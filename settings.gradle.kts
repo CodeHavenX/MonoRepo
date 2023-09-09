@@ -64,6 +64,8 @@ include("samples:jvm-lib")
 include("samples:jvm-application")
 include("samples:nodejs-app")
 
+include("discord-bot-platform")
+
 include("tpsd")
 
 include("cdk-repo")

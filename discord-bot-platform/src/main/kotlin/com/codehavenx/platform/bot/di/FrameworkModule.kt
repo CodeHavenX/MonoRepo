@@ -1,10 +1,10 @@
-package com.cramsan.framework.sample.jvm
+package com.codehavenx.platform.bot.di
 
 import com.cramsan.framework.assertlib.AssertUtil
 import com.cramsan.framework.assertlib.AssertUtilInterface
 import com.cramsan.framework.assertlib.implementation.AssertUtilImpl
+import com.cramsan.framework.core.BEDispatcherProvider
 import com.cramsan.framework.core.DispatcherProvider
-import com.cramsan.framework.core.UIDispatcherProvider
 import com.cramsan.framework.halt.HaltUtil
 import com.cramsan.framework.halt.HaltUtilDelegate
 import com.cramsan.framework.halt.implementation.HaltUtilImpl
@@ -24,6 +24,7 @@ import com.cramsan.framework.thread.ThreadUtilDelegate
 import com.cramsan.framework.thread.ThreadUtilInterface
 import com.cramsan.framework.thread.implementation.ThreadUtilImpl
 import com.cramsan.framework.thread.implementation.ThreadUtilJVM
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 /**
@@ -32,30 +33,25 @@ import org.koin.dsl.module
 val FrameworkModule = module {
     single<PreferencesDelegate> { JVMPreferencesDelegate() }
 
-    single<Preferences> {
-        PreferencesImpl(get())
-    }
+    single<Preferences> { PreferencesImpl(get()) }
 
-    single<Boolean> {
-        val preferences: Preferences = get()
-        preferences.loadBoolean(KEY_LOG_TO_FILE) ?: false
-    }
+    single(named(IS_DEBUG_NAME)) { false }
 
-    single<EventLoggerDelegate> {
-        LoggerJVM(get())
-    }
+    single<EventLoggerDelegate> { LoggerJVM(get(named(IS_DEBUG_NAME)))    }
 
     single<EventLoggerInterface> {
-        val instance = EventLoggerImpl(Severity.DEBUG, null, get())
+        val severity: Severity = when (get<Boolean>(named(IS_DEBUG_NAME))) {
+            true -> Severity.VERBOSE
+            false -> Severity.INFO
+        }
+        val instance = EventLoggerImpl(severity, null, get())
         EventLogger.setInstance(instance)
         EventLogger.singleton
     }
 
     single<HaltUtilDelegate> { HaltUtilJVM() }
 
-    single<HaltUtil> {
-        HaltUtilImpl(get())
-    }
+    single<HaltUtil> { HaltUtilImpl(get()) }
 
     single<AssertUtilInterface> {
         val impl = AssertUtilImpl(
@@ -67,9 +63,7 @@ val FrameworkModule = module {
         AssertUtil.singleton
     }
 
-    single<ThreadUtilDelegate> {
-        ThreadUtilJVM(get(), get())
-    }
+    single<ThreadUtilDelegate> {  ThreadUtilJVM(get(), get()) }
 
     single<ThreadUtilInterface> {
         val instance = ThreadUtilImpl(get())
@@ -77,5 +71,7 @@ val FrameworkModule = module {
         ThreadUtil.singleton
     }
 
-    single<DispatcherProvider> { UIDispatcherProvider() }
+    single<DispatcherProvider> { BEDispatcherProvider() }
 }
+
+private const val IS_DEBUG_NAME = "isDebugEnabled"

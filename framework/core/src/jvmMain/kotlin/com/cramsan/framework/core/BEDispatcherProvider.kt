@@ -5,10 +5,10 @@ import kotlinx.coroutines.Dispatchers
 /**
  * JVM implementation of [DispatcherProvider]. It uses [Dispatchers.IO] for [ioDispatcher].
  */
-class JVMDispatcherProvider : DispatcherProvider {
+class BEDispatcherProvider : DispatcherProvider {
 
     @Suppress("InjectDispatcher")
     override fun ioDispatcher() = Dispatchers.IO
 
-    override fun uiDispatcher() = Dispatchers.Main
+    override fun uiDispatcher() = throw NotImplementedError("BE platforms cannot access a UI dispatcher.")
 }

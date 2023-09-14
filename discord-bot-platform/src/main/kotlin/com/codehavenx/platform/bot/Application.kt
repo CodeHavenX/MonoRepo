@@ -1,7 +1,10 @@
 package com.codehavenx.platform.bot
 
+import com.codehavenx.platform.bot.controller.KordController
+import com.codehavenx.platform.bot.controller.WebhookController
 import com.codehavenx.platform.bot.di.ApplicationModule
 import com.codehavenx.platform.bot.di.FrameworkModule
+import com.codehavenx.platform.bot.di.createKtorModule
 import com.cramsan.framework.assertlib.AssertUtilInterface
 import com.cramsan.framework.logging.EventLoggerInterface
 import com.cramsan.framework.logging.logI
@@ -9,36 +12,49 @@ import com.cramsan.framework.thread.ThreadUtilInterface
 import io.ktor.server.application.Application
 import io.ktor.server.application.call
 import io.ktor.server.application.install
-import io.ktor.server.request.receiveText
-import io.ktor.server.response.respondText
+import io.ktor.server.plugins.callloging.CallLogging
+import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import io.ktor.server.websocket.WebSockets
-import org.kohsuke.github.GitHub
+import kotlinx.coroutines.launch
 import org.koin.core.context.startKoin
 import org.koin.ktor.ext.inject
 
-
 fun main(args: Array<String>) = io.ktor.server.netty.EngineMain.main(args)
 
-fun Application.module() {
+fun Application.module() = launch {
     initializeDependencies()
     configureEngine()
-    configureRoutes()
+
+    val webhookController: WebhookController by inject()
+    val kordController: KordController by inject()
+    configureRoutes(webhookController, kordController)
+
     startApplication()
 }
 
 fun Application.configureEngine() {
+    install(CallLogging)
     install(WebSockets)
 }
 
-fun Application.configureRoutes() {
+suspend fun Application.configureRoutes(
+    webhookController: WebhookController,
+    kordController: KordController,
+) {
+    kordController.start()
+
     routing {
         route("webhook") {
-            post("/github") {
-                val text = call.receiveText()
-                call.respondText(text)
+            route("github") {
+                post("push") {
+                    webhookController.handleGithubPushPayload(call)
+                }
+                post("wfjobs") {
+                    webhookController.handleGithubWorkflowJobsPayload(call)
+                }
             }
         }
     }
@@ -46,7 +62,11 @@ fun Application.configureRoutes() {
 
 fun Application.initializeDependencies() {
     startKoin {
-        modules(FrameworkModule, ApplicationModule)
+        modules(
+            createKtorModule(this@initializeDependencies),
+            FrameworkModule,
+            ApplicationModule,
+        )
     }
     val eventLogger: EventLoggerInterface by inject()
     val assertUtil: AssertUtilInterface by inject()

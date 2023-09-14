@@ -20,9 +20,11 @@ dependencies {
     implementation("io.ktor:ktor-server-netty-jvm:_")
     implementation("io.ktor:ktor-server-websockets:_")
     implementation("dev.kord:kord-core:_")
-    implementation("org.kohsuke:github-api:_")
     implementation("io.insert-koin:koin-core:_")
     implementation("io.insert-koin:koin-ktor:_")
+    implementation("io.ktor:ktor-server-call-logging:_")
+    implementation("org.apache.logging.log4j:log4j-core:_")
+    implementation("org.apache.logging.log4j:log4j-slf4j-impl:_")
 
     testImplementation("io.ktor:ktor-server-tests-jvm:_")
 }

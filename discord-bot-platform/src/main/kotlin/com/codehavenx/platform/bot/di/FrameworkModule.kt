@@ -37,12 +37,12 @@ val FrameworkModule = module {
 
     single(named(IS_DEBUG_NAME)) { false }
 
-    single<EventLoggerDelegate> { LoggerJVM(get(named(IS_DEBUG_NAME)))    }
+    single<EventLoggerDelegate> { LoggerJVM(get(named(IS_DEBUG_NAME))) }
 
     single<EventLoggerInterface> {
         val severity: Severity = when (get<Boolean>(named(IS_DEBUG_NAME))) {
             true -> Severity.VERBOSE
-            false -> Severity.INFO
+            false -> Severity.VERBOSE
         }
         val instance = EventLoggerImpl(severity, null, get())
         EventLogger.setInstance(instance)
@@ -63,7 +63,7 @@ val FrameworkModule = module {
         AssertUtil.singleton
     }
 
-    single<ThreadUtilDelegate> {  ThreadUtilJVM(get(), get()) }
+    single<ThreadUtilDelegate> { ThreadUtilJVM(get(), get()) }
 
     single<ThreadUtilInterface> {
         val instance = ThreadUtilImpl(get())

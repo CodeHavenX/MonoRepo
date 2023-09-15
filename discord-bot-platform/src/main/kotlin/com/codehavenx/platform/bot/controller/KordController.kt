@@ -36,9 +36,9 @@ class KordController(
             logI(TAG, "GuildChatInputCommandInteractionCreateEvent received")
             val command = interaction.command.rootName
             val module = moduleMap[command]
-            val deferredResponse = interaction.deferPublicResponse()
 
             if (module == null) {
+                val deferredResponse = interaction.deferPublicResponse()
                 logW(TAG, "Unrecognized command $command")
                 deferredResponse.respond {
                     content = "Unrecognized command :("

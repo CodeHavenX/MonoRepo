@@ -11,7 +11,7 @@ SYSTEMD_FOLDER="$HOME/.config/systemd/user"
 
 echo "Building Server Executable"
 sleep 2
-../../gradlew :discord-bot-platform:buildFatJar
+../gradlew :discord-bot-platform:buildFatJar
 
 if [ $? -ne 0 ]; then
     echo "Build was unsuccesful"
@@ -38,7 +38,6 @@ echo "Stopping server..."
 systemctl --user stop $SYSTEMD_FILE
 if [ $? -ne 0 ]; then
     echo "Could not stop service $SYSTEMD_FILE"
-    exit $?
 fi
 
 echo "Copying file $ARTIFACT_FOLDER/$ARTIFACT_FILE to $INSTALLATION_FOLDER/$ARTIFACT_FILE"
@@ -60,3 +59,9 @@ echo "Starting server"
 systemctl --user daemon-reload
 systemctl --user restart $SYSTEMD_FILE
 systemctl --user enable $SYSTEMD_FILE
+
+echo "Some useful commands:"
+echo "To view the latest logs"
+echo "journalctl -e --user -u $SYSTEMD_FILE"
+echo "To manage the service"
+echo "systemctl --user stop/start $SYSTEMD_FILE"

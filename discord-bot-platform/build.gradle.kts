@@ -19,6 +19,8 @@ dependencies {
     implementation("io.ktor:ktor-server-core-jvm:_")
     implementation("io.ktor:ktor-server-netty-jvm:_")
     implementation("io.ktor:ktor-server-websockets:_")
+    implementation("io.ktor:ktor-server-content-negotiation:_")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:_")
     implementation("dev.kord:kord-core:_")
     implementation("io.insert-koin:koin-core:_")
     implementation("io.insert-koin:koin-ktor:_")

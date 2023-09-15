@@ -1,8 +1,11 @@
 package com.codehavenx.platform.bot.network.gh
 
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import java.util.Date
 
+@Serializable
 data class Repository(
     @SerialName("id")
     val id: Long = 0,
@@ -99,6 +102,7 @@ data class Repository(
     @SerialName("created_at")
     val createdAt: Long = 0,
     @SerialName("updated_at")
+    @Contextual
     val updatedAt: Date? = null,
     @SerialName("pushed_at")
     val pushedAt: Long = 0,

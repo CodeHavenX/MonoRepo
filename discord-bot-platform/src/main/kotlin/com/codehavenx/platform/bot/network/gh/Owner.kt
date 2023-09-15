@@ -1,7 +1,9 @@
 package com.codehavenx.platform.bot.network.gh
 
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Owner(
     @SerialName("name")
     val name: String? = null,

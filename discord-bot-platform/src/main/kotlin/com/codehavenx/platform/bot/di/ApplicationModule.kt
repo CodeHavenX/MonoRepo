@@ -4,12 +4,16 @@ import com.codehavenx.platform.bot.controller.KordController
 import com.codehavenx.platform.bot.controller.WebhookController
 import com.codehavenx.platform.bot.controller.kord.InteractionModule
 import com.codehavenx.platform.bot.controller.kord.WebHookRegisterInteractionModule
+import com.codehavenx.platform.bot.ktor.DateAsStringSerializer
 import com.codehavenx.platform.bot.service.github.GithubWebhookService
 import dev.kord.core.Kord
 import io.ktor.server.config.ApplicationConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.contextual
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -54,6 +58,18 @@ val ApplicationModule = module {
         listOf(
             get<WebHookRegisterInteractionModule>()
         )
+    }
+
+    single {
+        SerializersModule {
+            contextual(DateAsStringSerializer)
+        }
+    }
+
+    single<Json> {
+        Json {
+            serializersModule = get()
+        }
     }
 }
 

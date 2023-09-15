@@ -1,7 +1,9 @@
 package com.codehavenx.platform.bot.network.gh
 
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 class WorkflowJobsPayload(
     val action: String? = null,
     @SerialName("workflow_job")

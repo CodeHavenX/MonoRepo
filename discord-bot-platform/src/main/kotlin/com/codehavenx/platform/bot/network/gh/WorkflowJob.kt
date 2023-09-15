@@ -1,8 +1,11 @@
 package com.codehavenx.platform.bot.network.gh
 
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import java.util.Date
 
+@Serializable
 data class WorkflowJob(
     @SerialName("id")
     val id: Long = 0,
@@ -28,10 +31,13 @@ data class WorkflowJob(
     val status: String? = null,
     @SerialName("conclusion")
     val conclusion: String? = null,
+    @Contextual
     @SerialName("created_at")
     val createdAt: Date? = null,
+    @Contextual
     @SerialName("started_at")
     val startedAt: Date? = null,
+    @Contextual
     @SerialName("completed_at")
     val completedAt: Date? = null,
     @SerialName("name")

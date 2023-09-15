@@ -9,16 +9,19 @@ import com.cramsan.framework.assertlib.AssertUtilInterface
 import com.cramsan.framework.logging.EventLoggerInterface
 import com.cramsan.framework.logging.logI
 import com.cramsan.framework.thread.ThreadUtilInterface
+import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.call
 import io.ktor.server.application.install
 import io.ktor.server.plugins.callloging.CallLogging
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import io.ktor.server.websocket.WebSockets
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 import org.koin.core.context.startKoin
 import org.koin.ktor.ext.inject
 
@@ -36,8 +39,13 @@ fun Application.module() = launch {
 }
 
 fun Application.configureEngine() {
+    val json: Json by inject()
+
     install(CallLogging)
     install(WebSockets)
+    install(ContentNegotiation) {
+        json(json)
+    }
 }
 
 suspend fun Application.configureRoutes(

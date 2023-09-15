@@ -28,3 +28,11 @@ dependencies {
 
     testImplementation("io.ktor:ktor-server-tests-jvm:_")
 }
+
+val distTar by tasks.getting(Tar::class) {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+val distZip by tasks.getting(Zip::class) {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}

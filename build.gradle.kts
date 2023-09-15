@@ -48,5 +48,7 @@ tasks.register("releaseAll") {
 
     dependsOn("cdk-repo:release")
 
+    dependsOn("discord-bot-platform:release")
+
     dependsOn("tpsd:release")
 }

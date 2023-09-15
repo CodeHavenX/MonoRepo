@@ -24,8 +24,8 @@ class WebhookController(
             val payload = call.receive<CodePushPayload>()
             val pusher = payload.pusher?.name
             val repoName = payload.repository?.name
-            val commitTitle = payload.head_commit?.message
-            val commitUrl = payload.head_commit?.url
+            val commitTitle = payload.headCommit?.message
+            val commitUrl = payload.headCommit?.url
             kordController.sendMessage(channelId) {
                 content = "$pusher pushed a commit to $repoName\n$commitTitle\n$commitUrl"
             }

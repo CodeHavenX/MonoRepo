@@ -3,14 +3,16 @@ package com.codehavenx.platform.bot.controller.kord
 import com.codehavenx.platform.bot.service.github.GithubWebhookService
 import com.codehavenx.platform.bot.service.github.WebhookEvent
 import com.cramsan.framework.logging.logD
-import dev.kord.core.behavior.interaction.response.respond
 import dev.kord.core.entity.interaction.GuildChatInputCommandInteraction
 import dev.kord.rest.builder.interaction.GlobalChatInputCreateBuilder
 import dev.kord.rest.builder.interaction.string
 import dev.kord.rest.builder.message.modify.InteractionResponseModifyBuilder
 import java.util.concurrent.CancellationException
 
-class WebHookRegisterInteractionModule(
+/**
+ * Module to define an interaction to register a webhook type [WebhookEvent] with a Discord channel.
+ */
+class WebhookRegisterInteractionModule(
     private val githubWebhookService: GithubWebhookService,
 ) : InteractionModule {
 
@@ -27,15 +29,16 @@ class WebHookRegisterInteractionModule(
     }
 
     @Suppress("SwallowedException")
-    override suspend fun onGlobalChatInteraction(interaction: GuildChatInputCommandInteraction) {
+    override suspend fun onGlobalChatInteraction(
+        interaction: GuildChatInputCommandInteraction,
+    ): InteractionResponseModifyBuilder.() -> Unit {
         logD(TAG, "Received event data: $interaction",)
 
         val command = interaction.command
         val webhookEventParam = command.strings.getValue("event")
         val webhookEvent = WebhookEvent.valueOf(webhookEventParam)
 
-        val deferredResponse = interaction.deferPublicResponse()
-        val responseBuilder = try {
+        return try {
             githubWebhookService.registerWebhookEventToChannel(
                 webhookEvent,
                 interaction.channelId.toString()
@@ -52,7 +55,6 @@ class WebHookRegisterInteractionModule(
                 content = "There was an exception \uD83D\uDE31"
             }
         }
-        deferredResponse.respond(responseBuilder)
     }
 
     companion object {

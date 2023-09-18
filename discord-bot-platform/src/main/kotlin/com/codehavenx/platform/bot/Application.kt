@@ -1,7 +1,7 @@
 package com.codehavenx.platform.bot
 
-import com.codehavenx.platform.bot.controller.KordController
-import com.codehavenx.platform.bot.controller.WebhookController
+import com.codehavenx.platform.bot.controller.kord.DiscordController
+import com.codehavenx.platform.bot.controller.webhook.WebhookController
 import com.codehavenx.platform.bot.di.ApplicationModule
 import com.codehavenx.platform.bot.di.FrameworkModule
 import com.codehavenx.platform.bot.di.createKtorModule
@@ -11,34 +11,38 @@ import com.cramsan.framework.logging.logI
 import com.cramsan.framework.thread.ThreadUtilInterface
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
-import io.ktor.server.application.call
 import io.ktor.server.application.install
 import io.ktor.server.plugins.callloging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.server.routing.get
-import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import io.ktor.server.websocket.WebSockets
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import org.koin.core.context.startKoin
 import org.koin.ktor.ext.inject
 
 fun main(args: Array<String>) = io.ktor.server.netty.EngineMain.main(args)
 
-fun Application.module() = launch {
+fun Application.module() = runBlocking {
     initializeDependencies()
-    configureEngine()
+    startServer()
+}
+
+fun Application.startServer() = runBlocking {
+    configureKtorEngine()
 
     val webhookController: WebhookController by inject()
-    val kordController: KordController by inject()
-    configureRoutes(webhookController, kordController)
+    val discordController: DiscordController by inject()
+    configureEntryPoints(webhookController, discordController)
 
     startApplication()
 }
 
-fun Application.configureEngine() {
+/**
+ * Configures the Ktor engine.
+ */
+fun Application.configureKtorEngine() {
     val json: Json by inject()
 
     install(CallLogging)
@@ -48,26 +52,25 @@ fun Application.configureEngine() {
     }
 }
 
-suspend fun Application.configureRoutes(
+/**
+ * Configures all the system entry points. This includes REST routes and Discord intents.
+ */
+suspend fun Application.configureEntryPoints(
     webhookController: WebhookController,
-    kordController: KordController,
+    discordController: DiscordController,
 ) {
-    kordController.start()
+    discordController.start()
 
     routing {
         route("webhook") {
-            route("github") {
-                post("push") {
-                    webhookController.handleGithubPushPayload(call)
-                }
-                post("wfjobs") {
-                    webhookController.handleGithubWorkflowJobsPayload(call)
-                }
-            }
+            webhookController.registerRoutes(this@route)
         }
     }
 }
 
+/**
+ * Initialize the service dependencies.
+ */
 fun Application.initializeDependencies() {
     startKoin {
         modules(
@@ -84,6 +87,9 @@ fun Application.initializeDependencies() {
     assertUtil.assertNotNull(threadUtil, TAG, "ThreadUtil is null")
 }
 
+/**
+ * Let's do it!
+ */
 fun Application.startApplication() {
     logI(TAG, "Application is ready.")
 }

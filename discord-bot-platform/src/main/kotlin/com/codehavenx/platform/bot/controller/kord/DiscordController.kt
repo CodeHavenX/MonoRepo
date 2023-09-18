@@ -1,6 +1,5 @@
-package com.codehavenx.platform.bot.controller
+package com.codehavenx.platform.bot.controller.kord
 
-import com.codehavenx.platform.bot.controller.kord.InteractionModule
 import com.cramsan.framework.logging.logI
 import com.cramsan.framework.logging.logW
 import dev.kord.common.entity.Snowflake
@@ -14,7 +13,12 @@ import dev.kord.rest.builder.message.create.UserMessageCreateBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-class KordController(
+/**
+ * This controller provides a mechanism to access Discord functionality. A [kord] is required to provide the underlying
+ * API. A [globalScope] is required to handle coroutines that may happen outside of the scope of the interaction. The
+ * [modules] is a list of [InteractionModule] that will be loaded.
+ */
+class DiscordController(
     private val kord: Kord,
     private val globalScope: CoroutineScope,
     private val modules: List<InteractionModule>,
@@ -44,7 +48,9 @@ class KordController(
                     content = "Unrecognized command :("
                 }
             } else {
-                module.onGlobalChatInteraction(interaction)
+                val deferredResponse = interaction.deferPublicResponse()
+                val responseBuilder = module.onGlobalChatInteraction(interaction)
+                deferredResponse.respond(responseBuilder)
             }
         }
 

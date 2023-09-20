@@ -34,6 +34,13 @@ fun Application.startServer() = runBlocking {
 
     val webhookController: WebhookController by inject()
     val discordController: DiscordController by inject()
+    val eventLogger: EventLoggerInterface by inject()
+    val assertUtil: AssertUtilInterface by inject()
+    val threadUtil: ThreadUtilInterface by inject()
+
+    assertUtil.assertNotNull(eventLogger, TAG, "EventLogger is null")
+    assertUtil.assertNotNull(threadUtil, TAG, "ThreadUtil is null")
+
     configureEntryPoints(webhookController, discordController)
 
     startApplication()
@@ -79,12 +86,6 @@ fun Application.initializeDependencies() {
             ApplicationModule,
         )
     }
-    val eventLogger: EventLoggerInterface by inject()
-    val assertUtil: AssertUtilInterface by inject()
-    val threadUtil: ThreadUtilInterface by inject()
-
-    assertUtil.assertNotNull(eventLogger, TAG, "EventLogger is null")
-    assertUtil.assertNotNull(threadUtil, TAG, "ThreadUtil is null")
 }
 
 /**

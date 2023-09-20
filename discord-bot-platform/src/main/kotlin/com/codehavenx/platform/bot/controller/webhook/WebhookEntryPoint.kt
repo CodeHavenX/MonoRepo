@@ -1,6 +1,6 @@
 package com.codehavenx.platform.bot.controller.webhook
 
-import io.ktor.server.application.ApplicationCall
+import com.codehavenx.platform.bot.ktor.HttpResponse
 import kotlin.reflect.KClass
 
 /**
@@ -19,12 +19,11 @@ interface WebhookEntryPoint <T : Any> {
     val path: String
 
     /**
-     * Implement this function to define how to handle a [payload] of type [type]. [call] should be used to send the
-     * response for this webhook request.
+     * Implement this function to define how to handle a [payload] of type [type]. This method returns a [HttpResponse].
      *
      * @sample GithubCommitPushEntryPoint.onPayload
      */
-    suspend fun onPayload(payload: T, call: ApplicationCall)
+    suspend fun onPayload(payload: T): HttpResponse
 
     companion object {
         private const val TAG = "WebhookEntryPoint"

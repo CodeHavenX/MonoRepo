@@ -10,6 +10,8 @@ import com.codehavenx.platform.bot.service.github.WebhookEvent
 import com.codehavenx.platform.bot.utils.readResource
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.test.TestBase
+import dev.kord.rest.builder.message.create.UserMessageCreateBuilder
+import dev.kord.rest.builder.message.modify.InteractionResponseModifyBuilder
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -20,10 +22,15 @@ import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.testing.testApplication
 import io.mockk.MockKAnnotations
+import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
+import io.mockk.slot
+import io.mockk.verify
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -40,9 +47,7 @@ class GithubCommitPushEntryPointTest : TestBase(){
     @MockK
     private lateinit var githubWebhookService: GithubWebhookService
 
-    @MockK(
-        relaxed = true,
-    )
+    @MockK
     private lateinit var discordController: DiscordController
     @BeforeTest
     override fun setupTest() {
@@ -55,83 +60,43 @@ class GithubCommitPushEntryPointTest : TestBase(){
         )
     }
 
-    @AfterTest
-    fun closeTest() {
-
-    }
-
     @Test
     fun `test path` () {
         assertEquals("github/push", entryPoint.path)
     }
 
     @Test
-    fun `test onPayload` () = testApplication {
-        val client = createClient {
-            install(ContentNegotiation) {
-                json(createJson())
-            }
-        }
-
-        startKoin {
-            modules(
-                createFrameworkModule(),
-                createApplicationModule(
-                    discordController = discordController,
-                    githubWebhookService = githubWebhookService,
-                    githubCommitPushEntryPoint = entryPoint,
-                ),
-            )
-        }
-
+    fun `test onPayload` () = runBlockingTest {
         val channelId = "channelId"
         val payload: CodePushPayload = json.decodeFromString(readResource("commit_push.json")!!)
         every { githubWebhookService.getWebhookEventChannel(WebhookEvent.PUSH) } returns channelId
+        val capturer = slot<UserMessageCreateBuilder.() -> Unit>()
+        coEvery { discordController.sendMessage(any(), capture(capturer)) } just runs
 
-        val response = client.post("/webhook/github/push") {
-            contentType(ContentType.Application.Json)
-            setBody(payload)
-        }
+        val builder: UserMessageCreateBuilder = mockk(relaxed = true)
 
-        coVerify { discordController.sendMessage(channelId, any()) }
-        assertEquals("Event handled", response.bodyAsText())
+        val response = entryPoint.onPayload(payload)
+
+        val discordMessage = capturer.captured
+        builder.discordMessage()
+
+        coVerify { discordController.sendMessage(eq(channelId), any()) }
         assertEquals(HttpStatusCode.OK, response.status)
-
-        stopKoin()
+        assertEquals("Event handled", response.body)
+        verify {
+            builder.content = "CRamsan pushed a commit to MonoRepo\n[DBP] Fixing date parsing\nhttps://github.com/CodeHavenX/MonoRepo/commit/3695c9218ac300065f38cf5c74b82690c0bd6d04"
+        }
     }
 
     @Test
-    fun `test onPayload with no channelId` () = testApplication {
-        val client = createClient {
-            install(ContentNegotiation) {
-                json(createJson())
-            }
-        }
-
-        startKoin {
-            modules(
-                createFrameworkModule(),
-                createApplicationModule(
-                    discordController = discordController,
-                    githubWebhookService = githubWebhookService,
-                    githubCommitPushEntryPoint = entryPoint,
-                ),
-            )
-        }
-
+    fun `test onPayload with no channelId` () = runBlockingTest {
         val payload: CodePushPayload = json.decodeFromString(readResource("commit_push.json")!!)
         every { githubWebhookService.getWebhookEventChannel(WebhookEvent.PUSH) } returns null
 
-        val response = client.post("/webhook/github/push") {
-            contentType(ContentType.Application.Json)
-            setBody(payload)
-        }
+        val response = entryPoint.onPayload(payload)
 
-        coVerify(exactly = 0) { discordController.sendMessage(any(), any()) }
-        assertEquals("Event unhandled", response.bodyAsText())
         assertEquals(HttpStatusCode.InternalServerError, response.status)
-
-        stopKoin()
+        assertEquals("Event unhandled", response.body)
     }
 
 }

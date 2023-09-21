@@ -27,6 +27,7 @@ dependencies {
     implementation("io.ktor:ktor-server-call-logging:_")
     implementation("org.apache.logging.log4j:log4j-core:_")
     implementation("org.apache.logging.log4j:log4j-slf4j-impl:_")
+    implementation("com.google.cloud:google-cloud-translate:2.23.0")
 
     testImplementation("io.ktor:ktor-server-tests-jvm:_")
     testImplementation("io.ktor:ktor-server-test-host:_")

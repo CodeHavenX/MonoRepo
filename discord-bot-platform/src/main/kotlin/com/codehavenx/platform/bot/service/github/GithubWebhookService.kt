@@ -15,7 +15,7 @@ class GithubWebhookService(
     }
 
     companion object {
-        private const val TAG = ""
+        private const val TAG = "GithubWebhookService"
 
         private const val CHANNEL_ID_KEY = "CHANNEL_ID_KEY"
     }

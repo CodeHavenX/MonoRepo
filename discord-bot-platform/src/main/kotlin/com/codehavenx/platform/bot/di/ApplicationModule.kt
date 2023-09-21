@@ -2,12 +2,16 @@ package com.codehavenx.platform.bot.di
 
 import com.codehavenx.platform.bot.config.createJson
 import com.codehavenx.platform.bot.controller.kord.DiscordController
+import com.codehavenx.platform.bot.controller.kord.GoogleTranslateInteractionModule
 import com.codehavenx.platform.bot.controller.kord.InteractionModule
 import com.codehavenx.platform.bot.controller.kord.WebhookRegisterInteractionModule
 import com.codehavenx.platform.bot.controller.webhook.GithubCommitPushEntryPoint
 import com.codehavenx.platform.bot.controller.webhook.WebhookController
 import com.codehavenx.platform.bot.controller.webhook.WebhookEntryPoint
 import com.codehavenx.platform.bot.service.github.GithubWebhookService
+import com.codehavenx.platform.bot.service.google.GoogleTranslateService
+import com.google.cloud.translate.Translate
+import com.google.cloud.translate.TranslateOptions
 import dev.kord.core.Kord
 import io.ktor.server.config.ApplicationConfig
 import kotlinx.coroutines.CoroutineScope
@@ -66,12 +70,25 @@ val ApplicationModule = module {
 
     single<List<InteractionModule>>(named(LIST_KORD_INTERACTION_MODULES)) {
         listOf(
-            get<WebhookRegisterInteractionModule>()
+            get<WebhookRegisterInteractionModule>(),
+            get<GoogleTranslateInteractionModule>(),
         )
     }
 
     single<Json> {
         createJson()
+    }
+
+    single {
+        GoogleTranslateInteractionModule(get())
+    }
+
+    single {
+        GoogleTranslateService(get())
+    }
+
+    single<Translate> {
+        TranslateOptions.getDefaultInstance().getService()
     }
 }
 

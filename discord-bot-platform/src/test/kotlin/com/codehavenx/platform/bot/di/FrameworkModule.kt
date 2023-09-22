@@ -20,7 +20,7 @@ fun createFrameworkModule(
     haltUtil: HaltUtil = mockk(relaxed = true),
     assertUtilInterface: AssertUtilInterface = mockk(relaxed = true),
     threadUtilInterface: ThreadUtilInterface = mockk(relaxed = true),
-) = module {
+) = module(createdAtStart = true) {
 
     single<Preferences> { preferences }
 

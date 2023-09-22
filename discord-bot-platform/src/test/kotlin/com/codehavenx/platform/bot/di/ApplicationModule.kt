@@ -3,10 +3,11 @@ package com.codehavenx.platform.bot.di
 import com.codehavenx.platform.bot.config.createJson
 import com.codehavenx.platform.bot.controller.kord.InteractionModule
 import com.codehavenx.platform.bot.controller.kord.DiscordController
-import com.codehavenx.platform.bot.controller.kord.WebhookRegisterInteractionModule
-import com.codehavenx.platform.bot.controller.webhook.GithubCommitPushEntryPoint
+import com.codehavenx.platform.bot.controller.kord.modules.WebhookRegisterInteractionModule
+import com.codehavenx.platform.bot.controller.webhook.entrypoint.GithubCommitPushEntryPoint
 import com.codehavenx.platform.bot.controller.webhook.WebhookController
 import com.codehavenx.platform.bot.controller.webhook.WebhookEntryPoint
+import com.codehavenx.platform.bot.service.DiscordService
 import com.codehavenx.platform.bot.service.github.GithubWebhookService
 import io.mockk.mockk
 import kotlinx.serialization.json.Json
@@ -18,10 +19,11 @@ import org.koin.dsl.module
  */
 fun createApplicationModule(
     discordController: DiscordController = mockk(relaxed = true),
+    discordService: DiscordService = mockk(relaxed = true),
     githubWebhookService: GithubWebhookService = mockk(relaxed = true),
     webHookRegisterInteractionModule: WebhookRegisterInteractionModule = mockk(relaxed = true),
     githubCommitPushEntryPoint: GithubCommitPushEntryPoint = mockk(relaxed = true),
-) = module {
+) = module(createdAtStart = true) {
 
     single<List<WebhookEntryPoint<*>>>(named(LIST_WH_ENTRY_POINTS)) {
         listOf(
@@ -31,6 +33,10 @@ fun createApplicationModule(
 
     single {
         githubCommitPushEntryPoint
+    }
+
+    single {
+        discordService
     }
 
     single {

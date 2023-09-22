@@ -2,14 +2,12 @@ package com.codehavenx.platform.bot.controller.kord
 
 import com.cramsan.framework.logging.logI
 import com.cramsan.framework.logging.logW
-import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.behavior.interaction.response.respond
 import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEvent
 import dev.kord.core.on
 import dev.kord.gateway.Intent
 import dev.kord.gateway.PrivilegedIntent
-import dev.kord.rest.builder.message.create.UserMessageCreateBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -64,11 +62,7 @@ class DiscordController(
         }
     }
 
-    suspend fun sendMessage(channelId: String, builder: UserMessageCreateBuilder.() -> Unit) {
-        kord.rest.channel.createMessage(Snowflake(channelId), builder)
-    }
-
     companion object {
-        private const val TAG = "KordController"
+        private const val TAG = "DiscordController"
     }
 }

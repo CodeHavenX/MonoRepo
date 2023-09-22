@@ -1,16 +1,14 @@
 package com.codehavenx.platform.bot
 
 import com.codehavenx.platform.bot.config.createJson
-import com.codehavenx.platform.bot.controller.kord.DiscordController
-import com.codehavenx.platform.bot.controller.webhook.GithubCommitPushEntryPoint
+import com.codehavenx.platform.bot.controller.webhook.entrypoint.GithubCommitPushEntryPoint
 import com.codehavenx.platform.bot.di.createApplicationModule
 import com.codehavenx.platform.bot.di.createFrameworkModule
 import com.codehavenx.platform.bot.ktor.HttpResponse
 import com.codehavenx.platform.bot.network.gh.CodePushPayload
+import com.codehavenx.platform.bot.service.DiscordService
 import com.codehavenx.platform.bot.service.github.GithubWebhookService
-import com.codehavenx.platform.bot.service.github.WebhookEvent
 import com.codehavenx.platform.bot.utils.readResource
-import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.test.TestBase
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.post
@@ -23,10 +21,7 @@ import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.testing.testApplication
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.impl.annotations.MockK
-import io.mockk.mockk
 import io.mockk.spyk
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -42,7 +37,7 @@ class ApplicationTest : TestBase() {
     private lateinit var githubWebhookService: GithubWebhookService
 
     @MockK(relaxed = true)
-    private lateinit var discordController: DiscordController
+    private lateinit var discordService: DiscordService
 
     private val json = createJson()
     override fun setupTest() { }
@@ -51,9 +46,10 @@ class ApplicationTest : TestBase() {
     fun `test onPayload with no channelId` () = testApplication {
         MockKAnnotations.init(this) // turn relaxUnitFun on for all mocks
 
-        githubCommitPushEntryPoint = spyk(GithubCommitPushEntryPoint(
-            githubWebhookService,
-            discordController,
+        githubCommitPushEntryPoint = spyk(
+            GithubCommitPushEntryPoint(
+                githubWebhookService,
+                discordService,
         ))
 
         coEvery { githubCommitPushEntryPoint.onPayload(any()) } returns HttpResponse(
@@ -73,7 +69,7 @@ class ApplicationTest : TestBase() {
                 createApplicationModule(
                     githubCommitPushEntryPoint = githubCommitPushEntryPoint,
                     githubWebhookService = githubWebhookService,
-                    discordController = discordController,
+                    discordService = discordService,
                 ),
             )
         }

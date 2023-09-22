@@ -6,7 +6,7 @@ import org.koin.dsl.module
 /**
  * Class to initialize and bind the ktor components.
  */
-fun createKtorModule(application: Application) = module {
+fun createKtorModule(application: Application) = module(createdAtStart = true) {
     single { application }
 
     single {

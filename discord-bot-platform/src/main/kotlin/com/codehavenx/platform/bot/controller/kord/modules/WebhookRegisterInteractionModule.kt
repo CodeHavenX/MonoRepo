@@ -1,5 +1,6 @@
-package com.codehavenx.platform.bot.controller.kord
+package com.codehavenx.platform.bot.controller.kord.modules
 
+import com.codehavenx.platform.bot.controller.kord.InteractionModule
 import com.codehavenx.platform.bot.service.github.GithubWebhookService
 import com.codehavenx.platform.bot.service.github.WebhookEvent
 import com.cramsan.framework.logging.logD

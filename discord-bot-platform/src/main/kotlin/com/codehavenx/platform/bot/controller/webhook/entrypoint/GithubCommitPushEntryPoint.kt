@@ -1,8 +1,9 @@
-package com.codehavenx.platform.bot.controller.webhook
+package com.codehavenx.platform.bot.controller.webhook.entrypoint
 
-import com.codehavenx.platform.bot.controller.kord.DiscordController
+import com.codehavenx.platform.bot.controller.webhook.WebhookEntryPoint
 import com.codehavenx.platform.bot.ktor.HttpResponse
 import com.codehavenx.platform.bot.network.gh.CodePushPayload
+import com.codehavenx.platform.bot.service.DiscordService
 import com.codehavenx.platform.bot.service.github.GithubWebhookService
 import com.codehavenx.platform.bot.service.github.WebhookEvent
 import com.cramsan.framework.logging.logD
@@ -16,7 +17,7 @@ import kotlin.reflect.KClass
  */
 class GithubCommitPushEntryPoint(
     private val githubWebhookService: GithubWebhookService,
-    private val discordController: DiscordController,
+    private val discordService: DiscordService,
 ) : WebhookEntryPoint<CodePushPayload> {
 
     override val type: KClass<CodePushPayload> = CodePushPayload::class
@@ -37,7 +38,7 @@ class GithubCommitPushEntryPoint(
             val repoName = payload.repository?.name
             val commitTitle = payload.headCommit?.message
             val commitUrl = payload.headCommit?.url
-            discordController.sendMessage(channelId) {
+            discordService.sendMessage(channelId) {
                 content = "$pusher pushed a commit to $repoName\n$commitTitle\n$commitUrl"
             }
             HttpResponse(

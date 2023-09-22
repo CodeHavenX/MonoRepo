@@ -5,10 +5,7 @@ import com.codehavenx.platform.bot.controller.webhook.WebhookController
 import com.codehavenx.platform.bot.di.ApplicationModule
 import com.codehavenx.platform.bot.di.FrameworkModule
 import com.codehavenx.platform.bot.di.createKtorModule
-import com.cramsan.framework.assertlib.AssertUtilInterface
-import com.cramsan.framework.logging.EventLoggerInterface
 import com.cramsan.framework.logging.logI
-import com.cramsan.framework.thread.ThreadUtilInterface
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
@@ -34,12 +31,6 @@ fun Application.startServer() = runBlocking {
 
     val webhookController: WebhookController by inject()
     val discordController: DiscordController by inject()
-    val eventLogger: EventLoggerInterface by inject()
-    val assertUtil: AssertUtilInterface by inject()
-    val threadUtil: ThreadUtilInterface by inject()
-
-    assertUtil.assertNotNull(eventLogger, TAG, "EventLogger is null")
-    assertUtil.assertNotNull(threadUtil, TAG, "ThreadUtil is null")
 
     configureEntryPoints(webhookController, discordController)
 

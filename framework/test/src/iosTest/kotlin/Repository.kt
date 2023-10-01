@@ -13,7 +13,7 @@ actual class Repository {
     }
 
     actual fun getDataBlocking(): Int {
-        sleep(1)
+        sleep(1u)
         return 100
     }
 }

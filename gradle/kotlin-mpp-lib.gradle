@@ -4,11 +4,10 @@
 apply plugin: "org.jetbrains.kotlin.multiplatform"
 
 apply plugin: "com.android.library"
-apply plugin: "kotlin-kapt"
 apply from: "$rootDir/gradle/detekt.gradle"
 
 android {
-    compileSdkVersion 33
+    compileSdkVersion 34
     defaultConfig {
         minSdkVersion 26
         targetSdkVersion 33

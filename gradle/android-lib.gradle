@@ -1,10 +1,9 @@
 apply plugin: "com.android.library"
 apply plugin: "kotlin-android"
-apply plugin: "kotlin-kapt" // Kotlin Annotation Processor
 apply from: "$rootDir/gradle/detekt.gradle"
 
 android {
-    compileSdkVersion 33
+    compileSdkVersion 34
 
     defaultConfig {
         minSdkVersion 26

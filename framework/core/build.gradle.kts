@@ -1,7 +1,6 @@
 plugins {
     id("com.android.library")
     kotlin("multiplatform")
-    kotlin("kapt")
 }
 
 apply(from = "$rootDir/gradle/kotlin-mpp-lib.gradle")

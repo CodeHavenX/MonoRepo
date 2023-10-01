@@ -12,7 +12,7 @@ apply from: "$rootDir/gradle/detekt.gradle"
 
 def composeCompiler = versionFor(project, "version.androidx.compose.compiler")
 android {
-    compileSdkVersion 33
+    compileSdkVersion 34
 
     defaultConfig {
         minSdkVersion 26

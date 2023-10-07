@@ -65,6 +65,7 @@ include("samples:jvm-application")
 include("samples:nodejs-app")
 
 include("discord-bot-platform")
+//include("reservation-system")
 
 include("tpsd")
 

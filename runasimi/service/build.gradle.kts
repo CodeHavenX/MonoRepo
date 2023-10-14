@@ -18,8 +18,11 @@ dependencies {
 
     implementation("io.ktor:ktor-server-core-jvm:_")
     implementation("io.ktor:ktor-server-netty-jvm:_")
-    implementation("io.ktor:ktor-server-html-builder:_")
     implementation("io.ktor:ktor-serialization-kotlinx-json:_")
+    implementation("io.ktor:ktor-server-partial-content:_")
+    implementation("io.ktor:ktor-server-content-negotiation:_")
+    implementation("io.ktor:ktor-server-auto-head-response:_")
+    implementation("io.ktor:ktor-server-freemarker:_")
     implementation("io.ktor:ktor-client-core:_")
     implementation("io.ktor:ktor-client-java:_")
     implementation("io.insert-koin:koin-core:_")

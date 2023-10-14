@@ -1,27 +1,30 @@
 package com.codehavenx.platform.bot.controller
 
-import com.codehavenx.platform.bot.service.TranslationService
+import com.codehavenx.platform.bot.service.TextToSpeechService
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logI
+import io.ktor.http.ContentDisposition
+import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
 import io.ktor.server.request.receive
 import io.ktor.server.request.receiveParameters
+import io.ktor.server.response.header
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondBytes
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.post
 
 /**
- * This controller will load [modules] as a list of available webhoks and their respective handlers.
+ * This controller will load expose an HTTP Api for other services.
  */
 class ApiController(
-    private val translationService: TranslationService,
+    private val textToSpeechService: TextToSpeechService,
 ) {
 
     /**
-     * This function registers the routes for all the [modules]. The [route] is the root path.
+     * This function registers the routes for the http endpoints.
      */
     fun registerRoutes(route: Route) {
         route.apply {
@@ -40,7 +43,13 @@ class ApiController(
         val result = runCatching {
             val formParameters = call.receiveParameters()
             val payload = formParameters[FORM_KEY_MESSAGE].toString()
-            processPayload(payload, call)
+            val response = processPayload(payload, call)
+            call.response.header(
+                HttpHeaders.ContentDisposition,
+                ContentDisposition.Attachment.withParameter(
+                    ContentDisposition.Parameters.FileName, "voice.ogg").toString()
+            )
+            call.respondBytes(response, status = HttpStatusCode.OK)
         }
 
         if (result.isFailure) {
@@ -49,16 +58,13 @@ class ApiController(
         }
     }
 
-    /**
-     * Handles the request provided by [call] for the webhook of [entryPoint]. This function takes care of deserializing
-     * the body and provides it the respective [WebhookEntryPoint].
-     */
     private suspend fun handleRawBody(call: ApplicationCall) {
         logI(TAG, "handlePost called")
 
         val result = runCatching {
             val payload: String = call.receive()
-            processPayload(payload, call)
+            val response = processPayload(payload, call)
+            call.respondBytes(response, status = HttpStatusCode.OK)
         }
 
         if (result.isFailure) {
@@ -67,13 +73,12 @@ class ApiController(
         }
     }
 
-    private suspend fun processPayload(message: String, call: ApplicationCall) {
+    private suspend fun processPayload(message: String, call: ApplicationCall): ByteArray {
         if (message.length > CHAR_SIZE_LIMIT) {
             call.respond(HttpStatusCode.BadRequest, "Message length limit is $CHAR_SIZE_LIMIT")
         }
 
-        val response = translationService.sendMessage(message)
-        call.respondBytes(response, status = HttpStatusCode.OK)
+        return textToSpeechService.generateSpeech(message)
     }
 
     companion object {

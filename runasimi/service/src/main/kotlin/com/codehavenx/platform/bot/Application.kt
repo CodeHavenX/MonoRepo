@@ -6,9 +6,14 @@ import com.codehavenx.platform.bot.di.ApplicationModule
 import com.codehavenx.platform.bot.di.FrameworkModule
 import com.codehavenx.platform.bot.di.createKtorModule
 import com.cramsan.framework.logging.logI
+import freemarker.cache.ClassTemplateLoader
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
+import io.ktor.server.freemarker.FreeMarker
+import io.ktor.server.plugins.autohead.AutoHeadResponse
 import io.ktor.server.plugins.callloging.CallLogging
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.plugins.partialcontent.PartialContent
 import io.ktor.server.routing.routing
 import kotlinx.coroutines.runBlocking
 import org.koin.core.context.startKoin
@@ -37,17 +42,23 @@ fun Application.startServer() = runBlocking {
  */
 fun Application.configureKtorEngine() {
     install(CallLogging)
+    install(PartialContent)
+    install(ContentNegotiation)
+    install(AutoHeadResponse)
+    install(FreeMarker) {
+        templateLoader = ClassTemplateLoader(this::class.java.classLoader, "templates")
+    }
 }
 
 /**
- * Configures all the system entry points. This includes REST routes and Discord intents.
+ * Configures all the system entry points. This includes HTML routes and API endpoints.
  */
 suspend fun Application.configureEntryPoints(
-    webhookController: ApiController,
+    apiController: ApiController,
     htmlController: HtmlController,
 ) {
     routing {
-        webhookController.registerRoutes(this@routing)
+        apiController.registerRoutes(this@routing)
         htmlController.registerRoutes(this@routing)
     }
 }

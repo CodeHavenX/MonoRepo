@@ -6,12 +6,19 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.readBytes
 
-class TranslationService(
+/**
+ * Service to generate speech data.
+ */
+class TextToSpeechService(
     private val httpClient: HttpClient,
     private val port: String,
 ) {
-    suspend fun sendMessage(message: String): ByteArray {
-        logI(TAG, "Translating message of size ${message.length}")
+
+    /**
+     * Generate a [ByteArray] representing an audio file from the provided [message].
+     */
+    suspend fun generateSpeech(message: String): ByteArray {
+        logI(TAG, "Generating speech from message of size ${message.length}")
         val response = httpClient.post("http://192.168.1.151:$port/tts") {
             setBody(message)
         }

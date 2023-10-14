@@ -1,70 +1,32 @@
 package com.codehavenx.platform.bot.controller
 
-import com.codehavenx.platform.bot.service.TranslationService
-import com.cramsan.framework.logging.logE
-import com.cramsan.framework.logging.logI
-import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
-import io.ktor.server.html.respondHtml
-import io.ktor.server.request.receive
+import io.ktor.server.freemarker.FreeMarkerContent
 import io.ktor.server.response.respond
-import io.ktor.server.response.respondBytes
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
-import io.ktor.server.routing.post
-import kotlinx.html.FormEncType
-import kotlinx.html.FormMethod
-import kotlinx.html.body
-import kotlinx.html.form
-import kotlinx.html.h1
-import kotlinx.html.head
-import kotlinx.html.p
-import kotlinx.html.submitInput
-import kotlinx.html.textInput
-import kotlinx.html.title
 
 /**
- * This controller will load [modules] as a list of available webhoks and their respective handlers.
+ * This controller will handle and route requests for HTML content.
  */
 class HtmlController {
 
     /**
-     * This function registers the routes for all the [modules]. The [route] is the root path.
+     * This function will register the routes for all HTML resources.
      */
     fun registerRoutes(route: Route) {
         route.apply {
             get {
-                showHtml(call)
+                showIndexPage(call)
             }
         }
     }
 
     /**
-     * Handles the request provided by [call] for the webhook of [entryPoint]. This function takes care of deserializing
-     * the body and provides it the respective [WebhookEntryPoint].
+     * Show the home page.
      */
-    private suspend fun showHtml(call: ApplicationCall) {
-        call.respondHtml(HttpStatusCode.OK) {
-            head {
-                title {
-                    +"name"
-                }
-            }
-            body {
-                h1 {
-                    +"Hello from name!"
-                }
-                form(action = "/tts-form", encType = FormEncType.multipartFormData, method = FormMethod.post) {
-                    p {
-                        +"Message:"
-                        textInput(name = ApiController.FORM_KEY_MESSAGE)
-                    }
-                    p {
-                        submitInput { value = "Submit" }
-                    }
-                }
-            }
-        }
+    private suspend fun showIndexPage(call: ApplicationCall) {
+        call.respond(FreeMarkerContent("index.ftl", mapOf<String, String>()))
     }
 }

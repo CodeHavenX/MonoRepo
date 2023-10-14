@@ -2,7 +2,7 @@ package com.codehavenx.platform.bot.di
 
 import com.codehavenx.platform.bot.controller.ApiController
 import com.codehavenx.platform.bot.controller.HtmlController
-import com.codehavenx.platform.bot.service.TranslationService
+import com.codehavenx.platform.bot.service.TextToSpeechService
 import io.ktor.server.config.ApplicationConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
@@ -33,7 +33,7 @@ val ApplicationModule = module(createdAtStart = true) {
     }
 
     single {
-        TranslationService(
+        TextToSpeechService(
             get(),
             get(named(CONTAINER_PORT)),
         )

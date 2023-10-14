@@ -69,4 +69,8 @@ include("discord-bot-platform")
 
 include("tpsd")
 
+include("runasimi:jbcompose-android-app")
+include("runasimi:jbcompose-mpp-lib")
+include("runasimi:service")
+
 include("cdk-repo")

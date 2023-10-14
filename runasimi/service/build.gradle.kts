@@ -18,8 +18,7 @@ dependencies {
 
     implementation("io.ktor:ktor-server-core-jvm:_")
     implementation("io.ktor:ktor-server-netty-jvm:_")
-    implementation("io.ktor:ktor-server-websockets:_")
-    implementation("io.ktor:ktor-server-content-negotiation:_")
+    implementation("io.ktor:ktor-server-html-builder:_")
     implementation("io.ktor:ktor-serialization-kotlinx-json:_")
     implementation("io.ktor:ktor-client-core:_")
     implementation("io.ktor:ktor-client-java:_")

@@ -1,6 +1,7 @@
 package com.codehavenx.platform.bot.di
 
-import com.codehavenx.platform.bot.controller.webhook.WebhookController
+import com.codehavenx.platform.bot.controller.ApiController
+import com.codehavenx.platform.bot.controller.HtmlController
 import com.codehavenx.platform.bot.service.TranslationService
 import io.ktor.server.config.ApplicationConfig
 import kotlinx.coroutines.CoroutineScope
@@ -16,11 +17,15 @@ val ApplicationModule = module(createdAtStart = true) {
     single(named(CONTAINER_PORT)) {
         val config: ApplicationConfig = get()
 
-        config.property("kord.container_port").getString()
+        config.property("docker.container_port").getString()
     }
 
     single {
-        WebhookController(get())
+        ApiController(get())
+    }
+
+    single {
+        HtmlController()
     }
 
     single<CoroutineScope> {

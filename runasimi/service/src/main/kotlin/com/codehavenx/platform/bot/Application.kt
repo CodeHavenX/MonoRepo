@@ -1,20 +1,16 @@
 package com.codehavenx.platform.bot
 
-import com.codehavenx.platform.bot.controller.webhook.WebhookController
+import com.codehavenx.platform.bot.controller.ApiController
+import com.codehavenx.platform.bot.controller.HtmlController
 import com.codehavenx.platform.bot.di.ApplicationModule
 import com.codehavenx.platform.bot.di.FrameworkModule
 import com.codehavenx.platform.bot.di.createKtorModule
 import com.cramsan.framework.logging.logI
-import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.plugins.callloging.CallLogging
-import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
-import io.ktor.server.websocket.WebSockets
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.json.Json
 import org.koin.core.context.startKoin
 import org.koin.ktor.ext.inject
 
@@ -28,9 +24,10 @@ fun Application.module() = runBlocking {
 fun Application.startServer() = runBlocking {
     configureKtorEngine()
 
-    val webhookController: WebhookController by inject()
+    val webhookController: ApiController by inject()
+    val htmlController: HtmlController by inject()
 
-    configureEntryPoints(webhookController)
+    configureEntryPoints(webhookController, htmlController)
 
     startApplication()
 }
@@ -46,10 +43,12 @@ fun Application.configureKtorEngine() {
  * Configures all the system entry points. This includes REST routes and Discord intents.
  */
 suspend fun Application.configureEntryPoints(
-    webhookController: WebhookController,
+    webhookController: ApiController,
+    htmlController: HtmlController,
 ) {
     routing {
         webhookController.registerRoutes(this@routing)
+        htmlController.registerRoutes(this@routing)
     }
 }
 

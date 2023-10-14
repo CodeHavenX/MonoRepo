@@ -11,7 +11,7 @@ SYSTEMD_FOLDER="$HOME/.config/systemd/user"
 
 echo "Building Server Executable"
 sleep 2
-../gradlew :runasimi:service:buildFatJar
+../../gradlew :runasimi:service:buildFatJar
 
 if [ $? -ne 0 ]; then
     echo "Build was unsuccesful"

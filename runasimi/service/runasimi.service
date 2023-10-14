@@ -3,7 +3,7 @@ Description=Runasimi Service
 After=syslog.target
 
 [Service]
-WorkingDirectory=%h/.local/dbp/
+WorkingDirectory=%h/.local/runasimi/
 ExecStart=/bin/java -jar service-all.jar -config=override.conf
 ExecStop=/bin/kill -15 $MAINPID
 SuccessExitStatus=143

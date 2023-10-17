@@ -2,13 +2,13 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-M4374C90QT"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZFH0040L6B"></script>
 <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-    gtag('config', 'G-M4374C90QT');
+  gtag('config', 'G-ZFH0040L6B');
 </script>
 </head>
 <body>

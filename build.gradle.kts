@@ -52,5 +52,9 @@ tasks.register("releaseAll") {
     dependsOn("discord-bot-platform:release")
     //dependsOn("reservation-system:release")
 
+    dependsOn("runasimi:android-app:release")
+    dependsOn("runasimi:mpp-lib:release")
+    dependsOn("runasimi:service:release")
+
     dependsOn("tpsd:release")
 }

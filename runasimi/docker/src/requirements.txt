@@ -1,0 +1,11 @@
+Cython==0.29.21
+librosa==0.9.0
+phonemizer==2.2.1
+scipy
+numpy
+torch
+torchvision
+matplotlib
+Unidecode==1.1.1
+flask
+soundfile

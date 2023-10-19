@@ -1,4 +1,5 @@
-/**
+import static de.fayard.refreshVersions.core.Versions.versionFor
+ /**
  * Plugin to create a kotlin MPP with safe defaults.
  */
 
@@ -7,6 +8,7 @@ apply plugin: "com.android.library"
 apply plugin: "org.jetbrains.compose"
 apply from: "$rootDir/gradle/detekt.gradle"
 
+def composeCompiler = versionFor(project, "version.androidx.compose.compiler")
 android {
     compileSdkVersion 34
     defaultConfig {
@@ -31,6 +33,14 @@ android {
 
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
+    buildFeatures {
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = composeCompiler
+    }
+
     testOptions {
         unitTests {
             includeAndroidResources = true
@@ -47,7 +57,10 @@ dependencies {
     implementation("androidx.activity:activity-compose:_")
     implementation("androidx.appcompat:appcompat:_")
     implementation("androidx.core:core-ktx:_")
-    implementation(compose.desktop.common)
+
+    implementation("androidx.compose.ui:ui-tooling-preview:_")
+    debugImplementation("androidx.compose.ui:ui-tooling:_")
+    implementation("androidx.compose.foundation:foundation:_")
 }
 
 kotlin {
@@ -86,12 +99,17 @@ kotlin {
 
                 implementation(compose.runtime)
                 implementation(compose.foundation)
-                implementation(compose.material)
+                implementation(compose.material3)
+                implementation(compose.materialIconsExtended)
                 implementation(compose.components.resources)
+                implementation(compose.animation)
             }
         }
         commonTest {
             dependencies {
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:_"
+                implementation "org.jetbrains.kotlin:kotlin-test-common:_"
+                implementation "org.jetbrains.kotlin:kotlin-test-annotations-common:_"
             }
         }
         androidMain {
@@ -104,11 +122,16 @@ kotlin {
             dependsOn(commonMain)
             dependencies {
                 implementation(compose.desktop.common)
+                implementation("org.jetbrains.compose.ui:ui-tooling-preview:_")
+                //implementation("androidx.compose.material3:material3:1.0.0-alpha14")
             }
         }
         jvmTest {
             dependsOn(commonTest)
             dependencies {
+                implementation("org.junit.jupiter:junit-jupiter-api:_")
+                implementation("org.jetbrains.kotlin:kotlin-test-junit5:_")
+                implementation("io.mockk:mockk:_")
             }
         }
         iosMain {

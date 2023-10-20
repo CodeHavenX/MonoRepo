@@ -1,11 +1,12 @@
-package com.codehavenx.platform.bot
+package com.cramsan.runasimi.service
 
-import com.codehavenx.platform.bot.controller.ApiController
-import com.codehavenx.platform.bot.controller.HtmlController
-import com.codehavenx.platform.bot.di.ApplicationModule
-import com.codehavenx.platform.bot.di.FrameworkModule
-import com.codehavenx.platform.bot.di.createKtorModule
+import com.cramsan.framework.core.ktor.initializeMonitoring
 import com.cramsan.framework.logging.logI
+import com.cramsan.runasimi.service.controller.ApiController
+import com.cramsan.runasimi.service.controller.HtmlController
+import com.cramsan.runasimi.service.di.ApplicationModule
+import com.cramsan.runasimi.service.di.FrameworkModule
+import com.cramsan.runasimi.service.di.createKtorModule
 import freemarker.cache.ClassTemplateLoader
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
@@ -48,6 +49,7 @@ fun Application.configureKtorEngine() {
     install(FreeMarker) {
         templateLoader = ClassTemplateLoader(this::class.java.classLoader, "templates")
     }
+    initializeMonitoring(TAG)
 }
 
 /**

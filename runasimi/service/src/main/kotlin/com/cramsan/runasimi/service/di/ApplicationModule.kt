@@ -1,8 +1,8 @@
-package com.codehavenx.platform.bot.di
+package com.cramsan.runasimi.service.di
 
-import com.codehavenx.platform.bot.controller.ApiController
-import com.codehavenx.platform.bot.controller.HtmlController
-import com.codehavenx.platform.bot.service.TextToSpeechService
+import com.cramsan.runasimi.service.controller.ApiController
+import com.cramsan.runasimi.service.controller.HtmlController
+import com.cramsan.runasimi.service.service.TextToSpeechService
 import io.ktor.server.config.ApplicationConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
@@ -39,4 +39,4 @@ val ApplicationModule = module(createdAtStart = true) {
         )
     }
 }
-private const val CONTAINER_PORT = "CONTAINER_PORT"
+internal const val CONTAINER_PORT = "CONTAINER_PORT"

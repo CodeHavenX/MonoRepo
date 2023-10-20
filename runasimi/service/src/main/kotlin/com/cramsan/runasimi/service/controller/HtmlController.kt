@@ -1,4 +1,4 @@
-package com.codehavenx.platform.bot.controller
+package com.cramsan.runasimi.service.controller
 
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call

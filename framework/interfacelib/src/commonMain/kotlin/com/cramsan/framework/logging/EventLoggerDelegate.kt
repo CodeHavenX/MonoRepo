@@ -7,9 +7,16 @@ interface EventLoggerDelegate {
 
     /**
      * Log a [message] and [tag]. If the [severity] is less than [severity], the message is not logged.
-     * There is also an optional [throwable] that can be logged.
+     * There is also an optional [throwable] that can be logged. The [args] can be provided to apply as
+     * arguments to format into the [message].
      */
-    fun log(severity: Severity, tag: String, message: String, throwable: Throwable?)
+    fun log(
+        severity: Severity,
+        tag: String,
+        message: String,
+        throwable: Throwable?,
+        vararg args: Any?,
+    )
 
     /**
      * Notify when the target severity for the [EventLoggerInterface] changes.

@@ -12,6 +12,7 @@ dependencies {
     implementation(project(":framework:logging"))
     implementation(project(":framework:assert"))
     implementation(project(":framework:core"))
+    implementation(project(":framework:core-ktor"))
     implementation(project(":framework:halt"))
     implementation(project(":framework:preferences"))
     implementation(project(":framework:thread"))

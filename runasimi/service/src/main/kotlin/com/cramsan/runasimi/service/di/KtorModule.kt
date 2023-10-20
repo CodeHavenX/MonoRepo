@@ -1,4 +1,4 @@
-package com.codehavenx.platform.bot.di
+package com.cramsan.runasimi.service.di
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.java.Java

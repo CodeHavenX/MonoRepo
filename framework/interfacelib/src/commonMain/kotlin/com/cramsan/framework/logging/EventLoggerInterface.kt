@@ -43,6 +43,7 @@ interface EventLoggerInterface {
         message: String,
         throwable: Throwable? = null,
         ignoreErrorCallback: Boolean = false,
+        vararg args: Any?,
     )
 
     /**

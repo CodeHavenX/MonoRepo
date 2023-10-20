@@ -37,6 +37,7 @@ class EventLoggerImpl(
         message: String,
         throwable: Throwable?,
         ignoreErrorCallback: Boolean,
+        vararg args: Any?,
     ) {
         if (severity < targetSeverity)
             return

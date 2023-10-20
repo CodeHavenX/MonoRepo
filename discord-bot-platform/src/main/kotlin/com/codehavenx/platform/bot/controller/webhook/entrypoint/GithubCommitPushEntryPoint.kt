@@ -3,9 +3,9 @@ package com.codehavenx.platform.bot.controller.webhook.entrypoint
 import com.codehavenx.platform.bot.controller.webhook.WebhookEntryPoint
 import com.codehavenx.platform.bot.ktor.HttpResponse
 import com.codehavenx.platform.bot.network.gh.CodePushPayload
-import com.codehavenx.platform.bot.service.DiscordService
 import com.codehavenx.platform.bot.service.github.GithubWebhookService
 import com.codehavenx.platform.bot.service.github.WebhookEvent
+import com.cramsan.framework.core.ktor.service.DiscordService
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logI
 import com.cramsan.framework.logging.logW

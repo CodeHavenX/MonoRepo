@@ -19,6 +19,7 @@ class NoopEventLogger : EventLoggerInterface {
         tag: String,
         message: String,
         throwable: Throwable?,
-        ignoreErrorCallback: Boolean
+        ignoreErrorCallback: Boolean,
+        vararg args: Any?,
     ) = Unit
 }

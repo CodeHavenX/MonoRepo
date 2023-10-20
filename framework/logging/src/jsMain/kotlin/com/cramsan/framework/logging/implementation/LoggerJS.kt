@@ -7,8 +7,14 @@ import com.cramsan.framework.logging.Severity
  * Logger that uses the Javascript APIs.
  */
 class LoggerJS : EventLoggerDelegate {
-    override fun log(severity: Severity, tag: String, message: String, throwable: Throwable?) {
-        val formattedString = "[${severity.name}][$tag]$message"
+    override fun log(
+        severity: Severity,
+        tag: String,
+        message: String,
+        throwable: Throwable?,
+        vararg args: Any?,
+    ) {
+        val formattedString = "[${severity.name}][$tag]$message-$args"
         when (severity) {
             Severity.VERBOSE, Severity.DEBUG -> console.log(formattedString)
             Severity.INFO -> console.info(formattedString)

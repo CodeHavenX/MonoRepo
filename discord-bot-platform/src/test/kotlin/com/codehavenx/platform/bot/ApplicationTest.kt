@@ -6,9 +6,9 @@ import com.codehavenx.platform.bot.di.createApplicationModule
 import com.codehavenx.platform.bot.di.createFrameworkModule
 import com.codehavenx.platform.bot.ktor.HttpResponse
 import com.codehavenx.platform.bot.network.gh.CodePushPayload
-import com.codehavenx.platform.bot.service.DiscordService
 import com.codehavenx.platform.bot.service.github.GithubWebhookService
 import com.codehavenx.platform.bot.utils.readResource
+import com.cramsan.framework.core.ktor.service.DiscordService
 import com.cramsan.framework.test.TestBase
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.post

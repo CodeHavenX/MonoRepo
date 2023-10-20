@@ -12,11 +12,10 @@ class AndroidSoundManager(
     private val scope: CoroutineScope,
 ) : SoundManager {
 
-    private val mediaPlayer = MediaPlayer()
-
     @Suppress("TooGenericExceptionCaught")
     override fun playSound(path: String) {
         scope.launch {
+            val mediaPlayer = MediaPlayer()
             try {
                 mediaPlayer.reset()
                 delay(100)
@@ -34,7 +33,6 @@ class AndroidSoundManager(
                 delay(duration.toLong())
             } catch (e: Exception) {
                 logE(TAG, "Error while playing audio: $path", e)
-                e.printStackTrace()
             } finally {
                 mediaPlayer.release()
             }

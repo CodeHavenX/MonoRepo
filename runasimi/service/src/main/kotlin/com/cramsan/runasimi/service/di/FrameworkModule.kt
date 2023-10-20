@@ -1,16 +1,18 @@
-package com.codehavenx.platform.bot.di
+package com.cramsan.runasimi.service.di
 
 import com.cramsan.framework.assertlib.AssertUtil
 import com.cramsan.framework.assertlib.AssertUtilInterface
 import com.cramsan.framework.assertlib.implementation.AssertUtilImpl
 import com.cramsan.framework.core.BEDispatcherProvider
 import com.cramsan.framework.core.DispatcherProvider
+import com.cramsan.framework.core.ktor.DiscordErrorCallbackDelegateService
 import com.cramsan.framework.halt.HaltUtil
 import com.cramsan.framework.halt.HaltUtilDelegate
 import com.cramsan.framework.halt.implementation.HaltUtilImpl
 import com.cramsan.framework.halt.implementation.HaltUtilJVM
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.EventLoggerDelegate
+import com.cramsan.framework.logging.EventLoggerErrorCallbackDelegate
 import com.cramsan.framework.logging.EventLoggerInterface
 import com.cramsan.framework.logging.Severity
 import com.cramsan.framework.logging.implementation.EventLoggerImpl
@@ -46,12 +48,20 @@ val FrameworkModule = module(createdAtStart = true) {
         config.propertyOrNull("kord.error_log_channel_id")?.getString() ?: ""
     }
 
+    single<EventLoggerErrorCallbackDelegate> {
+        DiscordErrorCallbackDelegateService(
+            get(),
+            get(named(DISCORD_ERROR_LOG_CHANNEL_ID_NAME)),
+            get(),
+        )
+    }
+
     single<EventLoggerInterface> {
         val severity: Severity = when (get<Boolean>(named(IS_DEBUG_NAME))) {
             true -> Severity.VERBOSE
             false -> Severity.VERBOSE
         }
-        val instance = EventLoggerImpl(severity, null, get())
+        val instance = EventLoggerImpl(severity, get(), get())
         EventLogger.setInstance(instance)
         EventLogger.singleton
     }

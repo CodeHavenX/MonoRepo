@@ -4,10 +4,10 @@ import com.codehavenx.platform.bot.config.createJson
 import com.codehavenx.platform.bot.controller.kord.DiscordController
 import com.codehavenx.platform.bot.controller.webhook.entrypoint.GithubCommitPushEntryPoint
 import com.codehavenx.platform.bot.network.gh.CodePushPayload
-import com.codehavenx.platform.bot.service.DiscordService
 import com.codehavenx.platform.bot.service.github.GithubWebhookService
 import com.codehavenx.platform.bot.service.github.WebhookEvent
 import com.codehavenx.platform.bot.utils.readResource
+import com.cramsan.framework.core.ktor.service.DiscordService
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.test.TestBase
 import dev.kord.rest.builder.message.create.UserMessageCreateBuilder

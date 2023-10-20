@@ -25,9 +25,20 @@ class LoggerJVM(
 
         logger = LogManager.getRootLogger()
     }
-    override fun log(severity: Severity, tag: String, message: String, throwable: Throwable?) {
+    override fun log(
+        severity: Severity,
+        tag: String,
+        message: String,
+        throwable: Throwable?,
+        vararg args: Any?,
+    ) {
         val level = severity.toLevel()
-        val logMessage = "[$tag]$message"
+        val formattedMessage = if (args.isNotEmpty()) {
+            message.format(args)
+        } else {
+            message
+        }
+        val logMessage = "[$tag]$formattedMessage"
         logger.log(level, logMessage, throwable)
         throwable?.let {
             it.printStackTrace()

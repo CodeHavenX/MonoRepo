@@ -1,4 +1,4 @@
-package com.codehavenx.platform.bot.service
+package com.cramsan.runasimi.service.service
 
 import com.cramsan.framework.logging.logI
 import io.ktor.client.HttpClient

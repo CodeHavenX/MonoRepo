@@ -23,6 +23,7 @@ tasks.register("releaseAll") {
     dependsOn("framework:crashhandler:release")
     dependsOn("framework:core:release")
     dependsOn("framework:core-compose:release")
+    dependsOn("framework:core-ktor:release")
     dependsOn("framework:halt:release")
     dependsOn("framework:interfacelib:release")
     dependsOn("framework:interfacelib-test:release")

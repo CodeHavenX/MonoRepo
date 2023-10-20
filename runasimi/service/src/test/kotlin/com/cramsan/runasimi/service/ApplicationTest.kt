@@ -1,0 +1,64 @@
+package com.cramsan.runasimi.service
+
+import com.cramsan.runasimi.service.di.createApplicationModule
+import com.cramsan.runasimi.service.di.createFrameworkModule
+import com.cramsan.framework.core.ktor.service.DiscordService
+import com.cramsan.framework.logging.EventLoggerInterface
+import com.cramsan.framework.logging.logW
+import com.cramsan.framework.test.TestBase
+import io.ktor.server.application.ApplicationStarted
+import io.ktor.server.application.ApplicationStarting
+import io.ktor.server.application.ApplicationStopPreparing
+import io.ktor.server.application.ApplicationStopped
+import io.ktor.server.application.ApplicationStopping
+import io.ktor.server.application.ServerReady
+import io.ktor.server.testing.testApplication
+import io.mockk.MockKAnnotations
+import io.mockk.called
+import io.mockk.confirmVerified
+import io.mockk.impl.annotations.MockK
+import io.mockk.mockk
+import io.mockk.verify
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import kotlin.test.Test
+
+class ApplicationTest : TestBase() {
+
+    @MockK(relaxed = true)
+    private lateinit var discordService: DiscordService
+
+    override fun setupTest() { }
+
+    @Test
+    fun `verify app launching`() = runBlockingTest {
+        MockKAnnotations.init(this) // turn relaxUnitFun on for all mocks
+
+        val eventLogger: EventLoggerInterface = mockk(relaxed = true)
+
+        testApplication {
+            startKoin {
+                modules(
+                    createFrameworkModule(
+                        eventLoggerInterface = eventLogger,
+                    ),
+                    createApplicationModule(
+                        discordService = discordService,
+                        scope = backgroundScope,
+                    ),
+                )
+            }
+        }
+
+        verify {
+            eventLogger.i("Application", "Application is ready.")
+            eventLogger.w("Application", "ApplicationStarted")
+            eventLogger.w("Application", "ApplicationStopPreparing")
+            eventLogger.w("Application", "ApplicationStopping")
+            eventLogger.w("Application", "ApplicationStopped")
+        }
+        confirmVerified(eventLogger)
+
+        stopKoin()
+    }
+}

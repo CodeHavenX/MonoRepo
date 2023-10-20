@@ -6,8 +6,15 @@ import com.codehavenx.platform.bot.di.ApplicationModule
 import com.codehavenx.platform.bot.di.FrameworkModule
 import com.codehavenx.platform.bot.di.createKtorModule
 import com.cramsan.framework.logging.logI
+import com.cramsan.framework.logging.logW
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
+import io.ktor.server.application.ApplicationStarted
+import io.ktor.server.application.ApplicationStarting
+import io.ktor.server.application.ApplicationStopPreparing
+import io.ktor.server.application.ApplicationStopped
+import io.ktor.server.application.ApplicationStopping
+import io.ktor.server.application.ServerReady
 import io.ktor.server.application.install
 import io.ktor.server.plugins.callloging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
@@ -27,6 +34,7 @@ fun Application.module() = runBlocking {
 }
 
 fun Application.startServer() = runBlocking {
+    initializeMonitoring()
     configureKtorEngine()
 
     val webhookController: WebhookController by inject()
@@ -77,6 +85,21 @@ fun Application.initializeDependencies() {
             ApplicationModule,
         )
     }
+}
+
+/**
+ * Initialize monitoring
+ */
+fun Application.initializeMonitoring() {
+    val handler: (Any) -> Unit = {
+        logW(TAG, it.toString())
+    }
+    environment.monitor.subscribe(ApplicationStarting, handler)
+    environment.monitor.subscribe(ApplicationStarted, handler)
+    environment.monitor.subscribe(ServerReady, handler)
+    environment.monitor.subscribe(ApplicationStopPreparing, handler)
+    environment.monitor.subscribe(ApplicationStopping, handler)
+    environment.monitor.subscribe(ApplicationStopped, handler)
 }
 
 /**

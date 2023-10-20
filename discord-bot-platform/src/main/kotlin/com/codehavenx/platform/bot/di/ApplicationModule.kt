@@ -8,9 +8,9 @@ import com.codehavenx.platform.bot.controller.kord.modules.WebhookRegisterIntera
 import com.codehavenx.platform.bot.controller.webhook.WebhookController
 import com.codehavenx.platform.bot.controller.webhook.WebhookEntryPoint
 import com.codehavenx.platform.bot.controller.webhook.entrypoint.GithubCommitPushEntryPoint
-import com.codehavenx.platform.bot.service.DiscordService
 import com.codehavenx.platform.bot.service.github.GithubWebhookService
 import com.codehavenx.platform.bot.service.google.GoogleTranslateService
+import com.cramsan.framework.core.ktor.service.DiscordService
 import com.google.cloud.translate.Translate
 import com.google.cloud.translate.TranslateOptions
 import dev.kord.core.Kord

@@ -1,11 +1,11 @@
 package com.codehavenx.platform.bot.di
 
-import com.codehavenx.platform.bot.service.DiscordErrorCallbackDelegateService
 import com.cramsan.framework.assertlib.AssertUtil
 import com.cramsan.framework.assertlib.AssertUtilInterface
 import com.cramsan.framework.assertlib.implementation.AssertUtilImpl
 import com.cramsan.framework.core.BEDispatcherProvider
 import com.cramsan.framework.core.DispatcherProvider
+import com.cramsan.framework.core.ktor.DiscordErrorCallbackDelegateService
 import com.cramsan.framework.halt.HaltUtil
 import com.cramsan.framework.halt.HaltUtilDelegate
 import com.cramsan.framework.halt.implementation.HaltUtilImpl

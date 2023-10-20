@@ -1,8 +1,8 @@
-package com.codehavenx.platform.bot.controller
+package com.cramsan.runasimi.service.controller
 
-import com.codehavenx.platform.bot.service.TextToSpeechService
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logI
+import com.cramsan.runasimi.service.service.TextToSpeechService
 import io.ktor.http.ContentDisposition
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode

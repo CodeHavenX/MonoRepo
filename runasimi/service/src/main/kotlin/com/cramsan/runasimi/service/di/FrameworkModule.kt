@@ -12,9 +12,11 @@ import com.cramsan.framework.halt.implementation.HaltUtilImpl
 import com.cramsan.framework.halt.implementation.HaltUtilJVM
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.EventLoggerDelegate
+import com.cramsan.framework.logging.EventLoggerErrorCallback
 import com.cramsan.framework.logging.EventLoggerErrorCallbackDelegate
 import com.cramsan.framework.logging.EventLoggerInterface
 import com.cramsan.framework.logging.Severity
+import com.cramsan.framework.logging.implementation.EventLoggerErrorCallbackImpl
 import com.cramsan.framework.logging.implementation.EventLoggerImpl
 import com.cramsan.framework.logging.implementation.LoggerJVM
 import com.cramsan.framework.preferences.Preferences
@@ -52,6 +54,13 @@ val FrameworkModule = module(createdAtStart = true) {
         DiscordErrorCallbackDelegateService(
             get(),
             get(named(DISCORD_ERROR_LOG_CHANNEL_ID_NAME)),
+            get(),
+        )
+    }
+
+    single<EventLoggerErrorCallback> {
+        EventLoggerErrorCallbackImpl(
+            get(),
             get(),
         )
     }

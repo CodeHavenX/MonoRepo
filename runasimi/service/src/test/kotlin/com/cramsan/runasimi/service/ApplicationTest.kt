@@ -52,10 +52,10 @@ class ApplicationTest : TestBase() {
 
         verify {
             eventLogger.i("Application", "Application is ready.")
-            eventLogger.w("Application", "ApplicationStarted")
-            eventLogger.w("Application", "ApplicationStopPreparing")
-            eventLogger.w("Application", "ApplicationStopping")
-            eventLogger.w("Application", "ApplicationStopped")
+            eventLogger.i("Application", "ApplicationStarted")
+            eventLogger.i("Application", "ApplicationStopPreparing")
+            eventLogger.i("Application", "ApplicationStopping")
+            eventLogger.i("Application", "ApplicationStopped")
         }
         confirmVerified(eventLogger)
 

@@ -1,6 +1,6 @@
 package com.cramsan.framework.core.ktor
 
-import com.cramsan.framework.logging.logW
+import com.cramsan.framework.logging.logI
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationStarted
 import io.ktor.server.application.ApplicationStarting
@@ -14,21 +14,21 @@ import io.ktor.server.application.ServerReady
  */
 fun Application.initializeMonitoring(tag: String) {
     environment.monitor.subscribe(ApplicationStarting) {
-        logW(tag, "ApplicationStarting")
+        logI(tag, "ApplicationStarting")
     }
     environment.monitor.subscribe(ApplicationStarted) {
-        logW(tag, "ApplicationStarted")
+        logI(tag, "ApplicationStarted")
     }
     environment.monitor.subscribe(ServerReady) {
-        logW(tag, "ServerReady")
+        logI(tag, "ServerReady")
     }
     environment.monitor.subscribe(ApplicationStopPreparing) {
-        logW(tag, "ApplicationStopPreparing")
+        logI(tag, "ApplicationStopPreparing")
     }
     environment.monitor.subscribe(ApplicationStopping) {
-        logW(tag, "ApplicationStopping")
+        logI(tag, "ApplicationStopping")
     }
     environment.monitor.subscribe(ApplicationStopped) {
-        logW(tag, "ApplicationStopped")
+        logI(tag, "ApplicationStopped")
     }
 }

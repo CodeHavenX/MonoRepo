@@ -6,6 +6,7 @@ import com.cramsan.framework.assertlib.implementation.AssertUtilImpl
 import com.cramsan.framework.core.BEDispatcherProvider
 import com.cramsan.framework.core.DispatcherProvider
 import com.cramsan.framework.core.ktor.DiscordErrorCallbackDelegateService
+import com.cramsan.framework.core.ktor.DiscordLogContext
 import com.cramsan.framework.halt.HaltUtil
 import com.cramsan.framework.halt.HaltUtilDelegate
 import com.cramsan.framework.halt.implementation.HaltUtilImpl
@@ -98,6 +99,14 @@ val FrameworkModule = module(createdAtStart = true) {
     }
 
     single<DispatcherProvider> { BEDispatcherProvider() }
+
+    single {
+        DiscordLogContext(
+            discordService = get(),
+            channelId = get(named(DISCORD_ERROR_LOG_CHANNEL_ID_NAME)),
+            coroutineScope = get(),
+        )
+    }
 }
 
 private const val IS_DEBUG_NAME = "isDebugEnabled"

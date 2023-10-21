@@ -1,5 +1,7 @@
 package com.cramsan.runasimi.service
 
+import com.cramsan.framework.core.ktor.DiscordLogContext
+import com.cramsan.framework.core.ktor.initializeDiscordMonitoring
 import com.cramsan.framework.core.ktor.initializeMonitoring
 import com.cramsan.framework.logging.logI
 import com.cramsan.runasimi.service.controller.ApiController
@@ -28,10 +30,10 @@ fun Application.module() = runBlocking {
 }
 
 fun Application.startServer() = runBlocking {
-    configureKtorEngine()
-
+    val discordLogContext: DiscordLogContext by inject()
     val webhookController: ApiController by inject()
     val htmlController: HtmlController by inject()
+    configureKtorEngine(discordLogContext)
 
     configureEntryPoints(webhookController, htmlController)
 
@@ -41,7 +43,10 @@ fun Application.startServer() = runBlocking {
 /**
  * Configures the Ktor engine.
  */
-fun Application.configureKtorEngine() {
+fun Application.configureKtorEngine(discordLogContext: DiscordLogContext) {
+    initializeMonitoring(TAG)
+    initializeDiscordMonitoring(discordLogContext, TAG)
+
     install(CallLogging)
     install(PartialContent)
     install(ContentNegotiation)
@@ -49,7 +54,6 @@ fun Application.configureKtorEngine() {
     install(FreeMarker) {
         templateLoader = ClassTemplateLoader(this::class.java.classLoader, "templates")
     }
-    initializeMonitoring(TAG)
 }
 
 /**

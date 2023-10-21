@@ -60,7 +60,7 @@ class MainViewModel(
     }
 
     suspend fun playAudioStatement(selectedIndex: Int) = withContext(dispatcherProvider.ioDispatcher()) {
-        val selectedModel = uiModel.value?.cards?.get(selectedIndex) ?: return@withContext
+        val selectedModel = uiModel.value.cards.get(selectedIndex) ?: return@withContext
         val message = selectedModel.sentence.toSentenceString()
 
         val content = fetchAudioFile(message)

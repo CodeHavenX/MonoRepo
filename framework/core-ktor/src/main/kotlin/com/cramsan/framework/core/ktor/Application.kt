@@ -1,9 +1,6 @@
 package com.cramsan.framework.core.ktor
 
-import com.cramsan.framework.assertlib.assertFailure
 import com.cramsan.framework.core.ktor.service.DiscordService
-import com.cramsan.framework.logging.EventLoggerErrorCallbackDelegate
-import com.cramsan.framework.logging.Severity
 import com.cramsan.framework.logging.logI
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationStarted

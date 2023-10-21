@@ -20,9 +20,9 @@ kotlin {
         summary = "Some description for the JBCcomposeMPPLib Module"
         homepage = "Link to the jbcompose-ios-app Module homepage"
         ios.deploymentTarget = "14.1"
-        podfile = project.file("../jbcompose-ios-app/Podfile")
+        podfile = project.file("../ios-app/Podfile")
         framework {
-            baseName = "JBComposeMPPLib"
+            baseName = "MPPLib"
             isStatic = true
         }
     }

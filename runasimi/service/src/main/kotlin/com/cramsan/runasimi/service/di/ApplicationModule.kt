@@ -3,6 +3,7 @@ package com.cramsan.runasimi.service.di
 import com.cramsan.framework.core.ktor.service.DiscordService
 import com.cramsan.runasimi.service.controller.ApiController
 import com.cramsan.runasimi.service.controller.HtmlController
+import com.cramsan.runasimi.service.service.DataCachingService
 import com.cramsan.runasimi.service.service.TextToSpeechService
 import dev.kord.core.Kord
 import io.ktor.server.config.ApplicationConfig
@@ -55,7 +56,12 @@ val ApplicationModule = module(createdAtStart = true) {
         TextToSpeechService(
             get(),
             get(named(CONTAINER_PORT)),
+            get(),
         )
+    }
+
+    single {
+        DataCachingService()
     }
 }
 internal const val CONTAINER_PORT = "CONTAINER_PORT"

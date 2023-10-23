@@ -27,6 +27,22 @@ class HtmlController {
      * Show the home page.
      */
     private suspend fun showIndexPage(call: ApplicationCall) {
-        call.respond(FreeMarkerContent("index.ftl", mapOf<String, String>()))
+        val initialQuery = call.request.queryParameters[QUERY_ARG] ?: ""
+
+        call.respond(
+            FreeMarkerContent(
+                "index.ftl",
+                mapOf(
+                    UI_MODEL to HtmlUIModel(
+                        initialQuery = initialQuery,
+                    ),
+                )
+            )
+        )
+    }
+
+    companion object {
+        private const val QUERY_ARG = "query"
+        private const val UI_MODEL = "uiModel"
     }
 }

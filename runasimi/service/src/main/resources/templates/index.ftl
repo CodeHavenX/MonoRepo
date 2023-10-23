@@ -1,3 +1,4 @@
+<#-- @ftlvariable name="uiModel" type="com.cramsan.runasimi.service.controller.HtmlUIModel" -->
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -37,9 +38,32 @@
 <p>Para preguntas o sugerencias: <b>contact@cramsan.com</b></p>
 
 <form action="/tts-form" enctype="multipart/form-data" method="post">
-    <span>Mensaje</span><input type="text" id="message" name="message" maxlength="50">
+    <span>Mensaje</span><input type="text" id="message" name="message" maxlength="50" value="${uiModel.initialQuery}">
     <input type="submit" value="Generar">
 </form>
+
+<p>Algunas frases que puedes probar:</p>
+
+Kunanchu ripunki? - <i>¿Ahora te vas?</i><br>
+Imaynallam kachkanki? - <i>¿Cómo estás?</i><br>
+¿Haykaqtaq ripunki? - <i>¿Cuándo te vas?</i><br>
+Haykatataq munanki? - <i>¿Cuánto quieres?</i><br>
+Hayka watayuqtaq kanki? - <i>¿Cuántos años tienes?</i><br>
+Imataq sutiyki? - <i>¿Cuál es tu nombre?</i><br>
+Maymantataq kanki? - <i>¿De dónde eres?</i><br>
+Maymantataq hamunki? - <i>¿De dónde vienes?</i><br>
+Allinllam kachkani - <i>Estoy bien</i><br>
+Tutakama/Ampikama. - <i>Hasta la noche</i><br>
+Paqarinkama/Waraykama. - <i>Hasta mañana</i><br>
+Paqarin tuta/Waray ampi. - <i>Mañana por la noche</i><br>
+Unquchkankichu?/Keshyankiku? - <i>¿Estas enfermo?</i><br>
+Imatataq ruwachkanki? - <i>¿Qué estás haciendo?</i><br>
+Imatataq munanki? - <i>¿Qué quieres?</i><br>
+Imaykitaq nanan? - <i>¿Qué te duele?</i><br>
+Imatataq apamunki? - <i>¡Que traes?</i><br>
+Imatataq rantikunki? - <i>¿Qué vendes?</i><br>
+Munankichu mikuyta? - <i>¿Quieres comer?</i><br>
+Quñisunkichu, chirisunkichu? - <i>¿Sientes calor?</i><br>
 
 </body>
 </html>

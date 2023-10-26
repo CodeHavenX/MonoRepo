@@ -57,6 +57,7 @@ val ApplicationModule = module(createdAtStart = true) {
             get(),
             get(named(CONTAINER_PORT)),
             get(),
+            get(),
         )
     }
 

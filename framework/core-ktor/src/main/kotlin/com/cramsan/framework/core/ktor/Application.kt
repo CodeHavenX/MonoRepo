@@ -36,42 +36,39 @@ fun Application.initializeMonitoring(tag: String) {
     }
 }
 
-class DiscordLogContext(
-    val discordService: DiscordService,
-    val channelId: String,
-    val coroutineScope: CoroutineScope,
-)
-
-fun Application.initializeDiscordMonitoring(discordLogContext: DiscordLogContext, tag: String) {
+fun Application.initializeDiscordMonitoring(
+    discordService: DiscordService,
+    channelId: String,
+    coroutineScope: CoroutineScope,
+    tag: String,
+) {
     environment.monitor.subscribe(ApplicationStarting) {
-        logDiscordMonitoring(discordLogContext, tag, "ApplicationStarting")
+        logDiscordMonitoring(discordService, channelId, coroutineScope, tag, "ApplicationStarting")
     }
     environment.monitor.subscribe(ApplicationStarted) {
-        logDiscordMonitoring(discordLogContext, tag, "ApplicationStarted")
+        logDiscordMonitoring(discordService, channelId, coroutineScope, tag, "ApplicationStarted")
     }
     environment.monitor.subscribe(ServerReady) {
-        logDiscordMonitoring(discordLogContext, tag, "ServerReady")
+        logDiscordMonitoring(discordService, channelId, coroutineScope, tag, "ServerReady")
     }
     environment.monitor.subscribe(ApplicationStopPreparing) {
-        logDiscordMonitoring(discordLogContext, tag, "ApplicationStopPreparing")
+        logDiscordMonitoring(discordService, channelId, coroutineScope, tag, "ApplicationStopPreparing")
     }
     environment.monitor.subscribe(ApplicationStopping) {
-        logDiscordMonitoring(discordLogContext, tag, "ApplicationStopping")
+        logDiscordMonitoring(discordService, channelId, coroutineScope, tag, "ApplicationStopping")
     }
     environment.monitor.subscribe(ApplicationStopped) {
-        logDiscordMonitoring(discordLogContext, tag, "ApplicationStopped")
+        logDiscordMonitoring(discordService, channelId, coroutineScope, tag, "ApplicationStopped")
     }
 }
 
 private fun logDiscordMonitoring(
-    discordLogContext: DiscordLogContext,
+    discordService: DiscordService,
+    channelId: String,
+    coroutineScope: CoroutineScope,
     tag: String,
     message: String,
 ) {
-    val discordService = discordLogContext.discordService
-    val channelId = discordLogContext.channelId
-    val coroutineScope = discordLogContext.coroutineScope
-
     coroutineScope.launch {
         discordService.sendMessage(channelId) { content = "[$tag]$message" }
     }

@@ -28,6 +28,9 @@ object EventLogger {
      */
     fun setInstance(eventLogger: EventLoggerInterface) {
         _singleton = eventLogger
+        Severity.values().forEach {
+            _singleton.log(it, "EventLoggerImpl", "Probing logger for severity: $it", null, false)
+        }
     }
 }
 

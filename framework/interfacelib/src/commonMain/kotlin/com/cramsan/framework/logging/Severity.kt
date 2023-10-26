@@ -34,4 +34,15 @@ enum class Severity {
      * Do not log anything.
      */
     DISABLED,
+    ;
+
+    companion object {
+        fun fromStringOrDefault(value: String?, default: Severity = DEBUG): Severity {
+            return if (value == null) {
+                default
+            } else {
+                entries.find { it.name.lowercase() == value.lowercase() } ?: default
+            }
+        }
+    }
 }

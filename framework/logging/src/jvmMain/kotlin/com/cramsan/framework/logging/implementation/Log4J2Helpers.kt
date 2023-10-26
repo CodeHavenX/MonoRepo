@@ -65,5 +65,5 @@ object Log4J2Helpers {
             .addComponent(triggeringPolicy)
     }
 
-    private const val LOG_PATTERN = " %d\t%p\t[%t]\t%m%n"
+    private const val LOG_PATTERN = "%d\t%p\t[%t]\t%m%n"
 }

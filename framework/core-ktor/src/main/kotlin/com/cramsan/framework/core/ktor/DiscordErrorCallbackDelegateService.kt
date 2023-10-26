@@ -22,7 +22,7 @@ class DiscordErrorCallbackDelegateService(
 
         coroutineScope.launch {
             discordService.sendMessage(channelId) {
-                content = "[$tag] Severity: $severity - $message\n${throwable.localizedMessage}"
+                content = "[$tag] [$severity] - $message\n${throwable.localizedMessage}"
             }
         }
     }

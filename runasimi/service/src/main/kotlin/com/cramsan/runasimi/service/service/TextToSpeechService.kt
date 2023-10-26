@@ -16,6 +16,7 @@ class TextToSpeechService(
     private val httpClient: HttpClient,
     private val port: String,
     private val dataCachingService: DataCachingService,
+    private val discordCommunicationService: DiscordCommunicationService,
 ) {
 
     private val mutex = Mutex()
@@ -29,6 +30,7 @@ class TextToSpeechService(
                 logI(TAG, "Voice data found in cache.")
                 val data = dataCachingService.get(message)
 
+                discordCommunicationService.sendMessage("Request from cache: $message")
                 if (data == null || data.isEmpty()) {
                     logE(TAG, "Voice data from cache is invalid.")
                     byteArrayOf()
@@ -37,6 +39,7 @@ class TextToSpeechService(
                 }
             } else {
                 logI(TAG, "Generating speech from message of size ${message.length}")
+                discordCommunicationService.sendMessage("Request from service: $message")
                 val response = httpClient.post("http://192.168.1.151:$port/tts") {
                     setBody(message)
                 }

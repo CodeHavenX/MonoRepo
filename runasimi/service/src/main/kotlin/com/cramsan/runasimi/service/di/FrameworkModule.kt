@@ -6,7 +6,6 @@ import com.cramsan.framework.assertlib.implementation.AssertUtilImpl
 import com.cramsan.framework.core.BEDispatcherProvider
 import com.cramsan.framework.core.DispatcherProvider
 import com.cramsan.framework.core.ktor.DiscordErrorCallbackDelegateService
-import com.cramsan.framework.core.ktor.DiscordLogContext
 import com.cramsan.framework.halt.HaltUtil
 import com.cramsan.framework.halt.HaltUtilDelegate
 import com.cramsan.framework.halt.implementation.HaltUtilImpl
@@ -29,6 +28,7 @@ import com.cramsan.framework.thread.ThreadUtilDelegate
 import com.cramsan.framework.thread.ThreadUtilInterface
 import com.cramsan.framework.thread.implementation.ThreadUtilImpl
 import com.cramsan.framework.thread.implementation.ThreadUtilJVM
+import com.cramsan.runasimi.service.service.DiscordCommunicationService
 import io.ktor.server.config.ApplicationConfig
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -41,9 +41,13 @@ val FrameworkModule = module(createdAtStart = true) {
 
     single<Preferences> { PreferencesImpl(get()) }
 
-    single(named(IS_DEBUG_NAME)) { false }
+    single() {
+        val config: ApplicationConfig = get()
 
-    single<EventLoggerDelegate> { LoggerJVM(get(named(IS_DEBUG_NAME))) }
+        Severity.fromStringOrDefault(config.propertyOrNull("common.log_level")?.getString())
+    }
+
+    single<EventLoggerDelegate> { LoggerJVM(false) }
 
     single(named(DISCORD_ERROR_LOG_CHANNEL_ID_NAME)) {
         val config: ApplicationConfig = get()
@@ -67,11 +71,7 @@ val FrameworkModule = module(createdAtStart = true) {
     }
 
     single<EventLoggerInterface> {
-        val severity: Severity = when (get<Boolean>(named(IS_DEBUG_NAME))) {
-            true -> Severity.VERBOSE
-            false -> Severity.VERBOSE
-        }
-        val instance = EventLoggerImpl(severity, get(), get())
+        val instance = EventLoggerImpl(get(), get(), get())
         EventLogger.setInstance(instance)
         EventLogger.singleton
     }
@@ -101,13 +101,11 @@ val FrameworkModule = module(createdAtStart = true) {
     single<DispatcherProvider> { BEDispatcherProvider() }
 
     single {
-        DiscordLogContext(
+        DiscordCommunicationService(
             discordService = get(),
             channelId = get(named(DISCORD_ERROR_LOG_CHANNEL_ID_NAME)),
-            coroutineScope = get(),
         )
     }
 }
 
-private const val IS_DEBUG_NAME = "isDebugEnabled"
-private const val DISCORD_ERROR_LOG_CHANNEL_ID_NAME = "DISCORD_ERROR_LOG_CHANNEL_ID_NAME"
+const val DISCORD_ERROR_LOG_CHANNEL_ID_NAME = "DISCORD_ERROR_LOG_CHANNEL_ID_NAME"

@@ -22,6 +22,7 @@ class LoggerJVM(
             initializationLogLevel,
         )
         Configurator.initialize(loggerConfiguration)
+        Configurator.reconfigure(loggerConfiguration)
 
         logger = LogManager.getRootLogger()
     }

@@ -4,6 +4,7 @@ import com.cramsan.runasimi.service.di.createApplicationModule
 import com.cramsan.runasimi.service.di.createFrameworkModule
 import com.cramsan.framework.core.ktor.service.DiscordService
 import com.cramsan.framework.logging.EventLoggerInterface
+import com.cramsan.framework.logging.Severity
 import com.cramsan.framework.logging.logW
 import com.cramsan.framework.test.TestBase
 import io.ktor.server.application.ApplicationStarted
@@ -48,6 +49,16 @@ class ApplicationTest : TestBase() {
                     ),
                 )
             }
+        }
+
+        verify {
+            eventLogger.log(Severity.VERBOSE, "EventLoggerImpl", "Probing logger for severity: VERBOSE", any(), any())
+            eventLogger.log(Severity.DEBUG, "EventLoggerImpl", "Probing logger for severity: DEBUG", any(), any())
+            eventLogger.log(Severity.INFO, "EventLoggerImpl", "Probing logger for severity: INFO", any(), any())
+            eventLogger.log(Severity.WARNING, "EventLoggerImpl", "Probing logger for severity: WARNING", any(), any())
+            eventLogger.log(Severity.ERROR, "EventLoggerImpl", "Probing logger for severity: ERROR", any(), any())
+            eventLogger.log(Severity.DISABLED, "EventLoggerImpl", "Probing logger for severity: DISABLED", any(), any())
+            eventLogger.targetSeverity
         }
 
         verify {

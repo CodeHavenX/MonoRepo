@@ -1,10 +1,9 @@
 package com.cramsan.runasimi.service.di
 
+import com.cramsan.framework.core.ktor.service.DiscordService
 import com.cramsan.runasimi.service.controller.ApiController
 import com.cramsan.runasimi.service.controller.HtmlController
 import com.cramsan.runasimi.service.service.TextToSpeechService
-import com.cramsan.framework.core.ktor.service.DiscordService
-import io.ktor.server.config.ApplicationConfig
 import io.mockk.mockk
 import kotlinx.coroutines.CoroutineScope
 import org.koin.core.qualifier.named
@@ -18,6 +17,7 @@ fun createApplicationModule(
     apiController: ApiController = mockk(relaxed = true),
     htmlController: HtmlController = mockk(relaxed = true),
     textToSpeechService: TextToSpeechService = mockk(relaxed = true),
+    channelId: String = "",
     scope: CoroutineScope,
 ) = module(createdAtStart = true) {
 
@@ -45,4 +45,7 @@ fun createApplicationModule(
         textToSpeechService
     }
 
+    single(named("DISCORD_ERROR_LOG_CHANNEL_ID_NAME")) {
+        channelId
+    }
 }

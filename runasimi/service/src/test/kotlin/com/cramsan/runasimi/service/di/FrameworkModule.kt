@@ -2,15 +2,14 @@ package com.cramsan.runasimi.service.di
 
 import com.cramsan.framework.assertlib.AssertUtil
 import com.cramsan.framework.assertlib.AssertUtilInterface
-import com.cramsan.framework.core.ktor.DiscordLogContext
 import com.cramsan.framework.halt.HaltUtil
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.EventLoggerInterface
 import com.cramsan.framework.preferences.Preferences
 import com.cramsan.framework.thread.ThreadUtil
 import com.cramsan.framework.thread.ThreadUtilInterface
+import com.cramsan.runasimi.service.service.DiscordCommunicationService
 import io.mockk.mockk
-import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 /**
@@ -44,10 +43,9 @@ fun createFrameworkModule(
     }
 
     single {
-        DiscordLogContext(
+        DiscordCommunicationService(
             get(),
             "",
-            get(),
         )
     }
 }

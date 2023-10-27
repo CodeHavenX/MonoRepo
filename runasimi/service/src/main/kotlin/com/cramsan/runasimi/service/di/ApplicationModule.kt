@@ -4,6 +4,7 @@ import com.cramsan.framework.core.ktor.service.DiscordService
 import com.cramsan.runasimi.service.controller.ApiController
 import com.cramsan.runasimi.service.controller.HtmlController
 import com.cramsan.runasimi.service.service.DataCachingService
+import com.cramsan.runasimi.service.service.DiscordCommunicationService
 import com.cramsan.runasimi.service.service.TextToSpeechService
 import dev.kord.core.Kord
 import io.ktor.server.config.ApplicationConfig
@@ -18,16 +19,23 @@ import org.koin.dsl.module
  */
 val ApplicationModule = module(createdAtStart = true) {
 
-    single(named(CONTAINER_PORT)) {
+    single(named(CONTAINER_ENDPOINT)) {
         val config: ApplicationConfig = get()
 
-        config.property("docker.container_port").getString()
+        config.property("docker.container_endpoint").getString()
     }
 
     single(named(DISCORD_BOT_TOKEN)) {
         val config: ApplicationConfig = get()
 
         config.propertyOrNull("kord.access_token")?.getString() ?: ""
+    }
+
+    single {
+        DiscordCommunicationService(
+            discordService = get(),
+            channelId = get(named(DISCORD_ERROR_LOG_CHANNEL_ID_NAME)),
+        )
     }
 
     single {
@@ -55,7 +63,7 @@ val ApplicationModule = module(createdAtStart = true) {
     single {
         TextToSpeechService(
             get(),
-            get(named(CONTAINER_PORT)),
+            get(named(CONTAINER_ENDPOINT)),
             get(),
             get(),
         )
@@ -65,5 +73,5 @@ val ApplicationModule = module(createdAtStart = true) {
         DataCachingService()
     }
 }
-internal const val CONTAINER_PORT = "CONTAINER_PORT"
+internal const val CONTAINER_ENDPOINT = "CONTAINER_ENDPOINT"
 private const val DISCORD_BOT_TOKEN = "DISCORD_BOT_TOKEN"

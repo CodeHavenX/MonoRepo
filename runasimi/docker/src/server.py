@@ -22,8 +22,11 @@ from scipy.io.wavfile import write
 import soundfile as sf
 from flask import Flask, request, send_file
 import os.path
+from threading import Lock
 
 locale.getpreferredencoding = lambda: "UTF-8"
+
+lock = Lock()
 
 def download(lang, tgt_dir="./"):
   lang_fn, lang_dir = os.path.join(tgt_dir, lang+'.tar.gz'), os.path.join(tgt_dir, lang)
@@ -158,9 +161,6 @@ def preprocess_text(txt, text_mapper, hps, uroman_dir=None, lang=None):
     return txt
 
 def load_lang(lang):
-    if lang not in LANG_LIST:
-        return false
-
     ckpt_dir = download(lang)
     if torch.cuda.is_available():
         device = torch.device("cuda")
@@ -185,11 +185,11 @@ def load_lang(lang):
     print(f"load {g_pth}")
 
     _ = utils.load_checkpoint(g_pth, net_g, None)
-    return true
+    return (hps, text_mapper, device, net_g)
 
-def generate_audio(txt):
+def generate_audio(txt, lang, hps, text_mapper, device, net_g):
     print(f"text: {txt}")
-    txt = preprocess_text(txt, text_mapper, hps, lang=LANG)
+    txt = preprocess_text(txt, text_mapper, hps, lang=lang)
     stn_tst = text_mapper.get_text(txt, hps)
     with torch.no_grad():
         x_tst = stn_tst.unsqueeze(0).to(device)
@@ -209,8 +209,12 @@ def index():
     lang = request.args.get('lang')
     if not lang:
         return "Missing lang parameter", 400
+    if lang not in LANG_LIST:
+        return "Invalid lang parameter", 400
     print(f'Request received: lang={lang} message={request.data}')
-    if not load_lang(lang):
+    (hps, text_mapper, device, net_g) = load_lang(lang)
+    if not text_mapper and not hps and not device and not net_g:
         return "Invalid language", 400
-    generate_audio(request.data.decode())
-    return send_file('file.ogg', mimetype='audio/ogg')
+    with lock:
+        generate_audio(request.data.decode(), lang, hps, text_mapper, device, net_g)
+        return send_file('file.ogg', mimetype='audio/ogg')

@@ -28,7 +28,6 @@ import com.cramsan.framework.thread.ThreadUtilDelegate
 import com.cramsan.framework.thread.ThreadUtilInterface
 import com.cramsan.framework.thread.implementation.ThreadUtilImpl
 import com.cramsan.framework.thread.implementation.ThreadUtilJVM
-import com.cramsan.runasimi.service.service.DiscordCommunicationService
 import io.ktor.server.config.ApplicationConfig
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -41,18 +40,12 @@ val FrameworkModule = module(createdAtStart = true) {
 
     single<Preferences> { PreferencesImpl(get()) }
 
-    single() {
+    single<EventLoggerDelegate> { LoggerJVM(false) }
+
+    single {
         val config: ApplicationConfig = get()
 
         Severity.fromStringOrDefault(config.propertyOrNull("common.log_level")?.getString())
-    }
-
-    single<EventLoggerDelegate> { LoggerJVM(false) }
-
-    single(named(DISCORD_ERROR_LOG_CHANNEL_ID_NAME)) {
-        val config: ApplicationConfig = get()
-
-        config.propertyOrNull("kord.error_log_channel_id")?.getString() ?: ""
     }
 
     single<EventLoggerErrorCallbackDelegate> {
@@ -100,11 +93,10 @@ val FrameworkModule = module(createdAtStart = true) {
 
     single<DispatcherProvider> { BEDispatcherProvider() }
 
-    single {
-        DiscordCommunicationService(
-            discordService = get(),
-            channelId = get(named(DISCORD_ERROR_LOG_CHANNEL_ID_NAME)),
-        )
+    single(named(DISCORD_ERROR_LOG_CHANNEL_ID_NAME)) {
+        val config: ApplicationConfig = get()
+
+        config.propertyOrNull("kord.error_log_channel_id")?.getString() ?: ""
     }
 }
 

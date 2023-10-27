@@ -43,7 +43,8 @@ class ApiController(
         val result = runCatching {
             val formParameters = call.receiveParameters()
             val payload = formParameters[FORM_KEY_MESSAGE].toString()
-            val response = processPayload(payload, call)
+            val lang = formParameters[FORM_KEY_LANG].toString()
+            val response = processPayload(payload, lang, call)
             call.response.header(
                 HttpHeaders.ContentDisposition,
                 ContentDisposition.Attachment.withParameter(
@@ -51,7 +52,12 @@ class ApiController(
                     "voice.ogg"
                 ).toString()
             )
-            call.respondBytes(response, status = HttpStatusCode.OK)
+
+            if (response == null) {
+                call.respond(HttpStatusCode.InternalServerError, "Server error")
+            } else {
+                call.respondBytes(response, status = HttpStatusCode.OK)
+            }
         }
 
         if (result.isFailure) {
@@ -64,9 +70,21 @@ class ApiController(
         logI(TAG, "handlePost called")
 
         val result = runCatching {
+            val lang = call.request.queryParameters["lang"]
             val payload: String = call.receive()
-            val response = processPayload(payload, call)
-            call.respondBytes(response, status = HttpStatusCode.OK)
+
+            if (lang.isNullOrBlank()) {
+                call.respond(HttpStatusCode.BadRequest, "Missing lang parameter")
+            } else if (payload.isBlank()) {
+                call.respond(HttpStatusCode.BadRequest, "Missing payload")
+            } else {
+                val response = processPayload(payload, lang, call)
+                if (response == null) {
+                    call.respond(HttpStatusCode.InternalServerError, "Server error")
+                } else {
+                    call.respondBytes(response, status = HttpStatusCode.OK)
+                }
+            }
         }
 
         if (result.isFailure) {
@@ -75,17 +93,18 @@ class ApiController(
         }
     }
 
-    private suspend fun processPayload(message: String, call: ApplicationCall): ByteArray {
+    private suspend fun processPayload(message: String, lang: String, call: ApplicationCall): ByteArray? {
         if (message.length > CHAR_SIZE_LIMIT) {
             call.respond(HttpStatusCode.BadRequest, "Message length limit is $CHAR_SIZE_LIMIT")
         }
 
-        return textToSpeechService.generateSpeech(message)
+        return textToSpeechService.generateSpeech(message, lang)
     }
 
     companion object {
         private const val CHAR_SIZE_LIMIT = 50
         private const val TAG = "ApiController"
-        const val FORM_KEY_MESSAGE = "message"
+        private const val FORM_KEY_LANG = "LANG"
+        private const val FORM_KEY_MESSAGE = "message"
     }
 }

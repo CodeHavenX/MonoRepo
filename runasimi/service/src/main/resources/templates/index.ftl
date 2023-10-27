@@ -15,11 +15,12 @@
 <body>
 <h1>Runasimi TTS</h1>
 
-<p>Esta página es una demostración de un servicio TTS(text-to-speech)  para el lenguaje quechua.</p>
+<p>Esta página es una demostración de un servicio TTS(text-to-speech) para el lenguaje quechua.</p>
 <p>
     Instrucciones:
     <ul>
         <li>Pon un texto en quechua para general el archivo de voz.</li>
+        <li>Elige una de las variedades de quechua</li>
         <li>Dale al botón de <b>Generar</b> para iniciar el proceso.</li>
     </ul>
 </p>
@@ -38,6 +39,26 @@
 <p>Para preguntas o sugerencias: <b>contact@cramsan.com</b></p>
 
 <form action="/tts-form" enctype="multipart/form-data" method="post">
+    <span>Variedad</span><select id="lang" name="lang">
+        <option value="quy">Quechua, Ayacucho</option>
+        <option value="qvc">Quechua, Cajamarca</option>
+        <option value="quz">Quechua, Cusco</option>
+        <option value="qve">Quechua, Eastern Apurímac</option>
+        <option value="qub">Quechua, Huallaga</option>
+        <option value="qvh">Quechua, Huamalíes-Dos de Mayo Huánuco</option>
+        <option value="qwh">Quechua, Huaylas Ancash</option>
+        <option value="qvw">Quechua, Huaylla Wanca</option>
+        <option value="quf">Quechua, Lambayeque</option>
+        <option value="qvm">Quechua, Margos-Yarowilca-Lauricocha</option>
+        <option value="qul">Quechua, Norte de Bolivia</option>
+        <option value="qvn">Quechua, Norte de Junín</option>
+        <option value="qxn">Quechua, Conchucos Norte, Ancash</option>
+        <option value="qxh">Quechua, Panao</option>
+        <option value="qvs">Quechua, San Martín</option>
+        <option value="quh">Quechua, Sur de Bolivian</option>
+        <option value="qxo">Quechua, Conchucos, Sur</option>
+    </select>
+    <br><br>
     <span>Mensaje</span><input type="text" id="message" name="message" maxlength="50" value="${uiModel.initialQuery}">
     <input type="submit" value="Generar">
 </form>

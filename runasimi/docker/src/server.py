@@ -38,8 +38,44 @@ def download(lang, tgt_dir="./"):
   print(f"Model checkpoints in {lang_dir}: {os.listdir(lang_dir)}")
   return lang_dir
 
-LANG = "quy"
-ckpt_dir = download(LANG)
+# https://dl.fbaipublicfiles.com/mms/tts/all-tts-languages.html
+# quy = Quechua, Ayacucho
+# qvc = Quechua, Cajamarca
+# quz = Quechua, Cusco
+# qve = Quechua, Eastern Apurímac
+# qub = Quechua, Huallaga
+# qvh = Quechua, Huamalíes-Dos de Mayo Huánuco
+# qwh = Quechua, Huaylas Ancash
+# qvw = Quechua, Huaylla Wanca
+# quf = Quechua, Lambayeque
+# qvm = Quechua, Margos-Yarowilca-Lauricocha
+# qul = Quechua, Norte de Bolivia
+# qvn = Quechua, Norte de Junín
+# qxn = Quechua, Conchucos Norte, Ancash
+# qxh = Quechua, Panao
+# qvs = Quechua, San Martín
+# quh = Quechua, Sur de Bolivian
+# qxo = Quechua, Conchucos, Sur
+
+LANG_LIST =[
+    "quy",
+    "qvc",
+    "quz",
+    "qve",
+    "qub",
+    "qvh",
+    "qwh",
+    "qvw",
+    "quf",
+    "qvm",
+    "qul",
+    "qvn",
+    "qxn",
+    "qxh",
+    "qvs",
+    "quh",
+    "qxo"
+]
 
 def preprocess_char(text, lang=None):
     """
@@ -121,29 +157,35 @@ def preprocess_text(txt, text_mapper, hps, uroman_dir=None, lang=None):
     txt = text_mapper.filter_oov(txt)
     return txt
 
-if torch.cuda.is_available():
-    device = torch.device("cuda")
-else:
-    device = torch.device("cpu")
+def load_lang(lang):
+    if lang not in LANG_LIST:
+        return false
 
-print(f"Run inference with {device}")
-vocab_file = f"{ckpt_dir}/vocab.txt"
-config_file = f"{ckpt_dir}/config.json"
-assert os.path.isfile(config_file), f"{config_file} doesn't exist"
-hps = utils.get_hparams_from_file(config_file)
-text_mapper = TextMapper(vocab_file)
-net_g = SynthesizerTrn(
-    len(text_mapper.symbols),
-    hps.data.filter_length // 2 + 1,
-    hps.train.segment_size // hps.data.hop_length,
-    **hps.model)
-net_g.to(device)
-_ = net_g.eval()
+    ckpt_dir = download(lang)
+    if torch.cuda.is_available():
+        device = torch.device("cuda")
+    else:
+        device = torch.device("cpu")
 
-g_pth = f"{ckpt_dir}/G_100000.pth"
-print(f"load {g_pth}")
+    print(f"Run inference with {device}")
+    vocab_file = f"{ckpt_dir}/vocab.txt"
+    config_file = f"{ckpt_dir}/config.json"
+    assert os.path.isfile(config_file), f"{config_file} doesn't exist"
+    hps = utils.get_hparams_from_file(config_file)
+    text_mapper = TextMapper(vocab_file)
+    net_g = SynthesizerTrn(
+        len(text_mapper.symbols),
+        hps.data.filter_length // 2 + 1,
+        hps.train.segment_size // hps.data.hop_length,
+        **hps.model)
+    net_g.to(device)
+    _ = net_g.eval()
 
-_ = utils.load_checkpoint(g_pth, net_g, None)
+    g_pth = f"{ckpt_dir}/G_100000.pth"
+    print(f"load {g_pth}")
+
+    _ = utils.load_checkpoint(g_pth, net_g, None)
+    return true
 
 def generate_audio(txt):
     print(f"text: {txt}")
@@ -163,12 +205,9 @@ def generate_audio(txt):
 app = Flask(__name__)
 
 @app.route('/tts',  methods=['POST'])
-def index():
-    print(f'Request received: {request.data}')
+def index(lang):
+    print(f'Request received: lang={lang} message={request.data}')
+    if not load_lang(lang):
+        return "Invalid language", 400
     generate_audio(request.data.decode())
-    #image_binary = read_image(pid)
-    #response = make_response(image_binary)
-    #response.headers.set('Content-Type', 'image/jpeg')
-    #response.headers.set('Content-Disposition', 'attachment', filename='%s.jpg' % pid)
-    #return response
     return send_file('file.ogg', mimetype='audio/ogg')

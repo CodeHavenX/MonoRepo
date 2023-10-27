@@ -205,7 +205,10 @@ def generate_audio(txt):
 app = Flask(__name__)
 
 @app.route('/tts',  methods=['POST'])
-def index(lang):
+def index():
+    lang = request.args.get('lang')
+    if not lang:
+        return "Missing lang parameter", 400
     print(f'Request received: lang={lang} message={request.data}')
     if not load_lang(lang):
         return "Invalid language", 400

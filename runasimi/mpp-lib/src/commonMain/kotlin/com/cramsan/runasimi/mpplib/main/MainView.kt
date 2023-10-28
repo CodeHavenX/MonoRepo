@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,7 +36,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.unit.dp
 import com.cramsan.runasimi.mpplib.ui.Card
 import com.cramsan.runasimi.mpplib.ui.MainViewUIModel
 import com.cramsan.runasimi.mpplib.ui.theme.Dimension
@@ -57,7 +57,7 @@ fun MainView(
     Scaffold(
         floatingActionButton = {
             Column(
-                modifier = Modifier.padding(bottom = Dimension.xxx_large),
+                modifier = Modifier.padding(bottom = Dimension.large),
                 horizontalAlignment = Alignment.End,
                 verticalArrangement = Arrangement.spacedBy(Dimension.small),
             ) {
@@ -124,7 +124,7 @@ fun MainView(
             ) {
                 Row(
                     Modifier
-                        .height(50.dp)
+                        .wrapContentHeight()
                         .fillMaxWidth()
                         .align(Alignment.BottomCenter),
                     horizontalArrangement = Arrangement.Center
@@ -150,7 +150,8 @@ fun MainView(
                                 MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
                         Box(
                             modifier = Modifier
-                                .padding(Dimension.xx_small)
+                                .padding(horizontal = Dimension.xx_small)
+                                .padding(vertical = Dimension.xxx_small)
                                 .clip(RoundedCornerShape(Dimension.xxx_small))
                                 .background(color)
                                 .weight(lineWeight.value)

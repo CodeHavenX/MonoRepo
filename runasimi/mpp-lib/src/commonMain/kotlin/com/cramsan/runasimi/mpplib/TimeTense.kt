@@ -6,4 +6,5 @@ enum class TimeTense(
 ) {
     PRESENT(listOf(""), "Presente"),
     PAST(listOf("Rqa", "Ra"), "Pasado"),
+    FUTURE(listOf(""), "Futuro"),
 }

@@ -1,6 +1,7 @@
 package com.cramsan.runasimi.mpplib.main
 
 import com.cramsan.framework.core.DispatcherProvider
+import com.cramsan.framework.logging.logW
 import com.cramsan.framework.preferences.Preferences
 import com.cramsan.runasimi.mpplib.StatementManager
 import com.cramsan.runasimi.mpplib.ui.MainViewUIModel
@@ -9,6 +10,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.readBytes
+import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -60,20 +62,32 @@ class MainViewModel(
     }
 
     suspend fun playAudioStatement(selectedIndex: Int) = withContext(dispatcherProvider.ioDispatcher()) {
-        val selectedModel = uiModel.value.cards.get(selectedIndex) ?: return@withContext
+        val selectedModel = uiModel.value.cards[selectedIndex]
         val message = selectedModel.sentence.toSentenceString()
 
         val content = fetchAudioFile(message)
+        if (content == null) {
+            logW(TAG, "Could not get audio data")
+            return@withContext
+        }
+
         val filename = "tmp.ogg"
         val fileUrl = fileManager.saveToFile(filename, content)
 
         soundManager.playSound(fileUrl)
     }
 
-    private suspend fun fetchAudioFile(statement: String): ByteArray {
-        return httpClient.post("https://runasimi.cramsan.com/tts") {
+    private suspend fun fetchAudioFile(statement: String): ByteArray? {
+        val response = httpClient.post("https://runasimi.cramsan.com/tts?lang=quy") {
             setBody(statement)
-        }.readBytes()
+        }
+
+        if (response.status != HttpStatusCode.OK) {
+            logW(TAG, "Audio API request was not successful. Response ${response.status}")
+            return null
+        }
+
+        return response.readBytes()
     }
 
     private suspend fun setSeed(newSeed: Int) {
@@ -92,5 +106,6 @@ class MainViewModel(
     }
     companion object {
         const val PAGE_COUNT = 25
+        private const val TAG = "MainViewModel"
     }
 }

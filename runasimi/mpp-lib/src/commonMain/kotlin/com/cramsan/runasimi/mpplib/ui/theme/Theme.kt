@@ -77,9 +77,9 @@ fun RunasimiTheme(
 ) {
     MaterialTheme(
         colorScheme = if (useDarkTheme) {
-            darkColorScheme()
+            DarkColors
         } else {
-            lightColorScheme()
+            LightColors
         },
         content = content
     )

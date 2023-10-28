@@ -31,7 +31,6 @@
         <li>El servicio tiene recursos limitados, puede ser que tome hasta 30 segundos en generar un archivo.</li>
         <li>El mensaje tiene un límite de 50 letras.</li>
         <li>El resultado será un archivo .ogg que se descargara en tu dispositivo.</li>
-        <li>Actualmente solo el lenguaje Quechua/Ayacucho</li>
         <li>Este servicio usa el sistema MMST desarrollado por <a href="https://about.fb.com/news/2023/05/ai-massively-multilingual-speech-technology/">Meta</a>.</li>
     </ul>
 </p>

@@ -2,6 +2,7 @@ package com.cramsan.runasimi.mpplib.main
 
 import com.cramsan.runasimi.mpplib.ModalityTense
 import com.cramsan.runasimi.mpplib.Pronoun
+import com.cramsan.runasimi.mpplib.PronounFutureSuffix
 import com.cramsan.runasimi.mpplib.PronounPastSuffix
 import com.cramsan.runasimi.mpplib.PronounPresentSuffix
 import com.cramsan.runasimi.mpplib.Statement
@@ -102,6 +103,9 @@ private fun pronounConjugationPrefix(timeTense: TimeTense, pronoun: Pronoun): St
         }
         TimeTense.PAST -> {
             PronounPastSuffix.valueOf(pronoun.name).suffix
+        }
+        TimeTense.FUTURE -> {
+            PronounFutureSuffix.valueOf(pronoun.name).suffix
         }
     }
 }

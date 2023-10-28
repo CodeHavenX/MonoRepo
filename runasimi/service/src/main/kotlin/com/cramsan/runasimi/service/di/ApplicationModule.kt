@@ -45,7 +45,7 @@ val ApplicationModule = module(createdAtStart = true) {
     }
 
     single {
-        ApiController(get())
+        ApiController(get(), get())
     }
 
     single {

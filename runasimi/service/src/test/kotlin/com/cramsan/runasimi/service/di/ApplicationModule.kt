@@ -30,7 +30,7 @@ fun createApplicationModule(
     }
 
     single {
-        ApiController(get())
+        ApiController(get(), get())
     }
 
     single {

@@ -108,7 +108,8 @@ private fun RenderMainView() {
                 ),
                 CardUiModel(listOf(), listOf()),
                 CardUiModel(listOf(), listOf()),
-            )
+            ),
+            isLoading = true,
         )
     )
 }

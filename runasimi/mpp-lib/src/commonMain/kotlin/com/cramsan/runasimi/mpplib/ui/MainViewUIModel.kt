@@ -2,6 +2,7 @@ package com.cramsan.runasimi.mpplib.ui
 
 data class MainViewUIModel(
     val cards: List<CardUiModel>,
+    val isLoading: Boolean,
 )
 data class CardUiModel(
     val sentence: List<Word>,

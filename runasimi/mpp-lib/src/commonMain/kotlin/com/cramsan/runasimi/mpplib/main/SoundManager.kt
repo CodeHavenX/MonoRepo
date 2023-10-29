@@ -2,5 +2,7 @@ package com.cramsan.runasimi.mpplib.main
 
 interface SoundManager {
 
-    fun playSound(path: String)
+    suspend fun playSound(path: String)
+
+    fun playSoundAsync(path: String)
 }

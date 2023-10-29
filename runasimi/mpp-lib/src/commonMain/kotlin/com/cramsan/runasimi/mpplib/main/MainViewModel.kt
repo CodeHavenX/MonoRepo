@@ -27,7 +27,10 @@ class MainViewModel(
 ) {
 
     private val _uiModel = MutableStateFlow(
-        MainViewUIModel(listOf())
+        MainViewUIModel(
+            listOf(),
+            isLoading = false,
+        )
     )
 
     val uiModel = _uiModel.asStateFlow()
@@ -50,31 +53,43 @@ class MainViewModel(
         savedSeed(seed ?: Random.nextInt())
     }
 
-    private suspend fun loadCards() {
+    private fun loadCards() {
         _uiModel.update {
             MainViewUIModel(
                 cards = (0 until PAGE_COUNT).map {
                     val statement = statementManager.generateStatement(initialSeed + it)
                     statement.toUIModel()
-                }
+                },
+                isLoading = false,
             )
         }
     }
 
     suspend fun playAudioStatement(selectedIndex: Int) = withContext(dispatcherProvider.ioDispatcher()) {
-        val selectedModel = uiModel.value.cards[selectedIndex]
-        val message = selectedModel.sentence.toSentenceString()
-
-        val content = fetchAudioFile(message)
-        if (content == null) {
-            logW(TAG, "Could not get audio data")
+        if (_uiModel.value.isLoading) {
             return@withContext
         }
 
-        val filename = "tmp.ogg"
-        val fileUrl = fileManager.saveToFile(filename, content)
+        _uiModel.update {
+            it.copy(isLoading = true)
+        }
+        runCatching {
+            val selectedModel = uiModel.value.cards[selectedIndex]
+            val message = selectedModel.sentence.toSentenceString()
 
-        soundManager.playSound(fileUrl)
+            val content = fetchAudioFile(message)
+            if (content == null) {
+                logW(TAG, "Could not get audio data")
+            } else {
+                val filename = "tmp.ogg"
+                val fileUrl = fileManager.saveToFile(filename, content)
+
+                soundManager.playSound(fileUrl)
+            }
+        }
+        _uiModel.update {
+            it.copy(isLoading = false)
+        }
     }
 
     private suspend fun fetchAudioFile(statement: String): ByteArray? {

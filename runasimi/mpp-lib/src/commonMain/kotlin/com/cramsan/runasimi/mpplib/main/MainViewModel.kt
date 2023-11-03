@@ -53,14 +53,13 @@ class MainViewModel(
         savedSeed(seed ?: Random.nextInt())
     }
 
-    private fun loadCards() {
+    private suspend fun loadCards() {
         _uiModel.update {
-            MainViewUIModel(
+            it.copy(
                 cards = (0 until PAGE_COUNT).map {
                     val statement = statementManager.generateStatement(initialSeed + it)
                     statement.toUIModel()
                 },
-                isLoading = false,
             )
         }
     }

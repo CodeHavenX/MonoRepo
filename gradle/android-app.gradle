@@ -6,7 +6,7 @@ Gradle plugin to create an Android app with good default values.
 
 apply plugin: "com.android.application"
 apply plugin: "kotlin-android"
-apply plugin: "kotlin-kapt" // Kotlin Annotation Processor
+apply plugin: "com.google.devtools.ksp"
 apply plugin: "com.google.dagger.hilt.android"
 apply from: "$rootDir/gradle/detekt.gradle"
 
@@ -93,13 +93,9 @@ android {
     }
 }
 
-kapt {
-    correctErrorTypes true
-}
-
 dependencies {
-    kapt "com.google.dagger:hilt-compiler:_"
-    kapt "androidx.hilt:hilt-compiler:_"
+    ksp "com.google.dagger:hilt-compiler:_"
+    ksp "androidx.hilt:hilt-compiler:_"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:_"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:_"

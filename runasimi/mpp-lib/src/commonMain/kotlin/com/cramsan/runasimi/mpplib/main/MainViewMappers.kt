@@ -51,7 +51,7 @@ fun Statement.toUIModel(): CardUiModel {
                 )
             ),
             CardUiModel.Word(
-                listOf(
+                listOfNotNull(
                     CardUiModel.Segment(
                         segment = verb.root.first(),
                         color = null,
@@ -60,10 +60,12 @@ fun Statement.toUIModel(): CardUiModel {
                         segment = modalityTense.suffix.lowercase(),
                         color = ComponentColor.RED,
                     ),
-                    CardUiModel.Segment(
-                        segment = timeTense.suffix.first().lowercase(),
-                        color = ComponentColor.YELLOW,
-                    ),
+                    timeTense.suffix.firstOrNull()?.let {
+                        CardUiModel.Segment(
+                            segment = it.lowercase(),
+                            color = ComponentColor.YELLOW,
+                        )
+                    },
                     CardUiModel.Segment(
                         segment = conjugationPrefix,
                         color = ComponentColor.BLUE,

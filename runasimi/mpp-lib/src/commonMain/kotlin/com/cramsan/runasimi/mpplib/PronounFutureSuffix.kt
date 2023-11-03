@@ -8,7 +8,7 @@ enum class PronounFutureSuffix(
     QAM("nki"),
     PAY("nqa"),
     @Suppress("EnumNaming")
-    ÑUQANCHIK("sunchiq"),
+    ÑUQANCHIK("sunchik"),
     @Suppress("EnumNaming")
     ÑUQAYKU("saqku"),
     QAMKUNA("nkichik"),

@@ -13,7 +13,7 @@ data class CardUiModel(
     )
 
     data class Segment(
-        val segment: String,
+        val segment: String?,
         val color: ComponentColor?,
     )
     data class Component(

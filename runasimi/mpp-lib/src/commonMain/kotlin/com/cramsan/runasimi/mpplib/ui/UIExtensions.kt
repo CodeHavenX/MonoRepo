@@ -12,7 +12,7 @@ import com.cramsan.runasimi.mpplib.ui.theme.component_type_c_light
 
 fun List<CardUiModel.Word>.toSentenceString(): String {
     return joinToString(" ") {
-        it.segments.joinToString("") { it.segment }
+        it.segments.joinToString("") { it.segment ?: "" }
     }
 }
 

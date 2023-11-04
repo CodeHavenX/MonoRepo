@@ -58,6 +58,8 @@ fun MainView(
                         { initialPage = it }
                     )
                 }
+                Tab.FRASES_COMUNES -> {
+                }
             }
         }
     }
@@ -77,6 +79,7 @@ private fun Bottombar(
                         when (tab) {
                             Tab.PRONOMBRES -> Icons.Default.Info
                             Tab.PRACTICA -> Icons.Default.Info
+                            Tab.FRASES_COMUNES -> Icons.Default.Info
                         },
                         contentDescription = null
                     )
@@ -92,4 +95,5 @@ private fun Bottombar(
 private enum class Tab {
     PRONOMBRES,
     PRACTICA,
+    FRASES_COMUNES,
 }

@@ -1,12 +1,10 @@
-Ñuqam Nelyda Taype Breña kani.;Yo soy Nelyda Taype Breña.
-Paucará llaqtamanta kani.;Soy del pueblo de Paucará.
-Iskay chunka qanchisniyuq watayuqmi kani;Tengo 27 años.
+Ñuqam Cristiana Silvia kani.;Yo soy Cristiana Silvia.
 Ñuqa Limapi llamkani.;Yo trabajo en Lima.
 ¿Allinllachu kachkanki?;¿Estás bien?
 ¿Imaynallam kachkanki?;¿Cómo estás?
 Allinllam Kachkani;Estoy bien
 Manam allinchu kachkani;No estoy bien
-TUPANANCHIKKAMA;HASTA PRONTO
-HUK PUNCHAWKAMA;HASTA OTRO DÍA
-PAQARINKAMA;HASTA MAÑANA
-RIPUSAQÑA;YA ME VOY
+Tupananchikkama;Hasta pronto
+Huk punchawkama;Hasta otro día
+Paqarinkama;Hasta mañana
+Ripusaqña;Ya me voy

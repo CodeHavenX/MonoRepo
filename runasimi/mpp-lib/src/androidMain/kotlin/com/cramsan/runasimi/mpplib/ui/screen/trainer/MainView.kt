@@ -1,7 +1,10 @@
-package com.cramsan.runasimi.mpplib
+package com.cramsan.runasimi.mpplib.ui.screen.trainer
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import com.cramsan.runasimi.mpplib.Pronoun
+import com.cramsan.runasimi.mpplib.PronounPastSuffix
+import com.cramsan.runasimi.mpplib.TimeTense
 import com.cramsan.runasimi.mpplib.main.MainView
 import com.cramsan.runasimi.mpplib.ui.CardUiModel
 import com.cramsan.runasimi.mpplib.ui.ComponentColor

@@ -101,8 +101,8 @@ fun TrainerContent(
         }
         Column(
             modifier = Modifier
-                .padding(bottom = Dimension.large)
-                .padding(horizontal = Dimension.small)
+                .padding(bottom = Dimension.xx_large)
+                .padding(horizontal = Dimension.xx_large)
                 .align(Alignment.BottomEnd),
             horizontalAlignment = Alignment.End,
             verticalArrangement = Arrangement.spacedBy(Dimension.small),

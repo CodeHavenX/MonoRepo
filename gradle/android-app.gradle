@@ -133,6 +133,7 @@ tasks.register("releaseAndroid") {
     description = 'Run all the steps to build a release artifact'
 
     dependsOn 'build' // Assembles and test this project
+    dependsOn 'bundle' // Assembles and test this project
     dependsOn 'detekt' // Run the code analyzer
 }
 

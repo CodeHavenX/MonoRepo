@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.cramsan.runasimi.android"
-        versionCode = 1
+        versionCode = 2
         versionName = "1.0"
     }
 }

@@ -40,9 +40,13 @@ val FrameworkModule = module(createdAtStart = true) {
 
     single<Preferences> { PreferencesImpl(get()) }
 
-    single(named(IS_DEBUG_NAME)) { false }
+    single {
+        val config: ApplicationConfig = get()
 
-    single<EventLoggerDelegate> { LoggerJVM(get(named(IS_DEBUG_NAME))) }
+        Severity.fromStringOrDefault(config.propertyOrNull("common.log_level")?.getString())
+    }
+
+    single<EventLoggerDelegate> { LoggerJVM(false) }
 
     single(named(DISCORD_ERROR_LOG_CHANNEL_ID_NAME)) {
         val config: ApplicationConfig = get()
@@ -66,11 +70,7 @@ val FrameworkModule = module(createdAtStart = true) {
     }
 
     single<EventLoggerInterface> {
-        val severity: Severity = when (get<Boolean>(named(IS_DEBUG_NAME))) {
-            true -> Severity.VERBOSE
-            false -> Severity.VERBOSE
-        }
-        val instance = EventLoggerImpl(severity, get(), get())
+        val instance = EventLoggerImpl(get(), get(), get())
         EventLogger.setInstance(instance)
         EventLogger.singleton
     }
@@ -100,5 +100,4 @@ val FrameworkModule = module(createdAtStart = true) {
     single<DispatcherProvider> { BEDispatcherProvider() }
 }
 
-private const val IS_DEBUG_NAME = "isDebugEnabled"
 private const val DISCORD_ERROR_LOG_CHANNEL_ID_NAME = "DISCORD_ERROR_LOG_CHANNEL_ID_NAME"

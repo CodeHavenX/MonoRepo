@@ -72,7 +72,7 @@ class GithubCommitPushEntryPointTest : TestBase(){
         assertEquals(HttpStatusCode.OK, response.status)
         assertEquals("Event handled", response.body)
         verify {
-            builder.content = "CRamsan pushed a commit to MonoRepo\n[DBP] Fixing date parsing\nhttps://github.com/CodeHavenX/MonoRepo/commit/3695c9218ac300065f38cf5c74b82690c0bd6d04"
+            builder.content = "CRamsan pushed a commit to MonoRepo\n[DBP] Adding logging levels\nhttps://github.com/CodeHavenX/MonoRepo/commit/cace1343b2fe5a3abdfd23436925f623d946b43d"
         }
     }
 

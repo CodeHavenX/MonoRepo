@@ -46,7 +46,7 @@ class WebhookController(
         }
 
         if (result.isFailure) {
-            logE(TAG, "Unexpected failure when handing request")
+            logE(TAG, "Unexpected failure when handing request", result.exceptionOrNull())
         }
     }
 

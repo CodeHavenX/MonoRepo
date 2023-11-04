@@ -1,7 +1,7 @@
 {
   "ref": "refs/heads/main",
-  "before": "f688a16b7f751af46ceb74a72ea3189462896e04",
-  "after": "3695c9218ac300065f38cf5c74b82690c0bd6d04",
+  "before": "ffadd014c84b1da624ab6e014bb819be78e696b4",
+  "after": "cace1343b2fe5a3abdfd23436925f623d946b43d",
   "repository": {
     "id": 683876771,
     "node_id": "R_kgDOKMMhow",
@@ -72,13 +72,13 @@
     "deployments_url": "https://api.github.com/repos/CodeHavenX/MonoRepo/deployments",
     "created_at": 1693184544,
     "updated_at": "2023-08-30T00:03:34Z",
-    "pushed_at": 1694764378,
+    "pushed_at": 1699088608,
     "git_url": "git://github.com/CodeHavenX/MonoRepo.git",
     "ssh_url": "git@github.com:CodeHavenX/MonoRepo.git",
     "clone_url": "https://github.com/CodeHavenX/MonoRepo.git",
     "svn_url": "https://github.com/CodeHavenX/MonoRepo",
     "homepage": "https://cramsan.com/",
-    "size": 45302,
+    "size": 45467,
     "stargazers_count": 0,
     "watchers_count": 0,
     "language": "Kotlin",
@@ -92,7 +92,7 @@
     "mirror_url": null,
     "archived": false,
     "disabled": false,
-    "open_issues_count": 4,
+    "open_issues_count": 2,
     "license": null,
     "allow_forking": true,
     "is_template": false,
@@ -102,12 +102,15 @@
     ],
     "visibility": "public",
     "forks": 0,
-    "open_issues": 4,
+    "open_issues": 2,
     "watchers": 0,
     "default_branch": "main",
     "stargazers": 0,
     "master_branch": "main",
-    "organization": "CodeHavenX"
+    "organization": "CodeHavenX",
+    "custom_properties": {
+
+    }
   },
   "pusher": {
     "name": "CRamsan",
@@ -151,15 +154,15 @@
   "deleted": false,
   "forced": false,
   "base_ref": null,
-  "compare": "https://github.com/CodeHavenX/MonoRepo/compare/f688a16b7f75...3695c9218ac3",
+  "compare": "https://github.com/CodeHavenX/MonoRepo/compare/ffadd014c84b...cace1343b2fe",
   "commits": [
     {
-      "id": "3695c9218ac300065f38cf5c74b82690c0bd6d04",
-      "tree_id": "533ae3da435b0829ad8f3f6cdcbf8e12f7f36fa2",
+      "id": "cace1343b2fe5a3abdfd23436925f623d946b43d",
+      "tree_id": "d818c854b5f9534ca1df73a254c0ac0a4bad8d55",
       "distinct": true,
-      "message": "[DBP] Fixing date parsing",
-      "timestamp": "2023-09-15T00:52:54-07:00",
-      "url": "https://github.com/CodeHavenX/MonoRepo/commit/3695c9218ac300065f38cf5c74b82690c0bd6d04",
+      "message": "[DBP] Adding logging levels",
+      "timestamp": "2023-11-04T02:03:01-07:00",
+      "url": "https://github.com/CodeHavenX/MonoRepo/commit/cace1343b2fe5a3abdfd23436925f623d946b43d",
       "author": {
         "name": "CRamsan",
         "email": "me@cramsan.com",
@@ -171,38 +174,24 @@
         "username": "CRamsan"
       },
       "added": [
-        "discord-bot-platform/src/main/kotlin/com/codehavenx/platform/bot/ktor/DateAsStringSerializer.kt"
+
       ],
       "removed": [
 
       ],
       "modified": [
-        "discord-bot-platform/build.gradle.kts",
-        "discord-bot-platform/src/main/kotlin/com/codehavenx/platform/bot/Application.kt",
-        "discord-bot-platform/src/main/kotlin/com/codehavenx/platform/bot/di/ApplicationModule.kt",
-        "discord-bot-platform/src/main/kotlin/com/codehavenx/platform/bot/network/gh/Author.kt",
-        "discord-bot-platform/src/main/kotlin/com/codehavenx/platform/bot/network/gh/CodePushPayload.kt",
-        "discord-bot-platform/src/main/kotlin/com/codehavenx/platform/bot/network/gh/Commit.kt",
-        "discord-bot-platform/src/main/kotlin/com/codehavenx/platform/bot/network/gh/Committer.kt",
-        "discord-bot-platform/src/main/kotlin/com/codehavenx/platform/bot/network/gh/HeadCommit.kt",
-        "discord-bot-platform/src/main/kotlin/com/codehavenx/platform/bot/network/gh/Organization.kt",
-        "discord-bot-platform/src/main/kotlin/com/codehavenx/platform/bot/network/gh/Owner.kt",
-        "discord-bot-platform/src/main/kotlin/com/codehavenx/platform/bot/network/gh/Pusher.kt",
-        "discord-bot-platform/src/main/kotlin/com/codehavenx/platform/bot/network/gh/Repository.kt",
-        "discord-bot-platform/src/main/kotlin/com/codehavenx/platform/bot/network/gh/Sender.kt",
-        "discord-bot-platform/src/main/kotlin/com/codehavenx/platform/bot/network/gh/Step.kt",
-        "discord-bot-platform/src/main/kotlin/com/codehavenx/platform/bot/network/gh/WorkflowJob.kt",
-        "discord-bot-platform/src/main/kotlin/com/codehavenx/platform/bot/network/gh/WorkflowJobsPayload.kt"
+        "discord-bot-platform/src/main/kotlin/com/codehavenx/platform/bot/di/FrameworkModule.kt",
+        "discord-bot-platform/src/main/resources/application.conf"
       ]
     }
   ],
   "head_commit": {
-    "id": "3695c9218ac300065f38cf5c74b82690c0bd6d04",
-    "tree_id": "533ae3da435b0829ad8f3f6cdcbf8e12f7f36fa2",
+    "id": "cace1343b2fe5a3abdfd23436925f623d946b43d",
+    "tree_id": "d818c854b5f9534ca1df73a254c0ac0a4bad8d55",
     "distinct": true,
-    "message": "[DBP] Fixing date parsing",
-    "timestamp": "2023-09-15T00:52:54-07:00",
-    "url": "https://github.com/CodeHavenX/MonoRepo/commit/3695c9218ac300065f38cf5c74b82690c0bd6d04",
+    "message": "[DBP] Adding logging levels",
+    "timestamp": "2023-11-04T02:03:01-07:00",
+    "url": "https://github.com/CodeHavenX/MonoRepo/commit/cace1343b2fe5a3abdfd23436925f623d946b43d",
     "author": {
       "name": "CRamsan",
       "email": "me@cramsan.com",
@@ -214,28 +203,14 @@
       "username": "CRamsan"
     },
     "added": [
-      "discord-bot-platform/src/main/kotlin/com/codehavenx/platform/bot/ktor/DateAsStringSerializer.kt"
+
     ],
     "removed": [
 
     ],
     "modified": [
-      "discord-bot-platform/build.gradle.kts",
-      "discord-bot-platform/src/main/kotlin/com/codehavenx/platform/bot/Application.kt",
-      "discord-bot-platform/src/main/kotlin/com/codehavenx/platform/bot/di/ApplicationModule.kt",
-      "discord-bot-platform/src/main/kotlin/com/codehavenx/platform/bot/network/gh/Author.kt",
-      "discord-bot-platform/src/main/kotlin/com/codehavenx/platform/bot/network/gh/CodePushPayload.kt",
-      "discord-bot-platform/src/main/kotlin/com/codehavenx/platform/bot/network/gh/Commit.kt",
-      "discord-bot-platform/src/main/kotlin/com/codehavenx/platform/bot/network/gh/Committer.kt",
-      "discord-bot-platform/src/main/kotlin/com/codehavenx/platform/bot/network/gh/HeadCommit.kt",
-      "discord-bot-platform/src/main/kotlin/com/codehavenx/platform/bot/network/gh/Organization.kt",
-      "discord-bot-platform/src/main/kotlin/com/codehavenx/platform/bot/network/gh/Owner.kt",
-      "discord-bot-platform/src/main/kotlin/com/codehavenx/platform/bot/network/gh/Pusher.kt",
-      "discord-bot-platform/src/main/kotlin/com/codehavenx/platform/bot/network/gh/Repository.kt",
-      "discord-bot-platform/src/main/kotlin/com/codehavenx/platform/bot/network/gh/Sender.kt",
-      "discord-bot-platform/src/main/kotlin/com/codehavenx/platform/bot/network/gh/Step.kt",
-      "discord-bot-platform/src/main/kotlin/com/codehavenx/platform/bot/network/gh/WorkflowJob.kt",
-      "discord-bot-platform/src/main/kotlin/com/codehavenx/platform/bot/network/gh/WorkflowJobsPayload.kt"
+      "discord-bot-platform/src/main/kotlin/com/codehavenx/platform/bot/di/FrameworkModule.kt",
+      "discord-bot-platform/src/main/resources/application.conf"
     ]
   }
 }

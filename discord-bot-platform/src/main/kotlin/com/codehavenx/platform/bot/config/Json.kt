@@ -12,5 +12,6 @@ import kotlinx.serialization.modules.contextual
 fun createJson() = Json {
     serializersModule = SerializersModule {
         contextual(DateAsStringSerializer)
+        ignoreUnknownKeys = true
     }
 }

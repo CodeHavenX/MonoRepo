@@ -26,7 +26,7 @@ kotlin {
     }
 
     sourceSets {
-        val jsMain by getting {
+        jsMain {
             dependencies {
                 implementation(compose.web.core)
                 implementation(compose.runtime)
@@ -35,7 +35,7 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:_")
             }
         }
-        val jsTest by getting {
+        jsTest {
             dependencies {
             }
         }

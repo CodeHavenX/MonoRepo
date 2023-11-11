@@ -16,7 +16,7 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation(project(":framework:interfacelib"))
                 implementation("io.ktor:ktor-client-core:_")
@@ -24,7 +24,7 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:_")
             }
         }
-        val commonTest by getting {
+        commonTest {
             dependencies {
                 implementation(project(":framework:test"))
             }

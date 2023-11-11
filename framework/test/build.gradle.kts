@@ -38,7 +38,7 @@ dependencies {
 kotlin {
 
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation(project(":framework:interfacelib"))
 
@@ -47,7 +47,7 @@ kotlin {
                 implementation("org.jetbrains.kotlin:kotlin-test-annotations-common:_")
             }
         }
-        val jvmMain by getting {
+        jvmMain {
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:_")
                 implementation("org.junit.jupiter:junit-jupiter-api:_")
@@ -55,13 +55,11 @@ kotlin {
                 implementation("io.mockk:mockk:_")
             }
         }
-        val jvmTest by getting {
+        jvmTest {
         }
-        val androidMain by getting {
+        androidMain {
         }
-        val androidUnitTest by getting {
-        }
-        val jsMain by getting {
+        jsMain {
             dependencies {
                 implementation("org.jetbrains.kotlin:kotlin-test-js:_")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:_")

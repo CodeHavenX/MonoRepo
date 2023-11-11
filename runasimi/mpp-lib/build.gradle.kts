@@ -28,7 +28,7 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation("io.ktor:ktor-client-core:_")
             }

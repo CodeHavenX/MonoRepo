@@ -24,24 +24,24 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation(project(":stranded:server"))
 
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:_")
             }
         }
-        val commonTest by getting {
+        commonTest {
             dependencies {
                 implementation(project(":framework:test"))
             }
         }
-        val jvmMain by getting {
+        jvmMain {
             dependencies {
                 implementation(project(":stranded:server"))
             }
         }
-        val jvmTest by getting {
+        jvmTest {
             dependencies {
             }
         }

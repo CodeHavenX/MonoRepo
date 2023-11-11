@@ -21,18 +21,18 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:_")
                 implementation("io.ktor:ktor-client-websockets:_")
                 implementation("io.ktor:ktor-client-core:_")
             }
         }
-        val commonTest by getting {
+        commonTest {
             dependencies {
             }
         }
-        val jvmMain by getting {
+        jvmMain {
             dependencies {
                 // Serer dependencies
                 implementation("io.ktor:ktor-client-cio:_")
@@ -41,11 +41,11 @@ kotlin {
                 implementation("io.ktor:ktor-websockets:_")
             }
         }
-        val jvmTest by getting {
+        jvmTest {
             dependencies {
             }
         }
-        val jsMain by getting {
+        jsMain {
             dependencies {
                 // Client dependencies
                 implementation("io.ktor:ktor-client-js:_")

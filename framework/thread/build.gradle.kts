@@ -15,13 +15,13 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation(project(":framework:interfacelib"))
                 implementation(project(":framework:assert"))
             }
         }
-        val commonTest by getting {
+        commonTest {
             dependencies {
                 implementation(project(":framework:test"))
             }

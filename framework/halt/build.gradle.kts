@@ -19,18 +19,18 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation(project(":framework:interfacelib"))
                 implementation(project(":framework:logging"))
             }
         }
-        val commonTest by getting {
+        commonTest {
             dependencies {
                 implementation(project(":framework:test"))
             }
         }
-        val jvmTest by getting {
+        jvmTest {
             dependencies {
                 implementation(project(":framework:test"))
             }

@@ -94,7 +94,7 @@ kotlin {
 
     // TODO: This target should be determined at configuration time since it depends on the
     // architecture of the host.
-    iosSimulatorArm64("ios") {
+    iosSimulatorArm64() {
 
     }
 
@@ -116,20 +116,16 @@ kotlin {
             }
         }
         androidMain {
-            dependsOn(commonMain)
         }
         androidUnitTest {
-            dependsOn(commonTest)
         }
         jvmMain {
-            dependsOn(commonMain)
             dependencies {
                 implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:_"
                 implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:_"
             }
         }
         jvmTest {
-            dependsOn(commonTest)
             dependencies {
                 implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:_"
                 implementation "org.junit.jupiter:junit-jupiter-api:_"
@@ -140,23 +136,19 @@ kotlin {
             }
         }
         jsMain {
-            dependsOn(commonMain)
             dependencies {
                 implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-js:_"
             }
         }
         jsTest {
-            dependsOn(commonTest)
             dependencies {
                 implementation "org.jetbrains.kotlin:kotlin-test-js:_"
                 implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:_"
             }
         }
         iosMain {
-            dependsOn(commonMain)
         }
         iosTest {
-            dependsOn(commonTest)
         }
     }
 }
@@ -203,10 +195,10 @@ tasks.register("releaseAndroid") {
 tasks.register("releaseIos") {
     group = 'release'
     description = 'Run all the steps to build a releaseIos artifact'
-    dependsOn 'compileKotlinIos'
-    dependsOn 'detektMetadataMain' // Run the code analyzer on the common-code source set
-    dependsOn 'detektIosMain' // Run the code analyzer
-    dependsOn 'iosTest'
+    dependsOn 'compileKotlinIosSimulatorArm64'
+    dependsOn 'detektIosSimulatorArm64Main' // Run the code analyzer on the common-code source set
+    dependsOn 'detektIosSimulatorArm64Main' // Run the code analyzer
+    dependsOn 'iosSimulatorArm64Test'
 }
 
 tasks.register("release") {

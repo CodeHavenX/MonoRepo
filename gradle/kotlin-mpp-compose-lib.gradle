@@ -86,7 +86,7 @@ kotlin {
 
     // TODO: This target should be determined at configuration time since it depends on the
     // architecture of the host.
-    iosSimulatorArm64("ios") {
+    iosSimulatorArm64() {
 
     }
 
@@ -112,13 +112,10 @@ kotlin {
             }
         }
         androidMain {
-            dependsOn(commonMain)
         }
         androidUnitTest {
-            dependsOn(commonTest)
         }
         jvmMain {
-            dependsOn(commonMain)
             dependencies {
                 implementation(compose.desktop.common)
                 implementation("org.jetbrains.compose.ui:ui-tooling-preview:_")
@@ -126,7 +123,6 @@ kotlin {
             }
         }
         jvmTest {
-            dependsOn(commonTest)
             dependencies {
                 implementation("org.junit.jupiter:junit-jupiter-api:_")
                 implementation("org.jetbrains.kotlin:kotlin-test-junit5:_")
@@ -134,10 +130,8 @@ kotlin {
             }
         }
         iosMain {
-            dependsOn(commonMain)
         }
         iosTest {
-            dependsOn(commonTest)
         }
     }
 }
@@ -175,10 +169,10 @@ tasks.register("releaseAndroid") {
 tasks.register("releaseIos") {
     group = 'release'
     description = 'Run all the steps to build a releaseIos artifact'
-    dependsOn 'compileKotlinIos'
-    dependsOn 'detektMetadataMain' // Run the code analyzer on the common-code source set
-    dependsOn 'detektIosMain' // Run the code analyzer
-    dependsOn 'iosTest'
+    dependsOn 'compileKotlinIosSimulatorArm64'
+    dependsOn 'detektIosSimulatorArm64Main' // Run the code analyzer on the common-code source set
+    dependsOn 'detektIosSimulatorArm64Main' // Run the code analyzer
+    dependsOn 'iosSimulatorArm64Test'
 }
 
 tasks.register("release") {

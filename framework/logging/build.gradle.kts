@@ -15,17 +15,17 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation(project(":framework:interfacelib"))
             }
         }
-        val commonTest by getting {
+        commonTest {
             dependencies {
                 implementation(project(":framework:test"))
             }
         }
-        val jvmMain by getting {
+        jvmMain {
             dependencies {
                 implementation("org.apache.logging.log4j:log4j-api:_")
                 implementation("org.apache.logging.log4j:log4j-core:_")

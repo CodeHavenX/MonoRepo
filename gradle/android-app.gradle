@@ -6,11 +6,11 @@ Gradle plugin to create an Android app with good default values.
 
 apply plugin: "com.android.application"
 apply plugin: "kotlin-android"
+apply plugin: "org.jetbrains.compose"
 apply plugin: "com.google.devtools.ksp"
 apply plugin: "com.google.dagger.hilt.android"
 apply from: "$rootDir/gradle/detekt.gradle"
 
-def composeCompiler = versionFor(project, "version.androidx.compose.compiler")
 android {
     compileSdkVersion 34
 
@@ -57,7 +57,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = composeCompiler
+        kotlinCompilerExtensionVersion = versionFor(project, "version.androidx.compose.compiler")
     }
 
     packaging {

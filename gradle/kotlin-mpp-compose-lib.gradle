@@ -8,7 +8,6 @@ apply plugin: "com.android.library"
 apply plugin: "org.jetbrains.compose"
 apply from: "$rootDir/gradle/detekt.gradle"
 
-def composeCompiler = versionFor(project, "version.androidx.compose.compiler")
 android {
     compileSdkVersion 34
     defaultConfig {
@@ -38,7 +37,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = composeCompiler
+        kotlinCompilerExtensionVersion = versionFor(project, "version.androidx.compose.compiler")
     }
 
     testOptions {

@@ -29,7 +29,7 @@ dependencies {
     implementation("io.insert-koin:koin-core:_")
     implementation("io.insert-koin:koin-ktor:_")
     implementation("dev.kord:kord-core:_")
-    implementation("org.ehcache:ehcache:3.10.0")
+    implementation("org.ehcache:ehcache:_")
     implementation("io.ktor:ktor-server-call-logging:_")
     implementation("org.apache.logging.log4j:log4j-core:_")
     implementation("org.apache.logging.log4j:log4j-slf4j-impl:_")

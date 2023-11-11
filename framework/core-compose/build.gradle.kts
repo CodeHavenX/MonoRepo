@@ -2,6 +2,7 @@ import de.fayard.refreshVersions.core.versionFor
 
 plugins {
     id("com.android.library")
+    id("org.jetbrains.compose")
 }
 
 apply(from = "$rootDir/gradle/android-lib.gradle")
@@ -15,7 +16,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = versionFor(AndroidX.compose.compiler)
+        kotlinCompilerExtensionVersion = versionFor("version.androidx.compose.compiler")
     }
 
     dependencies {

@@ -98,7 +98,8 @@ kotlin {
 
     }
 
-    js {
+    js(IR) {
+        browser()
     }
 
     sourceSets {

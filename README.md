@@ -1,28 +1,14 @@
 # Monorepo
+
  
 This mono-repo holds the code for several projects that I manage. The reason for going with a mono-repo was to make code-sharing easier and reducing maintenance cost. You can find more information about the projec's design on the [design](https://dev.azure.com/CRamsan/Framework/_wiki/wikis/Framework.wiki/28/Design-Architecture) page.
 
 You can find more documentation in the [wiki](https://dev.azure.com/CRamsan/Framework/_wiki/wikis/Framework.wiki/22/Project-Wiki).
 
-## Current Projects
+## Current Projects (WIP)
 | Project                                                  | Builds             | Status                                                                                                                                                                                                                                   |
 |----------------------------------------------------------|--------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Build the world                                          |                    | [![Build Status](https://dev.azure.com/CRamsan/Framework/_apis/build/status/Build-The-World_Release?branchName=master)](https://dev.azure.com/CRamsan/Framework/_build/latest?definitionId=21&branchName=master)                         | 
-|                                                          |                    |                                                                                                                                                                                                                                          | 
-| [Auraxis Control Center](auraxiscontrolcenter/README.md) | Android            | [![Build Status](https://dev.azure.com/CRamsan/AuraxisControlCenter/_apis/build/status/AuraxisControCenter?branchName=master)](https://dev.azure.com/CRamsan/AuraxisControlCenter/_build/latest?definitionId=6&branchName=master)        |
-|                                                          | CDK                | [![Build Status](https://dev.azure.com/CRamsan/AuraxisControlCenter/_apis/build/status/AuraxisControlCenter_Cdk?branchName=master)](https://dev.azure.com/CRamsan/AuraxisControlCenter/_build/latest?definitionId=20&branchName=master)  |
-|                                                          |                    |                                                                                                                                                                                                                                          | 
-| [Safe for my pets](petproject//README.md)                | Android            | [![Build Status](https://dev.azure.com/CRamsan/PetProject/_apis/build/status/PetProject-Android?branchName=master)](https://dev.azure.com/CRamsan/PetProject/_build/latest?definitionId=3&branchName=master)                             |
-|                                                          | Webservice         | [![Build Status](https://dev.azure.com/CRamsan/PetProject/_apis/build/status/PetProject-Webservice?branchName=master)](https://dev.azure.com/CRamsan/PetProject/_build/latest?definitionId=8&branchName=master)                          |
-|                                                          |                    |                                                                                                                                                                                                                                          | 
-| [Doom](doom/README.md)                                   | Desktop            | [![Build Status](https://dev.azure.com/CRamsan/Doom-Project/_apis/build/status/Doom-Project_Desktop?branchName=master)](https://dev.azure.com/CRamsan/Doom-Project/_build/latest?definitionId=12&branchName=master)                      |
-|                                                          |                    |                                                                                                                                                                                                                                          | 
-| [Framework](framework/README.md)                         | Samples            | [![Build Status](https://dev.azure.com/CRamsan/Framework/_apis/build/status/Framework-Samples_Release?branchName=master)](https://dev.azure.com/CRamsan/Framework/_build/latest?definitionId=15&branchName=master)                       |
-|                                                          | Dependency Updates | [![Build Status](https://dev.azure.com/CRamsan/Framework/_apis/build/status/Dependency-Updates?branchName=master)](https://dev.azure.com/CRamsan/Framework/_build/latest?definitionId=16&branchName=master)                              |
-|                                                          |                    |                                                                                                                                                                                                                                          | 
-| [KotlinLibs](kotlinlibs/README.md)                       | Spring Server      | [![Build Status](https://dev.azure.com/CRamsan/KotlinLibs/_apis/build/status/KotlinLibs_Spring?branchName=master)](https://dev.azure.com/CRamsan/KotlinLibs/_build/latest?definitionId=22&branchName=master)                             |
-|                                                          | Angular Site       | [![Build Status](https://dev.azure.com/CRamsan/KotlinLibs/_apis/build/status/KotlinLibs_Angular?branchName=master)](https://dev.azure.com/CRamsan/KotlinLibs/_build/latest?definitionId=23&branchName=master)                            |
-|                                                          | CDK                | [![Build Status](https://dev.azure.com/CRamsan/KotlinLibs/_apis/build/status/KotlinLibs_Cdk?branchName=master)](https://dev.azure.com/CRamsan/KotlinLibs/_build/latest?definitionId=24&branchName=master)                                |
+| 
 
 # Framework
 A lot of the code is kept in a shared module called **Framework** that abstract a lot of complexities out of the client apps.
@@ -32,13 +18,17 @@ A lot of the code is kept in a shared module called **Framework** that abstract 
 ## Getting started
  
 ### Prerequisites
-- JDK 11
-- Gradle 7.0(installed from the wrapper)
+- JDK 17 _(installed from IDE or web)_
+- Gradle 8.0 _(installed from the wrapper)_
 - IDEA 2021.3.1 CE
-- ~~Android Studio~~ *Waiting until AS is updated to use IDEA 2021.3.1 as platform*
+- Verify your Android SDK Manager is pointing to your android SDK _(installed from IDE or web)_
+- [Node JS](https://nodejs.org/en/download)
+- Node Version Manager (NVM) - _optional_
+  - [nvm windows](https://github.com/coreybutler/nvm-windows/releases)
+  - [nvm mac/linux](https://github.com/nvm-sh/nvm#installing-and-updating)
 
 ### SDK Package
-Make sure you have SDK downloaded. You can do this manually or through the IDE.
+Make sure you have SDK downloaded. You can do this manually or through the IDE. Add a `local.properties` file to the root dir. In the file, add `sdk.dir=YOUR\\PATH\\TO\ANDROID\\SDK`
 
 ### Building the code
 To build all the projects and execute all tests run: `./gradlew releaseAll`.

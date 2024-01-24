@@ -2,22 +2,31 @@
  * Configure a Kotlin-JS project with safe defaults.
  */
 
-apply plugin: "org.jetbrains.kotlin.js"
+apply plugin: "org.jetbrains.kotlin.multiplatform"
 apply from: "$rootDir/gradle/detekt.gradle"
 
 kotlin {
-    js {
+    targets.all {
+        compilations.all {
+        }
     }
-}
 
-compileKotlinJs{
-}
+    js(IR) {
+    }
 
-dependencies {
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-js:_"
-
-    testImplementation "org.jetbrains.kotlin:kotlin-test-js:_"
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:_"
+    sourceSets {
+        jsMain {
+            dependencies {
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-js:_"
+            }
+        }
+        jsTest {
+            dependencies {
+                implementation "org.jetbrains.kotlin:kotlin-test-js:_"
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:_"
+            }
+        }
+    }
 }
 
 // Release task that will build and test the project.
@@ -27,7 +36,7 @@ def releaseJs = tasks.register("releaseJs") {
 
     dependsOn 'detekt'
     dependsOn 'compileKotlinJs'
-    dependsOn 'test'
+    dependsOn 'jsTest'
 }
 
 tasks.register("release") {

@@ -8,7 +8,7 @@ class GoogleTranslateService(
 ) {
 
     @Suppress("SpreadOperator")
-    fun translate(message: String, targetLanguage: Language, sourceLanguage: Language? = null): String {
+    fun translate(message: String, sourceLanguage: Language, targetLanguage: Language): String {
         logI(TAG, "Calling translate. Length: ${message.length}")
         if (message.length > 120) {
             throw IllegalStateException("Message is too long")

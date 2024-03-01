@@ -4,6 +4,7 @@ import com.codehavenx.platform.bot.controller.kord.InteractionModule
 import com.codehavenx.platform.bot.service.github.GithubWebhookService
 import com.codehavenx.platform.bot.service.github.WebhookEvent
 import com.cramsan.framework.logging.logD
+import dev.kord.common.Locale
 import dev.kord.core.entity.interaction.GuildChatInputCommandInteraction
 import dev.kord.rest.builder.interaction.GlobalChatInputCreateBuilder
 import dev.kord.rest.builder.interaction.string
@@ -20,6 +21,11 @@ class WebhookRegisterInteractionModule(
     override val command = "wh_register"
 
     override val description = "Register a webhook to the current channel"
+
+    override val commandLocalizations = emptyMap<Locale, String>()
+
+    override val descriptionLocalizations = emptyMap<Locale, String>()
+
     override suspend fun onGlobalChatInputRegister(): GlobalChatInputCreateBuilder.() -> Unit = {
         string("event", "Event to register in this channel") {
             required = true
@@ -27,13 +33,14 @@ class WebhookRegisterInteractionModule(
                 choice(it.name, it.name)
             }
         }
+
     }
 
     @Suppress("SwallowedException")
     override suspend fun onGlobalChatInteraction(
         interaction: GuildChatInputCommandInteraction,
     ): InteractionResponseModifyBuilder.() -> Unit {
-        logD(TAG, "Received event data: $interaction",)
+        logD(TAG, "Received event data: %S", interaction)
 
         val command = interaction.command
         val webhookEventParam = command.strings.getValue("event")

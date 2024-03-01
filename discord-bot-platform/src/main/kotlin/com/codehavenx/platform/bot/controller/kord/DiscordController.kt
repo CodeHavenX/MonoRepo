@@ -28,9 +28,12 @@ class DiscordController(
         modules.forEach {
             kord.createGlobalChatInputCommand(
                 it.command,
-                it.description,
-                it.onGlobalChatInputRegister(),
-            )
+                it.description
+            ) {
+                nameLocalizations = it.commandLocalizations.toMutableMap()
+                descriptionLocalizations = it.descriptionLocalizations.toMutableMap()
+                it.onGlobalChatInputRegister().invoke(this)
+            }
         }
 
         // Configure the callback for any registered commands.

@@ -124,6 +124,6 @@ abstract class BaseComposeActivity<T : BaseViewModel> : ComponentActivity() {
      */
     @CallSuper
     protected open fun onViewModelEvent(event: BaseEvent) {
-        logD(logTag, "Event: $event")
+        logD(logTag, "Event: %S", event)
     }
 }

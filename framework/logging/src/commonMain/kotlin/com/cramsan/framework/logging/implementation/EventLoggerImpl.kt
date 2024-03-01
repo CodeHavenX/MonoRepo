@@ -39,7 +39,7 @@ class EventLoggerImpl(
         if (severity < targetSeverity)
             return
 
-        platformDelegate.log(severity, tag, message, throwable)
+        platformDelegate.log(severity, tag, message, throwable, *args)
 
         if (ignoreErrorCallback) {
             return

@@ -1,6 +1,7 @@
 package com.cramsan.framework.logging
 
 import com.cramsan.framework.assertlib.AssertUtil.singleton
+import com.cramsan.framework.logging.EventLogger.singleton
 import kotlin.native.concurrent.ThreadLocal
 
 /**
@@ -28,7 +29,7 @@ object EventLogger {
      */
     fun setInstance(eventLogger: EventLoggerInterface) {
         _singleton = eventLogger
-        Severity.values().forEach {
+        Severity.entries.forEach {
             _singleton.log(it, "EventLoggerImpl", "Probing logger for severity: $it", null, false)
         }
     }
@@ -44,8 +45,8 @@ object EventLogger {
  *
  * @see EventLoggerInterface.log
  */
-fun logV(tag: String, message: String) {
-    EventLogger.singleton.v(tag, message)
+fun logV(tag: String, message: String, vararg args: Any?) {
+    EventLogger.singleton.v(tag, message, *args)
 }
 
 /**
@@ -54,8 +55,8 @@ fun logV(tag: String, message: String) {
  *
  * @see EventLoggerInterface.log
  */
-fun logD(tag: String, message: String) {
-    EventLogger.singleton.d(tag, message)
+fun logD(tag: String, message: String, vararg args: Any?) {
+    EventLogger.singleton.d(tag, message, *args)
 }
 
 /**

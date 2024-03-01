@@ -49,12 +49,12 @@ interface EventLoggerInterface {
     /**
      * Log a message with [Severity.DEBUG] severity
      */
-    fun d(tag: String, message: String) = log(Severity.DEBUG, tag, message)
+    fun d(tag: String, message: String, vararg args: Any?) = log(Severity.DEBUG, tag, message, args = args)
 
     /**
      * Log a message with [Severity.VERBOSE] severity
      */
-    fun v(tag: String, message: String) = log(Severity.VERBOSE, tag, message)
+    fun v(tag: String, message: String, vararg args: Any?) = log(Severity.VERBOSE, tag, message, args = args)
 
     /**
      * Log a message with [Severity.INFO] severity

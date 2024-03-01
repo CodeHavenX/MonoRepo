@@ -1,5 +1,6 @@
 package com.codehavenx.platform.bot.controller.kord
 
+import dev.kord.common.Locale
 import dev.kord.core.entity.interaction.GuildChatInputCommandInteraction
 import dev.kord.rest.builder.interaction.GlobalChatInputCreateBuilder
 import dev.kord.rest.builder.message.modify.InteractionResponseModifyBuilder
@@ -19,6 +20,16 @@ interface InteractionModule {
      * Description for this command.
      */
     val description: String
+
+    /**
+     * Localizations for the command.
+     */
+    val commandLocalizations: Map<Locale, String>
+
+    /**
+     * Localizations for the description.
+     */
+    val descriptionLocalizations: Map<Locale, String>
 
     /**
      * Implement this function to register your command. For more information see the [official docs](https://github.com/kordlib/kord/wiki/Interactions#registering)

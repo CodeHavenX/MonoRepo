@@ -116,6 +116,6 @@ abstract class BaseFragment : Fragment() {
     @CallSuper
     @Suppress("UndocumentedPublicProperty")
     protected open fun onViewModelEvent(event: BaseEvent) {
-        logD(logTag, "Event: $event")
+        logD(logTag, "Event: %S", event)
     }
 }

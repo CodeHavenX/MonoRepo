@@ -59,7 +59,9 @@ class GoogleTranslateInteractionModule(
             )
             supportedLanguages.forEach {
                 val language = it.key
-                val name = it.value[Locale.ENGLISH_GREAT_BRITAIN] ?: it.value[Locale.ENGLISH_UNITED_STATES] ?: language.code
+                val name = it.value[Locale.ENGLISH_GREAT_BRITAIN]
+                    ?: it.value[Locale.ENGLISH_UNITED_STATES]
+                    ?: language.code
                 choice(name, language.code, Optional.invoke(it.value))
             }
         }
@@ -76,7 +78,9 @@ class GoogleTranslateInteractionModule(
             )
             supportedLanguages.forEach {
                 val language = it.key
-                val name = it.value[Locale.ENGLISH_GREAT_BRITAIN] ?: it.value[Locale.ENGLISH_UNITED_STATES] ?: language.code
+                val name = it.value[Locale.ENGLISH_GREAT_BRITAIN]
+                    ?: it.value[Locale.ENGLISH_UNITED_STATES]
+                    ?: language.code
                 choice(name, language.code, Optional.invoke(it.value))
             }
         }

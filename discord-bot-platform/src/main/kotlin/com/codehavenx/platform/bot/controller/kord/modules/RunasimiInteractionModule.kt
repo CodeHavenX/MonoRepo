@@ -147,8 +147,10 @@ class RunasimiInteractionModule(
         const val ERROR_MESSAGE_TOO_LONG_DESC_EN = "Message is too long."
         const val ERROR_MESSAGE_TOO_LONG_DESC_ES = "El mensaje es demasiado largo."
 
-        const val ERROR_MESSAGE_UNEXPECTED_ERROR_DESC_EN = "There was an unexpected error. Please try again later with a different message or a shorter message."
-        const val ERROR_MESSAGE_UNEXPECTED_ERROR_DESC_ES = "Ocucrrió un error inesperado. Por favor intenta de nuevo más tarde con un mensaje diferente o un mensage más corto."
+        const val ERROR_MESSAGE_UNEXPECTED_ERROR_DESC_EN = "There was an unexpected error. Please try again later " +
+            "with a different message or a shorter message."
+        const val ERROR_MESSAGE_UNEXPECTED_ERROR_DESC_ES = "Ocucrrió un error inesperado. Por favor intenta de nuevo " +
+            "más tarde con un mensaje diferente o un mensage más corto."
 
         private val SUPPORTED_VARIANTS = listOf(
             Variant("quy", "Ayacucho"),

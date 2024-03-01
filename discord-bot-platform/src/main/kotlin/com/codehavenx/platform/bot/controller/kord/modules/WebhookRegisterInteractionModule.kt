@@ -33,7 +33,6 @@ class WebhookRegisterInteractionModule(
                 choice(it.name, it.name)
             }
         }
-
     }
 
     @Suppress("SwallowedException")

@@ -1,6 +1,8 @@
 package com.codehavenx.platform.bot.controller.kord.modules
 
 import com.codehavenx.platform.bot.controller.kord.InteractionModule
+import com.codehavenx.platform.bot.controller.kord.LocalizedArgument
+import com.codehavenx.platform.bot.controller.kord.LocalizedString
 import com.codehavenx.platform.bot.service.runasimi.RunasimiService
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logE
@@ -20,40 +22,25 @@ class RunasimiInteractionModule(
     private val runasimiService: RunasimiService
 ) : InteractionModule {
 
-    override val command = COMMAND
+    override val command = "rimanki"
 
-    override val description = DESCRIPTION_EN
+    override val description = localizedDescription.default
 
     override val commandLocalizations = mapOf<Locale, String>()
 
-    override val descriptionLocalizations = mapOf(
-        Locale.SPANISH_SPAIN to DESCRIPTION_ES,
-        Locale.SPANISH_LATIN_AMERICA to DESCRIPTION_ES,
-    )
+    override val descriptionLocalizations = localizedDescription.map
 
     override suspend fun onGlobalChatInputRegister(): GlobalChatInputCreateBuilder.() -> Unit = {
-        string(ARG_1_EN, ARG_1_DESC_EN) {
+        string(argumentMessage.name, argumentMessage.description) {
             required = true
-            nameLocalizations = mutableMapOf(
-                Locale.SPANISH_SPAIN to ARG_1_ES,
-                Locale.SPANISH_LATIN_AMERICA to ARG_1_ES,
-            )
-            descriptionLocalizations = mutableMapOf(
-                Locale.SPANISH_SPAIN to ARG_1_DESC_ES,
-                Locale.SPANISH_LATIN_AMERICA to ARG_1_DESC_ES,
-            )
+            nameLocalizations = argumentMessage.localizedName
+            descriptionLocalizations = argumentMessage.localizedDescription
         }
 
-        string(ARG_2_EN, ARG_2_DESC_EN) {
+        string(argumentVariant.name, argumentVariant.description) {
             required = false
-            nameLocalizations = mutableMapOf(
-                Locale.SPANISH_SPAIN to ARG_2_ES,
-                Locale.SPANISH_LATIN_AMERICA to ARG_2_ES,
-            )
-            descriptionLocalizations = mutableMapOf(
-                Locale.SPANISH_SPAIN to ARG_2_DESC_ES,
-                Locale.SPANISH_LATIN_AMERICA to ARG_2_DESC_ES,
-            )
+            nameLocalizations = argumentVariant.localizedName
+            descriptionLocalizations = argumentVariant.localizedDescription
             SUPPORTED_VARIANTS.forEach {
                 choice(it.name, it.code)
             }
@@ -67,21 +54,14 @@ class RunasimiInteractionModule(
         logD(TAG, "Received event data: %S", interaction)
 
         val command = interaction.command
-        val message = command.strings.getValue(ARG_1_EN)
+        val message = command.strings.getValue(argumentMessage.name)
 
         return try {
-            val variant = command.strings.getOrDefault(ARG_2_EN, null) ?: "quy"
+            val variant = command.strings.getOrDefault(argumentVariant.name, null) ?: "quy"
 
             if (message.length > CHAR_SIZE_LIMIT) {
                 return {
-                    content = when (interaction.locale) {
-                        Locale.SPANISH_SPAIN, Locale.SPANISH_LATIN_AMERICA -> {
-                            ERROR_MESSAGE_TOO_LONG_DESC_ES
-                        }
-                        else -> {
-                            ERROR_MESSAGE_TOO_LONG_DESC_EN
-                        }
-                    }
+                    content = ERROR_MESSAGE_TOO_LONG_DESC.toLanguage(interaction.locale)
                 }
             }
 
@@ -100,14 +80,7 @@ class RunasimiInteractionModule(
                         }
                     )
                 } else {
-                    content = when (interaction.locale) {
-                        Locale.SPANISH_SPAIN, Locale.SPANISH_LATIN_AMERICA -> {
-                            ERROR_MESSAGE_UNEXPECTED_ERROR_DESC_ES
-                        }
-                        else -> {
-                            ERROR_MESSAGE_UNEXPECTED_ERROR_DESC_EN
-                        }
-                    }
+                    content = ERROR_MESSAGE_UNEXPECTED_ERROR_DESC.toLanguage(interaction.locale)
                 }
             }
             builder
@@ -130,27 +103,44 @@ class RunasimiInteractionModule(
         private const val TAG = "RunasimiInteractionModule"
         private const val CHAR_SIZE_LIMIT = 50
 
-        const val COMMAND = "rimanki"
-        const val DESCRIPTION_EN = "Generate TTS audio from a text in Quechua"
-        const val DESCRIPTION_ES = "Genera audio TTS a partir de un texto en Quechua"
+        private val localizedDescription = LocalizedString(
+            default = "Generate TTS audio from a text in Quechua",
+            spanish = "Genera audio TTS a partir de un texto en Quechua",
+        )
 
-        const val ARG_1_EN = "message"
-        const val ARG_1_ES = "mensaje"
-        const val ARG_1_DESC_EN = "Max $CHAR_SIZE_LIMIT characters"
-        const val ARG_1_DESC_ES = "Maximo $CHAR_SIZE_LIMIT caracteres"
+        private val argumentMessage = LocalizedArgument(
+            localizedName = LocalizedString(
+                default = "message",
+                spanish = "mensaje",
+            ),
+            localizedDescription = LocalizedString(
+                default = "Max $CHAR_SIZE_LIMIT characters",
+                spanish = "Maximo $CHAR_SIZE_LIMIT caracteres",
+            ),
+        )
 
-        const val ARG_2_EN = "variant"
-        const val ARG_2_ES = "variante"
-        const val ARG_2_DESC_EN = "The variant of Quechua to use"
-        const val ARG_2_DESC_ES = "La variante Quechua a utilizar"
+        private val argumentVariant = LocalizedArgument(
+            localizedName = LocalizedString(
+                default = "variant",
+                spanish = "variante",
+            ),
+            localizedDescription = LocalizedString(
+                default = "The variant of Quechua to use",
+                spanish = "La variante Quechua a utilizar",
+            ),
+        )
 
-        const val ERROR_MESSAGE_TOO_LONG_DESC_EN = "Message is too long."
-        const val ERROR_MESSAGE_TOO_LONG_DESC_ES = "El mensaje es demasiado largo."
+        private val ERROR_MESSAGE_TOO_LONG_DESC = LocalizedString(
+            default = "Message is too long.",
+            spanish = "El mensaje es demasiado largo.",
+        )
 
-        const val ERROR_MESSAGE_UNEXPECTED_ERROR_DESC_EN = "There was an unexpected error. Please try again later " +
-            "with a different message or a shorter message."
-        const val ERROR_MESSAGE_UNEXPECTED_ERROR_DESC_ES = "Ocucrrió un error inesperado. Por favor intenta de nuevo " +
-            "más tarde con un mensaje diferente o un mensage más corto."
+        private val ERROR_MESSAGE_UNEXPECTED_ERROR_DESC = LocalizedString(
+            default = "There was an unexpected error. Please try again later " +
+                "with a different message or a shorter message.",
+            spanish = "Ocucrrió un error inesperado. Por favor intenta de nuevo " +
+                "más tarde con un mensaje diferente o un mensage más corto."
+        )
 
         private val SUPPORTED_VARIANTS = listOf(
             Variant("quy", "Ayacucho"),
@@ -171,7 +161,7 @@ class RunasimiInteractionModule(
             Variant("quh", "Sur de Bolivian"),
             Variant("qxo", "Conchucos, Sur"),
         )
-    }
 
-    class Variant(val code: String, val name: String)
+        private class Variant(val code: String, val name: String)
+    }
 }

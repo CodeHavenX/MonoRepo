@@ -1,6 +1,8 @@
 package com.codehavenx.platform.bot.controller.kord.modules
 
 import com.codehavenx.platform.bot.controller.kord.InteractionModule
+import com.codehavenx.platform.bot.controller.kord.LocalizedArgument
+import com.codehavenx.platform.bot.controller.kord.LocalizedString
 import com.codehavenx.platform.bot.service.google.GoogleTranslateService
 import com.codehavenx.platform.bot.service.google.Language
 import com.cramsan.framework.logging.logD
@@ -20,68 +22,46 @@ class GoogleTranslateInteractionModule(
     private val googleTranslateService: GoogleTranslateService,
 ) : InteractionModule {
 
-    override val command = COMMAND_EN
+    override val command = localizedCommand.default
 
-    override val description = DESCRIPTION_EN
+    override val description = localizedDescription.default
 
-    override val commandLocalizations = mapOf(
-        Locale.SPANISH_SPAIN to COMMAND_ES,
-        Locale.SPANISH_LATIN_AMERICA to COMMAND_ES,
-    )
+    override val commandLocalizations = localizedCommand.map
 
-    override val descriptionLocalizations = mapOf(
-        Locale.SPANISH_SPAIN to DESCRIPTION_ES,
-        Locale.SPANISH_LATIN_AMERICA to DESCRIPTION_ES,
-    )
+    override val descriptionLocalizations = localizedDescription.map
 
     override suspend fun onGlobalChatInputRegister(): GlobalChatInputCreateBuilder.() -> Unit = {
-        string(ARG_1_EN, ARG_1_DESC_EN) {
+        string(argumentMessage.name, argumentMessage.description) {
             required = true
-            nameLocalizations = mutableMapOf(
-                Locale.SPANISH_SPAIN to ARG_1_ES,
-                Locale.SPANISH_LATIN_AMERICA to ARG_1_ES,
-            )
-            descriptionLocalizations = mutableMapOf(
-                Locale.SPANISH_SPAIN to ARG_1_DESC_ES,
-                Locale.SPANISH_LATIN_AMERICA to ARG_1_DESC_ES,
-            )
+            nameLocalizations = argumentMessage.localizedName
+            descriptionLocalizations = argumentMessage.localizedDescription
         }
 
-        string(ARG_2_EN, ARG_2_DESC_EN) {
+        string(argumentFrom.name, argumentFrom.description) {
             required = true
-            nameLocalizations = mutableMapOf(
-                Locale.SPANISH_SPAIN to ARG_2_ES,
-                Locale.SPANISH_LATIN_AMERICA to ARG_2_ES,
-            )
-            descriptionLocalizations = mutableMapOf(
-                Locale.SPANISH_SPAIN to ARG_2_DESC_ES,
-                Locale.SPANISH_LATIN_AMERICA to ARG_2_DESC_ES,
-            )
+            nameLocalizations = argumentFrom.localizedName
+            descriptionLocalizations = argumentFrom.localizedDescription
             supportedLanguages.forEach {
                 val language = it.key
-                val name = it.value[Locale.ENGLISH_GREAT_BRITAIN]
-                    ?: it.value[Locale.ENGLISH_UNITED_STATES]
+                val localizedString = it.value
+                val name = localizedString.map[Locale.ENGLISH_GREAT_BRITAIN]
+                    ?: localizedString.map[Locale.ENGLISH_UNITED_STATES]
                     ?: language.code
-                choice(name, language.code, Optional.invoke(it.value))
+                choice(name, language.code, Optional.invoke(localizedString.map))
             }
         }
 
-        string(ARG_3_EN, ARG_3_DESC_EN) {
+        string(argumentTo.name, argumentTo.description) {
             required = true
-            nameLocalizations = mutableMapOf(
-                Locale.SPANISH_SPAIN to ARG_3_ES,
-                Locale.SPANISH_LATIN_AMERICA to ARG_3_ES,
-            )
-            descriptionLocalizations = mutableMapOf(
-                Locale.SPANISH_SPAIN to ARG_3_DESC_ES,
-                Locale.SPANISH_LATIN_AMERICA to ARG_3_DESC_ES,
-            )
+            nameLocalizations = argumentTo.localizedName
+            descriptionLocalizations = argumentTo.localizedDescription
             supportedLanguages.forEach {
                 val language = it.key
-                val name = it.value[Locale.ENGLISH_GREAT_BRITAIN]
-                    ?: it.value[Locale.ENGLISH_UNITED_STATES]
+                val localizedString = it.value
+                val name = localizedString.map[Locale.ENGLISH_GREAT_BRITAIN]
+                    ?: localizedString.map[Locale.ENGLISH_UNITED_STATES]
                     ?: language.code
-                choice(name, language.code, Optional.invoke(it.value))
+                choice(name, language.code, Optional.invoke(localizedString.map))
             }
         }
     }
@@ -93,14 +73,14 @@ class GoogleTranslateInteractionModule(
         logD(TAG, "Received event data: %S", interaction)
 
         val command = interaction.command
-        val message = command.strings.getValue(ARG_1_EN)
+        val message = command.strings.getValue(argumentMessage.name)
 
         return try {
             val originLang = Language.fromCode(
-                command.strings.getValue(ARG_2_EN)
+                command.strings.getValue(argumentFrom.name)
             ) ?: throw IllegalArgumentException("Invalid origin language")
             val resultLang = Language.fromCode(
-                command.strings.getValue(ARG_3_EN)
+                command.strings.getValue(argumentTo.name)
             ) ?: throw IllegalArgumentException("Invalid result language")
 
             val result = googleTranslateService.translate(message, originLang, resultLang)
@@ -123,53 +103,61 @@ class GoogleTranslateInteractionModule(
     companion object {
         private const val TAG = "GoogleTranslateInteractionModule"
 
-        const val COMMAND_EN = "translate"
-        const val COMMAND_ES = "traducir"
-        const val DESCRIPTION_EN = "Translate a message from one language to another"
-        const val DESCRIPTION_ES = "Traduce un mensaje de un idioma a otro"
+        private val localizedCommand = LocalizedString(
+            default = "translate",
+            spanish = "traducir",
+        )
 
-        const val ARG_1_EN = "message"
-        const val ARG_1_ES = "mensaje"
-        const val ARG_1_DESC_EN = "Max 120 characters"
-        const val ARG_1_DESC_ES = "Maximo 120 caracteres"
+        private val localizedDescription = LocalizedString(
+            default = "Translate a message from one language to another",
+            spanish = "Traduce un mensaje de un idioma a otro",
+        )
 
-        const val ARG_2_EN = "from"
-        const val ARG_2_ES = "del"
-        const val ARG_2_DESC_EN = "Message language"
-        const val ARG_2_DESC_ES = "Lenguaje del mensaje"
+        private val argumentMessage = LocalizedArgument(
+            localizedName = LocalizedString(
+                default = "message",
+                spanish = "mensaje",
+            ),
+            localizedDescription = LocalizedString(
+                default = "Max 120 characters",
+                spanish = "Maximo 120 caracteres",
+            ),
+        )
 
-        const val ARG_3_EN = "to"
-        const val ARG_3_ES = "al"
-        const val ARG_3_DESC_EN = "Output language"
-        const val ARG_3_DESC_ES = "Lenguaje del cual traducir"
+        private val argumentFrom = LocalizedArgument(
+            localizedName = LocalizedString(
+                default = "from",
+                spanish = "del",
+            ),
+            localizedDescription = LocalizedString(
+                default = "Message language",
+                spanish = "Lenguaje del mensaje",
+            ),
+        )
 
-        const val LANG_ES_ES = "Español"
-        const val LANG_ES_EN = "Spanish"
-
-        const val LANG_EN_ES = "Ingles"
-        const val LANG_EN_EN = "English"
-
-        const val LANG_QU = "Quechua"
+        private val argumentTo = LocalizedArgument(
+            localizedName = LocalizedString(
+                default = "to",
+                spanish = "al",
+            ),
+            localizedDescription = LocalizedString(
+                default = "Output language",
+                spanish = "Lenguaje al cual traducir",
+            ),
+        )
 
         private val supportedLanguages = mapOf(
-            Language.ENGLISH to mapOf(
-                Locale.ENGLISH_GREAT_BRITAIN to LANG_EN_EN,
-                Locale.ENGLISH_UNITED_STATES to LANG_EN_EN,
-                Locale.SPANISH_SPAIN to LANG_EN_ES,
-                Locale.SPANISH_LATIN_AMERICA to LANG_EN_ES,
+            Language.ENGLISH to LocalizedString(
+                "English",
+                "Ingles",
             ),
-            Language.SPANISH to mapOf(
-                Locale.ENGLISH_GREAT_BRITAIN to LANG_ES_EN,
-                Locale.ENGLISH_UNITED_STATES to LANG_ES_EN,
-                Locale.SPANISH_SPAIN to LANG_ES_ES,
-                Locale.SPANISH_LATIN_AMERICA to LANG_ES_ES,
+            Language.SPANISH to LocalizedString(
+                "Spanish",
+                "Español",
             ),
-            Language.QUECHUA to mapOf(
-                Locale.ENGLISH_GREAT_BRITAIN to LANG_QU,
-                Locale.ENGLISH_UNITED_STATES to LANG_QU,
-                Locale.SPANISH_SPAIN to LANG_QU,
-                Locale.SPANISH_LATIN_AMERICA to LANG_QU,
-
+            Language.QUECHUA to LocalizedString(
+                "Quechua",
+                "Quechua",
             ),
         )
     }

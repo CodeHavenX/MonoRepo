@@ -13,6 +13,8 @@ import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.ImageBitmap
 import com.cramsan.minesweepers.common.game.Status
 import com.cramsan.minesweepers.common.ui.theme.Dimensions
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.imageResource
 
 @Composable
 internal fun ResetButton(
@@ -41,11 +43,13 @@ internal fun ResetButton(
     )
 }
 
+@Composable
+@OptIn(ExperimentalResourceApi::class)
 private fun FaceButtonState.toImageBitmap(): ImageBitmap = when (this) {
-    FaceButtonState.NORMAL -> Assets.buttonNormal()
-    FaceButtonState.DEAD -> Assets.buttonDead()
-    FaceButtonState.PRESSED -> Assets.buttonPressed()
-    FaceButtonState.WON -> Assets.buttonWon()
+    FaceButtonState.NORMAL -> imageResource(Assets.buttonNormal())
+    FaceButtonState.DEAD -> imageResource(Assets.buttonDead())
+    FaceButtonState.PRESSED -> imageResource(Assets.buttonPressed())
+    FaceButtonState.WON -> imageResource(Assets.buttonWon())
 }
 
 private fun Status.toFaceButtonState() = when (this) {

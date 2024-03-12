@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalResourceApi::class)
+
 package com.cramsan.minesweepers.common.ui
 
 import androidx.compose.foundation.Image
@@ -10,13 +12,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.FilterQuality
 import com.cramsan.minesweepers.common.ui.theme.Dimensions
 import com.cramsan.minesweepers.common.ui.theme.Padding
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.imageResource
 
 @Composable
 internal fun ArrowDownRow(modifier: Modifier) {
     Row(modifier = modifier) {
         repeat(3) {
             Image(
-                Assets.arrowDown(),
+                imageResource(Assets.arrowDown()),
                 contentDescription = "",
                 filterQuality = FilterQuality.None,
                 modifier = Modifier
@@ -35,7 +39,7 @@ internal fun ArrowUpRow(modifier: Modifier) {
     Row(modifier = modifier) {
         repeat(3) {
             Image(
-                Assets.arrowUp(),
+                imageResource(Assets.arrowUp()),
                 contentDescription = "",
                 filterQuality = FilterQuality.None,
                 modifier = Modifier
@@ -54,7 +58,7 @@ internal fun ArrowLeftColumn(modifier: Modifier) {
     Column(modifier = modifier) {
         repeat(3) {
             Image(
-                Assets.arrowLeft(),
+                imageResource(Assets.arrowLeft()),
                 contentDescription = "",
                 filterQuality = FilterQuality.None,
                 modifier = Modifier
@@ -73,7 +77,7 @@ internal fun ArrowRightColumn(modifier: Modifier) {
     Column(modifier = modifier) {
         repeat(3) {
             Image(
-                Assets.arrowRight(),
+                imageResource(Assets.arrowRight()),
                 contentDescription = "",
                 filterQuality = FilterQuality.None,
                 modifier = Modifier

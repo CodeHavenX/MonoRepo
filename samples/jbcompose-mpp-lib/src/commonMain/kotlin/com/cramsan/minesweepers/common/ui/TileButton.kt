@@ -3,10 +3,13 @@ package com.cramsan.minesweepers.common.ui
 import androidx.compose.runtime.Composable
 import com.cramsan.minesweepers.common.game.Tile
 import com.cramsan.minesweepers.common.game.TileCoverMode
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.imageResource
 
 /**
  *
  */
+@OptIn(ExperimentalResourceApi::class)
 @Suppress("CyclomaticComplexMethod")
 @Composable
 internal fun TileButton(
@@ -40,7 +43,7 @@ internal fun TileButton(
     }
 
     TileButtonDrawable(
-        imageBitmap,
+        imageResource(imageBitmap),
         { onTileSelected(column, row) },
     ) { onTileSelectedSecondary(column, row) }
 }

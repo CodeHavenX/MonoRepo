@@ -17,6 +17,10 @@ plugins {
     id("io.gitlab.arturbosch.detekt") apply false
 }
 
+/**
+ * Production task settings for all projects. These must pass to consider
+ * all projects are running correctly.
+ */
 tasks.register("releaseAll") {
     group = "release"
     description = "Builds all target"
@@ -53,7 +57,7 @@ tasks.register("releaseAll") {
     dependsOn("cdk-repo:release")
 
     dependsOn("discord-bot-platform:release")
-    //dependsOn("reservation-system:release")
+    dependsOn("alpaca-scheduler:release")
 
     dependsOn("runasimi:android-app:release")
     dependsOn("runasimi:mpp-lib:release")

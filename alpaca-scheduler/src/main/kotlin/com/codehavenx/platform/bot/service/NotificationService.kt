@@ -23,14 +23,17 @@ class NotificationService(
 
     private fun handleMessage(message: Message) {
         logI(TAG, "Message received: $message")
-        //val sendNotification = message as? Message.SendNotification ?: return
+        // val sendNotification = message as? Message.SendNotification ?: return
     }
 
     suspend fun sendNotification(userId: UserId, notificationMessage: NotificationMessage) {
-        internalMessagingService.publish(Topic.NOTIFICATION, Message.SendNotification(
-            userId,
-            notificationMessage,
-        ))
+        internalMessagingService.publish(
+            Topic.NOTIFICATION,
+            Message.SendNotification(
+                userId,
+                notificationMessage,
+            )
+        )
     }
 
     companion object {

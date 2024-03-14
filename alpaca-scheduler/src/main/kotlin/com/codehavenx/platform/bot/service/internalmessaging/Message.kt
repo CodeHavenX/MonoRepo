@@ -9,5 +9,4 @@ sealed class Message {
         val userId: UserId,
         val message: NotificationMessage,
     ) : Message()
-
 }

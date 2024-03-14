@@ -1,7 +1,5 @@
 package com.codehavenx.platform.bot
 
-import com.codehavenx.platform.bot.controller.kord.DiscordController
-import com.codehavenx.platform.bot.controller.webhook.WebhookController
 import com.codehavenx.platform.bot.di.ApplicationModule
 import com.codehavenx.platform.bot.di.FrameworkModule
 import com.codehavenx.platform.bot.di.createKtorModule
@@ -11,8 +9,6 @@ import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.plugins.callloging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.server.routing.route
-import io.ktor.server.routing.routing
 import io.ktor.server.websocket.WebSockets
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
@@ -28,12 +24,6 @@ fun Application.module() = runBlocking {
 
 fun Application.startServer() = runBlocking {
     configureKtorEngine()
-
-    val webhookController: WebhookController by inject()
-    val discordController: DiscordController by inject()
-
-    configureEntryPoints(webhookController, discordController)
-
     startApplication()
 }
 
@@ -47,22 +37,6 @@ fun Application.configureKtorEngine() {
     install(WebSockets)
     install(ContentNegotiation) {
         json(json)
-    }
-}
-
-/**
- * Configures all the system entry points. This includes REST routes and Discord intents.
- */
-suspend fun Application.configureEntryPoints(
-    webhookController: WebhookController,
-    discordController: DiscordController,
-) {
-    discordController.start()
-
-    routing {
-        route("webhook") {
-            webhookController.registerRoutes(this@route)
-        }
     }
 }
 

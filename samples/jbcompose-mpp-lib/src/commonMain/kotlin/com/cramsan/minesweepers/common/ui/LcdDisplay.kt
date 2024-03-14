@@ -7,6 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.FilterQuality
 import com.cramsan.minesweepers.common.ui.theme.Dimensions
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.imageResource
 
 @Composable
 internal fun MinesRemainingDisplay(
@@ -22,6 +24,7 @@ internal fun TimePlayed(
     LcdDisplay(3, time)
 }
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 private fun LcdDisplay(
     digits: Int,
@@ -44,7 +47,7 @@ private fun LcdDisplay(
                 else -> Assets.lcdNumberNone()
             }
             Image(
-                imageBitmap,
+                imageResource(imageBitmap),
                 contentDescription = digit.toString(),
                 filterQuality = FilterQuality.None,
                 modifier = Modifier.size(Dimensions.LCD_WIDTH, Dimensions.LCD_HEIGHT),

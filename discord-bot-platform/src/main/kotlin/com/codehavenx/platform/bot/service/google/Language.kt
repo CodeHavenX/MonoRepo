@@ -1,5 +1,8 @@
 package com.codehavenx.platform.bot.service.google
 
+/**
+ * Enum to represent the supported languages by the Google Translate API.
+ */
 enum class Language(val code: String) {
     AFRIKAANS("af"),
     ALBANIAN("sq"),
@@ -134,4 +137,16 @@ enum class Language(val code: String) {
     YIDDISH("yi"),
     YORUBA("yo"),
     ZULU("zu"),
+    ;
+
+    companion object {
+        private val languageMap = entries.associateBy { it.code }
+
+        /**
+         * Returns the language from the given code.
+         */
+        fun fromCode(code: String): Language? {
+            return languageMap[code]
+        }
+    }
 }

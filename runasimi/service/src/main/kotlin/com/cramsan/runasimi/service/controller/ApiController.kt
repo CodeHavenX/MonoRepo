@@ -127,6 +127,7 @@ class ApiController(
     private suspend fun processPayload(message: String, lang: String, call: ApplicationCall): ByteArray? {
         if (message.length > CHAR_SIZE_LIMIT) {
             call.respond(HttpStatusCode.BadRequest, "Message length limit is $CHAR_SIZE_LIMIT")
+            return null
         }
 
         return textToSpeechService.generateSpeech(message, lang)

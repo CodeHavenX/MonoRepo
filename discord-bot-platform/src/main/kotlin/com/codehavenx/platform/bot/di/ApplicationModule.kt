@@ -4,16 +4,19 @@ import com.codehavenx.platform.bot.config.createJson
 import com.codehavenx.platform.bot.controller.kord.DiscordController
 import com.codehavenx.platform.bot.controller.kord.InteractionModule
 import com.codehavenx.platform.bot.controller.kord.modules.GoogleTranslateInteractionModule
+import com.codehavenx.platform.bot.controller.kord.modules.RunasimiInteractionModule
 import com.codehavenx.platform.bot.controller.kord.modules.WebhookRegisterInteractionModule
 import com.codehavenx.platform.bot.controller.webhook.WebhookController
 import com.codehavenx.platform.bot.controller.webhook.WebhookEntryPoint
 import com.codehavenx.platform.bot.controller.webhook.entrypoint.GithubCommitPushEntryPoint
 import com.codehavenx.platform.bot.service.github.GithubWebhookService
 import com.codehavenx.platform.bot.service.google.GoogleTranslateService
+import com.codehavenx.platform.bot.service.runasimi.RunasimiService
 import com.cramsan.framework.core.ktor.service.DiscordService
 import com.google.cloud.translate.Translate
 import com.google.cloud.translate.TranslateOptions
 import dev.kord.core.Kord
+import io.ktor.client.HttpClient
 import io.ktor.server.config.ApplicationConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
@@ -31,6 +34,12 @@ val ApplicationModule = module(createdAtStart = true) {
         val config: ApplicationConfig = get()
 
         config.propertyOrNull("kord.access_token")?.getString() ?: ""
+    }
+
+    single(named(RUNASIMI_ENDPOINT_URL)) {
+        val config: ApplicationConfig = get()
+
+        config.propertyOrNull("runasimi.endpoint")?.getString() ?: ""
     }
 
     single {
@@ -77,7 +86,12 @@ val ApplicationModule = module(createdAtStart = true) {
         listOf(
             get<WebhookRegisterInteractionModule>(),
             get<GoogleTranslateInteractionModule>(),
+            get<RunasimiInteractionModule>(),
         )
+    }
+
+    single<RunasimiInteractionModule> {
+        RunasimiInteractionModule(get())
     }
 
     single<Json> {
@@ -92,11 +106,23 @@ val ApplicationModule = module(createdAtStart = true) {
         GoogleTranslateService(get())
     }
 
+    single {
+        RunasimiService(
+            get(),
+            get(named(RUNASIMI_ENDPOINT_URL)),
+        )
+    }
+
+    single {
+        HttpClient {}
+    }
+
     single<Translate> {
-        TranslateOptions.getDefaultInstance().getService()
+        TranslateOptions.getDefaultInstance().service
     }
 }
 
 private const val DISCORD_BOT_TOKEN = "DISCORD_BOT_TOKEN"
+private const val RUNASIMI_ENDPOINT_URL = "https://runasimi.cramsan.com/"
 private const val LIST_WH_ENTRY_POINTS = "LIST_WH_ENTRY_POINTS"
 private const val LIST_KORD_INTERACTION_MODULES = "LIST_KORD_INTERACTION_MODULES"

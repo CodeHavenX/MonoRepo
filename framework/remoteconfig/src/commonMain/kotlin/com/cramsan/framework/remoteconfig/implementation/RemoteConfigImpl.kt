@@ -48,7 +48,7 @@ class RemoteConfigImpl<T>(
         return try {
             val response: HttpResponse = http.get(remoteConfigEndpoint)
             val body = response.bodyAsText()
-            eventLogger.d(TAG, "Remote config payload: $body")
+            eventLogger.d(TAG, "Remote config payload: %S", body)
             downloadedConfigPayload = json.decodeFromString(deserializer, body)
             eventLogger.i(TAG, "Config payload was downloaded successfully")
             isConfigPayloadReady()

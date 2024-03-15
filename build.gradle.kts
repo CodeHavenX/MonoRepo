@@ -1,6 +1,3 @@
-import de.fayard.refreshVersions.core.versionFor
-import org.jetbrains.compose.ComposeExtension
-
 plugins {
     id("com.android.application") apply false
     id("com.android.library") apply false

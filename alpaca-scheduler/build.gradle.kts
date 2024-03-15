@@ -5,6 +5,7 @@ plugins {
 
 val mainClassTarget by extra("io.ktor.server.netty.EngineMain")
 
+// Configures default settings for JVM project
 apply(from = "$rootDir/gradle/kotlin-jvm-application.gradle")
 
 dependencies {
@@ -32,4 +33,13 @@ dependencies {
     testImplementation("io.ktor:ktor-server-tests-jvm:_")
     testImplementation("io.ktor:ktor-server-test-host:_")
     testImplementation(project(":framework:test"))
+}
+
+// Configures the distribution archives, excluding duplicate files
+val distTar by tasks.getting(Tar::class) {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+val distZip by tasks.getting(Zip::class) {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }

@@ -11,7 +11,11 @@ class ReservationService(
     private val notificationService: NotificationService,
 ) {
 
-    suspend fun getAvailableTimeSlots(appointmentType: AppointmentType, period: DateTimePeriod, staff: UserId?): List<TimeSlot> {
+    suspend fun getAvailableTimeSlots(
+        appointmentType: AppointmentType,
+        period: DateTimePeriod,
+        staff: UserId?
+    ): List<TimeSlot> {
         val configuration = configurationService.getAppointmentConfiguration(appointmentType)
 
         return calendarService.getAvailableTimeSlots(

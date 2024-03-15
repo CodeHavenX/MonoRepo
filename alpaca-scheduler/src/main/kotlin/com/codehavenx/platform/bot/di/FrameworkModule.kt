@@ -1,6 +1,5 @@
 package com.codehavenx.platform.bot.di
 
-import com.codehavenx.platform.bot.service.DiscordErrorCallbackDelegateService
 import com.cramsan.framework.assertlib.AssertUtil
 import com.cramsan.framework.assertlib.AssertUtilInterface
 import com.cramsan.framework.assertlib.implementation.AssertUtilImpl
@@ -13,7 +12,6 @@ import com.cramsan.framework.halt.implementation.HaltUtilJVM
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.EventLoggerDelegate
 import com.cramsan.framework.logging.EventLoggerErrorCallback
-import com.cramsan.framework.logging.EventLoggerErrorCallbackDelegate
 import com.cramsan.framework.logging.EventLoggerInterface
 import com.cramsan.framework.logging.Severity
 import com.cramsan.framework.logging.implementation.EventLoggerErrorCallbackImpl
@@ -48,14 +46,6 @@ val FrameworkModule = module(createdAtStart = true) {
         val config: ApplicationConfig = get()
 
         config.propertyOrNull("kord.error_log_channel_id")?.getString() ?: ""
-    }
-
-    single<EventLoggerErrorCallbackDelegate> {
-        DiscordErrorCallbackDelegateService(
-            get(),
-            get(named(DISCORD_ERROR_LOG_CHANNEL_ID_NAME)),
-            get(),
-        )
     }
 
     single<EventLoggerErrorCallback> {

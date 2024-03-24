@@ -13,13 +13,13 @@ dependencies {
     implementation(project(":framework:logging"))
     implementation(project(":framework:assert"))
     implementation(project(":framework:core"))
+    implementation(project(":framework:core-ktor"))
     implementation(project(":framework:halt"))
     implementation(project(":framework:preferences"))
     implementation(project(":framework:thread"))
 
     implementation("io.ktor:ktor-server-core-jvm:_")
     implementation("io.ktor:ktor-server-netty-jvm:_")
-    implementation("io.ktor:ktor-server-websockets:_")
     implementation("io.ktor:ktor-server-content-negotiation:_")
     implementation("io.ktor:ktor-serialization-kotlinx-json:_")
     implementation("dev.kord:kord-core:_")
@@ -28,7 +28,7 @@ dependencies {
     implementation("io.ktor:ktor-server-call-logging:_")
     implementation("org.apache.logging.log4j:log4j-core:_")
     implementation("org.apache.logging.log4j:log4j-slf4j-impl:_")
-    implementation("com.google.cloud:google-cloud-translate:_")
+    implementation("org.mongodb:mongodb-driver-kotlin-coroutine:4.11.0")
 
     testImplementation("io.ktor:ktor-server-tests-jvm:_")
     testImplementation("io.ktor:ktor-server-test-host:_")

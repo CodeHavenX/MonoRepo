@@ -1,27 +1,31 @@
 package com.codehavenx.platform.bot.service
 
-import com.codehavenx.platform.bot.domain.models.AppointmentType
+import com.codehavenx.platform.bot.domain.models.StaffId
 import com.codehavenx.platform.bot.domain.models.TimeSlot
-import com.codehavenx.platform.bot.domain.models.UserId
-import kotlinx.datetime.DateTimePeriod
+import com.cramsan.framework.logging.logI
+import kotlinx.datetime.LocalDateTime
 
 class ReservationService(
     private val configurationService: ConfigurationService,
     private val calendarService: CalendarService,
-    private val notificationService: NotificationService,
 ) {
 
-    suspend fun getAvailableTimeSlots(
-        appointmentType: AppointmentType,
-        period: DateTimePeriod,
-        staff: UserId?
-    ): List<TimeSlot> {
-        val configuration = configurationService.getAppointmentConfiguration(appointmentType)
+    suspend fun getAvailableTimes(
+        configurationId: String,
+        startDateTime: LocalDateTime,
+        endDatetime: LocalDateTime,
+        staffId: StaffId
+    ): Map<LocalDateTime, List<TimeSlot>> {
+        logI(TAG, "getAvailableTimes called")
+
+        val configuration = configurationService.getAppointmentConfiguration(configurationId) ?: TODO()
 
         return calendarService.getAvailableTimeSlots(
-            period,
+            startDateTime,
+            endDatetime,
+            configuration.timeZone,
             configuration.duration,
-            staff,
+            listOf(staffId),
         )
     }
 

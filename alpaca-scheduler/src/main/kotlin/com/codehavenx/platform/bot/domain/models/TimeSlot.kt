@@ -1,8 +1,9 @@
 package com.codehavenx.platform.bot.domain.models
 
-import kotlinx.datetime.DateTimePeriod
+import kotlinx.datetime.LocalDateTime
 
 data class TimeSlot(
-    val staff: UserId,
-    val period: DateTimePeriod,
+    val staff: StaffId,
+    val startTime: LocalDateTime,
+    val endTime: LocalDateTime,
 )

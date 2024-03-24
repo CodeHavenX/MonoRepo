@@ -12,6 +12,7 @@ import com.cramsan.framework.halt.implementation.HaltUtilJVM
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.EventLoggerDelegate
 import com.cramsan.framework.logging.EventLoggerErrorCallback
+import com.cramsan.framework.logging.EventLoggerErrorCallbackDelegate
 import com.cramsan.framework.logging.EventLoggerInterface
 import com.cramsan.framework.logging.Severity
 import com.cramsan.framework.logging.implementation.EventLoggerErrorCallbackImpl
@@ -26,7 +27,6 @@ import com.cramsan.framework.thread.ThreadUtilDelegate
 import com.cramsan.framework.thread.ThreadUtilInterface
 import com.cramsan.framework.thread.implementation.ThreadUtilImpl
 import com.cramsan.framework.thread.implementation.ThreadUtilJVM
-import io.ktor.server.config.ApplicationConfig
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -42,16 +42,17 @@ val FrameworkModule = module(createdAtStart = true) {
 
     single<EventLoggerDelegate> { LoggerJVM(get(named(IS_DEBUG_NAME))) }
 
-    single(named(DISCORD_ERROR_LOG_CHANNEL_ID_NAME)) {
-        val config: ApplicationConfig = get()
-
-        config.propertyOrNull("kord.error_log_channel_id")?.getString() ?: ""
-    }
-
     single<EventLoggerErrorCallback> {
         EventLoggerErrorCallbackImpl(
             get(),
-            get(),
+            object : EventLoggerErrorCallbackDelegate {
+                override fun handleErrorEvent(
+                    tag: String,
+                    message: String,
+                    throwable: Throwable,
+                    severity: Severity,
+                ) = Unit
+            },
         )
     }
 
@@ -91,4 +92,3 @@ val FrameworkModule = module(createdAtStart = true) {
 }
 
 private const val IS_DEBUG_NAME = "isDebugEnabled"
-private const val DISCORD_ERROR_LOG_CHANNEL_ID_NAME = "DISCORD_ERROR_LOG_CHANNEL_ID_NAME"

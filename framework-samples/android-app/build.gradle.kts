@@ -31,7 +31,6 @@ dependencies {
     implementation(project(":framework:metrics"))
     implementation(project(":framework:userevents"))
     implementation(project(":framework:preferences"))
-    implementation(project(":framework:remoteconfig"))
     implementation(project(":framework:thread"))
     implementation(project(":framework:test"))
     implementation(project(":framework:utils"))

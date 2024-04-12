@@ -19,6 +19,8 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json:_")
     implementation("org.jetbrains.kotlinx:kotlinx-cli:_")
 
+    implementation("org.apache.logging.log4j:log4j-slf4j2-impl:_")
+
     implementation(compose.desktop.currentOs)
 
     testImplementation(kotlin("test"))

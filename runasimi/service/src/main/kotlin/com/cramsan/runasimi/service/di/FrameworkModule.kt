@@ -18,6 +18,7 @@ import com.cramsan.framework.logging.EventLoggerInterface
 import com.cramsan.framework.logging.Severity
 import com.cramsan.framework.logging.implementation.EventLoggerErrorCallbackImpl
 import com.cramsan.framework.logging.implementation.EventLoggerImpl
+import com.cramsan.framework.logging.implementation.Log4J2Helpers
 import com.cramsan.framework.logging.implementation.LoggerJVM
 import com.cramsan.framework.preferences.Preferences
 import com.cramsan.framework.preferences.PreferencesDelegate
@@ -29,6 +30,7 @@ import com.cramsan.framework.thread.ThreadUtilInterface
 import com.cramsan.framework.thread.implementation.ThreadUtilImpl
 import com.cramsan.framework.thread.implementation.ThreadUtilJVM
 import io.ktor.server.config.ApplicationConfig
+import org.apache.logging.log4j.Logger
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -40,7 +42,11 @@ val FrameworkModule = module(createdAtStart = true) {
 
     single<Preferences> { PreferencesImpl(get()) }
 
-    single<EventLoggerDelegate> { LoggerJVM(false) }
+    single<Logger> {
+        Log4J2Helpers.getRootLogger(get(), Severity.INFO)
+    }
+
+    single<EventLoggerDelegate> { LoggerJVM(get()) }
 
     single {
         val config: ApplicationConfig = get()

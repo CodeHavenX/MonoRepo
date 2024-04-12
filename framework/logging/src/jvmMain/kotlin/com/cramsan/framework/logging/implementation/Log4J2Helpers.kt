@@ -3,8 +3,11 @@ package com.cramsan.framework.logging.implementation
 import com.cramsan.framework.logging.Severity
 import com.cramsan.framework.logging.implementation.LoggerJVM.Companion.toLevel
 import org.apache.logging.log4j.Level
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import org.apache.logging.log4j.core.appender.ConsoleAppender
 import org.apache.logging.log4j.core.config.Configuration
+import org.apache.logging.log4j.core.config.Configurator
 import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory
@@ -13,6 +16,21 @@ import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuild
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration
 
 object Log4J2Helpers {
+
+    fun getRootLogger(
+        logToFile: Boolean,
+        initializationLogLevel: Severity,
+    ): Logger {
+        val loggerConfiguration = buildConfiguration(
+            logToFile,
+            initializationLogLevel,
+        )
+        Configurator.initialize(loggerConfiguration)
+        Configurator.reconfigure(loggerConfiguration)
+
+        return LogManager.getRootLogger()
+    }
+
     fun buildConfiguration(
         logToFile: Boolean,
         initializationLogLevel: Severity,

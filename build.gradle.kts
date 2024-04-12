@@ -34,7 +34,6 @@ tasks.register("releaseAll") {
     dependsOn("framework:metrics:release")
     dependsOn("framework:userevents:release")
     dependsOn("framework:preferences:release")
-    dependsOn("framework:remoteconfig:release")
     dependsOn("framework:thread:release")
     dependsOn("framework:test:release")
     dependsOn("framework:utils:release")

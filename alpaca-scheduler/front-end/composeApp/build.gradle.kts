@@ -55,6 +55,9 @@ kotlin {
             implementation("androidx.activity:activity-compose:_")
         }
         commonMain.dependencies {
+            implementation(project(":framework:interfacelib"))
+            implementation(project(":framework:logging"))
+
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material)

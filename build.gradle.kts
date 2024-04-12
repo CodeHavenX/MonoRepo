@@ -53,7 +53,7 @@ tasks.register("releaseAll") {
     dependsOn("cdk-repo:release")
 
     dependsOn("discord-bot-platform:release")
-    dependsOn("alpaca-scheduler:release")
+    dependsOn("alpaca-scheduler:back-end:release")
 
     dependsOn("runasimi:android-app:release")
     dependsOn("runasimi:mpp-lib:release")

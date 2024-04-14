@@ -11,21 +11,9 @@ import org.apache.logging.log4j.core.config.Configurator
  * Logger that prints to stdout.
  */
 class LoggerJVM(
-    logToFile: Boolean,
-    initializationLogLevel: Severity = Severity.INFO,
+    private val logger: Logger
 ) : EventLoggerDelegate {
 
-    private val logger: Logger
-    init {
-        val loggerConfiguration = Log4J2Helpers.buildConfiguration(
-            logToFile,
-            initializationLogLevel,
-        )
-        Configurator.initialize(loggerConfiguration)
-        Configurator.reconfigure(loggerConfiguration)
-
-        logger = LogManager.getRootLogger()
-    }
     override fun log(
         severity: Severity,
         tag: String,
@@ -35,15 +23,13 @@ class LoggerJVM(
     ) {
         val level = severity.toLevel()
         val formattedMessage = if (args.isNotEmpty()) {
-            message.format(args)
+            message.format(*args)
         } else {
             message
         }
         val logMessage = "[$tag]$formattedMessage"
         logger.log(level, logMessage, throwable)
-        throwable?.let {
-            it.printStackTrace()
-        }
+        throwable?.printStackTrace()
     }
 
     override fun setTargetSeverity(targetSeverity: Severity) {

@@ -12,7 +12,6 @@ android {
 kotlin {
     js {
         nodejs()
-        browser()
     }
 }
 

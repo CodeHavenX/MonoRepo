@@ -8,6 +8,7 @@
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.Severity
 import com.cramsan.framework.logging.implementation.EventLoggerImpl
+import com.cramsan.framework.logging.implementation.Log4J2Helpers
 import com.cramsan.framework.logging.implementation.LoggerJVM
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logE
@@ -61,7 +62,8 @@ const val ENV_CHANNEL_NAME = "CHANNEL_NAME"
 var channelName = ""
 
 fun main() {
-    val eventLoggerDelegate = LoggerJVM(true)
+    val log4jLogger = Log4J2Helpers.getRootLogger(true, Severity.DEBUG)
+    val eventLoggerDelegate = LoggerJVM(log4jLogger)
     val eventLogger = EventLoggerImpl(
         Severity.DEBUG,
         errorCallback = null,

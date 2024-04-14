@@ -14,6 +14,7 @@ import com.cramsan.framework.logging.EventLoggerDelegate
 import com.cramsan.framework.logging.EventLoggerInterface
 import com.cramsan.framework.logging.Severity
 import com.cramsan.framework.logging.implementation.EventLoggerImpl
+import com.cramsan.framework.logging.implementation.Log4J2Helpers
 import com.cramsan.framework.logging.implementation.LoggerJVM
 import com.cramsan.framework.preferences.Preferences
 import com.cramsan.framework.preferences.PreferencesDelegate
@@ -24,6 +25,7 @@ import com.cramsan.framework.thread.ThreadUtilDelegate
 import com.cramsan.framework.thread.ThreadUtilInterface
 import com.cramsan.framework.thread.implementation.ThreadUtilImpl
 import com.cramsan.framework.thread.implementation.ThreadUtilJVM
+import org.apache.logging.log4j.Logger
 import org.koin.dsl.module
 
 /**
@@ -39,6 +41,10 @@ val FrameworkModule = module {
     single<Boolean> {
         val preferences: Preferences = get()
         preferences.loadBoolean(KEY_LOG_TO_FILE) ?: false
+    }
+
+    single<Logger> {
+        Log4J2Helpers.getRootLogger(get(), Severity.INFO)
     }
 
     single<EventLoggerDelegate> {

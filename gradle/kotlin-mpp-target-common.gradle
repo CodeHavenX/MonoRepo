@@ -1,0 +1,29 @@
+/**
+ * Plugin to create a kotlin MPP with safe defaults.
+ */
+apply plugin: "org.jetbrains.kotlin.multiplatform"
+
+apply from: "$rootDir/gradle/detekt.gradle"
+
+kotlin {
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation "org.jetbrains.kotlin:kotlin-stdlib-common:_"
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:_"
+            }
+        }
+        commonTest {
+            dependencies {
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:_"
+                implementation "org.jetbrains.kotlin:kotlin-test-common:_"
+                implementation "org.jetbrains.kotlin:kotlin-test-annotations-common:_"
+            }
+        }
+    }
+}
+
+tasks.register("release") {
+    group = 'release'
+    description = 'Run all the steps to build a release artifact for all enabled targets'
+}

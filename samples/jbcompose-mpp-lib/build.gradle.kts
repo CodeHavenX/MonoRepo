@@ -8,7 +8,10 @@ plugins {
 
 version = "1.0-SNAPSHOT"
 
-apply(from = "$rootDir/gradle/kotlin-mpp-compose-lib.gradle")
+apply(from = "$rootDir/gradle/kotlin-mpp-target-common-compose.gradle")
+apply(from = "$rootDir/gradle/kotlin-mpp-target-android-compose.gradle")
+apply(from = "$rootDir/gradle/kotlin-mpp-target-ios.gradle")
+apply(from = "$rootDir/gradle/kotlin-mpp-target-jvm-compose.gradle")
 
 android {
     namespace = "com.cramsan.sample.mpp_lib.compose"

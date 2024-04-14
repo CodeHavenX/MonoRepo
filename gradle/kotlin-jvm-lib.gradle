@@ -25,7 +25,7 @@ test {
 }
 
 // Release task that will build and test the project.
-def releaseJvm = tasks.register("releaseJvm") {
+tasks.register("releaseJvm") {
     group = 'release'
     description = 'Run all the steps to build a release artifact'
 

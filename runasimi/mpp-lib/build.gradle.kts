@@ -9,7 +9,9 @@ plugins {
 
 version = "1.0-SNAPSHOT"
 
-apply(from = "$rootDir/gradle/kotlin-mpp-compose-lib.gradle")
+apply(from = "$rootDir/gradle/kotlin-mpp-target-common-compose.gradle")
+apply(from = "$rootDir/gradle/kotlin-mpp-target-android-compose.gradle")
+apply(from = "$rootDir/gradle/kotlin-mpp-target-ios.gradle")
 
 android {
     namespace = "com.cramsan.runasimi.mpplib"
@@ -30,8 +32,12 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                implementation(project(":framework:interfacelib"))
+                implementation(project(":framework:logging"))
+
                 implementation("io.ktor:ktor-client-core:_")
             }
         }
+
     }
 }

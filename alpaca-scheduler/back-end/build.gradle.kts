@@ -18,6 +18,8 @@ dependencies {
     implementation(project(":framework:preferences"))
     implementation(project(":framework:thread"))
 
+    implementation(project(":alpaca-scheduler:shared"))
+
     implementation("io.ktor:ktor-server-core-jvm:_")
     implementation("io.ktor:ktor-server-netty-jvm:_")
     implementation("io.ktor:ktor-server-content-negotiation:_")

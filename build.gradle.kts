@@ -54,6 +54,11 @@ tasks.register("releaseAll") {
 
     dependsOn("discord-bot-platform:release")
     dependsOn("alpaca-scheduler:back-end:release")
+    dependsOn("alpaca-scheduler:shared:release")
+    dependsOn("alpaca-scheduler:front-end:shared-compose:release")
+    dependsOn("alpaca-scheduler:front-end:app-android:release")
+    dependsOn("alpaca-scheduler:front-end:app-jvm:release")
+    dependsOn("alpaca-scheduler:front-end:app-wasm:release")
 
     dependsOn("runasimi:android-app:release")
     dependsOn("runasimi:mpp-lib:release")

@@ -1,0 +1,21 @@
+apply plugin: "org.jetbrains.kotlin.multiplatform"
+
+kotlin {
+    wasmJs {
+    }
+
+    sourceSets {
+        wasmJs {
+        }
+        wasmJsTest {
+        }
+    }
+}
+
+tasks.register("releaseWasm") {
+    group = 'release'
+    description = 'Run all the steps to build a releaseWasn artifact'
+    dependsOn 'wasmJsMainClasses'
+}
+
+release.dependsOn('releaseWasm')

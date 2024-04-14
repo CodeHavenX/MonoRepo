@@ -58,7 +58,11 @@ include("samples:nodejs-app")
 
 include("discord-bot-platform")
 include("alpaca-scheduler:back-end")
-include("alpaca-scheduler:front-end:composeApp")
+include("alpaca-scheduler:shared")
+include("alpaca-scheduler:front-end:shared-compose")
+include("alpaca-scheduler:front-end:app-android")
+include("alpaca-scheduler:front-end:app-jvm")
+include("alpaca-scheduler:front-end:app-wasm")
 
 include("tpsd")
 

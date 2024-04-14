@@ -2,7 +2,6 @@
 
 plugins {
     kotlin("multiplatform")
-    kotlin("native.cocoapods")
     id("com.android.library")
 }
 
@@ -18,12 +17,8 @@ android {
 }
 
 kotlin {
-    cocoapods {
-        summary = "Some description for the JBCcomposeMPPLib Module"
-        homepage = "Link to the jbcompose-ios-app Module homepage"
-        ios.deploymentTarget = "14.1"
-        podfile = project.file("../jbcompose-ios-app/Podfile")
-        framework {
+    iosSimulatorArm64() {
+        binaries.framework {
             baseName = "JBComposeMPPLib"
             isStatic = true
         }

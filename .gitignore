@@ -75,6 +75,6 @@ testem.log
 Podfile.lock
 Pods/
 *.xcworkspace/
-*.xcodeproj/
 !project.pbxproj
+*.xcodeproj/
 *.podspec

@@ -1,5 +1,6 @@
 package com.codehavenx.platform.bot
 
+import com.codehavenx.alpaca.shared.TestShared
 import com.codehavenx.platform.bot.controller.UserController
 import com.codehavenx.platform.bot.di.ApplicationModule
 import com.codehavenx.platform.bot.di.FrameworkModule
@@ -82,6 +83,7 @@ suspend fun Application.configureEntryPoints(
  */
 fun Application.startApplication() {
     logI(TAG, "Application is ready.")
+    logI(TAG, "Application is ready. + ${TestShared.TEST}")
 }
 
 private const val TAG = "Application"

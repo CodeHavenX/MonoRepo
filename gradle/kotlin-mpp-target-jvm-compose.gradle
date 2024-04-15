@@ -1,0 +1,25 @@
+/**
+ * Plugin to create a kotlin MPP with safe defaults.
+ */
+apply plugin: "org.jetbrains.kotlin.multiplatform"
+apply plugin: "org.jetbrains.compose"
+apply from: "$rootDir/gradle/kotlin-mpp-target-jvm.gradle"
+
+kotlin {
+    jvm() {
+    }
+
+    sourceSets {
+        jvmMain {
+            dependencies {
+                implementation(compose.desktop.currentOs)
+                implementation(compose.desktop.common)
+                implementation("org.jetbrains.compose.ui:ui-tooling-preview:_")
+            }
+        }
+        jvmTest {
+            dependencies {
+            }
+        }
+    }
+}

@@ -46,5 +46,5 @@ Pod::Spec.new do |spec|
             SCRIPT
         }
     ]
-    spec.resources = ['build\compose\ios\JBComposeMPPLib\compose-resources']
+    spec.resources = ['build/compose/ios/JBComposeMPPLib/compose-resources']
 end

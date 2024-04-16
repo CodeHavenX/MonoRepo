@@ -13,11 +13,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import coreproject.alpaca_scheduler.front_end.`shared-compose`.generated.resources.Res
-import coreproject.alpaca_scheduler.front_end.`shared-compose`.generated.resources.compose_multiplatform
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import shared_compose.Res
+import shared_compose.compose_multiplatform
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable

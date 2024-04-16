@@ -31,3 +31,7 @@ android {
     sourceSets["main"].res.srcDirs("src/androidMain/res")
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 }
+
+compose.resources {
+    packageOfResClass = "shared_compose"
+}

@@ -43,6 +43,7 @@ tasks.register("releaseAll") {
     dependsOn("samples:jbcompose-mpp-lib:release")
     dependsOn("samples:jbcompose-desktop-app:release")
     dependsOn("samples:jbcompose-android-app:release")
+    dependsOn("samples:jbcompose-wasm-app:release")
     dependsOn("samples:mpp-lib:release")
     dependsOn("samples:jvm-lib:release")
     dependsOn("samples:nodejs-app:release")

@@ -1,12 +1,10 @@
 package com.cramsan.minesweepers.common.game
 
-import com.cramsan.minesweepers.common.ui.Assets
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
@@ -25,9 +23,6 @@ class Game {
         MutableStateFlow(Status.NORMAL)
     )
     val gameStateHolder: GameStateHolder = _statusHolder
-
-    private val _initialized = MutableStateFlow(false)
-    val initialized = _initialized.asStateFlow()
 
     private var timerJob: Job? = null
     private var isGameRunning = false
@@ -67,19 +62,6 @@ class Game {
         _statusHolder.status.value = Status.NORMAL
         _statusHolder.time.value = 0
         updateMapState()
-    }
-
-    /**
-     *
-     */
-    @OptIn(DelicateCoroutinesApi::class)
-    fun loadAssetsAsync() {
-        // This is not the right way to dispatch IO
-        // We should be injecting an IO dispatcher.
-        GlobalScope.launch {
-            Assets.loadAssets()
-            _initialized.value = true
-        }
     }
 
     /**

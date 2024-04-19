@@ -1,23 +1,16 @@
-package com.cramsan.minesweepers.jvm
-
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.window.Window
-import androidx.compose.ui.window.application
-import com.cramsan.minesweepers.common.MainView
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.window.CanvasBasedWindow
 import com.cramsan.minesweepers.common.game.Game
 
-/**
- *
- */
-fun main() = application {
+@OptIn(ExperimentalComposeUiApi::class)
+fun main() {
     val game = Game()
     game.configure()
 
-    Window(
-        title = "Minesweepers",
-        onCloseRequest = ::exitApplication,
-    ) {
+    CanvasBasedWindow(canvasElementId = "ComposeTarget") {
         val map by game.gameStateHolder.map.collectAsState()
         val time by game.gameStateHolder.time.collectAsState()
         val minesRemaining by game.gameStateHolder.minesRemaining.collectAsState()

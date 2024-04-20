@@ -1,0 +1,966 @@
+openapi: 3.0.3
+info:
+  title: Swagger Petstore - OpenAPI 3.0
+  description: |-
+    This is a sample Pet Store Server based on the OpenAPI 3.0 specification.  You can find out more about
+    Swagger at [https://swagger.io](https://swagger.io). In the third iteration of the pet store, we've switched to the design first approach!
+    You can now help us improve the API whether it's by making changes to the definition itself or to the code.
+    That way, with time, we can improve the API in general, and expose some of the new features in OAS3.
+
+    _If you're looking for the Swagger 2.0/OAS 2.0 version of Petstore, then click [here](https://editor.swagger.io/?url=https://petstore.swagger.io/v2/swagger.yaml). Alternatively, you can load via the `Edit > Load Petstore OAS 2.0` menu option!_
+    
+    Some useful links:
+    - [The Pet Store repository](https://github.com/swagger-api/swagger-petstore)
+    - [The source API definition for the Pet Store](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml)
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: http://localhost:8282
+  - url: https://petstore3.swagger.io/api/v3
+tags:
+  - name: user
+  - name: business
+  - name: appointment
+  - name: availability
+  - name: appointmentConfiguration
+paths:
+  /user:
+    post:
+      tags:
+        - user
+      summary: Create an new user
+      description: 'Create a new user with the information provided.'
+      operationId: createUser
+      requestBody:
+        description: This information is the metadata required to create a new user.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '201':
+          description: User was created. Returns the user information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    get:
+      tags:
+        - user
+      summary: Get users that match criteria
+      description: 'Get all users that match the criteria.'
+      operationId: getUsersFromCriteria
+      parameters:
+        - name: businessId
+          in: query
+          description: ID of the business to get users from
+          required: false
+          schema:
+            $ref: '#/components/schemas/BusinessId'
+      responses:
+        '200':
+          description: Users were found. Returns the list of users.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '404':
+          description: Users were not found.
+  /user/{userId}:
+    get:
+      tags:
+        - user
+      summary: Get user by user ID
+      description: 'Get a user by its ID.'
+      operationId: getUserById
+      parameters:
+        - name: userId
+          in: path
+          description: ID of the user to get
+          required: true
+          schema:
+            $ref: '#/components/schemas/UserId'
+      responses:
+        '200':
+          description: User was found. Returns the user information.
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/User'
+        '404':
+          description: User was not found.
+    put:
+      tags:
+        - user
+      summary: Update user by user ID
+      description: 'Update a user by its ID.'
+      operationId: updateUserById
+      parameters:
+        - name: userId
+          in: path
+          description: ID of the user to update
+          required: true
+          schema:
+            $ref: '#/components/schemas/UserId'
+      requestBody:
+        description: This information is the metadata required to update a user.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '200':
+          description: User was updated. Returns the user information.
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/User'
+        '404':
+          description: User was not found.
+    delete:
+      tags:
+        - user
+      summary: Delete user by user ID
+      description: 'Delete a user by its ID.'
+      operationId: deleteUserById
+      parameters:
+        - name: userId
+          in: path
+          description: ID of the user to delete
+          required: true
+          schema:
+            $ref: '#/components/schemas/UserId'
+      responses:
+        '200':
+          description: User was deleted.
+        '404':
+          description: User was not found.
+  /business:
+    get:
+      tags:
+        - business
+      summary: Get businesses that match the criteria
+      description: 'Get businesses that match the criteria.'
+      operationId: getBusinessesFromCriteria
+      responses:
+        '200':
+          description: Businesses were found. Returns the list of businesses.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AppointmentConfiguration'
+        '404':
+          description: Businesses were not found.
+    post:
+      tags:
+        - business
+      summary: Create a new business
+      description: 'Create a new business with the information provided.'
+      operationId: createBusiness
+      requestBody:
+        description: This information is the metadata required to create a new business.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BusinessRequest'
+      responses:
+        '201':
+          description: Business was created. Returns the business information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Business'
+  /business/{businessId}:
+    get:
+      tags:
+        - business
+      summary: Get business by ID
+      description: 'Get a business by its ID.'
+      operationId: getBusinessById
+      parameters:
+        - name: businessId
+          in: path
+          description: ID of the business to get
+          required: true
+          schema:
+            $ref: '#/components/schemas/BusinessId'
+      responses:
+        '200':
+          description: Business was found. Returns the business information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Business'
+        '404':
+          description: Business was not found.
+    put:
+      tags:
+        - business
+      summary: Update business by business ID
+      description: 'Update a business by its ID.'
+      operationId: updateBusinessById
+      parameters:
+        - name: businessId
+          in: path
+          description: ID of the business to update
+          required: true
+          schema:
+            $ref: '#/components/schemas/BusinessId'
+      requestBody:
+        description: This information is the metadata required to update a business.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BusinessRequest'
+      responses:
+        '200':
+          description: Business was updated. Returns the business information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Business'
+        '404':
+          description: Business was not found.
+    delete:
+      tags:
+        - business
+      summary: Delete business by business ID
+      description: 'Delete a business by its ID.'
+      operationId: deleteBusinessById
+      parameters:
+        - name: businessId
+          in: path
+          description: ID of the business to delete
+          required: true
+          schema:
+            $ref: '#/components/schemas/BusinessId'
+      responses:
+        '200':
+          description: Business was deleted.
+        '404':
+          description: Business was not found.
+  /business/{businessId}/relation/{userId}:
+    post:
+      tags:
+        - business
+      summary: Set the relation between a user and a business
+      description: 'Add a user to a business.'
+      operationId: addUserToBusiness
+      parameters:
+        - name: businessId
+          in: path
+          description: ID of the business to add the user to
+          required: true
+          schema:
+            $ref: '#/components/schemas/BusinessId'
+        - name: userId
+          in: path
+          description: ID of the user to add to the business
+          required: true
+          schema:
+              $ref: '#/components/schemas/UserId'
+        - name: relationType
+          in: query
+          description: The type of relation between the user and the business
+          required: true
+          schema:
+            $ref: '#/components/schemas/BusinessRelation'
+      responses:
+        '200':
+          description: User was request to be added to the business.
+    delete:
+      tags:
+        - business
+      summary: Remove the relation between a user and a business
+      description: 'Remove a user from a business.'
+      operationId: remoteUserFromBusiness
+      parameters:
+        - name: businessId
+          in: path
+          description: ID of the business to add the user to
+          required: true
+          schema:
+            $ref: '#/components/schemas/BusinessId'
+        - name: userId
+          in: path
+          description: ID of the user to add to the business
+          required: true
+          schema:
+            $ref: '#/components/schemas/UserId'
+      responses:
+        '200':
+          description: User was removed from the business.
+  /appointment/configuration:
+    post:
+      tags:
+        - appointmentConfiguration
+      summary: Create a new appointment configuration
+      operationId: createAppointmentConfiguration
+      requestBody:
+        description: The appointment configuration to create.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppointmentConfigurationRequest'
+      responses:
+        '201':
+          description: Appointment configuration was created. Returns the appointment configuration information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppointmentConfiguration'
+    get:
+      tags:
+        - appointmentConfiguration
+      summary: Get appointment configurations that belong to a business
+      operationId: getAppointmentConfigurationsForBusiness
+      parameters:
+        - name: businessId
+          in: query
+          description: ID of the business to get appointments configurations from
+          required: true
+          schema:
+            $ref: '#/components/schemas/BusinessId'
+      responses:
+        '200':
+          description: Returns a list of appointment configurations.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AppointmentConfiguration'
+  /appointment/configuration/{appointmentConfigurationId}:
+    get:
+      tags:
+        - appointmentConfiguration
+      summary: Get an appointment configuration by ID
+      operationId: getAppointmentConfigurationById
+      parameters:
+        - name: appointmentConfigurationId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/AppointmentConfigurationId'
+      responses:
+        '200':
+          description: Returns the appointment configuration.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppointmentConfiguration'
+    put:
+      tags:
+        - appointmentConfiguration
+      summary: Update an appointment configuration by ID
+      operationId: updateAppointmentConfigurationById
+      parameters:
+        - name: appointmentConfigurationId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/AppointmentConfigurationId'
+      requestBody:
+        description: The request to update the appointment configuration.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppointmentConfigurationRequest'
+      responses:
+        '200':
+          description: Appointment configuration was updated. Returns the updated appointment configuration.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppointmentConfiguration'
+    delete:
+      tags:
+        - appointmentConfiguration
+      summary: Delete an appointment configuration by ID
+      operationId: deleteAppointmentConfigurationById
+      parameters:
+        - name: appointmentConfigurationId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/AppointmentConfigurationId'
+      responses:
+        '200':
+          description: Appointment configuration was deleted.
+
+  /appointment:
+    post:
+      tags:
+        - appointment
+      summary: Create an new appointment
+      description: 'Create a new appointment with the information provided.'
+      operationId: createAppointment
+      requestBody:
+        description: This information is the metadata required to create a new appointment.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppointmentRequest'
+      responses:
+        '201':
+          description: Appointment was created. Returns the appointment information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Appointment'
+    get:
+      tags:
+        - appointment
+      summary: Get appointments that match criteria
+      description: 'Get all appointments that match the criteria.'
+      operationId: getAppointmentsFromCriteria
+      parameters:
+        - name: businessId
+          in: query
+          description: ID of the business to get appointments from
+          required: false
+          schema:
+            $ref: '#/components/schemas/BusinessId'
+        - name: userId
+          in: query
+          description: ID of the user to get appointments from
+          required: false
+          schema:
+            $ref: '#/components/schemas/UserId'
+      responses:
+        '200':
+          description: Appointments were found. Returns the list of appointments.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Appointment'
+        '404':
+          description: Appointments were not found.
+  /appointment/{appointmentId}:
+    get:
+      tags:
+        - appointment
+      summary: Get appointment by appointment ID
+      description: 'Get an appointment by its ID.'
+      operationId: getAppointmentById
+      parameters:
+        - name: appointmentId
+          in: path
+          description: ID of the appointment to get
+          required: true
+          schema:
+            $ref: '#/components/schemas/AppointmentId'
+      responses:
+        '200':
+          description: Appointment was found. Returns the appointment information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Appointment'
+        '404':
+          description: Appointment was not found.
+    put:
+      tags:
+        - appointment
+      summary: Update appointment by appointment ID
+      description: 'Update an appointment by its ID.'
+      operationId: updateAppointmentById
+      parameters:
+        - name: appointmentId
+          in: path
+          description: ID of the appointment to update
+          required: true
+          schema:
+            $ref: '#/components/schemas/AppointmentId'
+      requestBody:
+        description: This information is the metadata required to update an appointment.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppointmentRequest'
+      responses:
+        '200':
+          description: Appointment was updated. Returns the appointment information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Appointment'
+        '404':
+          description: Appointment was not found.
+    delete:
+      tags:
+        - appointment
+      summary: Delete appointment by appointment ID
+      description: 'Delete an appointment by its ID.'
+      operationId: deleteAppointmentById
+      parameters:
+        - name: appointmentId
+          in: path
+          description: ID of the appointment to delete
+          required: true
+          schema:
+            $ref: '#/components/schemas/AppointmentId'
+      responses:
+        '200':
+          description: Appointment was deleted.
+        '404':
+          description: Appointment was not found.
+  /availability:
+    post:
+      tags:
+        - availability
+      summary: Set the availability for a user
+      description: 'Set the availability for a user.'
+      operationId: setAvailability
+      requestBody:
+        description: This information is the metadata required to set the availability of the user.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AvailabilityRequest'
+      responses:
+        '200':
+          description: Availability was set. Returns the availability information.
+    get:
+      tags:
+          - availability
+      summary: Get the availability for a user
+      description: 'Get the availability for a user.'
+      operationId: getAvailability
+      parameters:
+        - name: businessId
+          in: query
+          description: ID of the business to get availability from
+          required: true
+          schema:
+            $ref: '#/components/schemas/BusinessId'
+        - name: userId
+          in: query
+          description: ID of the user to get availability from
+          required: false
+          schema:
+            $ref: '#/components/schemas/UserId'
+        - name: startDate
+          in: query
+          description: The start date of the availability request
+          required: true
+          schema:
+            $ref: '#/components/schemas/BusinessId'
+        - name: endDate
+          in: query
+          description: The end date of the availability request
+          required: true
+          schema:
+            $ref: '#/components/schemas/BusinessId'
+      responses:
+        '200':
+          description: Availability was found. Returns the availability information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Availability'
+        '404':
+          description: Availability was not found.
+  /availability/override:
+    post:
+      tags:
+        - availability
+      summary: Set the availability override for a user
+      description: 'Set the availability override for a user.'
+      operationId: setAvailabilityOverride
+      requestBody:
+        description: This information is the metadata required to set the availability override of the user.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AvailabilityOverrideRequest'
+      responses:
+        '200':
+          description: Availability was set. Returns the availability information.
+  /availability/timeslots:
+    get:
+      tags:
+        - availability
+      summary: Get the availability time slots for a user
+      description: 'Get the availability time slots for a user.'
+      operationId: getAvailabilityTimeSlots
+      parameters:
+        - name: businessId
+          in: query
+          description: ID of the business to get availability from
+          required: true
+          schema:
+            $ref: '#/components/schemas/BusinessId'
+        - name: userId
+          in: query
+          description: ID of the user to get availability from
+          required: false
+          schema:
+            $ref: '#/components/schemas/UserId'
+        - name: startDate
+          in: query
+          description: The start date of the availability request
+          required: true
+          schema:
+            $ref: '#/components/schemas/Date'
+        - name: endDate
+          in: query
+          description: The end date of the availability request
+          required: true
+          schema:
+            $ref: '#/components/schemas/Date'
+        - name: appointmentConfigurationId
+          in: query
+          description: The type of appointment configuration to get the availability from
+          required: true
+          schema:
+            $ref: '#/components/schemas/TimeSlotDay'
+      responses:
+        '200':
+          description: Availability was found. Returns the availability information.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TimeSlot'
+        '404':
+          description: Availability was not found.
+
+components:
+  schemas:
+    UserId:
+      description: An Id that identifies a user.
+      type: string
+      example: 61058763-4faa-4174-97fb-1df89dfcb466
+    BusinessId:
+      description: An Id that identifies a business.
+      type: string
+      example: 06a9f74a-1850-46ef-9573-9b6afb46da90
+    AppointmentId:
+      description: An Id that identifies an appointment.
+      type: string
+      example: b4fe2a16-5ce4-46e3-b522-12f0549d9880
+    AppointmentConfigurationId:
+      description: An Id that identifies an appointment configuration.
+      type: string
+      example: 51083ddd-4adb-4595-8103-ad6852164311
+    AppointmentType:
+      required:
+        - appointmentType
+      description: An appointment type with an Id that identifies it.
+      type: object
+      properties:
+        appointmentType:
+          type: string
+          example: "Consultation"
+    AppointmentConfiguration:
+      required:
+        - appointmentConfigurationId
+        - appointmentType
+        - duration
+        - timezone
+      description: An appointment configuration with all it's respective information.
+      type: object
+      properties:
+        appointmentConfigurationId:
+          $ref: '#/components/schemas/AppointmentConfigurationId'
+        appointmentType:
+          $ref: "#/components/schemas/AppointmentType"
+        duration:
+          $ref: "#/components/schemas/Duration"
+        timezone:
+          type: string
+          example: Europe/Berlin
+    AppointmentConfigurationRequest:
+      required:
+        - appointmentType
+        - duration
+        - timezone
+      description: A request to create or update an appointment configuration.
+      type: object
+      properties:
+        appointmentType:
+          $ref: "#/components/schemas/AppointmentType"
+        duration:
+          $ref: "#/components/schemas/Duration"
+        timezone:
+          type: string
+          example: Europe/Berlin
+    TimeSlot:
+      required:
+        - startTime
+        - endTime
+        - userId
+      description: A single slot for availability.
+      type: object
+      properties:
+        startTime:
+          $ref: "#/components/schemas/DateTime"
+        endTime:
+          $ref: "#/components/schemas/DateTime"
+        userId:
+          $ref: '#/components/schemas/UserId'
+    UserRequest:
+      required:
+        - name
+      description: Request to create or update a user.
+      type: object
+      properties:
+        name:
+          type: string
+          example: John Doe
+    User:
+      required:
+        - userId
+        - name
+      description: A single user and it's basic public information.
+      type: object
+      properties:
+        userId:
+          $ref: "#/components/schemas/UserId"
+        name:
+          type: string
+          example: John Doe
+        relations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Relation"
+    Relation:
+      type: object
+      properties:
+        businessId:
+          $ref: "#/components/schemas/BusinessId"
+        userId:
+          $ref: "#/components/schemas/UserId"
+        relationType:
+          $ref: "#/components/schemas/BusinessRelation"
+    BusinessRelation:
+      type: string
+      enum:
+        - "Owner"
+        - "Staff"
+        - "Customer"
+    BusinessRequest:
+      required:
+        - name
+      description: Request to create or update a business.
+      type: object
+      properties:
+        name:
+          type: string
+          example: Business Name
+    Business:
+      required:
+        - businessId
+        - name
+      description: A single business and its basic public information.
+      type: object
+      properties:
+        businessId:
+          $ref: "#/components/schemas/BusinessId"
+        name:
+          type: string
+          example: Business Name
+    Appointment:
+      required:
+        - id
+        - businessId
+        - userId
+        - appointmentConfiguration
+        - timeSlot
+      description: An appointment with all it's respective information.
+      type: object
+      properties:
+        appointmentId:
+          $ref: '#/components/schemas/AppointmentId'
+        businessId:
+          $ref: '#/components/schemas/BusinessId'
+        userId:
+          $ref: '#/components/schemas/UserId'
+        appointmentConfiguration:
+          $ref: "#/components/schemas/AppointmentConfiguration"
+        timeSlot:
+          $ref: "#/components/schemas/TimeSlot"
+    AppointmentRequest:
+      required:
+          - businessId
+          - appointmentConfiguration
+          - timeSlot
+      description: Request to create or update an appointment.
+      type: object
+      properties:
+        businessId:
+          $ref: '#/components/schemas/BusinessId'
+        appointmentConfigurationId:
+          $ref: "#/components/schemas/AppointmentConfigurationId"
+        timeSlot:
+          $ref: "#/components/schemas/TimeSlot"
+    AvailabilityRequest:
+      required:
+        - businessId
+        - userId
+        - startDate
+        - endDate
+        - hours
+      description: Request to set the availability of a user.
+      type: object
+      properties:
+        businessId:
+          $ref: '#/components/schemas/BusinessId'
+        userId:
+          $ref: '#/components/schemas/UserId'
+        startDate:
+          $ref: "#/components/schemas/Date"
+        endDate:
+          $ref: "#/components/schemas/Date"
+        hours:
+          type: object
+          properties:
+            startTime:
+              $ref: "#/components/schemas/Time"
+            endTime:
+              $ref: "#/components/schemas/Time"
+        daysOfTheWeek:
+          $ref: "#/components/schemas/DaysOfTheWeek"
+    AvailabilityOverrideRequest:
+      required:
+        - availabilityRequest
+        - reason
+      description: Request to set the availability override of a user.
+      type: object
+      properties:
+        availabilityRequest:
+          $ref: "#/components/schemas/AvailabilityRequest"
+        reason:
+          type: string
+          example: "Doctor's appointment"
+    Availability:
+      required:
+        - businessId
+        - userId
+        - startDate
+        - endDate
+      description: The availability of a user.
+      type: object
+      properties:
+        businessId:
+          $ref: '#/components/schemas/BusinessId'
+        userId:
+          $ref: '#/components/schemas/UserId'
+        startDate:
+          $ref: "#/components/schemas/Date"
+        endDate:
+          $ref: "#/components/schemas/Date"
+        calendar:
+          type: array
+          items:
+            $ref: "#/components/schemas/CalendarDay"
+    CalendarDay:
+      required:
+          - date
+          - events
+      description: A single day with all its events.
+      type: object
+      properties:
+        date:
+          $ref: "#/components/schemas/Date"
+        startTime:
+          $ref: "#/components/schemas/Time"
+        endTime:
+          $ref: "#/components/schemas/Time"
+        events:
+          type: array
+          items:
+              $ref: "#/components/schemas/CalendarEvent"
+    TimeSlotDay:
+      required:
+        - date
+        - timeSlots
+      description: A single day with the free timeslots.
+      type: object
+      properties:
+        date:
+          $ref: "#/components/schemas/Date"
+        events:
+          type: array
+          items:
+            $ref: "#/components/schemas/TimeSlot"
+    DayOfTheWeek:
+      type: string
+      enum:
+        - "Monday"
+        - "Tuesday"
+        - "Wednesday"
+        - "Thursday"
+        - "Friday"
+        - "Saturday"
+        - "Sunday"
+      example: "Monday"
+    DaysOfTheWeek:
+      type: array
+      items:
+        $ref: "#/components/schemas/DayOfTheWeek"
+      example: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+    Date:
+      type: string
+      description: A date with format YYYY-MM-DD.
+      format: date
+      example: 2024-05-13
+    Time:
+      type: string
+      description: A time with format HH:mm (24h).
+      format: time
+      example: 17:00
+    DateTime:
+      type: string
+      description: A date and time with format YYYY-MM-DDTHH:mm:ss.SSSZ.
+      format: date-time
+      example: 2024-04-20T09:30:00.000Z
+    Duration:
+      type: integer
+      description: The duration of the appointment in minutes.
+      format: int32
+      example: 30
+    CalendarEventId:
+      description: An Id that identifies a calendar event.
+      type: string
+      example: 187ff571-61a7-4070-b5ee-32c97869c2a8
+    CalendarEvent:
+      type: object
+      required:
+        - calendarEventId
+        - title
+        - start
+        - end
+        - userId
+      properties:
+        calendarEventId:
+          $ref: "#/components/schemas/CalendarEventId"
+        title:
+          type: string
+          example: "Appointment with John Doe"
+        startDateTime:
+          $ref: "#/components/schemas/DateTime"
+        endDateTime:
+          $ref: "#/components/schemas/DateTime"
+        ownerId:
+          $ref: '#/components/schemas/UserId'
+        participantsId:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserId'

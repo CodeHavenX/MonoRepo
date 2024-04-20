@@ -1,17 +1,13 @@
 package com.codehavenx.platform.bot
 
+import com.codehavenx.alpaca.server.main
 import com.codehavenx.alpaca.shared.TestShared
-import com.codehavenx.platform.bot.controller.UserController
 import com.codehavenx.platform.bot.di.ApplicationModule
 import com.codehavenx.platform.bot.di.FrameworkModule
 import com.codehavenx.platform.bot.di.createKtorModule
 import com.cramsan.framework.logging.logI
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
-import io.ktor.server.application.install
-import io.ktor.server.plugins.callloging.CallLogging
-import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.server.routing.routing
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import org.koin.core.context.startKoin
@@ -36,9 +32,8 @@ fun Application.module() = runBlocking {
 fun Application.startServer() = runBlocking {
     configureKtorEngine()
 
-    val userController: UserController by inject()
+    // val userController: UserController by inject()
 
-    configureEntryPoints(userController)
     startApplication()
 }
 
@@ -47,11 +42,7 @@ fun Application.startServer() = runBlocking {
  */
 fun Application.configureKtorEngine() {
     val json: Json by inject()
-
-    install(CallLogging)
-    install(ContentNegotiation) {
-        json(json)
-    }
+    main(json)
 }
 
 /**
@@ -64,17 +55,6 @@ fun Application.initializeDependencies() {
             FrameworkModule,
             ApplicationModule,
         )
-    }
-}
-
-/**
- * Configures the entry points of the application.
- */
-suspend fun Application.configureEntryPoints(
-    userController: UserController,
-) {
-    routing {
-        userController.registerRoutes(this@routing)
     }
 }
 

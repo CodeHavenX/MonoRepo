@@ -5,7 +5,7 @@ plugins {
     kotlin("jvm")
 }
 
-apply(from = "$rootDir/gradle/kotlin-jvm-lib.gradle")
+apply(from = "$rootDir/gradle/kotlin-jvm-target-lib.gradle")
 
 kotlin {
     jvmToolchain(17)

@@ -1,13 +1,13 @@
 import static de.fayard.refreshVersions.core.Versions.versionFor
 /**
- * Plugin to create a kotlin MPP with safe defaults.
+ * Plugin to provide compose support to an Android library target.
  */
 
 apply plugin: "org.jetbrains.kotlin.multiplatform"
 
 apply plugin: "com.android.library"
 apply plugin: "org.jetbrains.compose"
-apply from: "$rootDir/gradle/kotlin-mpp-target-android.gradle"
+apply from: "$rootDir/gradle/kotlin-mpp-target-android-lib.gradle"
 
 android {
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
@@ -17,6 +17,7 @@ android {
     }
 
     composeOptions {
+        // https://developer.android.com/jetpack/androidx/releases/compose-kotlin
         kotlinCompilerExtensionVersion = versionFor(project, "version.androidx.compose.compiler")
     }
 }
@@ -25,21 +26,4 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview:_")
     debugImplementation("androidx.compose.ui:ui-tooling:_")
     implementation("androidx.compose.foundation:foundation:_")
-}
-
-kotlin {
-    androidTarget() {
-        compilations.all {
-            kotlinOptions {
-
-            }
-        }
-    }
-
-    sourceSets {
-        androidMain {
-        }
-        androidUnitTest {
-        }
-    }
 }

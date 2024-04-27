@@ -1,7 +1,6 @@
 plugins {
     id("com.android.application") apply false
     id("com.android.library") apply false
-    id("org.jetbrains.kotlin.android") apply false
     kotlin("jvm") apply false
     kotlin("js") apply false
     kotlin("multiplatform") apply false
@@ -12,6 +11,10 @@ plugins {
     id("androidx.navigation.safeargs.kotlin") apply false
     id("com.squareup.sqldelight") apply false
     id("io.gitlab.arturbosch.detekt") apply false
+}
+
+subprojects {
+    apply(from = "$rootDir/gradle/detekt.gradle")
 }
 
 /**

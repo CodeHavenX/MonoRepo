@@ -1,6 +1,8 @@
+/**
+ * Plugin to apply the Android library target.
+ */
 apply plugin: "com.android.library"
-apply plugin: "kotlin-android"
-apply from: "$rootDir/gradle/detekt.gradle"
+apply plugin: "org.jetbrains.kotlin.multiplatform"
 
 android {
     compileSdkVersion 34
@@ -10,20 +12,9 @@ android {
         targetSdkVersion 33
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-
     compileOptions {
-        // Set the compile options for Java source
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
-    }
-
-    kotlin {
-        jvmToolchain(17)
-    }
-
-    kotlinOptions {
-        // Set the compile target for Kotlin source
-        freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
     }
 
     packaging {
@@ -32,16 +23,14 @@ android {
         }
     }
 
+    kotlin {
+        jvmToolchain(17)
+    }
+
     testOptions {
         unitTests {
             includeAndroidResources = true
-
-            // Allows framework calls to return default values. I should look if I can remove this.
-            // Instead we could relly on the testing framework to mock system calls.
-            returnDefaultValues = true
-
             all {
-                // Enable printing the result of the unit tests.
                 testLogging {
                     events "passed", "skipped", "failed"
                 }
@@ -80,17 +69,20 @@ dependencies {
     androidTestImplementation "org.robolectric:robolectric:_"
 }
 
+kotlin {
+    androidTarget()
+}
+
 tasks.register("releaseAndroid") {
     group = 'release'
-    description = 'Run all the steps to build a release artifact'
-
-    dependsOn 'build' // Assembles and test this project
-    dependsOn 'detekt' // Run the code analyzer
+    description = 'Run all the steps to build a releaseAndroid artifact'
+    dependsOn 'assembleDebug'
+    dependsOn 'assembleRelease'
+    dependsOn 'detektMetadataMain' // Run the code analyzer on the common-code source set
+    dependsOn 'detektAndroidDebug' // Run the code analyzer
+    dependsOn 'detektAndroidRelease' // Run the code analyzer
+    dependsOn 'testDebugUnitTest'
+    dependsOn 'testReleaseUnitTest'
 }
 
-tasks.register("release") {
-    group = 'release'
-    description = 'Run releaseAndroid'
-
-    dependsOn 'releaseAndroid'
-}
+release.dependsOn('releaseAndroid')

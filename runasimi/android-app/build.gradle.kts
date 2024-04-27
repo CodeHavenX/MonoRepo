@@ -1,10 +1,10 @@
-    plugins {
-    id("org.jetbrains.kotlin.android")
+plugins {
+    kotlin("multiplatform")
     id("com.android.application")
     id("org.jetbrains.compose")
 }
 
-apply(from = "$rootDir/gradle/android-app.gradle")
+apply(from = "$rootDir/gradle/kotlin-mpp-target-android-app.gradle")
 
 android {
     namespace = "com.cramsan.runasimi.android"

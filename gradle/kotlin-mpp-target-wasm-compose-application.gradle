@@ -1,27 +1,11 @@
 /**
- * Configure a Kotlin-JS project with safe defaults.
+ * Configure a Kotlin-wasm target with compose support.
  */
 
 apply plugin: "org.jetbrains.kotlin.multiplatform"
 apply plugin: "org.jetbrains.compose"
 
 apply from: "$rootDir/gradle/kotlin-mpp-target-wasm.gradle"
-
-kotlin {
-    wasmJs {
-    }
-
-    sourceSets {
-        wasmJs {
-            dependencies {
-            }
-        }
-        wasmJsTest {
-            dependencies {
-            }
-        }
-    }
-}
 
 compose.experimental {
     web.application {}

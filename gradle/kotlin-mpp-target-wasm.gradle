@@ -1,3 +1,7 @@
+/**
+ * Configure a Kotlin-wasm target with safe defaults.
+ */
+
 apply plugin: "org.jetbrains.kotlin.multiplatform"
 
 kotlin {

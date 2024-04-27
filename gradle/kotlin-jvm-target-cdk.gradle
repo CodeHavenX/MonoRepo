@@ -3,7 +3,7 @@
  */
 import org.apache.tools.ant.taskdefs.condition.Os
 
-apply from: "$rootDir/gradle/kotlin-jvm-application.gradle"
+apply from: "$rootDir/gradle/kotlin-jvm-target-application.gradle"
 
 dependencies {
     implementation "software.amazon.awscdk:aws-cdk-lib:_"

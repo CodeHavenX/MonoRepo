@@ -2,7 +2,7 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
 }
-apply(from = "$rootDir/gradle/kotlin-jvm-lib.gradle")
+apply(from = "$rootDir/gradle/kotlin-jvm-target-lib.gradle")
 
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:_")

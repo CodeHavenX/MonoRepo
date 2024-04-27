@@ -1,9 +1,8 @@
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
 }
 
-apply(from = "$rootDir/gradle/android-app.gradle")
+apply(from = "$rootDir/gradle/kotlin-mpp-target-android-app.gradle")
 
 android {
     namespace = "com.cramsan.framework.sample.android"
@@ -35,18 +34,8 @@ dependencies {
     implementation(project(":framework:test"))
     implementation(project(":framework:utils"))
 
-    implementation("androidx.activity:activity-compose:_")
-
-    implementation(AndroidX.compose.ui.tooling)
-    implementation(AndroidX.compose.foundation)
 
     implementation("androidx.appcompat:appcompat:_")
     implementation("androidx.core:core-ktx:_")
     implementation(AndroidX.lifecycle.runtime.ktx)
-
-    implementation(platform(AndroidX.compose.bom))
-    implementation("androidx.compose.ui:ui-graphics:_")
-    implementation(AndroidX.compose.ui.toolingPreview)
-    implementation(AndroidX.compose.material3)
-    implementation(AndroidX.navigation.compose)
 }

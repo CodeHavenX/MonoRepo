@@ -1,5 +1,5 @@
 /**
- * Plugin to create a kotlin MPP with safe defaults.
+ * Plugin to create a kotlin JVM target with safe defaults.
  */
 apply plugin: "org.jetbrains.kotlin.multiplatform"
 

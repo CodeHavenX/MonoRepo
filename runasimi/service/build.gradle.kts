@@ -5,7 +5,7 @@ plugins {
 
 val mainClassTarget by extra("io.ktor.server.netty.EngineMain")
 
-apply(from = "$rootDir/gradle/kotlin-jvm-application.gradle")
+apply(from = "$rootDir/gradle/kotlin-jvm-target-application.gradle")
 
 dependencies {
     implementation(project(":framework:interfacelib"))

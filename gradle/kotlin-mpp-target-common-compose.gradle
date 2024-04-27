@@ -1,10 +1,9 @@
 /**
- * Plugin to create a kotlin MPP with safe defaults.
+ * Plugin to create add compose support to a common source-set.
  */
 apply plugin: "org.jetbrains.kotlin.multiplatform"
 apply plugin: "org.jetbrains.compose"
 
-apply from: "$rootDir/gradle/detekt.gradle"
 apply from: "$rootDir/gradle/kotlin-mpp-target-common.gradle"
 
 kotlin {

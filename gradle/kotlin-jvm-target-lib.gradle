@@ -3,7 +3,7 @@
  */
 
 apply plugin: 'kotlin'
-apply from: "$rootDir/gradle/detekt.gradle"
+apply from: "$rootDir/gradle/release-task.gradle"
 
 kotlin {
     jvmToolchain(17)
@@ -34,8 +34,4 @@ tasks.register("releaseJvm") {
     dependsOn 'test'
 }
 
-tasks.register("release") {
-    group = 'release'
-
-    dependsOn "releaseJvm"
-}
+release.dependsOn('releaseJvm')

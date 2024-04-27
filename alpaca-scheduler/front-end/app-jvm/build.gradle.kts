@@ -5,7 +5,7 @@ plugins {
     id("org.jetbrains.compose")
 }
 
-apply(from = "$rootDir/gradle/kotlin-jvm-lib.gradle")
+apply(from = "$rootDir/gradle/kotlin-jvm-target-lib.gradle")
 
 dependencies {
     implementation(compose.desktop.currentOs)

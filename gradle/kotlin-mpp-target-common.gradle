@@ -1,9 +1,8 @@
 /**
- * Plugin to create a kotlin MPP with safe defaults.
+ * Plugin to create a kotlin MPP common source set with safe defaults.
  */
 apply plugin: "org.jetbrains.kotlin.multiplatform"
-
-apply from: "$rootDir/gradle/detekt.gradle"
+apply from: "$rootDir/gradle/release-task.gradle"
 
 kotlin {
     sourceSets {
@@ -21,9 +20,4 @@ kotlin {
             }
         }
     }
-}
-
-tasks.register("release") {
-    group = 'release'
-    description = 'Run all the steps to build a release artifact for all enabled targets'
 }

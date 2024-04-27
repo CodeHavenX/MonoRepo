@@ -4,4 +4,4 @@ plugins {
     kotlin("jvm")
 }
 
-apply(from = "$rootDir/gradle/kotlin-jvm-cdk.gradle")
+apply(from = "$rootDir/gradle/kotlin-jvm-target-cdk.gradle")

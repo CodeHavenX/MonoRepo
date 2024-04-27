@@ -19,7 +19,6 @@ dependencies {
 
     implementation(project(":framework:interfacelib"))
 
-    implementation("com.google.android.material:material:_")
     implementation("androidx.appcompat:appcompat:_")
     implementation("androidx.fragment:fragment-ktx:_")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:_")

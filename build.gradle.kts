@@ -2,7 +2,6 @@ plugins {
     id("com.android.application") apply false
     id("com.android.library") apply false
     kotlin("jvm") apply false
-    kotlin("js") apply false
     kotlin("multiplatform") apply false
     id("com.google.devtools.ksp") apply false
     id("com.google.dagger.hilt.android") apply false

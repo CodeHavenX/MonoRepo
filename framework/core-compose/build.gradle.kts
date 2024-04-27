@@ -1,5 +1,3 @@
-import de.fayard.refreshVersions.core.versionFor
-
 plugins {
     id("com.android.library")
     id("org.jetbrains.compose")
@@ -18,7 +16,6 @@ dependencies {
     implementation(project(":framework:interfacelib"))
     implementation(project(":framework:core"))
 
-    implementation("com.google.android.material:material:_")
     implementation("androidx.appcompat:appcompat:_")
     implementation("androidx.activity:activity-compose:_")
     implementation("androidx.fragment:fragment-ktx:_")

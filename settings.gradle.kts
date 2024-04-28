@@ -65,6 +65,12 @@ include("alpaca-scheduler:front-end:app-android")
 include("alpaca-scheduler:front-end:app-jvm")
 include("alpaca-scheduler:front-end:app-wasm")
 
+include("cenit:back-end")
+include("cenit:shared")
+include("cenit:front-end:shared-compose")
+include("cenit:front-end:app-android")
+include("cenit:front-end:app-jvm")
+
 include("tpsd")
 
 include("runasimi:android-app")

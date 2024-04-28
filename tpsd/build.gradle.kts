@@ -4,7 +4,7 @@ plugins {
     kotlin("plugin.serialization")
 }
 
-apply(from = "$rootDir/gradle/kotlin-jvm-target-lib.gradle")
+apply(from = "$rootDir/gradle/kotlin-jvm-target-lib-compose.gradle")
 
 dependencies {
     implementation(project(":framework:interfacelib"))
@@ -20,8 +20,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-cli:_")
 
     implementation("org.apache.logging.log4j:log4j-slf4j2-impl:_")
-
-    implementation(compose.desktop.currentOs)
 
     testImplementation(kotlin("test"))
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:_")

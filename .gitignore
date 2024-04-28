@@ -78,3 +78,6 @@ Pods/
 !project.pbxproj
 *.xcodeproj/
 *.podspec
+
+# Credentials, secrets, etc
+credentials.json

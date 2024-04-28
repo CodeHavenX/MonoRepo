@@ -5,7 +5,7 @@ plugins {
     kotlin("jvm")
 }
 
-apply(from = "$rootDir/gradle/kotlin-jvm-target-lib.gradle")
+apply(from = "$rootDir/gradle/kotlin-jvm-target-lib-compose.gradle")
 
 kotlin {
     jvmToolchain(17)
@@ -18,8 +18,6 @@ compose.desktop {
 }
 
 dependencies {
-    implementation(compose.desktop.currentOs)
-
     implementation(project(":framework:assert"))
     implementation(project(":framework:core"))
     implementation(project(":framework:halt"))

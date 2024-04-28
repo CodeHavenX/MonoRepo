@@ -20,7 +20,7 @@ A lot of the code is kept in a shared module called **Framework** that abstract 
 ### Prerequisites
 - JDK 17 _(installed from IDE or web)_
 - Gradle 8.0 _(installed from the wrapper)_
-- IDEA 2021.3.1 CE
+- IDEA 2024.1 UE / 2023.3.6 CE
 - Ensure you have the following plugins installed:
   - [Compose Multiplatform IDE Support](https://plugins.jetbrains.com/plugin/16541-compose-multiplatform-ide-support)
   - [Compose colors preview](https://plugins.jetbrains.com/plugin/21298-compose-colors-preview)

@@ -8,7 +8,7 @@ plugins {
 apply(from = "$rootDir/gradle/kotlin-jvm-target-lib-compose.gradle")
 
 dependencies {
-    implementation(project(":alpaca-scheduler:front-end:shared-compose"))
+    implementation(project(":cenit:front-end:shared-compose"))
 }
 
 compose.desktop {
@@ -17,7 +17,7 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "org.example.project"
+            packageName = "com.cramsan.cenit.client.desktop"
             packageVersion = "1.0.0"
         }
     }

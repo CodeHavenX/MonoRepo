@@ -55,6 +55,12 @@ tasks.register("releaseAll") {
 
     dependsOn("cdk-repo:release")
 
+    dependsOn("cenit:back-end:release")
+    dependsOn("cenit:shared:release")
+    dependsOn("cenit:front-end:shared-compose:release")
+    dependsOn("cenit:front-end:app-android:release")
+    dependsOn("cenit:front-end:app-jvm:release")
+
     dependsOn("discord-bot-platform:release")
     dependsOn("alpaca-scheduler:back-end:release")
     dependsOn("alpaca-scheduler:shared:release")

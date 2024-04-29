@@ -10,3 +10,12 @@ apply(from = "$rootDir/gradle/kotlin-mpp-target-jvm.gradle")
 android {
     namespace = "com.cramsan.edifikana.lib"
 }
+
+kotlin {
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+            }
+        }
+    }
+}

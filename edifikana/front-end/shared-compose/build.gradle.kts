@@ -14,6 +14,8 @@ kotlin {
             implementation(project(":framework:interfacelib"))
             implementation(project(":framework:logging"))
             implementation(project(":edifikana:shared"))
+
+            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha01")
         }
     }
 }

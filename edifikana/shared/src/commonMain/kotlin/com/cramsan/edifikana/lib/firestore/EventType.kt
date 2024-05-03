@@ -5,4 +5,5 @@ enum class EventType {
     INCIDENT,
     DELIVERY,
     MAINTENANCE_SERVICE,
+    OTHER,
 }

@@ -4,22 +4,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import com.cramsan.edifikana.client.android.managers.FireStoreManager
-import com.cramsan.edifikana.client.android.screens.ClockInOutScreen
-import com.cramsan.edifikana.client.android.screens.ClockInOutSingleEmployeeScreen
-import com.cramsan.edifikana.client.android.screens.EventLogAddItemScreen
-import com.cramsan.edifikana.client.android.screens.EventLogSingleItemScreen
-import com.cramsan.edifikana.client.android.screens.EventLotScreen
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import com.cramsan.edifikana.client.android.camera.CameraContract
+import com.cramsan.edifikana.client.android.theme.AppTheme
+import com.cramsan.edifikana.client.android.utils.shareToWhatsApp
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -31,16 +24,43 @@ class MainActivity : ComponentActivity() {
         viewModel.onSignInResult(res)
     }
 
+    private val cameraLauncher = registerForActivityResult(CameraContract()) { filePath ->
+        viewModel.handleCameraResult(filePath)
+    }
+
+    public override fun onStart() {
+        super.onStart()
+        viewModel.checkSignIn()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            Content()
+            val events by viewModel.events.collectAsState()
+
+            LaunchedEffect(events) {
+                when (val activityEvent = events) {
+                    is MainActivityEvents.LaunchSignIn -> {
+                        signIn()
+                    }
+                    is MainActivityEvents.Noop -> { }
+                    is MainActivityEvents.OnCameraComplete -> { }
+                    is MainActivityEvents.ShareToWhatsApp -> {
+                        shareToWhatsApp(activityEvent.text, activityEvent.imageUri)
+                    }
+                }
+            }
+
+            AppTheme {
+                MainScreen(
+                    mainActivityEvents = events,
+                ) {
+                    cameraLauncher.launch(it)
+                }
+            }
         }
 
-        GlobalScope.launch {
-            FireStoreManager().getEmployees()
-        }
     }
 
     fun signIn() {
@@ -56,18 +76,5 @@ class MainActivity : ComponentActivity() {
             .setAvailableProviders(providers)
             .build()
         signInLauncher.launch(signInIntent)
-    }
-}
-
-@Preview
-@Composable
-fun Content() {
-    val navController = rememberNavController()
-    NavHost(navController, startDestination = Screens.EventLog.route) {
-        composable(Screens.ClockInOut.route) { ClockInOutScreen() }
-        composable(Screens.ClockInOutSingleEmployee.route) { ClockInOutSingleEmployeeScreen() }
-        composable(Screens.EventLog.route) { EventLotScreen() }
-        composable(Screens.EventLogAddItem.route) { EventLogAddItemScreen() }
-        composable(Screens.EventLogSingleItem.route) { EventLogSingleItemScreen() }
     }
 }

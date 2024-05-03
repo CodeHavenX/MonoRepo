@@ -9,16 +9,19 @@ data class Employee(
     val idType: IdType? = null,
     val name: String? = null,
     val lastName: String? = null,
+    val role: EmployeeRole? = null,
 ) {
-
     /**
      * Generates a document id based on the employee id and id type. This is used as the primary key in Firestore.
      */
-    fun documentId(): String {
-        return "${idType?.name}_${id}"
+    fun documentId(): EmployeePK {
+        return EmployeePK("${idType?.name}_${id}")
     }
 
     companion object {
         const val COLLECTION = "employees"
     }
 }
+
+@JvmInline
+value class EmployeePK(val documentPath: String)

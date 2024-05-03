@@ -1,0 +1,4 @@
+<paths>
+    <external-media-path path="images/" name="images" />
+    <external-media-path path="cache/" name="cache" />
+</paths>

@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">Minesweepers</string>
+    <string name="app_name">Edifikana</string>
+    <string name="route_clock_in">route_clock_in</string>
+    <string name="route_clock_in_single_employee">route_clock_in_single_employee</string>
+    <string name="route_event_log">route_event_log</string>
+    <string name="route_event_log_single_item">route_event_log_single_item</string>
+    <string name="route_event_log_add_item">route_event_log_add_item</string>
 </resources>

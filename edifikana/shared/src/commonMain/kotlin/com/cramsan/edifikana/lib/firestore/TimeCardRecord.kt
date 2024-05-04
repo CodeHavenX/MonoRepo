@@ -15,12 +15,11 @@ data class TimeCardRecord(
     val fallbackEmployeeIdType: IdType? = null,
     val fallbackEmployeeIdTypeOther: String? = null,
     val fallbackEmployeeIdReason: String? = null,
-    val timeRecorded: Long? = null,
     val imageUrl: String? = null,
 ) {
 
     fun documentId(): TimeCardRecordPK {
-        return TimeCardRecordPK("$employeeDocumentId-$eventType-$timeRecorded")
+        return TimeCardRecordPK("$employeeDocumentId-$eventType-$eventTime")
     }
 
     companion object {

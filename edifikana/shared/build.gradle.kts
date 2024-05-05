@@ -13,8 +13,9 @@ android {
 
 kotlin {
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0-RC.2")
             }
         }
     }

@@ -20,15 +20,18 @@ import java.util.Collections
 fun appendValues(
     sheets: Sheets,
     spreadsheetId: String?,
-    range: String?,
-    values: List<List<Any>>,
+    sheetName: String,
+    values: List<List<String>>,
 ) {
     try {
         // Append values to the specified range.
-        val body = ValueRange().setValues(values)
+        val range = "$sheetName!A1"
+        val sanitizedValues = values.map { row -> row.map { it.ifEmpty { "/" } } }
+        val body = ValueRange().setValues(sanitizedValues)
         val result = sheets.spreadsheets().values()
             .append(spreadsheetId, range, body)
             .setValueInputOption(ValueInputOption.RAW.name)
+            .setInsertDataOption("INSERT_ROWS")
             .execute()
         println(result)
     } catch (e: GoogleJsonResponseException) {

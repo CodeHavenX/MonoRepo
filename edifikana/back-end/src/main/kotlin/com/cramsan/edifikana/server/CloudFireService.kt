@@ -142,7 +142,7 @@ class CloudFireService {
         appendValues(
             sheets,
             gDriveParams.timeCardSpreadsheetId,
-            "Hoja 1!A1",
+            "Hoja 1",
             listOf(
                 timeCardRecord.toRowEntry(
                     employeeFullName = employeeName,
@@ -177,7 +177,7 @@ class CloudFireService {
         appendValues(
             sheets,
             gDriveParams.eventLogSpreadsheetId,
-            "Hoja 1!A1",
+            "Hoja 1",
             listOf(
                 eventLogRecord.toRowEntry(employeeName)
             )

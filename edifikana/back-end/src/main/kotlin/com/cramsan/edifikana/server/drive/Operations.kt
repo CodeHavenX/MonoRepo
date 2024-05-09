@@ -30,7 +30,7 @@ fun appendValues(
         val body = ValueRange().setValues(sanitizedValues)
         val result = sheets.spreadsheets().values()
             .append(spreadsheetId, range, body)
-            .setValueInputOption(ValueInputOption.RAW.name)
+            .setValueInputOption(ValueInputOption.USER_ENTERED.name)
             .setInsertDataOption("INSERT_ROWS")
             .execute()
         println(result)

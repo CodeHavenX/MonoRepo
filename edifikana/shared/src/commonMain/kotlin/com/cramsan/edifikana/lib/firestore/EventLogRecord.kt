@@ -13,6 +13,7 @@ data class EventLogRecord (
     val fallbackEventType: String? = null,
     val summary: String? = null,
     val description: String? = null,
+    val attachments: List<String>? = null,
 ) {
     fun documentId(): EventLogRecordPK {
         return EventLogRecordPK("$employeeDocumentId-$timeRecorded-$eventType")

@@ -68,6 +68,7 @@ fun TimeCardRecord.toRowEntry(
 
 fun EventLogRecord.toRowEntry(
     employeeFullName: String,
+    attachments: String,
 ): List<String> {
     return listOf(
         employeeFullName,
@@ -78,5 +79,6 @@ fun EventLogRecord.toRowEntry(
         fallbackEventType.orEmpty(),
         summary.orEmpty(),
         description.orEmpty(),
+        attachments,
     )
 }

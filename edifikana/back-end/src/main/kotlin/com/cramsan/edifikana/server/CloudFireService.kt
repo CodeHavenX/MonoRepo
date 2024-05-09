@@ -4,6 +4,7 @@ import com.cramsan.edifikana.lib.firestore.Employee
 import com.cramsan.edifikana.lib.firestore.EmployeePK
 import com.cramsan.edifikana.lib.firestore.EventLogRecord
 import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
+import com.cramsan.edifikana.lib.firestore.EventType
 import com.cramsan.edifikana.lib.firestore.TimeCardRecord
 import com.cramsan.edifikana.lib.firestore.User
 import com.cramsan.edifikana.lib.firestore.helpers.fullName
@@ -16,12 +17,12 @@ import com.cramsan.edifikana.server.drive.initializeSpreadsheetService
 import com.cramsan.edifikana.server.drive.uploadFile
 import com.cramsan.edifikana.server.firebase.getDocument
 import com.cramsan.edifikana.server.models.toEmployee
-import com.cramsan.edifikana.server.models.toEventLogRecord
 import com.cramsan.edifikana.server.models.toRowEntry
 import com.cramsan.edifikana.server.models.toTimeCardEvent
 import com.google.api.services.drive.Drive
 import com.google.api.services.sheets.v4.Sheets
 import com.google.cloud.firestore.Firestore
+import com.google.events.cloud.firestore.v1.Document
 import com.google.events.cloud.firestore.v1.DocumentEventData
 import java.io.File
 import java.net.URL
@@ -80,7 +81,13 @@ class CloudFireService {
                 return
             }
             EventLogRecord.COLLECTION -> {
-                processEventLogRecord(EventLogRecordPK(documentId), firestore, gDriveParams)
+                processEventLogRecord(
+                    EventLogRecordPK(documentId),
+                    firestore,
+                    gDriveParams,
+                    documentEventData.oldValue,
+                    documentEventData.value,
+                )
                 return
             }
             User.COLLECTION -> {
@@ -163,26 +170,75 @@ class CloudFireService {
         eventLogRecordPK: EventLogRecordPK,
         firestore: Firestore,
         gDriveParams: GoogleDriveParameters,
+        oldValue: Document,
+        value1: Document,
     ) {
         logger.info("Processing event log record: $eventLogRecordPK")
-        val document = getDocument(firestore, EventLogRecord.COLLECTION, eventLogRecordPK.documentPath)
+        val oldEventLogRecord = oldValue.toObject()
+        val eventLogRecord = value1.toObject()
 
-        val eventLogRecord = document.toEventLogRecord()
+        val old = (oldEventLogRecord.attachments ?: listOf()).toSet()
+        val new = (eventLogRecord.attachments ?: listOf()).toSet()
+        val diff = new - old
 
         val employeeName = eventLogRecord.employeeDocumentId?.let {
             val employee = getDocument(firestore, Employee.COLLECTION, it).toEmployee()
             employee.fullName()
         }.orEmpty()
 
+        val uploadedImages = diff.map {
+            val imageUrl = it.let {
+                "https://firebasestorage.googleapis.com/v0/b/edifikana.appspot.com/o/${urlEncode(it)}?alt=media"
+            }
+
+            if (imageUrl.isNotEmpty()) {
+                logger.info("EventLogRecordPK: ${eventLogRecordPK.documentPath} - ImageUrl: $imageUrl")
+                val url = URL(imageUrl)
+                val imageData = url.readBytes()
+                val imageFile = File.createTempFile("image", ".jpg")
+                imageFile.writeBytes(imageData)
+
+                uploadFile(
+                    drive,
+                    gDriveParams.storageFolderId,
+                    imageFile.absolutePath,
+                    "image/jpeg",
+                    it,
+                )
+            } else {
+                logger.warning("No image URL found")
+                ""
+            }
+        }.filter { it.isNotEmpty() }
+
         appendValues(
             sheets,
             gDriveParams.eventLogSpreadsheetId,
             "Hoja 1",
             listOf(
-                eventLogRecord.toRowEntry(employeeName)
+                eventLogRecord.toRowEntry(employeeName, uploadedImages.joinToString("\n"))
             )
         )
     }
+}
+
+fun Document.toObject(): EventLogRecord {
+    return EventLogRecord(
+        employeeDocumentId = this.getFieldsOrDefault("employeeDocumentId", null)?.stringValue,
+        timeRecorded = this.getFieldsOrDefault("timeRecorded", null)?.integerValue,
+        unit = this.getFieldsOrDefault("unit", null)?.stringValue,
+        eventType = this.getFieldsOrDefault("eventType", null)?.let {
+            EventType.fromString(it.stringValue)
+        } ?: EventType.OTHER,
+        fallbackEmployeeName = this.getFieldsOrDefault("fallbackEmployeeName", null)?.stringValue,
+        fallbackEventType = this.getFieldsOrDefault("fallbackEventType", null)?.stringValue,
+        summary = this.getFieldsOrDefault("summary", null)?.stringValue,
+        description = this.getFieldsOrDefault("description", null)?.stringValue,
+        attachments = this.getFieldsOrDefault("attachments", null)?.arrayValue?.valuesList?.map {
+            it.stringValue
+        },
+
+    )
 }
 
 private fun urlEncode(path: String): String {

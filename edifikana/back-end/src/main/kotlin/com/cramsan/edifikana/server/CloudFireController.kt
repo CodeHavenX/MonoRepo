@@ -53,12 +53,18 @@ private const val TIME_CARD_SPREADSHEET_ID_PARAM = "TIME_CARD_SPREADSHEET_ID"
 private const val EVENT_LOG_SPREADSHEET_ID_PARAM = "EVENT_LOG_SPREADSHEET_ID"
 
 fun main() {
-    val payload = "CosDCmJwcm9qZWN0cy9lZGlmaWthbmEvZGF0YWJhc2VzLyhkZWZhdWx0KS9kb2N1bWVudHMvdGltZUNhcmRSZWNvcmRz" +
-        "L0ROSV80NzIwMjIwMS1DTE9DS19PVVQtMTcxNDg5MTk2ORIcChZmYWxsYmFja0VtcGxveWVlSWRUeXBlEgJYABIeChhmYWxsYmF" +
-        "ja0VtcGxveWVlSWRSZWFzb24SAlgAEjUKCGltYWdlVXJsEimKASZjbG9ja2lub3V0LzIwMjQtMDUtMDQtMjMtNTItNDctODQ2Lmp" +
-        "wZxITCglldmVudFRpbWUSBhDB2dyxBhIhChtmYWxsYmFja0VtcGxveWVlSWRUeXBlT3RoZXISAlgAEhkKCWV2ZW50VHlwZRIMigE" +
-        "JQ0xPQ0tfT1VUEhoKFGZhbGxiYWNrRW1wbG95ZWVOYW1lEgJYABIlChJlbXBsb3llZURvY3VtZW50SWQSD4oBDEROSV80NzIwMj" +
-        "IwMRoMCMTZ3LEGEJjP06UDIgwIxNncsQYQmM/TpQM="
+    val payload = "CuYFCmVwcm9qZWN0cy9lZGlmaWthbmEvZGF0YWJhc2VzLyhkZWZhdWx0KS9kb2N1bWVudHMvZXZlbnRM" +
+            "b2cvRE5JXzQ3NTI0ODExLTE3MTUxODk2MTktTUFJTlRFTkFOQ0VfU0VSVklDRRIlCgdzdW1tYXJ5EhqKARdzZX" +
+            "J2aWNpbyBkZSBqYXJkaW5lcsOtYRIYChFmYWxsYmFja0V2ZW50VHlwZRIDigEAEg4KBHVuaXQSBooBAzEwORIWCgx" +
+            "0aW1lUmVjb3JkZWQSBhDz7u6xBhKOAwoLZGVzY3JpcHRpb24S/gKKAfoCaW5ncmVzYXJvbiBwZXJzb25hbCBwYX" +
+            "JhIHNlcnZpY2lvIGRlIGphcmRpbmVyw61hIEZlcm5hbmRvIEVucmlxdWUgUGxhbm8gRE5JIDE2NTgyNTQsIGxh" +
+            "IHNydGEuIGFkbWluaXN0cmFkb3JhIGxlcyBtb3N0csOzIGRldGFsbGFkYW1lbnRlIGxvcyBsdWdhcmVzIHF1ZS" +
+            "BzZSBkZWJlIHJlYWxpemFyIGxvcyB0cmFiYWpvcy4gRWwgc3IuIGphcmRpbmVybyBpbmRpY8OzIHF1ZSBoYXkg" +
+            "cGxhbnRhcyBlbmZlcm1hcyB5IHF1ZSBuZWNlc2l0YW4gZnVtaWdhci4gYSBwYXJ0ZSBkZSBsYSBzcnRhLiBhZG1" +
+            "pbmlzdHJhZG9yYSBsYSBzcmEuIENsYXVkaWEgQm9uYW5pIHRhbWJpw6luIGVzdMOhIGVuc2XDsWFuZG8gYWwgamF" +
+            "yZGluZXJvIGxvcyBsdWdhcmVzIGEgdHJhYmFqYXIuEiMKCWV2ZW50VHlwZRIWigETTUFJTlRFTkFOQ0VfU0VSV" +
+            "klDRRIbChRmYWxsYmFja0VtcGxveWVlTmFtZRIDigEAEiUKEmVtcGxveWVlRG9jdW1lbnRJZBIPigEMRE5JXzQ3" +
+            "NTI0ODExGgwI9+7usQYQmMXusQEiDAj37u6xBhCYxe6xAQ=="
     val data = Base64.getDecoder().decode(payload)
     val firestoreEventData: DocumentEventData = DocumentEventData.parseFrom(data)
 

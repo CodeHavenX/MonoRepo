@@ -86,4 +86,4 @@ private val SCOPES = listOf(
     SheetsScopes.DRIVE,
     SheetsScopes.SPREADSHEETS,
 )
-private const val CREDENTIALS_FILE_PATH = "/credentials.json"
+private const val CREDENTIALS_FILE_PATH = "/gdrivde-credentials.json"

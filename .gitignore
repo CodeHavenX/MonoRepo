@@ -81,3 +81,5 @@ Pods/
 
 # Credentials, secrets, etc
 credentials.json
+firebase-admin-sdk.json
+gdrive-credentials.json

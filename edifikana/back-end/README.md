@@ -1,4 +1,16 @@
 # Pre-requisites
+## Firebase
+- Have a [Firebase account](https://console.firebase.google.com/).
+- Create a new project.
+- Enable Firestore.
+- Enable the Firebase Admin SDK.
+- Download the Firebase Admin SDK credentials.
+    - **BEWARE! Generating a new key will invalidate the previous key. If there is a key already in use, use that one instead to avoid breaking the system.**
+    - Open the Project Settings in Firebase.
+    - Go into Service Accounts.
+    - Select `Firebase Admin SDK`.
+    - `Generate new private key`. and store the file in a safe place.
+    - Place this file in the `src/main/resources` folder and name it `firebase-admin-sdk.json`.
 ## Google Cloud
  - Have a [Google Cloud account](https://console.cloud.google.com/).
  - Install the [gcloud CLI](https://cloud.google.com/sdk/docs/install).
@@ -22,14 +34,6 @@
      - Click on `Add Key` and create a new key. This will download a JSON file.
      - Place this file in the `src/main/resources` folder and name it `credentials.json`.
      - Make a note of the email for this service account.
-## Firebase
-- Download the Firebase Admin SDK credentials.
-    - **BEWARE! Generating a new key will invalidate the previous key. If there is a key already in use, use that one instead to avoid breaking the system.**
-    - Open the Project Settings in Firebase.
-    - Go into Service Accounts.
-    - Select `Firebase Admin SDK`.
-    - `Generate new private key`. and store the file in a safe place.
-    - Place this file in the `src/main/resources` folder and name it `firebase-admin-sdk.json`.
 ## Google Drive 
  - Have a Google account with a Drive.
    - Create a folder in your Google Drive and copy the ID. This will be used to store files.

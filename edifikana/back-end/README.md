@@ -1,17 +1,76 @@
 # Pre-requisites
 ## Firebase
-- Have a [Firebase account](https://console.firebase.google.com/).
-- Create a new project.
-- Enable Firestore.
-- Enable the Firebase Admin SDK.
+- Go to firebase
+- Create a new Project
+- Use default settings for analytics
+- Register app:
+ - package name(should be the preprod flavor for staging and the prod falvor for the prod stack)
+ -Do not download the json file yet
+ - Next
+- Datasote
+ - Create database
+ - use default name, select us-west1 as location(VERY IMPORTANT, this location will be used in other steps)
+ - Start in Production mode
+- Storage
+ - Get started
+ - Start in production mode
+ - LOcation will be set to us-west1(same as above)
+- Auth
+ - Get started
+ - Enable annonimous sign in
+ - Enable Google sign in
+ - Set the display name accordingly
+ - Set the support email
+ - Save 
+- Go to project settings
+- Add other users to the project
+- Download the goog-service.json
+- Save the file in <FIND LOCATION!!!!>
+
 - Download the Firebase Admin SDK credentials.
     - **BEWARE! Generating a new key will invalidate the previous key. If there is a key already in use, use that one instead to avoid breaking the system.**
     - Open the Project Settings in Firebase.
     - Go into Service Accounts.
     - Select `Firebase Admin SDK`.
     - `Generate new private key`. and store the file in a safe place.
-    - Place this file in the `src/main/resources` folder and name it `firebase-admin-sdk.json`.
-## Google Cloud
+    - Place this file in the `back-end/src/main/resources` folder and name it `firebase-admin-sdk.json`. <--- Update the folder path
+
+## Google Cloud Access
+ - Create a new project
+  - name it accordingly
+ - Select the project
+ - Go to [IAM](https://console.cloud.google.com/iam-admin/iam)
+ - Let's create a service account.
+   - Go to `Service Accounts`.
+   - Click `Create Service Account`.
+   - Follow the instructions to create a service account. There is no need to add new roles at this moment.
+     - Name it `gdrive-access-service`
+     - Once the account is created, open the account's details page and open the `Keys` tab.
+     - Click on `Add Key` and create a new key. This will download a JSON file.
+     - Place this file in the `back-end/src/main/resources` folder and name it `gdrive-credentials.json`.
+     - Make a note of the email for this service account.
+
+## Google Drive 
+ - Have a Google account with a Drive.
+   - Create a folder in your Google Drive and copy the ID. This will be used to store files.
+     - This folder will be used later in the `STORAGE_FOLDER_ID` environment variable.
+   - Create a Google Sheet and copy the ID.
+     - This will be used later in the `TIME_CARD_SPREADSHEET_ID` environment variables.
+   - Create a Google Sheet and copy the ID.
+     - This will be used later in the `EVENT_LOG_SPREADSHEET_ID` environment variables.
+   - Now share the folder and the sheets with the service account email and assign it `editor` permissions.
+
+## Google Drive and Sheets API
+- https://developers.google.com/workspace/guides/get-started
+- In the Google Cloud console, go to Menu menu > More products > Google Workspace > Product Library *warning page loads very slowly*
+- Click on APIs on the left hand side
+- Click on Google Drive API
+- Click on Enable
+- Go back to the API library
+- Click on Google Sheets API
+- Click on Enable**TODO: We need to have a way to verify that we have completed the API setup.**
+
+## Google Cloud Function
  - Have a [Google Cloud account](https://console.cloud.google.com/).
  - Install the [gcloud CLI](https://cloud.google.com/sdk/docs/install).
  - Manually create a [Google Cloud Function](https://console.cloud.google.com/functions/).
@@ -26,23 +85,7 @@
    - Click `Next`.
    - Set the Runtime to `Java 17`.
    - Click `Deploy`.
- - Go to [IAM](https://console.cloud.google.com/iam-admin/iam) and let's create a service account.
-   - Go to `Service Accounts`.
-   - Click `Create Service Account`.
-   - Follow the instructions to create a service account. There is no need to add new roles at this moment.
-     - Once the account is created, open the account's details page and open the `Keys` tab.
-     - Click on `Add Key` and create a new key. This will download a JSON file.
-     - Place this file in the `src/main/resources` folder and name it `credentials.json`.
-     - Make a note of the email for this service account.
-## Google Drive 
- - Have a Google account with a Drive.
-   - Create a folder in your Google Drive and copy the ID. This will be used to store files.
-     - This folder will be used later in the `STORAGE_FOLDER_ID` environment variable.
-   - Create a Google Sheet and copy the ID.
-     - This will be used later in the `TIME_CARD_SPREADSHEET_ID` environment variables.
-   - Create a Google Sheet and copy the ID.
-     - This will be used later in the `EVENT_LOG_SPREADSHEET_ID` environment variables.
-   - Now share the folder and the sheets with the service account email and assign it `editor` permissions.
+
 
 # Testing
 

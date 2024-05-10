@@ -10,9 +10,9 @@ import io.cloudevents.CloudEvent
 import java.util.Base64
 import java.util.logging.Logger
 
-class CloudFireController : CloudEventsFunction {
+class CloudFirebaseApp : CloudEventsFunction {
     companion object {
-        private val logger: Logger = Logger.getLogger(CloudFireController::class.java.getName())
+        private val logger: Logger = Logger.getLogger(CloudFirebaseApp::class.java.getName())
     }
 
     val credentials = getLocalFirebaseCredentials()
@@ -26,11 +26,11 @@ class CloudFireController : CloudEventsFunction {
         logger.info("Function triggered by event on: " + event.source)
         logger.info("Event type: " + event.type)
         val payloadBytes = event.data!!.toBytes()
-        val eventData = DocumentEventData.parseFrom(payloadBytes)
 
         val encodedString: String = Base64.getEncoder().encodeToString(payloadBytes)
         logger.warning("Encoded payload: $encodedString")
 
+        val eventData = DocumentEventData.parseFrom(payloadBytes)
         val gDriveParams = GoogleDriveParameters(
             storageFolderId = System.getenv(STORAGE_FOLDER_ID_PARAM) ?: throw IllegalArgumentException(
                 "Missing $STORAGE_FOLDER_ID_PARAM environment variable"
@@ -68,7 +68,7 @@ fun main() {
     val data = Base64.getDecoder().decode(payload)
     val firestoreEventData: DocumentEventData = DocumentEventData.parseFrom(data)
 
-    val firestore = CloudFireController().firestore
+    val firestore = CloudFirebaseApp().firestore
 
     val gDriveParams = GoogleDriveParameters(
         storageFolderId = "1ZRI7dP2X7VqwixGKz3OPJ6KB-uuDkkM1",

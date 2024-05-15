@@ -1,6 +1,5 @@
 package com.cramsan.edifikana.lib.firestore
 
-
 /**
  * Due to Firestore limitations, we need to make all fields nullable and with a default value.
  */

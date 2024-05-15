@@ -83,4 +83,7 @@ Pods/
 *.jks
 *credentials.json
 firebase-admin-sdk.json
-gdrive-credentials.json
+google-services.json
+*.keystore
+*.local.properties
+.secrets/

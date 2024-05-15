@@ -5,6 +5,7 @@ import com.cramsan.edifikana.lib.firestore.EmployeePK
 import com.cramsan.edifikana.lib.firestore.EventLogRecord
 import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
 import com.cramsan.edifikana.lib.firestore.EventType
+import com.cramsan.edifikana.lib.firestore.FireStoreModel
 import com.cramsan.edifikana.lib.firestore.TimeCardRecord
 import com.cramsan.edifikana.lib.firestore.User
 import com.cramsan.edifikana.lib.firestore.helpers.fullName
@@ -55,6 +56,7 @@ class CloudFireService {
      * @param firestore The Firestore instance
      * @param gDriveParams The Google Drive parameters
      */
+    @OptIn(FireStoreModel::class)
     fun processEvent(
         documentEventData: DocumentEventData,
         firestore: Firestore,
@@ -108,6 +110,7 @@ class CloudFireService {
      * @param firestore The Firestore instance
      * @param gDriveParams The Google Drive parameters
      */
+    @OptIn(FireStoreModel::class)
     private fun processTimeCardRecord(
         timeCardRecordPK: EmployeePK,
         firestore: Firestore,
@@ -166,6 +169,7 @@ class CloudFireService {
      * @param firestore The Firestore instance
      * @param gDriveParams The Google Drive parameters
      */
+    @OptIn(FireStoreModel::class)
     private fun processEventLogRecord(
         eventLogRecordPK: EventLogRecordPK,
         firestore: Firestore,
@@ -222,6 +226,7 @@ class CloudFireService {
     }
 }
 
+@FireStoreModel
 fun Document.toObject(): EventLogRecord {
     return EventLogRecord(
         employeeDocumentId = this.getFieldsOrDefault("employeeDocumentId", null)?.stringValue,

@@ -5,29 +5,26 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
-import androidx.core.content.FileProvider
-import androidx.core.net.toFile
+import com.cramsan.edifikana.client.android.R
 
-
-fun Context.shareToWhatsApp(text: String, imageUri: Uri?): Boolean {
-    val whatsappIntent = Intent(Intent.ACTION_SEND)
-    whatsappIntent.setType("text/plain")
-    whatsappIntent.setPackage("com.whatsapp")
-    whatsappIntent.putExtra(Intent.EXTRA_TEXT, text)
-    imageUri?.let {
-        val contentUri: Uri = FileProvider.getUriForFile(this, packageName+".fileprovider", imageUri.toFile())
-        whatsappIntent.putExtra(Intent.EXTRA_STREAM, contentUri)
-        whatsappIntent.setType("image/jpeg")
-        whatsappIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+fun Context.shareContent(text: String, imageUri: Uri?): Boolean {
+    val shareIntent = Intent(Intent.ACTION_SEND)
+    shareIntent.putExtra(Intent.EXTRA_TEXT, text)
+    if (imageUri != null) {
+        shareIntent.setType("image/jpeg")
+        shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri)
+        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    } else {
+        shareIntent.setType("text/plain")
     }
 
 
     try {
-        startActivity(whatsappIntent)
+        val chooserIntent = Intent.createChooser(shareIntent, null)
+        startActivity(chooserIntent)
         return true
     } catch (ex: ActivityNotFoundException) {
-        //Toast.makeText(this, "There was an error when trying to share.", Toast.LENGTH_SHORT).show()
-        Toast.makeText(this, "$text\n$imageUri", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(R.string.error_message_unexpected_error), Toast.LENGTH_SHORT).show()
     }
 
     return false

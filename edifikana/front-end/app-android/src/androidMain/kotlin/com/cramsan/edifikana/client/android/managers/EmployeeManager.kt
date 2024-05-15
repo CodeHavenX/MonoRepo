@@ -1,43 +1,47 @@
 package com.cramsan.edifikana.client.android.managers
 
-import com.cramsan.edifikana.client.android.BackgroundDispatcher
-import com.cramsan.edifikana.client.android.run
+import com.cramsan.edifikana.client.android.managers.mappers.toDomainModel
+import com.cramsan.edifikana.client.android.models.EmployeeModel
+import com.cramsan.edifikana.client.android.utils.getOrCatch
 import com.cramsan.edifikana.lib.firestore.Employee
 import com.cramsan.edifikana.lib.firestore.EmployeePK
-import com.cramsan.edifikana.lib.firestore.IdType
+import com.cramsan.edifikana.lib.firestore.FireStoreModel
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.snapshots
-import com.google.firebase.firestore.toObject
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.tasks.await
 
 @Singleton
 class EmployeeManager @Inject constructor(
-    val fireStore: FirebaseFirestore,
-    @BackgroundDispatcher
-    val background: CoroutineDispatcher,
+    private val fireStore: FirebaseFirestore,
+    private val workContext: WorkContext,
 ) {
-    suspend fun getEmployees(): Result<List<Employee>> = background.run {
+    @OptIn(FireStoreModel::class)
+    suspend fun getEmployees(): Result<List<EmployeeModel>> = workContext.getOrCatch {
         fireStore.collection(Employee.COLLECTION)
             .get()
             .await()
-            .toObjects(Employee::class.java).toList()
+            .toObjects(Employee::class.java)
+            .toList()
+            .map { it.toDomainModel() }
     }
 
-    suspend fun getEmployee(employeePK: EmployeePK): Result<Employee> = background.run {
+    @OptIn(FireStoreModel::class)
+    suspend fun getEmployee(employeePK: EmployeePK): Result<EmployeeModel> = workContext.getOrCatch {
         fireStore.collection(Employee.COLLECTION)
             .document(employeePK.documentPath)
             .get()
             .await()
-            .toObject(Employee::class.java) ?: throw Exception("Employee not found")
+            .toObject(Employee::class.java)
+            ?.toDomainModel() ?: throw RuntimeException("Employee $employeePK not found")
     }
 
-    suspend fun addEmployee(employee: Employee) = background.run {
+    @OptIn(FireStoreModel::class)
+    suspend fun addEmployee(employee: EmployeeModel) = workContext.getOrCatch {
+        val firebaseModel = employee.toDomainModel()
         fireStore.collection(Employee.COLLECTION)
-            .document(employee.documentId().documentPath)
-            .set(employee)
+            .document(firebaseModel.documentId().documentPath)
+            .set(firebaseModel)
             .await()
     }
 }

@@ -1,9 +1,9 @@
 package com.cramsan.edifikana.lib.firestore
 
-
 /**
  * Due to Firestore limitations, we need to make all fields nullable and with a default value.
  */
+@FireStoreModel
 data class Employee(
     val id: String? = null,
     val idType: IdType? = null,
@@ -15,7 +15,7 @@ data class Employee(
      * Generates a document id based on the employee id and id type. This is used as the primary key in Firestore.
      */
     fun documentId(): EmployeePK {
-        return EmployeePK("${idType?.name}_${id}")
+        return EmployeePK("${idType?.name}_$id")
     }
 
     companion object {

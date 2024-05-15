@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<defaults>
+  <entry>
+    <key>captureWidth</key>
+    <value>1080</value>
+  </entry>
+  <entry>
+    <key>captureHeight</key>
+    <value>1920</value>
+  </entry>
+  <entry>
+    <key>imageQualityHint</key>
+    <value>25</value>
+  </entry>
+</defaults>

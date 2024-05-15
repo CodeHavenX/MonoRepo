@@ -3,15 +3,19 @@ package com.cramsan.edifikana.lib.firestore.helpers
 import com.cramsan.edifikana.lib.firestore.Employee
 import com.cramsan.edifikana.lib.firestore.EmployeeRole
 import com.cramsan.edifikana.lib.firestore.EventType
+import com.cramsan.edifikana.lib.firestore.FireStoreModel
 import com.cramsan.edifikana.lib.firestore.IdType
 import com.cramsan.edifikana.lib.firestore.TimeCardEventType
-import java.time.format.DateTimeFormatter
-import java.util.TimeZone
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.TimeZone
 
+@FireStoreModel
 fun Employee.fullName() = "$name $lastName".trim()
+
+// TODO: Unify with other mapper functions in com.cramsan.edifikana.client.lib.Mappers
 
 fun EmployeeRole?.toRoleFriendlyName(): String {
     return when (this) {

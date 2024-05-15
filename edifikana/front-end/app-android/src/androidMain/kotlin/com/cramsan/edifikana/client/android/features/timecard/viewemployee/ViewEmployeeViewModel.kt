@@ -11,11 +11,11 @@ import com.cramsan.edifikana.client.android.models.EmployeeModel
 import com.cramsan.edifikana.client.android.models.StorageRef
 import com.cramsan.edifikana.client.android.models.TimeCardRecordModel
 import com.cramsan.edifikana.client.android.models.fullName
+import com.cramsan.edifikana.client.lib.eventTypeFriendlyName
 import com.cramsan.edifikana.client.lib.toFriendlyDateTime
 import com.cramsan.edifikana.lib.firestore.EmployeePK
 import com.cramsan.edifikana.lib.firestore.TimeCardEventType
 import com.cramsan.edifikana.lib.firestore.TimeCardRecordPK
-import com.cramsan.edifikana.lib.firestore.helpers.eventTypeFriendlyName
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.async

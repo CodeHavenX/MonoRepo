@@ -4,28 +4,28 @@
 - Create a new Project
 - Use default settings for analytics
 - Register app:
- - package name(should be the preprod flavor for staging and the prod falvor for the prod stack)
- -Do not download the json file yet
- - Next
+- package name(should be the preprod flavor for staging and the prod falvor for the prod stack)
+  -Do not download the json file yet
+- Next
 - Datasote
- - Create database
- - use default name, select us-west1 as location(VERY IMPORTANT, this location will be used in other steps)
- - Start in Production mode
+- Create database
+- use default name, select us-west1 as location(VERY IMPORTANT, this location will be used in other steps)
+- Start in Production mode
 - Storage
- - Get started
- - Start in production mode
- - LOcation will be set to us-west1(same as above)
+- Get started
+- Start in production mode
+- LOcation will be set to us-west1(same as above)
 - Auth
- - Get started
- - Enable annonimous sign in
- - Enable Google sign in
- - Set the display name accordingly
- - Set the support email
- - Save 
+- Get started
+- Enable annonimous sign in
+- Enable Google sign in
+- Set the display name accordingly
+- Set the support email
+- Save
 - Go to project settings
 - Add other users to the project
 - Download the goog-service.json
-- Save the file in <FIND LOCATION!!!!>
+- Save the file in <FIND LOCATION!!!!> , include paths for flavors
 
 - Download the Firebase Admin SDK credentials.
     - **BEWARE! Generating a new key will invalidate the previous key. If there is a key already in use, use that one instead to avoid breaking the system.**
@@ -36,29 +36,29 @@
     - Place this file in the `back-end/src/main/resources` folder and name it `firebase-admin-sdk.json`. <--- Update the folder path
 
 ## Google Cloud Access
- - Create a new project
-  - name it accordingly
- - Select the project
- - Go to [IAM](https://console.cloud.google.com/iam-admin/iam)
- - Let's create a service account.
-   - Go to `Service Accounts`.
-   - Click `Create Service Account`.
-   - Follow the instructions to create a service account. There is no need to add new roles at this moment.
-     - Name it `gdrive-access-service`
-     - Once the account is created, open the account's details page and open the `Keys` tab.
-     - Click on `Add Key` and create a new key. This will download a JSON file.
-     - Place this file in the `back-end/src/main/resources` folder and name it `gdrive-credentials.json`.
-     - Make a note of the email for this service account.
+- Create a new project
+- name it accordingly
+- Select the project
+- Go to [IAM](https://console.cloud.google.com/iam-admin/iam)
+- Let's create a service account.
+    - Go to `Service Accounts`.
+    - Click `Create Service Account`.
+    - Follow the instructions to create a service account. There is no need to add new roles at this moment.
+        - Name it `gdrive-access-service`
+        - Once the account is created, open the account's details page and open the `Keys` tab.
+        - Click on `Add Key` and create a new key. This will download a JSON file.
+        - Place this file in the `back-end/src/main/resources` folder and name it `gdrive-credentials.json`.
+        - Make a note of the email for this service account.
 
-## Google Drive 
- - Have a Google account with a Drive.
-   - Create a folder in your Google Drive and copy the ID. This will be used to store files.
-     - This folder will be used later in the `STORAGE_FOLDER_ID` environment variable.
-   - Create a Google Sheet and copy the ID.
-     - This will be used later in the `TIME_CARD_SPREADSHEET_ID` environment variables.
-   - Create a Google Sheet and copy the ID.
-     - This will be used later in the `EVENT_LOG_SPREADSHEET_ID` environment variables.
-   - Now share the folder and the sheets with the service account email and assign it `editor` permissions.
+## Google Drive
+- Have a Google account with a Drive.
+    - Create a folder in your Google Drive and copy the ID. This will be used to store files.
+        - This folder will be used later in the `STORAGE_FOLDER_ID` environment variable.
+    - Create a Google Sheet and copy the ID.
+        - This will be used later in the `TIME_CARD_SPREADSHEET_ID` environment variables.
+    - Create a Google Sheet and copy the ID.
+        - This will be used later in the `EVENT_LOG_SPREADSHEET_ID` environment variables.
+    - Now share the folder and the sheets with the service account email and assign it `editor` permissions.
 
 ## Google Drive and Sheets API
 - https://developers.google.com/workspace/guides/get-started
@@ -70,22 +70,89 @@
 - Click on Google Sheets API
 - Click on Enable**TODO: We need to have a way to verify that we have completed the API setup.**
 
-## Google Cloud Function
- - Have a [Google Cloud account](https://console.cloud.google.com/).
- - Install the [gcloud CLI](https://cloud.google.com/sdk/docs/install).
- - Manually create a [Google Cloud Function](https://console.cloud.google.com/functions/).
-   - Use the `gen2` environment.
-   - Select a region that matches your needs. In this scenario we will use `us-west1`.
-   - Set the trigger to `Cloud Firestore`.
-   - Set the event type to `google.cloud.firestore.document.v1.created`.
-   - Ensure that `Retry on failure` is disabled.
-   - Open the `More Options` panel and set the `Region` to `us-west1`.
-   - Select a `Service Account`. The default service account should be fine. 
-   - If there is any message about needing to enable APIs or adding permissions, do so.
-   - Click `Next`.
-   - Set the Runtime to `Java 17`.
-   - Click `Deploy`.
+## Android App
+- Make sure to get the SHA1 signatures for your debug certificate:
+    - https://developers.google.com/android/guides/client-auth
+    - Add the debug SHA1 and SHA256 into the app setting in project settings. (TODO: do we need both or only SHA1?)
+- Storage:
+- Update the rules to be
+```
+rules_version = '2';
 
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if request.time < timestamp.date(2024, 6, 3);
+    }
+  }
+}
+```
+- In the above example set the date to a small range like tomorrow. This is the deadline to configure persmissions.
+- In the Database create a collection called `users`.
+- Add your user to the allowlist:
+    - Create a document with the document id of the email you want to add to the allowlist.
+    - Add a single field called `id`, set this also to the email
+- Launch the app
+- Verify that the google sign in dialog appears and that you are able to sign in.
+- If that is the case, change the rules to be:
+```
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}
+```
+
+- Enable required indexes:
+- Not all queries are can be run directly from the app, some require first to enable an index:
+- Open the IDE and connect the logcat
+- Open the app. Go into the Events page
+- Select into any employee
+- Look into the logs, there will be a message about missng index and an included link.
+- Open the link.
+- Ensure that the correct project is selected
+- Create the indexes
+- Creating the indexes should not take more than 5 minutes
+- Up to now you will be able to access the app and the content will be stored in Firebase. But the content is not going into Google Drive just yet.
+
+Storage
+- Enable authenticated writes
+- Go to Storage, Ruls
+- Set this as the rules
+```
+rules_version = '2';
+
+// Craft rules based on data in your Firestore database
+// allow write: if firestore.get(
+//    /databases/(default)/documents/users/$(request.auth.uid)).data.isAdmin;
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}
+```
+
+## Google Cloud Function
+- Have a [Google Cloud account](https://console.cloud.google.com/).
+- Install the [gcloud CLI](https://cloud.google.com/sdk/docs/install).
+- Manually create a [Google Cloud Function](https://console.cloud.google.com/functions/).
+    - Use the `gen2` environment.
+    - Select a region that matches your needs. In this scenario we will use `us-west1`.
+    - Set the trigger to `Cloud Firestore`.
+    - Set the event type to `google.cloud.firestore.document.v1.created`.
+    - Ensure that `Retry on failure` is disabled.
+    - Open the `More Options` panel and set the `Region` to `us-west1`.
+    - Select a `Service Account`. The default service account should be fine.
+    - If there is any message about needing to enable APIs or adding permissions, do so.
+    - Click `Next`.
+    - Set the Runtime to `Java 17`.
+    - Click `Deploy`.
 
 # Testing
 
@@ -95,7 +162,7 @@ You can test the function by running the main method:
 ./gradlew edifikana:back-end:run
 ```
 
-TODO: We need to improve this section. 
+TODO: We need to improve this section.
 
 # Deployment
 

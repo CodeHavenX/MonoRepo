@@ -30,19 +30,19 @@ jobs:
         distribution: 'temurin'
     - name: Load Firebase service files
       env:
-        GOOGLE_SERVICES_PREPROD: ${{ secrets.GOOGLE_SERVICES_PREPROD }}
-        GOOGLE_SERVICES_PROD: ${{ secrets.GOOGLE_SERVICES_PROD }}
+        GOOGLE_SERVICES_PREPROD: ${{ secrets.EDIFIKANA_GOOGLE_SERVICES_PREPROD }}
+        GOOGLE_SERVICES_PROD: ${{ secrets.EDIFIKANA_GOOGLE_SERVICES_PROD }}
       run: |
         echo "$GOOGLE_SERVICES_PREPROD" | base64 -d > edifikana/front-end/app-android/src/preprod/google-services.json
         echo "$GOOGLE_SERVICES_PROD" | base64 -d > edifikana/front-end/app-android/src/prod/google-services.json
     - name: Load Fastlane file
       env:
-        FASTLANE_SECRETS: ${{ secrets.FASTLANE_SECRETS }}
+        FASTLANE_SECRETS: ${{ secrets.EDIFIKANA_FASTLANE_SECRETS }}
       run: echo "$FASTLANE_SECRETS" | base64 -d > edifikana/front-end/app-android/.secrets/silken-physics.json
 
     - name: Load Android upload signing key
       env:
-        UPLOAD_KEY: ${{ secrets.UPLOAD_KEY }}
+        UPLOAD_KEY: ${{ secrets.EDIFIKANA_UPLOAD_KEY }}
       run: echo "$UPLOAD_KEY" | base64 -d > edifikana/front-end/app-android/.secrets/upload.jks
 
     - name: Build with Gradle

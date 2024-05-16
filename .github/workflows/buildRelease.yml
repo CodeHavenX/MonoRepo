@@ -35,7 +35,7 @@ jobs:
       env:
         GOOGLE_SERVICES_PREPROD: ${{ secrets.GOOGLE_SERVICES_PREPROD }}
         GOOGLE_SERVICES_PROD: ${{ secrets.GOOGLE_SERVICES_PROD }}
-      run:
+      run: |
         echo "Prod Encoded"
         echo "$GOOGLE_SERVICES_PREPROD"
         echo "PreProd Encoded"

@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "225276838088",
+    "project_id": "edifikana-stage",
+    "storage_bucket": "edifikana-stage.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:225276838088:android:0499ce5edcda27d98325fd",
+        "android_client_info": {
+          "package_name": "com.cramsan.edifikana.client.android.preprod"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "225276838088-nin6va093fdfpjnoietg711cklrml7p9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBi5To1Eptzplixc_McDzeohNc77KXXPvQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "225276838088-nin6va093fdfpjnoietg711cklrml7p9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:225276838088:android:16439a906f8b44f48325fd",
+        "android_client_info": {
+          "package_name": "com.cramsan.edifikana.client.android.preprod.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "225276838088-nin6va093fdfpjnoietg711cklrml7p9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBi5To1Eptzplixc_McDzeohNc77KXXPvQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "225276838088-nin6va093fdfpjnoietg711cklrml7p9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

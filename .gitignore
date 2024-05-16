@@ -80,4 +80,10 @@ Pods/
 *.podspec
 
 # Credentials, secrets, etc
-credentials.json
+*.jks
+*credentials.json
+firebase-admin-sdk.json
+google-services.json
+*.keystore
+*.local.properties
+.secrets/

@@ -1,0 +1,22 @@
+<resources>
+    <string name="sign_in">Iniciar Sesión</string>
+    <string name="role_admin">Administrator</string>
+    <string name="role_security">Seguridad</string>
+    <string name="role_security_cover">Descansero</string>
+    <string name="role_limpieza">Limpieza</string>
+    <string name="role_unknown">Desconocido</string>
+
+    <string name="time_card_event_clock_in">Entrada</string>
+    <string name="time_card_event_clock_out">Salida</string>
+
+    <string name="id_type_dni">DNI</string>
+    <string name="id_type_ce">CE</string>
+    <string name="id_type_passport">Pasaporte</string>
+    <string name="id_type_other">Otro</string>
+
+    <string name="event_type_guest">Invitado</string>
+    <string name="event_type_delivery">Cargo/Delivery</string>
+    <string name="event_type_incident">Incidente/Seguridad</string>
+    <string name="event_type_maintenance_service">Mantenimiento/Servicio</string>
+    <string name="event_type_other">Otro</string>
+</resources>

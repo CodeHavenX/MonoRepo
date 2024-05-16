@@ -1,69 +1,166 @@
 package com.cramsan.edifikana.client.android.managers
 
-import com.cramsan.edifikana.client.android.BackgroundDispatcher
-import com.cramsan.edifikana.client.android.run
-import com.cramsan.edifikana.lib.firestore.Employee
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import android.media.ExifInterface
+import android.net.Uri
+import androidx.core.net.toUri
+import com.cramsan.edifikana.client.android.db.models.TimeCardRecordDao
+import com.cramsan.edifikana.client.android.db.models.TimeCardRecordEntity
+import com.cramsan.edifikana.client.android.managers.mappers.toEntity
+import com.cramsan.edifikana.client.android.managers.mappers.toFirebaseModel
+import com.cramsan.edifikana.client.android.managers.mappers.toDomainModel
+import com.cramsan.edifikana.client.android.models.StorageRef
+import com.cramsan.edifikana.client.android.models.TimeCardRecordModel
+import com.cramsan.edifikana.client.android.utils.getFilename
+import com.cramsan.edifikana.client.android.utils.getOrCatch
+import com.cramsan.edifikana.client.android.utils.launch
 import com.cramsan.edifikana.lib.firestore.EmployeePK
+import com.cramsan.edifikana.lib.firestore.FireStoreModel
 import com.cramsan.edifikana.lib.firestore.TimeCardRecord
 import com.cramsan.edifikana.lib.firestore.TimeCardRecordPK
+import com.cramsan.edifikana.lib.storage.FOLDER_TIME_CARDS
+import com.cramsan.framework.logging.logE
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.time.Duration.Companion.days
-import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.tasks.await
-import kotlinx.datetime.Clock
 
 @Singleton
 class TimeCardManager @Inject constructor(
-    val fireStore: FirebaseFirestore,
-    val clock: Clock,
-    @BackgroundDispatcher
-    val background: CoroutineDispatcher,
+    private val fireStore: FirebaseFirestore,
+    private val timeCardRecordDao: TimeCardRecordDao,
+    private val storageService: StorageService,
+    private val workContext: WorkContext,
 ) {
-    suspend fun getRecords(): Result<List<TimeCardRecord>> = background.run {
-        val now = clock.now()
+    private val mutex = Mutex()
+    private var uploadJob: Job? = null
 
+    @OptIn(FireStoreModel::class)
+    suspend fun getRecords(employeePK: EmployeePK): Result<List<TimeCardRecordModel>> = workContext.getOrCatch {
+        val now = workContext.clock.now()
+
+        // TODO: Make this range configurable
         val twoDaysAgo = now.minus(2.days).epochSeconds
 
-        fireStore.collection(TimeCardRecord.COLLECTION)
-            .orderBy("timeRecorded", Query.Direction.DESCENDING)
-            .whereGreaterThan("timeRecorded", twoDaysAgo)
-            .get()
-            .await()
-            .toObjects(TimeCardRecord::class.java).toList()
-    }
+        val cachedData = timeCardRecordDao.getAll(employeePK.documentPath).map { it.toDomainModel() }
 
-    suspend fun getRecords(employeePK: EmployeePK): Result<List<TimeCardRecord>> = background.run {
-        val now = clock.now()
-
-        val twoDaysAgo = now.minus(2.days).epochSeconds
-
-        fireStore.collection(TimeCardRecord.COLLECTION)
-            .orderBy("timeRecorded", Query.Direction.DESCENDING)
-            .whereGreaterThan("timeRecorded", twoDaysAgo)
+        val onlineData = fireStore.collection(TimeCardRecord.COLLECTION)
+            .orderBy("eventTime", Query.Direction.DESCENDING)
+            .whereGreaterThan("eventTime", twoDaysAgo)
             .whereEqualTo("employeeDocumentId", employeePK.documentPath)
             .get()
             .await()
-            .toObjects(TimeCardRecord::class.java).toList()
+            .toObjects(TimeCardRecord::class.java).toList().map { it.toDomainModel(workContext.storageBucket) }
+        (cachedData + onlineData).sortedByDescending { it.eventTime }
     }
 
-    suspend fun getRecord(timeCardRecordPK: TimeCardRecordPK): Result<TimeCardRecord> = background.run {
-        fireStore.collection(TimeCardRecord.COLLECTION)
+    @OptIn(FireStoreModel::class)
+    suspend fun getRecord(timeCardRecordPK: TimeCardRecordPK): Result<TimeCardRecordModel> = workContext.getOrCatch {
+        val result = fireStore.collection(TimeCardRecord.COLLECTION)
             .document(timeCardRecordPK.documentPath)
             .get()
             .await()
-            .toObject(TimeCardRecord::class.java) ?: throw Exception("TimeCardRecord not found")
+            .toObject(TimeCardRecord::class.java) ?: throw RuntimeException("TimeCardRecord $timeCardRecordPK not found")
+        result.toDomainModel(workContext.storageBucket)
     }
 
-    suspend fun addRecord(timeCardRecord: TimeCardRecord) = background.run {
-        val processedRecord = timeCardRecord.copy(
-            timeRecorded = clock.now().epochSeconds,
-        )
-        fireStore.collection(TimeCardRecord.COLLECTION)
-            .document(processedRecord.documentId().documentPath)
-            .set(processedRecord)
-            .await()
+    suspend fun addRecord(timeCardRecord: TimeCardRecordModel, cachedImageUrl: Uri) = workContext.getOrCatch {
+        val entity = timeCardRecord.toEntity(cachedImageUrl)
+        timeCardRecordDao.insert(entity)
+
+        workContext.launch {
+            uploadRecord(entity)
+            triggerFullUpload()
+        }
+        Unit
+    }
+
+    @OptIn(FireStoreModel::class)
+    private suspend fun uploadRecord(entity: TimeCardRecordEntity) = runCatching {
+        mutex.withLock {
+            val localImageUri = entity.cachedImageUrl?.toUri()
+
+            val remoteImageRef = runCatching {
+                if (localImageUri?.toString().isNullOrBlank()) {
+                    throw IllegalStateException("Local image url is invalid: $localImageUri")
+                }
+
+                workContext.appContext.contentResolver.openInputStream(localImageUri!!).use { inputStream ->
+                    val imageData = inputStream?.readBytes() ?: throw RuntimeException("Could not get inputstream for uri: $localImageUri")
+
+                    val exifInterface = ExifInterface(ByteArrayInputStream(imageData))
+                    val rotation = when (
+                        exifInterface.getAttributeInt(
+                            ExifInterface.TAG_ORIENTATION,
+                            ExifInterface.ORIENTATION_NORMAL
+                        )
+                    ) {
+                        ExifInterface.ORIENTATION_ROTATE_90 -> 90f
+                        ExifInterface.ORIENTATION_ROTATE_180 -> 180f
+                        ExifInterface.ORIENTATION_ROTATE_270 -> 270f
+                        else -> 0f
+                    }
+
+                    val bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.size)
+                    val matrix = Matrix().apply { postRotate(rotation) }
+                    val rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+
+                    val stream = ByteArrayOutputStream()
+                    // TODO: Set the compression to be configurable
+                    rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 25, stream)
+                    val byteArray = stream.toByteArray()
+                    rotatedBitmap.recycle()
+
+                    val fileName = localImageUri.getFilename(workContext.appContext.contentResolver)
+                    val uploadPath = listOf(FOLDER_TIME_CARDS)
+
+                    storageService.uploadFile(
+                        byteArray,
+                        StorageRef(
+                            fileName,
+                            uploadPath,
+                        ),
+                    ).getOrThrow()
+                }
+            }
+
+            val imageUrl = remoteImageRef.getOrThrow().ref
+            val processedRecord = entity.toFirebaseModel().copy(imageUrl = imageUrl)
+
+            fireStore.collection(TimeCardRecord.COLLECTION)
+                .document(processedRecord.documentId().documentPath)
+                .set(processedRecord)
+                .await()
+
+            timeCardRecordDao.delete(entity)
+        }
+    }
+
+    private suspend fun triggerFullUpload(): Job {
+        uploadJob?.cancel()
+        return workContext.launch {
+            val pending = timeCardRecordDao.getAll()
+
+            pending.forEach { record ->
+                uploadRecord(record).onFailure {
+                    logE(TAG, "Failed to upload time card", it)
+                }
+            }
+        }.also {
+            uploadJob = it
+        }
+    }
+
+    companion object {
+        private const val TAG = "TimeCardManager"
     }
 }

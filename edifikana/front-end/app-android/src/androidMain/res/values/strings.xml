@@ -1,8 +1,48 @@
 <resources>
-    <string name="app_name">Edifikana</string>
+    <string name="app_name">Administración Cenit</string>
+    <!-- Routes -->
     <string name="route_clock_in">route_clock_in</string>
     <string name="route_clock_in_single_employee">route_clock_in_single_employee</string>
     <string name="route_event_log">route_event_log</string>
     <string name="route_event_log_single_item">route_event_log_single_item</string>
     <string name="route_event_log_add_item">route_event_log_add_item</string>
+
+    <!-- Strings -->
+    <string name="string_id_number">Documento de identidad</string>
+    <string name="string_id_type">Tipo de documento</string>
+    <string name="string_names">Nombres</string>
+    <string name="string_last_names">Apellidos</string>
+    <string name="string_role">Función</string>
+    <string name="string_save">Guardar</string>
+    <string name="string_confirm">Confirmar</string>
+    <string name="string_cancel">Cancelar</string>
+    <string name="error_message_unexpected_error">Hubo un error inesperado.</string>
+    <string name="string_field_event">Evento:</string>
+    <string name="string_field_date_time">"Fecha y hora: "</string>
+    <string name="string_field_unit">"Dpto: "</string>
+    <string name="string_share">Compartir</string>
+    <string name="string_add">Agregar</string>
+    <string name="string_camera">Camara</string>
+    <string name="string_gallery">Galeria</string>
+    <string name="string_event_log_title">Libro de Ocurrencias</string>
+    <string name="string_assistance">Asistencia</string>
+    <string name="string_back_navigation">Atras</string>
+    <string name="text_input_activation_code">Ingrese el codigo de activacion</string>
+    <string name="text_code">Codigo</string>
+    <string name="text_accept">Aceptar</string>
+    <string name="text_take_photo">Tomar foto</string>
+    <string name="text_error_take_photo">Hubo un error cargando la foto</string>
+    <string name="string_other">Otro</string>
+    <string name="text_please_complete_fields">Por favor completar todos los campos.</string>
+    <string name="text_there_was_an_error_processing_request">Hubo un error procesando la operacion.</string>
+    <string name="text_clock_in">Marcar entrada</string>
+    <string name="text_clock_out">Marcar salída</string>
+    <string name="text_employee">Empleado</string>
+    <string name="text_event_type">Tipo de evento</string>
+    <string name="text_appartment">Departamento</string>
+    <string name="text_simple_desc">Descripcion simple</string>
+    <string name="text_full_desc">Descripcion detallada</string>
+    <string name="text_add">Agregar</string>
+    <string name="text_flip_camera">Cambiar cámara</string>
+    <string name="text_employee_name">Nombre del conserje</string>
 </resources>

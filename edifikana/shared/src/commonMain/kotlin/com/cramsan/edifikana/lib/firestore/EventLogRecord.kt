@@ -1,10 +1,10 @@
 package com.cramsan.edifikana.lib.firestore
 
-
 /**
  * Due to Firestore limitations, we need to make all fields nullable and with a default value.
  */
-data class EventLogRecord (
+@FireStoreModel
+data class EventLogRecord(
     val employeeDocumentId: String? = null,
     val timeRecorded: Long? = null,
     val unit: String? = null,
@@ -13,6 +13,7 @@ data class EventLogRecord (
     val fallbackEventType: String? = null,
     val summary: String? = null,
     val description: String? = null,
+    val attachments: List<String>? = null,
 ) {
     fun documentId(): EventLogRecordPK {
         return EventLogRecordPK("$employeeDocumentId-$timeRecorded-$eventType")

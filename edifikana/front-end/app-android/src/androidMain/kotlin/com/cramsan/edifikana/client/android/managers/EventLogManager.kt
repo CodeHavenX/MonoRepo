@@ -1,49 +1,113 @@
 package com.cramsan.edifikana.client.android.managers
 
-import com.cramsan.edifikana.lib.firestore.Employee
-import com.cramsan.edifikana.lib.firestore.EmployeePK
+import com.cramsan.edifikana.client.android.db.models.EventLogRecordDao
+import com.cramsan.edifikana.client.android.db.models.FileAttachmentDao
+import com.cramsan.edifikana.client.android.managers.mappers.toEntity
+import com.cramsan.edifikana.client.android.managers.mappers.toFirebaseModel
+import com.cramsan.edifikana.client.android.managers.mappers.toDomainModel
+import com.cramsan.edifikana.client.android.models.EventLogRecordModel
+import com.cramsan.edifikana.client.android.utils.getOrCatch
+import com.cramsan.edifikana.client.android.utils.launch
 import com.cramsan.edifikana.lib.firestore.EventLogRecord
 import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
-import com.cramsan.edifikana.lib.firestore.IdType
+import com.cramsan.edifikana.lib.firestore.FireStoreModel
+import com.cramsan.framework.logging.logE
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.snapshots
-import com.google.firebase.firestore.toObject
 import javax.inject.Inject
+import javax.inject.Singleton
 import kotlin.time.Duration.Companion.days
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.tasks.await
-import kotlinx.datetime.Clock
 
-
+@Singleton
 class EventLogManager @Inject constructor(
-    val fireStore: FirebaseFirestore,
-    val clock: Clock,
+    private val fireStore: FirebaseFirestore,
+    private val eventLogRecordDao: EventLogRecordDao,
+    private val attachmentDao: FileAttachmentDao,
+    private val workContext: WorkContext,
 ) {
-    suspend fun getRecords(): Result<List<EventLogRecord>> = runCatching {
-        val now = clock.now()
+    private val mutex = Mutex()
+    private var uploadJob: Job? = null
 
-        val twoDaysAgo = now.minus(2.days).epochSeconds
+    @OptIn(FireStoreModel::class)
+    suspend fun getRecords(): Result<List<EventLogRecordModel>> = workContext.getOrCatch {
+        val now = workContext.clock.now()
 
-        fireStore.collection(EventLogRecord.COLLECTION)
+        // TODO: Make this range configurable
+        val twoDaysAgo = now.minus(4.days).epochSeconds
+
+        val cachedData = eventLogRecordDao.getAll().map { it.toDomainModel() }
+
+        val onlineData = fireStore.collection(EventLogRecord.COLLECTION)
             .orderBy("timeRecorded", Query.Direction.DESCENDING)
             .whereGreaterThan("timeRecorded", twoDaysAgo)
             .get()
             .await()
-            .toObjects(EventLogRecord::class.java).toList()
+            .toObjects(EventLogRecord::class.java)
+            .toList()
+            .map { it.toDomainModel(workContext.storageBucket) }
+
+        (cachedData + onlineData).sortedByDescending { it.timeRecorded }
     }
 
-    suspend fun getRecord(eventLogRecordPK: EventLogRecordPK): Result<EventLogRecord> = runCatching {
-        fireStore.collection(EventLogRecord.COLLECTION)
+    @OptIn(FireStoreModel::class)
+    suspend fun getRecord(eventLogRecordPK: EventLogRecordPK): Result<EventLogRecordModel> = workContext.getOrCatch {
+        val localAttachments = attachmentDao.getAll()
+            .filter { it.eventLogRecordPK == eventLogRecordPK.documentPath }
+            .mapNotNull { it.fileUri }
+        val record = fireStore.collection(EventLogRecord.COLLECTION)
             .document(eventLogRecordPK.documentPath)
             .get()
             .await()
-            .toObject(EventLogRecord::class.java) ?: throw Exception("EventLogRecord not found")
+            .toObject(EventLogRecord::class.java)
+            ?.toDomainModel(workContext.storageBucket) ?: throw RuntimeException("EventLogRecord $eventLogRecordPK not found")
+        record.copy(
+            attachments = localAttachments + record.attachments,
+        )
     }
 
-    suspend fun addRecord(eventLogRecord: EventLogRecord) = runCatching {
-        fireStore.collection(EventLogRecord.COLLECTION)
-            .document(eventLogRecord.documentId().documentPath)
-            .set(eventLogRecord)
-            .await()
+    suspend fun addRecord(eventLogRecord: EventLogRecordModel) = workContext.getOrCatch {
+        eventLogRecordDao.insert(eventLogRecord.toEntity())
+
+        workContext.launch {
+            uploadRecord(eventLogRecord)
+            triggerFullUpload()
+        }
+        Unit
+    }
+
+    @OptIn(FireStoreModel::class)
+    private suspend fun uploadRecord(eventLogRecord: EventLogRecordModel) = runCatching {
+        mutex.withLock {
+            val record = eventLogRecord.toFirebaseModel()
+            fireStore.collection(EventLogRecord.COLLECTION)
+                .document(record.documentId().documentPath)
+                .set(record)
+                .await()
+
+            eventLogRecordDao.delete(eventLogRecord.toEntity())
+        }
+    }
+
+    private suspend fun triggerFullUpload(): Job {
+        uploadJob?.cancel()
+        return workContext.launch {
+            val pending = eventLogRecordDao.getAll()
+
+            pending.forEach { record ->
+                uploadRecord(record.toDomainModel()).onFailure {
+                    logE(TAG, "Failed to upload event record", it)
+                }
+            }
+        }.also {
+            uploadJob = it
+        }
+    }
+
+    companion object {
+        private const val TAG = "EventLogManager"
     }
 }

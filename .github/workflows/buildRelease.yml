@@ -36,8 +36,16 @@ jobs:
         GOOGLE_SERVICES_PREPROD: ${{ secrets.GOOGLE_SERVICES_PREPROD }}
         GOOGLE_SERVICES_PROD: ${{ secrets.GOOGLE_SERVICES_PROD }}
       run:
+        echo "Prod Encoded"
+        echo "$GOOGLE_SERVICES_PREPROD"
+        echo "PreProd Encoded"
+        echo "$GOOGLE_SERVICES_PROD"
         echo "$GOOGLE_SERVICES_PREPROD" | base64 -d > edifikana/front-end/app-android/src/preprod/google-services.json
         echo "$GOOGLE_SERVICES_PROD" | base64 -d > edifikana/front-end/app-android/src/prod/google-services.json
+        echo "Prod Decoded"
+        cat edifikana/front-end/app-android/src/preprod/google-services.json
+        echo "PreProd Decoded"
+        cat edifikana/front-end/app-android/src/prod/google-services.json
     - name: Build with Gradle
       uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
       with:

@@ -63,7 +63,7 @@ UPDATE `.gitignore` WITH THE NEEDED RULES**.
 Now use the same approach as before to encode the file and upload it as a secret named `FASTLANE_SECRETS`.
 
 ```bash
-# Encode the Prod google-services.json files
+# Encode the fast lane secrets files
 base64 -i edifikana/front-end/app-android/.secrets/silken-physics.json
 ```
 
@@ -82,7 +82,7 @@ To sign the app we need to have access to the keystore file. This file should no
 Instead, we will encode the file and upload it as a secret by using the method described above.
 
 ```bash
-# Encode the Prod google-services.json files
+# Encode the Prod upload key
 base64 -i path/to/upload.jks
 ```
 

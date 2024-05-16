@@ -22,6 +22,6 @@ dependencies {
 
     implementation("androidx.activity:activity-compose:_")
     implementation("androidx.appcompat:appcompat:_")
-    implementation(AndroidX.navigation.fragmentKtx)
+    implementation("androidx.navigation:navigation-fragment-ktx:_")
     implementation("androidx.navigation:navigation-ui-ktx:_")
 }

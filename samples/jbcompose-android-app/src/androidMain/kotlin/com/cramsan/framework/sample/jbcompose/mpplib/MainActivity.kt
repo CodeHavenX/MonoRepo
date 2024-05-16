@@ -3,6 +3,7 @@ package com.cramsan.framework.sample.jbcompose.mpplib
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -56,4 +57,15 @@ fun MainActivityPreview() {
         { _, _ -> },
         { },
     )
+}
+
+
+// TODO: Currently there is an issue with the new resources API that causes previews not to render.
+// This function is a temporary alternative to be able to verify that @Previews work.
+@Preview(
+    showBackground = true
+)
+@Composable
+fun TempComposePreview() {
+    Text(text = "Hello World!")
 }

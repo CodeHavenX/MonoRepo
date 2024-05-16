@@ -15,7 +15,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0-RC.2")
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:_")
             }
         }
     }

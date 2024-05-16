@@ -52,4 +52,5 @@ jobs:
         EDIFIKANA_KEY_PASSWORD: ${{ secrets.EDIFIKANA_KEY_PASSWORD }}
       run: |
         cd edifikana/front-end/app-android
+        bundle install
         bundle exec fastlane deploy

@@ -43,12 +43,12 @@ jobs:
     - name: Load Fastlane file
       env:
         FASTLANE_SECRETS: ${{ secrets.EDIFIKANA_FASTLANE_SECRETS }}
-      run: echo FASTLANE_SECRETS | base64 -d > edifikana/front-end/app-android/.secrets/silken-physics.json
+      run: echo "$FASTLANE_SECRETS" | base64 -d > edifikana/front-end/app-android/.secrets/silken-physics.json
 
     - name: Load Android upload signing key
       env:
         UPLOAD_KEY: ${{ secrets.EDIFIKANA_UPLOAD_KEY }}
-      run: echo UPLOAD_KEY | base64 -d > edifikana/front-end/app-android/.secrets/upload.jks
+      run: echo "$UPLOAD_KEY" | base64 -d > edifikana/front-end/app-android/upload.jks
 
     - name: Build with Gradle
       uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1

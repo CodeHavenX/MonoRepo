@@ -15,17 +15,17 @@ val ENV_STORE_PASSWORD = "EDIFIKANA_STORE_PASSWORD"
 val ENV_KEY_ALIAS = "EDIFIKANA_KEY_ALIAS"
 val ENV_KEY_PASSWORD = "EDIFIKANA_KEY_PASSWORD"
 
-val storePassword = System.getenv(ENV_STORE_PASSWORD) ?: ""
-val keyAlias = System.getenv(ENV_KEY_ALIAS) ?: ""
-val keyPassword = System.getenv(ENV_KEY_PASSWORD) ?: ""
+val releaseStorePassword = System.getenv(ENV_STORE_PASSWORD) ?: ""
+val releaseKeyAlias = System.getenv(ENV_KEY_ALIAS) ?: ""
+val releaseKeyPassword = System.getenv(ENV_KEY_PASSWORD) ?: ""
 
 android {
     namespace = "com.cramsan.edifikana.client.android"
 
     defaultConfig {
         applicationId = "com.cramsan.edifikana.client.android"
-        versionCode = 9
-        versionName = "1.7"
+        versionCode = 10
+        versionName = "2.0"
         minSdk = 30
     }
 
@@ -35,14 +35,14 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file(".secrets/upload.jks")
-            storePassword = storePassword
-            keyAlias = keyAlias
-            keyPassword = keyPassword
+            storeFile = file("upload.jks")
+            storePassword = releaseStorePassword
+            keyAlias = releaseKeyAlias
+            keyPassword = releaseKeyPassword
         }
     }
     buildTypes {
-        if (storePassword.isNotEmpty() && keyAlias.isNotEmpty() && keyPassword.isNotEmpty()) {
+        if (releaseStorePassword.isNotEmpty() && releaseKeyAlias.isNotEmpty() && releaseKeyPassword.isNotEmpty()) {
             getByName("release") {
                 signingConfig = signingConfigs.getByName("release")
             }

@@ -20,8 +20,11 @@ platform :android do
   lane :deploy do
     gradle(
         gradle_path: "../../.././gradlew",
-        task: "release"
+        task: "release",
     )
-    # upload_to_play_store
+    upload_to_play_store(
+        track: 'internal',
+        aab: 'build/outputs/bundle/prodRelease/app-android-prod-release.aab'
+    )
   end
 end

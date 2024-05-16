@@ -24,7 +24,7 @@
 - Save
 - Go to project settings
 - Add other users to the project
-- Download the goog-service.json
+- Download the google-services.json
 - Save the file in <FIND LOCATION!!!!> , include paths for flavors
 
 - Download the Firebase Admin SDK credentials.

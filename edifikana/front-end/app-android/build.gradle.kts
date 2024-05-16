@@ -11,12 +11,10 @@ plugins {
 
 apply(from = "$rootDir/gradle/kotlin-mpp-target-android-app.gradle")
 
-val ENV_STORE_FILE = "EDIFIKANA_STORE_FILE"
 val ENV_STORE_PASSWORD = "EDIFIKANA_STORE_PASSWORD"
 val ENV_KEY_ALIAS = "EDIFIKANA_KEY_ALIAS"
 val ENV_KEY_PASSWORD = "EDIFIKANA_KEY_PASSWORD"
 
-val storeFilePath = System.getenv(ENV_STORE_FILE) ?: ""
 val storePassword = System.getenv(ENV_STORE_PASSWORD) ?: ""
 val keyAlias = System.getenv(ENV_KEY_ALIAS) ?: ""
 val keyPassword = System.getenv(ENV_KEY_PASSWORD) ?: ""
@@ -33,6 +31,22 @@ android {
 
     buildFeatures {
         buildConfig = true
+    }
+
+    signingConfigs {
+        create("release") {
+            storeFile = file(".secrets/upload.jks")
+            storePassword = storePassword
+            keyAlias = keyAlias
+            keyPassword = keyPassword
+        }
+    }
+    buildTypes {
+        if (storePassword.isNotEmpty() && keyAlias.isNotEmpty() && keyPassword.isNotEmpty()) {
+            getByName("release") {
+                signingConfig = signingConfigs.getByName("release")
+            }
+        }
     }
 }
 

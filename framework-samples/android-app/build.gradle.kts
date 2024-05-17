@@ -37,5 +37,5 @@ dependencies {
 
     implementation("androidx.appcompat:appcompat:_")
     implementation("androidx.core:core-ktx:_")
-    implementation(AndroidX.lifecycle.runtime.ktx)
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:_")
 }

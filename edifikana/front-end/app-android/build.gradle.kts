@@ -2,11 +2,11 @@ plugins {
     kotlin("multiplatform")
     id("com.android.application")
     id("org.jetbrains.compose")
-    id("com.google.gms.google-services") version "4.4.1"
+    id("com.google.gms.google-services")
     id("com.google.devtools.ksp")
-    id("com.google.firebase.crashlytics") version "2.9.9"
+    id("com.google.firebase.crashlytics")
     kotlin("plugin.serialization")
-    id("androidx.room") version "2.6.1"
+    id("androidx.room")
 }
 
 apply(from = "$rootDir/gradle/kotlin-mpp-target-android-app.gradle")
@@ -63,11 +63,11 @@ dependencies {
 
     implementation("androidx.appcompat:appcompat:_")
     implementation("androidx.core:core-ktx:_")
-    implementation("androidx.navigation:navigation-compose:2.7.7")
-    implementation("androidx.compose.material:material-icons-extended:1.6.6")
+    implementation("androidx.navigation:navigation-compose:_")
+    implementation("androidx.compose.material:material-icons-extended:_")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:_")
 
-    implementation(platform("com.google.firebase:firebase-bom:32.8.1"))
+    implementation(platform("com.google.firebase:firebase-bom:_"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
@@ -76,27 +76,25 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-config")
 
-    implementation("androidx.camera:camera-camera2:1.0.1")
-    implementation("androidx.camera:camera-lifecycle:1.0.1")
-    implementation("androidx.camera:camera-view:1.0.0-alpha27")
+    implementation("androidx.camera:camera-camera2:_")
+    implementation("androidx.camera:camera-lifecycle:_")
+    implementation("androidx.camera:camera-view:_")
 
-    implementation("io.coil-kt:coil-compose:2.6.0")
-    implementation("io.coil-kt:coil:2.6.0")
+    implementation("io.coil-kt:coil-compose:_")
+    implementation("io.coil-kt:coil:_")
 
-    implementation("com.firebaseui:firebase-ui-auth:7.2.0")
-    implementation("com.google.android.gms:play-services-auth:20.7.0")
+    implementation("com.firebaseui:firebase-ui-auth:_")
+    implementation("com.google.android.gms:play-services-auth:_")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0-RC.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:_")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:_")
-    implementation("androidx.exifinterface:exifinterface:1.3.6")
+    implementation("androidx.exifinterface:exifinterface:_")
 
-    val room_version = "2.6.1"
-
-    implementation("androidx.room:room-runtime:$room_version")
-    implementation("androidx.room:room-ktx:$room_version")
-    annotationProcessor("androidx.room:room-compiler:$room_version")
+    implementation("androidx.room:room-runtime:_")
+    implementation("androidx.room:room-ktx:_")
+    annotationProcessor("androidx.room:room-compiler:_")
     // To use Kotlin Symbol Processing (KSP)
-    ksp("androidx.room:room-compiler:$room_version")
+    ksp("androidx.room:room-compiler:_")
 }
 
 room {

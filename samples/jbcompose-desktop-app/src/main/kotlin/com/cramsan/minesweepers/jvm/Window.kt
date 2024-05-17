@@ -1,11 +1,14 @@
 package com.cramsan.minesweepers.jvm
 
+import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import com.cramsan.minesweepers.common.MainView
 import com.cramsan.minesweepers.common.game.Game
+import com.cramsan.minesweepers.common.game.Status
 
 /**
  *
@@ -33,4 +36,18 @@ fun main() = application {
             { game.configure() },
         )
     }
+}
+
+@Preview
+@Composable
+fun Preview() {
+    MainView(
+        time = 0,
+        minesRemaining = 0,
+        map = emptyList(),
+        status = Status.NORMAL,
+        onTileSelected = { _, _ -> },
+        onTileSelectedSecondary = { _, _ -> },
+        onRestartSelected = {},
+    )
 }

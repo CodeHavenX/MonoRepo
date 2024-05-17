@@ -15,8 +15,8 @@ kotlin {
             implementation(project(":framework:logging"))
             implementation(project(":edifikana:shared"))
 
-            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0-RC.2")
-            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha01")
+            implementation("org.jetbrains.kotlinx:kotlinx-datetime:_")
+            implementation("org.jetbrains.androidx.navigation:navigation-compose:_")
         }
     }
 }

@@ -51,6 +51,8 @@ jobs:
         which ruby
         ruby --version
         bundler --version 
+        id -un
+        pwd
 
     - name: Build with Gradle
       env:

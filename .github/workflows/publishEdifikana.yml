@@ -45,6 +45,11 @@ jobs:
         UPLOAD_KEY: ${{ secrets.EDIFIKANA_UPLOAD_KEY }}
       run: echo "$UPLOAD_KEY" | base64 -d > edifikana/front-end/app-android/upload.jks
 
+    - name: Print path
+      run: |
+        echo $PATH
+
+
     - name: Build with Gradle
       env:
         EDIFIKANA_STORE_PASSWORD: ${{ secrets.EDIFIKANA_STORE_PASSWORD }}

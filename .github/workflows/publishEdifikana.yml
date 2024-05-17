@@ -54,6 +54,7 @@ jobs:
         bundler --version 
         id -un
         pwd
+        rvm list
 
     - name: Build with Gradle
       env:

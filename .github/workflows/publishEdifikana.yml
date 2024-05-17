@@ -48,6 +48,7 @@ jobs:
     - name: Print Values
       run: |
         echo Ruby status
+        echo $SHELL
         which ruby
         ruby --version
         bundler --version 

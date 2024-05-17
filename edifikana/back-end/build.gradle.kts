@@ -24,6 +24,9 @@ dependencies {
     implementation("com.google.firebase:firebase-admin:9.2.0")
 
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0-RC.2")
+
+    // Testing dependencies
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.0.0")
 }
 
 tasks.withType<ShadowJar> {

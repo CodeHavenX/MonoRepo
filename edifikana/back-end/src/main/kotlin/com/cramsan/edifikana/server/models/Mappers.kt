@@ -48,6 +48,7 @@ fun DocumentSnapshot.toTimeCardEvent(): TimeCardRecord {
     )
 }
 
+@OptIn(FireStoreModel::class)
 fun TimeCardRecord.toRowEntry(
     employeeFullName: String,
     imageUrlOverride: String,
@@ -60,6 +61,7 @@ fun TimeCardRecord.toRowEntry(
     )
 }
 
+@OptIn(FireStoreModel::class)
 fun EventLogRecord.toRowEntry(
     employeeFullName: String,
     attachments: String,

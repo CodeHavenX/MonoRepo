@@ -45,10 +45,6 @@ jobs:
         UPLOAD_KEY: ${{ secrets.EDIFIKANA_UPLOAD_KEY }}
       run: echo "$UPLOAD_KEY" | base64 -d > edifikana/front-end/app-android/upload.jks
 
-    - uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
-      with:
-        ruby-version: '3.1' # Not needed with a .ruby-version file
-
     - name: Build with Gradle
       env:
         EDIFIKANA_STORE_PASSWORD: ${{ secrets.EDIFIKANA_STORE_PASSWORD }}

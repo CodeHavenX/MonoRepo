@@ -1,4 +1,10 @@
 ../../gradlew buildFunction
+
+if [ $? -ne 0 ]; then
+    echo "Failed to build Cloud Function"
+    exit 1
+fi
+
 echo
 
 ADMIN_SDK_CREDS="src/main/resources/.secrets/firebase-adminsdk.json"

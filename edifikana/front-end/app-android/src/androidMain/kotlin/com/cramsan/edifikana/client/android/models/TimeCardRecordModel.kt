@@ -10,4 +10,5 @@ data class TimeCardRecordModel(
     val eventType: TimeCardEventType,
     val eventTime: Long,
     val imageUrl: String?,
+    val imageRef: StorageRef?,
 )

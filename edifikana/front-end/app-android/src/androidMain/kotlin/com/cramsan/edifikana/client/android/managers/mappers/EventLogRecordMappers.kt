@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.android.managers.mappers
 
 import com.cramsan.edifikana.client.android.db.models.EventLogRecordEntity
+import com.cramsan.edifikana.client.android.models.AttachmentHolder
 import com.cramsan.edifikana.client.android.models.EventLogRecordModel
 import com.cramsan.edifikana.client.android.models.StorageRef
 import com.cramsan.edifikana.client.android.utils.publicDownloadUrl
@@ -39,7 +40,7 @@ fun EventLogRecordEntity.toDomainModel(): EventLogRecordModel {
     )
 }
 
-@OptIn(FireStoreModel::class)
+@FireStoreModel
 fun EventLogRecord.toDomainModel(storageBucket: String): EventLogRecordModel {
     return EventLogRecordModel(
         id = documentId(),
@@ -52,12 +53,15 @@ fun EventLogRecord.toDomainModel(storageBucket: String): EventLogRecordModel {
         summary = summary ?: TODO("Summary cannot be null"),
         description = description ?: TODO("Description cannot be null"),
         attachments = attachments?.map {
-            publicDownloadUrl(StorageRef(it), storageBucket)
+            AttachmentHolder(
+                publicUrl = publicDownloadUrl(StorageRef(it), storageBucket),
+                storageRef = StorageRef(it),
+            )
         } ?: emptyList(),
     )
 }
 
-@OptIn(FireStoreModel::class)
+@FireStoreModel
 fun EventLogRecordModel.toFirebaseModel(): EventLogRecord {
     return EventLogRecord(
         employeeDocumentId = employeePk.documentPath,
@@ -68,6 +72,6 @@ fun EventLogRecordModel.toFirebaseModel(): EventLogRecord {
         fallbackEventType = fallbackEventType,
         summary = summary,
         description = description,
-        attachments = attachments,
+        attachments = attachments.mapNotNull { it.storageRef?.ref },
     )
 }

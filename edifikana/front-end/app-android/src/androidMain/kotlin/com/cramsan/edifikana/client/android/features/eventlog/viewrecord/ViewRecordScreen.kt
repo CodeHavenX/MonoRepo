@@ -38,6 +38,8 @@ import coil.compose.AsyncImage
 import com.cramsan.edifikana.client.android.R
 import com.cramsan.edifikana.client.android.features.main.MainActivityDelegatedEvent
 import com.cramsan.edifikana.client.android.features.main.MainActivityEvent
+import com.cramsan.edifikana.client.android.models.AttachmentHolder
+import com.cramsan.edifikana.client.android.models.StorageRef
 import com.cramsan.edifikana.client.android.ui.components.LoadingAnimationOverlay
 import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
 
@@ -90,7 +92,7 @@ private fun SingleRecord(
     eventLogRecord: ViewRecordUIModel?,
     onShareClicked: () -> Unit,
     onPickMultipleVisualMediaClicked: () -> Unit,
-    onImageClicked: (String) -> Unit,
+    onImageClicked: (AttachmentHolder) -> Unit,
 ) {
 
     Column(
@@ -150,7 +152,7 @@ private fun SingleRecord(
                     text = eventLogRecord.description,
                     style = MaterialTheme.typography.bodyMedium,
                 )
-                if (eventLogRecord.publicAttachmentUris.isNotEmpty()) {
+                if (eventLogRecord.attachments.isNotEmpty()) {
                     HorizontalDivider()
                     val columns = 4
                     FlowRow(
@@ -162,12 +164,12 @@ private fun SingleRecord(
                             .padding(4.dp)
                             .height(80.dp)
                             .weight(1f)
-                        eventLogRecord.publicAttachmentUris.forEach {
+                        eventLogRecord.attachments.forEach {
                             AsyncImage(
                                 modifier = itemModifier.clickable {
                                     onImageClicked(it)
                                 },
-                                model = it,
+                                model = it.publicUrl,
                                 contentDescription = null,
                                 contentScale = ContentScale.Crop,
                             )
@@ -243,10 +245,10 @@ private fun ViewScreenPreview() {
             timeRecorded = "2024 12 02 12:12:12",
             unit = "302",
             description = "Pizza delivery to the main entrance. The delivery was made by the main entrance. ",
-            publicAttachmentUris = listOf(
-                "url",
-                "url",
-                "url",
+            attachments = listOf(
+                AttachmentHolder("url", StorageRef("url")),
+                AttachmentHolder("url", StorageRef("url")),
+                AttachmentHolder("url", StorageRef("url")),
             ),
             recordPK = EventLogRecordPK("1"),
         ),

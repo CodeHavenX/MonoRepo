@@ -209,8 +209,15 @@ object Dependencies {
     @Singleton
     @Provides
     @FirebaseStorageBucketName
-    fun provideFirebaseProjectName(): String {
+    fun provideFirebaseBucketName(): String {
         return Firebase.app.options.storageBucket ?: TODO("Add error handling")
+    }
+
+    @Singleton
+    @Provides
+    @FirebaseProjectName
+    fun provideFirebaseProjectName(): String {
+        return Firebase.app.options.projectId ?: TODO("Add error handling")
     }
 
     // Application Dependencies
@@ -324,7 +331,10 @@ object Dependencies {
         val remoteConfig: FirebaseRemoteConfig = Firebase.remoteConfig
         val configSettings = remoteConfigSettings {
             // The default is 12 hours. If needed we can override it here.
-            // minimumFetchIntervalInSeconds = 3600
+            if (BuildConfig.DEBUG) {
+                minimumFetchIntervalInSeconds = 3600
+            }
+
         }
         remoteConfig.setConfigSettingsAsync(configSettings)
         remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)

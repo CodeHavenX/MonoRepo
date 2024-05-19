@@ -15,5 +15,10 @@ data class EventLogRecordModel (
     val fallbackEventType: String?,
     val summary: String,
     val description: String,
-    val attachments: List<String>,
+    val attachments: List<AttachmentHolder>,
+)
+
+data class AttachmentHolder(
+    val publicUrl: String,
+    val storageRef: StorageRef?,
 )

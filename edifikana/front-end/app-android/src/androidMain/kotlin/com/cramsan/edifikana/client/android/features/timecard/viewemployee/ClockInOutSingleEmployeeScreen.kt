@@ -31,6 +31,7 @@ import coil.compose.AsyncImage
 import com.cramsan.edifikana.client.android.R
 import com.cramsan.edifikana.client.android.features.main.MainActivityDelegatedEvent
 import com.cramsan.edifikana.client.android.features.main.MainActivityEvent
+import com.cramsan.edifikana.client.android.models.StorageRef
 import com.cramsan.edifikana.client.android.ui.components.LoadingAnimationOverlay
 import com.cramsan.edifikana.lib.firestore.EmployeePK
 import com.cramsan.edifikana.lib.firestore.TimeCardEventType
@@ -181,7 +182,7 @@ private fun ViewEmployeeScreenPreview() {
             ViewEmployeeUIModel.TimeCardRecordUIModel(
                 eventType = "Entrada",
                 timeRecorded = "2021-01-01 12:00:00",
-                "",
+                StorageRef(""),
                 TimeCardEventType.CLOCK_IN,
                 null,
                 TimeCardRecordPK("123-123-123"),
@@ -189,7 +190,7 @@ private fun ViewEmployeeScreenPreview() {
             ViewEmployeeUIModel.TimeCardRecordUIModel(
                 eventType = "Salida",
                 timeRecorded = "2021-01-01 12:00:00",
-                "",
+                StorageRef(""),
                 TimeCardEventType.CLOCK_OUT,
                 null,
                 TimeCardRecordPK("321"),

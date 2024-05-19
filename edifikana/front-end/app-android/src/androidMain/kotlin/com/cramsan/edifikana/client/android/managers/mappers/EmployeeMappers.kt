@@ -4,7 +4,7 @@ import com.cramsan.edifikana.client.android.models.EmployeeModel
 import com.cramsan.edifikana.lib.firestore.Employee
 import com.cramsan.edifikana.lib.firestore.FireStoreModel
 
-@OptIn(FireStoreModel::class)
+@FireStoreModel
 fun Employee.toDomainModel(): EmployeeModel {
     return EmployeeModel(
         employeePK = documentId(),
@@ -16,8 +16,8 @@ fun Employee.toDomainModel(): EmployeeModel {
     )
 }
 
-@OptIn(FireStoreModel::class)
-fun EmployeeModel.toDomainModel() = Employee(
+@FireStoreModel
+fun EmployeeModel.toFirebaseModel() = Employee(
     id = id,
     idType = idType,
     name = name,

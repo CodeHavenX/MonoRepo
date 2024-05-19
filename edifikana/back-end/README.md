@@ -35,6 +35,8 @@
     - `Generate new private key`. and store the file in a safe place.
     - Place this file in the `back-end/src/main/resources` folder and name it `firebase-admin-sdk.json`. <--- Update the folder path
 
+- Go to Billing and set up a budget alert.
+
 ## Google Cloud Access
 - Create a new project
 - name it accordingly

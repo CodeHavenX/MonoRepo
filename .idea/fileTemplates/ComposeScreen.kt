@@ -18,7 +18,7 @@ fun ${NAME}Screen(
     viewModel: ${NAME}ViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val event by viewModel.event.collectAsState(EventLogEvent.Noop)
+    val event by viewModel.event.collectAsState(${NAME}Event.Noop)
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
     }
@@ -50,9 +50,11 @@ private fun ${NAME}Content(content: ${NAME}UIModel, loading: Boolean) {
     LoadingAnimationOverlay(isLoading = loading)
 }
 
-@Preview
+@Preview(
+    showBackground = true,
+)
 @Composable
-fun ${NAME}ScreenPreview() {
+private fun ${NAME}ScreenPreview() {
     ${NAME}Content(
         content = ${NAME}UIModel(),
         loading = false,

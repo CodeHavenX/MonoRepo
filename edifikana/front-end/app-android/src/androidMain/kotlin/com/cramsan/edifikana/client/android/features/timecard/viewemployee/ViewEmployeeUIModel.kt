@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.android.features.timecard.viewemployee
 
 import com.cramsan.edifikana.client.android.models.EmployeeModel
+import com.cramsan.edifikana.client.android.models.StorageRef
 import com.cramsan.edifikana.client.android.models.TimeCardRecordModel
 import com.cramsan.edifikana.client.android.models.fullName
 import com.cramsan.edifikana.client.lib.eventTypeFriendlyName
@@ -14,7 +15,7 @@ object ViewEmployeeUIModel {
     data class TimeCardRecordUIModel(
         val eventType: String,
         val timeRecorded: String,
-        val imageRed: String?,
+        val imageRef: StorageRef?,
         val eventTypeEnum: TimeCardEventType?,
         val publicImageUrl: String?,
         val timeCardRecordPK: TimeCardRecordPK,
@@ -39,7 +40,7 @@ suspend fun TimeCardRecordModel.toUIModel(): ViewEmployeeUIModel.TimeCardRecordU
     return ViewEmployeeUIModel.TimeCardRecordUIModel(
         eventType = eventType.eventTypeFriendlyName(),
         timeRecorded = eventTime.toFriendlyDateTime(),
-        imageRed = imageUrl,
+        imageRef = imageRef,
         eventTypeEnum = eventType,
         publicImageUrl = imageUrl,
         timeCardRecordPK = id,

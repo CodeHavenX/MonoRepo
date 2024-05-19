@@ -5,15 +5,14 @@ import androidx.lifecycle.viewModelScope
 import com.cramsan.edifikana.client.android.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.android.features.main.Route
 import com.cramsan.edifikana.client.android.managers.EventLogManager
-import com.cramsan.edifikana.client.android.models.EventLogRecordModel
 import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
 
 @HiltViewModel
 class EventLogViewModel @Inject constructor(

@@ -12,4 +12,8 @@
     <key>imageQualityHint</key>
     <value>25</value>
   </entry>
+  <entry>
+    <key>feature_form_tab_enabled</key>
+    <value>true</value>
+  </entry>
 </defaults>

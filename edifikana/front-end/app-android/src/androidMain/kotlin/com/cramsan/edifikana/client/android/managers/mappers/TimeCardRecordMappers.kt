@@ -27,10 +27,11 @@ fun TimeCardRecordEntity.toDomainModel(): TimeCardRecordModel {
         eventType ?: TODO("Event type cannot be null"),
         eventTime ?: TODO("Event time cannot be null"),
         cachedImageUrl,
+        null,
     )
 }
 
-@OptIn(FireStoreModel::class)
+@FireStoreModel
 fun TimeCardRecord.toDomainModel(storageBucket: String): TimeCardRecordModel {
     return TimeCardRecordModel(
         id = documentId(),
@@ -38,10 +39,11 @@ fun TimeCardRecord.toDomainModel(storageBucket: String): TimeCardRecordModel {
         eventType = eventType ?: TODO("Event type cannot be null"),
         eventTime = eventTime ?: TODO("Event time cannot be null"),
         imageUrl = imageUrl?.let { publicDownloadUrl(StorageRef(it), storageBucket) },
+        imageRef = imageUrl?.let { StorageRef(it) },
     )
 }
 
-@OptIn(FireStoreModel::class)
+@FireStoreModel
 fun TimeCardRecordEntity.toFirebaseModel(): TimeCardRecord {
     return TimeCardRecord(
         employeeDocumentId = employeeDocumentId ?: TODO("Employee document ID cannot be null"),

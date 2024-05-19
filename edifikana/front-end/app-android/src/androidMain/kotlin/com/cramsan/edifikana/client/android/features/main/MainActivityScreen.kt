@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Assignment
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,11 +33,17 @@ import com.cramsan.edifikana.client.android.R
 import com.cramsan.edifikana.client.android.features.eventlog.EventLogScreen
 import com.cramsan.edifikana.client.android.features.eventlog.addrecord.AddRecordScreen
 import com.cramsan.edifikana.client.android.features.eventlog.viewrecord.ViewRecordScreen
+import com.cramsan.edifikana.client.android.features.formlist.FormListScreen
+import com.cramsan.edifikana.client.android.features.formlist.entry.EntryScreen
+import com.cramsan.edifikana.client.android.features.formlist.records.RecordsScreen
+import com.cramsan.edifikana.client.android.features.formlist.records.read.RecordReadScreen
 import com.cramsan.edifikana.client.android.features.timecard.TimeCardScreen
 import com.cramsan.edifikana.client.android.features.timecard.addemployee.AddEmployeeScreen
 import com.cramsan.edifikana.client.android.features.timecard.viewemployee.ViewEmployeeScreen
 import com.cramsan.edifikana.lib.firestore.EmployeePK
 import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
+import com.cramsan.edifikana.lib.firestore.FormPK
+import com.cramsan.edifikana.lib.firestore.FormRecordPK
 
 @SuppressLint("RestrictedApi")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,6 +52,7 @@ fun MainActivityScreen(
     navController: NavHostController,
     mainActivityDelegatedEvent: MainActivityDelegatedEvent,
     onMainActivityEventInvoke: (MainActivityEvent) -> Unit,
+    formTabFeatureEnabled: Boolean,
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val backStack by navController.currentBackStack.collectAsState()
@@ -64,7 +72,7 @@ fun MainActivityScreen(
                         enter = fadeIn(),
                         exit = fadeOut(),
                     ) {
-                        IconButton(onClick = { navController.popBackStack() }) {
+                        IconButton(onClick = { navController.navigateUp() }) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = stringResource(id = R.string.string_back_navigation)
@@ -77,16 +85,25 @@ fun MainActivityScreen(
         bottomBar = {
             NavigationBar {
                 BottomBarDestinationUiModels.forEach { dest ->
-                    val selected = currentDestination?.hierarchy?.any { it.route == dest.route } == true
-                    val title = stringResource(id = dest.text)
-                    NavigationBarItem(
-                        onClick = {
-                            onMainActivityEventInvoke(MainActivityEvent.NavigateToRootPage(dest.route))
-                        },
-                        icon = { Icon(painterResource(dest.icon), contentDescription = title) },
-                        label = { Text(title) },
-                        selected = selected,
-                    )
+                    if (formTabFeatureEnabled || dest.route != Route.Forms.route) {
+                        val selected = currentDestination?.hierarchy?.any { it.route == dest.route } == true
+                        val title = stringResource(id = dest.text)
+
+                        NavigationBarItem(
+                            onClick = {
+                                onMainActivityEventInvoke(MainActivityEvent.NavigateToRootPage(dest.route))
+                            },
+                            icon = {
+                                if (dest.route != Route.Forms.route) {
+                                    Icon(painterResource(dest.icon), contentDescription = title)
+                                } else {
+                                    Icon(Icons.AutoMirrored.Filled.Assignment, contentDescription = title)
+                                }
+                            },
+                            label = { Text(title) },
+                            selected = selected,
+                        )
+                    }
                 }
             }
         },
@@ -102,6 +119,11 @@ fun MainActivityScreen(
 }
 
 private val BottomBarDestinationUiModels = listOf(
+    BottomBarDestinationUiModel(
+        Route.toFormsRoute(),
+        R.drawable.schedule,
+        R.string.text_forms
+    ),
     BottomBarDestinationUiModel(
         Route.EventLog.route,
         R.drawable.two_pager,
@@ -154,6 +176,32 @@ private fun NavigationHost(
                 EventLogRecordPK(backStackEntry.arguments?.getString("eventLogRecordPk") ?: ""),
                 mainActivityDelegatedEvent,
                 onMainActivityEventInvoke,
+            )
+        }
+        composable(Route.Forms.route) {
+            FormListScreen(
+                mainActivityDelegatedEvent,
+                onMainActivityEventInvoke,
+            )
+        }
+        composable(Route.FormEntry.route) { backStackEntry ->
+            EntryScreen(
+                formPK = FormPK(backStackEntry.arguments?.getString("formPk") ?: ""),
+                mainActivityDelegatedEvent = mainActivityDelegatedEvent,
+                onMainActivityEventInvoke = onMainActivityEventInvoke,
+            )
+        }
+        composable(Route.FormRecords.route) {
+            RecordsScreen(
+                mainActivityDelegatedEvent = mainActivityDelegatedEvent,
+                onMainActivityEventInvoke = onMainActivityEventInvoke,
+            )
+        }
+        composable(Route.FormRecordRead.route) { backStackEntry ->
+            RecordReadScreen(
+                formRecordPK = FormRecordPK(backStackEntry.arguments?.getString("formRecordPk") ?: ""),
+                mainActivityDelegatedEvent = mainActivityDelegatedEvent,
+                onMainActivityEventInvoke = onMainActivityEventInvoke,
             )
         }
     }

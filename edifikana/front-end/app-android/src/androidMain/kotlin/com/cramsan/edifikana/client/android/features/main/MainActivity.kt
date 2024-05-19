@@ -21,13 +21,19 @@ import androidx.navigation.compose.rememberNavController
 import com.cramsan.edifikana.client.android.db.clearOldFiles
 import com.cramsan.edifikana.client.android.features.camera.CameraContract
 import com.cramsan.edifikana.client.android.features.signin.SignInActivity
+import com.cramsan.edifikana.client.android.managers.remoteconfig.Features
+import com.cramsan.edifikana.client.android.managers.remoteconfig.RemoteConfigService
 import com.cramsan.edifikana.client.android.ui.theme.AppTheme
 import com.cramsan.edifikana.client.android.utils.shareContent
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var remoteConfigService: RemoteConfigService
 
     private val viewModel: MainActivityViewModel by viewModels()
 
@@ -115,6 +121,7 @@ class MainActivity : ComponentActivity() {
                     navController = navController,
                     mainActivityDelegatedEvent = delegatedEvent,
                     onMainActivityEventInvoke = { viewModel.executeMainActivityEvent(it) },
+                    formTabFeatureEnabled = remoteConfigService.isFeatureEnabled(Features.FORM_TAB),
                 )
             }
         }

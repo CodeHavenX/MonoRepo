@@ -143,6 +143,15 @@ service firebase.storage {
 ## Google Cloud Function
 - Have a [Google Cloud account](https://console.cloud.google.com/).
 - Install the [gcloud CLI](https://cloud.google.com/sdk/docs/install).
+- Go into the Google Cloud Console and select the project you created earlier.
+- Go to the [Cloud Functions](https://console.cloud.google.com/functions) page.
+- Click on Enable Billing
+- Select a billing account and click on `Set Account`.
+- Enabling billing will take a few minutes. IF after 5 minutes the page is still loading, refresh the page.
+  - If Billing is not enabled, this could be due to some other issues. Here is a link that mentions a similar problem https://stackoverflow.com/questions/45265125/enabling-an-api-loading-forever.
+  - Go to Billing Account and check if the billing account is enabled.
+- In the [Cloud Functions](https://console.cloud.google.com/functions) page, click on Create Function.
+  - A window may appear requesting to enable the API. Click on `Enable API`.
 - Manually create a [Google Cloud Function](https://console.cloud.google.com/functions/).
     - Use the `gen2` environment.
     - Select a region that matches your needs. In this scenario we will use `us-west1`.
@@ -204,3 +213,13 @@ curl -m 70 -X POST https://us-west1-<PROJECT_ID>.cloudfunctions.net/<FUNCTION_NA
 -H "ce-time: 2020-08-08T00:11:44.895529672Z" \
 -H "ce-source: //firestore.googleapis.com/projects/<PROJECT_ID>/databases/(default)" --data-binary @-
 ```
+
+### Helper
+
+export EDIFIKANA_PROJECT_NAME=edifikana-stage
+export EDIFIKANA_STORAGE_FOLDER_ID=1ZRI7dP2X7VqwixGKz3OPJ6KB-uuDkkM1
+export EDIFIKANA_TIME_CARD_SPREADSHEET_ID=1mDgyQtJV_EkCrikM5-lBufwmFGS5N8FxMUVYvdbXSuM
+export EDIFIKANA_EVENT_LOG_SPREADSHEET_ID=1v-we-o55vEu8tGItH0EvY0v4IJIwAPtW75ZbdPPNyQA
+export EDIFIKANA_FORM_ENTRIES_SPREADSHEET_ID=16Fqq_uC6fyQVEhn7wTbNVcCjFLWuvgS676ic2ALrOzk
+
+./deploy.sh

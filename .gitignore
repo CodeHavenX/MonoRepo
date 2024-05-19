@@ -88,7 +88,8 @@ Pods/
 # Credentials, secrets, etc
 *.jks
 *credentials.json
-firebase-admin-sdk.json
+*firebase-admin-sdk.json
+*firebase-adminsdk.json
 google-services.json
 *.keystore
 *.local.properties

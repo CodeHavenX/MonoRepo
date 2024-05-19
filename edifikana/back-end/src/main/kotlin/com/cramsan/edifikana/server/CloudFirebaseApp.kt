@@ -30,6 +30,10 @@ class CloudFirebaseApp : CloudEventsFunction {
         val encodedString: String = Base64.getEncoder().encodeToString(payloadBytes)
         logger.warning("Encoded payload: $encodedString")
 
+        val projectName = System.getenv(PROJECT_NAME) ?: throw IllegalArgumentException(
+            "Missing $STORAGE_FOLDER_ID_PARAM environment variable"
+        )
+
         val eventData = DocumentEventData.parseFrom(payloadBytes)
         val gDriveParams = GoogleDriveParameters(
             storageFolderId = System.getenv(STORAGE_FOLDER_ID_PARAM) ?: throw IllegalArgumentException(
@@ -41,16 +45,23 @@ class CloudFirebaseApp : CloudEventsFunction {
             eventLogSpreadsheetId = System.getenv(EVENT_LOG_SPREADSHEET_ID_PARAM) ?: throw IllegalArgumentException(
                 "Missing $EVENT_LOG_SPREADSHEET_ID_PARAM environment variable"
             ),
+            formEntriesSpreadsheetId = System.getenv(
+                FORM_ENTRIES_SPREADSHEET_ID_PARAM
+            ) ?: throw IllegalArgumentException(
+                "Missing $FORM_ENTRIES_SPREADSHEET_ID_PARAM environment variable"
+            ),
         )
 
-        CloudFireService().processEvent(eventData, firestore, gDriveParams)
+        CloudFireService(projectName).processEvent(eventData, firestore, gDriveParams)
         logger.info("Invocation complete")
     }
 }
 
+private const val PROJECT_NAME = "PROJECT_NAME"
 private const val STORAGE_FOLDER_ID_PARAM = "STORAGE_FOLDER_ID"
 private const val TIME_CARD_SPREADSHEET_ID_PARAM = "TIME_CARD_SPREADSHEET_ID"
 private const val EVENT_LOG_SPREADSHEET_ID_PARAM = "EVENT_LOG_SPREADSHEET_ID"
+private const val FORM_ENTRIES_SPREADSHEET_ID_PARAM = "FORM_ENTRIES_SPREADSHEET_ID"
 
 fun main() {
     val payload = "CuYFCmVwcm9qZWN0cy9lZGlmaWthbmEvZGF0YWJhc2VzLyhkZWZhdWx0KS9kb2N1bWVudHMvZXZlbnRM" +
@@ -74,6 +85,7 @@ fun main() {
         storageFolderId = "1ZRI7dP2X7VqwixGKz3OPJ6KB-uuDkkM1",
         timeCardSpreadsheetId = "1mDgyQtJV_EkCrikM5-lBufwmFGS5N8FxMUVYvdbXSuM",
         eventLogSpreadsheetId = "1v-we-o55vEu8tGItH0EvY0v4IJIwAPtW75ZbdPPNyQA",
+        formEntriesSpreadsheetId = "16Fqq_uC6fyQVEhn7wTbNVcCjFLWuvgS676ic2ALrOzk",
     )
-    CloudFireService().processEvent(firestoreEventData, firestore, gDriveParams)
+    CloudFireService("edifikana-stage").processEvent(firestoreEventData, firestore, gDriveParams)
 }

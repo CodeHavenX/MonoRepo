@@ -13,7 +13,6 @@ import java.io.InputStream
 fun initializeFirebase(credentials: GoogleCredentials): FirebaseApp {
     val options: FirebaseOptions = FirebaseOptions.builder()
         .setCredentials(credentials)
-        .setProjectId("edifikana")
         .build()
 
     return FirebaseApp.initializeApp(options)
@@ -30,8 +29,7 @@ fun initializeFirestoreService(firebaseApp: FirebaseApp): Firestore {
  * Loads the locally bundled credentials.
  */
 fun getLocalFirebaseCredentials(): GoogleCredentials {
-    // TODO: Identify the path to the credentials file at build time
-    val credentialsPath = "/firebase-admin-sdk.json"
+    val credentialsPath = "/.secrets/firebase-adminsdk.json"
     val input: InputStream = object {}.javaClass.getResourceAsStream(credentialsPath) ?: TODO(
         "ERROR: FILE IS MISSING!!"
     )

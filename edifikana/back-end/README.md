@@ -154,9 +154,10 @@ service firebase.storage {
   - A window may appear requesting to enable the API. Click on `Enable API`.
 - Manually create a [Google Cloud Function](https://console.cloud.google.com/functions/).
     - Use the `gen2` environment.
+    - Use the name `edifikana-cloud-function`.
     - Select a region that matches your needs. In this scenario we will use `us-west1`.
     - Set the trigger to `Cloud Firestore`.
-    - Set the event type to `google.cloud.firestore.document.v1.created`.
+    - Set the event type to `google.cloud.firestore.document.v1.written`.
     - Ensure that `Retry on failure` is disabled.
     - Open the `More Options` panel and set the `Region` to `us-west1`.
     - Select a `Service Account`. The default service account should be fine.
@@ -164,6 +165,14 @@ service firebase.storage {
     - Click `Next`.
     - Set the Runtime to `Java 17`.
     - Click `Deploy`.
+
+
+- Set the error reporting
+- Go to the [Error Reporting](https://console.cloud.google.com/errors) page.
+- Select the project you want to observe. You dont need to set up monitoring for non-prod environments.
+- Click on `Configure Notifications`. 
+- Select an existing channel or `Manage Notification Channels` to create a new one.
+- Click on `Save`.
 
 # Testing
 
@@ -216,6 +225,7 @@ curl -m 70 -X POST https://us-west1-<PROJECT_ID>.cloudfunctions.net/<FUNCTION_NA
 
 ### Helper
 
+```
 export EDIFIKANA_PROJECT_NAME=edifikana-stage
 export EDIFIKANA_STORAGE_FOLDER_ID=1ZRI7dP2X7VqwixGKz3OPJ6KB-uuDkkM1
 export EDIFIKANA_TIME_CARD_SPREADSHEET_ID=1mDgyQtJV_EkCrikM5-lBufwmFGS5N8FxMUVYvdbXSuM
@@ -223,3 +233,4 @@ export EDIFIKANA_EVENT_LOG_SPREADSHEET_ID=1v-we-o55vEu8tGItH0EvY0v4IJIwAPtW75Zbd
 export EDIFIKANA_FORM_ENTRIES_SPREADSHEET_ID=16Fqq_uC6fyQVEhn7wTbNVcCjFLWuvgS676ic2ALrOzk
 
 ./deploy.sh
+```

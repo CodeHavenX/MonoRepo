@@ -67,6 +67,9 @@ class CloudFireService(
         firestore: Firestore,
         gDriveParams: GoogleDriveParameters,
     ) {
+        logger.info("Old value:")
+        logger.info(documentEventData.oldValue.toString())
+
         logger.info("New value:")
         logger.info(documentEventData.value.toString())
 

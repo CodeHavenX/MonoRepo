@@ -1,3 +1,8 @@
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+NC='\033[0m' # No Color
+
 ../../gradlew buildFunction
 
 if [ $? -ne 0 ]; then
@@ -80,6 +85,9 @@ if [ "$EDIFIKANA_PROJECT_NAME" != "$GCLOUD_PROJECT_ID" ]; then
   echo "EDIFIKANA_PROJECT_NAME does not match the current gcloud project ID. Please set the correct project ID in the environment variable EDIFIKANA_PROJECT_NAME."
   exit 1
 fi
+
+echo -e "${YELLOW}BEFORE CONTINUING, PLEASE VERIFY THAT THE PROJECT WAS COMPILED WITH THE SECRETS FOR THE RIGHT TARGET ENVIRONMENT!!!.${NC}"
+echo
 
 read -p "Do you want to continue? (Y/N): " confirm && [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]] || exit 1
 

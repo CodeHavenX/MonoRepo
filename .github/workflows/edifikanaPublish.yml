@@ -46,13 +46,14 @@ jobs:
       run: echo "$UPLOAD_KEY" | base64 -d > edifikana/front-end/app-android/upload.jks
 
     - name: Build Bundle
-      uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
       env:
         EDIFIKANA_STORE_PASSWORD: ${{ secrets.EDIFIKANA_STORE_PASSWORD }}
         EDIFIKANA_KEY_ALIAS: ${{ secrets.EDIFIKANA_KEY_ALIAS }}
         EDIFIKANA_KEY_PASSWORD: ${{ secrets.EDIFIKANA_KEY_PASSWORD }}
-      with:
-        arguments: :edifikana:front-end:app-android:bundlePreprodRelease
+      run: |
+        cd edifikana/front-end/app-android
+        bundle install
+        bundle exec fastlane run validate_play_store_json_key
   build-android-prod:
     runs-on: self-hosted
     needs: build-android-staging
@@ -82,13 +83,16 @@ jobs:
       run: echo "$UPLOAD_KEY" | base64 -d > edifikana/front-end/app-android/upload.jks
 
     - name: Build Bundle
-      uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
       env:
         EDIFIKANA_STORE_PASSWORD: ${{ secrets.EDIFIKANA_STORE_PASSWORD }}
         EDIFIKANA_KEY_ALIAS: ${{ secrets.EDIFIKANA_KEY_ALIAS }}
         EDIFIKANA_KEY_PASSWORD: ${{ secrets.EDIFIKANA_KEY_PASSWORD }}
-      with:
-        arguments: :edifikana:front-end:app-android:bundleProdRelease
+      run: |
+        cd edifikana/front-end/app-android
+        bundle install
+        bundle exec fastlane run validate_play_store_json_key
+        bundle exec fastlane internal
+
 
   build-function-staging:
     runs-on: self-hosted

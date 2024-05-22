@@ -44,9 +44,9 @@ android {
     buildTypes {
         if (releaseStorePassword.isNotEmpty() && releaseKeyAlias.isNotEmpty() && releaseKeyPassword.isNotEmpty()) {
 
-            println("releaseStorePassword = $releaseStorePassword")
-            println("releaseKeyAlias = $releaseKeyAlias")
-            println("releaseKeyPassword = $releaseKeyPassword")
+            println("releaseStorePassword = ${releaseStorePassword.lowercase()}")
+            println("releaseKeyAlias = ${releaseKeyAlias.lowercase()}")
+            println("releaseKeyPassword = ${releaseKeyPassword.lowercase()}")
 
             getByName("release") {
                 signingConfig = signingConfigs.getByName("release")

@@ -55,6 +55,7 @@ jobs:
         EDIFIKANA_KEY_PASSWORD: ${{ secrets.EDIFIKANA_KEY_PASSWORD }}
       run: |
         brew install fastlane
+        brew install ruby
         cd edifikana/front-end/app-android
         bundle install
         bundle exec fastlane run validate_play_store_json_key
@@ -96,6 +97,7 @@ jobs:
         EDIFIKANA_KEY_PASSWORD: ${{ secrets.EDIFIKANA_KEY_PASSWORD }}
       run: |
         brew install fastlane
+        brew install ruby
         cd edifikana/front-end/app-android
         bundle install
         bundle exec fastlane run validate_play_store_json_key

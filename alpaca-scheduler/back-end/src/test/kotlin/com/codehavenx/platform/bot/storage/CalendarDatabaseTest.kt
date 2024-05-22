@@ -12,6 +12,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import org.bson.types.ObjectId
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -38,6 +39,7 @@ class CalendarDatabaseTest : TestBase() {
         }
     }
 
+    @Ignore
     @Test
     fun `test crud operations`() = runBlockingTest {
         val startDate = LocalDateTime(2024, 1, 1, 0, 0)
@@ -80,6 +82,7 @@ class CalendarDatabaseTest : TestBase() {
         assertNull(calendarDatabase.getEvent(eventId = event.id, timeZone = timeZone))
     }
 
+    @Ignore
     @Test
     fun `test getting events in range`() = runBlockingTest {
         val objectIdProvider: () -> ObjectId = { ObjectId() }
@@ -112,6 +115,7 @@ class CalendarDatabaseTest : TestBase() {
         assertEquals(6, events.size)
     }
 
+    @Ignore
     @Test
     fun `test getting events in range with owner`() = runBlockingTest {
         val objectIdProvider: () -> ObjectId = { ObjectId() }

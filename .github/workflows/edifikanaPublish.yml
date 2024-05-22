@@ -20,7 +20,6 @@ env:
 jobs:
   build-android-staging:
     runs-on: self-hosted
-    needs: build-android-prod
     environment: staging
     steps:
     - uses: actions/checkout@v3
@@ -47,9 +46,18 @@ jobs:
       env:
         UPLOAD_KEY: ${{ secrets.EDIFIKANA_UPLOAD_KEY }}
       run: echo "$UPLOAD_KEY" | base64 -d > edifikana/front-end/app-android/upload.jks
+    - name: Build Bundle
+      uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
+      with:
+        arguments: :edifikana:front-end:app-android:bundlePreprodRelease
+    - uses: actions/download-artifact@v4
+      with:
+        name: PreprodBundle
+        path: edifikana/front-end/app-android/build/outputs/bundle/preprodRelease/app-android-preprod-release.aab
 
   build-android-prod:
     runs-on: self-hosted
+    needs: build-android-staging
     environment: prod
     steps:
     - uses: actions/checkout@v3
@@ -77,8 +85,6 @@ jobs:
         UPLOAD_KEY: ${{ secrets.EDIFIKANA_UPLOAD_KEY }}
       run: |
         echo "$UPLOAD_KEY" | base64 -d > edifikana/front-end/app-android/.secrets/upload.jks
-        ls -l edifikana/front-end/app-android/.secrets/
-        cat edifikana/front-end/app-android/.secrets/upload.jks
 
     - name: Build Bundle
       env:
@@ -86,10 +92,6 @@ jobs:
         EDIFIKANA_KEY_ALIAS: ${{ secrets.EDIFIKANA_KEY_ALIAS }}
         EDIFIKANA_KEY_PASSWORD: ${{ secrets.EDIFIKANA_KEY_PASSWORD }}
       run: |
-        echo $EDIFIKANA_STORE_PASSWORD
-        echo $EDIFIKANA_KEY_ALIAS
-        echo $EDIFIKANA_KEY_PASSWORD 
-        
         export LC_ALL=en_US.UTF-8
         export LANG=en_US.UTF-8
         brew install fastlane

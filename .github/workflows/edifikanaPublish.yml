@@ -54,6 +54,7 @@ jobs:
         EDIFIKANA_KEY_ALIAS: ${{ secrets.EDIFIKANA_KEY_ALIAS }}
         EDIFIKANA_KEY_PASSWORD: ${{ secrets.EDIFIKANA_KEY_PASSWORD }}
       run: |
+        set -x
         brew install fastlane
         brew install ruby
         cd edifikana/front-end/app-android
@@ -96,7 +97,6 @@ jobs:
         EDIFIKANA_KEY_ALIAS: ${{ secrets.EDIFIKANA_KEY_ALIAS }}
         EDIFIKANA_KEY_PASSWORD: ${{ secrets.EDIFIKANA_KEY_PASSWORD }}
       run: |
-        set -x
         brew install fastlane
         cd edifikana/front-end/app-android
         fastlane run validate_play_store_json_key
@@ -105,6 +105,7 @@ jobs:
 
   build-function-staging:
     runs-on: self-hosted
+    needs: build-android-staging
     environment: staging
     steps:
     - uses: actions/checkout@v3

@@ -42,23 +42,11 @@ jobs:
       env:
         FASTLANE_SECRETS: ${{ secrets.EDIFIKANA_FASTLANE_SECRETS }}
       run: echo "$FASTLANE_SECRETS" | base64 -d > edifikana/front-end/app-android/.secrets/silken-physics.json
-
     - name: Load Android upload signing key
       env:
         UPLOAD_KEY: ${{ secrets.EDIFIKANA_UPLOAD_KEY }}
       run: echo "$UPLOAD_KEY" | base64 -d > edifikana/front-end/app-android/upload.jks
 
-    - name: Build Bundle
-      env:
-        EDIFIKANA_STORE_PASSWORD: ${{ secrets.EDIFIKANA_STORE_PASSWORD }}
-        EDIFIKANA_KEY_ALIAS: ${{ secrets.EDIFIKANA_KEY_ALIAS }}
-        EDIFIKANA_KEY_PASSWORD: ${{ secrets.EDIFIKANA_KEY_PASSWORD }}
-      run: |
-        set -x
-        brew install fastlane
-        brew install ruby
-        cd edifikana/front-end/app-android
-        fastlane run validate_play_store_json_key
   build-android-prod:
     runs-on: self-hosted
     needs: build-android-staging
@@ -84,23 +72,22 @@ jobs:
       env:
         FASTLANE_SECRETS: ${{ secrets.EDIFIKANA_FASTLANE_SECRETS }}
       run: echo "$FASTLANE_SECRETS" | base64 -d > edifikana/front-end/app-android/.secrets/silken-physics.json
-
     - name: Load Android upload signing key
       env:
         UPLOAD_KEY: ${{ secrets.EDIFIKANA_UPLOAD_KEY }}
       run: echo "$UPLOAD_KEY" | base64 -d > edifikana/front-end/app-android/upload.jks
-
     - name: Build Bundle
       env:
         EDIFIKANA_STORE_PASSWORD: ${{ secrets.EDIFIKANA_STORE_PASSWORD }}
         EDIFIKANA_KEY_ALIAS: ${{ secrets.EDIFIKANA_KEY_ALIAS }}
         EDIFIKANA_KEY_PASSWORD: ${{ secrets.EDIFIKANA_KEY_PASSWORD }}
       run: |
+        export LC_ALL=en_US.UTF-8
+        export LANG=en_US.UTF-8
         brew install fastlane
         cd edifikana/front-end/app-android
         fastlane run validate_play_store_json_key
         fastlane internal
-
 
   build-function-staging:
     runs-on: self-hosted

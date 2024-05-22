@@ -53,12 +53,12 @@ jobs:
     - name: TESTREMOVE
       run: |
         find edifikana/front-end/app-android/build/outputs/
-        
 
-    - uses: actions/download-artifact@v4
+    - name: Save Bundle
+      uses: actions/upload-artifact@v4
       with:
         name: PreprodBundle
-        path: edifikana/front-end/app-android/build/outputs/bundle/preprodRelease/app-android-preprod-release.aab
+        path: edifikana/front-end/app-android/build/outputs/**/*.aab
 
   build-android-prod:
     runs-on: self-hosted

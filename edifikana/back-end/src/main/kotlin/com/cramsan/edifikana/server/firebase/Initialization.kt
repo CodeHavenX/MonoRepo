@@ -30,6 +30,7 @@ fun initializeFirestoreService(firebaseApp: FirebaseApp): Firestore {
  * Loads the locally bundled credentials.
  */
 fun getLocalFirebaseCredentials(): GoogleCredentials {
+    // TODO: Identify the path to the credentials file at build time
     val credentialsPath = "/firebase-admin-sdk.json"
     val input: InputStream = object {}.javaClass.getResourceAsStream(credentialsPath) ?: TODO(
         "ERROR: FILE IS MISSING!!"

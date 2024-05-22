@@ -124,8 +124,8 @@ jobs:
         FIREBASE_ADMIN_SDK: ${{ secrets.FIREBASE_ADMIN_SDK }}
         GDRIVE_ACCESS_SERVICE: ${{ secrets.GDRIVE_ACCESS_SERVICE }}
       run: |
-        echo "$FIREBASE_ADMIN_SDK" | base64 -d > edifikana/back-end/.secrets/firebase-adminsdk.json
-        echo "$GDRIVE_ACCESS_SERVICE" | base64 -d > edifikana/back-end/.secrets/gdrive-access-service.json
+        echo "$FIREBASE_ADMIN_SDK" | base64 -d > edifikana/back-end/src/main/resources/firebase-admin-sdk.json
+        echo "$GDRIVE_ACCESS_SERVICE" | base64 -d > edifikana/back-end/src/main/resources/gdrivde-credentials.json
     - name: Build Staging
       uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
       with:
@@ -173,9 +173,8 @@ jobs:
         FIREBASE_ADMIN_SDK: ${{ secrets.FIREBASE_ADMIN_SDK }}
         GDRIVE_ACCESS_SERVICE: ${{ secrets.GDRIVE_ACCESS_SERVICE }}
       run: |
-        echo "$FIREBASE_ADMIN_SDK" | base64 -d > edifikana/back-end/.secrets/firebase-adminsdk.json
-        echo "$GDRIVE_ACCESS_SERVICE" | base64 -d > edifikana/back-end/.secrets/gdrive-access-service.json
-    - name: Build Staging
+        echo "$FIREBASE_ADMIN_SDK" | base64 -d > edifikana/back-end/src/main/resources/firebase-admin-sdk.json
+        echo "$GDRIVE_ACCESS_SERVICE" | base64 -d > edifikana/back-end/src/main/resources/gdrivde-credentials.json    - name: Build Staging
       uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
       with:
         arguments: :edifikana:back-end:buildFunction
@@ -186,4 +185,17 @@ jobs:
     - name: Set up Cloud SDK
       uses: google-github-actions/setup-gcloud@v2
     - name: Use gcloud CLI
-      run: gcloud info
+      run: |
+        cd edifikana/back-end
+        gcloud functions deploy edifikana-cloud-function \
+          --gen2 \
+          --entry-point=com.cramsan.edifikana.server.CloudFirebaseApp \
+          --runtime=java17 \
+          --memory=512MB \
+          --region=us-west1 \
+          --source=build/deploy \
+          --set-env-vars STORAGE_FOLDER_ID=${{ vars.EDIFIKANA_STORAGE_FOLDER_ID }} \
+          --set-env-vars TIME_CARD_SPREADSHEET_ID=${{ vars.EDIFIKANA_TIME_CARD_SPREADSHEET_ID }} \
+          --set-env-vars EVENT_LOG_SPREADSHEET_ID=${{ vars.EDIFIKANA_EVENT_LOG_SPREADSHEET_ID }} \
+          --set-env-vars FORM_ENTRIES_SPREADSHEET_ID=${{ vars.EDIFIKANA_FORM_ENTRIES_SPREADSHEET_ID }} \
+          --set-env-vars PROJECT_NAME=${{ vars.EDIFIKANA_PROJECT_NAME }}

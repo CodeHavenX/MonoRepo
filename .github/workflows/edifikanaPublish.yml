@@ -134,6 +134,14 @@ jobs:
       with:
         name: PreprodJar
         path: edifikana/back-end/build/deploy/**/*.jar
+    - name: Google Auth
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+    - name: Use gcloud CLI
+      run: gcloud info
 
   build-function-prod:
     runs-on: self-hosted
@@ -157,4 +165,11 @@ jobs:
       uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
       with:
         arguments: :edifikana:back-end:buildFunction
-
+    - name: Google Auth
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+    - name: Use gcloud CLI
+      run: gcloud info

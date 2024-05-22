@@ -111,3 +111,6 @@ Finally, load the variables in the github actions.
   with:
     arguments: releaseAll
 ```
+
+## Github Actions
+Follow this: https://github.com/google-github-actions/auth?tab=readme-ov-file#inputs-service-account-key-json

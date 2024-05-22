@@ -75,7 +75,11 @@ jobs:
     - name: Load Android upload signing key
       env:
         UPLOAD_KEY: ${{ secrets.EDIFIKANA_UPLOAD_KEY }}
-      run: echo "$UPLOAD_KEY" | base64 -d > edifikana/front-end/app-android/.secrets/upload.jks
+      run: |
+        echo "$UPLOAD_KEY" | base64 -d > edifikana/front-end/app-android/.secrets/upload.jks
+        ls -l edifikana/front-end/app-android/.secrets/
+        cat edifikana/front-end/app-android/.secrets/upload.jks
+
     - name: Build Bundle
       env:
         EDIFIKANA_STORE_PASSWORD: ${{ secrets.EDIFIKANA_STORE_PASSWORD }}
@@ -91,7 +95,7 @@ jobs:
 
   build-function-staging:
     runs-on: self-hosted
-    needs: build-android-staging
+    needs: build-android-prod
     environment: staging
     steps:
     - uses: actions/checkout@v3

@@ -50,10 +50,6 @@ jobs:
       uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
       with:
         arguments: :edifikana:front-end:app-android:bundlePreprodRelease
-    - name: TESTREMOVE
-      run: |
-        find edifikana/front-end/app-android/build/outputs/
-
     - name: Save Bundle
       uses: actions/upload-artifact@v4
       with:
@@ -88,8 +84,7 @@ jobs:
     - name: Load Android upload signing key
       env:
         UPLOAD_KEY: ${{ secrets.EDIFIKANA_UPLOAD_KEY }}
-      run: |
-        echo "$UPLOAD_KEY" | base64 -d > edifikana/front-end/app-android/.secrets/upload.jks
+      run: echo "$UPLOAD_KEY" | base64 -d > edifikana/front-end/app-android/.secrets/upload.jks
 
     - name: Build Bundle
       env:
@@ -97,6 +92,7 @@ jobs:
         EDIFIKANA_KEY_ALIAS: ${{ secrets.EDIFIKANA_KEY_ALIAS }}
         EDIFIKANA_KEY_PASSWORD: ${{ secrets.EDIFIKANA_KEY_PASSWORD }}
       run: |
+        # TODO: Move to use deploy.sh
         export LC_ALL=en_US.UTF-8
         export LANG=en_US.UTF-8
         brew install fastlane

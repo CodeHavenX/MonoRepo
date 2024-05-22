@@ -9,9 +9,7 @@ name: Publish Edifikana
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches: [ "cramsan/test_ci" ]
 
 permissions:
   contents: read
@@ -54,7 +52,7 @@ jobs:
         EDIFIKANA_KEY_ALIAS: ${{ secrets.EDIFIKANA_KEY_ALIAS }}
         EDIFIKANA_KEY_PASSWORD: ${{ secrets.EDIFIKANA_KEY_PASSWORD }}
       with:
-        arguments: :edifikana:front-end:app-android:bundleRelease
+        arguments: :edifikana:front-end:app-android:bundlePreprodRelease
   build-android-prod:
     runs-on: self-hosted
     needs: build-android-staging
@@ -90,7 +88,7 @@ jobs:
         EDIFIKANA_KEY_ALIAS: ${{ secrets.EDIFIKANA_KEY_ALIAS }}
         EDIFIKANA_KEY_PASSWORD: ${{ secrets.EDIFIKANA_KEY_PASSWORD }}
       with:
-        arguments: :edifikana:front-end:app-android:bundleRelease
+        arguments: :edifikana:front-end:app-android:bundleProdRelease
 
   build-function-staging:
     runs-on: self-hosted

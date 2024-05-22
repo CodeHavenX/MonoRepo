@@ -9,7 +9,7 @@ name: Publish Edifikana
 
 on:
   push:
-    branches: [ "cramsan/test_ci" ]
+    branches: [ "main" ]
 
 permissions:
   contents: read

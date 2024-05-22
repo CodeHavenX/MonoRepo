@@ -106,7 +106,6 @@ jobs:
 
   build-function-staging:
     runs-on: self-hosted
-    needs: build-android-prod
     environment: staging
     steps:
     - uses: actions/checkout@v3
@@ -119,6 +118,7 @@ jobs:
       uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
       with:
         arguments: :edifikana:back-end:release
+
   build-function-prod:
     runs-on: self-hosted
     needs: build-function-staging

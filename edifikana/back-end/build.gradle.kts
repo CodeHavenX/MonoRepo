@@ -39,3 +39,25 @@ tasks.register<Copy>("buildFunction") {
     from("$projectDir/build/libs/" + projectDir.name + "-all.jar")
     into("$projectDir/build/deploy")
 }
+
+tasks.register("strictBuildFunction") {
+    group = "build"
+
+    dependsOn("buildFunction")
+
+    System.getenv("EDIFIKANA_PROJECT_NAME").ifBlank {
+        TODO("Environment variable EDIFIKANA_PROJECT_NAME not set")
+    }
+    System.getenv("EDIFIKANA_STORAGE_FOLDER_ID").ifBlank {
+        TODO("Environment variable EDIFIKANA_STORAGE_FOLDER_ID not set")
+    }
+    System.getenv("EDIFIKANA_TIME_CARD_SPREADSHEET_ID").ifBlank {
+        TODO("Environment variable EDIFIKANA_TIME_CARD_SPREADSHEET_ID not set")
+    }
+    System.getenv("EDIFIKANA_FORM_ENTRIES_SPREADSHEET_ID").ifBlank {
+        TODO("Environment variable EDIFIKANA_FORM_ENTRIES_SPREADSHEET_ID not set")
+    }
+    System.getenv("EDIFIKANA_EVENT_LOG_SPREADSHEET_ID").ifBlank {
+        TODO("Environment variable EDIFIKANA_EVENT_LOG_SPREADSHEET_ID not set")
+    }
+}

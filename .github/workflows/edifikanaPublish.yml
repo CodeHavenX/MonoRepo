@@ -129,7 +129,7 @@ jobs:
     - name: Build Staging
       uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
       with:
-        arguments: :edifikana:back-end:buildFunction
+        arguments: :edifikana:back-end:strictBuildFunction
     - name: Save Jar
       uses: actions/upload-artifact@v4
       with:
@@ -143,6 +143,7 @@ jobs:
       uses: google-github-actions/setup-gcloud@v2
     - name: Use gcloud CLI
       run: |
+        cd edifikana/back-end
         gcloud functions deploy edifikana-cloud-function \
           --gen2 \
           --entry-point=com.cramsan.edifikana.server.CloudFirebaseApp \

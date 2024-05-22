@@ -114,3 +114,8 @@ Finally, load the variables in the github actions.
 
 ## Github Actions
 Follow this: https://github.com/google-github-actions/auth?tab=readme-ov-file#inputs-service-account-key-json
+
+Perms:
+- roles/iam.serviceAccountTokenCreator
+
+Enable the Cloud API service account: https://console.cloud.google.com/cloud-build/settings/service-account?project=edifikana-stage

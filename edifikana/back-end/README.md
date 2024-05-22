@@ -176,7 +176,7 @@ Now the function will be packaged in a fat jar and placed in the `build/deploy` 
 Make sure you have the IDs of the Google Drive folders and Google Sheets ready.
 
 ```
-gcloud functions deploy function-1 \
+gcloud functions deploy edifikana-cloud-function \
   --gen2 \
   --entry-point=com.cramsan.edifikana.server.CloudFireController \
   --runtime=java17 \

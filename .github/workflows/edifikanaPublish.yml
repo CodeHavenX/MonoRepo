@@ -120,10 +120,10 @@ jobs:
       uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
       with:
         arguments: :edifikana:back-end:buildFunction
-    - name: Save FatJar
+    - name: Save Jar
       uses: actions/upload-artifact@v4
       with:
-        name: PreprodBundle
+        name: PreprodJar
         path: edifikana/back-end/build/deploy/**/*.jar
 
   build-function-prod:

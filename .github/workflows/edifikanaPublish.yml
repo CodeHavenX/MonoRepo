@@ -75,7 +75,7 @@ jobs:
     - name: Load Android upload signing key
       env:
         UPLOAD_KEY: ${{ secrets.EDIFIKANA_UPLOAD_KEY }}
-      run: echo "$UPLOAD_KEY" | base64 -d > edifikana/front-end/app-android/upload.jks
+      run: echo "$UPLOAD_KEY" | base64 -d > edifikana/front-end/app-android/.secrets/upload.jks
     - name: Build Bundle
       env:
         EDIFIKANA_STORE_PASSWORD: ${{ secrets.EDIFIKANA_STORE_PASSWORD }}

@@ -20,7 +20,6 @@ env:
 jobs:
   build-android-staging:
     runs-on: self-hosted
-    needs: build-function-staging
     environment: staging
     steps:
     - uses: actions/checkout@v3
@@ -185,18 +184,3 @@ jobs:
         credentials_json: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
     - name: Set up Cloud SDK
       uses: google-github-actions/setup-gcloud@v2
-    - name: Use gcloud CLI
-      run: |
-        cd edifikana/back-end
-        gcloud functions deploy edifikana-cloud-function \
-          --gen2 \
-          --entry-point=com.cramsan.edifikana.server.CloudFirebaseApp \
-          --runtime=java17 \
-          --memory=512MB \
-          --region=us-west1 \
-          --source=build/deploy \
-          --set-env-vars STORAGE_FOLDER_ID=${{ vars.EDIFIKANA_STORAGE_FOLDER_ID }} \
-          --set-env-vars TIME_CARD_SPREADSHEET_ID=${{ vars.EDIFIKANA_TIME_CARD_SPREADSHEET_ID }} \
-          --set-env-vars EVENT_LOG_SPREADSHEET_ID=${{ vars.EDIFIKANA_EVENT_LOG_SPREADSHEET_ID }} \
-          --set-env-vars FORM_ENTRIES_SPREADSHEET_ID=${{ vars.EDIFIKANA_FORM_ENTRIES_SPREADSHEET_ID }} \
-          --set-env-vars PROJECT_NAME=${{ vars.EDIFIKANA_PROJECT_NAME }}

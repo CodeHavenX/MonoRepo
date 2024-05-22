@@ -58,8 +58,7 @@ jobs:
         brew install fastlane
         brew install ruby
         cd edifikana/front-end/app-android
-        bundle install
-        bundle exec fastlane run validate_play_store_json_key
+        fastlane run validate_play_store_json_key
   build-android-prod:
     runs-on: self-hosted
     needs: build-android-staging

@@ -5,14 +5,14 @@ import android.net.Uri
 import android.provider.MediaStore
 import com.cramsan.edifikana.client.android.models.StorageRef
 import com.cramsan.edifikana.client.android.utils.getOrCatch
+import com.cramsan.framework.assertlib.assert
 import com.google.firebase.storage.FirebaseStorage
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withTimeout
-import com.cramsan.framework.assertlib.assert
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.time.Duration.Companion.seconds
 
 @Singleton
 class StorageService @Inject constructor(
@@ -42,7 +42,9 @@ class StorageService @Inject constructor(
         val uploadPathRef = uploadTask.result.metadata?.path?.let { storageReference.child(it) } ?: throw RuntimeException("Failed to get download URL")
         assert(uploadPathRef.path == uploadRef.path, TAG, "Path mismatch for uploaded file.")
 
-        val resultRef = StorageRef(uploadPathRef.path)
+        // TODO: Improve how to generate the references and classes
+        // We are manually removing the leading slash from the path since this is how the BE expects the path
+        val resultRef = StorageRef(uploadPathRef.path.removePrefix("/"))
         resultRef
     }
 

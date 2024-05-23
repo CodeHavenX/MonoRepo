@@ -24,8 +24,8 @@ android {
 
     defaultConfig {
         applicationId = "com.cramsan.edifikana.client.android"
-        versionCode = 10
-        versionName = "2.0"
+        versionCode = 12
+        versionName = "2.2"
         minSdk = 30
     }
 

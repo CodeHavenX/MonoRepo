@@ -8,7 +8,6 @@ import com.cramsan.edifikana.client.android.managers.EmployeeManager
 import com.cramsan.edifikana.client.android.managers.StorageService
 import com.cramsan.edifikana.client.android.managers.TimeCardManager
 import com.cramsan.edifikana.client.android.models.EmployeeModel
-import com.cramsan.edifikana.client.android.models.StorageRef
 import com.cramsan.edifikana.client.android.models.TimeCardRecordModel
 import com.cramsan.edifikana.client.android.models.fullName
 import com.cramsan.edifikana.client.lib.eventTypeFriendlyName
@@ -83,8 +82,8 @@ class ViewEmployeeViewModel @Inject constructor(
             return@launch
         }
 
-        val imageUri = record.imageRed?.let {
-            val res = storageService.downloadImage(StorageRef(it))
+        val imageUri = record.imageRef?.let {
+            val res = storageService.downloadImage(it)
 
             if (res.isSuccess) {
                 res.getOrNull()
@@ -120,6 +119,7 @@ class ViewEmployeeViewModel @Inject constructor(
             eventType = timeCardEventType,
             eventTime = clock.now().epochSeconds,
             imageUrl = null,
+            imageRef = null,
         )
         timeCardManager.addRecord(
             newRecord,

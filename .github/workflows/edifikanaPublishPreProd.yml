@@ -71,8 +71,8 @@ jobs:
         FIREBASE_ADMIN_SDK: ${{ secrets.FIREBASE_ADMIN_SDK }}
         GDRIVE_ACCESS_SERVICE: ${{ secrets.GDRIVE_ACCESS_SERVICE }}
       run: |
-        echo "$FIREBASE_ADMIN_SDK" | base64 -d > edifikana/back-end/src/main/resources/firebase-admin-sdk.json
-        echo "$GDRIVE_ACCESS_SERVICE" | base64 -d > edifikana/back-end/src/main/resources/gdrivde-credentials.json
+        echo "$FIREBASE_ADMIN_SDK" | base64 -d > edifikana/back-end/src/main/resources/.secrets/firebase-adminsdk.json
+        echo "$GDRIVE_ACCESS_SERVICE" | base64 -d > edifikana/back-end/src/main/resources/.secrets/gdrive-access-service.json
     - name: Build Staging
       uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
       with:

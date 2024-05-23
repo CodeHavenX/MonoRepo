@@ -7,7 +7,7 @@ import com.cramsan.edifikana.lib.firestore.EventType
 
 data class EventLogRecordModel (
     val id: EventLogRecordPK,
-    val employeePk: EmployeePK,
+    val employeePk: EmployeePK?,
     val timeRecorded: Long,
     val unit: String,
     val eventType: EventType,
@@ -15,5 +15,10 @@ data class EventLogRecordModel (
     val fallbackEventType: String?,
     val summary: String,
     val description: String,
-    val attachments: List<String>,
+    val attachments: List<AttachmentHolder>,
+)
+
+data class AttachmentHolder(
+    val publicUrl: String,
+    val storageRef: StorageRef?,
 )

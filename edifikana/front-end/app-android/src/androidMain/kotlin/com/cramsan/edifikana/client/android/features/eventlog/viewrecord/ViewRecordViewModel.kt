@@ -7,6 +7,7 @@ import com.cramsan.edifikana.client.android.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.android.managers.AttachmentManager
 import com.cramsan.edifikana.client.android.managers.EventLogManager
 import com.cramsan.edifikana.client.android.managers.StorageService
+import com.cramsan.edifikana.client.android.models.AttachmentHolder
 import com.cramsan.edifikana.client.android.models.EventLogRecordModel
 import com.cramsan.edifikana.client.android.models.StorageRef
 import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
@@ -81,15 +82,20 @@ class ViewRecordViewModel @Inject constructor(
         loadRecord(recordPk)
     }
 
-    fun openImage(imageRef: String) = viewModelScope.launch {
-        val storageRef = StorageRef(imageRef)
-        val res = storageService.downloadImage(storageRef)
+    fun openImage(attachmentHolder: AttachmentHolder) = viewModelScope.launch {
+        val storageRef = attachmentHolder.storageRef
 
-        val imageUri = if (res.isSuccess) {
-            res.getOrNull()
+        val imageUri = if (storageRef != null) {
+            val res = storageService.downloadImage(storageRef)
+
+            if (res.isSuccess) {
+                res.getOrNull()
+            } else {
+                null
+            } ?: return@launch
         } else {
-            null
-        } ?: return@launch
+            Uri.parse(attachmentHolder.publicUrl)
+        }
 
         _event.emit(ViewRecordEvent.TriggerMainActivityEvent(
             MainActivityEvent.OpenImageExternally(imageUri)

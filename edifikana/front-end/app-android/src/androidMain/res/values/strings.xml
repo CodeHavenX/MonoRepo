@@ -45,4 +45,6 @@
     <string name="text_add">Agregar</string>
     <string name="text_flip_camera">Cambiar cámara</string>
     <string name="text_employee_name">Nombre del conserje</string>
+    <string name="text_forms">Formularios</string>
+    <string name="text_view_records">Ver Archivos</string>
 </resources>

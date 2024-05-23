@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.android.managers
 
 import com.cramsan.edifikana.client.android.managers.mappers.toDomainModel
+import com.cramsan.edifikana.client.android.managers.mappers.toFirebaseModel
 import com.cramsan.edifikana.client.android.models.EmployeeModel
 import com.cramsan.edifikana.client.android.utils.getOrCatch
 import com.cramsan.edifikana.lib.firestore.Employee
@@ -38,7 +39,7 @@ class EmployeeManager @Inject constructor(
 
     @OptIn(FireStoreModel::class)
     suspend fun addEmployee(employee: EmployeeModel) = workContext.getOrCatch {
-        val firebaseModel = employee.toDomainModel()
+        val firebaseModel = employee.toFirebaseModel()
         fireStore.collection(Employee.COLLECTION)
             .document(firebaseModel.documentId().documentPath)
             .set(firebaseModel)

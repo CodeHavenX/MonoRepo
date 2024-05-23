@@ -3,8 +3,9 @@ package com.cramsan.edifikana.client.android.managers
 import com.cramsan.edifikana.client.android.db.models.EventLogRecordDao
 import com.cramsan.edifikana.client.android.db.models.FileAttachmentDao
 import com.cramsan.edifikana.client.android.managers.mappers.toEntity
-import com.cramsan.edifikana.client.android.managers.mappers.toFirebaseModel
 import com.cramsan.edifikana.client.android.managers.mappers.toDomainModel
+import com.cramsan.edifikana.client.android.managers.mappers.toFirebaseModel
+import com.cramsan.edifikana.client.android.models.AttachmentHolder
 import com.cramsan.edifikana.client.android.models.EventLogRecordModel
 import com.cramsan.edifikana.client.android.utils.getOrCatch
 import com.cramsan.edifikana.client.android.utils.launch
@@ -57,7 +58,7 @@ class EventLogManager @Inject constructor(
     suspend fun getRecord(eventLogRecordPK: EventLogRecordPK): Result<EventLogRecordModel> = workContext.getOrCatch {
         val localAttachments = attachmentDao.getAll()
             .filter { it.eventLogRecordPK == eventLogRecordPK.documentPath }
-            .mapNotNull { it.fileUri }
+            .mapNotNull { it.fileUri?.let { uri -> AttachmentHolder(publicUrl = uri, storageRef = null) } }
         val record = fireStore.collection(EventLogRecord.COLLECTION)
             .document(eventLogRecordPK.documentPath)
             .get()

@@ -13,3 +13,7 @@ annotation class UIThreadDispatcher
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class FirebaseStorageBucketName
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class FirebaseProjectName

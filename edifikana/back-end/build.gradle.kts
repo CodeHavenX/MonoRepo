@@ -20,6 +20,13 @@ dependencies {
     implementation("com.google.cloud.functions:functions-framework-api:_")
     implementation("com.google.cloud:google-cloudevent-types:_")
 
+    implementation("io.cloudevents:cloudevents-core:2.3.0")
+    implementation("io.cloudevents:cloudevents-json-jackson:2.3.0")
+
+    // Ktor Dependencies
+    implementation("io.ktor:ktor-server-core-jvm:_")
+    implementation("io.ktor:ktor-server-netty-jvm:_")
+
     // Firestore Dependencies
     implementation("com.google.firebase:firebase-admin:_")
 

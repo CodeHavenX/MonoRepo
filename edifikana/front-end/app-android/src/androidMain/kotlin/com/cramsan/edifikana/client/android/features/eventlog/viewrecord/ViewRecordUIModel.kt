@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.client.android.features.eventlog.viewrecord
 
+import com.cramsan.edifikana.client.android.models.AttachmentHolder
 import com.cramsan.edifikana.client.android.models.EventLogRecordModel
 import com.cramsan.edifikana.client.lib.toFriendlyDateTime
 import com.cramsan.edifikana.client.lib.toFriendlyString
@@ -11,7 +12,7 @@ data class ViewRecordUIModel(
     val eventType: String,
     val unit: String,
     val timeRecorded: String,
-    val publicAttachmentUris: List<String>,
+    val attachments: List<AttachmentHolder>,
     val recordPK: EventLogRecordPK,
 )
 
@@ -22,7 +23,7 @@ suspend fun EventLogRecordModel.toUIModel(): ViewRecordUIModel {
         eventType = eventType.toFriendlyString(),
         unit = unit,
         timeRecorded = timeRecorded.toFriendlyDateTime(),
-        publicAttachmentUris = attachments,
+        attachments = attachments,
         recordPK = id,
     )
 }

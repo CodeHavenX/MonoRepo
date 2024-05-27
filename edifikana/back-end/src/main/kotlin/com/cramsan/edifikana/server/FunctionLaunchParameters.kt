@@ -1,6 +1,5 @@
 package com.cramsan.edifikana.server
 
-
 class FunctionLaunchParameters(
     val projectName: String,
     val storageFolderId: String,
@@ -35,21 +34,21 @@ class FunctionLaunchParameters(
             val loadedEventLogSpreadsheetId = System.getenv(EVENT_LOG_SPREADSHEET_ID_PARAM)
             val loadedFormEntriesSpreadsheetId = System.getenv(FORM_ENTRIES_SPREADSHEET_ID_PARAM)
 
-             require(loadedProjectName.isNotBlank()) {
-                 "Missing $PROJECT_NAME environment variable"
-             }
-             require(loadedStorageFolderId.isNotBlank()) {
-                 "Missing $STORAGE_FOLDER_ID_PARAM environment variable"
-             }
-             require(loadedTimeCardSpreadsheetId.isNotBlank()) {
-                 "Missing $TIME_CARD_SPREADSHEET_ID_PARAM environment variable"
-             }
-             require(loadedEventLogSpreadsheetId.isNotBlank()) {
-                 "Missing $EVENT_LOG_SPREADSHEET_ID_PARAM environment variable"
-             }
-             require(loadedFormEntriesSpreadsheetId.isNotBlank()) {
+            require(loadedProjectName.isNotBlank()) {
+                "Missing $PROJECT_NAME environment variable"
+            }
+            require(loadedStorageFolderId.isNotBlank()) {
+                "Missing $STORAGE_FOLDER_ID_PARAM environment variable"
+            }
+            require(loadedTimeCardSpreadsheetId.isNotBlank()) {
+                "Missing $TIME_CARD_SPREADSHEET_ID_PARAM environment variable"
+            }
+            require(loadedEventLogSpreadsheetId.isNotBlank()) {
+                "Missing $EVENT_LOG_SPREADSHEET_ID_PARAM environment variable"
+            }
+            require(loadedFormEntriesSpreadsheetId.isNotBlank()) {
                 "Missing $FORM_ENTRIES_SPREADSHEET_ID_PARAM environment variable"
-             }
+            }
 
             return FunctionLaunchParameters(
                 projectName = loadedProjectName,

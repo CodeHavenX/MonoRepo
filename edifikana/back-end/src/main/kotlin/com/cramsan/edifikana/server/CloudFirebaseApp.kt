@@ -1,8 +1,5 @@
 package com.cramsan.edifikana.server
 
-import com.cramsan.edifikana.server.firebase.getLocalFirebaseCredentials
-import com.cramsan.edifikana.server.firebase.initializeFirebase
-import com.cramsan.edifikana.server.firebase.initializeFirestoreService
 import com.cramsan.edifikana.server.json.jsonFormat
 import com.google.cloud.functions.CloudEventsFunction
 import com.google.events.cloud.firestore.v1.DocumentEventData

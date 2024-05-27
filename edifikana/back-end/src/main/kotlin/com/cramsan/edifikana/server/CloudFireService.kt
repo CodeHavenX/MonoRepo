@@ -11,11 +11,6 @@ import com.cramsan.edifikana.lib.firestore.TimeCardRecord
 import com.cramsan.edifikana.lib.firestore.User
 import com.cramsan.edifikana.lib.firestore.helpers.fullName
 import com.cramsan.edifikana.server.drive.appendValues
-import com.cramsan.edifikana.server.drive.getHttpTransport
-import com.cramsan.edifikana.server.drive.getLocalDriveCredentials
-import com.cramsan.edifikana.server.drive.getRequestInitializer
-import com.cramsan.edifikana.server.drive.initializeDriveService
-import com.cramsan.edifikana.server.drive.initializeSpreadsheetService
 import com.cramsan.edifikana.server.drive.uploadFile
 import com.cramsan.edifikana.server.firebase.getDocument
 import com.cramsan.edifikana.server.models.toEmployee

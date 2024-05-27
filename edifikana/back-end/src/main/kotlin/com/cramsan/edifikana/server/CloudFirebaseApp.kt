@@ -16,24 +16,9 @@ class CloudFirebaseApp : CloudEventsFunction {
         private val logger: Logger = Logger.getLogger(CloudFirebaseApp::class.java.getName())
     }
 
-    private val credentials = getLocalFirebaseCredentials()
+    var launchParametersProvider: () -> FunctionLaunchParameters = { FunctionLaunchParameters.fromSystemEnvironment() }
 
-    private val app = initializeFirebase(credentials)
-
-    private val firestore = initializeFirestoreService(app)
-
-    /**
-     * These are public so we can overwrite them when running locally
-     */
-    var projectName = System.getenv(PROJECT_NAME)
-
-    var storageFolderId = System.getenv(STORAGE_FOLDER_ID_PARAM)
-
-    var timeCardSpreadsheetId = System.getenv(TIME_CARD_SPREADSHEET_ID_PARAM)
-
-    var eventLogSpreadsheetId = System.getenv(EVENT_LOG_SPREADSHEET_ID_PARAM)
-
-    var formEntriesSpreadsheetId = System.getenv(FORM_ENTRIES_SPREADSHEET_ID_PARAM)
+    var dependencies: FunctionDependencies = DependenciesLocalCredentials()
 
     @Throws(InvalidProtocolBufferException::class)
     override fun accept(event: CloudEvent) {
@@ -44,29 +29,22 @@ class CloudFirebaseApp : CloudEventsFunction {
         val encodedString: String = Base64.getEncoder().encodeToString(payloadBytes)
         logger.warning("Encoded event: $encodedString")
 
-        require(projectName.isNotBlank()) { "Missing $PROJECT_NAME environment variable" }
-        require(storageFolderId.isNotBlank()) { "Missing $STORAGE_FOLDER_ID_PARAM environment variable" }
-        require(timeCardSpreadsheetId.isNotBlank()) { "Missing $TIME_CARD_SPREADSHEET_ID_PARAM environment variable" }
-        require(eventLogSpreadsheetId.isNotBlank()) { "Missing $EVENT_LOG_SPREADSHEET_ID_PARAM environment variable" }
-        require(formEntriesSpreadsheetId.isNotBlank()) {
-            "Missing $FORM_ENTRIES_SPREADSHEET_ID_PARAM environment variable"
-        }
+        val functionLaunchParameters = launchParametersProvider()
 
         val eventData = DocumentEventData.parseFrom(event.data!!.toBytes())
         val gDriveParams = GoogleDriveParameters(
-            storageFolderId = storageFolderId,
-            timeCardSpreadsheetId = timeCardSpreadsheetId,
-            eventLogSpreadsheetId = eventLogSpreadsheetId,
-            formEntriesSpreadsheetId = formEntriesSpreadsheetId,
+            storageFolderId = functionLaunchParameters.storageFolderId,
+            timeCardSpreadsheetId = functionLaunchParameters.timeCardSpreadsheetId,
+            eventLogSpreadsheetId = functionLaunchParameters.eventLogSpreadsheetId,
+            formEntriesSpreadsheetId = functionLaunchParameters.formEntriesSpreadsheetId,
         )
 
-        CloudFireService(projectName).processEvent(eventData, firestore, gDriveParams)
+        CloudFireService(
+            functionLaunchParameters.projectName,
+            dependencies.sheets,
+            dependencies.drive,
+            dependencies.firestore,
+        ).processEvent(eventData, gDriveParams)
         logger.info("Invocation complete")
     }
 }
-
-private const val PROJECT_NAME = "PROJECT_NAME"
-private const val STORAGE_FOLDER_ID_PARAM = "STORAGE_FOLDER_ID"
-private const val TIME_CARD_SPREADSHEET_ID_PARAM = "TIME_CARD_SPREADSHEET_ID"
-private const val EVENT_LOG_SPREADSHEET_ID_PARAM = "EVENT_LOG_SPREADSHEET_ID"
-private const val FORM_ENTRIES_SPREADSHEET_ID_PARAM = "FORM_ENTRIES_SPREADSHEET_ID"

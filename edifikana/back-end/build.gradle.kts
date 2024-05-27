@@ -20,8 +20,8 @@ dependencies {
     implementation("com.google.cloud.functions:functions-framework-api:_")
     implementation("com.google.cloud:google-cloudevent-types:_")
 
-    implementation("io.cloudevents:cloudevents-core:2.3.0")
-    implementation("io.cloudevents:cloudevents-json-jackson:2.3.0")
+    implementation("io.cloudevents:cloudevents-core:_")
+    implementation("io.cloudevents:cloudevents-json-jackson:_")
 
     // Ktor Dependencies
     implementation("io.ktor:ktor-server-core-jvm:_")

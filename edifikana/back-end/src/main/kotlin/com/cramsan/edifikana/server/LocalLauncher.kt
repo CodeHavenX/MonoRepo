@@ -26,11 +26,15 @@ fun main() {
 
                 try {
                     val firebaseApp = CloudFirebaseApp()
-                    firebaseApp.projectName = projectName
-                    firebaseApp.storageFolderId = storageFolderId
-                    firebaseApp.timeCardSpreadsheetId = timeCardSpreadsheetId
-                    firebaseApp.eventLogSpreadsheetId = eventLogSpreadsheetId
-                    firebaseApp.formEntriesSpreadsheetId = formEntriesSpreadsheetId
+                    firebaseApp.launchParametersProvider = {
+                        FunctionLaunchParameters(
+                            projectName = projectName,
+                            storageFolderId = storageFolderId,
+                            timeCardSpreadsheetId = timeCardSpreadsheetId,
+                            eventLogSpreadsheetId = eventLogSpreadsheetId,
+                            formEntriesSpreadsheetId = formEntriesSpreadsheetId,
+                        )
+                    }
 
                     val decodedString = Base64.getDecoder().decode(payload)
                     val event = jsonFormat.deserialize(decodedString)

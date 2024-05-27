@@ -35,22 +35,12 @@ import java.util.logging.Logger
 
 class CloudFireService(
     private val projectName: String,
+    private val sheets: Sheets,
+    private val drive: Drive,
+    private val firestore: Firestore,
 ) {
     companion object {
         private val logger: Logger = Logger.getLogger(CloudFireService::class.java.getName())
-    }
-
-    private val sheets: Sheets
-
-    private val drive: Drive
-
-    init {
-        val credentials = getLocalDriveCredentials()
-        val httpTransport = getHttpTransport()
-        val requestInitializer = getRequestInitializer(credentials)
-
-        sheets = initializeSpreadsheetService(httpTransport, requestInitializer)
-        drive = initializeDriveService(httpTransport, requestInitializer)
     }
 
     /**
@@ -64,7 +54,6 @@ class CloudFireService(
     @OptIn(FireStoreModel::class)
     fun processEvent(
         documentEventData: DocumentEventData,
-        firestore: Firestore,
         gDriveParams: GoogleDriveParameters,
     ) {
         logger.info("Old value:")

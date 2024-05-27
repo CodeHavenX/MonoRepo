@@ -6,10 +6,10 @@ plugins {
 apply(from = "$rootDir/gradle/kotlin-mpp-target-android-app.gradle")
 
 android {
-    namespace = "com.cramsan.framework.sample.android.app"
+    namespace = "com.cramsan.samples.android.app"
 
     defaultConfig {
-        applicationId = "com.cramsan.framework.sample.android.app"
+        applicationId = "com.cramsan.samples.android.app"
         versionCode = 1
         versionName = "1.0"
     }

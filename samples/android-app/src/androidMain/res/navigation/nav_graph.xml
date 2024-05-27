@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/blankFragment"
-        android:name="com.cramsan.framework.sample.android.app.homepage.HomePageFragment"
+        android:name="com.cramsan.samples.android.app.homepage.HomePageFragment"
         android:label="fragment_blank">
     </fragment>
 </navigation>

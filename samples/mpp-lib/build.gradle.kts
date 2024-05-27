@@ -11,7 +11,7 @@ apply(from = "$rootDir/gradle/kotlin-mpp-target-jvm.gradle")
 
 
 android {
-    namespace = "com.cramsan.framework.sample.mpp_lib"
+    namespace = "com.cramsan.samples.mpp_lib"
 }
 
 kotlin {

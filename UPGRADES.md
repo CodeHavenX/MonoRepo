@@ -23,21 +23,26 @@ upgrades.
 
 ## Verifying sample projects
 
-1. Open an emulator and run the following command to install the app:
+1. Open an emulator and do a smoke test. Run the following command to install and launch the app. Once you have verified
+that everything looks fine, press enter to in the terminal to close the app:
 
 ```shell
 ./gradlew samples:android-app:installPreprodDebug
+adb shell am start -n com.cramsan.samples.android.app.preprod.debug/com.cramsan.samples.android.app.MainActivity
+read -p "Press enter to continue"
+adb shell am force-stop com.cramsan.samples.android.app.preprod.debug
 ```
 
-2. Launch the `Android App Sample` app to ensure the app is launching.
-3. Repeat the process for the other sample apps:
+2. Repeat the process for the other sample apps:
 
 ```shell
 ./gradlew samples:jbcompose-android-app:installPreprodDebug
+adb shell am start -n com.cramsan.minesweepers.android.app.preprod.debug/com.cramsan.minesweepers.android.app.MainActivity
+read -p "Press enter to continue"
+adb shell am force-stop  com.cramsan.minesweepers.android.app.preprod.debug
 ```
 
-4. Launch the `MineSweepers` app to ensure the app is launching.
-5. Now lets launch the Compose Desktop app. Run the following command and verify that the app is launching:
+4. Now lets launch the Compose Desktop app. Run the following command and verify that the app is launching:
 
 ```shell
 ./gradlew samples:jbcompose-desktop-app:run
@@ -67,4 +72,4 @@ Ensure you have followed the steps in the [README.md](README.md) to ensure you h
 
 Open each file and verify that you can see the Previews:
 - [Window.kt](samples/jbcompose-desktop-app/src/main/kotlin/com/cramsan/minesweepers/jvm/Window.kt)
-- [MainActivity.kt](samples/jbcompose-android-app/src/androidMain/kotlin/com/cramsan/framework/sample/jbcompose/mpplib/MainActivity.kt)
+- [MainActivity.kt](samples/jbcompose-android-app/src/androidMain/kotlin/com/cramsan/minesweepers/android/app/MainActivity.kt)

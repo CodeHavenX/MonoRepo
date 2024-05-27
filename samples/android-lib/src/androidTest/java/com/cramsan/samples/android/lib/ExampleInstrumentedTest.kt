@@ -1,4 +1,4 @@
-package com.cramsan.samples.android.app
+package com.cramsan.samples.android.lib
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -17,6 +17,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.cramsan.samples.android.app", appContext.packageName)
+        assertEquals("com.cramsan.samples.android.lib.test", appContext.packageName)
     }
 }

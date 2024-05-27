@@ -1,4 +1,4 @@
-package com.cramsan.framework.sample.android.app
+package com.cramsan.samples.android.app
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

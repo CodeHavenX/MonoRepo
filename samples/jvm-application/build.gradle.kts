@@ -2,7 +2,7 @@ plugins {
     kotlin("jvm")
 }
 
-val mainClassTarget by extra("com.cramsan.framework.sample.jvm.application.ApplicationKt")
+val mainClassTarget by extra("com.cramsan.samples.jvm.application.ApplicationKt")
 
 apply(from = "$rootDir/gradle/kotlin-jvm-target-application.gradle")
 

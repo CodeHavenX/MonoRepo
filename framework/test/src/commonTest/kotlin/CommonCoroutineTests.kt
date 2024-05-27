@@ -9,6 +9,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
+import kotlin.time.Duration.Companion.days
 
 @ExperimentalCoroutinesApi
 class CommonCoroutineTests : TestBase() {
@@ -33,8 +34,13 @@ class CommonCoroutineTests : TestBase() {
     @Test
     fun Test_delays_are_executed_instantly() = runBlockingTest {
         // This method should run instantly
-        // When upgrading to Kotlin 1.5 we can use the new Duration.hours API.
         delay((1000 * 60 * 60).toLong())
+    }
+
+    @Test
+    fun Test_delays_are_executed_instantly_using_duration() = runBlockingTest {
+        // This method should run instantly
+        delay(60.days)
     }
 
     @Test

@@ -1,6 +1,7 @@
 plugins {
     kotlin("multiplatform")
     id("com.android.application")
+    id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.compose")
     id("com.google.gms.google-services")
     id("com.google.devtools.ksp")
@@ -94,7 +95,7 @@ dependencies {
     implementation("androidx.room:room-ktx:_")
     annotationProcessor("androidx.room:room-compiler:_")
     // To use Kotlin Symbol Processing (KSP)
-    ksp("androidx.room:room-compiler:_")
+    add("kspAndroid", "androidx.room:room-compiler:_")
 }
 
 room {

@@ -11,6 +11,10 @@ apply plugin: "com.google.devtools.ksp"
 apply plugin: "com.google.dagger.hilt.android"
 apply from: "$rootDir/gradle/release-task.gradle"
 
+kotlin {
+    androidTarget()
+}
+
 android {
     compileSdkVersion 34
 
@@ -56,11 +60,6 @@ android {
         compose true
     }
 
-    composeOptions {
-        // https://developer.android.com/jetpack/androidx/releases/compose-kotlin
-        kotlinCompilerExtensionVersion = versionFor(project, "version.androidx.compose.compiler")
-    }
-
     packaging {
         resources {
             excludes += "/META-INF/**"
@@ -90,8 +89,8 @@ android {
 }
 
 dependencies {
-    ksp "com.google.dagger:hilt-compiler:_"
-    ksp "androidx.hilt:hilt-compiler:_"
+    kspAndroid "com.google.dagger:hilt-compiler:_"
+    kspAndroid "androidx.hilt:hilt-compiler:_"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:_"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:_"
@@ -132,10 +131,6 @@ dependencies {
     androidTestImplementation "org.jetbrains.kotlin:kotlin-test-junit:_"
     androidTestImplementation "io.mockk:mockk-android:_"
     androidTestImplementation "org.robolectric:robolectric:_"
-}
-
-kotlin {
-    androidTarget()
 }
 
 tasks.register("releaseAndroid") {

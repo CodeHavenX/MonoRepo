@@ -45,7 +45,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(project(":framework:interfacelib"))
-
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:_")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:_")
                 implementation("org.jetbrains.kotlin:kotlin-test-common:_")
                 implementation("org.jetbrains.kotlin:kotlin-test-annotations-common:_")
@@ -65,6 +65,7 @@ kotlin {
         }
         jsMain {
             dependencies {
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:_")
                 implementation("org.jetbrains.kotlin:kotlin-test-js:_")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:_")
             }

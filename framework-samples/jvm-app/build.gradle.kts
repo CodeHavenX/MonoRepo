@@ -2,6 +2,7 @@ import de.fayard.refreshVersions.core.versionFor
 
 plugins {
     id("org.jetbrains.compose")
+    id("org.jetbrains.kotlin.plugin.compose")
     kotlin("jvm")
 }
 

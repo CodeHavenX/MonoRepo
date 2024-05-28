@@ -1,6 +1,9 @@
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
+
 plugins {
     kotlin("multiplatform")
     id("org.jetbrains.compose")
+    id("org.jetbrains.kotlin.plugin.compose")
     id("com.android.library")
 }
 
@@ -10,6 +13,7 @@ apply(from = "$rootDir/gradle/kotlin-mpp-target-jvm-compose.gradle")
 apply(from = "$rootDir/gradle/kotlin-mpp-target-wasm.gradle")
 
 kotlin {
+    @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
         browser {}
         binaries.executable()

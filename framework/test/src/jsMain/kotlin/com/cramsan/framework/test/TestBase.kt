@@ -13,8 +13,9 @@ actual abstract class TestBase {
     val testCoroutineDispatcher = StandardTestDispatcher()
     private val _testCoroutineScope = TestScope(testCoroutineDispatcher)
 
-    actual fun runBlockingTest(block: suspend TestScope.() -> Unit): dynamic =
+    actual fun runBlockingTest(block: suspend TestScope.() -> Unit) {
         _testCoroutineScope.runTest { block() }
+    }
 
     /**
      * Reference to the Scope used to run the tests. This scope can be injected into

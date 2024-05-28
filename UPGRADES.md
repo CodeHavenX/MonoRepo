@@ -29,7 +29,7 @@ that everything looks fine, press enter to in the terminal to close the app:
 ```shell
 ./gradlew samples:android-app:installPreprodDebug
 adb shell am start -n com.cramsan.samples.android.app.preprod.debug/com.cramsan.samples.android.app.MainActivity
-read -p "Press enter to continue"
+read result
 adb shell am force-stop com.cramsan.samples.android.app.preprod.debug
 ```
 
@@ -38,7 +38,7 @@ adb shell am force-stop com.cramsan.samples.android.app.preprod.debug
 ```shell
 ./gradlew samples:jbcompose-android-app:installPreprodDebug
 adb shell am start -n com.cramsan.minesweepers.android.app.preprod.debug/com.cramsan.minesweepers.android.app.MainActivity
-read -p "Press enter to continue"
+read result
 adb shell am force-stop  com.cramsan.minesweepers.android.app.preprod.debug
 ```
 

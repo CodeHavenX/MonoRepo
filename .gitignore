@@ -8,6 +8,7 @@ build/
 yarn.lock
 node_modules/
 .caching
+.kotlin/
 
 ### Fastlane ###
 **/fastlane/report.xml

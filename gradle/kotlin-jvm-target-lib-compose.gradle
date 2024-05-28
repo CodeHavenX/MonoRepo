@@ -3,6 +3,7 @@
  */
 
 apply plugin: "org.jetbrains.compose"
+apply plugin: "org.jetbrains.kotlin.plugin.compose"
 apply plugin: 'kotlin'
 
 apply from: "$rootDir/gradle/kotlin-jvm-target-lib.gradle"

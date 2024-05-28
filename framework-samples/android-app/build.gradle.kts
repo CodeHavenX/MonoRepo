@@ -1,5 +1,7 @@
 plugins {
     id("com.android.application")
+    id("org.jetbrains.kotlin.plugin.compose")
+    id("org.jetbrains.compose")
 }
 
 apply(from = "$rootDir/gradle/kotlin-mpp-target-android-app.gradle")

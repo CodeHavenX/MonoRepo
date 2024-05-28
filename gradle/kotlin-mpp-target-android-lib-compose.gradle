@@ -7,6 +7,7 @@ apply plugin: "org.jetbrains.kotlin.multiplatform"
 
 apply plugin: "com.android.library"
 apply plugin: "org.jetbrains.compose"
+apply plugin: "org.jetbrains.kotlin.plugin.compose"
 apply from: "$rootDir/gradle/kotlin-mpp-target-android-lib.gradle"
 
 android {
@@ -14,11 +15,6 @@ android {
 
     buildFeatures {
         compose = true
-    }
-
-    composeOptions {
-        // https://developer.android.com/jetpack/androidx/releases/compose-kotlin
-        kotlinCompilerExtensionVersion = versionFor(project, "version.androidx.compose.compiler")
     }
 }
 

@@ -1,30 +1,31 @@
 package com.cramsan.edifikana.client.android.features.eventlog.viewrecord
 
 import android.net.Uri
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.cramsan.edifikana.client.android.features.base.EdifikanaBaseViewModel
 import com.cramsan.edifikana.client.android.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.android.managers.AttachmentManager
 import com.cramsan.edifikana.client.android.managers.EventLogManager
 import com.cramsan.edifikana.client.android.managers.StorageService
 import com.cramsan.edifikana.client.android.models.AttachmentHolder
 import com.cramsan.edifikana.client.android.models.EventLogRecordModel
-import com.cramsan.edifikana.client.android.models.StorageRef
 import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class ViewRecordViewModel @Inject constructor(
     private val eventLogManager: EventLogManager,
     private val attachmentManager: AttachmentManager,
     private val storageService: StorageService,
-) : ViewModel() {
+    exceptionHandler: CoroutineExceptionHandler,
+) : EdifikanaBaseViewModel(exceptionHandler) {
 
     private val _uiState = MutableStateFlow(ViewRecordUIState(null, true))
     val uiState: StateFlow<ViewRecordUIState> = _uiState
@@ -39,14 +40,15 @@ class ViewRecordViewModel @Inject constructor(
 
         val result = eventLogManager.getRecord(eventLogRecord)
 
-        result.onSuccess { record ->
-            this@ViewRecordViewModel.record = record
+        if (result.isFailure) {
+            _uiState.value = ViewRecordUIState(null, false)
+        } else {
+            val loadedRecord = result.getOrThrow()
+            this@ViewRecordViewModel.record = loadedRecord
             _uiState.value = ViewRecordUIState(
-                record.toUIModel(),
+                loadedRecord.toUIModel(),
                 isLoading = false,
             )
-        }.onFailure {
-            _uiState.value = ViewRecordUIState(null, false)
         }
     }
 
@@ -59,17 +61,21 @@ class ViewRecordViewModel @Inject constructor(
             "${record.timeRecorded}\n" +
             "Dpto: ${record.unit}\n" +
             record.description
-        _event.emit(ViewRecordEvent.TriggerMainActivityEvent(
-            MainActivityEvent.ShareContent(
-                text = message,
+        _event.emit(
+            ViewRecordEvent.TriggerMainActivityEvent(
+                MainActivityEvent.ShareContent(
+                    text = message,
+                )
             )
-        ))
+        )
     }
 
     fun pickMultipleVisualMedia() = viewModelScope.launch {
-        _event.emit(ViewRecordEvent.TriggerMainActivityEvent(
-            MainActivityEvent.OpenPhotoPicker()
-        ))
+        _event.emit(
+            ViewRecordEvent.TriggerMainActivityEvent(
+                MainActivityEvent.OpenPhotoPicker()
+            )
+        )
     }
 
     fun upload(uris: List<Uri>) = viewModelScope.launch {
@@ -89,7 +95,7 @@ class ViewRecordViewModel @Inject constructor(
             val res = storageService.downloadImage(storageRef)
 
             if (res.isSuccess) {
-                res.getOrNull()
+                res.getOrThrow()
             } else {
                 null
             } ?: return@launch
@@ -97,8 +103,10 @@ class ViewRecordViewModel @Inject constructor(
             Uri.parse(attachmentHolder.publicUrl)
         }
 
-        _event.emit(ViewRecordEvent.TriggerMainActivityEvent(
-            MainActivityEvent.OpenImageExternally(imageUri)
-        ))
+        _event.emit(
+            ViewRecordEvent.TriggerMainActivityEvent(
+                MainActivityEvent.OpenImageExternally(imageUri)
+            )
+        )
     }
 }

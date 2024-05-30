@@ -1,11 +1,8 @@
 package com.cramsan.edifikana.client.android.features.formlist.entry
 
-
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -81,10 +78,10 @@ private fun EntryContent(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             item {
-                 Text(
-                     text = content.name,
-                     style = MaterialTheme.typography.titleLarge,
-                 )
+                Text(
+                    text = content.name,
+                    style = MaterialTheme.typography.titleLarge,
+                )
             }
             items(content.fields) { field ->
                 EntryFieldItem(field, onValueChange)

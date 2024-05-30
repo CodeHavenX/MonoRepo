@@ -3,7 +3,6 @@ package com.cramsan.edifikana.client.android.features.eventlog
 import com.cramsan.edifikana.client.android.models.EventLogRecordModel
 import com.cramsan.edifikana.client.lib.toFriendlyDateTime
 import com.cramsan.edifikana.client.lib.toFriendlyString
-import com.cramsan.edifikana.lib.firestore.EventLogRecord
 import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
 
 data class EventLogRecordUIModel(

@@ -27,6 +27,5 @@ data class FileAttachmentEntity(
             val id = "$eventLogRecordPK-$fileUri-${clock.now().epochSeconds}"
             return FileAttachmentEntity(id, eventLogRecordPK.documentPath, fileUri.toString())
         }
-
     }
 }

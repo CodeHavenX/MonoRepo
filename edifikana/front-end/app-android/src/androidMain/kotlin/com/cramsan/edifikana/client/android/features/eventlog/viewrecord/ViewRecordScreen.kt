@@ -98,7 +98,8 @@ private fun SingleRecord(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(top = 16.dp)
+            .padding(horizontal = 16.dp),
     ) {
         eventLogRecord?.let {
             Column(
@@ -208,7 +209,7 @@ private fun SingleRecord(
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                    .padding(16.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.surface,
                     contentColor = MaterialTheme.colorScheme.onSurface,

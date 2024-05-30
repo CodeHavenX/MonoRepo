@@ -2,7 +2,6 @@ package com.cramsan.edifikana.client.android.db.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.cramsan.edifikana.lib.firestore.IdType
 import com.cramsan.edifikana.lib.firestore.TimeCardEventType
 import com.cramsan.edifikana.lib.firestore.TimeCardRecord
 

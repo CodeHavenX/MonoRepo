@@ -13,6 +13,10 @@
     <value>25</value>
   </entry>
   <entry>
+    <key>fetchPeriod</key>
+    <value>3</value>
+  </entry>
+  <entry>
     <key>feature_form_tab_enabled</key>
     <value>true</value>
   </entry>

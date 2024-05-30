@@ -15,4 +15,8 @@ sealed class CameraEvent {
         val id: Int = Random.nextInt(),
         val uri: Uri,
     ) : CameraEvent()
+
+    data class OpenSettings(
+        val id: Int = Random.nextInt(),
+    ) : CameraEvent()
 }

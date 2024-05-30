@@ -1,17 +1,22 @@
 package com.cramsan.edifikana.client.android.features.camera
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.addCallback
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import com.cramsan.edifikana.client.android.config.ImageConfig
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.android.features.camera.compose.CameraPreview
+import com.cramsan.edifikana.client.android.features.camera.compose.PermissionDeniedScreen
 import com.cramsan.edifikana.client.android.features.camera.compose.PhotoConfirmation
-import com.cramsan.edifikana.client.android.features.camera.compose.PhotoError
+import com.cramsan.edifikana.client.android.features.camera.compose.PhotoErrorScreen
+import com.cramsan.edifikana.client.android.managers.remoteconfig.ImageConfig
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -35,6 +40,10 @@ class CameraActivity : ComponentActivity() {
             val uiState by cameraDelegate.uiState.collectAsState()
             val event by cameraDelegate.event.collectAsState(CameraEvent.Noop)
 
+            LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+                cameraDelegate.requestCameraPermission()
+            }
+
             LaunchedEffect(event) {
                 when (val event = event) {
                     CameraEvent.Noop -> Unit
@@ -48,6 +57,13 @@ class CameraActivity : ComponentActivity() {
                         finish()
                     }
                     is CameraEvent.CancelFlow -> finish()
+                    is CameraEvent.OpenSettings -> {
+                        val intent = Intent(
+                            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                            Uri.fromParts("package", this@CameraActivity.packageName, null)
+                        )
+                        startActivity(intent)
+                    }
                 }
             }
 
@@ -70,12 +86,17 @@ class CameraActivity : ComponentActivity() {
                     )
                 }
                 is CameraUiState.Error -> {
-                    PhotoError(
+                    PhotoErrorScreen(
                         message = state.message,
                         onCancelClick = { cameraDelegate.displayFrontCameraPreview() },
                     )
                 }
-                CameraUiState.PermissionDenied -> { }
+                is CameraUiState.PermissionDenied -> {
+                    PermissionDeniedScreen(
+                        onOpenSettingsClick = { cameraDelegate.openAppSettings() },
+                        onCancelClick = { cameraDelegate.handleBackNavigation() },
+                    )
+                }
             }
         }
     }

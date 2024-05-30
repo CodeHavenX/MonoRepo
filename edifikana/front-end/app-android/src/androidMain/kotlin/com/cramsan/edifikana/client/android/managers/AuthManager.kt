@@ -9,9 +9,9 @@ import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.tasks.await
 
 @Singleton
 class AuthManager @Inject constructor(
@@ -19,7 +19,7 @@ class AuthManager @Inject constructor(
     private val fireStore: FirebaseFirestore,
     private val workContext: WorkContext,
 ) {
-    suspend fun isSignedIn(enforceAllowList: Boolean): Result<Boolean> = workContext.getOrCatch {
+    suspend fun isSignedIn(enforceAllowList: Boolean): Result<Boolean> = workContext.getOrCatch(TAG) {
         val isSignedIn = auth.currentUser != null
 
         if (!isSignedIn) {
@@ -32,7 +32,7 @@ class AuthManager @Inject constructor(
         }
     }
 
-    suspend fun getUser(userPk: UserPk): Result<User> = workContext.getOrCatch {
+    suspend fun getUser(userPk: UserPk): Result<User> = workContext.getOrCatch(TAG) {
         fireStore.collection(User.COLLECTION)
             .document(userPk.documentPath)
             .get()
@@ -44,13 +44,15 @@ class AuthManager @Inject constructor(
         return getUser(UserPk(email)).isSuccess
     }
 
-    suspend fun signInAnonymously(): Result<AuthResult> = workContext.getOrCatch {
+    suspend fun signInAnonymously(): Result<AuthResult> = workContext.getOrCatch(TAG) {
         val result = auth.signInAnonymously().await()
         logI(TAG, "Successful anonymous sign in.")
         result
     }
 
-    suspend fun handleSignInResult(result: FirebaseAuthUIAuthenticationResult?): Result<Boolean> = workContext.getOrCatch {
+    suspend fun handleSignInResult(result: FirebaseAuthUIAuthenticationResult?): Result<Boolean> = workContext.getOrCatch(
+        TAG
+    ) {
         val response = result?.idpResponse
         if (result?.resultCode == Activity.RESULT_OK) {
             // Successfully signed in

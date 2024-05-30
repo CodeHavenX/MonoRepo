@@ -12,30 +12,30 @@ import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.cramsan.edifikana.client.android.R
-import com.cramsan.edifikana.client.android.config.ImageConfig
+import com.cramsan.edifikana.client.android.managers.remoteconfig.ImageConfig
 import com.cramsan.framework.logging.logE
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import java.text.SimpleDateFormat
-import java.util.Locale
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 
 class CameraDelegate(
     private val activity: ComponentActivity,
     private val imageConfig: ImageConfig
 ) {
 
-    private val _uiState = MutableStateFlow<CameraUiState>(CameraUiState.PreviewCamera(
-        lensFacing = CameraSelector.LENS_FACING_BACK,
-        captureWidth = imageConfig.captureWidth,
-        captureHeight = imageConfig.captureHeight,
-    ))
+    private val _uiState = MutableStateFlow<CameraUiState>(
+        CameraUiState.PreviewCamera(
+            lensFacing = CameraSelector.LENS_FACING_BACK,
+            captureWidth = imageConfig.captureWidth,
+            captureHeight = imageConfig.captureHeight,
+        )
+    )
     val uiState: StateFlow<CameraUiState> = _uiState
 
     private val _event = MutableSharedFlow<CameraEvent>()
@@ -43,21 +43,12 @@ class CameraDelegate(
 
     private val scope = activity.lifecycleScope
 
-    init {
-        activity.lifecycle.addObserver(object : DefaultLifecycleObserver {
-            override fun onCreate(owner: LifecycleOwner) {
-                super.onCreate(owner)
-                requestCameraPermission()
-            }
-        })
-    }
-
     private val requestPermissionLauncher = activity.registerPermissionCallbacks(
         onPermissionGranted = { displayFrontCameraPreview() },
         onPermissionDenied = { displayPermissionDeniedMessage() },
     )
 
-    private fun requestCameraPermission() {
+    fun requestCameraPermission() {
         when {
             ContextCompat.checkSelfPermission(
                 activity,
@@ -97,7 +88,10 @@ class CameraDelegate(
 
     private fun openImageConfirmation(uri: Uri?) {
         if (uri == null) {
-            displayErrorMessage(activity.resources.getString(R.string.text_error_take_photo), RuntimeException("Failed to save image"))
+            displayErrorMessage(
+                activity.resources.getString(R.string.text_error_take_photo),
+                RuntimeException("Failed to save image")
+            )
             return
         } else {
             _uiState.value = CameraUiState.PhotoConfirmation(uri)
@@ -150,7 +144,7 @@ class CameraDelegate(
     fun handleBackNavigation() {
         scope.launch {
             when (_uiState.value) {
-                CameraUiState.PermissionDenied -> _event.emit(CameraEvent.CancelFlow())
+                is CameraUiState.PermissionDenied -> _event.emit(CameraEvent.CancelFlow())
                 is CameraUiState.Error -> _event.emit(CameraEvent.CancelFlow())
                 is CameraUiState.PhotoConfirmation -> displayFrontCameraPreview()
                 is CameraUiState.PreviewCamera -> _event.emit(CameraEvent.CancelFlow())
@@ -161,6 +155,12 @@ class CameraDelegate(
     fun handleResult(uri: Uri) {
         scope.launch {
             _event.emit(CameraEvent.CompleteFlow(uri = uri))
+        }
+    }
+
+    fun openAppSettings() {
+        scope.launch {
+            _event.emit(CameraEvent.OpenSettings())
         }
     }
 

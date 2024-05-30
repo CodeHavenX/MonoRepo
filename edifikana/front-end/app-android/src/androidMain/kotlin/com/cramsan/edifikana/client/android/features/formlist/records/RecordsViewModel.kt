@@ -1,13 +1,14 @@
 package com.cramsan.edifikana.client.android.features.formlist.records
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.cramsan.edifikana.client.android.features.base.EdifikanaBaseViewModel
 import com.cramsan.edifikana.client.android.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.android.features.main.Route
 import com.cramsan.edifikana.client.android.managers.FormsManager
 import com.cramsan.edifikana.client.android.models.FormRecordModel
 import com.cramsan.framework.logging.logE
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -18,11 +19,15 @@ import javax.inject.Inject
 @HiltViewModel
 class RecordsViewModel @Inject constructor(
     private val formsManager: FormsManager,
-) : ViewModel() {
-    private val _uiState = MutableStateFlow(RecordsUIState(
-        content = emptyList(),
-        isLoading = false,
-    ))
+    exceptionHandler: CoroutineExceptionHandler,
+) : EdifikanaBaseViewModel(exceptionHandler) {
+
+    private val _uiState = MutableStateFlow(
+        RecordsUIState(
+            content = emptyList(),
+            isLoading = false,
+        )
+    )
     val uiState: StateFlow<RecordsUIState> = _uiState
 
     private val _event = MutableSharedFlow<RecordsEvent>()
@@ -47,9 +52,11 @@ class RecordsViewModel @Inject constructor(
     }
 
     fun navigateToRecord(record: FormRecordModel) = viewModelScope.launch {
-        _event.emit(RecordsEvent.TriggerMainActivityEvent(
-            MainActivityEvent.Navigate(Route.toFormRecordReadRoute(record.formRecordPk))
-        ))
+        _event.emit(
+            RecordsEvent.TriggerMainActivityEvent(
+                MainActivityEvent.Navigate(Route.toFormRecordReadRoute(record.formRecordPk))
+            )
+        )
     }
 
     companion object {

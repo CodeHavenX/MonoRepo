@@ -1,6 +1,5 @@
 package com.cramsan.edifikana.client.android.features.formlist.records.read
 
-
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding

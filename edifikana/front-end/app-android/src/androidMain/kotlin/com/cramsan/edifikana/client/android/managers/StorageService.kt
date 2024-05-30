@@ -19,7 +19,9 @@ class StorageService @Inject constructor(
     private val storage: FirebaseStorage,
     private val workContext: WorkContext,
 ) {
-    suspend fun uploadFile(data: ByteArray, targetRef: StorageRef): Result<StorageRef> = workContext.getOrCatch {
+    suspend fun uploadFile(data: ByteArray, targetRef: StorageRef): Result<StorageRef> = workContext.getOrCatch(
+        TAG
+    ) {
         // Create a storage reference from our app
         val storageReference = storage.reference
 
@@ -39,7 +41,9 @@ class StorageService @Inject constructor(
 
         // Get the imageRef of the uploaded file
         // TODO: Improve how to generate the references and classes
-        val uploadPathRef = uploadTask.result.metadata?.path?.let { storageReference.child(it) } ?: throw RuntimeException("Failed to get download URL")
+        val uploadPathRef = uploadTask.result.metadata?.path?.let { storageReference.child(it) } ?: throw RuntimeException(
+            "Failed to get download URL"
+        )
         assert(uploadPathRef.path == uploadRef.path, TAG, "Path mismatch for uploaded file.")
 
         // TODO: Improve how to generate the references and classes
@@ -49,7 +53,7 @@ class StorageService @Inject constructor(
     }
 
     // TODO: This function is hardcoded to handle image downloads. Lets change it to be configurable.
-    suspend fun downloadImage(targetRef: StorageRef): Result<Uri> = workContext.getOrCatch {
+    suspend fun downloadImage(targetRef: StorageRef): Result<Uri> = workContext.getOrCatch(TAG) {
         val resolver = workContext.appContext.contentResolver
         val imageCollection = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
 
@@ -104,7 +108,9 @@ class StorageService @Inject constructor(
             put(MediaStore.Images.Media.DISPLAY_NAME, targetRef.filename())
         }
 
-        val newImageUri = resolver.insert(imageCollection, newImageDetails) ?: throw RuntimeException("Failed to create new image")
+        val newImageUri = resolver.insert(imageCollection, newImageDetails) ?: throw RuntimeException(
+            "Failed to create new image"
+        )
 
         // TODO: Handle any filesize
         val data = downloadRef.getBytes(ONE_MEGABYTE).await()

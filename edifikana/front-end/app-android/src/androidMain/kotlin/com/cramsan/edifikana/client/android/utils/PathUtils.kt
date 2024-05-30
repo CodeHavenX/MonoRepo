@@ -8,7 +8,7 @@ fun publicDownloadUrl(storageRef: StorageRef, storageBucket: String): String {
 }
 
 private fun urlEncode(path: String): String {
-    return URLEncoder.encode(path.trimStart { it == '/'}, "UTF-8")
+    return URLEncoder.encode(path.trimStart { it == '/' }, "UTF-8")
 }
 
 private const val FIREBASE_PUBLIC_URL_MEDIA_SUFFIX = "alt=media"

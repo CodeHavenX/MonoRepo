@@ -4,8 +4,7 @@ import com.cramsan.edifikana.lib.firestore.EmployeePK
 import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
 import com.cramsan.edifikana.lib.firestore.EventType
 
-
-data class EventLogRecordModel (
+data class EventLogRecordModel(
     val id: EventLogRecordPK,
     val employeePk: EmployeePK?,
     val timeRecorded: Long,

@@ -2,8 +2,8 @@ package com.cramsan.edifikana.client.android.managers
 
 import com.cramsan.edifikana.client.android.db.models.EventLogRecordDao
 import com.cramsan.edifikana.client.android.db.models.FileAttachmentDao
-import com.cramsan.edifikana.client.android.managers.mappers.toEntity
 import com.cramsan.edifikana.client.android.managers.mappers.toDomainModel
+import com.cramsan.edifikana.client.android.managers.mappers.toEntity
 import com.cramsan.edifikana.client.android.managers.mappers.toFirebaseModel
 import com.cramsan.edifikana.client.android.models.AttachmentHolder
 import com.cramsan.edifikana.client.android.models.EventLogRecordModel
@@ -15,13 +15,13 @@ import com.cramsan.edifikana.lib.firestore.FireStoreModel
 import com.cramsan.framework.logging.logE
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.time.Duration.Companion.days
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.time.Duration.Companion.days
 
 @Singleton
 class EventLogManager @Inject constructor(
@@ -34,7 +34,7 @@ class EventLogManager @Inject constructor(
     private var uploadJob: Job? = null
 
     @OptIn(FireStoreModel::class)
-    suspend fun getRecords(): Result<List<EventLogRecordModel>> = workContext.getOrCatch {
+    suspend fun getRecords(): Result<List<EventLogRecordModel>> = workContext.getOrCatch(TAG) {
         val now = workContext.clock.now()
 
         // TODO: Make this range configurable
@@ -55,7 +55,7 @@ class EventLogManager @Inject constructor(
     }
 
     @OptIn(FireStoreModel::class)
-    suspend fun getRecord(eventLogRecordPK: EventLogRecordPK): Result<EventLogRecordModel> = workContext.getOrCatch {
+    suspend fun getRecord(eventLogRecordPK: EventLogRecordPK): Result<EventLogRecordModel> = workContext.getOrCatch(TAG) {
         val localAttachments = attachmentDao.getAll()
             .filter { it.eventLogRecordPK == eventLogRecordPK.documentPath }
             .mapNotNull { it.fileUri?.let { uri -> AttachmentHolder(publicUrl = uri, storageRef = null) } }
@@ -64,16 +64,18 @@ class EventLogManager @Inject constructor(
             .get()
             .await()
             .toObject(EventLogRecord::class.java)
-            ?.toDomainModel(workContext.storageBucket) ?: throw RuntimeException("EventLogRecord $eventLogRecordPK not found")
+            ?.toDomainModel(workContext.storageBucket) ?: throw RuntimeException(
+            "EventLogRecord $eventLogRecordPK not found"
+        )
         record.copy(
             attachments = localAttachments + record.attachments,
         )
     }
 
-    suspend fun addRecord(eventLogRecord: EventLogRecordModel) = workContext.getOrCatch {
+    suspend fun addRecord(eventLogRecord: EventLogRecordModel) = workContext.getOrCatch(TAG) {
         eventLogRecordDao.insert(eventLogRecord.toEntity())
 
-        workContext.launch {
+        workContext.launch(TAG) {
             uploadRecord(eventLogRecord)
             triggerFullUpload()
         }
@@ -91,17 +93,15 @@ class EventLogManager @Inject constructor(
 
             eventLogRecordDao.delete(eventLogRecord.toEntity())
         }
-    }
+    }.onFailure { logE(TAG, "Failed to upload event record", it) }
 
     private suspend fun triggerFullUpload(): Job {
         uploadJob?.cancel()
-        return workContext.launch {
+        return workContext.launch(TAG) {
             val pending = eventLogRecordDao.getAll()
 
             pending.forEach { record ->
-                uploadRecord(record.toDomainModel()).onFailure {
-                    logE(TAG, "Failed to upload event record", it)
-                }
+                uploadRecord(record.toDomainModel())
             }
         }.also {
             uploadJob = it

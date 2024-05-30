@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.client.android.config
+package com.cramsan.edifikana.client.android.managers.remoteconfig
 
 import android.graphics.Bitmap
 import androidx.camera.core.ImageCapture
@@ -9,6 +9,18 @@ import androidx.camera.core.ImageCapture
 data class RemoteConfig(
     val image: ImageConfig,
     val caching: CachingConfig,
+    val behavior: BehaviorConfig,
+    val features: FeatureConfig,
+)
+
+/**
+ * The configuration data for the behavior of the app.
+ *
+ * The [fetchPeriod] is the period in days to retrieve data for.
+ */
+data class BehaviorConfig(
+    val fetchPeriod: Int,
+    val allowListedCodes: List<String>,
 )
 
 /**
@@ -34,3 +46,11 @@ data class ImageConfig(
     val captureWidth: Int,
     val captureHeight: Int,
 )
+
+data class FeatureConfig(
+    val flags: Map<Features, Boolean>,
+) {
+    fun isFeatureEnabled(feature: Features): Boolean {
+        return flags[feature] ?: false
+    }
+}

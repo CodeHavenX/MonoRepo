@@ -1,10 +1,13 @@
 package com.cramsan.edifikana.client.android.features.camera.compose
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.Cancel
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -18,15 +21,27 @@ import androidx.compose.ui.unit.dp
 import com.cramsan.edifikana.client.android.R
 
 @Composable
-fun PhotoErrorScreen(
-    message: String,
+fun PermissionDeniedScreen(
+    onOpenSettingsClick: () -> Unit,
     onCancelClick: () -> Unit,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
-        Text(
-            text = message,
-            modifier = Modifier.align(Alignment.Center),
-        )
+        Column(
+            modifier = Modifier
+                .padding(15.dp)
+                .wrapContentSize()
+                .align(Alignment.Center),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                text = stringResource(R.string.text_permissions_camera),
+            )
+            Button(onClick = onOpenSettingsClick) {
+                Text(
+                    text = stringResource(R.string.text_permissions_open_setting),
+                )
+            }
+        }
         BottomActionBar(
             modifier = Modifier.align(Alignment.BottomCenter),
             mainButton = {
@@ -49,6 +64,9 @@ fun PhotoErrorScreen(
     showBackground = true,
 )
 @Composable
-private fun PreviewPhotoConfirmation() {
-    PhotoErrorScreen("Hubo un error") {}
+private fun PreviewPermissionDeniedScreen() {
+    PermissionDeniedScreen(
+        onOpenSettingsClick = {},
+        onCancelClick = {},
+    )
 }

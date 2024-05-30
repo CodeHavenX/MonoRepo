@@ -20,7 +20,7 @@ object ViewEmployeeUIModel {
         val publicImageUrl: String?,
         val timeCardRecordPK: TimeCardRecordPK,
     )
-    
+
     data class EmployeeUIModel(
         val fullName: String,
         val role: String,

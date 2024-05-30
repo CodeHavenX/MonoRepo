@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.client.android.managers
 
+import com.cramsan.edifikana.client.android.managers.AuthManager.Companion.TAG
 import com.cramsan.edifikana.client.android.managers.mappers.toDomainModel
 import com.cramsan.edifikana.client.android.managers.mappers.toFirebaseModel
 import com.cramsan.edifikana.client.android.models.FormModel
@@ -18,7 +19,7 @@ class FormsManager @Inject constructor(
     private val workContext: WorkContext,
 ) {
     @OptIn(FireStoreModel::class)
-    suspend fun getForms(): Result<List<FormModel>> = workContext.getOrCatch {
+    suspend fun getForms(): Result<List<FormModel>> = workContext.getOrCatch(TAG) {
         fireStore.collection(Form.COLLECTION)
             .whereEqualTo("propertyId", "cenit_01")
             .get()
@@ -29,7 +30,7 @@ class FormsManager @Inject constructor(
     }
 
     @OptIn(FireStoreModel::class)
-    suspend fun getForm(formPK: FormPK): Result<FormModel> = workContext.getOrCatch {
+    suspend fun getForm(formPK: FormPK): Result<FormModel> = workContext.getOrCatch(TAG) {
         fireStore.collection(Form.COLLECTION)
             .document(formPK.documentPath)
             .get()
@@ -39,7 +40,7 @@ class FormsManager @Inject constructor(
     }
 
     @OptIn(FireStoreModel::class)
-    suspend fun getFormRecords(): Result<List<FormRecordModel>> = workContext.getOrCatch {
+    suspend fun getFormRecords(): Result<List<FormRecordModel>> = workContext.getOrCatch(TAG) {
         // TODO: Make this range configurable
         val now = workContext.clock.now()
         val fourDaysAgo = now.minus(4.days).epochSeconds
@@ -56,7 +57,7 @@ class FormsManager @Inject constructor(
     }
 
     @OptIn(FireStoreModel::class)
-    suspend fun getFormRecord(formRecordPK: FormRecordPK): Result<FormRecordModel> = workContext.getOrCatch {
+    suspend fun getFormRecord(formRecordPK: FormRecordPK): Result<FormRecordModel> = workContext.getOrCatch(TAG) {
         fireStore.collection(FormRecord.COLLECTION)
             .document(formRecordPK.documentPath)
             .get()
@@ -66,7 +67,7 @@ class FormsManager @Inject constructor(
     }
 
     @OptIn(FireStoreModel::class)
-    suspend fun submitFormRecord(formRecordModel: FormRecordModel): Result<Unit> = workContext.getOrCatch {
+    suspend fun submitFormRecord(formRecordModel: FormRecordModel): Result<Unit> = workContext.getOrCatch(TAG) {
         val firebaseFormRecord = formRecordModel.toFirebaseModel("cenit_01")
         fireStore.collection(FormRecord.COLLECTION)
             .document(firebaseFormRecord.formRecordPK().documentPath)

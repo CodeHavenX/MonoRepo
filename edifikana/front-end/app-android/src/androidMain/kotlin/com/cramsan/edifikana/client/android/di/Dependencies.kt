@@ -6,14 +6,13 @@ import androidx.room.Room
 import coil.ImageLoader
 import com.cramsan.edifikana.client.android.BuildConfig
 import com.cramsan.edifikana.client.android.R
-import com.cramsan.edifikana.client.android.config.CachingConfig
-import com.cramsan.edifikana.client.android.config.ImageConfig
 import com.cramsan.edifikana.client.android.db.AppDatabase
 import com.cramsan.edifikana.client.android.db.models.EventLogRecordDao
 import com.cramsan.edifikana.client.android.db.models.FileAttachmentDao
 import com.cramsan.edifikana.client.android.db.models.TimeCardRecordDao
 import com.cramsan.edifikana.client.android.framework.crashhandler.CrashlyticsCrashHandler
 import com.cramsan.edifikana.client.android.framework.crashhandler.CrashlyticsErrorCallback
+import com.cramsan.edifikana.client.android.managers.remoteconfig.*
 import com.cramsan.framework.assertlib.AssertUtil
 import com.cramsan.framework.assertlib.AssertUtilInterface
 import com.cramsan.framework.assertlib.implementation.AssertUtilImpl
@@ -24,12 +23,7 @@ import com.cramsan.framework.halt.HaltUtil
 import com.cramsan.framework.halt.HaltUtilDelegate
 import com.cramsan.framework.halt.implementation.HaltUtilAndroid
 import com.cramsan.framework.halt.implementation.HaltUtilImpl
-import com.cramsan.framework.logging.EventLogger
-import com.cramsan.framework.logging.EventLoggerDelegate
-import com.cramsan.framework.logging.EventLoggerErrorCallback
-import com.cramsan.framework.logging.EventLoggerErrorCallbackDelegate
-import com.cramsan.framework.logging.EventLoggerInterface
-import com.cramsan.framework.logging.Severity
+import com.cramsan.framework.logging.*
 import com.cramsan.framework.logging.implementation.EventLoggerErrorCallbackImpl
 import com.cramsan.framework.logging.implementation.EventLoggerImpl
 import com.cramsan.framework.logging.implementation.LoggerAndroid
@@ -59,7 +53,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineName
@@ -67,6 +60,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.datetime.Clock
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -233,8 +227,8 @@ object Dependencies {
     fun provideExceptionHandler(
         eventLogger: EventLoggerInterface,
     ): CoroutineExceptionHandler {
-        return CoroutineExceptionHandler { context, throwable ->
-            eventLogger.e("CoroutineExceptionHandler", "CoroutineName: ${context[CoroutineName]}", throwable)
+        return CoroutineExceptionHandler { _, throwable ->
+            eventLogger.e("CoroutineExceptionHandler", "Uncaught Exception", throwable)
         }
     }
 
@@ -314,31 +308,39 @@ object Dependencies {
 
     @Singleton
     @Provides
-    fun provideCachingConfig() = CachingConfig(
-        imageQualityHint = 25,
-    )
-
-    @Singleton
-    @Provides
-    fun provideImageConfig() = ImageConfig(
-        captureWidth = 1080,
-        captureHeight = 1920,
-    )
-
-    @Singleton
-    @Provides
     fun provideRemoteConfig(): FirebaseRemoteConfig {
         val remoteConfig: FirebaseRemoteConfig = Firebase.remoteConfig
         val configSettings = remoteConfigSettings {
             // The default is 12 hours. If needed we can override it here.
             if (BuildConfig.DEBUG) {
-                minimumFetchIntervalInSeconds = 3600
+                minimumFetchIntervalInSeconds = 30
             }
-
         }
         remoteConfig.setConfigSettingsAsync(configSettings)
         remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
         remoteConfig.fetchAndActivate()
         return remoteConfig
     }
+
+    @Singleton
+    @Provides
+    fun provideRemoteConfigService(
+        service: RemoteConfigService
+    ): RemoteConfig = service.getRemoteConfigPayload()
+
+    @Singleton
+    @Provides
+    fun provideCachingConfig(remoteConfig: RemoteConfig): CachingConfig = remoteConfig.caching
+
+    @Singleton
+    @Provides
+    fun provideImageConfig(remoteConfig: RemoteConfig): ImageConfig = remoteConfig.image
+
+    @Singleton
+    @Provides
+    fun provideBehaviorConfig(remoteConfig: RemoteConfig): BehaviorConfig = remoteConfig.behavior
+
+    @Singleton
+    @Provides
+    fun provideFeaturesConfig(remoteConfig: RemoteConfig): FeatureConfig = remoteConfig.features
 }

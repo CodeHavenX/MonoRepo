@@ -18,7 +18,6 @@ fun Context.shareContent(text: String, imageUri: Uri?): Boolean {
         shareIntent.setType("text/plain")
     }
 
-
     try {
         val chooserIntent = Intent.createChooser(shareIntent, null)
         startActivity(chooserIntent)

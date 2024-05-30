@@ -1,8 +1,8 @@
 package com.cramsan.edifikana.client.android.features.timecard.viewemployee
 
 import android.net.Uri
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.cramsan.edifikana.client.android.features.base.EdifikanaBaseViewModel
 import com.cramsan.edifikana.client.android.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.android.managers.EmployeeManager
 import com.cramsan.edifikana.client.android.managers.StorageService
@@ -16,7 +16,7 @@ import com.cramsan.edifikana.lib.firestore.EmployeePK
 import com.cramsan.edifikana.lib.firestore.TimeCardEventType
 import com.cramsan.edifikana.lib.firestore.TimeCardRecordPK
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
+import javax.inject.Inject
 
 @HiltViewModel
 class ViewEmployeeViewModel @Inject constructor(
@@ -31,7 +32,8 @@ class ViewEmployeeViewModel @Inject constructor(
     private val timeCardManager: TimeCardManager,
     private val storageService: StorageService,
     private val clock: Clock,
-) : ViewModel() {
+    exceptionHandler: CoroutineExceptionHandler,
+) : EdifikanaBaseViewModel(exceptionHandler) {
 
     private val _uiState = MutableStateFlow(
         ViewEmployeeUIState(
@@ -64,7 +66,7 @@ class ViewEmployeeViewModel @Inject constructor(
                 employee = ViewEmployeeUIModel.EmployeeUIModel("", "", EmployeePK("")),
             )
         } else {
-            employee = employeeResult.getOrNull()
+            employee = employeeResult.getOrThrow()
             _uiState.value = ViewEmployeeUIState(
                 false,
                 employeeResult.getOrThrow().toUIModel(),
@@ -86,26 +88,30 @@ class ViewEmployeeViewModel @Inject constructor(
             val res = storageService.downloadImage(it)
 
             if (res.isSuccess) {
-                res.getOrNull()
+                res.getOrThrow()
             } else {
                 null
             }
         }
-        _event.emit(ViewEmployeeEvent.TriggerMainActivityEvent(
-            MainActivityEvent.ShareContent(
-                formatShareMessage(employee, record.timeRecorded, record.eventType),
-                imageUri,
+        _event.emit(
+            ViewEmployeeEvent.TriggerMainActivityEvent(
+                MainActivityEvent.ShareContent(
+                    formatShareMessage(employee, record.timeRecorded, record.eventType),
+                    imageUri,
+                )
             )
-        ))
+        )
         _uiState.value = _uiState.value.copy(isLoading = false)
     }
 
     fun onClockEventSelected(eventType: TimeCardEventType) = viewModelScope.launch {
         this@ViewEmployeeViewModel.eventType = eventType
         // TODO: Set the filename
-        _event.emit(ViewEmployeeEvent.TriggerMainActivityEvent(
-            MainActivityEvent.OpenCamera(eventType.toString())
-        ))
+        _event.emit(
+            ViewEmployeeEvent.TriggerMainActivityEvent(
+                MainActivityEvent.OpenCamera(eventType.toString())
+            )
+        )
     }
 
     fun recordClockEvent(photoUri: Uri) = viewModelScope.launch {
@@ -121,30 +127,34 @@ class ViewEmployeeViewModel @Inject constructor(
             imageUrl = null,
             imageRef = null,
         )
-        timeCardManager.addRecord(
+        val result = timeCardManager.addRecord(
             newRecord,
             cachedImageUrl = photoUri,
-        ).onSuccess {
-            _event.emit(ViewEmployeeEvent.TriggerMainActivityEvent(
-                MainActivityEvent.ShareContent(
-                    formatShareMessage(
-                        employee,
-                        newRecord.eventTime.toFriendlyDateTime(),
-                        eventType.eventTypeFriendlyName()
-                    ),
-                    photoUri,
-                )
-            ))
-            eventType = null
-            loadEmployee(employee!!.employeePK)
-        }.onFailure { throwable ->
-            throwable.printStackTrace()
+        )
+
+        if (result.isFailure) {
             _uiState.value = _uiState.value.copy(
                 isLoading = false,
                 records = listOf(),
                 employee = ViewEmployeeUIModel.EmployeeUIModel("", "", EmployeePK("")),
             )
             eventType = null
+        } else {
+            _event.emit(
+                ViewEmployeeEvent.TriggerMainActivityEvent(
+                    MainActivityEvent.ShareContent(
+                        formatShareMessage(
+                            employee,
+                            newRecord.eventTime.toFriendlyDateTime(),
+                            eventType.eventTypeFriendlyName()
+                        ),
+                        photoUri,
+                    )
+                )
+            )
+            eventType = null
+            loadEmployee(employee!!.employeePK)
+
         }
     }
 

@@ -4,9 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -20,7 +18,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.android.R
-import com.cramsan.edifikana.client.android.features.eventlog.EventLogEvent
 import com.cramsan.edifikana.client.android.features.main.MainActivityDelegatedEvent
 import com.cramsan.edifikana.client.android.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.android.ui.components.LoadingAnimationOverlay

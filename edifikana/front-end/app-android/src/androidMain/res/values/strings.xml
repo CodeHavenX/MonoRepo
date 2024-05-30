@@ -47,4 +47,7 @@
     <string name="text_employee_name">Nombre del conserje</string>
     <string name="text_forms">Formularios</string>
     <string name="text_view_records">Ver Archivos</string>
+
+    <string name="text_permissions_camera">Para poder tomar fotos necesitas dar permiso para utilizar la camara.</string>
+    <string name="text_permissions_open_setting">Abrir configuración</string>
 </resources>

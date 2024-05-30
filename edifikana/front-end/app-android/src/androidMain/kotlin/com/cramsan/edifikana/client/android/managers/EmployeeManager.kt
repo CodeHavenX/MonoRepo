@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.client.android.managers
 
+import com.cramsan.edifikana.client.android.managers.AuthManager.Companion.TAG
 import com.cramsan.edifikana.client.android.managers.mappers.toDomainModel
 import com.cramsan.edifikana.client.android.managers.mappers.toFirebaseModel
 import com.cramsan.edifikana.client.android.models.EmployeeModel
@@ -18,7 +19,7 @@ class EmployeeManager @Inject constructor(
     private val workContext: WorkContext,
 ) {
     @OptIn(FireStoreModel::class)
-    suspend fun getEmployees(): Result<List<EmployeeModel>> = workContext.getOrCatch {
+    suspend fun getEmployees(): Result<List<EmployeeModel>> = workContext.getOrCatch(TAG) {
         fireStore.collection(Employee.COLLECTION)
             .get()
             .await()
@@ -28,7 +29,7 @@ class EmployeeManager @Inject constructor(
     }
 
     @OptIn(FireStoreModel::class)
-    suspend fun getEmployee(employeePK: EmployeePK): Result<EmployeeModel> = workContext.getOrCatch {
+    suspend fun getEmployee(employeePK: EmployeePK): Result<EmployeeModel> = workContext.getOrCatch(TAG) {
         fireStore.collection(Employee.COLLECTION)
             .document(employeePK.documentPath)
             .get()
@@ -38,7 +39,7 @@ class EmployeeManager @Inject constructor(
     }
 
     @OptIn(FireStoreModel::class)
-    suspend fun addEmployee(employee: EmployeeModel) = workContext.getOrCatch {
+    suspend fun addEmployee(employee: EmployeeModel) = workContext.getOrCatch(TAG) {
         val firebaseModel = employee.toFirebaseModel()
         fireStore.collection(Employee.COLLECTION)
             .document(firebaseModel.documentId().documentPath)

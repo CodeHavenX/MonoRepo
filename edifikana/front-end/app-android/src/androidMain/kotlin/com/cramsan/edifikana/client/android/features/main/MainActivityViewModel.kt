@@ -1,23 +1,25 @@
 package com.cramsan.edifikana.client.android.features.main
 
 import android.net.Uri
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.cramsan.edifikana.client.android.features.base.EdifikanaBaseViewModel
 import com.cramsan.edifikana.client.android.managers.AuthManager
 import com.cramsan.framework.logging.logI
 import com.cramsan.framework.logging.logW
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import javax.inject.Inject
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
     private val auth: AuthManager,
-) : ViewModel() {
+    exceptionHandler: CoroutineExceptionHandler,
+) : EdifikanaBaseViewModel(exceptionHandler) {
 
     private val _events = MutableStateFlow<MainActivityEvent>(MainActivityEvent.Noop)
     val events: StateFlow<MainActivityEvent> = _events
@@ -27,14 +29,16 @@ class MainActivityViewModel @Inject constructor(
 
     suspend fun enforceAuth() {
         viewModelScope.launch {
-            auth.isSignedIn(true).onSuccess {
-                if (!it) {
+            val result = auth.isSignedIn(true)
+
+            if (result.isFailure) {
+                logW(TAG, "Failure when enforcing auth.", result.exceptionOrNull())
+            } else {
+                if (!result.getOrThrow()) {
                     _events.value = MainActivityEvent.LaunchSignIn()
                 } else {
                     // Already signed in
                 }
-            }.onFailure {
-                logW(TAG, "Failure when enforcing auth.", it)
             }
         }
     }

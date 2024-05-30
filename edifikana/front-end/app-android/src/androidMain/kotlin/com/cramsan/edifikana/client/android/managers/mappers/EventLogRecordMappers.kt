@@ -11,7 +11,6 @@ import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
 import com.cramsan.edifikana.lib.firestore.EventType
 import com.cramsan.edifikana.lib.firestore.FireStoreModel
 
-
 fun EventLogRecordModel.toEntity(): EventLogRecordEntity {
     return EventLogRecordEntity(
         id.documentPath,

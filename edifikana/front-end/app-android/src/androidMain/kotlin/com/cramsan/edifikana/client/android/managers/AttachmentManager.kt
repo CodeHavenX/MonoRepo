@@ -13,12 +13,12 @@ import com.cramsan.edifikana.lib.firestore.FireStoreModel
 import com.cramsan.edifikana.lib.storage.FOLDER_ATTACHMENTS
 import com.cramsan.framework.logging.logE
 import com.google.firebase.firestore.FirebaseFirestore
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 class AttachmentManager @Inject constructor(
@@ -33,7 +33,7 @@ class AttachmentManager @Inject constructor(
     suspend fun addAttachment(
         fileUris: List<Uri>,
         eventLogRecordPK: EventLogRecordPK,
-    ): Result<Unit> = workContext.getOrCatch {
+    ): Result<Unit> = workContext.getOrCatch(TAG) {
         fileUris.forEach { fileUri ->
             val entity = FileAttachmentEntity.create(eventLogRecordPK, workContext.clock, fileUri)
             attachmentDao.insert(entity)
@@ -81,17 +81,15 @@ class AttachmentManager @Inject constructor(
                 attachmentDao.delete(attachmentEntity)
             }
         }
-    }
+    }.onFailure { logE(TAG, "Failed to upload attachment", it) }
 
     private suspend fun triggerFullUpload(): Job {
         uploadJob?.cancel()
-        return workContext.launch {
+        return workContext.launch(TAG) {
             val pending = attachmentDao.getAll()
 
             pending.forEach { record ->
-                uploadAttachment(record).onFailure {
-                    logE(TAG, "Failed to upload attachment", it)
-                }
+                uploadAttachment(record)
             }
         }.also {
             uploadJob = it

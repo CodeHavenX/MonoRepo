@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.android.features.formlist.entry
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.cramsan.edifikana.client.android.features.base.EdifikanaBaseViewModel
 import com.cramsan.edifikana.client.android.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.android.features.main.Route
 import com.cramsan.edifikana.client.android.managers.FormsManager
@@ -12,26 +12,31 @@ import com.cramsan.edifikana.lib.firestore.FormPK
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logW
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class EntryViewModel @Inject constructor(
     private val formsManager: FormsManager,
     private val workContext: WorkContext,
-) : ViewModel() {
-    private val _uiState = MutableStateFlow(EntryUIState(
-        EntryUIModel(
-            name = "",
-            fields = emptyList(),
-            submitAllowed = false,
-        ),
-        false,
-    ))
+    exceptionHandler: CoroutineExceptionHandler,
+) : EdifikanaBaseViewModel(exceptionHandler) {
+
+    private val _uiState = MutableStateFlow(
+        EntryUIState(
+            EntryUIModel(
+                name = "",
+                fields = emptyList(),
+                submitAllowed = false,
+            ),
+            false,
+        )
+    )
     val uiState: StateFlow<EntryUIState> = _uiState
 
     private val _event = MutableSharedFlow<EntryEvent>()
@@ -80,19 +85,18 @@ class EntryViewModel @Inject constructor(
             if (!result.isSuccess) {
                 logW(TAG, "Failed to add record: ${formRecord.formRecordPk}", result.exceptionOrNull())
             } else {
-                _event.emit(EntryEvent.TriggerMainActivityEvent(
-                    MainActivityEvent.Navigate(Route.toFormRecordsRoute())
-                ))
+                _event.emit(
+                    EntryEvent.TriggerMainActivityEvent(
+                        MainActivityEvent.Navigate(Route.toFormRecordsRoute())
+                    )
+                )
             }
         } catch (e: Throwable) {
             logE(TAG, "Failed to add record", e)
         } finally {
             _uiState.value = _uiState.value.copy(isLoading = false)
         }
-
     }
-
-
 
     companion object {
         private const val TAG = "EntryViewModel"

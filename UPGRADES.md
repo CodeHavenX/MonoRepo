@@ -12,6 +12,11 @@ This document is a checklist of the steps to take when upgrading all packages.
 ./gradlew refreshVersions
 ```
 2. Open the [versions.properties](versions.properties) file and review the changes.
+3. The Android Plugin version is marked as unused but this is a false positive. The version is used in the Android 
+   projects. You can ignore this warning and instead update the version manually. You can find the latest version of 
+   the AGP in the [releases page](https://developer.android.com/build/releases/gradle-plugin).
+4. Update the version of Gradle. This is defined in the [gradle.properties](gradle/wrapper/gradle-wrapper.properties) file.
+   You can find the versions of gradle in their [releases page](https://gradle.org/releases/).
 3. Run the `releaseAll` task to ensure that all projects are building correctly.
 ```shell
 ./gradlew releaseAll

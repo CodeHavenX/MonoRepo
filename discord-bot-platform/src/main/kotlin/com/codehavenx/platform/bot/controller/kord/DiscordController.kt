@@ -28,7 +28,7 @@ class DiscordController(
         modules.forEach {
             kord.createGlobalChatInputCommand(
                 it.command,
-                it.description
+                it.description,
             ) {
                 nameLocalizations = it.commandLocalizations.toMutableMap()
                 descriptionLocalizations = it.descriptionLocalizations.toMutableMap()

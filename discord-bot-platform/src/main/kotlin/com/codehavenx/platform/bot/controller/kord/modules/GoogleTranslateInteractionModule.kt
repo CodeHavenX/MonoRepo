@@ -77,10 +77,10 @@ class GoogleTranslateInteractionModule(
 
         return try {
             val originLang = Language.fromCode(
-                command.strings.getValue(argumentFrom.name)
+                command.strings.getValue(argumentFrom.name),
             ) ?: throw IllegalArgumentException("Invalid origin language")
             val resultLang = Language.fromCode(
-                command.strings.getValue(argumentTo.name)
+                command.strings.getValue(argumentTo.name),
             ) ?: throw IllegalArgumentException("Invalid result language")
 
             val result = googleTranslateService.translate(message, originLang, resultLang)

@@ -39,7 +39,7 @@ fun AsyncImage(
             painter = BitmapPainter(image = image!!),
             contentDescription = contentDescription,
             contentScale = contentScale,
-            modifier = modifier
+            modifier = modifier,
         )
     }
 }

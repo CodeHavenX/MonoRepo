@@ -19,8 +19,8 @@ fun PreviewCardDark() {
                             CardUiModel.Segment(
                                 segment = "Qamkuna",
                                 color = ComponentColor.BLUE,
-                            )
-                        )
+                            ),
+                        ),
                     ),
                     CardUiModel.Word(
                         listOf(
@@ -40,7 +40,7 @@ fun PreviewCardDark() {
                                 segment = "nkichik",
                                 color = ComponentColor.BLUE,
                             ),
-                        )
+                        ),
                     ),
                 ),
                 components = listOf(
@@ -68,7 +68,7 @@ fun PreviewCardDark() {
                         quechua = PronounPastSuffix.QAMKUNA.suffix,
                         color = ComponentColor.YELLOW,
                     ),
-                )
+                ),
             ),
             false,
         )
@@ -87,8 +87,8 @@ fun PreviewCard() {
                             CardUiModel.Segment(
                                 segment = "Qamkuna",
                                 color = ComponentColor.BLUE,
-                            )
-                        )
+                            ),
+                        ),
                     ),
                     CardUiModel.Word(
                         listOf(
@@ -108,7 +108,7 @@ fun PreviewCard() {
                                 segment = "nkichik",
                                 color = ComponentColor.RED,
                             ),
-                        )
+                        ),
                     ),
                 ),
                 components = listOf(
@@ -136,7 +136,7 @@ fun PreviewCard() {
                         quechua = PronounPastSuffix.QAMKUNA.suffix,
                         color = ComponentColor.RED,
                     ),
-                )
+                ),
             ),
             true,
         )

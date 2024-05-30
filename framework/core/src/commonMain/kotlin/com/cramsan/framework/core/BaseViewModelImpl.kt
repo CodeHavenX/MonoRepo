@@ -19,7 +19,7 @@ abstract class BaseViewModelImpl<E : BaseEvent>(
      * as the default dispatcher.
      */
     override val viewModelScope: CoroutineScope = CoroutineScope(
-        SupervisorJob() + dispatcherProvider.uiDispatcher()
+        SupervisorJob() + dispatcherProvider.uiDispatcher(),
     )
 
     /**

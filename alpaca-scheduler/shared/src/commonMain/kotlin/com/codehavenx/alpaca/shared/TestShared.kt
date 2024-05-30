@@ -6,5 +6,5 @@ package com.codehavenx.alpaca.shared
 enum class TestShared {
     TEST,
     TEST2,
-    TEST3
+    TEST3,
 }

@@ -7,5 +7,5 @@ import androidx.compose.ui.graphics.ImageBitmap
 internal expect fun TileButtonDrawable(
     image: ImageBitmap,
     onTileSelected: () -> Unit,
-    onTileSelectedSecondary: () -> Unit
+    onTileSelectedSecondary: () -> Unit,
 )

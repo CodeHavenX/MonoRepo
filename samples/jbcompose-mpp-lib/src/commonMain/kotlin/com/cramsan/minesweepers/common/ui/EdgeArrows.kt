@@ -32,8 +32,8 @@ internal fun ArrowDownRow(modifier: Modifier) {
                     .padding(horizontal = Padding.XLARGE, vertical = Padding.MEDIUM)
                     .size(
                         Dimensions.ARROW_H_WIDTH,
-                        Dimensions.ARROW_H_HEIGHT
-                    )
+                        Dimensions.ARROW_H_HEIGHT,
+                    ),
             )
         }
     }
@@ -51,8 +51,8 @@ internal fun ArrowUpRow(modifier: Modifier) {
                     .padding(horizontal = Padding.XLARGE, vertical = Padding.MEDIUM)
                     .size(
                         Dimensions.ARROW_H_WIDTH,
-                        Dimensions.ARROW_H_HEIGHT
-                    )
+                        Dimensions.ARROW_H_HEIGHT,
+                    ),
             )
         }
     }
@@ -70,8 +70,8 @@ internal fun ArrowLeftColumn(modifier: Modifier) {
                     .padding(horizontal = Padding.MEDIUM, vertical = Padding.XLARGE)
                     .size(
                         Dimensions.ARROW_V_WIDTH,
-                        Dimensions.ARROW_V_HEIGHT
-                    )
+                        Dimensions.ARROW_V_HEIGHT,
+                    ),
             )
         }
     }
@@ -89,8 +89,8 @@ internal fun ArrowRightColumn(modifier: Modifier) {
                     .padding(horizontal = Padding.MEDIUM, vertical = Padding.XLARGE)
                     .size(
                         Dimensions.ARROW_V_WIDTH,
-                        Dimensions.ARROW_V_HEIGHT
-                    )
+                        Dimensions.ARROW_V_HEIGHT,
+                    ),
             )
         }
     }

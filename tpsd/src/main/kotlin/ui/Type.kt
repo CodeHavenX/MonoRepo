@@ -16,15 +16,15 @@ val typography = Typography(
     defaultFontFamily = customFont,
     body1 = TextStyle(
         fontWeight = FontWeight.Normal,
-        fontSize = 16.sp
+        fontSize = 16.sp,
     ),
     body2 = TextStyle(
         fontWeight = FontWeight.Normal,
-        fontSize = 14.sp
+        fontSize = 14.sp,
     ),
     button = TextStyle(
         fontWeight = FontWeight.W500,
-        fontSize = 14.sp
+        fontSize = 14.sp,
     ),
     caption = TextStyle(
         fontWeight = FontWeight.Normal,
@@ -33,11 +33,11 @@ val typography = Typography(
     subtitle1 = TextStyle(
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
-        color = Color.Gray
+        color = Color.Gray,
     ),
     subtitle2 = TextStyle(
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
-        color = Color.Gray
+        color = Color.Gray,
     ),
 )

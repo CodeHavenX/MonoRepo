@@ -20,7 +20,7 @@ class Game {
         MutableStateFlow(0),
         MutableStateFlow(0),
         MutableStateFlow(emptyList()),
-        MutableStateFlow(Status.NORMAL)
+        MutableStateFlow(Status.NORMAL),
     )
     val gameStateHolder: GameStateHolder = _statusHolder
 
@@ -165,7 +165,7 @@ class Game {
 
         _map[row][column] = when (currentTile) {
             is Tile.Bomb -> return
-            is Tile.Adjacent, -> Tile.Adjacent(currentTile.risk, TileCoverMode.UNCOVERED)
+            is Tile.Adjacent -> Tile.Adjacent(currentTile.risk, TileCoverMode.UNCOVERED)
             is Tile.Empty -> Tile.Empty(TileCoverMode.UNCOVERED)
         }
 

@@ -126,15 +126,6 @@ complexity:
       - '**/jvmTest/**'
       - '**/jsTest/**'
       - '**/iosTest/**'
-  ComplexMethod:
-    excludes:
-      - '**/build/generated/**'
-      - '**/test/**'
-      - '**/androidTest/**'
-      - '**/commonTest/**'
-      - '**/jvmTest/**'
-      - '**/jsTest/**'
-      - '**/iosTest/**'
   LabeledExpression:
     excludes:
       - '**/build/generated/**'
@@ -1109,11 +1100,20 @@ formatting:
       - '**/jvmTest/**'
       - '**/jsTest/**'
       - '**/iosTest/**'
-  TrailingComma:
+  TrailingCommaOnCallSite:
     active: true
     autoCorrect: true
-    allowTrailingComma: true
-    allowTrailingCommaOnCallSite: true
+    excludes:
+      - '**/build/generated/**'
+      - '**/test/**'
+      - '**/androidTest/**'
+      - '**/commonTest/**'
+      - '**/jvmTest/**'
+      - '**/jsTest/**'
+      - '**/iosTest/**'
+  TrailingCommaOnDeclarationSite:
+    active: true
+    autoCorrect: true
     excludes:
       - '**/build/generated/**'
       - '**/test/**'
@@ -1433,15 +1433,6 @@ potential-bugs:
       - '**/jvmTest/**'
       - '**/jsTest/**'
       - '**/iosTest/**'
-  DuplicateCaseInWhenExpression:
-    excludes:
-      - '**/build/generated/**'
-      - '**/test/**'
-      - '**/androidTest/**'
-      - '**/commonTest/**'
-      - '**/jvmTest/**'
-      - '**/jsTest/**'
-      - '**/iosTest/**'
   ElseCaseInsteadOfExhaustiveWhen:
     excludes:
       - '**/build/generated/**'
@@ -1577,15 +1568,6 @@ potential-bugs:
       - '**/jvmTest/**'
       - '**/jsTest/**'
       - '**/iosTest/**'
-  MissingWhenCase:
-    excludes:
-      - '**/build/generated/**'
-      - '**/test/**'
-      - '**/androidTest/**'
-      - '**/commonTest/**'
-      - '**/jvmTest/**'
-      - '**/jsTest/**'
-      - '**/iosTest/**'
   NullCheckOnMutableProperty:
     excludes:
       - '**/build/generated/**'
@@ -1596,15 +1578,6 @@ potential-bugs:
       - '**/jsTest/**'
       - '**/iosTest/**'
   NullableToStringCall:
-    excludes:
-      - '**/build/generated/**'
-      - '**/test/**'
-      - '**/androidTest/**'
-      - '**/commonTest/**'
-      - '**/jvmTest/**'
-      - '**/jsTest/**'
-      - '**/iosTest/**'
-  RedundantElseInWhen:
     excludes:
       - '**/build/generated/**'
       - '**/test/**'
@@ -1834,15 +1807,6 @@ style:
       - '**/jvmTest/**'
       - '**/jsTest/**'
       - '**/iosTest/**'
-  ForbiddenPublicDataClass:
-    excludes:
-      - '**/build/generated/**'
-      - '**/test/**'
-      - '**/androidTest/**'
-      - '**/commonTest/**'
-      - '**/jvmTest/**'
-      - '**/jsTest/**'
-      - '**/iosTest/**'
   ForbiddenVoid:
     excludes:
       - '**/build/generated/**'
@@ -1853,25 +1817,6 @@ style:
       - '**/jsTest/**'
       - '**/iosTest/**'
   FunctionOnlyReturningConstant:
-    excludes:
-      - '**/build/generated/**'
-      - '**/test/**'
-      - '**/androidTest/**'
-      - '**/commonTest/**'
-      - '**/jvmTest/**'
-      - '**/jsTest/**'
-      - '**/iosTest/**'
-  LibraryCodeMustSpecifyReturnType:
-    excludes:
-      - '**/build/generated/**'
-      - '**/test/**'
-      - '**/androidTest/**'
-      - '**/commonTest/**'
-      - '**/jvmTest/**'
-      - '**/jsTest/**'
-      - '**/iosTest/**'
-  LibraryEntitiesShouldNotBePublic:
-    active: false
     excludes:
       - '**/build/generated/**'
       - '**/test/**'
@@ -1898,7 +1843,9 @@ style:
       - '**/jvmTest/**'
       - '**/jsTest/**'
       - '**/iosTest/**'
-  MandatoryBracesIfStatements:
+  BracesOnIfStatements:
+    singleLine: 'always'
+    multiLine: 'always'
     excludes:
       - '**/build/generated/**'
       - '**/test/**'
@@ -1999,15 +1946,6 @@ style:
       - '**/jsTest/**'
       - '**/iosTest/**'
   OptionalUnit:
-    excludes:
-      - '**/build/generated/**'
-      - '**/test/**'
-      - '**/androidTest/**'
-      - '**/commonTest/**'
-      - '**/jvmTest/**'
-      - '**/jsTest/**'
-      - '**/iosTest/**'
-  OptionalWhenBraces:
     excludes:
       - '**/build/generated/**'
       - '**/test/**'

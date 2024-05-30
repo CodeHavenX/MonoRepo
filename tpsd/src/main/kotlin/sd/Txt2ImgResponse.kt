@@ -12,7 +12,7 @@ data class Txt2ImgResponse(
     @SerialName("parameters")
     var parameters: Parameters? = Parameters(),
     @SerialName("info")
-    var info: String? = null
+    var info: String? = null,
 
 ) {
     @Serializable

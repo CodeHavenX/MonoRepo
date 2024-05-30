@@ -32,7 +32,7 @@ class NotificationService(
             Message.SendNotification(
                 userId,
                 notificationMessage,
-            )
+            ),
         )
     }
 

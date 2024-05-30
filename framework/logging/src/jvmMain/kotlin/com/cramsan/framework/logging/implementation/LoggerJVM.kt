@@ -11,7 +11,7 @@ import org.apache.logging.log4j.core.config.Configurator
  * Logger that prints to stdout.
  */
 class LoggerJVM(
-    private val logger: Logger
+    private val logger: Logger,
 ) : EventLoggerDelegate {
 
     override fun log(

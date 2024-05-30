@@ -42,7 +42,7 @@ class StableDiffusionClient(
             negativePrompt = INITIAL_NEGATIVE_PROMPT,
             positivePromptText = "...",
             negativePromptText = "...",
-        )
+        ),
     )
 
     // Observable the contains the latest parameters and output
@@ -141,7 +141,7 @@ class StableDiffusionClient(
 
         val file = kotlin.io.path.createTempFile(
             directory = tmpFolder.toPath(),
-            suffix = ".jpg"
+            suffix = ".jpg",
         ).toFile()
 
         file.writeBytes(imageBytes)
@@ -206,7 +206,7 @@ class StableDiffusionClient(
         positivePrompt[position] = positivePrompt[position].emphasize()
 
         _uiState.value = _uiState.value.copy(
-            positivePrompt = positivePrompt
+            positivePrompt = positivePrompt,
         )
         return "Emphasized term ${uiState.value.positivePrompt[position].term}"
     }
@@ -221,7 +221,7 @@ class StableDiffusionClient(
         negativePrompt[position] = negativePrompt[position].emphasize()
 
         _uiState.value = _uiState.value.copy(
-            negativePrompt = negativePrompt
+            negativePrompt = negativePrompt,
         )
         return "Emphasized negative term ${uiState.value.negativePrompt[position].term}"
     }
@@ -236,7 +236,7 @@ class StableDiffusionClient(
         positivePrompt[position] = positivePrompt[position].deemphasize()
 
         _uiState.value = _uiState.value.copy(
-            positivePrompt = positivePrompt
+            positivePrompt = positivePrompt,
         )
         return "Deemphasized term ${uiState.value.positivePrompt[position].term}"
     }
@@ -251,7 +251,7 @@ class StableDiffusionClient(
         negativePrompt[position] = negativePrompt[position].deemphasize()
 
         _uiState.value = _uiState.value.copy(
-            negativePrompt = negativePrompt
+            negativePrompt = negativePrompt,
         )
         return "Deemphasized negative term ${uiState.value.negativePrompt[position].term}"
     }
@@ -267,7 +267,7 @@ class StableDiffusionClient(
         positivePrompt.removeAt(position)
 
         _uiState.value = _uiState.value.copy(
-            positivePrompt = positivePrompt
+            positivePrompt = positivePrompt,
         )
         return "Removed term $oldTerm"
     }
@@ -283,7 +283,7 @@ class StableDiffusionClient(
         positivePrompt[position] = Term(term)
 
         _uiState.value = _uiState.value.copy(
-            positivePrompt = positivePrompt
+            positivePrompt = positivePrompt,
         )
         return "Updated term from $oldTerm to ${uiState.value.positivePrompt[position].term}"
     }
@@ -298,7 +298,7 @@ class StableDiffusionClient(
         else
             positivePrompt.add(positivePrompt.size + position + 1, Term(term))
         _uiState.value = _uiState.value.copy(
-            positivePrompt = positivePrompt
+            positivePrompt = positivePrompt,
         )
 
         return "Added term $term in position $position"
@@ -315,7 +315,7 @@ class StableDiffusionClient(
         negativePrompt.removeAt(position)
 
         _uiState.value = _uiState.value.copy(
-            negativePrompt = negativePrompt
+            negativePrompt = negativePrompt,
         )
         return "Removed negative term $oldTerm"
     }
@@ -331,7 +331,7 @@ class StableDiffusionClient(
         negativePrompt[position] = Term(term)
 
         _uiState.value = _uiState.value.copy(
-            negativePrompt = negativePrompt
+            negativePrompt = negativePrompt,
         )
         return "Updated negative term from $oldTerm to ${uiState.value.negativePrompt[position].term}"
     }
@@ -346,7 +346,7 @@ class StableDiffusionClient(
         else
             negativePrompt.add(negativePrompt.size + position + 1, Term(term))
         _uiState.value = _uiState.value.copy(
-            negativePrompt = negativePrompt
+            negativePrompt = negativePrompt,
         )
         return "Added negative term $term in position $position"
     }

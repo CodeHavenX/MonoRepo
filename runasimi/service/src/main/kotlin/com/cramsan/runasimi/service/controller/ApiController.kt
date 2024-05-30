@@ -78,8 +78,8 @@ class ApiController(
                 HttpHeaders.ContentDisposition,
                 ContentDisposition.Attachment.withParameter(
                     ContentDisposition.Parameters.FileName,
-                    "voice.ogg"
-                ).toString()
+                    "voice.ogg",
+                ).toString(),
             )
 
             if (response == null) {

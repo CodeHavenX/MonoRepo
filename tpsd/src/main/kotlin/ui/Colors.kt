@@ -15,5 +15,5 @@ val colorPalette = darkColors(
     onSecondary = Color.White,
     onBackground = Color.Black,
     onSurface = Color.Black,
-    onError = Color.Red
+    onError = Color.Red,
 )

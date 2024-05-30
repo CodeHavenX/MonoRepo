@@ -60,7 +60,7 @@ fun parseAdminCommand(tokens: List<String>): AdminCommand {
         AdminCategory.STOP_COMMAND_QUEUE -> { AdminCommand.StopCommandQueue }
         AdminCategory.SET_IDLE_MODE -> {
             AdminCommand.SetIdleMode(
-                param?.toBoolean() ?: false
+                param?.toBoolean() ?: false,
             )
         }
     }

@@ -55,11 +55,11 @@ fun Card(
         ),
     ) {
         Column(
-            modifier = Modifier.verticalScroll(rememberScrollState())
+            modifier = Modifier.verticalScroll(rememberScrollState()),
         ) {
             CardContent(isExpanded, cardUiModel.sentence)
             Divider(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             )
             CardDetails(cardUiModel.components, isExpanded) {
                 isExpanded = !isExpanded
@@ -76,7 +76,7 @@ private fun CardContent(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(Dimension.medium)
+            .padding(Dimension.medium),
     ) {
         Text(
             text = buildAnnotatedString {
@@ -86,7 +86,7 @@ private fun CardContent(
                             if (highlightText)
                                 segment.color?.toColor() ?: MaterialTheme.colorScheme.onBackground
                             else
-                                MaterialTheme.colorScheme.onBackground
+                                MaterialTheme.colorScheme.onBackground,
                         )
                         withStyle(
                             style = SpanStyle(color = textColor),
@@ -117,13 +117,13 @@ private fun CardDetails(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(Dimension.small)
+            .padding(Dimension.small),
     ) {
         Icon(
             expandIcon,
             contentDescription = null,
             modifier = Modifier.clickable { onExpandButtonClicked() }
-                .align(Alignment.BottomEnd)
+                .align(Alignment.BottomEnd),
         )
         // This is to workaround
         // https://stackoverflow.com/questions/67975569/why-cant-i-use-animatedvisibility-in-a-boxscope
@@ -145,7 +145,7 @@ private fun CardDetails(
                                 ) {
                                     append("${it.quechua} (${it.meaning})")
                                 }
-                            }
+                            },
                         )
                     }
                 }

@@ -17,7 +17,7 @@ import com.cramsan.minesweepers.common.ui.theme.Dimensions
 actual fun TileButtonDrawable(
     image: ImageBitmap,
     onTileSelected: () -> Unit,
-    onTileSelectedSecondary: () -> Unit
+    onTileSelectedSecondary: () -> Unit,
 ) {
     Image(
         image,

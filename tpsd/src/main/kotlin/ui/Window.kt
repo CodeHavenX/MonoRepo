@@ -35,7 +35,7 @@ fun pageGUI(
         undecorated = true,
         state = WindowState(
             size = DpSize(1920.dp, 1080.dp),
-            position = WindowPosition.Absolute(0.dp, 0.dp)
+            position = WindowPosition.Absolute(0.dp, 0.dp),
         ),
         transparent = true,
     ) {
@@ -100,7 +100,7 @@ fun Page(
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
                     .fillMaxHeight()
-                    .width(COLUMN_WIDTH)
+                    .width(COLUMN_WIDTH),
             ) {
                 PromptSection(
                     "Positive Prompt",
@@ -125,7 +125,7 @@ fun Page(
                 modifier = Modifier
                     .align(Alignment.CenterStart)
                     .width(MAX_COLUMN_WIDTH)
-                    .fillMaxHeight()
+                    .fillMaxHeight(),
             ) {
                 ParametersSection(
                     cfgScale,
@@ -161,7 +161,7 @@ fun Page(
             Instructions(
                 modifier = Modifier
                     .padding(Padding.large)
-                    .align(Alignment.BottomCenter)
+                    .align(Alignment.BottomCenter),
             )
         }
     }

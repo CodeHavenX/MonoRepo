@@ -27,7 +27,7 @@ fun MainView(
 ) {
     var selectedTab by rememberSaveable { mutableStateOf(Tab.PRACTICA) }
     var initialPage by rememberSaveable(
-        mainViewUIModel.cards
+        mainViewUIModel.cards,
     ) {
         mutableStateOf(0)
     }
@@ -36,13 +36,13 @@ fun MainView(
         floatingActionButton = { },
         bottomBar = {
             Bottombar(
-                selectedTab
+                selectedTab,
             ) { selectedTab = it }
-        }
+        },
     ) { innerPadding ->
         Crossfade(
             targetState = selectedTab,
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.padding(innerPadding),
         ) {
             when (selectedTab) {
                 Tab.PRONOMBRES -> {
@@ -55,7 +55,7 @@ fun MainView(
                         mainViewUIModel.isLoading,
                         shuffleCards,
                         playAudio,
-                        { initialPage = it }
+                        { initialPage = it },
                     )
                 }
                 Tab.FRASES_COMUNES -> {
@@ -81,7 +81,7 @@ private fun Bottombar(
                             Tab.PRACTICA -> Icons.Default.Info
                             Tab.FRASES_COMUNES -> Icons.Default.Info
                         },
-                        contentDescription = null
+                        contentDescription = null,
                     )
                 },
                 selected = tab == selectedTab,

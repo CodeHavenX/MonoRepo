@@ -50,7 +50,7 @@ fun TrainerContent(
     isLoading: Boolean,
     shuffleCards: () -> Unit = {},
     playAudio: (Int) -> Unit = {},
-    onPageChanged: (Int) -> Unit = {}
+    onPageChanged: (Int) -> Unit = {},
 ) {
     val pageCount = cards.size
     val pagerState = rememberPagerState(
@@ -71,13 +71,13 @@ fun TrainerContent(
             transitionSpec = {
                 fadeIn(animationSpec = tween(300, 300)) + slideInVertically(
                     animationSpec = tween(400),
-                    initialOffsetY = { fullHeight -> fullHeight }
+                    initialOffsetY = { fullHeight -> fullHeight },
                 ) togetherWith
                     fadeOut(animationSpec = tween(300)) using
                     // Disable clipping since the faded slide-in/out should
                     // be displayed out of bounds.
                     SizeTransform(clip = false)
-            }
+            },
         ) {
             if (it.isNotEmpty()) {
                 HorizontalPager(
@@ -137,14 +137,14 @@ private fun BoxScope.PageIndicator(
 ) {
     AnimatedContent(
         targetState = pageCount,
-        modifier = Modifier.align(Alignment.BottomCenter)
+        modifier = Modifier.align(Alignment.BottomCenter),
     ) {
         Row(
             Modifier
                 .wrapContentHeight()
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter),
-            horizontalArrangement = Arrangement.Center
+            horizontalArrangement = Arrangement.Center,
         ) {
             repeat(it) { iteration ->
                 val lineWeight = animateFloatAsState(
@@ -158,7 +158,7 @@ private fun BoxScope.PageIndicator(
                         }
                     },
                     label = "weight",
-                    animationSpec = tween(300, easing = EaseInOut)
+                    animationSpec = tween(300, easing = EaseInOut),
                 )
                 val color =
                     if (currentPage == iteration)
@@ -172,7 +172,7 @@ private fun BoxScope.PageIndicator(
                         .clip(RoundedCornerShape(Dimension.xxx_small))
                         .background(color)
                         .weight(lineWeight.value)
-                        .height(Dimension.xx_small)
+                        .height(Dimension.xx_small),
                 )
             }
         }

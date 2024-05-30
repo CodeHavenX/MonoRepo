@@ -60,14 +60,14 @@ class ConfigurationDatabase(
         val updatedConfiguration = configuration.toConfigurationEntity()
         return collection.replaceOne(
             Filters.eq("_id", updatedConfiguration.id),
-            updatedConfiguration
+            updatedConfiguration,
         ).wasAcknowledged()
     }
 
     suspend fun deleteConfiguration(configurationId: String): Boolean {
         logD(TAG, "Deleting configuration: %S", configurationId)
         return collection.deleteOne(
-            Filters.eq("_id", ObjectId(configurationId))
+            Filters.eq("_id", ObjectId(configurationId)),
         ).wasAcknowledged()
     }
 

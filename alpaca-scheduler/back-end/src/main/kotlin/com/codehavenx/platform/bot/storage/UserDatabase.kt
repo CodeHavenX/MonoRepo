@@ -53,7 +53,7 @@ class UserDatabase(
     suspend fun deleteUser(userId: UserId): Boolean {
         logD(TAG, "Deleting user: %S", userId)
         return database.getCollection<UserEntity>(COLLECTION_NAME).deleteOne(
-            Filters.eq("_id", ObjectId(userId.userId))
+            Filters.eq("_id", ObjectId(userId.userId)),
         ).wasAcknowledged()
     }
 

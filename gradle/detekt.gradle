@@ -34,5 +34,7 @@ detekt {
 
     dependencies {
         detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:$detektFormattingVersion")
+        // TODO: Investigate enabling this ruleset
+        // detektPlugins("io.gitlab.arturbosch.detekt:detekt-rules-libraries:$detektFormattingVersion")
     }
 }

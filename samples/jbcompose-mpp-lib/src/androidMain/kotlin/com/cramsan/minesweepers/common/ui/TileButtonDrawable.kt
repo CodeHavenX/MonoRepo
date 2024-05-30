@@ -15,14 +15,14 @@ import com.cramsan.minesweepers.common.ui.theme.Dimensions
 internal actual fun TileButtonDrawable(
     image: ImageBitmap,
     onTileSelected: () -> Unit,
-    onTileSelectedSecondary: () -> Unit
+    onTileSelectedSecondary: () -> Unit,
 ) {
     Image(
         image,
         modifier = Modifier
             .size(Dimensions.TILE_SIZE)
             .combinedClickable(
-                onLongClick = { onTileSelectedSecondary() }
+                onLongClick = { onTileSelectedSecondary() },
             ) { onTileSelected() },
         contentDescription = null,
         filterQuality = FilterQuality.None,

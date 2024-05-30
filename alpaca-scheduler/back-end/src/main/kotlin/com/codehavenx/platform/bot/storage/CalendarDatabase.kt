@@ -71,7 +71,7 @@ class CalendarDatabase(
         val filter = if (owners.isNotEmpty()) {
             Filters.and(
                 Filters.or(
-                    owners.map { Filters.eq("owner", it.staffId) }
+                    owners.map { Filters.eq("owner", it.staffId) },
                 ),
                 dateTimeFilter,
             )
@@ -87,14 +87,14 @@ class CalendarDatabase(
         val updatedEvent = event.toEventEntity(timeZone)
         return collection.replaceOne(
             Filters.eq("_id", updatedEvent.id),
-            updatedEvent
+            updatedEvent,
         ).wasAcknowledged()
     }
 
     suspend fun deleteEvent(eventId: String): Boolean {
         logD(TAG, "Deleting event: %S", eventId)
         return collection.deleteOne(
-            Filters.eq("_id", ObjectId(eventId))
+            Filters.eq("_id", ObjectId(eventId)),
         ).wasAcknowledged()
     }
 

@@ -38,7 +38,7 @@ internal fun GameMap(
     onTileSelectedSecondary: (column: Int, row: Int) -> Unit,
 ) {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         var offsetX by remember { mutableStateOf(0f) }
         var offsetY by remember { mutableStateOf(0f) }
@@ -93,17 +93,17 @@ internal fun GameMap(
                                         offsetY += dragAmount.y
                                     }
                                 }
-                            }
+                            },
                         )
                     }
                     .onGloballyPositioned { coordinates ->
                         mapSize = coordinates.size
                         mapPos = coordinates.positionInParent()
-                    }
+                    },
             ) {
                 map.forEachIndexed { rowIndex, row ->
                     Row(
-                        modifier = Modifier.wrapContentSize(unbounded = true)
+                        modifier = Modifier.wrapContentSize(unbounded = true),
                     ) {
                         row.forEachIndexed { columnIndex, tile ->
                             TileButton(
@@ -111,7 +111,7 @@ internal fun GameMap(
                                 columnIndex,
                                 rowIndex,
                                 onTileSelected,
-                                onTileSelectedSecondary
+                                onTileSelectedSecondary,
                             )
                         }
                     }

@@ -27,7 +27,7 @@ internal fun GameBar(
             .fillMaxWidth()
             .background(WINDOWS_GRAY)
             .border(Padding.SMALL, Color.Black)
-            .padding(Padding.SMALL)
+            .padding(Padding.SMALL),
     ) {
         MinesRemainingDisplay(minesRemaining)
         Spacer(Modifier.weight(1f))

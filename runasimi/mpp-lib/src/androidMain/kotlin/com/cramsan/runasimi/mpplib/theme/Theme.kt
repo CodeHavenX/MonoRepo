@@ -78,7 +78,7 @@ import com.cramsan.runasimi.mpplib.ui.theme.md_theme_light_tertiaryContainer
 fun PreviewColors() {
     RunasimiTheme(false) {
         Row(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             ColorPalette(
                 title = "Light Mode",
@@ -182,133 +182,133 @@ private fun ColorPalette(
     scrim: Color,
 ) {
     val textModifier = Modifier.padding(
-        Dimension.medium
+        Dimension.medium,
     ).fillMaxWidth()
     Column(
-        modifier = Modifier.width(200.dp)
+        modifier = Modifier.width(200.dp),
     ) {
         Text(
             text = title,
-            modifier = Modifier.then(textModifier)
+            modifier = Modifier.then(textModifier),
         )
         Text(
             text = "Primary",
             color = onPrimary,
             modifier = Modifier
                 .background(primary)
-                .then(textModifier)
+                .then(textModifier),
         )
         Text(
             text = "PrimaryContainer",
             color = onPrimaryContainer,
             modifier = Modifier
                 .background(primaryContainer)
-                .then(textModifier)
+                .then(textModifier),
         )
         Text(
             text = "Secondary",
             color = onSecondary,
             modifier = Modifier
                 .background(secondary)
-                .then(textModifier)
+                .then(textModifier),
         )
         Text(
             text = "SecondaryContainer",
             color = onSecondaryContainer,
             modifier = Modifier
                 .background(secondaryContainer)
-                .then(textModifier)
+                .then(textModifier),
         )
         Text(
             text = "Tertiary",
             color = onTertiary,
             modifier = Modifier
                 .background(tertiary)
-                .then(textModifier)
+                .then(textModifier),
         )
         Text(
             text = "TertiaryContainer",
             color = onTertiaryContainer,
             modifier = Modifier
                 .background(tertiaryContainer)
-                .then(textModifier)
+                .then(textModifier),
         )
         Text(
             text = "Error",
             color = onError,
             modifier = Modifier
                 .background(error)
-                .then(textModifier)
+                .then(textModifier),
         )
         Text(
             text = "ErrorContainer",
             color = onErrorContainer,
             modifier = Modifier
                 .background(errorContainer)
-                .then(textModifier)
+                .then(textModifier),
         )
         Text(
             text = "Background",
             color = onBackground,
             modifier = Modifier
                 .background(background)
-                .then(textModifier)
+                .then(textModifier),
         )
         Text(
             text = "Surface",
             color = onSurface,
             modifier = Modifier
                 .background(surface)
-                .then(textModifier)
+                .then(textModifier),
         )
         Text(
             text = "SurfaceVariant",
             color = onSurfaceVariant,
             modifier = Modifier
                 .background(surfaceVariant)
-                .then(textModifier)
+                .then(textModifier),
         )
         Text(
             text = "InverseSurface",
             color = inverseOnSurface,
             modifier = Modifier
                 .background(inverseSurface)
-                .then(textModifier)
+                .then(textModifier),
         )
         Text(
             text = "Outline",
             color = onPrimary,
             modifier = Modifier
                 .background(outline)
-                .then(textModifier)
+                .then(textModifier),
         )
         Text(
             text = "InversePrimary",
             color = onPrimary,
             modifier = Modifier
                 .background(inversePrimary)
-                .then(textModifier)
+                .then(textModifier),
         )
         Text(
             text = "SurfaceTint",
             color = onPrimary,
             modifier = Modifier
                 .background(surfaceTint)
-                .then(textModifier)
+                .then(textModifier),
         )
         Text(
             text = "OutlineVariant",
             color = onPrimary,
             modifier = Modifier
                 .background(outlineVariant)
-                .then(textModifier)
+                .then(textModifier),
         )
         Text(
             text = "Scrim",
             color = onPrimary,
             modifier = Modifier
                 .background(scrim)
-                .then(textModifier)
+                .then(textModifier),
         )
     }
 }

@@ -50,7 +50,7 @@ val ApplicationModule = module(createdAtStart = true) {
 
     single<List<WebhookEntryPoint<*>>>(named(LIST_WH_ENTRY_POINTS)) {
         listOf(
-            get<GithubCommitPushEntryPoint>()
+            get<GithubCommitPushEntryPoint>(),
         )
     }
 

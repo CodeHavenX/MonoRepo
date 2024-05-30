@@ -68,7 +68,7 @@ fun Screen() {
 
     Column {
         Row(
-            modifier = Modifier.horizontalScroll(rememberScrollState())
+            modifier = Modifier.horizontalScroll(rememberScrollState()),
         ) {
             if (selectedTab != null) {
                 Button(onClick = { selectedTab = null }) {

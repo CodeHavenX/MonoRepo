@@ -106,7 +106,8 @@ class CloudwatchMetrics(
             when (throwable) {
                 is InvalidParameterValueException, is MissingRequiredParameterException,
                 is InvalidParameterCombinationException, is InternalServiceException,
-                is AmazonServiceException, -> eventLogger.log(
+                is AmazonServiceException,
+                -> eventLogger.log(
                     Severity.WARNING,
                     TAG,
                     "AWS service failure while uploading metric",

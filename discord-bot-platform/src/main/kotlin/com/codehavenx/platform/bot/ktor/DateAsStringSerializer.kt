@@ -17,6 +17,6 @@ object DateAsStringSerializer : KSerializer<Date> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Date", PrimitiveKind.STRING)
     override fun serialize(encoder: Encoder, value: Date) = encoder.encodeString(format.format(value))
     override fun deserialize(decoder: Decoder): Date = Date.from(
-        OffsetDateTime.parse(decoder.decodeString()).toInstant()
+        OffsetDateTime.parse(decoder.decodeString()).toInstant(),
     )
 }

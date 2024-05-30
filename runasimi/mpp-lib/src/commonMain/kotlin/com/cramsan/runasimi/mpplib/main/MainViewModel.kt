@@ -30,7 +30,7 @@ class MainViewModel(
         MainViewUIModel(
             listOf(),
             isLoading = false,
-        )
+        ),
     )
 
     val uiModel = _uiModel.asStateFlow()

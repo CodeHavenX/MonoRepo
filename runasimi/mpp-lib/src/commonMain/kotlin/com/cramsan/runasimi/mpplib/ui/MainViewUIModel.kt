@@ -9,7 +9,7 @@ data class CardUiModel(
     val components: List<Component>,
 ) {
     data class Word(
-        val segments: List<Segment>
+        val segments: List<Segment>,
     )
 
     data class Segment(

@@ -36,8 +36,8 @@ class HtmlController {
                     UI_MODEL to HtmlUIModel(
                         initialQuery = initialQuery,
                     ),
-                )
-            )
+                ),
+            ),
         )
     }
 

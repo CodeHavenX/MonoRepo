@@ -47,8 +47,8 @@ fun Statement.toUIModel(): CardUiModel {
                     CardUiModel.Segment(
                         segment = pronoun.pronoun,
                         color = ComponentColor.BLUE,
-                    )
-                )
+                    ),
+                ),
             ),
             CardUiModel.Word(
                 listOfNotNull(
@@ -70,7 +70,7 @@ fun Statement.toUIModel(): CardUiModel {
                         segment = conjugationPrefix,
                         color = ComponentColor.BLUE,
                     ),
-                )
+                ),
             ),
         ),
         components = listOf(
@@ -94,7 +94,7 @@ fun Statement.toUIModel(): CardUiModel {
                 quechua = conjugationPrefix,
                 color = ComponentColor.BLUE,
             ),
-        ).filterNotNull()
+        ).filterNotNull(),
     )
 }
 

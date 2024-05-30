@@ -31,7 +31,7 @@ fun initializeFirestoreService(firebaseApp: FirebaseApp): Firestore {
 fun getLocalFirebaseCredentials(): GoogleCredentials {
     val credentialsPath = "/.secrets/firebase-adminsdk.json"
     val input: InputStream = object {}.javaClass.getResourceAsStream(credentialsPath) ?: TODO(
-        "ERROR: FILE IS MISSING!!"
+        "ERROR: FILE IS MISSING!!",
     )
     return GoogleCredentials.fromStream(input)
 }

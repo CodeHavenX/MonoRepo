@@ -44,7 +44,7 @@ internal fun ResetButton(
         filterQuality = FilterQuality.None,
         modifier = Modifier
             .size(Dimensions.BUTTON_SIZE)
-            .clickable { onRestartSelected() }
+            .clickable { onRestartSelected() },
     )
 }
 

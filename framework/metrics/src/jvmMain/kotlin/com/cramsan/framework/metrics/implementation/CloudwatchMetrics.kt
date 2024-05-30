@@ -67,7 +67,8 @@ class CloudwatchMetrics(
         } catch (throwable: Throwable) {
             when (throwable) {
                 is InvalidParameterValueException, is MissingRequiredParameterException,
-                is InvalidParameterCombinationException, -> logE(
+                is InvalidParameterCombinationException,
+                -> logE(
                     TAG,
                     "Failed to upload metric due to bad request",
                     throwable,

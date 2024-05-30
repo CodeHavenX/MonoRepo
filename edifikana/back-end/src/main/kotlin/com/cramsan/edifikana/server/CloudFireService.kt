@@ -141,7 +141,7 @@ class CloudFireService(
                 gDriveParams.storageFolderId,
                 imageFile.absolutePath,
                 "image/jpeg",
-                timeCardRecordPK.documentPath
+                timeCardRecordPK.documentPath,
             )
         } else {
             logger.warning("No image URL found")
@@ -156,8 +156,8 @@ class CloudFireService(
                 timeCardRecord.toRowEntry(
                     employeeFullName = employeeName,
                     imageUrlOverride = driveImageUrl,
-                )
-            )
+                ),
+            ),
         )
     }
 
@@ -219,8 +219,8 @@ class CloudFireService(
             gDriveParams.eventLogSpreadsheetId,
             "Hoja 1",
             listOf(
-                eventLogRecord.toRowEntry(employeeName, uploadedImages.joinToString("\n"))
-            )
+                eventLogRecord.toRowEntry(employeeName, uploadedImages.joinToString("\n")),
+            ),
         )
     }
 
@@ -247,8 +247,8 @@ class CloudFireService(
             gDriveParams.formEntriesSpreadsheetId,
             "Hoja 1",
             listOf(
-                formRecord.toRowEntry()
-            )
+                formRecord.toRowEntry(),
+            ),
         )
     }
 }

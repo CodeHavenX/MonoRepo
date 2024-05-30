@@ -21,7 +21,7 @@ class GoogleTranslateService(
 
         return translate.translate(
             message,
-            *arrayOptions
+            *arrayOptions,
         ).translatedText
     }
 

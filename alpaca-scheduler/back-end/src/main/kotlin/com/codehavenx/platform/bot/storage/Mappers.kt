@@ -99,7 +99,7 @@ fun createConfigurationEntity(
         id = objectIdProvider(),
         appointmentType = appointmentType.appointmentType,
         duration = duration.inWholeSeconds,
-        timeZone = timeZone.id
+        timeZone = timeZone.id,
     )
 }
 

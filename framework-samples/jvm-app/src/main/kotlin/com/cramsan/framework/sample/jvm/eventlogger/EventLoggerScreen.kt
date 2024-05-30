@@ -27,7 +27,7 @@ private fun EventLoggerScreenContent(
     Column {
         Text(text = "Set Severity")
         Row(
-            modifier = Modifier.horizontalScroll(rememberScrollState())
+            modifier = Modifier.horizontalScroll(rememberScrollState()),
         ) {
             Severity.values().forEach {
                 Button(onClick = { eventHandler.setSeverity(it) }) {
@@ -80,7 +80,7 @@ fun AssertScreenPreview() {
                 override fun tryLogE() = Unit
                 override fun toggleLogToFile() = Unit
                 override fun setSeverity(severity: Severity) = Unit
-            }
+            },
         )
     }
 }

@@ -14,7 +14,7 @@ class ReservationService(
         configurationId: String,
         startDateTime: LocalDateTime,
         endDatetime: LocalDateTime,
-        staffId: StaffId
+        staffId: StaffId,
     ): Map<LocalDateTime, List<TimeSlot>> {
         logI(TAG, "getAvailableTimes called")
 

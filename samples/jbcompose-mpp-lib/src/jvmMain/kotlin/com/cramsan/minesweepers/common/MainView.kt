@@ -33,22 +33,22 @@ fun AppPreview() {
             listOf(
                 Tile.Empty(TileCoverMode.COVERED),
                 Tile.Empty(TileCoverMode.UNCOVERED),
-                Tile.Empty(TileCoverMode.COVERED)
+                Tile.Empty(TileCoverMode.COVERED),
             ),
             listOf(
                 Tile.Bomb(TileCoverMode.COVERED),
                 Tile.Bomb(TileCoverMode.FLAGGED),
-                Tile.Bomb(TileCoverMode.COVERED)
+                Tile.Bomb(TileCoverMode.COVERED),
             ),
             listOf(
                 Tile.Adjacent(1, TileCoverMode.UNCOVERED),
                 Tile.Adjacent(2, TileCoverMode.UNCOVERED),
-                Tile.Adjacent(3, TileCoverMode.COVERED)
+                Tile.Adjacent(3, TileCoverMode.COVERED),
             ),
         ),
         Status.WON,
         { _, _ -> },
         { _, _ -> },
-        {}
+        {},
     )
 }

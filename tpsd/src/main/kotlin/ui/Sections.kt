@@ -44,12 +44,12 @@ fun CommandQueue(
         modifier = modifier,
     ) {
         Column(
-            modifier = Modifier
+            modifier = Modifier,
         ) {
             if (inIdleMode) {
                 Text(
                     "In idle mode. Random commands will be executed...",
-                    modifier = Modifier.padding(bottom = 25.dp)
+                    modifier = Modifier.padding(bottom = 25.dp),
                 )
             }
             Text("Last command was: $lastExecutedCommand")
@@ -61,7 +61,7 @@ fun CommandQueue(
 
             Text(
                 message,
-                modifier = Modifier.padding(vertical = 25.dp)
+                modifier = Modifier.padding(vertical = 25.dp),
             )
             commandMap.forEach { (username, command) ->
                 Text("[$username] $command")
@@ -102,7 +102,7 @@ fun ParametersSection(
             Text(
                 "Parameters",
                 style = MaterialTheme.typography.h5,
-                modifier = Modifier.padding(vertical = Padding.medium)
+                modifier = Modifier.padding(vertical = Padding.medium),
             )
             Text("CFG Scale: $cfgScale")
             Text("Width: $width")
@@ -119,13 +119,13 @@ fun PromptSection(
     modifier: Modifier = Modifier,
 ) {
     Frame(
-        modifier = modifier.animateContentSize()
+        modifier = modifier.animateContentSize(),
     ) {
         Column {
             Text(
                 label,
                 style = MaterialTheme.typography.h5,
-                modifier = Modifier.padding(vertical = Padding.medium)
+                modifier = Modifier.padding(vertical = Padding.medium),
             )
             promptList.forEachIndexed { index, term ->
                 if (term.emphasis != 0) {
@@ -149,7 +149,7 @@ fun Background(
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxSize()
-                .blur(50.dp)
+                .blur(50.dp),
         )
     }
 }
@@ -165,7 +165,7 @@ fun BoxScope.MainImage(
         val imageModifier = if (isLoading) {
             Modifier.blur(
                 25.dp,
-                BlurredEdgeTreatment(ROUNDED_CORNER_LARGE)
+                BlurredEdgeTreatment(ROUNDED_CORNER_LARGE),
             )
         } else {
             Modifier
@@ -179,14 +179,14 @@ fun BoxScope.MainImage(
             path = imagePath,
             contentDescription = null,
             contentScale = ContentScale.Fit,
-            modifier = imageModifier
+            modifier = imageModifier,
         )
     }
     AnimatedVisibility(
         visible = isLoading,
         enter = fadeIn(),
         exit = fadeOut(),
-        modifier = Modifier.align(Alignment.Center)
+        modifier = Modifier.align(Alignment.Center),
     ) {
         Frame {
             CircularProgressIndicator()
@@ -229,7 +229,7 @@ fun Instructions(
             Text(
                 "Instructions",
                 style = MaterialTheme.typography.h5,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+                modifier = Modifier.align(Alignment.CenterHorizontally),
             )
 
             Row {

@@ -48,7 +48,7 @@ class WebhookRegisterInteractionModule(
         return try {
             githubWebhookService.registerWebhookEventToChannel(
                 webhookEvent,
-                interaction.channelId.toString()
+                interaction.channelId.toString(),
             )
 
             val builder: InteractionResponseModifyBuilder.() -> Unit = {

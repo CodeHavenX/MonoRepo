@@ -19,7 +19,7 @@ import java.util.concurrent.CancellationException
  * Module to define an interaction to interact with the Runasimi endpoint.
  */
 class RunasimiInteractionModule(
-    private val runasimiService: RunasimiService
+    private val runasimiService: RunasimiService,
 ) : InteractionModule {
 
     override val command = "rimanki"
@@ -77,7 +77,7 @@ class RunasimiInteractionModule(
                             result.size.toLong(),
                         ) {
                             ByteReadChannel(result)
-                        }
+                        },
                     )
                 } else {
                     content = ERROR_MESSAGE_UNEXPECTED_ERROR_DESC.toLanguage(interaction.locale)
@@ -139,7 +139,7 @@ class RunasimiInteractionModule(
             default = "There was an unexpected error. Please try again later " +
                 "with a different message or a shorter message.",
             spanish = "Ocucrrió un error inesperado. Por favor intenta de nuevo " +
-                "más tarde con un mensaje diferente o un mensage más corto."
+                "más tarde con un mensaje diferente o un mensage más corto.",
         )
 
         private val SUPPORTED_VARIANTS = listOf(

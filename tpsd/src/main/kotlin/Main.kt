@@ -82,7 +82,7 @@ fun main() {
     }
 
     val accessToken = System.getenv(ENV_ACCESS_TOKEN) ?: throw RuntimeException(
-        "Set the $ENV_ACCESS_TOKEN env variable"
+        "Set the $ENV_ACCESS_TOKEN env variable",
     )
     channelName = System.getenv(ENV_CHANNEL_NAME) ?: throw RuntimeException("Set the $ENV_CHANNEL_NAME env variable")
 

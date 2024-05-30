@@ -26,7 +26,7 @@ class AndroidSoundManager(
                 AudioAttributes.Builder()
                     .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                     .setUsage(AudioAttributes.USAGE_MEDIA)
-                    .build()
+                    .build(),
             )
             mediaPlayer.setDataSource(path)
             mediaPlayer.prepare() // might take long! (for buffering, etc)

@@ -57,7 +57,7 @@ class JVMPreferencesDelegate : PreferencesDelegate {
     @Suppress("SwallowedException")
     private fun <T> verifyAndGetOrNull(
         nodeName: String,
-        block: (nodeName: String) -> T?
+        block: (nodeName: String) -> T?,
     ): T? {
         return try {
             // TODO: Verify that the key exists

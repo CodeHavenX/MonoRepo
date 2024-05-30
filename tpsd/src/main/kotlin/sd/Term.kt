@@ -17,7 +17,7 @@ data class Term(
 fun Term.emphasize(): Term {
     val diff = if (emphasis < 5) { 1 } else { 0 }
     return copy(
-        emphasis = emphasis + diff
+        emphasis = emphasis + diff,
     )
 }
 
@@ -27,7 +27,7 @@ fun Term.emphasize(): Term {
 fun Term.deemphasize(): Term {
     val diff = if (emphasis > - 5) { -1 } else { 0 }
     return copy(
-        emphasis = emphasis + diff
+        emphasis = emphasis + diff,
     )
 }
 
@@ -44,7 +44,7 @@ fun List<Term>.toPrompt(): String {
                     if (isPositive)
                         "("
                     else
-                        "["
+                        "[",
                 )
             }
             append(term.term)
@@ -53,7 +53,7 @@ fun List<Term>.toPrompt(): String {
                     if (isPositive)
                         ")"
                     else
-                        "]"
+                        "]",
                 )
             }
             if (index != this@toPrompt.lastIndex) {

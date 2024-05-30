@@ -57,8 +57,8 @@ class DataCachingService {
                     String::class.java,
                     ByteArray::class.java,
                     ResourcePoolsBuilder.newResourcePoolsBuilder()
-                        .disk(200, MemoryUnit.MB, true)
-                )
+                        .disk(200, MemoryUnit.MB, true),
+                ),
             ).build(true)
     }
 
@@ -66,7 +66,7 @@ class DataCachingService {
         return persistentCacheManager.getCache(
             ALIAS,
             String::class.java,
-            ByteArray::class.java
+            ByteArray::class.java,
         )
     }
 

@@ -73,7 +73,7 @@ private val DarkColors = darkColorScheme(
 @Composable
 fun RunasimiTheme(
     useDarkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     MaterialTheme(
         colorScheme = if (useDarkTheme) {
@@ -81,6 +81,6 @@ fun RunasimiTheme(
         } else {
             LightColors
         },
-        content = content
+        content = content,
     )
 }

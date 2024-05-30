@@ -23,7 +23,7 @@ fun PronounsContent() {
     Column(
         modifier = Modifier
             .padding(horizontal = Dimension.medium)
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(rememberScrollState()),
     ) {
         SectionHeader("Tiempo Presente")
         PronounPresentSuffix.ÑUQA.let {
@@ -228,14 +228,14 @@ private fun PronounLine(
             Text(
                 "-${modalityTense.suffix}",
                 style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.endPadding().padding(vertical = Dimension.x_small)
+                modifier = Modifier.endPadding().padding(vertical = Dimension.x_small),
             )
         }
         if (timeTense.suffix.isNotEmpty()) {
             Text(
                 "-${timeTense.suffix.joinToString("/").lowercase()}",
                 style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.endPadding().padding(vertical = Dimension.x_small)
+                modifier = Modifier.endPadding().padding(vertical = Dimension.x_small),
             )
         }
         Text(

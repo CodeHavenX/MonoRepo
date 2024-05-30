@@ -59,7 +59,7 @@ fun AssertScreenPreview() {
                 override fun tryAssertNull() = Unit
                 override fun tryAssertNotNull() = Unit
                 override fun tryAssertFailure() = Unit
-            }
+            },
         )
     }
 }

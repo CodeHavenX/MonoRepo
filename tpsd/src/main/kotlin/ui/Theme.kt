@@ -11,6 +11,6 @@ fun AppTheme(
         colors = colorPalette,
         typography = typography,
         shapes = shapes,
-        content = content
+        content = content,
     )
 }

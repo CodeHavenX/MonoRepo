@@ -18,9 +18,9 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
 import io.mockk.verify
+import kotlinx.datetime.Instant
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlinx.datetime.Instant
 
 class WebhookRegisterInteractionModuleTest : TestBase() {
 
@@ -74,10 +74,12 @@ class WebhookRegisterInteractionModuleTest : TestBase() {
         every { interactionCommand.strings } returns stringsParams
         coEvery { interaction.deferPublicResponse() } returns deferredResponse
         every { interaction.channelId } returns channelId
-        every { githubWebhookService.registerWebhookEventToChannel(
-            WebhookEvent.WORKFLOW_JOB,
-            channelId.toString(),
-        ) } just runs
+        every {
+            githubWebhookService.registerWebhookEventToChannel(
+                WebhookEvent.WORKFLOW_JOB,
+                channelId.toString(),
+            )
+        } just runs
         val builder: InteractionResponseModifyBuilder = mockk(relaxed = true)
 
         val response = module.onGlobalChatInteraction(interaction)

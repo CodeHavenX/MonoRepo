@@ -83,10 +83,11 @@ private fun CardContent(
                 sentence.forEach {
                     it.segments.forEach { segment ->
                         val textColor: Color by animateColorAsState(
-                            if (highlightText)
+                            if (highlightText) {
                                 segment.color?.toColor() ?: MaterialTheme.colorScheme.onBackground
-                            else
-                                MaterialTheme.colorScheme.onBackground,
+                            } else {
+                                MaterialTheme.colorScheme.onBackground
+                            },
                         )
                         withStyle(
                             style = SpanStyle(color = textColor),

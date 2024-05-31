@@ -3,6 +3,7 @@
     "UndocumentedPublicClass",
     "UndocumentedPublicFunction",
     "TooGenericExceptionThrown",
+    "MagicNumber",
 )
 
 import com.cramsan.framework.logging.EventLogger

@@ -1,12 +1,12 @@
 package com.codehavenx.platform.bot.di
 
 import com.codehavenx.platform.bot.config.createJson
-import com.codehavenx.platform.bot.controller.kord.InteractionModule
 import com.codehavenx.platform.bot.controller.kord.DiscordController
+import com.codehavenx.platform.bot.controller.kord.InteractionModule
 import com.codehavenx.platform.bot.controller.kord.modules.WebhookRegisterInteractionModule
-import com.codehavenx.platform.bot.controller.webhook.entrypoint.GithubCommitPushEntryPoint
 import com.codehavenx.platform.bot.controller.webhook.WebhookController
 import com.codehavenx.platform.bot.controller.webhook.WebhookEntryPoint
+import com.codehavenx.platform.bot.controller.webhook.entrypoint.GithubCommitPushEntryPoint
 import com.codehavenx.platform.bot.service.github.GithubWebhookService
 import com.cramsan.framework.core.ktor.service.DiscordService
 import io.mockk.mockk
@@ -24,7 +24,6 @@ fun createApplicationModule(
     webHookRegisterInteractionModule: WebhookRegisterInteractionModule = mockk(relaxed = true),
     githubCommitPushEntryPoint: GithubCommitPushEntryPoint = mockk(relaxed = true),
 ) = module(createdAtStart = true) {
-
     single<List<WebhookEntryPoint<*>>>(named(LIST_WH_ENTRY_POINTS)) {
         listOf(
             get<GithubCommitPushEntryPoint>()

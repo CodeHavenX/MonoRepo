@@ -10,12 +10,10 @@ class GoogleTranslateService(
     @Suppress("SpreadOperator")
     fun translate(message: String, sourceLanguage: Language, targetLanguage: Language): String {
         logI(TAG, "Calling translate. Length: ${message.length}")
-        if (message.length > 120) {
-            throw IllegalStateException("Message is too long")
-        }
+        check(message.length > INPUT_CHAR_LIMIT) { "Message is too long" }
 
         val arrayOptions = listOfNotNull(
-            sourceLanguage?.let { Translate.TranslateOption.sourceLanguage(it.code) },
+            sourceLanguage.let { Translate.TranslateOption.sourceLanguage(it.code) },
             Translate.TranslateOption.targetLanguage(targetLanguage.code),
         ).toTypedArray()
 
@@ -27,5 +25,6 @@ class GoogleTranslateService(
 
     companion object {
         private const val TAG = "GoogleTranslateService"
+        private const val INPUT_CHAR_LIMIT = 120
     }
 }

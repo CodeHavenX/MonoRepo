@@ -7,8 +7,10 @@ enum class PronounPastSuffix(
     ÑUQA("ni"),
     QAM("nki"),
     PAY(""),
+
     @Suppress("EnumNaming")
     ÑUQANCHIK("nchik"),
+
     @Suppress("EnumNaming")
     ÑUQAYKU("niku"),
     QAMKUNA("nkichik"),

@@ -1,10 +1,13 @@
+@file:Suppress("MagicNumber")
+
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.NoopEventLogger
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import kotlin.random.Random
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 class CommandQueueTest {
 
@@ -32,5 +35,4 @@ class CommandQueueTest {
 
         assertNotNull(commandBuffer.flush())
     }
-
 }

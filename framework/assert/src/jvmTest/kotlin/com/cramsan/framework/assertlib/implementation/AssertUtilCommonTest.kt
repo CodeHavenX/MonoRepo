@@ -27,7 +27,7 @@ import kotlin.test.assertEquals
 @OptIn(ExperimentalCoroutinesApi::class)
 class AssertUtilCommonTest : TestBase() {
 
-    override fun setupTest() { }
+    override fun setupTest() = Unit
 
     @Test
     fun assertTrueWithHaltEnabled() = runBlockingTest {

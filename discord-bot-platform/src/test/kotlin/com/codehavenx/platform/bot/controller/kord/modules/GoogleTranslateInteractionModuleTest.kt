@@ -15,7 +15,7 @@ class GoogleTranslateInteractionModuleTest : TestBase() {
     @MockK
     lateinit var googleTranslateService: GoogleTranslateService
 
-    private lateinit var module :GoogleTranslateInteractionModule
+    private lateinit var module: GoogleTranslateInteractionModule
 
     override fun setupTest() {
         MockKAnnotations.init(this) // turn relaxUnitFun on for all mocks
@@ -28,15 +28,20 @@ class GoogleTranslateInteractionModuleTest : TestBase() {
     @Test
     fun `verify localizations`() {
         assertEquals("translate", module.command)
-        assertEquals(mutableMapOf(
-            Locale.SPANISH_SPAIN to "traducir",
-            Locale.SPANISH_LATIN_AMERICA to "traducir",
-        ), module.commandLocalizations)
+        assertEquals(
+            mutableMapOf(
+                Locale.SPANISH_SPAIN to "traducir",
+                Locale.SPANISH_LATIN_AMERICA to "traducir",
+            ),
+            module.commandLocalizations
+        )
         assertEquals("Translate a message from one language to another", module.description)
-        assertEquals(mutableMapOf(
-            Locale.SPANISH_SPAIN to "Traduce un mensaje de un idioma a otro",
-            Locale.SPANISH_LATIN_AMERICA to "Traduce un mensaje de un idioma a otro",
-        ), module.descriptionLocalizations)
+        assertEquals(
+            mutableMapOf(
+                Locale.SPANISH_SPAIN to "Traduce un mensaje de un idioma a otro",
+                Locale.SPANISH_LATIN_AMERICA to "Traduce un mensaje de un idioma a otro",
+            ),
+            module.descriptionLocalizations
+        )
     }
-
 }

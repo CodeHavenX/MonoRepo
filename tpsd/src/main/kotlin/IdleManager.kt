@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 import com.cramsan.framework.logging.logI
 import java.io.File
 import kotlin.random.Random
@@ -21,10 +23,11 @@ class IdleManager {
             return null
         }
 
-        val index = if (termCount > 0)
+        val index = if (termCount > 0) {
             Random.nextInt(termCount)
-        else
+        } else {
             0
+        }
 
         val command = if (termCount < 10) {
             SdCommand.AddTerm(term, index)

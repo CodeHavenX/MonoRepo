@@ -57,7 +57,7 @@ fun EventLogRecord.toDomainModel(storageBucket: String): EventLogRecordModel {
                 publicUrl = publicDownloadUrl(StorageRef(it), storageBucket),
                 storageRef = StorageRef(it),
             )
-        } ?: emptyList(),
+        }.orEmpty(),
     )
 }
 

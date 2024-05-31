@@ -36,8 +36,9 @@ class EventLoggerImpl(
         ignoreErrorCallback: Boolean,
         vararg args: Any?,
     ) {
-        if (severity < targetSeverity)
+        if (severity < targetSeverity) {
             return
+        }
 
         platformDelegate.log(severity, tag, message, throwable, *args)
 

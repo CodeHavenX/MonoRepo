@@ -25,6 +25,7 @@ import software.constructs.Construct
 /**
  * Construct that creates an Elastic Beanstalk application.
  */
+@Suppress("MagicNumber")
 class LoadBalancesApplication(scope: software.constructs.Construct, id: String) : Construct(scope, id) {
 
     init {

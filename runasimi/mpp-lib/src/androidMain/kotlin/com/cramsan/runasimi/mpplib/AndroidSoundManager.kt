@@ -16,7 +16,7 @@ class AndroidSoundManager(
         scope.launch { playSound(path) }
     }
 
-    @Suppress("TooGenericExceptionCaught")
+    @Suppress("TooGenericExceptionCaught", "MagicNumber")
     override suspend fun playSound(path: String) {
         val mediaPlayer = MediaPlayer()
         try {

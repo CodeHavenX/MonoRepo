@@ -13,7 +13,7 @@ data class Form(
      */
     fun documentId(): FormPK {
         val encodedFormName = name
-            ?.substring(0, min(name.length, 50))
+            ?.substring(0, min(name.length, FORM_NAME_END_INDEX))
             ?.replace(nonAlphaNum, "_")
             ?.lowercase() ?: TODO()
         return FormPK("${encodedFormName}_$propertyId")
@@ -36,3 +36,5 @@ data class FormField(
 value class FormPK(val documentPath: String)
 
 private val nonAlphaNum = "[^a-zA-Z0-9]".toRegex()
+
+private const val FORM_NAME_END_INDEX = 50

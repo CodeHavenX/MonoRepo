@@ -20,7 +20,6 @@ fun createApplicationModule(
     channelId: String = "",
     scope: CoroutineScope,
 ) = module(createdAtStart = true) {
-
     single {
         discordService
     }

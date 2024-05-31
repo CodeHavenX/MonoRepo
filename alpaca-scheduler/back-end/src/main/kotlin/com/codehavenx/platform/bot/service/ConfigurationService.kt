@@ -34,6 +34,7 @@ class ConfigurationService(
     }
 
     companion object {
+        @Suppress("UnusedPrivateProperty")
         private const val TAG = "ConfigurationService"
     }
 }

@@ -11,7 +11,6 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-
 class GithubWebhookServiceTest {
 
     @MockK
@@ -36,7 +35,6 @@ class GithubWebhookServiceTest {
 
         verify { preferences.saveString("CHANNEL_ID_KEYPUSH", "12345") }
     }
-
 
     @Test
     fun `test getWebhookEventChannel`() {

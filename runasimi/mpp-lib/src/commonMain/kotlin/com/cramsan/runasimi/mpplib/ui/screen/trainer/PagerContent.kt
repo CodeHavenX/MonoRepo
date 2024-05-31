@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 package com.cramsan.runasimi.mpplib.ui.screen.trainer
 
 import androidx.compose.animation.AnimatedContent
@@ -161,10 +163,11 @@ private fun BoxScope.PageIndicator(
                     animationSpec = tween(300, easing = EaseInOut),
                 )
                 val color =
-                    if (currentPage == iteration)
+                    if (currentPage == iteration) {
                         MaterialTheme.colorScheme.onBackground
-                    else
+                    } else {
                         MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
+                    }
                 Box(
                     modifier = Modifier
                         .padding(horizontal = Dimension.xx_small)

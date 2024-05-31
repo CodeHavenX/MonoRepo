@@ -29,6 +29,7 @@ class UserService(
     }
 
     companion object {
+        @Suppress("UnusedPrivateProperty")
         private const val TAG = "UserService"
     }
 }

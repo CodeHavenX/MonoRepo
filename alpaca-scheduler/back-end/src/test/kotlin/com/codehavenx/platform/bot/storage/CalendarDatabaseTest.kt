@@ -19,7 +19,6 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.minutes
 
-
 class CalendarDatabaseTest : TestBase() {
 
     private val connectionString = ConnectionString("mongodb://localhost:27017")
@@ -30,9 +29,11 @@ class CalendarDatabaseTest : TestBase() {
     private val timeZone = TimeZone.UTC
 
     override fun setupTest() {
-        EventLogger.setInstance(mockk(
-            relaxed = true,
-        ))
+        EventLogger.setInstance(
+            mockk(
+                relaxed = true,
+            )
+        )
 
         runBlocking {
             database.drop()
@@ -129,7 +130,7 @@ class CalendarDatabaseTest : TestBase() {
             val eventEndDateTime = currentDate.toInstant(timeZone) + (30.minutes * it + 60.minutes)
 
             calendarDatabase.createEvent(
-                owner = StaffId("testOwner-${it%3}"),
+                owner = StaffId("testOwner-${it % 3}"),
                 attendants = emptySet(),
                 title = "Event $it",
                 description = "Description $it",

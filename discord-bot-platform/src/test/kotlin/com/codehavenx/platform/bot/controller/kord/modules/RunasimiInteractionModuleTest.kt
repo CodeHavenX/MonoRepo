@@ -15,7 +15,7 @@ class RunasimiInteractionModuleTest : TestBase() {
     @MockK
     lateinit var runasimiService: RunasimiService
 
-    private lateinit var module :RunasimiInteractionModule
+    private lateinit var module: RunasimiInteractionModule
 
     override fun setupTest() {
         MockKAnnotations.init(this) // turn relaxUnitFun on for all mocks
@@ -30,10 +30,12 @@ class RunasimiInteractionModuleTest : TestBase() {
         assertEquals("rimanki", module.command)
         assertEquals(emptyMap(), module.commandLocalizations)
         assertEquals("Generate TTS audio from a text in Quechua", module.description)
-        assertEquals(mutableMapOf(
-            Locale.SPANISH_SPAIN to "Genera audio TTS a partir de un texto en Quechua",
-            Locale.SPANISH_LATIN_AMERICA to "Genera audio TTS a partir de un texto en Quechua",
-        ), module.descriptionLocalizations)
+        assertEquals(
+            mutableMapOf(
+                Locale.SPANISH_SPAIN to "Genera audio TTS a partir de un texto en Quechua",
+                Locale.SPANISH_LATIN_AMERICA to "Genera audio TTS a partir de un texto en Quechua",
+            ),
+            module.descriptionLocalizations
+        )
     }
-
 }

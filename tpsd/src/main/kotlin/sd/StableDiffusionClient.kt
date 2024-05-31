@@ -1,4 +1,9 @@
-@file:Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
+@file:Suppress(
+    "UndocumentedPublicClass",
+    "UndocumentedPublicFunction",
+    "MagicNumber",
+    "TooManyFunctions",
+)
 
 package sd
 
@@ -293,10 +298,11 @@ class StableDiffusionClient(
         if (positivePrompt.size >= 50) {
             return ""
         }
-        if (position >= 0)
+        if (position >= 0) {
             positivePrompt.add(position, Term(term))
-        else
+        } else {
             positivePrompt.add(positivePrompt.size + position + 1, Term(term))
+        }
         _uiState.value = _uiState.value.copy(
             positivePrompt = positivePrompt,
         )
@@ -341,10 +347,11 @@ class StableDiffusionClient(
         if (negativePrompt.size >= 50) {
             return ""
         }
-        if (position >= 0)
+        if (position >= 0) {
             negativePrompt.add(position, Term(term))
-        else
+        } else {
             negativePrompt.add(negativePrompt.size + position + 1, Term(term))
+        }
         _uiState.value = _uiState.value.copy(
             negativePrompt = negativePrompt,
         )

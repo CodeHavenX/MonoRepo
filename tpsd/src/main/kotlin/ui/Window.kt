@@ -1,4 +1,4 @@
-@file:Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
+@file:Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction", "LongMethod", "MagicNumber")
 
 package ui
 

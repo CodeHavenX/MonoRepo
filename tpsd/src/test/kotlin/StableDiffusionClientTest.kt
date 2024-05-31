@@ -1,7 +1,7 @@
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import sd.Term
 import sd.toPrompt
+import kotlin.test.assertEquals
 
 class StableDiffusionClientTest {
 
@@ -16,9 +16,11 @@ class StableDiffusionClientTest {
             Term("even less emphasis", -2),
             Term("another word"),
         )
-        assertEquals("""
+        assertEquals(
+            """
             test, example, (with emphasis), ((even more emphasis)), [less emphasis], [[even less emphasis]], another word
-        """.trimIndent() ,terms.toPrompt())
+            """.trimIndent(),
+            terms.toPrompt()
+        )
     }
-
 }

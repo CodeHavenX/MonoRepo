@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 package ui
 
 import Command

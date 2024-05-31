@@ -2,6 +2,7 @@
     "UndocumentedPublicClass",
     "UndocumentedPublicFunction",
     "TooGenericExceptionThrown",
+    "MagicNumber",
 )
 
 import kotlin.time.Duration.Companion.minutes

@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
  * to specify which one will be used. If a viewModel is not required then [NoopViewModel] can be used.
  * This class is based on the existing [BaseActivity] but removes the decoupling from the View system.
  */
+@Suppress("TooManyFunctions")
 abstract class BaseComposeActivity<T : BaseViewModel> : ComponentActivity() {
 
     /**

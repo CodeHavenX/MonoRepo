@@ -12,7 +12,6 @@ import com.cramsan.runasimi.mpplib.ui.ComponentColor
 
 @Suppress("LongMethod")
 fun Statement.toUIModel(): CardUiModel {
-
     val conjugationPrefix = pronounConjugationPrefix(timeTense, pronoun)
 
     val modalityComponent = if (modalityTense == ModalityTense.SIMPLE) {

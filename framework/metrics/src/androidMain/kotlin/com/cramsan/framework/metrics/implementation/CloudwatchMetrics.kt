@@ -77,7 +77,7 @@ class CloudwatchMetrics(
                     withName(it.key)
                     withValue(it.value)
                 }
-            } ?: emptyList()
+            }.orEmpty()
             ) + Dimension().apply {
             withName(IDENTIFIER)
             withValue(tag)

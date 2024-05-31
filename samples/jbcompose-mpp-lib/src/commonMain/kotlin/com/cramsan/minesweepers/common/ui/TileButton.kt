@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 package com.cramsan.minesweepers.common.ui
 
 import androidx.compose.runtime.Composable

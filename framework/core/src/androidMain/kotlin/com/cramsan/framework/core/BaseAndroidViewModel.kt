@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
  * viewModel in case the system needs to kill/restart the process. ViewModels already keep their state
  * on configuration change so [savedStateHandle] should not be used in those cases.
  */
+@Suppress("UnnecessaryAbstractClass")
 abstract class BaseAndroidViewModel(
     protected open val viewModel: BaseViewModel,
 ) : ViewModel()

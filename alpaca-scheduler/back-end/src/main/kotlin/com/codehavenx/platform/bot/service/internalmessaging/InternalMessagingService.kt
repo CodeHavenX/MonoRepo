@@ -20,8 +20,9 @@ class InternalMessagingService {
 
     @Synchronized
     private fun ensureTopic(topic: Topic) {
-        if (topicMap.containsKey(topic))
+        if (topicMap.containsKey(topic)) {
             return
+        }
         topicMap[topic] = MutableSharedFlow()
     }
 }

@@ -23,6 +23,7 @@ import com.cramsan.minesweepers.common.ui.GameMap
         GameMap(map, onTileSelected, onTileSelectedSecondary)
     }
 }
+
 @Preview
 @Composable
 fun AppPreview() {

@@ -47,7 +47,7 @@ class CloudwatchMetrics(
         val dimensions = (
             metadata?.map {
                 Dimension.builder().name(it.key).value(it.value).build()
-            } ?: emptyList()
+            }.orEmpty()
             ) + Dimension.builder().name(IDENTIFIER).value(tag).build()
         val metricDatum = MetricDatum.builder().apply {
             metricName(type.name)

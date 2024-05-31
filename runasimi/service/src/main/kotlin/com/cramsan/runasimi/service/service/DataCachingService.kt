@@ -45,6 +45,7 @@ class DataCachingService {
         }
     }
 
+    @Suppress("MagicNumber")
     private fun getCachingManager(): PersistentCacheManager {
         val cacheLocation = File(CACHE_FOLDER)
         cacheLocation.mkdirs()

@@ -1,7 +1,8 @@
 package com.cramsan.framework.preferences
 
 /**
- * This module has a simple API to easily persist data in local storage. It was designed to be used for simple operations that do not require high performance.
+ * This module has a simple API to easily persist data in local storage. It was designed to be used for simple
+ * operations that do not require high performance.
  */
 interface Preferences {
 

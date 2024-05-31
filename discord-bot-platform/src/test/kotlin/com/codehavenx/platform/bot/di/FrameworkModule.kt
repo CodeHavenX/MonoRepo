@@ -4,7 +4,6 @@ import com.cramsan.framework.assertlib.AssertUtil
 import com.cramsan.framework.assertlib.AssertUtilInterface
 import com.cramsan.framework.halt.HaltUtil
 import com.cramsan.framework.logging.EventLogger
-import com.cramsan.framework.logging.EventLoggerErrorCallbackDelegate
 import com.cramsan.framework.logging.EventLoggerInterface
 import com.cramsan.framework.preferences.Preferences
 import com.cramsan.framework.thread.ThreadUtil
@@ -22,7 +21,6 @@ fun createFrameworkModule(
     assertUtilInterface: AssertUtilInterface = mockk(relaxed = true),
     threadUtilInterface: ThreadUtilInterface = mockk(relaxed = true),
 ) = module(createdAtStart = true) {
-
     single<Preferences> { preferences }
 
     single<EventLoggerInterface> {

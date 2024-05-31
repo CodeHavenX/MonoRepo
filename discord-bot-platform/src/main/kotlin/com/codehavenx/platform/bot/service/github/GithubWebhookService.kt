@@ -15,8 +15,8 @@ class GithubWebhookService(
     }
 
     companion object {
+        @Suppress("UnusedPrivateProperty")
         private const val TAG = "GithubWebhookService"
-
         private const val CHANNEL_ID_KEY = "CHANNEL_ID_KEY"
     }
 }

@@ -12,7 +12,7 @@ import kotlin.test.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class HaltUtilTest : TestBase() {
 
-    override fun setupTest() { }
+    override fun setupTest() = Unit
 
     @Test
     fun testStopThread() = runBlockingTest {

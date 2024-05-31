@@ -40,17 +40,18 @@ class ApplicationTest : TestBase() {
     private lateinit var discordService: DiscordService
 
     private val json = createJson()
-    override fun setupTest() { }
+    override fun setupTest() = Unit
 
     @Test
-    fun `test onPayload with no channelId` () = testApplication {
+    fun `test onPayload with no channelId`() = testApplication {
         MockKAnnotations.init(this) // turn relaxUnitFun on for all mocks
 
         githubCommitPushEntryPoint = spyk(
             GithubCommitPushEntryPoint(
                 githubWebhookService,
                 discordService,
-        ))
+            )
+        )
 
         coEvery { githubCommitPushEntryPoint.onPayload(any()) } returns HttpResponse(
             HttpStatusCode.OK,

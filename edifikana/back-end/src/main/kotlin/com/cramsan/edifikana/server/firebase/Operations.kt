@@ -25,8 +25,6 @@ fun getDocument(
     // Make a blocking call to get the document
     val document = future.get()
 
-    if (!document.exists()) {
-        throw IllegalArgumentException("No such document!")
-    }
+    require(document.exists()) { "No such document!" }
     return document
 }

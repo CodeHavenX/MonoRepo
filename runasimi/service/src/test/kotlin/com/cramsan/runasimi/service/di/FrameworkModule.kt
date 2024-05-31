@@ -22,7 +22,6 @@ fun createFrameworkModule(
     assertUtilInterface: AssertUtilInterface = mockk(relaxed = true),
     threadUtilInterface: ThreadUtilInterface = mockk(relaxed = true),
 ) = module(createdAtStart = true) {
-
     single<Preferences> { preferences }
 
     single<EventLoggerInterface> {

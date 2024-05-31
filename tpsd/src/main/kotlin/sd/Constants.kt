@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 package sd
 
 val INITIAL_POSITIVE_PROMPT = listOf(

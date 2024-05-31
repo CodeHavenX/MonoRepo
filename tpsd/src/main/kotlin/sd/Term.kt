@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 package sd
 
 import kotlin.math.absoluteValue
@@ -25,7 +27,7 @@ fun Term.emphasize(): Term {
  * Lower the weight of this term when processed by SD.
  */
 fun Term.deemphasize(): Term {
-    val diff = if (emphasis > - 5) { -1 } else { 0 }
+    val diff = if (emphasis > -5) { -1 } else { 0 }
     return copy(
         emphasis = emphasis + diff,
     )
@@ -41,19 +43,21 @@ fun List<Term>.toPrompt(): String {
             val isPositive = term.emphasis > 0
             repeat(term.emphasis.absoluteValue) {
                 append(
-                    if (isPositive)
+                    if (isPositive) {
                         "("
-                    else
-                        "[",
+                    } else {
+                        "["
+                    },
                 )
             }
             append(term.term)
             repeat(term.emphasis.absoluteValue) {
                 append(
-                    if (isPositive)
+                    if (isPositive) {
                         ")"
-                    else
-                        "]",
+                    } else {
+                        "]"
+                    },
                 )
             }
             if (index != this@toPrompt.lastIndex) {

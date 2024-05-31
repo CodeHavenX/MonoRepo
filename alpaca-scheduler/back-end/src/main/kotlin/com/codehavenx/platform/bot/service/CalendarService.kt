@@ -82,6 +82,7 @@ class CalendarService(
         return sortedTimeSlots
     }
 
+    @Suppress("LoopWithTooManyJumpStatements")
     suspend fun getAvailableTimeSlots(
         startTime: LocalDateTime,
         endTime: LocalDateTime,
@@ -139,6 +140,7 @@ class CalendarService(
     }
 
     companion object {
+        @Suppress("UnusedPrivateProperty")
         private const val TAG = "CalendarService"
     }
 }

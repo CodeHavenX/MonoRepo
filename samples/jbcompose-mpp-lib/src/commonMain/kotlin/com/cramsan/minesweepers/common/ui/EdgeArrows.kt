@@ -1,4 +1,5 @@
 @file:OptIn(ExperimentalResourceApi::class)
+@file:Suppress("MagicNumber")
 
 package com.cramsan.minesweepers.common.ui
 

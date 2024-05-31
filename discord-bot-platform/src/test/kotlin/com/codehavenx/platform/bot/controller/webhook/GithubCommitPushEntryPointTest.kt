@@ -1,7 +1,6 @@
 package com.codehavenx.platform.bot.controller.webhook
 
 import com.codehavenx.platform.bot.config.createJson
-import com.codehavenx.platform.bot.controller.kord.DiscordController
 import com.codehavenx.platform.bot.controller.webhook.entrypoint.GithubCommitPushEntryPoint
 import com.codehavenx.platform.bot.network.gh.CodePushPayload
 import com.codehavenx.platform.bot.service.github.GithubWebhookService
@@ -26,7 +25,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class GithubCommitPushEntryPointTest : TestBase(){
+class GithubCommitPushEntryPointTest : TestBase() {
 
     private lateinit var entryPoint: GithubCommitPushEntryPoint
 
@@ -37,6 +36,7 @@ class GithubCommitPushEntryPointTest : TestBase(){
 
     @MockK
     private lateinit var discordService: DiscordService
+
     @BeforeTest
     override fun setupTest() {
         MockKAnnotations.init(this) // turn relaxUnitFun on for all mocks
@@ -49,12 +49,12 @@ class GithubCommitPushEntryPointTest : TestBase(){
     }
 
     @Test
-    fun `test path` () {
+    fun `test path`() {
         assertEquals("github/push", entryPoint.path)
     }
 
     @Test
-    fun `test onPayload` () = runBlockingTest {
+    fun `test onPayload`() = runBlockingTest {
         val channelId = "channelId"
         val payload: CodePushPayload = json.decodeFromString(readResource("commit_push.json")!!)
         every { githubWebhookService.getWebhookEventChannel(WebhookEvent.PUSH) } returns channelId
@@ -72,12 +72,13 @@ class GithubCommitPushEntryPointTest : TestBase(){
         assertEquals(HttpStatusCode.OK, response.status)
         assertEquals("Event handled", response.body)
         verify {
-            builder.content = "CRamsan pushed a commit to MonoRepo\n[DBP] Adding logging levels\nhttps://github.com/CodeHavenX/MonoRepo/commit/cace1343b2fe5a3abdfd23436925f623d946b43d"
+            builder.content = "CRamsan pushed a commit to MonoRepo\n[DBP] Adding logging levels\n" +
+                "https://github.com/CodeHavenX/MonoRepo/commit/cace1343b2fe5a3abdfd23436925f623d946b43d"
         }
     }
 
     @Test
-    fun `test onPayload with no channelId` () = runBlockingTest {
+    fun `test onPayload with no channelId`() = runBlockingTest {
         val payload: CodePushPayload = json.decodeFromString(readResource("commit_push.json")!!)
         every { githubWebhookService.getWebhookEventChannel(WebhookEvent.PUSH) } returns null
 
@@ -86,5 +87,4 @@ class GithubCommitPushEntryPointTest : TestBase(){
         assertEquals(HttpStatusCode.InternalServerError, response.status)
         assertEquals("Event unhandled", response.body)
     }
-
 }

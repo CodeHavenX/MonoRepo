@@ -6,7 +6,7 @@ import kotlin.reflect.KClass
 /**
  * Define a webhook. The path of this webhook is defined in [path] and it expects a POST body of type [type].
  */
-interface WebhookEntryPoint <T : Any> {
+interface WebhookEntryPoint<T : Any> {
 
     /**
      * The type of the class used to deserialized the webhook body.
@@ -26,6 +26,7 @@ interface WebhookEntryPoint <T : Any> {
     suspend fun onPayload(payload: T): HttpResponse
 
     companion object {
+        @Suppress("UnusedPrivateProperty")
         private const val TAG = "WebhookEntryPoint"
     }
 }

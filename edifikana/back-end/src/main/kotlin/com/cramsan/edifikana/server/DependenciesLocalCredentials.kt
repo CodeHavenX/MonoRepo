@@ -1,13 +1,13 @@
 package com.cramsan.edifikana.server
 
-import com.cramsan.edifikana.server.drive.getHttpTransport
-import com.cramsan.edifikana.server.drive.getLocalDriveCredentials
-import com.cramsan.edifikana.server.drive.getRequestInitializer
 import com.cramsan.edifikana.server.drive.initializeDriveService
-import com.cramsan.edifikana.server.drive.initializeSpreadsheetService
 import com.cramsan.edifikana.server.firebase.getLocalFirebaseCredentials
 import com.cramsan.edifikana.server.firebase.initializeFirebase
 import com.cramsan.edifikana.server.firebase.initializeFirestoreService
+import com.cramsan.edifikana.server.google.getHttpTransport
+import com.cramsan.edifikana.server.google.getLocalDriveCredentials
+import com.cramsan.edifikana.server.google.getRequestInitializer
+import com.cramsan.edifikana.server.sheets.initializeSpreadsheetService
 import com.google.api.services.drive.Drive
 import com.google.api.services.sheets.v4.Sheets
 import com.google.cloud.firestore.Firestore

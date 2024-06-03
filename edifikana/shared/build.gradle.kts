@@ -16,6 +16,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-datetime:_")
+                implementation(project(":framework:interfacelib"))
             }
         }
     }

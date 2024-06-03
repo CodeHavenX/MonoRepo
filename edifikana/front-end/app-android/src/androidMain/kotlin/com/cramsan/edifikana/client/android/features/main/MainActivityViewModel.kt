@@ -9,9 +9,7 @@ import com.cramsan.framework.logging.logW
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,8 +19,8 @@ class MainActivityViewModel @Inject constructor(
     exceptionHandler: CoroutineExceptionHandler,
 ) : EdifikanaBaseViewModel(exceptionHandler) {
 
-    private val _events = MutableStateFlow<MainActivityEvent>(MainActivityEvent.Noop)
-    val events: StateFlow<MainActivityEvent> = _events
+    private val _events = MutableSharedFlow<MainActivityEvent>()
+    val events: SharedFlow<MainActivityEvent> = _events
 
     private val _delegatedEvents = MutableSharedFlow<MainActivityDelegatedEvent>()
     val delegatedEvents: SharedFlow<MainActivityDelegatedEvent> = _delegatedEvents
@@ -35,7 +33,7 @@ class MainActivityViewModel @Inject constructor(
                 logW(TAG, "Failure when enforcing auth.", result.exceptionOrNull())
             } else {
                 if (!result.getOrThrow()) {
-                    _events.value = MainActivityEvent.LaunchSignIn()
+                    _events.emit(MainActivityEvent.LaunchSignIn())
                 } else {
                     // Already signed in
                 }
@@ -61,8 +59,8 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
-    fun executeMainActivityEvent(event: MainActivityEvent) {
-        _events.value = event
+    fun executeMainActivityEvent(event: MainActivityEvent) = viewModelScope.launch {
+        _events.emit(event)
     }
 
     companion object {

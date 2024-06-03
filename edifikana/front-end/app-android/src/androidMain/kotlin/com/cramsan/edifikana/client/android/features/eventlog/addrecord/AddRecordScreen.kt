@@ -37,6 +37,7 @@ import com.cramsan.edifikana.lib.firestore.EventType
 @Composable
 fun AddRecordScreen(
     onMainActivityEventInvoke: (MainActivityEvent) -> Unit,
+    onTitleChange: (String) -> Unit,
     viewModel: AddRecordViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -55,6 +56,7 @@ fun AddRecordScreen(
         }
     }
 
+    onTitleChange(uiState.title)
     AddRecord(
         uiState.employees,
         uiState.isLoading,

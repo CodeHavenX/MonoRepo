@@ -64,6 +64,24 @@ class TimeCardManager @Inject constructor(
     }
 
     @OptIn(FireStoreModel::class)
+    suspend fun getAllRecords(): Result<List<TimeCardRecordModel>> = workContext.getOrCatch(TAG) {
+        val now = workContext.clock.now()
+
+        // TODO: Make this range configurable
+        val twoDaysAgo = now.minus(3.days).epochSeconds
+
+        val cachedData = timeCardRecordDao.getAll().map { it.toDomainModel() }
+
+        val onlineData = fireStore.collection(TimeCardRecord.COLLECTION)
+            .orderBy("eventTime", Query.Direction.DESCENDING)
+            .whereGreaterThan("eventTime", twoDaysAgo)
+            .get()
+            .await()
+            .toObjects(TimeCardRecord::class.java).toList().map { it.toDomainModel(workContext.storageBucket) }
+        (cachedData + onlineData).sortedByDescending { it.eventTime }
+    }
+
+    @OptIn(FireStoreModel::class)
     suspend fun getRecord(timeCardRecordPK: TimeCardRecordPK): Result<TimeCardRecordModel> = workContext.getOrCatch(
         TAG
     ) {
@@ -94,11 +112,9 @@ class TimeCardManager @Inject constructor(
             val localImageUri = entity.cachedImageUrl?.toUri()
 
             val remoteImageRef = runCatching {
-                if (localImageUri?.toString().isNullOrBlank()) {
-                    throw IllegalStateException("Local image url is invalid: $localImageUri")
-                }
+                requireNotNull(localImageUri) { "Local image url is invalid: $localImageUri" }
 
-                workContext.appContext.contentResolver.openInputStream(localImageUri!!).use { inputStream ->
+                workContext.appContext.contentResolver.openInputStream(localImageUri).use { inputStream ->
                     val imageData = inputStream?.readBytes() ?: throw RuntimeException(
                         "Could not get inputstream for uri: $localImageUri"
                     )

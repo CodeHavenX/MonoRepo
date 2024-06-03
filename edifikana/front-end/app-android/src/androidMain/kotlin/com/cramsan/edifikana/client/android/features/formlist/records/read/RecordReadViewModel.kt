@@ -1,10 +1,13 @@
 package com.cramsan.edifikana.client.android.features.formlist.records.read
 
+import android.content.Context
 import androidx.lifecycle.viewModelScope
+import com.cramsan.edifikana.client.android.R
 import com.cramsan.edifikana.client.android.features.base.EdifikanaBaseViewModel
 import com.cramsan.edifikana.client.android.managers.FormsManager
 import com.cramsan.edifikana.lib.firestore.FormRecordPK
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,6 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class RecordReadViewModel @Inject constructor(
     private val formsManager: FormsManager,
+    @ApplicationContext
+    private val context: Context,
     exceptionHandler: CoroutineExceptionHandler,
 ) : EdifikanaBaseViewModel(exceptionHandler) {
 
@@ -25,7 +30,8 @@ class RecordReadViewModel @Inject constructor(
                 name = "",
                 fields = emptyList(),
             ),
-            false
+            false,
+            context.getString(R.string.title_form_record_view)
         )
     )
     val uiState: StateFlow<RecordReadUIState> = _uiState

@@ -16,6 +16,11 @@ data class EventLogRecord(
     val attachments: List<String>? = null,
 ) {
     fun documentId(): EventLogRecordPK {
+        requireNotNull(employeeDocumentId)
+        require(employeeDocumentId.isNotBlank())
+        requireNotNull(timeRecorded)
+        require(timeRecorded > 0)
+        requireNotNull(eventType)
         return EventLogRecordPK("$employeeDocumentId-$timeRecorded-$eventType")
     }
 

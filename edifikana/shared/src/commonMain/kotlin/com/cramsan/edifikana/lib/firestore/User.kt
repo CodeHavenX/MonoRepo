@@ -10,7 +10,9 @@ data class User(
      * Generates a document id based on the employee id and id type. This is used as the primary key in Firestore.
      */
     fun documentId(): UserPk {
-        return UserPk(id ?: TODO())
+        requireNotNull(id)
+        require(id.isNotBlank())
+        return UserPk(id)
     }
 
     companion object {

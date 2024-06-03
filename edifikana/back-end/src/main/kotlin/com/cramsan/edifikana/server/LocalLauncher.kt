@@ -10,6 +10,7 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
 import io.ktor.server.util.getOrFail
+import org.koin.core.context.stopKoin
 import java.util.Base64
 
 fun main() {
@@ -19,20 +20,12 @@ fun main() {
                 val payload = call.receiveText().trim()
 
                 val projectName = call.parameters.getOrFail("projectName")
-                val storageFolderId = call.parameters.getOrFail("storageFolderId")
-                val timeCardSpreadsheetId = call.parameters.getOrFail("timeCardSpreadsheetId")
-                val eventLogSpreadsheetId = call.parameters.getOrFail("eventLogSpreadsheetId")
-                val formEntriesSpreadsheetId = call.parameters.getOrFail("formEntriesSpreadsheetId")
 
                 try {
                     val firebaseApp = CloudFirebaseApp()
                     firebaseApp.launchParametersProvider = {
                         FunctionLaunchParameters(
                             projectName = projectName,
-                            storageFolderId = storageFolderId,
-                            timeCardSpreadsheetId = timeCardSpreadsheetId,
-                            eventLogSpreadsheetId = eventLogSpreadsheetId,
-                            formEntriesSpreadsheetId = formEntriesSpreadsheetId,
                         )
                     }
 
@@ -45,6 +38,7 @@ fun main() {
                     return@post
                 } finally {
                     FirebaseApp.getApps().forEach { it.delete() }
+                    stopKoin()
                 }
 
                 call.respond("OK")

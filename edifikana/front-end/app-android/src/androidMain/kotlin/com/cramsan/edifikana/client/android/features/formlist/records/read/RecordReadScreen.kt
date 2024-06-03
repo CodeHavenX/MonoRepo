@@ -27,6 +27,7 @@ fun RecordReadScreen(
     formRecordPK: FormRecordPK,
     mainActivityDelegatedEvent: MainActivityDelegatedEvent,
     onMainActivityEventInvoke: (MainActivityEvent) -> Unit,
+    onTitleChange: (String) -> Unit,
     viewModel: RecordReadViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -52,6 +53,7 @@ fun RecordReadScreen(
         }
     }
 
+    onTitleChange(uiState.title)
     RecordReadContent(
         uiState.content,
         uiState.isLoading,

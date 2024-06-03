@@ -28,7 +28,9 @@ class AddEmployeeViewModel @Inject constructor(
     exceptionHandler: CoroutineExceptionHandler,
 ) : EdifikanaBaseViewModel(exceptionHandler) {
 
-    private val _uiState = MutableStateFlow(AddEmployeeUIState(false))
+    private val _uiState = MutableStateFlow(
+        AddEmployeeUIState(false, applicationContext.getString(R.string.title_timecard_add_employee))
+    )
     val uiState: StateFlow<AddEmployeeUIState> = _uiState
 
     private val _event = MutableSharedFlow<AddEmployeeEvent>()
@@ -57,7 +59,10 @@ class AddEmployeeViewModel @Inject constructor(
             return@launch
         }
 
-        _uiState.value = AddEmployeeUIState(isLoading = true)
+        _uiState.value = AddEmployeeUIState(
+            isLoading = true,
+            applicationContext.getString(R.string.title_timecard_add_employee)
+        )
 
         val result = employeeManager.addEmployee(
             EmployeeModel(

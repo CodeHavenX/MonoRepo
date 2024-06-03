@@ -1,5 +1,3 @@
-@file:OptIn(FireStoreModel::class)
-
 package com.cramsan.edifikana.server.models
 
 import com.cramsan.edifikana.lib.firestore.Employee
@@ -9,6 +7,7 @@ import com.cramsan.edifikana.lib.firestore.EventType
 import com.cramsan.edifikana.lib.firestore.FireStoreModel
 import com.cramsan.edifikana.lib.firestore.FormRecord
 import com.cramsan.edifikana.lib.firestore.IdType
+import com.cramsan.edifikana.lib.firestore.PropertyConfig
 import com.cramsan.edifikana.lib.firestore.TimeCardEventType
 import com.cramsan.edifikana.lib.firestore.TimeCardRecord
 import com.cramsan.edifikana.lib.firestore.helpers.eventTypeFriendlyName
@@ -18,6 +17,7 @@ import com.google.cloud.firestore.DocumentSnapshot
 import com.google.events.cloud.firestore.v1.Document
 import kotlinx.datetime.TimeZone
 
+@FireStoreModel
 fun DocumentSnapshot.toEmployee(): Employee {
     return Employee(
         this.getString("id"),
@@ -28,6 +28,7 @@ fun DocumentSnapshot.toEmployee(): Employee {
     )
 }
 
+@FireStoreModel
 fun DocumentSnapshot.toEventLogRecord(): EventLogRecord {
     return EventLogRecord(
         this.getString("employeeDocumentId"),
@@ -41,6 +42,7 @@ fun DocumentSnapshot.toEventLogRecord(): EventLogRecord {
     )
 }
 
+@FireStoreModel
 fun DocumentSnapshot.toTimeCardEvent(): TimeCardRecord {
     return TimeCardRecord(
         this.getString("employeeDocumentId"),
@@ -50,10 +52,17 @@ fun DocumentSnapshot.toTimeCardEvent(): TimeCardRecord {
     )
 }
 
+@FireStoreModel
 fun DocumentSnapshot.toFormRecord(): FormRecord {
     return toObject(FormRecord::class.java) ?: TODO("Handle error mapping to FormRecord")
 }
 
+@FireStoreModel
+fun DocumentSnapshot.toPropertyConfig(): PropertyConfig {
+    return requireNotNull(toObject(PropertyConfig::class.java))
+}
+
+@FireStoreModel
 fun TimeCardRecord.toRowEntry(
     employeeFullName: String,
     imageUrlOverride: String,
@@ -66,6 +75,7 @@ fun TimeCardRecord.toRowEntry(
     )
 }
 
+@FireStoreModel
 fun EventLogRecord.toRowEntry(
     employeeFullName: String,
     attachments: String,
@@ -84,7 +94,7 @@ fun EventLogRecord.toRowEntry(
 }
 
 @FireStoreModel
-fun Document.toObject(): EventLogRecord {
+fun Document.toFirestoreEventLogRecord(): EventLogRecord {
     return EventLogRecord(
         employeeDocumentId = this.getFieldsOrDefault("employeeDocumentId", null)?.stringValue,
         timeRecorded = this.getFieldsOrDefault("timeRecorded", null)?.integerValue,
@@ -102,6 +112,7 @@ fun Document.toObject(): EventLogRecord {
     )
 }
 
+@FireStoreModel
 fun FormRecord.toRowEntry(): List<String> {
     return listOf(
         name.orEmpty(),

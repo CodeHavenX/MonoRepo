@@ -1,11 +1,14 @@
 package com.cramsan.edifikana.client.android.features.formlist
 
+import android.content.Context
 import androidx.lifecycle.viewModelScope
+import com.cramsan.edifikana.client.android.R
 import com.cramsan.edifikana.client.android.features.base.EdifikanaBaseViewModel
 import com.cramsan.edifikana.client.android.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.android.features.main.Route
 import com.cramsan.edifikana.client.android.managers.FormsManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,10 +20,12 @@ import javax.inject.Inject
 @HiltViewModel
 class FormListViewModel @Inject constructor(
     private val formsManager: FormsManager,
+    @ApplicationContext
+    private val context: Context,
     exceptionHandler: CoroutineExceptionHandler,
 ) : EdifikanaBaseViewModel(exceptionHandler) {
 
-    private val _uiState = MutableStateFlow(FormListUIState())
+    private val _uiState = MutableStateFlow(FormListUIState(title = context.getString(R.string.title_form_list)))
     val uiState: StateFlow<FormListUIState> = _uiState
 
     private val _event = MutableSharedFlow<FormListEvent>()
@@ -33,7 +38,7 @@ class FormListViewModel @Inject constructor(
             val forms = formsManager.getForms().getOrThrow().map {
                 it.toFormUIModel()
             }
-            _uiState.value = FormListUIState(forms = forms)
+            _uiState.value = FormListUIState(forms = forms, title = context.getString(R.string.title_form_list))
         } finally {
             _uiState.value = _uiState.value.copy(isLoading = false)
         }

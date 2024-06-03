@@ -1,7 +1,9 @@
 package com.cramsan.edifikana.client.android.features.eventlog.viewrecord
 
+import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.viewModelScope
+import com.cramsan.edifikana.client.android.R
 import com.cramsan.edifikana.client.android.features.base.EdifikanaBaseViewModel
 import com.cramsan.edifikana.client.android.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.android.managers.AttachmentManager
@@ -11,6 +13,7 @@ import com.cramsan.edifikana.client.android.models.AttachmentHolder
 import com.cramsan.edifikana.client.android.models.EventLogRecordModel
 import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,10 +27,14 @@ class ViewRecordViewModel @Inject constructor(
     private val eventLogManager: EventLogManager,
     private val attachmentManager: AttachmentManager,
     private val storageService: StorageService,
+    @ApplicationContext
+    private val context: Context,
     exceptionHandler: CoroutineExceptionHandler,
 ) : EdifikanaBaseViewModel(exceptionHandler) {
 
-    private val _uiState = MutableStateFlow(ViewRecordUIState(null, true))
+    private val _uiState = MutableStateFlow(
+        ViewRecordUIState(null, true, context.getString(R.string.title_event_log_view))
+    )
     val uiState: StateFlow<ViewRecordUIState> = _uiState
 
     private val _event = MutableSharedFlow<ViewRecordEvent>()
@@ -41,13 +48,14 @@ class ViewRecordViewModel @Inject constructor(
         val result = eventLogManager.getRecord(eventLogRecord)
 
         if (result.isFailure) {
-            _uiState.value = ViewRecordUIState(null, false)
+            _uiState.value = ViewRecordUIState(null, false, context.getString(R.string.title_event_log_view))
         } else {
             val loadedRecord = result.getOrThrow()
             this@ViewRecordViewModel.record = loadedRecord
             _uiState.value = ViewRecordUIState(
                 loadedRecord.toUIModel(),
                 isLoading = false,
+                context.getString(R.string.title_event_log_view),
             )
         }
     }

@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.android.features.main
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -21,6 +22,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -39,6 +43,7 @@ import com.cramsan.edifikana.client.android.features.formlist.records.RecordsScr
 import com.cramsan.edifikana.client.android.features.formlist.records.read.RecordReadScreen
 import com.cramsan.edifikana.client.android.features.timecard.TimeCardScreen
 import com.cramsan.edifikana.client.android.features.timecard.addemployee.AddEmployeeScreen
+import com.cramsan.edifikana.client.android.features.timecard.employeelist.EmployeeListScreen
 import com.cramsan.edifikana.client.android.features.timecard.viewemployee.ViewEmployeeScreen
 import com.cramsan.edifikana.lib.firestore.EmployeePK
 import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
@@ -46,7 +51,7 @@ import com.cramsan.edifikana.lib.firestore.FormPK
 import com.cramsan.edifikana.lib.firestore.FormRecordPK
 
 @SuppressLint("RestrictedApi")
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, RouteSafePath::class)
 @Composable
 fun MainActivityScreen(
     navController: NavHostController,
@@ -58,11 +63,16 @@ fun MainActivityScreen(
     val backStack by navController.currentBackStack.collectAsState()
     val currentDestination = navBackStackEntry?.destination
     val startDestination = BottomBarDestinationUiModels.first { it.isStartDestination }.route
+    var title by remember { mutableStateOf("") }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { },
+                title = {
+                    AnimatedContent(title) {
+                        Text(it)
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                 ),
@@ -112,8 +122,9 @@ fun MainActivityScreen(
             navController = navController,
             startDestination = startDestination,
             modifier = Modifier.padding(innerPadding),
-            mainActivityDelegatedEvent,
-            onMainActivityEventInvoke,
+            mainActivityDelegatedEvent = mainActivityDelegatedEvent,
+            onMainActivityEventInvoke = onMainActivityEventInvoke,
+            onTitleChange = { title = it },
         )
     }
 }
@@ -125,18 +136,19 @@ private val BottomBarDestinationUiModels = listOf(
         R.string.text_forms
     ),
     BottomBarDestinationUiModel(
-        Route.EventLog.route,
+        Route.toEventLogRoute(),
         R.drawable.two_pager,
         R.string.string_event_log_title,
         isStartDestination = true,
     ),
     BottomBarDestinationUiModel(
-        Route.ClockInOut.route,
+        Route.toTimeCardRoute(),
         R.drawable.schedule,
         R.string.string_assistance
     ),
 )
 
+@OptIn(RouteSafePath::class)
 @Composable
 private fun NavigationHost(
     navController: NavHostController,
@@ -144,64 +156,87 @@ private fun NavigationHost(
     modifier: Modifier = Modifier,
     mainActivityDelegatedEvent: MainActivityDelegatedEvent,
     onMainActivityEventInvoke: (MainActivityEvent) -> Unit,
+    onTitleChange: (String) -> Unit,
 ) {
     NavHost(
         navController,
         startDestination = startDestination,
         modifier = modifier,
     ) {
-        composable(Route.ClockInOut.route) {
-            TimeCardScreen(onMainActivityEventInvoke)
+        composable(Route.TimeCard.route) {
+            TimeCardScreen(
+                onMainActivityEventInvoke,
+                onTitleChange,
+            )
         }
-        composable(Route.ClockInOutSingleEmployee.route) { backStackEntry ->
+        composable(Route.TimeCardSingleEmployee.route) { backStackEntry ->
             ViewEmployeeScreen(
                 EmployeePK(backStackEntry.arguments?.getString("employeePk") ?: ""),
                 mainActivityDelegatedEvent,
                 onMainActivityEventInvoke,
+                onTitleChange,
             )
         }
-        composable(Route.ClockInOutAddEmployee.route) {
+        composable(Route.TimeCardAddEmployee.route) {
             AddEmployeeScreen(
                 onMainActivityEventInvoke,
+                onTitleChange,
+            )
+        }
+        composable(Route.TimeCardEmployeeList.route) {
+            EmployeeListScreen(
+                onMainActivityEventInvoke,
+                onTitleChange,
             )
         }
         composable(Route.EventLog.route) {
-            EventLogScreen(onMainActivityEventInvoke)
+            EventLogScreen(
+                onMainActivityEventInvoke,
+                onTitleChange,
+            )
         }
         composable(Route.EventLogAddItem.route) {
-            AddRecordScreen(onMainActivityEventInvoke)
+            AddRecordScreen(
+                onMainActivityEventInvoke,
+                onTitleChange,
+            )
         }
         composable(Route.EventLogSingleItem.route) { backStackEntry ->
             ViewRecordScreen(
                 EventLogRecordPK(backStackEntry.arguments?.getString("eventLogRecordPk") ?: ""),
                 mainActivityDelegatedEvent,
                 onMainActivityEventInvoke,
+                onTitleChange,
             )
         }
         composable(Route.Forms.route) {
             FormListScreen(
                 mainActivityDelegatedEvent,
                 onMainActivityEventInvoke,
+                onTitleChange,
             )
         }
         composable(Route.FormEntry.route) { backStackEntry ->
             EntryScreen(
-                formPK = FormPK(backStackEntry.arguments?.getString("formPk") ?: ""),
-                mainActivityDelegatedEvent = mainActivityDelegatedEvent,
-                onMainActivityEventInvoke = onMainActivityEventInvoke,
+                FormPK(backStackEntry.arguments?.getString("formPk") ?: ""),
+                mainActivityDelegatedEvent,
+                onMainActivityEventInvoke,
+                onTitleChange,
             )
         }
         composable(Route.FormRecords.route) {
             RecordsScreen(
-                mainActivityDelegatedEvent = mainActivityDelegatedEvent,
-                onMainActivityEventInvoke = onMainActivityEventInvoke,
+                mainActivityDelegatedEvent,
+                onMainActivityEventInvoke,
+                onTitleChange,
             )
         }
         composable(Route.FormRecordRead.route) { backStackEntry ->
             RecordReadScreen(
-                formRecordPK = FormRecordPK(backStackEntry.arguments?.getString("formRecordPk") ?: ""),
-                mainActivityDelegatedEvent = mainActivityDelegatedEvent,
-                onMainActivityEventInvoke = onMainActivityEventInvoke,
+                FormRecordPK(backStackEntry.arguments?.getString("formRecordPk") ?: ""),
+                mainActivityDelegatedEvent,
+                onMainActivityEventInvoke,
+                onTitleChange,
             )
         }
     }

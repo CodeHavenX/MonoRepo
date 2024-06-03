@@ -32,7 +32,9 @@ class AddRecordViewModel @Inject constructor(
     exceptionHandler: CoroutineExceptionHandler,
 ) : EdifikanaBaseViewModel(exceptionHandler) {
 
-    private val _uiState = MutableStateFlow(AddRecordUIState(emptyList(), true))
+    private val _uiState = MutableStateFlow(
+        AddRecordUIState(emptyList(), true, context.getString(R.string.title_event_log_add))
+    )
     val uiState: StateFlow<AddRecordUIState> = _uiState
 
     private val _event = MutableSharedFlow<AddRecordEvent>()
@@ -43,7 +45,7 @@ class AddRecordViewModel @Inject constructor(
         val result = employeeManager.getEmployees()
 
         if (result.isFailure) {
-            _uiState.value = AddRecordUIState(listOf(), false)
+            _uiState.value = AddRecordUIState(listOf(), false, context.getString(R.string.title_event_log_add))
         } else {
             val employees = result.getOrThrow()
             val employeeList = employees.map {
@@ -53,6 +55,7 @@ class AddRecordViewModel @Inject constructor(
                 // TODO: Move this resources
                 employeeList + AddRecordUIModel(context.getString(R.string.string_other), null),
                 false,
+                context.getString(R.string.title_event_log_add)
             )
         }
     }
@@ -81,7 +84,7 @@ class AddRecordViewModel @Inject constructor(
 
         val eventLogRecord = EventLogRecordModel(
             id = EventLogRecordPK(""),
-            employeePk = employeeDocumentId!!,
+            employeePk = employeeDocumentId,
             timeRecorded = clock.now().epochSeconds,
             unit = unit.trim(),
             eventType = eventType ?: EventType.INCIDENT,

@@ -1,7 +1,9 @@
 package com.cramsan.edifikana.client.android.features.timecard.viewemployee
 
+import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.viewModelScope
+import com.cramsan.edifikana.client.android.R
 import com.cramsan.edifikana.client.android.features.base.EdifikanaBaseViewModel
 import com.cramsan.edifikana.client.android.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.android.managers.EmployeeManager
@@ -16,6 +18,7 @@ import com.cramsan.edifikana.lib.firestore.EmployeePK
 import com.cramsan.edifikana.lib.firestore.TimeCardEventType
 import com.cramsan.edifikana.lib.firestore.TimeCardRecordPK
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -32,6 +35,8 @@ class ViewEmployeeViewModel @Inject constructor(
     private val timeCardManager: TimeCardManager,
     private val storageService: StorageService,
     private val clock: Clock,
+    @ApplicationContext
+    private val context: Context,
     exceptionHandler: CoroutineExceptionHandler,
 ) : EdifikanaBaseViewModel(exceptionHandler) {
 
@@ -39,7 +44,8 @@ class ViewEmployeeViewModel @Inject constructor(
         ViewEmployeeUIState(
             true,
             null,
-            emptyList()
+            emptyList(),
+            context.getString(R.string.title_timecard_view_employee)
         )
     )
     val uiState: StateFlow<ViewEmployeeUIState> = _uiState
@@ -71,6 +77,7 @@ class ViewEmployeeViewModel @Inject constructor(
                 false,
                 employeeResult.getOrThrow().toUIModel(),
                 recordsResult.getOrThrow().map { it.toUIModel() },
+                context.getString(R.string.title_timecard_view_employee)
             )
         }
     }
@@ -121,7 +128,7 @@ class ViewEmployeeViewModel @Inject constructor(
 
         val newRecord = TimeCardRecordModel(
             id = TimeCardRecordPK(""),
-            employeePk = employee!!.employeePK,
+            employeePk = requireNotNull(employee).employeePK,
             eventType = timeCardEventType,
             eventTime = clock.now().epochSeconds,
             imageUrl = null,
@@ -154,7 +161,6 @@ class ViewEmployeeViewModel @Inject constructor(
             )
             eventType = null
             loadEmployee(employee!!.employeePK)
-
         }
     }
 

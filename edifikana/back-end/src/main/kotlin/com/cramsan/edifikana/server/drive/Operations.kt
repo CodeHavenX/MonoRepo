@@ -4,41 +4,7 @@ import com.google.api.client.googleapis.json.GoogleJsonResponseException
 import com.google.api.client.http.FileContent
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.model.File
-import com.google.api.services.sheets.v4.Sheets
-import com.google.api.services.sheets.v4.model.ValueRange
-import java.util.Collections
-
-/**
- * Appends the specified values to the specified range in the spreadsheet
- *
- * @param sheets The Google Sheets API service
- * @param spreadsheetId The ID of the spreadsheet
- * @param range The range to append the values to
- * @param values The values to append
- * @throws GoogleJsonResponseException If an error occurs while appending the values
- */
-fun appendValues(
-    sheets: Sheets,
-    spreadsheetId: String?,
-    sheetName: String,
-    values: List<List<String>>,
-) {
-    try {
-        // Append values to the specified range.
-        val range = "$sheetName!A1"
-        val sanitizedValues = values.map { row -> row.map { it.ifEmpty { "/" } } }
-        val body = ValueRange().setValues(sanitizedValues)
-        val result = sheets.spreadsheets().values()
-            .append(spreadsheetId, range, body)
-            .setValueInputOption(ValueInputOption.USER_ENTERED.name)
-            .setInsertDataOption("INSERT_ROWS")
-            .execute()
-        println(result)
-    } catch (e: GoogleJsonResponseException) {
-        System.err.println(e.details.code)
-        throw e
-    }
-}
+import java.util.*
 
 /**
  * Uploads the specified file to the specified folder
@@ -82,17 +48,46 @@ fun uploadFile(
     }
 }
 
-/**
- * ValueInputOption enum
- *
- * https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
- */
-private enum class ValueInputOption {
-    // The values the user has entered will not be parsed and will be stored as-is.
-    RAW,
+fun createFolder(
+    drive: Drive,
+    folderId: String,
+    folderName: String,
+): String {
+    // File's metadata.
+    val fileMetadata = File()
+    fileMetadata.setName(folderName)
+    fileMetadata.setParents(Collections.singletonList(folderId))
+    fileMetadata.setMimeType("application/vnd.google-apps.folder")
+    try {
+        val file = drive.files().create(fileMetadata)
+            .setFields("id")
+            .execute()
+        println("Folder ID: " + file.id)
+        return file.id
+    } catch (e: GoogleJsonResponseException) {
+        System.err.println("Unable to create folder: " + e.details)
+        throw e
+    }
+}
 
-    // The values will be parsed as if the user typed them into the UI.
-    // Numbers will stay as numbers, but strings may be converted to numbers, dates, etc. following the same
-    // rules that are applied when entering text into a cell via the Google Sheets UI.
-    USER_ENTERED,
+fun createSpreadsheet(
+    drive: Drive,
+    folderId: String,
+    spreadsheetName: String,
+): String {
+    // File's metadata.
+    val fileMetadata = File()
+    fileMetadata.setName(spreadsheetName)
+    fileMetadata.setParents(Collections.singletonList(folderId))
+    fileMetadata.setMimeType("application/vnd.google-apps.spreadsheet")
+    try {
+        val file = drive.files().create(fileMetadata)
+            .setFields("id")
+            .execute()
+        println("Spreadsheet ID: " + file.id)
+        return file.id
+    } catch (e: GoogleJsonResponseException) {
+        System.err.println("Unable to create spreadsheet: " + e.details)
+        throw e
+    }
 }

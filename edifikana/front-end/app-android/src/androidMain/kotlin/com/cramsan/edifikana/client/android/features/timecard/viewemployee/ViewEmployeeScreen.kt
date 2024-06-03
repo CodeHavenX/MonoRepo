@@ -42,6 +42,7 @@ fun ViewEmployeeScreen(
     employeePK: EmployeePK,
     mainActivityDelegatedEvent: MainActivityDelegatedEvent,
     onMainActivityEventInvoke: (MainActivityEvent) -> Unit,
+    onTitleChange: (String) -> Unit,
     viewModel: ViewEmployeeViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -69,6 +70,7 @@ fun ViewEmployeeScreen(
         }
     }
 
+    onTitleChange(uiState.title)
     ViewEmployeeContent(
         uiState.isLoading,
         uiState.employee,

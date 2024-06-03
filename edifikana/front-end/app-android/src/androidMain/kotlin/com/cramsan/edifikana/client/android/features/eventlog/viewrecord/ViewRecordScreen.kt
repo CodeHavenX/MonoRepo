@@ -48,6 +48,7 @@ fun ViewRecordScreen(
     eventLogRecordPK: EventLogRecordPK,
     mainActivityDelegatedEvent: MainActivityDelegatedEvent,
     onMainActivityEventInvoke: (MainActivityEvent) -> Unit,
+    onTitleChange: (String) -> Unit,
     viewModel: ViewRecordViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -76,6 +77,7 @@ fun ViewRecordScreen(
         }
     }
 
+    onTitleChange(uiState.title)
     SingleRecord(
         uiState.isLoading,
         uiState.record,
@@ -94,7 +96,6 @@ private fun SingleRecord(
     onPickMultipleVisualMediaClicked: () -> Unit,
     onImageClicked: (AttachmentHolder) -> Unit,
 ) {
-
     Column(
         modifier = Modifier
             .fillMaxSize()

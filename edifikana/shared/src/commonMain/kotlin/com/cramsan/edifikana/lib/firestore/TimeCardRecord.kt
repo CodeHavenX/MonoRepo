@@ -15,6 +15,11 @@ data class TimeCardRecord(
 ) {
 
     fun documentId(): TimeCardRecordPK {
+        requireNotNull(employeeDocumentId)
+        require(employeeDocumentId.isNotBlank())
+        requireNotNull(eventType)
+        requireNotNull(eventTime)
+        require(eventTime > 0)
         return TimeCardRecordPK("$employeeDocumentId-$eventType-$eventTime")
     }
 

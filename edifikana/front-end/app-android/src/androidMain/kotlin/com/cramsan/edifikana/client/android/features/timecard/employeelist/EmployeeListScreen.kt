@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.client.android.features.timecard
+package com.cramsan.edifikana.client.android.features.timecard.employeelist
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,12 +25,13 @@ import com.cramsan.edifikana.client.android.ui.components.LoadingAnimationOverla
 import com.cramsan.edifikana.lib.firestore.EmployeePK
 
 @Composable
-fun TimeCardScreen(
+fun EmployeeListScreen(
     onMainActivityEventInvoke: (MainActivityEvent) -> Unit,
-    viewModel: ClockInOutViewModel = hiltViewModel()
+    onTitleChange: (String) -> Unit,
+    viewModel: EmployeeListViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val event by viewModel.event.collectAsState(TimeCardEvent.Noop)
+    val event by viewModel.event.collectAsState(EmployeeListEvent.Noop)
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         viewModel.loadEmployees()
@@ -38,13 +39,14 @@ fun TimeCardScreen(
 
     LaunchedEffect(event) {
         when (val event = event) {
-            TimeCardEvent.Noop -> Unit
-            is TimeCardEvent.TriggerMainActivityEvent -> {
+            EmployeeListEvent.Noop -> Unit
+            is EmployeeListEvent.TriggerMainActivityEvent -> {
                 onMainActivityEventInvoke(event.mainActivityEvent)
             }
         }
     }
 
+    onTitleChange(uiState.title)
     EmployeeList(
         isLoading = uiState.isLoading,
         uiState.employees,
@@ -60,7 +62,7 @@ fun TimeCardScreen(
 @Composable
 private fun EmployeeList(
     isLoading: Boolean,
-    employees: List<TimeCardUIModel>,
+    employees: List<EmployeeUIModel>,
     onEmployeeClick: (EmployeePK) -> Unit,
     onAddEmployeeClick: () -> Unit,
 ) {
@@ -86,7 +88,7 @@ private fun EmployeeList(
 
 @Composable
 private fun EmployeeItem(
-    employee: TimeCardUIModel,
+    employee: EmployeeUIModel,
     modifier: Modifier = Modifier,
     onEmployeeSelected: (EmployeePK) -> Unit,
 ) {
@@ -116,12 +118,12 @@ private fun EmployeeOtherItem(
     showBackground = true,
 )
 @Composable
-private fun TimeCardScreenPreview() {
+private fun EmployeeListScreenPreview() {
     EmployeeList(
         isLoading = true,
         employees = listOf(
-            TimeCardUIModel("Cesar Andres Ramirez Sanchez", EmployeePK("John")),
-            TimeCardUIModel("2", EmployeePK("Jane")),
+            EmployeeUIModel("Cesar Andres Ramirez Sanchez", EmployeePK("John")),
+            EmployeeUIModel("2", EmployeePK("Jane")),
         ),
         onEmployeeClick = {},
         onAddEmployeeClick = {},

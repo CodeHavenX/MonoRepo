@@ -27,6 +27,7 @@ import com.cramsan.edifikana.lib.firestore.FormPK
 fun FormListScreen(
     mainActivityDelegatedEvent: MainActivityDelegatedEvent,
     onMainActivityEventInvoke: (MainActivityEvent) -> Unit,
+    onTitleChange: (String) -> Unit,
     viewModel: FormListViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -52,6 +53,7 @@ fun FormListScreen(
         }
     }
 
+    onTitleChange(uiState.title)
     FormList(
         uiState.forms,
         uiState.isLoading,

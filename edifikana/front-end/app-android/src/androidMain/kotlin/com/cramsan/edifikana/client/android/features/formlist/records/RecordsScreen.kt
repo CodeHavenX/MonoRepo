@@ -27,6 +27,7 @@ import com.cramsan.edifikana.lib.firestore.FormRecordPK
 fun RecordsScreen(
     mainActivityDelegatedEvent: MainActivityDelegatedEvent,
     onMainActivityEventInvoke: (MainActivityEvent) -> Unit,
+    onTitleChange: (String) -> Unit,
     viewModel: RecordsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -52,6 +53,7 @@ fun RecordsScreen(
         }
     }
 
+    onTitleChange(uiState.title)
     RecordsContent(
         uiState.content,
         uiState.isLoading,

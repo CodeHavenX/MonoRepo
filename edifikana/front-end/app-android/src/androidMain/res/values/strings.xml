@@ -50,4 +50,16 @@
 
     <string name="text_permissions_camera">Para poder tomar fotos necesitas dar permiso para utilizar la camara.</string>
     <string name="text_permissions_open_setting">Abrir configuración</string>
+
+    <string name="title_event_log">Libro de Ocurrencias</string>
+    <string name="title_event_log_add">Agregar Ocurrencia</string>
+    <string name="title_event_log_view">Ver Ocurrencia</string>
+    <string name="title_form_list">Lista de Formularios</string>
+    <string name="title_form_entry">Entrada de Formulario</string>
+    <string name="title_form_record">Registro de Formulario</string>
+    <string name="title_form_record_view">Ver Registro de Formulario</string>
+    <string name="title_timecard">Control de Asistencia</string>
+    <string name="title_timecard_add_employee">Agregar Empleado</string>
+    <string name="title_timecard_view_employee">Empleado</string>
+    <string name="title_timecard_employee_list">Lista de Empleados</string>
 </resources>

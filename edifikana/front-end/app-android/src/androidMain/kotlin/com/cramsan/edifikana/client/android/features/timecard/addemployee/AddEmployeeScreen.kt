@@ -34,6 +34,7 @@ import com.cramsan.edifikana.lib.firestore.IdType
 @Composable
 fun AddEmployeeScreen(
     onMainActivityEventInvoke: (MainActivityEvent) -> Unit,
+    onTitleChange: (String) -> Unit,
     viewModel: AddEmployeeViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -48,6 +49,7 @@ fun AddEmployeeScreen(
         }
     }
 
+    onTitleChange(uiState.title)
     AddEmployeeForm(uiState.isLoading) { id, idType, name, lastName, role ->
         viewModel.saveEmployee(id, idType, name, lastName, role)
     }

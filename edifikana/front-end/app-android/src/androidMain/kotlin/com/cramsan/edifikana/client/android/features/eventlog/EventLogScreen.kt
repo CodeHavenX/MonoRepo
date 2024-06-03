@@ -30,6 +30,7 @@ import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
 @Composable
 fun EventLogScreen(
     onMainActivityEventInvoke: (MainActivityEvent) -> Unit,
+    onTitleChange: (String) -> Unit,
     viewModel: EventLogViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -48,6 +49,7 @@ fun EventLogScreen(
         }
     }
 
+    onTitleChange(uiState.title)
     RecordList(
         uiState.records,
         uiState.isLoading,

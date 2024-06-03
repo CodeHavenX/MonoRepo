@@ -55,7 +55,7 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            val event by viewModel.events.collectAsState()
+            val event by viewModel.events.collectAsState(MainActivityEvent.Noop)
             val delegatedEvent by viewModel.delegatedEvents.collectAsState(MainActivityDelegatedEvent.Noop)
             val context = LocalContext.current
             val navController = rememberNavController()

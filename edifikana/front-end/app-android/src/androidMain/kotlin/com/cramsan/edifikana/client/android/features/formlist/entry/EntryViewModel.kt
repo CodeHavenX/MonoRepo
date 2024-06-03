@@ -1,6 +1,8 @@
 package com.cramsan.edifikana.client.android.features.formlist.entry
 
+import android.content.Context
 import androidx.lifecycle.viewModelScope
+import com.cramsan.edifikana.client.android.R
 import com.cramsan.edifikana.client.android.features.base.EdifikanaBaseViewModel
 import com.cramsan.edifikana.client.android.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.android.features.main.Route
@@ -12,6 +14,7 @@ import com.cramsan.edifikana.lib.firestore.FormPK
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logW
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,6 +27,8 @@ import javax.inject.Inject
 class EntryViewModel @Inject constructor(
     private val formsManager: FormsManager,
     private val workContext: WorkContext,
+    @ApplicationContext
+    private val context: Context,
     exceptionHandler: CoroutineExceptionHandler,
 ) : EdifikanaBaseViewModel(exceptionHandler) {
 
@@ -35,6 +40,7 @@ class EntryViewModel @Inject constructor(
                 submitAllowed = false,
             ),
             false,
+            context.getString(R.string.title_form_entry)
         )
     )
     val uiState: StateFlow<EntryUIState> = _uiState
@@ -80,7 +86,12 @@ class EntryViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(isLoading = true)
         try {
             val names = _uiState.value.content.fields.associate { it.fieldId to it.name }
-            val formRecord = createSubmissionFormRecordModel(formModel!!, workContext.clock, names, fields)
+            val formRecord = createSubmissionFormRecordModel(
+                requireNotNull(formModel),
+                workContext.clock,
+                names,
+                fields
+            )
             val result = formsManager.submitFormRecord(formRecord)
             if (!result.isSuccess) {
                 logW(TAG, "Failed to add record: ${formRecord.formRecordPk}", result.exceptionOrNull())

@@ -26,6 +26,7 @@ fun EntryScreen(
     formPK: FormPK,
     mainActivityDelegatedEvent: MainActivityDelegatedEvent,
     onMainActivityEventInvoke: (MainActivityEvent) -> Unit,
+    onTitleChange: (String) -> Unit,
     viewModel: EntryViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -51,6 +52,7 @@ fun EntryScreen(
         }
     }
 
+    onTitleChange(uiState.title)
     EntryContent(
         uiState.content,
         uiState.isLoading,

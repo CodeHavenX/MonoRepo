@@ -12,7 +12,21 @@ val mainClassTarget by extra("com.cramsan.edifikana.server.CloudFirebaseAppKt")
 apply(from = "$rootDir/gradle/kotlin-jvm-target-application.gradle")
 
 dependencies {
+    implementation(project(":framework:interfacelib"))
+    implementation(project(":framework:logging"))
+    implementation(project(":framework:assert"))
+    implementation(project(":framework:core"))
+    implementation(project(":framework:core-ktor"))
+    implementation(project(":framework:halt"))
+    implementation(project(":framework:preferences"))
+    implementation(project(":framework:thread"))
     implementation(project(":edifikana:shared"))
+
+    implementation("io.insert-koin:koin-core:_")
+    implementation("io.insert-koin:koin-ktor:_")
+
+    implementation("org.apache.logging.log4j:log4j-core:_")
+    implementation("org.apache.logging.log4j:log4j-slf4j-impl:_")
 
     implementation("com.google.apis:google-api-services-drive:_")
     implementation("com.google.apis:google-api-services-sheets:_")
@@ -31,6 +45,14 @@ dependencies {
     implementation("com.google.firebase:firebase-admin:_")
 
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:_")
+}
+
+val distTar by tasks.getting(Tar::class) {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+val distZip by tasks.getting(Zip::class) {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 tasks.withType<ShadowJar> {

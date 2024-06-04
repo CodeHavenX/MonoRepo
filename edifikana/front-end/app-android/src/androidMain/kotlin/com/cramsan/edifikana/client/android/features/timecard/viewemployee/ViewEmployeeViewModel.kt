@@ -2,7 +2,6 @@ package com.cramsan.edifikana.client.android.features.timecard.viewemployee
 
 import android.content.Context
 import android.net.Uri
-import androidx.lifecycle.viewModelScope
 import com.cramsan.edifikana.client.android.R
 import com.cramsan.edifikana.client.android.features.base.EdifikanaBaseViewModel
 import com.cramsan.edifikana.client.android.features.main.MainActivityEvent
@@ -123,12 +122,13 @@ class ViewEmployeeViewModel @Inject constructor(
 
     fun recordClockEvent(photoUri: Uri) = viewModelScope.launch {
         val timeCardEventType = eventType ?: return@launch
+        val employee = employee ?: return@launch
 
         _uiState.value = _uiState.value.copy(isLoading = true)
 
         val newRecord = TimeCardRecordModel(
             id = TimeCardRecordPK(""),
-            employeePk = requireNotNull(employee).employeePK,
+            employeePk = employee.employeePK,
             eventType = timeCardEventType,
             eventTime = clock.now().epochSeconds,
             imageUrl = null,
@@ -160,7 +160,7 @@ class ViewEmployeeViewModel @Inject constructor(
                 )
             )
             eventType = null
-            loadEmployee(employee!!.employeePK)
+            loadEmployee(employee.employeePK)
         }
     }
 

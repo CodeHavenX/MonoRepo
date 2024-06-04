@@ -28,6 +28,7 @@ import com.cramsan.edifikana.server.sheets.appendValues
 import com.cramsan.edifikana.server.sheets.checkIfSheetExists
 import com.cramsan.edifikana.server.sheets.createSheetTab
 import com.cramsan.framework.assertlib.AssertUtilInterface
+import com.cramsan.framework.core.DispatcherProvider
 import com.cramsan.framework.halt.HaltUtil
 import com.cramsan.framework.logging.EventLoggerInterface
 import com.cramsan.framework.logging.logI
@@ -38,7 +39,6 @@ import com.google.api.services.sheets.v4.Sheets
 import com.google.cloud.firestore.Firestore
 import com.google.events.cloud.firestore.v1.Document
 import com.google.events.cloud.firestore.v1.DocumentEventData
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -75,6 +75,8 @@ class CloudFireService(
 
     @Suppress("UnusedPrivateProperty")
     private val threadUtil: ThreadUtilInterface by inject()
+
+    private val dispatcherProvider: DispatcherProvider by inject()
 
     /**
      * Processes the event data. This function is called by the CloudFireController. It processes the event data based
@@ -241,8 +243,8 @@ class CloudFireService(
 
         ensureSheetExists(sheets, gDriveParams.eventLogSpreadsheetId, sheetName)
 
-        val old = (oldEventLogRecord.attachments ?: listOf()).toSet()
-        val new = (eventLogRecord.attachments ?: listOf()).toSet()
+        val old = (oldEventLogRecord.attachments.orEmpty()).toSet()
+        val new = (eventLogRecord.attachments.orEmpty()).toSet()
         val diff = new - old
 
         val employeeName = eventLogRecord.employeeDocumentId?.let {
@@ -342,7 +344,7 @@ class CloudFireService(
         var eventLogSpreadsheetId: String? = null
         var formEntriesSpreadsheetId: String? = null
         coroutineScope {
-            val timeCardJob = async(Dispatchers.IO) {
+            val timeCardJob = async(dispatcherProvider.ioDispatcher()) {
                 timeCardSpreadsheetId = createSpreadsheet(
                     drive,
                     propertyFolderId,
@@ -350,7 +352,7 @@ class CloudFireService(
                 )
                 logI(TAG, "Time card spreadsheet ID: $timeCardSpreadsheetId")
             }
-            val eventLogJob = async(Dispatchers.IO) {
+            val eventLogJob = async(dispatcherProvider.ioDispatcher()) {
                 eventLogSpreadsheetId = createSpreadsheet(
                     drive,
                     propertyFolderId,
@@ -358,7 +360,7 @@ class CloudFireService(
                 )
                 logI(TAG, "Event log spreadsheet ID: $eventLogSpreadsheetId")
             }
-            val formEntriesJob = async(Dispatchers.IO) {
+            val formEntriesJob = async(dispatcherProvider.ioDispatcher()) {
                 formEntriesSpreadsheetId = createSpreadsheet(
                     drive,
                     propertyFolderId,

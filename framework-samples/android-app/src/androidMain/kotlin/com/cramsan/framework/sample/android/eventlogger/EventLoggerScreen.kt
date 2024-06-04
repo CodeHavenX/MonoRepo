@@ -11,22 +11,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.cramsan.framework.logging.Severity
 import com.cramsan.framework.sample.android.theme.CoreProjectTheme
 
 @Composable
-fun EventLoggerScreen(
-    navController: NavController? = null,
-) {
+fun EventLoggerScreen() {
     val eventLoggerViewModel: EventLoggerViewModel = hiltViewModel()
 
-    EventLoggerScreenContent(navController, eventLoggerViewModel)
+    EventLoggerScreenContent(eventLoggerViewModel)
 }
 
 @Composable
 private fun EventLoggerScreenContent(
-    navController: NavController? = null,
     eventHandler: EventLoggerScreenEventHandler,
 ) {
     Column {

@@ -1,6 +1,5 @@
 package com.cramsan.framework.sample.android.eventlogger
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.EventLoggerDelegate
@@ -16,7 +15,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EventLoggerViewModel @Inject constructor(
-    private val savedStateHandle: SavedStateHandle,
     private val eventLoggerDelegate: EventLoggerDelegate,
 ) : ViewModel(), EventLoggerScreenEventHandler {
 

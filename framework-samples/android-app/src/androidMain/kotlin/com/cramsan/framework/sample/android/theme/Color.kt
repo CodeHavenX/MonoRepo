@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 package com.cramsan.framework.sample.android.theme
 
 import androidx.compose.ui.graphics.Color

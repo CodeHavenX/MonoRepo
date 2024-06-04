@@ -10,6 +10,7 @@ data class RecordsUIModel(
     val recordModel: FormRecordModel,
 )
 
+@Suppress("MagicNumber")
 fun FormRecordModel.toUIModel(): RecordsUIModel {
     return RecordsUIModel(
         name = name,

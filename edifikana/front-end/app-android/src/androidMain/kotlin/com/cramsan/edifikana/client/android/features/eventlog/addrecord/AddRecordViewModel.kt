@@ -60,6 +60,7 @@ class AddRecordViewModel @Inject constructor(
         }
     }
 
+    @Suppress("ComplexCondition")
     fun addRecord(
         employeeDocumentId: EmployeePK?,
         unit: String?,

@@ -5,7 +5,7 @@ import com.cramsan.framework.logging.Severity
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
 
-class CrashlyticsErrorCallback() : EventLoggerErrorCallbackDelegate {
+class CrashlyticsErrorCallback : EventLoggerErrorCallbackDelegate {
 
     private val crashlytics = Firebase.crashlytics
 

@@ -16,9 +16,9 @@ val ENV_STORE_PASSWORD = "EDIFIKANA_STORE_PASSWORD"
 val ENV_KEY_ALIAS = "EDIFIKANA_KEY_ALIAS"
 val ENV_KEY_PASSWORD = "EDIFIKANA_KEY_PASSWORD"
 
-val releaseStorePassword = System.getenv(ENV_STORE_PASSWORD) ?: ""
-val releaseKeyAlias = System.getenv(ENV_KEY_ALIAS) ?: ""
-val releaseKeyPassword = System.getenv(ENV_KEY_PASSWORD) ?: ""
+val releaseStorePassword = System.getenv(ENV_STORE_PASSWORD).orEmpty()
+val releaseKeyAlias = System.getenv(ENV_KEY_ALIAS).orEmpty()
+val releaseKeyPassword = System.getenv(ENV_KEY_PASSWORD).orEmpty()
 
 android {
     namespace = "com.cramsan.edifikana.client.android"

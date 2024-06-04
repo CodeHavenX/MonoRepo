@@ -39,7 +39,7 @@ fun <T> Dropdown(
     }
     val value = selectedIndex?.let {
         itemLabels.getOrNull(it)
-    } ?: ""
+    }.orEmpty()
 
     ExposedDropdownMenuBox(
         modifier = modifier,

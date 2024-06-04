@@ -71,7 +71,7 @@ private fun MainNavigation() {
                     MainMenu(navController)
                 }
                 composable(LibraryDestinations.LOGGING.destination) {
-                    EventLoggerScreen(navController)
+                    EventLoggerScreen()
                 }
                 composable(LibraryDestinations.METRICS.destination) {
                     MainMenu(navController)

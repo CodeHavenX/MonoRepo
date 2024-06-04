@@ -33,13 +33,13 @@ val ApplicationModule = module(createdAtStart = true) {
     single(named(DISCORD_BOT_TOKEN)) {
         val config: ApplicationConfig = get()
 
-        config.propertyOrNull("kord.access_token")?.getString() ?: ""
+        config.propertyOrNull("kord.access_token")?.getString().orEmpty()
     }
 
     single(named(RUNASIMI_ENDPOINT_URL)) {
         val config: ApplicationConfig = get()
 
-        config.propertyOrNull("runasimi.endpoint")?.getString() ?: ""
+        config.propertyOrNull("runasimi.endpoint")?.getString().orEmpty()
     }
 
     single {

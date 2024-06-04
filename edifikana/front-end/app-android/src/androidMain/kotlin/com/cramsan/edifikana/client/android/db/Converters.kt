@@ -9,7 +9,7 @@ object Converters {
 
     @TypeConverter
     fun fromString(value: String?): List<String> {
-        return value?.let { json.decodeFromString(it) } ?: emptyList()
+        return value?.let { json.decodeFromString<List<String>>(it) }.orEmpty()
     }
 
     @TypeConverter

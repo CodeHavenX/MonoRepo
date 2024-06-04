@@ -1,3 +1,5 @@
+@file:Suppress("Filename")
+
 package com.cramsan.edifikana.client.android.features.main
 
 import androidx.annotation.DrawableRes

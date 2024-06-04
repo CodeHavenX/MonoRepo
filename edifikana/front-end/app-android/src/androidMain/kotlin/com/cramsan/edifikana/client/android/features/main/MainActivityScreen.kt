@@ -97,7 +97,7 @@ fun MainActivityScreen(
                 BottomBarDestinationUiModels.forEach { dest ->
                     if (formTabFeatureEnabled || dest.route != Route.Forms.route) {
                         val selected = currentDestination?.hierarchy?.any { it.route == dest.route } == true
-                        val title = stringResource(id = dest.text)
+                        val label = stringResource(id = dest.text)
 
                         NavigationBarItem(
                             onClick = {
@@ -105,12 +105,12 @@ fun MainActivityScreen(
                             },
                             icon = {
                                 if (dest.route != Route.Forms.route) {
-                                    Icon(painterResource(dest.icon), contentDescription = title)
+                                    Icon(painterResource(dest.icon), contentDescription = label)
                                 } else {
-                                    Icon(Icons.AutoMirrored.Filled.Assignment, contentDescription = title)
+                                    Icon(Icons.AutoMirrored.Filled.Assignment, contentDescription = label)
                                 }
                             },
-                            label = { Text(title) },
+                            label = { Text(label) },
                             selected = selected,
                         )
                     }
@@ -171,7 +171,7 @@ private fun NavigationHost(
         }
         composable(Route.TimeCardSingleEmployee.route) { backStackEntry ->
             ViewEmployeeScreen(
-                EmployeePK(backStackEntry.arguments?.getString("employeePk") ?: ""),
+                EmployeePK(backStackEntry.arguments?.getString("employeePk").orEmpty()),
                 mainActivityDelegatedEvent,
                 onMainActivityEventInvoke,
                 onTitleChange,
@@ -203,7 +203,7 @@ private fun NavigationHost(
         }
         composable(Route.EventLogSingleItem.route) { backStackEntry ->
             ViewRecordScreen(
-                EventLogRecordPK(backStackEntry.arguments?.getString("eventLogRecordPk") ?: ""),
+                EventLogRecordPK(backStackEntry.arguments?.getString("eventLogRecordPk").orEmpty()),
                 mainActivityDelegatedEvent,
                 onMainActivityEventInvoke,
                 onTitleChange,
@@ -218,7 +218,7 @@ private fun NavigationHost(
         }
         composable(Route.FormEntry.route) { backStackEntry ->
             EntryScreen(
-                FormPK(backStackEntry.arguments?.getString("formPk") ?: ""),
+                FormPK(backStackEntry.arguments?.getString("formPk").orEmpty()),
                 mainActivityDelegatedEvent,
                 onMainActivityEventInvoke,
                 onTitleChange,
@@ -233,7 +233,7 @@ private fun NavigationHost(
         }
         composable(Route.FormRecordRead.route) { backStackEntry ->
             RecordReadScreen(
-                FormRecordPK(backStackEntry.arguments?.getString("formRecordPk") ?: ""),
+                FormRecordPK(backStackEntry.arguments?.getString("formRecordPk").orEmpty()),
                 mainActivityDelegatedEvent,
                 onMainActivityEventInvoke,
                 onTitleChange,

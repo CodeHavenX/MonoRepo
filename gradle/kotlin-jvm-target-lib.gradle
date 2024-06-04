@@ -30,7 +30,7 @@ tasks.register("releaseJvm") {
     description = 'Run all the steps to build a release artifact'
 
     dependsOn 'build'
-    dependsOn 'detekt' // Run the code analyzer
+    dependsOn 'detektMain' // Run the code analyzer
     dependsOn 'test'
 }
 

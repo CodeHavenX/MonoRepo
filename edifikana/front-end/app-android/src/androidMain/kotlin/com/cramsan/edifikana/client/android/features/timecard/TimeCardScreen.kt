@@ -45,10 +45,10 @@ fun TimeCardScreen(
     }
 
     LaunchedEffect(event) {
-        when (val event = event) {
+        when (val viewModelEvent = event) {
             TimeCardEvent.Noop -> Unit
             is TimeCardEvent.TriggerMainActivityEvent -> {
-                onMainActivityEventInvoke(event.mainActivityEvent)
+                onMainActivityEventInvoke(viewModelEvent.mainActivityEvent)
             }
         }
     }
@@ -127,8 +127,18 @@ private fun TimeCardScreenPreview() {
     EventList(
         isLoading = true,
         events = listOf(
-            TimeCardUIModel("Cesar Andres Ramirez Sanchez", "Marco salida", "2024 02 12 - 03:24:01", EmployeePK("John")),
-            TimeCardUIModel("Antonio", "Marco entrada", "2024 02 12 - 03:24:01", EmployeePK("Jane")),
+            TimeCardUIModel(
+                "Cesar Andres Ramirez Sanchez",
+                "Marco salida",
+                "2024 02 12 - 03:24:01",
+                EmployeePK("John"),
+            ),
+            TimeCardUIModel(
+                "Antonio",
+                "Marco entrada",
+                "2024 02 12 - 03:24:01",
+                EmployeePK("Jane"),
+            ),
         ),
         onEmployeeClick = {},
         onAddEventClick = {},

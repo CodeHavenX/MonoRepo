@@ -12,11 +12,14 @@ complexity:
   CyclomaticComplexMethod:
     ignoreAnnotated: [ 'Composable' ]
   TooManyFunctions:
+    ignoreAnnotated: [ 'Module' ]
     excludes:
       - '**/build/generated/**'
 
 exceptions:
   TooGenericExceptionCaught:
+    active: false
+  TooGenericExceptionThrown:
     active: false
 
 naming:
@@ -25,6 +28,8 @@ naming:
     excludes:
       - '**/build/generated/**'
   PackageNaming:
+    active: false
+  MatchingDeclarationName:
     active: false
 
 style:
@@ -39,6 +44,12 @@ style:
     max: 8
   MaxLineLength:
     active: false
+  UnusedPrivateMember:
+    ignoreAnnotated: [ 'Preview' ]
+
+coroutines:
+  InjectDispatcher:
+    ignoreAnnotated: [ 'BackgroundDispatcher', 'UIThreadDispatcher' ]
 
 formatting:
   active: true
@@ -46,7 +57,7 @@ formatting:
   autoCorrect: true
   MaximumLineLength:
     active: true
-    ignoreAnnotated: [ 'Test' ]
+    ignoreAnnotated: [ 'Test', 'Preview' ]
     autoCorrect: true
     maxLineLength: 120
   Indentation:

@@ -41,10 +41,10 @@ fun EventLogScreen(
     }
 
     LaunchedEffect(event) {
-        when (val event = event) {
+        when (val viewModelEvent = event) {
             EventLogEvent.Noop -> Unit
             is EventLogEvent.TriggerMainActivityEvent -> {
-                onMainActivityEventInvoke(event.mainActivityEvent)
+                onMainActivityEventInvoke(viewModelEvent.mainActivityEvent)
             }
         }
     }

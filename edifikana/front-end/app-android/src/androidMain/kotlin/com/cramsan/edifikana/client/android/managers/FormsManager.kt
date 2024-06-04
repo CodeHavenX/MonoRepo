@@ -6,7 +6,11 @@ import com.cramsan.edifikana.client.android.managers.mappers.toFirebaseModel
 import com.cramsan.edifikana.client.android.models.FormModel
 import com.cramsan.edifikana.client.android.models.FormRecordModel
 import com.cramsan.edifikana.client.android.utils.getOrCatch
-import com.cramsan.edifikana.lib.firestore.*
+import com.cramsan.edifikana.lib.firestore.FireStoreModel
+import com.cramsan.edifikana.lib.firestore.Form
+import com.cramsan.edifikana.lib.firestore.FormPK
+import com.cramsan.edifikana.lib.firestore.FormRecord
+import com.cramsan.edifikana.lib.firestore.FormRecordPK
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject

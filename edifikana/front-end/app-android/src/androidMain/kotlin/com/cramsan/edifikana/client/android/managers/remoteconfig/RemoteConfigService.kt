@@ -35,6 +35,7 @@ class RemoteConfigService @Inject constructor(
         return config
     }
 
+    @Suppress("MagicNumber")
     private fun verifyConfigIntegrity(config: RemoteConfig) {
         assert(config.image.captureWidth > 0, TAG, "Capture width must be greater than 0")
         assert(config.image.captureHeight > 0, TAG, "Capture height must be greater than 0")

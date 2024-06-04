@@ -48,16 +48,16 @@ fun HomePageScreen(
                 if (!loading) {
                     Text(
                         modifier = Modifier.clickable { refreshAction() },
-                        text = title ?: "",
+                        text = title.orEmpty(),
                     )
                     Text(
                         modifier = Modifier.clickable { refreshAction() },
-                        text = subtitle ?: "",
+                        text = subtitle.orEmpty(),
                     )
 
                     Text(
                         modifier = Modifier.clickable { refreshAction() },
-                        text = message ?: "",
+                        text = message.orEmpty(),
                     )
                 }
             }

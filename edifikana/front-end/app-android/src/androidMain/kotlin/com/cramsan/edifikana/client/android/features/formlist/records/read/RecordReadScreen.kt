@@ -45,10 +45,10 @@ fun RecordReadScreen(
     }
 
     LaunchedEffect(event) {
-        when (val event = event) {
+        when (val viewModelEvent = event) {
             RecordReadEvent.Noop -> Unit
             is RecordReadEvent.TriggerMainActivityEvent -> {
-                onMainActivityEventInvoke(event.mainActivityEvent)
+                onMainActivityEventInvoke(viewModelEvent.mainActivityEvent)
             }
         }
     }

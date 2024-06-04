@@ -37,7 +37,9 @@ fun main() {
                     call.respond("ERROR")
                     return@post
                 } finally {
-                    FirebaseApp.getApps().forEach { it.delete() }
+                    FirebaseApp.getApps().forEach { app ->
+                        app.delete()
+                    }
                     stopKoin()
                 }
 

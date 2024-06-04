@@ -36,6 +36,7 @@ class AddEmployeeViewModel @Inject constructor(
     private val _event = MutableSharedFlow<AddEmployeeEvent>()
     val event: SharedFlow<AddEmployeeEvent> = _event
 
+    @Suppress("ComplexCondition")
     fun saveEmployee(
         id: String?,
         idType: IdType?,

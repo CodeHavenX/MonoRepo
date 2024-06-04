@@ -28,7 +28,7 @@ val ApplicationModule = module(createdAtStart = true) {
     single(named(DISCORD_BOT_TOKEN)) {
         val config: ApplicationConfig = get()
 
-        config.propertyOrNull("kord.access_token")?.getString() ?: ""
+        config.propertyOrNull("kord.access_token")?.getString().orEmpty()
     }
 
     single {

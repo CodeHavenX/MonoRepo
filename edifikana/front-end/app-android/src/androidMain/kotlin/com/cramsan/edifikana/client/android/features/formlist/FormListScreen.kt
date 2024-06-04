@@ -1,7 +1,11 @@
 package com.cramsan.edifikana.client.android.features.formlist
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.HorizontalDivider
@@ -45,10 +49,10 @@ fun FormListScreen(
     }
 
     LaunchedEffect(event) {
-        when (val event = event) {
+        when (val viewModelEvent = event) {
             FormListEvent.Noop -> Unit
             is FormListEvent.TriggerMainActivityEvent -> {
-                onMainActivityEventInvoke(event.mainActivityEvent)
+                onMainActivityEventInvoke(viewModelEvent.mainActivityEvent)
             }
         }
     }

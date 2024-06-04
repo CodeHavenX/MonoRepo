@@ -32,6 +32,7 @@ import kotlinx.coroutines.GlobalScope
 
 @Module
 @InstallIn(SingletonComponent::class)
+@Suppress("TooManyFunctions")
 object AppModule {
 
     @Provides

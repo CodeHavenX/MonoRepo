@@ -59,10 +59,10 @@ fun ViewRecordScreen(
     }
 
     LaunchedEffect(event) {
-        when (val event = event) {
+        when (val viewModelEvent = event) {
             ViewRecordEvent.Noop -> Unit
             is ViewRecordEvent.TriggerMainActivityEvent -> {
-                onMainActivityEventInvoke(event.mainActivityEvent)
+                onMainActivityEventInvoke(viewModelEvent.mainActivityEvent)
             }
         }
     }
@@ -156,11 +156,10 @@ private fun SingleRecord(
                 )
                 if (eventLogRecord.attachments.isNotEmpty()) {
                     HorizontalDivider()
-                    val columns = 4
                     FlowRow(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(1.dp),
-                        maxItemsInEachRow = columns
+                        maxItemsInEachRow = COLUMNS,
                     ) {
                         val itemModifier = Modifier
                             .padding(4.dp)
@@ -259,3 +258,5 @@ private fun ViewScreenPreview() {
         {},
     )
 }
+
+const val COLUMNS = 4

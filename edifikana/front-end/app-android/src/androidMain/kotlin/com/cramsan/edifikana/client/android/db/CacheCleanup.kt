@@ -19,6 +19,7 @@ fun ComponentActivity.clearOldFiles(
     ttl: Duration = 15.days,
     clock: Clock = Clock.System,
 ) {
+    @Suppress("InjectDispatcher")
     GlobalScope.launch(Dispatchers.IO) {
         val currentTime = clock.now()
         externalMediaDirs.forEach {

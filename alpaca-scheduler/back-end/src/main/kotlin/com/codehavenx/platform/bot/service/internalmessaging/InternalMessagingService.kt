@@ -15,7 +15,7 @@ class InternalMessagingService {
 
     fun subscribe(topic: Topic): SharedFlow<Message> {
         ensureTopic(topic)
-        return topicMap[topic]!!.asSharedFlow()
+        return requireNotNull(topicMap[topic]).asSharedFlow()
     }
 
     @Synchronized

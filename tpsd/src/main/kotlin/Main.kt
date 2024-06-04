@@ -151,6 +151,7 @@ fun processCommandQueueAsync() {
 }
 
 @OptIn(DelicateCoroutinesApi::class)
+@Suppress("InjectDispatcher")
 fun observeConsoleInput() {
     GlobalScope.launch(Dispatchers.IO) {
         while (true) {

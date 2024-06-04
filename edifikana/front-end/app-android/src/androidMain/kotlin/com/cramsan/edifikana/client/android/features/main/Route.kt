@@ -1,3 +1,4 @@
+@file:Suppress("TooManyFunctions")
 @file:OptIn(RouteSafePath::class)
 
 package com.cramsan.edifikana.client.android.features.main
@@ -24,6 +25,7 @@ enum class Route(
     FormRecords(route = "forms/records"),
     FormRecordRead(route = "forms/records/{formRecordPk}"),
     ;
+
     companion object {
         fun toFormsRoute(): String = Forms.route
 

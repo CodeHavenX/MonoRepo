@@ -34,7 +34,7 @@ class StableDiffusionClient(
     private val json: Json,
 ) {
 
-    private var _uiState = MutableStateFlow(
+    private val _uiState = MutableStateFlow(
         UIState(
             cfgScale = 7.5,
             width = 512,
@@ -60,7 +60,7 @@ class StableDiffusionClient(
      * ensure so dispatch to a background thread. The operation is run synchronously but the result
      * should be observed through [uiState].
      */
-    @Suppress("CyclomaticComplexMethod")
+    @Suppress("CyclomaticComplexMethod", "InjectDispatcher")
     suspend fun handleCommands(command: SdCommand?) = withContext(Dispatchers.IO) {
         if (command == null) {
             logger.debug("Null command")

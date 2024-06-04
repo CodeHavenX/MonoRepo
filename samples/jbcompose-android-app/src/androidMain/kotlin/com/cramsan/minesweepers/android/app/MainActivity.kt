@@ -59,7 +59,6 @@ fun MainActivityPreview() {
     )
 }
 
-
 // TODO: Currently there is an issue with the new resources API that causes previews not to render.
 // This function is a temporary alternative to be able to verify that @Previews work.
 @Preview(

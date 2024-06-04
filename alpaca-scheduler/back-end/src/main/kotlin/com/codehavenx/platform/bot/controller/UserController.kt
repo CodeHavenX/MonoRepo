@@ -24,14 +24,12 @@ class UserController(
      * Registers the routes for the user controller. The [route] parameter is the root path for the controller.
      */
     fun registerRoutes(route: Route) {
-        route.apply {
-            route("user") {
-                post {
-                    createUser(call)
-                }
-                get("{userId}") {
-                    getUser(call)
-                }
+        route.route("user") {
+            post {
+                createUser(call)
+            }
+            get("{userId}") {
+                getUser(call)
             }
         }
     }
@@ -56,7 +54,7 @@ class UserController(
      * Handles the retrieval of a user. The [call] parameter is the request context.
      */
     suspend fun getUser(call: ApplicationCall) = call.handleCall(TAG, "getUser") {
-        val userId = call.parameters["userId"]!!
+        val userId = requireNotNull(call.parameters["userId"])
 
         val user = userService.getUser(
             UserId(userId),

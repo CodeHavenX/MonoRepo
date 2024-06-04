@@ -40,6 +40,7 @@ class HomePageViewModel @Inject constructor() : ViewModel() {
     /**
      *
      */
+    @Suppress("MagicNumber")
     fun loadData(forceRefresh: Boolean = false) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(loading = true)

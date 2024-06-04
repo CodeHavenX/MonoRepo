@@ -3,7 +3,11 @@ package com.cramsan.edifikana.client.android.managers.mappers
 import com.cramsan.edifikana.client.android.models.FormModel
 import com.cramsan.edifikana.client.android.models.FormRecordFieldModel
 import com.cramsan.edifikana.client.android.models.FormRecordModel
-import com.cramsan.edifikana.lib.firestore.*
+import com.cramsan.edifikana.lib.firestore.FireStoreModel
+import com.cramsan.edifikana.lib.firestore.FormEntryField
+import com.cramsan.edifikana.lib.firestore.FormPK
+import com.cramsan.edifikana.lib.firestore.FormRecord
+import com.cramsan.edifikana.lib.firestore.FormRecordPK
 import kotlinx.datetime.Clock
 
 @FireStoreModel
@@ -17,7 +21,7 @@ fun FormRecord.toDomainModel(): FormRecordModel {
             FormRecordFieldModel(
                 id = it.id ?: TODO("Field id cannot be null"),
                 name = it.name ?: TODO("Field name cannot be null"),
-                value = it.value ?: "",
+                value = it.value.orEmpty(),
             )
         }.orEmpty()
     )

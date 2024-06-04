@@ -41,10 +41,14 @@ class MainActivity : ComponentActivity() {
         viewModel.handleReceivedImage(filePath)
     }
 
-    private val mediaAttachmentLauncher = registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(5)) { uris ->
+    @Suppress("MagicNumber")
+    private val mediaAttachmentLauncher = registerForActivityResult(
+        ActivityResultContracts.PickMultipleVisualMedia(5),
+    ) { uris ->
         viewModel.handleReceivedImages(uris)
     }
 
+    @Suppress("LongMethod")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -86,7 +90,7 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     is MainActivityEvent.ShareContent -> {
-                        context.shareContent(mainActivityEvent.text, mainActivityEvent.imageUri)
+                        context.shareContent(TAG, mainActivityEvent.text, mainActivityEvent.imageUri)
                     }
                     is MainActivityEvent.ShowSnackbar -> {
                         Toast.makeText(context, mainActivityEvent.message, Toast.LENGTH_SHORT).show()
@@ -127,5 +131,9 @@ class MainActivity : ComponentActivity() {
         }
 
         clearOldFiles()
+    }
+
+    companion object {
+        private const val TAG = "MainActivity"
     }
 }

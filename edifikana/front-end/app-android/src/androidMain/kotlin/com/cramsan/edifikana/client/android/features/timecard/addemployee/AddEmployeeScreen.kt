@@ -41,10 +41,10 @@ fun AddEmployeeScreen(
     val event by viewModel.event.collectAsState(AddEmployeeEvent.Noop)
 
     LaunchedEffect(event) {
-        when (val event = event) {
+        when (val viewModelEvent = event) {
             AddEmployeeEvent.Noop -> Unit
             is AddEmployeeEvent.TriggerMainActivityEvent -> {
-                onMainActivityEventInvoke(event.mainActivityEvent)
+                onMainActivityEventInvoke(viewModelEvent.mainActivityEvent)
             }
         }
     }

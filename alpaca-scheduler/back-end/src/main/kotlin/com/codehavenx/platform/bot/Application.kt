@@ -70,7 +70,7 @@ fun Application.initializeDependencies() {
 /**
  * Configures the entry points of the application.
  */
-suspend fun Application.configureEntryPoints(
+fun Application.configureEntryPoints(
     userController: UserController,
 ) {
     routing {

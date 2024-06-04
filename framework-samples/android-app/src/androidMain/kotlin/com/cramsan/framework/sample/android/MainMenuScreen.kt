@@ -69,6 +69,7 @@ enum class LibraryDestinations(val destination: String, val enabled: Boolean = f
     USEREVENTS("userevents"),
     UTILS("utils"),
 }
+
 @Preview
 @Composable
 fun MainMenuPreview() {

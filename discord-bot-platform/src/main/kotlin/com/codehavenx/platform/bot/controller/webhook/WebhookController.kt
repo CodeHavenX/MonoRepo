@@ -21,10 +21,8 @@ class WebhookController(
      */
     fun registerRoutes(route: Route) {
         modules.forEach { entryPoint ->
-            route.apply {
-                post(entryPoint.path) {
-                    handlePost(entryPoint, call)
-                }
+            route.post(entryPoint.path) {
+                handlePost(entryPoint, call)
             }
         }
     }

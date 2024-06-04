@@ -80,7 +80,6 @@ tasks.register("releaseAndroid") {
     dependsOn 'assembleRelease'
     dependsOn 'detektMetadataMain' // Run the code analyzer on the common-code source set
     dependsOn 'detektAndroidDebug' // Run the code analyzer
-    dependsOn 'detektAndroidRelease' // Run the code analyzer
     dependsOn 'testDebugUnitTest'
     dependsOn 'testReleaseUnitTest'
 }

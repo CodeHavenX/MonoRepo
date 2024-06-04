@@ -102,7 +102,7 @@ val FrameworkModule = module(createdAtStart = true) {
     single(named(DISCORD_ERROR_LOG_CHANNEL_ID_NAME)) {
         val config: ApplicationConfig = get()
 
-        config.propertyOrNull("kord.error_log_channel_id")?.getString() ?: ""
+        config.propertyOrNull("kord.error_log_channel_id")?.getString().orEmpty()
     }
 }
 

@@ -12,7 +12,12 @@ import com.cramsan.edifikana.client.android.db.models.FileAttachmentDao
 import com.cramsan.edifikana.client.android.db.models.TimeCardRecordDao
 import com.cramsan.edifikana.client.android.framework.crashhandler.CrashlyticsCrashHandler
 import com.cramsan.edifikana.client.android.framework.crashhandler.CrashlyticsErrorCallback
-import com.cramsan.edifikana.client.android.managers.remoteconfig.*
+import com.cramsan.edifikana.client.android.managers.remoteconfig.BehaviorConfig
+import com.cramsan.edifikana.client.android.managers.remoteconfig.CachingConfig
+import com.cramsan.edifikana.client.android.managers.remoteconfig.FeatureConfig
+import com.cramsan.edifikana.client.android.managers.remoteconfig.ImageConfig
+import com.cramsan.edifikana.client.android.managers.remoteconfig.RemoteConfig
+import com.cramsan.edifikana.client.android.managers.remoteconfig.RemoteConfigService
 import com.cramsan.framework.assertlib.AssertUtil
 import com.cramsan.framework.assertlib.AssertUtilInterface
 import com.cramsan.framework.assertlib.implementation.AssertUtilImpl
@@ -23,7 +28,12 @@ import com.cramsan.framework.halt.HaltUtil
 import com.cramsan.framework.halt.HaltUtilDelegate
 import com.cramsan.framework.halt.implementation.HaltUtilAndroid
 import com.cramsan.framework.halt.implementation.HaltUtilImpl
-import com.cramsan.framework.logging.*
+import com.cramsan.framework.logging.EventLogger
+import com.cramsan.framework.logging.EventLoggerDelegate
+import com.cramsan.framework.logging.EventLoggerErrorCallback
+import com.cramsan.framework.logging.EventLoggerErrorCallbackDelegate
+import com.cramsan.framework.logging.EventLoggerInterface
+import com.cramsan.framework.logging.Severity
 import com.cramsan.framework.logging.implementation.EventLoggerErrorCallbackImpl
 import com.cramsan.framework.logging.implementation.EventLoggerImpl
 import com.cramsan.framework.logging.implementation.LoggerAndroid
@@ -305,6 +315,7 @@ object Dependencies {
 
     // Configuration Dependencies
 
+    @Suppress("MagicNumber")
     @Singleton
     @Provides
     fun provideRemoteConfig(): FirebaseRemoteConfig {
@@ -324,7 +335,7 @@ object Dependencies {
     @Singleton
     @Provides
     fun provideRemoteConfigService(
-        service: RemoteConfigService
+        service: RemoteConfigService,
     ): RemoteConfig = service.getRemoteConfigPayload()
 
     @Singleton

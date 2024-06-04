@@ -1,5 +1,3 @@
-@file:Suppress("MatchingDeclarationName")
-
 import android.os.Build
 
 class AndroidPlatform : Platform {

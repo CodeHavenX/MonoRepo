@@ -172,6 +172,7 @@ object ApplicationModule {
 
     @Singleton
     @Provides
+    @Suppress("InjectDispatcher")
     fun providesCoroutineScope(): CoroutineScope {
         // Run this code when providing an instance of CoroutineScope
         return CoroutineScope(SupervisorJob() + Dispatchers.Default)

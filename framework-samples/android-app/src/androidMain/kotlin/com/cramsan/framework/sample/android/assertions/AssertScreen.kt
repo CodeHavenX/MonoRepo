@@ -24,6 +24,7 @@ fun AssertScreen(
 
 @Composable
 private fun AssertScreenContent(
+    @Suppress("UnusedParameter")
     navController: NavController? = null,
     eventHandler: AssertScreenEventHandler,
 ) {

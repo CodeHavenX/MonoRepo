@@ -92,7 +92,7 @@ class ApiController(
 
         if (result.isFailure) {
             logE(TAG, "Unexpected failure when handing form request")
-            call.respond(HttpStatusCode.InternalServerError, result.exceptionOrNull()?.localizedMessage ?: "")
+            call.respond(HttpStatusCode.InternalServerError, result.exceptionOrNull()?.localizedMessage.orEmpty())
         }
     }
 
@@ -120,7 +120,7 @@ class ApiController(
 
         if (result.isFailure) {
             logE(TAG, "Unexpected failure when handing raw request")
-            call.respond(HttpStatusCode.InternalServerError, result.exceptionOrNull()?.localizedMessage ?: "")
+            call.respond(HttpStatusCode.InternalServerError, result.exceptionOrNull()?.localizedMessage.orEmpty())
         }
     }
 

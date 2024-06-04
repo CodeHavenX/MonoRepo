@@ -110,7 +110,10 @@ class CameraDelegate(
         imageCapture: ImageCapture,
     ) {
         val executor = ContextCompat.getMainExecutor(activity)
-        val fileName = SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS", Locale.US).format(System.currentTimeMillis()) + ".jpg"
+        val fileName = SimpleDateFormat(
+            "yyyy-MM-dd-HH-mm-ss-SSS",
+            Locale.US,
+        ).format(System.currentTimeMillis()) + ".jpg"
 
         val contentValues = ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)

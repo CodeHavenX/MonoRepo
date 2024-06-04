@@ -55,7 +55,9 @@ class EventLogManager @Inject constructor(
     }
 
     @OptIn(FireStoreModel::class)
-    suspend fun getRecord(eventLogRecordPK: EventLogRecordPK): Result<EventLogRecordModel> = workContext.getOrCatch(TAG) {
+    suspend fun getRecord(
+        eventLogRecordPK: EventLogRecordPK,
+    ): Result<EventLogRecordModel> = workContext.getOrCatch(TAG) {
         val localAttachments = attachmentDao.getAll()
             .filter { it.eventLogRecordPK == eventLogRecordPK.documentPath }
             .mapNotNull { it.fileUri?.let { uri -> AttachmentHolder(publicUrl = uri, storageRef = null) } }

@@ -4,12 +4,20 @@ import com.cramsan.edifikana.lib.firestore.PropertyConfigPK
 import com.cramsan.edifikana.server.CloudFireService
 import com.cramsan.edifikana.server.DependenciesLocalCredentials
 import com.cramsan.edifikana.server.FunctionDependencies
+import com.cramsan.edifikana.server.di.FrameworkModule
 import com.cramsan.framework.logging.logI
 import kotlinx.datetime.Clock
+import org.koin.core.context.startKoin
 
 private const val TAG = "ConfigureDrive"
 
 suspend fun main() {
+    startKoin {
+        modules(
+            FrameworkModule,
+        )
+    }
+
     logI(TAG, "Starting configuration of Google Drive")
 
     logI(TAG, "Loading dependencies")

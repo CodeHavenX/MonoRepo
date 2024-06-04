@@ -17,7 +17,7 @@ suspend fun EventLogRecordModel.toUIModel(): EventLogRecordUIModel {
     return EventLogRecordUIModel(
         summary = summary,
         eventType = eventType.toFriendlyString(),
-        unit = unit.orEmpty(),
+        unit = unit,
         timeRecorded = timeRecorded.toFriendlyDateTime(),
         recordPK = id,
     )

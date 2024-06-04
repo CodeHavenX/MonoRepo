@@ -6,8 +6,9 @@ import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
 import com.cramsan.edifikana.client.android.R
+import com.cramsan.framework.logging.logE
 
-fun Context.shareContent(text: String, imageUri: Uri?): Boolean {
+fun Context.shareContent(tag: String, text: String, imageUri: Uri?): Boolean {
     val shareIntent = Intent(Intent.ACTION_SEND)
     shareIntent.putExtra(Intent.EXTRA_TEXT, text)
     if (imageUri != null) {
@@ -23,6 +24,7 @@ fun Context.shareContent(text: String, imageUri: Uri?): Boolean {
         startActivity(chooserIntent)
         return true
     } catch (ex: ActivityNotFoundException) {
+        logE(tag, "No activity found to share content", ex)
         Toast.makeText(this, getString(R.string.error_message_unexpected_error), Toast.LENGTH_SHORT).show()
     }
 

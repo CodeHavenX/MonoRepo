@@ -84,7 +84,7 @@ fun Application.configureKtorEngine(
 /**
  * Configures all the system entry points. This includes HTML routes and API endpoints.
  */
-suspend fun Application.configureEntryPoints(
+fun Application.configureEntryPoints(
     apiController: ApiController,
     htmlController: HtmlController,
 ) {

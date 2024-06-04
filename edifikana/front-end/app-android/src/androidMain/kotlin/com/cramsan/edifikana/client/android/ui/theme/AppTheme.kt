@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
+@Suppress("MagicNumber")
 private val md_theme_light_primary = Color(0xFF13BC9A)
 
 private val LightThemeColors = lightColorScheme(

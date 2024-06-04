@@ -10,6 +10,7 @@ import com.cramsan.edifikana.client.android.utils.launch
 import com.cramsan.edifikana.lib.firestore.EventLogRecord
 import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
 import com.cramsan.edifikana.lib.firestore.FireStoreModel
+import com.cramsan.edifikana.lib.requireNotBlank
 import com.cramsan.edifikana.lib.storage.FOLDER_ATTACHMENTS
 import com.cramsan.framework.logging.logE
 import com.google.firebase.firestore.FirebaseFirestore
@@ -44,6 +45,8 @@ class AttachmentManager @Inject constructor(
     @OptIn(FireStoreModel::class)
     private suspend fun uploadAttachment(attachmentEntity: FileAttachmentEntity) = runCatching {
         mutex.withLock {
+            // TODO: Add a domain model layer to avoid having to force-cast nullable fields
+            val eventLogRecordPK = requireNotBlank(attachmentEntity.eventLogRecordPK)
             val fileUri = Uri.parse(attachmentEntity.fileUri)
             workContext.appContext.contentResolver.openInputStream(fileUri)?.use { inputStream ->
                 val fileData = inputStream.readBytes()
@@ -62,19 +65,18 @@ class AttachmentManager @Inject constructor(
 
                 val imagePhotoRef = imagePhotoResult.getOrThrow()
 
-                // TODO: Add a domain model layer to avoid having to force-cast nullable fields
                 val eventLogRecord = fireStore.collection(EventLogRecord.COLLECTION)
-                    .document(attachmentEntity.eventLogRecordPK!!)
+                    .document(eventLogRecordPK)
                     .get()
                     .await()
                     .toObject(EventLogRecord::class.java) ?: throw RuntimeException("EventLogRecord not found")
 
                 val updatedRecord = eventLogRecord.copy(
-                    attachments = (eventLogRecord.attachments ?: listOf()) + imagePhotoRef.ref,
+                    attachments = (eventLogRecord.attachments.orEmpty()) + imagePhotoRef.ref,
                 )
 
                 fireStore.collection(EventLogRecord.COLLECTION)
-                    .document(attachmentEntity.eventLogRecordPK)
+                    .document(eventLogRecordPK)
                     .set(updatedRecord)
                     .await()
 

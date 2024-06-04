@@ -28,6 +28,7 @@ class CameraActivity : ComponentActivity() {
 
     private lateinit var cameraDelegate: CameraDelegate
 
+    @Suppress("LongMethod")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         cameraDelegate = CameraDelegate(this, imageConfig)
@@ -45,13 +46,13 @@ class CameraActivity : ComponentActivity() {
             }
 
             LaunchedEffect(event) {
-                when (val event = event) {
+                when (val viewModelEvent = event) {
                     CameraEvent.Noop -> Unit
                     is CameraEvent.CompleteFlow -> {
                         setResult(
                             RESULT_OK,
                             Intent().apply {
-                                putExtra(RESULT_URI, event.uri.toString())
+                                putExtra(RESULT_URI, viewModelEvent.uri.toString())
                             }
                         )
                         finish()

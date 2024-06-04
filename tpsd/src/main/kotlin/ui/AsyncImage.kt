@@ -21,6 +21,7 @@ fun AsyncImage(
     modifier: Modifier = Modifier,
     contentScale: ContentScale = ContentScale.Fit,
 ) {
+    @Suppress("InjectDispatcher")
     val image by produceState<ImageBitmap?>(null, path) {
         value = withContext(Dispatchers.IO) {
             try {
@@ -36,7 +37,7 @@ fun AsyncImage(
 
     if (image != null) {
         Image(
-            painter = BitmapPainter(image = image!!),
+            painter = BitmapPainter(image = requireNotNull(image)),
             contentDescription = contentDescription,
             contentScale = contentScale,
             modifier = modifier,

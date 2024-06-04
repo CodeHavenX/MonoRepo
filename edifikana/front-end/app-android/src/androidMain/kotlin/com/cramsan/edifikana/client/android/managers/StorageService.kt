@@ -14,6 +14,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.time.Duration.Companion.seconds
 
+@Suppress("MagicNumber")
 @Singleton
 class StorageService @Inject constructor(
     private val storage: FirebaseStorage,
@@ -41,9 +42,9 @@ class StorageService @Inject constructor(
 
         // Get the imageRef of the uploaded file
         // TODO: Improve how to generate the references and classes
-        val uploadPathRef = uploadTask.result.metadata?.path?.let { storageReference.child(it) } ?: throw RuntimeException(
-            "Failed to get download URL"
-        )
+        val uploadPathRef = uploadTask.result.metadata?.path?.let {
+            storageReference.child(it)
+        } ?: throw RuntimeException("Failed to get download URL")
         assert(uploadPathRef.path == uploadRef.path, TAG, "Path mismatch for uploaded file.")
 
         // TODO: Improve how to generate the references and classes

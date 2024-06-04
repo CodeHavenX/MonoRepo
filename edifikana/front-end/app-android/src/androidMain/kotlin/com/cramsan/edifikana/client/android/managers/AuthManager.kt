@@ -5,6 +5,7 @@ import com.cramsan.edifikana.client.android.utils.getOrCatch
 import com.cramsan.edifikana.lib.firestore.User
 import com.cramsan.edifikana.lib.firestore.UserPk
 import com.cramsan.framework.logging.logI
+import com.cramsan.framework.logging.logW
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
@@ -26,7 +27,7 @@ class AuthManager @Inject constructor(
             false
         } else if (enforceAllowList) {
             (auth.currentUser?.isAnonymous == true) ||
-                userExists(auth.currentUser?.email ?: "")
+                userExists(auth.currentUser?.email.orEmpty())
         } else {
             true
         }
@@ -50,21 +51,24 @@ class AuthManager @Inject constructor(
         result
     }
 
-    suspend fun handleSignInResult(result: FirebaseAuthUIAuthenticationResult?): Result<Boolean> = workContext.getOrCatch(
-        TAG
-    ) {
+    suspend fun handleSignInResult(
+        result: FirebaseAuthUIAuthenticationResult?,
+    ): Result<Boolean> = workContext.getOrCatch(TAG) {
         val response = result?.idpResponse
         if (result?.resultCode == Activity.RESULT_OK) {
             // Successfully signed in
             val user = FirebaseAuth.getInstance().currentUser
+            logI(TAG, "${user?.email} signed in")
             // ...
         } else if (response == null) {
             // User canceled sign in
+            logI(TAG, "Sign in was cancelled")
         } else {
             // Sign in failed. If response is null the user canceled the
             // sign-in flow using the back button. Otherwise check
             // response.getError().getErrorCode() and handle the error.
             // ...
+            logW(TAG, "Sign in failed with code: ${response.error?.errorCode}", response.error)
         }
         isSignedIn(true).getOrThrow()
     }

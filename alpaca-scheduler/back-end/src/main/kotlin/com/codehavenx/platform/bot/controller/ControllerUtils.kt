@@ -43,7 +43,7 @@ suspend fun ApplicationCall.handleCall(
         logE(tag, "Unexpected failure when handing request", result.exceptionOrNull())
         respond(
             HttpStatusCode.InternalServerError,
-            result.exceptionOrNull()?.localizedMessage ?: "",
+            result.exceptionOrNull()?.localizedMessage.orEmpty(),
         )
     }
 }

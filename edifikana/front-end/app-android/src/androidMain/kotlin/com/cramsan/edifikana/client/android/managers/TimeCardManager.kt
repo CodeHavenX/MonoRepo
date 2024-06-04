@@ -106,6 +106,7 @@ class TimeCardManager @Inject constructor(
         Unit
     }
 
+    @Suppress("MagicNumber")
     @OptIn(FireStoreModel::class)
     private suspend fun uploadRecord(entity: TimeCardRecordEntity) = runCatching {
         mutex.withLock {

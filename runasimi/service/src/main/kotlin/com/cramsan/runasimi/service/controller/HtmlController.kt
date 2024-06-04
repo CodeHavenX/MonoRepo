@@ -16,10 +16,8 @@ class HtmlController {
      * This function will register the routes for all HTML resources.
      */
     fun registerRoutes(route: Route) {
-        route.apply {
-            get {
-                showIndexPage(call)
-            }
+        route.get {
+            showIndexPage(call)
         }
     }
 
@@ -27,7 +25,7 @@ class HtmlController {
      * Show the home page.
      */
     private suspend fun showIndexPage(call: ApplicationCall) {
-        val initialQuery = call.request.queryParameters[QUERY_ARG] ?: ""
+        val initialQuery = call.request.queryParameters[QUERY_ARG].orEmpty()
 
         call.respond(
             FreeMarkerContent(

@@ -7,7 +7,6 @@ import com.cramsan.edifikana.lib.firestore.FireStoreModel
 import com.cramsan.edifikana.lib.firestore.FormEntryField
 import com.cramsan.edifikana.lib.firestore.FormPK
 import com.cramsan.edifikana.lib.firestore.FormRecord
-import com.cramsan.edifikana.lib.firestore.FormRecordPK
 import kotlinx.datetime.Clock
 
 @FireStoreModel

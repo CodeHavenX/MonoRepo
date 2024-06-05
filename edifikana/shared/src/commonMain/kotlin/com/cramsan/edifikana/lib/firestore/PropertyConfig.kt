@@ -30,7 +30,7 @@ data class PropertyConfig(
 }
 
 @JvmInline
-value class PropertyConfigPK(val documentPath: String){
+value class PropertyConfigPK(val documentPath: String) {
     init {
         requireNotBlank(documentPath)
     }

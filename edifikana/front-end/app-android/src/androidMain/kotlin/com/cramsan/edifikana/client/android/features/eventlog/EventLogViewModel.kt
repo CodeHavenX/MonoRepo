@@ -7,6 +7,7 @@ import com.cramsan.edifikana.client.android.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.android.features.main.Route
 import com.cramsan.edifikana.client.android.managers.EventLogManager
 import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
+import com.cramsan.framework.logging.logW
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -50,12 +51,21 @@ class EventLogViewModel @Inject constructor(
         }
     }
 
-    fun openRecordScreen(recordPk: EventLogRecordPK) = viewModelScope.launch {
-        _event.emit(
-            EventLogEvent.TriggerMainActivityEvent(
-                MainActivityEvent.Navigate(Route.toEventLogSingleItemRoute(recordPk))
+    fun openRecordScreen(recordPk: EventLogRecordPK?) = viewModelScope.launch {
+        if (recordPk == null) {
+            logW(TAG, "Record PK is null")
+            _event.emit(
+                EventLogEvent.TriggerMainActivityEvent(
+                    MainActivityEvent.ShowSnackbar(context.getString(R.string.error_message_currently_uploading))
+                )
             )
-        )
+        } else {
+            _event.emit(
+                EventLogEvent.TriggerMainActivityEvent(
+                    MainActivityEvent.Navigate(Route.toEventLogSingleItemRoute(recordPk))
+                )
+            )
+        }
     }
 
     fun openAddRecordScreen() = viewModelScope.launch {
@@ -64,5 +74,9 @@ class EventLogViewModel @Inject constructor(
                 MainActivityEvent.Navigate(Route.toEventLogAddItemRoute())
             )
         )
+    }
+
+    companion object {
+        private const val TAG = "EventLogViewModel"
     }
 }

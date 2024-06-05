@@ -6,14 +6,12 @@ import com.cramsan.edifikana.lib.firestore.EmployeePK
 
 data class EmployeeUIModel(
     val fullName: String,
-    val employeePK: EmployeePK?,
-    val clickable: Boolean,
+    val employeePK: EmployeePK,
 )
 
 fun EmployeeModel.toUIModel(): EmployeeUIModel {
     return EmployeeUIModel(
         fullName = fullName(),
-        employeePK = employeePK,
-        clickable = employeePK != null,
+        employeePK = requireNotNull(employeePK),
     )
 }

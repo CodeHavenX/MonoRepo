@@ -9,7 +9,6 @@ import com.cramsan.edifikana.client.android.managers.EmployeeManager
 import com.cramsan.edifikana.client.android.managers.EventLogManager
 import com.cramsan.edifikana.client.android.models.EventLogRecordModel
 import com.cramsan.edifikana.lib.firestore.EmployeePK
-import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
 import com.cramsan.edifikana.lib.firestore.EventType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -21,7 +20,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import javax.inject.Inject
-import kotlin.random.Random
 
 @HiltViewModel
 class AddRecordViewModel @Inject constructor(

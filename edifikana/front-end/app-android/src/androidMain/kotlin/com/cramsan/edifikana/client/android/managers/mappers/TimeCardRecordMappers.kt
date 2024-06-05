@@ -8,7 +8,6 @@ import com.cramsan.edifikana.client.android.utils.publicDownloadUrl
 import com.cramsan.edifikana.lib.firestore.EmployeePK
 import com.cramsan.edifikana.lib.firestore.FireStoreModel
 import com.cramsan.edifikana.lib.firestore.TimeCardRecord
-import com.cramsan.edifikana.lib.firestore.TimeCardRecordPK
 
 fun TimeCardRecordModel.toEntity(cachedImageUrl: Uri): TimeCardRecordEntity {
     return TimeCardRecordEntity(

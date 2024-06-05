@@ -95,9 +95,7 @@ private fun EmployeeItem(
     Text(
         employee.fullName,
         modifier = modifier
-            .clickable(
-                enabled = employee.clickable
-            ) { onEmployeeSelected(requireNotNull(employee.employeePK)) }
+            .clickable { onEmployeeSelected(employee.employeePK) }
             .padding(16.dp),
     )
     HorizontalDivider()
@@ -127,12 +125,10 @@ private fun EmployeeListScreenPreview() {
             EmployeeUIModel(
                 "Cesar Andres Ramirez Sanchez",
                 EmployeePK("John"),
-                true,
             ),
             EmployeeUIModel(
                 "2",
                 EmployeePK("Jane"),
-                false,
             ),
         ),
         onEmployeeClick = {},

@@ -10,8 +10,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,6 +39,8 @@ import com.cramsan.edifikana.client.android.ui.components.LoadingAnimationOverla
 import com.cramsan.edifikana.lib.firestore.EmployeePK
 import com.cramsan.edifikana.lib.firestore.TimeCardEventType
 import com.cramsan.edifikana.lib.firestore.TimeCardRecordPK
+import com.cramsan.framework.assertlib.AssertUtil
+import com.cramsan.framework.assertlib.implementation.NoopAssertUtil
 
 @Composable
 fun ViewEmployeeScreen(
@@ -94,7 +99,7 @@ private fun ViewEmployeeContent(
     records: List<ViewEmployeeUIModel.TimeCardRecordUIModel>,
     onClockInClick: (ViewEmployeeUIModel.EmployeeUIModel) -> Unit,
     onClockOutClick: (ViewEmployeeUIModel.EmployeeUIModel) -> Unit,
-    onShareClick: (TimeCardRecordPK) -> Unit,
+    onShareClick: (TimeCardRecordPK?) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -144,21 +149,37 @@ private fun ViewEmployeeContent(
 @Composable
 private fun TimeCardRecordItem(
     record: ViewEmployeeUIModel.TimeCardRecordUIModel,
-    onShareClick: (TimeCardRecordPK) -> Unit,
+    onShareClick: (TimeCardRecordPK?) -> Unit,
 ) {
+    val textColor = if (record.clickable) {
+        MaterialTheme.colorScheme.onSurface
+    } else {
+        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+    }
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(
-                enabled = record.clickable,
-            ) { onShareClick(requireNotNull(record.timeCardRecordPK)) }
+            .clickable { onShareClick(record.timeCardRecordPK) }
             .padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column {
-            Text(text = record.eventType)
-            Text(text = record.timeRecorded)
+            Text(
+                text = record.eventType,
+                color = textColor,
+            )
+            Text(
+                text = record.timeRecorded,
+                color = textColor,
+            )
+        }
+        if (!record.clickable) {
+            Icon(
+                imageVector = Icons.Default.Upload,
+                contentDescription = stringResource(R.string.text_upload),
+                modifier = Modifier
+            )
         }
         AsyncImage(
             modifier = Modifier.size(64.dp),
@@ -175,6 +196,9 @@ private fun TimeCardRecordItem(
 )
 @Composable
 private fun ViewEmployeeScreenPreview() {
+    // TODO: Move to a centralized place in core-compose
+    AssertUtil.setInstance(NoopAssertUtil)
+
     ViewEmployeeContent(
         isLoading = true,
         employee = ViewEmployeeUIModel.EmployeeUIModel(
@@ -186,7 +210,7 @@ private fun ViewEmployeeScreenPreview() {
             ViewEmployeeUIModel.TimeCardRecordUIModel(
                 eventType = "Entrada",
                 timeRecorded = "2021-01-01 12:00:00",
-                StorageRef(""),
+                StorageRef("storage/1"),
                 TimeCardEventType.CLOCK_IN,
                 null,
                 TimeCardRecordPK("123-123-123"),
@@ -195,7 +219,7 @@ private fun ViewEmployeeScreenPreview() {
             ViewEmployeeUIModel.TimeCardRecordUIModel(
                 eventType = "Salida",
                 timeRecorded = "2021-01-01 12:00:00",
-                StorageRef(""),
+                StorageRef("storage/2"),
                 TimeCardEventType.CLOCK_OUT,
                 null,
                 TimeCardRecordPK("321"),

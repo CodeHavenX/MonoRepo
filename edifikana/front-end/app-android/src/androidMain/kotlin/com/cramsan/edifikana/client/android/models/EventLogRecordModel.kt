@@ -28,7 +28,7 @@ data class EventLogRecordModel(
             fallbackEventType: String?,
             summary: String,
             description: String,
-        ) : EventLogRecordModel {
+        ): EventLogRecordModel {
             // TODO: Use a better entity Id
             return EventLogRecordModel(
                 id = null,

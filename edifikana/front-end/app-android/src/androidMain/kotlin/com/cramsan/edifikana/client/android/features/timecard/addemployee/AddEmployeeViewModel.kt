@@ -7,7 +7,6 @@ import com.cramsan.edifikana.client.android.features.base.EdifikanaBaseViewModel
 import com.cramsan.edifikana.client.android.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.android.managers.EmployeeManager
 import com.cramsan.edifikana.client.android.models.EmployeeModel
-import com.cramsan.edifikana.lib.firestore.EmployeePK
 import com.cramsan.edifikana.lib.firestore.EmployeeRole
 import com.cramsan.edifikana.lib.firestore.IdType
 import dagger.hilt.android.lifecycle.HiltViewModel

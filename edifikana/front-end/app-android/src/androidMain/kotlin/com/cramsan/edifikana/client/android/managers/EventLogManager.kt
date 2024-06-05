@@ -110,6 +110,10 @@ class EventLogManager @Inject constructor(
         }
     }
 
+    suspend fun startUpload(): Result<Job> = workContext.getOrCatch(TAG) {
+        triggerFullUpload()
+    }
+
     companion object {
         private const val TAG = "EventLogManager"
     }

@@ -21,13 +21,18 @@ import androidx.navigation.compose.rememberNavController
 import com.cramsan.edifikana.client.android.db.clearOldFiles
 import com.cramsan.edifikana.client.android.features.camera.CameraContract
 import com.cramsan.edifikana.client.android.features.signin.SignInActivity
+import com.cramsan.edifikana.client.android.managers.AttachmentManager
+import com.cramsan.edifikana.client.android.managers.EventLogManager
+import com.cramsan.edifikana.client.android.managers.TimeCardManager
 import com.cramsan.edifikana.client.android.managers.remoteconfig.FeatureConfig
 import com.cramsan.edifikana.client.android.managers.remoteconfig.Features
 import com.cramsan.edifikana.client.android.ui.theme.AppTheme
 import com.cramsan.edifikana.client.android.utils.shareContent
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -40,6 +45,15 @@ class MainActivity : ComponentActivity() {
     private val cameraLauncher = registerForActivityResult(CameraContract()) { filePath ->
         viewModel.handleReceivedImage(filePath)
     }
+
+    @Inject
+    lateinit var eventLogManager: EventLogManager
+
+    @Inject
+    lateinit var attachmentManager: AttachmentManager
+
+    @Inject
+    lateinit var timeCardManager: TimeCardManager
 
     @Suppress("MagicNumber")
     private val mediaAttachmentLauncher = registerForActivityResult(
@@ -131,6 +145,16 @@ class MainActivity : ComponentActivity() {
         }
 
         clearOldFiles()
+        uploadPending()
+    }
+
+    private fun uploadPending() {
+        lifecycleScope.launch {
+            delay(1.seconds)
+            eventLogManager.startUpload()
+            attachmentManager.startUpload()
+            timeCardManager.startUpload()
+        }
     }
 
     companion object {

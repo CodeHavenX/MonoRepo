@@ -9,20 +9,26 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import com.cramsan.edifikana.client.android.R
 import com.cramsan.edifikana.client.android.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.android.ui.components.LoadingAnimationOverlay
 import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
@@ -66,7 +72,7 @@ fun EventLogScreen(
 private fun RecordList(
     records: List<EventLogRecordUIModel>,
     isLoading: Boolean,
-    onRecordSelected: (EventLogRecordPK) -> Unit,
+    onRecordSelected: (EventLogRecordPK?) -> Unit,
     onAddRecordClicked: () -> Unit,
 ) {
     Column(
@@ -94,24 +100,55 @@ private fun RecordList(
 @Composable
 private fun RecordItem(
     record: EventLogRecordUIModel,
-    onRecordSelected: (EventLogRecordPK) -> Unit,
+    onRecordSelected: (EventLogRecordPK?) -> Unit,
 ) {
-    Column(
+    val textColor = if (record.clickable) {
+        MaterialTheme.colorScheme.onSurface
+    } else {
+        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+    }
+    Row(
         modifier = Modifier
-            .clickable(
-                enabled = record.clickable,
-            ) { onRecordSelected(requireNotNull(record.recordPK)) }
+            .clickable { onRecordSelected(record.recordPK) }
             .fillMaxWidth()
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(record.summary, style = MaterialTheme.typography.bodyLarge)
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Text(record.timeRecorded, style = MaterialTheme.typography.labelMedium)
-            Text(record.eventType, style = MaterialTheme.typography.labelMedium)
-            Text(record.unit, style = MaterialTheme.typography.labelMedium)
+            Text(
+                record.summary,
+                color = textColor,
+                style = MaterialTheme.typography.bodyLarge,
+            )
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Text(
+                    record.timeRecorded,
+                    color = textColor,
+                    style = MaterialTheme.typography.labelMedium,
+                )
+                Text(
+                    record.eventType,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = textColor,
+                )
+                Text(
+                    record.unit,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = textColor,
+                )
+            }
+        }
+        if (!record.clickable) {
+            Icon(
+                imageVector = Icons.Default.Upload,
+                contentDescription = stringResource(R.string.text_upload),
+                modifier = Modifier
+            )
         }
     }
     HorizontalDivider()

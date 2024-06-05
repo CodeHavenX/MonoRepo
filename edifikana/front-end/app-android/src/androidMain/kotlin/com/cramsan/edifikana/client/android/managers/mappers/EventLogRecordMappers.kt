@@ -7,7 +7,6 @@ import com.cramsan.edifikana.client.android.models.StorageRef
 import com.cramsan.edifikana.client.android.utils.publicDownloadUrl
 import com.cramsan.edifikana.lib.firestore.EmployeePK
 import com.cramsan.edifikana.lib.firestore.EventLogRecord
-import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
 import com.cramsan.edifikana.lib.firestore.EventType
 import com.cramsan.edifikana.lib.firestore.FireStoreModel
 

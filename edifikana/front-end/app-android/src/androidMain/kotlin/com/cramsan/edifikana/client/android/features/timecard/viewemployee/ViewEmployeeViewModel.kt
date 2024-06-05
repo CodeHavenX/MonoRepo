@@ -16,6 +16,7 @@ import com.cramsan.edifikana.client.lib.toFriendlyDateTime
 import com.cramsan.edifikana.lib.firestore.EmployeePK
 import com.cramsan.edifikana.lib.firestore.TimeCardEventType
 import com.cramsan.edifikana.lib.firestore.TimeCardRecordPK
+import com.cramsan.framework.logging.logW
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -82,7 +83,17 @@ class ViewEmployeeViewModel @Inject constructor(
         }
     }
 
-    fun share(timeCardRecordPK: TimeCardRecordPK) = viewModelScope.launch {
+    fun share(timeCardRecordPK: TimeCardRecordPK?) = viewModelScope.launch {
+        if (timeCardRecordPK == null) {
+            logW(TAG, "TimeCardRecord PK is null")
+            _event.emit(
+                ViewEmployeeEvent.TriggerMainActivityEvent(
+                    MainActivityEvent.ShowSnackbar(context.getString(R.string.error_message_currently_uploading))
+                )
+            )
+            return@launch
+        }
+
         _uiState.value = _uiState.value.copy(isLoading = true)
         val state = uiState.value
         val record = state.records.find { it.timeCardRecordPK?.documentPath == timeCardRecordPK.documentPath }
@@ -170,5 +181,9 @@ class ViewEmployeeViewModel @Inject constructor(
     private fun formatShareMessage(employee: EmployeeModel?, localDateTime: String, timeCardEventType: String): String {
         // TODO: refactor this to use string resources
         return "$timeCardEventType de ${employee?.fullName()}\n$localDateTime"
+    }
+
+    companion object {
+        const val TAG = "ViewEmployeeViewModel"
     }
 }

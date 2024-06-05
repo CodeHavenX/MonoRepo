@@ -18,13 +18,14 @@ object ViewEmployeeUIModel {
         val imageRef: StorageRef?,
         val eventTypeEnum: TimeCardEventType?,
         val publicImageUrl: String?,
-        val timeCardRecordPK: TimeCardRecordPK,
+        val timeCardRecordPK: TimeCardRecordPK?,
+        val clickable: Boolean,
     )
 
     data class EmployeeUIModel(
         val fullName: String,
         val role: String,
-        val employeePK: EmployeePK,
+        val employeePK: EmployeePK?,
     )
 }
 
@@ -44,5 +45,6 @@ suspend fun TimeCardRecordModel.toUIModel(): ViewEmployeeUIModel.TimeCardRecordU
         eventTypeEnum = eventType,
         publicImageUrl = imageUrl,
         timeCardRecordPK = id,
+        clickable = id != null,
     )
 }

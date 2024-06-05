@@ -51,7 +51,7 @@ fun createSubmissionFormRecordModel(
     fields: Map<String, String>,
 ): FormRecordModel {
     return FormRecordModel(
-        formRecordPk = FormRecordPK(""),
+        formRecordPk = null,
         formPk = formModel.id,
         timeRecorded = clock.now().epochSeconds,
         name = formModel.name,

@@ -60,7 +60,7 @@ class RecordsViewModel @Inject constructor(
     fun navigateToRecord(record: FormRecordModel) = viewModelScope.launch {
         _event.emit(
             RecordsEvent.TriggerMainActivityEvent(
-                MainActivityEvent.Navigate(Route.toFormRecordReadRoute(record.formRecordPk))
+                MainActivityEvent.Navigate(Route.toFormRecordReadRoute(requireNotNull(record.formRecordPk)))
             )
         )
     }

@@ -10,7 +10,8 @@ data class EventLogRecordUIModel(
     val eventType: String,
     val unit: String,
     val timeRecorded: String,
-    val recordPK: EventLogRecordPK,
+    val recordPK: EventLogRecordPK?,
+    val clickable: Boolean,
 )
 
 suspend fun EventLogRecordModel.toUIModel(): EventLogRecordUIModel {
@@ -20,5 +21,6 @@ suspend fun EventLogRecordModel.toUIModel(): EventLogRecordUIModel {
         unit = unit,
         timeRecorded = timeRecorded.toFriendlyDateTime(),
         recordPK = id,
+        clickable = id != null
     )
 }

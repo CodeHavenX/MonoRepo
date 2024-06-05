@@ -12,7 +12,7 @@ import com.cramsan.edifikana.lib.firestore.TimeCardRecordPK
 
 fun TimeCardRecordModel.toEntity(cachedImageUrl: Uri): TimeCardRecordEntity {
     return TimeCardRecordEntity(
-        id.documentPath,
+        requireNotNull(entityId),
         employeePk.documentPath,
         eventType,
         eventTime,
@@ -22,7 +22,8 @@ fun TimeCardRecordModel.toEntity(cachedImageUrl: Uri): TimeCardRecordEntity {
 
 fun TimeCardRecordEntity.toDomainModel(): TimeCardRecordModel {
     return TimeCardRecordModel(
-        TimeCardRecordPK(id),
+        null,
+        id,
         EmployeePK(employeeDocumentId ?: TODO("Employee document ID cannot be null")),
         eventType ?: TODO("Event type cannot be null"),
         eventTime ?: TODO("Event time cannot be null"),
@@ -35,6 +36,7 @@ fun TimeCardRecordEntity.toDomainModel(): TimeCardRecordModel {
 fun TimeCardRecord.toDomainModel(storageBucket: String): TimeCardRecordModel {
     return TimeCardRecordModel(
         id = documentId(),
+        entityId = null,
         employeePk = EmployeePK(employeeDocumentId ?: TODO("Employee document ID cannot be null")),
         eventType = eventType ?: TODO("Event type cannot be null"),
         eventTime = eventTime ?: TODO("Event time cannot be null"),

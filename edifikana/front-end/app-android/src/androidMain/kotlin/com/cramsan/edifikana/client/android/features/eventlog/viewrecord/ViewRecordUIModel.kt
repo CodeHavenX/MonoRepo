@@ -24,6 +24,6 @@ suspend fun EventLogRecordModel.toUIModel(): ViewRecordUIModel {
         unit = unit,
         timeRecorded = timeRecorded.toFriendlyDateTime(),
         attachments = attachments,
-        recordPK = id,
+        recordPK = requireNotNull(id),
     )
 }

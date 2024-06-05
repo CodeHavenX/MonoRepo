@@ -1,5 +1,7 @@
 package com.cramsan.edifikana.lib.firestore
 
+import com.cramsan.edifikana.lib.requireNotBlank
+
 /**
  * Due to Firestore limitations, we need to make all fields nullable and with a default value.
  */
@@ -16,8 +18,6 @@ data class EventLogRecord(
     val attachments: List<String>? = null,
 ) {
     fun documentId(): EventLogRecordPK {
-        requireNotNull(employeeDocumentId)
-        require(employeeDocumentId.isNotBlank())
         requireNotNull(timeRecorded)
         require(timeRecorded > 0)
         requireNotNull(eventType)
@@ -30,4 +30,9 @@ data class EventLogRecord(
 }
 
 @JvmInline
-value class EventLogRecordPK(val documentPath: String)
+value class EventLogRecordPK(val documentPath: String) {
+    init {
+        requireNotBlank(documentPath)
+    }
+    override fun toString() = documentPath
+}

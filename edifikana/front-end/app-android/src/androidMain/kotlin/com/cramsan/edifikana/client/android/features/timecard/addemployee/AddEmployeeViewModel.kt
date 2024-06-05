@@ -67,7 +67,7 @@ class AddEmployeeViewModel @Inject constructor(
 
         val result = employeeManager.addEmployee(
             EmployeeModel(
-                employeePK = EmployeePK(""),
+                employeePK = null,
                 id = id.trim(),
                 idType = idType,
                 name = name.trim(),

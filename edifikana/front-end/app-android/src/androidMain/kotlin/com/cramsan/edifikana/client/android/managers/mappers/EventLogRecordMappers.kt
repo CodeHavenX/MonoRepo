@@ -13,7 +13,7 @@ import com.cramsan.edifikana.lib.firestore.FireStoreModel
 
 fun EventLogRecordModel.toEntity(): EventLogRecordEntity {
     return EventLogRecordEntity(
-        id.documentPath,
+        requireNotNull(entityId),
         employeePk?.documentPath,
         timeRecorded,
         unit,
@@ -27,7 +27,8 @@ fun EventLogRecordModel.toEntity(): EventLogRecordEntity {
 
 fun EventLogRecordEntity.toDomainModel(): EventLogRecordModel {
     return EventLogRecordModel(
-        id = EventLogRecordPK(id),
+        id = null,
+        entityId = id,
         employeePk = employeeDocumentId?.let { EmployeePK(it) },
         timeRecorded = timeRecorded ?: TODO("Time recorded cannot be null"),
         unit = unit.orEmpty(),
@@ -44,6 +45,7 @@ fun EventLogRecordEntity.toDomainModel(): EventLogRecordModel {
 fun EventLogRecord.toDomainModel(storageBucket: String): EventLogRecordModel {
     return EventLogRecordModel(
         id = documentId(),
+        entityId = null,
         employeePk = employeeDocumentId?.let { EmployeePK(it) },
         timeRecorded = timeRecorded ?: TODO("Time recorded cannot be null"),
         unit = unit.orEmpty(),

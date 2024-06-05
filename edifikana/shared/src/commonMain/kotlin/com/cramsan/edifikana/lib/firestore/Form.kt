@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.lib.firestore
 
+import com.cramsan.edifikana.lib.requireNotBlank
 import kotlin.math.min
 
 @FireStoreModel
@@ -33,7 +34,12 @@ data class FormField(
 )
 
 @JvmInline
-value class FormPK(val documentPath: String)
+value class FormPK(val documentPath: String) {
+    init {
+        requireNotBlank(documentPath)
+    }
+    override fun toString() = documentPath
+}
 
 private val nonAlphaNum = "[^a-zA-Z0-9]".toRegex()
 

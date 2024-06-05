@@ -4,7 +4,7 @@ import com.cramsan.edifikana.lib.firestore.FormPK
 import com.cramsan.edifikana.lib.firestore.FormRecordPK
 
 data class FormRecordModel(
-    val formRecordPk: FormRecordPK,
+    val formRecordPk: FormRecordPK?,
     val formPk: FormPK,
     val timeRecorded: Long,
     val name: String,

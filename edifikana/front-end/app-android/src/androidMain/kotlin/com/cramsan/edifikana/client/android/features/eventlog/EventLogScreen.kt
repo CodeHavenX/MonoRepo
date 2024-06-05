@@ -98,7 +98,9 @@ private fun RecordItem(
 ) {
     Column(
         modifier = Modifier
-            .clickable { onRecordSelected(record.recordPK) }
+            .clickable(
+                enabled = record.clickable,
+            ) { onRecordSelected(requireNotNull(record.recordPK)) }
             .fillMaxWidth()
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -128,6 +130,15 @@ private fun PreviewEventLogScreen() {
                 "1801",
                 "2021-09-01T00:00:00Z",
                 EventLogRecordPK("1"),
+                true,
+            ),
+            EventLogRecordUIModel(
+                "Arrived package for dpt 1801",
+                "DELIVERY",
+                "1801",
+                "2021-09-01T00:00:00Z",
+                EventLogRecordPK("1"),
+                false,
             ),
         ),
         isLoading = true,

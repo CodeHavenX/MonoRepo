@@ -5,7 +5,8 @@ import com.cramsan.edifikana.lib.firestore.TimeCardEventType
 import com.cramsan.edifikana.lib.firestore.TimeCardRecordPK
 
 data class TimeCardRecordModel(
-    val id: TimeCardRecordPK,
+    val id: TimeCardRecordPK?,
+    val entityId: String?,
     val employeePk: EmployeePK,
     val eventType: TimeCardEventType,
     val eventTime: Long,

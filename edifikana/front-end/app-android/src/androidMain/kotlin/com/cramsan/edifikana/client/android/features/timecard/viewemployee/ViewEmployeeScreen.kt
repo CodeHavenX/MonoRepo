@@ -149,7 +149,9 @@ private fun TimeCardRecordItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onShareClick(record.timeCardRecordPK) }
+            .clickable(
+                enabled = record.clickable,
+            ) { onShareClick(requireNotNull(record.timeCardRecordPK)) }
             .padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
@@ -188,6 +190,7 @@ private fun ViewEmployeeScreenPreview() {
                 TimeCardEventType.CLOCK_IN,
                 null,
                 TimeCardRecordPK("123-123-123"),
+                true,
             ),
             ViewEmployeeUIModel.TimeCardRecordUIModel(
                 eventType = "Salida",
@@ -196,6 +199,7 @@ private fun ViewEmployeeScreenPreview() {
                 TimeCardEventType.CLOCK_OUT,
                 null,
                 TimeCardRecordPK("321"),
+                false,
             ),
         ),
         onClockInClick = {},

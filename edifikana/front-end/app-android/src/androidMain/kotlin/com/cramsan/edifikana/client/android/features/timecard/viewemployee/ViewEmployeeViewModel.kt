@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import javax.inject.Inject
+import kotlin.random.Random
 
 @HiltViewModel
 class ViewEmployeeViewModel @Inject constructor(
@@ -84,7 +85,7 @@ class ViewEmployeeViewModel @Inject constructor(
     fun share(timeCardRecordPK: TimeCardRecordPK) = viewModelScope.launch {
         _uiState.value = _uiState.value.copy(isLoading = true)
         val state = uiState.value
-        val record = state.records.find { it.timeCardRecordPK.documentPath == timeCardRecordPK.documentPath }
+        val record = state.records.find { it.timeCardRecordPK?.documentPath == timeCardRecordPK.documentPath }
         if (record == null) {
             _uiState.value = _uiState.value.copy(isLoading = false)
             return@launch
@@ -123,11 +124,13 @@ class ViewEmployeeViewModel @Inject constructor(
     fun recordClockEvent(photoUri: Uri) = viewModelScope.launch {
         val timeCardEventType = eventType ?: return@launch
         val employee = employee ?: return@launch
+        val employeePk = employee.employeePK ?: return@launch
 
         _uiState.value = _uiState.value.copy(isLoading = true)
 
         val newRecord = TimeCardRecordModel(
-            id = TimeCardRecordPK(""),
+            id = null,
+            entityId = Random.nextInt().toString(),
             employeePk = employee.employeePK,
             eventType = timeCardEventType,
             eventTime = clock.now().epochSeconds,
@@ -160,7 +163,7 @@ class ViewEmployeeViewModel @Inject constructor(
                 )
             )
             eventType = null
-            loadEmployee(employee.employeePK)
+            loadEmployee(employeePk)
         }
     }
 

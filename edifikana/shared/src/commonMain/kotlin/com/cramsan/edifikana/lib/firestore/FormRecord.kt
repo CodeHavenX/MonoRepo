@@ -1,5 +1,7 @@
 package com.cramsan.edifikana.lib.firestore
 
+import com.cramsan.edifikana.lib.requireNotBlank
+
 @FireStoreModel
 data class FormRecord(
     val propertyId: String? = null,
@@ -28,4 +30,9 @@ data class FormEntryField(
 )
 
 @JvmInline
-value class FormRecordPK(val documentPath: String)
+value class FormRecordPK(val documentPath: String) {
+    init {
+        requireNotBlank(documentPath)
+    }
+    override fun toString() = documentPath
+}

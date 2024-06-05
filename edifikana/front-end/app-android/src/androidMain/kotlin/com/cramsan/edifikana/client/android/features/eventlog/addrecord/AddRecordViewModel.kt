@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import javax.inject.Inject
+import kotlin.random.Random
 
 @HiltViewModel
 class AddRecordViewModel @Inject constructor(
@@ -83,8 +84,7 @@ class AddRecordViewModel @Inject constructor(
             return@launch
         }
 
-        val eventLogRecord = EventLogRecordModel(
-            id = EventLogRecordPK(""),
+        val eventLogRecord = EventLogRecordModel.createTemporary(
             employeePk = employeeDocumentId,
             timeRecorded = clock.now().epochSeconds,
             unit = unit.trim(),
@@ -93,7 +93,6 @@ class AddRecordViewModel @Inject constructor(
             fallbackEventType = fallbackEventType?.trim(),
             summary = summary.trim(),
             description = description.trim(),
-            attachments = emptyList(),
         )
         val result = eventLogManager.addRecord(eventLogRecord)
 

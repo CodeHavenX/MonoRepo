@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.client.android.features.formlist
 
-import com.cramsan.edifikana.client.android.models.FormModel
+import com.cramsan.edifikana.client.lib.models.FormModel
 import com.cramsan.edifikana.lib.firestore.FormPK
 
 data class FormUIModel(

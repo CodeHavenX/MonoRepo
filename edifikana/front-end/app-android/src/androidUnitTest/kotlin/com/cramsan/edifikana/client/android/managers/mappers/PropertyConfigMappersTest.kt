@@ -2,7 +2,9 @@
 
 package com.cramsan.edifikana.client.android.managers.mappers
 
-import com.cramsan.edifikana.client.android.models.PropertyConfigModel
+import com.cramsan.edifikana.client.lib.managers.mappers.toDomainModel
+import com.cramsan.edifikana.client.lib.managers.mappers.toFirebaseModel
+import com.cramsan.edifikana.client.lib.models.PropertyConfigModel
 import com.cramsan.edifikana.lib.firestore.FireStoreModel
 import com.cramsan.edifikana.lib.firestore.PropertyConfig
 import io.mockk.every

@@ -3,8 +3,8 @@ package com.cramsan.edifikana.client.android.managers
 import android.content.ContentValues
 import android.net.Uri
 import android.provider.MediaStore
-import com.cramsan.edifikana.client.android.models.StorageRef
 import com.cramsan.edifikana.client.android.utils.getOrCatch
+import com.cramsan.edifikana.client.lib.models.StorageRef
 import com.cramsan.framework.assertlib.assert
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.delay

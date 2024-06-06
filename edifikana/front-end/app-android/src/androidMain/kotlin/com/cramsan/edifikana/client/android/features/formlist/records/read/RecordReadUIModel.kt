@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.client.android.features.formlist.records.read
 
-import com.cramsan.edifikana.client.android.models.FormRecordModel
+import com.cramsan.edifikana.client.lib.models.FormRecordModel
 
 data class RecordReadUIModel(
     val name: String,

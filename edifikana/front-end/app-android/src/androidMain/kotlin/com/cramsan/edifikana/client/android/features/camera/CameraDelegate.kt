@@ -14,7 +14,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.cramsan.edifikana.client.android.R
-import com.cramsan.edifikana.client.android.managers.remoteconfig.ImageConfig
+import com.cramsan.edifikana.client.lib.managers.remoteconfig.ImageConfig
 import com.cramsan.framework.logging.logE
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

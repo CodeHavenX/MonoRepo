@@ -9,6 +9,8 @@ complexity:
     ignoreAnnotatedParameter: []
   LongMethod:
     ignoreAnnotated: [ 'Composable', 'Preview', 'Test' ]
+    excludes:
+      - '**/build/generated/**'
   CyclomaticComplexMethod:
     ignoreAnnotated: [ 'Composable' ]
   TooManyFunctions:
@@ -31,6 +33,18 @@ naming:
     active: false
   MatchingDeclarationName:
     active: false
+  VariableNaming:
+    excludes:
+      - '**/build/generated/**'
+  FunctionParameterNaming:
+    excludes:
+      - '**/build/generated/**'
+  ConstructorParameterNaming:
+    excludes:
+      - '**/build/generated/**'
+  ClassNaming:
+    excludes:
+      - '**/build/generated/**'
 
 style:
   ForbiddenComment:
@@ -46,6 +60,9 @@ style:
     active: false
   UnusedPrivateMember:
     ignoreAnnotated: [ 'Preview' ]
+  VarCouldBeVal:
+    excludes:
+      - '**/build/generated/**'
 
 coroutines:
   InjectDispatcher:
@@ -60,6 +77,8 @@ formatting:
     ignoreAnnotated: [ 'Test', 'Preview' ]
     autoCorrect: true
     maxLineLength: 120
+    excludes:
+      - '**/build/generated/**'
   Indentation:
     excludes:
       - '**/build/generated/**'
@@ -79,5 +98,19 @@ formatting:
     excludes:
       - '**/build/generated/**'
   NoTrailingSpaces:
+    excludes:
+      - '**/build/generated/**'
+  SpacingAroundComma:
+    excludes:
+      - '**/build/generated/**'
+  NoConsecutiveBlankLines:
+    excludes:
+      - '**/build/generated/**'
+  Filename:
+    excludes:
+      - '**/build/generated/**'
+
+empty-blocks:
+  EmptyFunctionBlock:
     excludes:
       - '**/build/generated/**'

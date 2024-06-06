@@ -6,21 +6,22 @@ import android.graphics.Matrix
 import android.media.ExifInterface
 import android.net.Uri
 import androidx.core.net.toUri
-import com.cramsan.edifikana.client.android.db.models.TimeCardRecordDao
-import com.cramsan.edifikana.client.android.db.models.TimeCardRecordEntity
-import com.cramsan.edifikana.client.android.managers.mappers.toDomainModel
-import com.cramsan.edifikana.client.android.managers.mappers.toEntity
-import com.cramsan.edifikana.client.android.managers.mappers.toFirebaseModel
-import com.cramsan.edifikana.client.android.models.StorageRef
-import com.cramsan.edifikana.client.android.models.TimeCardRecordModel
 import com.cramsan.edifikana.client.android.utils.getFilename
 import com.cramsan.edifikana.client.android.utils.getOrCatch
 import com.cramsan.edifikana.client.android.utils.launch
+import com.cramsan.edifikana.client.lib.db.models.TimeCardRecordDao
+import com.cramsan.edifikana.client.lib.db.models.TimeCardRecordEntity
+import com.cramsan.edifikana.client.lib.managers.mappers.toDomainModel
+import com.cramsan.edifikana.client.lib.managers.mappers.toEntity
+import com.cramsan.edifikana.client.lib.managers.mappers.toFirebaseModel
+import com.cramsan.edifikana.client.lib.models.StorageRef
+import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
 import com.cramsan.edifikana.lib.firestore.EmployeePK
 import com.cramsan.edifikana.lib.firestore.FireStoreModel
 import com.cramsan.edifikana.lib.firestore.TimeCardRecord
 import com.cramsan.edifikana.lib.firestore.TimeCardRecordPK
 import com.cramsan.edifikana.lib.storage.FOLDER_TIME_CARDS
+import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.logging.logE
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -96,7 +97,7 @@ class TimeCardManager @Inject constructor(
     }
 
     suspend fun addRecord(timeCardRecord: TimeCardRecordModel, cachedImageUrl: Uri) = workContext.getOrCatch(TAG) {
-        val entity = timeCardRecord.toEntity(cachedImageUrl)
+        val entity = timeCardRecord.toEntity(CoreUri(cachedImageUrl))
         timeCardRecordDao.insert(entity)
 
         workContext.launch(TAG) {

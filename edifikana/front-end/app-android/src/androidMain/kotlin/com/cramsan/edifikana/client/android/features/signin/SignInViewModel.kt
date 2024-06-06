@@ -1,9 +1,8 @@
 package com.cramsan.edifikana.client.android.features.signin
 
-import androidx.lifecycle.viewModelScope
 import com.cramsan.edifikana.client.android.features.base.EdifikanaBaseViewModel
 import com.cramsan.edifikana.client.android.managers.AuthManager
-import com.cramsan.edifikana.client.android.managers.remoteconfig.BehaviorConfig
+import com.cramsan.edifikana.client.lib.managers.remoteconfig.BehaviorConfig
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logI
 import com.cramsan.framework.logging.logW

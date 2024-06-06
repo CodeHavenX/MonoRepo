@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.client.android.features.formlist.entry
 
-import com.cramsan.edifikana.client.android.models.FormModel
+import com.cramsan.edifikana.client.lib.models.FormModel
 
 data class EntryUIModel(
     val name: String,

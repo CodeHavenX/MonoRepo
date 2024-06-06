@@ -7,7 +7,6 @@ plugins {
     id("com.google.devtools.ksp")
     id("com.google.firebase.crashlytics")
     kotlin("plugin.serialization")
-    id("androidx.room")
 }
 
 apply(from = "$rootDir/gradle/kotlin-mpp-target-android-app.gradle")
@@ -58,6 +57,7 @@ dependencies {
     implementation(project(":framework:logging"))
     implementation(project(":framework:thread"))
     implementation(project(":framework:crashhandler"))
+    implementation(project(":framework:core"))
 
     implementation(project(":edifikana:front-end:shared-compose"))
     implementation(project(":edifikana:shared"))
@@ -93,13 +93,7 @@ dependencies {
 
     implementation("androidx.room:room-runtime:_")
     implementation("androidx.room:room-ktx:_")
-    annotationProcessor("androidx.room:room-compiler:_")
-    // To use Kotlin Symbol Processing (KSP)
-    add("kspAndroid", "androidx.room:room-compiler:_")
-}
 
-room {
-    schemaDirectory("$projectDir/schemas")
 }
 
 // https://github.com/JetBrains/compose-multiplatform/issues/4711

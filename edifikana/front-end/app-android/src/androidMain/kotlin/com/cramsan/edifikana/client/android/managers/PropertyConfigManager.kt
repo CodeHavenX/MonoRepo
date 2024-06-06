@@ -1,8 +1,8 @@
 package com.cramsan.edifikana.client.android.managers
 
-import com.cramsan.edifikana.client.android.managers.mappers.toDomainModel
-import com.cramsan.edifikana.client.android.models.PropertyConfigModel
 import com.cramsan.edifikana.client.android.utils.getOrCatch
+import com.cramsan.edifikana.client.lib.managers.mappers.toDomainModel
+import com.cramsan.edifikana.client.lib.models.PropertyConfigModel
 import com.cramsan.edifikana.lib.firestore.FireStoreModel
 import com.cramsan.edifikana.lib.firestore.PropertyConfig
 import com.google.firebase.firestore.FirebaseFirestore

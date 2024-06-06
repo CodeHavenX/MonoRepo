@@ -8,10 +8,10 @@ import com.cramsan.edifikana.client.android.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.android.managers.EmployeeManager
 import com.cramsan.edifikana.client.android.managers.StorageService
 import com.cramsan.edifikana.client.android.managers.TimeCardManager
-import com.cramsan.edifikana.client.android.models.EmployeeModel
-import com.cramsan.edifikana.client.android.models.TimeCardRecordModel
-import com.cramsan.edifikana.client.android.models.fullName
 import com.cramsan.edifikana.client.lib.eventTypeFriendlyName
+import com.cramsan.edifikana.client.lib.models.EmployeeModel
+import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
+import com.cramsan.edifikana.client.lib.models.fullName
 import com.cramsan.edifikana.client.lib.toFriendlyDateTime
 import com.cramsan.edifikana.lib.firestore.EmployeePK
 import com.cramsan.edifikana.lib.firestore.TimeCardEventType
@@ -142,7 +142,7 @@ class ViewEmployeeViewModel @Inject constructor(
         val newRecord = TimeCardRecordModel(
             id = null,
             entityId = Random.nextInt().toString(),
-            employeePk = employee.employeePK,
+            employeePk = employeePk,
             eventType = timeCardEventType,
             eventTime = clock.now().epochSeconds,
             imageUrl = null,

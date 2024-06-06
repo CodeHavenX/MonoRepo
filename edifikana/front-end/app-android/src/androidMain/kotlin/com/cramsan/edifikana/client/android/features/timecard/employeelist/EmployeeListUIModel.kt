@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.android.features.timecard.employeelist
 
-import com.cramsan.edifikana.client.android.models.EmployeeModel
-import com.cramsan.edifikana.client.android.models.fullName
+import com.cramsan.edifikana.client.lib.models.EmployeeModel
+import com.cramsan.edifikana.client.lib.models.fullName
 import com.cramsan.edifikana.lib.firestore.EmployeePK
 
 data class EmployeeUIModel(

@@ -7,7 +7,7 @@ import com.cramsan.edifikana.client.android.features.base.EdifikanaBaseViewModel
 import com.cramsan.edifikana.client.android.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.android.features.main.Route
 import com.cramsan.edifikana.client.android.managers.FormsManager
-import com.cramsan.edifikana.client.android.models.FormRecordModel
+import com.cramsan.edifikana.client.lib.models.FormRecordModel
 import com.cramsan.framework.logging.logE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext

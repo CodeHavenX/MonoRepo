@@ -9,8 +9,8 @@ import com.cramsan.edifikana.client.android.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.android.managers.AttachmentManager
 import com.cramsan.edifikana.client.android.managers.EventLogManager
 import com.cramsan.edifikana.client.android.managers.StorageService
-import com.cramsan.edifikana.client.android.models.AttachmentHolder
-import com.cramsan.edifikana.client.android.models.EventLogRecordModel
+import com.cramsan.edifikana.client.lib.models.AttachmentHolder
+import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext

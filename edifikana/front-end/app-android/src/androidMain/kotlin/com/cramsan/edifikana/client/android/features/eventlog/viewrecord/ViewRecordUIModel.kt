@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.android.features.eventlog.viewrecord
 
-import com.cramsan.edifikana.client.android.models.AttachmentHolder
-import com.cramsan.edifikana.client.android.models.EventLogRecordModel
+import com.cramsan.edifikana.client.lib.models.AttachmentHolder
+import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.client.lib.toFriendlyDateTime
 import com.cramsan.edifikana.client.lib.toFriendlyString
 import com.cramsan.edifikana.lib.firestore.EventLogRecordPK

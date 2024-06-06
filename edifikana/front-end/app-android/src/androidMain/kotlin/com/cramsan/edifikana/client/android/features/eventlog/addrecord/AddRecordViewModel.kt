@@ -7,7 +7,7 @@ import com.cramsan.edifikana.client.android.features.base.EdifikanaBaseViewModel
 import com.cramsan.edifikana.client.android.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.android.managers.EmployeeManager
 import com.cramsan.edifikana.client.android.managers.EventLogManager
-import com.cramsan.edifikana.client.android.models.EventLogRecordModel
+import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.lib.firestore.EmployeePK
 import com.cramsan.edifikana.lib.firestore.EventType
 import dagger.hilt.android.lifecycle.HiltViewModel

@@ -8,8 +8,8 @@ import com.cramsan.edifikana.client.android.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.android.features.main.Route
 import com.cramsan.edifikana.client.android.managers.FormsManager
 import com.cramsan.edifikana.client.android.managers.WorkContext
-import com.cramsan.edifikana.client.android.managers.mappers.createSubmissionFormRecordModel
-import com.cramsan.edifikana.client.android.models.FormModel
+import com.cramsan.edifikana.client.lib.managers.mappers.createSubmissionFormRecordModel
+import com.cramsan.edifikana.client.lib.models.FormModel
 import com.cramsan.edifikana.lib.firestore.FormPK
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logW

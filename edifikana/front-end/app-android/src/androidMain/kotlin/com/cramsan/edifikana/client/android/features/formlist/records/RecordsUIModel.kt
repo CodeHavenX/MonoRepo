@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.client.android.features.formlist.records
 
-import com.cramsan.edifikana.client.android.models.FormRecordModel
+import com.cramsan.edifikana.client.lib.models.FormRecordModel
 import com.cramsan.edifikana.client.lib.toFriendlyDateTime
 
 data class RecordsUIModel(

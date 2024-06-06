@@ -38,9 +38,9 @@ import coil.compose.AsyncImage
 import com.cramsan.edifikana.client.android.R
 import com.cramsan.edifikana.client.android.features.main.MainActivityDelegatedEvent
 import com.cramsan.edifikana.client.android.features.main.MainActivityEvent
-import com.cramsan.edifikana.client.android.models.AttachmentHolder
-import com.cramsan.edifikana.client.android.models.StorageRef
 import com.cramsan.edifikana.client.android.ui.components.LoadingAnimationOverlay
+import com.cramsan.edifikana.client.lib.models.AttachmentHolder
+import com.cramsan.edifikana.client.lib.models.StorageRef
 import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
 
 @Composable

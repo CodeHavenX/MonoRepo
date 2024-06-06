@@ -1,17 +1,18 @@
 package com.cramsan.edifikana.client.android.managers
 
 import android.net.Uri
-import com.cramsan.edifikana.client.android.db.models.FileAttachmentDao
-import com.cramsan.edifikana.client.android.db.models.FileAttachmentEntity
-import com.cramsan.edifikana.client.android.models.StorageRef
 import com.cramsan.edifikana.client.android.utils.getFilename
 import com.cramsan.edifikana.client.android.utils.getOrCatch
 import com.cramsan.edifikana.client.android.utils.launch
+import com.cramsan.edifikana.client.lib.db.models.FileAttachmentDao
+import com.cramsan.edifikana.client.lib.db.models.FileAttachmentEntity
+import com.cramsan.edifikana.client.lib.models.StorageRef
 import com.cramsan.edifikana.lib.firestore.EventLogRecord
 import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
 import com.cramsan.edifikana.lib.firestore.FireStoreModel
 import com.cramsan.edifikana.lib.requireNotBlank
 import com.cramsan.edifikana.lib.storage.FOLDER_ATTACHMENTS
+import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.logging.logE
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Job
@@ -36,7 +37,7 @@ class AttachmentManager @Inject constructor(
         eventLogRecordPK: EventLogRecordPK,
     ): Result<Unit> = workContext.getOrCatch(TAG) {
         fileUris.forEach { fileUri ->
-            val entity = FileAttachmentEntity.create(eventLogRecordPK, workContext.clock, fileUri)
+            val entity = FileAttachmentEntity.create(eventLogRecordPK, workContext.clock, CoreUri(fileUri))
             attachmentDao.insert(entity)
         }
         triggerFullUpload()

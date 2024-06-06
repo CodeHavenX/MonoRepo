@@ -16,7 +16,7 @@ import com.cramsan.edifikana.client.android.features.camera.compose.CameraPrevie
 import com.cramsan.edifikana.client.android.features.camera.compose.PermissionDeniedScreen
 import com.cramsan.edifikana.client.android.features.camera.compose.PhotoConfirmation
 import com.cramsan.edifikana.client.android.features.camera.compose.PhotoErrorScreen
-import com.cramsan.edifikana.client.android.managers.remoteconfig.ImageConfig
+import com.cramsan.edifikana.client.lib.managers.remoteconfig.ImageConfig
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

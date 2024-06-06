@@ -1,46 +1,40 @@
-package com.cramsan.edifikana.client.android.ui.theme
+package com.cramsan.edifikana.client.lib.ui.theme
 
 import android.app.Activity
 import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-@Suppress("MagicNumber")
-private val md_theme_light_primary = Color(0xFF13BC9A)
-
-private val LightThemeColors = lightColorScheme(
-    primary = md_theme_light_primary,
-)
-private val DarkThemeColors = lightColorScheme(
-    primary = md_theme_light_primary,
-)
-
 @Composable
-fun AppTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
-) {
-    val colorScheme = when {
+actual fun getColorScheme(
+    darkTheme: Boolean,
+    dynamicColor: Boolean,
+    darkColorScheme: ColorScheme,
+    lightColorScheme: ColorScheme,
+): ColorScheme {
+    return when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        darkTheme -> DarkThemeColors
-        else -> LightThemeColors
+        darkTheme -> darkColorScheme
+        else -> lightColorScheme
     }
+}
+
+@Composable
+actual fun WindowDecorations(
+    colorScheme: ColorScheme,
+    darkTheme: Boolean,
+) {
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
@@ -49,9 +43,4 @@ fun AppTheme(
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
         }
     }
-
-    MaterialTheme(
-        colorScheme = colorScheme,
-        content = content
-    )
 }

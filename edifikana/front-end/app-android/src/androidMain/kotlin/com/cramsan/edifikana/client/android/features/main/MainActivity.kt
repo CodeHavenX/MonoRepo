@@ -24,10 +24,10 @@ import com.cramsan.edifikana.client.android.features.signin.SignInActivity
 import com.cramsan.edifikana.client.android.managers.AttachmentManager
 import com.cramsan.edifikana.client.android.managers.EventLogManager
 import com.cramsan.edifikana.client.android.managers.TimeCardManager
-import com.cramsan.edifikana.client.android.ui.theme.AppTheme
 import com.cramsan.edifikana.client.android.utils.shareContent
 import com.cramsan.edifikana.client.lib.managers.remoteconfig.FeatureConfig
 import com.cramsan.edifikana.client.lib.managers.remoteconfig.Features
+import com.cramsan.edifikana.client.lib.ui.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.client.android.ui.components
+package com.cramsan.edifikana.client.lib.ui.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn

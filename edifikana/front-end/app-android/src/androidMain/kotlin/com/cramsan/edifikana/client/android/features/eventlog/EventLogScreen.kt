@@ -30,7 +30,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.android.R
 import com.cramsan.edifikana.client.android.features.main.MainActivityEvent
-import com.cramsan.edifikana.client.android.ui.components.LoadingAnimationOverlay
+import com.cramsan.edifikana.client.lib.ui.components.LoadingAnimationOverlay
 import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
 
 @Composable

@@ -24,10 +24,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.cramsan.edifikana.client.android.R
 import com.cramsan.edifikana.client.android.features.main.MainActivityEvent
-import com.cramsan.edifikana.client.android.ui.components.Dropdown
-import com.cramsan.edifikana.client.android.ui.components.LoadingAnimationOverlay
 import com.cramsan.edifikana.client.lib.toIdTypeFriendlyName
 import com.cramsan.edifikana.client.lib.toRoleFriendlyNameCompose
+import com.cramsan.edifikana.client.lib.ui.components.Dropdown
+import com.cramsan.edifikana.client.lib.ui.components.LoadingAnimationOverlay
 import com.cramsan.edifikana.lib.firestore.EmployeeRole
 import com.cramsan.edifikana.lib.firestore.IdType
 

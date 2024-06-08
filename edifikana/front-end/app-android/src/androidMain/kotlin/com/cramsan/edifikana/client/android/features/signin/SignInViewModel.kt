@@ -1,8 +1,9 @@
 package com.cramsan.edifikana.client.android.features.signin
 
 import com.cramsan.edifikana.client.android.features.base.EdifikanaBaseViewModel
-import com.cramsan.edifikana.client.android.managers.AuthManager
+import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.remoteconfig.BehaviorConfig
+import com.cramsan.edifikana.client.lib.service.auth.FirebaseAuthSignInResult
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logI
 import com.cramsan.framework.logging.logW
@@ -100,7 +101,8 @@ class SignInViewModel @Inject constructor(
     }
 
     fun onSignInResult(result: FirebaseAuthUIAuthenticationResult?) = viewModelScope.launch {
-        if (auth.handleSignInResult(result).getOrThrow()) {
+        val signInResult = FirebaseAuthSignInResult(result)
+        if (auth.handleSignInResult(signInResult).getOrThrow()) {
             _events.emit(SignInActivityEvents.CloseSignIn())
         } else {
             // TODO: Show error message

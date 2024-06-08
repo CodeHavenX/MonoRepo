@@ -53,3 +53,13 @@ fun TimeCardRecordEntity.toFirebaseModel(): TimeCardRecord {
         imageUrl = cachedImageUrl,
     )
 }
+
+@FireStoreModel
+fun TimeCardRecordModel.toFirebaseModel(): TimeCardRecord {
+    return TimeCardRecord(
+        employeeDocumentId = employeePk.documentPath,
+        eventType = eventType ?: TODO("Event type cannot be null"),
+        eventTime = eventTime ?: TODO("Event time cannot be null"),
+        imageUrl = imageUrl,
+    )
+}

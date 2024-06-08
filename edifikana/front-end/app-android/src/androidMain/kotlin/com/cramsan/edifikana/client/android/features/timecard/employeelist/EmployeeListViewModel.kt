@@ -3,9 +3,9 @@ package com.cramsan.edifikana.client.android.features.timecard.employeelist
 import android.content.Context
 import com.cramsan.edifikana.client.android.R
 import com.cramsan.edifikana.client.android.features.base.EdifikanaBaseViewModel
-import com.cramsan.edifikana.client.android.features.main.MainActivityEvent
-import com.cramsan.edifikana.client.android.features.main.Route
-import com.cramsan.edifikana.client.android.managers.EmployeeManager
+import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
+import com.cramsan.edifikana.client.lib.features.main.Route
+import com.cramsan.edifikana.client.lib.managers.EmployeeManager
 import com.cramsan.edifikana.lib.firestore.EmployeePK
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext

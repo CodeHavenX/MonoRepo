@@ -1,17 +1,16 @@
 package com.cramsan.edifikana.client.android.features.eventlog.viewrecord
 
 import android.content.Context
-import android.net.Uri
-import androidx.lifecycle.viewModelScope
 import com.cramsan.edifikana.client.android.R
 import com.cramsan.edifikana.client.android.features.base.EdifikanaBaseViewModel
-import com.cramsan.edifikana.client.android.features.main.MainActivityEvent
-import com.cramsan.edifikana.client.android.managers.AttachmentManager
-import com.cramsan.edifikana.client.android.managers.EventLogManager
-import com.cramsan.edifikana.client.android.managers.StorageService
+import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
+import com.cramsan.edifikana.client.lib.managers.AttachmentManager
+import com.cramsan.edifikana.client.lib.managers.EventLogManager
 import com.cramsan.edifikana.client.lib.models.AttachmentHolder
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
+import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
+import com.cramsan.framework.core.CoreUri
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -86,7 +85,7 @@ class ViewRecordViewModel @Inject constructor(
         )
     }
 
-    fun upload(uris: List<Uri>) = viewModelScope.launch {
+    fun upload(uris: List<CoreUri>) = viewModelScope.launch {
         val recordPk = record?.id ?: return@launch
 
         _uiState.value = _uiState.value.copy(isLoading = true)
@@ -108,7 +107,7 @@ class ViewRecordViewModel @Inject constructor(
                 null
             } ?: return@launch
         } else {
-            Uri.parse(attachmentHolder.publicUrl)
+            CoreUri.createUri(attachmentHolder.publicUrl)
         }
 
         _event.emit(

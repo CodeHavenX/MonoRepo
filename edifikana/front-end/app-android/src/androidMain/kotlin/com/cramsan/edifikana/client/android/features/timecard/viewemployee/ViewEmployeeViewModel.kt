@@ -1,21 +1,21 @@
 package com.cramsan.edifikana.client.android.features.timecard.viewemployee
 
 import android.content.Context
-import android.net.Uri
 import com.cramsan.edifikana.client.android.R
 import com.cramsan.edifikana.client.android.features.base.EdifikanaBaseViewModel
-import com.cramsan.edifikana.client.android.features.main.MainActivityEvent
-import com.cramsan.edifikana.client.android.managers.EmployeeManager
-import com.cramsan.edifikana.client.android.managers.StorageService
-import com.cramsan.edifikana.client.android.managers.TimeCardManager
 import com.cramsan.edifikana.client.lib.eventTypeFriendlyName
+import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
+import com.cramsan.edifikana.client.lib.managers.EmployeeManager
+import com.cramsan.edifikana.client.lib.managers.TimeCardManager
 import com.cramsan.edifikana.client.lib.models.EmployeeModel
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
 import com.cramsan.edifikana.client.lib.models.fullName
+import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.edifikana.client.lib.toFriendlyDateTime
 import com.cramsan.edifikana.lib.firestore.EmployeePK
 import com.cramsan.edifikana.lib.firestore.TimeCardEventType
 import com.cramsan.edifikana.lib.firestore.TimeCardRecordPK
+import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.logging.logW
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -132,7 +132,7 @@ class ViewEmployeeViewModel @Inject constructor(
         )
     }
 
-    fun recordClockEvent(photoUri: Uri) = viewModelScope.launch {
+    fun recordClockEvent(photoUri: CoreUri) = viewModelScope.launch {
         val timeCardEventType = eventType ?: return@launch
         val employee = employee ?: return@launch
         val employeePk = employee.employeePK ?: return@launch
@@ -184,6 +184,6 @@ class ViewEmployeeViewModel @Inject constructor(
     }
 
     companion object {
-        const val TAG = "ViewEmployeeViewModel"
+        private const val TAG = "ViewEmployeeViewModel"
     }
 }

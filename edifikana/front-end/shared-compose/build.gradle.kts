@@ -22,9 +22,9 @@ kotlin {
 
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:_")
             implementation("org.jetbrains.androidx.navigation:navigation-compose:_")
+            implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:_")
             implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:_")
             implementation("androidx.room:room-runtime:_")
-            implementation("androidx.room:room-ktx:_")
         }
     }
 }
@@ -42,10 +42,24 @@ compose.resources {
 }
 
 dependencies {
+    implementation(platform("com.google.firebase:firebase-bom:_"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-storage")
+    implementation("com.google.firebase:firebase-crashlytics")
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-config")
+    implementation("com.firebaseui:firebase-ui-auth:_")
+
     // To use Kotlin Symbol Processing (KSP)
     add("kspCommonMainMetadata", "androidx.room:room-compiler:_")
     add("kspAndroid", "androidx.room:room-compiler:_")
     add("kspJvm", "androidx.room:room-compiler:_")
+
+    // Hilt
+    implementation("com.google.dagger:hilt-android:_")
+    implementation("androidx.hilt:hilt-navigation-compose:_")
 }
 
 room {

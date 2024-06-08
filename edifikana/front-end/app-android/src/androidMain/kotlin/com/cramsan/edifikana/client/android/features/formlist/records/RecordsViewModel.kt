@@ -1,12 +1,11 @@
 package com.cramsan.edifikana.client.android.features.formlist.records
 
 import android.content.Context
-import androidx.lifecycle.viewModelScope
 import com.cramsan.edifikana.client.android.R
 import com.cramsan.edifikana.client.android.features.base.EdifikanaBaseViewModel
-import com.cramsan.edifikana.client.android.features.main.MainActivityEvent
-import com.cramsan.edifikana.client.android.features.main.Route
-import com.cramsan.edifikana.client.android.managers.FormsManager
+import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
+import com.cramsan.edifikana.client.lib.features.main.Route
+import com.cramsan.edifikana.client.lib.managers.FormsManager
 import com.cramsan.edifikana.client.lib.models.FormRecordModel
 import com.cramsan.framework.logging.logE
 import dagger.hilt.android.lifecycle.HiltViewModel

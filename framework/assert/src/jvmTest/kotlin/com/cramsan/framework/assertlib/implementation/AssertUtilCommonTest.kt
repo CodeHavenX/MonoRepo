@@ -51,12 +51,14 @@ class AssertUtilCommonTest : TestBase() {
         val classTag = "Test"
 
         every { eventLogger.log(Severity.ERROR, classTag, "Assert-Message-1") } just Runs
+        every { eventLogger.log(Severity.ERROR, classTag, "HALTING THREAD!!!") } just Runs
         every { haltUtil.stopThread() } just Runs
 
         assertUtil.assert(false, classTag, "Assert-Message-1")
 
         verify(exactly = 1) {
             eventLogger.log(Severity.ERROR, classTag, "Assert-Message-1")
+            eventLogger.log(Severity.ERROR, classTag, "HALTING THREAD!!!")
             haltUtil.stopThread()
         }
     }

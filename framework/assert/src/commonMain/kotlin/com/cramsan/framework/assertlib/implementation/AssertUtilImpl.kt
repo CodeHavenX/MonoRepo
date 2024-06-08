@@ -30,6 +30,7 @@ class AssertUtilImpl(
         }
         eventLogger?.log(Severity.ERROR, tag, message)
         if (haltOnFailure) {
+            eventLogger?.log(Severity.ERROR, tag, "HALTING THREAD!!!")
             haltUtil?.stopThread()
         }
     }

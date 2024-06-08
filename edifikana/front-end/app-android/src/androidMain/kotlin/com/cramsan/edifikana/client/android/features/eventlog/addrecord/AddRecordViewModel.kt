@@ -1,12 +1,11 @@
 package com.cramsan.edifikana.client.android.features.eventlog.addrecord
 
 import android.content.Context
-import androidx.lifecycle.viewModelScope
 import com.cramsan.edifikana.client.android.R
 import com.cramsan.edifikana.client.android.features.base.EdifikanaBaseViewModel
-import com.cramsan.edifikana.client.android.features.main.MainActivityEvent
-import com.cramsan.edifikana.client.android.managers.EmployeeManager
-import com.cramsan.edifikana.client.android.managers.EventLogManager
+import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
+import com.cramsan.edifikana.client.lib.managers.EmployeeManager
+import com.cramsan.edifikana.client.lib.managers.EventLogManager
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.lib.firestore.EmployeePK
 import com.cramsan.edifikana.lib.firestore.EventType

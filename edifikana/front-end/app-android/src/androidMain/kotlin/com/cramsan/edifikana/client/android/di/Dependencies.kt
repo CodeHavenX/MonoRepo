@@ -13,14 +13,37 @@ import com.cramsan.edifikana.client.lib.db.AppDatabase
 import com.cramsan.edifikana.client.lib.db.models.EventLogRecordDao
 import com.cramsan.edifikana.client.lib.db.models.FileAttachmentDao
 import com.cramsan.edifikana.client.lib.db.models.TimeCardRecordDao
+import com.cramsan.edifikana.client.lib.managers.AttachmentManager
+import com.cramsan.edifikana.client.lib.managers.AuthManager
+import com.cramsan.edifikana.client.lib.managers.EmployeeManager
+import com.cramsan.edifikana.client.lib.managers.EventLogManager
+import com.cramsan.edifikana.client.lib.managers.FormsManager
+import com.cramsan.edifikana.client.lib.managers.TimeCardManager
+import com.cramsan.edifikana.client.lib.managers.WorkContext
 import com.cramsan.edifikana.client.lib.managers.remoteconfig.BehaviorConfig
 import com.cramsan.edifikana.client.lib.managers.remoteconfig.CachingConfig
 import com.cramsan.edifikana.client.lib.managers.remoteconfig.FeatureConfig
 import com.cramsan.edifikana.client.lib.managers.remoteconfig.ImageConfig
 import com.cramsan.edifikana.client.lib.managers.remoteconfig.RemoteConfig
+import com.cramsan.edifikana.client.lib.service.AuthService
+import com.cramsan.edifikana.client.lib.service.EmployeeService
+import com.cramsan.edifikana.client.lib.service.EventLogService
+import com.cramsan.edifikana.client.lib.service.FirebaseAuthService
+import com.cramsan.edifikana.client.lib.service.FirebaseEmployeeService
+import com.cramsan.edifikana.client.lib.service.FirebaseEventLogService
+import com.cramsan.edifikana.client.lib.service.FirebaseFormsService
+import com.cramsan.edifikana.client.lib.service.FirebasePropertyConfigService
+import com.cramsan.edifikana.client.lib.service.FirebaseStorageService
+import com.cramsan.edifikana.client.lib.service.FirebaseTimeCardService
+import com.cramsan.edifikana.client.lib.service.FormsService
+import com.cramsan.edifikana.client.lib.service.PropertyConfigService
+import com.cramsan.edifikana.client.lib.service.StorageService
+import com.cramsan.edifikana.client.lib.service.TimeCardService
 import com.cramsan.framework.assertlib.AssertUtil
 import com.cramsan.framework.assertlib.AssertUtilInterface
 import com.cramsan.framework.assertlib.implementation.AssertUtilImpl
+import com.cramsan.framework.core.DispatcherProvider
+import com.cramsan.framework.core.DispatcherProviderImpl
 import com.cramsan.framework.crashehandler.CrashHandler
 import com.cramsan.framework.crashehandler.CrashHandlerDelegate
 import com.cramsan.framework.crashehandler.implementation.CrashHandlerImpl
@@ -182,6 +205,12 @@ object Dependencies {
         }
     }
 
+    @Provides
+    @Singleton
+    fun provideDispatcherProvider(): DispatcherProvider {
+        return DispatcherProviderImpl()
+    }
+
     // Firebase Dependencies
     @Singleton
     @Provides
@@ -221,6 +250,87 @@ object Dependencies {
     @FirebaseProjectName
     fun provideFirebaseProjectName(): String {
         return Firebase.app.options.projectId ?: TODO("Add error handling")
+    }
+
+    @Singleton
+    @Provides
+    fun provideAuthService(
+        firebaseAuth: FirebaseAuth,
+        fireStore: FirebaseFirestore,
+    ): AuthService {
+        return FirebaseAuthService(
+            firebaseAuth,
+            fireStore,
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideEmployeeService(
+        fireStore: FirebaseFirestore,
+    ): EmployeeService {
+        return FirebaseEmployeeService(
+            fireStore,
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideEventLogService(
+        fireStore: FirebaseFirestore,
+        workContext: WorkContext,
+    ): EventLogService {
+        return FirebaseEventLogService(
+            fireStore,
+            workContext,
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideFormsService(
+        fireStore: FirebaseFirestore,
+        workContext: WorkContext,
+    ): FormsService {
+        return FirebaseFormsService(
+            fireStore,
+            workContext,
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun providePropertyConfigService(
+        fireStore: FirebaseFirestore,
+    ): PropertyConfigService {
+        return FirebasePropertyConfigService(
+            fireStore,
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideStorageService(
+        firebaseStorage: FirebaseStorage,
+        @ApplicationContext
+        context: Context,
+    ): StorageService {
+        return FirebaseStorageService(
+            firebaseStorage,
+            context,
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideTimeCardService(
+        fireStore: FirebaseFirestore,
+        workContext: WorkContext,
+    ): TimeCardService {
+        return FirebaseTimeCardService(
+            fireStore,
+            workContext,
+        )
     }
 
     // Application Dependencies
@@ -291,6 +401,109 @@ object Dependencies {
             "offline-db"
         ).fallbackToDestructiveMigration()
             .build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideWorkContext(
+        clock: Clock,
+        appScope: CoroutineScope,
+        dispatcherProvider: DispatcherProvider,
+        coroutineExceptionHandler: CoroutineExceptionHandler,
+        @FirebaseStorageBucketName
+        storageBucket: String,
+    ): WorkContext {
+        return WorkContext(
+            clock,
+            appScope,
+            dispatcherProvider,
+            coroutineExceptionHandler,
+            storageBucket,
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideEventLogManager(
+        eventLogService: EventLogService,
+        eventLogRecordDao: EventLogRecordDao,
+        attachmentDao: FileAttachmentDao,
+        workContext: WorkContext,
+    ): EventLogManager {
+        return EventLogManager(
+            eventLogService,
+            eventLogRecordDao,
+            attachmentDao,
+            workContext,
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideAttachmentManager(
+        eventLogService: EventLogService,
+        storageService: StorageService,
+        attachmentDao: FileAttachmentDao,
+        workContext: WorkContext,
+    ): AttachmentManager {
+        return AttachmentManager(
+            eventLogService,
+            storageService,
+            attachmentDao,
+            workContext,
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideTimeCardManager(
+        timeCardService: TimeCardService,
+        timeCardRecordDao: TimeCardRecordDao,
+        storageService: StorageService,
+        workContext: WorkContext,
+    ): TimeCardManager {
+        return TimeCardManager(
+            timeCardService,
+            timeCardRecordDao,
+            storageService,
+            workContext,
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideEmployeeManager(
+        employeeService: EmployeeService,
+        workContext: WorkContext,
+    ): EmployeeManager {
+        return EmployeeManager(
+            employeeService,
+            workContext,
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideFormsManager(
+        formsService: FormsService,
+        workContext: WorkContext,
+    ): FormsManager {
+        return FormsManager(
+            formsService,
+            workContext,
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideAuthManager(
+        authService: AuthService,
+        workContext: WorkContext,
+    ): AuthManager {
+        return AuthManager(
+            authService,
+            workContext,
+        )
     }
 
     // Room Dependencies

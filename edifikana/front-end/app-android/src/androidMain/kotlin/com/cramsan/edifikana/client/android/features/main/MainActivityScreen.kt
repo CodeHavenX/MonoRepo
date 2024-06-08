@@ -34,7 +34,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.cramsan.edifikana.client.android.R
-import com.cramsan.edifikana.client.android.features.eventlog.EventLogScreen
 import com.cramsan.edifikana.client.android.features.eventlog.addrecord.AddRecordScreen
 import com.cramsan.edifikana.client.android.features.eventlog.viewrecord.ViewRecordScreen
 import com.cramsan.edifikana.client.android.features.formlist.FormListScreen
@@ -45,6 +44,10 @@ import com.cramsan.edifikana.client.android.features.timecard.TimeCardScreen
 import com.cramsan.edifikana.client.android.features.timecard.addemployee.AddEmployeeScreen
 import com.cramsan.edifikana.client.android.features.timecard.employeelist.EmployeeListScreen
 import com.cramsan.edifikana.client.android.features.timecard.viewemployee.ViewEmployeeScreen
+import com.cramsan.edifikana.client.lib.features.eventlog.EventLogScreen
+import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
+import com.cramsan.edifikana.client.lib.features.main.Route
+import com.cramsan.edifikana.client.lib.features.main.RouteSafePath
 import com.cramsan.edifikana.lib.firestore.EmployeePK
 import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
 import com.cramsan.edifikana.lib.firestore.FormPK

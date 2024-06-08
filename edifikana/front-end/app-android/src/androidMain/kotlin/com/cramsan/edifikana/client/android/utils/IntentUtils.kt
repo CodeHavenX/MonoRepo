@@ -3,17 +3,17 @@ package com.cramsan.edifikana.client.android.utils
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.widget.Toast
 import com.cramsan.edifikana.client.android.R
+import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.logging.logE
 
-fun Context.shareContent(tag: String, text: String, imageUri: Uri?): Boolean {
+fun Context.shareContent(tag: String, text: String, imageUri: CoreUri?): Boolean {
     val shareIntent = Intent(Intent.ACTION_SEND)
     shareIntent.putExtra(Intent.EXTRA_TEXT, text)
     if (imageUri != null) {
         shareIntent.setType("image/jpeg")
-        shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri)
+        shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri.getAndroidUri())
         shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     } else {
         shareIntent.setType("text/plain")

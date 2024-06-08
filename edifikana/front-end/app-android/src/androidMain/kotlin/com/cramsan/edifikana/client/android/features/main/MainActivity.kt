@@ -21,13 +21,15 @@ import androidx.navigation.compose.rememberNavController
 import com.cramsan.edifikana.client.android.db.clearOldFiles
 import com.cramsan.edifikana.client.android.features.camera.CameraContract
 import com.cramsan.edifikana.client.android.features.signin.SignInActivity
-import com.cramsan.edifikana.client.android.managers.AttachmentManager
-import com.cramsan.edifikana.client.android.managers.EventLogManager
-import com.cramsan.edifikana.client.android.managers.TimeCardManager
 import com.cramsan.edifikana.client.android.utils.shareContent
+import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
+import com.cramsan.edifikana.client.lib.managers.AttachmentManager
+import com.cramsan.edifikana.client.lib.managers.EventLogManager
+import com.cramsan.edifikana.client.lib.managers.TimeCardManager
 import com.cramsan.edifikana.client.lib.managers.remoteconfig.FeatureConfig
 import com.cramsan.edifikana.client.lib.managers.remoteconfig.Features
 import com.cramsan.edifikana.client.lib.ui.theme.AppTheme
+import com.cramsan.framework.core.CoreUri
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -43,7 +45,7 @@ class MainActivity : ComponentActivity() {
     private val viewModel: MainActivityViewModel by viewModels()
 
     private val cameraLauncher = registerForActivityResult(CameraContract()) { filePath ->
-        viewModel.handleReceivedImage(filePath)
+        viewModel.handleReceivedImage(filePath?.let { CoreUri(it) })
     }
 
     @Inject
@@ -59,7 +61,8 @@ class MainActivity : ComponentActivity() {
     private val mediaAttachmentLauncher = registerForActivityResult(
         ActivityResultContracts.PickMultipleVisualMedia(5),
     ) { uris ->
-        viewModel.handleReceivedImages(uris)
+        // TODO: Move mapping logic to ViewModel
+        viewModel.handleReceivedImages(uris.map { CoreUri(it) })
     }
 
     @Suppress("LongMethod")
@@ -93,7 +96,7 @@ class MainActivity : ComponentActivity() {
                             context,
                             Intent(
                                 Intent.ACTION_VIEW,
-                                mainActivityEvent.imageUri,
+                                mainActivityEvent.imageUri.getAndroidUri(),
                             ),
                             null,
                         )

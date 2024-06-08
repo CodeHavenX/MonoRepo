@@ -1,10 +1,9 @@
 package com.cramsan.edifikana.client.android.features.formlist.records.read
 
 import android.content.Context
-import androidx.lifecycle.viewModelScope
 import com.cramsan.edifikana.client.android.R
 import com.cramsan.edifikana.client.android.features.base.EdifikanaBaseViewModel
-import com.cramsan.edifikana.client.android.managers.FormsManager
+import com.cramsan.edifikana.client.lib.managers.FormsManager
 import com.cramsan.edifikana.lib.firestore.FormRecordPK
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext

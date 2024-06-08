@@ -1,9 +1,9 @@
 package com.cramsan.edifikana.client.android.features.main
 
-import android.net.Uri
-import androidx.lifecycle.viewModelScope
 import com.cramsan.edifikana.client.android.features.base.EdifikanaBaseViewModel
-import com.cramsan.edifikana.client.android.managers.AuthManager
+import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
+import com.cramsan.edifikana.client.lib.managers.AuthManager
+import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.logging.logI
 import com.cramsan.framework.logging.logW
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -41,7 +41,7 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
-    fun handleReceivedImage(uri: Uri?) = viewModelScope.launch {
+    fun handleReceivedImage(uri: CoreUri?) = viewModelScope.launch {
         if (uri == null) {
             logI(TAG, "Uri was null.")
         } else {
@@ -50,7 +50,7 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
-    fun handleReceivedImages(uris: List<Uri>) = viewModelScope.launch {
+    fun handleReceivedImages(uris: List<CoreUri>) = viewModelScope.launch {
         if (uris.isEmpty()) {
             logI(TAG, "Uri list is empty.")
         } else {

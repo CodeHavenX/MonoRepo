@@ -94,6 +94,9 @@ dependencies {
     implementation("androidx.room:room-runtime:_")
     implementation("androidx.room:room-ktx:_")
 
+    implementation("io.insert-koin:koin-core:_")
+    implementation("io.insert-koin:koin-android:_")
+    implementation("io.insert-koin:koin-androidx-compose:_")
 }
 
 // https://github.com/JetBrains/compose-multiplatform/issues/4711

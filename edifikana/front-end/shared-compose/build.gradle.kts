@@ -22,9 +22,13 @@ kotlin {
 
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:_")
             implementation("org.jetbrains.androidx.navigation:navigation-compose:_")
+            implementation("org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose:_")
             implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:_")
             implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:_")
             implementation("androidx.room:room-runtime:_")
+
+            implementation("io.insert-koin:koin-core:_")
+            implementation("io.insert-koin:koin-compose:_")
         }
     }
 }

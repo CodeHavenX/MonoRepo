@@ -3,22 +3,20 @@ package com.cramsan.edifikana.client.android
 import android.app.Application
 import coil.ImageLoader
 import coil.ImageLoaderFactory
-import com.cramsan.framework.assertlib.AssertUtilInterface
-import com.cramsan.framework.logging.EventLoggerInterface
+import com.cramsan.edifikana.client.android.di.koin.AndroidModule
+import com.cramsan.edifikana.client.android.di.koin.FrameworkModule
+import com.cramsan.edifikana.client.android.di.koin.ManagerModule
+import com.cramsan.edifikana.client.android.di.koin.ViewModelModule
 import dagger.hilt.android.HiltAndroidApp
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.startKoin
 
 @HiltAndroidApp
 class EdifikanaApplication : Application(), ImageLoaderFactory {
 
-    @Inject
-    lateinit var imageLoader: ImageLoader
-
-    @Inject
-    lateinit var eventLogger: EventLoggerInterface
-
-    @Inject
-    lateinit var assertUtilInterface: AssertUtilInterface
+    private val imageLoader: ImageLoader by inject()
 
     /**
      * Create a new instance of [ImageLoader] and configure it.
@@ -30,10 +28,18 @@ class EdifikanaApplication : Application(), ImageLoaderFactory {
     override fun onCreate() {
         super.onCreate()
 
-        eventLogger.i(TAG, "onCreate")
-    }
-
-    companion object {
-        private const val TAG = "EdifikanaApplication"
+        startKoin {
+            // Log Koin into Android logger
+            androidLogger()
+            // Reference Android context
+            androidContext(this@EdifikanaApplication)
+            // Load modules
+            modules(
+                FrameworkModule,
+                ManagerModule,
+                AndroidModule,
+                ViewModelModule,
+            )
+        }
     }
 }

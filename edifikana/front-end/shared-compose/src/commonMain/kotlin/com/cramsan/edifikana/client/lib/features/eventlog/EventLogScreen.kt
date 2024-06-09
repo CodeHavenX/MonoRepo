@@ -22,10 +22,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.lib.ui.components.LoadingAnimationOverlay
 import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
@@ -33,29 +32,19 @@ import edifikana_lib.Res
 import edifikana_lib.text_upload
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.koinInject
 
 @Composable
 fun EventLogScreen(
     onMainActivityEventInvoke: (MainActivityEvent) -> Unit,
     onTitleChange: (String) -> Unit,
-    viewModel: EventLogViewModel = viewModel<EventLogViewModel> { TODO() },
+    viewModel: EventLogViewModel = koinInject(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val event by viewModel.event.collectAsState(EventLogEvent.Noop)
 
-    val lifecycleOwner = LocalLifecycleOwner.current
-    val currentLifecycleState = lifecycleOwner.lifecycle.currentState
-
-    LaunchedEffect(currentLifecycleState) {
-        when (currentLifecycleState) {
-            Lifecycle.State.RESUMED -> {
-                viewModel.loadRecords()
-            }
-            Lifecycle.State.INITIALIZED -> Unit
-            Lifecycle.State.CREATED -> Unit
-            Lifecycle.State.STARTED -> Unit
-            Lifecycle.State.DESTROYED -> Unit
-        }
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        viewModel.loadRecords()
     }
 
     LaunchedEffect(event) {

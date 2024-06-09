@@ -33,6 +33,8 @@ import com.cramsan.framework.core.CoreUri
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.KoinAndroidContext
+import org.koin.core.annotation.KoinExperimentalAPI
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
@@ -65,6 +67,7 @@ class MainActivity : ComponentActivity() {
         viewModel.handleReceivedImages(uris.map { CoreUri(it) })
     }
 
+    @OptIn(KoinExperimentalAPI::class)
     @Suppress("LongMethod")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -137,13 +140,15 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
-            AppTheme {
-                MainActivityScreen(
-                    navController = navController,
-                    mainActivityDelegatedEvent = delegatedEvent,
-                    onMainActivityEventInvoke = { viewModel.executeMainActivityEvent(it) },
-                    formTabFeatureEnabled = featuresConfig.isFeatureEnabled(Features.FORM_TAB),
-                )
+            KoinAndroidContext {
+                AppTheme {
+                    MainActivityScreen(
+                        navController = navController,
+                        mainActivityDelegatedEvent = delegatedEvent,
+                        onMainActivityEventInvoke = { viewModel.executeMainActivityEvent(it) },
+                        formTabFeatureEnabled = featuresConfig.isFeatureEnabled(Features.FORM_TAB),
+                    )
+                }
             }
         }
 

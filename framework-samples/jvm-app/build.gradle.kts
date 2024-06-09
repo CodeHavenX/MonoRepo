@@ -28,7 +28,7 @@ dependencies {
     implementation(project(":framework:thread"))
     implementation(project(":framework:interfacelib"))
 
-    implementation("io.insert-koin:koin-compose:${versionFor("version.io.insert-koin..koin-compose")}")
+    implementation("io.insert-koin:koin-compose:${versionFor("version.io.insert-koin")}")
     implementation("io.insert-koin:koin-core:_")
     implementation("org.apache.logging.log4j:log4j-slf4j2-impl:_")
 

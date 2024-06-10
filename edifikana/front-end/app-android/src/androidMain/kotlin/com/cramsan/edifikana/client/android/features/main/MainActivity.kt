@@ -7,7 +7,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -22,42 +21,23 @@ import com.cramsan.edifikana.client.android.db.clearOldFiles
 import com.cramsan.edifikana.client.android.features.camera.CameraContract
 import com.cramsan.edifikana.client.android.features.signin.SignInActivity
 import com.cramsan.edifikana.client.android.utils.shareContent
+import com.cramsan.edifikana.client.lib.features.main.MainActivityDelegatedEvent
 import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
-import com.cramsan.edifikana.client.lib.managers.AttachmentManager
-import com.cramsan.edifikana.client.lib.managers.EventLogManager
-import com.cramsan.edifikana.client.lib.managers.TimeCardManager
-import com.cramsan.edifikana.client.lib.managers.remoteconfig.FeatureConfig
-import com.cramsan.edifikana.client.lib.managers.remoteconfig.Features
 import com.cramsan.edifikana.client.lib.ui.theme.AppTheme
 import com.cramsan.framework.core.CoreUri
-import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 import org.koin.androidx.compose.KoinAndroidContext
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.annotation.KoinExperimentalAPI
-import javax.inject.Inject
-import kotlin.time.Duration.Companion.seconds
 
-@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @Inject
-    lateinit var featuresConfig: FeatureConfig
-
-    private val viewModel: MainActivityViewModel by viewModels()
+    private val viewModel: MainActivityViewModel by inject()
 
     private val cameraLauncher = registerForActivityResult(CameraContract()) { filePath ->
         viewModel.handleReceivedImage(filePath?.let { CoreUri(it) })
     }
-
-    @Inject
-    lateinit var eventLogManager: EventLogManager
-
-    @Inject
-    lateinit var attachmentManager: AttachmentManager
-
-    @Inject
-    lateinit var timeCardManager: TimeCardManager
 
     @Suppress("MagicNumber")
     private val mediaAttachmentLauncher = registerForActivityResult(
@@ -146,23 +126,13 @@ class MainActivity : ComponentActivity() {
                         navController = navController,
                         mainActivityDelegatedEvent = delegatedEvent,
                         onMainActivityEventInvoke = { viewModel.executeMainActivityEvent(it) },
-                        formTabFeatureEnabled = featuresConfig.isFeatureEnabled(Features.FORM_TAB),
+                        formTabFeatureEnabled = false,
                     )
                 }
             }
         }
 
         clearOldFiles()
-        uploadPending()
-    }
-
-    private fun uploadPending() {
-        lifecycleScope.launch {
-            delay(1.seconds)
-            eventLogManager.startUpload()
-            attachmentManager.startUpload()
-            timeCardManager.startUpload()
-        }
     }
 
     companion object {

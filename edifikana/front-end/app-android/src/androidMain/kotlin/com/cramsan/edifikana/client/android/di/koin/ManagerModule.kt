@@ -2,7 +2,7 @@ package com.cramsan.edifikana.client.android.di.koin
 
 import com.cramsan.edifikana.client.android.BuildConfig
 import com.cramsan.edifikana.client.android.R
-import com.cramsan.edifikana.client.android.managers.remoteconfig.RemoteConfigService
+import com.cramsan.edifikana.client.lib.service.RemoteConfigService
 import com.cramsan.edifikana.client.lib.managers.AttachmentManager
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.EmployeeManager
@@ -12,11 +12,14 @@ import com.cramsan.edifikana.client.lib.managers.TimeCardManager
 import com.cramsan.edifikana.client.lib.managers.WorkContext
 import com.cramsan.edifikana.client.lib.managers.remoteconfig.RemoteConfig
 import com.cramsan.edifikana.client.lib.service.AuthService
+import com.cramsan.edifikana.client.lib.service.EmployeeService
 import com.cramsan.edifikana.client.lib.service.EventLogService
 import com.cramsan.edifikana.client.lib.service.FirebaseAuthService
+import com.cramsan.edifikana.client.lib.service.FirebaseEmployeeService
 import com.cramsan.edifikana.client.lib.service.FirebaseEventLogService
 import com.cramsan.edifikana.client.lib.service.FirebaseFormsService
 import com.cramsan.edifikana.client.lib.service.FirebasePropertyConfigService
+import com.cramsan.edifikana.client.lib.service.FirebaseRemoteConfigService
 import com.cramsan.edifikana.client.lib.service.FirebaseStorageService
 import com.cramsan.edifikana.client.lib.service.FirebaseTimeCardService
 import com.cramsan.edifikana.client.lib.service.FormsService
@@ -33,7 +36,9 @@ import com.google.firebase.remoteconfig.remoteConfig
 import com.google.firebase.remoteconfig.remoteConfigSettings
 import com.google.firebase.storage.storage
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
+import javax.inject.Qualifier
 
 val ManagerModule = module {
 
@@ -46,15 +51,15 @@ val ManagerModule = module {
     }
     single { Firebase.storage }
     single { Firebase.auth }
-    single { Firebase.app.options.storageBucket ?: TODO("Add error handling") }
-    single { Firebase.app.options.projectId ?: TODO("Add error handling") }
+    single<String>(named("FirebaseStorageBucketName")) { Firebase.app.options.storageBucket ?: TODO("Add error handling") }
     single<AuthService> { FirebaseAuthService(get(), get()) }
     single<EventLogService> { FirebaseEventLogService(get(), get()) }
     single<FormsService> { FirebaseFormsService(get(), get()) }
     single<PropertyConfigService> { FirebasePropertyConfigService(get()) }
     single<StorageService> { FirebaseStorageService(get(), androidContext()) }
     single<TimeCardService> { FirebaseTimeCardService(get(), get()) }
-    single { WorkContext(get(), get(), get(), get(), get()) }
+    single<EmployeeService> { FirebaseEmployeeService(get()) }
+    single { WorkContext(get(), get(), get(), get(), get<String>(named("FirebaseStorageBucketName"))) }
     single { EventLogManager(get(), get(), get(), get()) }
     single { AttachmentManager(get(), get(), get(), get()) }
     single { TimeCardManager(get(), get(), get(), get()) }
@@ -74,6 +79,7 @@ val ManagerModule = module {
             fetchAndActivate()
         }
     }
+    single<RemoteConfigService> { FirebaseRemoteConfigService(get()) }
     single { get<RemoteConfigService>().getRemoteConfigPayload() }
     single { get<RemoteConfig>().caching }
     single { get<RemoteConfig>().image }

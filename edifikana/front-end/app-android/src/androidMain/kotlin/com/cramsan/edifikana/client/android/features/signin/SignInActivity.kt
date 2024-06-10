@@ -3,7 +3,6 @@ package com.cramsan.edifikana.client.android.features.signin
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.Lifecycle
@@ -12,13 +11,13 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.cramsan.edifikana.client.lib.ui.theme.AppTheme
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-@AndroidEntryPoint
 class SignInActivity : ComponentActivity() {
 
-    private val viewModel: SignInViewModel by viewModels()
+    private val viewModel: SignInViewModel by inject()
 
     // See: https://developer.android.com/training/basics/intents/result
     private val signInLauncher = registerForActivityResult(FirebaseAuthUIActivityResultContract()) { res ->

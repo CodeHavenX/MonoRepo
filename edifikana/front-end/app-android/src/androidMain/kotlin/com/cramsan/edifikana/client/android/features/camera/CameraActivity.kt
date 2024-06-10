@@ -18,13 +18,12 @@ import com.cramsan.edifikana.client.android.features.camera.compose.PhotoConfirm
 import com.cramsan.edifikana.client.android.features.camera.compose.PhotoErrorScreen
 import com.cramsan.edifikana.client.lib.managers.remoteconfig.ImageConfig
 import dagger.hilt.android.AndroidEntryPoint
+import org.koin.android.ext.android.inject
 import javax.inject.Inject
 
-@AndroidEntryPoint
 class CameraActivity : ComponentActivity() {
 
-    @Inject
-    lateinit var imageConfig: ImageConfig
+    private val imageConfig: ImageConfig by inject()
 
     private lateinit var cameraDelegate: CameraDelegate
 

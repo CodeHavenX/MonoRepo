@@ -81,8 +81,10 @@ dependencies {
     implementation("androidx.camera:camera-lifecycle:_")
     implementation("androidx.camera:camera-view:_")
 
-    implementation("io.coil-kt:coil-compose:_")
-    implementation("io.coil-kt:coil:_")
+    implementation("io.coil-kt.coil3:coil:")
+    implementation("io.coil-kt.coil3:coil-compose:_")
+    implementation("io.coil-kt.coil3:coil-network-ktor:_")
+    implementation("io.ktor:ktor-client-android:_")
 
     implementation("com.firebaseui:firebase-ui-auth:_")
     implementation("com.google.android.gms:play-services-auth:_")

@@ -29,6 +29,11 @@ kotlin {
 
             implementation("io.insert-koin:koin-core:_")
             implementation("io.insert-koin:koin-compose:_")
+
+            implementation("io.coil-kt.coil3:coil:")
+            implementation("io.coil-kt.coil3:coil-compose:_")
+            implementation("io.coil-kt.coil3:coil-network-ktor:_")
+            implementation("io.ktor:ktor-client-android:_")
         }
     }
 }

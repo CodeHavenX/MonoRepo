@@ -1,9 +1,10 @@
 package com.cramsan.edifikana.client.android.features.signin
 
-import com.cramsan.edifikana.client.android.features.base.EdifikanaBaseViewModel
+import com.cramsan.edifikana.client.lib.features.base.EdifikanaBaseViewModel
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.remoteconfig.BehaviorConfig
 import com.cramsan.edifikana.client.lib.service.auth.FirebaseAuthSignInResult
+import com.cramsan.framework.core.DispatcherProvider
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logI
 import com.cramsan.framework.logging.logW
@@ -17,12 +18,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@HiltViewModel
-class SignInViewModel @Inject constructor(
+class SignInViewModel(
     private val auth: AuthManager,
     private val behaviorConfig: BehaviorConfig,
     exceptionHandler: CoroutineExceptionHandler,
-) : EdifikanaBaseViewModel(exceptionHandler) {
+    dispatcherProvider: DispatcherProvider,
+) : EdifikanaBaseViewModel(exceptionHandler, dispatcherProvider) {
 
     private val _uiState = MutableStateFlow(SignInUIState(showAccessCodeDialog = false))
     val uiState: StateFlow<SignInUIState> = _uiState

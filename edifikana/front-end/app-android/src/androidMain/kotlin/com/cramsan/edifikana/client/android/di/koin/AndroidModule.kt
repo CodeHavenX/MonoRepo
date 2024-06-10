@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.android.di.koin
 
 import androidx.room.Room
-import coil.ImageLoader
+import com.cramsan.edifikana.client.android.BuildConfig
 import com.cramsan.edifikana.client.lib.db.AppDatabase
 import com.cramsan.framework.logging.EventLoggerInterface
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -26,12 +26,6 @@ val AndroidModule = module {
 
     @OptIn(DelicateCoroutinesApi::class)
     single<CoroutineScope> { GlobalScope }
-
-    single {
-        ImageLoader.Builder(androidContext())
-            .respectCacheHeaders(false)
-            .build()
-    }
 
     single {
         Room.databaseBuilder(

@@ -1,8 +1,9 @@
-package com.cramsan.edifikana.client.lib.service
+package com.cramsan.edifikana.client.android.service
 
 import com.cramsan.edifikana.client.lib.managers.mappers.toDomainModel
 import com.cramsan.edifikana.client.lib.managers.mappers.toFirebaseModel
 import com.cramsan.edifikana.client.lib.models.EmployeeModel
+import com.cramsan.edifikana.client.lib.service.EmployeeService
 import com.cramsan.edifikana.client.lib.utils.runSuspendCatching
 import com.cramsan.edifikana.lib.firestore.Employee
 import com.cramsan.edifikana.lib.firestore.EmployeePK

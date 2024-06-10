@@ -1,10 +1,11 @@
-package com.cramsan.edifikana.client.lib.service
+package com.cramsan.edifikana.client.android.service
 
 import com.cramsan.edifikana.client.lib.managers.WorkContext
 import com.cramsan.edifikana.client.lib.managers.mappers.toDomainModel
 import com.cramsan.edifikana.client.lib.managers.mappers.toFirebaseModel
 import com.cramsan.edifikana.client.lib.models.FormModel
 import com.cramsan.edifikana.client.lib.models.FormRecordModel
+import com.cramsan.edifikana.client.lib.service.FormsService
 import com.cramsan.edifikana.client.lib.utils.getOrCatch
 import com.cramsan.edifikana.lib.firestore.FireStoreModel
 import com.cramsan.edifikana.lib.firestore.Form

@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.client.lib.service
+package com.cramsan.edifikana.client.android.service
 
 import com.cramsan.edifikana.client.lib.managers.remoteconfig.BehaviorConfig
 import com.cramsan.edifikana.client.lib.managers.remoteconfig.CachingConfig
@@ -6,6 +6,7 @@ import com.cramsan.edifikana.client.lib.managers.remoteconfig.FeatureConfig
 import com.cramsan.edifikana.client.lib.managers.remoteconfig.Features
 import com.cramsan.edifikana.client.lib.managers.remoteconfig.ImageConfig
 import com.cramsan.edifikana.client.lib.managers.remoteconfig.RemoteConfig
+import com.cramsan.edifikana.client.lib.service.RemoteConfigService
 import com.cramsan.framework.assertlib.assert
 import com.cramsan.framework.logging.logI
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig

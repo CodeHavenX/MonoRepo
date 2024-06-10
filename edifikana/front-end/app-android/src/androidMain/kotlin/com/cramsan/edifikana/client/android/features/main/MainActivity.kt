@@ -13,8 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
 import com.cramsan.edifikana.client.android.db.clearOldFiles
@@ -27,10 +26,8 @@ import com.cramsan.edifikana.client.lib.features.main.MainActivityScreen
 import com.cramsan.edifikana.client.lib.features.main.MainActivityViewModel
 import com.cramsan.edifikana.client.lib.ui.theme.AppTheme
 import com.cramsan.framework.core.CoreUri
-import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.compose.KoinAndroidContext
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 
 class MainActivity : ComponentActivity() {
@@ -54,17 +51,15 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.enforceAuth()
-            }
-        }
-
         setContent {
             val event by viewModel.events.collectAsState(MainActivityEvent.Noop)
             val delegatedEvent by viewModel.delegatedEvents.collectAsState(MainActivityDelegatedEvent.Noop)
             val context = LocalContext.current
             val navController = rememberNavController()
+
+            LifecycleEventEffect(Lifecycle.Event.ON_START) {
+                viewModel.enforceAuth()
+            }
 
             LaunchedEffect(event) {
                 when (val mainActivityEvent = event) {

@@ -1,10 +1,11 @@
-package com.cramsan.edifikana.client.lib.service
+package com.cramsan.edifikana.client.android.service
 
 import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
 import com.cramsan.edifikana.client.lib.models.StorageRef
+import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.edifikana.client.lib.utils.runSuspendCatching
 import com.cramsan.framework.assertlib.assert
 import com.cramsan.framework.core.CoreUri

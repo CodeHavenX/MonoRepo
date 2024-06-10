@@ -2,28 +2,20 @@ package com.cramsan.edifikana.client.android.di.koin
 
 import com.cramsan.edifikana.client.android.BuildConfig
 import com.cramsan.edifikana.client.android.R
-import com.cramsan.edifikana.client.lib.service.RemoteConfigService
-import com.cramsan.edifikana.client.lib.managers.AttachmentManager
-import com.cramsan.edifikana.client.lib.managers.AuthManager
-import com.cramsan.edifikana.client.lib.managers.EmployeeManager
-import com.cramsan.edifikana.client.lib.managers.EventLogManager
-import com.cramsan.edifikana.client.lib.managers.FormsManager
-import com.cramsan.edifikana.client.lib.managers.TimeCardManager
-import com.cramsan.edifikana.client.lib.managers.WorkContext
-import com.cramsan.edifikana.client.lib.managers.remoteconfig.RemoteConfig
 import com.cramsan.edifikana.client.lib.service.AuthService
 import com.cramsan.edifikana.client.lib.service.EmployeeService
 import com.cramsan.edifikana.client.lib.service.EventLogService
-import com.cramsan.edifikana.client.lib.service.FirebaseAuthService
-import com.cramsan.edifikana.client.lib.service.FirebaseEmployeeService
-import com.cramsan.edifikana.client.lib.service.FirebaseEventLogService
-import com.cramsan.edifikana.client.lib.service.FirebaseFormsService
-import com.cramsan.edifikana.client.lib.service.FirebasePropertyConfigService
-import com.cramsan.edifikana.client.lib.service.FirebaseRemoteConfigService
-import com.cramsan.edifikana.client.lib.service.FirebaseStorageService
-import com.cramsan.edifikana.client.lib.service.FirebaseTimeCardService
+import com.cramsan.edifikana.client.android.service.FirebaseAuthService
+import com.cramsan.edifikana.client.android.service.FirebaseEmployeeService
+import com.cramsan.edifikana.client.android.service.FirebaseEventLogService
+import com.cramsan.edifikana.client.android.service.FirebaseFormsService
+import com.cramsan.edifikana.client.android.service.FirebasePropertyConfigService
+import com.cramsan.edifikana.client.android.service.FirebaseRemoteConfigService
+import com.cramsan.edifikana.client.android.service.FirebaseStorageService
+import com.cramsan.edifikana.client.android.service.FirebaseTimeCardService
 import com.cramsan.edifikana.client.lib.service.FormsService
 import com.cramsan.edifikana.client.lib.service.PropertyConfigService
+import com.cramsan.edifikana.client.lib.service.RemoteConfigService
 import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.edifikana.client.lib.service.TimeCardService
 import com.google.firebase.Firebase
@@ -58,6 +50,7 @@ val ManagerPlatformModule = module {
     single<StorageService> { FirebaseStorageService(get(), androidContext()) }
     single<TimeCardService> { FirebaseTimeCardService(get(), get()) }
     single<EmployeeService> { FirebaseEmployeeService(get()) }
+    single<RemoteConfigService> { FirebaseRemoteConfigService(get()) }
 
     single {
         Firebase.remoteConfig.apply {

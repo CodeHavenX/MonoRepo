@@ -1,9 +1,10 @@
-package com.cramsan.edifikana.client.lib.service
+package com.cramsan.edifikana.client.android.service
 
 import com.cramsan.edifikana.client.lib.managers.WorkContext
 import com.cramsan.edifikana.client.lib.managers.mappers.toDomainModel
 import com.cramsan.edifikana.client.lib.managers.mappers.toFirebaseModel
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
+import com.cramsan.edifikana.client.lib.service.EventLogService
 import com.cramsan.edifikana.client.lib.utils.runSuspendCatching
 import com.cramsan.edifikana.lib.firestore.EventLogRecord
 import com.cramsan.edifikana.lib.firestore.EventLogRecordPK

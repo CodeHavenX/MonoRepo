@@ -3,7 +3,7 @@ package com.cramsan.edifikana.client.android.features.signin
 import com.cramsan.edifikana.client.lib.features.base.EdifikanaBaseViewModel
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.remoteconfig.BehaviorConfig
-import com.cramsan.edifikana.client.lib.service.auth.FirebaseAuthSignInResult
+import com.cramsan.edifikana.client.android.service.auth.FirebaseAuthSignInResult
 import com.cramsan.framework.core.DispatcherProvider
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logI

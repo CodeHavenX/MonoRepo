@@ -31,19 +31,17 @@ class MainActivityViewModel (
     private val _delegatedEvents = MutableSharedFlow<MainActivityDelegatedEvent>()
     val delegatedEvents: SharedFlow<MainActivityDelegatedEvent> = _delegatedEvents
 
-    suspend fun enforceAuth() {
-        viewModelScope.launch {
-            val result = auth.isSignedIn(true)
+    fun enforceAuth() = viewModelScope.launch {
+        val result = auth.isSignedIn(true)
 
-            if (result.isFailure) {
-                logW(TAG, "Failure when enforcing auth.", result.exceptionOrNull())
+        if (result.isFailure) {
+            logW(TAG, "Failure when enforcing auth.", result.exceptionOrNull())
+        } else {
+            if (!result.getOrThrow()) {
+                _events.emit(MainActivityEvent.LaunchSignIn())
             } else {
-                if (!result.getOrThrow()) {
-                    _events.emit(MainActivityEvent.LaunchSignIn())
-                } else {
-                    // Already signed in
-                    uploadPending()
-                }
+                // Already signed in
+                uploadPending()
             }
         }
     }

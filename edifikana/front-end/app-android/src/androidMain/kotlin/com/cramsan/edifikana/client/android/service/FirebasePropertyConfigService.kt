@@ -1,7 +1,8 @@
-package com.cramsan.edifikana.client.lib.service
+package com.cramsan.edifikana.client.android.service
 
 import com.cramsan.edifikana.client.lib.managers.mappers.toDomainModel
 import com.cramsan.edifikana.client.lib.models.PropertyConfigModel
+import com.cramsan.edifikana.client.lib.service.PropertyConfigService
 import com.cramsan.edifikana.client.lib.utils.runSuspendCatching
 import com.cramsan.edifikana.lib.firestore.FireStoreModel
 import com.cramsan.edifikana.lib.firestore.PropertyConfig

@@ -1,5 +1,6 @@
-package com.cramsan.edifikana.client.lib.service
+package com.cramsan.edifikana.client.android.service
 
+import com.cramsan.edifikana.client.lib.service.AuthService
 import com.cramsan.edifikana.client.lib.service.auth.SignInResult
 import com.cramsan.edifikana.client.lib.utils.runSuspendCatching
 import com.cramsan.edifikana.lib.firestore.User

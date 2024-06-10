@@ -1,8 +1,5 @@
-package com.cramsan.edifikana.client.android.di.koin
+package com.cramsan.edifikana.client.lib.di.koin
 
-import com.cramsan.edifikana.client.android.BuildConfig
-import com.cramsan.edifikana.client.android.features.main.MainActivityViewModel
-import com.cramsan.edifikana.client.android.features.signin.SignInViewModel
 import com.cramsan.edifikana.client.lib.features.eventlog.EventLogViewModel
 import com.cramsan.edifikana.client.lib.features.eventlog.addrecord.AddRecordViewModel
 import com.cramsan.edifikana.client.lib.features.eventlog.viewrecord.ViewRecordViewModel
@@ -10,11 +7,11 @@ import com.cramsan.edifikana.client.lib.features.formlist.FormListViewModel
 import com.cramsan.edifikana.client.lib.features.formlist.entry.EntryViewModel
 import com.cramsan.edifikana.client.lib.features.formlist.records.RecordsViewModel
 import com.cramsan.edifikana.client.lib.features.formlist.records.read.RecordReadViewModel
+import com.cramsan.edifikana.client.lib.features.main.MainActivityViewModel
 import com.cramsan.edifikana.client.lib.features.timecard.TimeCartViewModel
 import com.cramsan.edifikana.client.lib.features.timecard.addemployee.AddEmployeeViewModel
 import com.cramsan.edifikana.client.lib.features.timecard.employeelist.EmployeeListViewModel
 import com.cramsan.edifikana.client.lib.features.timecard.viewemployee.ViewEmployeeViewModel
-import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val ViewModelModule = module {
@@ -30,7 +27,5 @@ val ViewModelModule = module {
     factory { EntryViewModel(get(), get(), get(), get()) }
     factory { AddRecordViewModel(get(), get(), get(), get(), get()) }
     factory { ViewEmployeeViewModel(get(), get(), get(), get(), get(), get()) }
-
     factory { MainActivityViewModel(get(), get(), get(), get(), get(), get()) }
-    factory { SignInViewModel(get(), get(), get(), get()) }
 }

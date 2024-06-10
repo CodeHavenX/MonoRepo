@@ -1,6 +1,5 @@
-package com.cramsan.edifikana.client.android.features.main
+package com.cramsan.edifikana.client.lib.features.main
 
-import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -27,13 +26,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.cramsan.edifikana.client.android.R
 import com.cramsan.edifikana.client.lib.features.timecard.TimeCardScreen
 import com.cramsan.edifikana.client.lib.features.timecard.addemployee.AddEmployeeScreen
 import com.cramsan.edifikana.client.lib.features.timecard.employeelist.EmployeeListScreen
@@ -53,8 +50,13 @@ import com.cramsan.edifikana.lib.firestore.EmployeePK
 import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
 import com.cramsan.edifikana.lib.firestore.FormPK
 import com.cramsan.edifikana.lib.firestore.FormRecordPK
+import edifikana_lib.Res
+import edifikana_lib.string_assistance
+import edifikana_lib.string_back_navigation
+import edifikana_lib.string_event_log_title
+import edifikana_lib.text_forms
+import org.jetbrains.compose.resources.stringResource
 
-@SuppressLint("RestrictedApi")
 @OptIn(ExperimentalMaterial3Api::class, RouteSafePath::class)
 @Composable
 fun MainActivityScreen(
@@ -89,7 +91,7 @@ fun MainActivityScreen(
                         IconButton(onClick = { navController.navigateUp() }) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = stringResource(id = R.string.string_back_navigation)
+                                contentDescription = stringResource(Res.string.string_back_navigation)
                             )
                         }
                     }
@@ -101,7 +103,7 @@ fun MainActivityScreen(
                 BottomBarDestinationUiModels.forEach { dest ->
                     if (formTabFeatureEnabled || dest.route != Route.Forms.route) {
                         val selected = currentDestination?.hierarchy?.any { it.route == dest.route } == true
-                        val label = stringResource(id = dest.text)
+                        val label = stringResource(dest.text)
 
                         NavigationBarItem(
                             onClick = {
@@ -109,7 +111,7 @@ fun MainActivityScreen(
                             },
                             icon = {
                                 if (dest.route != Route.Forms.route) {
-                                    Icon(painterResource(dest.icon), contentDescription = label)
+                                    Icon(dest.icon, contentDescription = label)
                                 } else {
                                     Icon(Icons.AutoMirrored.Filled.Assignment, contentDescription = label)
                                 }
@@ -136,19 +138,19 @@ fun MainActivityScreen(
 private val BottomBarDestinationUiModels = listOf(
     BottomBarDestinationUiModel(
         Route.toFormsRoute(),
-        R.drawable.schedule,
-        R.string.text_forms
+        Icons.AutoMirrored.Filled.ArrowBack,
+        Res.string.text_forms
     ),
     BottomBarDestinationUiModel(
         Route.toEventLogRoute(),
-        R.drawable.two_pager,
-        R.string.string_event_log_title,
+        Icons.AutoMirrored.Filled.ArrowBack,
+        Res.string.string_event_log_title,
         isStartDestination = true,
     ),
     BottomBarDestinationUiModel(
         Route.toTimeCardRoute(),
-        R.drawable.schedule,
-        R.string.string_assistance
+        Icons.AutoMirrored.Filled.ArrowBack,
+        Res.string.string_assistance,
     ),
 )
 

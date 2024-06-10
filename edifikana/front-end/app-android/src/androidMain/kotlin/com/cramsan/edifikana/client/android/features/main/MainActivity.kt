@@ -23,6 +23,8 @@ import com.cramsan.edifikana.client.android.features.signin.SignInActivity
 import com.cramsan.edifikana.client.android.utils.shareContent
 import com.cramsan.edifikana.client.lib.features.main.MainActivityDelegatedEvent
 import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
+import com.cramsan.edifikana.client.lib.features.main.MainActivityScreen
+import com.cramsan.edifikana.client.lib.features.main.MainActivityViewModel
 import com.cramsan.edifikana.client.lib.ui.theme.AppTheme
 import com.cramsan.framework.core.CoreUri
 import kotlinx.coroutines.launch

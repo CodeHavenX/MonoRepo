@@ -15,9 +15,14 @@ apply(from = "$rootDir/gradle/kotlin-mpp-target-jvm-compose.gradle")
 kotlin {
     sourceSets {
         commonMain.dependencies {
+            implementation(project(":framework:assert"))
+            implementation(project(":framework:halt"))
             implementation(project(":framework:interfacelib"))
             implementation(project(":framework:logging"))
+            implementation(project(":framework:thread"))
+            implementation(project(":framework:crashhandler"))
             implementation(project(":framework:core"))
+
             implementation(project(":edifikana:shared"))
 
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:_")

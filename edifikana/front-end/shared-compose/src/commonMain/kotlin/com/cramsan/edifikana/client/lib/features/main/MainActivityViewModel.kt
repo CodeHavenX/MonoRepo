@@ -1,9 +1,6 @@
-package com.cramsan.edifikana.client.android.features.main
+package com.cramsan.edifikana.client.lib.features.main
 
-import androidx.lifecycle.lifecycleScope
 import com.cramsan.edifikana.client.lib.features.base.EdifikanaBaseViewModel
-import com.cramsan.edifikana.client.lib.features.main.MainActivityDelegatedEvent
-import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.lib.managers.AttachmentManager
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.EventLogManager
@@ -12,14 +9,11 @@ import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.DispatcherProvider
 import com.cramsan.framework.logging.logI
 import com.cramsan.framework.logging.logW
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
-import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
 class MainActivityViewModel (

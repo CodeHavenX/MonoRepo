@@ -2,6 +2,7 @@ package com.cramsan.edifikana.client.lib.features.base
 
 import androidx.lifecycle.ViewModel
 import com.cramsan.framework.core.DispatcherProvider
+import com.cramsan.framework.logging.logI
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -13,12 +14,21 @@ abstract class EdifikanaBaseViewModel(
     dispatcherProvider: DispatcherProvider,
 ) : ViewModel() {
 
-    val viewModelScope: CoroutineScope = CoroutineScope(
+    protected val viewModelScope: CoroutineScope = CoroutineScope(
         SupervisorJob() + exceptionHandler + dispatcherProvider.uiDispatcher()
     )
 
+    init {
+        logI(TAG, "ViewModel created: ${this::class}")
+    }
+
     override fun onCleared() {
         super.onCleared()
+        logI(TAG, "ViewModel cleared: ${this::class}")
         viewModelScope.cancel()
+    }
+
+    companion object {
+        private const val TAG = "EdifikaneBaseViewModel"
     }
 }

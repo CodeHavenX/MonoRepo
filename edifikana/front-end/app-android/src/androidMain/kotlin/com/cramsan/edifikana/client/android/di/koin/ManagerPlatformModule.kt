@@ -38,9 +38,8 @@ import com.google.firebase.storage.storage
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import javax.inject.Qualifier
 
-val ManagerModule = module {
+val ManagerPlatformModule = module {
 
     single {
         Firebase.firestore.apply {
@@ -59,13 +58,6 @@ val ManagerModule = module {
     single<StorageService> { FirebaseStorageService(get(), androidContext()) }
     single<TimeCardService> { FirebaseTimeCardService(get(), get()) }
     single<EmployeeService> { FirebaseEmployeeService(get()) }
-    single { WorkContext(get(), get(), get(), get(), get<String>(named("FirebaseStorageBucketName"))) }
-    single { EventLogManager(get(), get(), get(), get()) }
-    single { AttachmentManager(get(), get(), get(), get()) }
-    single { TimeCardManager(get(), get(), get(), get()) }
-    single { EmployeeManager(get(), get()) }
-    single { FormsManager(get(), get()) }
-    single { AuthManager(get(), get()) }
 
     single {
         Firebase.remoteConfig.apply {
@@ -79,12 +71,6 @@ val ManagerModule = module {
             fetchAndActivate()
         }
     }
-    single<RemoteConfigService> { FirebaseRemoteConfigService(get()) }
-    single { get<RemoteConfigService>().getRemoteConfigPayload() }
-    single { get<RemoteConfig>().caching }
-    single { get<RemoteConfig>().image }
-    single { get<RemoteConfig>().behavior }
-    single { get<RemoteConfig>().features }
 }
 
 private const val DEBUG_FIREBASE_FETCH_INTERVAL_SECONDS = 30L

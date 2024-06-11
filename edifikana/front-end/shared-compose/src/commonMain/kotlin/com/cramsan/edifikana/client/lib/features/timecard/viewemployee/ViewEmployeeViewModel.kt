@@ -101,13 +101,7 @@ class ViewEmployeeViewModel(
         }
 
         val imageUri = record.imageRef?.let {
-            val res = storageService.downloadImage(it)
-
-            if (res.isSuccess) {
-                res.getOrThrow()
-            } else {
-                null
-            }
+            storageService.downloadImage(it).getOrThrow()
         }
         _event.emit(
             ViewEmployeeEvent.TriggerMainActivityEvent(

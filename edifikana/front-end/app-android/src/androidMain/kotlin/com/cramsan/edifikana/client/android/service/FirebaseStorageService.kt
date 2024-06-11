@@ -103,6 +103,7 @@ class FirebaseStorageService(
 
         val newImageDetails = ContentValues().apply {
             put(MediaStore.Images.Media.DISPLAY_NAME, targetRef.filename())
+            put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
         }
 
         val newImageUri = resolver.insert(imageCollection, newImageDetails) ?: throw RuntimeException(

@@ -19,16 +19,16 @@ abstract class EdifikanaBaseViewModel(
     )
 
     init {
-        logI(TAG, "ViewModel created: ${this::class}")
+        logI(TAG, "ViewModel created: ${this.hashCode()}")
     }
 
     override fun onCleared() {
         super.onCleared()
-        logI(TAG, "ViewModel cleared: ${this::class}")
+        logI(TAG, "ViewModel cleared: ${this.hashCode()}")
         viewModelScope.cancel()
     }
 
     companion object {
-        private const val TAG = "EdifikaneBaseViewModel"
+        private const val TAG = "EdifikanaBaseViewModel"
     }
 }

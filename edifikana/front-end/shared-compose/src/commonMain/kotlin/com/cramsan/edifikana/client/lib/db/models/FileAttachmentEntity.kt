@@ -16,7 +16,6 @@ data class FileAttachmentEntity(
     val id: String,
     val eventLogRecordPK: String?,
     val fileUri: String? = null,
-    val filename: String? = null,
 ) {
     companion object {
 
@@ -24,14 +23,12 @@ data class FileAttachmentEntity(
             eventLogRecordPK: EventLogRecordPK,
             clock: Clock,
             fileUri: CoreUri,
-            filename: String,
         ): FileAttachmentEntity {
             val id = "$eventLogRecordPK-$fileUri-${clock.now().epochSeconds}"
             return FileAttachmentEntity(
                 id,
                 eventLogRecordPK.documentPath,
                 fileUri.toString(),
-                filename,
             )
         }
     }

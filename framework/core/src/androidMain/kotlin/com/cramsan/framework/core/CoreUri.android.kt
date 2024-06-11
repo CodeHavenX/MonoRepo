@@ -6,8 +6,6 @@ actual class CoreUri(
     private val uri: Uri,
 ) {
 
-    constructor(uri: String) : this(Uri.parse(uri))
-
     actual fun getUri(): String {
         return uri.toString()
     }
@@ -22,7 +20,7 @@ actual class CoreUri(
 
     actual companion object {
         actual fun createUri(uri: String): CoreUri {
-            TODO("Not yet implemented")
+            return CoreUri(Uri.parse(uri))
         }
     }
 }

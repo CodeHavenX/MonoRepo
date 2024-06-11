@@ -15,4 +15,6 @@ val ExtrasPlatformModule = module {
         ).fallbackToDestructiveMigration()
             .build()
     }
+
+    single { androidContext().contentResolver }
 }

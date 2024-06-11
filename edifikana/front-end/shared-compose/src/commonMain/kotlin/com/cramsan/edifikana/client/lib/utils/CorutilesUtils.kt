@@ -28,7 +28,9 @@ fun WorkContext.launch(tag: String, block: suspend CoroutineScope.() -> Unit): J
     )
 }
 
-expect fun readBytes(uri: CoreUri): Result<ByteArray>
+expect class IODependencies
+
+expect fun readBytes(uri: CoreUri, dependencies: IODependencies): Result<ByteArray>
 
 expect fun processImageData(data: ByteArray): Result<ByteArray>
 

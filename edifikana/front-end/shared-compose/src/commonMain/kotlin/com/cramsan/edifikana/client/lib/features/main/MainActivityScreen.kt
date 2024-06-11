@@ -46,10 +46,13 @@ import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
 import com.cramsan.edifikana.lib.firestore.FormPK
 import com.cramsan.edifikana.lib.firestore.FormRecordPK
 import edifikana_lib.Res
+import edifikana_lib.schedule
 import edifikana_lib.string_assistance
 import edifikana_lib.string_back_navigation
 import edifikana_lib.string_event_log_title
 import edifikana_lib.text_forms
+import edifikana_lib.two_pager
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class, RouteSafePath::class)
@@ -106,7 +109,7 @@ fun MainActivityScreen(
                             },
                             icon = {
                                 if (dest.route != Route.Forms.route) {
-                                    Icon(dest.icon, contentDescription = label)
+                                    Icon(painterResource(dest.icon), contentDescription = label)
                                 } else {
                                     Icon(Icons.AutoMirrored.Filled.Assignment, contentDescription = label)
                                 }
@@ -133,18 +136,18 @@ fun MainActivityScreen(
 private val BottomBarDestinationUiModels = listOf(
     BottomBarDestinationUiModel(
         Route.toFormsRoute(),
-        Icons.AutoMirrored.Filled.ArrowBack,
+        Res.drawable.schedule,
         Res.string.text_forms
     ),
     BottomBarDestinationUiModel(
         Route.toEventLogRoute(),
-        Icons.AutoMirrored.Filled.ArrowBack,
+        Res.drawable.two_pager,
         Res.string.string_event_log_title,
         isStartDestination = true,
     ),
     BottomBarDestinationUiModel(
         Route.toTimeCardRoute(),
-        Icons.AutoMirrored.Filled.ArrowBack,
+        Res.drawable.schedule,
         Res.string.string_assistance,
     ),
 )

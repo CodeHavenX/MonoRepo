@@ -8,6 +8,8 @@ import com.cramsan.edifikana.client.lib.models.StorageRef
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
 import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.edifikana.client.lib.service.TimeCardService
+import com.cramsan.edifikana.client.lib.utils.IODependencies
+import com.cramsan.edifikana.client.lib.utils.getFilename
 import com.cramsan.edifikana.client.lib.utils.getOrCatch
 import com.cramsan.edifikana.client.lib.utils.launch
 import com.cramsan.edifikana.client.lib.utils.processImageData
@@ -23,12 +25,13 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlin.random.Random
 
-class TimeCardManager constructor(
+class TimeCardManager (
     private val timeCardService: TimeCardService,
     private val timeCardRecordDao: TimeCardRecordDao,
     private val storageService: StorageService,
     private val workContext: WorkContext,
-) {
+    private val ioDependencies: IODependencies,
+    ) {
     private val mutex = Mutex()
     private var uploadJob: Job? = null
 
@@ -73,10 +76,10 @@ class TimeCardManager constructor(
             val localImageUri = CoreUri.createUri(requireNotNull(entity.cachedImageUrl))
 
             val remoteImageRef = runCatching {
-                val imageData = readBytes(localImageUri).getOrThrow()
+                val imageData = readBytes(localImageUri, ioDependencies).getOrThrow()
                 val processedImage = processImageData(imageData).getOrThrow()
 
-                val fileName = requireNotNull(Random.nextInt().toString())
+                val fileName =  localImageUri.getFilename(ioDependencies)
                 val uploadPath = listOf(FOLDER_TIME_CARDS)
 
                 storageService.uploadFile(

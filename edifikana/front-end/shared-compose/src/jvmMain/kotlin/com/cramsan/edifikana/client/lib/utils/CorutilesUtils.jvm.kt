@@ -2,7 +2,12 @@ package com.cramsan.edifikana.client.lib.utils
 
 import com.cramsan.framework.core.CoreUri
 
-actual fun readBytes(uri: CoreUri): Result<ByteArray> {
+actual class IODependencies
+
+actual fun readBytes(
+    uri: CoreUri,
+    dependencies: IODependencies
+): Result<ByteArray> {
     TODO("Not yet implemented")
 }
 

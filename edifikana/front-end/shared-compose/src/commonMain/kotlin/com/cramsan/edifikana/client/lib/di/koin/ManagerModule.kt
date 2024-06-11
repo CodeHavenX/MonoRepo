@@ -15,8 +15,8 @@ import org.koin.dsl.module
 val ManagerModule = module {
     single { WorkContext(get(), get(), get(), get(), get<String>(named("FirebaseStorageBucketName"))) }
     single { EventLogManager(get(), get(), get(), get()) }
-    single { AttachmentManager(get(), get(), get(), get()) }
-    single { TimeCardManager(get(), get(), get(), get()) }
+    single { AttachmentManager(get(), get(), get(), get(), get()) }
+    single { TimeCardManager(get(), get(), get(), get(), get()) }
     single { EmployeeManager(get(), get()) }
     single { FormsManager(get(), get()) }
     single { AuthManager(get(), get()) }

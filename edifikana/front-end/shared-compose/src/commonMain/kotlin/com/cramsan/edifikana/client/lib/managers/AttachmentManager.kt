@@ -13,6 +13,8 @@ import com.cramsan.edifikana.client.lib.utils.readBytes
 import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
 import com.cramsan.edifikana.lib.requireNotBlank
 import com.cramsan.edifikana.lib.storage.FOLDER_ATTACHMENTS
+import com.cramsan.edifikana.client.lib.utils.IODependencies
+import com.cramsan.edifikana.client.lib.utils.getFilename
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logI
@@ -20,11 +22,12 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-class AttachmentManager constructor(
+class AttachmentManager (
     private val eventLogService: EventLogService,
     private val storageService: StorageService,
     private val attachmentDao: FileAttachmentDao,
     private val workContext: WorkContext,
+    private val ioDependencies: IODependencies,
 ) {
     private val mutex = Mutex()
     private var uploadJob: Job? = null
@@ -35,7 +38,7 @@ class AttachmentManager constructor(
     ): Result<Unit> = workContext.getOrCatch(TAG) {
         logI(TAG, "Adding attachment to event log record: $eventLogRecordPK")
         fileUris.forEach { fileUri ->
-            val entity = FileAttachmentEntity.create(eventLogRecordPK, workContext.clock, fileUri, TODO())
+            val entity = FileAttachmentEntity.create(eventLogRecordPK, workContext.clock, fileUri)
             attachmentDao.insert(entity)
         }
         triggerFullUpload()
@@ -47,9 +50,9 @@ class AttachmentManager constructor(
             val eventLogRecordPK = EventLogRecordPK(requireNotBlank(attachmentEntity.eventLogRecordPK))
             val fileUri = CoreUri.createUri(attachmentEntity.fileUri!!)
 
-            val fileData = readBytes(fileUri).getOrThrow()
+            val fileData = readBytes(fileUri, ioDependencies).getOrThrow()
 
-            val fileName = attachmentEntity.filename!!
+            val fileName = fileUri.getFilename(ioDependencies)
             val uploadPath = listOf(FOLDER_ATTACHMENTS)
 
             val uploadRef = StorageRef(

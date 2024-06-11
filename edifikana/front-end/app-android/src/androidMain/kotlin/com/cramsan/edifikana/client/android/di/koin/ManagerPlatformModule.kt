@@ -18,6 +18,7 @@ import com.cramsan.edifikana.client.lib.service.PropertyConfigService
 import com.cramsan.edifikana.client.lib.service.RemoteConfigService
 import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.edifikana.client.lib.service.TimeCardService
+import com.cramsan.edifikana.client.lib.utils.IODependencies
 import com.google.firebase.Firebase
 import com.google.firebase.app
 import com.google.firebase.auth.auth
@@ -28,6 +29,7 @@ import com.google.firebase.remoteconfig.remoteConfig
 import com.google.firebase.remoteconfig.remoteConfigSettings
 import com.google.firebase.storage.storage
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -68,6 +70,8 @@ val ManagerPlatformModule = module {
             fetchAndActivate()
         }
     }
+
+    singleOf(::IODependencies)
 }
 
 private const val DEBUG_FIREBASE_FETCH_INTERVAL_SECONDS = 30L

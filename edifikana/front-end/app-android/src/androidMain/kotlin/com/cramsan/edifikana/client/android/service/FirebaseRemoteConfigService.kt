@@ -11,7 +11,7 @@ import com.cramsan.framework.assertlib.assert
 import com.cramsan.framework.logging.logI
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 
-class FirebaseRemoteConfigService (
+class FirebaseRemoteConfigService(
     private val remoteConfig: FirebaseRemoteConfig,
 ) : RemoteConfigService {
     override fun getRemoteConfigPayload(): RemoteConfig {

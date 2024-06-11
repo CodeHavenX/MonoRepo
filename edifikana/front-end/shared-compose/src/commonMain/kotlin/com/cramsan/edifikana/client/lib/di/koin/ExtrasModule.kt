@@ -1,6 +1,5 @@
 package com.cramsan.edifikana.client.lib.di.koin
 
-import androidx.room.Room
 import com.cramsan.edifikana.client.lib.db.AppDatabase
 import com.cramsan.framework.logging.EventLoggerInterface
 import kotlinx.coroutines.CoroutineExceptionHandler

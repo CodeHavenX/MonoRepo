@@ -2,9 +2,6 @@ package com.cramsan.edifikana.client.android.di.koin
 
 import com.cramsan.edifikana.client.android.BuildConfig
 import com.cramsan.edifikana.client.android.R
-import com.cramsan.edifikana.client.lib.service.AuthService
-import com.cramsan.edifikana.client.lib.service.EmployeeService
-import com.cramsan.edifikana.client.lib.service.EventLogService
 import com.cramsan.edifikana.client.android.service.FirebaseAuthService
 import com.cramsan.edifikana.client.android.service.FirebaseEmployeeService
 import com.cramsan.edifikana.client.android.service.FirebaseEventLogService
@@ -13,6 +10,9 @@ import com.cramsan.edifikana.client.android.service.FirebasePropertyConfigServic
 import com.cramsan.edifikana.client.android.service.FirebaseRemoteConfigService
 import com.cramsan.edifikana.client.android.service.FirebaseStorageService
 import com.cramsan.edifikana.client.android.service.FirebaseTimeCardService
+import com.cramsan.edifikana.client.lib.service.AuthService
+import com.cramsan.edifikana.client.lib.service.EmployeeService
+import com.cramsan.edifikana.client.lib.service.EventLogService
 import com.cramsan.edifikana.client.lib.service.FormsService
 import com.cramsan.edifikana.client.lib.service.PropertyConfigService
 import com.cramsan.edifikana.client.lib.service.RemoteConfigService
@@ -42,7 +42,11 @@ val ManagerPlatformModule = module {
     }
     single { Firebase.storage }
     single { Firebase.auth }
-    single<String>(named("FirebaseStorageBucketName")) { Firebase.app.options.storageBucket ?: TODO("Add error handling") }
+    single<String>(named("FirebaseStorageBucketName")) {
+        Firebase.app.options.storageBucket ?: TODO(
+            "Add error handling"
+        )
+    }
     single<AuthService> { FirebaseAuthService(get(), get()) }
     single<EventLogService> { FirebaseEventLogService(get(), get()) }
     single<FormsService> { FirebaseFormsService(get(), get()) }

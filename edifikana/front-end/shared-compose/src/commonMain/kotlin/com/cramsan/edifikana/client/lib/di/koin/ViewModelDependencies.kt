@@ -20,7 +20,7 @@ val ViewModelModule = module {
     factory { TimeCartViewModel(get(), get(), get(), get()) }
     factory { RecordReadViewModel(get(), get(), get()) }
     factory { EmployeeListViewModel(get(), get(), get()) }
-    factory { FormListViewModel(get(), get(), get())}
+    factory { FormListViewModel(get(), get(), get()) }
     factory { ViewRecordViewModel(get(), get(), get(), get(), get()) }
     factory { AddEmployeeViewModel(get(), get(), get()) }
     factory { RecordsViewModel(get(), get(), get()) }

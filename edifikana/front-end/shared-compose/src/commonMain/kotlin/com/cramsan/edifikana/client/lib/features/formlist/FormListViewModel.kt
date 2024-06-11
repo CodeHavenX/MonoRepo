@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 
-class FormListViewModel (
+class FormListViewModel(
     private val formsManager: FormsManager,
     exceptionHandler: CoroutineExceptionHandler,
     dispatcherProvider: DispatcherProvider,

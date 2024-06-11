@@ -17,9 +17,7 @@ import com.cramsan.edifikana.client.android.features.camera.compose.PermissionDe
 import com.cramsan.edifikana.client.android.features.camera.compose.PhotoConfirmation
 import com.cramsan.edifikana.client.android.features.camera.compose.PhotoErrorScreen
 import com.cramsan.edifikana.client.lib.managers.remoteconfig.ImageConfig
-import dagger.hilt.android.AndroidEntryPoint
 import org.koin.android.ext.android.inject
-import javax.inject.Inject
 
 class CameraActivity : ComponentActivity() {
 

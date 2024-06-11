@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class EntryViewModel (
+class EntryViewModel(
     private val formsManager: FormsManager,
     private val workContext: WorkContext,
     exceptionHandler: CoroutineExceptionHandler,

@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 
-class TimeCartViewModel (
+class TimeCartViewModel(
     private val timeCardManager: TimeCardManager,
     private val employeeManager: EmployeeManager,
     exceptionHandler: CoroutineExceptionHandler,

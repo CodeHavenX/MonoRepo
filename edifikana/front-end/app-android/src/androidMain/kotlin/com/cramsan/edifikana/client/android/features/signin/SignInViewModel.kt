@@ -1,22 +1,20 @@
 package com.cramsan.edifikana.client.android.features.signin
 
+import com.cramsan.edifikana.client.android.service.auth.FirebaseAuthSignInResult
 import com.cramsan.edifikana.client.lib.features.base.EdifikanaBaseViewModel
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.remoteconfig.BehaviorConfig
-import com.cramsan.edifikana.client.android.service.auth.FirebaseAuthSignInResult
 import com.cramsan.framework.core.DispatcherProvider
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logI
 import com.cramsan.framework.logging.logW
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 class SignInViewModel(
     private val auth: AuthManager,

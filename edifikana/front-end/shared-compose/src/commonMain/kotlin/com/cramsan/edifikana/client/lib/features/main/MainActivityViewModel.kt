@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
-class MainActivityViewModel (
+class MainActivityViewModel(
     private val auth: AuthManager,
     private val eventLogManager: EventLogManager,
     private val attachmentManager: AttachmentManager,

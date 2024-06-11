@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 
-class EmployeeListViewModel (
+class EmployeeListViewModel(
     private val employeeManager: EmployeeManager,
     exceptionHandler: CoroutineExceptionHandler,
     dispatcherProvider: DispatcherProvider,

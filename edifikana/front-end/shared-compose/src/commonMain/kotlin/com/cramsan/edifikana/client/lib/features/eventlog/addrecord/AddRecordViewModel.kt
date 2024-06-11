@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import org.jetbrains.compose.resources.getString
 
-class AddRecordViewModel (
+class AddRecordViewModel(
     private val employeeManager: EmployeeManager,
     private val eventLogManager: EventLogManager,
     private val clock: Clock,

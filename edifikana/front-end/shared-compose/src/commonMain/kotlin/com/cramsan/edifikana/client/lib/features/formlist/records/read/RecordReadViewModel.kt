@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class RecordReadViewModel (
+class RecordReadViewModel(
     private val formsManager: FormsManager,
     exceptionHandler: CoroutineExceptionHandler,
     dispatcherProvider: DispatcherProvider,

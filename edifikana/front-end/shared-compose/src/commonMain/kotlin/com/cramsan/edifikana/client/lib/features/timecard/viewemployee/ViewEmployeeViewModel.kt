@@ -30,7 +30,7 @@ import kotlinx.datetime.Clock
 import org.jetbrains.compose.resources.getString
 import kotlin.random.Random
 
-class ViewEmployeeViewModel (
+class ViewEmployeeViewModel(
     private val employeeManager: EmployeeManager,
     private val timeCardManager: TimeCardManager,
     private val storageService: StorageService,

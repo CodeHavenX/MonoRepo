@@ -48,7 +48,9 @@ fun AddRecordScreen(
     viewModel: AddRecordViewModel = koinInject(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val event by viewModel.event.collectAsState(com.cramsan.edifikana.client.lib.features.eventlog.addrecord.AddRecordEvent.Noop)
+    val event by viewModel.event.collectAsState(
+        com.cramsan.edifikana.client.lib.features.eventlog.addrecord.AddRecordEvent.Noop
+    )
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         viewModel.loadEmployees()

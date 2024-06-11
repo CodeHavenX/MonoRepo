@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 
-class ViewRecordViewModel (
+class ViewRecordViewModel(
     private val eventLogManager: EventLogManager,
     private val attachmentManager: AttachmentManager,
     private val storageService: StorageService,

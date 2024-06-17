@@ -6,7 +6,7 @@ plugins {
     id("com.github.johnrengelman.shadow")
 }
 
-val mainClassTarget by extra("com.cramsan.edifikana.server.CloudFirebaseAppKt")
+val mainClassTarget by extra("com.cramsan.edifikana.server.LocalLauncherKt")
 
 // Configures default settings for JVM project
 apply(from = "$rootDir/gradle/kotlin-jvm-target-application.gradle")

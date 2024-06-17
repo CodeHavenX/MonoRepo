@@ -16,6 +16,7 @@ actual fun readBytes(uri: CoreUri, dependencies: IODependencies): Result<ByteArr
     }
 }
 
+@Suppress("MagicNumber")
 actual fun processImageData(data: ByteArray): Result<ByteArray> = runCatching {
     val exifInterface = ExifInterface(ByteArrayInputStream(data))
     val rotation = when (

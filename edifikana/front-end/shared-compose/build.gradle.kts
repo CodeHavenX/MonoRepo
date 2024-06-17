@@ -40,6 +40,9 @@ kotlin {
             implementation("io.coil-kt.coil3:coil-network-ktor:_")
             implementation("io.ktor:ktor-client-android:_")
         }
+
+        jvmMain.dependencies {
+        }
     }
 }
 
@@ -61,9 +64,8 @@ dependencies {
     add("kspAndroid", "androidx.room:room-compiler:_")
     add("kspJvm", "androidx.room:room-compiler:_")
 
-    // Hilt
-    implementation("com.google.dagger:hilt-android:_")
-    implementation("androidx.hilt:hilt-navigation-compose:_")
+    implementation("io.insert-koin:koin-android:_")
+    implementation("io.insert-koin:koin-androidx-compose:_")
 }
 
 room {

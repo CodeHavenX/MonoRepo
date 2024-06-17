@@ -6,6 +6,8 @@ import com.cramsan.edifikana.client.lib.models.AttachmentHolder
 import com.cramsan.edifikana.client.lib.models.StorageRef
 import com.cramsan.edifikana.client.lib.service.EventLogService
 import com.cramsan.edifikana.client.lib.service.StorageService
+import com.cramsan.edifikana.client.lib.utils.IODependencies
+import com.cramsan.edifikana.client.lib.utils.getFilename
 import com.cramsan.edifikana.client.lib.utils.getOrCatch
 import com.cramsan.edifikana.client.lib.utils.launch
 import com.cramsan.edifikana.client.lib.utils.publicDownloadUrl
@@ -13,8 +15,6 @@ import com.cramsan.edifikana.client.lib.utils.readBytes
 import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
 import com.cramsan.edifikana.lib.requireNotBlank
 import com.cramsan.edifikana.lib.storage.FOLDER_ATTACHMENTS
-import com.cramsan.edifikana.client.lib.utils.IODependencies
-import com.cramsan.edifikana.client.lib.utils.getFilename
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logI
@@ -22,7 +22,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-class AttachmentManager (
+class AttachmentManager(
     private val eventLogService: EventLogService,
     private val storageService: StorageService,
     private val attachmentDao: FileAttachmentDao,

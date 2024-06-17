@@ -70,4 +70,8 @@ class JVMPreferencesDelegate : PreferencesDelegate {
     override fun remove(key: String) {
         prefs.remove(key)
     }
+
+    override fun clear() {
+        prefs.clear()
+    }
 }

@@ -3,8 +3,6 @@ package com.cramsan.edifikana.client.lib.di.koin
 import com.cramsan.framework.assertlib.AssertUtil
 import com.cramsan.framework.assertlib.AssertUtilInterface
 import com.cramsan.framework.assertlib.implementation.AssertUtilImpl
-import com.cramsan.framework.crashehandler.CrashHandler
-import com.cramsan.framework.crashehandler.implementation.CrashHandlerImpl
 import com.cramsan.framework.halt.HaltUtil
 import com.cramsan.framework.halt.implementation.HaltUtilImpl
 import com.cramsan.framework.logging.EventLogger
@@ -29,10 +27,6 @@ val FrameworkModule = module(createdAtStart = true) {
         )
         AssertUtil.setInstance(impl)
         AssertUtil.singleton
-    }
-
-    single<CrashHandler> {
-        CrashHandlerImpl(get())
     }
 
     single<EventLoggerErrorCallback> {

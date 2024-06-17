@@ -14,9 +14,11 @@ complexity:
   CyclomaticComplexMethod:
     ignoreAnnotated: [ 'Composable' ]
   TooManyFunctions:
+    active: false
     ignoreAnnotated: [ 'Module' ]
     excludes:
       - '**/build/generated/**'
+
 
 exceptions:
   TooGenericExceptionCaught:

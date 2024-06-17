@@ -80,4 +80,11 @@ class PreferencesAndroid(context: Context) : PreferencesDelegate {
             commit()
         }
     }
+
+    override fun clear() {
+        with(sharedPref.edit()) {
+            clear()
+            commit()
+        }
+    }
 }

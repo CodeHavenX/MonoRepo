@@ -50,4 +50,9 @@ interface Preferences {
      * Remove a [key] from the preferences
      */
     fun remove(key: String)
+
+    /**
+     * Clear all preferences
+     */
+    fun clear()
 }

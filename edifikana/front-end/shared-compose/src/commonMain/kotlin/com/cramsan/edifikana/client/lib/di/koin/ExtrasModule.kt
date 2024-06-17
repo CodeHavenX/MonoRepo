@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.di.koin
 
 import com.cramsan.edifikana.client.lib.db.AppDatabase
-import com.cramsan.framework.logging.EventLoggerInterface
+import com.cramsan.framework.logging.logE
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -15,7 +15,7 @@ val ExtrasModule = module {
 
     single {
         CoroutineExceptionHandler { _, throwable ->
-            get<EventLoggerInterface>().e("CoroutineExceptionHandler", "Uncaught Exception", throwable)
+            logE("CoroutineExceptionHandler", "Uncaught Exception", throwable)
         }
     }
 

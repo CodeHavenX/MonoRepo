@@ -43,4 +43,8 @@ class PreferencesImpl(private val platformDelegate: PreferencesDelegate) : Prefe
     override fun remove(key: String) {
         platformDelegate.remove(key)
     }
+
+    override fun clear() {
+        platformDelegate.clear()
+    }
 }

@@ -48,4 +48,8 @@ class InMemoryPreferencesDelegate : PreferencesDelegate {
     override fun remove(key: String) {
         map.remove(key)
     }
+
+    override fun clear() {
+        map.clear()
+    }
 }

@@ -23,15 +23,14 @@ import com.cramsan.framework.logging.logI
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlin.random.Random
 
-class TimeCardManager (
+class TimeCardManager(
     private val timeCardService: TimeCardService,
     private val timeCardRecordDao: TimeCardRecordDao,
     private val storageService: StorageService,
     private val workContext: WorkContext,
     private val ioDependencies: IODependencies,
-    ) {
+) {
     private val mutex = Mutex()
     private var uploadJob: Job? = null
 
@@ -79,7 +78,7 @@ class TimeCardManager (
                 val imageData = readBytes(localImageUri, ioDependencies).getOrThrow()
                 val processedImage = processImageData(imageData).getOrThrow()
 
-                val fileName =  localImageUri.getFilename(ioDependencies)
+                val fileName = localImageUri.getFilename(ioDependencies)
                 val uploadPath = listOf(FOLDER_TIME_CARDS)
 
                 storageService.uploadFile(

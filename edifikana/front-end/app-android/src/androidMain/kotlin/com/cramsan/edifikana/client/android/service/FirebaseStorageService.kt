@@ -20,7 +20,7 @@ class FirebaseStorageService(
     private val context: Context,
 ) : StorageService {
     override suspend fun uploadFile(data: ByteArray, targetRef: StorageRef): Result<StorageRef> = runSuspendCatching {
-// Create a storage reference from our app
+        // Create a storage reference from our app
         val storageReference = storage.reference
 
         // Create a reference to the file to be uploaded

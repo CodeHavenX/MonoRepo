@@ -4,7 +4,6 @@ plugins {
     kotlin("jvm")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.compose")
-    kotlin("plugin.serialization")
 }
 
 apply(from = "$rootDir/gradle/kotlin-jvm-target-lib-compose.gradle")
@@ -23,7 +22,6 @@ dependencies {
     implementation(project(":edifikana:shared"))
 
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:_")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:_")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:_")
 
     implementation("org.apache.logging.log4j:log4j-core:_")
@@ -39,9 +37,7 @@ dependencies {
     implementation("dev.gitlive:firebase-auth:1.12.0")
     implementation("dev.gitlive:firebase-firestore:1.12.0")
     implementation("dev.gitlive:firebase-storage:1.14.0")
-    implementation("dev.gitlive:firebase-installations:1.12.0")
     implementation("dev.gitlive:firebase-config:1.12.0")
-    implementation("dev.gitlive:firebase-perf:1.12.0")
     implementation("dev.gitlive:firebase-java-sdk:0.4.3")
 }
 

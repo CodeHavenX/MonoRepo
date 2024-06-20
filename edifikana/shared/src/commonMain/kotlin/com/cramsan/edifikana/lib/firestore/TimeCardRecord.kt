@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.lib.firestore
 
 import com.cramsan.edifikana.lib.requireNotBlank
+import kotlinx.serialization.Serializable
 
 /**
  * Due to Firestore limitations, we need to make all fields nullable and with a default value.
@@ -8,6 +9,7 @@ import com.cramsan.edifikana.lib.requireNotBlank
  * To query this model from Firestore we will need to have a query.
  * https://console.firebase.google.com/v1/r/project/edifikana/firestore/indexes?create_composite=ClFwcm9qZWN0cy9lZGlmaWthbmEvZGF0YWJhc2VzLyhkZWZhdWx0KS9jb2xsZWN0aW9uR3JvdXBzL3RpbWVDYXJkUmVjb3Jkcy9pbmRleGVzL18QARoWChJlbXBsb3llZURvY3VtZW50SWQQARoQCgx0aW1lUmVjb3JkZWQQAhoMCghfX25hbWVfXxAC
  */
+@Serializable
 @FireStoreModel
 data class TimeCardRecord(
     val employeeDocumentId: String? = null,

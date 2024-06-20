@@ -28,7 +28,7 @@ import com.google.firebase.firestore.persistentCacheSettings
 import com.google.firebase.remoteconfig.remoteConfig
 import com.google.firebase.remoteconfig.remoteConfigSettings
 import com.google.firebase.storage.storage
-import org.koin.android.ext.koin.androidContext
+import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -49,14 +49,30 @@ val ManagerPlatformModule = module {
             "Add error handling"
         )
     }
-    single<AuthService> { FirebaseAuthService(get(), get()) }
-    single<EventLogService> { FirebaseEventLogService(get(), get()) }
-    single<FormsService> { FirebaseFormsService(get(), get()) }
-    single<PropertyConfigService> { FirebasePropertyConfigService(get()) }
-    single<StorageService> { FirebaseStorageService(get(), androidContext()) }
-    single<TimeCardService> { FirebaseTimeCardService(get(), get()) }
-    single<EmployeeService> { FirebaseEmployeeService(get()) }
-    single<RemoteConfigService> { FirebaseRemoteConfigService(get()) }
+    singleOf(::FirebaseAuthService) {
+        bind<AuthService>()
+    }
+    singleOf(::FirebaseEventLogService) {
+        bind<EventLogService>()
+    }
+    singleOf(::FirebaseFormsService) {
+        bind<FormsService>()
+    }
+    singleOf(::FirebasePropertyConfigService) {
+        bind<PropertyConfigService>()
+    }
+    singleOf(::FirebaseStorageService) {
+        bind<StorageService>()
+    }
+    singleOf(::FirebaseTimeCardService) {
+        bind<TimeCardService>()
+    }
+    singleOf(::FirebaseEmployeeService) {
+        bind<EmployeeService>()
+    }
+    singleOf(::FirebaseRemoteConfigService) {
+        bind<RemoteConfigService>()
+    }
 
     single {
         Firebase.remoteConfig.apply {

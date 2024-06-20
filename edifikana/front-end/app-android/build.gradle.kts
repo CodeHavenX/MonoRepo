@@ -6,7 +6,6 @@ plugins {
     id("com.google.gms.google-services")
     id("com.google.devtools.ksp")
     id("com.google.firebase.crashlytics")
-    kotlin("plugin.serialization")
 }
 
 apply(from = "$rootDir/gradle/kotlin-mpp-target-android-app.gradle")
@@ -74,7 +73,6 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-storage")
     implementation("com.google.firebase:firebase-crashlytics")
-    implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-config")
 
     implementation("androidx.camera:camera-camera2:_")
@@ -90,7 +88,6 @@ dependencies {
     implementation("com.google.android.gms:play-services-auth:_")
 
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:_")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:_")
     implementation("androidx.exifinterface:exifinterface:_")
 
     implementation("androidx.room:room-runtime:_")

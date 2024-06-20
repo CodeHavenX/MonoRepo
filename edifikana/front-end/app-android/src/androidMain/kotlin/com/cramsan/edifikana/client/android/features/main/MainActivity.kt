@@ -77,7 +77,7 @@ class MainActivity : ComponentActivity(), EdifikanaMainScreenEventHandler {
 
     override fun shareContent(event: MainActivityEvent.ShareContent) {
         lifecycleScope.launch {
-            (this as Context).shareContent(TAG, event.text, event.imageUri)
+            (this@MainActivity as Context).shareContent(TAG, event.text, event.imageUri)
         }
     }
 

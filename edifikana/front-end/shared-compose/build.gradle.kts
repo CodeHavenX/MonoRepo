@@ -5,7 +5,6 @@ plugins {
     id("com.android.library")
     id("androidx.room")
     id("com.google.devtools.ksp")
-    kotlin("plugin.serialization")
 }
 
 apply(from = "$rootDir/gradle/kotlin-mpp-target-common-compose.gradle")
@@ -42,6 +41,8 @@ kotlin {
         }
 
         jvmMain.dependencies {
+            implementation("org.apache.logging.log4j:log4j-core:_")
+            implementation("org.apache.logging.log4j:log4j-slf4j-impl:_")
         }
     }
 }

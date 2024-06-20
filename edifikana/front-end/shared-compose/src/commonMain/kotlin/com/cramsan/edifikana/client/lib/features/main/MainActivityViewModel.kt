@@ -31,6 +31,14 @@ class MainActivityViewModel(
     private val _delegatedEvents = MutableSharedFlow<MainActivityDelegatedEvent>()
     val delegatedEvents: SharedFlow<MainActivityDelegatedEvent> = _delegatedEvents
 
+    init {
+        viewModelScope.launch {
+            delegatedEvents.collect {
+                logI(TAG, "Delegated event received: $it")
+            }
+        }
+    }
+
     fun enforceAuth() = viewModelScope.launch {
         val result = auth.isSignedIn(true)
 

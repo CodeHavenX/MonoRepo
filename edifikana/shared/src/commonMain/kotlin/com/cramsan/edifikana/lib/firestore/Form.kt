@@ -1,8 +1,10 @@
 package com.cramsan.edifikana.lib.firestore
 
 import com.cramsan.edifikana.lib.requireNotBlank
+import kotlinx.serialization.Serializable
 import kotlin.math.min
 
+@Serializable
 @FireStoreModel
 data class Form(
     val name: String? = null,
@@ -25,6 +27,7 @@ data class Form(
     }
 }
 
+@Serializable
 @FireStoreModel
 data class FormField(
     val id: String? = null,

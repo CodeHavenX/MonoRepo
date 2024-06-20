@@ -30,6 +30,7 @@ import dev.gitlive.firebase.remoteconfig.remoteConfig
 import dev.gitlive.firebase.storage.storage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -61,14 +62,30 @@ val ManagerPlatformModule = module {
             "Add error handling"
         )
     }
-    single<AuthService> { FirebaseAuthService(get(), get()) }
-    single<EventLogService> { FirebaseEventLogService(get(), get()) }
-    single<FormsService> { FirebaseFormsService(get(), get()) }
-    single<PropertyConfigService> { FirebasePropertyConfigService(get()) }
-    single<StorageService> { FirebaseStorageService(get()) }
-    single<TimeCardService> { FirebaseTimeCardService(get(), get()) }
-    single<EmployeeService> { FirebaseEmployeeService(get()) }
-    single<RemoteConfigService> { FirebaseRemoteConfigService(get()) }
+    singleOf(::FirebaseAuthService) {
+        bind<AuthService>()
+    }
+    singleOf(::FirebaseEventLogService) {
+        bind<EventLogService>()
+    }
+    singleOf(::FirebaseFormsService) {
+        bind<FormsService>()
+    }
+    singleOf(::FirebasePropertyConfigService) {
+        bind<PropertyConfigService>()
+    }
+    singleOf(::FirebaseStorageService) {
+        bind<StorageService>()
+    }
+    singleOf(::FirebaseTimeCardService) {
+        bind<TimeCardService>()
+    }
+    singleOf(::FirebaseEmployeeService) {
+        bind<EmployeeService>()
+    }
+    singleOf(::FirebaseRemoteConfigService) {
+        bind<RemoteConfigService>()
+    }
 
     single {
         Firebase.remoteConfig.apply {

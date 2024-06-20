@@ -12,20 +12,23 @@ import com.cramsan.edifikana.client.lib.features.timecard.TimeCartViewModel
 import com.cramsan.edifikana.client.lib.features.timecard.addemployee.AddEmployeeViewModel
 import com.cramsan.edifikana.client.lib.features.timecard.employeelist.EmployeeListViewModel
 import com.cramsan.edifikana.client.lib.features.timecard.viewemployee.ViewEmployeeViewModel
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val ViewModelModule = module {
 
-    factory { EventLogViewModel(get(), get(), get()) }
-    factory { TimeCartViewModel(get(), get(), get(), get()) }
-    factory { RecordReadViewModel(get(), get(), get()) }
-    factory { EmployeeListViewModel(get(), get(), get()) }
-    factory { FormListViewModel(get(), get(), get()) }
-    factory { ViewRecordViewModel(get(), get(), get(), get(), get()) }
-    factory { AddEmployeeViewModel(get(), get(), get()) }
-    factory { RecordsViewModel(get(), get(), get()) }
-    factory { EntryViewModel(get(), get(), get(), get()) }
-    factory { AddRecordViewModel(get(), get(), get(), get(), get()) }
-    factory { ViewEmployeeViewModel(get(), get(), get(), get(), get(), get()) }
-    factory { MainActivityViewModel(get(), get(), get(), get(), get(), get()) }
+    // TODO: Currently we cannot scope a viewmodel to a navigation graph until koin supports the viewModel function
+    // in compose multiplatform code. Until then we will have all viewmodels as singletons.
+    singleOf(::EventLogViewModel)
+    singleOf(::TimeCartViewModel)
+    singleOf(::RecordReadViewModel)
+    singleOf(::EmployeeListViewModel)
+    singleOf(::FormListViewModel)
+    singleOf(::ViewRecordViewModel)
+    singleOf(::AddEmployeeViewModel)
+    singleOf(::RecordsViewModel)
+    singleOf(::EntryViewModel)
+    singleOf(::AddRecordViewModel)
+    singleOf(::ViewEmployeeViewModel)
+    singleOf(::MainActivityViewModel)
 }

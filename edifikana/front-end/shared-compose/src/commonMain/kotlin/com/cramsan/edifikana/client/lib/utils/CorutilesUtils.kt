@@ -3,6 +3,7 @@ package com.cramsan.edifikana.client.lib.utils
 import com.cramsan.edifikana.client.lib.managers.WorkContext
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.logging.logE
+import com.cramsan.framework.logging.logW
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
@@ -40,6 +41,7 @@ inline fun <T, R> T.runSuspendCatching(block: T.() -> R): Result<R> {
     } catch (e: CancellationException) {
         throw e
     } catch (e: Throwable) {
+        logW("runSuspendCatching", "Operation failed. ", e)
         Result.failure(e)
     }
 }

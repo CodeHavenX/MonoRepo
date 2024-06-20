@@ -1,6 +1,7 @@
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
+    kotlin("plugin.serialization")
 }
 
 apply(from = "$rootDir/gradle/kotlin-mpp-target-common.gradle")
@@ -16,6 +17,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-datetime:_")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:_")
                 implementation(project(":framework:interfacelib"))
             }
         }

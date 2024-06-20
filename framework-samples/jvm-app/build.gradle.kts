@@ -30,6 +30,9 @@ dependencies {
 
     implementation("io.insert-koin:koin-compose:${versionFor("version.io.insert-koin")}")
     implementation("io.insert-koin:koin-core:_")
+
+    implementation("org.apache.logging.log4j:log4j-api:_")
+    implementation("org.apache.logging.log4j:log4j-core:_")
     implementation("org.apache.logging.log4j:log4j-slf4j2-impl:_")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:_")

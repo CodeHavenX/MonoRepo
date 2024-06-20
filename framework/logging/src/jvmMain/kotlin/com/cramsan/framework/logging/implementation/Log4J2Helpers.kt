@@ -5,9 +5,11 @@ import com.cramsan.framework.logging.implementation.LoggerJVM.Companion.toLevel
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import org.apache.logging.log4j.core.LoggerContext
 import org.apache.logging.log4j.core.appender.ConsoleAppender
 import org.apache.logging.log4j.core.config.Configuration
 import org.apache.logging.log4j.core.config.Configurator
+import org.apache.logging.log4j.core.config.DefaultConfiguration
 import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory
@@ -15,23 +17,44 @@ import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration
 
+/**
+ * Helper class to configure Log4J2.
+ *
+ * For documentation on how to configure Log4J2, see:
+ * https://logging.apache.org/log4j/2.x/manual/configuration.html
+ *
+ * This logger uses log4j2 with a default configuration to be used as part of the framework library.
+ * You can also configure it following the regular log4j2 configurations. If any log4j2 configurations
+ * are present, our default configuration will be ignored.
+ */
 object Log4J2Helpers {
 
+    /**
+     * Configures Log4J2 and returns the root logger.
+     */
     fun getRootLogger(
         logToFile: Boolean,
         initializationLogLevel: Severity,
     ): Logger {
-        val loggerConfiguration = buildConfiguration(
-            logToFile,
-            initializationLogLevel,
-        )
-        Configurator.initialize(loggerConfiguration)
-        Configurator.reconfigure(loggerConfiguration)
+        val context: LoggerContext = LogManager.getContext(false) as LoggerContext
+        val config: Configuration = context.configuration
+
+        if (config is DefaultConfiguration) {
+            val loggerConfiguration = buildConfiguration(
+                logToFile,
+                initializationLogLevel,
+            )
+
+            Configurator.initialize(loggerConfiguration)
+        }
 
         return LogManager.getRootLogger()
     }
 
-    fun buildConfiguration(
+    /**
+     * Builds the Log4J2 configuration.
+     */
+    private fun buildConfiguration(
         logToFile: Boolean,
         initializationLogLevel: Severity,
     ): Configuration {

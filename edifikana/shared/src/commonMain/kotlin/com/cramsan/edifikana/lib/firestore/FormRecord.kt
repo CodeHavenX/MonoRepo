@@ -1,7 +1,9 @@
 package com.cramsan.edifikana.lib.firestore
 
 import com.cramsan.edifikana.lib.requireNotBlank
+import kotlinx.serialization.Serializable
 
+@Serializable
 @FireStoreModel
 data class FormRecord(
     val propertyId: String? = null,
@@ -22,6 +24,7 @@ data class FormRecord(
     }
 }
 
+@Serializable
 @FireStoreModel
 data class FormEntryField(
     val id: String? = null,

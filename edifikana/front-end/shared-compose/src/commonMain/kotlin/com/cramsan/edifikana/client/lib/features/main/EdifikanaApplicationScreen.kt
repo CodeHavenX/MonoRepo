@@ -20,7 +20,7 @@ fun EdifikanaApplicationScreen(
     val delegatedEvent by viewModel.delegatedEvents.collectAsState(MainActivityDelegatedEvent.Noop)
     val navController = rememberNavController()
 
-    LifecycleEventEffect(Lifecycle.Event.ON_START) {
+    LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
         viewModel.enforceAuth()
     }
 

@@ -11,6 +11,8 @@ import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
 import com.cramsan.edifikana.lib.firestore.FireStoreModel
 import com.google.firebase.firestore.Query
 import dev.gitlive.firebase.firestore.FirebaseFirestore
+import dev.gitlive.firebase.firestore.orderBy
+import dev.gitlive.firebase.firestore.where
 import kotlin.time.Duration.Companion.days
 
 class FirebaseEventLogService(

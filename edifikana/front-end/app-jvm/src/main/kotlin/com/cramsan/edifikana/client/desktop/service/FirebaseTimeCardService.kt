@@ -13,6 +13,8 @@ import com.cramsan.edifikana.lib.firestore.TimeCardRecordPK
 import com.cramsan.framework.logging.logI
 import com.google.firebase.firestore.Query
 import dev.gitlive.firebase.firestore.FirebaseFirestore
+import dev.gitlive.firebase.firestore.orderBy
+import dev.gitlive.firebase.firestore.where
 import kotlin.time.Duration.Companion.days
 
 class FirebaseTimeCardService(

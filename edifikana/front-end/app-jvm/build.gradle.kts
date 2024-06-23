@@ -36,7 +36,7 @@ dependencies {
 
     implementation("dev.gitlive:firebase-auth:1.12.0")
     implementation("dev.gitlive:firebase-firestore:1.12.0")
-    implementation("dev.gitlive:firebase-storage:1.14.0")
+    implementation("dev.gitlive:firebase-storage:1.12.0")
     implementation("dev.gitlive:firebase-config:1.12.0")
     implementation("dev.gitlive:firebase-java-sdk:0.4.3")
 }

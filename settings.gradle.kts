@@ -57,6 +57,7 @@ include("samples:mpp-lib")
 include("samples:jvm-lib")
 include("samples:jvm-application")
 include("samples:nodejs-app")
+include("samples:service-ktor")
 
 include("discord-bot-platform")
 include("alpaca-scheduler:back-end")

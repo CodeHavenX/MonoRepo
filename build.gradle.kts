@@ -50,6 +50,7 @@ tasks.register("releaseAll") {
     dependsOn("samples:mpp-lib:release")
     dependsOn("samples:jvm-lib:release")
     dependsOn("samples:nodejs-app:release")
+    dependsOn("samples:service-ktor:release")
 
     dependsOn("framework-samples:android-app:release")
     dependsOn("framework-samples:jvm-app:release")

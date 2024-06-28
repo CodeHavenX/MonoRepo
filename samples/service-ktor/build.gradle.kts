@@ -27,7 +27,6 @@ dependencies {
 
     implementation("org.apache.logging.log4j:log4j-core:_")
     implementation("org.apache.logging.log4j:log4j-slf4j-impl:_")
-    implementation("org.mongodb:mongodb-driver-kotlin-coroutine:_")
 
     testImplementation("io.ktor:ktor-server-tests-jvm:_")
     testImplementation("io.ktor:ktor-server-test-host:_")

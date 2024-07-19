@@ -9,9 +9,9 @@ import com.cramsan.edifikana.lib.firestore.FireStoreModel
 import com.cramsan.edifikana.lib.firestore.PropertyConfig
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.datetime.TimeZone
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlinx.datetime.TimeZone
 
 class PropertyConfigMappersTest {
 

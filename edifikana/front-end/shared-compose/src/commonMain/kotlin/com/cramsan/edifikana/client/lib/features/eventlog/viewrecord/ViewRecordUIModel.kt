@@ -4,7 +4,7 @@ import com.cramsan.edifikana.client.lib.models.AttachmentHolder
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.client.lib.toFriendlyDateTime
 import com.cramsan.edifikana.client.lib.toFriendlyString
-import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
+import com.cramsan.edifikana.lib.EventLogRecordPK
 
 data class ViewRecordUIModel(
     val summary: String,

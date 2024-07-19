@@ -5,7 +5,7 @@ import com.cramsan.edifikana.client.lib.models.AttachmentHolder
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.client.lib.models.StorageRef
 import com.cramsan.edifikana.client.lib.utils.publicDownloadUrl
-import com.cramsan.edifikana.lib.firestore.EmployeePK
+import com.cramsan.edifikana.lib.EmployeePK
 import com.cramsan.edifikana.lib.firestore.EventLogRecord
 import com.cramsan.edifikana.lib.firestore.EventType
 import com.cramsan.edifikana.lib.firestore.FireStoreModel

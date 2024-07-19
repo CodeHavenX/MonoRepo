@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.service
 
 import com.cramsan.edifikana.client.lib.models.EmployeeModel
-import com.cramsan.edifikana.lib.firestore.EmployeePK
+import com.cramsan.edifikana.lib.EmployeePK
 
 interface EmployeeService {
 

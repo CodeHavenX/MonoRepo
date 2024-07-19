@@ -1,7 +1,8 @@
 package com.cramsan.edifikana.server.firebase
 
+import com.cramsan.edifikana.lib.EmployeePK
+import com.cramsan.edifikana.lib.TimeCardRecordPK
 import com.cramsan.edifikana.lib.firestore.Employee
-import com.cramsan.edifikana.lib.firestore.EmployeePK
 import com.cramsan.edifikana.lib.firestore.FireStoreModel
 import com.cramsan.edifikana.lib.firestore.Form
 import com.cramsan.edifikana.lib.firestore.FormPK
@@ -9,7 +10,6 @@ import com.cramsan.edifikana.lib.firestore.FormRecord
 import com.cramsan.edifikana.lib.firestore.PropertyConfig
 import com.cramsan.edifikana.lib.firestore.PropertyConfigPK
 import com.cramsan.edifikana.lib.firestore.TimeCardRecord
-import com.cramsan.edifikana.lib.firestore.TimeCardRecordPK
 import com.cramsan.edifikana.server.models.toEmployee
 import com.cramsan.edifikana.server.models.toFormRecord
 import com.cramsan.edifikana.server.models.toPropertyConfig

@@ -21,10 +21,6 @@ sealed class MainActivityEvent {
         val id: Int = Random.nextInt(),
     ) : MainActivityEvent()
 
-    data class LaunchSignIn(
-        val id: Int = Random.nextInt(),
-    ) : MainActivityEvent()
-
     data class Navigate(
         val route: String,
         val id: Int = Random.nextInt(),

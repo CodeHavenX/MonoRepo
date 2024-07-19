@@ -8,6 +8,7 @@ import com.cramsan.edifikana.client.lib.features.formlist.entry.EntryViewModel
 import com.cramsan.edifikana.client.lib.features.formlist.records.RecordsViewModel
 import com.cramsan.edifikana.client.lib.features.formlist.records.read.RecordReadViewModel
 import com.cramsan.edifikana.client.lib.features.main.MainActivityViewModel
+import com.cramsan.edifikana.client.lib.features.signinv2.SignInV2ViewModel
 import com.cramsan.edifikana.client.lib.features.timecard.TimeCartViewModel
 import com.cramsan.edifikana.client.lib.features.timecard.addemployee.AddEmployeeViewModel
 import com.cramsan.edifikana.client.lib.features.timecard.employeelist.EmployeeListViewModel
@@ -31,4 +32,5 @@ val ViewModelModule = module {
     singleOf(::AddRecordViewModel)
     singleOf(::ViewEmployeeViewModel)
     singleOf(::MainActivityViewModel)
+    singleOf(::SignInV2ViewModel)
 }

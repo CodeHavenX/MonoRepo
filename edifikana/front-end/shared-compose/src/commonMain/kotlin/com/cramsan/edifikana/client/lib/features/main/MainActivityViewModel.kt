@@ -46,7 +46,8 @@ class MainActivityViewModel(
             logW(TAG, "Failure when enforcing auth.", result.exceptionOrNull())
         } else {
             if (!result.getOrThrow()) {
-                _events.emit(MainActivityEvent.LaunchSignIn())
+                // _events.emit(MainActivityEvent.LaunchSignIn())
+                _events.emit(MainActivityEvent.Navigate(Route.toSignInRoute()))
             } else {
                 // Already signed in
                 uploadPending()

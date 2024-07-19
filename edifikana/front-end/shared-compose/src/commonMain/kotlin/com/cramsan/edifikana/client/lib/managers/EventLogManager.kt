@@ -9,7 +9,7 @@ import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.client.lib.service.EventLogService
 import com.cramsan.edifikana.client.lib.utils.getOrCatch
 import com.cramsan.edifikana.client.lib.utils.launch
-import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
+import com.cramsan.edifikana.lib.EventLogRecordPK
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logI
 import kotlinx.coroutines.Job

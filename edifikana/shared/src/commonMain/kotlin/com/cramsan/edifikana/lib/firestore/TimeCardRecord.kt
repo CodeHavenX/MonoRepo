@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.lib.firestore
 
-import com.cramsan.edifikana.lib.requireNotBlank
+import com.cramsan.edifikana.lib.TimeCardRecordPK
 import kotlinx.serialization.Serializable
 
 /**
@@ -30,12 +30,4 @@ data class TimeCardRecord(
     companion object {
         const val COLLECTION = "timeCardRecords"
     }
-}
-
-@JvmInline
-value class TimeCardRecordPK(val documentPath: String) {
-    init {
-        requireNotBlank(documentPath)
-    }
-    override fun toString() = documentPath
 }

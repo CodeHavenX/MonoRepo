@@ -1,10 +1,10 @@
 package com.cramsan.edifikana.client.lib.managers
 
+import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.client.lib.service.AuthService
 import com.cramsan.edifikana.client.lib.service.auth.SignInResult
 import com.cramsan.edifikana.client.lib.utils.getOrCatch
-import com.cramsan.edifikana.lib.firestore.User
-import com.cramsan.edifikana.lib.firestore.UserPk
+import com.cramsan.edifikana.lib.UserPk
 import com.cramsan.framework.logging.logI
 
 class AuthManager(
@@ -16,7 +16,7 @@ class AuthManager(
         authService.isSignedIn(enforceAllowList).getOrThrow()
     }
 
-    suspend fun getUser(userPk: UserPk): Result<User> = workContext.getOrCatch(TAG) {
+    suspend fun getUser(userPk: UserPk): Result<UserModel> = workContext.getOrCatch(TAG) {
         logI(TAG, "getUser")
         authService.getUser(userPk).getOrThrow()
     }

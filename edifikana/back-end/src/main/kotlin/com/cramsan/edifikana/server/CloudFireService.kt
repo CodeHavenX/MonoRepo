@@ -1,9 +1,9 @@
 package com.cramsan.edifikana.server
 
+import com.cramsan.edifikana.lib.EmployeePK
+import com.cramsan.edifikana.lib.EventLogRecordPK
 import com.cramsan.edifikana.lib.firestore.Employee
-import com.cramsan.edifikana.lib.firestore.EmployeePK
 import com.cramsan.edifikana.lib.firestore.EventLogRecord
-import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
 import com.cramsan.edifikana.lib.firestore.FireStoreModel
 import com.cramsan.edifikana.lib.firestore.FormRecord
 import com.cramsan.edifikana.lib.firestore.FormRecordPK

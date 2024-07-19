@@ -14,7 +14,7 @@ import kotlinx.coroutines.withContext
 suspend inline fun <T> WorkContext.getOrCatch(
     tag: String,
     crossinline block: suspend () -> T,
-): Result<T> = runSuspendCatching {
+): Result<T> = runSuspendCatching(tag) {
     withContext(dispatcherProvider.ioDispatcher()) {
         block()
     }
@@ -35,13 +35,13 @@ expect fun readBytes(uri: CoreUri, dependencies: IODependencies): Result<ByteArr
 
 expect fun processImageData(data: ByteArray): Result<ByteArray>
 
-inline fun <T, R> T.runSuspendCatching(block: T.() -> R): Result<R> {
+inline fun <T, R> T.runSuspendCatching(tag: String, block: T.() -> R): Result<R> {
     return try {
         Result.success(block())
     } catch (e: CancellationException) {
         throw e
     } catch (e: Throwable) {
-        logW("runSuspendCatching", "Operation failed. ", e)
+        logW(tag, "Operation failed. ", e)
         Result.failure(e)
     }
 }

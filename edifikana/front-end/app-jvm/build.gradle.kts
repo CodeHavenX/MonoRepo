@@ -33,12 +33,6 @@ dependencies {
     // Room
     implementation("androidx.room:room-runtime:_")
     implementation("androidx.sqlite:sqlite-bundled-jvm:2.5.0-alpha04")
-
-    implementation("dev.gitlive:firebase-auth:1.12.0")
-    implementation("dev.gitlive:firebase-firestore:1.12.0")
-    implementation("dev.gitlive:firebase-storage:1.12.0")
-    implementation("dev.gitlive:firebase-config:1.12.0")
-    implementation("dev.gitlive:firebase-java-sdk:0.4.3")
 }
 
 compose.desktop {

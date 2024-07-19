@@ -3,8 +3,8 @@
 
 package com.cramsan.edifikana.client.lib.features.main
 
-import com.cramsan.edifikana.lib.firestore.EmployeePK
-import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
+import com.cramsan.edifikana.lib.EmployeePK
+import com.cramsan.edifikana.lib.EventLogRecordPK
 import com.cramsan.edifikana.lib.firestore.FormPK
 import com.cramsan.edifikana.lib.firestore.FormRecordPK
 import com.cramsan.edifikana.lib.requireNotBlank
@@ -24,6 +24,7 @@ enum class Route(
     FormEntry(route = "forms/{formPk}"),
     FormRecords(route = "forms/records"),
     FormRecordRead(route = "forms/records/{formRecordPk}"),
+    SignIn(route = "signin"),
     ;
 
     companion object {
@@ -61,5 +62,7 @@ enum class Route(
         }
 
         fun toEventLogAddItemRoute(): String = EventLogAddItem.route
+
+        fun toSignInRoute(): String = SignIn.route
     }
 }

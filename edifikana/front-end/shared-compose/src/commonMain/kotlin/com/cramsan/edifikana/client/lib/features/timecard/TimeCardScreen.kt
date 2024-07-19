@@ -27,7 +27,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.lib.ui.components.LoadingAnimationOverlay
-import com.cramsan.edifikana.lib.firestore.EmployeePK
+import com.cramsan.edifikana.lib.EmployeePK
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 

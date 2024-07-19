@@ -4,7 +4,7 @@ import com.cramsan.edifikana.client.lib.db.models.TimeCardRecordEntity
 import com.cramsan.edifikana.client.lib.models.StorageRef
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
 import com.cramsan.edifikana.client.lib.utils.publicDownloadUrl
-import com.cramsan.edifikana.lib.firestore.EmployeePK
+import com.cramsan.edifikana.lib.EmployeePK
 import com.cramsan.edifikana.lib.firestore.FireStoreModel
 import com.cramsan.edifikana.lib.firestore.TimeCardRecord
 import com.cramsan.framework.core.CoreUri

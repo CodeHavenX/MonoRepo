@@ -27,9 +27,6 @@ fun EdifikanaApplicationScreen(
     LaunchedEffect(event) {
         when (val mainActivityEvent = event) {
             MainActivityEvent.Noop -> Unit
-            is MainActivityEvent.LaunchSignIn -> {
-                eventHandler.launchSignIn(mainActivityEvent)
-            }
             is MainActivityEvent.OpenCamera -> {
                 eventHandler.openCamera(mainActivityEvent)
             }

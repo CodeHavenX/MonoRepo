@@ -1,15 +1,13 @@
 package com.cramsan.edifikana.client.android.di.koin
 
-import com.cramsan.edifikana.client.android.framework.crashhandler.CrashlyticsCrashHandler
-import com.cramsan.edifikana.client.android.framework.crashhandler.CrashlyticsErrorCallback
 import com.cramsan.framework.core.DispatcherProvider
 import com.cramsan.framework.core.DispatcherProviderImpl
-import com.cramsan.framework.crashehandler.CrashHandlerDelegate
 import com.cramsan.framework.halt.HaltUtilDelegate
 import com.cramsan.framework.halt.implementation.HaltUtilAndroid
 import com.cramsan.framework.logging.EventLoggerDelegate
 import com.cramsan.framework.logging.EventLoggerErrorCallbackDelegate
 import com.cramsan.framework.logging.implementation.LoggerAndroid
+import com.cramsan.framework.logging.implementation.NoopEventLoggerErrorCallbackDelegate
 import com.cramsan.framework.thread.ThreadUtilDelegate
 import com.cramsan.framework.thread.implementation.ThreadUtilAndroid
 import org.koin.android.ext.koin.androidApplication
@@ -21,11 +19,7 @@ val FrameworkPlatformDelegatesModule = module(createdAtStart = true) {
         ThreadUtilAndroid(get())
     }
 
-    single<CrashHandlerDelegate> { CrashlyticsCrashHandler() }
-
-    single<EventLoggerErrorCallbackDelegate> {
-        CrashlyticsErrorCallback()
-    }
+    single<EventLoggerErrorCallbackDelegate> { NoopEventLoggerErrorCallbackDelegate }
 
     single<EventLoggerDelegate> { LoggerAndroid() }
 

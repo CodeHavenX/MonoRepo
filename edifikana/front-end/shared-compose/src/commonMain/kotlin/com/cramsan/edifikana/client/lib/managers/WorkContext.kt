@@ -10,5 +10,5 @@ data class WorkContext(
     val appScope: CoroutineScope,
     val dispatcherProvider: DispatcherProvider,
     val coroutineExceptionHandler: CoroutineExceptionHandler,
-    val storageBucket: String,
+    val storageBucket: String = "test",
 )

@@ -2,7 +2,7 @@ package com.cramsan.edifikana.client.lib.features.eventlog.addrecord
 
 import com.cramsan.edifikana.client.lib.models.EmployeeModel
 import com.cramsan.edifikana.client.lib.models.fullName
-import com.cramsan.edifikana.lib.firestore.EmployeePK
+import com.cramsan.edifikana.lib.EmployeePK
 
 data class AddRecordUIModel(
     val fullName: String,

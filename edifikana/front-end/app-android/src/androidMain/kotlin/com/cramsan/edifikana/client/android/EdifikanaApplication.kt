@@ -4,7 +4,6 @@ import android.app.Application
 import com.cramsan.edifikana.client.android.di.koin.ExtrasPlatformModule
 import com.cramsan.edifikana.client.android.di.koin.FrameworkPlatformDelegatesModule
 import com.cramsan.edifikana.client.android.di.koin.ManagerPlatformModule
-import com.cramsan.edifikana.client.android.di.koin.ViewModelPlatformModule
 import com.cramsan.edifikana.client.lib.di.koin.ExtrasModule
 import com.cramsan.edifikana.client.lib.di.koin.FrameworkModule
 import com.cramsan.edifikana.client.lib.di.koin.ManagerModule
@@ -32,7 +31,6 @@ class EdifikanaApplication : Application() {
                 ManagerModule,
                 ManagerPlatformModule,
                 ViewModelModule,
-                ViewModelPlatformModule,
             )
         }
     }

@@ -12,7 +12,7 @@ import com.cramsan.edifikana.client.lib.utils.getOrCatch
 import com.cramsan.edifikana.client.lib.utils.launch
 import com.cramsan.edifikana.client.lib.utils.publicDownloadUrl
 import com.cramsan.edifikana.client.lib.utils.readBytes
-import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
+import com.cramsan.edifikana.lib.EventLogRecordPK
 import com.cramsan.edifikana.lib.requireNotBlank
 import com.cramsan.edifikana.lib.storage.FOLDER_ATTACHMENTS
 import com.cramsan.framework.core.CoreUri
@@ -75,7 +75,7 @@ class AttachmentManager(
                 )
             )
 
-            eventLogService.addRecord(updatedRecord).getOrThrow()
+            eventLogService.updateRecord(updatedRecord).getOrThrow()
             attachmentDao.delete(attachmentEntity)
         }
     }.onFailure { logE(TAG, "Failed to upload attachment", it) }

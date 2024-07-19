@@ -5,7 +5,7 @@ import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.lib.managers.EmployeeManager
 import com.cramsan.edifikana.client.lib.managers.EventLogManager
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
-import com.cramsan.edifikana.lib.firestore.EmployeePK
+import com.cramsan.edifikana.lib.EmployeePK
 import com.cramsan.edifikana.lib.firestore.EventType
 import com.cramsan.framework.core.DispatcherProvider
 import edifikana_lib.Res

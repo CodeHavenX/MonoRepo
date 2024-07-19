@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.models
 
-import com.cramsan.edifikana.lib.firestore.EmployeePK
-import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
+import com.cramsan.edifikana.lib.EmployeePK
+import com.cramsan.edifikana.lib.EventLogRecordPK
 import com.cramsan.edifikana.lib.firestore.EventType
 import kotlin.random.Random
 

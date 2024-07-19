@@ -1,7 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.main
 
 interface EdifikanaMainScreenEventHandler {
-    fun launchSignIn(event: MainActivityEvent.LaunchSignIn)
     fun openCamera(event: MainActivityEvent.OpenCamera)
     fun openImageExternally(event: MainActivityEvent.OpenImageExternally)
     fun openPhotoPicker(event: MainActivityEvent.OpenPhotoPicker)

@@ -10,9 +10,9 @@ import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
 import com.cramsan.edifikana.client.lib.models.fullName
 import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.edifikana.client.lib.toFriendlyDateTime
-import com.cramsan.edifikana.lib.firestore.EmployeePK
+import com.cramsan.edifikana.lib.EmployeePK
+import com.cramsan.edifikana.lib.TimeCardRecordPK
 import com.cramsan.edifikana.lib.firestore.TimeCardEventType
-import com.cramsan.edifikana.lib.firestore.TimeCardRecordPK
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.DispatcherProvider
 import com.cramsan.framework.logging.logW

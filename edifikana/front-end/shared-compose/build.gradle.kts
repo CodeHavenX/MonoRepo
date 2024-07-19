@@ -1,5 +1,6 @@
 plugins {
     kotlin("multiplatform")
+    kotlin("plugin.serialization")
     id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.android.library")
@@ -38,11 +39,21 @@ kotlin {
             implementation("io.coil-kt.coil3:coil-compose:_")
             implementation("io.coil-kt.coil3:coil-network-ktor:_")
             implementation("io.ktor:ktor-client-android:_")
+
+            implementation("io.github.jan-tennert.supabase:postgrest-kt:2.5.1")
+            implementation("io.github.jan-tennert.supabase:storage-kt:2.5.1")
+            implementation("io.github.jan-tennert.supabase:gotrue-kt:2.5.1")
+               implementation("io.github.jan-tennert.supabase:compose-auth:2.5.1")
+            implementation("io.github.jan-tennert.supabase:compose-auth-ui:2.5.1")
+            implementation("io.github.jan-tennert.supabase:imageloader-integration:2.5.1")
         }
 
         jvmMain.dependencies {
             implementation("org.apache.logging.log4j:log4j-core:_")
             implementation("org.apache.logging.log4j:log4j-slf4j-impl:_")
+            implementation("io.ktor:ktor-client-cio:_")
+
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:_")
         }
     }
 }
@@ -67,6 +78,7 @@ dependencies {
 
     implementation("io.insert-koin:koin-android:_")
     implementation("io.insert-koin:koin-androidx-compose:_")
+    implementation("io.ktor:ktor-client-cio:_")
 }
 
 room {

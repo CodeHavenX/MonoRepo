@@ -3,7 +3,7 @@ package com.cramsan.edifikana.client.lib.features.eventlog
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.client.lib.toFriendlyDateTime
 import com.cramsan.edifikana.client.lib.toFriendlyString
-import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
+import com.cramsan.edifikana.lib.EventLogRecordPK
 
 data class EventLogRecordUIModel(
     val summary: String,

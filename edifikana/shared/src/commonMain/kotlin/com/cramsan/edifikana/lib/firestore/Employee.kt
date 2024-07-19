@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.lib.firestore
 
-import com.cramsan.edifikana.lib.requireNotBlank
+import com.cramsan.edifikana.lib.EmployeePK
 import kotlinx.serialization.Serializable
 
 /**
@@ -28,12 +28,4 @@ data class Employee(
     companion object {
         const val COLLECTION = "employees"
     }
-}
-
-@JvmInline
-value class EmployeePK(val documentPath: String) {
-    init {
-        requireNotBlank(documentPath)
-    }
-    override fun toString() = documentPath
 }

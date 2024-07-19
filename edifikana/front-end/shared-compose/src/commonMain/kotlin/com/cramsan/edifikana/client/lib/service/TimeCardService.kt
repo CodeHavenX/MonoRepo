@@ -1,8 +1,8 @@
 package com.cramsan.edifikana.client.lib.service
 
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
-import com.cramsan.edifikana.lib.firestore.EmployeePK
-import com.cramsan.edifikana.lib.firestore.TimeCardRecordPK
+import com.cramsan.edifikana.lib.EmployeePK
+import com.cramsan.edifikana.lib.TimeCardRecordPK
 
 interface TimeCardService {
 

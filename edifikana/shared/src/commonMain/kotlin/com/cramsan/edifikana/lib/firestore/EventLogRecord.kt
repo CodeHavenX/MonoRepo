@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.lib.firestore
 
-import com.cramsan.edifikana.lib.requireNotBlank
+import com.cramsan.edifikana.lib.EventLogRecordPK
 import kotlinx.serialization.Serializable
 
 /**
@@ -29,12 +29,4 @@ data class EventLogRecord(
     companion object {
         const val COLLECTION = "eventLog"
     }
-}
-
-@JvmInline
-value class EventLogRecordPK(val documentPath: String) {
-    init {
-        requireNotBlank(documentPath)
-    }
-    override fun toString() = documentPath
 }

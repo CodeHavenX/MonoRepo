@@ -37,12 +37,13 @@ import com.cramsan.edifikana.client.lib.features.formlist.FormListScreen
 import com.cramsan.edifikana.client.lib.features.formlist.entry.EntryScreen
 import com.cramsan.edifikana.client.lib.features.formlist.records.RecordsScreen
 import com.cramsan.edifikana.client.lib.features.formlist.records.read.RecordReadScreen
+import com.cramsan.edifikana.client.lib.features.signinv2.SignInV2Screen
 import com.cramsan.edifikana.client.lib.features.timecard.TimeCardScreen
 import com.cramsan.edifikana.client.lib.features.timecard.addemployee.AddEmployeeScreen
 import com.cramsan.edifikana.client.lib.features.timecard.employeelist.EmployeeListScreen
 import com.cramsan.edifikana.client.lib.features.timecard.viewemployee.ViewEmployeeScreen
-import com.cramsan.edifikana.lib.firestore.EmployeePK
-import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
+import com.cramsan.edifikana.lib.EmployeePK
+import com.cramsan.edifikana.lib.EventLogRecordPK
 import com.cramsan.edifikana.lib.firestore.FormPK
 import com.cramsan.edifikana.lib.firestore.FormRecordPK
 import edifikana_lib.Res
@@ -238,6 +239,13 @@ private fun NavigationHost(
         composable(Route.FormRecordRead.route) { backStackEntry ->
             RecordReadScreen(
                 FormRecordPK(backStackEntry.arguments?.getString("formRecordPk").orEmpty()),
+                mainActivityDelegatedEvent,
+                onMainActivityEventInvoke,
+                onTitleChange,
+            )
+        }
+        composable(Route.SignIn.route) {
+            SignInV2Screen(
                 mainActivityDelegatedEvent,
                 onMainActivityEventInvoke,
                 onTitleChange,

@@ -4,7 +4,7 @@ import com.cramsan.edifikana.client.lib.features.base.EdifikanaBaseViewModel
 import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.lib.features.main.Route
 import com.cramsan.edifikana.client.lib.managers.EmployeeManager
-import com.cramsan.edifikana.lib.firestore.EmployeePK
+import com.cramsan.edifikana.lib.EmployeePK
 import com.cramsan.framework.core.DispatcherProvider
 import edifikana_lib.Res
 import edifikana_lib.title_timecard_employee_list

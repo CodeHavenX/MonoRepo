@@ -3,7 +3,7 @@ package com.cramsan.edifikana.client.lib.managers
 import com.cramsan.edifikana.client.lib.models.EmployeeModel
 import com.cramsan.edifikana.client.lib.service.EmployeeService
 import com.cramsan.edifikana.client.lib.utils.getOrCatch
-import com.cramsan.edifikana.lib.firestore.EmployeePK
+import com.cramsan.edifikana.lib.EmployeePK
 import com.cramsan.framework.logging.logI
 
 class EmployeeManager(

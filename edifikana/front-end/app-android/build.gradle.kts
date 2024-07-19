@@ -5,7 +5,6 @@ plugins {
     id("org.jetbrains.compose")
     id("com.google.gms.google-services")
     id("com.google.devtools.ksp")
-    id("com.google.firebase.crashlytics")
 }
 
 apply(from = "$rootDir/gradle/kotlin-mpp-target-android-app.gradle")
@@ -67,14 +66,6 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:_")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:_")
 
-    implementation(platform("com.google.firebase:firebase-bom:_"))
-    implementation("com.google.firebase:firebase-analytics")
-    implementation("com.google.firebase:firebase-auth")
-    implementation("com.google.firebase:firebase-firestore")
-    implementation("com.google.firebase:firebase-storage")
-    implementation("com.google.firebase:firebase-crashlytics")
-    implementation("com.google.firebase:firebase-config")
-
     implementation("androidx.camera:camera-camera2:_")
     implementation("androidx.camera:camera-lifecycle:_")
     implementation("androidx.camera:camera-view:_")
@@ -83,9 +74,6 @@ dependencies {
     implementation("io.coil-kt.coil3:coil-compose:_")
     implementation("io.coil-kt.coil3:coil-network-ktor:_")
     implementation("io.ktor:ktor-client-android:_")
-
-    implementation("com.firebaseui:firebase-ui-auth:_")
-    implementation("com.google.android.gms:play-services-auth:_")
 
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:_")
     implementation("androidx.exifinterface:exifinterface:_")

@@ -27,7 +27,7 @@ import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.lib.toFriendlyStringCompose
 import com.cramsan.edifikana.client.lib.ui.components.Dropdown
 import com.cramsan.edifikana.client.lib.ui.components.LoadingAnimationOverlay
-import com.cramsan.edifikana.lib.firestore.EmployeePK
+import com.cramsan.edifikana.lib.EmployeePK
 import com.cramsan.edifikana.lib.firestore.EventType
 import edifikana_lib.Res
 import edifikana_lib.text_add

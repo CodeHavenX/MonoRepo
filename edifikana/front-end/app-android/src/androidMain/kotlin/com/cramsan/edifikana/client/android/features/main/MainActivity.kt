@@ -10,9 +10,7 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import com.cramsan.edifikana.client.android.db.clearOldFiles
 import com.cramsan.edifikana.client.android.features.camera.CameraContract
-import com.cramsan.edifikana.client.android.features.signin.SignInActivity
 import com.cramsan.edifikana.client.lib.features.main.EdifikanaApplicationScreen
 import com.cramsan.edifikana.client.lib.features.main.EdifikanaMainScreenEventHandler
 import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
@@ -45,13 +43,6 @@ class MainActivity : ComponentActivity(), EdifikanaMainScreenEventHandler {
         setContent {
             EdifikanaApplicationScreen(eventHandler = this)
         }
-
-        clearOldFiles()
-    }
-
-    override fun launchSignIn(event: MainActivityEvent.LaunchSignIn) {
-        val intent = Intent(this@MainActivity, SignInActivity::class.java)
-        startActivity(intent)
     }
 
     override fun openCamera(event: MainActivityEvent.OpenCamera) {

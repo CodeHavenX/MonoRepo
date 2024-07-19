@@ -15,6 +15,11 @@ value class StorageRef(val ref: String) {
         return ref.split("/").last()
     }
 
+    fun path(): List<String> {
+        val array = ref.split("/")
+        return array.subList(0, array.size - 1)
+    }
+
     companion object {
         private const val TAG = "StorageRef"
     }

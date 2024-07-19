@@ -2,8 +2,8 @@ package com.cramsan.edifikana.client.lib.db.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.cramsan.edifikana.lib.EventLogRecordPK
 import com.cramsan.edifikana.lib.firestore.EventLogRecord
-import com.cramsan.edifikana.lib.firestore.EventLogRecordPK
 import com.cramsan.framework.core.CoreUri
 import kotlinx.datetime.Clock
 

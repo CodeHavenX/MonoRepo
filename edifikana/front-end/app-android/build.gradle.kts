@@ -49,12 +49,10 @@ android {
 }
 
 dependencies {
-    implementation(project(":framework:assert"))
     implementation(project(":framework:halt"))
     implementation(project(":framework:interfacelib"))
     implementation(project(":framework:logging"))
     implementation(project(":framework:thread"))
-    implementation(project(":framework:crashhandler"))
     implementation(project(":framework:core"))
 
     implementation(project(":edifikana:front-end:shared-compose"))
@@ -62,9 +60,7 @@ dependencies {
 
     implementation("androidx.appcompat:appcompat:_")
     implementation("androidx.core:core-ktx:_")
-    implementation("androidx.navigation:navigation-compose:_")
     implementation("androidx.compose.material:material-icons-extended:_")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:_")
 
     implementation("androidx.camera:camera-camera2:_")
     implementation("androidx.camera:camera-lifecycle:_")

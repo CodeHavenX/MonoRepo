@@ -35,6 +35,6 @@ read -p "Do you want start the deployment? (Y/N): " confirm && [[ $confirm == [y
 
 bundle exec fastlane deploy
 if [ $? -ne 0 ]; then
-    echo "Failed to deploy Edifikana Cloud Function"
+    echo "Failed to deploy Edifikana Android app to Play Store"
     exit 1
 fi

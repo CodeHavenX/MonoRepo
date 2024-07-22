@@ -43,17 +43,13 @@ kotlin {
             implementation("io.github.jan-tennert.supabase:postgrest-kt:2.5.1")
             implementation("io.github.jan-tennert.supabase:storage-kt:2.5.1")
             implementation("io.github.jan-tennert.supabase:gotrue-kt:2.5.1")
-               implementation("io.github.jan-tennert.supabase:compose-auth:2.5.1")
+            implementation("io.github.jan-tennert.supabase:compose-auth:2.5.1")
             implementation("io.github.jan-tennert.supabase:compose-auth-ui:2.5.1")
             implementation("io.github.jan-tennert.supabase:imageloader-integration:2.5.1")
         }
 
         jvmMain.dependencies {
-            implementation("org.apache.logging.log4j:log4j-core:_")
-            implementation("org.apache.logging.log4j:log4j-slf4j-impl:_")
             implementation("io.ktor:ktor-client-cio:_")
-
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:_")
         }
     }
 }

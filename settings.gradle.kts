@@ -73,10 +73,4 @@ include("edifikana:front-end:shared-compose")
 include("edifikana:front-end:app-android")
 include("edifikana:front-end:app-jvm")
 
-include("tpsd")
-
-include("runasimi:android-app")
-include("runasimi:mpp-lib")
-include("runasimi:service")
-
 include("cdk-repo")

@@ -70,10 +70,4 @@ tasks.register("releaseAll") {
     dependsOn("alpaca-scheduler:front-end:app-android:release")
     dependsOn("alpaca-scheduler:front-end:app-jvm:release")
     dependsOn("alpaca-scheduler:front-end:app-wasm:release")
-
-    dependsOn("runasimi:android-app:release")
-    dependsOn("runasimi:mpp-lib:release")
-    dependsOn("runasimi:service:release")
-
-    dependsOn("tpsd:release")
 }

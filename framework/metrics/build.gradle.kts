@@ -32,13 +32,10 @@ kotlin {
         }
         jvmMain {
             dependencies {
-                implementation("software.amazon.awssdk:auth:_")
-                implementation("software.amazon.awssdk:cloudwatch:_")
             }
         }
     }
 }
 
 dependencies {
-    implementation("com.amazonaws:aws-android-sdk-cloudwatch:_")
 }

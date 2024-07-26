@@ -14,11 +14,11 @@ dependencies {
 
 compose.desktop {
     application {
-        mainClass = "MainKt"
+        mainClass = "com.codehavenx.alpaca.frontend.desktop.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "org.example.project"
+            packageName = "com.codehavenx.alpaca.frontend.desktop"
             packageVersion = "1.0.0"
         }
     }

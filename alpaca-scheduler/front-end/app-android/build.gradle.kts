@@ -8,10 +8,10 @@ plugins {
 apply(from = "$rootDir/gradle/kotlin-mpp-target-android-app.gradle")
 
 android {
-    namespace = "org.example.project.android"
+    namespace = "com.codehavenx.alpaca.frontend.android"
 
     defaultConfig {
-        applicationId = "org.example.project.android"
+        applicationId = "com.codehavenx.alpaca.frontend.android"
         versionCode = 1
         versionName = "1.0"
     }

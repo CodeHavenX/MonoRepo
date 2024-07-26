@@ -55,8 +55,6 @@ tasks.register("releaseAll") {
     dependsOn("framework-samples:android-app:release")
     dependsOn("framework-samples:jvm-app:release")
 
-    dependsOn("cdk-repo:release")
-
     dependsOn("edifikana:back-end:release")
     dependsOn("edifikana:shared:release")
     dependsOn("edifikana:front-end:shared-compose:release")

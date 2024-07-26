@@ -72,5 +72,3 @@ include("edifikana:shared")
 include("edifikana:front-end:shared-compose")
 include("edifikana:front-end:app-android")
 include("edifikana:front-end:app-jvm")
-
-include("cdk-repo")

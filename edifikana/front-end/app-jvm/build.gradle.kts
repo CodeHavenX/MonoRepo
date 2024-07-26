@@ -32,7 +32,7 @@ dependencies {
 
     // Room
     implementation("androidx.room:room-runtime:_")
-    implementation("androidx.sqlite:sqlite-bundled-jvm:2.5.0-alpha04")
+    implementation("androidx.sqlite:sqlite-bundled-jvm:_")
 }
 
 compose.desktop {
@@ -51,5 +51,5 @@ compose.desktop {
 // Temporary mitigation for the issue above regarding the latest versions of Compose MP and Jetpack Navigation
 configurations.all {
     resolutionStrategy {
-        force("androidx.compose.material:material-ripple:1.7.0-alpha05") }
+        force(AndroidX.compose.material.ripple) }
 }

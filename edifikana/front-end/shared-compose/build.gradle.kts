@@ -40,12 +40,12 @@ kotlin {
             implementation("io.coil-kt.coil3:coil-network-ktor:_")
             implementation("io.ktor:ktor-client-android:_")
 
-            implementation("io.github.jan-tennert.supabase:postgrest-kt:2.5.1")
-            implementation("io.github.jan-tennert.supabase:storage-kt:2.5.1")
-            implementation("io.github.jan-tennert.supabase:gotrue-kt:2.5.1")
-            implementation("io.github.jan-tennert.supabase:compose-auth:2.5.1")
-            implementation("io.github.jan-tennert.supabase:compose-auth-ui:2.5.1")
-            implementation("io.github.jan-tennert.supabase:imageloader-integration:2.5.1")
+            implementation("io.github.jan-tennert.supabase:postgrest-kt:_")
+            implementation("io.github.jan-tennert.supabase:storage-kt:_")
+            implementation("io.github.jan-tennert.supabase:gotrue-kt:_")
+            implementation("io.github.jan-tennert.supabase:compose-auth:_")
+            implementation("io.github.jan-tennert.supabase:compose-auth-ui:_")
+            implementation("io.github.jan-tennert.supabase:imageloader-integration:_")
         }
 
         jvmMain.dependencies {

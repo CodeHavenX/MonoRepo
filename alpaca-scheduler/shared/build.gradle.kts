@@ -1,6 +1,9 @@
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
+
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
+    kotlin("plugin.serialization")
 }
 
 apply(from = "$rootDir/gradle/kotlin-mpp-target-common.gradle")
@@ -14,8 +17,18 @@ android {
 }
 
 kotlin {
+    @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
         browser {}
         binaries.executable()
+    }
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:_")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:_")
+            }
+        }
     }
 }

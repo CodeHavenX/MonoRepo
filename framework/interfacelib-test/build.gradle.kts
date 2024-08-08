@@ -8,7 +8,7 @@ apply(from = "$rootDir/gradle/kotlin-mpp-target-android-lib.gradle")
 apply(from = "$rootDir/gradle/kotlin-mpp-target-ios.gradle")
 apply(from = "$rootDir/gradle/kotlin-mpp-target-js.gradle")
 apply(from = "$rootDir/gradle/kotlin-mpp-target-jvm.gradle")
-
+apply(from = "$rootDir/gradle/kotlin-mpp-target-wasm.gradle")
 
 android {
     namespace = "com.cramsan.framework.interfacelib.test"
@@ -60,6 +60,12 @@ kotlin {
             dependencies {
                 implementation("org.jetbrains.kotlin:kotlin-test-js:_")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:_")
+            }
+        }
+        wasmJsMain {
+            dependencies {
+                implementation("org.jetbrains.kotlin:kotlin-test-wasm-js:_")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test-wasm-js:_")
             }
         }
     }

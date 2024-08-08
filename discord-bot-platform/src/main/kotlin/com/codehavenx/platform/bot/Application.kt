@@ -16,7 +16,7 @@ import io.ktor.server.application.ApplicationStopped
 import io.ktor.server.application.ApplicationStopping
 import io.ktor.server.application.ServerReady
 import io.ktor.server.application.install
-import io.ktor.server.plugins.callloging.CallLogging
+import io.ktor.server.plugins.calllogging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
@@ -94,12 +94,12 @@ fun Application.initializeMonitoring() {
     val handler: (Any) -> Unit = {
         logW(TAG, it.toString())
     }
-    environment.monitor.subscribe(ApplicationStarting, handler)
-    environment.monitor.subscribe(ApplicationStarted, handler)
-    environment.monitor.subscribe(ServerReady, handler)
-    environment.monitor.subscribe(ApplicationStopPreparing, handler)
-    environment.monitor.subscribe(ApplicationStopping, handler)
-    environment.monitor.subscribe(ApplicationStopped, handler)
+    monitor.subscribe(ApplicationStarting, handler)
+    monitor.subscribe(ApplicationStarted, handler)
+    monitor.subscribe(ServerReady, handler)
+    monitor.subscribe(ApplicationStopPreparing, handler)
+    monitor.subscribe(ApplicationStopping, handler)
+    monitor.subscribe(ApplicationStopped, handler)
 }
 
 /**

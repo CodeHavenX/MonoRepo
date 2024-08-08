@@ -59,7 +59,6 @@ include("samples:jvm-application")
 include("samples:nodejs-app")
 include("samples:service-ktor")
 
-include("discord-bot-platform")
 include("alpaca-scheduler:back-end")
 include("alpaca-scheduler:shared")
 include("alpaca-scheduler:front-end:shared-compose")

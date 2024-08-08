@@ -61,7 +61,6 @@ tasks.register("releaseAll") {
     dependsOn("edifikana:front-end:app-android:release")
     dependsOn("edifikana:front-end:app-jvm:release")
 
-    dependsOn("discord-bot-platform:release")
     dependsOn("alpaca-scheduler:back-end:release")
     dependsOn("alpaca-scheduler:shared:release")
     dependsOn("alpaca-scheduler:front-end:shared-compose:release")

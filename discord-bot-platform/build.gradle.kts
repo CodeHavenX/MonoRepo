@@ -30,7 +30,6 @@ dependencies {
     implementation("org.apache.logging.log4j:log4j-slf4j-impl:_")
     implementation("com.google.cloud:google-cloud-translate:_")
 
-    testImplementation("io.ktor:ktor-server-tests-jvm:_")
     testImplementation("io.ktor:ktor-server-test-host:_")
     testImplementation(project(":framework:test"))
 }

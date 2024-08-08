@@ -8,7 +8,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
 import io.ktor.server.request.receive
-import io.ktor.server.routing.Route
+import io.ktor.server.routing.RootRouting
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
@@ -23,7 +23,9 @@ class UserController(
     /**
      * Registers the routes for the user controller. The [route] parameter is the root path for the controller.
      */
-    fun registerRoutes(route: Route) {
+    fun registerRoutes(
+        route: RootRouting
+    ) {
         route.route("user") {
             post {
                 createUser(call)

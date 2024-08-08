@@ -1,3 +1,5 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 plugins {
     kotlin("plugin.serialization")
     id("io.ktor.plugin")
@@ -20,19 +22,21 @@ dependencies {
 
     implementation(project(":alpaca-scheduler:shared"))
 
+    implementation("io.insert-koin:koin-core:_")
+    implementation("io.insert-koin:koin-ktor:_")
+
+    implementation("org.apache.logging.log4j:log4j-core:_")
+    implementation("org.apache.logging.log4j:log4j-slf4j-impl:_")
+
     implementation("io.ktor:ktor-server-core-jvm:_")
     implementation("io.ktor:ktor-server-netty-jvm:_")
     implementation("io.ktor:ktor-server-content-negotiation:_")
     implementation("io.ktor:ktor-serialization-kotlinx-json:_")
-    implementation("dev.kord:kord-core:_")
-    implementation("io.insert-koin:koin-core:_")
-    implementation("io.insert-koin:koin-ktor:_")
     implementation("io.ktor:ktor-server-call-logging:_")
-    implementation("org.apache.logging.log4j:log4j-core:_")
-    implementation("org.apache.logging.log4j:log4j-slf4j-impl:_")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:_")
     implementation("org.mongodb:mongodb-driver-kotlin-coroutine:_")
 
-    testImplementation("io.ktor:ktor-server-tests-jvm:_")
     testImplementation("io.ktor:ktor-server-test-host:_")
     testImplementation(project(":framework:test"))
 }

@@ -16,22 +16,22 @@ import kotlinx.coroutines.launch
  * Initialize monitoring
  */
 fun Application.initializeMonitoring(tag: String) {
-    environment.monitor.subscribe(ApplicationStarting) {
+    monitor.subscribe(ApplicationStarting) {
         logI(tag, "ApplicationStarting")
     }
-    environment.monitor.subscribe(ApplicationStarted) {
+    monitor.subscribe(ApplicationStarted) {
         logI(tag, "ApplicationStarted")
     }
-    environment.monitor.subscribe(ServerReady) {
+    monitor.subscribe(ServerReady) {
         logI(tag, "ServerReady")
     }
-    environment.monitor.subscribe(ApplicationStopPreparing) {
+    monitor.subscribe(ApplicationStopPreparing) {
         logI(tag, "ApplicationStopPreparing")
     }
-    environment.monitor.subscribe(ApplicationStopping) {
+    monitor.subscribe(ApplicationStopping) {
         logI(tag, "ApplicationStopping")
     }
-    environment.monitor.subscribe(ApplicationStopped) {
+    monitor.subscribe(ApplicationStopped) {
         logI(tag, "ApplicationStopped")
     }
 }
@@ -42,22 +42,22 @@ fun Application.initializeDiscordMonitoring(
     coroutineScope: CoroutineScope,
     tag: String,
 ) {
-    environment.monitor.subscribe(ApplicationStarting) {
+    monitor.subscribe(ApplicationStarting) {
         logDiscordMonitoring(discordService, channelId, coroutineScope, tag, "ApplicationStarting")
     }
-    environment.monitor.subscribe(ApplicationStarted) {
+    monitor.subscribe(ApplicationStarted) {
         logDiscordMonitoring(discordService, channelId, coroutineScope, tag, "ApplicationStarted")
     }
-    environment.monitor.subscribe(ServerReady) {
+    monitor.subscribe(ServerReady) {
         logDiscordMonitoring(discordService, channelId, coroutineScope, tag, "ServerReady")
     }
-    environment.monitor.subscribe(ApplicationStopPreparing) {
+    monitor.subscribe(ApplicationStopPreparing) {
         logDiscordMonitoring(discordService, channelId, coroutineScope, tag, "ApplicationStopPreparing")
     }
-    environment.monitor.subscribe(ApplicationStopping) {
+    monitor.subscribe(ApplicationStopping) {
         logDiscordMonitoring(discordService, channelId, coroutineScope, tag, "ApplicationStopping")
     }
-    environment.monitor.subscribe(ApplicationStopped) {
+    monitor.subscribe(ApplicationStopped) {
         logDiscordMonitoring(discordService, channelId, coroutineScope, tag, "ApplicationStopped")
     }
 }

@@ -43,7 +43,7 @@ class ApplicationTest : TestBase() {
     override fun setupTest() = Unit
 
     @Test
-    fun `test onPayload with no channelId`() = testApplication {
+    fun `test commit push webhook payload`() = testApplication {
         MockKAnnotations.init(this) // turn relaxUnitFun on for all mocks
 
         githubCommitPushEntryPoint = spyk(

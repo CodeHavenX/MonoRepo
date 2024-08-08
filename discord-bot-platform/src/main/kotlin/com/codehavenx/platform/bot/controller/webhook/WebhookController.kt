@@ -3,10 +3,9 @@ package com.codehavenx.platform.bot.controller.webhook
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logI
 import io.ktor.server.application.ApplicationCall
-import io.ktor.server.application.call
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
-import io.ktor.server.routing.Route
+import io.ktor.server.routing.Routing
 import io.ktor.server.routing.post
 
 /**
@@ -19,7 +18,7 @@ class WebhookController(
     /**
      * This function registers the routes for all the [modules]. The [route] is the root path.
      */
-    fun registerRoutes(route: Route) {
+    fun registerRoutes(route: Routing) {
         modules.forEach { entryPoint ->
             route.post(entryPoint.path) {
                 handlePost(entryPoint, call)

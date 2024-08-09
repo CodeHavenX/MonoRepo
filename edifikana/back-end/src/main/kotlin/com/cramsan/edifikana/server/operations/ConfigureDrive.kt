@@ -26,7 +26,7 @@ suspend fun main() {
     logI(TAG, "Loading function launch parameters")
 
     val service = CloudFireService(
-        "edifikana-stage",
+        "edifikana",
         dependencies.sheets,
         dependencies.drive,
         dependencies.firestore,

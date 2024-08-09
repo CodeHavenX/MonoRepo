@@ -30,26 +30,6 @@ else
   exit 1
 fi
 
-if [ -z "${EDIFIKANA_STORAGE_FOLDER_ID}" ]; then
-  echo "EDIFIKANA_STORAGE_FOLDER_ID is unset or set to the empty string"
-  exit 1
-fi
-
-if [ -z "${EDIFIKANA_TIME_CARD_SPREADSHEET_ID}" ]; then
-  echo "EDIFIKANA_TIME_CARD_SPREADSHEET_ID is unset or set to the empty string"
-  exit 1
-fi
-
-if [ -z "${EDIFIKANA_EVENT_LOG_SPREADSHEET_ID}" ]; then
-  echo "EDIFIKANA_EVENT_LOG_SPREADSHEET_ID is unset or set to the empty string"
-  exit 1
-fi
-
-if [ -z "${EDIFIKANA_FORM_ENTRIES_SPREADSHEET_ID}" ]; then
-  echo "EDIFIKANA_FORM_ENTRIES_SPREADSHEET_ID is unset or set to the empty string"
-  exit 1
-fi
-
 if [ -z "${EDIFIKANA_PROJECT_NAME}" ]; then
   echo "EDIFIKANA_PROJECT_NAME is unset or set to the empty string"
   exit 1

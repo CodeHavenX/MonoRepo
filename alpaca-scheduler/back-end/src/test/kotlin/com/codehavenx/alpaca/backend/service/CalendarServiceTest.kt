@@ -8,7 +8,6 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
-import org.bson.types.ObjectId
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.minutes
@@ -261,7 +260,7 @@ class CalendarServiceTest : TestBase() {
         endDateTime: LocalDateTime,
     ): Event {
         return Event(
-            id = ObjectId().toHexString(),
+            id = "$startDateTime-$endDateTime",
             owner = StaffId(""),
             attendants = mockk(),
             title = "",

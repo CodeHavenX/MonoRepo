@@ -35,7 +35,6 @@ dependencies {
     implementation("io.ktor:ktor-server-call-logging:_")
 
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:_")
-    implementation("org.mongodb:mongodb-driver-kotlin-coroutine:_")
 
     testImplementation("io.ktor:ktor-server-test-host:_")
     testImplementation(project(":framework:test"))

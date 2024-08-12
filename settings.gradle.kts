@@ -61,7 +61,7 @@ include("samples:service-ktor")
 
 include("alpaca-scheduler:back-end")
 include("alpaca-scheduler:shared")
-include("alpaca-scheduler:front-end:shared-compose")
+include("alpaca-scheduler:front-end:appcore")
 include("alpaca-scheduler:front-end:app-android")
 include("alpaca-scheduler:front-end:app-jvm")
 include("alpaca-scheduler:front-end:app-wasm")

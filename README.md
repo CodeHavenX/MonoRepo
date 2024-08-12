@@ -5,10 +5,11 @@ This mono-repo holds the code for several projects that I manage. The reason for
 
 You can find more documentation in the [wiki](https://dev.azure.com/CRamsan/Framework/_wiki/wikis/Framework.wiki/22/Project-Wiki).
 
-## Current Projects (WIP)
-| Project                                                  | Builds             | Status                                                                                                                                                                                                                                   |
-|----------------------------------------------------------|--------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 
+## Current Projects
+| Project                   | Link                                  |
+|---------------------------|---------------------------------------|
+| Ktor Service Template     | https://sampleserverktor.cramsan.com/ |
+| Compose Wasm App Template | https://samplecomposeapp.cramsan.com/ |
 
 # Framework
 A lot of the code is kept in a shared module called **Framework** that abstract a lot of complexities out of the client apps.

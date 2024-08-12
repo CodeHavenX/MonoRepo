@@ -14,7 +14,6 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
-import org.bson.types.ObjectId
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
@@ -26,10 +25,10 @@ fun createEventEntity(
     startTime: LocalDateTime,
     endTime: LocalDateTime,
     timeZone: TimeZone,
-    objectIdProvider: () -> ObjectId,
+    uniqueIdProvider: () -> String,
 ): EventEntity {
     return EventEntity(
-        id = objectIdProvider(),
+        id = uniqueIdProvider(),
         owner = owner.staffId,
         attendants = attendants,
         title = title,
@@ -41,7 +40,7 @@ fun createEventEntity(
 
 fun EventEntity.toEvent(timeZone: TimeZone): Event {
     return Event(
-        id = this.id.toHexString() ?: TODO(),
+        id = this.id,
         owner = StaffId(owner),
         attendants = attendants.map { UserId(it) }.toSet(),
         title = title,
@@ -53,7 +52,7 @@ fun EventEntity.toEvent(timeZone: TimeZone): Event {
 
 fun Event.toEventEntity(timeZone: TimeZone): EventEntity {
     return EventEntity(
-        id = ObjectId(this.id),
+        id = this.id,
         owner = owner.staffId,
         attendants = attendants.map { it.userId }.toSet(),
         title = title,
@@ -73,7 +72,7 @@ fun Long.toLocalDateTime(timeZone: TimeZone): LocalDateTime {
 
 fun ConfigurationEntity.toConfiguration(): AppointmentConfiguration {
     return AppointmentConfiguration(
-        id = id.toHexString(),
+        id = id,
         appointmentType = AppointmentType(appointmentType),
         duration = duration.seconds,
         timeZone = TimeZone.of(timeZone),
@@ -82,7 +81,7 @@ fun ConfigurationEntity.toConfiguration(): AppointmentConfiguration {
 
 fun AppointmentConfiguration.toConfigurationEntity(): ConfigurationEntity {
     return ConfigurationEntity(
-        id = ObjectId(id),
+        id = id,
         appointmentType = appointmentType.appointmentType,
         duration = duration.inWholeSeconds,
         timeZone = timeZone.id,
@@ -93,10 +92,10 @@ fun createConfigurationEntity(
     appointmentType: AppointmentType,
     duration: Duration,
     timeZone: TimeZone,
-    objectIdProvider: () -> ObjectId,
+    uniqueIdProvider: () -> String,
 ): ConfigurationEntity {
     return ConfigurationEntity(
-        id = objectIdProvider(),
+        id = uniqueIdProvider(),
         appointmentType = appointmentType.appointmentType,
         duration = duration.inWholeSeconds,
         timeZone = timeZone.id,
@@ -105,14 +104,14 @@ fun createConfigurationEntity(
 
 fun User.toUserEntity(): UserEntity {
     return UserEntity(
-        id = ObjectId(this.userId.userId),
+        id = this.userId.userId,
         name = name,
     )
 }
 
 fun UserEntity.toUser(): User {
     return User(
-        userId = UserId(this.id.toHexString()),
+        userId = UserId(this.id),
         name = this.name,
     )
 }

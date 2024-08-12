@@ -32,7 +32,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(project(":alpaca-scheduler:front-end:shared-compose"))
+                implementation(project(":alpaca-scheduler:front-end:appcore"))
             }
         }
     }
@@ -43,7 +43,7 @@ kotlin {
 // https://github.com/Kotlin/kotlin-wasm-examples/blob/main/compose-imageviewer/webApp/build.gradle.kts
 // TODO: Verify if the program runs without this workaround. If it does, remove this workaround.
 val copyWasmResources = tasks.create("copyWasmResourcesWorkaround", Copy::class.java) {
-    from(project(":alpaca-scheduler:front-end:shared-compose").file("src/commonMain/composeResources"))
+    from(project(":alpaca-scheduler:front-end:appcore").file("src/commonMain/composeResources"))
     into("build/processedResources/wasmJs/main")
 }
 afterEvaluate {

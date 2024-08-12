@@ -18,7 +18,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":alpaca-scheduler:front-end:shared-compose"))
+    implementation(project(":alpaca-scheduler:front-end:appcore"))
 
     implementation("androidx.activity:activity-compose:_")
 

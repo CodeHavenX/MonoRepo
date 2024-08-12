@@ -2,21 +2,12 @@ package com.codehavenx.alpaca.backend.storage
 
 import com.codehavenx.alpaca.backend.models.Event
 import com.codehavenx.alpaca.backend.models.StaffId
-import com.codehavenx.alpaca.backend.storage.entity.EventEntity
 import com.cramsan.framework.logging.logD
-import com.mongodb.client.model.Filters
-import com.mongodb.kotlin.client.coroutine.MongoDatabase
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.toList
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
-import org.bson.types.ObjectId
 
-class CalendarDatabase(
-    database: MongoDatabase,
-    private val objectIdProvider: () -> ObjectId,
-) {
-    private val collection = database.getCollection<EventEntity>(COLLECTION_NAME)
+@Suppress("UnusedParameter", "UnusedPrivateProperty", "RedundantSuspendModifier")
+class CalendarDatabase {
 
     suspend fun createEvent(
         owner: StaffId,
@@ -28,6 +19,7 @@ class CalendarDatabase(
         timeZone: TimeZone,
     ): Event {
         logD(TAG, "Creating event")
+        /*
         val eventEntity = createEventEntity(
             owner,
             attendants,
@@ -45,6 +37,8 @@ class CalendarDatabase(
         } else {
             TODO()
         }
+         */
+        TODO()
     }
 
     suspend fun getEvent(
@@ -52,9 +46,12 @@ class CalendarDatabase(
         timeZone: TimeZone,
     ): Event? {
         logD(TAG, "Getting event: %S", eventId)
+        /*
         return collection
             .find(Filters.eq("_id", ObjectId(eventId)))
             .firstOrNull()?.toEvent(timeZone)
+         */
+        TODO()
     }
 
     suspend fun getEventsInRange(
@@ -64,6 +61,7 @@ class CalendarDatabase(
         timeZone: TimeZone,
     ): List<Event> {
         logD(TAG, "Getting events in range: %S - %S", startTime, endTime)
+        /*
         val dateTimeFilter = Filters.and(
             Filters.gte("endTime", startTime.toLong(timeZone)),
             Filters.lte("startTime", endTime.toLong(timeZone)),
@@ -80,22 +78,30 @@ class CalendarDatabase(
         }
         return collection
             .find(filter).toList().map { it.toEvent(timeZone) }
+         */
+        TODO()
     }
 
     suspend fun updateEvent(event: Event, timeZone: TimeZone): Boolean {
         logD(TAG, "Updating event: %S", event.id)
+        /*
         val updatedEvent = event.toEventEntity(timeZone)
         return collection.replaceOne(
             Filters.eq("_id", updatedEvent.id),
             updatedEvent,
         ).wasAcknowledged()
+         */
+        TODO()
     }
 
     suspend fun deleteEvent(eventId: String): Boolean {
         logD(TAG, "Deleting event: %S", eventId)
+        /*
         return collection.deleteOne(
             Filters.eq("_id", ObjectId(eventId)),
         ).wasAcknowledged()
+         */
+        TODO()
     }
 
     companion object {

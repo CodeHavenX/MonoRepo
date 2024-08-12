@@ -9,7 +9,7 @@ plugins {
 apply(from = "$rootDir/gradle/kotlin-jvm-target-lib-compose.gradle")
 
 dependencies {
-    implementation(project(":alpaca-scheduler:front-end:shared-compose"))
+    implementation(project(":alpaca-scheduler:front-end:appcore"))
 }
 
 compose.desktop {

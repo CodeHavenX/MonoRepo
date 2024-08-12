@@ -3,15 +3,11 @@ package com.codehavenx.alpaca.backend.storage
 import com.codehavenx.alpaca.backend.models.StaffId
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.test.TestBase
-import com.mongodb.ConnectionString
-import com.mongodb.kotlin.client.coroutine.MongoClient
 import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
-import org.bson.types.ObjectId
 import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -19,13 +15,9 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.minutes
 
+@Ignore
 class CalendarDatabaseTest : TestBase() {
 
-    private val connectionString = ConnectionString("mongodb://localhost:27017")
-    private val mongoClient = MongoClient.create(connectionString)
-    private val database = mongoClient.getDatabase("test")
-
-    private val testObjectId = ObjectId("65bb3d1cce761d0352aee080")
     private val timeZone = TimeZone.UTC
 
     override fun setupTest() {
@@ -34,10 +26,6 @@ class CalendarDatabaseTest : TestBase() {
                 relaxed = true,
             )
         )
-
-        runBlocking {
-            database.drop()
-        }
     }
 
     @Ignore
@@ -45,8 +33,7 @@ class CalendarDatabaseTest : TestBase() {
     fun `test crud operations`() = runBlockingTest {
         val startDate = LocalDateTime(2024, 1, 1, 0, 0)
         val endDate = LocalDateTime(2024, 1, 1, 1, 0)
-        val objectIdProvider: () -> ObjectId = { testObjectId }
-        val calendarDatabase = CalendarDatabase(database, objectIdProvider)
+        val calendarDatabase = CalendarDatabase()
 
         // Create event
         val event = calendarDatabase.createEvent(
@@ -86,8 +73,7 @@ class CalendarDatabaseTest : TestBase() {
     @Ignore
     @Test
     fun `test getting events in range`() = runBlockingTest {
-        val objectIdProvider: () -> ObjectId = { ObjectId() }
-        val calendarDatabase = CalendarDatabase(database, objectIdProvider)
+        val calendarDatabase = CalendarDatabase()
         val currentDate = LocalDateTime(2024, 1, 1, 0, 0)
 
         // Create events
@@ -119,8 +105,7 @@ class CalendarDatabaseTest : TestBase() {
     @Ignore
     @Test
     fun `test getting events in range with owner`() = runBlockingTest {
-        val objectIdProvider: () -> ObjectId = { ObjectId() }
-        val calendarDatabase = CalendarDatabase(database, objectIdProvider)
+        val calendarDatabase = CalendarDatabase()
         val currentDate = LocalDateTime(2024, 1, 1, 0, 0)
 
         // Create events

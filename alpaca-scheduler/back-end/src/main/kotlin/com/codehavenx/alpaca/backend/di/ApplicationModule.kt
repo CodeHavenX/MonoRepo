@@ -1,7 +1,9 @@
 package com.codehavenx.alpaca.backend.di
 
+import com.codehavenx.alpaca.backend.config.createJson
 import com.codehavenx.alpaca.backend.controller.UserController
 import com.codehavenx.alpaca.backend.service.UserService
+import com.codehavenx.alpaca.backend.storage.UserDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.serialization.json.Json
@@ -17,7 +19,7 @@ val ApplicationModule = module(createdAtStart = true) {
     }
 
     single<Json> {
-        com.codehavenx.alpaca.backend.config.createJson()
+        createJson()
     }
 
     single<UserController> {
@@ -26,5 +28,9 @@ val ApplicationModule = module(createdAtStart = true) {
 
     single<UserService> {
         UserService(get())
+    }
+
+    single<UserDatabase> {
+        UserDatabase()
     }
 }

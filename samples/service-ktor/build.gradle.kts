@@ -28,7 +28,6 @@ dependencies {
     implementation("org.apache.logging.log4j:log4j-core:_")
     implementation("org.apache.logging.log4j:log4j-slf4j-impl:_")
 
-    testImplementation("io.ktor:ktor-server-tests-jvm:_")
     testImplementation("io.ktor:ktor-server-test-host:_")
 }
 

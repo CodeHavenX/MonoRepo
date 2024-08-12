@@ -12,3 +12,11 @@ This project is split in the following way:
   - **[App-Android](./front-end/app-android)**: Android application.
   - **[App-Jvm](./front-end/app-jvm)**: JVM application.
   - **[App-Wasm](./front-end/app-wasm)**: WebAssembly application.
+
+## Releases
+
+- WebApp: https://alpaca.cramsan.com/
+- Android: TBD
+- iOS: TBD
+- Desktop: TBD
+- Backend: https://alpacaapi.cramsan.com/

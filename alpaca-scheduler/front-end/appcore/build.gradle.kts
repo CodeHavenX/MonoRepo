@@ -50,11 +50,14 @@ kotlin {
             implementation("io.github.jan-tennert.supabase:gotrue-kt:_")
             implementation("io.github.jan-tennert.supabase:compose-auth:_")
             implementation("io.github.jan-tennert.supabase:compose-auth-ui:_")
-            // implementation("io.github.jan-tennert.supabase:imageloader-integration:_")
         }
 
         jvmMain.dependencies {
             implementation("io.ktor:ktor-client-cio:_")
+        }
+
+        wasmJsMain.dependencies {
+            implementation("io.ktor:ktor-client-js:_")
         }
     }
 }

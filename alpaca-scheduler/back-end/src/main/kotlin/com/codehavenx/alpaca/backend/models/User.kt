@@ -1,6 +1,9 @@
 package com.codehavenx.alpaca.backend.models
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class User(
-    val userId: UserId,
-    val name: String,
+    val id: UserId,
+    val username: String,
 )

@@ -13,23 +13,18 @@ class UserService(
     ): User {
         return userDatabase.createUser(
             name = name,
-        )
+        ).getOrThrow()
     }
 
     suspend fun getUser(
         userId: UserId,
     ): User? {
-        return userDatabase.getUser(userId)
+        return userDatabase.getUser(userId).getOrThrow()
     }
 
     suspend fun deleteEvent(
         userId: UserId,
     ): Boolean {
-        return userDatabase.deleteUser(userId)
-    }
-
-    companion object {
-        @Suppress("UnusedPrivateProperty")
-        private const val TAG = "UserService"
+        return userDatabase.deleteUser(userId).getOrThrow()
     }
 }

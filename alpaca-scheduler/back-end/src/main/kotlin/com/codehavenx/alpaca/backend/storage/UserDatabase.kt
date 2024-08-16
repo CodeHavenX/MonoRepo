@@ -2,67 +2,78 @@ package com.codehavenx.alpaca.backend.storage
 
 import com.codehavenx.alpaca.backend.models.User
 import com.codehavenx.alpaca.backend.models.UserId
+import com.codehavenx.alpaca.backend.storage.entity.COLLECTION
+import com.codehavenx.alpaca.backend.storage.entity.CreateUserEntity
+import com.codehavenx.alpaca.backend.storage.entity.SupabaseModel
+import com.codehavenx.alpaca.backend.storage.entity.UserEntity
+import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
+import io.github.jan.supabase.postgrest.Postgrest
+import kotlinx.datetime.Clock
 
 @Suppress("UnusedParameter", "UnusedPrivateProperty", "RedundantSuspendModifier")
-class UserDatabase {
+class UserDatabase(
+    private val postgrest: Postgrest,
+    private val clock: Clock,
+) {
 
+    @OptIn(SupabaseModel::class)
     suspend fun createUser(
         name: String,
-    ): User {
+    ): Result<User> = runSuspendCatching(TAG) {
         logD(TAG, "Creating user: %S", name)
-        /*
-        val userEntity = UserEntity(
-            id = objectIdProvider(),
-            name = name,
+        val userRequest = CreateUserEntity(
+            username = name,
         )
 
-        val result = collection.insertOne(userEntity)
-        logD(TAG, "User %S, created = %S", userEntity.id, result.wasAcknowledged())
-        if (result.wasAcknowledged()) {
-            return userEntity.toUser()
-        } else {
-            TODO()
-        }
-         */
-        TODO()
+        val createdUser = postgrest.from(COLLECTION)
+            .insert(userRequest) {
+                select()
+            }
+            .decodeSingle<UserEntity>()
+        logD(TAG, "User created userId=%S", createdUser.id)
+        createdUser.toUser()
     }
 
-    suspend fun getUser(userId: UserId): User? {
+    @OptIn(SupabaseModel::class)
+    suspend fun getUser(userId: UserId): Result<User?> = runSuspendCatching(TAG) {
         logD(TAG, "Getting user: %S", userId)
-        /*
-        return database.getCollection<UserEntity>(COLLECTION_NAME)
-            .find(Filters.eq("_id", ObjectId(userId.userId)))
-            .firstOrNull()?.toUser()
 
-         */
-        TODO()
+        postgrest.from(COLLECTION)
+            .select {
+                filter {
+                    eq("id", userId.userId)
+                }
+                limit(1)
+                single()
+            }
+            .decodeAs<UserEntity>()
+            .toUser()
     }
 
-    suspend fun updateUser(user: User): Boolean {
-        logD(TAG, "Updating user: %S", user.userId)
+    @OptIn(SupabaseModel::class)
+    suspend fun updateUser(user: User): Result<Boolean> = runSuspendCatching(TAG) {
+        logD(TAG, "Updating user: %S", user.id)
         val userEntity = user.toUserEntity()
-        /*
-        return database.getCollection<UserEntity>(COLLECTION_NAME).replaceOne(
-            Filters.eq("_id", userEntity.id),
-            userEntity,
-        ).wasAcknowledged()
-         */
-        TODO()
+
+        postgrest.from(COLLECTION)
+            .update(userEntity)
+            .decodeAsOrNull<UserEntity>() != null
     }
 
-    suspend fun deleteUser(userId: UserId): Boolean {
+    @OptIn(SupabaseModel::class)
+    suspend fun deleteUser(userId: UserId): Result<Boolean> = runSuspendCatching(TAG) {
         logD(TAG, "Deleting user: %S", userId)
-        /*
-        return database.getCollection<UserEntity>(COLLECTION_NAME).deleteOne(
-            Filters.eq("_id", ObjectId(userId.userId)),
-        ).wasAcknowledged()
-         */
-        TODO()
+
+        postgrest.from(COLLECTION)
+            .delete {
+                filter {
+                    eq("id", userId.userId)
+                }
+            }.decodeAsOrNull<UserEntity>() != null
     }
 
     companion object {
         private const val TAG = "UserDatabase"
-        private const val COLLECTION_NAME = "Users"
     }
 }

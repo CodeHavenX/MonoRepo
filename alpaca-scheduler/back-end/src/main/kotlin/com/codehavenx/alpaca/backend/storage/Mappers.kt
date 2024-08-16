@@ -8,6 +8,7 @@ import com.codehavenx.alpaca.backend.models.User
 import com.codehavenx.alpaca.backend.models.UserId
 import com.codehavenx.alpaca.backend.storage.entity.ConfigurationEntity
 import com.codehavenx.alpaca.backend.storage.entity.EventEntity
+import com.codehavenx.alpaca.backend.storage.entity.SupabaseModel
 import com.codehavenx.alpaca.backend.storage.entity.UserEntity
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
@@ -102,16 +103,18 @@ fun createConfigurationEntity(
     )
 }
 
+@SupabaseModel
 fun User.toUserEntity(): UserEntity {
     return UserEntity(
-        id = this.userId.userId,
-        name = name,
+        id = this.id.userId,
+        username = username,
     )
 }
 
+@SupabaseModel
 fun UserEntity.toUser(): User {
     return User(
-        userId = UserId(this.id),
-        name = this.name,
+        id = UserId(this.id),
+        username = this.username,
     )
 }

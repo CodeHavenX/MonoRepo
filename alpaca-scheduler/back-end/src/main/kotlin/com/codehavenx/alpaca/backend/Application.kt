@@ -1,10 +1,10 @@
 package com.codehavenx.alpaca.backend
 
+import com.codehavenx.alpaca.backend.controller.AvailabilityController
 import com.codehavenx.alpaca.backend.controller.UserController
 import com.codehavenx.alpaca.backend.di.ApplicationModule
 import com.codehavenx.alpaca.backend.di.FrameworkModule
 import com.codehavenx.alpaca.backend.di.createKtorModule
-import com.codehavenx.alpaca.shared.TestShared
 import com.cramsan.framework.logging.logI
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
@@ -37,8 +37,9 @@ fun Application.startServer() = runBlocking {
     configureKtorEngine()
 
     val userController: UserController by inject()
+    val availabilityController: AvailabilityController by inject()
 
-    configureEntryPoints(userController)
+    configureEntryPoints(userController, availabilityController)
     startApplication()
 }
 
@@ -72,9 +73,11 @@ fun Application.initializeDependencies() {
  */
 fun Application.configureEntryPoints(
     userController: UserController,
+    availabilityController: AvailabilityController,
 ) {
     routing {
         userController.registerRoutes(this@routing)
+        availabilityController.registerRoutes(this@routing)
     }
 }
 
@@ -83,7 +86,6 @@ fun Application.configureEntryPoints(
  */
 fun Application.startApplication() {
     logI(TAG, "Application is ready.")
-    logI(TAG, "Application is ready. + ${TestShared.TEST}")
 }
 
 private const val TAG = "Application"

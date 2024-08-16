@@ -19,6 +19,7 @@ dependencies {
     implementation(project(":framework:halt"))
     implementation(project(":framework:preferences"))
     implementation(project(":framework:thread"))
+    implementation(project(":framework:utils"))
 
     implementation(project(":alpaca-scheduler:shared"))
 
@@ -35,6 +36,9 @@ dependencies {
     implementation("io.ktor:ktor-server-call-logging:_")
 
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:_")
+
+    implementation("io.github.jan-tennert.supabase:postgrest-kt:_")
+    implementation("io.github.jan-tennert.supabase:storage-kt:_")
 
     testImplementation("io.ktor:ktor-server-test-host:_")
     testImplementation(project(":framework:test"))

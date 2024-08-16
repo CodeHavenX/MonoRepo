@@ -1,5 +1,6 @@
 package com.codehavenx.alpaca.backend.di
 
+import com.codehavenx.alpaca.backend.controller.UserController
 import io.ktor.server.application.Application
 import org.koin.dsl.module
 
@@ -11,5 +12,9 @@ fun createKtorModule(application: Application) = module(createdAtStart = true) {
 
     single {
         application.environment.config
+    }
+
+    single<UserController> {
+        UserController(get())
     }
 }

@@ -1,17 +1,21 @@
 # Alpaca Scheduler Back-End
 
 ## Getting Started
-
-Follow the steps [here](https://supabase.com/docs/guides/cli/local-development) to install a local supabase instance. 
-This will be used for local development.
-
-If you are unable to launch Docker Desktop when on Ubuntu 24.04, try the following:
+1. Download Docker on your machine. We use [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- If you are unable to launch Docker Desktop when on Ubuntu 24.04, try the following:
 https://forums.docker.com/t/docker-desktop-not-working-on-ubuntu-24-04/141054/2
 
+2. Follow the steps [here](https://supabase.com/docs/guides/cli/getting-started) to install a local supabase instance.
+3. Once you've installed supabase, `cd MonoRepo/alpaca-scheduler` and enter `supabase start` . This will be used for local development.
+- The first time will take ~XX minute to complete the first time. 
+
+### Ubuntu Work Around for Docker Desktop
 ```bash
 sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
 sudo systemctl --user restart docker-desktop
 ```
+
+## Sequence Diagram
 Here is a simple flow chart:
 
 ```mermaid

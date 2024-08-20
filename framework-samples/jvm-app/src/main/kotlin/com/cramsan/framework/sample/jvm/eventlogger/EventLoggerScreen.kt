@@ -13,6 +13,9 @@ import androidx.compose.ui.Modifier
 import com.cramsan.framework.logging.Severity
 import org.koin.compose.koinInject
 
+/**
+ * Screen for logging events.
+ */
 @Composable
 fun EventLoggerScreen() {
     val eventLoggerViewModel: EventLoggerViewModel = koinInject()
@@ -57,19 +60,49 @@ private fun EventLoggerScreenContent(
     }
 }
 
+/**
+ * Event handler for the EventLoggerScreen.
+ */
 interface EventLoggerScreenEventHandler {
+    /**
+     * Try to log a verbose message.
+     */
     fun tryLogV()
+
+    /**
+     * Try to log a debug message.
+     */
     fun tryLogD()
+
+    /**
+     * Try to log an info message.
+     */
     fun tryLogI()
+
+    /**
+     * Try to log a warning message.
+     */
     fun tryLogW()
+
+    /**
+     * Try to log an error message.
+     */
     fun tryLogE()
+
+    /**
+     * Toggle logging to a file.
+     */
     fun toggleLogToFile()
+
+    /**
+     * Set the severity of the logger.
+     */
     fun setSeverity(severity: Severity)
 }
 
 @Preview
 @Composable
-fun AssertScreenPreview() {
+private fun AssertScreenPreview() {
     MaterialTheme {
         EventLoggerScreenContent(
             eventHandler = object : EventLoggerScreenEventHandler {

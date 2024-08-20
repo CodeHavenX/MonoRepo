@@ -4,6 +4,9 @@ import com.cramsan.edifikana.client.lib.features.main.EdifikanaMainScreenEventHa
 import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
 import com.cramsan.framework.logging.logE
 
+/**
+ * Main screen event handler for JVM.
+ */
 class EdifikanaJvmMainScreenEventHandler : EdifikanaMainScreenEventHandler {
 
     override fun openCamera(event: MainActivityEvent.OpenCamera) {

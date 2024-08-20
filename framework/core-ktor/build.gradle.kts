@@ -9,5 +9,4 @@ dependencies {
 
     implementation("io.ktor:ktor-server-core-jvm:_")
     implementation("io.ktor:ktor-client-core:_")
-    implementation("dev.kord:kord-core:_")
 }

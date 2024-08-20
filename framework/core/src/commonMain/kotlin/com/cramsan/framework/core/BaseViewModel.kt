@@ -9,12 +9,24 @@ import kotlinx.coroutines.flow.SharedFlow
  */
 interface BaseViewModel {
 
+    /**
+     * The tag to use for logging.
+     */
     val logTag: String
 
+    /**
+     * The dispatcher provider to use for this viewmodel.
+     */
     val dispatcherProvider: DispatcherProvider
 
+    /**
+     * The coroutine scope to use for this viewmodel.
+     */
     val viewModelScope: CoroutineScope
 
+    /**
+     * A flow of events that this viewmodel emits to the UI.
+     */
     val events: SharedFlow<BaseEvent>
 
     /**

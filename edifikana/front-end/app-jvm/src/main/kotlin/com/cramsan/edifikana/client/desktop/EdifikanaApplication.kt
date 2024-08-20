@@ -14,6 +14,9 @@ import com.cramsan.edifikana.client.lib.di.koin.ViewModelModule
 import com.cramsan.edifikana.client.lib.features.main.EdifikanaApplicationScreen
 import org.koin.core.context.startKoin
 
+/**
+ * Main function for the desktop application.
+ */
 fun main() = application {
     startKoin {
         // Load modules

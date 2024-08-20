@@ -1,7 +1,9 @@
 package com.codehavenx.alpaca.backend
 
-import com.codehavenx.alpaca.backend.controller.AvailabilityController
-import com.codehavenx.alpaca.backend.controller.UserController
+import com.codehavenx.alpaca.backend.core.controller.AvailabilityController
+import com.codehavenx.alpaca.backend.core.controller.AvailabilityController.Companion.registerRoutes
+import com.codehavenx.alpaca.backend.core.controller.UserController
+import com.codehavenx.alpaca.backend.core.controller.UserController.Companion.registerRoutes
 import com.codehavenx.alpaca.backend.di.ApplicationModule
 import com.codehavenx.alpaca.backend.di.FrameworkModule
 import com.codehavenx.alpaca.backend.di.createKtorModule
@@ -37,7 +39,7 @@ fun Application.startServer() = runBlocking {
     configureKtorEngine()
 
     val userController: UserController by inject()
-    val availabilityController: AvailabilityController by inject()
+    val availabilityController: com.codehavenx.alpaca.backend.core.controller.AvailabilityController by inject()
 
     configureEntryPoints(userController, availabilityController)
     startApplication()
@@ -73,7 +75,7 @@ fun Application.initializeDependencies() {
  */
 fun Application.configureEntryPoints(
     userController: UserController,
-    availabilityController: AvailabilityController,
+    availabilityController: com.codehavenx.alpaca.backend.core.controller.AvailabilityController,
 ) {
     routing {
         userController.registerRoutes(this@routing)

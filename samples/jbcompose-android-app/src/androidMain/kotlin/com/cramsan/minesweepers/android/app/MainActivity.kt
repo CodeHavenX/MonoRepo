@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
 
 @Preview
 @Composable
-fun MainActivityPreview() {
+private fun MainActivityPreview() {
     MainView(
         10,
         12,
@@ -65,6 +65,6 @@ fun MainActivityPreview() {
     showBackground = true
 )
 @Composable
-fun TempComposePreview() {
+private fun TempComposePreview() {
     Text(text = "Hello World!")
 }

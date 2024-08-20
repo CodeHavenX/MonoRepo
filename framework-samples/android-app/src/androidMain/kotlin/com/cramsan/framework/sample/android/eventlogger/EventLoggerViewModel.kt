@@ -13,6 +13,9 @@ import com.cramsan.framework.logging.logW
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
+/**
+ * ViewModel for the Event Logger screen.
+ */
 @HiltViewModel
 class EventLoggerViewModel @Inject constructor(
     private val eventLoggerDelegate: EventLoggerDelegate,

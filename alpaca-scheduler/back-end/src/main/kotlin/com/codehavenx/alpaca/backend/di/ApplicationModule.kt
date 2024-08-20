@@ -1,17 +1,15 @@
 package com.codehavenx.alpaca.backend.di
 
 import com.codehavenx.alpaca.backend.config.createJson
-import com.codehavenx.alpaca.backend.controller.AvailabilityController
-import com.codehavenx.alpaca.backend.controller.UserController
-import com.codehavenx.alpaca.backend.service.CalendarService
-import com.codehavenx.alpaca.backend.service.ConfigurationService
-import com.codehavenx.alpaca.backend.service.NotificationService
-import com.codehavenx.alpaca.backend.service.ReservationService
-import com.codehavenx.alpaca.backend.service.UserService
-import com.codehavenx.alpaca.backend.service.internalmessaging.InternalMessagingService
-import com.codehavenx.alpaca.backend.storage.CalendarDatabase
-import com.codehavenx.alpaca.backend.storage.ConfigurationDatabase
-import com.codehavenx.alpaca.backend.storage.UserDatabase
+import com.codehavenx.alpaca.backend.core.controller.AvailabilityController
+import com.codehavenx.alpaca.backend.core.controller.UserController
+import com.codehavenx.alpaca.backend.core.service.CalendarService
+import com.codehavenx.alpaca.backend.core.service.ConfigurationService
+import com.codehavenx.alpaca.backend.core.service.ReservationService
+import com.codehavenx.alpaca.backend.core.service.UserService
+import com.codehavenx.alpaca.backend.core.storage.supabase.SupabaseCalendarDatabase
+import com.codehavenx.alpaca.backend.core.storage.supabase.SupabaseConfigurationDatabase
+import com.codehavenx.alpaca.backend.core.storage.supabase.SupabaseUserDatabase
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.gotrue.Auth
@@ -77,12 +75,10 @@ val ApplicationModule = module(createdAtStart = true) {
     singleOf(::UserService)
     singleOf(::CalendarService)
     singleOf(::ConfigurationService)
-    singleOf(::NotificationService)
     singleOf(::ReservationService)
-    singleOf(::InternalMessagingService)
 
     // Storage
-    singleOf(::UserDatabase)
-    singleOf(::CalendarDatabase)
-    singleOf(::ConfigurationDatabase)
+    singleOf(::SupabaseUserDatabase)
+    singleOf(::SupabaseCalendarDatabase)
+    singleOf(::SupabaseConfigurationDatabase)
 }

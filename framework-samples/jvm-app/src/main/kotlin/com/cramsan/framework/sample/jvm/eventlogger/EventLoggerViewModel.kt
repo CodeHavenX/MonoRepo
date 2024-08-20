@@ -12,6 +12,9 @@ import com.cramsan.framework.logging.logW
 import com.cramsan.framework.preferences.Preferences
 import com.cramsan.framework.sample.jvm.KEY_LOG_TO_FILE
 
+/**
+ * ViewModel for the EventLoggerScreen.
+ */
 class EventLoggerViewModel(
     private val eventLoggerDelegate: EventLoggerDelegate,
     private val preferences: Preferences,

@@ -14,6 +14,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.cramsan.framework.logging.Severity
 import com.cramsan.framework.sample.android.theme.CoreProjectTheme
 
+/**
+ * Screen for the Event Logger.
+ */
 @Composable
 fun EventLoggerScreen() {
     val eventLoggerViewModel: EventLoggerViewModel = hiltViewModel()
@@ -56,18 +59,44 @@ private fun EventLoggerScreenContent(
     }
 }
 
+/**
+ * ViewModel for the EventLoggerScreen.
+ */
 interface EventLoggerScreenEventHandler {
+    /**
+     * Try to log a message with the specified severity.
+     */
     fun tryLogV()
+
+    /**
+     * Try to log a message with the specified severity.
+     */
     fun tryLogD()
+
+    /**
+     * Try to log a message with the specified severity.
+     */
     fun tryLogI()
+
+    /**
+     * Try to log a message with the specified severity.
+     */
     fun tryLogW()
+
+    /**
+     * Try to log a message with the specified severity.
+     */
     fun tryLogE()
+
+    /**
+     * Set the severity for the next log message.
+     */
     fun setSeverity(severity: Severity)
 }
 
 @Preview
 @Composable
-fun AssertScreenPreview() {
+private fun AssertScreenPreview() {
     CoreProjectTheme {
         EventLoggerScreenContent(
             eventHandler = object : EventLoggerScreenEventHandler {

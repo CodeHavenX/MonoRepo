@@ -1,8 +1,10 @@
 package com.codehavenx.alpaca.backend.service
 
-import com.codehavenx.alpaca.backend.models.Event
-import com.codehavenx.alpaca.backend.models.StaffId
-import com.codehavenx.alpaca.backend.storage.CalendarDatabase
+import com.codehavenx.alpaca.backend.core.service.CalendarService
+import com.codehavenx.alpaca.backend.core.service.models.Event
+import com.codehavenx.alpaca.backend.core.service.models.StaffId
+import com.codehavenx.alpaca.backend.core.storage.CalendarDatabase
+import com.codehavenx.alpaca.backend.core.storage.requests.GetEventsInRangeRequest
 import com.cramsan.framework.test.TestBase
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -28,31 +30,35 @@ class CalendarServiceTest : TestBase() {
 
         coEvery {
             calendarDatabase.getEventsInRange(
-                startDate,
-                endDate,
-                listOf(StaffId("testOwner")),
-                TimeZone.UTC,
+                GetEventsInRangeRequest(
+                    startDate,
+                    endDate,
+                    listOf(StaffId("testOwner")),
+                    TimeZone.UTC,
+                )
             )
-        } returns listOf(
-            createEvent(
-                LocalDateTime(2024, 1, 1, 0, 0),
-                LocalDateTime(2024, 1, 1, 0, 5),
-            ),
-            createEvent(
-                LocalDateTime(2024, 1, 1, 2, 0),
-                LocalDateTime(2024, 1, 1, 3, 0),
-            ),
-            createEvent(
-                LocalDateTime(2024, 1, 1, 4, 55),
-                LocalDateTime(2024, 1, 1, 5, 15),
-            ),
-            createEvent(
-                LocalDateTime(2024, 1, 1, 6, 10),
-                LocalDateTime(2024, 1, 1, 8, 32),
-            ),
+        } returns Result.success(
+            listOf(
+                createEvent(
+                    LocalDateTime(2024, 1, 1, 0, 0),
+                    LocalDateTime(2024, 1, 1, 0, 5),
+                ),
+                createEvent(
+                    LocalDateTime(2024, 1, 1, 2, 0),
+                    LocalDateTime(2024, 1, 1, 3, 0),
+                ),
+                createEvent(
+                    LocalDateTime(2024, 1, 1, 4, 55),
+                    LocalDateTime(2024, 1, 1, 5, 15),
+                ),
+                createEvent(
+                    LocalDateTime(2024, 1, 1, 6, 10),
+                    LocalDateTime(2024, 1, 1, 8, 32),
+                ),
+            )
         )
 
-        val availability = calendarService.getAvailableTimeSlots(
+        val availability = calendarService.getAvailableTimeSlotsForStaff(
             startTime = startDate,
             endTime = endDate,
             timeZone = TimeZone.UTC,
@@ -163,47 +169,59 @@ class CalendarServiceTest : TestBase() {
 
         coEvery {
             calendarDatabase.getEventsInRange(
-                startDate,
-                endDate,
-                listOf(StaffId("testOwner1")),
-                TimeZone.UTC,
+                GetEventsInRangeRequest(
+                    startDate,
+                    endDate,
+                    listOf(StaffId("testOwner1")),
+                    TimeZone.UTC,
+                )
             )
-        } returns listOf(
-            createEvent(
-                LocalDateTime(2024, 1, 1, 0, 0),
-                LocalDateTime(2024, 1, 1, 0, 5),
-            ),
+        } returns Result.success(
+            listOf(
+                createEvent(
+                    LocalDateTime(2024, 1, 1, 0, 0),
+                    LocalDateTime(2024, 1, 1, 0, 5),
+                ),
+            )
         )
 
         coEvery {
             calendarDatabase.getEventsInRange(
-                startDate,
-                endDate,
-                listOf(StaffId("testOwner2")),
-                TimeZone.UTC,
+                GetEventsInRangeRequest(
+                    startDate,
+                    endDate,
+                    listOf(StaffId("testOwner2")),
+                    TimeZone.UTC,
+                )
             )
-        } returns listOf(
-            createEvent(
-                LocalDateTime(2024, 1, 1, 0, 10),
-                LocalDateTime(2024, 1, 1, 0, 32),
-            ),
+        } returns Result.success(
+            listOf(
+                createEvent(
+                    LocalDateTime(2024, 1, 1, 0, 10),
+                    LocalDateTime(2024, 1, 1, 0, 32),
+                ),
+            )
         )
 
         coEvery {
             calendarDatabase.getEventsInRange(
-                startDate,
-                endDate,
-                listOf(StaffId("testOwner3")),
-                TimeZone.UTC,
+                GetEventsInRangeRequest(
+                    startDate,
+                    endDate,
+                    listOf(StaffId("testOwner3")),
+                    TimeZone.UTC,
+                )
             )
-        } returns listOf(
-            createEvent(
-                LocalDateTime(2024, 1, 1, 0, 55),
-                LocalDateTime(2024, 1, 1, 1, 25),
-            ),
+        } returns Result.success(
+            listOf(
+                createEvent(
+                    LocalDateTime(2024, 1, 1, 0, 55),
+                    LocalDateTime(2024, 1, 1, 1, 25),
+                ),
+            )
         )
 
-        val availability = calendarService.getAvailableTimeSlots(
+        val availability = calendarService.getAvailableTimeSlotsForStaff(
             startTime = startDate,
             endTime = endDate,
             timeZone = TimeZone.UTC,

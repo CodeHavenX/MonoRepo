@@ -9,6 +9,9 @@ import com.cramsan.minesweepers.common.game.TileCoverMode
 import com.cramsan.minesweepers.common.ui.GameBar
 import com.cramsan.minesweepers.common.ui.GameMap
 
+/**
+ * Main view for the game.
+ */
 @Composable
 fun MainView(
     time: Int,
@@ -27,7 +30,7 @@ fun MainView(
 
 @Preview
 @Composable
-fun AppPreview() {
+private fun AppPreview() {
     MainView(
         20,
         5,

@@ -1,6 +1,6 @@
 package com.codehavenx.alpaca.backend.di
 
-import com.codehavenx.alpaca.backend.controller.UserController
+import com.codehavenx.alpaca.backend.core.controller.UserController
 import io.ktor.server.application.Application
 import org.koin.dsl.module
 

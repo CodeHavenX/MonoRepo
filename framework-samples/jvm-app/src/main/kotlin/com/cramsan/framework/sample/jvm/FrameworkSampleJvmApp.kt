@@ -43,6 +43,9 @@ fun main() = application {
     }
 }
 
+/**
+ * Possible screens
+ */
 enum class LibraryDestinations(val destination: String, val enabled: Boolean = false) {
     ASSERT("assert", true),
     BUILD("build"),
@@ -62,6 +65,9 @@ enum class LibraryDestinations(val destination: String, val enabled: Boolean = f
     UTILS("utils"),
 }
 
+/**
+ * Main screen for the application.
+ */
 @Composable
 fun Screen() {
     var selectedTab: LibraryDestinations? by remember { mutableStateOf(null) }

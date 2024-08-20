@@ -18,6 +18,9 @@ import com.cramsan.framework.sample.android.eventlogger.EventLoggerScreen
 import com.cramsan.framework.sample.android.theme.CoreProjectTheme
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * Main activity.
+ */
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

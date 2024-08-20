@@ -13,6 +13,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.cramsan.framework.sample.android.theme.CoreProjectTheme
 
+/**
+ * Screen that allows the user to try different assertions.
+ */
 @Composable
 fun AssertScreen(
     navController: NavController? = null,
@@ -51,17 +54,40 @@ private fun AssertScreenContent(
     }
 }
 
+/**
+ * Event handler for the AssertScreenContent.
+ */
 interface AssertScreenEventHandler {
+
+    /**
+     * Called when the user clicks the "Try Assert" button.
+     */
     fun tryAssert()
+
+    /**
+     * Called when the user clicks the "Try tryAssertFalse" button.
+     */
     fun tryAssertFalse()
+
+    /**
+     * Called when the user clicks the "Try tryAssertNull" button.
+     */
     fun tryAssertNull()
+
+    /**
+     * Called when the user clicks the "Try tryAssertNotNull" button.
+     */
     fun tryAssertNotNull()
+
+    /**
+     * Called when the user clicks the "Try tryAssertFailure" button.
+     */
     fun tryAssertFailure()
 }
 
 @Preview
 @Composable
-fun AssertScreenPreview() {
+private fun AssertScreenPreview() {
     CoreProjectTheme {
         AssertScreenContent(
             eventHandler = object : AssertScreenEventHandler {

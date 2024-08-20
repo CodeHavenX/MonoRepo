@@ -9,6 +9,9 @@ import java.nio.file.Paths
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.exists
 
+/**
+ * Download strategy for JVM.
+ */
 class JvmDownloadStrategy : DownloadStrategy {
 
     override fun isFileCached(targetRef: StorageRef): Boolean {

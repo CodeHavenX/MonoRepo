@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>UndocumentedPublicClass:AppDatabase_Impl.kt$AppDatabase_Impl : AppDatabase</ID>
+    <ID>UndocumentedPublicClass:CorutilesUtils.jvm.kt$IODependencies</ID>
+    <ID>UndocumentedPublicClass:EventLogRecordDao_Impl.kt$EventLogRecordDao_Impl : EventLogRecordDao</ID>
+    <ID>UndocumentedPublicClass:FileAttachmentDao_Impl.kt$FileAttachmentDao_Impl : FileAttachmentDao</ID>
+    <ID>UndocumentedPublicClass:TimeCardRecordDao_Impl.kt$TimeCardRecordDao_Impl : TimeCardRecordDao</ID>
+    <ID>UndocumentedPublicFunction:AppTheme.jvm.kt$@Composable actual fun WindowDecorations( colorScheme: ColorScheme, darkTheme: Boolean, )</ID>
+    <ID>UndocumentedPublicFunction:AppTheme.jvm.kt$@Composable actual fun getColorScheme( darkTheme: Boolean, dynamicColor: Boolean, darkColorScheme: ColorScheme, lightColorScheme: ColorScheme, ): ColorScheme</ID>
+    <ID>UndocumentedPublicFunction:CoreURiUtils.jvm.kt$actual fun CoreUri.getFilename(ioDependencies: IODependencies): String</ID>
+    <ID>UndocumentedPublicFunction:CorutilesUtils.jvm.kt$actual fun processImageData(data: ByteArray): Result&lt;ByteArray&gt;</ID>
+    <ID>UndocumentedPublicFunction:CorutilesUtils.jvm.kt$actual fun readBytes( uri: CoreUri, dependencies: IODependencies ): Result&lt;ByteArray&gt;</ID>
+    <ID>UndocumentedPublicFunction:EdifikanaApplicationScreen.jvm.kt$@Composable actual fun ComposableKoinContext(content: @Composable () -&gt; Unit)</ID>
+    <ID>UndocumentedPublicFunction:EventLogRecordDao_Impl.kt$EventLogRecordDao_Impl.Companion$public fun getRequiredConverters(): List&lt;KClass&lt;*&gt;&gt;</ID>
+    <ID>UndocumentedPublicFunction:FileAttachmentDao_Impl.kt$FileAttachmentDao_Impl.Companion$public fun getRequiredConverters(): List&lt;KClass&lt;*&gt;&gt;</ID>
+    <ID>UndocumentedPublicFunction:TimeCardRecordDao_Impl.kt$TimeCardRecordDao_Impl.Companion$public fun getRequiredConverters(): List&lt;KClass&lt;*&gt;&gt;</ID>
+  </CurrentIssues>
+</SmellBaseline>

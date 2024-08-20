@@ -40,7 +40,7 @@ fun main() = application {
 
 @Preview
 @Composable
-fun Preview() {
+private fun Preview() {
     MainView(
         time = 0,
         minesRemaining = 0,

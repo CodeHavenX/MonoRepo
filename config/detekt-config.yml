@@ -48,6 +48,14 @@ naming:
     excludes:
       - '**/build/generated/**'
 
+comments:
+  UndocumentedPublicClass:
+    active: true
+  UndocumentedPublicFunction:
+    active: true
+  UndocumentedPublicProperty:
+    active: false
+
 style:
   ForbiddenComment:
     active: false

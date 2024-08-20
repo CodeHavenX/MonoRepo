@@ -37,6 +37,9 @@ private val LightColorScheme = lightColorScheme(
     */
 )
 
+/**
+ * Core project theme.
+ */
 @Composable
 fun CoreProjectTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),

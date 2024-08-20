@@ -12,6 +12,9 @@ import com.cramsan.framework.userevents.UserEventsInterface
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
+/**
+ * Sample application.
+ */
 @HiltAndroidApp
 class SampleApplication : Application() {
 

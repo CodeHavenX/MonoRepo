@@ -5,6 +5,10 @@ import com.cramsan.framework.logging.EventLoggerErrorCallback
 import com.cramsan.framework.logging.EventLoggerInterface
 import com.cramsan.framework.logging.Severity
 
+/**
+ * A no-op implementation of the [EventLoggerInterface]. This is useful when you want to disable
+ * logging.
+ */
 class NoopEventLogger : EventLoggerInterface {
     override val targetSeverity: Severity
         get() = TODO("Not yet implemented")

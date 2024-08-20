@@ -6,6 +6,9 @@ import com.cramsan.framework.assertlib.assertFalse
 import com.cramsan.framework.assertlib.assertNotNull
 import com.cramsan.framework.assertlib.assertNull
 
+/**
+ * ViewModel for the AssertScreen.
+ */
 class AssertViewModel : AssertScreenEventHandler {
 
     override fun tryAssert() {

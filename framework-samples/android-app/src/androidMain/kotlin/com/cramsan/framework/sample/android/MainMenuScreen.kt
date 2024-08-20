@@ -15,6 +15,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import com.cramsan.framework.sample.android.theme.CoreProjectTheme
 
+/**
+ * Main menu screen.
+ */
 @Composable
 fun MainMenu(
     navController: NavController? = null,
@@ -51,6 +54,9 @@ private fun MainMenuContent(
     }
 }
 
+/**
+ * Destinations for the library modules.
+ */
 enum class LibraryDestinations(val destination: String, val enabled: Boolean = false) {
     ASSERT("assert", true),
     BUILD("build"),
@@ -72,7 +78,7 @@ enum class LibraryDestinations(val destination: String, val enabled: Boolean = f
 
 @Preview
 @Composable
-fun MainMenuPreview() {
+private fun MainMenuPreview() {
     CoreProjectTheme {
         MainMenu()
     }

@@ -1,0 +1,119 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>UndocumentedPublicClass:Employee.kt$Employee</ID>
+    <ID>UndocumentedPublicClass:EmployeePK.kt$EmployeePK</ID>
+    <ID>UndocumentedPublicClass:EmployeeRole.kt$EmployeeRole</ID>
+    <ID>UndocumentedPublicClass:EventLogRecord.kt$EventLogRecord</ID>
+    <ID>UndocumentedPublicClass:EventLogRecordPK.kt$EventLogRecordPK</ID>
+    <ID>UndocumentedPublicClass:EventType.kt$EventType</ID>
+    <ID>UndocumentedPublicClass:FireStoreModel.kt$FireStoreModel</ID>
+    <ID>UndocumentedPublicClass:Form.kt$Form</ID>
+    <ID>UndocumentedPublicClass:Form.kt$FormField</ID>
+    <ID>UndocumentedPublicClass:Form.kt$FormPK</ID>
+    <ID>UndocumentedPublicClass:FormRecord.kt$FormEntryField</ID>
+    <ID>UndocumentedPublicClass:FormRecord.kt$FormRecord</ID>
+    <ID>UndocumentedPublicClass:FormRecord.kt$FormRecordPK</ID>
+    <ID>UndocumentedPublicClass:IdType.kt$IdType</ID>
+    <ID>UndocumentedPublicClass:Property.kt$PropertyPK</ID>
+    <ID>UndocumentedPublicClass:PropertyConfig.kt$PropertyConfigPK</ID>
+    <ID>UndocumentedPublicClass:RowEntry.kt$RowEntry</ID>
+    <ID>UndocumentedPublicClass:SupabaseModel.kt$SupabaseModel</ID>
+    <ID>UndocumentedPublicClass:TimeCardEventType.kt$TimeCardEventType</ID>
+    <ID>UndocumentedPublicClass:TimeCardRecord.kt$TimeCardRecord</ID>
+    <ID>UndocumentedPublicClass:TimeCardRecordPK.kt$TimeCardRecordPK</ID>
+    <ID>UndocumentedPublicClass:User.kt$User</ID>
+    <ID>UndocumentedPublicClass:UserPk.kt$UserPk</ID>
+    <ID>UndocumentedPublicFunction:Employee.kt$Employee.Companion$fun create( id: String, idType: IdType, name: String, lastName: String, role: EmployeeRole, ): Employee</ID>
+    <ID>UndocumentedPublicFunction:EmployeeRole.kt$EmployeeRole.Companion$fun fromString(value: String?): EmployeeRole</ID>
+    <ID>UndocumentedPublicFunction:EventLogRecord.kt$EventLogRecord$fun documentId(): EventLogRecordPK</ID>
+    <ID>UndocumentedPublicFunction:EventLogRecord.kt$EventLogRecord.Companion$fun create( employeeDocumentId: String?, timeRecorded: Long, unit: String, eventType: EventType, fallbackEmployeeName: String?, fallbackEventType: String?, summary: String, description: String, attachments: List&lt;String&gt;, ): EventLogRecord</ID>
+    <ID>UndocumentedPublicFunction:EventType.kt$EventType.Companion$fun fromString(value: String): EventType</ID>
+    <ID>UndocumentedPublicFunction:IdType.kt$IdType.Companion$fun fromString(value: String): IdType</ID>
+    <ID>UndocumentedPublicFunction:Mappers.kt$@FireStoreModel fun Employee.fullName()</ID>
+    <ID>UndocumentedPublicFunction:Mappers.kt$@SupabaseModel fun Employee.fullName()</ID>
+    <ID>UndocumentedPublicFunction:Mappers.kt$fun EmployeeRole?.toRoleFriendlyName(): String</ID>
+    <ID>UndocumentedPublicFunction:Mappers.kt$fun EventType?.toFriendlyString(): String</ID>
+    <ID>UndocumentedPublicFunction:Mappers.kt$fun IdType.toIdTypeFriendlyName(): String</ID>
+    <ID>UndocumentedPublicFunction:Mappers.kt$fun Long?.toFriendlyDateTime(tz: kotlinx.datetime.TimeZone? = null): String</ID>
+    <ID>UndocumentedPublicFunction:Mappers.kt$fun TimeCardEventType?.eventTypeFriendlyName(): String</ID>
+    <ID>UndocumentedPublicFunction:Mappers.kt$fun safeTimeZone(timeZone: String?): TimeZone</ID>
+    <ID>UndocumentedPublicFunction:RowEntry.kt$RowEntry$fun toList(): List&lt;String&gt;</ID>
+    <ID>UndocumentedPublicFunction:TimeCardEventType.kt$TimeCardEventType.Companion$fun fromString(value: String): TimeCardEventType</ID>
+    <ID>UndocumentedPublicFunction:TimeCardRecord.kt$TimeCardRecord$fun documentId(): TimeCardRecordPK</ID>
+    <ID>UndocumentedPublicFunction:TimeCardRecord.kt$TimeCardRecord.Companion$fun create( employeeDocumentId: String, eventType: TimeCardEventType, eventTime: Long, imageUrl: String?, ): TimeCardRecord</ID>
+    <ID>UndocumentedPublicFunction:User.kt$User.Companion$fun create(id: String): User</ID>
+    <ID>UndocumentedPublicFunction:Utils.kt$@OptIn(ExperimentalContracts::class) fun requireNotBlank(value: String?, lazyMessage: (() -&gt; Any)? = null): String</ID>
+    <ID>UndocumentedPublicProperty:Constants.kt$const val FOLDER_ATTACHMENTS = "attachments"</ID>
+    <ID>UndocumentedPublicProperty:Constants.kt$const val FOLDER_TIME_CARDS = "clockinout"</ID>
+    <ID>UndocumentedPublicProperty:Employee.kt$Employee$val id: String? = null</ID>
+    <ID>UndocumentedPublicProperty:Employee.kt$Employee$val idType: IdType? = null</ID>
+    <ID>UndocumentedPublicProperty:Employee.kt$Employee$val lastName: String? = null</ID>
+    <ID>UndocumentedPublicProperty:Employee.kt$Employee$val name: String? = null</ID>
+    <ID>UndocumentedPublicProperty:Employee.kt$Employee$val pk: String</ID>
+    <ID>UndocumentedPublicProperty:Employee.kt$Employee$val role: EmployeeRole? = null</ID>
+    <ID>UndocumentedPublicProperty:Employee.kt$Employee.Companion$const val COLLECTION = "employees"</ID>
+    <ID>UndocumentedPublicProperty:EmployeePK.kt$EmployeePK$val documentPath: String</ID>
+    <ID>UndocumentedPublicProperty:EventLogRecord.kt$EventLogRecord$val attachments: List&lt;String&gt;? = null</ID>
+    <ID>UndocumentedPublicProperty:EventLogRecord.kt$EventLogRecord$val description: String? = null</ID>
+    <ID>UndocumentedPublicProperty:EventLogRecord.kt$EventLogRecord$val employeeDocumentId: String? = null</ID>
+    <ID>UndocumentedPublicProperty:EventLogRecord.kt$EventLogRecord$val eventType: EventType? = null</ID>
+    <ID>UndocumentedPublicProperty:EventLogRecord.kt$EventLogRecord$val fallbackEmployeeName: String? = null</ID>
+    <ID>UndocumentedPublicProperty:EventLogRecord.kt$EventLogRecord$val fallbackEventType: String? = null</ID>
+    <ID>UndocumentedPublicProperty:EventLogRecord.kt$EventLogRecord$val pk: String</ID>
+    <ID>UndocumentedPublicProperty:EventLogRecord.kt$EventLogRecord$val summary: String? = null</ID>
+    <ID>UndocumentedPublicProperty:EventLogRecord.kt$EventLogRecord$val timeRecorded: Long? = null</ID>
+    <ID>UndocumentedPublicProperty:EventLogRecord.kt$EventLogRecord$val unit: String? = null</ID>
+    <ID>UndocumentedPublicProperty:EventLogRecord.kt$EventLogRecord.Companion$const val COLLECTION = "eventLog"</ID>
+    <ID>UndocumentedPublicProperty:EventLogRecordPK.kt$EventLogRecordPK$val documentPath: String</ID>
+    <ID>UndocumentedPublicProperty:Form.kt$Form$val fields: List&lt;FormField&gt;? = null</ID>
+    <ID>UndocumentedPublicProperty:Form.kt$Form$val name: String? = null</ID>
+    <ID>UndocumentedPublicProperty:Form.kt$Form$val propertyId: String? = null</ID>
+    <ID>UndocumentedPublicProperty:Form.kt$Form.Companion$const val COLLECTION = "forms"</ID>
+    <ID>UndocumentedPublicProperty:Form.kt$FormField$val id: String? = null</ID>
+    <ID>UndocumentedPublicProperty:Form.kt$FormField$val isSingleLine: Boolean? = null</ID>
+    <ID>UndocumentedPublicProperty:Form.kt$FormField$val name: String? = null</ID>
+    <ID>UndocumentedPublicProperty:Form.kt$FormField$val required: Boolean? = null</ID>
+    <ID>UndocumentedPublicProperty:Form.kt$FormPK$val documentPath: String</ID>
+    <ID>UndocumentedPublicProperty:FormRecord.kt$FormEntryField$val id: String? = null</ID>
+    <ID>UndocumentedPublicProperty:FormRecord.kt$FormEntryField$val name: String? = null</ID>
+    <ID>UndocumentedPublicProperty:FormRecord.kt$FormEntryField$val value: String? = null</ID>
+    <ID>UndocumentedPublicProperty:FormRecord.kt$FormRecord$val fields: List&lt;FormEntryField&gt;? = null</ID>
+    <ID>UndocumentedPublicProperty:FormRecord.kt$FormRecord$val formPk: String? = null</ID>
+    <ID>UndocumentedPublicProperty:FormRecord.kt$FormRecord$val name: String? = null</ID>
+    <ID>UndocumentedPublicProperty:FormRecord.kt$FormRecord$val propertyId: String? = null</ID>
+    <ID>UndocumentedPublicProperty:FormRecord.kt$FormRecord$val timeRecorded: Long? = null</ID>
+    <ID>UndocumentedPublicProperty:FormRecord.kt$FormRecord.Companion$const val COLLECTION = "form_records"</ID>
+    <ID>UndocumentedPublicProperty:FormRecord.kt$FormRecordPK$val documentPath: String</ID>
+    <ID>UndocumentedPublicProperty:Mappers.kt$val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")</ID>
+    <ID>UndocumentedPublicProperty:Property.kt$Property$val address: String? = null</ID>
+    <ID>UndocumentedPublicProperty:Property.kt$Property$val id: String? = null</ID>
+    <ID>UndocumentedPublicProperty:Property.kt$Property$val name: String? = null</ID>
+    <ID>UndocumentedPublicProperty:Property.kt$Property.Companion$const val COLLECTION = "properties"</ID>
+    <ID>UndocumentedPublicProperty:Property.kt$PropertyPK$val documentPath: String</ID>
+    <ID>UndocumentedPublicProperty:PropertyConfig.kt$PropertyConfig$val driveFolderId: String? = null</ID>
+    <ID>UndocumentedPublicProperty:PropertyConfig.kt$PropertyConfig$val eventLogSpreadsheetId: String? = null</ID>
+    <ID>UndocumentedPublicProperty:PropertyConfig.kt$PropertyConfig$val formEntriesSpreadsheetId: String? = null</ID>
+    <ID>UndocumentedPublicProperty:PropertyConfig.kt$PropertyConfig$val propertyId: String? = null</ID>
+    <ID>UndocumentedPublicProperty:PropertyConfig.kt$PropertyConfig$val storageFolderId: String? = null</ID>
+    <ID>UndocumentedPublicProperty:PropertyConfig.kt$PropertyConfig$val timeCardSpreadsheetId: String? = null</ID>
+    <ID>UndocumentedPublicProperty:PropertyConfig.kt$PropertyConfig$val timeZone: String? = null</ID>
+    <ID>UndocumentedPublicProperty:PropertyConfig.kt$PropertyConfig.Companion$const val COLLECTION = "property_configs"</ID>
+    <ID>UndocumentedPublicProperty:PropertyConfig.kt$PropertyConfigPK$val documentPath: String</ID>
+    <ID>UndocumentedPublicProperty:RowEntry.kt$RowEntry$val dateRecorded: String</ID>
+    <ID>UndocumentedPublicProperty:RowEntry.kt$RowEntry$val dateUploaded: String</ID>
+    <ID>UndocumentedPublicProperty:RowEntry.kt$RowEntry$val message: String</ID>
+    <ID>UndocumentedPublicProperty:TimeCardRecord.kt$TimeCardRecord$val employeeDocumentId: String? = null</ID>
+    <ID>UndocumentedPublicProperty:TimeCardRecord.kt$TimeCardRecord$val eventTime: Long? = null</ID>
+    <ID>UndocumentedPublicProperty:TimeCardRecord.kt$TimeCardRecord$val eventType: TimeCardEventType? = null</ID>
+    <ID>UndocumentedPublicProperty:TimeCardRecord.kt$TimeCardRecord$val imageUrl: String? = null</ID>
+    <ID>UndocumentedPublicProperty:TimeCardRecord.kt$TimeCardRecord$val pk: String</ID>
+    <ID>UndocumentedPublicProperty:TimeCardRecord.kt$TimeCardRecord.Companion$const val COLLECTION = "timeCardRecords"</ID>
+    <ID>UndocumentedPublicProperty:TimeCardRecordPK.kt$TimeCardRecordPK$val documentPath: String</ID>
+    <ID>UndocumentedPublicProperty:User.kt$User$val id: String? = null</ID>
+    <ID>UndocumentedPublicProperty:User.kt$User$val pk: String? = null</ID>
+    <ID>UndocumentedPublicProperty:User.kt$User.Companion$const val COLLECTION = "users"</ID>
+    <ID>UndocumentedPublicProperty:UserPk.kt$UserPk$val documentPath: String</ID>
+  </CurrentIssues>
+</SmellBaseline>

@@ -12,6 +12,9 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.input.pointer.PointerButton
 import com.cramsan.minesweepers.common.ui.theme.Dimensions
 
+/**
+ * Draws a tile button.
+ */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 actual fun TileButtonDrawable(

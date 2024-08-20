@@ -53,7 +53,7 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Singleton
 
 @Module
-@Suppress("UndocumentedPublicFunction", "TooManyFunctions")
+@Suppress("UndocumentedPublicFunction", "TooManyFunctions", "UndocumentedPublicClass", "UndocumentedPublicFunction")
 @InstallIn(SingletonComponent::class)
 object ApplicationModule {
 

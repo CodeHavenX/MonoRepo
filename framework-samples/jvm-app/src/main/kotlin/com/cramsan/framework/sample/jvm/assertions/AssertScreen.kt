@@ -8,6 +8,9 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import org.koin.compose.koinInject
 
+/**
+ * Screen for testing assertions.
+ */
 @Composable
 fun AssertScreen(
     assertViewModel: AssertViewModel = koinInject(),
@@ -40,17 +43,39 @@ private fun AssertScreenContent(
     }
 }
 
+/**
+ * Event handler for the AssertScreen.
+ */
 interface AssertScreenEventHandler {
+    /**
+     * Try an assert.
+     */
     fun tryAssert()
+
+    /**
+     * Try an assert that should fail.
+     */
     fun tryAssertFalse()
+
+    /**
+     * Try an assert that fails due to null.
+     */
     fun tryAssertNull()
+
+    /**
+     * Try an assert that fails due to not null.
+     */
     fun tryAssertNotNull()
+
+    /**
+     * Try an assert that fails due to an assertion failure.
+     */
     fun tryAssertFailure()
 }
 
 @Preview
 @Composable
-fun AssertScreenPreview() {
+private fun AssertScreenPreview() {
     MaterialTheme {
         AssertScreenContent(
             eventHandler = object : AssertScreenEventHandler {

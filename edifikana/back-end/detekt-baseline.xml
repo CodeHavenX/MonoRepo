@@ -1,0 +1,45 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>UndocumentedPublicClass:CloudFireService.kt$CloudFireService : KoinComponent</ID>
+    <ID>UndocumentedPublicClass:CloudFirebaseApp.kt$CloudFirebaseApp : CloudEventsFunction</ID>
+    <ID>UndocumentedPublicClass:DependenciesLocalCredentials.kt$DependenciesLocalCredentials : FunctionDependencies</ID>
+    <ID>UndocumentedPublicClass:FunctionDependencies.kt$FunctionDependencies</ID>
+    <ID>UndocumentedPublicClass:FunctionLaunchParameters.kt$FunctionLaunchParameters</ID>
+    <ID>UndocumentedPublicFunction:CloudFireService.kt$CloudFireService$@OptIn(FireStoreModel::class) suspend fun configureDrive( propertyConfigPK: PropertyConfigPK, )</ID>
+    <ID>UndocumentedPublicFunction:ConfigureDrive.kt$suspend fun main()</ID>
+    <ID>UndocumentedPublicFunction:FunctionLaunchParameters.kt$FunctionLaunchParameters.Companion$fun fromSystemEnvironment(): FunctionLaunchParameters</ID>
+    <ID>UndocumentedPublicFunction:LocalLauncher.kt$fun main()</ID>
+    <ID>UndocumentedPublicFunction:Mappers.kt$@FireStoreModel fun Document.toFirestoreEventLogRecord(): EventLogRecord</ID>
+    <ID>UndocumentedPublicFunction:Mappers.kt$@FireStoreModel fun DocumentSnapshot.toEmployee(): Employee</ID>
+    <ID>UndocumentedPublicFunction:Mappers.kt$@FireStoreModel fun DocumentSnapshot.toEventLogRecord(): EventLogRecord</ID>
+    <ID>UndocumentedPublicFunction:Mappers.kt$@FireStoreModel fun DocumentSnapshot.toFormRecord(): FormRecord</ID>
+    <ID>UndocumentedPublicFunction:Mappers.kt$@FireStoreModel fun DocumentSnapshot.toPropertyConfig(): PropertyConfig</ID>
+    <ID>UndocumentedPublicFunction:Mappers.kt$@FireStoreModel fun DocumentSnapshot.toTimeCardEvent(): TimeCardRecord</ID>
+    <ID>UndocumentedPublicFunction:Mappers.kt$@FireStoreModel fun EventLogRecord.toRowEntry( employeeFullName: String, attachments: String, ): List&lt;String&gt;</ID>
+    <ID>UndocumentedPublicFunction:Mappers.kt$@FireStoreModel fun FormRecord.toRowEntry(): List&lt;String&gt;</ID>
+    <ID>UndocumentedPublicFunction:Mappers.kt$@FireStoreModel fun TimeCardRecord.toRowEntry( employeeFullName: String, imageUrlOverride: String, ): List&lt;String&gt;</ID>
+    <ID>UndocumentedPublicFunction:Operations.kt$@FireStoreModel fun getEmployee( firestore: Firestore, employeePK: EmployeePK, ): Employee</ID>
+    <ID>UndocumentedPublicFunction:Operations.kt$@FireStoreModel fun getForms( firestore: Firestore, formPK: FormPK, ): FormRecord</ID>
+    <ID>UndocumentedPublicFunction:Operations.kt$@FireStoreModel fun getPropertyConfig( firestore: Firestore, propertyConfigPK: PropertyConfigPK, ): PropertyConfig</ID>
+    <ID>UndocumentedPublicFunction:Operations.kt$@FireStoreModel fun getTimeCardRecord( firestore: Firestore, timeCardRecordPK: TimeCardRecordPK, ): TimeCardRecord</ID>
+    <ID>UndocumentedPublicFunction:Operations.kt$@FireStoreModel fun updatePropertyConfig( firestore: Firestore, propertyConfig: PropertyConfig, )</ID>
+    <ID>UndocumentedPublicFunction:Operations.kt$fun checkIfSheetExists( sheetsService: Sheets, spreadsheetId: String, sheetName: String, ): Boolean</ID>
+    <ID>UndocumentedPublicFunction:Operations.kt$fun createFolder( drive: Drive, folderId: String, folderName: String, ): String</ID>
+    <ID>UndocumentedPublicFunction:Operations.kt$fun createSheetTab( sheets: Sheets, spreadsheetId: String?, sheetName: String, )</ID>
+    <ID>UndocumentedPublicFunction:Operations.kt$fun createSpreadsheet( drive: Drive, folderId: String, spreadsheetName: String, ): String</ID>
+    <ID>UndocumentedPublicProperty:CloudFirebaseApp.kt$CloudFirebaseApp$var clock = Clock.System</ID>
+    <ID>UndocumentedPublicProperty:CloudFirebaseApp.kt$CloudFirebaseApp$var dependencies: FunctionDependencies = DependenciesLocalCredentials()</ID>
+    <ID>UndocumentedPublicProperty:CloudFirebaseApp.kt$CloudFirebaseApp$var launchParametersProvider: () -&gt; FunctionLaunchParameters = { FunctionLaunchParameters.fromSystemEnvironment() }</ID>
+    <ID>UndocumentedPublicProperty:FunctionDependencies.kt$FunctionDependencies$val drive: Drive</ID>
+    <ID>UndocumentedPublicProperty:FunctionDependencies.kt$FunctionDependencies$val firebaseApp: FirebaseApp</ID>
+    <ID>UndocumentedPublicProperty:FunctionDependencies.kt$FunctionDependencies$val firestore: Firestore</ID>
+    <ID>UndocumentedPublicProperty:FunctionDependencies.kt$FunctionDependencies$val sheets: Sheets</ID>
+    <ID>UndocumentedPublicProperty:FunctionLaunchParameters.kt$FunctionLaunchParameters$val projectName: String</ID>
+    <ID>UndocumentedPublicProperty:Initialization.kt$const val CREDENTIALS_FILE_PATH = "/.secrets/gdrive-access-service.json"</ID>
+    <ID>UndocumentedPublicProperty:Initialization.kt$val JSON_FACTORY: JsonFactory = GsonFactory.getDefaultInstance()</ID>
+    <ID>UndocumentedPublicProperty:Initialization.kt$val SCOPES = listOf( SheetsScopes.DRIVE, SheetsScopes.SPREADSHEETS, )</ID>
+    <ID>UndocumentedPublicProperty:JsonFormat.kt$val jsonFormat: JsonFormat = JsonFormat()</ID>
+  </CurrentIssues>
+</SmellBaseline>

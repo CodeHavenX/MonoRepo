@@ -9,6 +9,9 @@ import com.cramsan.framework.assertlib.assertNull
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
+/**
+ * ViewModel for the Assert screen.
+ */
 @HiltViewModel
 class AssertViewModel @Inject constructor() : ViewModel(), AssertScreenEventHandler {
 

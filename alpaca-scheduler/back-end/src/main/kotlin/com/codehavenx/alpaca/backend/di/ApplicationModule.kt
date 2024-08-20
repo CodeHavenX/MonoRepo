@@ -26,7 +26,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.datetime.Clock
 import kotlinx.serialization.json.Json
 import org.koin.core.module.dsl.bind
-import org.koin.core.module.dsl.binds
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
@@ -83,13 +82,13 @@ val ApplicationModule = module(createdAtStart = true) {
     singleOf(::ReservationService)
 
     // Storage
-    singleOf(::SupabaseUserDatabase){
+    singleOf(::SupabaseUserDatabase) {
         bind<UserDatabase>()
     }
     singleOf(::SupabaseCalendarDatabase) {
         bind<CalendarDatabase>()
     }
-    singleOf(::SupabaseConfigurationDatabase){
+    singleOf(::SupabaseConfigurationDatabase) {
         bind<ConfigurationDatabase>()
     }
 }

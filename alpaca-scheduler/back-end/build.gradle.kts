@@ -34,6 +34,7 @@ dependencies {
     implementation("io.ktor:ktor-server-content-negotiation:_")
     implementation("io.ktor:ktor-serialization-kotlinx-json:_")
     implementation("io.ktor:ktor-server-call-logging:_")
+    implementation("io.ktor:ktor-client-cio:_")
 
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:_")
 

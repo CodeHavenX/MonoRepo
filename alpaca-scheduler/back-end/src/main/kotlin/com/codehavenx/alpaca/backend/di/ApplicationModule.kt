@@ -7,6 +7,9 @@ import com.codehavenx.alpaca.backend.core.service.CalendarService
 import com.codehavenx.alpaca.backend.core.service.ConfigurationService
 import com.codehavenx.alpaca.backend.core.service.ReservationService
 import com.codehavenx.alpaca.backend.core.service.UserService
+import com.codehavenx.alpaca.backend.core.storage.CalendarDatabase
+import com.codehavenx.alpaca.backend.core.storage.ConfigurationDatabase
+import com.codehavenx.alpaca.backend.core.storage.UserDatabase
 import com.codehavenx.alpaca.backend.core.storage.supabase.SupabaseCalendarDatabase
 import com.codehavenx.alpaca.backend.core.storage.supabase.SupabaseConfigurationDatabase
 import com.codehavenx.alpaca.backend.core.storage.supabase.SupabaseUserDatabase
@@ -22,6 +25,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.datetime.Clock
 import kotlinx.serialization.json.Json
+import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
@@ -78,7 +82,13 @@ val ApplicationModule = module(createdAtStart = true) {
     singleOf(::ReservationService)
 
     // Storage
-    singleOf(::SupabaseUserDatabase)
-    singleOf(::SupabaseCalendarDatabase)
-    singleOf(::SupabaseConfigurationDatabase)
+    singleOf(::SupabaseUserDatabase) {
+        bind<UserDatabase>()
+    }
+    singleOf(::SupabaseCalendarDatabase) {
+        bind<CalendarDatabase>()
+    }
+    singleOf(::SupabaseConfigurationDatabase) {
+        bind<ConfigurationDatabase>()
+    }
 }

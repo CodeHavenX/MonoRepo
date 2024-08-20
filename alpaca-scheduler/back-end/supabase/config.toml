@@ -184,7 +184,8 @@ policy = "oneshot"
 inspector_port = 8083
 
 [analytics]
-enabled = true
+# this is disabled because windows doesn't support this on docker desktop: https://github.com/supabase/cli/issues/2538
+enabled = false
 port = 54327
 # Configure one of the supported backends: `postgres`, `bigquery`.
 backend = "postgres"

@@ -1,12 +1,12 @@
 package com.codehavenx.alpaca.backend.core.service
 
+import com.codehavenx.alpaca.backend.core.repository.CalendarDatabase
 import com.codehavenx.alpaca.backend.core.service.models.Event
 import com.codehavenx.alpaca.backend.core.service.models.StaffId
 import com.codehavenx.alpaca.backend.core.service.models.TimeSlot
-import com.codehavenx.alpaca.backend.core.storage.CalendarDatabase
-import com.codehavenx.alpaca.backend.core.storage.requests.CreateEventRequest
-import com.codehavenx.alpaca.backend.core.storage.requests.GetEventRequest
-import com.codehavenx.alpaca.backend.core.storage.requests.GetEventsInRangeRequest
+import com.codehavenx.alpaca.backend.core.service.models.requests.CreateEventRequest
+import com.codehavenx.alpaca.backend.core.service.models.requests.GetEventRequest
+import com.codehavenx.alpaca.backend.core.service.models.requests.GetEventsInRangeRequest
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant

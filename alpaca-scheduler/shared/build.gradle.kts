@@ -28,6 +28,8 @@ kotlin {
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-datetime:_")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:_")
+
+                implementation("io.ktor:ktor-serialization-kotlinx-json:_")
             }
         }
     }

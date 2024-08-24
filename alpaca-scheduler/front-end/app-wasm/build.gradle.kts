@@ -33,6 +33,9 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(project(":alpaca-scheduler:front-end:appcore"))
+
+                implementation("io.insert-koin:koin-core:_")
+                implementation("io.insert-koin:koin-compose:_")
             }
         }
     }

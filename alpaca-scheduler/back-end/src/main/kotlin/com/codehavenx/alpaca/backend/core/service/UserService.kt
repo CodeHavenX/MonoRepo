@@ -1,12 +1,12 @@
 package com.codehavenx.alpaca.backend.core.service
 
+import com.codehavenx.alpaca.backend.core.repository.UserDatabase
 import com.codehavenx.alpaca.backend.core.service.models.User
 import com.codehavenx.alpaca.backend.core.service.models.UserId
-import com.codehavenx.alpaca.backend.core.storage.UserDatabase
-import com.codehavenx.alpaca.backend.core.storage.requests.CreateUserRequest
-import com.codehavenx.alpaca.backend.core.storage.requests.DeleteUserRequest
-import com.codehavenx.alpaca.backend.core.storage.requests.GetUserRequest
-import com.codehavenx.alpaca.backend.core.storage.requests.UpdateUserRequest
+import com.codehavenx.alpaca.backend.core.service.models.requests.CreateUserRequest
+import com.codehavenx.alpaca.backend.core.service.models.requests.DeleteUserRequest
+import com.codehavenx.alpaca.backend.core.service.models.requests.GetUserRequest
+import com.codehavenx.alpaca.backend.core.service.models.requests.UpdateUserRequest
 
 /**
  * Service for user operations.
@@ -34,11 +34,21 @@ class UserService(
     suspend fun getUser(
         id: UserId,
     ): User? {
-        return userDatabase.getUser(
+        val user = userDatabase.getUser(
             request = GetUserRequest(
                 id = id,
             ),
         ).getOrNull()
+
+        return user
+    }
+
+    /**
+     * Retrieves all users.
+     */
+    suspend fun getUsers(): List<User> {
+        val users = userDatabase.getUsers().getOrThrow()
+        return users
     }
 
     /**
@@ -47,7 +57,7 @@ class UserService(
     suspend fun updateUser(
         id: UserId,
         username: String?,
-    ): Boolean {
+    ): User {
         return userDatabase.updateUser(
             request = UpdateUserRequest(
                 id = id,

@@ -18,41 +18,20 @@ sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
 sudo systemctl --user restart docker-desktop
 ```
 
-## Sequence Diagram
-Here is a simple flow chart:
-
-```mermaid
-sequenceDiagram
-    Alicia->>+Reservation: getAvailableTimes<br>(appointmentType, period, staff?)
-    Reservation->>+Configuration: getConfiguration<br>(appointmentType)
-    Configuration-->>-Reservation: Duration
-    Reservation->>+Calendar: getAvailableTimeSlots<br>(period, duration, staff?)
-    Calendar-->>-Reservation: List<AvailabilityTimeSlot>
-    Reservation-->>-Alicia: List<AvailabilityTimeSlot>
-    Alicia->>+Reservation: book(staff?, timeSlot, user)
-    Reservation->>+Calendar: book(timeSlot, staff?, user)
-    Calendar-->>-Reservation: RequestConfirmation
-    Reservation->>Comms: notify(timeSlot, staff, user)
-    Reservation-->>-Alicia: RequestConfirmation
-    Comms-->>Alicia: notify(timeSlot, staff, user)
+## Running the Server
+You can either run the server through gradle or through IntelliJ. To run through gradle, run the following command:
+```bash
+./gradlew :alpaca-scheduler:back-end:run
 ```
+or by using the main function in the [AlpacaSchedulerBackEnd.kt](src/main/kotlin/com/codehavenx/alpaca/backend/AlpacaSchedulerBackEnd.kt) file.
 
-Test
+## Managing Supabase Changes
 
-```mermaid
-sequenceDiagram
-    participant Cesar
-    participant Reservation
-    participant Calendar
-    participant Comms
-    Comms-->>Cesar: notify(timeSlot, staff, user)
-    Cesar->>+Reservation: getBookedTimes<br>(period, staff)
-    Reservation->>+Calendar: getBookedTimeSlots<br>(period)
-    Calendar-->>-Reservation: List<TimeSlot>
-    Reservation-->>-Cesar: List<TimeSlot>
-    Cesar->>+Reservation: confirm(staff, timeSlot, user)
-    Reservation->>+Calendar: confirm(timeSlot, staff, user)
-    Calendar-->>-Reservation: BookedConfirmation
-    Reservation-->>Comms: notify(timeSlot, staff, user)
-    Reservation-->>-Cesar: BookedConfirmation
-```
+Some useful references: 
+ - [Supabase Local Development](https://supabase.com/docs/guides/cli/local-development) 
+ - [Supabase CLI Reference](https://supabase.com/docs/reference/cli/introduction)
+
+We are still currently in the early stages of development and are making changes to the database schema consistently.
+The recommended approach to managing changes is to perform schema changes locally and to push those changes. 
+
+**MORE CONTENT TO BE FILLED HERE 🔨🚧**

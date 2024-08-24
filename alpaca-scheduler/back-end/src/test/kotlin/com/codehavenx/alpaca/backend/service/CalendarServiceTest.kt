@@ -1,10 +1,10 @@
 package com.codehavenx.alpaca.backend.service
 
+import com.codehavenx.alpaca.backend.core.repository.CalendarDatabase
 import com.codehavenx.alpaca.backend.core.service.CalendarService
 import com.codehavenx.alpaca.backend.core.service.models.Event
 import com.codehavenx.alpaca.backend.core.service.models.StaffId
-import com.codehavenx.alpaca.backend.core.storage.CalendarDatabase
-import com.codehavenx.alpaca.backend.core.storage.requests.GetEventsInRangeRequest
+import com.codehavenx.alpaca.backend.core.service.models.requests.GetEventsInRangeRequest
 import com.cramsan.framework.test.TestBase
 import io.mockk.coEvery
 import io.mockk.mockk

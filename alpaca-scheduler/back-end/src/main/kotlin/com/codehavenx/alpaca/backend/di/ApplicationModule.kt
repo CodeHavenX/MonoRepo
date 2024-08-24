@@ -1,18 +1,18 @@
 package com.codehavenx.alpaca.backend.di
 
-import com.codehavenx.alpaca.backend.config.createJson
 import com.codehavenx.alpaca.backend.core.controller.AvailabilityController
 import com.codehavenx.alpaca.backend.core.controller.UserController
+import com.codehavenx.alpaca.backend.core.repository.CalendarDatabase
+import com.codehavenx.alpaca.backend.core.repository.ConfigurationDatabase
+import com.codehavenx.alpaca.backend.core.repository.UserDatabase
+import com.codehavenx.alpaca.backend.core.repository.supabase.SupabaseCalendarDatabase
+import com.codehavenx.alpaca.backend.core.repository.supabase.SupabaseConfigurationDatabase
+import com.codehavenx.alpaca.backend.core.repository.supabase.SupabaseUserDatabase
 import com.codehavenx.alpaca.backend.core.service.CalendarService
 import com.codehavenx.alpaca.backend.core.service.ConfigurationService
 import com.codehavenx.alpaca.backend.core.service.ReservationService
 import com.codehavenx.alpaca.backend.core.service.UserService
-import com.codehavenx.alpaca.backend.core.storage.CalendarDatabase
-import com.codehavenx.alpaca.backend.core.storage.ConfigurationDatabase
-import com.codehavenx.alpaca.backend.core.storage.UserDatabase
-import com.codehavenx.alpaca.backend.core.storage.supabase.SupabaseCalendarDatabase
-import com.codehavenx.alpaca.backend.core.storage.supabase.SupabaseConfigurationDatabase
-import com.codehavenx.alpaca.backend.core.storage.supabase.SupabaseUserDatabase
+import com.codehavenx.alpaca.shared.api.serialization.createJson
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.gotrue.Auth
@@ -47,11 +47,10 @@ val ApplicationModule = module(createdAtStart = true) {
     }
 
     // Supabase
-
     single {
         createSupabaseClient(
-            supabaseUrl = "",
-            supabaseKey = ""
+            supabaseUrl = System.getenv("ALPACA_SUPABASE_URL"),
+            supabaseKey = System.getenv("ALPACA_SUPABASE_KEY"),
         ) {
             install(Postgrest)
             install(Storage)

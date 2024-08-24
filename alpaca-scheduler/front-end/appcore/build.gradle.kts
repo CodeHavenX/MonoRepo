@@ -6,6 +6,9 @@ plugins {
     id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.android.library")
+    // #66: Enable Room in appcore project
+    // id("androidx.room")
+    // id("com.google.devtools.ksp")
 }
 
 apply(from = "$rootDir/gradle/kotlin-mpp-target-common-compose.gradle")
@@ -37,6 +40,8 @@ kotlin {
             implementation("org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose:_")
             implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:_")
             implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:_")
+            // #66: Enable Room in appcore project
+            // implementation("androidx.room:room-runtime:_")
 
             implementation("io.insert-koin:koin-core:_")
             implementation("io.insert-koin:koin-compose:_")
@@ -44,6 +49,9 @@ kotlin {
             implementation("io.coil-kt.coil3:coil:")
             implementation("io.coil-kt.coil3:coil-compose:_")
             implementation("io.coil-kt.coil3:coil-network-ktor:_")
+
+            implementation("io.ktor:ktor-client-core:_")
+            implementation("io.ktor:ktor-serialization-kotlinx-json:_")
 
             implementation("io.github.jan-tennert.supabase:postgrest-kt:_")
             implementation("io.github.jan-tennert.supabase:storage-kt:_")
@@ -79,3 +87,10 @@ dependencies {
 compose.resources {
     packageOfResClass = "shared_compose"
 }
+
+// #66: Enable Room in appcore project
+/*
+room {
+    schemaDirectory("$projectDir/schemas")
+}
+*/

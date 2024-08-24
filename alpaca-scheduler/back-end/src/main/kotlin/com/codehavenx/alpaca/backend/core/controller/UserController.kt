@@ -32,7 +32,7 @@ class UserController(
 
         val newUser = userService.createUser(
             createUserRequest.username,
-        )
+        ).toUserResponse()
 
         HttpResponse(
             status = HttpStatusCode.OK,
@@ -43,16 +43,36 @@ class UserController(
     /**
      * Handles the retrieval of a user. The [call] parameter is the request context.
      */
+    @OptIn(NetworkModel::class)
     suspend fun getUser(call: ApplicationCall) = call.handleCall(TAG, "getUser") {
         val userId = requireNotNull(call.parameters[USER_ID])
 
         val user = userService.getUser(
             UserId(userId),
+        )?.toUserResponse()
+
+        val statusCode = if (user == null) {
+            HttpStatusCode.NotFound
+        } else {
+            HttpStatusCode.OK
+        }
+
+        HttpResponse(
+            status = statusCode,
+            body = user,
         )
+    }
+
+    /**
+     * Handles the retrieval of all users. The [call] parameter is the request context.
+     */
+    @OptIn(NetworkModel::class)
+    suspend fun getUsers(call: ApplicationCall) = call.handleCall(TAG, "getUsers") {
+        val users = userService.getUsers().map { it.toUserResponse() }
 
         HttpResponse(
             status = HttpStatusCode.OK,
-            body = user,
+            body = users,
         )
     }
 
@@ -68,7 +88,7 @@ class UserController(
         val updatedUser = userService.updateUser(
             id = UserId(userId),
             username = updateUserRequest.username,
-        )
+        ).toUserResponse()
 
         HttpResponse(
             status = HttpStatusCode.OK,
@@ -92,6 +112,9 @@ class UserController(
                 }
                 get("{$USER_ID}") {
                     getUser(call)
+                }
+                get {
+                    getUsers(call)
                 }
             }
         }

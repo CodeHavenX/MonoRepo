@@ -2,13 +2,37 @@ package com.codehavenx.alpaca.frontend.desktop
 
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import com.codehavenx.alpaca.frontend.appcore.App
+import com.codehavenx.alpaca.frontend.appcore.di.ExtrasModule
+import com.codehavenx.alpaca.frontend.appcore.di.FrameworkModule
+import com.codehavenx.alpaca.frontend.appcore.di.ManagerModule
+import com.codehavenx.alpaca.frontend.appcore.di.ViewModelModule
+import com.codehavenx.alpaca.frontend.appcore.features.application.AlpacaApplicationScreen
+import com.codehavenx.alpaca.frontend.appcore.features.application.PlatformEventHandler
+import com.codehavenx.alpaca.frontend.desktop.di.ExtrasPlatformModule
+import com.codehavenx.alpaca.frontend.desktop.di.FrameworkPlatformDelegatesModule
+import org.koin.core.context.startKoin
 
 /**
  * Main function for the desktop application.
  */
 fun main() = application {
-    Window(onCloseRequest = ::exitApplication, title = "KotlinProject") {
-        App()
+    startKoin {
+        // Load modules
+        modules(
+            FrameworkPlatformDelegatesModule,
+            FrameworkModule,
+            ExtrasModule,
+            ExtrasPlatformModule,
+            ManagerModule,
+            ViewModelModule,
+        )
+    }
+    Window(
+        onCloseRequest = ::exitApplication,
+        title = "Alpaca Scheduler",
+    ) {
+        AlpacaApplicationScreen(
+            eventHandler = object : PlatformEventHandler {},
+        )
     }
 }

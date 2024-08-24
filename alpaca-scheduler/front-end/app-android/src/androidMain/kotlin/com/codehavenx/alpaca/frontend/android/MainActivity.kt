@@ -3,9 +3,8 @@ package com.codehavenx.alpaca.frontend.android
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
-import com.codehavenx.alpaca.frontend.appcore.App
+import com.codehavenx.alpaca.frontend.appcore.features.application.AlpacaApplicationScreen
+import com.codehavenx.alpaca.frontend.appcore.features.application.PlatformEventHandler
 
 /**
  * Main activity for the Android app.
@@ -15,13 +14,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            App()
+            AlpacaApplicationScreen(
+                eventHandler = object : PlatformEventHandler {},
+            )
         }
     }
-}
-
-@Preview
-@Composable
-private fun AppAndroidPreview() {
-    App()
 }

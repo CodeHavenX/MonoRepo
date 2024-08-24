@@ -1,10 +1,10 @@
 package com.codehavenx.alpaca.backend.core.service
 
+import com.codehavenx.alpaca.backend.core.repository.ConfigurationDatabase
 import com.codehavenx.alpaca.backend.core.service.models.AppointmentConfiguration
 import com.codehavenx.alpaca.backend.core.service.models.AppointmentType
-import com.codehavenx.alpaca.backend.core.storage.ConfigurationDatabase
-import com.codehavenx.alpaca.backend.core.storage.requests.CreateConfigurationRequest
-import com.codehavenx.alpaca.backend.core.storage.requests.GetConfigurationRequest
+import com.codehavenx.alpaca.backend.core.service.models.requests.CreateConfigurationRequest
+import com.codehavenx.alpaca.backend.core.service.models.requests.GetConfigurationRequest
 import kotlinx.datetime.TimeZone
 import kotlin.time.Duration
 

@@ -13,6 +13,7 @@ import com.codehavenx.alpaca.backend.core.service.ConfigurationService
 import com.codehavenx.alpaca.backend.core.service.ReservationService
 import com.codehavenx.alpaca.backend.core.service.UserService
 import com.codehavenx.alpaca.shared.api.serialization.createJson
+import com.cramsan.framework.assertlib.assertFalse
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.gotrue.Auth
@@ -48,9 +49,15 @@ val ApplicationModule = module(createdAtStart = true) {
 
     // Supabase
     single {
+        val supabaseUrl = System.getenv("ALPACA_SUPABASE_URL")
+        val supabaseKey = System.getenv("ALPACA_SUPABASE_KEY")
+
+        assertFalse(supabaseUrl.isNullOrBlank(), TAG, "ALPACA_SUPABASE_URL cannot be blank")
+        assertFalse(supabaseKey.isNullOrBlank(), TAG, "ALPACA_SUPABASE_KEY cannot be blank")
+
         createSupabaseClient(
-            supabaseUrl = System.getenv("ALPACA_SUPABASE_URL"),
-            supabaseKey = System.getenv("ALPACA_SUPABASE_KEY"),
+            supabaseUrl = supabaseUrl,
+            supabaseKey = supabaseKey,
         ) {
             install(Postgrest)
             install(Storage)
@@ -91,3 +98,5 @@ val ApplicationModule = module(createdAtStart = true) {
         bind<ConfigurationDatabase>()
     }
 }
+
+private const val TAG = "ApplicationModule"

@@ -2,7 +2,9 @@ package com.codehavenx.alpaca.frontend.android
 
 import android.app.Application
 import com.codehavenx.alpaca.frontend.appcore.di.ExtrasModule
+import com.codehavenx.alpaca.frontend.appcore.di.ExtrasPlatformModule
 import com.codehavenx.alpaca.frontend.appcore.di.FrameworkModule
+import com.codehavenx.alpaca.frontend.appcore.di.FrameworkPlatformDelegatesModule
 import com.codehavenx.alpaca.frontend.appcore.di.ManagerModule
 import com.codehavenx.alpaca.frontend.appcore.di.ViewModelModule
 import org.koin.android.ext.koin.androidContext
@@ -24,8 +26,10 @@ class AlpacaApplication : Application() {
             androidContext(this@AlpacaApplication)
             // Load modules
             modules(
+                FrameworkPlatformDelegatesModule,
                 FrameworkModule,
                 ExtrasModule,
+                ExtrasPlatformModule,
                 ManagerModule,
                 ViewModelModule,
             )

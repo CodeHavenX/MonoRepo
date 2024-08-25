@@ -64,6 +64,7 @@ tasks.register("releaseAll") {
     dependsOn("alpaca-scheduler:back-end:release")
     dependsOn("alpaca-scheduler:shared:release")
     dependsOn("alpaca-scheduler:front-end:appcore:release")
+    dependsOn("alpaca-scheduler:front-end:appcore-db:release")
     dependsOn("alpaca-scheduler:front-end:app-android:release")
     dependsOn("alpaca-scheduler:front-end:app-jvm:release")
     dependsOn("alpaca-scheduler:front-end:app-wasm:release")

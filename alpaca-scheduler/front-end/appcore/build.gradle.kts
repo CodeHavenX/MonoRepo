@@ -6,9 +6,7 @@ plugins {
     id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.android.library")
-    // #66: Enable Room in appcore project
-    // id("androidx.room")
-    // id("com.google.devtools.ksp")
+    id("com.google.devtools.ksp")
 }
 
 apply(from = "$rootDir/gradle/kotlin-mpp-target-common-compose.gradle")
@@ -30,6 +28,7 @@ kotlin {
             implementation(project(":framework:interfacelib"))
             implementation(project(":framework:logging"))
             implementation(project(":framework:thread"))
+            implementation(project(":framework:preferences"))
             implementation(project(":framework:crashhandler"))
             implementation(project(":framework:core"))
 
@@ -40,8 +39,6 @@ kotlin {
             implementation("org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose:_")
             implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:_")
             implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:_")
-            // #66: Enable Room in appcore project
-            // implementation("androidx.room:room-runtime:_")
 
             implementation("io.insert-koin:koin-core:_")
             implementation("io.insert-koin:koin-compose:_")
@@ -61,7 +58,15 @@ kotlin {
         }
 
         jvmMain.dependencies {
+            implementation(project(":alpaca-scheduler:front-end:appcore-db"))
+
+            implementation("org.apache.logging.log4j:log4j-core:_")
+            implementation("org.apache.logging.log4j:log4j-slf4j-impl:_")
+
             implementation("io.ktor:ktor-client-cio:_")
+
+            implementation("androidx.room:room-runtime:_")
+            implementation("androidx.sqlite:sqlite-bundled-jvm:_")
         }
 
         wasmJsMain.dependencies {
@@ -79,18 +84,17 @@ android {
 }
 
 dependencies {
+    implementation(project(":alpaca-scheduler:front-end:appcore-db"))
+
     implementation("io.insert-koin:koin-android:_")
     implementation("io.insert-koin:koin-androidx-compose:_")
+
     implementation("io.ktor:ktor-client-cio:_")
+
+    implementation("androidx.room:room-runtime:_")
+    implementation("androidx.room:room-ktx:_")
 }
 
 compose.resources {
     packageOfResClass = "shared_compose"
 }
-
-// #66: Enable Room in appcore project
-/*
-room {
-    schemaDirectory("$projectDir/schemas")
-}
-*/

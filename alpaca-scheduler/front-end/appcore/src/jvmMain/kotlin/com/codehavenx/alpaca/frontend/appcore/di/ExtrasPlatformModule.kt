@@ -1,12 +1,15 @@
-package com.codehavenx.alpaca.frontend.desktop.di
+package com.codehavenx.alpaca.frontend.appcore.di
 
+import androidx.room.Room
+import androidx.sqlite.driver.bundled.BundledSQLiteDriver
+import com.codehavenx.alpaca.frontend.appcore.database.AppDatabase
+import kotlinx.coroutines.Dispatchers
 import org.koin.dsl.module
+import java.io.File
 
 @Suppress("InjectDispatcher")
 val ExtrasPlatformModule = module {
 
-    // #66: Enable Room in appcore project
-    /*
     single {
         val dbFile = File(System.getProperty("java.io.tmpdir"), "my_room.db")
         val builder = Room.databaseBuilder<AppDatabase>(
@@ -20,5 +23,4 @@ val ExtrasPlatformModule = module {
             .setQueryCoroutineContext(Dispatchers.IO)
             .build()
     }
-    */
 }

@@ -1,4 +1,4 @@
-package com.codehavenx.alpaca.frontend.desktop.di
+package com.codehavenx.alpaca.frontend.appcore.di
 
 import com.cramsan.framework.core.DispatcherProvider
 import com.cramsan.framework.core.UIDispatcherProvider

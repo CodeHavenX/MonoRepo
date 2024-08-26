@@ -2,6 +2,8 @@ package com.codehavenx.alpaca.backend
 
 import com.codehavenx.alpaca.backend.core.controller.AvailabilityController
 import com.codehavenx.alpaca.backend.core.controller.AvailabilityController.Companion.registerRoutes
+import com.codehavenx.alpaca.backend.core.controller.HealthCheckController
+import com.codehavenx.alpaca.backend.core.controller.HealthCheckController.Companion.registerRoutes
 import com.codehavenx.alpaca.backend.core.controller.UserController
 import com.codehavenx.alpaca.backend.core.controller.UserController.Companion.registerRoutes
 import com.codehavenx.alpaca.backend.di.ApplicationModule
@@ -40,8 +42,9 @@ fun Application.startServer() = runBlocking {
 
     val userController: UserController by inject()
     val availabilityController: AvailabilityController by inject()
+    val healthCheckController: HealthCheckController by inject()
 
-    configureEntryPoints(userController, availabilityController)
+    configureEntryPoints(userController, availabilityController, healthCheckController)
     startApplication()
 }
 
@@ -76,10 +79,12 @@ fun Application.initializeDependencies() {
 fun Application.configureEntryPoints(
     userController: UserController,
     availabilityController: AvailabilityController,
+    healthCheckController: HealthCheckController,
 ) {
     routing {
         userController.registerRoutes(this@routing)
         availabilityController.registerRoutes(this@routing)
+        healthCheckController.registerRoutes(this@routing)
     }
 }
 

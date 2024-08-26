@@ -18,4 +18,11 @@ object Routes {
     object Availability {
         const val PATH = "availability"
     }
+
+    /**
+     * Routes for the health check API.
+     */
+    object Health {
+        const val PATH = "health"
+    }
 }

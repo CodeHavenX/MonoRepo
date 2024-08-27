@@ -25,7 +25,11 @@ sudo systemctl --user restart docker-desktop
 Before running the server locally make sure that Supabase is running locally by following the steps above. Once Supabase
 is running you will see the following output:
 
-```bassh
+```bash
+supabase start
+```
+
+```
 Started supabase local development setup.
 
          API URL: http://127.0.0.1:54321

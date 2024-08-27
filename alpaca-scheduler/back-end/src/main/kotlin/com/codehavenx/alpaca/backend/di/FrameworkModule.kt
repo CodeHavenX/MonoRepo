@@ -76,7 +76,7 @@ val FrameworkModule = module(createdAtStart = true) {
 
     single<HaltUtil> { HaltUtilImpl(get()) }
 
-    single<AssertUtilInterface> {
+    single<AssertUtilInterface>(createdAtStart = true) {
         val impl = AssertUtilImpl(
             true,
             get(),

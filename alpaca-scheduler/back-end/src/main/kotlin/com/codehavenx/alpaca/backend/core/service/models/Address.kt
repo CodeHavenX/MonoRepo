@@ -3,7 +3,7 @@ package com.codehavenx.alpaca.backend.core.service.models
 /**
  * Holds the details of an address for all users
  */
-data class Address (
+data class Address(
     val streetAddress: String,
     val unit: String?,
     val city: String,

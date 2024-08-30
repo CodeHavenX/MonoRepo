@@ -1,7 +1,6 @@
 package com.codehavenx.alpaca.backend.core.repository.supabase.models
 
 import com.codehavenx.alpaca.backend.core.repository.supabase.SupabaseModel
-import com.codehavenx.alpaca.backend.core.service.models.Address
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

@@ -1,6 +1,5 @@
 package com.codehavenx.alpaca.backend.core.service.models
 
-
 /**
  * Domain model representing a user.
  * First phone number and email are the primary attributes.

@@ -1,5 +1,6 @@
 package com.codehavenx.alpaca.backend.core.controller
 
+import com.codehavenx.alpaca.backend.core.controller.ControllerUtils.handleCall
 import com.codehavenx.alpaca.backend.core.service.UserService
 import com.codehavenx.alpaca.backend.core.service.models.UserId
 import com.codehavenx.alpaca.shared.api.Routes

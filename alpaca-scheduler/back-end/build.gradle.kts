@@ -1,5 +1,3 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-
 plugins {
     kotlin("plugin.serialization")
     id("io.ktor.plugin")
@@ -42,6 +40,7 @@ dependencies {
     implementation("io.github.jan-tennert.supabase:storage-kt:_")
 
     testImplementation("io.ktor:ktor-server-test-host:_")
+    implementation("io.insert-koin:koin-test:_")
     testImplementation(project(":framework:test"))
 }
 

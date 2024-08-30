@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @SupabaseModel
-data class AddressEntity (
+data class AddressEntity(
     val streetAddress: String,
     val unit: String?,
     val city: String,

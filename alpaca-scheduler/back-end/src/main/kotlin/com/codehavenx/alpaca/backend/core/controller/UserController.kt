@@ -18,6 +18,7 @@ import io.ktor.server.routing.route
 
 /**
  * Controller for user related operations. CRUD operations for users.
+ * Users are defined as Customers, Business Owners, Employees, Admins
  */
 class UserController(
     private val userService: UserService,
@@ -32,6 +33,9 @@ class UserController(
 
         val newUser = userService.createUser(
             createUserRequest.username,
+            createUserRequest.phoneNumber,
+            createUserRequest.email,
+
         ).toUserResponse()
 
         HttpResponse(

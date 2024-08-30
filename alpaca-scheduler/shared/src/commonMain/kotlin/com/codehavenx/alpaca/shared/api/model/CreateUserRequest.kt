@@ -12,4 +12,8 @@ import kotlinx.serialization.Serializable
 data class CreateUserRequest(
     @SerialName("username")
     val username: String,
+    @SerialName("phone_number")
+    val phoneNumber: String? = null,
+    @SerialName("email")
+    val email: String? = null,
 )

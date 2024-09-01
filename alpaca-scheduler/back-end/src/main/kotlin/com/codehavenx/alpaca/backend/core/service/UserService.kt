@@ -33,8 +33,8 @@ class UserService(
         return userDatabase.createUser(
             request = CreateUserRequest(
                 username = username,
-                phoneNumber = listOfNotNull(phoneNumber),
-                email = listOfNotNull(email),
+                phoneNumbers = listOfNotNull(phoneNumber),
+                emails = listOfNotNull(email),
             ),
         ).getOrThrow()
     }

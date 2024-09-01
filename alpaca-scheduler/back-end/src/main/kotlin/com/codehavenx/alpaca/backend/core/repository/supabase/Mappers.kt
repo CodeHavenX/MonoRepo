@@ -91,8 +91,8 @@ fun UserEntity.toUser(): User {
         firstName = this.firstName,
         lastName = this.lastName,
         address = this.address?.toAddress(),
-        phoneNumber = this.phoneNumber,
-        email = this.email
+        phoneNumbers = this.phoneNumbers,
+        emails = this.emails,
     )
 }
 
@@ -118,8 +118,8 @@ private fun AddressEntity.toAddress(): Address {
 fun CreateUserRequest.toUserEntity(): UserEntity.CreateUserEntity {
     return UserEntity.CreateUserEntity(
         username = username,
-        phoneNumber = phoneNumber,
-        email = email
+        phoneNumbers = phoneNumbers,
+        emails = emails,
     )
 }
 

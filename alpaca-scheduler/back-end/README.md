@@ -78,4 +78,20 @@ Some useful references:
 We are still currently in the early stages of development and are making changes to the database schema consistently.
 The recommended approach to managing changes is to perform schema changes locally and to push those changes. 
 
+You do so by following these steps:
+
+1. Ensure that you have the latest DB schema applied locally:
+```bash
+git pull
+supabase db reset // This step will your local DB and all content will be lost
+```
+
+2. Now you can make changes to the schema. This can be done directly through the UI. Make changes until you are ready to publish your changes and the code is updated to handle the new changes.
+3. To generate a migration file, run the following command:
+```bash
+supabase db diff --local -f MIGRATION_FILE_NAME>
+```
+4. Push your code changes alongside with the migration file.
+
+
 **MORE CONTENT TO BE FILLED HERE 🔨🚧**

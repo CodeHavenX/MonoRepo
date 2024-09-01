@@ -9,9 +9,9 @@ data class User(
     val id: UserId,
     val isVerified: Boolean,
     val username: String,
-    val phoneNumber: List<String>,
+    val phoneNumbers: List<String>,
     val firstName: String?,
     val lastName: String?,
     val address: Address?,
-    val email: List<String>,
+    val emails: List<String>,
 )

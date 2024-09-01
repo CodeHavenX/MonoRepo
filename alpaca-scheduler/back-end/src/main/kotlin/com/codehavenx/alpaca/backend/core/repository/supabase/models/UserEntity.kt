@@ -14,9 +14,9 @@ data class UserEntity(
     @SerialName("is_verified")
     val isVerified: Boolean = false,
     val username: String,
-    @SerialName("phone_number")
-    val phoneNumber: List<String>,
-    val email: List<String>,
+    @SerialName("phone_numbers")
+    val phoneNumbers: List<String>,
+    val emails: List<String>,
     @SerialName("first_name")
     val firstName: String? = null,
     @SerialName("last_name")
@@ -34,7 +34,8 @@ data class UserEntity(
     @SupabaseModel
     data class CreateUserEntity(
         val username: String,
-        val phoneNumber: List<String>,
-        val email: List<String>
+        @SerialName("phone_numbers")
+        val phoneNumbers: List<String>,
+        val emails: List<String>
     )
 }

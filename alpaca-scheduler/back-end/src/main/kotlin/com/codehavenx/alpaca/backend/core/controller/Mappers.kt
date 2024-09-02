@@ -27,7 +27,7 @@ fun String.toStaffId(): StaffId {
  */
 @NetworkModel
 fun User.toUserResponse(): UserResponse {
-    return UserResponse(
+    return UserResponse.create(
         id = id.userId,
         username = username,
         isVerified = isVerified,
@@ -41,7 +41,7 @@ fun User.toUserResponse(): UserResponse {
 
 @NetworkModel
 private fun Address.toAddressResponse(): AddressResponse {
-    return AddressResponse(
+    return AddressResponse.create(
         streetAddress = streetAddress,
         unit = unit,
         city = city,

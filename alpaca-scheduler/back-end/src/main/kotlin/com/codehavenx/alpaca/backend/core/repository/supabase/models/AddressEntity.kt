@@ -3,6 +3,9 @@ package com.codehavenx.alpaca.backend.core.repository.supabase.models
 import com.codehavenx.alpaca.backend.core.repository.supabase.SupabaseModel
 import kotlinx.serialization.Serializable
 
+/**
+ * Supabase entity representing an address.
+ */
 @Serializable
 @SupabaseModel
 data class AddressEntity(
@@ -14,7 +17,7 @@ data class AddressEntity(
     val country: String,
 ) {
     /**
-     * Supabase entity representing a create new address request.
+     * Supabase entity representing a request to create new address.
      */
     @Serializable
     @SupabaseModel

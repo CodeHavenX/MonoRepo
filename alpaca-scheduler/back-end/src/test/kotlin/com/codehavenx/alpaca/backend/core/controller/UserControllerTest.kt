@@ -41,11 +41,11 @@ class UserControllerTest : TestBase(), KoinTest {
                     id = UserId("123"),
                     isVerified = false,
                     username = "test",
-                    phoneNumber = emptyList(),
+                    phoneNumbers = emptyList(),
                     firstName = null,
                     lastName = null,
                     address = null,
-                    email = emptyList(),
+                    emails = emptyList(),
                 )
             }
 

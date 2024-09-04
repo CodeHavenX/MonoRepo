@@ -19,15 +19,27 @@ import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+/**
+ * Test the [UserController] class.
+ */
 class UserControllerTest : TestBase(), KoinTest {
 
+    /**
+     * Setup the test.
+     */
     override fun setupTest() = Unit
 
+    /**
+     * Clean up the test.
+     */
     @AfterTest
     fun cleanUp() {
         stopKoin()
     }
 
+    /**
+     * Test the [UserController.createUser] function.
+     */
     @Test
     fun `test createUser`() = testAlpacaApplication {
         // Configure

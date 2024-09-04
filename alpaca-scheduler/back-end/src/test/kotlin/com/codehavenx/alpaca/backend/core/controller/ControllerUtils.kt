@@ -24,6 +24,9 @@ fun testAlpacaApplication(
     block()
 }
 
+/**
+ * Start the koin framework with the test configuration.
+ */
 fun startTestKoin(
     moduleDeclaration: Module.() -> Unit = {},
 ) {

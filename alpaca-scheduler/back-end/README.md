@@ -10,7 +10,7 @@
    3. Check `Add the *.docker.internal names to the host's /etc/hosts file (Requires password)`
    4. Apply and restart. This is important given supabase isn't fully compatible with Windows
 3. Follow the steps [here](https://supabase.com/docs/guides/cli/getting-started) to install a local supabase instance.
-4. Once you've installed supabase, `cd MonoRepo/alpaca-scheduler` and enter `supabase start` . This will be used for local development.
+4. Once supabase is installed, `cd MonoRepo/alpaca-scheduler` and enter `supabase start` . This will be used for local development.
 
 ### Ubuntu Work Around for Docker Desktop
 ```bash
@@ -23,7 +23,7 @@ sudo systemctl --user restart docker-desktop
 ### Set the Supabase Environment Variables
 
 Before running the server locally make sure that Supabase is running locally by following the steps above. Once Supabase
-is running you will see the following output:
+is running the following output will display:
 
 ```bash
 supabase start
@@ -46,8 +46,8 @@ service_role key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZ
        S3 Region: local
 ```
 
-From this output you will need the `API URL` and the `service_role key`. Set these as environment variables in your terminal.
-I recommend you them in a permanent location like your `.bashrc` or `.zshrc` file.
+From this output you will need the `API URL` and the `service_role key`. Set these as environment variables in the terminal.
+I recommend you store them in a permanent location like a `.bashrc` or `.zshrc` file.
 
 ```bash
 export ALPACA_SUPABASE_URL=http://127.0.0.1:54321
@@ -59,13 +59,15 @@ If you are using IntelliJ, you can set these values in the run configuration as 
 
 ### Running the Server Application
 
-You can either run the server through gradle or through IntelliJ. To run through gradle, run the following command:
+You can either run the server through gradle or through IntelliJ. 
+
+To run through gradle, run the following command:
 ```bash
 ./gradlew :alpaca-scheduler:back-end:run
 ```
 or by using the main function in the [AlpacaSchedulerBackEnd.kt](src/main/kotlin/com/codehavenx/alpaca/backend/AlpacaSchedulerBackEnd.kt) file.
 
-If you get an error about `ALPACA_SUPABASE_URL` or `ALPACA_SUPABASE_KEY` being null, make sure you have set the environment variables correctly. You may need to restart your terminal or IntelliJ.
+If you get an error about `ALPACA_SUPABASE_URL` or `ALPACA_SUPABASE_KEY` being null, make sure the environment variables are set correctly. A restart of the terminal or IntelliJ may be required.
 
 Once the server is running, it will be available at `http://0.0.0.0:8282`.
 
@@ -76,22 +78,20 @@ Some useful references:
  - [Supabase CLI Reference](https://supabase.com/docs/reference/cli/introduction)
 
 We are still currently in the early stages of development and are making changes to the database schema consistently.
-The recommended approach to managing changes is to perform schema changes locally and to push those changes. 
+The recommended approach is to perform schema changes locally and to push those changes: 
 
-You do so by following these steps:
-
-1. Ensure that you have the latest DB schema applied locally:
+1. Ensure that you have the latest DB schema applied locally: `git pull`
+2. Reset the db:
 ```bash
-git pull
 supabase db reset // This step will your local DB and all content will be lost
 ```
-
-2. Now you can make changes to the schema. This can be done directly through the UI. Make changes until you are ready to publish your changes and the code is updated to handle the new changes.
-3. To generate a migration file, run the following command:
+3. Make changes to the schema through the UI. 
+4. Repeat this until you are ready to publish your changes and the code is updated to handle the new changes.
+5. To generate a migration file, run the following command:
 ```bash
-supabase db diff --local -f MIGRATION_FILE_NAME>
+supabase db diff --local -f <MIGRATION_FILE_NAME>
 ```
-4. Push your code changes alongside with the migration file.
+6. Push your changes with the migration file.
 
 
 **MORE CONTENT TO BE FILLED HERE 🔨🚧**

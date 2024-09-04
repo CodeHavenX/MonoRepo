@@ -10,15 +10,27 @@ import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+/**
+ * Test the [HealthCheckController] class.
+ */
 class HealthCheckControllerTest : TestBase(), KoinTest {
 
+    /**
+     * Setup the test.
+     */
     override fun setupTest() = Unit
 
+    /**
+     * Clean up the test.
+     */
     @AfterTest
     fun cleanUp() {
         stopKoin()
     }
 
+    /**
+     * Test the [HealthCheckController.healthCheck] function.
+     */
     @Test
     fun `test healthCheck`() = testAlpacaApplication {
         // Configure

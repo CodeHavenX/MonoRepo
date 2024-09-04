@@ -15,6 +15,7 @@ import io.ktor.server.request.receive
 import io.ktor.server.routing.Routing
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
+import io.ktor.server.routing.put
 import io.ktor.server.routing.route
 
 /**
@@ -37,7 +38,7 @@ class UserController(
             createUserRequest.phoneNumber,
             createUserRequest.email,
 
-        ).toUserResponse()
+            ).toUserResponse()
 
         HttpResponse(
             status = HttpStatusCode.OK,
@@ -59,7 +60,7 @@ class UserController(
         val statusCode = if (user == null) {
             HttpStatusCode.NotFound
         } else {
-            HttpStatusCode.OK
+            HttpStatusCode.Created
         }
 
         HttpResponse(
@@ -83,6 +84,7 @@ class UserController(
 
     /**
      * Handles the updating of a user. The [call] parameter is the request context.
+     * TODO: Update isVerified to validate the user's email and phone number when changed??.
      */
     @OptIn(NetworkModel::class)
     suspend fun updateUser(call: ApplicationCall) = call.handleCall(TAG, "updateUser") {
@@ -120,6 +122,9 @@ class UserController(
                 }
                 get {
                     getUsers(call)
+                }
+                put("{$USER_ID}") {
+                    updateUser(call)
                 }
             }
         }

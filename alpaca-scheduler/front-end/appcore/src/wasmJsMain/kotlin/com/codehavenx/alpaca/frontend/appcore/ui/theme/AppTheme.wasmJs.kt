@@ -14,8 +14,10 @@ actual fun getColorScheme(
     darkColorScheme: ColorScheme,
     lightColorScheme: ColorScheme
 ): ColorScheme {
-    TODO("Not yet implemented")
-}
+    return when {
+        darkTheme -> darkColorScheme
+        else -> lightColorScheme
+    }}
 
 @Composable
 actual fun WindowDecorations(colorScheme: ColorScheme, darkTheme: Boolean) = Unit

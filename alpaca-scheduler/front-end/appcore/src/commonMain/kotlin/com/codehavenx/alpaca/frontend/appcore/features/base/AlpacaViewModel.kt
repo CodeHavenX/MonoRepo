@@ -2,6 +2,7 @@ package com.codehavenx.alpaca.frontend.appcore.features.base
 
 import androidx.lifecycle.ViewModel
 import com.cramsan.framework.core.DispatcherProvider
+import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.logI
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -21,12 +22,13 @@ abstract class AlpacaViewModel(
     )
 
     init {
-        logI(TAG, "ViewModel created: ${this.hashCode()}")
+        println("HELLOO!!!!")
+        //logI(TAG, "ViewModel created: ${this.hashCode()}")
     }
 
     override fun onCleared() {
         super.onCleared()
-        logI(TAG, "ViewModel cleared: ${this.hashCode()}")
+        // logI(TAG, "ViewModel cleared: ${this.hashCode()}")
         viewModelScope.cancel()
     }
 

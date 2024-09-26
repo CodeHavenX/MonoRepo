@@ -32,13 +32,13 @@ kotlin {
             implementation(project(":framework:crashhandler"))
             implementation(project(":framework:core"))
 
-            implementation(project(":alpaca-scheduler:shared"))
+            //implementation(project(":alpaca-scheduler:shared"))
 
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:_")
             implementation("org.jetbrains.androidx.navigation:navigation-compose:_")
             implementation("org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose:_")
             implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:_")
-            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:_")
+            //implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:_")
 
             implementation("io.insert-koin:koin-core:_")
             implementation("io.insert-koin:koin-compose:_")

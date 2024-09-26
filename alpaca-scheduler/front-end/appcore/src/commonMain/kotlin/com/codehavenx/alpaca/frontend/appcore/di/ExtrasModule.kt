@@ -1,6 +1,5 @@
 package com.codehavenx.alpaca.frontend.appcore.di
 
-import com.codehavenx.alpaca.shared.api.serialization.createJson
 import com.cramsan.framework.logging.logE
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.compose.auth.ComposeAuth
@@ -31,13 +30,17 @@ val ExtrasModule = module {
     single<Clock> { Clock.System }
 
     single {
+        println("Coroutine Handler")
         CoroutineExceptionHandler { _, throwable ->
             logE("CoroutineExceptionHandler", "Uncaught Exception", throwable)
         }
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    single<CoroutineScope> { GlobalScope }
+    single<CoroutineScope> {
+        println("Global Scope")
+        GlobalScope
+    }
 
     single {
         createSupabaseClient(
@@ -71,10 +74,6 @@ val ExtrasModule = module {
 
     single {
         get<SupabaseClient>().postgrest
-    }
-
-    single<Json> {
-        createJson()
     }
 
     single {

@@ -46,19 +46,22 @@ import shared_compose.string_back_navigation
  */
 @Composable
 fun AlpacaApplicationScreen(
-    viewModel: ApplicationViewModel = koinInject(),
+    //viewModel: ApplicationViewModel = koinInject(),
     @Suppress("UnusedParameter")
     eventHandler: PlatformEventHandler,
 ) {
+    /*
     val event by viewModel.events.collectAsState(ApplicationEvent.Noop)
     val delegatedEvent by viewModel.delegatedEvents.collectAsState(ApplicationDelegatedEvent.Noop)
+     */
     val navController = rememberNavController()
 
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
         // Do something on create
     }
 
-    LaunchedEffect(event) {
+    LaunchedEffect(Unit) {
+        /*
         when (val applicationEvent = event) {
             ApplicationEvent.Noop -> Unit
             is ApplicationEvent.Navigate -> {
@@ -85,7 +88,9 @@ fun AlpacaApplicationScreen(
                 }
             }
         }
+         */
     }
+    /*
     ComposableKoinContext {
         AlpacaTheme {
             NavigationHost(
@@ -95,6 +100,7 @@ fun AlpacaApplicationScreen(
             )
         }
     }
+     */
 }
 
 @Composable

@@ -2,18 +2,16 @@ package com.cramsan.framework.thread.implemantation
 
 import com.cramsan.framework.thread.ThreadUtilDelegate
 
+/**
+ * Noop implementation of [ThreadUtilDelegate] that does nothing.
+ */
 object ThreadUtilDelegateNoop : ThreadUtilDelegate {
-    override fun isUIThread(): Boolean {
-        return false
-    }
 
-    override fun isBackgroundThread(): Boolean {
-        return false
-    }
+    override fun isUIThread(): Boolean = false
 
-    override fun assertIsUIThread() {
-    }
+    override fun isBackgroundThread(): Boolean = false
 
-    override fun assertIsBackgroundThread() {
-    }
+    override fun assertIsUIThread() = Unit
+
+    override fun assertIsBackgroundThread() = Unit
 }

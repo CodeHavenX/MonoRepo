@@ -1,7 +1,5 @@
 package com.codehavenx.alpaca.frontend.appcore.features.application
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.codehavenx.alpaca.frontend.appcore.features.base.AlpacaViewModel
 import com.cramsan.framework.core.DispatcherProvider
 import com.cramsan.framework.logging.logI
@@ -16,8 +14,7 @@ import kotlinx.coroutines.launch
 class ApplicationViewModel(
     exceptionHandler: CoroutineExceptionHandler,
     dispatcherProvider: DispatcherProvider,
-//) : AlpacaViewModel(exceptionHandler, dispatcherProvider) {
-) : ViewModel() {
+) : AlpacaViewModel(exceptionHandler, dispatcherProvider) {
 
     private val _events = MutableSharedFlow<ApplicationEvent>()
     val events: SharedFlow<ApplicationEvent> = _events

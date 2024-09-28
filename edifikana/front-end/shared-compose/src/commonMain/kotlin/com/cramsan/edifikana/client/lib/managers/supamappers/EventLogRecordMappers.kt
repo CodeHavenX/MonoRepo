@@ -6,7 +6,6 @@ import com.cramsan.edifikana.client.lib.models.StorageRef
 import com.cramsan.edifikana.client.lib.utils.publicDownloadUrl
 import com.cramsan.edifikana.lib.EmployeePK
 import com.cramsan.edifikana.lib.EventLogRecordPK
-import com.cramsan.edifikana.lib.firestore.EventType
 import com.cramsan.edifikana.lib.supa.EventLogRecord
 import com.cramsan.edifikana.lib.supa.SupabaseModel
 

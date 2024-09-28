@@ -6,7 +6,7 @@ import com.cramsan.edifikana.client.lib.managers.EmployeeManager
 import com.cramsan.edifikana.client.lib.managers.EventLogManager
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.lib.EmployeePK
-import com.cramsan.edifikana.lib.firestore.EventType
+import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.framework.core.DispatcherProvider
 import edifikana_lib.Res
 import edifikana_lib.string_other
@@ -60,7 +60,7 @@ class AddRecordViewModel(
     fun addRecord(
         employeeDocumentId: EmployeePK?,
         unit: String?,
-        eventType: EventType?,
+        eventType: EventLogEventType?,
         fallbackEmployeeName: String?,
         fallbackEventType: String?,
         summary: String?,
@@ -83,7 +83,7 @@ class AddRecordViewModel(
             employeePk = employeeDocumentId,
             timeRecorded = clock.now().epochSeconds,
             unit = unit.trim(),
-            eventType = eventType ?: EventType.INCIDENT,
+            eventType = eventType ?: EventLogEventType.INCIDENT,
             fallbackEmployeeName = fallbackEmployeeName?.trim(),
             fallbackEventType = fallbackEventType?.trim(),
             summary = summary.trim(),

@@ -2,7 +2,7 @@ package com.cramsan.edifikana.client.lib.db.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.cramsan.edifikana.lib.firestore.TimeCardEventType
+import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.edifikana.lib.firestore.TimeCardRecord
 
 /**

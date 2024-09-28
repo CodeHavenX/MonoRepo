@@ -2,7 +2,7 @@ package com.cramsan.edifikana.client.lib.models
 
 import com.cramsan.edifikana.lib.EmployeePK
 import com.cramsan.edifikana.lib.EventLogRecordPK
-import com.cramsan.edifikana.lib.firestore.EventType
+import com.cramsan.edifikana.lib.model.EventLogEventType
 import kotlin.random.Random
 
 data class EventLogRecordModel(
@@ -11,7 +11,7 @@ data class EventLogRecordModel(
     val employeePk: EmployeePK?,
     val timeRecorded: Long,
     val unit: String,
-    val eventType: EventType,
+    val eventType: EventLogEventType,
     val fallbackEmployeeName: String?,
     val fallbackEventType: String?,
     val summary: String,
@@ -23,7 +23,7 @@ data class EventLogRecordModel(
             employeePk: EmployeePK?,
             timeRecorded: Long,
             unit: String,
-            eventType: EventType?,
+            eventType: EventLogEventType?,
             fallbackEmployeeName: String?,
             fallbackEventType: String?,
             summary: String,
@@ -36,7 +36,7 @@ data class EventLogRecordModel(
                 employeePk = employeePk,
                 timeRecorded = timeRecorded,
                 unit = unit.trim(),
-                eventType = eventType ?: EventType.INCIDENT,
+                eventType = eventType ?: EventLogEventType.INCIDENT,
                 fallbackEmployeeName = fallbackEmployeeName?.trim(),
                 fallbackEventType = fallbackEventType?.trim(),
                 summary = summary.trim(),

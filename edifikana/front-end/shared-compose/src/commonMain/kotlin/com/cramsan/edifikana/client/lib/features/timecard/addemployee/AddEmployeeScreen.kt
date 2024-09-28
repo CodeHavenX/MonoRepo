@@ -25,7 +25,7 @@ import com.cramsan.edifikana.client.lib.toRoleFriendlyNameCompose
 import com.cramsan.edifikana.client.lib.ui.components.Dropdown
 import com.cramsan.edifikana.client.lib.ui.components.LoadingAnimationOverlay
 import com.cramsan.edifikana.lib.firestore.EmployeeRole
-import com.cramsan.edifikana.lib.firestore.IdType
+import com.cramsan.edifikana.lib.model.IdType
 import edifikana_lib.Res
 import edifikana_lib.string_id_number
 import edifikana_lib.string_id_type

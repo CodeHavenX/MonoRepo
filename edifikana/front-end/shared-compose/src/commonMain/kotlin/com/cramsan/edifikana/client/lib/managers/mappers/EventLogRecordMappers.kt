@@ -7,7 +7,7 @@ import com.cramsan.edifikana.client.lib.models.StorageRef
 import com.cramsan.edifikana.client.lib.utils.publicDownloadUrl
 import com.cramsan.edifikana.lib.EmployeePK
 import com.cramsan.edifikana.lib.firestore.EventLogRecord
-import com.cramsan.edifikana.lib.firestore.EventType
+import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.firestore.FireStoreModel
 
 fun EventLogRecordModel.toEntity(): EventLogRecordEntity {
@@ -31,7 +31,7 @@ fun EventLogRecordEntity.toDomainModel(): EventLogRecordModel {
         employeePk = employeeDocumentId?.let { EmployeePK(it) },
         timeRecorded = timeRecorded ?: TODO("Time recorded cannot be null"),
         unit = unit.orEmpty(),
-        eventType = eventType ?: EventType.OTHER,
+        eventType = eventType ?: EventLogEventType.OTHER,
         fallbackEmployeeName = fallbackEmployeeName,
         fallbackEventType = fallbackEventType,
         summary = summary.orEmpty(),

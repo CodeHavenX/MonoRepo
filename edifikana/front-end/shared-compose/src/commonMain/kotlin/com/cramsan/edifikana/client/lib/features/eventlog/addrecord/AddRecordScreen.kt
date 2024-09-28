@@ -28,7 +28,7 @@ import com.cramsan.edifikana.client.lib.toFriendlyStringCompose
 import com.cramsan.edifikana.client.lib.ui.components.Dropdown
 import com.cramsan.edifikana.client.lib.ui.components.LoadingAnimationOverlay
 import com.cramsan.edifikana.lib.EmployeePK
-import com.cramsan.edifikana.lib.firestore.EventType
+import com.cramsan.edifikana.lib.model.EventLogEventType
 import edifikana_lib.Res
 import edifikana_lib.text_add
 import edifikana_lib.text_appartment
@@ -95,7 +95,7 @@ private fun AddRecord(
     onAddRecordClicked: (
         employeeDocumentId: EmployeePK?,
         unit: String?,
-        eventType: EventType?,
+        eventType: EventLogEventType?,
         fallbackEmployeeName: String?,
         fallbackEventType: String?,
         summary: String?,
@@ -103,7 +103,7 @@ private fun AddRecord(
     ) -> Unit,
 ) {
     var employeePK by remember { mutableStateOf(employees.firstOrNull()?.employeePK) }
-    var eventType by remember { mutableStateOf(EventType.OTHER) }
+    var eventType by remember { mutableStateOf(EventLogEventType.OTHER) }
     var unit by remember { mutableStateOf("") }
     var fallbackName by remember { mutableStateOf("") }
     var fallbackEventType by remember { mutableStateOf("") }
@@ -146,15 +146,15 @@ private fun AddRecord(
 
             Dropdown(
                 label = stringResource(Res.string.text_event_type),
-                items = EventType.entries,
-                itemLabels = EventType.entries.map { it.toFriendlyStringCompose() },
+                items = EventLogEventType.entries,
+                itemLabels = EventLogEventType.entries.map { it.toFriendlyStringCompose() },
                 modifier = Modifier.fillMaxWidth(),
                 startValueMatcher = { it == eventType },
             ) {
                 eventType = it
             }
 
-            if (eventType == EventType.OTHER) {
+            if (eventType == EventLogEventType.OTHER) {
                 TextField(
                     value = fallbackEventType,
                     onValueChange = { fallbackEventType = it },

@@ -2,9 +2,9 @@ package com.cramsan.edifikana.client.lib
 
 import androidx.compose.runtime.Composable
 import com.cramsan.edifikana.lib.firestore.EmployeeRole
-import com.cramsan.edifikana.lib.firestore.EventType
-import com.cramsan.edifikana.lib.firestore.IdType
-import com.cramsan.edifikana.lib.firestore.TimeCardEventType
+import com.cramsan.edifikana.lib.model.EventLogEventType
+import com.cramsan.edifikana.lib.model.IdType
+import com.cramsan.edifikana.lib.model.TimeCardEventType
 import edifikana_lib.Res
 import edifikana_lib.event_type_delivery
 import edifikana_lib.event_type_guest
@@ -84,23 +84,23 @@ fun IdType.toIdTypeFriendlyName(): String {
     }
 }
 
-suspend fun EventType?.toFriendlyString(): String {
+suspend fun EventLogEventType?.toFriendlyString(): String {
     return when (this) {
-        EventType.GUEST -> getString(Res.string.event_type_guest)
-        EventType.DELIVERY -> getString(Res.string.event_type_delivery)
-        EventType.INCIDENT -> getString(Res.string.event_type_incident)
-        EventType.MAINTENANCE_SERVICE -> getString(Res.string.event_type_maintenance_service)
+        EventLogEventType.GUEST -> getString(Res.string.event_type_guest)
+        EventLogEventType.DELIVERY -> getString(Res.string.event_type_delivery)
+        EventLogEventType.INCIDENT -> getString(Res.string.event_type_incident)
+        EventLogEventType.MAINTENANCE_SERVICE -> getString(Res.string.event_type_maintenance_service)
         else -> getString(Res.string.event_type_other)
     }
 }
 
 @Composable
-fun EventType?.toFriendlyStringCompose(): String {
+fun EventLogEventType?.toFriendlyStringCompose(): String {
     return when (this) {
-        EventType.GUEST -> stringResource(Res.string.event_type_guest)
-        EventType.DELIVERY -> stringResource(Res.string.event_type_delivery)
-        EventType.INCIDENT -> stringResource(Res.string.event_type_incident)
-        EventType.MAINTENANCE_SERVICE -> stringResource(Res.string.event_type_maintenance_service)
+        EventLogEventType.GUEST -> stringResource(Res.string.event_type_guest)
+        EventLogEventType.DELIVERY -> stringResource(Res.string.event_type_delivery)
+        EventLogEventType.INCIDENT -> stringResource(Res.string.event_type_incident)
+        EventLogEventType.MAINTENANCE_SERVICE -> stringResource(Res.string.event_type_maintenance_service)
         else -> stringResource(Res.string.event_type_other)
     }
 }

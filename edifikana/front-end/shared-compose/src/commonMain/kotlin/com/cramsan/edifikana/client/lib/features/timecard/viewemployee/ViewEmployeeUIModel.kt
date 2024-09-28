@@ -9,7 +9,7 @@ import com.cramsan.edifikana.client.lib.toFriendlyDateTime
 import com.cramsan.edifikana.client.lib.toRoleFriendlyName
 import com.cramsan.edifikana.lib.EmployeePK
 import com.cramsan.edifikana.lib.TimeCardRecordPK
-import com.cramsan.edifikana.lib.firestore.TimeCardEventType
+import com.cramsan.edifikana.lib.model.TimeCardEventType
 
 object ViewEmployeeUIModel {
     data class TimeCardRecordUIModel(

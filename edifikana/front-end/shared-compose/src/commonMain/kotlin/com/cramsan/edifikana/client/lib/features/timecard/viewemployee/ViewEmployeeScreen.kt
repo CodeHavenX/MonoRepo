@@ -34,7 +34,7 @@ import com.cramsan.edifikana.client.lib.models.StorageRef
 import com.cramsan.edifikana.client.lib.ui.components.LoadingAnimationOverlay
 import com.cramsan.edifikana.lib.EmployeePK
 import com.cramsan.edifikana.lib.TimeCardRecordPK
-import com.cramsan.edifikana.lib.firestore.TimeCardEventType
+import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.framework.assertlib.AssertUtil
 import com.cramsan.framework.assertlib.implementation.NoopAssertUtil
 import edifikana_lib.Res

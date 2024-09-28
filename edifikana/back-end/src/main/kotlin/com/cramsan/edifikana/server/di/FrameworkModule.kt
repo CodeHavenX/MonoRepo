@@ -29,6 +29,7 @@ import com.cramsan.framework.thread.ThreadUtilInterface
 import com.cramsan.framework.thread.implementation.ThreadUtilImpl
 import com.cramsan.framework.thread.implementation.ThreadUtilJVM
 import org.apache.logging.log4j.Logger
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 /**
@@ -39,8 +40,10 @@ val FrameworkModule = module(createdAtStart = true) {
 
     single<Preferences> { PreferencesImpl(get()) }
 
+    single(named(IS_DEBUG_NAME)) { false }
+
     single<Logger> {
-        Log4J2Helpers.getRootLogger(false, Severity.VERBOSE)
+        Log4J2Helpers.getRootLogger(get(named(IS_DEBUG_NAME)), Severity.DEBUG)
     }
 
     single<EventLoggerDelegate> { LoggerJVM(get()) }
@@ -60,7 +63,10 @@ val FrameworkModule = module(createdAtStart = true) {
     }
 
     single<EventLoggerInterface> {
-        val severity: Severity = Severity.VERBOSE
+        val severity: Severity = when (get<Boolean>(named(IS_DEBUG_NAME))) {
+            true -> Severity.VERBOSE
+            false -> Severity.VERBOSE
+        }
         val instance = EventLoggerImpl(severity, get(), get())
         EventLogger.setInstance(instance)
         EventLogger.singleton
@@ -70,7 +76,7 @@ val FrameworkModule = module(createdAtStart = true) {
 
     single<HaltUtil> { HaltUtilImpl(get()) }
 
-    single<AssertUtilInterface> {
+    single<AssertUtilInterface>(createdAtStart = true) {
         val impl = AssertUtilImpl(
             true,
             get(),
@@ -90,3 +96,5 @@ val FrameworkModule = module(createdAtStart = true) {
 
     single<DispatcherProvider> { BEDispatcherProvider() }
 }
+
+private const val IS_DEBUG_NAME = "isDebugEnabled"

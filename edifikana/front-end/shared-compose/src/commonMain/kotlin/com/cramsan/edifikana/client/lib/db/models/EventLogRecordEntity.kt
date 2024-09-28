@@ -3,7 +3,7 @@ package com.cramsan.edifikana.client.lib.db.models
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.cramsan.edifikana.lib.firestore.EventLogRecord
-import com.cramsan.edifikana.lib.firestore.EventType
+import com.cramsan.edifikana.lib.model.EventLogEventType
 
 /**
  * Database model for representing a [EventLogRecord]
@@ -15,7 +15,7 @@ data class EventLogRecordEntity(
     val employeeDocumentId: String?,
     val timeRecorded: Long? = null,
     val unit: String? = null,
-    val eventType: EventType? = null,
+    val eventType: EventLogEventType? = null,
     val fallbackEmployeeName: String? = null,
     val fallbackEventType: String? = null,
     val summary: String? = null,

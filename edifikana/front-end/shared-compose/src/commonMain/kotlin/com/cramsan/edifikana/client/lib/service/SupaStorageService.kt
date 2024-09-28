@@ -4,7 +4,6 @@ import com.cramsan.edifikana.client.lib.models.StorageRef
 import com.cramsan.edifikana.client.lib.utils.runSuspendCatching
 import com.cramsan.framework.core.CoreUri
 import io.github.jan.supabase.storage.Storage
-import io.github.jan.supabase.storage.update
 
 class SupaStorageService(
     private val storage: Storage,

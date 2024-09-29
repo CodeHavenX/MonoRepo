@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
  */
 @NetworkModel
 @Serializable
-data class UpdateEventLogEntryRequest(
+data class CreateEventLogEntryNetworkRequest(
     @SerialName("title")
     val title: String,
     @SerialName("staff_id")

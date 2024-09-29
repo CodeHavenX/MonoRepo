@@ -5,11 +5,13 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
- * Request to update a property.
+ * Response model for a property.
  */
 @NetworkModel
 @Serializable
-data class UpdatePropertyRequest(
+data class PropertyNetworkResponse(
+    @SerialName("id")
+    val id: String,
     @SerialName("name")
     val name: String,
 )

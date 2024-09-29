@@ -5,13 +5,11 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
- * Response model for a property.
+ * Request model for creating a user.
  */
 @NetworkModel
 @Serializable
-data class PropertyResponse(
-    @SerialName("id")
-    val id: String,
-    @SerialName("name")
-    val name: String,
+data class UpdateUserNetworkRequest(
+    @SerialName("email")
+    val email: String,
 )

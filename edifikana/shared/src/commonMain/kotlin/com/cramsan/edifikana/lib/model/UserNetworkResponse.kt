@@ -5,11 +5,13 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
- * Model representing an event log entry.
+ * Response model for a user.
  */
 @NetworkModel
 @Serializable
-data class EventLogEntryResponse(
+data class UserNetworkResponse(
     @SerialName("id")
     val id: String,
+    @SerialName("email")
+    val email: String,
 )

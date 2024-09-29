@@ -5,17 +5,11 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
- * Model representing a staff.
+ * Model representing an event log entry.
  */
 @NetworkModel
 @Serializable
-data class TimeCardEventResponse(
+data class EventLogEntryNetworkResponse(
     @SerialName("id")
     val id: String,
-    @SerialName("staff_id")
-    val staffId: String,
-    @SerialName("type")
-    val type: String,
-    @SerialName("time")
-    val time: Long,
 )

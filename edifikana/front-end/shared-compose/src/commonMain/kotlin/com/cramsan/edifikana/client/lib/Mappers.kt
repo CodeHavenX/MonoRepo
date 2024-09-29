@@ -84,6 +84,9 @@ fun IdType.toIdTypeFriendlyName(): String {
     }
 }
 
+/**
+ * Converts the [EventLogEventType] to a friendly string.
+ */
 suspend fun EventLogEventType?.toFriendlyString(): String {
     return when (this) {
         EventLogEventType.GUEST -> getString(Res.string.event_type_guest)
@@ -94,6 +97,9 @@ suspend fun EventLogEventType?.toFriendlyString(): String {
     }
 }
 
+/**
+ * Converts the [EventLogEventType] to a friendly string.
+ */
 @Composable
 fun EventLogEventType?.toFriendlyStringCompose(): String {
     return when (this) {

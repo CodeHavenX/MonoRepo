@@ -5,15 +5,11 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
- * Model representing a staff.
+ * Request to create a new property.
  */
 @NetworkModel
 @Serializable
-data class StaffResponse(
-    @SerialName("id")
-    val id: String,
+data class CreatePropertyNetworkRequest(
     @SerialName("name")
     val name: String,
-    @SerialName("property_id")
-    val propertyId: String,
 )

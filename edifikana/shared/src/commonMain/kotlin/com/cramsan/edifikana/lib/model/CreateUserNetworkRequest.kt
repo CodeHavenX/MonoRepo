@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
  */
 @NetworkModel
 @Serializable
-data class CreateUserRequest(
+data class CreateUserNetworkRequest(
     @SerialName("email")
     val email: String,
 )

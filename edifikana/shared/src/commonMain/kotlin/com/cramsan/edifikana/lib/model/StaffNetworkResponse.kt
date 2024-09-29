@@ -5,13 +5,15 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
- * Response model for a user.
+ * Model representing a staff.
  */
 @NetworkModel
 @Serializable
-data class UserResponse(
+data class StaffNetworkResponse(
     @SerialName("id")
     val id: String,
-    @SerialName("email")
-    val email: String,
+    @SerialName("name")
+    val name: String,
+    @SerialName("property_id")
+    val propertyId: String,
 )

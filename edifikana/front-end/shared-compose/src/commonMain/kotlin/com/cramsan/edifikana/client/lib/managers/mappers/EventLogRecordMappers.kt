@@ -7,8 +7,8 @@ import com.cramsan.edifikana.client.lib.models.StorageRef
 import com.cramsan.edifikana.client.lib.utils.publicDownloadUrl
 import com.cramsan.edifikana.lib.EmployeePK
 import com.cramsan.edifikana.lib.firestore.EventLogRecord
-import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.firestore.FireStoreModel
+import com.cramsan.edifikana.lib.model.EventLogEventType
 
 fun EventLogRecordModel.toEntity(): EventLogRecordEntity {
     return EventLogRecordEntity(

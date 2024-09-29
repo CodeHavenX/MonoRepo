@@ -3,10 +3,9 @@ package com.cramsan.edifikana.server.core.controller
 import com.cramsan.edifikana.lib.PROPERTY_ID
 import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.annotations.NetworkModel
-import com.cramsan.edifikana.lib.model.CreatePropertyRequest
-import com.cramsan.edifikana.lib.model.UpdatePropertyRequest
+import com.cramsan.edifikana.lib.model.CreatePropertyNetworkRequest
+import com.cramsan.edifikana.lib.model.UpdatePropertyNetworkRequest
 import com.cramsan.edifikana.server.core.service.PropertyService
-import com.cramsan.edifikana.server.core.service.models.Property
 import com.cramsan.edifikana.server.core.service.models.PropertyId
 import com.cramsan.framework.core.ktor.HttpResponse
 import io.ktor.http.HttpStatusCode
@@ -32,7 +31,7 @@ class PropertyController(
      */
     @OptIn(NetworkModel::class)
     suspend fun createProperty(call: ApplicationCall) = call.handleCall(TAG, "createProperty") {
-        val createPropertyRequest = call.receive<CreatePropertyRequest>()
+        val createPropertyRequest = call.receive<CreatePropertyNetworkRequest>()
 
         val newProperty = propertyService.createProperty(
             createPropertyRequest.name,
@@ -87,7 +86,7 @@ class PropertyController(
     suspend fun updateProperty(call: ApplicationCall) = call.handleCall(TAG, "updateProperty") {
         val propertyId = requireNotNull(call.parameters[PROPERTY_ID])
 
-        val updatePropertyRequest = call.receive<UpdatePropertyRequest>()
+        val updatePropertyRequest = call.receive<UpdatePropertyNetworkRequest>()
 
         val updatedProperty = propertyService.updateProperty(
             id = PropertyId(propertyId),

@@ -5,7 +5,6 @@ import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.lib.managers.EmployeeManager
 import com.cramsan.edifikana.client.lib.managers.EventLogManager
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
-import com.cramsan.edifikana.lib.EmployeePK
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.framework.core.DispatcherProvider
 import edifikana_lib.Res
@@ -56,9 +55,12 @@ class AddRecordViewModel(
         }
     }
 
+    /**
+     * Add a new record to the event log.
+     */
     @Suppress("ComplexCondition")
     fun addRecord(
-        employeeDocumentId: EmployeePK?,
+        employeeDocumentId: String?,
         unit: String?,
         eventType: EventLogEventType?,
         fallbackEmployeeName: String?,

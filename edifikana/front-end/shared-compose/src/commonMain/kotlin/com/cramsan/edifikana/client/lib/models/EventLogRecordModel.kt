@@ -1,14 +1,12 @@
 package com.cramsan.edifikana.client.lib.models
 
-import com.cramsan.edifikana.lib.EmployeePK
-import com.cramsan.edifikana.lib.EventLogRecordPK
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import kotlin.random.Random
 
 data class EventLogRecordModel(
-    val id: EventLogRecordPK?,
+    val id: String?,
     val entityId: String?,
-    val employeePk: EmployeePK?,
+    val employeePk: String?,
     val timeRecorded: Long,
     val unit: String,
     val eventType: EventLogEventType,
@@ -19,8 +17,13 @@ data class EventLogRecordModel(
     val attachments: List<AttachmentHolder>,
 ) {
     companion object {
+
+        /**
+         * Create a temporary [EventLogRecordModel] that is intended to represent a record that has not been uploaded
+         * yet.
+         */
         fun createTemporary(
-            employeePk: EmployeePK?,
+            employeePk: String?,
             timeRecorded: Long,
             unit: String,
             eventType: EventLogEventType?,

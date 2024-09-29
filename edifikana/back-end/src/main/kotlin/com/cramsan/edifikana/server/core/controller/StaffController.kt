@@ -3,7 +3,7 @@ package com.cramsan.edifikana.server.core.controller
 import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.STAFF_ID
 import com.cramsan.edifikana.lib.annotations.NetworkModel
-import com.cramsan.edifikana.lib.model.CreateStaffRequest
+import com.cramsan.edifikana.lib.model.CreateStaffNetworkRequest
 import com.cramsan.edifikana.server.core.service.StaffService
 import com.cramsan.edifikana.server.core.service.models.StaffId
 import com.cramsan.edifikana.server.core.service.models.requests.UpdateStaffRequest
@@ -31,7 +31,7 @@ class StaffController(
      */
     @OptIn(NetworkModel::class)
     suspend fun createStaff(call: ApplicationCall) = call.handleCall(TAG, "createStaff") {
-        val createStaffRequest = call.receive<CreateStaffRequest>()
+        val createStaffRequest = call.receive<CreateStaffNetworkRequest>()
 
         val newStaff = staffService.createStaff(
             createStaffRequest.name,

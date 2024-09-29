@@ -3,8 +3,8 @@ package com.cramsan.edifikana.server.core.controller
 import com.cramsan.edifikana.lib.EVENT_LOG_ENTRY_ID
 import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.annotations.NetworkModel
-import com.cramsan.edifikana.lib.model.CreateEventLogEntryRequest
-import com.cramsan.edifikana.lib.model.UpdateEventLogEntryRequest
+import com.cramsan.edifikana.lib.model.CreateEventLogEntryNetworkRequest
+import com.cramsan.edifikana.lib.model.UpdateEventLogEntryNetworkRequest
 import com.cramsan.edifikana.server.core.service.EventLogService
 import com.cramsan.edifikana.server.core.service.models.EventLogEntryId
 import com.cramsan.edifikana.server.core.service.models.StaffId
@@ -33,7 +33,7 @@ class EventLogController(
      */
     @OptIn(NetworkModel::class)
     suspend fun createEventLog(call: ApplicationCall) = call.handleCall(TAG, "createEventLog") {
-        val createEventLogRequest = call.receive<CreateEventLogEntryRequest>()
+        val createEventLogRequest = call.receive<CreateEventLogEntryNetworkRequest>()
 
         val newEventLog = eventLogService.createEventLog(
             staffId = StaffId(createEventLogRequest.staffId),
@@ -90,7 +90,7 @@ class EventLogController(
     suspend fun updateEventLog(call: ApplicationCall) = call.handleCall(TAG, "updateEventLog") {
         val eventLogId = requireNotNull(call.parameters[EVENT_LOG_ENTRY_ID])
 
-        val updateEventLogRequest = call.receive<UpdateEventLogEntryRequest>()
+        val updateEventLogRequest = call.receive<UpdateEventLogEntryNetworkRequest>()
 
         val updatedEventLog = eventLogService.updateEventLog(
             id = EventLogEntryId(eventLogId),

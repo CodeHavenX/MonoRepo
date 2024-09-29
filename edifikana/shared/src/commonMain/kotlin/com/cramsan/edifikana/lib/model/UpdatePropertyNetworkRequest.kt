@@ -5,11 +5,11 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
- * Request model for creating a user.
+ * Request to update a property.
  */
 @NetworkModel
 @Serializable
-data class UpdateUserRequest(
-    @SerialName("email")
-    val email: String,
+data class UpdatePropertyNetworkRequest(
+    @SerialName("name")
+    val name: String,
 )

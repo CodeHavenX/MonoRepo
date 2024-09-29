@@ -3,9 +3,11 @@ package com.cramsan.edifikana.server.core.controller
 import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.TIMECARD_EVENT_ID
 import com.cramsan.edifikana.lib.annotations.NetworkModel
+import com.cramsan.edifikana.lib.model.CreateTimeCardEventNetworkRequest
+import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.edifikana.server.core.service.TimeCardService
+import com.cramsan.edifikana.server.core.service.models.StaffId
 import com.cramsan.edifikana.server.core.service.models.TimeCardEventId
-import com.cramsan.edifikana.server.core.service.models.requests.CreateTimeCardEventRequest
 import com.cramsan.framework.core.ktor.HttpResponse
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
@@ -27,11 +29,11 @@ class TimeCardController(
      */
     @OptIn(NetworkModel::class)
     suspend fun createTimeCard(call: ApplicationCall) = call.handleCall(TAG, "createTimeCard") {
-        val createTimeCardRequest = call.receive<CreateTimeCardEventRequest>()
+        val createTimeCardRequest = call.receive<CreateTimeCardEventNetworkRequest>()
 
         val newTimeCard = timeCardService.createTimeCard(
-            staffId = createTimeCardRequest.staffId,
-            eventType = createTimeCardRequest.eventType,
+            staffId = StaffId(createTimeCardRequest.staffId),
+            eventType = TimeCardEventType.fromString(createTimeCardRequest.type),
         ).toTimeCardResponse()
 
         HttpResponse(

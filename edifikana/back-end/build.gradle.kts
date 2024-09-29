@@ -5,7 +5,7 @@ plugins {
     id("io.ktor.plugin")
 }
 
-val mainClassTarget by extra("com.cramsan.edifikana.server.LocalLauncherKt")
+val mainClassTarget by extra("io.ktor.server.netty.EngineMain")
 
 // Configures default settings for JVM project
 apply(from = "$rootDir/gradle/kotlin-jvm-target-application.gradle")
@@ -42,6 +42,7 @@ dependencies {
     implementation("io.github.jan-tennert.supabase:storage-kt:_")
 
     testImplementation("io.ktor:ktor-server-test-host:_")
+    implementation("io.insert-koin:koin-test:_")
     testImplementation(project(":framework:test"))
 }
 

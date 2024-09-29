@@ -2,7 +2,6 @@ package com.cramsan.edifikana.client.lib.db.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.cramsan.edifikana.lib.firestore.EventLogRecord
 import com.cramsan.edifikana.lib.model.EventLogEventType
 
 /**

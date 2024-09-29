@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
  */
 @NetworkModel
 @Serializable
-data class CreateStaffRequest(
+data class CreateStaffNetworkRequest(
     @SerialName("name")
     val name: String,
     @SerialName("property_id")

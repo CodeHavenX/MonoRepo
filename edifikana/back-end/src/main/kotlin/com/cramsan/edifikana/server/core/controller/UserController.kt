@@ -3,8 +3,8 @@ package com.cramsan.edifikana.server.core.controller
 import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.USER_ID
 import com.cramsan.edifikana.lib.annotations.NetworkModel
-import com.cramsan.edifikana.lib.model.CreateUserRequest
-import com.cramsan.edifikana.lib.model.UpdateUserRequest
+import com.cramsan.edifikana.lib.model.CreateUserNetworkRequest
+import com.cramsan.edifikana.lib.model.UpdateUserNetworkRequest
 import com.cramsan.edifikana.server.core.service.UserService
 import com.cramsan.edifikana.server.core.service.models.UserId
 import com.cramsan.framework.core.ktor.HttpResponse
@@ -31,7 +31,7 @@ class UserController(
      */
     @OptIn(NetworkModel::class)
     suspend fun createUser(call: ApplicationCall) = call.handleCall(TAG, "createUser") {
-        val createUserRequest = call.receive<CreateUserRequest>()
+        val createUserRequest = call.receive<CreateUserNetworkRequest>()
 
         val newUser = userService.createUser(
             createUserRequest.email,
@@ -86,7 +86,7 @@ class UserController(
     suspend fun updateUser(call: ApplicationCall) = call.handleCall(TAG, "updateUser") {
         val userId = requireNotNull(call.parameters[USER_ID])
 
-        val updateUserRequest = call.receive<UpdateUserRequest>()
+        val updateUserRequest = call.receive<UpdateUserNetworkRequest>()
 
         val updatedUser = userService.updateUser(
             id = UserId(userId),

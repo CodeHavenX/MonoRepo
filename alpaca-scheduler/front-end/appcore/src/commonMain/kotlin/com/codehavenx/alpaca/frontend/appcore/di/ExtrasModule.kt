@@ -30,7 +30,6 @@ val ExtrasModule = module {
     single<Clock> { Clock.System }
 
     single {
-        println("Coroutine Handler")
         CoroutineExceptionHandler { _, throwable ->
             logE("CoroutineExceptionHandler", "Uncaught Exception", throwable)
         }
@@ -38,7 +37,6 @@ val ExtrasModule = module {
 
     @OptIn(DelicateCoroutinesApi::class)
     single<CoroutineScope> {
-        println("Global Scope")
         GlobalScope
     }
 

@@ -12,4 +12,10 @@ import kotlinx.serialization.Serializable
 data class EventLogEntryNetworkResponse(
     @SerialName("id")
     val id: String,
+    @SerialName("title")
+    val title: String,
+    @SerialName("staff_id")
+    val staffId: String?,
+    @SerialName("time")
+    val time: Long,
 )

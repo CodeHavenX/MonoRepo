@@ -13,10 +13,10 @@ import io.ktor.server.response.respondNullable
  * Handle a call to a controller function. This function will log the call, execute the function, and respond to the
  * client with the result.
  */
-suspend fun ApplicationCall.handleCall(
+suspend inline fun ApplicationCall.handleCall(
     tag: String,
     functionName: String,
-    function: suspend ApplicationCall.() -> HttpResponse,
+    function: ApplicationCall.() -> HttpResponse,
 ) {
     logI(tag, "$functionName called")
 

@@ -42,6 +42,9 @@ fun Staff.toStaffResponse(): StaffNetworkResponse {
 fun EventLogEntry.toEventLogResponse(): EventLogEntryNetworkResponse {
     return EventLogEntryNetworkResponse(
         id = id.eventLogEntryId,
+        title = title,
+        staffId = staffId?.staffId,
+        time = time.toEpochMilliseconds(),
     )
 }
 

@@ -36,6 +36,7 @@ class EventLogControllerTest : TestBase(), KoinTest {
         stopKoin()
     }
 
+    // Something about public/private and the file name under the function was located.
     @Test
     fun `test createEventLog`() = testEdifikanaApplication {
         // Configure
@@ -46,14 +47,14 @@ class EventLogControllerTest : TestBase(), KoinTest {
         coEvery {
             userService.createEventLog(
                 StaffId("test"),
-                Instant.fromEpochMilliseconds(1234567890),
+                Instant.fromEpochMilliseconds(1727702654),
                 "test event",
             )
         }.answers {
             EventLogEntry(
                 id = EventLogEntryId("test"),
                 staffId = StaffId("test"),
-                time = Instant.fromEpochMilliseconds(1234567890),
+                time = Instant.fromEpochMilliseconds(1727702654),
                 title = "test event",
             )
         }

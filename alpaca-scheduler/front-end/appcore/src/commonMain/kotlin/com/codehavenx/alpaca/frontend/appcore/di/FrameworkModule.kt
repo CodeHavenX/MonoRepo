@@ -19,7 +19,6 @@ import org.koin.dsl.module
 val FrameworkModule = module(createdAtStart = true) {
 
     single<AssertUtilInterface> {
-        println("AssertUtilInterface")
         // TODO: Move this flag into an injectable property
         val impl = AssertUtilImpl(
             true,
@@ -31,12 +30,10 @@ val FrameworkModule = module(createdAtStart = true) {
     }
 
     single<EventLoggerErrorCallback> {
-        println("EventLoggerErrorCallback")
         EventLoggerErrorCallbackImpl(get(), get())
     }
 
     single<EventLoggerInterface> {
-        println("EventLoggerInterface")
         // TODO: Move this flag into an injectable property
         val severity = if (true) {
             Severity.VERBOSE

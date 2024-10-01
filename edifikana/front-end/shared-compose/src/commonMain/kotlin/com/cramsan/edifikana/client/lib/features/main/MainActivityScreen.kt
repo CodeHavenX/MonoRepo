@@ -33,10 +33,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.cramsan.edifikana.client.lib.features.eventlog.EventLogScreen
 import com.cramsan.edifikana.client.lib.features.eventlog.addrecord.AddRecordScreen
 import com.cramsan.edifikana.client.lib.features.eventlog.viewrecord.ViewRecordScreen
-import com.cramsan.edifikana.client.lib.features.formlist.FormListScreen
-import com.cramsan.edifikana.client.lib.features.formlist.entry.EntryScreen
-import com.cramsan.edifikana.client.lib.features.formlist.records.RecordsScreen
-import com.cramsan.edifikana.client.lib.features.formlist.records.read.RecordReadScreen
 import com.cramsan.edifikana.client.lib.features.signinv2.SignInV2Screen
 import com.cramsan.edifikana.client.lib.features.timecard.TimeCardScreen
 import com.cramsan.edifikana.client.lib.features.timecard.addemployee.AddEmployeeScreen
@@ -44,8 +40,6 @@ import com.cramsan.edifikana.client.lib.features.timecard.employeelist.EmployeeL
 import com.cramsan.edifikana.client.lib.features.timecard.viewemployee.ViewEmployeeScreen
 import com.cramsan.edifikana.lib.EmployeePK
 import com.cramsan.edifikana.lib.EventLogRecordPK
-import com.cramsan.edifikana.lib.firestore.FormPK
-import com.cramsan.edifikana.lib.firestore.FormRecordPK
 import edifikana_lib.Res
 import edifikana_lib.schedule
 import edifikana_lib.string_assistance
@@ -209,36 +203,6 @@ private fun NavigationHost(
         composable(Route.EventLogSingleItem.route) { backStackEntry ->
             ViewRecordScreen(
                 EventLogRecordPK(backStackEntry.arguments?.getString("eventLogRecordPk").orEmpty()),
-                mainActivityDelegatedEvent,
-                onMainActivityEventInvoke,
-                onTitleChange,
-            )
-        }
-        composable(Route.Forms.route) {
-            FormListScreen(
-                mainActivityDelegatedEvent,
-                onMainActivityEventInvoke,
-                onTitleChange,
-            )
-        }
-        composable(Route.FormEntry.route) { backStackEntry ->
-            EntryScreen(
-                FormPK(backStackEntry.arguments?.getString("formPk").orEmpty()),
-                mainActivityDelegatedEvent,
-                onMainActivityEventInvoke,
-                onTitleChange,
-            )
-        }
-        composable(Route.FormRecords.route) {
-            RecordsScreen(
-                mainActivityDelegatedEvent,
-                onMainActivityEventInvoke,
-                onTitleChange,
-            )
-        }
-        composable(Route.FormRecordRead.route) { backStackEntry ->
-            RecordReadScreen(
-                FormRecordPK(backStackEntry.arguments?.getString("formRecordPk").orEmpty()),
                 mainActivityDelegatedEvent,
                 onMainActivityEventInvoke,
                 onTitleChange,

@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 package com.cramsan.edifikana.server.core.repository.dummy
 
 import com.cramsan.edifikana.server.core.repository.PropertyDatabase
@@ -9,6 +11,9 @@ import com.cramsan.edifikana.server.core.service.models.requests.GetPropertyRequ
 import com.cramsan.edifikana.server.core.service.models.requests.UpdatePropertyRequest
 import kotlinx.coroutines.delay
 
+/**
+ * Dummy implementation of [PropertyDatabase].
+ */
 class DummyPropertyDatabase : PropertyDatabase {
     override suspend fun createProperty(request: CreatePropertyRequest): Result<Property> {
         delay(1000)

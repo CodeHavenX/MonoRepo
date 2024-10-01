@@ -8,6 +8,7 @@ import com.cramsan.edifikana.client.lib.models.StorageRef
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
 import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.edifikana.client.lib.service.TimeCardService
+import com.cramsan.edifikana.client.lib.utils.FOLDER_TIME_CARDS
 import com.cramsan.edifikana.client.lib.utils.IODependencies
 import com.cramsan.edifikana.client.lib.utils.getFilename
 import com.cramsan.edifikana.client.lib.utils.getOrCatch
@@ -16,7 +17,6 @@ import com.cramsan.edifikana.client.lib.utils.processImageData
 import com.cramsan.edifikana.client.lib.utils.readBytes
 import com.cramsan.edifikana.lib.EmployeePK
 import com.cramsan.edifikana.lib.TimeCardRecordPK
-import com.cramsan.edifikana.lib.storage.FOLDER_TIME_CARDS
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logI

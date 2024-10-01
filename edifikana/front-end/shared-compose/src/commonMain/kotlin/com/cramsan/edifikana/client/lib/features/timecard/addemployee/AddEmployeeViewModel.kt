@@ -4,7 +4,7 @@ import com.cramsan.edifikana.client.lib.features.base.EdifikanaBaseViewModel
 import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.lib.managers.EmployeeManager
 import com.cramsan.edifikana.client.lib.models.EmployeeModel
-import com.cramsan.edifikana.lib.firestore.EmployeeRole
+import com.cramsan.edifikana.lib.model.EmployeeRole
 import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.framework.core.DispatcherProvider
 import edifikana_lib.Res

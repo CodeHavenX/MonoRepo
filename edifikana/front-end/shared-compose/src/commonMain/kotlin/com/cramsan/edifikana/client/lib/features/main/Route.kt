@@ -5,9 +5,7 @@ package com.cramsan.edifikana.client.lib.features.main
 
 import com.cramsan.edifikana.lib.EmployeePK
 import com.cramsan.edifikana.lib.EventLogRecordPK
-import com.cramsan.edifikana.lib.firestore.FormPK
-import com.cramsan.edifikana.lib.firestore.FormRecordPK
-import com.cramsan.edifikana.lib.requireNotBlank
+import com.cramsan.edifikana.lib.utils.requireNotBlank
 
 enum class Route(
     @RouteSafePath
@@ -29,18 +27,6 @@ enum class Route(
 
     companion object {
         fun toFormsRoute(): String = Forms.route
-
-        fun toFormEntryRoute(formPk: FormPK): String {
-            return FormEntry.route.replace("{formPk}", requireNotBlank(formPk.documentPath))
-        }
-
-        fun toFormRecordsRoute(): String = FormRecords.route
-
-        fun toFormRecordReadRoute(
-            formRecordPk: FormRecordPK,
-        ): String {
-            return FormRecordRead.route.replace("{formRecordPk}", requireNotBlank(formRecordPk.documentPath))
-        }
 
         fun toTimeCardRoute(): String = TimeCard.route
 

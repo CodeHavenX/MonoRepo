@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib
 
 import androidx.compose.runtime.Composable
-import com.cramsan.edifikana.lib.firestore.EmployeeRole
+import com.cramsan.edifikana.lib.model.EmployeeRole
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.TimeCardEventType

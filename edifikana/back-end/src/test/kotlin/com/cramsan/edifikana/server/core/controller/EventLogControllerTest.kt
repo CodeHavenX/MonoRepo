@@ -13,13 +13,13 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.mockk.coEvery
-import kotlin.test.AfterTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlinx.datetime.Instant
 import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
 import org.koin.test.get
+import kotlin.test.AfterTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class EventLogControllerTest : TestBase(), KoinTest {
 

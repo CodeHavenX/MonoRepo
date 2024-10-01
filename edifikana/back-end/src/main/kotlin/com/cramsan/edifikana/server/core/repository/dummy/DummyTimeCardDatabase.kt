@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 package com.cramsan.edifikana.server.core.repository.dummy
 
 import com.cramsan.edifikana.lib.model.TimeCardEventType
@@ -11,6 +13,9 @@ import com.cramsan.edifikana.server.core.service.models.requests.GetTimeCardEven
 import kotlinx.coroutines.delay
 import kotlinx.datetime.Clock
 
+/**
+ * Dummy implementation of [TimeCardDatabase].
+ */
 class DummyTimeCardDatabase(
     private val clock: Clock,
 ) : TimeCardDatabase {

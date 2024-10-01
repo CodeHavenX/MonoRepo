@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 package com.cramsan.edifikana.server.core.repository.dummy
 
 import com.cramsan.edifikana.server.core.repository.EventLogDatabase
@@ -11,6 +13,9 @@ import com.cramsan.edifikana.server.core.service.models.requests.UpdateEventLogE
 import kotlinx.coroutines.delay
 import kotlinx.datetime.Clock
 
+/**
+ * Dummy implementation of [EventLogDatabase].
+ */
 class DummyEventLogDatabase(
     private val clock: Clock,
 ) : EventLogDatabase {

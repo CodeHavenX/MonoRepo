@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 package com.cramsan.edifikana.server.core.repository.dummy
 
 import com.cramsan.edifikana.server.core.repository.UserDatabase
@@ -9,6 +11,9 @@ import com.cramsan.edifikana.server.core.service.models.requests.GetUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdateUserRequest
 import kotlinx.coroutines.delay
 
+/**
+ * Dummy implementation of [UserDatabase].
+ */
 class DummyUserDatabase : UserDatabase {
     override suspend fun createUser(request: CreateUserRequest): Result<User> {
         delay(1000)

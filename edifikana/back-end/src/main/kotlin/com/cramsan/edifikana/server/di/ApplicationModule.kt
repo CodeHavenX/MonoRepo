@@ -106,19 +106,19 @@ val ApplicationModule = module {
     singleOf(::SupabaseUserDatabase) {
     }
     // Dummy database
-    singleOf(::DummyEventLogDatabase){
+    singleOf(::DummyEventLogDatabase) {
         bind<EventLogDatabase>()
     }
-    singleOf(::DummyPropertyDatabase){
+    singleOf(::DummyPropertyDatabase) {
         bind<PropertyDatabase>()
     }
-    singleOf(::DummyStaffDatabase){
+    singleOf(::DummyStaffDatabase) {
         bind<StaffDatabase>()
     }
-    singleOf(::DummyTimeCardDatabase){
+    singleOf(::DummyTimeCardDatabase) {
         bind<TimeCardDatabase>()
     }
-    singleOf(::DummyUserDatabase){
+    singleOf(::DummyUserDatabase) {
         bind<UserDatabase>()
     }
 }

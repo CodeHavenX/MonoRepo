@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.models
 
 import com.cramsan.edifikana.lib.EmployeePK
-import com.cramsan.edifikana.lib.firestore.EmployeeRole
+import com.cramsan.edifikana.lib.model.EmployeeRole
 import com.cramsan.edifikana.lib.model.IdType
 
 data class EmployeeModel(

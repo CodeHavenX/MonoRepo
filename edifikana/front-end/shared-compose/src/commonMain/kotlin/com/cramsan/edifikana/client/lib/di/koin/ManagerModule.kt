@@ -4,26 +4,21 @@ import com.cramsan.edifikana.client.lib.managers.AttachmentManager
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.EmployeeManager
 import com.cramsan.edifikana.client.lib.managers.EventLogManager
-import com.cramsan.edifikana.client.lib.managers.FormsManager
 import com.cramsan.edifikana.client.lib.managers.TimeCardManager
 import com.cramsan.edifikana.client.lib.managers.WorkContext
 import com.cramsan.edifikana.client.lib.managers.remoteconfig.RemoteConfig
 import com.cramsan.edifikana.client.lib.service.AuthService
 import com.cramsan.edifikana.client.lib.service.EmployeeService
 import com.cramsan.edifikana.client.lib.service.EventLogService
-import com.cramsan.edifikana.client.lib.service.FormsService
 import com.cramsan.edifikana.client.lib.service.PropertyConfigService
-import com.cramsan.edifikana.client.lib.service.RemoteConfigService
 import com.cramsan.edifikana.client.lib.service.StorageService
-import com.cramsan.edifikana.client.lib.service.SupaAuthService
-import com.cramsan.edifikana.client.lib.service.SupaEmployeeService
-import com.cramsan.edifikana.client.lib.service.SupaEventLogService
-import com.cramsan.edifikana.client.lib.service.SupaFormsService
-import com.cramsan.edifikana.client.lib.service.SupaPropertyConfigService
-import com.cramsan.edifikana.client.lib.service.SupaRemoteConfigService
-import com.cramsan.edifikana.client.lib.service.SupaStorageService
-import com.cramsan.edifikana.client.lib.service.SupaTimeCardService
 import com.cramsan.edifikana.client.lib.service.TimeCardService
+import com.cramsan.edifikana.client.lib.service.dummy.DummyAuthService
+import com.cramsan.edifikana.client.lib.service.dummy.DummyEmployeeService
+import com.cramsan.edifikana.client.lib.service.dummy.DummyEventLogService
+import com.cramsan.edifikana.client.lib.service.dummy.DummyPropertyConfigService
+import com.cramsan.edifikana.client.lib.service.dummy.DummyStorageService
+import com.cramsan.edifikana.client.lib.service.dummy.DummyTimeCardService
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.compose.auth.ComposeAuth
 import io.github.jan.supabase.compose.auth.appleNativeLogin
@@ -46,9 +41,7 @@ val ManagerModule = module {
     singleOf(::AttachmentManager)
     singleOf(::TimeCardManager)
     singleOf(::EmployeeManager)
-    singleOf(::FormsManager)
     singleOf(::AuthManager)
-    single { get<RemoteConfigService>().getRemoteConfigPayload() }
     single { get<RemoteConfig>().caching }
     single { get<RemoteConfig>().image }
     single { get<RemoteConfig>().behavior }
@@ -88,28 +81,23 @@ val ManagerModule = module {
         get<SupabaseClient>().postgrest
     }
 
-    singleOf(::SupaAuthService) {
+    // Services
+    singleOf(::DummyAuthService) {
         bind<AuthService>()
     }
-    singleOf(::SupaEventLogService) {
+    singleOf(::DummyEventLogService) {
         bind<EventLogService>()
     }
-    singleOf(::SupaFormsService) {
-        bind<FormsService>()
-    }
-    singleOf(::SupaPropertyConfigService) {
+    singleOf(::DummyPropertyConfigService) {
         bind<PropertyConfigService>()
     }
-    singleOf(::SupaStorageService) {
+    singleOf(::DummyStorageService) {
         bind<StorageService>()
     }
-    singleOf(::SupaTimeCardService) {
+    singleOf(::DummyTimeCardService) {
         bind<TimeCardService>()
     }
-    singleOf(::SupaEmployeeService) {
+    singleOf(::DummyEmployeeService) {
         bind<EmployeeService>()
-    }
-    singleOf(::SupaRemoteConfigService) {
-        bind<RemoteConfigService>()
     }
 }

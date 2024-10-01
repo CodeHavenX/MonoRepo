@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 package com.cramsan.edifikana.server.core.repository.dummy
 
 import com.cramsan.edifikana.server.core.repository.StaffDatabase
@@ -10,6 +12,9 @@ import com.cramsan.edifikana.server.core.service.models.requests.GetStaffRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdateStaffRequest
 import kotlinx.coroutines.delay
 
+/**
+ * Dummy implementation of [StaffDatabase].
+ */
 class DummyStaffDatabase : StaffDatabase {
     override suspend fun createStaff(request: CreateStaffRequest): Result<Staff> {
         delay(1000)

@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.client.desktop.koin
+package com.cramsan.edifikana.client.lib.koin
 
 import androidx.room.Room
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver

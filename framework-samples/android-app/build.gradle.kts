@@ -20,8 +20,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":samples:jbcompose-mpp-lib"))
-
     implementation(project(":framework:assert"))
     implementation(project(":framework:crashhandler"))
     implementation(project(":framework:core"))
@@ -35,7 +33,6 @@ dependencies {
     implementation(project(":framework:thread"))
     implementation(project(":framework:test"))
     implementation(project(":framework:utils"))
-
 
     implementation("androidx.appcompat:appcompat:_")
     implementation("androidx.core:core-ktx:_")

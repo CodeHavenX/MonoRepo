@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.client.android.di.koin
+package com.cramsan.edifikana.client.lib.koin
 
 import com.cramsan.framework.core.DispatcherProvider
 import com.cramsan.framework.core.DispatcherProviderImpl

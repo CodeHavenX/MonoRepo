@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.client.android.features.main
+package com.cramsan.edifikana.client.lib.features.main.main
 
 import android.content.Context
 import android.content.Intent
@@ -10,16 +10,19 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import com.cramsan.edifikana.client.android.features.camera.CameraContract
 import com.cramsan.edifikana.client.lib.features.main.EdifikanaApplicationScreen
 import com.cramsan.edifikana.client.lib.features.main.EdifikanaMainScreenEventHandler
 import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.lib.features.main.MainActivityViewModel
+import com.cramsan.edifikana.client.lib.features.main.camera.CameraContract
 import com.cramsan.edifikana.client.lib.utils.shareContent
 import com.cramsan.framework.core.CoreUri
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
+/**
+ * Main activity for the application.
+ */
 class MainActivity : ComponentActivity(), EdifikanaMainScreenEventHandler {
 
     private val viewModel: MainActivityViewModel by inject()

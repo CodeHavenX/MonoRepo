@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.client.android.features.camera.compose
+package com.cramsan.edifikana.client.lib.features.main.camera.compose
 
 import android.content.Context
 import android.util.Size
@@ -24,15 +24,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
-import com.cramsan.edifikana.client.android.R
+import edifikana_lib.Res
+import edifikana_lib.text_flip_camera
+import edifikana_lib.text_take_photo
+import org.jetbrains.compose.resources.stringResource
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
+/**
+ * Composable that displays the camera preview.
+ *
+ * @param lensFacing The lens facing of the camera.
+ * @param captureWidth The width of the image to capture.
+ * @param captureHeight The height of the image to capture.
+ * @param onShutterButtonClick Callback when the shutter button is clicked.
+ * @param onToggleCameraClick Callback when the toggle camera button is clicked.
+ */
 @Composable
 fun CameraPreview(
     lensFacing: Int,
@@ -79,7 +90,7 @@ fun CameraPreview(
                 IconButton(onClick = { onShutterButtonClick(imageCapture) }) {
                     Icon(
                         imageVector = Icons.Sharp.Lens,
-                        contentDescription = stringResource(R.string.text_take_photo),
+                        contentDescription = stringResource(Res.string.text_take_photo),
                         tint = Color.White,
                         modifier = Modifier
                             .border(1.dp, Color.White, CircleShape)
@@ -91,7 +102,7 @@ fun CameraPreview(
                 IconButton(onClick = onToggleCameraClick) {
                     Icon(
                         imageVector = Icons.Sharp.FlipCameraAndroid,
-                        contentDescription = stringResource(R.string.text_flip_camera),
+                        contentDescription = stringResource(Res.string.text_flip_camera),
                         tint = Color.White,
                         modifier = Modifier
                             .padding(5.dp)

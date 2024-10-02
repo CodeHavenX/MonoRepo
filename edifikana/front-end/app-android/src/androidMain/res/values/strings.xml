@@ -1,18 +1,4 @@
 <resources>
     <!-- We need to move these into the common module -->
     <string name="app_name">Administración Cenit</string>
-
-    <string name="string_confirm">Confirmar</string>
-    <string name="string_cancel">Cancelar</string>
-    <string name="error_message_unexpected_error">Hubo un error inesperado.</string>
-    <string name="text_input_activation_code">Ingrese el codigo de activacion</string>
-    <string name="text_code">Codigo</string>
-    <string name="text_accept">Aceptar</string>
-    <string name="text_take_photo">Tomar foto</string>
-    <string name="text_error_take_photo">Hubo un error cargando la foto</string>
-    <string name="text_flip_camera">Cambiar cámara</string>
-
-    <string name="text_permissions_camera">Para poder tomar fotos necesitas dar permiso para utilizar la camara.</string>
-    <string name="text_permissions_open_setting">Abrir configuración</string>
-
 </resources>

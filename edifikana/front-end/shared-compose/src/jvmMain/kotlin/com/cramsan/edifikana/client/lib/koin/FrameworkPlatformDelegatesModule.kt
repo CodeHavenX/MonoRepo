@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.client.desktop.koin
+package com.cramsan.edifikana.client.lib.koin
 
 import com.cramsan.framework.core.DispatcherProvider
 import com.cramsan.framework.core.UIDispatcherProvider

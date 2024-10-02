@@ -1,7 +1,6 @@
-package com.cramsan.edifikana.client.desktop.lib.service
+package com.cramsan.edifikana.client.lib.service
 
 import com.cramsan.edifikana.client.lib.models.StorageRef
-import com.cramsan.edifikana.client.lib.service.DownloadStrategy
 import com.cramsan.framework.core.CoreUri
 import java.io.File
 import java.nio.file.Files

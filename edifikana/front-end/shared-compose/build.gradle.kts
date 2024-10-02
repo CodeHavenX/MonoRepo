@@ -22,6 +22,7 @@ kotlin {
             implementation(project(":framework:thread"))
             implementation(project(":framework:crashhandler"))
             implementation(project(":framework:core"))
+            implementation(project(":framework:preferences"))
 
             implementation(project(":edifikana:shared"))
 
@@ -49,7 +50,15 @@ kotlin {
         }
 
         jvmMain.dependencies {
+            implementation("org.apache.logging.log4j:log4j-core:_")
+            implementation("org.apache.logging.log4j:log4j-slf4j-impl:_")
+
             implementation("io.ktor:ktor-client-cio:_")
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:_")
+
+            // Room
+            implementation("androidx.room:room-runtime:_")
+            implementation("androidx.sqlite:sqlite-bundled-jvm:_")
         }
     }
 }
@@ -72,9 +81,28 @@ dependencies {
     add("kspAndroid", "androidx.room:room-compiler:_")
     add("kspJvm", "androidx.room:room-compiler:_")
 
+    implementation("androidx.appcompat:appcompat:_")
+    implementation("androidx.core:core-ktx:_")
+    implementation("androidx.compose.material:material-icons-extended:_")
+
+    implementation("androidx.camera:camera-camera2:_")
+    implementation("androidx.camera:camera-lifecycle:_")
+    implementation("androidx.camera:camera-view:_")
+
+    implementation("io.coil-kt.coil3:coil:")
+    implementation("io.coil-kt.coil3:coil-compose:_")
+    implementation("io.coil-kt.coil3:coil-network-ktor:_")
+
+    implementation("io.ktor:ktor-client-cio:_")
+
+    implementation("androidx.exifinterface:exifinterface:_")
+
+    implementation("androidx.room:room-runtime:_")
+    implementation("androidx.room:room-ktx:_")
+
+    implementation("io.insert-koin:koin-core:_")
     implementation("io.insert-koin:koin-android:_")
     implementation("io.insert-koin:koin-androidx-compose:_")
-    implementation("io.ktor:ktor-client-cio:_")
 }
 
 room {

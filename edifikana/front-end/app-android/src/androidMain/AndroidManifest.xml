@@ -18,7 +18,7 @@
         <!-- TODO: Remove orientation lock! -->
         <activity
             android:exported="true"
-            android:name=".features.main.MainActivity"
+            android:name="com.cramsan.edifikana.client.lib.features.main.main.MainActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateVisible"
         >
@@ -30,7 +30,7 @@
         </activity>
         <!-- TODO: Remove orientation lock! -->
         <activity
-                android:name=".features.camera.CameraActivity"
+                android:name="com.cramsan.edifikana.client.lib.features.main.camera.CameraActivity"
                 android:screenOrientation="portrait"/>
         <provider
                 android:name="androidx.core.content.FileProvider"

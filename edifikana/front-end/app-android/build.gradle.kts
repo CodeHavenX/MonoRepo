@@ -3,8 +3,6 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.compose")
-    id("com.google.gms.google-services")
-    id("com.google.devtools.ksp")
 }
 
 apply(from = "$rootDir/gradle/kotlin-mpp-target-android-app.gradle")
@@ -49,37 +47,10 @@ android {
 }
 
 dependencies {
-    implementation(project(":framework:halt"))
-    implementation(project(":framework:interfacelib"))
-    implementation(project(":framework:logging"))
-    implementation(project(":framework:thread"))
-    implementation(project(":framework:core"))
-
     implementation(project(":edifikana:front-end:shared-compose"))
-    implementation(project(":edifikana:shared"))
-
-    implementation("androidx.appcompat:appcompat:_")
-    implementation("androidx.core:core-ktx:_")
-    implementation("androidx.compose.material:material-icons-extended:_")
-
-    implementation("androidx.camera:camera-camera2:_")
-    implementation("androidx.camera:camera-lifecycle:_")
-    implementation("androidx.camera:camera-view:_")
-
-    implementation("io.coil-kt.coil3:coil:")
-    implementation("io.coil-kt.coil3:coil-compose:_")
-    implementation("io.coil-kt.coil3:coil-network-ktor:_")
-    implementation("io.ktor:ktor-client-android:_")
-
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:_")
-    implementation("androidx.exifinterface:exifinterface:_")
-
-    implementation("androidx.room:room-runtime:_")
-    implementation("androidx.room:room-ktx:_")
 
     implementation("io.insert-koin:koin-core:_")
     implementation("io.insert-koin:koin-android:_")
-    implementation("io.insert-koin:koin-androidx-compose:_")
 }
 
 // https://github.com/JetBrains/compose-multiplatform/issues/4711

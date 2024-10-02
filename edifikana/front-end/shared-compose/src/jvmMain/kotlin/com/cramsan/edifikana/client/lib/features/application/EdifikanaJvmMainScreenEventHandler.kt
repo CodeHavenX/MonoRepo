@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.client.desktop.features.application
+package com.cramsan.edifikana.client.lib.features.application
 
 import com.cramsan.edifikana.client.lib.features.main.EdifikanaMainScreenEventHandler
 import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent

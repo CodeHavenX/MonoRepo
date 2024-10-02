@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.client.android.features.camera.compose
+package com.cramsan.edifikana.client.lib.features.main.camera.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -19,6 +19,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
+/**
+ * Bottom action bar for the camera preview.
+ *
+ * @param modifier The modifier to apply to the view.
+ * @param tertiaryButton The tertiary button to display.
+ * @param secondaryButton The secondary button to display.
+ * @param mainButton The main button to display.
+ */
 @Composable
 fun BottomActionBar(
     modifier: Modifier = Modifier,
@@ -48,7 +56,7 @@ fun BottomActionBar(
 
 @Preview
 @Composable
-fun PreviewBottomActionBar() {
+private fun PreviewBottomActionBar() {
     BottomActionBar(
         mainButton = {
             IconButton(

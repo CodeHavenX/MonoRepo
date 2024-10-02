@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.client.android.features.camera
+package com.cramsan.edifikana.client.lib.features.main.camera
 
 import android.app.Activity
 import android.content.Context
@@ -6,6 +6,9 @@ import android.content.Intent
 import android.net.Uri
 import androidx.activity.result.contract.ActivityResultContract
 
+/**
+ * Camera contract.
+ */
 class CameraContract : ActivityResultContract<String, Uri?>() {
 
     override fun createIntent(context: Context, input: String): Intent {

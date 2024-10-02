@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.client.android.features.camera
+package com.cramsan.edifikana.client.lib.features.main.camera
 
 import android.content.Intent
 import android.net.Uri
@@ -12,13 +12,16 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
-import com.cramsan.edifikana.client.android.features.camera.compose.CameraPreview
-import com.cramsan.edifikana.client.android.features.camera.compose.PermissionDeniedScreen
-import com.cramsan.edifikana.client.android.features.camera.compose.PhotoConfirmation
-import com.cramsan.edifikana.client.android.features.camera.compose.PhotoErrorScreen
+import com.cramsan.edifikana.client.lib.features.main.camera.compose.CameraPreview
+import com.cramsan.edifikana.client.lib.features.main.camera.compose.PermissionDeniedScreen
+import com.cramsan.edifikana.client.lib.features.main.camera.compose.PhotoConfirmation
+import com.cramsan.edifikana.client.lib.features.main.camera.compose.PhotoErrorScreen
 import com.cramsan.edifikana.client.lib.managers.remoteconfig.ImageConfig
 import org.koin.android.ext.android.inject
 
+/**
+ * Activity that handles camera operations.
+ */
 class CameraActivity : ComponentActivity() {
 
     private val imageConfig: ImageConfig by inject()

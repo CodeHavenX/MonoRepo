@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.client.android.di.koin
+package com.cramsan.edifikana.client.lib.koin
 
 import androidx.room.Room
 import com.cramsan.edifikana.client.lib.db.AppDatabase

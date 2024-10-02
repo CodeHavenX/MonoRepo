@@ -1,13 +1,13 @@
 package com.cramsan.edifikana.client.android
 
 import android.app.Application
-import com.cramsan.edifikana.client.android.di.koin.ExtrasPlatformModule
-import com.cramsan.edifikana.client.android.di.koin.FrameworkPlatformDelegatesModule
-import com.cramsan.edifikana.client.android.di.koin.ManagerPlatformModule
 import com.cramsan.edifikana.client.lib.di.koin.ExtrasModule
 import com.cramsan.edifikana.client.lib.di.koin.FrameworkModule
 import com.cramsan.edifikana.client.lib.di.koin.ManagerModule
 import com.cramsan.edifikana.client.lib.di.koin.ViewModelModule
+import com.cramsan.edifikana.client.lib.koin.ExtrasPlatformModule
+import com.cramsan.edifikana.client.lib.koin.FrameworkPlatformDelegatesModule
+import com.cramsan.edifikana.client.lib.koin.ManagerPlatformModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin

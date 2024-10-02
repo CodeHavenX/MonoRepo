@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.client.android.features.camera
+package com.cramsan.edifikana.client.lib.features.main.camera
 
 import android.Manifest
 import android.content.ContentValues
@@ -13,17 +13,25 @@ import androidx.camera.core.ImageCaptureException
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import com.cramsan.edifikana.client.android.R
 import com.cramsan.edifikana.client.lib.managers.remoteconfig.ImageConfig
 import com.cramsan.framework.logging.logE
+import edifikana_lib.Res
+import edifikana_lib.text_error_take_photo
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.getString
 import java.text.SimpleDateFormat
 import java.util.Locale
 
+/**
+ * Delegate that handles camera operations.
+ *
+ * @param activity The activity that owns the delegate.
+ * @param imageConfig The image configuration.
+ */
 class CameraDelegate(
     private val activity: ComponentActivity,
     private val imageConfig: ImageConfig
@@ -48,6 +56,9 @@ class CameraDelegate(
         onPermissionDenied = { displayPermissionDeniedMessage() },
     )
 
+    /**
+     * Requests camera permission.
+     */
     fun requestCameraPermission() {
         when {
             ContextCompat.checkSelfPermission(
@@ -67,6 +78,9 @@ class CameraDelegate(
         _uiState.value = CameraUiState.PermissionDenied
     }
 
+    /**
+     * Toggles the camera.
+     */
     fun toggleCamera() {
         val previewState = _uiState.value as? CameraUiState.PreviewCamera ?: return
 
@@ -86,10 +100,10 @@ class CameraDelegate(
         _uiState.value = CameraUiState.Error(message)
     }
 
-    private fun openImageConfirmation(uri: Uri?) {
+    private suspend fun openImageConfirmation(uri: Uri?) {
         if (uri == null) {
             displayErrorMessage(
-                activity.resources.getString(R.string.text_error_take_photo),
+                getString(Res.string.text_error_take_photo),
                 RuntimeException("Failed to save image")
             )
             return
@@ -98,6 +112,9 @@ class CameraDelegate(
         }
     }
 
+    /**
+     * Displays the front camera preview.
+     */
     fun displayFrontCameraPreview() {
         _uiState.value = CameraUiState.PreviewCamera(
             lensFacing = CameraSelector.LENS_FACING_BACK,
@@ -106,6 +123,11 @@ class CameraDelegate(
         )
     }
 
+    /**
+     * Captures a photo.
+     *
+     * @param imageCapture The image capture instance.
+     */
     fun capturePhoto(
         imageCapture: ImageCapture,
     ) {
@@ -131,19 +153,26 @@ class CameraDelegate(
             executor,
             object : ImageCapture.OnImageSavedCallback {
                 override fun onError(exception: ImageCaptureException) {
-                    displayErrorMessage(
-                        activity.resources.getString(R.string.text_error_take_photo),
-                        exception,
-                    )
+                    activity.lifecycleScope.launch {
+                        displayErrorMessage(
+                            getString(Res.string.text_error_take_photo),
+                            exception,
+                        )
+                    }
                 }
 
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                    openImageConfirmation(outputFileResults.savedUri)
+                    activity.lifecycleScope.launch {
+                        openImageConfirmation(outputFileResults.savedUri)
+                    }
                 }
             }
         )
     }
 
+    /**
+     * Handles back navigation.
+     */
     fun handleBackNavigation() {
         scope.launch {
             when (_uiState.value) {
@@ -155,12 +184,20 @@ class CameraDelegate(
         }
     }
 
+    /**
+     * Handles the result of the camera flow.
+     *
+     * @param uri The URI of the image.
+     */
     fun handleResult(uri: Uri) {
         scope.launch {
             _event.emit(CameraEvent.CompleteFlow(uri = uri))
         }
     }
 
+    /**
+     * Opens the app settings.
+     */
     fun openAppSettings() {
         scope.launch {
             _event.emit(CameraEvent.OpenSettings())

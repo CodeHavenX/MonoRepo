@@ -6,6 +6,9 @@ import com.cramsan.edifikana.client.lib.toFriendlyDateTime
 import com.cramsan.edifikana.client.lib.toFriendlyString
 import com.cramsan.edifikana.lib.EventLogRecordPK
 
+/**
+ * Represents the UI state of the View Record screen.
+ */
 data class ViewRecordUIModel(
     val summary: String,
     val description: String,
@@ -16,6 +19,9 @@ data class ViewRecordUIModel(
     val recordPK: EventLogRecordPK,
 )
 
+/**
+ * Converts an [EventLogRecordModel] to a [ViewRecordUIModel].
+ */
 suspend fun EventLogRecordModel.toUIModel(): ViewRecordUIModel {
     return ViewRecordUIModel(
         summary = summary,

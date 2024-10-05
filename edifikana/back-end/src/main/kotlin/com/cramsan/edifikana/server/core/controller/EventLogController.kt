@@ -29,17 +29,23 @@ class EventLogController(
 ) {
 
     /**
-     * Handles the creation of a new event log. The [call] parameter is the request context.
+     * Handles the creation of a new event log entry. The [call] parameter is the request context.
      */
     @OptIn(NetworkModel::class)
-    suspend fun createEventLog(call: ApplicationCall) = call.handleCall(TAG, "createEventLog") {
+    suspend fun createEventLogEntry(call: ApplicationCall) = call.handleCall(TAG, "createEventLogEntry") {
         val createEventLogRequest = call.receive<CreateEventLogEntryNetworkRequest>()
 
-        val newEventLog = eventLogService.createEventLog(
-            staffId = StaffId(createEventLogRequest.staffId),
-            time = Instant.fromEpochMilliseconds(createEventLogRequest.time),
+        val newEventLog = eventLogService.createEventLogEntry(
+            staffId = createEventLogRequest.staffId?.let { StaffId(it) },
+            fallbackStaffName = createEventLogRequest.fallbackStaffName,
+            propertyId = createEventLogRequest.propertyId,
+            type = createEventLogRequest.type,
+            fallbackEventType = createEventLogRequest.fallbackEventType,
+            timestamp = Instant.fromEpochSeconds(createEventLogRequest.timestamp),
             title = createEventLogRequest.title,
-        ).toEventLogResponse()
+            description = createEventLogRequest.description,
+            unit = createEventLogRequest.unit,
+        ).toEventLogEntryNetworkResponse()
 
         HttpResponse(
             status = HttpStatusCode.OK,
@@ -51,12 +57,12 @@ class EventLogController(
      * Handles the retrieval of an event log. The [call] parameter is the request context.
      */
     @OptIn(NetworkModel::class)
-    suspend fun getEventLog(call: ApplicationCall) = call.handleCall(TAG, "getEventLog") {
+    suspend fun getEventLogEntry(call: ApplicationCall) = call.handleCall(TAG, "getEventLogEntry") {
         val eventLogId = requireNotNull(call.parameters[EVENT_LOG_ENTRY_ID])
 
-        val eventLog = eventLogService.getEventLog(
+        val eventLog = eventLogService.getEventLogEntry(
             EventLogEntryId(eventLogId),
-        )?.toEventLogResponse()
+        )?.toEventLogEntryNetworkResponse()
 
         val statusCode = if (eventLog == null) {
             HttpStatusCode.NotFound
@@ -71,11 +77,11 @@ class EventLogController(
     }
 
     /**
-     * Handles the retrieval of all event logs. The [call] parameter is the request context.
+     * Handles the retrieval of all event log entries. The [call] parameter is the request context.
      */
     @OptIn(NetworkModel::class)
-    suspend fun getEventLogs(call: ApplicationCall) = call.handleCall(TAG, "getEventLogs") {
-        val eventLogs = eventLogService.getEventLogs().map { it.toEventLogResponse() }
+    suspend fun getEventLogEntries(call: ApplicationCall) = call.handleCall(TAG, "getEventLogEntries") {
+        val eventLogs = eventLogService.getEventLogEntries().map { it.toEventLogEntryNetworkResponse() }
 
         HttpResponse(
             status = HttpStatusCode.OK,
@@ -84,20 +90,20 @@ class EventLogController(
     }
 
     /**
-     * Handles the updating of an event log. The [call] parameter is the request context.
+     * Handles the updating of an event log entry. The [call] parameter is the request context.
      */
     @OptIn(NetworkModel::class)
-    suspend fun updateEventLog(call: ApplicationCall) = call.handleCall(TAG, "updateEventLog") {
+    suspend fun updateEventLogEntry(call: ApplicationCall) = call.handleCall(TAG, "updateEventLogEntry") {
         val eventLogId = requireNotNull(call.parameters[EVENT_LOG_ENTRY_ID])
 
         val updateEventLogRequest = call.receive<UpdateEventLogEntryNetworkRequest>()
 
-        val updatedEventLog = eventLogService.updateEventLog(
+        val updatedEventLog = eventLogService.updateEventLogEntry(
             id = EventLogEntryId(eventLogId),
             title = updateEventLogRequest.title,
             staffId = StaffId(updateEventLogRequest.staffId),
             time = Instant.fromEpochMilliseconds(updateEventLogRequest.time),
-        ).toEventLogResponse()
+        ).toEventLogEntryNetworkResponse()
 
         HttpResponse(
             status = HttpStatusCode.OK,
@@ -106,12 +112,12 @@ class EventLogController(
     }
 
     /**
-     * Handles the deletion of an event log. The [call] parameter is the request context.
+     * Handles the deletion of an event log entry. The [call] parameter is the request context.
      */
-    suspend fun deleteEventLog(call: RoutingCall) {
+    suspend fun deleteEventLogEntry(call: RoutingCall) {
         val eventLogId = requireNotNull(call.parameters[EVENT_LOG_ENTRY_ID])
 
-        val success = eventLogService.deleteEventLog(
+        val success = eventLogService.deleteEventLogEntry(
             EventLogEntryId(eventLogId),
         )
 
@@ -136,19 +142,19 @@ class EventLogController(
         fun EventLogController.registerRoutes(route: Routing) {
             route.route(Routes.EventLog.PATH) {
                 post {
-                    createEventLog(call)
+                    createEventLogEntry(call)
                 }
                 get("{$EVENT_LOG_ENTRY_ID") {
-                    getEventLog(call)
+                    getEventLogEntry(call)
                 }
                 get {
-                    getEventLogs(call)
+                    getEventLogEntries(call)
                 }
                 put {
-                    updateEventLog(call)
+                    updateEventLogEntry(call)
                 }
                 delete {
-                    deleteEventLog(call)
+                    deleteEventLogEntry(call)
                 }
             }
         }

@@ -1,9 +1,9 @@
 package com.cramsan.edifikana.client.lib
 
 import androidx.compose.runtime.Composable
-import com.cramsan.edifikana.lib.model.EmployeeRole
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.IdType
+import com.cramsan.edifikana.lib.model.StaffRole
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import edifikana_lib.Res
 import edifikana_lib.event_type_delivery
@@ -20,7 +20,6 @@ import edifikana_lib.role_limpieza
 import edifikana_lib.role_security
 import edifikana_lib.role_security_cover
 import edifikana_lib.role_unknown
-import edifikana_lib.sign_in
 import edifikana_lib.time_card_event_clock_in
 import edifikana_lib.time_card_event_clock_out
 import kotlinx.datetime.Instant
@@ -31,33 +30,38 @@ import org.jetbrains.compose.resources.stringResource
 import java.time.format.DateTimeFormatter
 import java.util.TimeZone
 
-val signInString
-    @Composable
-    get() = stringResource(Res.string.sign_in)
-
-suspend fun EmployeeRole?.toRoleFriendlyName(): String {
+/**
+ * Converts the [StaffRole] to a friendly string.
+ */
+suspend fun StaffRole?.toRoleFriendlyName(): String {
     return when (this) {
-        EmployeeRole.ADMIN -> getString(Res.string.role_admin)
-        EmployeeRole.SECURITY -> getString(Res.string.role_security)
-        EmployeeRole.SECURITY_COVER -> getString(Res.string.role_security_cover)
-        EmployeeRole.CLEANING -> getString(Res.string.role_limpieza)
+        StaffRole.ADMIN -> getString(Res.string.role_admin)
+        StaffRole.SECURITY -> getString(Res.string.role_security)
+        StaffRole.SECURITY_COVER -> getString(Res.string.role_security_cover)
+        StaffRole.CLEANING -> getString(Res.string.role_limpieza)
         null -> getString(Res.string.role_unknown)
     }
 }
 
+/**
+ * Converts the [StaffRole] to a friendly string.
+ */
 @Composable
-fun EmployeeRole?.toRoleFriendlyNameCompose(): String {
+fun StaffRole?.toRoleFriendlyNameCompose(): String {
     return when (this) {
-        EmployeeRole.ADMIN -> stringResource(Res.string.role_admin)
-        EmployeeRole.SECURITY -> stringResource(Res.string.role_security)
-        EmployeeRole.SECURITY_COVER -> stringResource(Res.string.role_security_cover)
-        EmployeeRole.CLEANING -> stringResource(Res.string.role_limpieza)
+        StaffRole.ADMIN -> stringResource(Res.string.role_admin)
+        StaffRole.SECURITY -> stringResource(Res.string.role_security)
+        StaffRole.SECURITY_COVER -> stringResource(Res.string.role_security_cover)
+        StaffRole.CLEANING -> stringResource(Res.string.role_limpieza)
         null -> stringResource(Res.string.role_unknown)
     }
 }
 
 private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
+/**
+ * Converts a [Long] timestamp to a friendly date time string.
+ */
 fun Long?.toFriendlyDateTime(): String {
     if (this == null) return ""
 
@@ -66,6 +70,9 @@ fun Long?.toFriendlyDateTime(): String {
     return dateFormatter.format(instant.toLocalDateTime(tz).toJavaLocalDateTime())
 }
 
+/**
+ * Converts the [TimeCardEventType] to a friendly string.
+ */
 suspend fun TimeCardEventType?.eventTypeFriendlyName(): String {
     return when (this) {
         TimeCardEventType.CLOCK_IN -> getString(Res.string.time_card_event_clock_in)
@@ -74,6 +81,9 @@ suspend fun TimeCardEventType?.eventTypeFriendlyName(): String {
     }
 }
 
+/**
+ * Converts the [IdType] to a friendly string.
+ */
 @Composable
 fun IdType.toIdTypeFriendlyName(): String {
     return when (this) {

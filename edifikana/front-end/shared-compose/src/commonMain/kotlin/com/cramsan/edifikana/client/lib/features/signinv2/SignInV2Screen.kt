@@ -26,6 +26,9 @@ import io.github.jan.supabase.gotrue.providers.Google
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
+/**
+ * SignInV2 screen
+ */
 @Composable
 fun SignInV2Screen(
     mainActivityDelegatedEvent: MainActivityDelegatedEvent,
@@ -97,7 +100,7 @@ private fun SignInV2Content(
 
 @Preview
 @Composable
-private fun ViewEmployeeScreenPreview() {
+private fun ViewStaffScreenPreview() {
     // TODO: Move to a centralized place in core-compose
     AssertUtil.setInstance(NoopAssertUtil)
 

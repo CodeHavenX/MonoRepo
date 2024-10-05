@@ -2,12 +2,14 @@ package com.cramsan.edifikana.server.core.service
 
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.edifikana.server.core.repository.TimeCardDatabase
+import com.cramsan.edifikana.server.core.service.models.PropertyId
 import com.cramsan.edifikana.server.core.service.models.StaffId
 import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.core.service.models.TimeCardEventId
 import com.cramsan.edifikana.server.core.service.models.requests.CreateTimeCardEventRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetTimeCardEventListRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetTimeCardEventRequest
+import kotlinx.datetime.Instant
 
 /**
  * Service for time card operations.
@@ -17,24 +19,32 @@ class TimeCardService(
 ) {
 
     /**
-     * Creates a time card with the provided [hours].
+     * Creates a time card event with the provided parameters.
      */
-    suspend fun createTimeCard(
+    suspend fun createTimeCardEvent(
         staffId: StaffId,
-        eventType: TimeCardEventType,
+        fallbackStaffName: String?,
+        propertyId: PropertyId,
+        type: TimeCardEventType,
+        imageUrl: String?,
+        timestamp: Instant,
     ): TimeCardEvent {
         return timeCardDatabase.createTimeCardEvent(
             request = CreateTimeCardEventRequest(
                 staffId = staffId,
-                eventType = eventType,
+                fallbackStaffName = fallbackStaffName,
+                propertyId = propertyId,
+                type = type,
+                imageUrl = imageUrl,
+                timestamp = timestamp,
             ),
         ).getOrThrow()
     }
 
     /**
-     * Retrieves a time card with the provided [id].
+     * Retrieves a time card event with the provided [id].
      */
-    suspend fun getTimeCard(
+    suspend fun getTimeCardEvent(
         id: TimeCardEventId,
     ): TimeCardEvent? {
         val timeCard = timeCardDatabase.getTimeCardEvent(
@@ -49,7 +59,7 @@ class TimeCardService(
     /**
      * Retrieves all time cards.
      */
-    suspend fun getTimeCards(): List<TimeCardEvent> {
+    suspend fun getTimeCardEvents(): List<TimeCardEvent> {
         val timeCards = timeCardDatabase.getTimeCardEvents(
             request = GetTimeCardEventListRequest(
                 staffId = null,

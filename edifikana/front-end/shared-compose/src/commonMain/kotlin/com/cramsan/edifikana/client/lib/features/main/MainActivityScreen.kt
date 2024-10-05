@@ -7,7 +7,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.Assignment
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,28 +34,29 @@ import com.cramsan.edifikana.client.lib.features.eventlog.addrecord.AddRecordScr
 import com.cramsan.edifikana.client.lib.features.eventlog.viewrecord.ViewRecordScreen
 import com.cramsan.edifikana.client.lib.features.signinv2.SignInV2Screen
 import com.cramsan.edifikana.client.lib.features.timecard.TimeCardScreen
-import com.cramsan.edifikana.client.lib.features.timecard.addemployee.AddEmployeeScreen
-import com.cramsan.edifikana.client.lib.features.timecard.employeelist.EmployeeListScreen
-import com.cramsan.edifikana.client.lib.features.timecard.viewemployee.ViewEmployeeScreen
-import com.cramsan.edifikana.lib.EmployeePK
+import com.cramsan.edifikana.client.lib.features.timecard.addstaff.AddStaffScreen
+import com.cramsan.edifikana.client.lib.features.timecard.stafflist.StaffListScreen
+import com.cramsan.edifikana.client.lib.features.timecard.viewstaff.ViewStaffScreen
 import com.cramsan.edifikana.lib.EventLogRecordPK
+import com.cramsan.edifikana.lib.StaffPK
 import edifikana_lib.Res
 import edifikana_lib.schedule
 import edifikana_lib.string_assistance
 import edifikana_lib.string_back_navigation
 import edifikana_lib.string_event_log_title
-import edifikana_lib.text_forms
 import edifikana_lib.two_pager
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
+/**
+ * Main activity screen.
+ */
 @OptIn(ExperimentalMaterial3Api::class, RouteSafePath::class)
 @Composable
 fun MainActivityScreen(
     navController: NavHostController,
     mainActivityDelegatedEvent: MainActivityDelegatedEvent,
     onMainActivityEventInvoke: (MainActivityEvent) -> Unit,
-    formTabFeatureEnabled: Boolean,
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val backStack by navController.currentBackStack.collectAsState()
@@ -94,25 +94,19 @@ fun MainActivityScreen(
         bottomBar = {
             NavigationBar {
                 BottomBarDestinationUiModels.forEach { dest ->
-                    if (formTabFeatureEnabled || dest.route != Route.Forms.route) {
-                        val selected = currentDestination?.hierarchy?.any { it.route == dest.route } == true
-                        val label = stringResource(dest.text)
+                    val selected = currentDestination?.hierarchy?.any { it.route == dest.route } == true
+                    val label = stringResource(dest.text)
 
-                        NavigationBarItem(
-                            onClick = {
-                                onMainActivityEventInvoke(MainActivityEvent.NavigateToRootPage(dest.route))
-                            },
-                            icon = {
-                                if (dest.route != Route.Forms.route) {
-                                    Icon(painterResource(dest.icon), contentDescription = label)
-                                } else {
-                                    Icon(Icons.AutoMirrored.Filled.Assignment, contentDescription = label)
-                                }
-                            },
-                            label = { Text(label) },
-                            selected = selected,
-                        )
-                    }
+                    NavigationBarItem(
+                        onClick = {
+                            onMainActivityEventInvoke(MainActivityEvent.NavigateToRootPage(dest.route))
+                        },
+                        icon = {
+                            Icon(painterResource(dest.icon), contentDescription = label)
+                        },
+                        label = { Text(label) },
+                        selected = selected,
+                    )
                 }
             }
         },
@@ -129,11 +123,6 @@ fun MainActivityScreen(
 }
 
 private val BottomBarDestinationUiModels = listOf(
-    BottomBarDestinationUiModel(
-        Route.toFormsRoute(),
-        Res.drawable.schedule,
-        Res.string.text_forms
-    ),
     BottomBarDestinationUiModel(
         Route.toEventLogRoute(),
         Res.drawable.two_pager,
@@ -168,22 +157,22 @@ private fun NavigationHost(
                 onTitleChange,
             )
         }
-        composable(Route.TimeCardSingleEmployee.route) { backStackEntry ->
-            ViewEmployeeScreen(
-                EmployeePK(backStackEntry.arguments?.getString("employeePk").orEmpty()),
+        composable(Route.TimeCardSingleStaff.route) { backStackEntry ->
+            ViewStaffScreen(
+                StaffPK(backStackEntry.arguments?.getString("staffPk").orEmpty()),
                 mainActivityDelegatedEvent,
                 onMainActivityEventInvoke,
                 onTitleChange,
             )
         }
-        composable(Route.TimeCardAddEmployee.route) {
-            AddEmployeeScreen(
+        composable(Route.TimeCardAddStaff.route) {
+            AddStaffScreen(
                 onMainActivityEventInvoke,
                 onTitleChange,
             )
         }
-        composable(Route.TimeCardEmployeeList.route) {
-            EmployeeListScreen(
+        composable(Route.TimeCardStaffList.route) {
+            StaffListScreen(
                 onMainActivityEventInvoke,
                 onTitleChange,
             )

@@ -20,6 +20,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 
+/**
+ * Represents the UI state of the View Record screen.
+ */
 class ViewRecordViewModel(
     private val eventLogManager: EventLogManager,
     private val attachmentManager: AttachmentManager,
@@ -31,13 +34,24 @@ class ViewRecordViewModel(
     private val _uiState = MutableStateFlow(
         ViewRecordUIState(null, true, "")
     )
+
+    /**
+     * UI state flow.
+     */
     val uiState: StateFlow<ViewRecordUIState> = _uiState
 
     private val _event = MutableSharedFlow<ViewRecordEvent>()
+
+    /**
+     * Event flow.
+     */
     val event: SharedFlow<ViewRecordEvent> = _event
 
     private var record: EventLogRecordModel? = null
 
+    /**
+     * Load a record.
+     */
     fun loadRecord(eventLogRecord: EventLogRecordPK) = viewModelScope.launch {
         _uiState.value = _uiState.value.copy(isLoading = true)
 
@@ -56,6 +70,9 @@ class ViewRecordViewModel(
         }
     }
 
+    /**
+     * Delete a record.
+     */
     fun share() = viewModelScope.launch {
         val record = (uiState.value as? ViewRecordUIState)?.record ?: return@launch
 
@@ -74,6 +91,9 @@ class ViewRecordViewModel(
         )
     }
 
+    /**
+     * Delete a record.
+     */
     fun pickMultipleVisualMedia() = viewModelScope.launch {
         _event.emit(
             ViewRecordEvent.TriggerMainActivityEvent(
@@ -82,6 +102,9 @@ class ViewRecordViewModel(
         )
     }
 
+    /**
+     * Delete a record.
+     */
     fun upload(uris: List<CoreUri>) = viewModelScope.launch {
         val recordPk = record?.id ?: return@launch
 
@@ -92,6 +115,9 @@ class ViewRecordViewModel(
         loadRecord(recordPk)
     }
 
+    /**
+     * Delete a record.
+     */
     fun openImage(attachmentHolder: AttachmentHolder) = viewModelScope.launch {
         val storageRef = attachmentHolder.storageRef
 

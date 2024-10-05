@@ -2,6 +2,9 @@ package com.cramsan.edifikana.lib
 
 import com.cramsan.edifikana.lib.utils.requireNotBlank
 
+/**
+ * Represents a time card record primary key.
+ */
 @JvmInline
 value class EventLogRecordPK(val documentPath: String) {
     init {

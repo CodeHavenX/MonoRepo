@@ -27,10 +27,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.lib.ui.components.LoadingAnimationOverlay
-import com.cramsan.edifikana.lib.EmployeePK
+import com.cramsan.edifikana.lib.StaffPK
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
+/**
+ * Represents the UI state of the Time Card screen.
+ */
 @Composable
 fun TimeCardScreen(
     onMainActivityEventInvoke: (MainActivityEvent) -> Unit,
@@ -57,11 +60,11 @@ fun TimeCardScreen(
     EventList(
         isLoading = uiState.isLoading,
         uiState.timeCardEvents,
-        onEmployeeClick = { employeePK ->
-            viewModel.navigateToEmployee(employeePK)
+        onStaffClick = { staffPK ->
+            viewModel.navigateToStaff(staffPK)
         },
         onAddEventClick = {
-            viewModel.navigateToEmployeeList()
+            viewModel.navigateToStaffList()
         },
     )
 }
@@ -70,18 +73,18 @@ fun TimeCardScreen(
 private fun EventList(
     isLoading: Boolean,
     events: List<TimeCardUIModel>,
-    onEmployeeClick: (EmployeePK) -> Unit,
+    onStaffClick: (StaffPK) -> Unit,
     onAddEventClick: () -> Unit,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
             Modifier.fillMaxSize(),
         ) {
-            items(events) { employee ->
-                EmployeeItem(
-                    employee,
+            items(events) { staff ->
+                StaffItem(
+                    staff,
                     Modifier.fillMaxWidth(),
-                    onEmployeeClick,
+                    onStaffClick,
                 )
             }
         }
@@ -98,23 +101,23 @@ private fun EventList(
 }
 
 @Composable
-private fun EmployeeItem(
-    employee: TimeCardUIModel,
+private fun StaffItem(
+    staff: TimeCardUIModel,
     modifier: Modifier = Modifier,
-    onEmployeeSelected: (EmployeePK) -> Unit,
+    onStaffSelected: (StaffPK) -> Unit,
 ) {
     Column(
         modifier = modifier
-            .clickable { onEmployeeSelected(employee.employeePK) }
+            .clickable { onStaffSelected(staff.staffPK) }
             .padding(16.dp),
         horizontalAlignment = Alignment.End,
     ) {
         Row {
-            Text(employee.fullName)
+            Text(staff.fullName)
             Spacer(modifier = Modifier.weight(1f))
-            Text(employee.eventDescription)
+            Text(staff.eventDescription)
         }
-        Text(employee.eventTime)
+        Text(staff.eventTime)
     }
     HorizontalDivider()
 }
@@ -129,16 +132,16 @@ private fun TimeCardScreenPreview() {
                 "Cesar Andres Ramirez Sanchez",
                 "Marco salida",
                 "2024 02 12 - 03:24:01",
-                EmployeePK("John"),
+                StaffPK("John"),
             ),
             TimeCardUIModel(
                 "Antonio",
                 "Marco entrada",
                 "2024 02 12 - 03:24:01",
-                EmployeePK("Jane"),
+                StaffPK("Jane"),
             ),
         ),
-        onEmployeeClick = {},
+        onStaffClick = {},
         onAddEventClick = {},
     )
 }

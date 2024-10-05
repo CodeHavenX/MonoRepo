@@ -17,6 +17,9 @@ private val DarkThemeColors = lightColorScheme(
     primary = md_theme_light_primary,
 )
 
+/**
+ * App theme.
+ */
 @Composable
 fun AppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -34,6 +37,9 @@ fun AppTheme(
     )
 }
 
+/**
+ * Get color scheme.
+ */
 @Composable
 expect fun getColorScheme(
     darkTheme: Boolean,
@@ -42,6 +48,9 @@ expect fun getColorScheme(
     lightColorScheme: ColorScheme,
 ): ColorScheme
 
+/**
+ * Window decorations.
+ */
 @Composable
 expect fun WindowDecorations(
     colorScheme: ColorScheme,

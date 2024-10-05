@@ -54,14 +54,14 @@
     <string name="text_there_was_an_error_processing_request">Hubo un error procesando la operacion.</string>
     <string name="text_clock_in">Marcar entrada</string>
     <string name="text_clock_out">Marcar salída</string>
-    <string name="text_employee">Empleado</string>
+    <string name="text_staff">Empleado</string>
     <string name="text_event_type">Tipo de evento</string>
     <string name="text_appartment">Departamento</string>
     <string name="text_simple_desc">Descripcion simple</string>
     <string name="text_full_desc">Descripcion detallada</string>
     <string name="text_add">Agregar</string>
     <string name="text_flip_camera">Cambiar cámara</string>
-    <string name="text_employee_name">Nombre del conserje</string>
+    <string name="text_staff_name">Nombre del conserje</string>
     <string name="text_forms">Formularios</string>
     <string name="text_view_records">Ver Archivos</string>
     <string name="text_upload">Subiendo</string>
@@ -78,9 +78,9 @@
     <string name="title_form_record">Registro de Formulario</string>
     <string name="title_form_record_view">Ver Registro de Formulario</string>
     <string name="title_timecard">Control de Asistencia</string>
-    <string name="title_timecard_add_employee">Agregar Empleado</string>
-    <string name="title_timecard_view_employee">Empleado</string>
-    <string name="title_timecard_employee_list">Lista de Empleados</string>
+    <string name="title_timecard_add_staff">Agregar Empleado</string>
+    <string name="title_timecard_view_staff">Empleado</string>
+    <string name="title_timecard_staff_list">Lista de Empleados</string>
 
     <!-- End of section for strings migrated from android into common -->
 

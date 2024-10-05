@@ -12,6 +12,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
+/**
+ * Get the color scheme based on the given parameters.
+ */
 @Composable
 actual fun getColorScheme(
     darkTheme: Boolean,
@@ -30,6 +33,9 @@ actual fun getColorScheme(
     }
 }
 
+/**
+ * Apply window decorations based on the given parameters.
+ */
 @Composable
 actual fun WindowDecorations(
     colorScheme: ColorScheme,

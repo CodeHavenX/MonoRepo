@@ -16,6 +16,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
+/**
+ * Manager for event logs.
+ */
 class EventLogManager(
     private val eventLogService: EventLogService,
     private val eventLogRecordDao: EventLogRecordDao,
@@ -25,6 +28,9 @@ class EventLogManager(
     private val mutex = Mutex()
     private var uploadJob: Job? = null
 
+    /**
+     * Get all event log records.
+     */
     suspend fun getRecords(): Result<List<EventLogRecordModel>> = workContext.getOrCatch(TAG) {
         logI(TAG, "getRecords")
 
@@ -36,6 +42,9 @@ class EventLogManager(
         (cachedData + onlineData).sortedByDescending { it.timeRecorded }
     }
 
+    /**
+     * Get a specific event log record.
+     */
     suspend fun getRecord(
         eventLogRecordPK: EventLogRecordPK,
     ): Result<EventLogRecordModel> = workContext.getOrCatch(TAG) {
@@ -49,6 +58,9 @@ class EventLogManager(
         )
     }
 
+    /**
+     * Add a new event log record.
+     */
     suspend fun addRecord(eventLogRecord: EventLogRecordModel) = workContext.getOrCatch(TAG) {
         logI(TAG, "addRecord")
         eventLogRecordDao.insert(eventLogRecord.toEntity())
@@ -83,6 +95,9 @@ class EventLogManager(
         }
     }
 
+    /**
+     * Start the upload process.
+     */
     suspend fun startUpload(): Result<Job> = workContext.getOrCatch(TAG) {
         logI(TAG, "startUpload")
         triggerFullUpload()

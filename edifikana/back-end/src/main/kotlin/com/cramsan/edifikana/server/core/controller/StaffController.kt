@@ -5,6 +5,7 @@ import com.cramsan.edifikana.lib.STAFF_ID
 import com.cramsan.edifikana.lib.annotations.NetworkModel
 import com.cramsan.edifikana.lib.model.CreateStaffNetworkRequest
 import com.cramsan.edifikana.server.core.service.StaffService
+import com.cramsan.edifikana.server.core.service.models.PropertyId
 import com.cramsan.edifikana.server.core.service.models.StaffId
 import com.cramsan.edifikana.server.core.service.models.requests.UpdateStaffRequest
 import com.cramsan.framework.core.ktor.HttpResponse
@@ -34,8 +35,12 @@ class StaffController(
         val createStaffRequest = call.receive<CreateStaffNetworkRequest>()
 
         val newStaff = staffService.createStaff(
-            createStaffRequest.name,
-        ).toStaffResponse()
+            idType = createStaffRequest.idType,
+            firstName = createStaffRequest.firstName,
+            lastName = createStaffRequest.lastName,
+            role = createStaffRequest.role,
+            propertyId = PropertyId(createStaffRequest.propertyId),
+        ).toStaffNetworkResponse()
 
         HttpResponse(
             status = HttpStatusCode.OK,
@@ -52,7 +57,7 @@ class StaffController(
 
         val staff = staffService.getStaff(
             StaffId(staffId),
-        )?.toStaffResponse()
+        )?.toStaffNetworkResponse()
 
         val statusCode = if (staff == null) {
             HttpStatusCode.NotFound
@@ -71,7 +76,7 @@ class StaffController(
      */
     @OptIn(NetworkModel::class)
     suspend fun getStaffs(call: ApplicationCall) = call.handleCall(TAG, "getStaffs") {
-        val staffs = staffService.getStaffs().map { it.toStaffResponse() }
+        val staffs = staffService.getStaffs().map { it.toStaffNetworkResponse() }
 
         HttpResponse(
             status = HttpStatusCode.OK,
@@ -90,8 +95,12 @@ class StaffController(
 
         val updatedStaff = staffService.updateStaff(
             id = StaffId(staffId),
-            name = updateStaffRequest.name,
-        ).toStaffResponse()
+            idType = updateStaffRequest.idType,
+            firstName = updateStaffRequest.firstName,
+            lastName = updateStaffRequest.lastName,
+            role = updateStaffRequest.role,
+            propertyId = updateStaffRequest.propertyId,
+        ).toStaffNetworkResponse()
 
         HttpResponse(
             status = HttpStatusCode.OK,

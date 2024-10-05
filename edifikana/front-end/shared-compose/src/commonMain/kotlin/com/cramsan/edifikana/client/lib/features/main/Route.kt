@@ -3,43 +3,58 @@
 
 package com.cramsan.edifikana.client.lib.features.main
 
-import com.cramsan.edifikana.lib.EmployeePK
 import com.cramsan.edifikana.lib.EventLogRecordPK
+import com.cramsan.edifikana.lib.StaffPK
 import com.cramsan.edifikana.lib.utils.requireNotBlank
 
+/**
+ * Routes in the application.
+ */
 enum class Route(
     @RouteSafePath
     val route: String,
 ) {
     TimeCard(route = "clockin"),
-    TimeCardEmployeeList(route = "clockin/employees"),
-    TimeCardSingleEmployee(route = "clockin/employees/{employeePk}"),
-    TimeCardAddEmployee(route = "clockin/add"),
+    TimeCardStaffList(route = "clockin/staffs"),
+    TimeCardSingleStaff(route = "clockin/staffs/{staffPk}"),
+    TimeCardAddStaff(route = "clockin/add"),
     EventLog(route = "eventlog"),
     EventLogSingleItem(route = "eventlog/{eventLogRecordPk}"),
     EventLogAddItem(route = "eventlog/add"),
-    Forms(route = "forms"),
-    FormEntry(route = "forms/{formPk}"),
-    FormRecords(route = "forms/records"),
-    FormRecordRead(route = "forms/records/{formRecordPk}"),
     SignIn(route = "signin"),
     ;
 
     companion object {
-        fun toFormsRoute(): String = Forms.route
-
+        /**
+         * Get the route to the time card screen.
+         */
         fun toTimeCardRoute(): String = TimeCard.route
 
-        fun toTimeCardEmployeeListRoute(): String = TimeCardEmployeeList.route
+        /**
+         * Get the route to the time card staff list screen.
+         */
+        fun toTimeCardStaffListRoute(): String = TimeCardStaffList.route
 
-        fun toTimeCardSingleEmployeeRoute(employeePk: EmployeePK): String {
-            return TimeCardSingleEmployee.route.replace("{employeePk}", requireNotBlank(employeePk.documentPath))
+        /**
+         * Get the route to the time card single staff screen.
+         */
+        fun toTimeCardSingleStaffRoute(staffPk: StaffPK): String {
+            return TimeCardSingleStaff.route.replace("{staffPk}", requireNotBlank(staffPk.documentPath))
         }
 
-        fun toTimeCardAddEmployeeRoute(): String = TimeCardAddEmployee.route
+        /**
+         * Get the route to the time card add staff screen.
+         */
+        fun toTimeCardAddStaffRoute(): String = TimeCardAddStaff.route
 
+        /**
+         * Get the route to the event log screen.
+         */
         fun toEventLogRoute(): String = EventLog.route
 
+        /**
+         * Get the route to the event log single item screen.
+         */
         fun toEventLogSingleItemRoute(eventLogRecordPk: EventLogRecordPK): String {
             return EventLogSingleItem.route.replace(
                 "{eventLogRecordPk}",
@@ -47,8 +62,14 @@ enum class Route(
             )
         }
 
+        /**
+         * Get the route to the event log add item screen.
+         */
         fun toEventLogAddItemRoute(): String = EventLogAddItem.route
 
+        /**
+         * Get the route to the sign in screen.
+         */
         fun toSignInRoute(): String = SignIn.route
     }
 }

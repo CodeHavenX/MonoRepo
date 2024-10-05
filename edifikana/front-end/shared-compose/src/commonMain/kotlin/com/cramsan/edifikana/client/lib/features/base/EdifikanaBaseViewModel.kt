@@ -8,7 +8,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 
-@Suppress("UnnecessaryAbstractClass")
+/**
+ * Base ViewModel for Edifikana.
+ */
 abstract class EdifikanaBaseViewModel(
     exceptionHandler: CoroutineExceptionHandler,
     dispatcherProvider: DispatcherProvider,

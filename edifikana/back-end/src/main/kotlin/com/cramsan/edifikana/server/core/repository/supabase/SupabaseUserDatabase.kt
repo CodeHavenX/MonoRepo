@@ -26,13 +26,12 @@ class SupabaseUserDatabase(
         request: CreateUserRequest,
     ): Result<User> = runSuspendCatching(TAG) {
         logD(TAG, "Creating user: %S", request.email)
-        val requestEntity = request.toUserEntity()
+        val requestEntity: UserEntity.CreateUserEntity = request.toUserEntity()
 
         val createdUser = postgrest.from(UserEntity.COLLECTION).insert(requestEntity) {
             select()
-        }
-            .decodeSingle<UserEntity>()
-        logD(TAG, "User created userId=%S", createdUser.id)
+        }.decodeSingle<UserEntity>()
+        logD(TAG, "User created userId: %S", createdUser.id)
         createdUser.toUser()
     }
 
@@ -47,7 +46,7 @@ class SupabaseUserDatabase(
 
         val userEntity = postgrest.from(UserEntity.COLLECTION).select {
             filter {
-                UserEntity::id eq request.id
+                UserEntity::id eq request.id.userId
             }
             limit(1)
             single()
@@ -81,9 +80,9 @@ class SupabaseUserDatabase(
         ) {
             select()
             filter {
-                UserEntity::id eq request.id
+                UserEntity::id eq request.id.userId
             }
-        }.decodeAs<UserEntity>().toUser()
+        }.decodeSingle<UserEntity>().toUser()
     }
 
     /**
@@ -98,7 +97,7 @@ class SupabaseUserDatabase(
         postgrest.from(UserEntity.COLLECTION).delete {
             select()
             filter {
-                UserEntity::id eq request.id
+                UserEntity::id eq request.id.userId
             }
         }.decodeSingleOrNull<UserEntity>() != null
     }

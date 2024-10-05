@@ -7,5 +7,5 @@ import com.cramsan.edifikana.server.core.service.models.PropertyId
  */
 data class UpdatePropertyRequest(
     val propertyId: PropertyId,
-    val name: String,
+    val name: String?,
 )

@@ -18,6 +18,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 
+/**
+ * Represents the UI state of the Event Log screen.
+ */
 class EventLogViewModel(
     private val eventLogManager: EventLogManager,
     dispatcherProvider: DispatcherProvider,
@@ -27,11 +30,22 @@ class EventLogViewModel(
     private val _uiState = MutableStateFlow(
         EventLogUIState(emptyList(), true, "")
     )
+
+    /**
+     * UI state flow.
+     */
     val uiState: StateFlow<EventLogUIState> = _uiState
 
     private val _event = MutableSharedFlow<EventLogEvent>()
+
+    /**
+     * Event flow.
+     */
     val event: SharedFlow<EventLogEvent> = _event
 
+    /**
+     * Load records.
+     */
     fun loadRecords() = viewModelScope.launch {
         _uiState.value = _uiState.value.copy(isLoading = true)
         val result = eventLogManager.getRecords()
@@ -49,6 +63,9 @@ class EventLogViewModel(
         }
     }
 
+    /**
+     * Open a record screen.
+     */
     fun openRecordScreen(recordPk: EventLogRecordPK?) = viewModelScope.launch {
         if (recordPk == null) {
             logW(TAG, "Record PK is null")
@@ -66,6 +83,9 @@ class EventLogViewModel(
         }
     }
 
+    /**
+     * Open the add record screen.
+     */
     fun openAddRecordScreen() = viewModelScope.launch {
         _event.emit(
             EventLogEvent.TriggerMainActivityEvent(

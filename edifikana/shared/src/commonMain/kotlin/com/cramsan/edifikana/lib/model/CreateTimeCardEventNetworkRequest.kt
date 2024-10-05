@@ -12,9 +12,11 @@ import kotlinx.serialization.Serializable
 data class CreateTimeCardEventNetworkRequest(
     @SerialName("staff_id")
     val staffId: String,
-    @SerialName("type")
-    val type: String,
-    @SerialName("time")
-    val time: Long,
-
+    @SerialName("fallback_staff_name")
+    val fallbackStaffName: String?,
+    @SerialName("property_id")
+    val propertyId: String,
+    val type: TimeCardEventType,
+    @SerialName("image_url")
+    val imageUrl: String?,
 )

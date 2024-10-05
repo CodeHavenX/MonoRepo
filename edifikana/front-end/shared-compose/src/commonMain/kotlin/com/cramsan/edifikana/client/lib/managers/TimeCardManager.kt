@@ -15,7 +15,7 @@ import com.cramsan.edifikana.client.lib.utils.getOrCatch
 import com.cramsan.edifikana.client.lib.utils.launch
 import com.cramsan.edifikana.client.lib.utils.processImageData
 import com.cramsan.edifikana.client.lib.utils.readBytes
-import com.cramsan.edifikana.lib.EmployeePK
+import com.cramsan.edifikana.lib.StaffPK
 import com.cramsan.edifikana.lib.TimeCardRecordPK
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.logging.logE
@@ -24,6 +24,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
+/**
+ * Manager for time cards.
+ */
 class TimeCardManager(
     private val timeCardService: TimeCardService,
     private val timeCardRecordDao: TimeCardRecordDao,
@@ -34,14 +37,20 @@ class TimeCardManager(
     private val mutex = Mutex()
     private var uploadJob: Job? = null
 
-    suspend fun getRecords(employeePK: EmployeePK): Result<List<TimeCardRecordModel>> = workContext.getOrCatch(TAG) {
+    /**
+     * Get all time card records for a staff member.
+     */
+    suspend fun getRecords(staffPK: StaffPK): Result<List<TimeCardRecordModel>> = workContext.getOrCatch(TAG) {
         logI(TAG, "getRecords")
-        val cachedData = timeCardRecordDao.getAll(employeePK.documentPath).map { it.toDomainModel() }
+        val cachedData = timeCardRecordDao.getAll(staffPK.documentPath).map { it.toDomainModel() }
 
-        val onlineData = timeCardService.getRecords(employeePK).getOrThrow()
+        val onlineData = timeCardService.getRecords(staffPK).getOrThrow()
         (cachedData + onlineData).sortedByDescending { it.eventTime }
     }
 
+    /**
+     * Get all time card records.
+     */
     suspend fun getAllRecords(): Result<List<TimeCardRecordModel>> = workContext.getOrCatch(TAG) {
         logI(TAG, "getAllRecords")
         val cachedData = timeCardRecordDao.getAll().map { it.toDomainModel() }
@@ -50,6 +59,9 @@ class TimeCardManager(
         (cachedData + onlineData).sortedByDescending { it.eventTime }
     }
 
+    /**
+     * Get a specific time card record.
+     */
     suspend fun getRecord(timeCardRecordPK: TimeCardRecordPK): Result<TimeCardRecordModel> = workContext.getOrCatch(
         TAG
     ) {
@@ -57,6 +69,9 @@ class TimeCardManager(
         timeCardService.getRecord(timeCardRecordPK).getOrThrow()
     }
 
+    /**
+     * Add a time card record.
+     */
     suspend fun addRecord(timeCardRecord: TimeCardRecordModel, cachedImageUrl: CoreUri) = workContext.getOrCatch(TAG) {
         logI(TAG, "addRecord")
         val entity = timeCardRecord.toEntity(cachedImageUrl)
@@ -112,6 +127,9 @@ class TimeCardManager(
         }
     }
 
+    /**
+     * Start the upload process.
+     */
     suspend fun startUpload(): Result<Job> = workContext.getOrCatch(TAG) {
         triggerFullUpload()
     }

@@ -8,7 +8,10 @@ import kotlinx.datetime.Instant
  */
 data class TimeCardEvent(
     val id: TimeCardEventId,
-    val staffId: StaffId,
+    val staffId: StaffId?,
+    val fallbackStaffName: String?,
+    val propertyId: PropertyId,
     val type: TimeCardEventType,
-    val time: Instant,
+    val imageUrl: String?,
+    val timestamp: Instant,
 )

@@ -13,10 +13,9 @@ import com.cramsan.edifikana.server.core.repository.StaffDatabase
 import com.cramsan.edifikana.server.core.repository.TimeCardDatabase
 import com.cramsan.edifikana.server.core.repository.UserDatabase
 import com.cramsan.edifikana.server.core.repository.dummy.DummyEventLogDatabase
-import com.cramsan.edifikana.server.core.repository.dummy.DummyPropertyDatabase
-import com.cramsan.edifikana.server.core.repository.dummy.DummyStaffDatabase
-import com.cramsan.edifikana.server.core.repository.dummy.DummyTimeCardDatabase
-import com.cramsan.edifikana.server.core.repository.dummy.DummyUserDatabase
+import com.cramsan.edifikana.server.core.repository.supabase.SupabasePropertyDatabase
+import com.cramsan.edifikana.server.core.repository.supabase.SupabaseStaffDatabase
+import com.cramsan.edifikana.server.core.repository.supabase.SupabaseTimeCardDatabase
 import com.cramsan.edifikana.server.core.repository.supabase.SupabaseUserDatabase
 import com.cramsan.edifikana.server.core.service.EventLogService
 import com.cramsan.edifikana.server.core.service.PropertyService
@@ -59,11 +58,11 @@ val ApplicationModule = module {
 
     // Supabase
     single {
-        val supabaseUrl = System.getenv("edifikana_SUPABASE_URL")
-        val supabaseKey = System.getenv("edifikana_SUPABASE_KEY")
+        val supabaseUrl = System.getenv("EDIFIKANA_SUPABASE_URL")
+        val supabaseKey = System.getenv("EDIFIKANA_SUPABASE_KEY")
 
-        assertFalse(supabaseUrl.isNullOrBlank(), TAG, "edifikana_SUPABASE_URL cannot be blank")
-        assertFalse(supabaseKey.isNullOrBlank(), TAG, "edifikana_SUPABASE_KEY cannot be blank")
+        assertFalse(supabaseUrl.isNullOrBlank(), TAG, "EDIFIKANA_SUPABASE_URL cannot be blank")
+        assertFalse(supabaseKey.isNullOrBlank(), TAG, "EDIFIKANA_SUPABASE_KEY cannot be blank")
 
         createSupabaseClient(
             supabaseUrl = supabaseUrl,
@@ -104,22 +103,21 @@ val ApplicationModule = module {
 
     // Storage
     singleOf(::SupabaseUserDatabase) {
+        bind<UserDatabase>()
     }
+    singleOf(::SupabaseStaffDatabase) {
+        bind<StaffDatabase>()
+    }
+    singleOf(::SupabasePropertyDatabase) {
+        bind<PropertyDatabase>()
+    }
+    singleOf(::SupabaseTimeCardDatabase) {
+        bind<TimeCardDatabase>()
+    }
+
     // Dummy database
     singleOf(::DummyEventLogDatabase) {
         bind<EventLogDatabase>()
-    }
-    singleOf(::DummyPropertyDatabase) {
-        bind<PropertyDatabase>()
-    }
-    singleOf(::DummyStaffDatabase) {
-        bind<StaffDatabase>()
-    }
-    singleOf(::DummyTimeCardDatabase) {
-        bind<TimeCardDatabase>()
-    }
-    singleOf(::DummyUserDatabase) {
-        bind<UserDatabase>()
     }
 }
 

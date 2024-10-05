@@ -10,18 +10,32 @@ import com.cramsan.edifikana.client.lib.db.models.FileAttachmentEntity
 import com.cramsan.edifikana.client.lib.db.models.TimeCardRecordDao
 import com.cramsan.edifikana.client.lib.db.models.TimeCardRecordEntity
 
+/**
+ * Room database for the application.
+ */
 @Database(
     entities = [
         TimeCardRecordEntity::class,
         EventLogRecordEntity::class,
         FileAttachmentEntity::class,
     ],
-    version = 4,
+    version = 5,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
+    /**
+     * Get the time card record DAO.
+     */
     abstract fun timeCardRecordDao(): TimeCardRecordDao
+
+    /**
+     * Get the event log record DAO.
+     */
     abstract fun eventLogRecordDao(): EventLogRecordDao
+
+    /**
+     * Get the file attachment DAO.
+     */
     abstract fun fileAttachmentDao(): FileAttachmentDao
 }

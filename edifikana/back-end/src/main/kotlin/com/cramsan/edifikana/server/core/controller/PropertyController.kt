@@ -35,7 +35,7 @@ class PropertyController(
 
         val newProperty = propertyService.createProperty(
             createPropertyRequest.name,
-        ).toPropertyResponse()
+        ).toPropertyNetworkResponse()
 
         HttpResponse(
             status = HttpStatusCode.OK,
@@ -52,7 +52,7 @@ class PropertyController(
 
         val property = propertyService.getProperty(
             PropertyId(propertyId),
-        )?.toPropertyResponse()
+        )?.toPropertyNetworkResponse()
 
         val statusCode = if (property == null) {
             HttpStatusCode.NotFound
@@ -71,7 +71,7 @@ class PropertyController(
      */
     @OptIn(NetworkModel::class)
     suspend fun getProperties(call: ApplicationCall) = call.handleCall(TAG, "getProperties") {
-        val properties = propertyService.getProperties().map { it.toPropertyResponse() }
+        val properties = propertyService.getProperties().map { it.toPropertyNetworkResponse() }
 
         HttpResponse(
             status = HttpStatusCode.OK,
@@ -91,7 +91,7 @@ class PropertyController(
         val updatedProperty = propertyService.updateProperty(
             id = PropertyId(propertyId),
             name = updatePropertyRequest.name,
-        ).toPropertyResponse()
+        ).toPropertyNetworkResponse()
 
         HttpResponse(
             status = HttpStatusCode.OK,

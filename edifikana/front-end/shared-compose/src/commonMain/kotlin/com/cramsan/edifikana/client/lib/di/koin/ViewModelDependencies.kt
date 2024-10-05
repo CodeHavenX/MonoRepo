@@ -6,9 +6,9 @@ import com.cramsan.edifikana.client.lib.features.eventlog.viewrecord.ViewRecordV
 import com.cramsan.edifikana.client.lib.features.main.MainActivityViewModel
 import com.cramsan.edifikana.client.lib.features.signinv2.SignInV2ViewModel
 import com.cramsan.edifikana.client.lib.features.timecard.TimeCartViewModel
-import com.cramsan.edifikana.client.lib.features.timecard.addemployee.AddEmployeeViewModel
-import com.cramsan.edifikana.client.lib.features.timecard.employeelist.EmployeeListViewModel
-import com.cramsan.edifikana.client.lib.features.timecard.viewemployee.ViewEmployeeViewModel
+import com.cramsan.edifikana.client.lib.features.timecard.addstaff.AddStaffViewModel
+import com.cramsan.edifikana.client.lib.features.timecard.stafflist.StaffListViewModel
+import com.cramsan.edifikana.client.lib.features.timecard.viewstaff.ViewStaffViewModel
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
@@ -18,11 +18,11 @@ val ViewModelModule = module {
     // in compose multiplatform code. Until then we will have all viewmodels as singletons.
     singleOf(::EventLogViewModel)
     singleOf(::TimeCartViewModel)
-    singleOf(::EmployeeListViewModel)
+    singleOf(::StaffListViewModel)
     singleOf(::ViewRecordViewModel)
-    singleOf(::AddEmployeeViewModel)
+    singleOf(::AddStaffViewModel)
     singleOf(::AddRecordViewModel)
-    singleOf(::ViewEmployeeViewModel)
+    singleOf(::ViewStaffViewModel)
     singleOf(::MainActivityViewModel)
     singleOf(::SignInV2ViewModel)
 }

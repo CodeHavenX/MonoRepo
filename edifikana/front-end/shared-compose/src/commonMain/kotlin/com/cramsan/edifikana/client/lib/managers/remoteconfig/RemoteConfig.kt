@@ -44,9 +44,15 @@ data class ImageConfig(
     val captureHeight: Int,
 )
 
+/**
+ * The configuration data for the features of the app.
+ */
 data class FeatureConfig(
     val flags: Map<Features, Boolean>,
 ) {
+    /**
+     * Check if a feature is enabled.
+     */
     fun isFeatureEnabled(feature: Features): Boolean {
         return flags[feature] ?: false
     }

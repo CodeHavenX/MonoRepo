@@ -2,9 +2,11 @@
 
 package com.cramsan.edifikana.server.core.repository.dummy
 
+import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.server.core.repository.EventLogDatabase
 import com.cramsan.edifikana.server.core.service.models.EventLogEntry
 import com.cramsan.edifikana.server.core.service.models.EventLogEntryId
+import com.cramsan.edifikana.server.core.service.models.PropertyId
 import com.cramsan.edifikana.server.core.service.models.StaffId
 import com.cramsan.edifikana.server.core.service.models.requests.CreateEventLogEntryRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteEventLogEntryRequest
@@ -25,8 +27,14 @@ class DummyEventLogDatabase(
             EventLogEntry(
                 id = EventLogEntryId("1"),
                 staffId = StaffId("1"),
-                time = clock.now(),
-                title = "Test"
+                fallbackStaffName = null,
+                propertyId = PropertyId("1"),
+                type = EventLogEventType.INCIDENT,
+                fallbackEventType = null,
+                timestamp = clock.now(),
+                title = "Test",
+                description = null,
+                unit = "Test"
             )
         )
     }
@@ -37,8 +45,14 @@ class DummyEventLogDatabase(
             EventLogEntry(
                 id = EventLogEntryId("1"),
                 staffId = StaffId("1"),
-                time = clock.now(),
-                title = "Test"
+                fallbackStaffName = null,
+                propertyId = PropertyId("1"),
+                type = EventLogEventType.INCIDENT,
+                fallbackEventType = null,
+                timestamp = clock.now(),
+                title = "Test",
+                description = null,
+                unit = "Test"
             )
         )
     }
@@ -48,10 +62,16 @@ class DummyEventLogDatabase(
         return Result.success(
             (0..10).map {
                 EventLogEntry(
-                    id = EventLogEntryId(it.toString()),
-                    staffId = StaffId(it.toString()),
-                    time = clock.now(),
-                    title = "Test $it"
+                    id = EventLogEntryId("1"),
+                    staffId = StaffId("1"),
+                    fallbackStaffName = null,
+                    propertyId = PropertyId("1"),
+                    type = EventLogEventType.INCIDENT,
+                    fallbackEventType = null,
+                    timestamp = clock.now(),
+                    title = "Test",
+                    description = null,
+                    unit = "Test"
                 )
             }
         )
@@ -63,8 +83,14 @@ class DummyEventLogDatabase(
             EventLogEntry(
                 id = EventLogEntryId("1"),
                 staffId = StaffId("1"),
-                time = clock.now(),
-                title = "Test"
+                fallbackStaffName = null,
+                propertyId = PropertyId("1"),
+                type = EventLogEventType.INCIDENT,
+                fallbackEventType = null,
+                timestamp = clock.now(),
+                title = "Test",
+                description = null,
+                unit = "Test"
             )
         )
     }

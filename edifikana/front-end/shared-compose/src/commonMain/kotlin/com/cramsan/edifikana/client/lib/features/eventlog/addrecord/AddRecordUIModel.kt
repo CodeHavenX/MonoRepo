@@ -1,17 +1,23 @@
 package com.cramsan.edifikana.client.lib.features.eventlog.addrecord
 
-import com.cramsan.edifikana.client.lib.models.EmployeeModel
+import com.cramsan.edifikana.client.lib.models.StaffModel
 import com.cramsan.edifikana.client.lib.models.fullName
-import com.cramsan.edifikana.lib.EmployeePK
+import com.cramsan.edifikana.lib.StaffPK
 
+/**
+ * Represents the UI model of the Add Record screen.
+ */
 data class AddRecordUIModel(
     val fullName: String,
-    val employeePK: EmployeePK?,
+    val staffPK: StaffPK?,
 )
 
-fun EmployeeModel.toUIModel(): AddRecordUIModel {
+/**
+ * Converts a [StaffModel] to a [AddRecordUIModel].
+ */
+fun StaffModel.toUIModel(): AddRecordUIModel {
     return AddRecordUIModel(
         fullName = fullName(),
-        employeePK = employeePK,
+        staffPK = staffPK,
     )
 }

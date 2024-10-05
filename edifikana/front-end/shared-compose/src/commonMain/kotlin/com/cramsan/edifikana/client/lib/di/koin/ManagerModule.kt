@@ -2,23 +2,23 @@ package com.cramsan.edifikana.client.lib.di.koin
 
 import com.cramsan.edifikana.client.lib.managers.AttachmentManager
 import com.cramsan.edifikana.client.lib.managers.AuthManager
-import com.cramsan.edifikana.client.lib.managers.EmployeeManager
 import com.cramsan.edifikana.client.lib.managers.EventLogManager
+import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.client.lib.managers.TimeCardManager
 import com.cramsan.edifikana.client.lib.managers.WorkContext
 import com.cramsan.edifikana.client.lib.managers.remoteconfig.RemoteConfig
 import com.cramsan.edifikana.client.lib.service.AuthService
-import com.cramsan.edifikana.client.lib.service.EmployeeService
 import com.cramsan.edifikana.client.lib.service.EventLogService
 import com.cramsan.edifikana.client.lib.service.PropertyConfigService
+import com.cramsan.edifikana.client.lib.service.StaffService
 import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.edifikana.client.lib.service.TimeCardService
 import com.cramsan.edifikana.client.lib.service.dummy.DummyAuthService
-import com.cramsan.edifikana.client.lib.service.dummy.DummyEmployeeService
-import com.cramsan.edifikana.client.lib.service.dummy.DummyEventLogService
 import com.cramsan.edifikana.client.lib.service.dummy.DummyPropertyConfigService
+import com.cramsan.edifikana.client.lib.service.dummy.DummyStaffService
 import com.cramsan.edifikana.client.lib.service.dummy.DummyStorageService
 import com.cramsan.edifikana.client.lib.service.dummy.DummyTimeCardService
+import com.cramsan.edifikana.client.lib.service.supabase.SupabaseEventLogService
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.compose.auth.ComposeAuth
 import io.github.jan.supabase.compose.auth.appleNativeLogin
@@ -33,6 +33,7 @@ import io.github.jan.supabase.storage.Storage
 import io.github.jan.supabase.storage.storage
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val ManagerModule = module {
@@ -40,7 +41,7 @@ val ManagerModule = module {
     singleOf(::EventLogManager)
     singleOf(::AttachmentManager)
     singleOf(::TimeCardManager)
-    singleOf(::EmployeeManager)
+    singleOf(::StaffManager)
     singleOf(::AuthManager)
     single { get<RemoteConfig>().caching }
     single { get<RemoteConfig>().image }
@@ -48,9 +49,12 @@ val ManagerModule = module {
     single { get<RemoteConfig>().features }
 
     single {
+        val supabaseUrl = get<String>(named(EDIFIKANA_SUPABASE_URL))
+        val supabaseKey = get<String>(named(EDIFIKANA_SUPABASE_KEY))
+
         createSupabaseClient(
-            supabaseUrl = "",
-            supabaseKey = ""
+            supabaseUrl = supabaseUrl,
+            supabaseKey = supabaseKey,
         ) {
             install(Postgrest)
             install(Storage)
@@ -85,7 +89,7 @@ val ManagerModule = module {
     singleOf(::DummyAuthService) {
         bind<AuthService>()
     }
-    singleOf(::DummyEventLogService) {
+    singleOf(::SupabaseEventLogService) {
         bind<EventLogService>()
     }
     singleOf(::DummyPropertyConfigService) {
@@ -97,7 +101,10 @@ val ManagerModule = module {
     singleOf(::DummyTimeCardService) {
         bind<TimeCardService>()
     }
-    singleOf(::DummyEmployeeService) {
-        bind<EmployeeService>()
+    singleOf(::DummyStaffService) {
+        bind<StaffService>()
     }
 }
+
+internal const val EDIFIKANA_SUPABASE_URL = "EDIFIKANA_SUPABASE_URL"
+internal const val EDIFIKANA_SUPABASE_KEY = "EDIFIKANA_SUPABASE_KEY"

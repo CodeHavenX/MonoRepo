@@ -10,6 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
+/**
+ * Loading animation overlay.
+ */
 @Composable
 fun LoadingAnimationOverlay(isLoading: Boolean) {
     AnimatedVisibility(

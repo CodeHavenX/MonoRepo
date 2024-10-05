@@ -27,20 +27,23 @@ import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.lib.toFriendlyStringCompose
 import com.cramsan.edifikana.client.lib.ui.components.Dropdown
 import com.cramsan.edifikana.client.lib.ui.components.LoadingAnimationOverlay
-import com.cramsan.edifikana.lib.EmployeePK
+import com.cramsan.edifikana.lib.StaffPK
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import edifikana_lib.Res
 import edifikana_lib.text_add
 import edifikana_lib.text_appartment
-import edifikana_lib.text_employee
-import edifikana_lib.text_employee_name
 import edifikana_lib.text_event_type
 import edifikana_lib.text_full_desc
 import edifikana_lib.text_simple_desc
+import edifikana_lib.text_staff
+import edifikana_lib.text_staff_name
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
+/**
+ * Represents the UI state of the Add Record screen.
+ */
 @Composable
 fun AddRecordScreen(
     onMainActivityEventInvoke: (MainActivityEvent) -> Unit,
@@ -53,7 +56,7 @@ fun AddRecordScreen(
     )
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
-        viewModel.loadEmployees()
+        viewModel.loadStaffs()
     }
 
     LaunchedEffect(event) {
@@ -67,20 +70,20 @@ fun AddRecordScreen(
 
     onTitleChange(uiState.title)
     AddRecord(
-        uiState.employees,
+        uiState.records,
         uiState.isLoading,
-    ) { employeeDocumentId,
+    ) { staffDocumentId,
         unit,
         eventType,
-        fallbackEmployeeName,
+        fallbackStaffName,
         fallbackEventType,
         summary,
         description ->
         viewModel.addRecord(
-            employeeDocumentId,
+            staffDocumentId,
             unit,
             eventType,
-            fallbackEmployeeName,
+            fallbackStaffName,
             fallbackEventType,
             summary,
             description,
@@ -90,19 +93,19 @@ fun AddRecordScreen(
 
 @Composable
 private fun AddRecord(
-    employees: List<AddRecordUIModel>,
+    staffs: List<AddRecordUIModel>,
     isLoading: Boolean,
     onAddRecordClicked: (
-        employeeDocumentId: EmployeePK?,
+        staffDocumentId: StaffPK?,
         unit: String?,
         eventType: EventLogEventType?,
-        fallbackEmployeeName: String?,
+        fallbackStaffName: String?,
         fallbackEventType: String?,
         summary: String?,
         description: String?,
     ) -> Unit,
 ) {
-    var employeePK by remember { mutableStateOf(employees.firstOrNull()?.employeePK) }
+    var staffPK by remember { mutableStateOf(staffs.firstOrNull()?.staffPK) }
     var eventType by remember { mutableStateOf(EventLogEventType.OTHER) }
     var unit by remember { mutableStateOf("") }
     var fallbackName by remember { mutableStateOf("") }
@@ -123,20 +126,20 @@ private fun AddRecord(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Dropdown(
-                label = stringResource(Res.string.text_employee),
-                items = employees,
-                itemLabels = employees.map { it.fullName },
+                label = stringResource(Res.string.text_staff),
+                items = staffs,
+                itemLabels = staffs.map { it.fullName },
                 modifier = Modifier.fillMaxWidth(),
-                startValueMatcher = { it.employeePK == employeePK },
+                startValueMatcher = { it.staffPK == staffPK },
             ) {
-                employeePK = it.employeePK
+                staffPK = it.staffPK
             }
 
-            if (employeePK == null) {
+            if (staffPK == null) {
                 TextField(
                     value = fallbackName,
                     onValueChange = { fallbackName = it },
-                    label = { Text(stringResource(Res.string.text_employee_name)) },
+                    label = { Text(stringResource(Res.string.text_staff_name)) },
                     modifier = Modifier.fillMaxWidth(),
                     isError = fallbackName.isBlank(),
                 )
@@ -198,7 +201,7 @@ private fun AddRecord(
                 .padding(16.dp),
             onClick = {
                 onAddRecordClicked(
-                    employeePK,
+                    staffPK,
                     unit,
                     eventType,
                     fallbackName,
@@ -221,7 +224,7 @@ private fun AddRecordPreview() {
         listOf(
             AddRecordUIModel(
                 "Juan Perez",
-                EmployeePK("1"),
+                StaffPK("1"),
             ),
             AddRecordUIModel(
                 "Maria Rodriguez",

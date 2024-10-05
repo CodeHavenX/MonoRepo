@@ -5,6 +5,9 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.datetime.Clock
 
+/**
+ * Context for work.
+ */
 data class WorkContext(
     val clock: Clock,
     val appScope: CoroutineScope,

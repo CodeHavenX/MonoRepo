@@ -19,6 +19,9 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+/**
+ * Sign in v2 ViewModel.
+ */
 class SignInV2ViewModel(
     private val auth: AuthManager,
     private val authSB: Auth,
@@ -35,6 +38,9 @@ class SignInV2ViewModel(
     private val _events = MutableSharedFlow<SignInV2Event>()
     val events: SharedFlow<SignInV2Event> = _events
 
+    /**
+     * Enforce sign in.
+     */
     fun enforceSignIn() = viewModelScope.launch {
         val result = auth.isSignedIn(true)
 
@@ -58,6 +64,9 @@ class SignInV2ViewModel(
         }
     }
 
+    /**
+     * Show access code dialog.
+     */
     fun showAccessCodeDialog() = viewModelScope.launch {
         val result = auth.isSignedIn(true)
 
@@ -82,11 +91,17 @@ class SignInV2ViewModel(
         }
     }
 
+    /**
+     * Close access code dialog.
+     */
     fun closeAccessCodeDialog() = viewModelScope.launch {
         logI(TAG, "Closing access code dialog.")
         _uiState.value = SignInV2UIState(showAccessCodeDialog = false)
     }
 
+    /**
+     * Submit access code.
+     */
     fun submitAccessCode(code: String) = viewModelScope.launch {
         _uiState.value = SignInV2UIState(showAccessCodeDialog = false)
         if (code != SECRET_CODE && !behaviorConfig.allowListedCodes.contains(code)) {
@@ -130,6 +145,9 @@ class SignInV2ViewModel(
         }
     }
 
+    /**
+     * Handle sign in result.
+     */
     fun handleSignInResult(result: NativeSignInResult) = viewModelScope.launch {
         when (result) {
             is NativeSignInResult.Success -> {
@@ -151,6 +169,9 @@ class SignInV2ViewModel(
         }
     }
 
+    /**
+     * Handle fallback.
+     */
     fun handleFallback() = viewModelScope.launch {
         authSB.signInWith(Google)
     }

@@ -12,6 +12,13 @@ import kotlinx.serialization.Serializable
 data class CreateStaffNetworkRequest(
     @SerialName("name")
     val name: String,
+    @SerialName("id_type")
+    val idType: IdType,
+    @SerialName("first_name")
+    val firstName: String,
+    @SerialName("last_name")
+    val lastName: String,
+    val role: StaffRole,
     @SerialName("property_id")
-    val propertyId: Int,
+    val propertyId: String,
 )

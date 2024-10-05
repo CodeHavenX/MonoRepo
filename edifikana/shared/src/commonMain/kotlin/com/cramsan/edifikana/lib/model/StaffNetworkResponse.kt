@@ -10,10 +10,14 @@ import kotlinx.serialization.Serializable
 @NetworkModel
 @Serializable
 data class StaffNetworkResponse(
-    @SerialName("id")
     val id: String,
-    @SerialName("name")
-    val name: String,
+    @SerialName("id_type")
+    val idType: IdType,
+    @SerialName("first_name")
+    val firstName: String,
+    @SerialName("last_name")
+    val lastName: String,
+    val role: StaffRole,
     @SerialName("property_id")
     val propertyId: String,
 )

@@ -11,11 +11,11 @@ import com.cramsan.edifikana.lib.model.EventLogEventType
 data class EventLogRecordEntity(
     @PrimaryKey
     val id: String,
-    val employeeDocumentId: String?,
+    val staffDocumentId: String?,
     val timeRecorded: Long? = null,
     val unit: String? = null,
     val eventType: EventLogEventType? = null,
-    val fallbackEmployeeName: String? = null,
+    val fallbackStaffName: String? = null,
     val fallbackEventType: String? = null,
     val summary: String? = null,
     val description: String? = null,

@@ -13,7 +13,7 @@ data class TimeCardEventNetworkResponse(
     @SerialName("id")
     val id: String,
     @SerialName("staff_id")
-    val staffId: String,
+    val staffId: String?,
     @SerialName("type")
     val type: String,
     @SerialName("time")

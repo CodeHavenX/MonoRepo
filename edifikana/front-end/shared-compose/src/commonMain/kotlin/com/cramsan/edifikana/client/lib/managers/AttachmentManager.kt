@@ -22,6 +22,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
+/**
+ * Manager for attachments.
+ */
 class AttachmentManager(
     private val eventLogService: EventLogService,
     private val storageService: StorageService,
@@ -32,6 +35,9 @@ class AttachmentManager(
     private val mutex = Mutex()
     private var uploadJob: Job? = null
 
+    /**
+     * Add an attachment to an event log record.
+     */
     suspend fun addAttachment(
         fileUris: List<CoreUri>,
         eventLogRecordPK: EventLogRecordPK,
@@ -93,6 +99,9 @@ class AttachmentManager(
         }
     }
 
+    /**
+     * Start the upload process.
+     */
     suspend fun startUpload(): Result<Job> = workContext.getOrCatch(TAG) {
         triggerFullUpload()
     }

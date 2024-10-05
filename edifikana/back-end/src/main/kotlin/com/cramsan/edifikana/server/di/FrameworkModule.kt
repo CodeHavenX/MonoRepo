@@ -12,13 +12,13 @@ import com.cramsan.framework.halt.implementation.HaltUtilJVM
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.EventLoggerDelegate
 import com.cramsan.framework.logging.EventLoggerErrorCallback
-import com.cramsan.framework.logging.EventLoggerErrorCallbackDelegate
 import com.cramsan.framework.logging.EventLoggerInterface
 import com.cramsan.framework.logging.Severity
 import com.cramsan.framework.logging.implementation.EventLoggerErrorCallbackImpl
 import com.cramsan.framework.logging.implementation.EventLoggerImpl
 import com.cramsan.framework.logging.implementation.Log4J2Helpers
 import com.cramsan.framework.logging.implementation.LoggerJVM
+import com.cramsan.framework.logging.implementation.NoopEventLoggerErrorCallbackDelegate
 import com.cramsan.framework.preferences.Preferences
 import com.cramsan.framework.preferences.PreferencesDelegate
 import com.cramsan.framework.preferences.implementation.JVMPreferencesDelegate
@@ -40,10 +40,16 @@ val FrameworkModule = module(createdAtStart = true) {
 
     single<Preferences> { PreferencesImpl(get()) }
 
-    single(named(IS_DEBUG_NAME)) { false }
+    single {
+        Severity.fromStringOrDefault(System.getenv(NAME_LOGGING), Severity.INFO)
+    }
+
+    single(named(NAME_LOG_TO_FILE)) {
+        System.getenv(NAME_LOG_TO_FILE).toBoolean()
+    }
 
     single<Logger> {
-        Log4J2Helpers.getRootLogger(get(named(IS_DEBUG_NAME)), Severity.DEBUG)
+        Log4J2Helpers.getRootLogger(get(named(NAME_LOG_TO_FILE)), Severity.DEBUG)
     }
 
     single<EventLoggerDelegate> { LoggerJVM(get()) }
@@ -51,22 +57,12 @@ val FrameworkModule = module(createdAtStart = true) {
     single<EventLoggerErrorCallback> {
         EventLoggerErrorCallbackImpl(
             get(),
-            object : EventLoggerErrorCallbackDelegate {
-                override fun handleErrorEvent(
-                    tag: String,
-                    message: String,
-                    throwable: Throwable,
-                    severity: Severity,
-                ) = Unit
-            },
+            NoopEventLoggerErrorCallbackDelegate,
         )
     }
 
     single<EventLoggerInterface> {
-        val severity: Severity = when (get<Boolean>(named(IS_DEBUG_NAME))) {
-            true -> Severity.VERBOSE
-            false -> Severity.VERBOSE
-        }
+        val severity: Severity = get()
         val instance = EventLoggerImpl(severity, get(), get())
         EventLogger.setInstance(instance)
         EventLogger.singleton
@@ -78,7 +74,7 @@ val FrameworkModule = module(createdAtStart = true) {
 
     single<AssertUtilInterface>(createdAtStart = true) {
         val impl = AssertUtilImpl(
-            true,
+            get(named(NAME_LOG_TO_FILE)),
             get(),
             get(),
         )
@@ -97,4 +93,6 @@ val FrameworkModule = module(createdAtStart = true) {
     single<DispatcherProvider> { BEDispatcherProvider() }
 }
 
-private const val IS_DEBUG_NAME = "isDebugEnabled"
+// Environment variables
+const val NAME_LOGGING = "EDIFIKANA_LOGGING"
+const val NAME_LOG_TO_FILE = "EDIFIKANA_LOG_TO_FILE"

@@ -16,6 +16,9 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
+/**
+ * Main activity view model.
+ */
 class MainActivityViewModel(
     private val auth: AuthManager,
     private val eventLogManager: EventLogManager,
@@ -39,6 +42,9 @@ class MainActivityViewModel(
         }
     }
 
+    /**
+     * Enforce auth.
+     */
     fun enforceAuth() = viewModelScope.launch {
         val result = auth.isSignedIn(true)
 
@@ -55,6 +61,9 @@ class MainActivityViewModel(
         }
     }
 
+    /**
+     * Handle received image.
+     */
     fun handleReceivedImage(uri: CoreUri?) = viewModelScope.launch {
         if (uri == null) {
             logI(TAG, "Uri was null.")
@@ -64,6 +73,9 @@ class MainActivityViewModel(
         }
     }
 
+    /**
+     * Handle received images.
+     */
     fun handleReceivedImages(uris: List<CoreUri>) = viewModelScope.launch {
         if (uris.isEmpty()) {
             logI(TAG, "Uri list is empty.")
@@ -73,6 +85,9 @@ class MainActivityViewModel(
         }
     }
 
+    /**
+     * Execute main activity event.
+     */
     fun executeMainActivityEvent(event: MainActivityEvent) = viewModelScope.launch {
         _events.emit(event)
     }

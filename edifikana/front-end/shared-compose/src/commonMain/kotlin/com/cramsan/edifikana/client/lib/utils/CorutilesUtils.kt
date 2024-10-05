@@ -11,6 +11,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+/**
+ * Get a result of a suspend function or catch the exception.
+ */
 suspend inline fun <T> WorkContext.getOrCatch(
     tag: String,
     crossinline block: suspend () -> T,
@@ -22,6 +25,9 @@ suspend inline fun <T> WorkContext.getOrCatch(
     logE(tag, "Operation failed. ", it)
 }
 
+/**
+ * Launch a coroutine with a tag.
+ */
 fun WorkContext.launch(tag: String, block: suspend CoroutineScope.() -> Unit): Job {
     return appScope.launch(
         context = coroutineExceptionHandler + CoroutineName(tag),
@@ -29,12 +35,24 @@ fun WorkContext.launch(tag: String, block: suspend CoroutineScope.() -> Unit): J
     )
 }
 
+/**
+ * I/O dependencies.
+ */
 expect class IODependencies
 
+/**
+ * Read bytes from a URI.
+ */
 expect fun readBytes(uri: CoreUri, dependencies: IODependencies): Result<ByteArray>
 
+/**
+ * Process image data.
+ */
 expect fun processImageData(data: ByteArray): Result<ByteArray>
 
+/**
+ * Run the suspend function and catch the exception.
+ */
 inline fun <T, R> T.runSuspendCatching(tag: String, block: T.() -> R): Result<R> {
     return try {
         Result.success(block())

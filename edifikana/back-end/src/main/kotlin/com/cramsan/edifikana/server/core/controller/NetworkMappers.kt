@@ -16,7 +16,7 @@ import com.cramsan.edifikana.server.core.service.models.User
  * Converts a [User] domain model to a [UserNetworkResponse] network model.
  */
 @NetworkModel
-fun User.toUserResponse(): UserNetworkResponse {
+fun User.toUserNetworkResponse(): UserNetworkResponse {
     return UserNetworkResponse(
         id = id.userId,
         email = email,
@@ -27,10 +27,13 @@ fun User.toUserResponse(): UserNetworkResponse {
  * Converts a [Staff] domain model to a [StaffNetworkResponse] network model.
  */
 @OptIn(NetworkModel::class)
-fun Staff.toStaffResponse(): StaffNetworkResponse {
+fun Staff.toStaffNetworkResponse(): StaffNetworkResponse {
     return StaffNetworkResponse(
         id = id.staffId,
-        name = name,
+        idType = idType,
+        firstName = firstName,
+        lastName = lastName,
+        role = role,
         propertyId = propertyId.propertyId,
     )
 }
@@ -39,12 +42,18 @@ fun Staff.toStaffResponse(): StaffNetworkResponse {
  * Converts a [EventLogEntry] domain model to a [EventLogEntryNetworkResponse] network model.
  */
 @OptIn(NetworkModel::class)
-fun EventLogEntry.toEventLogResponse(): EventLogEntryNetworkResponse {
+fun EventLogEntry.toEventLogEntryNetworkResponse(): EventLogEntryNetworkResponse {
     return EventLogEntryNetworkResponse(
         id = id.eventLogEntryId,
         title = title,
         staffId = staffId?.staffId,
-        time = time.toEpochMilliseconds(),
+        fallbackStaffName = fallbackStaffName,
+        propertyId = propertyId.propertyId,
+        type = type,
+        fallbackEventType = fallbackEventType,
+        timestamp = timestamp.epochSeconds,
+        description = description,
+        unit = unit,
     )
 }
 
@@ -52,7 +61,7 @@ fun EventLogEntry.toEventLogResponse(): EventLogEntryNetworkResponse {
  * Converts a [Property] domain model to a [PropertyNetworkResponse] network model.
  */
 @OptIn(NetworkModel::class)
-fun Property.toPropertyResponse(): PropertyNetworkResponse {
+fun Property.toPropertyNetworkResponse(): PropertyNetworkResponse {
     return PropertyNetworkResponse(
         id = id.propertyId,
         name = name,
@@ -63,11 +72,11 @@ fun Property.toPropertyResponse(): PropertyNetworkResponse {
  * Converts a [TimeCardEvent] domain model to a [TimeCardEventNetworkResponse] network model.
  */
 @OptIn(NetworkModel::class)
-fun TimeCardEvent.toTimeCardResponse(): TimeCardEventNetworkResponse {
+fun TimeCardEvent.toTimeCardEventNetworkResponse(): TimeCardEventNetworkResponse {
     return TimeCardEventNetworkResponse(
         id = id.timeCardEventId,
-        staffId = staffId.staffId,
+        staffId = staffId?.staffId,
         type = type.name,
-        time = time.toEpochMilliseconds(),
+        time = timestamp.epochSeconds,
     )
 }

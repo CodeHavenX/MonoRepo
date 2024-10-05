@@ -1,8 +1,10 @@
 package com.cramsan.edifikana.server.core.controller
 
+import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.server.core.service.EventLogService
 import com.cramsan.edifikana.server.core.service.models.EventLogEntry
 import com.cramsan.edifikana.server.core.service.models.EventLogEntryId
+import com.cramsan.edifikana.server.core.service.models.PropertyId
 import com.cramsan.edifikana.server.core.service.models.StaffId
 import com.cramsan.edifikana.server.core.utils.readFileContent
 import com.cramsan.framework.test.TestBase
@@ -45,17 +47,29 @@ class EventLogControllerTest : TestBase(), KoinTest {
         val expectedResponse = readFileContent("requests/create_event_log_entry_response.json")
         val userService = get<EventLogService>()
         coEvery {
-            userService.createEventLog(
-                StaffId("test"),
-                Instant.fromEpochMilliseconds(1727702654),
-                "test event",
+            userService.createEventLogEntry(
+                staffId = StaffId("staff456"),
+                fallbackStaffName = "John Doe",
+                propertyId = "property789",
+                type = EventLogEventType.MAINTENANCE_SERVICE,
+                fallbackEventType = "General Maintenance",
+                timestamp = Instant.fromEpochSeconds(1727702654),
+                title = "Routine Check",
+                description = "Performed routine maintenance check.",
+                unit = "Unit 101",
             )
         }.answers {
             EventLogEntry(
-                id = EventLogEntryId("test"),
-                staffId = StaffId("test"),
-                time = Instant.fromEpochMilliseconds(1727702654),
-                title = "test event",
+                id = EventLogEntryId("event123"),
+                staffId = StaffId("staff456"),
+                fallbackStaffName = "John Doe",
+                propertyId = PropertyId("property789"),
+                type = EventLogEventType.MAINTENANCE_SERVICE,
+                fallbackEventType = "General Maintenance",
+                timestamp = Instant.fromEpochSeconds(1727702654),
+                title = "Routine Check",
+                description = "Performed routine maintenance check.",
+                unit = "Unit 101",
             )
         }
 

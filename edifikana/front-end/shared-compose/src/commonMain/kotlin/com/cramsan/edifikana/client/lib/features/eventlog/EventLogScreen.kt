@@ -34,6 +34,9 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
+/**
+ * Represents the UI state of the Event Log screen.
+ */
 @Composable
 fun EventLogScreen(
     onMainActivityEventInvoke: (MainActivityEvent) -> Unit,

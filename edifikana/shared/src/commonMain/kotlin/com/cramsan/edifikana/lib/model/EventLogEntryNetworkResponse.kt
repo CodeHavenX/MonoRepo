@@ -10,12 +10,18 @@ import kotlinx.serialization.Serializable
 @NetworkModel
 @Serializable
 data class EventLogEntryNetworkResponse(
-    @SerialName("id")
     val id: String,
-    @SerialName("title")
-    val title: String,
     @SerialName("staff_id")
     val staffId: String?,
-    @SerialName("time")
-    val time: Long,
+    @SerialName("fallback_staff_name")
+    val fallbackStaffName: String?,
+    @SerialName("property_id")
+    val propertyId: String,
+    val type: EventLogEventType,
+    @SerialName("fallback_type")
+    val fallbackEventType: String?,
+    val timestamp: Long,
+    val title: String,
+    val description: String?,
+    val unit: String,
 )

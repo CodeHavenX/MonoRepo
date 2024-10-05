@@ -2,6 +2,8 @@
 
 package com.cramsan.edifikana.server.core.repository.dummy
 
+import com.cramsan.edifikana.lib.model.IdType
+import com.cramsan.edifikana.lib.model.StaffRole
 import com.cramsan.edifikana.server.core.repository.StaffDatabase
 import com.cramsan.edifikana.server.core.service.models.PropertyId
 import com.cramsan.edifikana.server.core.service.models.Staff
@@ -21,8 +23,11 @@ class DummyStaffDatabase : StaffDatabase {
         return Result.success(
             Staff(
                 id = StaffId("1"),
-                name = "Test",
+                firstName = "Test",
+                lastName = "Test",
                 propertyId = PropertyId("1"),
+                role = StaffRole.CLEANING,
+                idType = IdType.DNI,
             )
         )
     }
@@ -32,8 +37,11 @@ class DummyStaffDatabase : StaffDatabase {
         return Result.success(
             Staff(
                 id = StaffId("1"),
-                name = "Test",
+                firstName = "Test",
+                lastName = "Test",
                 propertyId = PropertyId("1"),
+                role = StaffRole.CLEANING,
+                idType = IdType.DNI,
             )
         )
     }
@@ -44,8 +52,11 @@ class DummyStaffDatabase : StaffDatabase {
             (0..10).map {
                 Staff(
                     id = StaffId(it.toString()),
-                    name = "Test $it",
+                    firstName = "Test $it",
+                    lastName = "$it",
                     propertyId = PropertyId(it.toString()),
+                    role = StaffRole.CLEANING,
+                    idType = IdType.DNI,
                 )
             }
         )
@@ -56,8 +67,11 @@ class DummyStaffDatabase : StaffDatabase {
         return Result.success(
             Staff(
                 id = StaffId("1"),
-                name = "Test",
+                firstName = "Test",
+                lastName = "Test",
                 propertyId = PropertyId("1"),
+                role = StaffRole.CLEANING,
+                idType = IdType.DNI,
             )
         )
     }

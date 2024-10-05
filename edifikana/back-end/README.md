@@ -113,7 +113,7 @@ service cloud.firestore {
 - Not all queries are can be run directly from the app, some require first to enable an index:
 - Open the IDE and connect the logcat
 - Open the app. Go into the Events page
-- Select into any employee
+- Select into any staff
 - Look into the logs, there will be a message about missng index and an included link.
 - Open the link.
 - Ensure that the correct project is selected

@@ -1,18 +1,21 @@
 package com.cramsan.edifikana.client.lib.models
 
-import com.cramsan.edifikana.lib.EmployeePK
 import com.cramsan.edifikana.lib.EventLogRecordPK
+import com.cramsan.edifikana.lib.StaffPK
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import kotlin.random.Random
 
+/**
+ * Model for an event log record.
+ */
 data class EventLogRecordModel(
     val id: EventLogRecordPK?,
     val entityId: String?,
-    val employeePk: EmployeePK?,
+    val staffPk: StaffPK?,
     val timeRecorded: Long,
     val unit: String,
     val eventType: EventLogEventType,
-    val fallbackEmployeeName: String?,
+    val fallbackStaffName: String?,
     val fallbackEventType: String?,
     val summary: String,
     val description: String,
@@ -25,11 +28,11 @@ data class EventLogRecordModel(
          * yet.
          */
         fun createTemporary(
-            employeePk: EmployeePK?,
+            staffPk: StaffPK?,
             timeRecorded: Long,
             unit: String,
             eventType: EventLogEventType?,
-            fallbackEmployeeName: String?,
+            fallbackStaffName: String?,
             fallbackEventType: String?,
             summary: String,
             description: String,
@@ -38,11 +41,11 @@ data class EventLogRecordModel(
             return EventLogRecordModel(
                 id = null,
                 entityId = Random.nextInt().toString(),
-                employeePk = employeePk,
+                staffPk = staffPk,
                 timeRecorded = timeRecorded,
                 unit = unit.trim(),
                 eventType = eventType ?: EventLogEventType.INCIDENT,
-                fallbackEmployeeName = fallbackEmployeeName?.trim(),
+                fallbackStaffName = fallbackStaffName?.trim(),
                 fallbackEventType = fallbackEventType?.trim(),
                 summary = summary.trim(),
                 description = description.trim(),
@@ -52,6 +55,9 @@ data class EventLogRecordModel(
     }
 }
 
+/**
+ * Holder for an attachment.
+ */
 data class AttachmentHolder(
     val publicUrl: String,
     val storageRef: StorageRef?,

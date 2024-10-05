@@ -1,6 +1,12 @@
 {
-    "id": "test",
-    "title": "test event",
-    "staff_id": "test",
-    "time": 1727702654
+    "id": "event123",
+    "staff_id": "staff456",
+    "fallback_staff_name": "John Doe",
+    "property_id": "property789",
+    "type": "MAINTENANCE_SERVICE",
+    "fallback_type": "General Maintenance",
+    "timestamp": 1727702654,
+    "title": "Routine Check",
+    "description": "Performed routine maintenance check.",
+    "unit": "Unit 101"
 }

@@ -31,6 +31,7 @@ import com.cramsan.framework.thread.ThreadUtilInterface
 import com.cramsan.framework.thread.implementation.ThreadUtilImpl
 import com.cramsan.framework.thread.implementation.ThreadUtilJVM
 import io.mockk.mockk
+import kotlinx.datetime.Clock
 import kotlinx.serialization.json.Json
 import org.apache.logging.log4j.Logger
 import org.koin.core.module.dsl.singleOf
@@ -84,6 +85,8 @@ fun testKtorModule() = module {
  */
 fun testApplicationModule() = module {
     single<Json> { createJson() }
+
+    single<Clock> { mockk() }
 
     // Services
     single<UserService> { mockk() }

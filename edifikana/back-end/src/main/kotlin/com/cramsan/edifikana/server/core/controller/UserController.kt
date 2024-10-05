@@ -35,7 +35,7 @@ class UserController(
 
         val newUser = userService.createUser(
             createUserRequest.email,
-        ).toUserResponse()
+        ).toUserNetworkResponse()
 
         HttpResponse(
             status = HttpStatusCode.OK,
@@ -52,7 +52,7 @@ class UserController(
 
         val user = userService.getUser(
             UserId(userId),
-        )?.toUserResponse()
+        )?.toUserNetworkResponse()
 
         val statusCode = if (user == null) {
             HttpStatusCode.NotFound
@@ -71,7 +71,7 @@ class UserController(
      */
     @OptIn(NetworkModel::class)
     suspend fun getUsers(call: ApplicationCall) = call.handleCall(TAG, "getUsers") {
-        val users = userService.getUsers().map { it.toUserResponse() }
+        val users = userService.getUsers().map { it.toUserNetworkResponse() }
 
         HttpResponse(
             status = HttpStatusCode.OK,
@@ -91,7 +91,7 @@ class UserController(
         val updatedUser = userService.updateUser(
             id = UserId(userId),
             username = updateUserRequest.email,
-        ).toUserResponse()
+        ).toUserNetworkResponse()
 
         HttpResponse(
             status = HttpStatusCode.OK,
@@ -141,10 +141,10 @@ class UserController(
                 get {
                     getUsers(call)
                 }
-                put {
+                put("{$USER_ID}") {
                     updateUser(call)
                 }
-                delete {
+                delete("{$USER_ID}") {
                     deleteUser(call)
                 }
             }

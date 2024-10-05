@@ -1,6 +1,9 @@
 package com.cramsan.edifikana.server.core.service
 
+import com.cramsan.edifikana.lib.model.IdType
+import com.cramsan.edifikana.lib.model.StaffRole
 import com.cramsan.edifikana.server.core.repository.StaffDatabase
+import com.cramsan.edifikana.server.core.service.models.PropertyId
 import com.cramsan.edifikana.server.core.service.models.Staff
 import com.cramsan.edifikana.server.core.service.models.StaffId
 import com.cramsan.edifikana.server.core.service.models.requests.CreateStaffRequest
@@ -19,11 +22,19 @@ class StaffService(
      * Creates a staff with the provided [name].
      */
     suspend fun createStaff(
-        name: String,
+        idType: IdType,
+        firstName: String,
+        lastName: String,
+        role: StaffRole,
+        propertyId: PropertyId,
     ): Staff {
         return staffDatabase.createStaff(
             request = CreateStaffRequest(
-                name = name,
+                idType = idType,
+                firstName = firstName,
+                lastName = lastName,
+                role = role,
+                propertyId = propertyId,
             ),
         ).getOrThrow()
     }
@@ -56,12 +67,20 @@ class StaffService(
      */
     suspend fun updateStaff(
         id: StaffId,
-        name: String?,
+        idType: IdType?,
+        firstName: String?,
+        lastName: String?,
+        role: StaffRole?,
+        propertyId: PropertyId?,
     ): Staff {
         return staffDatabase.updateStaff(
             request = UpdateStaffRequest(
                 id = id,
-                name = name,
+                idType = idType,
+                firstName = firstName,
+                lastName = lastName,
+                role = role,
+                propertyId = propertyId,
             ),
         ).getOrThrow()
     }

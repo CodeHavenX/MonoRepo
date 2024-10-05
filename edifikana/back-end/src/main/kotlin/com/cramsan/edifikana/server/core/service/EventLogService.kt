@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.core.service
 
+import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.server.core.repository.EventLogDatabase
 import com.cramsan.edifikana.server.core.service.models.EventLogEntry
 import com.cramsan.edifikana.server.core.service.models.EventLogEntryId
@@ -18,18 +19,30 @@ class EventLogService(
 ) {
 
     /**
-     * Creates an event log with the provided [title].
+     * Creates an event log entry with the provided parameters.
      */
-    suspend fun createEventLog(
+    suspend fun createEventLogEntry(
         staffId: StaffId?,
-        time: Instant,
+        fallbackStaffName: String?,
+        propertyId: String,
+        type: EventLogEventType,
+        fallbackEventType: String?,
+        timestamp: Instant,
         title: String,
+        description: String?,
+        unit: String,
     ): EventLogEntry {
         return eventLogDatabase.createEventLogEntry(
             request = CreateEventLogEntryRequest(
                 staffId = staffId,
-                time = time,
+                fallbackStaffName = fallbackStaffName,
+                propertyId = propertyId,
+                type = type,
+                fallbackEventType = fallbackEventType,
+                timestamp = timestamp,
                 title = title,
+                description = description,
+                unit = unit,
             ),
         ).getOrThrow()
     }
@@ -37,7 +50,7 @@ class EventLogService(
     /**
      * Retrieves an event log with the provided [id].
      */
-    suspend fun getEventLog(
+    suspend fun getEventLogEntry(
         id: EventLogEntryId,
     ): EventLogEntry? {
         val eventLog = eventLogDatabase.getEventLogEntry(
@@ -52,15 +65,15 @@ class EventLogService(
     /**
      * Retrieves all event logs.
      */
-    suspend fun getEventLogs(): List<EventLogEntry> {
+    suspend fun getEventLogEntries(): List<EventLogEntry> {
         val eventLogs = eventLogDatabase.getEventLogEntries().getOrThrow()
         return eventLogs
     }
 
     /**
-     * Updates an event log with the provided [id] and [description].
+     * Updates an event log entry with the provided [id] and parameters.
      */
-    suspend fun updateEventLog(
+    suspend fun updateEventLogEntry(
         id: EventLogEntryId,
         staffId: StaffId?,
         time: Instant?,
@@ -79,7 +92,7 @@ class EventLogService(
     /**
      * Deletes an event log with the provided [id].
      */
-    suspend fun deleteEventLog(
+    suspend fun deleteEventLogEntry(
         id: EventLogEntryId,
     ): Boolean {
         return eventLogDatabase.deleteEventLogEntry(

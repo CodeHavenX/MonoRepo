@@ -12,6 +12,9 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 
+/**
+ * Main application class for Edifikana Android application.
+ */
 class EdifikanaApplication : Application() {
 
     override fun onCreate() {

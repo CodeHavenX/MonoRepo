@@ -3,9 +3,9 @@ package com.cramsan.edifikana.client.lib.features.timecard
 import com.cramsan.edifikana.client.lib.features.base.EdifikanaBaseViewModel
 import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.lib.features.main.Route
-import com.cramsan.edifikana.client.lib.managers.EmployeeManager
+import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.client.lib.managers.TimeCardManager
-import com.cramsan.edifikana.lib.EmployeePK
+import com.cramsan.edifikana.lib.StaffPK
 import com.cramsan.framework.core.DispatcherProvider
 import edifikana_lib.Res
 import edifikana_lib.title_timecard
@@ -18,9 +18,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 
+/**
+ * Represents the UI state of the Time Card screen.
+ */
 class TimeCartViewModel(
     private val timeCardManager: TimeCardManager,
-    private val employeeManager: EmployeeManager,
+    private val staffManager: StaffManager,
     exceptionHandler: CoroutineExceptionHandler,
     dispatcherProvider: DispatcherProvider,
 ) : EdifikanaBaseViewModel(exceptionHandler, dispatcherProvider) {
@@ -32,41 +35,58 @@ class TimeCartViewModel(
             "",
         )
     )
+
+    /**
+     * UI state flow.
+     */
     val uiState: StateFlow<TimeCardUIState> = _uiState
 
     private val _event = MutableSharedFlow<TimeCardEvent>()
+
+    /**
+     * Event flow.
+     */
     val event: SharedFlow<TimeCardEvent> = _event
 
+    /**
+     * Load events.
+     */
     fun loadEvents() = viewModelScope.launch {
         _uiState.value = _uiState.value.copy(isLoading = true)
-        val employeesJob = async { employeeManager.getEmployees() }
+        val staffsJob = async { staffManager.getStaffs() }
         val result = timeCardManager.getAllRecords()
-        val employeesResult = employeesJob.await()
-        if (result.isFailure || employeesResult.isFailure) {
+        val staffsResult = staffsJob.await()
+        if (result.isFailure || staffsResult.isFailure) {
             _uiState.value = TimeCardUIState(emptyList(), false, getString(Res.string.title_timecard))
         } else {
             val events = result.getOrThrow()
-            val employees = employeesResult.getOrThrow()
+            val staffs = staffsResult.getOrThrow()
             _uiState.value = TimeCardUIState(
-                events.toUIModel(employees),
+                events.toUIModel(staffs),
                 false,
                 getString(Res.string.title_timecard)
             )
         }
     }
 
-    fun navigateToEmployee(employeePK: EmployeePK) = viewModelScope.launch {
+    /**
+     * Navigate to staff.
+     */
+    fun navigateToStaff(staffPK: StaffPK) = viewModelScope.launch {
         _event.emit(
             TimeCardEvent.TriggerMainActivityEvent(
-                MainActivityEvent.Navigate(Route.toTimeCardSingleEmployeeRoute(employeePK))
+                MainActivityEvent.Navigate(Route.toTimeCardSingleStaffRoute(staffPK))
             )
         )
     }
 
-    fun navigateToEmployeeList() = viewModelScope.launch {
+    /**
+     * Navigate to staff list.
+     */
+    fun navigateToStaffList() = viewModelScope.launch {
         _event.emit(
             TimeCardEvent.TriggerMainActivityEvent(
-                MainActivityEvent.Navigate(Route.toTimeCardEmployeeListRoute())
+                MainActivityEvent.Navigate(Route.toTimeCardStaffListRoute())
             )
         )
     }

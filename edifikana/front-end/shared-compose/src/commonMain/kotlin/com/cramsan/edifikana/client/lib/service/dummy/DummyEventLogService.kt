@@ -4,8 +4,8 @@ package com.cramsan.edifikana.client.lib.service.dummy
 
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.client.lib.service.EventLogService
-import com.cramsan.edifikana.lib.EmployeePK
 import com.cramsan.edifikana.lib.EventLogRecordPK
+import com.cramsan.edifikana.lib.StaffPK
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import kotlinx.datetime.Clock
 
@@ -19,7 +19,7 @@ class DummyEventLogService : EventLogService {
                 EventLogRecordModel(
                     EventLogRecordPK("$it"),
                     "Event $it",
-                    EmployeePK("empoyee_$it"),
+                    StaffPK("empoyee_$it"),
                     Clock.System.now().epochSeconds,
                     "Appt $it",
                     EventLogEventType.INCIDENT,
@@ -38,7 +38,7 @@ class DummyEventLogService : EventLogService {
             EventLogRecordModel(
                 eventLogRecordPK,
                 "Event ${eventLogRecordPK.documentPath}",
-                EmployeePK("empoyee_${eventLogRecordPK.documentPath}"),
+                StaffPK("empoyee_${eventLogRecordPK.documentPath}"),
                 Clock.System.now().epochSeconds,
                 "Appt 1801",
                 EventLogEventType.INCIDENT,
@@ -51,11 +51,11 @@ class DummyEventLogService : EventLogService {
         )
     }
 
-    override suspend fun addRecord(eventLogRecord: EventLogRecordModel): Result<Unit> {
-        return Result.success(Unit)
+    override suspend fun addRecord(eventLogRecord: EventLogRecordModel): Result<EventLogRecordModel> {
+        return TODO()
     }
 
-    override suspend fun updateRecord(eventLogRecord: EventLogRecordModel): Result<Unit> {
-        return Result.success(Unit)
+    override suspend fun updateRecord(eventLogRecord: EventLogRecordModel): Result<EventLogRecordModel> {
+        return TODO()
     }
 }

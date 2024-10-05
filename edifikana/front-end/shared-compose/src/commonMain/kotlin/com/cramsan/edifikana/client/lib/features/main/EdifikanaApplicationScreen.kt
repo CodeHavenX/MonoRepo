@@ -11,6 +11,9 @@ import androidx.navigation.compose.rememberNavController
 import com.cramsan.edifikana.client.lib.ui.theme.AppTheme
 import org.koin.compose.koinInject
 
+/**
+ * Edifikana application screen.
+ */
 @Composable
 fun EdifikanaApplicationScreen(
     viewModel: MainActivityViewModel = koinInject(),
@@ -73,11 +76,13 @@ fun EdifikanaApplicationScreen(
                 navController = navController,
                 mainActivityDelegatedEvent = delegatedEvent,
                 onMainActivityEventInvoke = { viewModel.executeMainActivityEvent(it) },
-                formTabFeatureEnabled = false,
             )
         }
     }
 }
 
+/**
+ * Edifikana main screen event handler.
+ */
 @Composable
 expect fun ComposableKoinContext(content: @Composable () -> Unit)

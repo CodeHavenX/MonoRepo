@@ -7,6 +7,9 @@ import android.provider.MediaStore
 import com.cramsan.edifikana.client.lib.models.StorageRef
 import com.cramsan.framework.core.CoreUri
 
+/**
+ * Strategy for downloading files on Android.
+ */
 class AndroidDownloadStrategy(
     private val context: Context,
 ) : DownloadStrategy {

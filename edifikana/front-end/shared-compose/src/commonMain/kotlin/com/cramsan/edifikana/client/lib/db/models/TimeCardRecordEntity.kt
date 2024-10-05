@@ -11,7 +11,7 @@ import com.cramsan.edifikana.lib.model.TimeCardEventType
 data class TimeCardRecordEntity(
     @PrimaryKey
     val id: String,
-    val employeeDocumentId: String?,
+    val staffDocumentId: String?,
     val eventType: TimeCardEventType? = null,
     val eventTime: Long? = null,
     val cachedImageUrl: String? = null,

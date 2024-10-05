@@ -4,7 +4,7 @@ package com.cramsan.edifikana.client.lib.service.dummy
 
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
 import com.cramsan.edifikana.client.lib.service.TimeCardService
-import com.cramsan.edifikana.lib.EmployeePK
+import com.cramsan.edifikana.lib.StaffPK
 import com.cramsan.edifikana.lib.TimeCardRecordPK
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import kotlinx.datetime.Clock
@@ -13,13 +13,13 @@ import kotlinx.datetime.Clock
  * Dummy implementation of [TimeCardService] for testing purposes.
  */
 class DummyTimeCardService : TimeCardService {
-    override suspend fun getRecords(employeePK: EmployeePK): Result<List<TimeCardRecordModel>> {
+    override suspend fun getRecords(staffPK: StaffPK): Result<List<TimeCardRecordModel>> {
         return Result.success(
             (0..10).map {
                 TimeCardRecordModel(
                     id = TimeCardRecordPK("$it"),
                     entityId = null,
-                    employeePk = EmployeePK("$it"),
+                    staffPk = StaffPK("$it"),
                     eventType = TimeCardEventType.CLOCK_IN,
                     eventTime = Clock.System.now().epochSeconds,
                     imageUrl = "",
@@ -35,7 +35,7 @@ class DummyTimeCardService : TimeCardService {
                 TimeCardRecordModel(
                     id = TimeCardRecordPK("$it"),
                     entityId = null,
-                    employeePk = EmployeePK("$it"),
+                    staffPk = StaffPK("$it"),
                     eventType = TimeCardEventType.CLOCK_IN,
                     eventTime = Clock.System.now().epochSeconds,
                     imageUrl = "",
@@ -50,7 +50,7 @@ class DummyTimeCardService : TimeCardService {
             TimeCardRecordModel(
                 id = TimeCardRecordPK("1"),
                 entityId = null,
-                employeePk = EmployeePK("1"),
+                staffPk = StaffPK("1"),
                 eventType = TimeCardEventType.CLOCK_IN,
                 eventTime = Clock.System.now().epochSeconds,
                 imageUrl = "",

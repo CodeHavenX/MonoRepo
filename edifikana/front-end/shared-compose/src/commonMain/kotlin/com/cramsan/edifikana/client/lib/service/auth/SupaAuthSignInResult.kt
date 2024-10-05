@@ -2,6 +2,9 @@ package com.cramsan.edifikana.client.lib.service.auth
 
 import io.github.jan.supabase.compose.auth.composable.NativeSignInResult
 
+/**
+ * Result of a sign in operation.
+ */
 class SupaAuthSignInResult(
     private val result: NativeSignInResult,
 ) : SignInResult {

@@ -45,7 +45,7 @@ fun Staff.toStaffNetworkResponse(): StaffNetworkResponse {
 fun EventLogEntry.toEventLogEntryNetworkResponse(): EventLogEntryNetworkResponse {
     return EventLogEntryNetworkResponse(
         id = id.eventLogEntryId,
-        title = title,
+        summary = summary,
         staffId = staffId?.staffId,
         fallbackStaffName = fallbackStaffName,
         propertyId = propertyId.propertyId,
@@ -76,7 +76,10 @@ fun TimeCardEvent.toTimeCardEventNetworkResponse(): TimeCardEventNetworkResponse
     return TimeCardEventNetworkResponse(
         id = id.timeCardEventId,
         staffId = staffId?.staffId,
-        type = type.name,
-        time = timestamp.epochSeconds,
+        fallbackStaffName = fallbackStaffName,
+        propertyId = propertyId.propertyId,
+        type = type,
+        imageUrl = imageUrl,
+        timestamp = timestamp.epochSeconds,
     )
 }

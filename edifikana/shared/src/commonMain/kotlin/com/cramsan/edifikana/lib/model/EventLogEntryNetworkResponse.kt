@@ -21,7 +21,7 @@ data class EventLogEntryNetworkResponse(
     @SerialName("fallback_type")
     val fallbackEventType: String?,
     val timestamp: Long,
-    val title: String,
+    val summary: String,
     val description: String?,
     val unit: String,
 )

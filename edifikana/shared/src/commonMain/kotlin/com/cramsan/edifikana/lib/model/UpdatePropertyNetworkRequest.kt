@@ -11,5 +11,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class UpdatePropertyNetworkRequest(
     @SerialName("name")
-    val name: String,
+    val name: String?,
 )

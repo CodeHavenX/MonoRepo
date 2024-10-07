@@ -10,10 +10,10 @@ import kotlinx.serialization.Serializable
 @NetworkModel
 @Serializable
 data class UpdateEventLogEntryNetworkRequest(
-    @SerialName("title")
-    val title: String,
-    @SerialName("staff_id")
-    val staffId: String,
-    @SerialName("time")
-    val time: Long,
+    val type: EventLogEventType?,
+    @SerialName("fallback_type")
+    val fallbackEventType: String?,
+    val summary: String?,
+    val description: String?,
+    val unit: String?,
 )

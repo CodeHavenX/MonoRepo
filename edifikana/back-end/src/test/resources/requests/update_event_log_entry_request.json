@@ -1,0 +1,7 @@
+{
+    "type": "INCIDENT",
+    "fallback_type": "Inspection",
+    "summary": "Monthly check",
+    "description": "Performed monthly inspection.",
+    "unit": "Unit 202"
+}

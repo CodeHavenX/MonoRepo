@@ -102,7 +102,7 @@ class PropertyController(
     /**
      * Handles the deletion of a property. The [call] parameter is the request context.
      */
-    suspend fun deleteProperty(call: RoutingCall) {
+    suspend fun deleteProperty(call: RoutingCall) = call.handleCall(TAG, "deleteProperty") {
         val propertyId = requireNotNull(call.parameters[PROPERTY_ID])
 
         val success = propertyService.deleteProperty(
@@ -138,10 +138,10 @@ class PropertyController(
                 get {
                     getProperties(call)
                 }
-                put {
+                put("{$PROPERTY_ID}") {
                     updateProperty(call)
                 }
-                delete {
+                delete("{$PROPERTY_ID}") {
                     deleteProperty(call)
                 }
             }

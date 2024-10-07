@@ -1,0 +1,8 @@
+{
+    "id": "staff123",
+    "id_type": "DNI",
+    "first_name": "John",
+    "last_name": "Doe",
+    "role": "SECURITY",
+    "property_id": "property123"
+}

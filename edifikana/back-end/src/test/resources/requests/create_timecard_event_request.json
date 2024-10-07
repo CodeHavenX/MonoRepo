@@ -1,0 +1,7 @@
+{
+    "staff_id": "staff123",
+    "fallback_staff_name": "John Doe",
+    "property_id": "property123",
+    "type": "CLOCK_OUT",
+    "image_url": "http://example.com/image.jpg"
+}

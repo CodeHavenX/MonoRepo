@@ -28,7 +28,7 @@ class EventLogService(
         type: EventLogEventType,
         fallbackEventType: String?,
         timestamp: Instant,
-        title: String,
+        summary: String,
         description: String?,
         unit: String,
     ): EventLogEntry {
@@ -40,7 +40,7 @@ class EventLogService(
                 type = type,
                 fallbackEventType = fallbackEventType,
                 timestamp = timestamp,
-                title = title,
+                summary = summary,
                 description = description,
                 unit = unit,
             ),
@@ -75,16 +75,20 @@ class EventLogService(
      */
     suspend fun updateEventLogEntry(
         id: EventLogEntryId,
-        staffId: StaffId?,
-        time: Instant?,
-        title: String,
+        type: EventLogEventType?,
+        fallbackEventType: String?,
+        summary: String?,
+        description: String?,
+        unit: String?,
     ): EventLogEntry {
         return eventLogDatabase.updateEventLogEntry(
             request = UpdateEventLogEntryRequest(
                 id = id,
-                title = title,
-                staffId = staffId,
-                time = time,
+                type = type,
+                fallbackEventType = fallbackEventType,
+                summary = summary,
+                description = description,
+                unit = unit,
             ),
         ).getOrThrow()
     }

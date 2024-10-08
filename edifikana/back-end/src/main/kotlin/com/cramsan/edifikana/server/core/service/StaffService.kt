@@ -71,7 +71,6 @@ class StaffService(
         firstName: String?,
         lastName: String?,
         role: StaffRole?,
-        propertyId: PropertyId?,
     ): Staff {
         return staffDatabase.updateStaff(
             request = UpdateStaffRequest(
@@ -80,7 +79,6 @@ class StaffService(
                 firstName = firstName,
                 lastName = lastName,
                 role = role,
-                propertyId = propertyId,
             ),
         ).getOrThrow()
     }

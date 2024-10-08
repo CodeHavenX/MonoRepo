@@ -1,0 +1,26 @@
+[
+    {
+        "id": "event123",
+        "staff_id": "staff456",
+        "fallback_staff_name": "John Doe",
+        "property_id": "property789",
+        "type": "MAINTENANCE_SERVICE",
+        "fallback_type": "General Maintenance",
+        "timestamp": 1727702654,
+        "summary": "Routine Check",
+        "description": "Performed routine maintenance check.",
+        "unit": "Unit 101"
+    },
+    {
+        "id": "event456",
+        "staff_id": "staff789",
+        "fallback_staff_name": "Jane Doe",
+        "property_id": "property101",
+        "type": "MAINTENANCE_SERVICE",
+        "fallback_type": "General Maintenance",
+        "timestamp": 1727702654,
+        "summary": "Routine Check",
+        "description": "Performed routine maintenance check.",
+        "unit": "Unit 101"
+    }
+]

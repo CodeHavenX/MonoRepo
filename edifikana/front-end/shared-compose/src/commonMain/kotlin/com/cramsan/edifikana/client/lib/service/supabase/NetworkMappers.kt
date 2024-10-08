@@ -22,7 +22,7 @@ fun EventLogEntryNetworkResponse.toEventLogRecordModel(): EventLogRecordModel {
         eventType = type,
         fallbackStaffName = fallbackEventType,
         fallbackEventType = fallbackStaffName,
-        summary = title,
+        summary = summary,
         description = description.orEmpty(),
         emptyList(),
     )
@@ -40,7 +40,7 @@ fun EventLogRecordModel.toCreateEventLogEntryNetworkRequest(): CreateEventLogEnt
         type = eventType,
         fallbackEventType = fallbackEventType,
         timestamp = timeRecorded,
-        title = summary,
+        summary = summary,
         description = description,
         unit = unit,
     )
@@ -52,8 +52,10 @@ fun EventLogRecordModel.toCreateEventLogEntryNetworkRequest(): CreateEventLogEnt
 @OptIn(NetworkModel::class)
 fun EventLogRecordModel.toUpdateEventLogEntryNetworkRequest(): UpdateEventLogEntryNetworkRequest {
     return UpdateEventLogEntryNetworkRequest(
-        title = summary,
-        staffId = staffPk?.documentPath ?: TODO(),
-        time = timeRecorded,
+        type = eventType,
+        fallbackEventType = fallbackEventType,
+        summary = summary,
+        description = description,
+        unit = unit,
     )
 }

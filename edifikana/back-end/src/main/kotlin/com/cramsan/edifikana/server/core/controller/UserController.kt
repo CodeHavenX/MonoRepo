@@ -90,7 +90,7 @@ class UserController(
 
         val updatedUser = userService.updateUser(
             id = UserId(userId),
-            username = updateUserRequest.email,
+            email = updateUserRequest.email,
         ).toUserNetworkResponse()
 
         HttpResponse(
@@ -102,7 +102,7 @@ class UserController(
     /**
      * Handles the deletion of a user. The [call] parameter is the request context.
      */
-    suspend fun deleteUser(call: RoutingCall) {
+    suspend fun deleteUser(call: RoutingCall) = call.handleCall(TAG, "deleteUser") {
         val userId = requireNotNull(call.parameters[USER_ID])
 
         val success = userService.deleteUser(

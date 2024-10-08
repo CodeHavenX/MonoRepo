@@ -1,0 +1,20 @@
+[
+    {
+        "id": "timecard123",
+        "staff_id": "staff123",
+        "fallback_staff_name": "John Doe",
+        "property_id": "property123",
+        "type": "CLOCK_IN",
+        "image_url": "http://example.com/image.jpg",
+        "timestamp": 1727702654
+    },
+    {
+        "id": "timecard456",
+        "staff_id": "staff456",
+        "fallback_staff_name": "Jane Smith",
+        "property_id": "property456",
+        "type": "CLOCK_IN",
+        "image_url": "http://example.com/image2.jpg",
+        "timestamp": 1727702654
+    }
+]

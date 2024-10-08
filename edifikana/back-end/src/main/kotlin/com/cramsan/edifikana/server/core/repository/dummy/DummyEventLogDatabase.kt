@@ -32,7 +32,7 @@ class DummyEventLogDatabase(
                 type = EventLogEventType.INCIDENT,
                 fallbackEventType = null,
                 timestamp = clock.now(),
-                title = "Test",
+                summary = "Test",
                 description = null,
                 unit = "Test"
             )
@@ -50,7 +50,7 @@ class DummyEventLogDatabase(
                 type = EventLogEventType.INCIDENT,
                 fallbackEventType = null,
                 timestamp = clock.now(),
-                title = "Test",
+                summary = "Test",
                 description = null,
                 unit = "Test"
             )
@@ -69,7 +69,7 @@ class DummyEventLogDatabase(
                     type = EventLogEventType.INCIDENT,
                     fallbackEventType = null,
                     timestamp = clock.now(),
-                    title = "Test",
+                    summary = "Test",
                     description = null,
                     unit = "Test"
                 )
@@ -88,7 +88,7 @@ class DummyEventLogDatabase(
                 type = EventLogEventType.INCIDENT,
                 fallbackEventType = null,
                 timestamp = clock.now(),
-                title = "Test",
+                summary = "Test",
                 description = null,
                 unit = "Test"
             )

@@ -136,7 +136,7 @@ fun CreateEventLogEntryRequest.toEventLogEntryEntity(): EventLogEntryEntity.Crea
         type = type,
         fallbackEventType = fallbackEventType,
         timestamp = timestamp.epochSeconds,
-        title = title,
+        summary = summary,
         description = description,
         unit = unit,
     )
@@ -155,7 +155,7 @@ fun EventLogEntryEntity.toEventLogEntry(): EventLogEntry {
         type = this.type,
         fallbackEventType = this.fallbackEventType,
         timestamp = Instant.fromEpochSeconds(this.timestamp),
-        title = this.title,
+        summary = this.summary,
         description = this.description,
         unit = this.unit,
     )

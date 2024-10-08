@@ -56,7 +56,7 @@ class PropertyService(
      */
     suspend fun updateProperty(
         id: PropertyId,
-        name: String,
+        name: String?,
     ): Property {
         return propertyDatabase.updateProperty(
             request = UpdatePropertyRequest(

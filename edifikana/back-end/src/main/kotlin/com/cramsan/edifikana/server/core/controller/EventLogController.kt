@@ -42,7 +42,7 @@ class EventLogController(
             type = createEventLogRequest.type,
             fallbackEventType = createEventLogRequest.fallbackEventType,
             timestamp = Instant.fromEpochSeconds(createEventLogRequest.timestamp),
-            title = createEventLogRequest.title,
+            summary = createEventLogRequest.summary,
             description = createEventLogRequest.description,
             unit = createEventLogRequest.unit,
         ).toEventLogEntryNetworkResponse()
@@ -100,9 +100,11 @@ class EventLogController(
 
         val updatedEventLog = eventLogService.updateEventLogEntry(
             id = EventLogEntryId(eventLogId),
-            title = updateEventLogRequest.title,
-            staffId = StaffId(updateEventLogRequest.staffId),
-            time = Instant.fromEpochMilliseconds(updateEventLogRequest.time),
+            type = updateEventLogRequest.type,
+            fallbackEventType = updateEventLogRequest.fallbackEventType,
+            summary = updateEventLogRequest.summary,
+            description = updateEventLogRequest.description,
+            unit = updateEventLogRequest.unit,
         ).toEventLogEntryNetworkResponse()
 
         HttpResponse(
@@ -114,7 +116,7 @@ class EventLogController(
     /**
      * Handles the deletion of an event log entry. The [call] parameter is the request context.
      */
-    suspend fun deleteEventLogEntry(call: RoutingCall) {
+    suspend fun deleteEventLogEntry(call: RoutingCall) = call.handleCall(TAG, "deleteEventLogEntry") {
         val eventLogId = requireNotNull(call.parameters[EVENT_LOG_ENTRY_ID])
 
         val success = eventLogService.deleteEventLogEntry(
@@ -144,16 +146,16 @@ class EventLogController(
                 post {
                     createEventLogEntry(call)
                 }
-                get("{$EVENT_LOG_ENTRY_ID") {
+                get("{$EVENT_LOG_ENTRY_ID}") {
                     getEventLogEntry(call)
                 }
                 get {
                     getEventLogEntries(call)
                 }
-                put {
+                put("{$EVENT_LOG_ENTRY_ID}") {
                     updateEventLogEntry(call)
                 }
-                delete {
+                delete("{$EVENT_LOG_ENTRY_ID}") {
                     deleteEventLogEntry(call)
                 }
             }

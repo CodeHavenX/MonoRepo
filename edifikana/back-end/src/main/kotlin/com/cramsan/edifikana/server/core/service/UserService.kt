@@ -52,16 +52,16 @@ class UserService(
     }
 
     /**
-     * Updates a user with the provided [id] and [username].
+     * Updates a user with the provided [id] and [email].
      */
     suspend fun updateUser(
         id: UserId,
-        username: String?,
+        email: String?,
     ): User {
         return userDatabase.updateUser(
             request = UpdateUserRequest(
                 id = id,
-                email = username,
+                email = email,
             ),
         ).getOrThrow()
     }

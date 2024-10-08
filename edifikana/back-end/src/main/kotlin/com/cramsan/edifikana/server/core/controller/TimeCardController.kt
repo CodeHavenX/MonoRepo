@@ -95,7 +95,7 @@ class TimeCardController(
                 post {
                     createTimeCardEvent(call)
                 }
-                get("{$TIMECARD_EVENT_ID") {
+                get("{$TIMECARD_EVENT_ID}") {
                     getTimeCardEvent(call)
                 }
                 get {

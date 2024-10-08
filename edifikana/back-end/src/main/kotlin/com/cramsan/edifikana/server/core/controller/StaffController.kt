@@ -4,10 +4,10 @@ import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.STAFF_ID
 import com.cramsan.edifikana.lib.annotations.NetworkModel
 import com.cramsan.edifikana.lib.model.CreateStaffNetworkRequest
+import com.cramsan.edifikana.lib.model.UpdateStaffNetworkRequest
 import com.cramsan.edifikana.server.core.service.StaffService
 import com.cramsan.edifikana.server.core.service.models.PropertyId
 import com.cramsan.edifikana.server.core.service.models.StaffId
-import com.cramsan.edifikana.server.core.service.models.requests.UpdateStaffRequest
 import com.cramsan.framework.core.ktor.HttpResponse
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
@@ -91,7 +91,7 @@ class StaffController(
     suspend fun updateStaff(call: ApplicationCall) = call.handleCall(TAG, "updateStaff") {
         val staffId = requireNotNull(call.parameters[STAFF_ID])
 
-        val updateStaffRequest = call.receive<UpdateStaffRequest>()
+        val updateStaffRequest = call.receive<UpdateStaffNetworkRequest>()
 
         val updatedStaff = staffService.updateStaff(
             id = StaffId(staffId),
@@ -99,7 +99,6 @@ class StaffController(
             firstName = updateStaffRequest.firstName,
             lastName = updateStaffRequest.lastName,
             role = updateStaffRequest.role,
-            propertyId = updateStaffRequest.propertyId,
         ).toStaffNetworkResponse()
 
         HttpResponse(
@@ -111,7 +110,7 @@ class StaffController(
     /**
      * Handles the deletion of a staff. The [call] parameter is the request context.
      */
-    suspend fun deleteStaff(call: RoutingCall) {
+    suspend fun deleteStaff(call: RoutingCall) = call.handleCall(TAG, "deleteStaff") {
         val staffId = requireNotNull(call.parameters[STAFF_ID])
 
         val success = staffService.deleteStaff(
@@ -150,10 +149,10 @@ class StaffController(
                 get {
                     getStaffs(call)
                 }
-                put {
+                put("{$STAFF_ID}") {
                     updateStaff(call)
                 }
-                delete {
+                delete("{$STAFF_ID}") {
                     deleteStaff(call)
                 }
             }

@@ -9,7 +9,13 @@ import kotlinx.serialization.Serializable
  */
 @NetworkModel
 @Serializable
-data class UpdateUserRequest(
+data class UpdateUserRequest internal constructor(
     @SerialName("username")
     val username: String?,
+    val phoneNumber: String?,
+    val email: String?,
+    val firstName: String?,
+    val lastName: String?,
+    val isVerified: Boolean?,
+    val address: AddressResponse?,
 )

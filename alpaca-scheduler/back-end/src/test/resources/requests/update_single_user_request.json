@@ -1,0 +1,18 @@
+{
+    "username": {
+        "value": "UpdateMe"
+    },
+    "phone_numbers": {
+        "value": [
+            "6352659856"
+        ]
+    },
+    "firstName": null,
+    "lastName": null,
+    "address": {
+        "value": null
+    },
+    "emails": {
+        "value": null
+    }
+}

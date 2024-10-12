@@ -4,8 +4,6 @@ package com.cramsan.edifikana.client.lib.service.dummy
 
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
 import com.cramsan.edifikana.client.lib.service.TimeCardService
-import com.cramsan.edifikana.lib.StaffPK
-import com.cramsan.edifikana.lib.TimeCardRecordPK
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import kotlinx.datetime.Clock
 
@@ -59,7 +57,17 @@ class DummyTimeCardService : TimeCardService {
         )
     }
 
-    override suspend fun addRecord(timeCardRecord: TimeCardRecordModel): Result<Unit> {
-        return Result.success(Unit)
+    override suspend fun addRecord(timeCardRecord: TimeCardRecordModel): Result<TimeCardRecordModel> {
+        return Result.success(
+            TimeCardRecordModel(
+                id = TimeCardRecordPK("1"),
+                entityId = null,
+                staffPk = StaffPK("1"),
+                eventType = TimeCardEventType.CLOCK_IN,
+                eventTime = Clock.System.now().epochSeconds,
+                imageUrl = "",
+                imageRef = null,
+            )
+        )
     }
 }

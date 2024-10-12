@@ -7,7 +7,6 @@ import com.cramsan.edifikana.client.lib.managers.EventLogManager
 import com.cramsan.edifikana.client.lib.models.AttachmentHolder
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.client.lib.service.StorageService
-import com.cramsan.edifikana.lib.EventLogRecordPK
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.DispatcherProvider
 import edifikana_lib.Res

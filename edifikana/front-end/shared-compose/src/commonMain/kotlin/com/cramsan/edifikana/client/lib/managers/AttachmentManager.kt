@@ -3,7 +3,6 @@ package com.cramsan.edifikana.client.lib.managers
 import com.cramsan.edifikana.client.lib.db.models.FileAttachmentDao
 import com.cramsan.edifikana.client.lib.db.models.FileAttachmentEntity
 import com.cramsan.edifikana.client.lib.models.AttachmentHolder
-import com.cramsan.edifikana.client.lib.models.StorageRef
 import com.cramsan.edifikana.client.lib.service.EventLogService
 import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.edifikana.client.lib.utils.FOLDER_ATTACHMENTS
@@ -13,7 +12,6 @@ import com.cramsan.edifikana.client.lib.utils.getOrCatch
 import com.cramsan.edifikana.client.lib.utils.launch
 import com.cramsan.edifikana.client.lib.utils.publicDownloadUrl
 import com.cramsan.edifikana.client.lib.utils.readBytes
-import com.cramsan.edifikana.lib.EventLogRecordPK
 import com.cramsan.edifikana.lib.utils.requireNotBlank
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.logging.logE

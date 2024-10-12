@@ -40,6 +40,7 @@ dependencies {
 
     implementation("io.github.jan-tennert.supabase:postgrest-kt:_")
     implementation("io.github.jan-tennert.supabase:storage-kt:_")
+    implementation("io.github.jan-tennert.supabase:auth-kt:_")
 
     testImplementation("io.ktor:ktor-server-test-host:_")
     implementation("io.insert-koin:koin-test:_")

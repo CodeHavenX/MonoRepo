@@ -4,7 +4,6 @@ import com.cramsan.edifikana.client.lib.models.AttachmentHolder
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.client.lib.toFriendlyDateTime
 import com.cramsan.edifikana.client.lib.toFriendlyString
-import com.cramsan.edifikana.lib.EventLogRecordPK
 
 /**
  * Represents the UI state of the View Record screen.

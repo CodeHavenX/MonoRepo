@@ -2,10 +2,10 @@ package com.cramsan.edifikana.server.core.controller
 
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.edifikana.server.core.service.TimeCardService
-import com.cramsan.edifikana.server.core.service.models.PropertyId
-import com.cramsan.edifikana.server.core.service.models.StaffId
+import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
-import com.cramsan.edifikana.server.core.service.models.TimeCardEventId
+import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.server.core.utils.readFileContent
 import com.cramsan.framework.test.TestBase
 import io.ktor.client.request.get

@@ -2,6 +2,7 @@ package com.cramsan.edifikana.server.core.controller
 
 import com.cramsan.edifikana.lib.Routes
 import com.cramsan.framework.core.ktor.HttpResponse
+import io.github.jan.supabase.auth.Auth
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.routing.Routing
@@ -11,12 +12,14 @@ import io.ktor.server.routing.route
 /**
  * Controller for handling health check requests.
  */
-class HealthCheckController {
+class HealthCheckController(
+    private val auth: Auth,
+) {
 
     /**
      * Handles a health check request.
      */
-    suspend fun healthCheck(call: ApplicationCall) = call.handleCall(TAG, "healthCheck") {
+    suspend fun healthCheck(call: ApplicationCall) = call.handleCall(TAG, "healthCheck", auth) {
         HttpResponse(
             status = HttpStatusCode.OK,
             body = "OK",

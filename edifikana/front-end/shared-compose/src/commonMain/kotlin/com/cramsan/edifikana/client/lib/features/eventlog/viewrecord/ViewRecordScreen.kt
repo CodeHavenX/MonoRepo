@@ -35,9 +35,7 @@ import coil3.compose.AsyncImage
 import com.cramsan.edifikana.client.lib.features.main.MainActivityDelegatedEvent
 import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.lib.models.AttachmentHolder
-import com.cramsan.edifikana.client.lib.models.StorageRef
 import com.cramsan.edifikana.client.lib.ui.components.LoadingAnimationOverlay
-import com.cramsan.edifikana.lib.EventLogRecordPK
 import edifikana_lib.Res
 import edifikana_lib.string_field_date_time
 import edifikana_lib.string_field_event

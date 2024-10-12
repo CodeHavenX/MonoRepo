@@ -4,7 +4,6 @@ import com.cramsan.edifikana.client.lib.features.base.EdifikanaBaseViewModel
 import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.lib.features.main.Route
 import com.cramsan.edifikana.client.lib.managers.StaffManager
-import com.cramsan.edifikana.lib.StaffPK
 import com.cramsan.framework.core.DispatcherProvider
 import edifikana_lib.Res
 import edifikana_lib.title_timecard_staff_list
@@ -46,7 +45,7 @@ class StaffListViewModel(
      */
     fun loadStaffs() = viewModelScope.launch {
         _uiState.value = _uiState.value.copy(isLoading = true)
-        val result = staffManager.getStaffs()
+        val result = staffManager.getStaffList()
 
         if (result.isFailure) {
             _uiState.value = StaffListUIState(

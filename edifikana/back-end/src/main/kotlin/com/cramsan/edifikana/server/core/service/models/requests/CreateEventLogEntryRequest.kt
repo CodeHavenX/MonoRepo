@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.server.core.service.models.requests
 
 import com.cramsan.edifikana.lib.model.EventLogEventType
-import com.cramsan.edifikana.server.core.service.models.StaffId
+import com.cramsan.edifikana.lib.model.StaffId
 import kotlinx.datetime.Instant
 
 /**

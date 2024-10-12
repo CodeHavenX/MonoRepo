@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.lib.model
+package com.cramsan.edifikana.lib.model.network
 
 import com.cramsan.edifikana.lib.annotations.NetworkModel
 import kotlinx.serialization.SerialName

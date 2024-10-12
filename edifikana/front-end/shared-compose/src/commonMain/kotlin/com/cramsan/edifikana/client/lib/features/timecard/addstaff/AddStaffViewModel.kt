@@ -73,11 +73,9 @@ class AddStaffViewModel constructor(
         )
 
         val result = staffManager.addStaff(
-            StaffModel(
-                staffPK = null,
-                id = id.trim(),
+            StaffModel.CreateStaffRequest(
                 idType = idType,
-                name = name.trim(),
+                firstName = name.trim(),
                 lastName = lastName.trim(),
                 role = role,
             )

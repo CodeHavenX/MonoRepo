@@ -3,12 +3,13 @@ package com.cramsan.edifikana.server.core.controller
 import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.TIMECARD_EVENT_ID
 import com.cramsan.edifikana.lib.annotations.NetworkModel
-import com.cramsan.edifikana.lib.model.CreateTimeCardEventNetworkRequest
+import com.cramsan.edifikana.lib.model.network.CreateTimeCardEventNetworkRequest
 import com.cramsan.edifikana.server.core.service.TimeCardService
-import com.cramsan.edifikana.server.core.service.models.PropertyId
-import com.cramsan.edifikana.server.core.service.models.StaffId
-import com.cramsan.edifikana.server.core.service.models.TimeCardEventId
+import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.framework.core.ktor.HttpResponse
+import io.github.jan.supabase.auth.Auth
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.request.receive
@@ -24,13 +25,14 @@ import kotlinx.datetime.Clock
 class TimeCardController(
     private val timeCardService: TimeCardService,
     private val clock: Clock,
+    private val auth: Auth,
 ) {
 
     /**
      * Handles the creation of a new time card event. The [call] parameter is the request context.
      */
     @OptIn(NetworkModel::class)
-    suspend fun createTimeCardEvent(call: ApplicationCall) = call.handleCall(TAG, "createTimeCardEvent") {
+    suspend fun createTimeCardEvent(call: ApplicationCall) = call.handleCall(TAG, "createTimeCardEvent", auth) {
         val createTimeCardRequest = call.receive<CreateTimeCardEventNetworkRequest>()
 
         val newTimeCard = timeCardService.createTimeCardEvent(
@@ -52,7 +54,7 @@ class TimeCardController(
      * Handles the retrieval of a time card event. The [call] parameter is the request context.
      */
     @OptIn(NetworkModel::class)
-    suspend fun getTimeCardEvent(call: ApplicationCall) = call.handleCall(TAG, "getTimeCardEvent") {
+    suspend fun getTimeCardEvent(call: ApplicationCall) = call.handleCall(TAG, "getTimeCardEvent", auth) {
         val timeCardId = requireNotNull(call.parameters[TIMECARD_EVENT_ID])
 
         val timeCard = timeCardService.getTimeCardEvent(
@@ -75,7 +77,7 @@ class TimeCardController(
      * Handles the retrieval of all time cards. The [call] parameter is the request context.
      */
     @OptIn(NetworkModel::class)
-    suspend fun getTimeCardEvents(call: ApplicationCall) = call.handleCall(TAG, "getTimeCardEvents") {
+    suspend fun getTimeCardEvents(call: ApplicationCall) = call.handleCall(TAG, "getTimeCardEvents", auth) {
         val timeCards = timeCardService.getTimeCardEvents().map { it.toTimeCardEventNetworkResponse() }
 
         HttpResponse(

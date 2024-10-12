@@ -2,17 +2,16 @@
 
 package com.cramsan.edifikana.client.lib.service.dummy
 
-import com.cramsan.edifikana.client.lib.models.PropertyConfigModel
-import com.cramsan.edifikana.client.lib.service.PropertyConfigService
+import com.cramsan.edifikana.client.lib.models.PropertyModel
 import kotlinx.datetime.TimeZone
 
 /**
  * Dummy implementation of [PropertyConfigService] for testing purposes.
  */
 class DummyPropertyConfigService : PropertyConfigService {
-    override suspend fun getPropertyConfig(): Result<PropertyConfigModel> {
+    override suspend fun getPropertyConfig(): Result<PropertyModel> {
         return Result.success(
-            PropertyConfigModel(
+            PropertyModel(
                 propertyId = "1",
                 driveFolderId = "1",
                 storageFolderId = "1",

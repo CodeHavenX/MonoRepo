@@ -3,11 +3,12 @@ package com.cramsan.edifikana.server.core.controller
 import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.USER_ID
 import com.cramsan.edifikana.lib.annotations.NetworkModel
-import com.cramsan.edifikana.lib.model.CreateUserNetworkRequest
-import com.cramsan.edifikana.lib.model.UpdateUserNetworkRequest
+import com.cramsan.edifikana.lib.model.network.CreateUserNetworkRequest
+import com.cramsan.edifikana.lib.model.network.UpdateUserNetworkRequest
 import com.cramsan.edifikana.server.core.service.UserService
-import com.cramsan.edifikana.server.core.service.models.UserId
+import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.framework.core.ktor.HttpResponse
+import io.github.jan.supabase.auth.Auth
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.request.receive
@@ -24,13 +25,14 @@ import io.ktor.server.routing.route
  */
 class UserController(
     private val userService: UserService,
+    private val auth: Auth,
 ) {
 
     /**
      * Handles the creation of a new user. The [call] parameter is the request context.
      */
     @OptIn(NetworkModel::class)
-    suspend fun createUser(call: ApplicationCall) = call.handleCall(TAG, "createUser") {
+    suspend fun createUser(call: ApplicationCall) = call.handleCall(TAG, "createUser", auth) {
         val createUserRequest = call.receive<CreateUserNetworkRequest>()
 
         val newUser = userService.createUser(
@@ -47,7 +49,7 @@ class UserController(
      * Handles the retrieval of a user. The [call] parameter is the request context.
      */
     @OptIn(NetworkModel::class)
-    suspend fun getUser(call: ApplicationCall) = call.handleCall(TAG, "getUser") {
+    suspend fun getUser(call: ApplicationCall) = call.handleCall(TAG, "getUser", auth) {
         val userId = requireNotNull(call.parameters[USER_ID])
 
         val user = userService.getUser(
@@ -70,7 +72,7 @@ class UserController(
      * Handles the retrieval of all users. The [call] parameter is the request context.
      */
     @OptIn(NetworkModel::class)
-    suspend fun getUsers(call: ApplicationCall) = call.handleCall(TAG, "getUsers") {
+    suspend fun getUsers(call: ApplicationCall) = call.handleCall(TAG, "getUsers", auth) {
         val users = userService.getUsers().map { it.toUserNetworkResponse() }
 
         HttpResponse(
@@ -83,7 +85,7 @@ class UserController(
      * Handles the updating of a user. The [call] parameter is the request context.
      */
     @OptIn(NetworkModel::class)
-    suspend fun updateUser(call: ApplicationCall) = call.handleCall(TAG, "updateUser") {
+    suspend fun updateUser(call: ApplicationCall) = call.handleCall(TAG, "updateUser", auth) {
         val userId = requireNotNull(call.parameters[USER_ID])
 
         val updateUserRequest = call.receive<UpdateUserNetworkRequest>()
@@ -102,7 +104,7 @@ class UserController(
     /**
      * Handles the deletion of a user. The [call] parameter is the request context.
      */
-    suspend fun deleteUser(call: RoutingCall) = call.handleCall(TAG, "deleteUser") {
+    suspend fun deleteUser(call: RoutingCall) = call.handleCall(TAG, "deleteUser", auth) {
         val userId = requireNotNull(call.parameters[USER_ID])
 
         val success = userService.deleteUser(

@@ -9,12 +9,14 @@ import com.cramsan.edifikana.server.core.service.models.requests.GetUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdateUserRequest
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
+import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.postgrest.Postgrest
 
 /**
  * Database for managing users.
  */
 class SupabaseUserDatabase(
+    private val auth: Auth,
     private val postgrest: Postgrest,
 ) : UserDatabase {
 
@@ -26,7 +28,14 @@ class SupabaseUserDatabase(
         request: CreateUserRequest,
     ): Result<User> = runSuspendCatching(TAG) {
         logD(TAG, "Creating user: %S", request.email)
-        val requestEntity: UserEntity.CreateUserEntity = request.toUserEntity()
+
+        val supabaseUser = auth.admin.createUserWithEmail {
+            this@createUserWithEmail.email = request.email
+            password = request.password
+            autoConfirm = true
+        }
+
+        val requestEntity: UserEntity.CreateUserEntity = request.toUserEntity(supabaseUser.id)
 
         val createdUser = postgrest.from(UserEntity.COLLECTION).insert(requestEntity) {
             select()
@@ -93,6 +102,8 @@ class SupabaseUserDatabase(
         request: DeleteUserRequest,
     ): Result<Boolean> = runSuspendCatching(TAG) {
         logD(TAG, "Deleting user: %S", request.id)
+
+        auth.admin.deleteUser(request.id.userId)
 
         postgrest.from(UserEntity.COLLECTION).delete {
             select()

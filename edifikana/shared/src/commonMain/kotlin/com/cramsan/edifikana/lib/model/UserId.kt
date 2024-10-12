@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.server.core.service.models
+package com.cramsan.edifikana.lib.model
 
 /**
  * Domain model representing a user ID.

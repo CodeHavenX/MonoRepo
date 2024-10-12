@@ -3,9 +3,9 @@ package com.cramsan.edifikana.server.core.controller
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.server.core.service.EventLogService
 import com.cramsan.edifikana.server.core.service.models.EventLogEntry
-import com.cramsan.edifikana.server.core.service.models.EventLogEntryId
-import com.cramsan.edifikana.server.core.service.models.PropertyId
-import com.cramsan.edifikana.server.core.service.models.StaffId
+import com.cramsan.edifikana.lib.model.EventLogEntryId
+import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.server.core.utils.readFileContent
 import com.cramsan.framework.test.TestBase
 import io.ktor.client.request.delete

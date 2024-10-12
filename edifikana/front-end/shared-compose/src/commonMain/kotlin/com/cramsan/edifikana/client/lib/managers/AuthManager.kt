@@ -4,7 +4,6 @@ import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.client.lib.service.AuthService
 import com.cramsan.edifikana.client.lib.service.auth.SignInResult
 import com.cramsan.edifikana.client.lib.utils.getOrCatch
-import com.cramsan.edifikana.lib.UserPk
 import com.cramsan.framework.logging.logI
 
 /**

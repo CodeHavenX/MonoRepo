@@ -3,12 +3,13 @@ package com.cramsan.edifikana.server.core.controller
 import com.cramsan.edifikana.lib.EVENT_LOG_ENTRY_ID
 import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.annotations.NetworkModel
-import com.cramsan.edifikana.lib.model.CreateEventLogEntryNetworkRequest
-import com.cramsan.edifikana.lib.model.UpdateEventLogEntryNetworkRequest
+import com.cramsan.edifikana.lib.model.network.CreateEventLogEntryNetworkRequest
+import com.cramsan.edifikana.lib.model.network.UpdateEventLogEntryNetworkRequest
 import com.cramsan.edifikana.server.core.service.EventLogService
-import com.cramsan.edifikana.server.core.service.models.EventLogEntryId
-import com.cramsan.edifikana.server.core.service.models.StaffId
+import com.cramsan.edifikana.lib.model.EventLogEntryId
+import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.framework.core.ktor.HttpResponse
+import io.github.jan.supabase.auth.Auth
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.request.receive
@@ -26,13 +27,14 @@ import kotlinx.datetime.Instant
  */
 class EventLogController(
     private val eventLogService: EventLogService,
+    private val auth: Auth,
 ) {
 
     /**
      * Handles the creation of a new event log entry. The [call] parameter is the request context.
      */
     @OptIn(NetworkModel::class)
-    suspend fun createEventLogEntry(call: ApplicationCall) = call.handleCall(TAG, "createEventLogEntry") {
+    suspend fun createEventLogEntry(call: ApplicationCall) = call.handleCall(TAG, "createEventLogEntry", auth) {
         val createEventLogRequest = call.receive<CreateEventLogEntryNetworkRequest>()
 
         val newEventLog = eventLogService.createEventLogEntry(
@@ -57,7 +59,7 @@ class EventLogController(
      * Handles the retrieval of an event log. The [call] parameter is the request context.
      */
     @OptIn(NetworkModel::class)
-    suspend fun getEventLogEntry(call: ApplicationCall) = call.handleCall(TAG, "getEventLogEntry") {
+    suspend fun getEventLogEntry(call: ApplicationCall) = call.handleCall(TAG, "getEventLogEntry", auth) {
         val eventLogId = requireNotNull(call.parameters[EVENT_LOG_ENTRY_ID])
 
         val eventLog = eventLogService.getEventLogEntry(
@@ -80,7 +82,7 @@ class EventLogController(
      * Handles the retrieval of all event log entries. The [call] parameter is the request context.
      */
     @OptIn(NetworkModel::class)
-    suspend fun getEventLogEntries(call: ApplicationCall) = call.handleCall(TAG, "getEventLogEntries") {
+    suspend fun getEventLogEntries(call: ApplicationCall) = call.handleCall(TAG, "getEventLogEntries", auth) {
         val eventLogs = eventLogService.getEventLogEntries().map { it.toEventLogEntryNetworkResponse() }
 
         HttpResponse(
@@ -93,7 +95,7 @@ class EventLogController(
      * Handles the updating of an event log entry. The [call] parameter is the request context.
      */
     @OptIn(NetworkModel::class)
-    suspend fun updateEventLogEntry(call: ApplicationCall) = call.handleCall(TAG, "updateEventLogEntry") {
+    suspend fun updateEventLogEntry(call: ApplicationCall) = call.handleCall(TAG, "updateEventLogEntry", auth) {
         val eventLogId = requireNotNull(call.parameters[EVENT_LOG_ENTRY_ID])
 
         val updateEventLogRequest = call.receive<UpdateEventLogEntryNetworkRequest>()
@@ -116,7 +118,7 @@ class EventLogController(
     /**
      * Handles the deletion of an event log entry. The [call] parameter is the request context.
      */
-    suspend fun deleteEventLogEntry(call: RoutingCall) = call.handleCall(TAG, "deleteEventLogEntry") {
+    suspend fun deleteEventLogEntry(call: RoutingCall) = call.handleCall(TAG, "deleteEventLogEntry", auth) {
         val eventLogId = requireNotNull(call.parameters[EVENT_LOG_ENTRY_ID])
 
         val success = eventLogService.deleteEventLogEntry(

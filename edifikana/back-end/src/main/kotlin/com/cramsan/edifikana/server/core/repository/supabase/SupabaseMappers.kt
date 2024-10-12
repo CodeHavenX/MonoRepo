@@ -6,15 +6,15 @@ import com.cramsan.edifikana.server.core.repository.supabase.models.StaffEntity
 import com.cramsan.edifikana.server.core.repository.supabase.models.TimeCardEventEntity
 import com.cramsan.edifikana.server.core.repository.supabase.models.UserEntity
 import com.cramsan.edifikana.server.core.service.models.EventLogEntry
-import com.cramsan.edifikana.server.core.service.models.EventLogEntryId
+import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.server.core.service.models.Property
-import com.cramsan.edifikana.server.core.service.models.PropertyId
+import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.server.core.service.models.Staff
-import com.cramsan.edifikana.server.core.service.models.StaffId
+import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
-import com.cramsan.edifikana.server.core.service.models.TimeCardEventId
+import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.server.core.service.models.User
-import com.cramsan.edifikana.server.core.service.models.UserId
+import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.service.models.requests.CreateEventLogEntryRequest
 import com.cramsan.edifikana.server.core.service.models.requests.CreatePropertyRequest
 import com.cramsan.edifikana.server.core.service.models.requests.CreateStaffRequest
@@ -37,8 +37,9 @@ fun UserEntity.toUser(): User {
  * Maps a [CreateUserRequest] to the [UserEntity.CreateUserEntity] model.
  */
 @OptIn(SupabaseModel::class)
-fun CreateUserRequest.toUserEntity(): UserEntity.CreateUserEntity {
+fun CreateUserRequest.toUserEntity(supabaseUserId: String): UserEntity.CreateUserEntity {
     return UserEntity.CreateUserEntity(
+        id = supabaseUserId,
         email = email,
     )
 }

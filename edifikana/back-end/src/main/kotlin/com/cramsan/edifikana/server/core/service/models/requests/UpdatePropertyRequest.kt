@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.server.core.service.models.requests
 
-import com.cramsan.edifikana.server.core.service.models.PropertyId
+import com.cramsan.edifikana.lib.model.PropertyId
 
 /**
  * Request to update a property.

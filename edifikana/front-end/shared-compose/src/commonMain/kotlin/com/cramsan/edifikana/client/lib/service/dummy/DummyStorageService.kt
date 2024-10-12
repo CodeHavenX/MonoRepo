@@ -2,7 +2,6 @@
 
 package com.cramsan.edifikana.client.lib.service.dummy
 
-import com.cramsan.edifikana.client.lib.models.StorageRef
 import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.framework.core.CoreUri
 

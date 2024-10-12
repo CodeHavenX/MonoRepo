@@ -2,7 +2,6 @@ package com.cramsan.edifikana.client.lib.managers.mappers
 
 import com.cramsan.edifikana.client.lib.db.models.TimeCardRecordEntity
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
-import com.cramsan.edifikana.lib.StaffPK
 import com.cramsan.framework.core.CoreUri
 
 /**

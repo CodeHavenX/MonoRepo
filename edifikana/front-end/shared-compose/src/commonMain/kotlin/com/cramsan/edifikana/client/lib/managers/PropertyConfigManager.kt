@@ -1,7 +1,6 @@
 package com.cramsan.edifikana.client.lib.managers
 
-import com.cramsan.edifikana.client.lib.models.PropertyConfigModel
-import com.cramsan.edifikana.client.lib.service.PropertyConfigService
+import com.cramsan.edifikana.client.lib.models.PropertyModel
 import com.cramsan.edifikana.client.lib.utils.getOrCatch
 import com.cramsan.framework.logging.logI
 
@@ -15,7 +14,7 @@ class PropertyConfigManager(
     /**
      * Get property configuration.
      */
-    suspend fun getPropertyConfig(): Result<PropertyConfigModel> = workContext.getOrCatch(TAG) {
+    suspend fun getPropertyConfig(): Result<PropertyModel> = workContext.getOrCatch(TAG) {
         logI(TAG, "getPropertyConfig")
         propertyConfigService.getPropertyConfig().getOrThrow()
     }

@@ -1,6 +1,8 @@
-package com.cramsan.edifikana.lib.model
+package com.cramsan.edifikana.lib.model.network
 
 import com.cramsan.edifikana.lib.annotations.NetworkModel
+import com.cramsan.edifikana.lib.model.IdType
+import com.cramsan.edifikana.lib.model.StaffRole
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

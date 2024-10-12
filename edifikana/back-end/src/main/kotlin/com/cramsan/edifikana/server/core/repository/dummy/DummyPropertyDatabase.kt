@@ -4,7 +4,8 @@ package com.cramsan.edifikana.server.core.repository.dummy
 
 import com.cramsan.edifikana.server.core.repository.PropertyDatabase
 import com.cramsan.edifikana.server.core.service.models.Property
-import com.cramsan.edifikana.server.core.service.models.PropertyId
+import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.service.models.requests.CreatePropertyRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeletePropertyRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetPropertyRequest
@@ -35,7 +36,7 @@ class DummyPropertyDatabase : PropertyDatabase {
         )
     }
 
-    override suspend fun getProperties(): Result<List<Property>> {
+    override suspend fun getProperties(userId: UserId): Result<List<Property>> {
         delay(1000)
         return Result.success(
             (0..10).map {

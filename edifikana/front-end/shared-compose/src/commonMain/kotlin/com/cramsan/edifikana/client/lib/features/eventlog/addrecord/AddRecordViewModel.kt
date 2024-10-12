@@ -5,7 +5,6 @@ import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.lib.managers.EventLogManager
 import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
-import com.cramsan.edifikana.lib.StaffPK
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.framework.core.DispatcherProvider
 import edifikana_lib.Res
@@ -52,7 +51,7 @@ class AddRecordViewModel(
      */
     fun loadStaffs() = viewModelScope.launch {
         _uiState.value = _uiState.value.copy(isLoading = true)
-        val result = staffManager.getStaffs()
+        val result = staffManager.getStaffList()
 
         if (result.isFailure) {
             _uiState.value = AddRecordUIState(listOf(), false, getString(Res.string.title_event_log_add))

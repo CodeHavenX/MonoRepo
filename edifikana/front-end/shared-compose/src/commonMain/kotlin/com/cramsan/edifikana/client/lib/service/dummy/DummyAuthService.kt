@@ -5,7 +5,6 @@ package com.cramsan.edifikana.client.lib.service.dummy
 import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.client.lib.service.AuthService
 import com.cramsan.edifikana.client.lib.service.auth.SignInResult
-import com.cramsan.edifikana.lib.UserPk
 import kotlinx.coroutines.delay
 
 /**

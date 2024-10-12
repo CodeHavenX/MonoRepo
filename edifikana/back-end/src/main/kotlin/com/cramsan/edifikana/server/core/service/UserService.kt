@@ -2,17 +2,19 @@ package com.cramsan.edifikana.server.core.service
 
 import com.cramsan.edifikana.server.core.repository.UserDatabase
 import com.cramsan.edifikana.server.core.service.models.User
-import com.cramsan.edifikana.server.core.service.models.UserId
+import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.service.models.requests.CreateUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdateUserRequest
+import com.cramsan.edifikana.server.core.service.password.PasswordGenerator
 
 /**
  * Service for user operations.
  */
 class UserService(
     private val userDatabase: UserDatabase,
+    private val passwordGenerator: PasswordGenerator,
 ) {
 
     /**
@@ -21,9 +23,12 @@ class UserService(
     suspend fun createUser(
         email: String,
     ): User {
+        val password = passwordGenerator.generate()
+
         return userDatabase.createUser(
             request = CreateUserRequest(
                 email = email,
+                password = password,
             ),
         ).getOrThrow()
     }

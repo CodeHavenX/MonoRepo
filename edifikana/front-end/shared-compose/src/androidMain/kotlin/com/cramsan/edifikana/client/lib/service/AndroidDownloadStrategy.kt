@@ -4,7 +4,6 @@ import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
-import com.cramsan.edifikana.client.lib.models.StorageRef
 import com.cramsan.framework.core.CoreUri
 
 /**

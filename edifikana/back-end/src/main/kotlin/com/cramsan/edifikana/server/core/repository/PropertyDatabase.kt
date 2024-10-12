@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.core.repository
 
+import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.service.models.Property
 import com.cramsan.edifikana.server.core.service.models.requests.CreatePropertyRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeletePropertyRequest
@@ -28,7 +29,7 @@ interface PropertyDatabase {
     /**
      * Retrieves all properties. Returns the [Result] of the operation with a list of [Property].
      */
-    suspend fun getProperties(): Result<List<Property>>
+    suspend fun getProperties(userId: UserId): Result<List<Property>>
 
     /**
      * Updates a property with the given [request]. Returns the [Result] of the operation with the updated [Property].

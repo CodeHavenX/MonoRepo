@@ -1,11 +1,11 @@
 package com.cramsan.edifikana.server.core.controller
 
 import com.cramsan.edifikana.lib.annotations.NetworkModel
-import com.cramsan.edifikana.lib.model.EventLogEntryNetworkResponse
-import com.cramsan.edifikana.lib.model.PropertyNetworkResponse
-import com.cramsan.edifikana.lib.model.StaffNetworkResponse
-import com.cramsan.edifikana.lib.model.TimeCardEventNetworkResponse
-import com.cramsan.edifikana.lib.model.UserNetworkResponse
+import com.cramsan.edifikana.lib.model.network.EventLogEntryNetworkResponse
+import com.cramsan.edifikana.lib.model.network.PropertyNetworkResponse
+import com.cramsan.edifikana.lib.model.network.StaffNetworkResponse
+import com.cramsan.edifikana.lib.model.network.TimeCardEventNetworkResponse
+import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
 import com.cramsan.edifikana.server.core.service.models.EventLogEntry
 import com.cramsan.edifikana.server.core.service.models.Property
 import com.cramsan.edifikana.server.core.service.models.Staff

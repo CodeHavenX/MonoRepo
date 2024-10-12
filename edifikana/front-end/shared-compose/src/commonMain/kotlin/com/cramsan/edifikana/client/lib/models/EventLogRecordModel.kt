@@ -1,17 +1,17 @@
 package com.cramsan.edifikana.client.lib.models
 
-import com.cramsan.edifikana.lib.EventLogRecordPK
-import com.cramsan.edifikana.lib.StaffPK
+import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
+import com.cramsan.edifikana.lib.model.StaffId
 import kotlin.random.Random
 
 /**
  * Model for an event log record.
  */
 data class EventLogRecordModel(
-    val id: EventLogRecordPK?,
+    val id: EventLogEntryId?,
     val entityId: String?,
-    val staffPk: StaffPK?,
+    val staffPk: StaffId?,
     val timeRecorded: Long,
     val unit: String,
     val eventType: EventLogEventType,
@@ -28,7 +28,7 @@ data class EventLogRecordModel(
          * yet.
          */
         fun createTemporary(
-            staffPk: StaffPK?,
+            staffPk: StaffId?,
             timeRecorded: Long,
             unit: String,
             eventType: EventLogEventType?,

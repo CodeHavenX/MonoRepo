@@ -1,7 +1,6 @@
 package com.cramsan.edifikana.client.lib.service
 
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
-import com.cramsan.edifikana.lib.EventLogRecordPK
 
 /**
  * Service for managing event logs.

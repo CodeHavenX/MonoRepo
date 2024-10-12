@@ -5,7 +5,6 @@ import com.cramsan.edifikana.client.lib.models.StaffModel
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
 import com.cramsan.edifikana.client.lib.models.fullName
 import com.cramsan.edifikana.client.lib.toFriendlyDateTime
-import com.cramsan.edifikana.lib.StaffPK
 
 /**
  * UI model for a time card record.
@@ -21,7 +20,7 @@ data class TimeCardUIModel(
  * Convert a list of [TimeCardRecordModel] to a list of [TimeCardUIModel].
  */
 suspend fun List<TimeCardRecordModel>.toUIModel(staffs: List<StaffModel>): List<TimeCardUIModel> {
-    val nameMap = staffs.associate { it.staffPK to it.fullName() }
+    val nameMap = staffs.associate { it.id to it.fullName() }
 
     return map {
         TimeCardUIModel(

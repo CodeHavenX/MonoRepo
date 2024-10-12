@@ -2,7 +2,6 @@ package com.cramsan.edifikana.client.lib.service
 
 import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.client.lib.service.auth.SignInResult
-import com.cramsan.edifikana.lib.UserPk
 
 /**
  * Service for managing authentication.

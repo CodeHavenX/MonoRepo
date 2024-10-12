@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Edifikana" type="CompoundRunConfigurationType">
+    <toRun name="MonoRepo:edifikana:back-end [run]" type="GradleRunConfiguration" />
+    <toRun name="MonoRepo:edifikana:front-end [run]" type="GradleRunConfiguration" />
+    <method v="2" />
+  </configuration>
+</component>

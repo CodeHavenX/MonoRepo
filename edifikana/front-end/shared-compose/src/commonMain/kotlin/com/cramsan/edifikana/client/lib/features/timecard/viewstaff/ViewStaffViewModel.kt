@@ -10,8 +10,6 @@ import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
 import com.cramsan.edifikana.client.lib.models.fullName
 import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.edifikana.client.lib.toFriendlyDateTime
-import com.cramsan.edifikana.lib.StaffPK
-import com.cramsan.edifikana.lib.TimeCardRecordPK
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.DispatcherProvider
@@ -150,7 +148,7 @@ class ViewStaffViewModel(
     fun recordClockEvent(photoUri: CoreUri) = viewModelScope.launch {
         val timeCardEventType = eventType ?: return@launch
         val staff = staff ?: return@launch
-        val staffPk = staff.staffPK ?: return@launch
+        val staffPk = staff.id ?: return@launch
 
         _uiState.value = _uiState.value.copy(isLoading = true)
 

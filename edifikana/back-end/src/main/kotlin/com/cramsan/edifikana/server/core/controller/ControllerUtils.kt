@@ -1,8 +1,12 @@
 package com.cramsan.edifikana.server.core.controller
 
+import com.cramsan.edifikana.lib.serialization.HEADER_TOKEN_AUTH
+import com.cramsan.edifikana.server.core.controller.auth.ClientContext
+import com.cramsan.edifikana.server.core.controller.auth.createClientContext
 import com.cramsan.framework.core.ktor.HttpResponse
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logI
+import io.github.jan.supabase.auth.Auth
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.response.respond
@@ -16,12 +20,31 @@ import io.ktor.server.response.respondNullable
 suspend inline fun ApplicationCall.handleCall(
     tag: String,
     functionName: String,
-    function: ApplicationCall.() -> HttpResponse,
+    auth: Auth,
+    function: ApplicationCall.(ClientContext) -> HttpResponse,
 ) {
     logI(tag, "$functionName called")
 
+    val headerMap = request.headers.entries().associate {
+        it.key to it.value
+    }
+
+    //val token = headerMap[HEADER_TOKEN_AUTH]?.firstOrNull()
+    val token = headerMap[HEADER_TOKEN_AUTH]?.firstOrNull() ?: "null"
+
+    if (token == null) {
+        logE(tag, "Missing token in request")
+        respond(
+            HttpStatusCode.Unauthorized,
+            "Missing token in request",
+        )
+        return
+    }
+
+    val clientContext = createClientContext(auth, token)
+
     val result = runCatching {
-        function()
+        function(clientContext)
     }
 
     if (result.isSuccess) {

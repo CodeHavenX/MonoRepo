@@ -5,7 +5,6 @@ import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.lib.features.main.Route
 import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.client.lib.managers.TimeCardManager
-import com.cramsan.edifikana.lib.StaffPK
 import com.cramsan.framework.core.DispatcherProvider
 import edifikana_lib.Res
 import edifikana_lib.title_timecard
@@ -53,7 +52,7 @@ class TimeCartViewModel(
      */
     fun loadEvents() = viewModelScope.launch {
         _uiState.value = _uiState.value.copy(isLoading = true)
-        val staffsJob = async { staffManager.getStaffs() }
+        val staffsJob = async { staffManager.getStaffList() }
         val result = timeCardManager.getAllRecords()
         val staffsResult = staffsJob.await()
         if (result.isFailure || staffsResult.isFailure) {

@@ -1,8 +1,6 @@
 package com.cramsan.edifikana.client.lib.service
 
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
-import com.cramsan.edifikana.lib.StaffPK
-import com.cramsan.edifikana.lib.TimeCardRecordPK
 
 /**
  * Service for managing time card records.
@@ -27,5 +25,5 @@ interface TimeCardService {
     /**
      * Add a new time card record.
      */
-    suspend fun addRecord(timeCardRecord: TimeCardRecordModel): Result<Unit>
+    suspend fun addRecord(timeCardRecord: TimeCardRecordModel): Result<TimeCardRecordModel>
 }

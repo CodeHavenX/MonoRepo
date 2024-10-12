@@ -3,12 +3,13 @@ package com.cramsan.edifikana.server.core.controller
 import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.STAFF_ID
 import com.cramsan.edifikana.lib.annotations.NetworkModel
-import com.cramsan.edifikana.lib.model.CreateStaffNetworkRequest
-import com.cramsan.edifikana.lib.model.UpdateStaffNetworkRequest
+import com.cramsan.edifikana.lib.model.network.CreateStaffNetworkRequest
+import com.cramsan.edifikana.lib.model.network.UpdateStaffNetworkRequest
 import com.cramsan.edifikana.server.core.service.StaffService
-import com.cramsan.edifikana.server.core.service.models.PropertyId
-import com.cramsan.edifikana.server.core.service.models.StaffId
+import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.framework.core.ktor.HttpResponse
+import io.github.jan.supabase.auth.Auth
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.request.receive
@@ -25,13 +26,15 @@ import io.ktor.server.routing.route
  */
 class StaffController(
     private val staffService: StaffService,
+    private val auth: Auth,
 ) {
 
     /**
      * Handles the creation of a new staff. The [call] parameter is the request context.
      */
     @OptIn(NetworkModel::class)
-    suspend fun createStaff(call: ApplicationCall) = call.handleCall(TAG, "createStaff") {
+
+    suspend fun createStaff(call: ApplicationCall) = call.handleCall(TAG, "createStaff", auth) {
         val createStaffRequest = call.receive<CreateStaffNetworkRequest>()
 
         val newStaff = staffService.createStaff(
@@ -52,7 +55,7 @@ class StaffController(
      * Handles the retrieval of a staff. The [call] parameter is the request context.
      */
     @OptIn(NetworkModel::class)
-    suspend fun getStaff(call: ApplicationCall) = call.handleCall(TAG, "getStaff") {
+    suspend fun getStaff(call: ApplicationCall) = call.handleCall(TAG, "getStaff", auth) {
         val staffId = requireNotNull(call.parameters[STAFF_ID])
 
         val staff = staffService.getStaff(
@@ -75,7 +78,7 @@ class StaffController(
      * Handles the retrieval of all staff. The [call] parameter is the request context.
      */
     @OptIn(NetworkModel::class)
-    suspend fun getStaffs(call: ApplicationCall) = call.handleCall(TAG, "getStaffs") {
+    suspend fun getStaffs(call: ApplicationCall) = call.handleCall(TAG, "getStaffs", auth) {
         val staffs = staffService.getStaffs().map { it.toStaffNetworkResponse() }
 
         HttpResponse(
@@ -88,7 +91,7 @@ class StaffController(
      * Handles the updating of a staff. The [call] parameter is the request context.
      */
     @OptIn(NetworkModel::class)
-    suspend fun updateStaff(call: ApplicationCall) = call.handleCall(TAG, "updateStaff") {
+    suspend fun updateStaff(call: ApplicationCall) = call.handleCall(TAG, "updateStaff", auth) {
         val staffId = requireNotNull(call.parameters[STAFF_ID])
 
         val updateStaffRequest = call.receive<UpdateStaffNetworkRequest>()
@@ -110,7 +113,7 @@ class StaffController(
     /**
      * Handles the deletion of a staff. The [call] parameter is the request context.
      */
-    suspend fun deleteStaff(call: RoutingCall) = call.handleCall(TAG, "deleteStaff") {
+    suspend fun deleteStaff(call: RoutingCall) = call.handleCall(TAG, "deleteStaff", auth) {
         val staffId = requireNotNull(call.parameters[STAFF_ID])
 
         val success = staffService.deleteStaff(

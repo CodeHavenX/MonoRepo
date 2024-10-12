@@ -2,7 +2,7 @@ package com.cramsan.edifikana.server.core.controller
 
 import com.cramsan.edifikana.server.core.service.PropertyService
 import com.cramsan.edifikana.server.core.service.models.Property
-import com.cramsan.edifikana.server.core.service.models.PropertyId
+import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.server.core.utils.readFileContent
 import com.cramsan.framework.test.TestBase
 import io.ktor.client.request.delete

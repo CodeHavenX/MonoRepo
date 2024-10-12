@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.server.core.service.models.requests
 
 import com.cramsan.edifikana.lib.model.EventLogEventType
-import com.cramsan.edifikana.server.core.service.models.EventLogEntryId
+import com.cramsan.edifikana.lib.model.EventLogEntryId
 
 /**
  * Domain model representing a request to update an event log entry.

@@ -9,16 +9,16 @@ import com.cramsan.edifikana.client.lib.managers.WorkContext
 import com.cramsan.edifikana.client.lib.managers.remoteconfig.RemoteConfig
 import com.cramsan.edifikana.client.lib.service.AuthService
 import com.cramsan.edifikana.client.lib.service.EventLogService
-import com.cramsan.edifikana.client.lib.service.PropertyConfigService
 import com.cramsan.edifikana.client.lib.service.StaffService
 import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.edifikana.client.lib.service.TimeCardService
 import com.cramsan.edifikana.client.lib.service.dummy.DummyAuthService
 import com.cramsan.edifikana.client.lib.service.dummy.DummyPropertyConfigService
-import com.cramsan.edifikana.client.lib.service.dummy.DummyStaffService
 import com.cramsan.edifikana.client.lib.service.dummy.DummyStorageService
 import com.cramsan.edifikana.client.lib.service.dummy.DummyTimeCardService
 import com.cramsan.edifikana.client.lib.service.supabase.SupabaseEventLogService
+import com.cramsan.edifikana.client.lib.service.supabase.SupabaseStaffService
+import com.cramsan.edifikana.client.lib.service.supabase.SupabaseTimeCardService
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.compose.auth.ComposeAuth
 import io.github.jan.supabase.compose.auth.appleNativeLogin
@@ -98,10 +98,10 @@ val ManagerModule = module {
     singleOf(::DummyStorageService) {
         bind<StorageService>()
     }
-    singleOf(::DummyTimeCardService) {
+    singleOf(::SupabaseTimeCardService) {
         bind<TimeCardService>()
     }
-    singleOf(::DummyStaffService) {
+    singleOf(::SupabaseStaffService) {
         bind<StaffService>()
     }
 }

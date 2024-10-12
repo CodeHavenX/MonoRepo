@@ -2,7 +2,7 @@ package com.cramsan.edifikana.client.lib.db.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.cramsan.edifikana.lib.EventLogRecordPK
+import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.framework.core.CoreUri
 import kotlinx.datetime.Clock
 
@@ -22,14 +22,14 @@ data class FileAttachmentEntity(
          * Create a new [FileAttachmentEntity] with the given [eventLogRecordPK], [clock], and [fileUri]
          */
         fun create(
-            eventLogRecordPK: EventLogRecordPK,
+            eventLogRecordPK: EventLogEntryId,
             clock: Clock,
             fileUri: CoreUri,
         ): FileAttachmentEntity {
             val id = "$eventLogRecordPK-$fileUri-${clock.now().epochSeconds}"
             return FileAttachmentEntity(
                 id,
-                eventLogRecordPK.documentPath,
+                eventLogRecordPK.eventLogEntryId,
                 fileUri.toString(),
             )
         }

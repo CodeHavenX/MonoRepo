@@ -13,4 +13,5 @@ interface PasswordGenerator {
      * Generates a password.
      */
     fun generate(): String
+
 }

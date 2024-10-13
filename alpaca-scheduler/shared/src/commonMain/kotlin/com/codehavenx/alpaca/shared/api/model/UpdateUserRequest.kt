@@ -10,14 +10,13 @@ import kotlinx.serialization.Serializable
 @NetworkModel
 @Serializable
 data class UpdateUserRequest internal constructor(
-    @SerialName("username")
-    val username: String?,
+    val username: String,
     @SerialName("phone_numbers")
-    val phoneNumber: List<String>?,
-    val emails: List<String>?,
+    val phoneNumber: List<String>? = null,
     @SerialName("first_name")
-    val firstName: String?,
+    val firstName: String? = null,
     @SerialName("last_name")
-    val lastName: String?,
-    val address: AddressResponse?,
+    val lastName: String? = null,
+    val address: AddressResponse? = null,
+    val emails: List<String>? = null,
 )

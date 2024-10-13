@@ -1,20 +1,13 @@
 package com.codehavenx.alpaca.frontend.appcore.features.application
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -23,20 +16,29 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.codehavenx.alpaca.frontend.appcore.features.main.MainMenuScreen
+import com.codehavenx.alpaca.frontend.appcore.features.clients.addclient.AddClientScreen
+import com.codehavenx.alpaca.frontend.appcore.features.clients.listclients.ListClientsScreen
+import com.codehavenx.alpaca.frontend.appcore.features.clients.updateclient.UpdateClientScreen
+import com.codehavenx.alpaca.frontend.appcore.features.clients.viewclient.ViewClientScreen
+import com.codehavenx.alpaca.frontend.appcore.features.createaccount.CreateAccountScreen
+import com.codehavenx.alpaca.frontend.appcore.features.home.HomeScreen
+import com.codehavenx.alpaca.frontend.appcore.features.signin.SignInScreen
+import com.codehavenx.alpaca.frontend.appcore.features.staff.addstaff.AddStaffScreen
+import com.codehavenx.alpaca.frontend.appcore.features.staff.liststaff.ListStaffsScreen
+import com.codehavenx.alpaca.frontend.appcore.features.staff.updatestaff.UpdateStaffScreen
+import com.codehavenx.alpaca.frontend.appcore.features.staff.viewstaff.ViewStaffScreen
+import com.codehavenx.alpaca.frontend.appcore.ui.components.NavigationBar
+import com.codehavenx.alpaca.frontend.appcore.ui.components.TopBar
 import com.codehavenx.alpaca.frontend.appcore.ui.theme.AlpacaTheme
-import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
-import shared_compose.Res
-import shared_compose.string_back_navigation
 
 /**
  * Alpaca application main entry point.
@@ -52,6 +54,7 @@ fun AlpacaApplicationScreen(
 ) {
     val event by viewModel.events.collectAsState(ApplicationEvent.Noop)
     val delegatedEvent by viewModel.delegatedEvents.collectAsState(ApplicationDelegatedEvent.Noop)
+    val uiState by viewModel.uiState.collectAsState()
     val navController = rememberNavController()
 
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
@@ -84,15 +87,36 @@ fun AlpacaApplicationScreen(
                     restoreState = true
                 }
             }
+            is ApplicationEvent.SignInStatusChange -> {
+                viewModel.setSignInStatus(applicationEvent.isSignedIn)
+            }
         }
     }
     ComposableKoinContext {
         AlpacaTheme {
-            NavigationHost(
-                navController = navController,
-                delegatedEvent = delegatedEvent,
-                onApplicationEventInvoke = { viewModel.executeApplicationEvent(it) },
-            )
+            val state = uiState
+            AnimatedContent(
+                targetState = state,
+                label = "animated content"
+            ) {
+                when (state) {
+                    ApplicationUIModel.SignedOut -> {
+                        SignInScreen(
+                            delegatedEvent,
+                            onApplicationEventInvoke = { viewModel.executeApplicationEvent(it) },
+                        )
+                    }
+                    is ApplicationUIModel.SignedIn -> {
+                        NavigationHost(
+                            navController = navController,
+                            delegatedEvent = delegatedEvent,
+                            onApplicationEventInvoke = { viewModel.executeApplicationEvent(it) },
+                            onSignOutClicked = { viewModel.signOut() },
+                            navBar = state.navBar,
+                        )
+                    }
+                }
+            }
         }
     }
 }
@@ -106,51 +130,38 @@ private fun NavigationHost(
     navController: NavHostController,
     delegatedEvent: ApplicationDelegatedEvent,
     onApplicationEventInvoke: (ApplicationEvent) -> Unit,
+    navBar: List<NavBarSegment>,
+    onSignOutClicked: () -> Unit,
 ) {
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val backStack by navController.currentBackStack.collectAsState()
-
-    @Suppress("UnusedPrivateProperty")
-    val currentDestination = navBackStackEntry?.destination
-    val startDestination = Route.mainMenu()
-    var title by remember { mutableStateOf("") }
+    val startDestination = Route.createAccount()
+    var showNavigationBar by remember { mutableStateOf(true) }
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    AnimatedContent(title) {
-                        Text(it)
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                ),
-                navigationIcon = {
-                    AnimatedVisibility(
-                        visible = (backStack.size > 2),
-                        enter = fadeIn(),
-                        exit = fadeOut(),
-                    ) {
-                        IconButton(onClick = { navController.navigateUp() }) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = stringResource(Res.string.string_back_navigation)
-                            )
-                        }
-                    }
-                },
+            TopBar(
+                navController,
+                { showNavigationBar = !showNavigationBar },
+                { onSignOutClicked() },
             )
         },
         bottomBar = { },
     ) { innerPadding ->
-        NavigationRoutes(
-            navController = navController,
-            startDestination = startDestination,
-            modifier = Modifier.padding(innerPadding),
-            activityDelegatedEvent = delegatedEvent,
-            onApplicationEventInvoke = onApplicationEventInvoke,
-        )
+        Row(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize(),
+        ) {
+            NavigationBar(navBar, navController, showNavigationBar)
+            NavigationRoutes(
+                navController = navController,
+                startDestination = startDestination,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .border(1.dp, MaterialTheme.colorScheme.primaryContainer),
+                activityDelegatedEvent = delegatedEvent,
+                onApplicationEventInvoke = onApplicationEventInvoke,
+            )
+        }
     }
 }
 
@@ -168,8 +179,80 @@ private fun NavigationRoutes(
         startDestination = startDestination,
         modifier = modifier,
     ) {
-        composable(Route.MAIN_MENU.route) { _ ->
-            MainMenuScreen(
+        composable(Route.HOME.route) { _ ->
+            HomeScreen(
+                activityDelegatedEvent,
+                onApplicationEventInvoke,
+            )
+        }
+        composable(Route.CLIENTS_LIST.route) { _ ->
+            ListClientsScreen(
+                activityDelegatedEvent,
+                onApplicationEventInvoke,
+            )
+        }
+
+        composable(Route.CLIENTS_ADD.route) { _ ->
+            AddClientScreen(
+                activityDelegatedEvent,
+                onApplicationEventInvoke,
+            )
+        }
+
+        composable(Route.CLIENTS_UPDATE.route) { backStackEntry ->
+            UpdateClientScreen(
+                backStackEntry.arguments?.getString("clientId")!!,
+                activityDelegatedEvent,
+                onApplicationEventInvoke,
+            )
+        }
+
+        composable(Route.CLIENTS_VIEW.route) { backStackEntry ->
+            ViewClientScreen(
+                backStackEntry.arguments?.getString("clientId")!!,
+                activityDelegatedEvent,
+                onApplicationEventInvoke,
+            )
+        }
+
+        composable(Route.STAFF_LIST.route) { _ ->
+            ListStaffsScreen(
+                activityDelegatedEvent,
+                onApplicationEventInvoke,
+            )
+        }
+
+        composable(Route.STAFF_UPDATE.route) { backStackEntry ->
+            UpdateStaffScreen(
+                backStackEntry.arguments?.getString("staffId")!!,
+                activityDelegatedEvent,
+                onApplicationEventInvoke,
+            )
+        }
+
+        composable(Route.STAFF_VIEW.route) { backStackEntry ->
+            ViewStaffScreen(
+                backStackEntry.arguments?.getString("staffId")!!,
+                activityDelegatedEvent,
+                onApplicationEventInvoke,
+            )
+        }
+
+        composable(Route.STAFF_ADD.route) { _ ->
+            AddStaffScreen(
+                activityDelegatedEvent,
+                onApplicationEventInvoke,
+            )
+        }
+
+        composable(Route.APPOINTMENTS.route) { _ ->
+        }
+
+        composable(Route.COURSES_AND_CLASSES.route) { _ ->
+        }
+
+        composable(Route.CREATE_ACCOUNT.route) { _ ->
+            CreateAccountScreen(
                 activityDelegatedEvent,
                 onApplicationEventInvoke,
             )

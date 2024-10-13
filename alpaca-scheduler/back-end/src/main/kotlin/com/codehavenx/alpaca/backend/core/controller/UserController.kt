@@ -1,5 +1,6 @@
 package com.codehavenx.alpaca.backend.core.controller
 
+import com.codehavenx.alpaca.backend.core.controller.ControllerUtils.handleCall
 import com.codehavenx.alpaca.backend.core.service.UserService
 import com.codehavenx.alpaca.backend.core.service.models.UserId
 import com.codehavenx.alpaca.shared.api.Routes
@@ -14,10 +15,12 @@ import io.ktor.server.request.receive
 import io.ktor.server.routing.Routing
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
+import io.ktor.server.routing.put
 import io.ktor.server.routing.route
 
 /**
  * Controller for user related operations. CRUD operations for users.
+ * Users are defined as Customers, Business Owners, Employees, Admins
  */
 class UserController(
     private val userService: UserService,
@@ -32,6 +35,9 @@ class UserController(
 
         val newUser = userService.createUser(
             createUserRequest.username,
+            createUserRequest.phoneNumber,
+            createUserRequest.email,
+
         ).toUserResponse()
 
         HttpResponse(
@@ -54,7 +60,7 @@ class UserController(
         val statusCode = if (user == null) {
             HttpStatusCode.NotFound
         } else {
-            HttpStatusCode.OK
+            HttpStatusCode.Created
         }
 
         HttpResponse(
@@ -78,6 +84,7 @@ class UserController(
 
     /**
      * Handles the updating of a user. The [call] parameter is the request context.
+     * TODO: Update isVerified to validate the user's email and phone number when changed??.
      */
     @OptIn(NetworkModel::class)
     suspend fun updateUser(call: ApplicationCall) = call.handleCall(TAG, "updateUser") {
@@ -115,6 +122,9 @@ class UserController(
                 }
                 get {
                     getUsers(call)
+                }
+                put("{$USER_ID}") {
+                    updateUser(call)
                 }
             }
         }

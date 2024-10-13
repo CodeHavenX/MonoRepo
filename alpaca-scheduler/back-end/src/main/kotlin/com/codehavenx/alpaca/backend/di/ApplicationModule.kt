@@ -1,7 +1,5 @@
 package com.codehavenx.alpaca.backend.di
 
-import com.codehavenx.alpaca.backend.core.controller.AvailabilityController
-import com.codehavenx.alpaca.backend.core.controller.UserController
 import com.codehavenx.alpaca.backend.core.repository.CalendarDatabase
 import com.codehavenx.alpaca.backend.core.repository.ConfigurationDatabase
 import com.codehavenx.alpaca.backend.core.repository.UserDatabase
@@ -76,10 +74,6 @@ val ApplicationModule = module {
     single {
         get<SupabaseClient>().postgrest
     }
-
-    // Controllers
-    singleOf(::UserController)
-    singleOf(::AvailabilityController)
 
     // Services
     singleOf(::UserService)

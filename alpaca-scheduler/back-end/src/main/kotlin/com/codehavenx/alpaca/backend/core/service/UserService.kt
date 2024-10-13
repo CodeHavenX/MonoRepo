@@ -7,6 +7,7 @@ import com.codehavenx.alpaca.backend.core.service.models.requests.CreateUserRequ
 import com.codehavenx.alpaca.backend.core.service.models.requests.DeleteUserRequest
 import com.codehavenx.alpaca.backend.core.service.models.requests.GetUserRequest
 import com.codehavenx.alpaca.backend.core.service.models.requests.UpdateUserRequest
+import com.cramsan.framework.logging.logE
 
 /**
  * Service for user operations.
@@ -20,10 +21,20 @@ class UserService(
      */
     suspend fun createUser(
         username: String,
+        phoneNumber: String?,
+        email: String?,
     ): User {
+        // Ensure that at least one of phone number or email is provided.
+        if (phoneNumber == null && email == null) {
+            logE(TAG, "Missing phone number or email.")
+            throw IllegalArgumentException("At least one of phone number or email must be provided.")
+        }
+
         return userDatabase.createUser(
             request = CreateUserRequest(
                 username = username,
+                phoneNumbers = listOfNotNull(phoneNumber),
+                emails = listOfNotNull(email),
             ),
         ).getOrThrow()
     }
@@ -37,6 +48,7 @@ class UserService(
         val user = userDatabase.getUser(
             request = GetUserRequest(
                 id = id,
+
             ),
         ).getOrNull()
 
@@ -77,5 +89,12 @@ class UserService(
                 id = id,
             )
         ).getOrThrow()
+    }
+
+    /**
+     * Companion object for the user service.
+     */
+    companion object {
+        private const val TAG = "UserService"
     }
 }

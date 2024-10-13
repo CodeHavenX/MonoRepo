@@ -1,0 +1,14 @@
+{
+    "id": "123",
+    "username": "test",
+    "is_verified": false,
+    "phone_numbers": [
+        "1234567890"
+    ],
+    "first_name": null,
+    "last_name": null,
+    "address": null,
+    "emails": [
+        "example@test.com"
+    ]
+}

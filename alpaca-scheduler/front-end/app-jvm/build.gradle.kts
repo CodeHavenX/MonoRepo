@@ -11,6 +11,8 @@ apply(from = "$rootDir/gradle/kotlin-jvm-target-lib-compose.gradle")
 dependencies {
     implementation(project(":alpaca-scheduler:front-end:appcore"))
 
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:_")
+
     implementation("io.insert-koin:koin-core:_")
     implementation("io.insert-koin:koin-compose:_")
 }

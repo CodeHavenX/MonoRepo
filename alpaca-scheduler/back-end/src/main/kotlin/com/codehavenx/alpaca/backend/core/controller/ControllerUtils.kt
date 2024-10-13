@@ -10,44 +10,51 @@ import io.ktor.server.response.respondBytes
 import io.ktor.server.response.respondNullable
 
 /**
- * Handle a call to a controller function. This function will log the call, execute the function, and respond to the
- * client with the result.
+ * This class was created due to a weird issue with a NoSuchMethodError when trying to call the handleCall function
+ * during tests. I dont know the reason for this exception, so this is just a workaround.
+ *
  */
-suspend fun ApplicationCall.handleCall(
-    tag: String,
-    functionName: String,
-    function: suspend ApplicationCall.() -> HttpResponse,
-) {
-    logI(tag, "$functionName called")
+object ControllerUtils {
+    /**
+     * Handle a call to a controller function. This function will log the call, execute the function, and respond to the
+     * client with the result.
+     */
+    suspend fun ApplicationCall.handleCall(
+        tag: String,
+        functionName: String,
+        function: suspend ApplicationCall.() -> HttpResponse,
+    ) {
+        logI(tag, "$functionName called")
 
-    val result = runCatching {
-        function()
-    }
+        val result = runCatching {
+            function()
+        }
 
-    if (result.isSuccess) {
-        val functionResponse = result.getOrNull()
-        if (functionResponse == null) {
-            logE(tag, "Successful response contained empty HttpResponse")
-            respond(
-                HttpStatusCode.InternalServerError,
-                "Invalid server response",
-            )
-        } else {
-            response.status(functionResponse.status)
-            when (val body = functionResponse.body) {
-                is ByteArray -> {
-                    respondBytes(body)
-                }
-                else -> {
-                    respondNullable(functionResponse.body)
+        if (result.isSuccess) {
+            val functionResponse = result.getOrNull()
+            if (functionResponse == null) {
+                logE(tag, "Successful response contained empty HttpResponse")
+                respond(
+                    HttpStatusCode.InternalServerError,
+                    "Invalid server response",
+                )
+            } else {
+                response.status(functionResponse.status)
+                when (val body = functionResponse.body) {
+                    is ByteArray -> {
+                        respondBytes(body)
+                    }
+                    else -> {
+                        respondNullable(functionResponse.body)
+                    }
                 }
             }
+        } else {
+            logE(tag, "Unexpected failure when handing request", result.exceptionOrNull())
+            respond(
+                HttpStatusCode.InternalServerError,
+                result.exceptionOrNull()?.localizedMessage.orEmpty(),
+            )
         }
-    } else {
-        logE(tag, "Unexpected failure when handing request", result.exceptionOrNull())
-        respond(
-            HttpStatusCode.InternalServerError,
-            result.exceptionOrNull()?.localizedMessage.orEmpty(),
-        )
     }
 }

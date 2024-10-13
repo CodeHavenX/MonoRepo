@@ -27,9 +27,10 @@ class SupabaseConfigurationDatabase(
 
         val requestEntity = request.toConfigurationEntity()
 
-        val createdConfiguration = postgrest.from(ConfigurationEntity.COLLECTION).insert(requestEntity) {
-            select()
-        }
+        val createdConfiguration = postgrest.from(ConfigurationEntity.COLLECTION)
+            .insert(requestEntity) {
+                select()
+            }
             .decodeSingle<ConfigurationEntity>()
         logD(TAG, "Configuration created id=%S", createdConfiguration.id)
 

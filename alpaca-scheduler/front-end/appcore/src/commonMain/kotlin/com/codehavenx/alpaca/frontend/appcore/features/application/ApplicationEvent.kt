@@ -41,4 +41,15 @@ sealed class ApplicationEvent {
         val route: String,
         val id: Int = Random.nextInt(),
     ) : ApplicationEvent()
+
+    /**
+     * Sign in status change event.
+     *
+     * @param id The id of the event. This is automatically generated. It is made accessible for testing purposes.
+     * @param isSignedIn The sign in status.
+     */
+    data class SignInStatusChange(
+        val id: Int = Random.nextInt(),
+        val isSignedIn: Boolean,
+    ) : ApplicationEvent()
 }

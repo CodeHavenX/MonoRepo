@@ -2,5 +2,9 @@
     <string name="app_name">Alpaca Scheduler</string>
 
     <string name="string_back_navigation">Back</string>
+    <string name="string_username">Username</string>
+    <string name="string_password">Password</string>
+    <string name="string_sign_in">Sign In</string>
+    <string name="message_sign_in_error">Username and password did not match our records.</string>
 
 </resources>

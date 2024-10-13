@@ -7,7 +7,9 @@ import com.codehavenx.alpaca.frontend.appcore.utils.runSuspendCatching
 /**
  * Default implementation of the user service.
  */
-class UserServiceImpl : UserService {
+class UserServiceImpl(
+    private val httpClient: HttpClient
+) : UserService {
 
     override suspend fun getUsers(): Result<List<User>> = runSuspendCatching(TAG) {
         listOf()

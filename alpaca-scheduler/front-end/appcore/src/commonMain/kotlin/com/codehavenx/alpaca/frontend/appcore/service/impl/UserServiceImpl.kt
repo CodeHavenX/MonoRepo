@@ -16,14 +16,20 @@ import io.ktor.client.request.setBody
 /**
  * Default implementation of the user service.
  */
-class UserServiceImpl : UserService {
+class UserServiceImpl(
+    private val httpClient: HttpClient
+) : UserService {
 
     override suspend fun getUsers(): Result<List<User>> = runSuspendCatching(TAG) {
         listOf()
     }
 
     @OptIn(NetworkModel::class)
-    override suspend fun createUser(userName: String, email: String?, phoneNumber: String?) {
+    override suspend fun createUser(
+        userName: String,
+        email: String?,
+        phoneNumber: String?,
+    ): Result<User> = runSuspendCatching(TAG) {
         val request = CreateUserRequest.create(userName, email, phoneNumber)
         httpClient.post(Routes.User.PATH) {
             setBody(request)

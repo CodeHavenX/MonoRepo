@@ -14,6 +14,8 @@ import org.koin.core.context.startKoin
 
 /**
  * Main function for the desktop application.
+ * Do not launch this function directly, as that will skip several build steps.
+ * To launch the application, use the gradle task `app-jvm:run`.
  */
 fun main() = application {
     startKoin {

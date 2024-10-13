@@ -17,7 +17,9 @@ data class UserResponse internal constructor(
     val isVerified: Boolean,
     @SerialName("phone_numbers")
     val phoneNumbers: List<String>,
+    @SerialName("first_name")
     val firstName: String?,
+    @SerialName("last_name")
     val lastName: String?,
     val address: AddressResponse?,
     val emails: List<String>,

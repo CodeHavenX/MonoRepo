@@ -3,8 +3,8 @@
     "username": "myUser",
     "is_verified": true,
     "phone_numbers": [],
-    "firstName": null,
-    "lastName": "Delanore",
+    "first_name": null,
+    "last_name": "Delanore",
     "address": null,
     "emails": []
 }

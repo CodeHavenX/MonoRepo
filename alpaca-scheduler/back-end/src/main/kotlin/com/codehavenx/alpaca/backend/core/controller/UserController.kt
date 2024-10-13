@@ -38,7 +38,7 @@ class UserController(
             createUserRequest.phoneNumber,
             createUserRequest.email,
 
-            ).toUserResponse()
+        ).toUserResponse()
 
         HttpResponse(
             status = HttpStatusCode.OK,

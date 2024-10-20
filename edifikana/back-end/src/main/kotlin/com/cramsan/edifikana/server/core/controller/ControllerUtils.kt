@@ -1,5 +1,7 @@
 package com.cramsan.edifikana.server.core.controller
 
+import com.cramsan.edifikana.server.core.controller.auth.ClientContext
+import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
 import com.cramsan.framework.core.ktor.HttpResponse
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logI
@@ -16,12 +18,15 @@ import io.ktor.server.response.respondNullable
 suspend inline fun ApplicationCall.handleCall(
     tag: String,
     functionName: String,
-    function: ApplicationCall.() -> HttpResponse,
+    contextRetriever: ContextRetriever,
+    function: ApplicationCall.(ClientContext) -> HttpResponse,
 ) {
     logI(tag, "$functionName called")
 
+    val clientContext = contextRetriever.getContext(this)
+
     val result = runCatching {
-        function()
+        function(clientContext)
     }
 
     if (result.isSuccess) {
@@ -49,5 +54,21 @@ suspend inline fun ApplicationCall.handleCall(
             HttpStatusCode.InternalServerError,
             result.exceptionOrNull()?.localizedMessage.orEmpty(),
         )
+    }
+}
+
+/**
+ * Get the authenticated client context from a client context. If the client context is not authenticated, an exception
+ * will be thrown.
+ */
+@Suppress("UseCheckOrError")
+inline fun getAuthenticatedClientContext(clientContext: ClientContext): ClientContext.AuthenticatedClientContext {
+    when (clientContext) {
+        is ClientContext.AuthenticatedClientContext -> {
+            return clientContext
+        }
+        is ClientContext.UnauthenticatedClientContext -> {
+            throw IllegalStateException("Client is not authenticated")
+        }
     }
 }

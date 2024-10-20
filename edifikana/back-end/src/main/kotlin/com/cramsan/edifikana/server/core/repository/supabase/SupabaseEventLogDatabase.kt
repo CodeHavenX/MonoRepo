@@ -25,7 +25,7 @@ class SupabaseEventLogDatabase(
     override suspend fun createEventLogEntry(
         request: CreateEventLogEntryRequest,
     ): Result<EventLogEntry> = runSuspendCatching(TAG) {
-        logD(TAG, "Creating event log entry: %S", request.summary)
+        logD(TAG, "Creating event log entry: %S", request.title)
         val requestEntity: EventLogEntryEntity.CreateEventLogEntryEntity = request.toEventLogEntryEntity()
 
         val createdEventLogEntry = postgrest.from(EventLogEntryEntity.COLLECTION).insert(requestEntity) {
@@ -77,7 +77,7 @@ class SupabaseEventLogDatabase(
             {
                 request.type?.let { value -> EventLogEntryEntity::type setTo value }
                 request.fallbackEventType?.let { value -> EventLogEntryEntity::fallbackEventType setTo value }
-                request.summary?.let { value -> EventLogEntryEntity::summary setTo value }
+                request.title?.let { value -> EventLogEntryEntity::title setTo value }
                 request.description?.let { value -> EventLogEntryEntity::description setTo value }
                 request.unit?.let { value -> EventLogEntryEntity::unit setTo value }
             }

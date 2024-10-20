@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.service
 
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
-import com.cramsan.edifikana.lib.EventLogRecordPK
+import com.cramsan.edifikana.lib.model.EventLogEntryId
 
 /**
  * Service for managing event logs.
@@ -17,7 +17,7 @@ interface EventLogService {
      * Get a specific event log record.
      */
     suspend fun getRecord(
-        eventLogRecordPK: EventLogRecordPK,
+        eventLogRecordPK: EventLogEntryId,
     ): Result<EventLogRecordModel>
 
     /**

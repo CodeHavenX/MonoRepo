@@ -4,6 +4,7 @@ import com.cramsan.edifikana.client.lib.features.base.EdifikanaBaseViewModel
 import com.cramsan.edifikana.client.lib.managers.AttachmentManager
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.EventLogManager
+import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.managers.TimeCardManager
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.DispatcherProvider
@@ -24,6 +25,7 @@ class MainActivityViewModel(
     private val eventLogManager: EventLogManager,
     private val attachmentManager: AttachmentManager,
     private val timeCardManager: TimeCardManager,
+    private val propertyManager: PropertyManager,
     exceptionHandler: CoroutineExceptionHandler,
     dispatcherProvider: DispatcherProvider,
 ) : EdifikanaBaseViewModel(exceptionHandler, dispatcherProvider) {
@@ -47,14 +49,17 @@ class MainActivityViewModel(
      */
     fun enforceAuth() = viewModelScope.launch {
         val result = auth.isSignedIn(true)
+        val propertyResult = propertyManager.getPropertyList()
 
         if (result.isFailure) {
             logW(TAG, "Failure when enforcing auth.", result.exceptionOrNull())
         } else {
             if (!result.getOrThrow()) {
+                propertyManager.setActiveProperty(null)
                 // _events.emit(MainActivityEvent.LaunchSignIn())
                 _events.emit(MainActivityEvent.Navigate(Route.toSignInRoute()))
             } else {
+                propertyManager.setActiveProperty(propertyResult.getOrNull()?.firstOrNull()?.id)
                 // Already signed in
                 uploadPending()
             }

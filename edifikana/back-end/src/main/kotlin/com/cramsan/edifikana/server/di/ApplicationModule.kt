@@ -7,12 +7,14 @@ import com.cramsan.edifikana.server.core.controller.PropertyController
 import com.cramsan.edifikana.server.core.controller.StaffController
 import com.cramsan.edifikana.server.core.controller.TimeCardController
 import com.cramsan.edifikana.server.core.controller.UserController
+import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
+import com.cramsan.edifikana.server.core.controller.auth.DummyContextRetriever
 import com.cramsan.edifikana.server.core.repository.EventLogDatabase
 import com.cramsan.edifikana.server.core.repository.PropertyDatabase
 import com.cramsan.edifikana.server.core.repository.StaffDatabase
 import com.cramsan.edifikana.server.core.repository.TimeCardDatabase
 import com.cramsan.edifikana.server.core.repository.UserDatabase
-import com.cramsan.edifikana.server.core.repository.dummy.DummyEventLogDatabase
+import com.cramsan.edifikana.server.core.repository.supabase.SupabaseEventLogDatabase
 import com.cramsan.edifikana.server.core.repository.supabase.SupabasePropertyDatabase
 import com.cramsan.edifikana.server.core.repository.supabase.SupabaseStaffDatabase
 import com.cramsan.edifikana.server.core.repository.supabase.SupabaseTimeCardDatabase
@@ -22,11 +24,13 @@ import com.cramsan.edifikana.server.core.service.PropertyService
 import com.cramsan.edifikana.server.core.service.StaffService
 import com.cramsan.edifikana.server.core.service.TimeCardService
 import com.cramsan.edifikana.server.core.service.UserService
+import com.cramsan.edifikana.server.core.service.password.PasswordGenerator
+import com.cramsan.edifikana.server.core.service.password.SimplePasswordGenerator
 import com.cramsan.framework.assertlib.assertFalse
 import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.auth.Auth
+import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.createSupabaseClient
-import io.github.jan.supabase.gotrue.Auth
-import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.storage.Storage
@@ -54,6 +58,14 @@ val ApplicationModule = module {
 
     single<Clock> {
         Clock.System
+    }
+
+    singleOf(::SimplePasswordGenerator) {
+        bind<PasswordGenerator>()
+    }
+
+    singleOf(::DummyContextRetriever) {
+        bind<ContextRetriever>()
     }
 
     // Supabase
@@ -114,9 +126,7 @@ val ApplicationModule = module {
     singleOf(::SupabaseTimeCardDatabase) {
         bind<TimeCardDatabase>()
     }
-
-    // Dummy database
-    singleOf(::DummyEventLogDatabase) {
+    singleOf(::SupabaseEventLogDatabase) {
         bind<EventLogDatabase>()
     }
 }

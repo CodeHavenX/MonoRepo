@@ -3,10 +3,11 @@ package com.cramsan.edifikana.server.core.controller
 import com.cramsan.edifikana.lib.PROPERTY_ID
 import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.annotations.NetworkModel
-import com.cramsan.edifikana.lib.model.CreatePropertyNetworkRequest
-import com.cramsan.edifikana.lib.model.UpdatePropertyNetworkRequest
+import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.network.CreatePropertyNetworkRequest
+import com.cramsan.edifikana.lib.model.network.UpdatePropertyNetworkRequest
+import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
 import com.cramsan.edifikana.server.core.service.PropertyService
-import com.cramsan.edifikana.server.core.service.models.PropertyId
 import com.cramsan.framework.core.ktor.HttpResponse
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
@@ -24,13 +25,14 @@ import io.ktor.server.routing.route
  */
 class PropertyController(
     private val propertyService: PropertyService,
+    private val contextRetriever: ContextRetriever,
 ) {
 
     /**
      * Handles the creation of a new property. The [call] parameter is the request context.
      */
     @OptIn(NetworkModel::class)
-    suspend fun createProperty(call: ApplicationCall) = call.handleCall(TAG, "createProperty") {
+    suspend fun createProperty(call: ApplicationCall) = call.handleCall(TAG, "createProperty", contextRetriever) {
         val createPropertyRequest = call.receive<CreatePropertyNetworkRequest>()
 
         val newProperty = propertyService.createProperty(
@@ -47,7 +49,7 @@ class PropertyController(
      * Handles the retrieval of a property. The [call] parameter is the request context.
      */
     @OptIn(NetworkModel::class)
-    suspend fun getProperty(call: ApplicationCall) = call.handleCall(TAG, "getProperty") {
+    suspend fun getProperty(call: ApplicationCall) = call.handleCall(TAG, "getProperty", contextRetriever) {
         val propertyId = requireNotNull(call.parameters[PROPERTY_ID])
 
         val property = propertyService.getProperty(
@@ -67,11 +69,17 @@ class PropertyController(
     }
 
     /**
-     * Handles the retrieval of all properties. The [call] parameter is the request context.
+     * Handles the retrieval of a list of properties. The [call] parameter is the request context.
      */
     @OptIn(NetworkModel::class)
-    suspend fun getProperties(call: ApplicationCall) = call.handleCall(TAG, "getProperties") {
-        val properties = propertyService.getProperties().map { it.toPropertyNetworkResponse() }
+    suspend fun getProperties(call: ApplicationCall) = call.handleCall(
+        TAG,
+        "getProperties",
+        contextRetriever,
+    ) { context ->
+        val userId = getAuthenticatedClientContext(context).userId
+
+        val properties = propertyService.getProperties(userId).map { it.toPropertyNetworkResponse() }
 
         HttpResponse(
             status = HttpStatusCode.OK,
@@ -83,7 +91,7 @@ class PropertyController(
      * Handles the update of a property. The [call] parameter is the request context.
      */
     @OptIn(NetworkModel::class)
-    suspend fun updateProperty(call: ApplicationCall) = call.handleCall(TAG, "updateProperty") {
+    suspend fun updateProperty(call: ApplicationCall) = call.handleCall(TAG, "updateProperty", contextRetriever) {
         val propertyId = requireNotNull(call.parameters[PROPERTY_ID])
 
         val updatePropertyRequest = call.receive<UpdatePropertyNetworkRequest>()
@@ -102,7 +110,7 @@ class PropertyController(
     /**
      * Handles the deletion of a property. The [call] parameter is the request context.
      */
-    suspend fun deleteProperty(call: RoutingCall) = call.handleCall(TAG, "deleteProperty") {
+    suspend fun deleteProperty(call: RoutingCall) = call.handleCall(TAG, "deleteProperty", contextRetriever) {
         val propertyId = requireNotNull(call.parameters[PROPERTY_ID])
 
         val success = propertyService.deleteProperty(

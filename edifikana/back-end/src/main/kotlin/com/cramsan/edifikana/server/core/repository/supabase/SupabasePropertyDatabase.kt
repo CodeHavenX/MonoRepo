@@ -1,7 +1,9 @@
 package com.cramsan.edifikana.server.core.repository.supabase
 
+import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.repository.PropertyDatabase
 import com.cramsan.edifikana.server.core.repository.supabase.models.PropertyEntity
+import com.cramsan.edifikana.server.core.repository.supabase.models.UserPropertyMappingEntity
 import com.cramsan.edifikana.server.core.service.models.Property
 import com.cramsan.edifikana.server.core.service.models.requests.CreatePropertyRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeletePropertyRequest
@@ -56,10 +58,16 @@ class SupabasePropertyDatabase(
     }
 
     @OptIn(SupabaseModel::class)
-    override suspend fun getProperties(): Result<List<Property>> = runSuspendCatching(TAG) {
+    override suspend fun getProperties(userId: UserId): Result<List<Property>> = runSuspendCatching(TAG) {
         logD(TAG, "Getting all properties")
 
+        val propertyIds = postgrest.from(UserPropertyMappingEntity.COLLECTION).select {
+            filter { UserPropertyMappingEntity::userId eq userId.userId }
+            select()
+        }.decodeList<UserPropertyMappingEntity>().map { it.propertyId }
+
         postgrest.from(PropertyEntity.COLLECTION).select {
+            filter { PropertyEntity::id isIn propertyIds }
             select()
         }.decodeList<PropertyEntity>().map { it.toProperty() }
     }

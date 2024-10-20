@@ -2,12 +2,12 @@
 
 package com.cramsan.edifikana.server.core.repository.dummy
 
+import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
+import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.server.core.repository.EventLogDatabase
 import com.cramsan.edifikana.server.core.service.models.EventLogEntry
-import com.cramsan.edifikana.server.core.service.models.EventLogEntryId
-import com.cramsan.edifikana.server.core.service.models.PropertyId
-import com.cramsan.edifikana.server.core.service.models.StaffId
 import com.cramsan.edifikana.server.core.service.models.requests.CreateEventLogEntryRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteEventLogEntryRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetEventLogEntryRequest
@@ -32,7 +32,7 @@ class DummyEventLogDatabase(
                 type = EventLogEventType.INCIDENT,
                 fallbackEventType = null,
                 timestamp = clock.now(),
-                summary = "Test",
+                title = "Test",
                 description = null,
                 unit = "Test"
             )
@@ -50,7 +50,7 @@ class DummyEventLogDatabase(
                 type = EventLogEventType.INCIDENT,
                 fallbackEventType = null,
                 timestamp = clock.now(),
-                summary = "Test",
+                title = "Test",
                 description = null,
                 unit = "Test"
             )
@@ -69,7 +69,7 @@ class DummyEventLogDatabase(
                     type = EventLogEventType.INCIDENT,
                     fallbackEventType = null,
                     timestamp = clock.now(),
-                    summary = "Test",
+                    title = "Test",
                     description = null,
                     unit = "Test"
                 )
@@ -88,7 +88,7 @@ class DummyEventLogDatabase(
                 type = EventLogEventType.INCIDENT,
                 fallbackEventType = null,
                 timestamp = clock.now(),
-                summary = "Test",
+                title = "Test",
                 description = null,
                 unit = "Test"
             )

@@ -30,10 +30,9 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import coil3.compose.AsyncImage
 import com.cramsan.edifikana.client.lib.features.main.MainActivityDelegatedEvent
 import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
-import com.cramsan.edifikana.client.lib.models.StorageRef
 import com.cramsan.edifikana.client.lib.ui.components.LoadingAnimationOverlay
-import com.cramsan.edifikana.lib.StaffPK
-import com.cramsan.edifikana.lib.TimeCardRecordPK
+import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.framework.assertlib.AssertUtil
 import com.cramsan.framework.assertlib.implementation.NoopAssertUtil
@@ -50,7 +49,7 @@ import org.koin.compose.koinInject
  */
 @Composable
 fun ViewStaffScreen(
-    staffPK: StaffPK,
+    staffPK: StaffId,
     mainActivityDelegatedEvent: MainActivityDelegatedEvent,
     onMainActivityEventInvoke: (MainActivityEvent) -> Unit,
     onTitleChange: (String) -> Unit,
@@ -105,7 +104,7 @@ private fun ViewStaffContent(
     records: List<ViewStaffUIModel.TimeCardRecordUIModel>,
     onClockInClick: (ViewStaffUIModel.StaffUIModel) -> Unit,
     onClockOutClick: (ViewStaffUIModel.StaffUIModel) -> Unit,
-    onShareClick: (TimeCardRecordPK?) -> Unit,
+    onShareClick: (TimeCardEventId?) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -155,7 +154,7 @@ private fun ViewStaffContent(
 @Composable
 private fun TimeCardRecordItem(
     record: ViewStaffUIModel.TimeCardRecordUIModel,
-    onShareClick: (TimeCardRecordPK?) -> Unit,
+    onShareClick: (TimeCardEventId?) -> Unit,
 ) {
     val textColor = if (record.clickable) {
         MaterialTheme.colorScheme.onSurface
@@ -208,25 +207,25 @@ private fun ViewStaffScreenPreview() {
         staff = ViewStaffUIModel.StaffUIModel(
             fullName = "Cesar Andres Ramirez Sanchez",
             role = "Descansero",
-            staffPK = StaffPK("123"),
+            staffPK = StaffId("123"),
         ),
         records = listOf(
             ViewStaffUIModel.TimeCardRecordUIModel(
                 eventType = "Entrada",
                 timeRecorded = "2021-01-01 12:00:00",
-                StorageRef("storage/1"),
+                "storage/1",
                 TimeCardEventType.CLOCK_IN,
                 null,
-                TimeCardRecordPK("123-123-123"),
+                TimeCardEventId("123-123-123"),
                 true,
             ),
             ViewStaffUIModel.TimeCardRecordUIModel(
                 eventType = "Salida",
                 timeRecorded = "2021-01-01 12:00:00",
-                StorageRef("storage/2"),
+                "storage/2",
                 TimeCardEventType.CLOCK_OUT,
                 null,
-                TimeCardRecordPK("321"),
+                TimeCardEventId("321"),
                 false,
             ),
         ),

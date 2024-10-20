@@ -2,7 +2,7 @@ package com.cramsan.edifikana.client.lib.service
 
 import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.client.lib.service.auth.SignInResult
-import com.cramsan.edifikana.lib.UserPk
+import com.cramsan.edifikana.lib.model.UserId
 
 /**
  * Service for managing authentication.
@@ -17,12 +17,7 @@ interface AuthService {
     /**
      * Get the current user.
      */
-    suspend fun getUser(userPk: UserPk): Result<UserModel>
-
-    /**
-     * Sign in with email and password.
-     */
-    suspend fun signInAnonymously(): Result<Unit>
+    suspend fun getUser(userPk: UserId): Result<UserModel>
 
     /**
      * Sign in with email and password.

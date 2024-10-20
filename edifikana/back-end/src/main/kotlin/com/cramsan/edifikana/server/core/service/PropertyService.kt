@@ -1,8 +1,9 @@
 package com.cramsan.edifikana.server.core.service
 
+import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.repository.PropertyDatabase
 import com.cramsan.edifikana.server.core.service.models.Property
-import com.cramsan.edifikana.server.core.service.models.PropertyId
 import com.cramsan.edifikana.server.core.service.models.requests.CreatePropertyRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeletePropertyRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetPropertyRequest
@@ -46,8 +47,8 @@ class PropertyService(
     /**
      * Retrieves all properties.
      */
-    suspend fun getProperties(): List<Property> {
-        val properties = propertyDatabase.getProperties().getOrThrow()
+    suspend fun getProperties(userId: UserId): List<Property> {
+        val properties = propertyDatabase.getProperties(userId).getOrThrow()
         return properties
     }
 

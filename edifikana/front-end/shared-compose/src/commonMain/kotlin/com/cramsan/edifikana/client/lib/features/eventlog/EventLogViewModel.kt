@@ -4,7 +4,7 @@ import com.cramsan.edifikana.client.lib.features.base.EdifikanaBaseViewModel
 import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.lib.features.main.Route
 import com.cramsan.edifikana.client.lib.managers.EventLogManager
-import com.cramsan.edifikana.lib.EventLogRecordPK
+import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.framework.core.DispatcherProvider
 import com.cramsan.framework.logging.logW
 import edifikana_lib.Res
@@ -66,7 +66,7 @@ class EventLogViewModel(
     /**
      * Open a record screen.
      */
-    fun openRecordScreen(recordPk: EventLogRecordPK?) = viewModelScope.launch {
+    fun openRecordScreen(recordPk: EventLogEntryId?) = viewModelScope.launch {
         if (recordPk == null) {
             logW(TAG, "Record PK is null")
             _event.emit(

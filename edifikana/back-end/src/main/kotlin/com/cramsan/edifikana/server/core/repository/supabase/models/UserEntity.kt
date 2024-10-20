@@ -22,6 +22,7 @@ data class UserEntity(
     @Serializable
     @SupabaseModel
     data class CreateUserEntity(
+        val id: String,
         val email: String,
     )
 }

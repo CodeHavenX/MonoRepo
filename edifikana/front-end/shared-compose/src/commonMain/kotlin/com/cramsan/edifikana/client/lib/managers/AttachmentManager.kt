@@ -3,17 +3,15 @@ package com.cramsan.edifikana.client.lib.managers
 import com.cramsan.edifikana.client.lib.db.models.FileAttachmentDao
 import com.cramsan.edifikana.client.lib.db.models.FileAttachmentEntity
 import com.cramsan.edifikana.client.lib.models.AttachmentHolder
-import com.cramsan.edifikana.client.lib.models.StorageRef
 import com.cramsan.edifikana.client.lib.service.EventLogService
 import com.cramsan.edifikana.client.lib.service.StorageService
-import com.cramsan.edifikana.client.lib.utils.FOLDER_ATTACHMENTS
 import com.cramsan.edifikana.client.lib.utils.IODependencies
 import com.cramsan.edifikana.client.lib.utils.getFilename
 import com.cramsan.edifikana.client.lib.utils.getOrCatch
 import com.cramsan.edifikana.client.lib.utils.launch
 import com.cramsan.edifikana.client.lib.utils.publicDownloadUrl
 import com.cramsan.edifikana.client.lib.utils.readBytes
-import com.cramsan.edifikana.lib.EventLogRecordPK
+import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.utils.requireNotBlank
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.logging.logE
@@ -40,7 +38,7 @@ class AttachmentManager(
      */
     suspend fun addAttachment(
         fileUris: List<CoreUri>,
-        eventLogRecordPK: EventLogRecordPK,
+        eventLogRecordPK: EventLogEntryId,
     ): Result<Unit> = workContext.getOrCatch(TAG) {
         logI(TAG, "Adding attachment to event log record: $eventLogRecordPK")
         fileUris.forEach { fileUri ->
@@ -53,18 +51,15 @@ class AttachmentManager(
     private suspend fun uploadAttachment(attachmentEntity: FileAttachmentEntity) = runCatching {
         mutex.withLock {
             // TODO: Add a domain model layer to avoid having to force-cast nullable fields
-            val eventLogRecordPK = EventLogRecordPK(requireNotBlank(attachmentEntity.eventLogRecordPK))
+            val eventLogRecordPK = EventLogEntryId(requireNotBlank(attachmentEntity.eventLogRecordPK))
             val fileUri = CoreUri.createUri(attachmentEntity.fileUri!!)
 
             val fileData = readBytes(fileUri, ioDependencies).getOrThrow()
 
             val fileName = fileUri.getFilename(ioDependencies)
-            val uploadPath = listOf(FOLDER_ATTACHMENTS)
 
-            val uploadRef = StorageRef(
-                fileName,
-                uploadPath,
-            )
+            val uploadRef = fileName
+
             val imagePhotoResult = storageService.uploadFile(
                 fileData,
                 uploadRef,

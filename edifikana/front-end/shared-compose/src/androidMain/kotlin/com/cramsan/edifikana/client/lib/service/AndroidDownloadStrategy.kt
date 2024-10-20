@@ -4,7 +4,6 @@ import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
-import com.cramsan.edifikana.client.lib.models.StorageRef
 import com.cramsan.framework.core.CoreUri
 
 /**
@@ -13,15 +12,15 @@ import com.cramsan.framework.core.CoreUri
 class AndroidDownloadStrategy(
     private val context: Context,
 ) : DownloadStrategy {
-    override fun isFileCached(targetRef: StorageRef): Boolean {
+    override fun isFileCached(targetRef: String): Boolean {
         return getFileImp(targetRef) != null
     }
 
-    override fun getCachedFile(targetRef: StorageRef): CoreUri {
+    override fun getCachedFile(targetRef: String): CoreUri {
         return getFileImp(targetRef) ?: throw RuntimeException("File not found")
     }
 
-    private fun getFileImp(targetRef: StorageRef): CoreUri? {
+    private fun getFileImp(targetRef: String): CoreUri? {
         val imageCollection = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
 
         // 1. First we check the local content to see if the file is already cached.
@@ -33,7 +32,7 @@ class AndroidDownloadStrategy(
         )
 
         val selection = "${MediaStore.Images.Media.DISPLAY_NAME} = ?"
-        val selectionArgs = arrayOf(targetRef.filename())
+        val selectionArgs = arrayOf(targetRef)
 
         //  Run query
         val cachedUri = context.contentResolver.query(
@@ -60,12 +59,12 @@ class AndroidDownloadStrategy(
         return cachedUri?.let { CoreUri(it) }
     }
 
-    override fun saveToFile(data: ByteArray, targetRef: StorageRef): CoreUri {
+    override fun saveToFile(data: ByteArray, targetRef: String): CoreUri {
         val resolver = context.contentResolver
         val imageCollection = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
 
         val newImageDetails = ContentValues().apply {
-            put(MediaStore.Images.Media.DISPLAY_NAME, targetRef.filename())
+            put(MediaStore.Images.Media.DISPLAY_NAME, targetRef)
             put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
         }
 

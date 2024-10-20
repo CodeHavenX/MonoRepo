@@ -1,18 +1,18 @@
 package com.cramsan.edifikana.client.lib.models
 
-import com.cramsan.edifikana.lib.StaffPK
-import com.cramsan.edifikana.lib.TimeCardRecordPK
+import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 
 /**
  * Model for a time card record.
  */
 data class TimeCardRecordModel(
-    val id: TimeCardRecordPK?,
+    val id: TimeCardEventId?,
     val entityId: String?,
-    val staffPk: StaffPK,
+    val staffPk: StaffId,
     val eventType: TimeCardEventType,
-    val eventTime: Long,
+    val eventTime: Long, // TODO: Change to Instant
     val imageUrl: String?,
-    val imageRef: StorageRef?,
+    val imageRef: String?,
 )

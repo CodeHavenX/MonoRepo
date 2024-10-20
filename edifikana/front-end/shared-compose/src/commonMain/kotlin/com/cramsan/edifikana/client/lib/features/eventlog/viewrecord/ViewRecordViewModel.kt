@@ -7,7 +7,7 @@ import com.cramsan.edifikana.client.lib.managers.EventLogManager
 import com.cramsan.edifikana.client.lib.models.AttachmentHolder
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.client.lib.service.StorageService
-import com.cramsan.edifikana.lib.EventLogRecordPK
+import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.DispatcherProvider
 import edifikana_lib.Res
@@ -52,7 +52,7 @@ class ViewRecordViewModel(
     /**
      * Load a record.
      */
-    fun loadRecord(eventLogRecord: EventLogRecordPK) = viewModelScope.launch {
+    fun loadRecord(eventLogRecord: EventLogEntryId) = viewModelScope.launch {
         _uiState.value = _uiState.value.copy(isLoading = true)
 
         val result = eventLogManager.getRecord(eventLogRecord)
@@ -77,7 +77,7 @@ class ViewRecordViewModel(
         val record = (uiState.value as? ViewRecordUIState)?.record ?: return@launch
 
         // TODO: Move this to a resource
-        val message = "${record.summary}\n" +
+        val message = "${record.title}\n" +
             "${record.eventType}\n" +
             "${record.timeRecorded}\n" +
             "Dpto: ${record.unit}\n" +

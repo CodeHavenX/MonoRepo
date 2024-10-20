@@ -5,4 +5,5 @@ package com.cramsan.edifikana.server.core.service.models.requests
  */
 data class CreateUserRequest(
     val email: String,
+    val password: String,
 )

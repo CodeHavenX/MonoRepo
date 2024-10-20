@@ -1,6 +1,9 @@
 package com.cramsan.edifikana.server.core.service.models
 
+import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
+import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.StaffId
 import kotlinx.datetime.Instant
 
 /**
@@ -14,7 +17,7 @@ data class EventLogEntry(
     val type: EventLogEventType,
     val fallbackEventType: String?,
     val timestamp: Instant,
-    val summary: String,
+    val title: String,
     val description: String?,
     val unit: String,
 )

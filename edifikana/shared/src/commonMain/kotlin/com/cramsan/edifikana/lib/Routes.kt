@@ -38,6 +38,13 @@ object Routes {
      */
     object TimeCard {
         const val PATH = "time_card"
+
+        /**
+         * Query parameters for the time card API.
+         */
+        object QueryParams {
+            const val STAFF_ID = "staff_id"
+        }
     }
 
     /**

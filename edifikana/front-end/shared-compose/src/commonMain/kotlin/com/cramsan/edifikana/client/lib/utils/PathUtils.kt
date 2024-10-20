@@ -1,14 +1,13 @@
 package com.cramsan.edifikana.client.lib.utils
 
-import com.cramsan.edifikana.client.lib.models.StorageRef
 import io.github.jan.supabase.storage.Storage
 import java.net.URLEncoder
 
 /**
  * Get public download URL for storage reference.
  */
-fun publicDownloadUrl(storageRef: StorageRef, storageBucket: String): String {
-    return "$FIREBASE_PUBLIC_URL_ROOT$storageBucket/o/${urlEncode(storageRef.ref)}?$FIREBASE_PUBLIC_URL_MEDIA_SUFFIX"
+fun publicDownloadUrl(storageRef: String, storageBucket: String): String {
+    return "$FIREBASE_PUBLIC_URL_ROOT$storageBucket/o/${urlEncode(storageRef)}?$FIREBASE_PUBLIC_URL_MEDIA_SUFFIX"
 }
 
 private fun urlEncode(path: String): String {
@@ -22,8 +21,8 @@ private const val FIREBASE_PUBLIC_URL_ROOT = "https://firebasestorage.googleapis
  * Get public download URL for storage reference.
  */
 fun publicSupabaseDownloadUrl(
-    storageRef: StorageRef,
+    storageRef: String,
     storage: Storage,
 ): String {
-    return storage.from("test").publicUrl(storageRef.ref)
+    return storage.from("test").publicUrl(storageRef)
 }

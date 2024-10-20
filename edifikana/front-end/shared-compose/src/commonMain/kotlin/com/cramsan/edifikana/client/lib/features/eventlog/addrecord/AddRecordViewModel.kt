@@ -3,10 +3,12 @@ package com.cramsan.edifikana.client.lib.features.eventlog.addrecord
 import com.cramsan.edifikana.client.lib.features.base.EdifikanaBaseViewModel
 import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.lib.managers.EventLogManager
+import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
-import com.cramsan.edifikana.lib.StaffPK
 import com.cramsan.edifikana.lib.model.EventLogEventType
+import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.framework.core.DispatcherProvider
 import edifikana_lib.Res
 import edifikana_lib.string_other
@@ -27,6 +29,7 @@ class AddRecordViewModel(
     private val staffManager: StaffManager,
     private val eventLogManager: EventLogManager,
     private val clock: Clock,
+    private val propertyManager: PropertyManager,
     exceptionHandler: CoroutineExceptionHandler,
     dispatcherProvider: DispatcherProvider,
 ) : EdifikanaBaseViewModel(exceptionHandler, dispatcherProvider) {
@@ -52,7 +55,7 @@ class AddRecordViewModel(
      */
     fun loadStaffs() = viewModelScope.launch {
         _uiState.value = _uiState.value.copy(isLoading = true)
-        val result = staffManager.getStaffs()
+        val result = staffManager.getStaffList()
 
         if (result.isFailure) {
             _uiState.value = AddRecordUIState(listOf(), false, getString(Res.string.title_event_log_add))
@@ -75,12 +78,12 @@ class AddRecordViewModel(
      */
     @Suppress("ComplexCondition")
     fun addRecord(
-        staffDocumentId: StaffPK?,
+        staffDocumentId: StaffId?,
         unit: String?,
         eventType: EventLogEventType?,
         fallbackStaffName: String?,
         fallbackEventType: String?,
-        summary: String?,
+        title: String?,
         description: String?,
     ) = viewModelScope.launch {
         _uiState.value = _uiState.value.copy(isLoading = true)
@@ -89,13 +92,14 @@ class AddRecordViewModel(
             (staffDocumentId == null && fallbackStaffName.isNullOrBlank()) ||
             (eventType == null && fallbackEventType.isNullOrBlank()) ||
             unit.isNullOrBlank() ||
-            summary.isNullOrBlank() ||
+            title.isNullOrBlank() ||
             description.isNullOrBlank()
         ) {
             _uiState.value = _uiState.value.copy(isLoading = false)
             return@launch
         }
 
+        val property: PropertyId = propertyManager.activeProperty().value ?: error("No active property")
         val eventLogRecord = EventLogRecordModel.createTemporary(
             staffPk = staffDocumentId,
             timeRecorded = clock.now().epochSeconds,
@@ -103,8 +107,9 @@ class AddRecordViewModel(
             eventType = eventType ?: EventLogEventType.INCIDENT,
             fallbackStaffName = fallbackStaffName?.trim(),
             fallbackEventType = fallbackEventType?.trim(),
-            summary = summary.trim(),
+            title = title.trim(),
             description = description.trim(),
+            propertyId = property,
         )
         val result = eventLogManager.addRecord(eventLogRecord)
 

@@ -1,8 +1,8 @@
 package com.cramsan.edifikana.client.lib.service
 
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
-import com.cramsan.edifikana.lib.StaffPK
-import com.cramsan.edifikana.lib.TimeCardRecordPK
+import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.edifikana.lib.model.TimeCardEventId
 
 /**
  * Service for managing time card records.
@@ -12,7 +12,7 @@ interface TimeCardService {
     /**
      * Get all time card records for a specific staff.
      */
-    suspend fun getRecords(staffPK: StaffPK): Result<List<TimeCardRecordModel>>
+    suspend fun getRecords(staffPK: StaffId): Result<List<TimeCardRecordModel>>
 
     /**
      * Get all time card records.
@@ -22,10 +22,10 @@ interface TimeCardService {
     /**
      * Get a specific time card record.
      */
-    suspend fun getRecord(timeCardRecordPK: TimeCardRecordPK): Result<TimeCardRecordModel>
+    suspend fun getRecord(timeCardRecordPK: TimeCardEventId): Result<TimeCardRecordModel>
 
     /**
      * Add a new time card record.
      */
-    suspend fun addRecord(timeCardRecord: TimeCardRecordModel): Result<Unit>
+    suspend fun addRecord(timeCardRecord: TimeCardRecordModel): Result<TimeCardRecordModel>
 }

@@ -27,7 +27,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.lib.ui.components.LoadingAnimationOverlay
-import com.cramsan.edifikana.lib.EventLogRecordPK
+import com.cramsan.edifikana.lib.model.EventLogEntryId
 import edifikana_lib.Res
 import edifikana_lib.text_upload
 import org.jetbrains.compose.resources.stringResource
@@ -76,7 +76,7 @@ fun EventLogScreen(
 private fun RecordList(
     records: List<EventLogRecordUIModel>,
     isLoading: Boolean,
-    onRecordSelected: (EventLogRecordPK?) -> Unit,
+    onRecordSelected: (EventLogEntryId?) -> Unit,
     onAddRecordClicked: () -> Unit,
 ) {
     Column(
@@ -104,7 +104,7 @@ private fun RecordList(
 @Composable
 private fun RecordItem(
     record: EventLogRecordUIModel,
-    onRecordSelected: (EventLogRecordPK?) -> Unit,
+    onRecordSelected: (EventLogEntryId?) -> Unit,
 ) {
     val textColor = if (record.clickable) {
         MaterialTheme.colorScheme.onSurface
@@ -123,7 +123,7 @@ private fun RecordItem(
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Text(
-                record.summary,
+                record.title,
                 color = textColor,
                 style = MaterialTheme.typography.bodyLarge,
             )
@@ -168,7 +168,7 @@ private fun PreviewEventLogScreen() {
                 "DELIVERY",
                 "1801",
                 "2021-09-01T00:00:00Z",
-                EventLogRecordPK("1"),
+                EventLogEntryId("1"),
                 true,
             ),
             EventLogRecordUIModel(
@@ -176,7 +176,7 @@ private fun PreviewEventLogScreen() {
                 "DELIVERY",
                 "1801",
                 "2021-09-01T00:00:00Z",
-                EventLogRecordPK("1"),
+                EventLogEntryId("1"),
                 false,
             ),
         ),

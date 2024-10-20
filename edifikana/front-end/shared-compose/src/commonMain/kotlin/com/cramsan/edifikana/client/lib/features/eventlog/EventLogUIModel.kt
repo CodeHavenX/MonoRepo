@@ -3,17 +3,17 @@ package com.cramsan.edifikana.client.lib.features.eventlog
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.client.lib.toFriendlyDateTime
 import com.cramsan.edifikana.client.lib.toFriendlyString
-import com.cramsan.edifikana.lib.EventLogRecordPK
+import com.cramsan.edifikana.lib.model.EventLogEntryId
 
 /**
  * Represents the UI state of the View Record screen.
  */
 data class EventLogRecordUIModel(
-    val summary: String,
+    val title: String,
     val eventType: String,
     val unit: String,
     val timeRecorded: String,
-    val recordPK: EventLogRecordPK?,
+    val recordPK: EventLogEntryId?,
     val clickable: Boolean,
 )
 
@@ -22,7 +22,7 @@ data class EventLogRecordUIModel(
  */
 suspend fun EventLogRecordModel.toUIModel(): EventLogRecordUIModel {
     return EventLogRecordUIModel(
-        summary = summary,
+        title = title,
         eventType = eventType.toFriendlyString(),
         unit = unit,
         timeRecorded = timeRecorded.toFriendlyDateTime(),

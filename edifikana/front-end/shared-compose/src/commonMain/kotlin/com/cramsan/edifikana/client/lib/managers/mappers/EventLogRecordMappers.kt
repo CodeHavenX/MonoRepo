@@ -2,8 +2,9 @@ package com.cramsan.edifikana.client.lib.managers.mappers
 
 import com.cramsan.edifikana.client.lib.db.models.EventLogRecordEntity
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
-import com.cramsan.edifikana.lib.StaffPK
 import com.cramsan.edifikana.lib.model.EventLogEventType
+import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.StaffId
 
 /**
  * Convert an event log record model to an entity.
@@ -11,14 +12,15 @@ import com.cramsan.edifikana.lib.model.EventLogEventType
 fun EventLogRecordModel.toEntity(): EventLogRecordEntity {
     return EventLogRecordEntity(
         requireNotNull(entityId),
-        staffPk?.documentPath,
+        staffPk?.staffId,
         timeRecorded,
         unit,
         eventType,
         fallbackStaffName,
         fallbackEventType,
-        summary,
+        title,
         description,
+        propertyId = propertyId.propertyId,
     )
 }
 
@@ -29,14 +31,15 @@ fun EventLogRecordEntity.toDomainModel(): EventLogRecordModel {
     return EventLogRecordModel(
         id = null,
         entityId = id,
-        staffPk = staffDocumentId?.let { StaffPK(it) },
+        staffPk = staffDocumentId?.let { StaffId(it) },
         timeRecorded = timeRecorded ?: TODO("Time recorded cannot be null"),
         unit = unit.orEmpty(),
         eventType = eventType ?: EventLogEventType.OTHER,
         fallbackStaffName = fallbackStaffName,
         fallbackEventType = fallbackEventType,
-        summary = summary.orEmpty(),
+        title = title.orEmpty(),
         description = description.orEmpty(),
         attachments = emptyList(),
+        propertyId = PropertyId(propertyId),
     )
 }

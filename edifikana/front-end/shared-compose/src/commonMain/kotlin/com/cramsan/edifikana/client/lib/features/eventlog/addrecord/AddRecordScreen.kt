@@ -27,8 +27,8 @@ import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.lib.toFriendlyStringCompose
 import com.cramsan.edifikana.client.lib.ui.components.Dropdown
 import com.cramsan.edifikana.client.lib.ui.components.LoadingAnimationOverlay
-import com.cramsan.edifikana.lib.StaffPK
 import com.cramsan.edifikana.lib.model.EventLogEventType
+import com.cramsan.edifikana.lib.model.StaffId
 import edifikana_lib.Res
 import edifikana_lib.text_add
 import edifikana_lib.text_appartment
@@ -77,7 +77,7 @@ fun AddRecordScreen(
         eventType,
         fallbackStaffName,
         fallbackEventType,
-        summary,
+        title,
         description ->
         viewModel.addRecord(
             staffDocumentId,
@@ -85,7 +85,7 @@ fun AddRecordScreen(
             eventType,
             fallbackStaffName,
             fallbackEventType,
-            summary,
+            title,
             description,
         )
     }
@@ -96,12 +96,12 @@ private fun AddRecord(
     staffs: List<AddRecordUIModel>,
     isLoading: Boolean,
     onAddRecordClicked: (
-        staffDocumentId: StaffPK?,
+        staffDocumentId: StaffId?,
         unit: String?,
         eventType: EventLogEventType?,
         fallbackStaffName: String?,
         fallbackEventType: String?,
-        summary: String?,
+        title: String?,
         description: String?,
     ) -> Unit,
 ) {
@@ -110,7 +110,7 @@ private fun AddRecord(
     var unit by remember { mutableStateOf("") }
     var fallbackName by remember { mutableStateOf("") }
     var fallbackEventType by remember { mutableStateOf("") }
-    var summary by remember { mutableStateOf("") }
+    var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
 
     Column(
@@ -178,12 +178,12 @@ private fun AddRecord(
             )
 
             TextField(
-                value = summary,
-                onValueChange = { summary = it },
+                value = title,
+                onValueChange = { title = it },
                 label = { Text(stringResource(Res.string.text_simple_desc)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
-                isError = summary.isBlank(),
+                isError = title.isBlank(),
             )
 
             TextField(
@@ -206,7 +206,7 @@ private fun AddRecord(
                     eventType,
                     fallbackName,
                     fallbackEventType,
-                    summary,
+                    title,
                     description,
                 )
             },
@@ -224,7 +224,7 @@ private fun AddRecordPreview() {
         listOf(
             AddRecordUIModel(
                 "Juan Perez",
-                StaffPK("1"),
+                StaffId("1"),
             ),
             AddRecordUIModel(
                 "Maria Rodriguez",

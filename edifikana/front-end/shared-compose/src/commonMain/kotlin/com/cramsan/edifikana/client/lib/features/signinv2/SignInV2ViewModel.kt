@@ -3,15 +3,14 @@ package com.cramsan.edifikana.client.lib.features.signinv2
 import com.cramsan.edifikana.client.lib.features.base.EdifikanaBaseViewModel
 import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
-import com.cramsan.edifikana.client.lib.managers.remoteconfig.BehaviorConfig
 import com.cramsan.edifikana.client.lib.service.auth.SupaAuthSignInResult
 import com.cramsan.framework.core.DispatcherProvider
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logI
 import com.cramsan.framework.logging.logW
+import io.github.jan.supabase.auth.Auth
+import io.github.jan.supabase.auth.providers.Google
 import io.github.jan.supabase.compose.auth.composable.NativeSignInResult
-import io.github.jan.supabase.gotrue.Auth
-import io.github.jan.supabase.gotrue.providers.Google
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,7 +26,6 @@ class SignInV2ViewModel(
     private val authSB: Auth,
     exceptionHandler: CoroutineExceptionHandler,
     dispatcherProvider: DispatcherProvider,
-    private val behaviorConfig: BehaviorConfig,
 ) : EdifikanaBaseViewModel(exceptionHandler, dispatcherProvider) {
 
     private val _uiState = MutableStateFlow(
@@ -99,39 +97,6 @@ class SignInV2ViewModel(
         _uiState.value = SignInV2UIState(showAccessCodeDialog = false)
     }
 
-    /**
-     * Submit access code.
-     */
-    fun submitAccessCode(code: String) = viewModelScope.launch {
-        _uiState.value = SignInV2UIState(showAccessCodeDialog = false)
-        if (code != SECRET_CODE && !behaviorConfig.allowListedCodes.contains(code)) {
-            logI(TAG, "Access code was invalid.")
-            return@launch
-        }
-
-        logI(TAG, "Valid access code.")
-        val result = auth.signInAnonymously()
-
-        if (result.isFailure) {
-            logE(TAG, "Unable to sign in anonymously.", result.exceptionOrNull())
-            return@launch
-        }
-
-        val verificationResult = auth.isSignedIn(false)
-
-        if (verificationResult.isFailure) {
-            logE(TAG, "Unable to verify anonymous sign in.", verificationResult.exceptionOrNull())
-            return@launch
-        }
-        logI(TAG, "Successfully signed in anonymously.")
-
-        _events.emit(
-            SignInV2Event.TriggerMainActivityEvent(
-                MainActivityEvent.NavigateBack()
-            )
-        )
-    }
-
     private suspend fun onSuccessSignInResult(result: NativeSignInResult.Success) {
         val signInResult = SupaAuthSignInResult(result)
         if (auth.handleSignInResult(signInResult).getOrThrow()) {
@@ -178,6 +143,5 @@ class SignInV2ViewModel(
 
     companion object {
         private const val TAG = "SignInV2ViewModel"
-        private const val SECRET_CODE = "7Y4Dc3Qw4Z"
     }
 }

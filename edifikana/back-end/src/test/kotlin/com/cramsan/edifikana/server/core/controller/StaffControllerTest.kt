@@ -1,11 +1,14 @@
 package com.cramsan.edifikana.server.core.controller
 
 import com.cramsan.edifikana.lib.model.IdType
+import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.StaffRole
+import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.server.core.controller.auth.ClientContext
+import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
 import com.cramsan.edifikana.server.core.service.StaffService
-import com.cramsan.edifikana.server.core.service.models.PropertyId
 import com.cramsan.edifikana.server.core.service.models.Staff
-import com.cramsan.edifikana.server.core.service.models.StaffId
 import com.cramsan.edifikana.server.core.utils.readFileContent
 import com.cramsan.framework.test.TestBase
 import io.ktor.client.request.delete
@@ -18,6 +21,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.mockk.coEvery
+import io.mockk.mockk
 import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
 import org.koin.test.get
@@ -60,6 +64,15 @@ class StaffControllerTest : TestBase(), KoinTest {
                 propertyId = PropertyId("property123"),
             )
         }
+        val contextRetriever = get<ContextRetriever>()
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            ClientContext.AuthenticatedClientContext(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
+        }
 
         // Act
         val response = client.post("staff") {
@@ -87,6 +100,15 @@ class StaffControllerTest : TestBase(), KoinTest {
                 idType = IdType.DNI,
                 role = StaffRole.SECURITY,
                 propertyId = PropertyId("property123"),
+            )
+        }
+        val contextRetriever = get<ContextRetriever>()
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            ClientContext.AuthenticatedClientContext(
+                userInfo = mockk(),
+                userId = UserId("user123"),
             )
         }
 
@@ -125,6 +147,15 @@ class StaffControllerTest : TestBase(), KoinTest {
                 )
             )
         }
+        val contextRetriever = get<ContextRetriever>()
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            ClientContext.AuthenticatedClientContext(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
+        }
 
         // Act
         val response = client.get("staff")
@@ -158,6 +189,15 @@ class StaffControllerTest : TestBase(), KoinTest {
                 propertyId = PropertyId("property456"),
             )
         }
+        val contextRetriever = get<ContextRetriever>()
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            ClientContext.AuthenticatedClientContext(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
+        }
 
         // Act
         val response = client.put("staff/staff123") {
@@ -178,6 +218,15 @@ class StaffControllerTest : TestBase(), KoinTest {
             staffService.deleteStaff(StaffId("staff123"))
         }.answers {
             true
+        }
+        val contextRetriever = get<ContextRetriever>()
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            ClientContext.AuthenticatedClientContext(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
         }
 
         // Act

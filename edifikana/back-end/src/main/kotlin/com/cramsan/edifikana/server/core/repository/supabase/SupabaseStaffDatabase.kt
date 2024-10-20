@@ -46,7 +46,7 @@ class SupabaseStaffDatabase(
 
         val staffEntity = postgrest.from(StaffEntity.COLLECTION).select {
             filter {
-                StaffEntity::id eq request.id
+                StaffEntity::id eq request.id.staffId
             }
             limit(1)
             single()

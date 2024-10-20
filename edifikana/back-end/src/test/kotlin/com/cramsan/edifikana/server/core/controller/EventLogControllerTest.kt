@@ -1,11 +1,14 @@
 package com.cramsan.edifikana.server.core.controller
 
+import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
+import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.server.core.controller.auth.ClientContext
+import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
 import com.cramsan.edifikana.server.core.service.EventLogService
 import com.cramsan.edifikana.server.core.service.models.EventLogEntry
-import com.cramsan.edifikana.server.core.service.models.EventLogEntryId
-import com.cramsan.edifikana.server.core.service.models.PropertyId
-import com.cramsan.edifikana.server.core.service.models.StaffId
 import com.cramsan.edifikana.server.core.utils.readFileContent
 import com.cramsan.framework.test.TestBase
 import io.ktor.client.request.delete
@@ -18,6 +21,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.mockk.coEvery
+import io.mockk.mockk
 import kotlinx.datetime.Instant
 import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
@@ -54,11 +58,11 @@ class EventLogControllerTest : TestBase(), KoinTest {
             userService.createEventLogEntry(
                 staffId = StaffId("staff456"),
                 fallbackStaffName = "John Doe",
-                propertyId = "property789",
+                propertyId = PropertyId("property789"),
                 type = EventLogEventType.MAINTENANCE_SERVICE,
                 fallbackEventType = "General Maintenance",
                 timestamp = Instant.fromEpochSeconds(1727702654),
-                summary = "Routine Check",
+                title = "Routine Check",
                 description = "Performed routine maintenance check.",
                 unit = "Unit 101",
             )
@@ -71,9 +75,18 @@ class EventLogControllerTest : TestBase(), KoinTest {
                 type = EventLogEventType.MAINTENANCE_SERVICE,
                 fallbackEventType = "General Maintenance",
                 timestamp = Instant.fromEpochSeconds(1727702654),
-                summary = "Routine Check",
+                title = "Routine Check",
                 description = "Performed routine maintenance check.",
                 unit = "Unit 101",
+            )
+        }
+        val contextRetriever = get<ContextRetriever>()
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            ClientContext.AuthenticatedClientContext(
+                userInfo = mockk(),
+                userId = UserId("user123"),
             )
         }
 
@@ -106,9 +119,18 @@ class EventLogControllerTest : TestBase(), KoinTest {
                 type = EventLogEventType.MAINTENANCE_SERVICE,
                 fallbackEventType = "General Maintenance",
                 timestamp = Instant.fromEpochSeconds(1727702654),
-                summary = "Routine Check",
+                title = "Routine Check",
                 description = "Performed routine maintenance check.",
                 unit = "Unit 101",
+            )
+        }
+        val contextRetriever = get<ContextRetriever>()
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            ClientContext.AuthenticatedClientContext(
+                userInfo = mockk(),
+                userId = UserId("user123"),
             )
         }
 
@@ -137,7 +159,7 @@ class EventLogControllerTest : TestBase(), KoinTest {
                     type = EventLogEventType.MAINTENANCE_SERVICE,
                     fallbackEventType = "General Maintenance",
                     timestamp = Instant.fromEpochSeconds(1727702654),
-                    summary = "Routine Check",
+                    title = "Routine Check",
                     description = "Performed routine maintenance check.",
                     unit = "Unit 101",
                 ),
@@ -149,10 +171,19 @@ class EventLogControllerTest : TestBase(), KoinTest {
                     type = EventLogEventType.MAINTENANCE_SERVICE,
                     fallbackEventType = "General Maintenance",
                     timestamp = Instant.fromEpochSeconds(1727702654),
-                    summary = "Routine Check",
+                    title = "Routine Check",
                     description = "Performed routine maintenance check.",
                     unit = "Unit 101",
                 ),
+            )
+        }
+        val contextRetriever = get<ContextRetriever>()
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            ClientContext.AuthenticatedClientContext(
+                userInfo = mockk(),
+                userId = UserId("user123"),
             )
         }
 
@@ -175,7 +206,7 @@ class EventLogControllerTest : TestBase(), KoinTest {
                 id = EventLogEntryId("event123"),
                 type = EventLogEventType.INCIDENT,
                 fallbackEventType = "Inspection",
-                summary = "Monthly check",
+                title = "Monthly check",
                 description = "Performed monthly inspection.",
                 unit = "Unit 202",
             )
@@ -188,9 +219,18 @@ class EventLogControllerTest : TestBase(), KoinTest {
                 type = EventLogEventType.INCIDENT,
                 fallbackEventType = "Inspection",
                 timestamp = Instant.fromEpochSeconds(1727702654),
-                summary = "Monthly check",
+                title = "Monthly check",
                 description = "Performed monthly inspection.",
                 unit = "Unit 202",
+            )
+        }
+        val contextRetriever = get<ContextRetriever>()
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            ClientContext.AuthenticatedClientContext(
+                userInfo = mockk(),
+                userId = UserId("user123"),
             )
         }
 
@@ -213,6 +253,15 @@ class EventLogControllerTest : TestBase(), KoinTest {
             userService.deleteEventLogEntry(EventLogEntryId("event123"))
         }.answers {
             true
+        }
+        val contextRetriever = get<ContextRetriever>()
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            ClientContext.AuthenticatedClientContext(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
         }
 
         // Act

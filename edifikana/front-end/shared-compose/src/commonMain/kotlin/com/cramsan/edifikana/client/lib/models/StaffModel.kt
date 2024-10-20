@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.models
 
 import com.cramsan.edifikana.lib.model.IdType
+import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.StaffRole
 
@@ -25,6 +26,7 @@ data class StaffModel(
         val firstName: String,
         val lastName: String,
         val role: StaffRole,
+        val propertyId: PropertyId,
     )
 }
 

@@ -5,6 +5,7 @@ import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.lib.features.main.Route
 import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.client.lib.managers.TimeCardManager
+import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.framework.core.DispatcherProvider
 import edifikana_lib.Res
 import edifikana_lib.title_timecard
@@ -71,7 +72,7 @@ class TimeCartViewModel(
     /**
      * Navigate to staff.
      */
-    fun navigateToStaff(staffPK: StaffPK) = viewModelScope.launch {
+    fun navigateToStaff(staffPK: StaffId) = viewModelScope.launch {
         _event.emit(
             TimeCardEvent.TriggerMainActivityEvent(
                 MainActivityEvent.Navigate(Route.toTimeCardSingleStaffRoute(staffPK))

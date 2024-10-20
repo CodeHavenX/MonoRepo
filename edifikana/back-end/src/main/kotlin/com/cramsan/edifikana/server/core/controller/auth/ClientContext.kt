@@ -1,32 +1,24 @@
 package com.cramsan.edifikana.server.core.controller.auth
 
 import com.cramsan.edifikana.lib.model.UserId
-import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.user.UserInfo
 
-data class ClientContext(
-    val userInfo: UserInfo,
-    val userId: UserId,
-)
+/**
+ * Represents the information about the client making a request. This information is what is referred to as the
+ * client context.
+ */
+sealed class ClientContext {
 
-suspend fun createClientContext(
-    auth: Auth,
-    userToken: String,
-): ClientContext {
-    /*
-    val user = auth.retrieveUser(userToken)
-
-    return ClientContext(
-        userInfo = user,
-        userId = UserId(user.id),
-    )
+    /**
+     * Represents a client that has been authenticated.
      */
-    return ClientContext(
-        userInfo = UserInfo(
-            id = "c58e6c54-8f47-4dbe-a0a8-655fc9f8c104",
-            email = "",
-            aud = ""
-        ),
-        userId = UserId("c58e6c54-8f47-4dbe-a0a8-655fc9f8c104"),
-    )
+    data class AuthenticatedClientContext(
+        val userInfo: UserInfo,
+        val userId: UserId,
+    ) : ClientContext()
+
+    /**
+     * Represents a client that has not been authenticated.
+     */
+    data object UnauthenticatedClientContext : ClientContext()
 }

@@ -6,7 +6,7 @@
     "type": "INCIDENT",
     "fallback_type": "Inspection",
     "timestamp": 1727702654,
-    "summary": "Monthly check",
+    "title": "Monthly check",
     "description": "Performed monthly inspection.",
     "unit": "Unit 202"
 }

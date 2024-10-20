@@ -3,6 +3,8 @@
 
 package com.cramsan.edifikana.client.lib.features.main
 
+import com.cramsan.edifikana.lib.model.EventLogEntryId
+import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.utils.requireNotBlank
 
 /**
@@ -36,8 +38,8 @@ enum class Route(
         /**
          * Get the route to the time card single staff screen.
          */
-        fun toTimeCardSingleStaffRoute(staffPk: StaffPK): String {
-            return TimeCardSingleStaff.route.replace("{staffPk}", requireNotBlank(staffPk.documentPath))
+        fun toTimeCardSingleStaffRoute(staffPk: StaffId): String {
+            return TimeCardSingleStaff.route.replace("{staffPk}", requireNotBlank(staffPk.staffId))
         }
 
         /**
@@ -53,10 +55,10 @@ enum class Route(
         /**
          * Get the route to the event log single item screen.
          */
-        fun toEventLogSingleItemRoute(eventLogRecordPk: EventLogRecordPK): String {
+        fun toEventLogSingleItemRoute(eventLogRecordPk: EventLogEntryId): String {
             return EventLogSingleItem.route.replace(
                 "{eventLogRecordPk}",
-                requireNotBlank(eventLogRecordPk.documentPath)
+                requireNotBlank(eventLogRecordPk.eventLogEntryId)
             )
         }
 

@@ -1,9 +1,13 @@
-package com.cramsan.edifikana.client.lib.service.supabase
+package com.cramsan.edifikana.client.lib.service.impl
 
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.client.lib.models.StaffModel
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
 import com.cramsan.edifikana.lib.annotations.NetworkModel
+import com.cramsan.edifikana.lib.model.EventLogEntryId
+import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.network.CreateEventLogEntryNetworkRequest
 import com.cramsan.edifikana.lib.model.network.CreateStaffNetworkRequest
 import com.cramsan.edifikana.lib.model.network.CreateTimeCardEventNetworkRequest
@@ -18,15 +22,16 @@ import com.cramsan.edifikana.lib.model.network.UpdateEventLogEntryNetworkRequest
 @OptIn(NetworkModel::class)
 fun EventLogEntryNetworkResponse.toEventLogRecordModel(): EventLogRecordModel {
     return EventLogRecordModel(
-        id = EventLogRecordPK(id),
+        id = EventLogEntryId(id),
         entityId = null,
-        staffPk = staffId?.let { it1 -> StaffPK(it1) },
+        staffPk = staffId?.let { it1 -> StaffId(it1) },
+        propertyId = PropertyId(propertyId),
         timeRecorded = timestamp,
         unit = unit,
         eventType = type,
         fallbackStaffName = fallbackEventType,
         fallbackEventType = fallbackStaffName,
-        summary = summary,
+        title = title,
         description = description.orEmpty(),
         emptyList(),
     )
@@ -38,13 +43,13 @@ fun EventLogEntryNetworkResponse.toEventLogRecordModel(): EventLogRecordModel {
 @OptIn(NetworkModel::class)
 fun EventLogRecordModel.toCreateEventLogEntryNetworkRequest(): CreateEventLogEntryNetworkRequest {
     return CreateEventLogEntryNetworkRequest(
-        staffId = staffPk?.documentPath,
+        staffId = staffPk?.staffId,
         fallbackStaffName = fallbackStaffName,
-        propertyId = "",
+        propertyId = propertyId.propertyId,
         type = eventType,
         fallbackEventType = fallbackEventType,
         timestamp = timeRecorded,
-        summary = summary,
+        title = title,
         description = description,
         unit = unit,
     )
@@ -58,7 +63,7 @@ fun EventLogRecordModel.toUpdateEventLogEntryNetworkRequest(): UpdateEventLogEnt
     return UpdateEventLogEntryNetworkRequest(
         type = eventType,
         fallbackEventType = fallbackEventType,
-        summary = summary,
+        title = title,
         description = description,
         unit = unit,
     )
@@ -74,7 +79,7 @@ fun StaffModel.CreateStaffRequest.toCreateStaffNetworkRequest(): CreateStaffNetw
         firstName = firstName,
         lastName = lastName,
         role = role,
-        propertyId = "", // TODO: Add property ID
+        propertyId = propertyId.propertyId,
     )
 }
 
@@ -84,7 +89,7 @@ fun StaffModel.CreateStaffRequest.toCreateStaffNetworkRequest(): CreateStaffNetw
 @NetworkModel
 fun StaffNetworkResponse.toStaffModel(): StaffModel {
     return StaffModel(
-        id = StaffPK(id),
+        id = StaffId(id),
         name = firstName, // TODO: Rename to first name
         lastName = lastName,
         role = role,
@@ -98,7 +103,7 @@ fun StaffNetworkResponse.toStaffModel(): StaffModel {
 @NetworkModel
 fun TimeCardRecordModel.toCreateTimeCardEventNetworkRequest(): CreateTimeCardEventNetworkRequest {
     return CreateTimeCardEventNetworkRequest(
-        staffId = staffPk.documentPath,
+        staffId = staffPk.staffId,
         fallbackStaffName = "",
         type = eventType,
         propertyId = "",
@@ -112,9 +117,9 @@ fun TimeCardRecordModel.toCreateTimeCardEventNetworkRequest(): CreateTimeCardEve
 @NetworkModel
 fun TimeCardEventNetworkResponse.toTimeCardRecordModel(): TimeCardRecordModel {
     return TimeCardRecordModel(
-        id = TimeCardRecordPK(id),
+        id = TimeCardEventId(id),
         entityId = null,
-        staffPk = StaffPK(staffId ?: ""), // TODO: Fix this
+        staffPk = StaffId(staffId ?: ""), // TODO: Fix this
         eventType = type,
         eventTime = timestamp,
         imageUrl = imageUrl,

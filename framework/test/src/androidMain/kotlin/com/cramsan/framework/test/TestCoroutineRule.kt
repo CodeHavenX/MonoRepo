@@ -3,7 +3,6 @@ package com.cramsan.framework.test
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -13,8 +12,7 @@ import org.junit.runner.Description
 import org.junit.runners.model.Statement
 
 /**
- * This rule is used in Android to configure the main dispatcher and set the dispatcher to a new
- * [TestCoroutineScope].
+ * This rule is used in Android to configure the main dispatcher and set the dispatcher.
  * Source: https://proandroiddev.com/how-to-unit-test-code-with-coroutines-50c1640f6bef
  */
 @ExperimentalCoroutinesApi

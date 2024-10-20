@@ -19,8 +19,9 @@ import com.cramsan.edifikana.client.lib.db.models.TimeCardRecordEntity
         EventLogRecordEntity::class,
         FileAttachmentEntity::class,
     ],
-    version = 5,
+    version = 1,
     exportSchema = true,
+    autoMigrations = []
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {

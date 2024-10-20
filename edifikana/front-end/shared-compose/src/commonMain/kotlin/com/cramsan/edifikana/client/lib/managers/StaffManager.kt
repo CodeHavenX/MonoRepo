@@ -3,6 +3,7 @@ package com.cramsan.edifikana.client.lib.managers
 import com.cramsan.edifikana.client.lib.models.StaffModel
 import com.cramsan.edifikana.client.lib.service.StaffService
 import com.cramsan.edifikana.client.lib.utils.getOrCatch
+import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.framework.logging.logI
 
 /**
@@ -24,7 +25,7 @@ class StaffManager(
     /**
      * Get a specific staff.
      */
-    suspend fun getStaff(staffPK: StaffPK): Result<StaffModel> = workContext.getOrCatch(TAG) {
+    suspend fun getStaff(staffPK: StaffId): Result<StaffModel> = workContext.getOrCatch(TAG) {
         logI(TAG, "getStaff")
         staffService.getStaff(staffPK).getOrThrow()
     }

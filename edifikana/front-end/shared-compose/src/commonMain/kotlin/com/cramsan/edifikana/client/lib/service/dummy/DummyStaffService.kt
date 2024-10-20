@@ -5,6 +5,7 @@ package com.cramsan.edifikana.client.lib.service.dummy
 import com.cramsan.edifikana.client.lib.models.StaffModel
 import com.cramsan.edifikana.client.lib.service.StaffService
 import com.cramsan.edifikana.lib.model.IdType
+import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.StaffRole
 import kotlinx.coroutines.delay
 
@@ -17,7 +18,7 @@ class DummyStaffService : StaffService {
         return Result.success(
             (0..10).map {
                 StaffModel(
-                    StaffPK(it.toString()),
+                    StaffId(it.toString()),
                     IdType.DNI,
                     "John Doe",
                     "$it",
@@ -27,10 +28,10 @@ class DummyStaffService : StaffService {
         )
     }
 
-    override suspend fun getStaff(staffPK: StaffPK): Result<StaffModel> {
+    override suspend fun getStaff(staffPK: StaffId): Result<StaffModel> {
         return Result.success(
             StaffModel(
-                StaffPK("1"),
+                StaffId("1"),
                 IdType.DNI,
                 "John",
                 "Doe",
@@ -42,7 +43,7 @@ class DummyStaffService : StaffService {
     override suspend fun createStaff(staff: StaffModel.CreateStaffRequest): Result<StaffModel> {
         return Result.success(
             StaffModel(
-                StaffPK("1"),
+                StaffId("1"),
                 IdType.DNI,
                 "John",
                 "Doe",

@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.service
 
 import com.cramsan.edifikana.client.lib.models.StaffModel
+import com.cramsan.edifikana.lib.model.StaffId
 
 /**
  * Service for managing staff.
@@ -15,7 +16,7 @@ interface StaffService {
     /**
      * Get a specific staff.
      */
-    suspend fun getStaff(staffPK: StaffPK): Result<StaffModel>
+    suspend fun getStaff(staffPK: StaffId): Result<StaffModel>
 
     /**
      * Create a new staff.

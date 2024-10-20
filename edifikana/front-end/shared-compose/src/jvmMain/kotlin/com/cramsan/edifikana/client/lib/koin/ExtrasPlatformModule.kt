@@ -18,7 +18,8 @@ val ExtrasPlatformModule = module {
 
         builder
             .addMigrations()
-            .fallbackToDestructiveMigrationOnDowngrade(dropAllTables = true)
+            // TODO: Remove this once we have reached production
+            .fallbackToDestructiveMigration(dropAllTables = true)
             .setDriver(BundledSQLiteDriver())
             .setQueryCoroutineContext(Dispatchers.IO)
             .build()

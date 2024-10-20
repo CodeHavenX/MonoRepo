@@ -4,6 +4,7 @@ import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.client.lib.service.AuthService
 import com.cramsan.edifikana.client.lib.service.auth.SignInResult
 import com.cramsan.edifikana.client.lib.utils.getOrCatch
+import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.framework.logging.logI
 
 /**
@@ -24,17 +25,9 @@ class AuthManager(
     /**
      * Get the user with the provided [UserPk].
      */
-    suspend fun getUser(userPk: UserPk): Result<UserModel> = workContext.getOrCatch(TAG) {
+    suspend fun getUser(userPk: UserId): Result<UserModel> = workContext.getOrCatch(TAG) {
         logI(TAG, "getUser")
         authService.getUser(userPk).getOrThrow()
-    }
-
-    /**
-     * Sign in anonymously.
-     */
-    suspend fun signInAnonymously(): Result<Unit> = workContext.getOrCatch(TAG) {
-        logI(TAG, "signInAnonymously")
-        authService.signInAnonymously().getOrThrow()
     }
 
     /**

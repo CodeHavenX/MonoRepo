@@ -45,7 +45,7 @@ class SupabaseTimeCardDatabase(
 
         val timeCardEventEntity = postgrest.from(TimeCardEventEntity.COLLECTION).select {
             filter {
-                TimeCardEventEntity::id eq request.id
+                TimeCardEventEntity::id eq request.id.timeCardEventId
             }
             limit(1)
             single()
@@ -61,6 +61,11 @@ class SupabaseTimeCardDatabase(
         logD(TAG, "Getting all time card events")
 
         postgrest.from(TimeCardEventEntity.COLLECTION).select {
+            filter {
+                request.staffId?.let {
+                    TimeCardEventEntity::staffId eq it.staffId
+                }
+            }
             select()
         }.decodeList<TimeCardEventEntity>().map { it.toTimeCardEvent() }
     }

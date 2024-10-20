@@ -5,6 +5,7 @@ import com.cramsan.edifikana.client.lib.models.StaffModel
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
 import com.cramsan.edifikana.client.lib.models.fullName
 import com.cramsan.edifikana.client.lib.toFriendlyDateTime
+import com.cramsan.edifikana.lib.model.StaffId
 
 /**
  * UI model for a time card record.
@@ -13,7 +14,7 @@ data class TimeCardUIModel(
     val fullName: String,
     val eventDescription: String,
     val eventTime: String,
-    val staffPK: StaffPK,
+    val staffPK: StaffId,
 )
 
 /**

@@ -2,6 +2,7 @@ package com.cramsan.edifikana.client.lib.features.timecard.addstaff
 
 import com.cramsan.edifikana.client.lib.features.base.EdifikanaBaseViewModel
 import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
+import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.client.lib.models.StaffModel
 import com.cramsan.edifikana.lib.model.IdType
@@ -24,6 +25,7 @@ import org.jetbrains.compose.resources.getString
  */
 class AddStaffViewModel constructor(
     private val staffManager: StaffManager,
+    private val propertyManager: PropertyManager,
     exceptionHandler: CoroutineExceptionHandler,
     dispatcherProvider: DispatcherProvider,
 ) : EdifikanaBaseViewModel(exceptionHandler, dispatcherProvider) {
@@ -78,6 +80,7 @@ class AddStaffViewModel constructor(
                 firstName = name.trim(),
                 lastName = lastName.trim(),
                 role = role,
+                propertyId = propertyManager.activeProperty().value!!
             )
         )
 

@@ -17,7 +17,7 @@ data class EventLogEntry(
     val type: EventLogEventType,
     val fallbackEventType: String?,
     val timestamp: Instant,
-    val summary: String,
+    val title: String,
     val description: String?,
     val unit: String,
 )

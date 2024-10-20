@@ -6,7 +6,7 @@
     "type": "MAINTENANCE_SERVICE",
     "fallback_type": "General Maintenance",
     "timestamp": 1727702654,
-    "summary": "Routine Check",
+    "title": "Routine Check",
     "description": "Performed routine maintenance check.",
     "unit": "Unit 101"
 }

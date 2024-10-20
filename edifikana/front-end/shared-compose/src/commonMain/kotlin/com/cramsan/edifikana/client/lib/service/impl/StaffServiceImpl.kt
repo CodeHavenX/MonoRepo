@@ -1,9 +1,10 @@
-package com.cramsan.edifikana.client.lib.service.supabase
+package com.cramsan.edifikana.client.lib.service.impl
 
 import com.cramsan.edifikana.client.lib.models.StaffModel
 import com.cramsan.edifikana.client.lib.service.StaffService
 import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.annotations.NetworkModel
+import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.network.StaffNetworkResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -13,7 +14,10 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 
-class SupabaseStaffService(
+/**
+ * Default implementation for the [StaffService].
+ */
+class StaffServiceImpl(
     private val http: HttpClient,
 ) : StaffService {
 
@@ -27,8 +31,8 @@ class SupabaseStaffService(
     }
 
     @OptIn(NetworkModel::class)
-    override suspend fun getStaff(staffPK: StaffPK): Result<StaffModel> {
-        val response = http.get("${Routes.Staff.PATH}/${staffPK.documentPath}").body<StaffNetworkResponse>()
+    override suspend fun getStaff(staffPK: StaffId): Result<StaffModel> {
+        val response = http.get("${Routes.Staff.PATH}/${staffPK.staffId}").body<StaffNetworkResponse>()
         val staff = response.toStaffModel()
         return Result.success(staff)
     }

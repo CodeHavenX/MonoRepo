@@ -45,7 +45,7 @@ fun Staff.toStaffNetworkResponse(): StaffNetworkResponse {
 fun EventLogEntry.toEventLogEntryNetworkResponse(): EventLogEntryNetworkResponse {
     return EventLogEntryNetworkResponse(
         id = id.eventLogEntryId,
-        summary = summary,
+        title = title,
         staffId = staffId?.staffId,
         fallbackStaffName = fallbackStaffName,
         propertyId = propertyId.propertyId,

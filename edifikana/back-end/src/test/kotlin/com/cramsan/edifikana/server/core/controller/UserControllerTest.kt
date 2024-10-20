@@ -1,8 +1,10 @@
 package com.cramsan.edifikana.server.core.controller
 
+import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.server.core.controller.auth.ClientContext
+import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
 import com.cramsan.edifikana.server.core.service.UserService
 import com.cramsan.edifikana.server.core.service.models.User
-import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.utils.readFileContent
 import com.cramsan.framework.test.TestBase
 import io.ktor.client.request.delete
@@ -15,6 +17,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.mockk.coEvery
+import io.mockk.mockk
 import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
 import org.koin.test.get
@@ -49,6 +52,15 @@ class UserControllerTest : TestBase(), KoinTest {
                 email = "john.doe@example.com"
             )
         }
+        val contextRetriever = get<ContextRetriever>()
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            ClientContext.AuthenticatedClientContext(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
+        }
 
         // Act
         val response = client.post("user") {
@@ -72,6 +84,15 @@ class UserControllerTest : TestBase(), KoinTest {
             User(
                 id = UserId("user123"),
                 email = "john.doe@example.com"
+            )
+        }
+        val contextRetriever = get<ContextRetriever>()
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            ClientContext.AuthenticatedClientContext(
+                userInfo = mockk(),
+                userId = UserId("user123"),
             )
         }
 
@@ -102,6 +123,15 @@ class UserControllerTest : TestBase(), KoinTest {
                 )
             )
         }
+        val contextRetriever = get<ContextRetriever>()
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            ClientContext.AuthenticatedClientContext(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
+        }
 
         // Act
         val response = client.get("user")
@@ -128,6 +158,15 @@ class UserControllerTest : TestBase(), KoinTest {
                 email = "updated.email@example.com"
             )
         }
+        val contextRetriever = get<ContextRetriever>()
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            ClientContext.AuthenticatedClientContext(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
+        }
 
         // Act
         val response = client.put("user/user123") {
@@ -148,6 +187,15 @@ class UserControllerTest : TestBase(), KoinTest {
             userService.deleteUser(UserId("user123"))
         }.answers {
             true
+        }
+        val contextRetriever = get<ContextRetriever>()
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            ClientContext.AuthenticatedClientContext(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
         }
 
         // Act

@@ -10,6 +10,8 @@ import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
 import com.cramsan.edifikana.client.lib.models.fullName
 import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.edifikana.client.lib.toFriendlyDateTime
+import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.DispatcherProvider
@@ -67,7 +69,7 @@ class ViewStaffViewModel(
     /**
      * Load staff member.
      */
-    fun loadStaff(staffPK: StaffPK) = viewModelScope.launch {
+    fun loadStaff(staffPK: StaffId) = viewModelScope.launch {
         _uiState.value = _uiState.value.copy(isLoading = true)
 
         val staffTask = async { staffManager.getStaff(staffPK) }
@@ -80,7 +82,7 @@ class ViewStaffViewModel(
             _uiState.value = _uiState.value.copy(
                 isLoading = false,
                 records = listOf(),
-                staff = ViewStaffUIModel.StaffUIModel("", "", StaffPK("")),
+                staff = ViewStaffUIModel.StaffUIModel("", "", StaffId("")),
             )
         } else {
             staff = staffResult.getOrThrow()
@@ -96,7 +98,7 @@ class ViewStaffViewModel(
     /**
      * Share a time card record.
      */
-    fun share(timeCardRecordPK: TimeCardRecordPK?) = viewModelScope.launch {
+    fun share(timeCardRecordPK: TimeCardEventId?) = viewModelScope.launch {
         if (timeCardRecordPK == null) {
             logW(TAG, "TimeCardRecord PK is null")
             _event.emit(
@@ -109,7 +111,7 @@ class ViewStaffViewModel(
 
         _uiState.value = _uiState.value.copy(isLoading = true)
         val state = uiState.value
-        val record = state.records.find { it.timeCardRecordPK?.documentPath == timeCardRecordPK.documentPath }
+        val record = state.records.find { it.timeCardRecordPK?.timeCardEventId == timeCardRecordPK.timeCardEventId }
         if (record == null) {
             _uiState.value = _uiState.value.copy(isLoading = false)
             return@launch
@@ -170,7 +172,7 @@ class ViewStaffViewModel(
             _uiState.value = _uiState.value.copy(
                 isLoading = false,
                 records = listOf(),
-                staff = ViewStaffUIModel.StaffUIModel("", "", StaffPK("")),
+                staff = ViewStaffUIModel.StaffUIModel("", "", StaffId("")),
             )
             eventType = null
         } else {

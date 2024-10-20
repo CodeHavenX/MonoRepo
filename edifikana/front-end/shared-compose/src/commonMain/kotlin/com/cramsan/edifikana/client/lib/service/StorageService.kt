@@ -9,10 +9,10 @@ interface StorageService {
     /**
      * Upload a file.
      */
-    suspend fun uploadFile(data: ByteArray, targetRef: StorageRef): Result<StorageRef>
+    suspend fun uploadFile(data: ByteArray, targetRef: String): Result<String>
 
     /**
      * Download a file.
      */
-    suspend fun downloadImage(targetRef: StorageRef): Result<CoreUri>
+    suspend fun downloadImage(targetRef: String): Result<CoreUri>
 }

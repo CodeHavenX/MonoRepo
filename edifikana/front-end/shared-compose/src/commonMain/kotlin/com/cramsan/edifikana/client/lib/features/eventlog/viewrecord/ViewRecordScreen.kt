@@ -36,6 +36,7 @@ import com.cramsan.edifikana.client.lib.features.main.MainActivityDelegatedEvent
 import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.lib.models.AttachmentHolder
 import com.cramsan.edifikana.client.lib.ui.components.LoadingAnimationOverlay
+import com.cramsan.edifikana.lib.model.EventLogEntryId
 import edifikana_lib.Res
 import edifikana_lib.string_field_date_time
 import edifikana_lib.string_field_event
@@ -51,7 +52,7 @@ import org.koin.compose.koinInject
  */
 @Composable
 fun ViewRecordScreen(
-    eventLogRecordPK: EventLogRecordPK,
+    eventLogRecordPK: EventLogEntryId,
     mainActivityDelegatedEvent: MainActivityDelegatedEvent,
     onMainActivityEventInvoke: (MainActivityEvent) -> Unit,
     onTitleChange: (String) -> Unit,
@@ -116,7 +117,7 @@ private fun SingleRecord(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 Text(
-                    text = eventLogRecord.summary,
+                    text = eventLogRecord.title,
                     style = MaterialTheme.typography.titleMedium,
                 )
                 HorizontalDivider()
@@ -245,17 +246,17 @@ private fun ViewScreenPreview() {
     SingleRecord(
         false,
         ViewRecordUIModel(
-            summary = "Delivery of pizza",
+            title = "Delivery of pizza",
             eventType = "Invitado",
             timeRecorded = "2024 12 02 12:12:12",
             unit = "302",
             description = "Pizza delivery to the main entrance. The delivery was made by the main entrance. ",
             attachments = listOf(
-                AttachmentHolder("url", StorageRef("url")),
-                AttachmentHolder("url", StorageRef("url")),
-                AttachmentHolder("url", StorageRef("url")),
+                AttachmentHolder("url", "url"),
+                AttachmentHolder("url", "url"),
+                AttachmentHolder("url", "url"),
             ),
-            recordPK = EventLogRecordPK("1"),
+            recordPK = EventLogEntryId("1"),
         ),
         {},
         {},

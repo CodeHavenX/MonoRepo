@@ -1,8 +1,11 @@
 package com.cramsan.edifikana.server.core.controller
 
+import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.server.core.controller.auth.ClientContext
+import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
 import com.cramsan.edifikana.server.core.service.PropertyService
 import com.cramsan.edifikana.server.core.service.models.Property
-import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.server.core.utils.readFileContent
 import com.cramsan.framework.test.TestBase
 import io.ktor.client.request.delete
@@ -15,6 +18,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.mockk.coEvery
+import io.mockk.mockk
 import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
 import org.koin.test.get
@@ -53,6 +57,15 @@ class PropertyControllerTest : TestBase(), KoinTest {
                 name = "building 1"
             )
         }
+        val contextRetriever = get<ContextRetriever>()
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            ClientContext.AuthenticatedClientContext(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
+        }
 
         // Act
         val response = client.post("property") {
@@ -78,6 +91,15 @@ class PropertyControllerTest : TestBase(), KoinTest {
                 name = "building 1"
             )
         }
+        val contextRetriever = get<ContextRetriever>()
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            ClientContext.AuthenticatedClientContext(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
+        }
 
         // Act
         val response = client.get("property/property123")
@@ -93,7 +115,7 @@ class PropertyControllerTest : TestBase(), KoinTest {
         val expectedResponse = readFileContent("requests/get_properties_response.json")
         val propertyService = get<PropertyService>()
         coEvery {
-            propertyService.getProperties()
+            propertyService.getProperties(UserId("user123"))
         }.answers {
             listOf(
                 Property(
@@ -104,6 +126,15 @@ class PropertyControllerTest : TestBase(), KoinTest {
                     id = PropertyId("property456"),
                     name = "building 2"
                 )
+            )
+        }
+        val contextRetriever = get<ContextRetriever>()
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            ClientContext.AuthenticatedClientContext(
+                userInfo = mockk(),
+                userId = UserId("user123"),
             )
         }
 
@@ -132,6 +163,15 @@ class PropertyControllerTest : TestBase(), KoinTest {
                 name = "Updated Property"
             )
         }
+        val contextRetriever = get<ContextRetriever>()
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            ClientContext.AuthenticatedClientContext(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
+        }
 
         // Act
         val response = client.put("property/property123") {
@@ -152,6 +192,15 @@ class PropertyControllerTest : TestBase(), KoinTest {
             propertyService.deleteProperty(PropertyId("property123"))
         }.answers {
             true
+        }
+        val contextRetriever = get<ContextRetriever>()
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            ClientContext.AuthenticatedClientContext(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
         }
 
         // Act

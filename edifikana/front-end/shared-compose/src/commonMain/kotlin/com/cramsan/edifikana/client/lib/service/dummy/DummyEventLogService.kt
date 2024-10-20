@@ -4,7 +4,10 @@ package com.cramsan.edifikana.client.lib.service.dummy
 
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.client.lib.service.EventLogService
+import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
+import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.StaffId
 import kotlinx.datetime.Clock
 
 /**
@@ -15,9 +18,10 @@ class DummyEventLogService : EventLogService {
         return Result.success(
             (0..10).map {
                 EventLogRecordModel(
-                    EventLogRecordPK("$it"),
+                    EventLogEntryId("$it"),
                     "Event $it",
-                    StaffPK("empoyee_$it"),
+                    StaffId("empoyee_$it"),
+                    PropertyId("Property $it"),
                     Clock.System.now().epochSeconds,
                     "Appt $it",
                     EventLogEventType.INCIDENT,
@@ -31,19 +35,20 @@ class DummyEventLogService : EventLogService {
         )
     }
 
-    override suspend fun getRecord(eventLogRecordPK: EventLogRecordPK): Result<EventLogRecordModel> {
+    override suspend fun getRecord(eventLogRecordPK: EventLogEntryId): Result<EventLogRecordModel> {
         return Result.success(
             EventLogRecordModel(
                 eventLogRecordPK,
-                "Event ${eventLogRecordPK.documentPath}",
-                StaffPK("empoyee_${eventLogRecordPK.documentPath}"),
+                "Event ${eventLogRecordPK.eventLogEntryId}",
+                StaffId("empoyee_${eventLogRecordPK.eventLogEntryId}"),
+                PropertyId("Property Id"),
                 Clock.System.now().epochSeconds,
                 "Appt 1801",
                 EventLogEventType.INCIDENT,
                 null,
                 null,
-                "Note ${eventLogRecordPK.documentPath}",
-                "Description ${eventLogRecordPK.documentPath}",
+                "Note ${eventLogRecordPK.eventLogEntryId}",
+                "Description ${eventLogRecordPK.eventLogEntryId}",
                 emptyList(),
             )
         )

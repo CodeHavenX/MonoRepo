@@ -9,6 +9,7 @@ import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.client.lib.service.EventLogService
 import com.cramsan.edifikana.client.lib.utils.getOrCatch
 import com.cramsan.edifikana.client.lib.utils.launch
+import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logI
 import kotlinx.coroutines.Job
@@ -45,11 +46,11 @@ class EventLogManager(
      * Get a specific event log record.
      */
     suspend fun getRecord(
-        eventLogRecordPK: EventLogRecordPK,
+        eventLogRecordPK: EventLogEntryId,
     ): Result<EventLogRecordModel> = workContext.getOrCatch(TAG) {
         logI(TAG, "getRecord")
         val localAttachments = attachmentDao.getAll()
-            .filter { it.eventLogRecordPK == eventLogRecordPK.documentPath }
+            .filter { it.eventLogRecordPK == eventLogRecordPK.eventLogEntryId }
             .mapNotNull { it.fileUri?.let { uri -> AttachmentHolder(publicUrl = uri, storageRef = null) } }
         val record = eventLogService.getRecord(eventLogRecordPK).getOrThrow()
         record.copy(

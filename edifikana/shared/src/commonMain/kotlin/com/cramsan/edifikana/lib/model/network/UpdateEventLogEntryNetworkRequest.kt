@@ -14,7 +14,7 @@ data class UpdateEventLogEntryNetworkRequest(
     val type: EventLogEventType?,
     @SerialName("fallback_type")
     val fallbackEventType: String?,
-    val summary: String?,
+    val title: String?,
     val description: String?,
     val unit: String?,
 )

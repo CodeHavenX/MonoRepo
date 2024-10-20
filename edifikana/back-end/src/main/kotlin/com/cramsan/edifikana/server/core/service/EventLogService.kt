@@ -1,10 +1,11 @@
 package com.cramsan.edifikana.server.core.service
 
+import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
+import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.server.core.repository.EventLogDatabase
 import com.cramsan.edifikana.server.core.service.models.EventLogEntry
-import com.cramsan.edifikana.lib.model.EventLogEntryId
-import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.server.core.service.models.requests.CreateEventLogEntryRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteEventLogEntryRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetEventLogEntryRequest
@@ -24,11 +25,11 @@ class EventLogService(
     suspend fun createEventLogEntry(
         staffId: StaffId?,
         fallbackStaffName: String?,
-        propertyId: String,
+        propertyId: PropertyId,
         type: EventLogEventType,
         fallbackEventType: String?,
         timestamp: Instant,
-        summary: String,
+        title: String,
         description: String?,
         unit: String,
     ): EventLogEntry {
@@ -40,7 +41,7 @@ class EventLogService(
                 type = type,
                 fallbackEventType = fallbackEventType,
                 timestamp = timestamp,
-                summary = summary,
+                title = title,
                 description = description,
                 unit = unit,
             ),
@@ -77,7 +78,7 @@ class EventLogService(
         id: EventLogEntryId,
         type: EventLogEventType?,
         fallbackEventType: String?,
-        summary: String?,
+        title: String?,
         description: String?,
         unit: String?,
     ): EventLogEntry {
@@ -86,7 +87,7 @@ class EventLogService(
                 id = id,
                 type = type,
                 fallbackEventType = fallbackEventType,
-                summary = summary,
+                title = title,
                 description = description,
                 unit = unit,
             ),

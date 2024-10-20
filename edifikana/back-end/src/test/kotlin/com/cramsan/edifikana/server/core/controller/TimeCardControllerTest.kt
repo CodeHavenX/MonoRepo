@@ -1,11 +1,14 @@
 package com.cramsan.edifikana.server.core.controller
 
-import com.cramsan.edifikana.lib.model.TimeCardEventType
-import com.cramsan.edifikana.server.core.service.TimeCardService
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
-import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
 import com.cramsan.edifikana.lib.model.TimeCardEventId
+import com.cramsan.edifikana.lib.model.TimeCardEventType
+import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.server.core.controller.auth.ClientContext
+import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
+import com.cramsan.edifikana.server.core.service.TimeCardService
+import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.core.utils.readFileContent
 import com.cramsan.framework.test.TestBase
 import io.ktor.client.request.get
@@ -17,6 +20,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.mockk.coEvery
 import io.mockk.every
+import io.mockk.mockk
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import org.koin.core.context.stopKoin
@@ -66,6 +70,15 @@ class TimeCardControllerTest : TestBase(), KoinTest {
             )
         }
         every { clock.now() } returns Instant.fromEpochSeconds(1727702654)
+        val contextRetriever = get<ContextRetriever>()
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            ClientContext.AuthenticatedClientContext(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
+        }
 
         // Act
         val response = client.post("time_card") {
@@ -96,6 +109,15 @@ class TimeCardControllerTest : TestBase(), KoinTest {
                 timestamp = Instant.fromEpochSeconds(1727702654),
             )
         }
+        val contextRetriever = get<ContextRetriever>()
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            ClientContext.AuthenticatedClientContext(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
+        }
 
         // Act
         val response = client.get("time_card/timecard123")
@@ -111,7 +133,7 @@ class TimeCardControllerTest : TestBase(), KoinTest {
         val expectedResponse = readFileContent("requests/get_timecard_events_response.json")
         val timeCardService = get<TimeCardService>()
         coEvery {
-            timeCardService.getTimeCardEvents()
+            timeCardService.getTimeCardEvents(null)
         }.answers {
             listOf(
                 TimeCardEvent(
@@ -132,6 +154,15 @@ class TimeCardControllerTest : TestBase(), KoinTest {
                     imageUrl = "http://example.com/image2.jpg",
                     timestamp = Instant.fromEpochSeconds(1727702654),
                 )
+            )
+        }
+        val contextRetriever = get<ContextRetriever>()
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            ClientContext.AuthenticatedClientContext(
+                userInfo = mockk(),
+                userId = UserId("user123"),
             )
         }
 

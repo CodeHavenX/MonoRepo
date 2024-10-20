@@ -18,6 +18,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
 import com.cramsan.edifikana.client.lib.ui.components.LoadingAnimationOverlay
+import com.cramsan.edifikana.lib.model.StaffId
 import edifikana_lib.Res
 import edifikana_lib.string_other
 import org.jetbrains.compose.resources.stringResource
@@ -66,7 +67,7 @@ fun StaffListScreen(
 private fun StaffList(
     isLoading: Boolean,
     staffs: List<StaffUIModel>,
-    onStaffClick: (StaffPK) -> Unit,
+    onStaffClick: (StaffId) -> Unit,
     onAddStaffClick: () -> Unit,
 ) {
     LazyColumn(
@@ -93,7 +94,7 @@ private fun StaffList(
 private fun StaffItem(
     staff: StaffUIModel,
     modifier: Modifier = Modifier,
-    onStaffSelected: (StaffPK) -> Unit,
+    onStaffSelected: (StaffId) -> Unit,
 ) {
     Text(
         staff.fullName,
@@ -125,11 +126,11 @@ private fun StaffListScreenPreview() {
         staffs = listOf(
             StaffUIModel(
                 "Cesar Andres Ramirez Sanchez",
-                StaffPK("John"),
+                StaffId("John"),
             ),
             StaffUIModel(
                 "2",
-                StaffPK("Jane"),
+                StaffId("Jane"),
             ),
         ),
         onStaffClick = {},

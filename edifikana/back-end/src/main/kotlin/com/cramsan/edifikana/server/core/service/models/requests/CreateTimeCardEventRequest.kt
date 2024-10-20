@@ -1,8 +1,8 @@
 package com.cramsan.edifikana.server.core.service.models.requests
 
-import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.edifikana.lib.model.TimeCardEventType
 import kotlinx.datetime.Instant
 
 /**

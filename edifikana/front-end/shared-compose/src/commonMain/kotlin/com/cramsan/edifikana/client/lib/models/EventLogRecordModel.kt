@@ -2,6 +2,7 @@ package com.cramsan.edifikana.client.lib.models
 
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
+import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import kotlin.random.Random
 
@@ -12,12 +13,13 @@ data class EventLogRecordModel(
     val id: EventLogEntryId?,
     val entityId: String?,
     val staffPk: StaffId?,
+    val propertyId: PropertyId,
     val timeRecorded: Long,
     val unit: String,
     val eventType: EventLogEventType,
     val fallbackStaffName: String?,
     val fallbackEventType: String?,
-    val summary: String,
+    val title: String,
     val description: String,
     val attachments: List<AttachmentHolder>,
 ) {
@@ -30,11 +32,12 @@ data class EventLogRecordModel(
         fun createTemporary(
             staffPk: StaffId?,
             timeRecorded: Long,
+            propertyId: PropertyId,
             unit: String,
             eventType: EventLogEventType?,
             fallbackStaffName: String?,
             fallbackEventType: String?,
-            summary: String,
+            title: String,
             description: String,
         ): EventLogRecordModel {
             // TODO: Use a better entity Id
@@ -47,9 +50,10 @@ data class EventLogRecordModel(
                 eventType = eventType ?: EventLogEventType.INCIDENT,
                 fallbackStaffName = fallbackStaffName?.trim(),
                 fallbackEventType = fallbackEventType?.trim(),
-                summary = summary.trim(),
+                title = title.trim(),
                 description = description.trim(),
                 attachments = emptyList(),
+                propertyId = propertyId,
             )
         }
     }
@@ -60,5 +64,5 @@ data class EventLogRecordModel(
  */
 data class AttachmentHolder(
     val publicUrl: String,
-    val storageRef: StorageRef?,
+    val storageRef: String?,
 )

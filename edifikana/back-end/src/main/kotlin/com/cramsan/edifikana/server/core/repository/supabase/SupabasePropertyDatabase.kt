@@ -67,7 +67,7 @@ class SupabasePropertyDatabase(
         }.decodeList<UserPropertyMappingEntity>().map { it.propertyId }
 
         postgrest.from(PropertyEntity.COLLECTION).select {
-            filter { PropertyEntity::id eq propertyIds }
+            filter { PropertyEntity::id isIn propertyIds }
             select()
         }.decodeList<PropertyEntity>().map { it.toProperty() }
     }

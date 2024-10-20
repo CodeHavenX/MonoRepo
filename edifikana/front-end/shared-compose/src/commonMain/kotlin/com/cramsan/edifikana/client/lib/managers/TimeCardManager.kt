@@ -7,13 +7,14 @@ import com.cramsan.edifikana.client.lib.managers.mappers.toEntity
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
 import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.edifikana.client.lib.service.TimeCardService
-import com.cramsan.edifikana.client.lib.utils.FOLDER_TIME_CARDS
 import com.cramsan.edifikana.client.lib.utils.IODependencies
 import com.cramsan.edifikana.client.lib.utils.getFilename
 import com.cramsan.edifikana.client.lib.utils.getOrCatch
 import com.cramsan.edifikana.client.lib.utils.launch
 import com.cramsan.edifikana.client.lib.utils.processImageData
 import com.cramsan.edifikana.client.lib.utils.readBytes
+import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logI
@@ -37,9 +38,9 @@ class TimeCardManager(
     /**
      * Get all time card records for a staff member.
      */
-    suspend fun getRecords(staffPK: StaffPK): Result<List<TimeCardRecordModel>> = workContext.getOrCatch(TAG) {
+    suspend fun getRecords(staffPK: StaffId): Result<List<TimeCardRecordModel>> = workContext.getOrCatch(TAG) {
         logI(TAG, "getRecords")
-        val cachedData = timeCardRecordDao.getAll(staffPK.documentPath).map { it.toDomainModel() }
+        val cachedData = timeCardRecordDao.getAll(staffPK.staffId).map { it.toDomainModel() }
 
         val onlineData = timeCardService.getRecords(staffPK).getOrThrow()
         (cachedData + onlineData).sortedByDescending { it.eventTime }
@@ -59,7 +60,7 @@ class TimeCardManager(
     /**
      * Get a specific time card record.
      */
-    suspend fun getRecord(timeCardRecordPK: TimeCardRecordPK): Result<TimeCardRecordModel> = workContext.getOrCatch(
+    suspend fun getRecord(timeCardRecordPK: TimeCardEventId): Result<TimeCardRecordModel> = workContext.getOrCatch(
         TAG
     ) {
         logI(TAG, "getRecord")
@@ -91,18 +92,14 @@ class TimeCardManager(
                 val processedImage = processImageData(imageData).getOrThrow()
 
                 val fileName = localImageUri.getFilename(ioDependencies)
-                val uploadPath = listOf(FOLDER_TIME_CARDS)
 
                 storageService.uploadFile(
                     processedImage,
-                    StorageRef(
-                        fileName,
-                        uploadPath,
-                    ),
+                    fileName,
                 ).getOrThrow()
             }
 
-            val imageUrl = remoteImageRef.getOrThrow().ref
+            val imageUrl = remoteImageRef.getOrThrow()
             val processedRecord = entity.toDomainModel().copy(imageUrl = imageUrl)
 
             timeCardService.addRecord(processedRecord).getOrThrow()

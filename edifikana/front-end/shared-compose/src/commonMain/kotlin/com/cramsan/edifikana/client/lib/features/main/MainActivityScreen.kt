@@ -37,6 +37,8 @@ import com.cramsan.edifikana.client.lib.features.timecard.TimeCardScreen
 import com.cramsan.edifikana.client.lib.features.timecard.addstaff.AddStaffScreen
 import com.cramsan.edifikana.client.lib.features.timecard.stafflist.StaffListScreen
 import com.cramsan.edifikana.client.lib.features.timecard.viewstaff.ViewStaffScreen
+import com.cramsan.edifikana.lib.model.EventLogEntryId
+import com.cramsan.edifikana.lib.model.StaffId
 import edifikana_lib.Res
 import edifikana_lib.schedule
 import edifikana_lib.string_assistance
@@ -157,7 +159,7 @@ private fun NavigationHost(
         }
         composable(Route.TimeCardSingleStaff.route) { backStackEntry ->
             ViewStaffScreen(
-                StaffPK(backStackEntry.arguments?.getString("staffPk").orEmpty()),
+                StaffId(backStackEntry.arguments?.getString("staffPk").orEmpty()),
                 mainActivityDelegatedEvent,
                 onMainActivityEventInvoke,
                 onTitleChange,
@@ -189,7 +191,7 @@ private fun NavigationHost(
         }
         composable(Route.EventLogSingleItem.route) { backStackEntry ->
             ViewRecordScreen(
-                EventLogRecordPK(backStackEntry.arguments?.getString("eventLogRecordPk").orEmpty()),
+                EventLogEntryId(backStackEntry.arguments?.getString("eventLogRecordPk").orEmpty()),
                 mainActivityDelegatedEvent,
                 onMainActivityEventInvoke,
                 onTitleChange,

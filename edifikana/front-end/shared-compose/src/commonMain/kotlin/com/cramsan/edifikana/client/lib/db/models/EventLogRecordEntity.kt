@@ -17,6 +17,7 @@ data class EventLogRecordEntity(
     val eventType: EventLogEventType? = null,
     val fallbackStaffName: String? = null,
     val fallbackEventType: String? = null,
-    val summary: String? = null,
+    val title: String? = null,
     val description: String? = null,
+    val propertyId: String,
 )

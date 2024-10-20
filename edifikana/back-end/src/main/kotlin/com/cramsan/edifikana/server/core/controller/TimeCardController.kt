@@ -10,7 +10,6 @@ import com.cramsan.edifikana.lib.model.network.CreateTimeCardEventNetworkRequest
 import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
 import com.cramsan.edifikana.server.core.service.TimeCardService
 import com.cramsan.framework.core.ktor.HttpResponse
-import io.github.jan.supabase.auth.Auth
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.request.receive
@@ -59,7 +58,11 @@ class TimeCardController(
      * Handles the retrieval of a time card event. The [call] parameter is the request context.
      */
     @OptIn(NetworkModel::class)
-    suspend fun getTimeCardEvent(call: ApplicationCall) = call.handleCall(TAG, "getTimeCardEvent", auth) {
+    suspend fun getTimeCardEvent(call: ApplicationCall) = call.handleCall(
+        TAG,
+        "getTimeCardEvent",
+        contextRetriever,
+    ) { _ ->
         val timeCardId = requireNotNull(call.parameters[TIMECARD_EVENT_ID])
 
         val timeCard = timeCardService.getTimeCardEvent(

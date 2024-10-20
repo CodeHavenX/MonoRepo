@@ -9,7 +9,6 @@ import com.cramsan.edifikana.lib.model.network.UpdatePropertyNetworkRequest
 import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
 import com.cramsan.edifikana.server.core.service.PropertyService
 import com.cramsan.framework.core.ktor.HttpResponse
-import io.github.jan.supabase.auth.Auth
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.request.receive

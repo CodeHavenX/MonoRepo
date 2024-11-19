@@ -21,11 +21,13 @@ val ManagerPlatformModule = module {
     single(named(EDIFIKANA_SUPABASE_URL)) {
         val supabaseUrl = System.getenv("EDIFIKANA_SUPABASE_URL")
         assertFalse(supabaseUrl.isNullOrBlank(), TAG, "EDIFIKANA_SUPABASE_URL cannot be blank")
+        supabaseUrl
     }
 
     single(named(EDIFIKANA_SUPABASE_KEY)) {
         val supabaseKey = System.getenv("EDIFIKANA_SUPABASE_KEY")
         assertFalse(supabaseKey.isNullOrBlank(), TAG, "EDIFIKANA_SUPABASE_KEY cannot be blank")
+        supabaseKey
     }
 }
 

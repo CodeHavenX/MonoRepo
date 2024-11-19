@@ -7,7 +7,7 @@ import com.cramsan.edifikana.client.lib.di.koin.FrameworkModule
 import com.cramsan.edifikana.client.lib.di.koin.ManagerModule
 import com.cramsan.edifikana.client.lib.di.koin.ViewModelModule
 import com.cramsan.edifikana.client.lib.features.application.EdifikanaJvmMainScreenEventHandler
-import com.cramsan.edifikana.client.lib.features.main.EdifikanaApplicationScreen
+import com.cramsan.edifikana.client.lib.features.root.EdifikanaApplicationScreen
 import com.cramsan.edifikana.client.lib.koin.ExtrasPlatformModule
 import com.cramsan.edifikana.client.lib.koin.FrameworkPlatformDelegatesModule
 import com.cramsan.edifikana.client.lib.koin.ManagerPlatformModule

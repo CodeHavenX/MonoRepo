@@ -14,8 +14,8 @@ import com.cramsan.edifikana.client.lib.service.PropertyService
 import com.cramsan.edifikana.client.lib.service.StaffService
 import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.edifikana.client.lib.service.TimeCardService
-import com.cramsan.edifikana.client.lib.service.dummy.DummyAuthService
 import com.cramsan.edifikana.client.lib.service.dummy.DummyStorageService
+import com.cramsan.edifikana.client.lib.service.impl.AuthServiceImpl
 import com.cramsan.edifikana.client.lib.service.impl.EventLogServiceImpl
 import com.cramsan.edifikana.client.lib.service.impl.PropertyServiceImpl
 import com.cramsan.edifikana.client.lib.service.impl.StaffServiceImpl
@@ -90,7 +90,7 @@ val ManagerModule = module {
     }
 
     // Services
-    singleOf(::DummyAuthService) {
+    singleOf(::AuthServiceImpl) {
         bind<AuthService>()
     }
     singleOf(::EventLogServiceImpl) {

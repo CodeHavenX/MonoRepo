@@ -2,6 +2,7 @@ package com.cramsan.edifikana.server.core.controller.auth
 
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.serialization.HEADER_TOKEN_AUTH
+import com.cramsan.framework.assertlib.assertNull
 import com.cramsan.framework.logging.logE
 import io.github.jan.supabase.auth.Auth
 import io.ktor.server.application.ApplicationCall
@@ -14,6 +15,7 @@ class SupabaseContextRetriever(
 ) : ContextRetriever {
 
     override suspend fun getContext(applicationCall: ApplicationCall): ClientContext {
+        assertNull(auth.currentUserOrNull(), TAG, "We cannot have the library have a signed in user")
         val headerMap = applicationCall.request.headers.entries().associate {
             it.key to it.value
         }

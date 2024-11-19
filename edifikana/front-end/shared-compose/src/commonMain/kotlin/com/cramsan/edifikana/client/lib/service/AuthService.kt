@@ -1,8 +1,8 @@
 package com.cramsan.edifikana.client.lib.service
 
 import com.cramsan.edifikana.client.lib.models.UserModel
-import com.cramsan.edifikana.client.lib.service.auth.SignInResult
 import com.cramsan.edifikana.lib.model.UserId
+import kotlinx.coroutines.flow.StateFlow
 
 /**
  * Service for managing authentication.
@@ -12,15 +12,26 @@ interface AuthService {
     /**
      * Check if the user is signed in.
      */
-    suspend fun isSignedIn(enforceAllowList: Boolean): Result<Boolean>
+    suspend fun isSignedIn(): Result<Boolean>
 
     /**
      * Get the current user.
      */
-    suspend fun getUser(userPk: UserId): Result<UserModel>
+    suspend fun getUser(): Result<UserModel>
 
     /**
-     * Sign in with email and password.
+     * Sign in the user with the given email and password.
      */
-    suspend fun handleSignInResult(signInResult: SignInResult): Result<Boolean>
+    suspend fun signIn(email: String, password: String): Result<UserModel>
+
+    /**
+     * Sign out the user.
+     */
+    suspend fun signOut(): Result<Unit>
+
+    /**
+     * Get the observable reference to the active user. You can use this function to fetch the current
+     * active user or to observe changes to the active user.
+     */
+    fun activeUser(): StateFlow<UserId?>
 }

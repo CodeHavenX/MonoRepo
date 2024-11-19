@@ -1,9 +1,11 @@
 package com.cramsan.edifikana.client.lib.models
 
+import com.cramsan.edifikana.lib.model.UserId
+
 /**
  * Model for a user.
  */
 data class UserModel(
-    val id: String,
+    val id: UserId,
     val email: String,
 )

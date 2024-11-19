@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.di.koin
 
 import com.cramsan.edifikana.client.lib.db.AppDatabase
+import com.cramsan.edifikana.client.lib.service.impl.AuthRequestPlugin
 import com.cramsan.edifikana.lib.serialization.createJson
 import com.cramsan.framework.logging.logE
 import io.ktor.client.HttpClient
@@ -37,10 +38,12 @@ val ExtrasModule = module {
         HttpClient {
             defaultRequest {
                 url("http://0.0.0.0:9292")
+                // url("http://10.0.2.2:9292")
             }
             install(ContentNegotiation) {
                 json(createJson())
             }
+            install(AuthRequestPlugin(get()))
         }
     }
 }

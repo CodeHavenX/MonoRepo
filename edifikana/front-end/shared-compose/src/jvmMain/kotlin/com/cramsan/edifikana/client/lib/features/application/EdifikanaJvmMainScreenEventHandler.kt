@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.application
 
-import com.cramsan.edifikana.client.lib.features.main.EdifikanaMainScreenEventHandler
-import com.cramsan.edifikana.client.lib.features.main.MainActivityEvent
+import com.cramsan.edifikana.client.lib.features.root.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.features.root.EdifikanaMainScreenEventHandler
 import com.cramsan.framework.logging.logE
 
 /**
@@ -9,23 +9,23 @@ import com.cramsan.framework.logging.logE
  */
 class EdifikanaJvmMainScreenEventHandler : EdifikanaMainScreenEventHandler {
 
-    override fun openCamera(event: MainActivityEvent.OpenCamera) {
+    override fun openCamera(event: EdifikanaApplicationEvent.OpenCamera) {
         logE(TAG, "Opening camera is not supported on JVM")
     }
 
-    override fun openImageExternally(event: MainActivityEvent.OpenImageExternally) {
+    override fun openImageExternally(event: EdifikanaApplicationEvent.OpenImageExternally) {
         logE(TAG, "Opening image externally is not supported on JVM")
     }
 
-    override fun openPhotoPicker(event: MainActivityEvent.OpenPhotoPicker) {
+    override fun openPhotoPicker(event: EdifikanaApplicationEvent.OpenPhotoPicker) {
         logE(TAG, "Opening photo picker is not supported on JVM")
     }
 
-    override fun shareContent(event: MainActivityEvent.ShareContent) {
+    override fun shareContent(event: EdifikanaApplicationEvent.ShareContent) {
         logE(TAG, "Sharing content is not supported on JVM")
     }
 
-    override fun showSnackbar(event: MainActivityEvent.ShowSnackbar) {
+    override fun showSnackbar(event: EdifikanaApplicationEvent.ShowSnackbar) {
         logE(TAG, "Showing snackbar is not supported on JVM")
     }
 

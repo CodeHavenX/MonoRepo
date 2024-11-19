@@ -5,6 +5,7 @@ import com.cramsan.edifikana.lib.USER_ID
 import com.cramsan.edifikana.lib.annotations.NetworkModel
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.model.network.CreateUserNetworkRequest
+import com.cramsan.edifikana.lib.model.network.UpdatePasswordNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdateUserNetworkRequest
 import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
 import com.cramsan.edifikana.server.core.service.UserService
@@ -65,6 +66,33 @@ class UserController(
         HttpResponse(
             status = statusCode,
             body = user,
+        )
+    }
+
+    /**
+     * Handles the updating of a user's password. The [call] parameter is the request context.
+     */
+    @OptIn(NetworkModel::class)
+    suspend fun updatePassword(call: RoutingCall) = call.handleCall(TAG, "updatePassword", contextRetriever) {
+        val userId = requireNotNull(call.parameters[USER_ID])
+
+        // TODO: Verify permissions
+        val updatePasswordRequest = call.receive<UpdatePasswordNetworkRequest>()
+
+        val success = userService.updatePassword(
+            userId = UserId(userId),
+            password = updatePasswordRequest.password,
+        )
+
+        val statusCode = if (success) {
+            HttpStatusCode.OK
+        } else {
+            HttpStatusCode.NotFound
+        }
+
+        HttpResponse(
+            status = statusCode,
+            body = null,
         )
     }
 
@@ -139,6 +167,9 @@ class UserController(
                 }
                 get("{$USER_ID}") {
                     getUser(call)
+                }
+                put("{$USER_ID}/password") {
+                    updatePassword(call)
                 }
                 get {
                     getUsers(call)

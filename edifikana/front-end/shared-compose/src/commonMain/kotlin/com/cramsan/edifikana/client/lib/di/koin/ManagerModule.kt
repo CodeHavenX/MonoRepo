@@ -103,11 +103,9 @@ val ManagerModule = module {
         bind<StorageService>()
     }
     singleOf(::TimeCardServiceImpl) {
-    singleOf(::SupabaseTimeCardService) {
         bind<TimeCardService>()
     }
     singleOf(::StaffServiceImpl) {
-    singleOf(::SupabaseStaffService) {
         bind<StaffService>()
     }
 }

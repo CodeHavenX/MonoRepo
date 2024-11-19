@@ -2,9 +2,6 @@ package com.cramsan.edifikana.server.core.controller
 
 import com.cramsan.edifikana.server.core.controller.auth.ClientContext
 import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
-import com.cramsan.edifikana.lib.serialization.HEADER_TOKEN_AUTH
-import com.cramsan.edifikana.server.core.controller.auth.ClientContext
-import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
 import com.cramsan.framework.core.ktor.HttpResponse
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logI

@@ -8,7 +8,7 @@ import com.cramsan.edifikana.server.core.controller.StaffController
 import com.cramsan.edifikana.server.core.controller.TimeCardController
 import com.cramsan.edifikana.server.core.controller.UserController
 import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
-import com.cramsan.edifikana.server.core.controller.auth.DummyContextRetriever
+import com.cramsan.edifikana.server.core.controller.auth.SupabaseContextRetriever
 import com.cramsan.edifikana.server.core.repository.EventLogDatabase
 import com.cramsan.edifikana.server.core.repository.PropertyDatabase
 import com.cramsan.edifikana.server.core.repository.StaffDatabase
@@ -64,7 +64,7 @@ val ApplicationModule = module {
         bind<PasswordGenerator>()
     }
 
-    singleOf(::DummyContextRetriever) {
+    singleOf(::SupabaseContextRetriever) {
         bind<ContextRetriever>()
     }
 

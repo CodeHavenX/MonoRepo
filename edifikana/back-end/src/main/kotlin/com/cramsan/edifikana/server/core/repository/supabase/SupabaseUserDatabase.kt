@@ -6,11 +6,14 @@ import com.cramsan.edifikana.server.core.service.models.User
 import com.cramsan.edifikana.server.core.service.models.requests.CreateUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetUserRequest
+import com.cramsan.edifikana.server.core.service.models.requests.UpdatePasswordRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdateUserRequest
+import com.cramsan.framework.assertlib.assertNull
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.postgrest.Postgrest
+import javax.management.Query.eq
 
 /**
  * Database for managing users.
@@ -30,7 +33,7 @@ class SupabaseUserDatabase(
         logD(TAG, "Creating user: %S", request.email)
 
         val supabaseUser = auth.admin.createUserWithEmail {
-            this@createUserWithEmail.email = request.email
+            email = request.email
             password = request.password
             autoConfirm = true
         }
@@ -55,11 +58,9 @@ class SupabaseUserDatabase(
 
         val userEntity = postgrest.from(UserEntity.COLLECTION).select {
             filter {
-                UserEntity::id eq request.id.userId
+                eq("id", request.id.userId)
             }
-            limit(1)
-            single()
-        }.decodeAsOrNull<UserEntity>()
+        }.decodeSingleOrNull<UserEntity>()
 
         userEntity?.toUser()
     }
@@ -68,9 +69,7 @@ class SupabaseUserDatabase(
     override suspend fun getUsers(): Result<List<User>> = runSuspendCatching(TAG) {
         logD(TAG, "Getting all users")
 
-        postgrest.from(UserEntity.COLLECTION).select {
-            select()
-        }.decodeList<UserEntity>().map { it.toUser() }
+        postgrest.from(UserEntity.COLLECTION).select().decodeList<UserEntity>().map { it.toUser() }
     }
 
     /**
@@ -111,6 +110,20 @@ class SupabaseUserDatabase(
                 UserEntity::id eq request.id.userId
             }
         }.decodeSingleOrNull<UserEntity>() != null
+    }
+
+    override suspend fun updatePassword(request: UpdatePasswordRequest): Result<Boolean> = runSuspendCatching(TAG) {
+        logD(TAG, "Updating password for user: %S", request.id)
+
+        assertNull(auth.currentUserOrNull(), TAG, "We cannot have a user signed in on the BE")
+        // Sign out the client by using
+        // auth.signOut()
+
+        auth.admin.updateUserById(request.id.userId) {
+            password = request.password
+        }
+
+        true
     }
 
     companion object {

@@ -4,6 +4,7 @@ import com.cramsan.edifikana.server.core.service.models.User
 import com.cramsan.edifikana.server.core.service.models.requests.CreateUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetUserRequest
+import com.cramsan.edifikana.server.core.service.models.requests.UpdatePasswordRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdateUserRequest
 
 /**
@@ -42,4 +43,10 @@ interface UserDatabase {
     suspend fun deleteUser(
         request: DeleteUserRequest,
     ): Result<Boolean>
+
+    /**
+     * Updates the password for a user with the given [request]. Returns the [Result] of the operation with a [Boolean]
+     * indicating success.
+     */
+    suspend fun updatePassword(request: UpdatePasswordRequest): Result<Boolean>
 }

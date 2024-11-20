@@ -1,14 +1,17 @@
 package com.cramsan.edifikana.client.lib.di.koin
 
-import com.cramsan.edifikana.client.lib.features.eventlog.EventLogViewModel
-import com.cramsan.edifikana.client.lib.features.eventlog.addrecord.AddRecordViewModel
-import com.cramsan.edifikana.client.lib.features.eventlog.viewrecord.ViewRecordViewModel
-import com.cramsan.edifikana.client.lib.features.main.MainActivityViewModel
-import com.cramsan.edifikana.client.lib.features.signinv2.SignInV2ViewModel
-import com.cramsan.edifikana.client.lib.features.timecard.TimeCartViewModel
-import com.cramsan.edifikana.client.lib.features.timecard.addstaff.AddStaffViewModel
-import com.cramsan.edifikana.client.lib.features.timecard.stafflist.StaffListViewModel
-import com.cramsan.edifikana.client.lib.features.timecard.viewstaff.ViewStaffViewModel
+import com.cramsan.edifikana.client.lib.features.root.EdifikanaApplicationViewModel
+import com.cramsan.edifikana.client.lib.features.root.auth.AuthActivityViewModel
+import com.cramsan.edifikana.client.lib.features.root.auth.signinv2.SignInV2ViewModel
+import com.cramsan.edifikana.client.lib.features.root.auth.signup.SignUpViewModel
+import com.cramsan.edifikana.client.lib.features.root.main.MainActivityViewModel
+import com.cramsan.edifikana.client.lib.features.root.main.eventlog.EventLogViewModel
+import com.cramsan.edifikana.client.lib.features.root.main.eventlog.addrecord.AddRecordViewModel
+import com.cramsan.edifikana.client.lib.features.root.main.eventlog.viewrecord.ViewRecordViewModel
+import com.cramsan.edifikana.client.lib.features.root.main.timecard.TimeCartViewModel
+import com.cramsan.edifikana.client.lib.features.root.main.timecard.addstaff.AddStaffViewModel
+import com.cramsan.edifikana.client.lib.features.root.main.timecard.stafflist.StaffListViewModel
+import com.cramsan.edifikana.client.lib.features.root.main.timecard.viewstaff.ViewStaffViewModel
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
@@ -25,4 +28,7 @@ val ViewModelModule = module {
     singleOf(::ViewStaffViewModel)
     singleOf(::MainActivityViewModel)
     singleOf(::SignInV2ViewModel)
+    singleOf(::SignUpViewModel)
+    singleOf(::AuthActivityViewModel)
+    singleOf(::EdifikanaApplicationViewModel)
 }

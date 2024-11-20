@@ -6,6 +6,7 @@ import com.cramsan.edifikana.server.core.service.models.User
 import com.cramsan.edifikana.server.core.service.models.requests.CreateUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetUserRequest
+import com.cramsan.edifikana.server.core.service.models.requests.UpdatePasswordRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdateUserRequest
 import com.cramsan.edifikana.server.core.service.password.PasswordGenerator
 
@@ -81,6 +82,18 @@ class UserService(
             request = DeleteUserRequest(
                 id = id,
             )
+        ).getOrThrow()
+    }
+
+    /**
+     * Updates the password for a user with the provided [userId].
+     */
+    suspend fun updatePassword(userId: UserId, password: String): Boolean {
+        return userDatabase.updatePassword(
+            request = UpdatePasswordRequest(
+                id = userId,
+                password = password,
+            ),
         ).getOrThrow()
     }
 }

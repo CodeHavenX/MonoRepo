@@ -36,6 +36,6 @@ class PropertyManager(
     fun activeProperty(): StateFlow<PropertyId?> = propertyService.activeProperty()
 
     companion object {
-        private const val TAG = "PropertyConfigManager"
+        private const val TAG = "PropertyManager"
     }
 }

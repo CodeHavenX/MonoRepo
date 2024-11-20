@@ -39,6 +39,17 @@ kotlin {
             isStatic = true
         }
     }
+
+    sourceSets {
+        commonMain.dependencies {
+            implementation("io.insert-koin:koin-core:_")
+            implementation("io.insert-koin:koin-compose:_")
+
+            implementation("org.jetbrains.androidx.navigation:navigation-compose:_")
+            implementation("org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose:_")
+            implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:_")
+        }
+    }
 }
 
 compose.resources {

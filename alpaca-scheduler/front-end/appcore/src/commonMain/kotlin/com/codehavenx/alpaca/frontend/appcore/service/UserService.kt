@@ -11,4 +11,13 @@ interface UserService {
      * Get the list of users.
      */
     suspend fun getUsers(): Result<List<User>>
+
+    /**
+     * Create a new user.
+     */
+    suspend fun createUser(
+        userName: String,
+        email: String?,
+        phoneNumber: String?,
+    ): Result<User>
 }

@@ -13,6 +13,24 @@ class UserServiceImpl : UserService {
         listOf()
     }
 
+    override suspend fun createUser(
+        userName: String,
+        email: String?,
+        phoneNumber: String?,
+    ) = runSuspendCatching(TAG) {
+        // TODO: Implement this
+        /*
+        val request = CreateUserRequest.create(userName, email, phoneNumber)
+        httpClient.post(Routes.User.PATH) {
+            setBody(request)
+        }.body<UserResponse>().toModel()
+        */
+        User(
+            id = "1",
+            username = userName,
+        )
+    }
+
     companion object {
         private const val TAG = "UserServiceImpl"
     }

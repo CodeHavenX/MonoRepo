@@ -1,5 +1,6 @@
 package com.codehavenx.alpaca.backend.core.controller
 
+import com.codehavenx.alpaca.backend.core.controller.ControllerUtils.handleCall
 import com.codehavenx.alpaca.shared.api.Routes
 import com.cramsan.framework.core.ktor.HttpResponse
 import io.ktor.http.HttpStatusCode
@@ -22,6 +23,7 @@ class HealthCheckController {
             body = "OK",
         )
     }
+
     companion object {
         private const val TAG = "HealthCheckController"
 

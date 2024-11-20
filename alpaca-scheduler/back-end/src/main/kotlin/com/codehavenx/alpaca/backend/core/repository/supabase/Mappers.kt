@@ -1,8 +1,10 @@
 package com.codehavenx.alpaca.backend.core.repository.supabase
 
+import com.codehavenx.alpaca.backend.core.repository.supabase.models.AddressEntity
 import com.codehavenx.alpaca.backend.core.repository.supabase.models.ConfigurationEntity
 import com.codehavenx.alpaca.backend.core.repository.supabase.models.EventEntity
 import com.codehavenx.alpaca.backend.core.repository.supabase.models.UserEntity
+import com.codehavenx.alpaca.backend.core.service.models.Address
 import com.codehavenx.alpaca.backend.core.service.models.AppointmentConfiguration
 import com.codehavenx.alpaca.backend.core.service.models.AppointmentType
 import com.codehavenx.alpaca.backend.core.service.models.Event
@@ -84,7 +86,28 @@ fun ConfigurationEntity.toConfiguration(): AppointmentConfiguration {
 fun UserEntity.toUser(): User {
     return User(
         id = UserId(this.id),
+        isVerified = this.isVerified,
         username = this.username,
+        firstName = this.firstName,
+        lastName = this.lastName,
+        address = this.address?.toAddress(),
+        phoneNumbers = this.phoneNumbers,
+        emails = this.emails,
+    )
+}
+
+/**
+ * Maps an [AddressEntity] to the [Address] model.
+ */
+@SupabaseModel
+private fun AddressEntity.toAddress(): Address {
+    return Address(
+        streetAddress = this.streetAddress,
+        unit = this.unit,
+        city = this.city,
+        state = this.state,
+        zipCode = this.zipCode,
+        country = this.country
     )
 }
 
@@ -95,6 +118,8 @@ fun UserEntity.toUser(): User {
 fun CreateUserRequest.toUserEntity(): UserEntity.CreateUserEntity {
     return UserEntity.CreateUserEntity(
         username = username,
+        phoneNumbers = phoneNumbers,
+        emails = emails,
     )
 }
 

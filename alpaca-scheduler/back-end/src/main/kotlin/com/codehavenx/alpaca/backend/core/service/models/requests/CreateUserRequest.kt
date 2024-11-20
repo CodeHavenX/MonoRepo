@@ -5,4 +5,6 @@ package com.codehavenx.alpaca.backend.core.service.models.requests
  */
 data class CreateUserRequest(
     val username: String,
+    val phoneNumbers: List<String>,
+    val emails: List<String>,
 )

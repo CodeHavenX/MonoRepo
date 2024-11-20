@@ -47,7 +47,7 @@ class SupabaseUserDatabase(
 
         val userEntity = postgrest.from(UserEntity.COLLECTION).select {
             filter {
-                UserEntity::id eq request.id
+                UserEntity::id eq request.id.userId
             }
             limit(1)
             single()
@@ -81,7 +81,7 @@ class SupabaseUserDatabase(
         ) {
             select()
             filter {
-                UserEntity::id eq request.id
+                UserEntity::id eq request.id.userId
             }
         }.decodeAs<UserEntity>().toUser()
     }
@@ -98,7 +98,7 @@ class SupabaseUserDatabase(
         postgrest.from(UserEntity.COLLECTION).delete {
             select()
             filter {
-                UserEntity::id eq request.id
+                UserEntity::id eq request.id.userId
             }
         }.decodeSingleOrNull<UserEntity>() != null
     }

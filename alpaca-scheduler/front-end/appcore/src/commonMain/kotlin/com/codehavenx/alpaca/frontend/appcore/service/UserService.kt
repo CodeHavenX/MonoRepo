@@ -19,5 +19,5 @@ interface UserService {
         userName: String,
         email: String?,
         phoneNumber: String?,
-    )
+    ): Result<User>
 }

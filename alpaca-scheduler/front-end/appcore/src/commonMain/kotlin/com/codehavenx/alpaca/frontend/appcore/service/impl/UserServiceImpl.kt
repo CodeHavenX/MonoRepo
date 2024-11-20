@@ -13,7 +13,11 @@ class UserServiceImpl : UserService {
         listOf()
     }
 
-    override suspend fun createUser(userName: String, email: String?, phoneNumber: String?) {
+    override suspend fun createUser(
+        userName: String,
+        email: String?,
+        phoneNumber: String?,
+    ) = runSuspendCatching(TAG) {
         // TODO: Implement this
         /*
         val request = CreateUserRequest.create(userName, email, phoneNumber)
@@ -21,6 +25,10 @@ class UserServiceImpl : UserService {
             setBody(request)
         }.body<UserResponse>().toModel()
         */
+        User(
+            id = "1",
+            username = userName,
+        )
     }
 
     companion object {

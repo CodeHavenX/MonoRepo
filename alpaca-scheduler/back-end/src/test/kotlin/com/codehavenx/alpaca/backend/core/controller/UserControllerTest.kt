@@ -123,7 +123,7 @@ class UserControllerTest : TestBase(), KoinTest {
                     id = UserId("4387DERE"),
                     isVerified = false,
                     username = "UpdateMe",
-                    phoneNumbers = listOf("1234567890"),
+                    phoneNumbers = listOf("6352659856"),
                     firstName = null,
                     lastName = null,
                     address = null,

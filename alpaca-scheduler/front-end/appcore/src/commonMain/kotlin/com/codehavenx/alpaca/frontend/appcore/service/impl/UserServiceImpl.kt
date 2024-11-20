@@ -7,15 +7,17 @@ import com.codehavenx.alpaca.frontend.appcore.utils.runSuspendCatching
 /**
  * Default implementation of the user service.
  */
-class UserServiceImpl(
-    private val httpClient: HttpClient
-) : UserService {
+class UserServiceImpl : UserService {
 
     override suspend fun getUsers(): Result<List<User>> = runSuspendCatching(TAG) {
         listOf()
     }
 
-    override suspend fun createUser(userName: String, email: String?, phoneNumber: String?) {
+    override suspend fun createUser(
+        userName: String,
+        email: String?,
+        phoneNumber: String?,
+    ) = runSuspendCatching(TAG) {
         // TODO: Implement this
         /*
         val request = CreateUserRequest.create(userName, email, phoneNumber)
@@ -23,6 +25,10 @@ class UserServiceImpl(
             setBody(request)
         }.body<UserResponse>().toModel()
         */
+        User(
+            id = "1",
+            username = userName,
+        )
     }
 
     companion object {

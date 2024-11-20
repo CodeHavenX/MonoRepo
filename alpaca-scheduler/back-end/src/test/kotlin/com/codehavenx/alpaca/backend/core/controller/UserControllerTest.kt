@@ -117,7 +117,7 @@ class UserControllerTest : TestBase(), KoinTest {
         val requestBody = readFileContent("requests/update_single_user_request.json")
         val expectedResponse = readFileContent("requests/update_single_user_response.json")
         val userService = get<UserService>()
-        coEvery { userService.updateUser(UserId("4387DERE"), "test") }
+        coEvery { userService.updateUser(UserId("4387DERE"), "UpdateMe") }
             .answers {
                 User(
                     id = UserId("4387DERE"),
@@ -132,7 +132,10 @@ class UserControllerTest : TestBase(), KoinTest {
             }
 
         // Act
-        val response = client.put("user/4387DERE")
+        val response = client.put("user/4387DERE") {
+            setBody(requestBody)
+            contentType(ContentType.Application.Json)
+        }
 
         // Assert
         assertEquals(HttpStatusCode.OK, response.status)

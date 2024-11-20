@@ -27,8 +27,7 @@ class SupabaseConfigurationDatabase(
 
         val requestEntity = request.toConfigurationEntity()
 
-        val createdConfiguration = postgrest.from(ConfigurationEntity.COLLECTION).
-        insert(requestEntity) {
+        val createdConfiguration = postgrest.from(ConfigurationEntity.COLLECTION).insert(requestEntity) {
             select()
         }
             .decodeSingle<ConfigurationEntity>()

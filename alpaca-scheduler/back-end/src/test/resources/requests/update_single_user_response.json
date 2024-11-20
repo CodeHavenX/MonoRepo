@@ -3,12 +3,10 @@
     "username": "UpdateMe",
     "is_verified": false,
     "phone_numbers": [
-        "6352659856"
+        "1234567890"
     ],
-    "firstName": null,
-    "lastName": null,
+    "first_name": null,
+    "last_name": null,
     "address": null,
-    "emails": [
-
-    ]
+    "emails": []
 }

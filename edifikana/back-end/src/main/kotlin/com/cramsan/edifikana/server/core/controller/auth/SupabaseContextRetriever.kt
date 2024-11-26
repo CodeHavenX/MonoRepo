@@ -28,6 +28,7 @@ class SupabaseContextRetriever(
         }
 
         val user = auth.retrieveUser(token)
+        assertNull(auth.currentUserOrNull(), TAG, "Library cannot sign in user")
 
         return ClientContext.AuthenticatedClientContext(
             userInfo = user,

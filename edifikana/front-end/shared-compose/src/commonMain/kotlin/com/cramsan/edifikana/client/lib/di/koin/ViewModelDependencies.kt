@@ -1,6 +1,8 @@
 package com.cramsan.edifikana.client.lib.di.koin
 
 import com.cramsan.edifikana.client.lib.features.root.EdifikanaApplicationViewModel
+import com.cramsan.edifikana.client.lib.features.root.account.AccountActivityViewModel
+import com.cramsan.edifikana.client.lib.features.root.account.account.AccountViewModel
 import com.cramsan.edifikana.client.lib.features.root.auth.AuthActivityViewModel
 import com.cramsan.edifikana.client.lib.features.root.auth.signinv2.SignInV2ViewModel
 import com.cramsan.edifikana.client.lib.features.root.auth.signup.SignUpViewModel
@@ -30,5 +32,7 @@ val ViewModelModule = module {
     singleOf(::SignInV2ViewModel)
     singleOf(::SignUpViewModel)
     singleOf(::AuthActivityViewModel)
+    singleOf(::AccountActivityViewModel)
+    singleOf(::AccountViewModel)
     singleOf(::EdifikanaApplicationViewModel)
 }

@@ -7,6 +7,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,6 +20,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.cramsan.edifikana.client.lib.features.root.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.lib.features.root.RouteSafePath
 import com.cramsan.edifikana.client.lib.features.root.main.eventlog.EventLogScreen
 import com.cramsan.edifikana.client.lib.features.root.main.eventlog.addrecord.AddRecordScreen
@@ -46,6 +48,7 @@ import org.koin.compose.koinInject
 @Composable
 fun MainActivityScreen(
     viewModel: MainActivityViewModel = koinInject(),
+    applicationViewModel: EdifikanaApplicationViewModel = koinInject(),
 ) {
     val navController = rememberNavController()
 
@@ -53,6 +56,23 @@ fun MainActivityScreen(
     val backStack by navController.currentBackStack.collectAsState()
     val currentDestination = navBackStackEntry?.destination
     var title by remember { mutableStateOf("") }
+
+    val event by viewModel.events.collectAsState(MainActivityEvent.Noop)
+    LaunchedEffect(event) {
+        when (val event = event) {
+            MainActivityEvent.Noop -> Unit
+            is MainActivityEvent.Navigate -> {
+                navController.navigate(event.destination.path)
+            }
+            is MainActivityEvent.NavigateBack -> {
+                navController.popBackStack()
+            }
+            is MainActivityEvent.NavigateToRootPage -> Unit
+            is MainActivityEvent.TriggerApplicationEvent -> {
+                applicationViewModel.executeEvent(event.applicationEvent)
+            }
+        }
+    }
 
     Scaffold(
         topBar = {

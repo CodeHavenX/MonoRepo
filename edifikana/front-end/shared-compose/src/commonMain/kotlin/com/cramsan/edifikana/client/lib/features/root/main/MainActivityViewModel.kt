@@ -1,7 +1,9 @@
 package com.cramsan.edifikana.client.lib.features.root.main
 
 import com.cramsan.edifikana.client.lib.features.base.EdifikanaBaseViewModel
+import com.cramsan.edifikana.client.lib.features.root.ActivityRouteDestination
 import com.cramsan.edifikana.client.lib.features.root.EdifikanaApplicationDelegatedEvent
+import com.cramsan.edifikana.client.lib.features.root.EdifikanaApplicationEvent
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.DispatcherProvider
 import com.cramsan.framework.logging.logI
@@ -68,7 +70,11 @@ class MainActivityViewModel(
      */
     fun navigateToAccount() {
         viewModelScope.launch {
-            TODO()
+            _events.emit(
+                MainActivityEvent.TriggerApplicationEvent(
+                    EdifikanaApplicationEvent.NavigateToActivity(ActivityRouteDestination.AccountDestination)
+                )
+            )
         }
     }
 

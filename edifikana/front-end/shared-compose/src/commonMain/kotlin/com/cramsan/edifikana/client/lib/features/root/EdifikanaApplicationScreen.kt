@@ -10,6 +10,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.cramsan.edifikana.client.lib.features.root.account.AccountActivityScreen
 import com.cramsan.edifikana.client.lib.features.root.auth.AuthActivityScreen
 import com.cramsan.edifikana.client.lib.features.root.main.MainActivityScreen
 import com.cramsan.edifikana.client.lib.features.root.splash.SplashActivityScreen
@@ -84,6 +85,9 @@ private fun ApplicationNavigationHost(
                 }
                 ApplicationRoute.Main -> composable(route.route) {
                     MainActivityScreen()
+                }
+                ApplicationRoute.Account -> composable(route.route) {
+                    AccountActivityScreen()
                 }
             }
         }

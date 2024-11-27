@@ -32,9 +32,9 @@ supabase start
 ```
 Started supabase local development setup.
 
-         API URL: http://127.0.0.1:54321
-     GraphQL URL: http://127.0.0.1:54321/graphql/v1
-  S3 Storage URL: http://127.0.0.1:54321/storage/v1/s3
+         API URL: http://127.0.0.1:56321
+     GraphQL URL: http://127.0.0.1:56321/graphql/v1
+  S3 Storage URL: http://127.0.0.1:56321/storage/v1/s3
           DB URL: postgresql://postgres:postgres@127.0.0.1:54322/postgres
       Studio URL: http://127.0.0.1:54323
     Inbucket URL: http://127.0.0.1:54324
@@ -50,7 +50,7 @@ From this output you will need the `API URL` and the `service_role key`. Set the
 I recommend you store them in a permanent location like a `.bashrc` or `.zshrc` file.
 
 ```bash
-export ALPACA_SUPABASE_URL=http://127.0.0.1:54321
+export ALPACA_SUPABASE_URL=http://127.0.0.1:56321
 export ALPACA_SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU
 ```
 

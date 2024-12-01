@@ -1,6 +1,5 @@
 package com.cramsan.edifikana.client.lib.features.root.main.eventlog.addrecord
 
-import com.cramsan.edifikana.client.lib.features.base.EdifikanaBaseViewModel
 import com.cramsan.edifikana.client.lib.features.root.main.MainActivityEvent
 import com.cramsan.edifikana.client.lib.managers.EventLogManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
@@ -9,11 +8,11 @@ import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
-import com.cramsan.framework.core.DispatcherProvider
+import com.cramsan.framework.core.compose.BaseViewModel
+import com.cramsan.framework.core.compose.ViewModelDependencies
 import edifikana_lib.Res
 import edifikana_lib.string_other
 import edifikana_lib.title_event_log_add
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -30,9 +29,8 @@ class AddRecordViewModel(
     private val eventLogManager: EventLogManager,
     private val clock: Clock,
     private val propertyManager: PropertyManager,
-    exceptionHandler: CoroutineExceptionHandler,
-    dispatcherProvider: DispatcherProvider,
-) : EdifikanaBaseViewModel(exceptionHandler, dispatcherProvider) {
+    dependencies: ViewModelDependencies,
+) : BaseViewModel(dependencies) {
 
     private val _uiState = MutableStateFlow(
         AddRecordUIState(emptyList(), true, "")

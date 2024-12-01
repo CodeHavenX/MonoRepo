@@ -7,12 +7,14 @@ import com.cramsan.edifikana.client.lib.managers.mappers.toEntity
 import com.cramsan.edifikana.client.lib.models.AttachmentHolder
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.client.lib.service.EventLogService
-import com.cramsan.edifikana.client.lib.utils.getOrCatch
-import com.cramsan.edifikana.client.lib.utils.launch
 import com.cramsan.edifikana.lib.model.EventLogEntryId
+import com.cramsan.framework.core.ManagerDependencies
+import com.cramsan.framework.core.getOrCatch
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logI
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -23,7 +25,7 @@ class EventLogManager(
     private val eventLogService: EventLogService,
     private val eventLogRecordDao: EventLogRecordDao,
     private val attachmentDao: FileAttachmentDao,
-    private val workContext: WorkContext,
+    private val dependencies: ManagerDependencies,
 ) {
     private val mutex = Mutex()
     private var uploadJob: Job? = null
@@ -31,7 +33,7 @@ class EventLogManager(
     /**
      * Get all event log records.
      */
-    suspend fun getRecords(): Result<List<EventLogRecordModel>> = workContext.getOrCatch(TAG) {
+    suspend fun getRecords(): Result<List<EventLogRecordModel>> = dependencies.getOrCatch(TAG) {
         logI(TAG, "getRecords")
 
         val cachedData = eventLogRecordDao.getAll().map { it.toDomainModel() }
@@ -47,7 +49,7 @@ class EventLogManager(
      */
     suspend fun getRecord(
         eventLogRecordPK: EventLogEntryId,
-    ): Result<EventLogRecordModel> = workContext.getOrCatch(TAG) {
+    ): Result<EventLogRecordModel> = dependencies.getOrCatch(TAG) {
         logI(TAG, "getRecord")
         val localAttachments = attachmentDao.getAll()
             .filter { it.eventLogRecordPK == eventLogRecordPK.eventLogEntryId }
@@ -61,11 +63,11 @@ class EventLogManager(
     /**
      * Add a new event log record.
      */
-    suspend fun addRecord(eventLogRecord: EventLogRecordModel) = workContext.getOrCatch(TAG) {
+    suspend fun addRecord(eventLogRecord: EventLogRecordModel) = dependencies.getOrCatch(TAG) {
         logI(TAG, "addRecord")
         eventLogRecordDao.insert(eventLogRecord.toEntity())
 
-        workContext.launch(TAG) {
+        coroutineScope {
             uploadRecord(eventLogRecord)
             triggerFullUpload()
         }
@@ -84,7 +86,7 @@ class EventLogManager(
     private suspend fun triggerFullUpload(): Job {
         logI(TAG, "triggerFullUpload")
         uploadJob?.cancel()
-        return workContext.launch(TAG) {
+        return dependencies.appScope.launch {
             val pending = eventLogRecordDao.getAll()
 
             pending.forEach { record ->
@@ -98,7 +100,7 @@ class EventLogManager(
     /**
      * Start the upload process.
      */
-    suspend fun startUpload(): Result<Job> = workContext.getOrCatch(TAG) {
+    suspend fun startUpload(): Result<Job> = dependencies.getOrCatch(TAG) {
         logI(TAG, "startUpload")
         triggerFullUpload()
     }

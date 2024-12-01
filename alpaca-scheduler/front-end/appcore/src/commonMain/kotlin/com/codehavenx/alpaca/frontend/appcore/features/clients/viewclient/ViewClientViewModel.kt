@@ -2,10 +2,10 @@ package com.codehavenx.alpaca.frontend.appcore.features.clients.viewclient
 
 import com.codehavenx.alpaca.frontend.appcore.features.application.ApplicationEvent
 import com.codehavenx.alpaca.frontend.appcore.features.application.Route
-import com.codehavenx.alpaca.frontend.appcore.features.base.AlpacaViewModel
 import com.codehavenx.alpaca.frontend.appcore.managers.ClientManager
-import com.codehavenx.alpaca.frontend.appcore.managers.WorkContext
 import com.codehavenx.alpaca.frontend.appcore.models.Client
+import com.cramsan.framework.core.compose.BaseViewModel
+import com.cramsan.framework.core.compose.ViewModelDependencies
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,9 +17,10 @@ import kotlinx.coroutines.launch
  * Events for the View Client screen.
  */
 class ViewClientViewModel(
-    workContext: WorkContext,
     private val clientManager: ClientManager,
-) : AlpacaViewModel(workContext) {
+    dependencies: ViewModelDependencies,
+) : BaseViewModel(dependencies) {
+
     private val _uiState = MutableStateFlow(
         ViewClientUIState(
             content = null,

@@ -1,16 +1,15 @@
 package com.cramsan.edifikana.client.lib.features.root
 
-import com.cramsan.edifikana.client.lib.features.base.EdifikanaBaseViewModel
 import com.cramsan.edifikana.client.lib.managers.AttachmentManager
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.EventLogManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.managers.TimeCardManager
 import com.cramsan.framework.core.CoreUri
-import com.cramsan.framework.core.DispatcherProvider
+import com.cramsan.framework.core.compose.BaseViewModel
+import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logI
 import com.cramsan.framework.logging.logW
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -26,9 +25,8 @@ class EdifikanaApplicationViewModel(
     private val attachmentManager: AttachmentManager,
     private val timeCardManager: TimeCardManager,
     private val propertyManager: PropertyManager,
-    exceptionHandler: CoroutineExceptionHandler,
-    dispatcherProvider: DispatcherProvider,
-) : EdifikanaBaseViewModel(exceptionHandler, dispatcherProvider) {
+    dependencies: ViewModelDependencies,
+) : BaseViewModel(dependencies) {
 
     private val _events = MutableSharedFlow<EdifikanaApplicationEvent>()
     val events: SharedFlow<EdifikanaApplicationEvent> = _events

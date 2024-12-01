@@ -7,18 +7,20 @@ import com.cramsan.edifikana.client.lib.service.EventLogService
 import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.edifikana.client.lib.utils.IODependencies
 import com.cramsan.edifikana.client.lib.utils.getFilename
-import com.cramsan.edifikana.client.lib.utils.getOrCatch
-import com.cramsan.edifikana.client.lib.utils.launch
 import com.cramsan.edifikana.client.lib.utils.publicDownloadUrl
 import com.cramsan.edifikana.client.lib.utils.readBytes
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.utils.requireNotBlank
 import com.cramsan.framework.core.CoreUri
+import com.cramsan.framework.core.ManagerDependencies
+import com.cramsan.framework.core.getOrCatch
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logI
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.datetime.Clock
 
 /**
  * Manager for attachments.
@@ -27,7 +29,8 @@ class AttachmentManager(
     private val eventLogService: EventLogService,
     private val storageService: StorageService,
     private val attachmentDao: FileAttachmentDao,
-    private val workContext: WorkContext,
+    private val clock: Clock,
+    private val dependencies: ManagerDependencies,
     private val ioDependencies: IODependencies,
 ) {
     private val mutex = Mutex()
@@ -39,10 +42,10 @@ class AttachmentManager(
     suspend fun addAttachment(
         fileUris: List<CoreUri>,
         eventLogRecordPK: EventLogEntryId,
-    ): Result<Unit> = workContext.getOrCatch(TAG) {
+    ): Result<Unit> = dependencies.getOrCatch(TAG) {
         logI(TAG, "Adding attachment to event log record: $eventLogRecordPK")
         fileUris.forEach { fileUri ->
-            val entity = FileAttachmentEntity.create(eventLogRecordPK, workContext.clock, fileUri)
+            val entity = FileAttachmentEntity.create(eventLogRecordPK, clock, fileUri)
             attachmentDao.insert(entity)
         }
         triggerFullUpload()
@@ -71,7 +74,7 @@ class AttachmentManager(
 
             val updatedRecord = eventLogRecord.copy(
                 attachments = eventLogRecord.attachments + AttachmentHolder(
-                    publicUrl = publicDownloadUrl(imagePhotoRef, workContext.storageBucket),
+                    publicUrl = publicDownloadUrl(imagePhotoRef, ""),
                     storageRef = imagePhotoRef,
                 )
             )
@@ -83,7 +86,8 @@ class AttachmentManager(
 
     private suspend fun triggerFullUpload(): Job {
         uploadJob?.cancel()
-        return workContext.launch(TAG) {
+
+        return dependencies.appScope.launch {
             val pending = attachmentDao.getAll()
 
             pending.forEach { record ->
@@ -97,7 +101,7 @@ class AttachmentManager(
     /**
      * Start the upload process.
      */
-    suspend fun startUpload(): Result<Job> = workContext.getOrCatch(TAG) {
+    suspend fun startUpload(): Result<Job> = dependencies.getOrCatch(TAG) {
         triggerFullUpload()
     }
 

@@ -14,10 +14,13 @@ import com.cramsan.edifikana.client.lib.features.root.main.timecard.TimeCartView
 import com.cramsan.edifikana.client.lib.features.root.main.timecard.addstaff.AddStaffViewModel
 import com.cramsan.edifikana.client.lib.features.root.main.timecard.stafflist.StaffListViewModel
 import com.cramsan.edifikana.client.lib.features.root.main.timecard.viewstaff.ViewStaffViewModel
+import com.cramsan.framework.core.compose.ViewModelDependencies
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val ViewModelModule = module {
+
+    singleOf(::ViewModelDependencies)
 
     // TODO: Currently we cannot scope a viewmodel to a navigation graph until koin supports the viewModel function
     // in compose multiplatform code. Until then we will have all viewmodels as singletons.

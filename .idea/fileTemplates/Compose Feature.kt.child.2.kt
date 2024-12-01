@@ -1,11 +1,12 @@
 package ${PACKAGE_NAME}
 
-data class ${NAME}UIModel(
-    val name: String,
+/**
+ * UI state of the ${NAME} feature.
+ *
+ * This class models the top level state of the page.
+ * For modeling more specific details of the page, see the respective UI model class.
+ */
+data class ${NAME}UIState(
+    val content: ${NAME}UIModel,
+    val isLoading: Boolean,
 )
-
-fun Any.to${NAME}UIModel(): ${NAME}UIModel {
-    return ${NAME}UIModel(
-        name = TODO(),
-    )
-}

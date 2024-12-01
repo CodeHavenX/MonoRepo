@@ -2,7 +2,8 @@ package com.codehavenx.alpaca.frontend.appcore.managers
 
 import com.codehavenx.alpaca.frontend.appcore.models.User
 import com.codehavenx.alpaca.frontend.appcore.service.UserService
-import com.codehavenx.alpaca.frontend.appcore.utils.getOrCatch
+import com.cramsan.framework.core.ManagerDependencies
+import com.cramsan.framework.core.getOrCatch
 import com.cramsan.framework.logging.logI
 
 /**
@@ -10,13 +11,13 @@ import com.cramsan.framework.logging.logI
  */
 class UserManager(
     private val userService: UserService,
-    private val workContext: WorkContext,
+    private val dependencies: ManagerDependencies,
 ) {
 
     /**
      * Get the list of users.
      */
-    suspend fun getUsers(): Result<List<User>> = workContext.getOrCatch(TAG) {
+    suspend fun getUsers(): Result<List<User>> = dependencies.getOrCatch(TAG) {
         logI(TAG, "getUsers")
         userService.getUsers().getOrThrow()
     }

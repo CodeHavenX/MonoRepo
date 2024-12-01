@@ -2,8 +2,9 @@ package com.cramsan.edifikana.client.lib.managers
 
 import com.cramsan.edifikana.client.lib.models.PropertyModel
 import com.cramsan.edifikana.client.lib.service.PropertyService
-import com.cramsan.edifikana.client.lib.utils.getOrCatch
 import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.framework.core.ManagerDependencies
+import com.cramsan.framework.core.getOrCatch
 import com.cramsan.framework.logging.logI
 import kotlinx.coroutines.flow.StateFlow
 
@@ -12,12 +13,12 @@ import kotlinx.coroutines.flow.StateFlow
  */
 class PropertyManager(
     private val propertyService: PropertyService,
-    private val workContext: WorkContext,
+    private val dependencies: ManagerDependencies,
 ) {
     /**
      * Get the list of properties.
      */
-    suspend fun getPropertyList(): Result<List<PropertyModel>> = workContext.getOrCatch(TAG) {
+    suspend fun getPropertyList(): Result<List<PropertyModel>> = dependencies.getOrCatch(TAG) {
         logI(TAG, "getPropertyList")
         propertyService.getPropertyList().getOrThrow()
     }
@@ -25,7 +26,7 @@ class PropertyManager(
     /**
      * Set the active property.
      */
-    suspend fun setActiveProperty(propertyId: PropertyId?) = workContext.getOrCatch(TAG) {
+    suspend fun setActiveProperty(propertyId: PropertyId?) = dependencies.getOrCatch(TAG) {
         logI(TAG, "setActiveProperty")
         propertyService.setActiveProperty(propertyId).getOrThrow()
     }

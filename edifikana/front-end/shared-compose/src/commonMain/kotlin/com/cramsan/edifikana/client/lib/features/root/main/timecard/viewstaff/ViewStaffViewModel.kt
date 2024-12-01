@@ -1,7 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.root.main.timecard.viewstaff
 
 import com.cramsan.edifikana.client.lib.eventTypeFriendlyName
-import com.cramsan.edifikana.client.lib.features.base.EdifikanaBaseViewModel
 import com.cramsan.edifikana.client.lib.features.root.EdifikanaApplicationEvent
 import com.cramsan.edifikana.client.lib.features.root.main.MainActivityEvent
 import com.cramsan.edifikana.client.lib.managers.StaffManager
@@ -15,12 +14,12 @@ import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.framework.core.CoreUri
-import com.cramsan.framework.core.DispatcherProvider
+import com.cramsan.framework.core.compose.BaseViewModel
+import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logW
 import edifikana_lib.Res
 import edifikana_lib.error_message_currently_uploading
 import edifikana_lib.title_timecard_view_staff
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,9 +38,8 @@ class ViewStaffViewModel(
     private val timeCardManager: TimeCardManager,
     private val storageService: StorageService,
     private val clock: Clock,
-    exceptionHandler: CoroutineExceptionHandler,
-    dispatcherProvider: DispatcherProvider,
-) : EdifikanaBaseViewModel(exceptionHandler, dispatcherProvider) {
+    dependencies: ViewModelDependencies,
+) : BaseViewModel(dependencies) {
 
     private val _uiState = MutableStateFlow(
         ViewStaffUIState(

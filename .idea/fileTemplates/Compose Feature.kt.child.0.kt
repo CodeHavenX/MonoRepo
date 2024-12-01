@@ -1,13 +1,37 @@
 package ${PACKAGE_NAME}
 
-import com.codehavenx.alpaca.frontend.appcore.features.application.ApplicationEvent
-import kotlin.random.Random
+import com.cramsan.framework.core.compose.BaseViewModel
+import com.cramsan.framework.core.compose.ViewModelDependencies
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 
-sealed class ${NAME}Event {
-    data object Noop : ${NAME}Event()
+/**
+ * ViewModel for the ${NAME} screen.
+ **/
+class ${NAME}ViewModel(
+    dependencies: ViewModelDependencies,
+) : BaseViewModel(dependencies) {
 
-    data class TriggerApplicationEvent(
-        val applicationEvent: ApplicationEvent,
-        val id: Int = Random.nextInt(),
-    ) : ${NAME}Event()
+    private val _uiState = MutableStateFlow(${NAME}UIState(
+        content = ${NAME}UIModel(""),
+        isLoading = false,
+    ))
+    
+    /**
+     * UI state of the screen.
+     */
+    val uiState: StateFlow<${NAME}UIState> = _uiState
+
+    private val _event = MutableSharedFlow<${NAME}Event>()
+
+    /**
+     * Event flow to be observed.
+     */
+    val event: SharedFlow<${NAME}Event> = _event
+    
+    companion object {
+        private const val TAG = "${NAME}ViewModel"
+    }
 }

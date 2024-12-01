@@ -1,10 +1,10 @@
 package com.codehavenx.alpaca.frontend.appcore.features.staff.updatestaff
 
 import com.codehavenx.alpaca.frontend.appcore.features.application.ApplicationEvent
-import com.codehavenx.alpaca.frontend.appcore.features.base.AlpacaViewModel
 import com.codehavenx.alpaca.frontend.appcore.managers.StaffManager
-import com.codehavenx.alpaca.frontend.appcore.managers.WorkContext
 import com.codehavenx.alpaca.frontend.appcore.models.Staff
+import com.cramsan.framework.core.compose.BaseViewModel
+import com.cramsan.framework.core.compose.ViewModelDependencies
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,9 +16,10 @@ import kotlinx.coroutines.launch
  * The ViewModel for the Update Staff screen.
  */
 class UpdateStaffViewModel(
-    workContext: WorkContext,
     private val staffManager: StaffManager,
-) : AlpacaViewModel(workContext) {
+    dependencies: ViewModelDependencies,
+) : BaseViewModel(dependencies) {
+
     private val _uiState = MutableStateFlow(
         UpdateStaffUIState(
             content = null,

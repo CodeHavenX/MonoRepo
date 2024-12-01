@@ -1,17 +1,16 @@
 package com.cramsan.edifikana.client.lib.features.root.main.eventlog
 
-import com.cramsan.edifikana.client.lib.features.base.EdifikanaBaseViewModel
 import com.cramsan.edifikana.client.lib.features.root.EdifikanaApplicationEvent
 import com.cramsan.edifikana.client.lib.features.root.main.MainActivityEvent
 import com.cramsan.edifikana.client.lib.features.root.main.MainRouteDestination
 import com.cramsan.edifikana.client.lib.managers.EventLogManager
 import com.cramsan.edifikana.lib.model.EventLogEntryId
-import com.cramsan.framework.core.DispatcherProvider
+import com.cramsan.framework.core.compose.BaseViewModel
+import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logW
 import edifikana_lib.Res
 import edifikana_lib.error_message_currently_uploading
 import edifikana_lib.title_event_log
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -24,9 +23,8 @@ import org.jetbrains.compose.resources.getString
  */
 class EventLogViewModel(
     private val eventLogManager: EventLogManager,
-    dispatcherProvider: DispatcherProvider,
-    exceptionHandler: CoroutineExceptionHandler,
-) : EdifikanaBaseViewModel(exceptionHandler, dispatcherProvider) {
+    dependencies: ViewModelDependencies,
+) : BaseViewModel(dependencies) {
 
     private val _uiState = MutableStateFlow(
         EventLogUIState(emptyList(), true, "")

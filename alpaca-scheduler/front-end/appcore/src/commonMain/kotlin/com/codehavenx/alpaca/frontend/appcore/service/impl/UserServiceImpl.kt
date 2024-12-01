@@ -2,7 +2,7 @@ package com.codehavenx.alpaca.frontend.appcore.service.impl
 
 import com.codehavenx.alpaca.frontend.appcore.models.User
 import com.codehavenx.alpaca.frontend.appcore.service.UserService
-import com.codehavenx.alpaca.frontend.appcore.utils.runSuspendCatching
+import com.cramsan.framework.core.runSuspendCatching
 
 /**
  * Default implementation of the user service.

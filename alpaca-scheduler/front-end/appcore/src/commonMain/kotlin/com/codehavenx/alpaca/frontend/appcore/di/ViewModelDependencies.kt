@@ -12,13 +12,17 @@ import com.codehavenx.alpaca.frontend.appcore.features.staff.addstaff.AddStaffVi
 import com.codehavenx.alpaca.frontend.appcore.features.staff.liststaff.ListStaffsViewModel
 import com.codehavenx.alpaca.frontend.appcore.features.staff.updatestaff.UpdateStaffViewModel
 import com.codehavenx.alpaca.frontend.appcore.features.staff.viewstaff.ViewStaffViewModel
+import com.cramsan.framework.core.compose.ViewModelDependencies
 import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 /**
  * Module for defining the view model for dependency injection of the application.
  */
 val ViewModelModule = module {
+
+    singleOf(::ViewModelDependencies)
 
     // TODO: Currently we cannot scope a viewmodel to a navigation graph until koin supports the viewModel function
     // in compose multiplatform code. Until then we will have all viewmodels as singletons.

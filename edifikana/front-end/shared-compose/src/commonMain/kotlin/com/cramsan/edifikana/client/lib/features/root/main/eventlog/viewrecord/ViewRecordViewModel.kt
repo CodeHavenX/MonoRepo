@@ -1,6 +1,5 @@
 package com.cramsan.edifikana.client.lib.features.root.main.eventlog.viewrecord
 
-import com.cramsan.edifikana.client.lib.features.base.EdifikanaBaseViewModel
 import com.cramsan.edifikana.client.lib.features.root.EdifikanaApplicationEvent
 import com.cramsan.edifikana.client.lib.features.root.main.MainActivityEvent
 import com.cramsan.edifikana.client.lib.managers.AttachmentManager
@@ -10,10 +9,10 @@ import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.framework.core.CoreUri
-import com.cramsan.framework.core.DispatcherProvider
+import com.cramsan.framework.core.compose.BaseViewModel
+import com.cramsan.framework.core.compose.ViewModelDependencies
 import edifikana_lib.Res
 import edifikana_lib.title_event_log_view
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -28,9 +27,8 @@ class ViewRecordViewModel(
     private val eventLogManager: EventLogManager,
     private val attachmentManager: AttachmentManager,
     private val storageService: StorageService,
-    exceptionHandler: CoroutineExceptionHandler,
-    dispatcherProvider: DispatcherProvider,
-) : EdifikanaBaseViewModel(exceptionHandler, dispatcherProvider) {
+    dependencies: ViewModelDependencies,
+) : BaseViewModel(dependencies) {
 
     private val _uiState = MutableStateFlow(
         ViewRecordUIState(null, true, "")

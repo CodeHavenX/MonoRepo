@@ -3,11 +3,11 @@
   <component name="ExportableFileTemplateSettings">
     <default_templates>
       <template name="Compose Feature.kt" file-name="${NAME}Screen" reformat="true" live-template-enabled="false">
-        <template name="Compose Feature.kt.child.0.kt" file-name="${NAME}Event" reformat="true" live-template-enabled="false" />
-        <template name="Compose Feature.kt.child.1.kt" file-name="${NAME}ViewModel" reformat="true" live-template-enabled="false" />
-        <template name="Compose Feature.kt.child.2.kt" file-name="${NAME}UIModel" reformat="true" live-template-enabled="false" />
-        <template name="Compose Feature.kt.child.3.kt" file-name="${NAME}UIState" reformat="true" live-template-enabled="false" />
-        <template name="Compose Feature.kt.child.4.kt" file-name="${NAME}ScreenPreview" reformat="true" live-template-enabled="false" />
+        <template name="Compose Feature.kt.child.0.kt" file-name="${NAME}ViewModel" reformat="true" live-template-enabled="false" />
+        <template name="Compose Feature.kt.child.1.kt" file-name="${NAME}ScreenPreview" reformat="true" live-template-enabled="false" />
+        <template name="Compose Feature.kt.child.2.kt" file-name="${NAME}UIState" reformat="true" live-template-enabled="false" />
+        <template name="Compose Feature.kt.child.3.kt" file-name="${NAME}UIModel" reformat="true" live-template-enabled="false" />
+        <template name="Compose Feature.kt.child.4.kt" file-name="${NAME}Event" reformat="true" live-template-enabled="false" />
       </template>
     </default_templates>
   </component>

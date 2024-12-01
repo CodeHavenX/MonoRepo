@@ -1,13 +1,12 @@
 package com.cramsan.edifikana.client.lib.features.root.main
 
-import com.cramsan.edifikana.client.lib.features.base.EdifikanaBaseViewModel
 import com.cramsan.edifikana.client.lib.features.root.ActivityRouteDestination
 import com.cramsan.edifikana.client.lib.features.root.EdifikanaApplicationDelegatedEvent
 import com.cramsan.edifikana.client.lib.features.root.EdifikanaApplicationEvent
 import com.cramsan.framework.core.CoreUri
-import com.cramsan.framework.core.DispatcherProvider
+import com.cramsan.framework.core.compose.BaseViewModel
+import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logI
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
@@ -16,9 +15,8 @@ import kotlinx.coroutines.launch
  * Main activity view model.
  */
 class MainActivityViewModel(
-    exceptionHandler: CoroutineExceptionHandler,
-    dispatcherProvider: DispatcherProvider,
-) : EdifikanaBaseViewModel(exceptionHandler, dispatcherProvider) {
+    dependencies: ViewModelDependencies,
+) : BaseViewModel(dependencies) {
 
     private val _events = MutableSharedFlow<MainActivityEvent>()
     val events: SharedFlow<MainActivityEvent> = _events

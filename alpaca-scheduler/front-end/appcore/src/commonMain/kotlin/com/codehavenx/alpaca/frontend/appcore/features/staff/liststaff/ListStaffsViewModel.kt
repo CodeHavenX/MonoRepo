@@ -2,10 +2,10 @@ package com.codehavenx.alpaca.frontend.appcore.features.staff.liststaff
 
 import com.codehavenx.alpaca.frontend.appcore.features.application.ApplicationEvent
 import com.codehavenx.alpaca.frontend.appcore.features.application.Route
-import com.codehavenx.alpaca.frontend.appcore.features.base.AlpacaViewModel
 import com.codehavenx.alpaca.frontend.appcore.managers.StaffManager
-import com.codehavenx.alpaca.frontend.appcore.managers.WorkContext
 import com.codehavenx.alpaca.frontend.appcore.models.Staff
+import com.cramsan.framework.core.compose.BaseViewModel
+import com.cramsan.framework.core.compose.ViewModelDependencies
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -17,8 +17,9 @@ import kotlinx.coroutines.launch
  */
 class ListStaffsViewModel(
     private val staffManager: StaffManager,
-    workContext: WorkContext,
-) : AlpacaViewModel(workContext) {
+    dependencies: ViewModelDependencies,
+) : BaseViewModel(dependencies) {
+
     private val _uiState = MutableStateFlow(
         ListStaffsUIState(
             users = StaffPageUIModel(emptyList()),

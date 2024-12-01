@@ -1,14 +1,15 @@
 package com.codehavenx.alpaca.frontend.appcore.managers
 
 import com.codehavenx.alpaca.frontend.appcore.models.Staff
-import com.codehavenx.alpaca.frontend.appcore.utils.getOrCatch
+import com.cramsan.framework.core.ManagerDependencies
+import com.cramsan.framework.core.getOrCatch
 import com.cramsan.framework.logging.logI
 
 /**
  * Manager to perform operations on staff.
  */
 class StaffManager(
-    private val workContext: WorkContext,
+    private val dependencies: ManagerDependencies,
 ) {
 
     private val staffs = INITIAL_STAFF.toMutableList()
@@ -16,7 +17,7 @@ class StaffManager(
     /**
      * Get the list of staff.
      */
-    suspend fun getStaff(): Result<List<Staff>> = workContext.getOrCatch(TAG) {
+    suspend fun getStaff(): Result<List<Staff>> = dependencies.getOrCatch(TAG) {
         logI(TAG, "getStaff")
         staffs
     }
@@ -24,7 +25,7 @@ class StaffManager(
     /**
      * Add new staff.
      */
-    suspend fun addStaff(staff: Staff): Result<Staff> = workContext.getOrCatch(TAG) {
+    suspend fun addStaff(staff: Staff): Result<Staff> = dependencies.getOrCatch(TAG) {
         logI(TAG, "addStaff")
         staffs.add(staff)
         staff
@@ -33,7 +34,7 @@ class StaffManager(
     /**
      * Update staff.
      */
-    suspend fun updateStaff(client: Staff): Result<Staff> = workContext.getOrCatch(TAG) {
+    suspend fun updateStaff(client: Staff): Result<Staff> = dependencies.getOrCatch(TAG) {
         logI(TAG, "updateStaff")
         val index = staffs.indexOfFirst { it.id == client.id }
         require(index == -1) { throw IllegalArgumentException("Staff not found") }
@@ -44,7 +45,7 @@ class StaffManager(
     /**
      * Delete staff.
      */
-    suspend fun deleteStaff(client: Staff): Result<Staff> = workContext.getOrCatch(TAG) {
+    suspend fun deleteStaff(client: Staff): Result<Staff> = dependencies.getOrCatch(TAG) {
         logI(TAG, "deleteStaff")
         val index = staffs.indexOfFirst { it.id == client.id }
         require(index == -1) {
@@ -57,7 +58,7 @@ class StaffManager(
     /**
      * Get a staff by id.
      */
-    suspend fun getStaffById(id: String): Result<Staff> = workContext.getOrCatch(TAG) {
+    suspend fun getStaffById(id: String): Result<Staff> = dependencies.getOrCatch(TAG) {
         logI(TAG, "getStaffById")
         staffs.firstOrNull { it.id == id } ?: throw IllegalArgumentException("Staff not found")
     }

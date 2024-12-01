@@ -1,14 +1,15 @@
 package com.codehavenx.alpaca.frontend.appcore.managers
 
 import com.codehavenx.alpaca.frontend.appcore.models.Client
-import com.codehavenx.alpaca.frontend.appcore.utils.getOrCatch
+import com.cramsan.framework.core.ManagerDependencies
+import com.cramsan.framework.core.getOrCatch
 import com.cramsan.framework.logging.logI
 
 /**
  * Manager to perform operations on clients.
  */
 class ClientManager(
-    private val workContext: WorkContext,
+    private val dependencies: ManagerDependencies,
 ) {
 
     private val clients = INITIAL_CLIENTS.toMutableList()
@@ -16,7 +17,7 @@ class ClientManager(
     /**
      * Get the list of clients.
      */
-    suspend fun getClients(): Result<List<Client>> = workContext.getOrCatch(TAG) {
+    suspend fun getClients(): Result<List<Client>> = dependencies.getOrCatch(TAG) {
         logI(TAG, "getClients")
         clients
     }
@@ -24,7 +25,7 @@ class ClientManager(
     /**
      * Add new client.
      */
-    suspend fun addClient(client: Client): Result<Client> = workContext.getOrCatch(TAG) {
+    suspend fun addClient(client: Client): Result<Client> = dependencies.getOrCatch(TAG) {
         logI(TAG, "addClient")
         clients.add(client)
         client
@@ -33,7 +34,7 @@ class ClientManager(
     /**
      * Update client.
      */
-    suspend fun updateClient(client: Client): Result<Client> = workContext.getOrCatch(TAG) {
+    suspend fun updateClient(client: Client): Result<Client> = dependencies.getOrCatch(TAG) {
         logI(TAG, "updateClient")
         val index = clients.indexOfFirst { it.id == client.id }
         require(index == -1) {
@@ -46,7 +47,7 @@ class ClientManager(
     /**
      * Delete client.
      */
-    suspend fun deleteClient(client: Client): Result<Client> = workContext.getOrCatch(TAG) {
+    suspend fun deleteClient(client: Client): Result<Client> = dependencies.getOrCatch(TAG) {
         logI(TAG, "deleteClient")
         val index = clients.indexOfFirst { it.id == client.id }
         require(index == -1) {
@@ -59,7 +60,7 @@ class ClientManager(
     /**
      * Get a client by id.
      */
-    suspend fun getClientById(id: String): Result<Client> = workContext.getOrCatch(TAG) {
+    suspend fun getClientById(id: String): Result<Client> = dependencies.getOrCatch(TAG) {
         logI(TAG, "getClientById")
         clients.firstOrNull { it.id == id } ?: throw IllegalArgumentException("Client not found")
     }

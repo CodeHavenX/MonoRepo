@@ -1,8 +1,8 @@
 package com.codehavenx.alpaca.frontend.appcore.features.application
 
-import com.codehavenx.alpaca.frontend.appcore.features.base.AlpacaViewModel
 import com.codehavenx.alpaca.frontend.appcore.managers.AuthenticationManager
-import com.codehavenx.alpaca.frontend.appcore.managers.WorkContext
+import com.cramsan.framework.core.compose.BaseViewModel
+import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logI
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,8 +15,8 @@ import kotlinx.coroutines.launch
  */
 class ApplicationViewModel(
     private val authenticationManager: AuthenticationManager,
-    workContext: WorkContext,
-) : AlpacaViewModel(workContext) {
+    dependencies: ViewModelDependencies,
+) : BaseViewModel(dependencies) {
 
     private val _events = MutableSharedFlow<ApplicationEvent>()
     val events: SharedFlow<ApplicationEvent> = _events

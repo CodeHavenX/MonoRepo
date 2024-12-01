@@ -1,10 +1,10 @@
 package com.codehavenx.alpaca.frontend.appcore.features.clients.updateclient
 
 import com.codehavenx.alpaca.frontend.appcore.features.application.ApplicationEvent
-import com.codehavenx.alpaca.frontend.appcore.features.base.AlpacaViewModel
 import com.codehavenx.alpaca.frontend.appcore.managers.ClientManager
-import com.codehavenx.alpaca.frontend.appcore.managers.WorkContext
 import com.codehavenx.alpaca.frontend.appcore.models.Client
+import com.cramsan.framework.core.compose.BaseViewModel
+import com.cramsan.framework.core.compose.ViewModelDependencies
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,9 +16,9 @@ import kotlinx.coroutines.launch
  * The ViewModel for the Update Client screen.
  */
 class UpdateClientViewModel(
-    workContext: WorkContext,
     private val clientManager: ClientManager,
-) : AlpacaViewModel(workContext) {
+    dependencies: ViewModelDependencies,
+) : BaseViewModel(dependencies) {
     private val _uiState = MutableStateFlow(
         UpdateClientUIState(
             content = null,

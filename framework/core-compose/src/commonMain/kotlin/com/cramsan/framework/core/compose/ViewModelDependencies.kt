@@ -1,16 +1,13 @@
-package com.codehavenx.alpaca.frontend.appcore.managers
+package com.cramsan.framework.core.compose
 
 import com.cramsan.framework.core.DispatcherProvider
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.datetime.Clock
 
 /**
- * Aggregator class that holds several common dependencies for the app. This class is expected to be used within the
- * business logic domain.
+ * Aggregator class that holds several common dependencies for the [BaseViewModel].
  */
-data class WorkContext(
-    val clock: Clock,
+data class ViewModelDependencies(
     val appScope: CoroutineScope,
     val dispatcherProvider: DispatcherProvider,
     val coroutineExceptionHandler: CoroutineExceptionHandler,

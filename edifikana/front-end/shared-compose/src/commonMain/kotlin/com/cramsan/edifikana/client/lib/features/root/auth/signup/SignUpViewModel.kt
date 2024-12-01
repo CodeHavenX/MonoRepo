@@ -1,15 +1,14 @@
 package com.cramsan.edifikana.client.lib.features.root.auth.signup
 
-import com.cramsan.edifikana.client.lib.features.base.EdifikanaBaseViewModel
 import com.cramsan.edifikana.client.lib.features.root.ActivityRouteDestination
 import com.cramsan.edifikana.client.lib.features.root.EdifikanaApplicationEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
-import com.cramsan.framework.core.DispatcherProvider
+import com.cramsan.framework.core.compose.BaseViewModel
+import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logI
 import edifikana_lib.Res
 import edifikana_lib.error_message_unexpected_error
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -23,9 +22,8 @@ import org.jetbrains.compose.resources.getString
  */
 class SignUpViewModel(
     private val auth: AuthManager,
-    exceptionHandler: CoroutineExceptionHandler,
-    dispatcherProvider: DispatcherProvider,
-) : EdifikanaBaseViewModel(exceptionHandler, dispatcherProvider) {
+    dependencies: ViewModelDependencies,
+) : BaseViewModel(dependencies) {
 
     private val _uiState = MutableStateFlow(SignUpUIState.Initial)
     val uiState: StateFlow<SignUpUIState> = _uiState

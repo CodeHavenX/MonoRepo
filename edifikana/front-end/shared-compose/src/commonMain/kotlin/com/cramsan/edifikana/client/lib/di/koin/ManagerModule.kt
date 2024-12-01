@@ -6,7 +6,6 @@ import com.cramsan.edifikana.client.lib.managers.EventLogManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.client.lib.managers.TimeCardManager
-import com.cramsan.edifikana.client.lib.managers.WorkContext
 import com.cramsan.edifikana.client.lib.managers.remoteconfig.RemoteConfig
 import com.cramsan.edifikana.client.lib.service.AuthService
 import com.cramsan.edifikana.client.lib.service.EventLogService
@@ -20,6 +19,7 @@ import com.cramsan.edifikana.client.lib.service.impl.EventLogServiceImpl
 import com.cramsan.edifikana.client.lib.service.impl.PropertyServiceImpl
 import com.cramsan.edifikana.client.lib.service.impl.StaffServiceImpl
 import com.cramsan.edifikana.client.lib.service.impl.TimeCardServiceImpl
+import com.cramsan.framework.core.ManagerDependencies
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.auth
@@ -38,7 +38,7 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val ManagerModule = module {
-    single { WorkContext(get(), get(), get(), get()) }
+    single { ManagerDependencies(get(), get()) }
 
     singleOf(::EventLogManager)
     singleOf(::AttachmentManager)

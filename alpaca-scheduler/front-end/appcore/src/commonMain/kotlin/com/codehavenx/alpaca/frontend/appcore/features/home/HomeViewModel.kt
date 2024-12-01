@@ -1,7 +1,7 @@
 package com.codehavenx.alpaca.frontend.appcore.features.home
 
-import com.codehavenx.alpaca.frontend.appcore.features.base.AlpacaViewModel
-import com.codehavenx.alpaca.frontend.appcore.managers.WorkContext
+import com.cramsan.framework.core.compose.BaseViewModel
+import com.cramsan.framework.core.compose.ViewModelDependencies
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -11,8 +11,8 @@ import kotlinx.coroutines.flow.StateFlow
  * The ViewModel for the Home screen.
  */
 class HomeViewModel(
-    workContext: WorkContext,
-) : AlpacaViewModel(workContext) {
+    dependencies: ViewModelDependencies,
+) : BaseViewModel(dependencies) {
 
     private val _uiState = MutableStateFlow(
         HomeUIState(

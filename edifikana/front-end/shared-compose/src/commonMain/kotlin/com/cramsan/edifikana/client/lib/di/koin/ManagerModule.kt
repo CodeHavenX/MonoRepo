@@ -22,6 +22,7 @@ import com.cramsan.edifikana.client.lib.service.impl.TimeCardServiceImpl
 import com.cramsan.framework.core.ManagerDependencies
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.Auth
+import io.github.jan.supabase.auth.SettingsSessionManager
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.compose.auth.ComposeAuth
 import io.github.jan.supabase.compose.auth.appleNativeLogin
@@ -63,6 +64,7 @@ val ManagerModule = module {
             install(Postgrest)
             install(Storage)
             install(Auth) {
+                sessionManager = SettingsSessionManager(key = "$supabaseUrl-client")
             }
             install(ComposeAuth) {
                 googleNativeLogin(

@@ -7,8 +7,11 @@ import com.cramsan.edifikana.lib.annotations.NetworkModel
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
 import com.cramsan.framework.core.runSuspendCatching
+import com.cramsan.framework.logging.logD
+import com.cramsan.framework.logging.logE
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.providers.builtin.Email
+import io.github.jan.supabase.exceptions.RestException
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -29,7 +32,18 @@ class AuthServiceImpl(
     override suspend fun isSignedIn(): Result<Boolean> = runSuspendCatching(TAG) {
         val user = auth.currentUserOrNull()
         _activeUser.value = user?.id?.let { UserId(it) }
-        user != null
+        if (user == null) {
+            logD(TAG, "User not signed in")
+            false
+        } else {
+            try {
+                auth.refreshCurrentSession()
+                true
+            } catch (e: RestException) {
+                logE(TAG, "Failed to refresh session. User considered signed out.", e)
+                false
+            }
+        }
     }
 
     @OptIn(NetworkModel::class)

@@ -29,6 +29,7 @@ import com.cramsan.edifikana.server.core.service.password.SimplePasswordGenerato
 import com.cramsan.framework.assertlib.assertFalse
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.Auth
+import io.github.jan.supabase.auth.SettingsSessionManager
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
@@ -82,7 +83,9 @@ val ApplicationModule = module {
         ) {
             install(Postgrest)
             install(Storage)
-            install(Auth)
+            install(Auth) {
+                sessionManager = SettingsSessionManager(key = "$supabaseUrl-server")
+            }
         }
     }
 

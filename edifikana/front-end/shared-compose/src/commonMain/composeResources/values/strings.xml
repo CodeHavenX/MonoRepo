@@ -3,6 +3,7 @@
 
     <string name="sign_in">Iniciar Sesión</string>
     <string name="sign_out">Cerrar Sessión</string>
+    <string name="sign_up">Registrarse</string>
     <string name="role_admin">Administrator</string>
     <string name="role_security">Seguridad</string>
     <string name="role_security_cover">Descansero</string>
@@ -83,7 +84,7 @@
     <string name="title_timecard_view_staff">Empleado</string>
     <string name="title_timecard_staff_list">Lista de Empleados</string>
 
-    <string name="text_email">Correo Electronico</string>
-    <string name="text_password">Contrasenha</string>
+    <string name="text_email">Correo/# Telefónico (requirido)</string>
+    <string name="text_password">Contraseña (requirido)</string>
 
 </resources>

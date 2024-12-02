@@ -12,9 +12,11 @@ data class SignUpUIState(
         val Initial = SignUpUIState(
             isLoading = false,
             signUpForm = SignUpFormUIModel(
-                email = "",
+                fullName = "",
+                username = "",
                 password = "",
-                repeatPassword = "",
+                policyChecked = false,
+                registerEnabled = false,
                 errorMessage = null,
             ),
         )

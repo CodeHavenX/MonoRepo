@@ -1,16 +1,9 @@
 package com.cramsan.edifikana.client.lib.features.root.auth.signup
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -26,7 +19,7 @@ import com.cramsan.edifikana.client.lib.features.root.auth.AuthActivityViewModel
 import com.cramsan.edifikana.client.lib.ui.components.LoadingAnimationOverlay
 import com.cramsan.edifikana.client.lib.ui.theme.Padding
 import edifikana_lib.Res
-import edifikana_lib.sign_in
+import edifikana_lib.sign_up
 import edifikana_lib.text_email
 import edifikana_lib.text_password
 import org.jetbrains.compose.resources.stringResource
@@ -94,7 +87,13 @@ internal fun SignInV2Content(
                 Text(it)
             }
             TextField(
-                value = uistate.signUpForm.email,
+                value = uistate.signUpForm.fullName,
+                onValueChange = {},
+                label = {Text("Full Name (required)")},
+                maxLines = 1,
+            )
+            TextField(
+                value = uistate.signUpForm.username,
                 onValueChange = { onUsernameValueChange(it) },
                 label = { Text(stringResource(Res.string.text_email)) },
                 maxLines = 1,
@@ -109,10 +108,18 @@ internal fun SignInV2Content(
                     keyboardType = KeyboardType.Password
                 ),
             )
+            Row {
+                Checkbox(
+                    checked = uistate.signUpForm.policyChecked,
+                    onCheckedChange = { /*TODO*/ },
+                )
+                Text("By creating an account, I accept Edifikans's Terms of Service and Privacy Policy.")
+            }
             Button(
+                enabled = uistate.signUpForm.registerEnabled,
                 onClick = onSignUpClicked,
             ) {
-                Text(stringResource(Res.string.sign_in))
+                Text(stringResource(Res.string.sign_up))
             }
         }
     }

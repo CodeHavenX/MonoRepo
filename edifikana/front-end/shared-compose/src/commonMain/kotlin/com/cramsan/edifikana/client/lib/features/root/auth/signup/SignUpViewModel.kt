@@ -52,7 +52,7 @@ class SignUpViewModel(
         logD(TAG, "onUsernameValueChange called")
         _uiState.update {
             it.copy(
-                signUpForm = it.signUpForm.copy(email = username)
+                signUpForm = it.signUpForm.copy(username = username)
             )
         }
     }
@@ -75,7 +75,7 @@ class SignUpViewModel(
     fun signUp() {
         logI(TAG, "signIn called")
         viewModelScope.launch {
-            val email = _uiState.value.signUpForm.email.trim()
+            val email = _uiState.value.signUpForm.username.trim()
             val password = _uiState.value.signUpForm.password
             val user = auth.signIn(
                 email = email,

@@ -6,11 +6,11 @@ plugins {
     id("com.google.devtools.ksp")
 }
 
-apply(from = "$rootDir/gradle/kotlin-mpp-target-common.gradle")
-apply(from = "$rootDir/gradle/kotlin-mpp-target-android-lib.gradle")
+apply(from = "$rootDir/gradle/kotlin-mpp-target-common-compose.gradle")
+apply(from = "$rootDir/gradle/kotlin-mpp-target-android-lib-compose.gradle")
+apply(from = "$rootDir/gradle/kotlin-mpp-target-jvm-compose.gradle")
 apply(from = "$rootDir/gradle/kotlin-mpp-target-ios.gradle")
 apply(from = "$rootDir/gradle/kotlin-mpp-target-js.gradle")
-apply(from = "$rootDir/gradle/kotlin-mpp-target-jvm.gradle")
 apply(from = "$rootDir/gradle/kotlin-mpp-target-wasm.gradle")
 
 android {

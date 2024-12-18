@@ -1,15 +1,36 @@
 package com.cramsan.edifikana.client.lib.features.root.auth.signup
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.lifecycle.Lifecycle
@@ -18,10 +39,13 @@ import com.cramsan.edifikana.client.lib.features.root.EdifikanaApplicationViewMo
 import com.cramsan.edifikana.client.lib.features.root.auth.AuthActivityViewModel
 import com.cramsan.edifikana.client.lib.ui.components.LoadingAnimationOverlay
 import com.cramsan.edifikana.client.lib.ui.theme.Padding
+import com.cramsan.edifikana.client.lib.ui.theme.Size
 import edifikana_lib.Res
-import edifikana_lib.sign_up
-import edifikana_lib.text_email
-import edifikana_lib.text_password
+import edifikana_lib.sign_up_screen_text_email
+import edifikana_lib.sign_up_screen_text_full_name
+import edifikana_lib.sign_up_screen_text_password
+import edifikana_lib.sign_up_screen_text_policy
+import edifikana_lib.sign_up_screen_text_sign_up
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 
@@ -61,6 +85,8 @@ fun SignUpScreen(
         uistate = uiState,
         onUsernameValueChange = { viewModel.onUsernameValueChange(it) },
         onPasswordValueChange = { viewModel.onPasswordValueChange(it) },
+        onFullNameValueChange = { viewModel.onFullNameValueChange(it) },
+        onPolicyChecked = { viewModel.onPolicyChecked(it) },
         onSignUpClicked = { viewModel.signUp() },
     )
 }
@@ -68,8 +94,10 @@ fun SignUpScreen(
 @Composable
 internal fun SignInV2Content(
     uistate: SignUpUIState,
+    onFullNameValueChange: (String) -> Unit,
     onUsernameValueChange: (String) -> Unit,
     onPasswordValueChange: (String) -> Unit,
+    onPolicyChecked: (Boolean) -> Unit,
     onSignUpClicked: () -> Unit,
 ) {
     Box(
@@ -79,47 +107,86 @@ internal fun SignInV2Content(
         contentAlignment = Alignment.Center,
     ) {
         Column(
-            modifier = Modifier.padding(Padding.MEDIUM),
+            modifier = Modifier
+                .sizeIn(maxWidth = Size.COLUMN_WIDTH)
+                .padding(Padding.MEDIUM),
             verticalArrangement = Arrangement.spacedBy(Padding.MEDIUM),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            uistate.signUpForm.errorMessage?.let {
-                Text(it)
+            AnimatedContent(
+                uistate.signUpForm.errorMessage,
+                transitionSpec = {
+                    fadeIn()
+                        .togetherWith(
+                            fadeOut()
+                        )
+                },
+            ) {
+                val showErrorMessage = it.isNullOrBlank().not()
+                if (showErrorMessage) {
+                    Text(
+                        it.orEmpty(),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                }
             }
+
             TextField(
                 value = uistate.signUpForm.fullName,
-                onValueChange = {},
-                label = {Text("Full Name (required)")},
+                onValueChange = { onFullNameValueChange(it) },
+                label = { Text(stringResource(Res.string.sign_up_screen_text_full_name)) },
                 maxLines = 1,
             )
+
             TextField(
                 value = uistate.signUpForm.username,
                 onValueChange = { onUsernameValueChange(it) },
-                label = { Text(stringResource(Res.string.text_email)) },
+                label = { Text(stringResource(Res.string.sign_up_screen_text_email)) },
                 maxLines = 1,
             )
             TextField(
                 value = uistate.signUpForm.password,
                 onValueChange = { onPasswordValueChange(it) },
-                label = { Text(stringResource(Res.string.text_password)) },
+                label = { Text(stringResource(Res.string.sign_up_screen_text_password)) },
                 maxLines = 1,
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password
                 ),
             )
-            Row {
+
+            var isChecked by remember { mutableStateOf(false) }
+            val interactionSource = remember { MutableInteractionSource() }
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .clip(MaterialTheme.shapes.small)
+                    .clickable(
+                        interactionSource = interactionSource,
+                        indication = ripple(),
+                    ) {
+                        isChecked = !isChecked
+                        onPolicyChecked(isChecked)
+                    }
+                    .padding(Padding.XX_SMALL)
+            ) {
                 Checkbox(
                     checked = uistate.signUpForm.policyChecked,
-                    onCheckedChange = { /*TODO*/ },
+                    onCheckedChange = null,
+                    modifier = Modifier.padding(end = Padding.SMALL),
                 )
-                Text("By creating an account, I accept Edifikans's Terms of Service and Privacy Policy.")
+                Text(
+                    stringResource(Res.string.sign_up_screen_text_policy),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
             Button(
                 enabled = uistate.signUpForm.registerEnabled,
                 onClick = onSignUpClicked,
             ) {
-                Text(stringResource(Res.string.sign_up))
+                Text(stringResource(Res.string.sign_up_screen_text_sign_up))
             }
         }
     }

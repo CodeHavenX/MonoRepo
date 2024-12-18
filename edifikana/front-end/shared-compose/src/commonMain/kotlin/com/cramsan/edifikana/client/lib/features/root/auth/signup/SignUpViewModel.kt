@@ -1,7 +1,5 @@
 package com.cramsan.edifikana.client.lib.features.root.auth.signup
 
-import com.cramsan.edifikana.client.lib.features.root.ActivityRouteDestination
-import com.cramsan.edifikana.client.lib.features.root.EdifikanaApplicationEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
@@ -49,7 +47,7 @@ class SignUpViewModel(
      * Called when the username value changes.
      */
     fun onUsernameValueChange(username: String) {
-        logD(TAG, "onUsernameValueChange called")
+        // Here we can implement any validation logic.
         _uiState.update {
             it.copy(
                 signUpForm = it.signUpForm.copy(username = username)
@@ -61,7 +59,7 @@ class SignUpViewModel(
      * Called when the password value changes.
      */
     fun onPasswordValueChange(password: String) {
-        logD(TAG, "onPasswordValueChange called")
+        // Here we can implement any validation logic.
         _uiState.update {
             it.copy(
                 signUpForm = it.signUpForm.copy(password = password)
@@ -70,24 +68,59 @@ class SignUpViewModel(
     }
 
     /**
+     * Called when the full name value changes.
+     */
+    fun onFullNameValueChange(fullName: String) {
+        // Here we can implement any validation logic.
+        _uiState.update {
+            it.copy(
+                signUpForm = it.signUpForm.copy(fullName = fullName)
+            )
+        }
+    }
+
+    /**
      * Call this function request to create the account.
      */
     fun signUp() {
-        logI(TAG, "signIn called")
+        logI(TAG, "signUp called")
         viewModelScope.launch {
-            val email = _uiState.value.signUpForm.username.trim()
+            val fullName = _uiState.value.signUpForm.fullName.trim()
+            val username = _uiState.value.signUpForm.username.trim()
             val password = _uiState.value.signUpForm.password
+
+            val errorMessages = listOf(
+                validateFullName(fullName),
+                validateUsername(username),
+                validatePassword(password),
+            ).flatten().joinToString("\n")
+
+            if (errorMessages.isNotEmpty()) {
+                _uiState.update {
+                    it.copy(
+                        signUpForm = it.signUpForm.copy(
+                            errorMessage = errorMessages
+                        )
+                    )
+                }
+                return@launch
+            }
+
+            // This should be updated to call the right API.
             val user = auth.signIn(
-                email = email,
+                email = username,
                 password = password,
             ).getOrThrow()
 
             if (user != null) {
+                logD(TAG, "User signed up: $user")
+                /*
                 _events.emit(
                     SignUpEvent.TriggerEdifikanaApplicationEvent(
                         EdifikanaApplicationEvent.NavigateToActivity(ActivityRouteDestination.MainDestination)
                     )
                 )
+                 */
             } else {
                 _uiState.update {
                     it.copy(
@@ -97,6 +130,20 @@ class SignUpViewModel(
                     )
                 }
             }
+        }
+    }
+
+    /**
+     * Called when the policy checkbox is checked or unchecked.
+     */
+    fun onPolicyChecked(checked: Boolean) {
+        _uiState.update {
+            it.copy(
+                signUpForm = it.signUpForm.copy(
+                    policyChecked = checked,
+                    registerEnabled = checked,
+                )
+            )
         }
     }
 

@@ -26,9 +26,9 @@ import com.cramsan.edifikana.client.lib.features.root.auth.AuthActivityViewModel
 import com.cramsan.edifikana.client.lib.ui.components.LoadingAnimationOverlay
 import com.cramsan.edifikana.client.lib.ui.theme.Padding
 import edifikana_lib.Res
-import edifikana_lib.sign_in
-import edifikana_lib.text_email
-import edifikana_lib.text_password
+import edifikana_lib.sign_in_screen_text_email
+import edifikana_lib.sign_in_screen_text_password
+import edifikana_lib.sign_in_screen_text_sign_in
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 
@@ -98,13 +98,13 @@ internal fun SignInV2Content(
             TextField(
                 value = uistate.signInForm.email,
                 onValueChange = { onUsernameValueChange(it) },
-                label = { Text(stringResource(Res.string.text_email)) },
+                label = { Text(stringResource(Res.string.sign_in_screen_text_email)) },
                 maxLines = 1,
             )
             TextField(
                 value = uistate.signInForm.password,
                 onValueChange = { onPasswordValueChange(it) },
-                label = { Text(stringResource(Res.string.text_password)) },
+                label = { Text(stringResource(Res.string.sign_in_screen_text_password)) },
                 maxLines = 1,
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(
@@ -114,7 +114,10 @@ internal fun SignInV2Content(
             Button(
                 onClick = onSignInClicked,
             ) {
-                Text(stringResource(Res.string.sign_in))
+                Text(
+                    stringResource(Res.string.sign_in_screen_text_sign_in),
+                    color = MaterialTheme.colorScheme.onPrimary,
+                )
             }
             Button(
                 onClick = onSignUpClicked,

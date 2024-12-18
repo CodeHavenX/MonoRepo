@@ -1,11 +1,14 @@
+@file:Suppress("MaximumLineLength")
+
 package com.cramsan.edifikana.client.lib.features.root.auth.signup
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
+import com.cramsan.edifikana.client.lib.ui.theme.AppTheme
 
 @Preview
 @Composable
-private fun SignUpScreenSuccessPreview() {
+private fun SignUpScreenSuccessPreview() = AppTheme {
     SignInV2Content(
         uistate = SignUpUIState(
             isLoading = false,
@@ -20,13 +23,15 @@ private fun SignUpScreenSuccessPreview() {
         ),
         onUsernameValueChange = {},
         onPasswordValueChange = {},
+        onFullNameValueChange = {},
+        onPolicyChecked = {},
         onSignUpClicked = {},
     )
 }
 
 @Preview
 @Composable
-private fun SignUpScreenFailurePreview() {
+private fun SignUpScreenFailurePreview() = AppTheme {
     SignInV2Content(
         uistate = SignUpUIState(
             isLoading = false,
@@ -37,11 +42,13 @@ private fun SignUpScreenFailurePreview() {
                 policyChecked = false,
                 registerEnabled = false,
                 errorMessage = "Invalid username, please use a valid email address or phone number.\n" +
-                        "Password must be at least 8 characters long, contain at last 1 uppercase, 1 lowercase, and 1 number.",
+                    "Password must be at least 8 characters long, contain at last 1 uppercase, 1 lowercase, and 1 number.",
             ),
         ),
         onUsernameValueChange = {},
         onPasswordValueChange = {},
+        onFullNameValueChange = {},
+        onPolicyChecked = {},
         onSignUpClicked = {},
     )
 }

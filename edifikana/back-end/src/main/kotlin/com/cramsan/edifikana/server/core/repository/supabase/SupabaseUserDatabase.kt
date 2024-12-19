@@ -13,7 +13,6 @@ import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.postgrest.Postgrest
-import javax.management.Query.eq
 
 /**
  * Database for managing users.
@@ -30,10 +29,10 @@ class SupabaseUserDatabase(
     override suspend fun createUser(
         request: CreateUserRequest,
     ): Result<User> = runSuspendCatching(TAG) {
-        logD(TAG, "Creating user: %S", request.email)
+        logD(TAG, "Creating user: %S", request.username)
 
         val supabaseUser = auth.admin.createUserWithEmail {
-            email = request.email
+            email = request.username
             password = request.password
             autoConfirm = true
         }

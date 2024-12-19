@@ -44,7 +44,9 @@ class UserControllerTest : TestBase(), KoinTest {
         val userService = get<UserService>()
         coEvery {
             userService.createUser(
-                email = "john.doe@example.com",
+                username = "john.doe@example.com",
+                password = "password",
+                fullname = "John Doe",
             )
         }.answers {
             User(

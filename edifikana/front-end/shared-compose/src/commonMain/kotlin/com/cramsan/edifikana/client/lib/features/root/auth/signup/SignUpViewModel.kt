@@ -1,19 +1,18 @@
 package com.cramsan.edifikana.client.lib.features.root.auth.signup
 
+import com.cramsan.edifikana.client.lib.features.root.ActivityRouteDestination
+import com.cramsan.edifikana.client.lib.features.root.EdifikanaApplicationEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logI
-import edifikana_lib.Res
-import edifikana_lib.error_message_unexpected_error
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.getString
 
 /**
  * Sign Up feature ViewModel.
@@ -107,29 +106,28 @@ class SignUpViewModel(
             }
 
             // This should be updated to call the right API.
-            val user = auth.signIn(
-                email = username,
+            val user = auth.signUp(
+                username = username,
                 password = password,
-            ).getOrThrow()
-
-            if (user != null) {
-                logD(TAG, "User signed up: $user")
-                /*
-                _events.emit(
-                    SignUpEvent.TriggerEdifikanaApplicationEvent(
-                        EdifikanaApplicationEvent.NavigateToActivity(ActivityRouteDestination.MainDestination)
-                    )
-                )
-                 */
-            } else {
+                fullname = fullName,
+            ).getOrElse { exception ->
+                logD(TAG, "Error signing up: $exception")
                 _uiState.update {
                     it.copy(
                         signUpForm = it.signUpForm.copy(
-                            errorMessage = getString(Res.string.error_message_unexpected_error)
+                            errorMessage = exception.localizedMessage
                         )
                     )
                 }
+                return@launch
             }
+
+            logD(TAG, "User signed up: $user")
+            _events.emit(
+                SignUpEvent.TriggerEdifikanaApplicationEvent(
+                    EdifikanaApplicationEvent.NavigateToActivity(ActivityRouteDestination.MainDestination)
+                )
+            )
         }
     }
 

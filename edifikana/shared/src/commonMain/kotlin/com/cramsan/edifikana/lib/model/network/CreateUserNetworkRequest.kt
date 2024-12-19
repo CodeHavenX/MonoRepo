@@ -1,7 +1,6 @@
 package com.cramsan.edifikana.lib.model.network
 
 import com.cramsan.edifikana.lib.annotations.NetworkModel
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
@@ -10,6 +9,7 @@ import kotlinx.serialization.Serializable
 @NetworkModel
 @Serializable
 data class CreateUserNetworkRequest(
-    @SerialName("email")
-    val email: String,
+    val username: String,
+    val password: String,
+    val fullname: String,
 )

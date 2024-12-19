@@ -47,6 +47,13 @@ sealed class EdifikanaApplicationEvent {
     ) : EdifikanaApplicationEvent()
 
     /**
+     * Close the activity.
+     */
+    data class CloseActivity(
+        val id: Int = Random.nextInt(),
+    ) : EdifikanaApplicationEvent()
+
+    /**
      * Show a snackbar.
      */
     data class ShowSnackbar(

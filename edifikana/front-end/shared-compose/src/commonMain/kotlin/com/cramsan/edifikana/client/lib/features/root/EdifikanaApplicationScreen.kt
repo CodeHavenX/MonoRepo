@@ -54,6 +54,9 @@ fun EdifikanaApplicationScreen(
             is EdifikanaApplicationEvent.NavigateToActivity -> {
                 navController.navigate(mainActivityEvent.destination.path)
             }
+            is EdifikanaApplicationEvent.CloseActivity -> {
+                navController.popBackStack()
+            }
         }
     }
 

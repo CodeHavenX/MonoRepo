@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.getString
 
 /**
  * Sign Up feature ViewModel.
@@ -80,7 +79,18 @@ class SignUpViewModel(
             val user = auth.signIn(
                 email = email,
                 password = password,
-            ).getOrThrow()
+                fullname = fullName,
+            ).getOrElse { exception ->
+                logD(TAG, "Error signing up: $exception")
+                _uiState.update {
+                    it.copy(
+                        signUpForm = it.signUpForm.copy(
+                            errorMessage = exception.localizedMessage
+                        )
+                    )
+                }
+                return@launch
+            }
 
             if (user != null) {
                 _events.emit(

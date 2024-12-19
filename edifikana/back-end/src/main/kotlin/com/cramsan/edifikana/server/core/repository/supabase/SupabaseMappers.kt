@@ -40,7 +40,7 @@ fun UserEntity.toUser(): User {
 fun CreateUserRequest.toUserEntity(supabaseUserId: String): UserEntity.CreateUserEntity {
     return UserEntity.CreateUserEntity(
         id = supabaseUserId,
-        email = email,
+        email = username,
     )
 }
 

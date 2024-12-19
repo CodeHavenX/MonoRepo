@@ -8,28 +8,27 @@ import com.cramsan.edifikana.server.core.service.models.requests.DeleteUserReque
 import com.cramsan.edifikana.server.core.service.models.requests.GetUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdatePasswordRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdateUserRequest
-import com.cramsan.edifikana.server.core.service.password.PasswordGenerator
 
 /**
  * Service for user operations.
  */
 class UserService(
     private val userDatabase: UserDatabase,
-    private val passwordGenerator: PasswordGenerator,
 ) {
 
     /**
-     * Creates a user with the provided [email].
+     * Creates a user with the provided [username].
      */
     suspend fun createUser(
-        email: String,
+        username: String,
+        password: String,
+        fullname: String,
     ): User {
-        val password = passwordGenerator.generate()
-
         return userDatabase.createUser(
             request = CreateUserRequest(
-                email = email,
+                username = username,
                 password = password,
+                fullname = fullname,
             ),
         ).getOrThrow()
     }

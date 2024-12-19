@@ -33,4 +33,8 @@ class DummyAuthService : AuthService {
     override fun activeUser(): StateFlow<UserId?> {
         TODO("Not yet implemented")
     }
+
+    override suspend fun signUp(username: String, password: String, fullname: String): Result<UserModel> {
+        TODO("Not yet implemented")
+    }
 }

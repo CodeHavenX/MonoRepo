@@ -10,8 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -53,9 +51,7 @@ fun MainActivityScreen(
     val navController = rememberNavController()
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val backStack by navController.currentBackStack.collectAsState()
     val currentDestination = navBackStackEntry?.destination
-    var title by remember { mutableStateOf("") }
 
     val event by viewModel.events.collectAsState(MainActivityEvent.Noop)
     LaunchedEffect(event) {
@@ -77,9 +73,11 @@ fun MainActivityScreen(
     Scaffold(
         topBar = {
             EdifikanaTopBar(
-                title = title,
-                showUpArrow = (backStack.size > 2),
+                title = "",
+                navHostController = navController,
+                enableCloseButton = false,
                 onUpArrowClicked = { navController.navigateUp() },
+                onCloseClicked = { },
                 onAccountClicked = { viewModel.navigateToAccount() },
             )
         },

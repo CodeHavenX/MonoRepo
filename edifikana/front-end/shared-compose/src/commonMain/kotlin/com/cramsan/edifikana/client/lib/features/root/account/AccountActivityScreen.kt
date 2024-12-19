@@ -13,6 +13,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.cramsan.edifikana.client.lib.features.root.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.lib.features.root.RouteSafePath
 import com.cramsan.edifikana.client.lib.features.root.account.account.AccountScreen
 import com.cramsan.edifikana.client.lib.ui.components.EdifikanaTopBar
@@ -24,10 +25,10 @@ import org.koin.compose.koinInject
 @OptIn(RouteSafePath::class)
 @Composable
 fun AccountActivityScreen(
-    viewModel: AccountActivityViewModel = koinInject()
+    viewModel: AccountActivityViewModel = koinInject(),
+    applicationViewModel: EdifikanaApplicationViewModel = koinInject(),
 ) {
     val navController = rememberNavController()
-    val backStack by navController.currentBackStack.collectAsState()
 
     val viewModelEvent by viewModel.event.collectAsState(AccountActivityEvent.Noop)
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
@@ -39,6 +40,9 @@ fun AccountActivityScreen(
             is AccountActivityEvent.Navigate -> {
                 navController.navigate(event.destination.route)
             }
+            is AccountActivityEvent.TriggerEdifikanaApplicationEvent -> {
+                applicationViewModel.executeEvent(event.edifikanaApplicationEvent)
+            }
         }
     }
 
@@ -46,8 +50,9 @@ fun AccountActivityScreen(
         topBar = {
             EdifikanaTopBar(
                 title = "",
-                showUpArrow = (backStack.size > 2),
+                navHostController = navController,
                 onUpArrowClicked = { navController.navigateUp() },
+                onCloseClicked = { viewModel.closeActivity() },
                 onAccountClicked = null,
             )
         },

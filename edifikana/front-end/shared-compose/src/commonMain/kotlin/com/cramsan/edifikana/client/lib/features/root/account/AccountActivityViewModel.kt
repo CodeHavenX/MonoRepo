@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.root.account
 
+import com.cramsan.edifikana.client.lib.features.root.EdifikanaApplicationEvent
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -25,5 +26,16 @@ class AccountActivityViewModel(
      */
     fun executeEvent(event: AccountActivityEvent) = viewModelScope.launch {
         _event.emit(event)
+    }
+
+    /**
+     * Close the account activity.
+     */
+    fun closeActivity() = viewModelScope.launch {
+        _event.emit(
+            AccountActivityEvent.TriggerEdifikanaApplicationEvent(
+                EdifikanaApplicationEvent.CloseActivity()
+            )
+        )
     }
 }

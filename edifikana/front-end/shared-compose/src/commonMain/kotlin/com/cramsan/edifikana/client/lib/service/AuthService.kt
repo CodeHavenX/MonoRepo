@@ -34,4 +34,9 @@ interface AuthService {
      * active user or to observe changes to the active user.
      */
     fun activeUser(): StateFlow<UserId?>
+
+    /**
+     * Sign up the user with the given [username] and [password]. Returns the user model if successful.
+     */
+    suspend fun signUp(username: String, password: String, fullname: String): Result<UserModel>
 }

@@ -6,6 +6,7 @@ import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.annotations.NetworkModel
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.network.PropertyNetworkResponse
+import com.cramsan.framework.core.runSuspendCatching
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -22,21 +23,24 @@ class PropertyServiceImpl(
     private val _activeProperty = MutableStateFlow<PropertyId?>(null)
 
     @OptIn(NetworkModel::class)
-    override suspend fun getPropertyList(): Result<List<PropertyModel>> {
+    override suspend fun getPropertyList(): Result<List<PropertyModel>> = runSuspendCatching(TAG) {
         val response = http.get(Routes.Property.PATH).body<List<PropertyNetworkResponse>>()
         val propertyList = response.map {
             it.toPropertyModel()
         }
-        return Result.success(propertyList)
+        propertyList
     }
 
     override fun activeProperty(): StateFlow<PropertyId?> {
         return _activeProperty
     }
 
-    override fun setActiveProperty(propertyId: PropertyId?): Result<Unit> {
+    override fun setActiveProperty(propertyId: PropertyId?): Result<Unit> = runSuspendCatching(TAG) {
         _activeProperty.value = propertyId
-        return Result.success(Unit)
+    }
+
+    companion object {
+        const val TAG = "PropertyServiceImpl"
     }
 }
 

@@ -68,7 +68,7 @@ kotlin {
 private val ENV_EDIFIKANA_SUPABASE_URL = "EDIFIKANA_SUPABASE_URL"
 private val ENV_EDIFIKANA_SUPABASE_KEY = "EDIFIKANA_SUPABASE_KEY"
 
-val edifikanaSupabaseUrl = "http://10.0.2.2:54321"
+val edifikanaSupabaseUrl = "http://10.0.2.2:54321" // System.getenv(ENV_EDIFIKANA_SUPABASE_URL).orEmpty()
 val edifikanaSupabaseKey = System.getenv(ENV_EDIFIKANA_SUPABASE_KEY).orEmpty()
 
 android {

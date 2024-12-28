@@ -46,4 +46,6 @@ interface PropertyDatabase {
     suspend fun deleteProperty(
         request: DeletePropertyRequest,
     ): Result<Boolean>
+
+    suspend fun getAdminProperties(): Result<List<Property>>
 }

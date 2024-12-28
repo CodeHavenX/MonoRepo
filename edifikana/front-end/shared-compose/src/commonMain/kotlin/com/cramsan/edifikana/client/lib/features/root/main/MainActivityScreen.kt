@@ -52,6 +52,7 @@ import com.cramsan.edifikana.lib.model.StaffId
 import edifikana_lib.Res
 import edifikana_lib.schedule
 import edifikana_lib.string_assistance
+import edifikana_lib.string_back_navigation
 import edifikana_lib.string_event_log_title
 import edifikana_lib.two_pager
 import org.jetbrains.compose.resources.painterResource

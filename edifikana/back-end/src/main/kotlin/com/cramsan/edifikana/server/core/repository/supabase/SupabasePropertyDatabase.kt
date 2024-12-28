@@ -1,12 +1,12 @@
 package com.cramsan.edifikana.server.core.repository.supabase
 
-import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.repository.PropertyDatabase
 import com.cramsan.edifikana.server.core.repository.supabase.models.PropertyEntity
 import com.cramsan.edifikana.server.core.repository.supabase.models.UserPropertyMappingEntity
 import com.cramsan.edifikana.server.core.service.models.Property
 import com.cramsan.edifikana.server.core.service.models.requests.CreatePropertyRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeletePropertyRequest
+import com.cramsan.edifikana.server.core.service.models.requests.GetPropertyListsRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetPropertyRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdatePropertyRequest
 import com.cramsan.framework.core.runSuspendCatching
@@ -58,16 +58,25 @@ class SupabasePropertyDatabase(
     }
 
     @OptIn(SupabaseModel::class)
-    override suspend fun getProperties(userId: UserId): Result<List<Property>> = runSuspendCatching(TAG) {
+    override suspend fun getProperties(
+        request: GetPropertyListsRequest,
+    ): Result<List<Property>> = runSuspendCatching(TAG) {
         logD(TAG, "Getting all properties")
+        val userId = request.userId
 
-        val propertyIds = postgrest.from(UserPropertyMappingEntity.COLLECTION).select {
-            filter { UserPropertyMappingEntity::userId eq userId.userId }
-            select()
-        }.decodeList<UserPropertyMappingEntity>().map { it.propertyId }
+        val propertyIds = if (request.showAll) {
+            emptyList()
+        } else {
+            postgrest.from(UserPropertyMappingEntity.COLLECTION).select {
+                filter { UserPropertyMappingEntity::userId eq userId.userId }
+                select()
+            }.decodeList<UserPropertyMappingEntity>().map { it.propertyId }
+        }
 
         postgrest.from(PropertyEntity.COLLECTION).select {
-            filter { PropertyEntity::id isIn propertyIds }
+            if (!request.showAll) {
+                filter { PropertyEntity::id isIn propertyIds }
+            }
             select()
         }.decodeList<PropertyEntity>().map { it.toProperty() }
     }
@@ -108,6 +117,17 @@ class SupabasePropertyDatabase(
                 PropertyEntity::id eq request.propertyId.propertyId
             }
         }.decodeSingleOrNull<PropertyEntity>() != null
+    }
+
+    @OptIn(SupabaseModel::class)
+    override suspend fun getAdminProperties(): Result<List<Property>> = runSuspendCatching(TAG) {
+        logD(TAG, "Getting all properties for admin")
+
+        val properties = postgrest.from(PropertyEntity.COLLECTION).select {
+            select()
+        }.decodeList<PropertyEntity>().map { it.toProperty() }
+
+        properties
     }
 
     companion object {

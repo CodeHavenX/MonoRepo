@@ -10,6 +10,7 @@ import com.cramsan.edifikana.server.core.service.models.requests.CreateEventLogE
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteEventLogEntryRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetEventLogEntryRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdateEventLogEntryRequest
+import com.cramsan.framework.logging.logD
 import kotlinx.datetime.Instant
 
 /**
@@ -33,6 +34,7 @@ class EventLogService(
         description: String?,
         unit: String,
     ): EventLogEntry {
+        logD(TAG, "createEventLogEntry")
         return eventLogDatabase.createEventLogEntry(
             request = CreateEventLogEntryRequest(
                 staffId = staffId,
@@ -54,6 +56,7 @@ class EventLogService(
     suspend fun getEventLogEntry(
         id: EventLogEntryId,
     ): EventLogEntry? {
+        logD(TAG, "getEventLogEntry")
         val eventLog = eventLogDatabase.getEventLogEntry(
             request = GetEventLogEntryRequest(
                 id = id,
@@ -82,6 +85,7 @@ class EventLogService(
         description: String?,
         unit: String?,
     ): EventLogEntry {
+        logD(TAG, "updateEventLogEntry")
         return eventLogDatabase.updateEventLogEntry(
             request = UpdateEventLogEntryRequest(
                 id = id,
@@ -100,10 +104,15 @@ class EventLogService(
     suspend fun deleteEventLogEntry(
         id: EventLogEntryId,
     ): Boolean {
+        logD(TAG, "deleteEventLogEntry")
         return eventLogDatabase.deleteEventLogEntry(
             request = DeleteEventLogEntryRequest(
                 id = id,
             )
         ).getOrThrow()
+    }
+
+    companion object {
+        private const val TAG = "EventLogService"
     }
 }

@@ -64,12 +64,29 @@ kotlin {
     }
 }
 
+private val ENV_EDIFIKANA_SUPABASE_URL = "EDIFIKANA_SUPABASE_URL"
+private val ENV_EDIFIKANA_SUPABASE_KEY = "EDIFIKANA_SUPABASE_KEY"
+
+val edifikanaSupabaseUrl = System.getenv(ENV_EDIFIKANA_SUPABASE_URL).orEmpty()
+val edifikanaSupabaseKey = System.getenv(ENV_EDIFIKANA_SUPABASE_KEY).orEmpty()
+
 android {
     namespace = "com.cramsan.edifikana.client.lib"
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     sourceSets["main"].res.srcDirs("src/androidMain/res")
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
+
+    buildFeatures {
+        buildConfig = true
+    }
+
+    buildTypes {
+        all {
+            buildConfigField("String", ENV_EDIFIKANA_SUPABASE_URL, "\"${edifikanaSupabaseUrl}\"")
+            buildConfigField("String", ENV_EDIFIKANA_SUPABASE_KEY, "\"${edifikanaSupabaseKey}\"")
+        }
+    }
 }
 
 compose.resources {

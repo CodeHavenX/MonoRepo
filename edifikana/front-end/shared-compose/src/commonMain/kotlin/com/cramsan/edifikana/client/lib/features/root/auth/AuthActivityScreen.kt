@@ -42,10 +42,7 @@ fun AuthActivityScreen(
             EdifikanaTopBar(
                 title = "",
                 navHostController = navController,
-                enableCloseButton = false,
-                onUpArrowClicked = { navController.navigateUp() },
-                onCloseClicked = { },
-                onAccountClicked = null,
+                onCloseClicked = null,
             )
         },
     ) { innerPadding ->

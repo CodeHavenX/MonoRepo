@@ -12,7 +12,7 @@ interface PropertyService {
     /**
      * Get a list of properties associated with current user.
      */
-    suspend fun getPropertyList(): Result<List<PropertyModel>>
+    suspend fun getPropertyList(showAll: Boolean): Result<List<PropertyModel>>
 
     /**
      * Get the observable reference to the active property. You can use this function to fetch the current
@@ -24,4 +24,11 @@ interface PropertyService {
      * Set the active property.
      */
     fun setActiveProperty(propertyId: PropertyId?): Result<Unit>
+
+    suspend fun getAdminPropertyList(): Result<List<PropertyModel>>
+
+    /**
+     * Get the property with the given id.
+     */
+    suspend fun getProperty(propertyId: PropertyId): Result<PropertyModel>
 }

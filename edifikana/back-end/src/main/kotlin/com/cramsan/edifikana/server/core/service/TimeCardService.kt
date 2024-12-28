@@ -9,6 +9,7 @@ import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.core.service.models.requests.CreateTimeCardEventRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetTimeCardEventListRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetTimeCardEventRequest
+import com.cramsan.framework.logging.logD
 import kotlinx.datetime.Instant
 
 /**
@@ -29,6 +30,7 @@ class TimeCardService(
         imageUrl: String?,
         timestamp: Instant,
     ): TimeCardEvent {
+        logD(TAG, "createTimeCardEvent")
         return timeCardDatabase.createTimeCardEvent(
             request = CreateTimeCardEventRequest(
                 staffId = staffId,
@@ -47,6 +49,7 @@ class TimeCardService(
     suspend fun getTimeCardEvent(
         id: TimeCardEventId,
     ): TimeCardEvent? {
+        logD(TAG, "getTimeCardEvent")
         val timeCard = timeCardDatabase.getTimeCardEvent(
             request = GetTimeCardEventRequest(
                 id = id,
@@ -62,11 +65,16 @@ class TimeCardService(
     suspend fun getTimeCardEvents(
         staffId: StaffId?,
     ): List<TimeCardEvent> {
+        logD(TAG, "getTimeCardEvents")
         val timeCards = timeCardDatabase.getTimeCardEvents(
             request = GetTimeCardEventListRequest(
                 staffId = staffId,
             ),
         ).getOrThrow()
         return timeCards
+    }
+
+    companion object {
+        private const val TAG = "TimeCardService"
     }
 }

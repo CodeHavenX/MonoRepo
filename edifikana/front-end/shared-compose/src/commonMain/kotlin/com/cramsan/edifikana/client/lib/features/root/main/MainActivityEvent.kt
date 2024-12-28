@@ -26,6 +26,7 @@ sealed class MainActivityEvent {
      */
     data class Navigate(
         val destination: MainRouteDestination,
+        val popToRoot: Boolean = false,
         val id: Int = Random.nextInt(),
     ) : MainActivityEvent()
 
@@ -33,14 +34,6 @@ sealed class MainActivityEvent {
      * Navigate back.
      */
     data class NavigateBack(
-        val id: Int = Random.nextInt(),
-    ) : MainActivityEvent()
-
-    /**
-     * Navigate to the root page.
-     */
-    data class NavigateToRootPage(
-        val destination: MainRouteDestination,
         val id: Int = Random.nextInt(),
     ) : MainActivityEvent()
 }

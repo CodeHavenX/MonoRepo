@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
@@ -31,15 +32,14 @@ import org.jetbrains.compose.resources.stringResource
 fun EdifikanaTopBar(
     title: String,
     navHostController: NavHostController,
-    enableCloseButton: Boolean? = true,
-    onUpArrowClicked: () -> Unit,
-    onCloseClicked: (() -> Unit),
-    onAccountClicked: (() -> Unit)?,
+    onUpArrowClicked: () -> Unit =  { navHostController.navigateUp() },
+    onCloseClicked: (() -> Unit)?,
+    content: (@Composable RowScope.() -> Unit)? = null,
 ) {
     val backStack by navHostController.currentBackStack.collectAsState()
     val navigationIcon = when {
         backStack.size > 2 -> NavigationIconMode.ShowUpArrow
-        enableCloseButton == true -> NavigationIconMode.ShowCloseButton
+        onCloseClicked != null -> NavigationIconMode.ShowCloseButton
         else -> NavigationIconMode.Hide
     }
     TopAppBar(
@@ -65,7 +65,7 @@ fun EdifikanaTopBar(
                         )
                     }
                     NavigationIconMode.ShowCloseButton -> IconButton(
-                        onClick = onCloseClicked
+                        onClick = onCloseClicked ?: { }
                     ) {
                         Icon(
                             imageVector = Icons.Default.Close,
@@ -76,16 +76,7 @@ fun EdifikanaTopBar(
                 }
             }
         },
-        actions = {
-            onAccountClicked?.let {
-                IconButton(onClick = it) {
-                    Icon(
-                        imageVector = Icons.Default.AccountCircle,
-                        contentDescription = ""
-                    )
-                }
-            }
-        }
+        actions = { content?.invoke(this) }
     )
 }
 

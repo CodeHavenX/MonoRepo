@@ -1,17 +1,36 @@
 package com.cramsan.edifikana.client.lib.features.root.main
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Apartment
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -28,11 +47,14 @@ import com.cramsan.edifikana.client.lib.features.root.main.timecard.addstaff.Add
 import com.cramsan.edifikana.client.lib.features.root.main.timecard.stafflist.StaffListScreen
 import com.cramsan.edifikana.client.lib.features.root.main.timecard.viewstaff.ViewStaffScreen
 import com.cramsan.edifikana.client.lib.ui.components.EdifikanaTopBar
+import com.cramsan.edifikana.client.lib.ui.theme.Padding
 import com.cramsan.edifikana.lib.model.EventLogEntryId
+import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import edifikana_lib.Res
 import edifikana_lib.schedule
 import edifikana_lib.string_assistance
+import edifikana_lib.string_back_navigation
 import edifikana_lib.string_event_log_title
 import edifikana_lib.two_pager
 import org.jetbrains.compose.resources.painterResource
@@ -58,28 +80,64 @@ fun MainActivityScreen(
         when (val event = event) {
             MainActivityEvent.Noop -> Unit
             is MainActivityEvent.Navigate -> {
-                navController.navigate(event.destination.path)
+                navController.navigate(event.destination.path) {
+                    if (event.popToRoot) {
+                        popUpTo(navController.graph.startDestinationRoute!!) {
+                            inclusive = false
+                        }
+                        launchSingleTop = true
+                    }
+                }
             }
             is MainActivityEvent.NavigateBack -> {
                 navController.popBackStack()
             }
-            is MainActivityEvent.NavigateToRootPage -> Unit
             is MainActivityEvent.TriggerApplicationEvent -> {
                 applicationViewModel.executeEvent(event.applicationEvent)
             }
         }
     }
 
+    LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
+        viewModel.loadProperties()
+    }
+
+    val uiModel by viewModel.uiModel.collectAsState()
+
     Scaffold(
         topBar = {
             EdifikanaTopBar(
                 title = "",
                 navHostController = navController,
-                enableCloseButton = false,
-                onUpArrowClicked = { navController.navigateUp() },
-                onCloseClicked = { },
-                onAccountClicked = { viewModel.navigateToAccount() },
+                onCloseClicked = null,
             )
+            {
+                // Property dropdown
+                PropertyDropDown(
+                    label = uiModel.label,
+                    list = uiModel.availableProperties,
+                    onPropertySelected = { propertyId -> viewModel.selectProperty(propertyId) }
+                )
+
+                // Admin Menu button
+                IconButton(onClick = {
+                    viewModel.navigateToAdmin()
+                }) {
+                    Icon(
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = ""
+                    )
+                }
+                // Account button
+                IconButton(onClick = {
+                    viewModel.navigateToAccount()
+                }) {
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = ""
+                    )
+                }
+            }
         },
         bottomBar = {
             NavigationBar {
@@ -89,7 +147,12 @@ fun MainActivityScreen(
 
                     NavigationBarItem(
                         onClick = {
-                            viewModel.executeMainActivityEvent(MainActivityEvent.NavigateToRootPage(dest.destination))
+                            viewModel.executeMainActivityEvent(
+                                MainActivityEvent.Navigate(
+                                    destination = dest.destination,
+                                    popToRoot = true,
+                                )
+                            )
                         },
                         icon = {
                             Icon(painterResource(dest.icon), contentDescription = label)
@@ -160,6 +223,53 @@ private fun NavigationHost(
                 MainRoute.EventLogAddItem -> composable(it.route) {
                     AddRecordScreen()
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun PropertyDropDown(
+    label: String,
+    list: List<PropertyUiModel>,
+    onPropertySelected: (PropertyId) -> Unit,
+) {
+    var expanded by remember { mutableStateOf(false) }
+    val interactionSource = remember { MutableInteractionSource() }
+
+    Box(
+        modifier = Modifier
+            .padding(Padding.SMALL)
+    ) {
+        Row(
+            modifier = Modifier
+                .clickable(
+                    interactionSource = interactionSource,
+                    indication = ripple(),
+                ) {
+                    expanded = !expanded
+                }
+        ) {
+            Text(label)
+            Icon(Icons.Default.Apartment, contentDescription = "")
+        }
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            list.forEach { uiModel ->
+                DropdownMenuItem(
+                    text = { Text(uiModel.name) },
+                    onClick = {
+                        onPropertySelected(uiModel.propertyId)
+                        expanded = false
+                    },
+                    trailingIcon = {
+                        if (uiModel.selected) {
+                            Icon(Icons.Default.Check, contentDescription = "")
+                        }
+                    }
+                )
             }
         }
     }

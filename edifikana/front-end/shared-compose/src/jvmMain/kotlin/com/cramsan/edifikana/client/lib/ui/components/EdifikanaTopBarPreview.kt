@@ -11,9 +11,6 @@ private fun EdifikanaTopBarPreview() {
     EdifikanaTopBar(
         title = "Title",
         navHostController = rememberNavController(),
-        enableCloseButton = true,
-        onUpArrowClicked = {},
         onCloseClicked = {},
-        onAccountClicked = {},
     )
 }

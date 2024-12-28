@@ -51,9 +51,7 @@ fun AccountActivityScreen(
             EdifikanaTopBar(
                 title = "",
                 navHostController = navController,
-                onUpArrowClicked = { navController.navigateUp() },
                 onCloseClicked = { viewModel.closeActivity() },
-                onAccountClicked = null,
             )
         },
     ) { innerPadding ->

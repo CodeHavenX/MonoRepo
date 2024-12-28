@@ -138,5 +138,6 @@ fun UserNetworkResponse.toUserModel(): UserModel {
     return UserModel(
         id = UserId(id),
         email = email,
+        hasGlobalPerms = hasGlobalPerms,
     )
 }

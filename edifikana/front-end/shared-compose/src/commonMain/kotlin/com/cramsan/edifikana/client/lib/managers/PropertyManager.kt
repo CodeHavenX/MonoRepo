@@ -18,9 +18,11 @@ class PropertyManager(
     /**
      * Get the list of properties.
      */
-    suspend fun getPropertyList(): Result<List<PropertyModel>> = dependencies.getOrCatch(TAG) {
+    suspend fun getPropertyList(
+        showAll: Boolean = false,
+    ): Result<List<PropertyModel>> = dependencies.getOrCatch(TAG) {
         logI(TAG, "getPropertyList")
-        propertyService.getPropertyList().getOrThrow()
+        propertyService.getPropertyList(showAll).getOrThrow()
     }
 
     /**
@@ -35,6 +37,11 @@ class PropertyManager(
      * Get the active property. You can use this function to either fetch the value or observe it.
      */
     fun activeProperty(): StateFlow<PropertyId?> = propertyService.activeProperty()
+
+    suspend fun getProperty(propertyId: PropertyId): Result<PropertyModel> = dependencies.getOrCatch(TAG) {
+        logI(TAG, "getProperty")
+        propertyService.getProperty(propertyId).getOrThrow()
+    }
 
     companion object {
         private const val TAG = "PropertyManager"

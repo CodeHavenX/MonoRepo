@@ -119,17 +119,6 @@ class SupabasePropertyDatabase(
         }.decodeSingleOrNull<PropertyEntity>() != null
     }
 
-    @OptIn(SupabaseModel::class)
-    override suspend fun getAdminProperties(): Result<List<Property>> = runSuspendCatching(TAG) {
-        logD(TAG, "Getting all properties for admin")
-
-        val properties = postgrest.from(PropertyEntity.COLLECTION).select {
-            select()
-        }.decodeList<PropertyEntity>().map { it.toProperty() }
-
-        properties
-    }
-
     companion object {
         const val TAG = "SupabasePropertyDatabase"
     }

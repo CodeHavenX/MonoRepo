@@ -102,6 +102,9 @@ class MainActivityViewModel(
         }
     }
 
+    /**
+     * Load properties.
+     */
     fun loadProperties() {
         logI(TAG, "Loading properties.")
         viewModelScope.launch {
@@ -109,6 +112,9 @@ class MainActivityViewModel(
         }
     }
 
+    /**
+     * Select property.
+     */
     fun selectProperty(propertyId: PropertyId) {
         logI(TAG, "Property selected: $propertyId")
         viewModelScope.launch {
@@ -134,7 +140,6 @@ class MainActivityViewModel(
                 availableProperties = propertyUiModels,
             )
         }
-
     }
 
     companion object {

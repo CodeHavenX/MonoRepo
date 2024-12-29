@@ -38,6 +38,9 @@ class PropertyManager(
      */
     fun activeProperty(): StateFlow<PropertyId?> = propertyService.activeProperty()
 
+    /**
+     * Get the list of properties that the current user has admin access to.
+     */
     suspend fun getProperty(propertyId: PropertyId): Result<PropertyModel> = dependencies.getOrCatch(TAG) {
         logI(TAG, "getProperty")
         propertyService.getProperty(propertyId).getOrThrow()

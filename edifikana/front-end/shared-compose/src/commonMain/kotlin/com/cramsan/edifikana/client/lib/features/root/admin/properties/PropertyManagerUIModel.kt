@@ -10,6 +10,9 @@ data class PropertyManagerUIModel(
     val properties: List<PropertyUIModel>,
 )
 
+/**
+ * Property UI model.
+ */
 data class PropertyUIModel(
     val id: PropertyId,
     val name: String,

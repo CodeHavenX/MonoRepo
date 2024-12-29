@@ -1,10 +1,12 @@
 [
     {
         "id": "user123",
-        "email": "john.doe@example.com"
+        "email": "john.doe@example.com",
+        "has_global_perms": false
     },
     {
         "id": "user456",
-        "email": "jane.smith@example.com"
+        "email": "jane.smith@example.com",
+        "has_global_perms": false
     }
 ]

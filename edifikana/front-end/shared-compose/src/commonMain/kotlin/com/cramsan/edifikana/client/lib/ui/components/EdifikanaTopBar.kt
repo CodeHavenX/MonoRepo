@@ -7,7 +7,6 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -32,7 +31,7 @@ import org.jetbrains.compose.resources.stringResource
 fun EdifikanaTopBar(
     title: String,
     navHostController: NavHostController,
-    onUpArrowClicked: () -> Unit =  { navHostController.navigateUp() },
+    onUpArrowClicked: () -> Unit = { navHostController.navigateUp() },
     onCloseClicked: (() -> Unit)?,
     content: (@Composable RowScope.() -> Unit)? = null,
 ) {

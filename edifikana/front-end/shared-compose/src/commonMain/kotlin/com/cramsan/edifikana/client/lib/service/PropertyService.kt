@@ -25,6 +25,9 @@ interface PropertyService {
      */
     fun setActiveProperty(propertyId: PropertyId?): Result<Unit>
 
+    /**
+     * Get the list of properties that the current user has admin access to.
+     */
     suspend fun getAdminPropertyList(): Result<List<PropertyModel>>
 
     /**

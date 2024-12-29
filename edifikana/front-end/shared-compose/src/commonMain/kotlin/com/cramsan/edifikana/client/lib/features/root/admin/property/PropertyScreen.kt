@@ -2,7 +2,6 @@ package com.cramsan.edifikana.client.lib.features.root.admin.property
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,8 +22,8 @@ import org.koin.compose.koinInject
  */
 @Composable
 fun PropertyScreen(
-    activityViewModel: AdminActivityViewModel = koinInject(), // Update this to the respective activity viewmodel. Remove if not necessary.
-    applicationViewModel: EdifikanaApplicationViewModel = koinInject(), // Update this to the respective application viewmodel. Remove if not necessary.
+    activityViewModel: AdminActivityViewModel = koinInject(),
+    applicationViewModel: EdifikanaApplicationViewModel = koinInject(),
     viewModel: PropertyViewModel = koinInject()
 ) {
     val uiState by viewModel.uiState.collectAsState()

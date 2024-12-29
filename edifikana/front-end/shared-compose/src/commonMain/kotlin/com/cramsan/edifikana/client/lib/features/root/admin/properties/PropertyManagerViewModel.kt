@@ -6,8 +6,8 @@ import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -40,6 +40,9 @@ class PropertyManagerViewModel(
      */
     val event: SharedFlow<PropertyManagerEvent> = _event
 
+    /**
+     * Load the page.
+     */
     fun loadPage() {
         _uiState.update {
             it.copy(isLoading = true)
@@ -63,18 +66,26 @@ class PropertyManagerViewModel(
         }
     }
 
+    /**
+     * Navigate to the property details screen.
+     */
     fun navigateToPropertyDetails(propertyId: PropertyId) {
         viewModelScope.launch {
-            _event.emit(PropertyManagerEvent.TriggerActivityEvent(
-                AdminActivityEvent.Navigate(
-                    AdminRouteDestination.PropertyAdminDestination(
-                        propertyId
+            _event.emit(
+                PropertyManagerEvent.TriggerActivityEvent(
+                    AdminActivityEvent.Navigate(
+                        AdminRouteDestination.PropertyAdminDestination(
+                            propertyId
+                        )
                     )
                 )
-            ))
+            )
         }
     }
 
+    /**
+     * Navigate to the add property screen.
+     */
     fun navigateToAddProperty() {
         viewModelScope.launch {
             /*
@@ -83,9 +94,5 @@ class PropertyManagerViewModel(
             )
              */
         }
-    }
-
-    companion object {
-        private const val TAG = "PropertyManagerViewModel"
     }
 }

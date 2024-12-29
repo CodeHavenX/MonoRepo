@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,8 +31,8 @@ import org.koin.compose.koinInject
  */
 @Composable
 fun PropertyManagerScreen(
-    accountActivityViewModel: AdminActivityViewModel = koinInject(), // Update this to the respective activity viewmodel. Remove if not necessary.
-    applicationViewModel: EdifikanaApplicationViewModel = koinInject(), // Update this to the respective application viewmodel. Remove if not necessary.
+    accountActivityViewModel: AdminActivityViewModel = koinInject(),
+    applicationViewModel: EdifikanaApplicationViewModel = koinInject(),
     viewModel: PropertyManagerViewModel = koinInject()
 ) {
     val uiState by viewModel.uiState.collectAsState()

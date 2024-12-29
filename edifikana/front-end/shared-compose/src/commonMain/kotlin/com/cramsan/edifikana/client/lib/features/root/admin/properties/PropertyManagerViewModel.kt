@@ -6,7 +6,6 @@ import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -95,9 +94,5 @@ class PropertyManagerViewModel(
             )
              */
         }
-    }
-
-    companion object {
-        private const val TAG = "PropertyManagerViewModel"
     }
 }

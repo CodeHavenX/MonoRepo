@@ -5,6 +5,10 @@ import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logI
+import com.cramsan.framework.utils.loginvalidation.validateFullName
+import com.cramsan.framework.utils.loginvalidation.validatePassword
+import com.cramsan.framework.utils.loginvalidation.validateUsernameEmail
+import com.cramsan.framework.utils.loginvalidation.validateUsernamePhoneNumber
 import edifikana_lib.Res
 import edifikana_lib.error_message_unexpected_error
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -44,13 +48,25 @@ class SignUpViewModel(
     }
 
     /**
-     * Called when the username value changes.
+     * Called when the email username value changes.
      */
-    fun onUsernameValueChange(username: String) {
+    fun onUsernameEmailValueChange(username: String) {
         // Here we can implement any validation logic.
         _uiState.update {
             it.copy(
-                signUpForm = it.signUpForm.copy(username = username)
+                signUpForm = it.signUpForm.copy(usernameEmail = username)
+            )
+        }
+    }
+
+    /**
+     * Called when the phone number username value changes.
+     */
+    fun onUsernamePhoneNumberValueChange(username: String) {
+        // Here we can implement any validation logic.
+        _uiState.update {
+            it.copy(
+                signUpForm = it.signUpForm.copy(usernamePhone = username)
             )
         }
     }
@@ -86,12 +102,14 @@ class SignUpViewModel(
         logI(TAG, "signUp called")
         viewModelScope.launch {
             val fullName = _uiState.value.signUpForm.fullName.trim()
-            val username = _uiState.value.signUpForm.username.trim()
+            val usernameEmail = _uiState.value.signUpForm.usernameEmail.trim()
+            val usernamePhone = _uiState.value.signUpForm.usernamePhone.trim()
             val password = _uiState.value.signUpForm.password
 
             val errorMessages = listOf(
                 validateFullName(fullName),
-                validateUsername(username),
+                validateUsernameEmail(usernameEmail),
+                validateUsernamePhoneNumber(usernamePhone),
                 validatePassword(password),
             ).flatten().joinToString("\n")
 
@@ -106,9 +124,9 @@ class SignUpViewModel(
                 return@launch
             }
 
-            // This should be updated to call the right API.
+            // TODO: This should be updated to call the right API. See Auth Service, UserController and update as needed
             val user = auth.signIn(
-                email = username,
+                email = usernameEmail,
                 password = password,
             ).getOrThrow()
 

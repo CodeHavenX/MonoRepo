@@ -7,7 +7,8 @@ package com.cramsan.edifikana.client.lib.features.root.auth.signup
  */
 data class SignUpFormUIModel(
     val fullName: String,
-    val username: String,
+    val usernameEmail: String,
+    val usernamePhone: String,
     val password: String,
     val policyChecked: Boolean,
     val registerEnabled: Boolean,

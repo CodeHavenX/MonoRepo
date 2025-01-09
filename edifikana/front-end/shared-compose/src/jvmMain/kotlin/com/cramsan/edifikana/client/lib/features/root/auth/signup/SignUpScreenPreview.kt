@@ -9,19 +9,21 @@ import com.cramsan.edifikana.client.lib.ui.theme.AppTheme
 @Preview
 @Composable
 private fun SignUpScreenSuccessPreview() = AppTheme {
-    SignInV2Content(
+    SignUpContent(
         uistate = SignUpUIState(
             isLoading = false,
             signUpForm = SignUpFormUIModel(
                 fullName = "Roberto Burritos",
-                username = "rob_burritos@gmail.com",
+                usernameEmail = "rob_burritos@gmail.com",
+                usernamePhone = "",
                 password = "iLikeBurrit0s",
                 policyChecked = true,
                 registerEnabled = true,
                 errorMessage = null,
             ),
         ),
-        onUsernameValueChange = {},
+        onUsernameEmailValueChange = {},
+        onUsernamePhoneNumberValueChange = {},
         onPasswordValueChange = {},
         onFullNameValueChange = {},
         onPolicyChecked = {},
@@ -32,12 +34,13 @@ private fun SignUpScreenSuccessPreview() = AppTheme {
 @Preview
 @Composable
 private fun SignUpScreenFailurePreview() = AppTheme {
-    SignInV2Content(
+    SignUpContent(
         uistate = SignUpUIState(
             isLoading = false,
             signUpForm = SignUpFormUIModel(
                 fullName = "Donkey Kong",
-                username = "454-345-2984",
+                usernameEmail = "",
+                usernamePhone = "1234567890",
                 password = "kong_is_king",
                 policyChecked = false,
                 registerEnabled = false,
@@ -45,7 +48,8 @@ private fun SignUpScreenFailurePreview() = AppTheme {
                     "Password must be at least 8 characters long, contain at last 1 uppercase, 1 lowercase, and 1 number.",
             ),
         ),
-        onUsernameValueChange = {},
+        onUsernameEmailValueChange = {},
+        onUsernamePhoneNumberValueChange = {},
         onPasswordValueChange = {},
         onFullNameValueChange = {},
         onPolicyChecked = {},

@@ -13,7 +13,8 @@ data class SignUpUIState(
             isLoading = false,
             signUpForm = SignUpFormUIModel(
                 fullName = "",
-                username = "",
+                usernameEmail = "",
+                usernamePhone = "",
                 password = "",
                 policyChecked = false,
                 registerEnabled = false,

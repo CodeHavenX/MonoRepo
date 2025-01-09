@@ -42,6 +42,7 @@ import com.cramsan.edifikana.client.lib.ui.theme.Padding
 import com.cramsan.edifikana.client.lib.ui.theme.Size
 import edifikana_lib.Res
 import edifikana_lib.sign_up_screen_text_email
+import edifikana_lib.sign_up_screen_text_phone_number
 import edifikana_lib.sign_up_screen_text_full_name
 import edifikana_lib.sign_up_screen_text_password
 import edifikana_lib.sign_up_screen_text_policy
@@ -81,9 +82,10 @@ fun SignUpScreen(
         }
     }
 
-    SignInV2Content(
+    SignUpContent(
         uistate = uiState,
-        onUsernameValueChange = { viewModel.onUsernameValueChange(it) },
+        onUsernameEmailValueChange = { viewModel.onUsernameEmailValueChange(it) },
+        onUsernamePhoneNumberValueChange = { viewModel.onUsernameEmailValueChange(it) },
         onPasswordValueChange = { viewModel.onPasswordValueChange(it) },
         onFullNameValueChange = { viewModel.onFullNameValueChange(it) },
         onPolicyChecked = { viewModel.onPolicyChecked(it) },
@@ -92,10 +94,11 @@ fun SignUpScreen(
 }
 
 @Composable
-internal fun SignInV2Content(
+internal fun SignUpContent(
     uistate: SignUpUIState,
     onFullNameValueChange: (String) -> Unit,
-    onUsernameValueChange: (String) -> Unit,
+    onUsernameEmailValueChange: (String) -> Unit,
+    onUsernamePhoneNumberValueChange: (String) -> Unit,
     onPasswordValueChange: (String) -> Unit,
     onPolicyChecked: (Boolean) -> Unit,
     onSignUpClicked: () -> Unit,
@@ -140,9 +143,15 @@ internal fun SignInV2Content(
             )
 
             TextField(
-                value = uistate.signUpForm.username,
-                onValueChange = { onUsernameValueChange(it) },
+                value = uistate.signUpForm.usernameEmail,
+                onValueChange = { onUsernameEmailValueChange(it) },
                 label = { Text(stringResource(Res.string.sign_up_screen_text_email)) },
+                maxLines = 1,
+            )
+            TextField(
+                value = uistate.signUpForm.usernamePhone,
+                onValueChange = { onUsernamePhoneNumberValueChange(it) },
+                label = { Text(stringResource(Res.string.sign_up_screen_text_phone_number)) },
                 maxLines = 1,
             )
             TextField(

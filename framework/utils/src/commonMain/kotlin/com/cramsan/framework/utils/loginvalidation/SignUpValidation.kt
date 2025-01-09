@@ -1,12 +1,29 @@
-package com.cramsan.edifikana.client.lib.features.root.auth.signup
+package com.cramsan.framework.utils.loginvalidation
 
 /**
- * Validate that the [username] is a valid email address or phone number. Returns a list of error messages
+ * Validate that the [username] is a valid email address. Returns a list of error messages
  * if the username is invalid. An empty list indicates that the username is valid.
  */
-fun validateUsername(username: String): List<String> {
+fun validateUsernameEmail(username: String): List<String> {
     if (username.isBlank()) {
         return listOf("Username cannot be empty.")
+    }
+    if (!username.contains("@")) {
+        return listOf("Username must be a valid email address.")
+    }
+    return emptyList()
+}
+
+/**
+ * Validate that the [username] is a valid email address. Returns a list of error messages
+ * if the username is invalid. An empty list indicates that the username is valid.
+ */
+fun validateUsernamePhoneNumber(username: String): List<String> {
+    if (username.isBlank()) {
+        return listOf("Username cannot be empty.")
+    }
+    if (!username.matches(Regex("\\d{10}"))) {
+        return listOf("Username must be a valid phone number.")
     }
     return emptyList()
 }

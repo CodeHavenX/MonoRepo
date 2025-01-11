@@ -26,6 +26,7 @@ kotlin {
             implementation(project(":framework:preferences"))
             implementation(project(":framework:preferences"))
             implementation(project(":framework:utils"))
+            implementation(project(":edifikana:shared"))
 
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:_")
             implementation("org.jetbrains.androidx.navigation:navigation-compose:_")

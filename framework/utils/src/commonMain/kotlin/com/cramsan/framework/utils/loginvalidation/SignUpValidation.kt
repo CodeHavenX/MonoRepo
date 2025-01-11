@@ -36,16 +36,31 @@ fun validatePassword(password: String): List<String> {
     if (password.isBlank()) {
         return listOf("Password cannot be empty.")
     }
+    if (password.length < 6 && password.length > 24) {
+        return listOf("Password must be between 6 and 24 characters long.")
+    }
+    if (!password.contains(Regex("[A-Z]"))) {
+        return listOf("Password must contain at least one uppercase letter.")
+    }
+    if (!password.contains(Regex("[a-z]"))) {
+        return listOf("Password must contain at least one lowercase letter.")
+    }
+    if (!password.contains(Regex("\\d"))) {
+        return listOf("Password must contain at least one number.")
+    }
     return emptyList()
 }
 
 /**
- * Validate that the [fullName] is not empty. Returns a list of error messages if the full name is invalid.
+ * Validate that the [firstName] & [lastName] are not empty. Returns a list of error messages if the full name is invalid.
  * An empty list indicates that the full name is valid.
  */
-fun validateFullName(fullName: String): List<String> {
-    if (fullName.isBlank()) {
-        return listOf("Full name cannot be empty.")
+fun validateName(firstName: String, lastName: String): List<String> {
+    if (firstName.isBlank()) {
+        return listOf("First name cannot be empty.")
+    }
+    if (lastName.isBlank()) {
+        return listOf("Last name cannot be empty.")
     }
     return emptyList()
 }

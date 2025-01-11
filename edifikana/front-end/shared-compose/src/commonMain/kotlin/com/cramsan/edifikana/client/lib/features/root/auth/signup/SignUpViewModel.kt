@@ -5,7 +5,7 @@ import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logI
-import com.cramsan.framework.utils.loginvalidation.validateFullName
+import com.cramsan.framework.utils.loginvalidation.validateName
 import com.cramsan.framework.utils.loginvalidation.validatePassword
 import com.cramsan.framework.utils.loginvalidation.validateUsernameEmail
 import com.cramsan.framework.utils.loginvalidation.validateUsernamePhoneNumber
@@ -84,13 +84,25 @@ class SignUpViewModel(
     }
 
     /**
-     * Called when the full name value changes.
+     * Called when the first name value changes.
      */
-    fun onFullNameValueChange(fullName: String) {
+    fun onFirstNameValueChange(firstName: String) {
         // Here we can implement any validation logic.
         _uiState.update {
             it.copy(
-                signUpForm = it.signUpForm.copy(fullName = fullName)
+                signUpForm = it.signUpForm.copy(firstName = firstName)
+            )
+        }
+    }
+
+    /**
+     * Called when the first name value changes.
+     */
+    fun onLastNameValueChange(lastName: String) {
+        // Here we can implement any validation logic.
+        _uiState.update {
+            it.copy(
+                signUpForm = it.signUpForm.copy(lastName = lastName)
             )
         }
     }
@@ -101,13 +113,14 @@ class SignUpViewModel(
     fun signUp() {
         logI(TAG, "signUp called")
         viewModelScope.launch {
-            val fullName = _uiState.value.signUpForm.fullName.trim()
+            val firstName = _uiState.value.signUpForm.firstName.trim()
+            val lastName = _uiState.value.signUpForm.firstName.trim()
             val usernameEmail = _uiState.value.signUpForm.usernameEmail.trim()
             val usernamePhone = _uiState.value.signUpForm.usernamePhone.trim()
             val password = _uiState.value.signUpForm.password
 
             val errorMessages = listOf(
-                validateFullName(fullName),
+                validateName(firstName, lastName),
                 validateUsernameEmail(usernameEmail),
                 validateUsernamePhoneNumber(usernamePhone),
                 validatePassword(password),

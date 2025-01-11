@@ -86,7 +86,8 @@
     <string name="sign_in_screen_text_email">Correo/# Telefónico</string>
     <string name="sign_in_screen_text_password">Contraseña</string>
 
-    <string name="sign_up_screen_text_full_name">Nombre completo</string>
+    <string name="sign_up_screen_text_first_name">Nombre</string>
+    <string name="sign_up_screen_text_last_name">Apellido</string>
     <string name="sign_up_screen_text_email">Correo</string>
     <string name="sign_up_screen_text_phone_number"># Telefónico</string>
     <string name="sign_up_screen_text_password">Contraseña</string>

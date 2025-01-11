@@ -12,7 +12,8 @@ data class SignUpUIState(
         val Initial = SignUpUIState(
             isLoading = false,
             signUpForm = SignUpFormUIModel(
-                fullName = "",
+                firstName = "",
+                lastName = "",
                 usernameEmail = "",
                 usernamePhone = "",
                 password = "",

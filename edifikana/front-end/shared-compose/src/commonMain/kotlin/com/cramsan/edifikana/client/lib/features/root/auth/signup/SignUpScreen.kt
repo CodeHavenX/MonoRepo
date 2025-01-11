@@ -40,11 +40,11 @@ import com.cramsan.edifikana.client.lib.features.root.auth.AuthActivityViewModel
 import com.cramsan.edifikana.client.lib.ui.components.LoadingAnimationOverlay
 import com.cramsan.edifikana.client.lib.ui.theme.Padding
 import com.cramsan.edifikana.client.lib.ui.theme.Size
+import edifikana_lib.*
 import edifikana_lib.Res
 import edifikana_lib.sign_up_screen_text_email
-import edifikana_lib.sign_up_screen_text_phone_number
-import edifikana_lib.sign_up_screen_text_full_name
 import edifikana_lib.sign_up_screen_text_password
+import edifikana_lib.sign_up_screen_text_phone_number
 import edifikana_lib.sign_up_screen_text_policy
 import edifikana_lib.sign_up_screen_text_sign_up
 import org.jetbrains.compose.resources.stringResource
@@ -87,7 +87,7 @@ fun SignUpScreen(
         onUsernameEmailValueChange = { viewModel.onUsernameEmailValueChange(it) },
         onUsernamePhoneNumberValueChange = { viewModel.onUsernameEmailValueChange(it) },
         onPasswordValueChange = { viewModel.onPasswordValueChange(it) },
-        onFullNameValueChange = { viewModel.onFullNameValueChange(it) },
+        onFullNameValueChange = { viewModel.onFirstNameValueChange(it) },
         onPolicyChecked = { viewModel.onPolicyChecked(it) },
         onSignUpClicked = { viewModel.signUp() },
     )
@@ -136,9 +136,16 @@ internal fun SignUpContent(
             }
 
             TextField(
-                value = uistate.signUpForm.fullName,
+                value = uistate.signUpForm.firstName,
                 onValueChange = { onFullNameValueChange(it) },
-                label = { Text(stringResource(Res.string.sign_up_screen_text_full_name)) },
+                label = { Text(stringResource(Res.string.sign_up_screen_text_first_name)) },
+                maxLines = 1,
+            )
+
+            TextField(
+                value = uistate.signUpForm.lastName,
+                onValueChange = { onFullNameValueChange(it) },
+                label = { Text(stringResource(Res.string.sign_up_screen_text_last_name)) },
                 maxLines = 1,
             )
 

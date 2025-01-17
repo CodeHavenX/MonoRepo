@@ -79,18 +79,10 @@ class SignInV2ViewModel(
         viewModelScope.launch {
             val email = _uiState.value.signInForm.email.trim()
             val password = _uiState.value.signInForm.password
-            val user = auth.signIn(
+            auth.signIn(
                 email = email,
                 password = password,
-            ).getOrThrow()
-
-            if (user != null) {
-                _events.emit(
-                    SignInV2Event.TriggerEdifikanaApplicationEvent(
-                        EdifikanaApplicationEvent.NavigateToActivity(ActivityRouteDestination.MainDestination)
-                    )
-                )
-            } else {
+            ).onFailure {
                 _uiState.update {
                     it.copy(
                         signInForm = it.signInForm.copy(
@@ -98,7 +90,14 @@ class SignInV2ViewModel(
                         )
                     )
                 }
+                return@launch
             }
+
+            _events.emit(
+                SignInV2Event.TriggerEdifikanaApplicationEvent(
+                    EdifikanaApplicationEvent.NavigateToActivity(ActivityRouteDestination.MainDestination)
+                )
+            )
         }
     }
 

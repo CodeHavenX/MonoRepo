@@ -5,6 +5,7 @@ import com.cramsan.edifikana.client.lib.service.AuthService
 import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.annotations.NetworkModel
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.network.CreateUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
@@ -15,6 +16,10 @@ import io.github.jan.supabase.exceptions.RestException
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -71,6 +76,27 @@ class AuthServiceImpl(
 
     override fun activeUser(): StateFlow<UserId?> {
         return _activeUser.asStateFlow()
+    }
+
+    @OptIn(NetworkModel::class)
+    override suspend fun signUp(
+        username: String,
+        password: String,
+        fullname: String,
+    ): Result<UserModel> = runSuspendCatching(TAG) {
+        val response = http.post(Routes.User.PATH) {
+            setBody(
+                CreateUserNetworkRequest(
+                    username = username,
+                    password = password,
+                    fullname = fullname,
+                )
+            )
+            contentType(ContentType.Application.Json)
+        }.body<UserNetworkResponse>()
+        val userModel = response.toUserModel()
+        _activeUser.value = userModel.id
+        userModel
     }
 
     companion object {

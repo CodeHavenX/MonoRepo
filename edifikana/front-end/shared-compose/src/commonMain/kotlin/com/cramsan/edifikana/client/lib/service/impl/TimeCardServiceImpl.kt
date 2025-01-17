@@ -2,11 +2,13 @@ package com.cramsan.edifikana.client.lib.service.impl
 
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
 import com.cramsan.edifikana.client.lib.service.TimeCardService
+import com.cramsan.edifikana.client.lib.service.impl.PropertyServiceImpl.Companion.TAG
 import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.annotations.NetworkModel
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.network.TimeCardEventNetworkResponse
+import com.cramsan.framework.core.runSuspendCatching
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -23,17 +25,21 @@ class TimeCardServiceImpl(
 ) : TimeCardService {
 
     @OptIn(NetworkModel::class)
-    override suspend fun getRecords(staffPK: StaffId): Result<List<TimeCardRecordModel>> {
-        return getRecordsImpl(staffPK)
+    override suspend fun getRecords(
+        staffPK: StaffId,
+    ): Result<List<TimeCardRecordModel>> = runSuspendCatching(TAG) {
+        getRecordsImpl(staffPK).getOrThrow()
     }
 
     @OptIn(NetworkModel::class)
-    override suspend fun getAllRecords(): Result<List<TimeCardRecordModel>> {
-        return getRecordsImpl(null)
+    override suspend fun getAllRecords(): Result<List<TimeCardRecordModel>> = runSuspendCatching(TAG) {
+        getRecordsImpl(null).getOrThrow()
     }
 
     @NetworkModel
-    private suspend fun getRecordsImpl(staffPK: StaffId?): Result<List<TimeCardRecordModel>> {
+    private suspend fun getRecordsImpl(
+        staffPK: StaffId?,
+    ): Result<List<TimeCardRecordModel>> = runSuspendCatching(TAG) {
         val response = http.get(Routes.TimeCard.PATH) {
             url {
                 staffPK?.let {
@@ -44,25 +50,29 @@ class TimeCardServiceImpl(
         val records = response.map {
             it.toTimeCardRecordModel()
         }
-        return Result.success(records)
+        records
     }
 
     @OptIn(NetworkModel::class)
-    override suspend fun getRecord(timeCardRecordPK: TimeCardEventId): Result<TimeCardRecordModel> {
+    override suspend fun getRecord(
+        timeCardRecordPK: TimeCardEventId,
+    ): Result<TimeCardRecordModel> = runSuspendCatching(TAG) {
         val response = http.get("${Routes.TimeCard.PATH}/${timeCardRecordPK.timeCardEventId}")
             .body<TimeCardEventNetworkResponse>()
         val record = response.toTimeCardRecordModel()
-        return Result.success(record)
+        record
     }
 
     @OptIn(NetworkModel::class)
-    override suspend fun addRecord(timeCardRecord: TimeCardRecordModel): Result<TimeCardRecordModel> {
+    override suspend fun addRecord(
+        timeCardRecord: TimeCardRecordModel,
+    ): Result<TimeCardRecordModel> = runSuspendCatching(TAG) {
         val response = http.post(Routes.TimeCard.PATH) {
             contentType(ContentType.Application.Json)
             setBody(timeCardRecord.toCreateTimeCardEventNetworkRequest())
         }.body<TimeCardEventNetworkResponse>()
 
         val record = response.toTimeCardRecordModel()
-        return Result.success(record)
+        record
     }
 }

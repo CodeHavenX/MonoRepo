@@ -83,7 +83,7 @@ The recommended approach is to perform schema changes locally and to push those 
 1. Ensure that you have the latest DB schema applied locally: `git pull`
 2. Reset the db:
 ```bash
-supabase db reset // This step will your local DB and all content will be lost
+supabase db reset // This step will clear your local DB and all content will be lost
 ```
 3. Make changes to the schema through the UI. 
 4. Repeat this until you are ready to publish your changes and the code is updated to handle the new changes.

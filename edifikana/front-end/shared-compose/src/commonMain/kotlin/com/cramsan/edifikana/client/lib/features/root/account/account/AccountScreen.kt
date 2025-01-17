@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.root.account.account
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -48,9 +49,10 @@ fun AccountScreen(
 
 @Composable
 internal fun AccountContent(content: AccountUIModel, onSignOutClicked: () -> Unit) {
-    // This is a placeholder. The actual content will be more complex.
-    Text("Account Screen: ${content.name}")
-    Button(onSignOutClicked) {
-        Text("Sign Out")
+    Column {
+        Text("Account Screen: ${content.name}")
+        Button(onSignOutClicked) {
+            Text("Sign Out")
+        }
     }
 }

@@ -25,13 +25,13 @@ class SupabaseStaffDatabase(
     override suspend fun createStaff(
         request: CreateStaffRequest,
     ): Result<Staff> = runSuspendCatching(TAG) {
-        logD(TAG, "Creating staff: %S", request.firstName)
+        logD(TAG, "Creating staff: %s", request.firstName)
         val requestEntity: StaffEntity.CreateStaffEntity = request.toStaffEntity()
 
         val createdStaff = postgrest.from(StaffEntity.COLLECTION).insert(requestEntity) {
             select()
         }.decodeSingle<StaffEntity>()
-        logD(TAG, "Staff created staffId: %S", createdStaff.id)
+        logD(TAG, "Staff created staffId: %s", createdStaff.id)
         createdStaff.toStaff()
     }
 
@@ -42,7 +42,7 @@ class SupabaseStaffDatabase(
     override suspend fun getStaff(
         request: GetStaffRequest,
     ): Result<Staff?> = runSuspendCatching(TAG) {
-        logD(TAG, "Getting staff: %S", request.id)
+        logD(TAG, "Getting staff: %s", request.id)
 
         val staffEntity = postgrest.from(StaffEntity.COLLECTION).select {
             filter {
@@ -71,7 +71,7 @@ class SupabaseStaffDatabase(
     override suspend fun updateStaff(
         request: UpdateStaffRequest,
     ): Result<Staff> = runSuspendCatching(TAG) {
-        logD(TAG, "Updating staff: %S", request.id)
+        logD(TAG, "Updating staff: %s", request.id)
 
         postgrest.from(StaffEntity.COLLECTION).update(
             {
@@ -95,7 +95,7 @@ class SupabaseStaffDatabase(
     override suspend fun deleteStaff(
         request: DeleteStaffRequest,
     ): Result<Boolean> = runSuspendCatching(TAG) {
-        logD(TAG, "Deleting staff: %S", request.id)
+        logD(TAG, "Deleting staff: %s", request.id)
 
         postgrest.from(StaffEntity.COLLECTION).delete {
             select()

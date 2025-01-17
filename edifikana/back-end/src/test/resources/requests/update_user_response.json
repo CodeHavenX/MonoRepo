@@ -1,4 +1,5 @@
 {
     "id": "user123",
-    "email": "updated.email@example.com"
+    "email": "updated.email@example.com",
+    "has_global_perms": false
 }

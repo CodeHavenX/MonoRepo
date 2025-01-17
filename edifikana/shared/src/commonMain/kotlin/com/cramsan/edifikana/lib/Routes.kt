@@ -17,6 +17,7 @@ object Routes {
      */
     object Property {
         const val PATH = "property"
+        const val ADMIN = "admin"
     }
 
     /**

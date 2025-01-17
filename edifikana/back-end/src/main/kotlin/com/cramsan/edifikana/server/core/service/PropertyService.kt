@@ -6,8 +6,10 @@ import com.cramsan.edifikana.server.core.repository.PropertyDatabase
 import com.cramsan.edifikana.server.core.service.models.Property
 import com.cramsan.edifikana.server.core.service.models.requests.CreatePropertyRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeletePropertyRequest
+import com.cramsan.edifikana.server.core.service.models.requests.GetPropertyListsRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetPropertyRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdatePropertyRequest
+import com.cramsan.framework.logging.logD
 
 /**
  * Service for property operations.
@@ -22,6 +24,7 @@ class PropertyService(
     suspend fun createProperty(
         name: String,
     ): Property {
+        logD(TAG, "createProperty")
         return propertyDatabase.createProperty(
             request = CreatePropertyRequest(
                 name = name,
@@ -35,6 +38,7 @@ class PropertyService(
     suspend fun getProperty(
         id: PropertyId,
     ): Property? {
+        logD(TAG, "getProperty")
         val property = propertyDatabase.getProperty(
             request = GetPropertyRequest(
                 propertyId = id,
@@ -47,8 +51,17 @@ class PropertyService(
     /**
      * Retrieves all properties.
      */
-    suspend fun getProperties(userId: UserId): List<Property> {
-        val properties = propertyDatabase.getProperties(userId).getOrThrow()
+    suspend fun getProperties(
+        userId: UserId,
+        showAll: Boolean,
+    ): List<Property> {
+        logD(TAG, "getProperties")
+        val properties = propertyDatabase.getProperties(
+            GetPropertyListsRequest(
+                userId,
+                showAll,
+            )
+        ).getOrThrow()
         return properties
     }
 
@@ -59,6 +72,7 @@ class PropertyService(
         id: PropertyId,
         name: String?,
     ): Property {
+        logD(TAG, "updateProperty")
         return propertyDatabase.updateProperty(
             request = UpdatePropertyRequest(
                 propertyId = id,
@@ -73,10 +87,15 @@ class PropertyService(
     suspend fun deleteProperty(
         id: PropertyId,
     ): Boolean {
+        logD(TAG, "deleteProperty")
         return propertyDatabase.deleteProperty(
             request = DeletePropertyRequest(
                 propertyId = id,
             )
         ).getOrThrow()
+    }
+
+    companion object {
+        private const val TAG = "PropertyService"
     }
 }

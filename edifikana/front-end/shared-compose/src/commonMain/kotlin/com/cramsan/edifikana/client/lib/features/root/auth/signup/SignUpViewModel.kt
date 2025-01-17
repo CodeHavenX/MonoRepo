@@ -141,7 +141,17 @@ class SignUpViewModel(
             val user = auth.signIn(
                 email = usernameEmail,
                 password = password,
-            ).getOrThrow()
+            ).getOrElse { exception ->
+                logD(TAG, "Error signing up: $exception")
+                _uiState.update {
+                    it.copy(
+                        signUpForm = it.signUpForm.copy(
+                            errorMessage = exception.localizedMessage
+                        )
+                    )
+                }
+                return@launch
+            }
 
             if (user != null) {
                 logD(TAG, "User signed up: $user")

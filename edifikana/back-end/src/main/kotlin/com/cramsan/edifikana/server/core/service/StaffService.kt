@@ -10,6 +10,7 @@ import com.cramsan.edifikana.server.core.service.models.requests.CreateStaffRequ
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteStaffRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetStaffRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdateStaffRequest
+import com.cramsan.framework.logging.logD
 
 /**
  * Service for staff operations.
@@ -28,6 +29,7 @@ class StaffService(
         role: StaffRole,
         propertyId: PropertyId,
     ): Staff {
+        logD(TAG, "createStaff")
         return staffDatabase.createStaff(
             request = CreateStaffRequest(
                 idType = idType,
@@ -45,6 +47,7 @@ class StaffService(
     suspend fun getStaff(
         id: StaffId,
     ): Staff? {
+        logD(TAG, "getStaff")
         val staff = staffDatabase.getStaff(
             request = GetStaffRequest(
                 id = id,
@@ -58,6 +61,7 @@ class StaffService(
      * Retrieves all staff.
      */
     suspend fun getStaffs(): List<Staff> {
+        logD(TAG, "getStaffs")
         val staffs = staffDatabase.getStaffs().getOrThrow()
         return staffs
     }
@@ -72,6 +76,7 @@ class StaffService(
         lastName: String?,
         role: StaffRole?,
     ): Staff {
+        logD(TAG, "updateStaff")
         return staffDatabase.updateStaff(
             request = UpdateStaffRequest(
                 id = id,
@@ -89,10 +94,15 @@ class StaffService(
     suspend fun deleteStaff(
         id: StaffId,
     ): Boolean {
+        logD(TAG, "deleteStaff")
         return staffDatabase.deleteStaff(
             request = DeleteStaffRequest(
                 id = id,
             )
         ).getOrThrow()
+    }
+
+    companion object {
+        private const val TAG = "StaffService"
     }
 }

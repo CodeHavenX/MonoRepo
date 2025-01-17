@@ -14,4 +14,6 @@ data class UserNetworkResponse(
     val id: String,
     @SerialName("email")
     val email: String,
+    @SerialName("has_global_perms")
+    val hasGlobalPerms: Boolean,
 )

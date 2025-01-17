@@ -2,6 +2,7 @@ package com.cramsan.edifikana.server.core.controller
 
 import com.cramsan.edifikana.lib.PROPERTY_ID
 import com.cramsan.edifikana.lib.Routes
+import com.cramsan.edifikana.lib.SHOW_ALL
 import com.cramsan.edifikana.lib.annotations.NetworkModel
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.network.CreatePropertyNetworkRequest
@@ -78,8 +79,12 @@ class PropertyController(
         contextRetriever,
     ) { context ->
         val userId = getAuthenticatedClientContext(context).userId
+        val showAll = call.request.queryParameters[SHOW_ALL]?.toBooleanStrictOrNull() == true
 
-        val properties = propertyService.getProperties(userId).map { it.toPropertyNetworkResponse() }
+        val properties = propertyService.getProperties(
+            userId = userId,
+            showAll = showAll,
+        ).map { it.toPropertyNetworkResponse() }
 
         HttpResponse(
             status = HttpStatusCode.OK,

@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.core.controller
 
+import com.cramsan.edifikana.lib.CHECK_GLOBAL_PERMS
 import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.USER_ID
 import com.cramsan.edifikana.lib.annotations.NetworkModel
@@ -37,7 +38,9 @@ class UserController(
         val createUserRequest = call.receive<CreateUserNetworkRequest>()
 
         val newUser = userService.createUser(
-            createUserRequest.email,
+            createUserRequest.username,
+            createUserRequest.password,
+            createUserRequest.fullname,
         ).toUserNetworkResponse()
 
         HttpResponse(
@@ -52,9 +55,11 @@ class UserController(
     @OptIn(NetworkModel::class)
     suspend fun getUser(call: ApplicationCall) = call.handleCall(TAG, "getUser", contextRetriever) {
         val userId = requireNotNull(call.parameters[USER_ID])
+        val checkGlobalPerms = call.request.queryParameters[CHECK_GLOBAL_PERMS]?.toBooleanStrictOrNull() == true
 
         val user = userService.getUser(
-            UserId(userId),
+            id = UserId(userId),
+            checkGlobalPerms = checkGlobalPerms
         )?.toUserNetworkResponse()
 
         val statusCode = if (user == null) {

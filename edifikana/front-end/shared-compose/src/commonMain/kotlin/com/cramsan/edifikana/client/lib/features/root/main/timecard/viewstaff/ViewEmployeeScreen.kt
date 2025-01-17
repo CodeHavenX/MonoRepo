@@ -41,6 +41,7 @@ import edifikana_lib.Res
 import edifikana_lib.text_clock_in
 import edifikana_lib.text_clock_out
 import edifikana_lib.text_upload
+import io.github.jan.supabase.storage.authenticatedStorageItem
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
@@ -188,12 +189,14 @@ private fun TimeCardRecordItem(
                 modifier = Modifier
             )
         }
-        AsyncImage(
-            modifier = Modifier.size(64.dp),
-            model = record.publicImageUrl,
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-        )
+        record.publicImageUrl?.let {
+            AsyncImage(
+                modifier = Modifier.size(64.dp),
+                model = authenticatedStorageItem("time_card_events", it),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+            )
+        }
     }
     HorizontalDivider()
 }

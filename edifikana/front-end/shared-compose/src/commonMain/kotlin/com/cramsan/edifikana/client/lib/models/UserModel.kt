@@ -8,4 +8,5 @@ import com.cramsan.edifikana.lib.model.UserId
 data class UserModel(
     val id: UserId,
     val email: String,
+    val hasGlobalPerms: Boolean,
 )

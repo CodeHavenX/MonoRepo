@@ -1,17 +1,38 @@
 package ${PACKAGE_NAME}
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.runtime.Composable
+import com.cramsan.framework.core.compose.BaseViewModel
+import com.cramsan.framework.core.compose.ViewModelDependencies
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 
-// Move this file to the desktop source set. Once done, remove this line
 /**
- * Preview for the ${NAME} feature screen.
- */
-@Preview
-@Composable
-private fun ${NAME}ScreenPreview() {
-    ${NAME}Content(
+ * ViewModel for the ${NAME} screen.
+ **/
+ // TODO: Register this ViewModel for dependecy injection
+class ${NAME}ViewModel(
+    dependencies: ViewModelDependencies,
+) : BaseViewModel(dependencies) {
+
+    private val _uiState = MutableStateFlow(${NAME}UIState(
         content = ${NAME}UIModel(""),
-        loading = false,
-    )
+        isLoading = false,
+    ))
+    
+    /**
+     * UI state of the screen.
+     */
+    val uiState: StateFlow<${NAME}UIState> = _uiState
+
+    private val _event = MutableSharedFlow<${NAME}Event>()
+
+    /**
+     * Event flow to be observed.
+     */
+    val event: SharedFlow<${NAME}Event> = _event
+    
+    companion object {
+        private const val TAG = "${NAME}ViewModel"
+    }
 }

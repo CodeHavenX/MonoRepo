@@ -109,7 +109,7 @@ fun TimeCardRecordModel.toCreateTimeCardEventNetworkRequest(): CreateTimeCardEve
         staffId = staffPk.staffId,
         fallbackStaffName = "",
         type = eventType,
-        propertyId = "",
+        propertyId = propertyId.propertyId,
         imageUrl = imageUrl,
     )
 }
@@ -123,6 +123,7 @@ fun TimeCardEventNetworkResponse.toTimeCardRecordModel(): TimeCardRecordModel {
         id = TimeCardEventId(id),
         entityId = null,
         staffPk = StaffId(staffId ?: ""), // TODO: Fix this
+        propertyId = PropertyId(propertyId),
         eventType = type,
         eventTime = timestamp,
         imageUrl = imageUrl,
@@ -138,5 +139,6 @@ fun UserNetworkResponse.toUserModel(): UserModel {
     return UserModel(
         id = UserId(id),
         email = email,
+        hasGlobalPerms = hasGlobalPerms,
     )
 }

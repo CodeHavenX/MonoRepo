@@ -6,6 +6,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import coil3.ImageLoader
+import coil3.compose.setSingletonImageLoaderFactory
+import coil3.network.ktor3.KtorNetworkFetcherFactory
+import coil3.util.DebugLogger
+import io.github.jan.supabase.coil.Coil3Integration
 
 @Suppress("MagicNumber")
 private val md_theme_light_primary = Color(0xFF13BC9A)
@@ -25,11 +30,24 @@ fun AppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
+    coil3: Coil3Integration? = null,
     content: @Composable () -> Unit
 ) {
     val colorScheme = getColorScheme(darkTheme, dynamicColor, DarkThemeColors, LightThemeColors)
 
     WindowDecorations(colorScheme, darkTheme)
+
+    coil3?.let {
+        setSingletonImageLoaderFactory { platformContext ->
+            ImageLoader.Builder(platformContext)
+                .components {
+                    add(it)
+                    add(KtorNetworkFetcherFactory())
+                }
+                .logger(DebugLogger())
+                .build()
+        }
+    }
 
     MaterialTheme(
         colorScheme = colorScheme,

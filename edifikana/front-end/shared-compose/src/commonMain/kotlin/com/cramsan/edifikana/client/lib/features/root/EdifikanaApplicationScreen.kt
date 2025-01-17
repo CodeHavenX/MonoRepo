@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.cramsan.edifikana.client.lib.features.root.account.AccountActivityScreen
+import com.cramsan.edifikana.client.lib.features.root.admin.AdminActivityScreen
 import com.cramsan.edifikana.client.lib.features.root.auth.AuthActivityScreen
 import com.cramsan.edifikana.client.lib.features.root.main.MainActivityScreen
 import com.cramsan.edifikana.client.lib.features.root.splash.SplashActivityScreen
@@ -54,11 +55,16 @@ fun EdifikanaApplicationScreen(
             is EdifikanaApplicationEvent.NavigateToActivity -> {
                 navController.navigate(mainActivityEvent.destination.path)
             }
+            is EdifikanaApplicationEvent.CloseActivity -> {
+                navController.popBackStack()
+            }
         }
     }
 
     ComposableKoinContext {
-        AppTheme {
+        AppTheme(
+            coil3 = koinInject(),
+        ) {
             ApplicationNavigationHost(
                 navHostController = navController,
             )
@@ -88,6 +94,9 @@ private fun ApplicationNavigationHost(
                 }
                 ApplicationRoute.Account -> composable(route.route) {
                     AccountActivityScreen()
+                }
+                ApplicationRoute.Admin -> composable(route.route) {
+                    AdminActivityScreen()
                 }
             }
         }

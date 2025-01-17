@@ -3,12 +3,19 @@ package com.cramsan.edifikana.client.lib.features.root.main
 import com.cramsan.edifikana.client.lib.features.root.ActivityRouteDestination
 import com.cramsan.edifikana.client.lib.features.root.EdifikanaApplicationDelegatedEvent
 import com.cramsan.edifikana.client.lib.features.root.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.managers.PropertyManager
+import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logI
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 /**
@@ -16,13 +23,17 @@ import kotlinx.coroutines.launch
  */
 class MainActivityViewModel(
     dependencies: ViewModelDependencies,
+    private val propertyManager: PropertyManager,
 ) : BaseViewModel(dependencies) {
 
+    private val _uiState = MutableStateFlow(MainActivityUiModel("", emptyList()))
+    val uiModel: StateFlow<MainActivityUiModel> = _uiState.asStateFlow()
+
     private val _events = MutableSharedFlow<MainActivityEvent>()
-    val events: SharedFlow<MainActivityEvent> = _events
+    val events: SharedFlow<MainActivityEvent> = _events.asSharedFlow()
 
     private val _delegatedEvents = MutableSharedFlow<EdifikanaApplicationDelegatedEvent>()
-    val delegatedEvents: SharedFlow<EdifikanaApplicationDelegatedEvent> = _delegatedEvents
+    val delegatedEvents: SharedFlow<EdifikanaApplicationDelegatedEvent> = _delegatedEvents.asSharedFlow()
 
     init {
         viewModelScope.launch {
@@ -67,11 +78,66 @@ class MainActivityViewModel(
      * Navigate to the account page.
      */
     fun navigateToAccount() {
+        logI(TAG, "Navigating to account page.")
         viewModelScope.launch {
             _events.emit(
                 MainActivityEvent.TriggerApplicationEvent(
                     EdifikanaApplicationEvent.NavigateToActivity(ActivityRouteDestination.AccountDestination)
                 )
+            )
+        }
+    }
+
+    /**
+     * Navigate to the admin page.
+     */
+    fun navigateToAdmin() {
+        logI(TAG, "Navigating to admin page.")
+        viewModelScope.launch {
+            _events.emit(
+                MainActivityEvent.TriggerApplicationEvent(
+                    EdifikanaApplicationEvent.NavigateToActivity(ActivityRouteDestination.AdminDestination)
+                )
+            )
+        }
+    }
+
+    /**
+     * Load properties.
+     */
+    fun loadProperties() {
+        logI(TAG, "Loading properties.")
+        viewModelScope.launch {
+            updatePropertyList()
+        }
+    }
+
+    /**
+     * Select property.
+     */
+    fun selectProperty(propertyId: PropertyId) {
+        logI(TAG, "Property selected: $propertyId")
+        viewModelScope.launch {
+            propertyManager.setActiveProperty(propertyId)
+            updatePropertyList()
+        }
+    }
+
+    private suspend fun updatePropertyList() {
+        val properties = propertyManager.getPropertyList().getOrThrow()
+        val selectedProperty = propertyManager.activeProperty().value
+        var name = ""
+        _uiState.update {
+            val propertyUiModels = properties.map { property ->
+                val isSelected = property.id == selectedProperty
+                if (isSelected) {
+                    name = property.name
+                }
+                property.toUIModel(selected = isSelected)
+            }
+            it.copy(
+                label = name,
+                availableProperties = propertyUiModels,
             )
         }
     }

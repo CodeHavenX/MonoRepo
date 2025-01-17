@@ -14,6 +14,7 @@ enum class ApplicationRoute(
     Splash("splash"),
     Auth("auth"),
     Account("account"),
+    Admin("admin"),
     ;
 }
 
@@ -60,5 +61,13 @@ sealed class ActivityRouteDestination(
     data object AccountDestination : ActivityRouteDestination(
         ApplicationRoute.Account,
         ApplicationRoute.Account.route,
+    )
+
+    /**
+     * A class representing navigating to the admin page.
+     */
+    data object AdminDestination : ActivityRouteDestination(
+        ApplicationRoute.Admin,
+        ApplicationRoute.Admin.route,
     )
 }

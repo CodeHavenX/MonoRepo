@@ -8,28 +8,29 @@ import com.cramsan.edifikana.server.core.service.models.requests.DeleteUserReque
 import com.cramsan.edifikana.server.core.service.models.requests.GetUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdatePasswordRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdateUserRequest
-import com.cramsan.edifikana.server.core.service.password.PasswordGenerator
+import com.cramsan.framework.logging.logD
 
 /**
  * Service for user operations.
  */
 class UserService(
     private val userDatabase: UserDatabase,
-    private val passwordGenerator: PasswordGenerator,
 ) {
 
     /**
-     * Creates a user with the provided [email].
+     * Creates a user with the provided [username].
      */
     suspend fun createUser(
-        email: String,
+        username: String,
+        password: String,
+        fullname: String,
     ): User {
-        val password = passwordGenerator.generate()
-
+        logD(TAG, "createUser")
         return userDatabase.createUser(
             request = CreateUserRequest(
-                email = email,
+                username = username,
                 password = password,
+                fullname = fullname,
             ),
         ).getOrThrow()
     }
@@ -39,10 +40,13 @@ class UserService(
      */
     suspend fun getUser(
         id: UserId,
+        checkGlobalPerms: Boolean,
     ): User? {
+        logD(TAG, "getUser")
         val user = userDatabase.getUser(
             request = GetUserRequest(
                 id = id,
+                checkGlobalPerms = checkGlobalPerms,
             ),
         ).getOrNull()
 
@@ -53,6 +57,7 @@ class UserService(
      * Retrieves all users.
      */
     suspend fun getUsers(): List<User> {
+        logD(TAG, "getUsers")
         val users = userDatabase.getUsers().getOrThrow()
         return users
     }
@@ -64,6 +69,7 @@ class UserService(
         id: UserId,
         email: String?,
     ): User {
+        logD(TAG, "updateUser")
         return userDatabase.updateUser(
             request = UpdateUserRequest(
                 id = id,
@@ -78,6 +84,7 @@ class UserService(
     suspend fun deleteUser(
         id: UserId,
     ): Boolean {
+        logD(TAG, "deleteUser")
         return userDatabase.deleteUser(
             request = DeleteUserRequest(
                 id = id,
@@ -89,11 +96,16 @@ class UserService(
      * Updates the password for a user with the provided [userId].
      */
     suspend fun updatePassword(userId: UserId, password: String): Boolean {
+        logD(TAG, "updatePassword")
         return userDatabase.updatePassword(
             request = UpdatePasswordRequest(
                 id = userId,
                 password = password,
             ),
         ).getOrThrow()
+    }
+
+    companion object {
+        private const val TAG = "UserService"
     }
 }

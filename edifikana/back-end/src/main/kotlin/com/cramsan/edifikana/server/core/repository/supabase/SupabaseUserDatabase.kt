@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.server.core.repository.supabase
 
 import com.cramsan.edifikana.server.core.repository.UserDatabase
+import com.cramsan.edifikana.server.core.repository.supabase.models.GlobalPermOverrideEntity
 import com.cramsan.edifikana.server.core.repository.supabase.models.UserEntity
 import com.cramsan.edifikana.server.core.service.models.User
 import com.cramsan.edifikana.server.core.service.models.requests.CreateUserRequest
@@ -13,7 +14,7 @@ import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.postgrest.Postgrest
-import javax.management.Query.eq
+import io.github.jan.supabase.postgrest.query.Count
 
 /**
  * Database for managing users.
@@ -30,10 +31,10 @@ class SupabaseUserDatabase(
     override suspend fun createUser(
         request: CreateUserRequest,
     ): Result<User> = runSuspendCatching(TAG) {
-        logD(TAG, "Creating user: %S", request.email)
+        logD(TAG, "Creating user: %s", request.username)
 
         val supabaseUser = auth.admin.createUserWithEmail {
-            email = request.email
+            email = request.username
             password = request.password
             autoConfirm = true
         }
@@ -43,8 +44,8 @@ class SupabaseUserDatabase(
         val createdUser = postgrest.from(UserEntity.COLLECTION).insert(requestEntity) {
             select()
         }.decodeSingle<UserEntity>()
-        logD(TAG, "User created userId: %S", createdUser.id)
-        createdUser.toUser()
+        logD(TAG, "User created userId: %s", createdUser.id)
+        createdUser.toUser(false)
     }
 
     /**
@@ -54,7 +55,7 @@ class SupabaseUserDatabase(
     override suspend fun getUser(
         request: GetUserRequest,
     ): Result<User?> = runSuspendCatching(TAG) {
-        logD(TAG, "Getting user: %S", request.id)
+        logD(TAG, "Getting user: %s", request.id)
 
         val userEntity = postgrest.from(UserEntity.COLLECTION).select {
             filter {
@@ -62,14 +63,26 @@ class SupabaseUserDatabase(
             }
         }.decodeSingleOrNull<UserEntity>()
 
-        userEntity?.toUser()
+        val hasGlobalPerms = if (request.checkGlobalPerms) {
+            val matchingRows = postgrest.from(GlobalPermOverrideEntity.COLLECTION).select {
+                filter {
+                    eq("id", request.id.userId)
+                }
+                count(Count.EXACT)
+            }.countOrNull()
+            matchingRows == 1L
+        } else {
+            false
+        }
+
+        userEntity?.toUser(hasGlobalPerms)
     }
 
     @OptIn(SupabaseModel::class)
     override suspend fun getUsers(): Result<List<User>> = runSuspendCatching(TAG) {
         logD(TAG, "Getting all users")
 
-        postgrest.from(UserEntity.COLLECTION).select().decodeList<UserEntity>().map { it.toUser() }
+        postgrest.from(UserEntity.COLLECTION).select().decodeList<UserEntity>().map { it.toUser(false) }
     }
 
     /**
@@ -79,7 +92,7 @@ class SupabaseUserDatabase(
     override suspend fun updateUser(
         request: UpdateUserRequest,
     ): Result<User> = runSuspendCatching(TAG) {
-        logD(TAG, "Updating user: %S", request.id)
+        logD(TAG, "Updating user: %s", request.id)
 
         postgrest.from(UserEntity.COLLECTION).update(
             {
@@ -90,7 +103,7 @@ class SupabaseUserDatabase(
             filter {
                 UserEntity::id eq request.id.userId
             }
-        }.decodeSingle<UserEntity>().toUser()
+        }.decodeSingle<UserEntity>().toUser(false)
     }
 
     /**
@@ -100,7 +113,7 @@ class SupabaseUserDatabase(
     override suspend fun deleteUser(
         request: DeleteUserRequest,
     ): Result<Boolean> = runSuspendCatching(TAG) {
-        logD(TAG, "Deleting user: %S", request.id)
+        logD(TAG, "Deleting user: %s", request.id)
 
         auth.admin.deleteUser(request.id.userId)
 
@@ -113,7 +126,7 @@ class SupabaseUserDatabase(
     }
 
     override suspend fun updatePassword(request: UpdatePasswordRequest): Result<Boolean> = runSuspendCatching(TAG) {
-        logD(TAG, "Updating password for user: %S", request.id)
+        logD(TAG, "Updating password for user: %s", request.id)
 
         assertNull(auth.currentUserOrNull(), TAG, "We cannot have a user signed in on the BE")
         // Sign out the client by using

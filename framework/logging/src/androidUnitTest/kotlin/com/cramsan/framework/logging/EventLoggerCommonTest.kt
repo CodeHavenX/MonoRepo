@@ -76,7 +76,7 @@ class EventLoggerCommonTest : TestBase() {
     fun test_logV_top_level_function() = runBlockingTest {
         val eventLogger: EventLoggerInterface = mockk(relaxed = true)
         val tag = "TestTag"
-        val message = "Error message %S"
+        val message = "Error message %s"
         val arg = "Arg"
 
         // Configure singleton

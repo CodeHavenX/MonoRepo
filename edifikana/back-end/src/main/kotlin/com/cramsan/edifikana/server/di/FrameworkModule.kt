@@ -41,7 +41,7 @@ val FrameworkModule = module(createdAtStart = true) {
     single<Preferences> { PreferencesImpl(get()) }
 
     single {
-        Severity.fromStringOrDefault(System.getenv(NAME_LOGGING), Severity.INFO)
+        Severity.fromStringOrDefault(System.getenv(NAME_LOGGING), Severity.DEBUG)
     }
 
     single(named(NAME_LOG_TO_FILE)) {
@@ -49,7 +49,7 @@ val FrameworkModule = module(createdAtStart = true) {
     }
 
     single<Logger> {
-        Log4J2Helpers.getRootLogger(get(named(NAME_LOG_TO_FILE)), Severity.DEBUG)
+        Log4J2Helpers.getRootLogger(get(named(NAME_LOG_TO_FILE)), get())
     }
 
     single<EventLoggerDelegate> { LoggerJVM(get()) }

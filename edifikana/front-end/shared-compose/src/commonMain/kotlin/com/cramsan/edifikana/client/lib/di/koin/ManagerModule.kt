@@ -6,6 +6,10 @@ import com.cramsan.edifikana.client.lib.managers.EventLogManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.client.lib.managers.TimeCardManager
+import com.cramsan.edifikana.client.lib.managers.remoteconfig.BehaviorConfig
+import com.cramsan.edifikana.client.lib.managers.remoteconfig.CachingConfig
+import com.cramsan.edifikana.client.lib.managers.remoteconfig.FeatureConfig
+import com.cramsan.edifikana.client.lib.managers.remoteconfig.ImageConfig
 import com.cramsan.edifikana.client.lib.managers.remoteconfig.RemoteConfig
 import com.cramsan.edifikana.client.lib.service.AuthService
 import com.cramsan.edifikana.client.lib.service.EventLogService
@@ -13,17 +17,20 @@ import com.cramsan.edifikana.client.lib.service.PropertyService
 import com.cramsan.edifikana.client.lib.service.StaffService
 import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.edifikana.client.lib.service.TimeCardService
-import com.cramsan.edifikana.client.lib.service.dummy.DummyStorageService
 import com.cramsan.edifikana.client.lib.service.impl.AuthServiceImpl
 import com.cramsan.edifikana.client.lib.service.impl.EventLogServiceImpl
 import com.cramsan.edifikana.client.lib.service.impl.PropertyServiceImpl
 import com.cramsan.edifikana.client.lib.service.impl.StaffServiceImpl
+import com.cramsan.edifikana.client.lib.service.impl.StorageServiceImpl
 import com.cramsan.edifikana.client.lib.service.impl.TimeCardServiceImpl
 import com.cramsan.framework.core.ManagerDependencies
 import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.annotations.SupabaseExperimental
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.SettingsSessionManager
 import io.github.jan.supabase.auth.auth
+import io.github.jan.supabase.coil.Coil3Integration
+import io.github.jan.supabase.coil.coil3
 import io.github.jan.supabase.compose.auth.ComposeAuth
 import io.github.jan.supabase.compose.auth.appleNativeLogin
 import io.github.jan.supabase.compose.auth.composeAuth
@@ -38,6 +45,7 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
+@OptIn(SupabaseExperimental::class)
 val ManagerModule = module {
     single { ManagerDependencies(get(), get()) }
 
@@ -48,6 +56,24 @@ val ManagerModule = module {
     singleOf(::AuthManager)
     singleOf(::PropertyManager)
 
+    single {
+        RemoteConfig(
+            image = ImageConfig(
+                captureWidth = 800,
+                captureHeight = 600,
+            ),
+            caching = CachingConfig(
+                imageQualityHint = 80,
+            ),
+            behavior = BehaviorConfig(
+                fetchPeriod = 1,
+                allowListedCodes = emptyList(),
+            ),
+            features = FeatureConfig(
+                flags = emptyMap()
+            ),
+        )
+    }
     single { get<RemoteConfig>().caching }
     single { get<RemoteConfig>().image }
     single { get<RemoteConfig>().behavior }
@@ -72,6 +98,7 @@ val ManagerModule = module {
                 )
                 appleNativeLogin()
             }
+            install(Coil3Integration)
         }
     }
 
@@ -91,6 +118,10 @@ val ManagerModule = module {
         get<SupabaseClient>().postgrest
     }
 
+    single {
+        get<SupabaseClient>().coil3
+    }
+
     // Services
     singleOf(::AuthServiceImpl) {
         bind<AuthService>()
@@ -101,7 +132,7 @@ val ManagerModule = module {
     singleOf(::PropertyServiceImpl) {
         bind<PropertyService>()
     }
-    singleOf(::DummyStorageService) {
+    singleOf(::StorageServiceImpl) {
         bind<StorageService>()
     }
     singleOf(::TimeCardServiceImpl) {

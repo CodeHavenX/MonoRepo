@@ -44,12 +44,15 @@ class UserControllerTest : TestBase(), KoinTest {
         val userService = get<UserService>()
         coEvery {
             userService.createUser(
-                email = "john.doe@example.com",
+                username = "john.doe@example.com",
+                password = "password",
+                fullname = "John Doe",
             )
         }.answers {
             User(
                 id = UserId("user123"),
-                email = "john.doe@example.com"
+                email = "john.doe@example.com",
+                hasGlobalPerms = false,
             )
         }
         val contextRetriever = get<ContextRetriever>()
@@ -79,11 +82,12 @@ class UserControllerTest : TestBase(), KoinTest {
         val expectedResponse = readFileContent("requests/get_user_response.json")
         val userService = get<UserService>()
         coEvery {
-            userService.getUser(UserId("user123"))
+            userService.getUser(UserId("user123"), false)
         }.answers {
             User(
                 id = UserId("user123"),
-                email = "john.doe@example.com"
+                email = "john.doe@example.com",
+                hasGlobalPerms = false,
             )
         }
         val contextRetriever = get<ContextRetriever>()
@@ -115,11 +119,13 @@ class UserControllerTest : TestBase(), KoinTest {
             listOf(
                 User(
                     id = UserId("user123"),
-                    email = "john.doe@example.com"
+                    email = "john.doe@example.com",
+                    hasGlobalPerms = false,
                 ),
                 User(
                     id = UserId("user456"),
-                    email = "jane.smith@example.com"
+                    email = "jane.smith@example.com",
+                    hasGlobalPerms = false,
                 )
             )
         }
@@ -155,7 +161,8 @@ class UserControllerTest : TestBase(), KoinTest {
         }.answers {
             User(
                 id = UserId("user123"),
-                email = "updated.email@example.com"
+                email = "updated.email@example.com",
+                hasGlobalPerms = false,
             )
         }
         val contextRetriever = get<ContextRetriever>()

@@ -32,7 +32,7 @@ class SupabaseCalendarDatabase(
         }
             .decodeSingle<EventEntity>()
 
-        logD(TAG, "Event %S", createdEvent.id)
+        logD(TAG, "Event %s", createdEvent.id)
         createdEvent.toEvent(request.timeZone)
     }
 
@@ -43,7 +43,7 @@ class SupabaseCalendarDatabase(
     override suspend fun getEvent(
         request: GetEventRequest,
     ): Result<Event?> = runSuspendCatching(TAG) {
-        logD(TAG, "Getting event: %S", request.eventId)
+        logD(TAG, "Getting event: %s", request.eventId)
 
         postgrest.from(EventEntity.COLLECTION).select {
             filter {
@@ -61,7 +61,7 @@ class SupabaseCalendarDatabase(
     override suspend fun getEventsInRange(
         request: GetEventsInRangeRequest,
     ): Result<List<Event>> = runSuspendCatching(TAG) {
-        logD(TAG, "Getting events in range: %S - %S", request.startTime, request.endTime)
+        logD(TAG, "Getting events in range: %s - %s", request.startTime, request.endTime)
 
         postgrest.from(EventEntity.COLLECTION).select {
             filter {

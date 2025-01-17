@@ -7,4 +7,6 @@ import com.cramsan.edifikana.lib.model.PropertyId
  */
 data class PropertyModel(
     val id: PropertyId,
+    val name: String,
+    val address: String,
 )

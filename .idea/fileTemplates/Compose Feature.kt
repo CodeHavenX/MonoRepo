@@ -15,10 +15,11 @@ import org.koin.compose.koinInject
  * This function provides the boilerplate needed to wire up the screen within the rest of the
  * application. This includes observing the view model's state and event flows and rendering the screen.
  */
+ // TODO: Register this screen as a new route within it's.
 @Composable
 fun ${NAME}Screen(
-    accountActivityViewModel: ActivityViewModel = koinInject(), // Update this to the respective activity viewmodel. Remove if not necessary.
-    applicationViewModel: ApplicationViewModel = koinInject(), // Update this to the respective application viewmodel. Remove if not necessary.
+    activityViewModel: ActivityViewModel = koinInject(), // TODO:  Update this to the respective activity viewmodel. Remove if not necessary.
+    applicationViewModel: ApplicationViewModel = koinInject(), // TODO: Update this to the respective application viewmodel. Remove if not necessary.
     viewModel: ${NAME}ViewModel = koinInject()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -39,7 +40,7 @@ fun ${NAME}Screen(
             ${NAME}Event.Noop -> Unit
             is ${NAME}Event.TriggerActivityEvent -> {
                 // Call the activities's viewmodel
-                accountActivityViewModel.executeEvent(event.activityEvent)
+                activityViewModel.executeActivityEvent(event.activityEvent)
             }
             is ${NAME}Event.TriggerApplicationEvent -> {
                 // Call the application's viewmodel

@@ -26,7 +26,6 @@ fun AuthActivityScreen(
     viewModel: AuthActivityViewModel = koinInject(),
 ) {
     val navController = rememberNavController()
-    val backStack by navController.currentBackStack.collectAsState()
 
     val event by viewModel.events.collectAsState(AuthActivityEvent.Noop)
     LaunchedEffect(event) {
@@ -42,9 +41,8 @@ fun AuthActivityScreen(
         topBar = {
             EdifikanaTopBar(
                 title = "",
-                showUpArrow = (backStack.size > 2),
-                onUpArrowClicked = { navController.navigateUp() },
-                onAccountClicked = null,
+                navHostController = navController,
+                onCloseClicked = null,
             )
         },
     ) { innerPadding ->

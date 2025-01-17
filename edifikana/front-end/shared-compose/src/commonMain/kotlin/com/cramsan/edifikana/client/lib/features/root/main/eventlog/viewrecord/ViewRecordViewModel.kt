@@ -127,7 +127,7 @@ class ViewRecordViewModel(
         val storageRef = attachmentHolder.storageRef
 
         val imageUri = if (storageRef != null) {
-            val res = storageService.downloadImage(storageRef)
+            val res = storageService.downloadFile(storageRef)
 
             if (res.isSuccess) {
                 res.getOrThrow()

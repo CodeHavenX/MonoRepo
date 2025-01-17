@@ -31,7 +31,7 @@ class SupabaseUserDatabase(
     override suspend fun createUser(
         request: CreateUserRequest,
     ): Result<User> = runSuspendCatching(TAG) {
-        logD(TAG, "Creating user: %S", request.username)
+        logD(TAG, "Creating user: %s", request.username)
 
         val supabaseUser = auth.admin.createUserWithEmail {
             email = request.username
@@ -44,7 +44,7 @@ class SupabaseUserDatabase(
         val createdUser = postgrest.from(UserEntity.COLLECTION).insert(requestEntity) {
             select()
         }.decodeSingle<UserEntity>()
-        logD(TAG, "User created userId: %S", createdUser.id)
+        logD(TAG, "User created userId: %s", createdUser.id)
         createdUser.toUser(false)
     }
 
@@ -55,7 +55,7 @@ class SupabaseUserDatabase(
     override suspend fun getUser(
         request: GetUserRequest,
     ): Result<User?> = runSuspendCatching(TAG) {
-        logD(TAG, "Getting user: %S", request.id)
+        logD(TAG, "Getting user: %s", request.id)
 
         val userEntity = postgrest.from(UserEntity.COLLECTION).select {
             filter {
@@ -92,7 +92,7 @@ class SupabaseUserDatabase(
     override suspend fun updateUser(
         request: UpdateUserRequest,
     ): Result<User> = runSuspendCatching(TAG) {
-        logD(TAG, "Updating user: %S", request.id)
+        logD(TAG, "Updating user: %s", request.id)
 
         postgrest.from(UserEntity.COLLECTION).update(
             {
@@ -113,7 +113,7 @@ class SupabaseUserDatabase(
     override suspend fun deleteUser(
         request: DeleteUserRequest,
     ): Result<Boolean> = runSuspendCatching(TAG) {
-        logD(TAG, "Deleting user: %S", request.id)
+        logD(TAG, "Deleting user: %s", request.id)
 
         auth.admin.deleteUser(request.id.userId)
 
@@ -126,7 +126,7 @@ class SupabaseUserDatabase(
     }
 
     override suspend fun updatePassword(request: UpdatePasswordRequest): Result<Boolean> = runSuspendCatching(TAG) {
-        logD(TAG, "Updating password for user: %S", request.id)
+        logD(TAG, "Updating password for user: %s", request.id)
 
         assertNull(auth.currentUserOrNull(), TAG, "We cannot have a user signed in on the BE")
         // Sign out the client by using

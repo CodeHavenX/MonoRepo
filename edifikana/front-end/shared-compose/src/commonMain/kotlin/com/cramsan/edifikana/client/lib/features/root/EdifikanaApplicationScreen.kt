@@ -62,7 +62,9 @@ fun EdifikanaApplicationScreen(
     }
 
     ComposableKoinContext {
-        AppTheme {
+        AppTheme(
+            coil3 = koinInject(),
+        ) {
             ApplicationNavigationHost(
                 navHostController = navController,
             )

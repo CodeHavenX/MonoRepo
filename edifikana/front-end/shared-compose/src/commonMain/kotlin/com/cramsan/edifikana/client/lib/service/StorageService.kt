@@ -14,5 +14,5 @@ interface StorageService {
     /**
      * Download a file.
      */
-    suspend fun downloadImage(targetRef: String): Result<CoreUri>
+    suspend fun downloadFile(targetRef: String): Result<CoreUri>
 }

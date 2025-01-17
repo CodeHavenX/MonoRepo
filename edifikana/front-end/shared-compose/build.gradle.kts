@@ -39,7 +39,7 @@ kotlin {
 
             implementation("io.coil-kt.coil3:coil:")
             implementation("io.coil-kt.coil3:coil-compose:_")
-            implementation("io.coil-kt.coil3:coil-network-ktor:_")
+            implementation("io.coil-kt.coil3:coil-network-ktor3:_")
             implementation("io.ktor:ktor-client-android:_")
 
             implementation("io.github.jan-tennert.supabase:postgrest-kt:_")
@@ -47,7 +47,7 @@ kotlin {
             implementation("io.github.jan-tennert.supabase:auth-kt:_")
             implementation("io.github.jan-tennert.supabase:compose-auth:_")
             implementation("io.github.jan-tennert.supabase:compose-auth-ui:_")
-            // implementation("io.github.jan-tennert.supabase:imageloader-integration:_")
+            implementation("io.github.jan-tennert.supabase:coil3-integration:_")
         }
 
         jvmMain.dependencies {
@@ -67,7 +67,7 @@ kotlin {
 private val ENV_EDIFIKANA_SUPABASE_URL = "EDIFIKANA_SUPABASE_URL"
 private val ENV_EDIFIKANA_SUPABASE_KEY = "EDIFIKANA_SUPABASE_KEY"
 
-val edifikanaSupabaseUrl = System.getenv(ENV_EDIFIKANA_SUPABASE_URL).orEmpty()
+val edifikanaSupabaseUrl = "http://10.0.2.2:54321"
 val edifikanaSupabaseKey = System.getenv(ENV_EDIFIKANA_SUPABASE_KEY).orEmpty()
 
 android {
@@ -109,7 +109,7 @@ dependencies {
 
     implementation("io.coil-kt.coil3:coil:")
     implementation("io.coil-kt.coil3:coil-compose:_")
-    implementation("io.coil-kt.coil3:coil-network-ktor:_")
+    implementation("io.coil-kt.coil3:coil-network-ktor3:_")
 
     implementation("io.ktor:ktor-client-cio:_")
 

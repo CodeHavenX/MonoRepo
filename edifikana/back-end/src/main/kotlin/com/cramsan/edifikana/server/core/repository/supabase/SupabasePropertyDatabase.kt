@@ -27,13 +27,13 @@ class SupabasePropertyDatabase(
     override suspend fun createProperty(
         request: CreatePropertyRequest,
     ): Result<Property> = runSuspendCatching(TAG) {
-        logD(TAG, "Creating property: %S", request.name)
+        logD(TAG, "Creating property: %s", request.name)
         val requestEntity: PropertyEntity.CreatePropertyEntity = request.toPropertyEntity()
 
         val createdProperty = postgrest.from(PropertyEntity.COLLECTION).insert(requestEntity) {
             select()
         }.decodeSingle<PropertyEntity>()
-        logD(TAG, "Property created propertyId: %S", createdProperty.id)
+        logD(TAG, "Property created propertyId: %s", createdProperty.id)
         createdProperty.toProperty()
     }
 
@@ -44,7 +44,7 @@ class SupabasePropertyDatabase(
     override suspend fun getProperty(
         request: GetPropertyRequest,
     ): Result<Property?> = runSuspendCatching(TAG) {
-        logD(TAG, "Getting property: %S", request.propertyId)
+        logD(TAG, "Getting property: %s", request.propertyId)
 
         val propertyEntity = postgrest.from(PropertyEntity.COLLECTION).select {
             filter {
@@ -88,7 +88,7 @@ class SupabasePropertyDatabase(
     override suspend fun updateProperty(
         request: UpdatePropertyRequest,
     ): Result<Property> = runSuspendCatching(TAG) {
-        logD(TAG, "Updating property: %S", request.propertyId)
+        logD(TAG, "Updating property: %s", request.propertyId)
 
         postgrest.from(PropertyEntity.COLLECTION).update(
             {
@@ -109,7 +109,7 @@ class SupabasePropertyDatabase(
     override suspend fun deleteProperty(
         request: DeletePropertyRequest,
     ): Result<Boolean> = runSuspendCatching(TAG) {
-        logD(TAG, "Deleting property: %S", request.propertyId)
+        logD(TAG, "Deleting property: %s", request.propertyId)
 
         postgrest.from(PropertyEntity.COLLECTION).delete {
             select()

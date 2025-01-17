@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "daa7dbe323790dafe2fa8696b853ec9f",
+    "identityHash": "7a25061482a50b963550bb87022ad84e",
     "entities": [
       {
         "tableName": "TimeCardRecordEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `staffDocumentId` TEXT, `eventType` TEXT, `eventTime` INTEGER, `cachedImageUrl` TEXT, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `staffDocumentId` TEXT, `propertyId` TEXT, `eventType` TEXT, `eventTime` INTEGER, `cachedImageUrl` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -17,6 +17,11 @@
           {
             "fieldPath": "staffDocumentId",
             "columnName": "staffDocumentId",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "propertyId",
+            "columnName": "propertyId",
             "affinity": "TEXT"
           },
           {
@@ -137,7 +142,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'daa7dbe323790dafe2fa8696b853ec9f')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7a25061482a50b963550bb87022ad84e')"
     ]
   }
 }

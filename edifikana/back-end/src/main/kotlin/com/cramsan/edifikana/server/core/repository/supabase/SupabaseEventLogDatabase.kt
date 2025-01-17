@@ -25,13 +25,13 @@ class SupabaseEventLogDatabase(
     override suspend fun createEventLogEntry(
         request: CreateEventLogEntryRequest,
     ): Result<EventLogEntry> = runSuspendCatching(TAG) {
-        logD(TAG, "Creating event log entry: %S", request.title)
+        logD(TAG, "Creating event log entry: %s", request.title)
         val requestEntity: EventLogEntryEntity.CreateEventLogEntryEntity = request.toEventLogEntryEntity()
 
         val createdEventLogEntry = postgrest.from(EventLogEntryEntity.COLLECTION).insert(requestEntity) {
             select()
         }.decodeSingle<EventLogEntryEntity>()
-        logD(TAG, "Event log entry created eventId: %S", createdEventLogEntry.id)
+        logD(TAG, "Event log entry created eventId: %s", createdEventLogEntry.id)
         createdEventLogEntry.toEventLogEntry()
     }
 
@@ -42,11 +42,11 @@ class SupabaseEventLogDatabase(
     override suspend fun getEventLogEntry(
         request: GetEventLogEntryRequest,
     ): Result<EventLogEntry?> = runSuspendCatching(TAG) {
-        logD(TAG, "Getting event log entry: %S", request.id)
+        logD(TAG, "Getting event log entry: %s", request.id)
 
         val eventLogEntryEntity = postgrest.from(EventLogEntryEntity.COLLECTION).select {
             filter {
-                EventLogEntryEntity::id eq request.id
+                EventLogEntryEntity::id eq request.id.eventLogEntryId
             }
             limit(1)
             single()
@@ -71,7 +71,7 @@ class SupabaseEventLogDatabase(
     override suspend fun updateEventLogEntry(
         request: UpdateEventLogEntryRequest,
     ): Result<EventLogEntry> = runSuspendCatching(TAG) {
-        logD(TAG, "Updating event log entry: %S", request.id)
+        logD(TAG, "Updating event log entry: %s", request.id)
 
         postgrest.from(EventLogEntryEntity.COLLECTION).update(
             {
@@ -96,12 +96,12 @@ class SupabaseEventLogDatabase(
     override suspend fun deleteEventLogEntry(
         request: DeleteEventLogEntryRequest,
     ): Result<Boolean> = runSuspendCatching(TAG) {
-        logD(TAG, "Deleting event log entry: %S", request.id)
+        logD(TAG, "Deleting event log entry: %s", request.id)
 
         postgrest.from(EventLogEntryEntity.COLLECTION).delete {
             select()
             filter {
-                EventLogEntryEntity::id eq request.id
+                EventLogEntryEntity::id eq request.id.eventLogEntryId
             }
         }.decodeSingleOrNull<EventLogEntryEntity>() != null
     }

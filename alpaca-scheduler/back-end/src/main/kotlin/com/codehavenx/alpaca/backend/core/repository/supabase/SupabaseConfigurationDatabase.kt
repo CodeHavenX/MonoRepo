@@ -23,7 +23,7 @@ class SupabaseConfigurationDatabase(
     override suspend fun createConfiguration(
         request: CreateConfigurationRequest,
     ): Result<AppointmentConfiguration> = runSuspendCatching(TAG) {
-        logD(TAG, "Creating configuration: %S", request.name)
+        logD(TAG, "Creating configuration: %s", request.name)
 
         val requestEntity = request.toConfigurationEntity()
 
@@ -31,7 +31,7 @@ class SupabaseConfigurationDatabase(
             select()
         }
             .decodeSingle<ConfigurationEntity>()
-        logD(TAG, "Configuration created id=%S", createdConfiguration.id)
+        logD(TAG, "Configuration created id=%s", createdConfiguration.id)
 
         createdConfiguration.toConfiguration()
     }
@@ -43,7 +43,7 @@ class SupabaseConfigurationDatabase(
     override suspend fun getConfiguration(
         request: GetConfigurationRequest,
     ): Result<AppointmentConfiguration?> = runSuspendCatching(TAG) {
-        logD(TAG, "Getting configuration: %S", request.id)
+        logD(TAG, "Getting configuration: %s", request.id)
 
         postgrest.from(ConfigurationEntity.COLLECTION).select {
             filter {

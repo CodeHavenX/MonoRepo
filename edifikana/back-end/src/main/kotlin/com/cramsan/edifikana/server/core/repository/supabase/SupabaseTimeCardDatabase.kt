@@ -24,13 +24,13 @@ class SupabaseTimeCardDatabase(
     override suspend fun createTimeCardEvent(
         request: CreateTimeCardEventRequest,
     ): Result<TimeCardEvent> = runSuspendCatching(TAG) {
-        logD(TAG, "Creating time card event: %S", request.type)
+        logD(TAG, "Creating time card event: %s", request.type)
         val requestEntity: TimeCardEventEntity.CreateTimeCardEventEntity = request.toTimeCardEventEntity()
 
         val createdTimeCardEvent = postgrest.from(TimeCardEventEntity.COLLECTION).insert(requestEntity) {
             select()
         }.decodeSingle<TimeCardEventEntity>()
-        logD(TAG, "Time card event created eventId: %S", createdTimeCardEvent.id)
+        logD(TAG, "Time card event created eventId: %s", createdTimeCardEvent.id)
         createdTimeCardEvent.toTimeCardEvent()
     }
 
@@ -41,7 +41,7 @@ class SupabaseTimeCardDatabase(
     override suspend fun getTimeCardEvent(
         request: GetTimeCardEventRequest,
     ): Result<TimeCardEvent?> = runSuspendCatching(TAG) {
-        logD(TAG, "Getting time card event: %S", request.id)
+        logD(TAG, "Getting time card event: %s", request.id)
 
         val timeCardEventEntity = postgrest.from(TimeCardEventEntity.COLLECTION).select {
             filter {

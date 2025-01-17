@@ -3,6 +3,7 @@ package com.cramsan.edifikana.client.lib.features.root.main.timecard.viewstaff
 import com.cramsan.edifikana.client.lib.eventTypeFriendlyName
 import com.cramsan.edifikana.client.lib.features.root.EdifikanaApplicationEvent
 import com.cramsan.edifikana.client.lib.features.root.main.MainActivityEvent
+import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.client.lib.managers.TimeCardManager
 import com.cramsan.edifikana.client.lib.models.StaffModel
@@ -10,6 +11,7 @@ import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
 import com.cramsan.edifikana.client.lib.models.fullName
 import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.edifikana.client.lib.toFriendlyDateTime
+import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
@@ -37,6 +39,7 @@ class ViewStaffViewModel(
     private val staffManager: StaffManager,
     private val timeCardManager: TimeCardManager,
     private val storageService: StorageService,
+    private val propertyManager: PropertyManager,
     private val clock: Clock,
     dependencies: ViewModelDependencies,
 ) : BaseViewModel(dependencies) {
@@ -118,8 +121,8 @@ class ViewStaffViewModel(
             return@launch
         }
 
-        val imageUri = record.imageRef?.let {
-            storageService.downloadImage(it).getOrThrow()
+        val imageUri = record.publicImageUrl?.let {
+            storageService.downloadFile(it).getOrThrow()
         }
         _event.emit(
             ViewStaffEvent.TriggerMainActivityEvent(
@@ -156,6 +159,7 @@ class ViewStaffViewModel(
         val timeCardEventType = eventType ?: return@launch
         val staff = staff ?: return@launch
         val staffPk = staff.id ?: return@launch
+        val propertyId = propertyManager.activeProperty().value?.propertyId ?: return@launch
 
         _uiState.value = _uiState.value.copy(isLoading = true)
 
@@ -163,6 +167,7 @@ class ViewStaffViewModel(
             id = null,
             entityId = Random.nextInt().toString(),
             staffPk = staffPk,
+            propertyId = PropertyId(propertyId),
             eventType = timeCardEventType,
             eventTime = clock.now().epochSeconds,
             imageUrl = null,

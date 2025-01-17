@@ -15,7 +15,8 @@ android {
 }
 
 dependencies {
-    implementation("com.android.support:support-compat:_")
+    implementation("androidx.appcompat:appcompat:_")
+    implementation("androidx.core:core-ktx:_")
 }
 
 kotlin {

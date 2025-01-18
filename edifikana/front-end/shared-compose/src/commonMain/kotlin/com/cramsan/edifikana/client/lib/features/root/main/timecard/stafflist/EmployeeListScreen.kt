@@ -22,7 +22,6 @@ import com.cramsan.edifikana.lib.model.StaffId
 import edifikana_lib.Res
 import edifikana_lib.string_other
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
 /**
@@ -62,7 +61,7 @@ fun StaffListScreen(
 }
 
 @Composable
-private fun StaffList(
+internal fun StaffList(
     isLoading: Boolean,
     staffs: List<StaffUIModel>,
     onStaffClick: (StaffId) -> Unit,
@@ -113,25 +112,5 @@ private fun StaffOtherItem(
         modifier = modifier
             .clickable { onAddStaffSelected() }
             .padding(16.dp),
-    )
-}
-
-@Preview
-@Composable
-private fun StaffListScreenPreview() {
-    StaffList(
-        isLoading = true,
-        staffs = listOf(
-            StaffUIModel(
-                "Cesar Andres Ramirez Sanchez",
-                StaffId("John"),
-            ),
-            StaffUIModel(
-                "2",
-                StaffId("Jane"),
-            ),
-        ),
-        onStaffClick = {},
-        onAddStaffClick = {},
     )
 }

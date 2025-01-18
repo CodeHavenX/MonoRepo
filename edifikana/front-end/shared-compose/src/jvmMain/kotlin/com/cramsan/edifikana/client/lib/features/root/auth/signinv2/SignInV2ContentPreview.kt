@@ -1,10 +1,7 @@
-package com.cramsan.edifikana.client.lib.features.signinv2
+package com.cramsan.edifikana.client.lib.features.root.auth.signinv2
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
-import com.cramsan.edifikana.client.lib.features.root.auth.signinv2.SignInFormUIModel
-import com.cramsan.edifikana.client.lib.features.root.auth.signinv2.SignInV2Content
-import com.cramsan.edifikana.client.lib.features.root.auth.signinv2.SignInV2UIState
 
 @Preview
 @Composable

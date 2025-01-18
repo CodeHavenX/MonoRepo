@@ -35,15 +35,12 @@ import com.cramsan.edifikana.client.lib.ui.components.LoadingAnimationOverlay
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
-import com.cramsan.framework.assertlib.AssertUtil
-import com.cramsan.framework.assertlib.implementation.NoopAssertUtil
 import edifikana_lib.Res
 import edifikana_lib.text_clock_in
 import edifikana_lib.text_clock_out
 import edifikana_lib.text_upload
 import io.github.jan.supabase.storage.authenticatedStorageItem
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
 /**
@@ -101,7 +98,7 @@ fun ViewStaffScreen(
 }
 
 @Composable
-private fun ViewStaffContent(
+internal fun ViewStaffContent(
     isLoading: Boolean,
     staff: ViewStaffUIModel.StaffUIModel?,
     records: List<ViewStaffUIModel.TimeCardRecordUIModel>,
@@ -155,7 +152,7 @@ private fun ViewStaffContent(
 }
 
 @Composable
-private fun TimeCardRecordItem(
+internal fun TimeCardRecordItem(
     record: ViewStaffUIModel.TimeCardRecordUIModel,
     onShareClick: (TimeCardEventId?) -> Unit,
 ) {
@@ -199,43 +196,4 @@ private fun TimeCardRecordItem(
         }
     }
     HorizontalDivider()
-}
-
-@Preview
-@Composable
-private fun ViewStaffScreenPreview() {
-    // TODO: Move to a centralized place in core-compose
-    AssertUtil.setInstance(NoopAssertUtil)
-
-    ViewStaffContent(
-        isLoading = true,
-        staff = ViewStaffUIModel.StaffUIModel(
-            fullName = "Cesar Andres Ramirez Sanchez",
-            role = "Descansero",
-            staffPK = StaffId("123"),
-        ),
-        records = listOf(
-            ViewStaffUIModel.TimeCardRecordUIModel(
-                eventType = "Entrada",
-                timeRecorded = "2021-01-01 12:00:00",
-                "storage/1",
-                TimeCardEventType.CLOCK_IN,
-                null,
-                TimeCardEventId("123-123-123"),
-                true,
-            ),
-            ViewStaffUIModel.TimeCardRecordUIModel(
-                eventType = "Salida",
-                timeRecorded = "2021-01-01 12:00:00",
-                "storage/2",
-                TimeCardEventType.CLOCK_OUT,
-                null,
-                TimeCardEventId("321"),
-                false,
-            ),
-        ),
-        onClockInClick = {},
-        onClockOutClick = {},
-        onShareClick = {},
-    )
 }

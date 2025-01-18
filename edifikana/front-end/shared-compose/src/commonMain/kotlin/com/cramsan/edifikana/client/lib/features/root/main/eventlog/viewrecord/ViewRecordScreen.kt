@@ -45,7 +45,6 @@ import edifikana_lib.string_field_unit
 import edifikana_lib.string_gallery
 import edifikana_lib.string_share
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
 /**
@@ -98,7 +97,7 @@ fun ViewRecordScreen(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun SingleRecord(
+internal fun SingleRecord(
     isLoading: Boolean,
     eventLogRecord: ViewRecordUIModel?,
     onShareClicked: () -> Unit,
@@ -242,28 +241,4 @@ private fun SingleRecord(
     LoadingAnimationOverlay(isLoading)
 }
 
-@Preview
-@Composable
-private fun ViewScreenPreview() {
-    SingleRecord(
-        false,
-        ViewRecordUIModel(
-            title = "Delivery of pizza",
-            eventType = "Invitado",
-            timeRecorded = "2024 12 02 12:12:12",
-            unit = "302",
-            description = "Pizza delivery to the main entrance. The delivery was made by the main entrance. ",
-            attachments = listOf(
-                AttachmentHolder("url", "url"),
-                AttachmentHolder("url", "url"),
-                AttachmentHolder("url", "url"),
-            ),
-            recordPK = EventLogEntryId("1"),
-        ),
-        {},
-        {},
-        {},
-    )
-}
-
-const val COLUMNS = 4
+private const val COLUMNS = 4

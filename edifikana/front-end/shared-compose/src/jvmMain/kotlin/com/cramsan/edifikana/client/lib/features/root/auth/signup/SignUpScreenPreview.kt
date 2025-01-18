@@ -6,6 +6,9 @@ import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
 import com.cramsan.edifikana.client.lib.ui.theme.AppTheme
 
+/**
+ * Preview for the SignUp screen.
+ */
 @Preview
 @Composable
 private fun SignUpScreenSuccessPreview() = AppTheme {

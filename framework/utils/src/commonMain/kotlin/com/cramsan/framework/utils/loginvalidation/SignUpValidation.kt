@@ -8,7 +8,7 @@ fun validateUsernameEmail(username: String): List<String> {
     if (username.isBlank()) {
         return listOf("Username cannot be empty.")
     }
-    if (!username.contains("@")) {
+    if (!username.matches(Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"))) {
         return listOf("Username must be a valid email address.")
     }
     return emptyList()
@@ -17,11 +17,15 @@ fun validateUsernameEmail(username: String): List<String> {
 /**
  * Validate that the [username] is a valid email address. Returns a list of error messages
  * if the username is invalid. An empty list indicates that the username is valid.
+ * Currently only supports US phone numbers
  */
-fun validateUsernamePhoneNumber(username: String): List<String> {
-    if (username.isBlank()) {
+fun validateUsernamePhoneNumber(phoneNumber: String): List<String> {
+    if (phoneNumber.isBlank()) {
         return listOf("Username cannot be empty.")
     }
+    // remove spaces, parenthesis, and dashes from phone number
+    val username = phoneNumber.replace(Regex("[\\s()-]"), "")
+
     if (!username.matches(Regex("\\d{10}"))) {
         return listOf("Username must be a valid phone number.")
     }

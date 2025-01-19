@@ -34,7 +34,6 @@ import edifikana_lib.string_names
 import edifikana_lib.string_role
 import edifikana_lib.string_save
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
 /**
@@ -63,7 +62,7 @@ fun AddStaffScreen(
 }
 
 @Composable
-private fun AddStaffForm(
+internal fun AddStaffForm(
     isLoading: Boolean,
     onSaveDataClicked: (
         id: String?,
@@ -139,13 +138,4 @@ private fun AddStaffForm(
         }
     }
     LoadingAnimationOverlay(isLoading)
-}
-
-@Preview
-@Composable
-private fun AddStaffScreenPreview() {
-    AddStaffForm(
-        isLoading = true,
-        onSaveDataClicked = { _, _, _, _, _ -> },
-    )
 }

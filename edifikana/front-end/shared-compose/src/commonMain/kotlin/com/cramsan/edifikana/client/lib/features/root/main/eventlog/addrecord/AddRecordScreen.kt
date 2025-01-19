@@ -38,7 +38,6 @@ import edifikana_lib.text_simple_desc
 import edifikana_lib.text_staff
 import edifikana_lib.text_staff_name
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
 /**
@@ -88,7 +87,7 @@ fun AddRecordScreen(
 }
 
 @Composable
-private fun AddRecord(
+internal fun AddRecord(
     staffs: List<AddRecordUIModel>,
     isLoading: Boolean,
     onAddRecordClicked: (
@@ -211,22 +210,4 @@ private fun AddRecord(
         }
     }
     LoadingAnimationOverlay(isLoading)
-}
-
-@Preview
-@Composable
-private fun AddRecordPreview() {
-    AddRecord(
-        listOf(
-            AddRecordUIModel(
-                "Juan Perez",
-                StaffId("1"),
-            ),
-            AddRecordUIModel(
-                "Maria Rodriguez",
-                null,
-            ),
-        ),
-        true,
-    ) { _, _, _, _, _, _, _ -> }
 }

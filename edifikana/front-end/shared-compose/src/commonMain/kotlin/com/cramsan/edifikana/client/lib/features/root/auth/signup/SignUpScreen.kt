@@ -64,7 +64,7 @@ fun SignUpScreen(
         }
     }
 
-    SignInV2Content(
+    SignUpScreenContent(
         uistate = uiState,
         onUsernameValueChange = { viewModel.onUsernameValueChange(it) },
         onPasswordValueChange = { viewModel.onPasswordValueChange(it) },
@@ -73,7 +73,7 @@ fun SignUpScreen(
 }
 
 @Composable
-internal fun SignInV2Content(
+internal fun SignUpScreenContent(
     uistate: SignUpUIState,
     onUsernameValueChange: (String) -> Unit,
     onPasswordValueChange: (String) -> Unit,

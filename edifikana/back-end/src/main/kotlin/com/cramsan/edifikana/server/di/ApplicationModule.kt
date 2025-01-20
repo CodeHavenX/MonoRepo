@@ -9,16 +9,6 @@ import com.cramsan.edifikana.server.core.controller.TimeCardController
 import com.cramsan.edifikana.server.core.controller.UserController
 import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
 import com.cramsan.edifikana.server.core.controller.auth.SupabaseContextRetriever
-import com.cramsan.edifikana.server.core.repository.EventLogDatabase
-import com.cramsan.edifikana.server.core.repository.PropertyDatabase
-import com.cramsan.edifikana.server.core.repository.StaffDatabase
-import com.cramsan.edifikana.server.core.repository.TimeCardDatabase
-import com.cramsan.edifikana.server.core.repository.UserDatabase
-import com.cramsan.edifikana.server.core.repository.supabase.SupabaseEventLogDatabase
-import com.cramsan.edifikana.server.core.repository.supabase.SupabasePropertyDatabase
-import com.cramsan.edifikana.server.core.repository.supabase.SupabaseStaffDatabase
-import com.cramsan.edifikana.server.core.repository.supabase.SupabaseTimeCardDatabase
-import com.cramsan.edifikana.server.core.repository.supabase.SupabaseUserDatabase
 import com.cramsan.edifikana.server.core.service.EventLogService
 import com.cramsan.edifikana.server.core.service.PropertyService
 import com.cramsan.edifikana.server.core.service.StaffService
@@ -115,23 +105,6 @@ val ApplicationModule = module {
     singleOf(::PropertyService)
     singleOf(::StaffService)
     singleOf(::TimeCardService)
-
-    // Storage
-    singleOf(::SupabaseUserDatabase) {
-        bind<UserDatabase>()
-    }
-    singleOf(::SupabaseStaffDatabase) {
-        bind<StaffDatabase>()
-    }
-    singleOf(::SupabasePropertyDatabase) {
-        bind<PropertyDatabase>()
-    }
-    singleOf(::SupabaseTimeCardDatabase) {
-        bind<TimeCardDatabase>()
-    }
-    singleOf(::SupabaseEventLogDatabase) {
-        bind<EventLogDatabase>()
-    }
 }
 
 private const val TAG = "ApplicationModule"

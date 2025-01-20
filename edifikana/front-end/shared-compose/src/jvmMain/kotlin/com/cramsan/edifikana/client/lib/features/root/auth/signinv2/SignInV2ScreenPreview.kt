@@ -22,5 +22,6 @@ fun SignInV2ScreenPreview() {
         onPasswordValueChange = { },
         onSignInClicked = { },
         onSignUpClicked = { },
+        onInfoClicked = { },
     )
 }

@@ -9,6 +9,8 @@ import com.cramsan.edifikana.client.lib.features.root.admin.property.PropertyVie
 import com.cramsan.edifikana.client.lib.features.root.auth.AuthActivityViewModel
 import com.cramsan.edifikana.client.lib.features.root.auth.signinv2.SignInV2ViewModel
 import com.cramsan.edifikana.client.lib.features.root.auth.signup.SignUpViewModel
+import com.cramsan.edifikana.client.lib.features.root.debug.DebugActivityViewModel
+import com.cramsan.edifikana.client.lib.features.root.debug.main.DebugViewModel
 import com.cramsan.edifikana.client.lib.features.root.main.MainActivityViewModel
 import com.cramsan.edifikana.client.lib.features.root.main.eventlog.EventLogViewModel
 import com.cramsan.edifikana.client.lib.features.root.main.eventlog.addrecord.AddRecordViewModel
@@ -44,4 +46,6 @@ val ViewModelModule = module {
     singleOf(::PropertyManagerViewModel)
     singleOf(::PropertyViewModel)
     singleOf(::EdifikanaApplicationViewModel)
+    singleOf(::DebugActivityViewModel)
+    singleOf(::DebugViewModel)
 }

@@ -19,7 +19,7 @@ import com.cramsan.edifikana.server.core.service.models.User
 import kotlinx.datetime.Instant
 
 val USER_1 = User(
-    id = UserId("usasadser_id_1"),
+    id = UserId("user_id_1"),
     email = "user1@test.com",
     hasGlobalPerms = false,
 )

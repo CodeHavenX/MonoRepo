@@ -114,6 +114,19 @@ class SignInV2ViewModel(
         }
     }
 
+    /**
+     * Navigate to the debug page.
+     */
+    fun navigateToDebugPage() {
+        viewModelScope.launch {
+            _events.emit(
+                SignInV2Event.TriggerEdifikanaApplicationEvent(
+                    EdifikanaApplicationEvent.NavigateToActivity(ActivityRouteDestination.DebugDestination)
+                )
+            )
+        }
+    }
+
     companion object {
         private const val TAG = "SignInV2ViewModel"
     }

@@ -15,6 +15,7 @@ enum class ApplicationRoute(
     Auth("auth"),
     Account("account"),
     Admin("admin"),
+    Debug("debug"),
     ;
 }
 
@@ -69,5 +70,13 @@ sealed class ActivityRouteDestination(
     data object AdminDestination : ActivityRouteDestination(
         ApplicationRoute.Admin,
         ApplicationRoute.Admin.route,
+    )
+
+    /**
+     * A class representing navigating to the debug page.
+     */
+    data object DebugDestination : ActivityRouteDestination(
+        ApplicationRoute.Debug,
+        ApplicationRoute.Debug.route,
     )
 }

@@ -1,5 +1,7 @@
 package com.cramsan.edifikana.server.di
 
+import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
+import com.cramsan.edifikana.server.core.controller.auth.DummyContextRetriever
 import com.cramsan.edifikana.server.core.repository.EventLogDatabase
 import com.cramsan.edifikana.server.core.repository.PropertyDatabase
 import com.cramsan.edifikana.server.core.repository.StaffDatabase
@@ -54,5 +56,8 @@ val DummyStorageModule = module {
     }
     singleOf(::DummyEventLogDatabase) {
         bind<EventLogDatabase>()
+    }
+    singleOf(::DummyContextRetriever) {
+        bind<ContextRetriever>()
     }
 }

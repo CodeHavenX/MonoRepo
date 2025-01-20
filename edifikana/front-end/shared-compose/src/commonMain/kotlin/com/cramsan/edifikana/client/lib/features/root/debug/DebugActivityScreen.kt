@@ -1,4 +1,4 @@
-package ${PACKAGE_NAME}
+package com.cramsan.edifikana.client.lib.features.root.debug
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -13,39 +13,53 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.cramsan.edifikana.client.lib.features.root.EdifikanaApplicationViewModel
+import com.cramsan.edifikana.client.lib.features.root.RouteSafePath
+import com.cramsan.edifikana.client.lib.features.root.debug.main.DebugScreen
+import com.cramsan.edifikana.client.lib.ui.components.EdifikanaTopBar
 import org.koin.compose.koinInject
 
 /**
- * ${NAME} activity screen.
+ * Debug activity screen.
  */
 @OptIn(RouteSafePath::class)
 @Composable
-fun ${NAME}ActivityScreen(
-    viewModel: ${NAME}ActivityViewModel = koinInject(),
-    applicationViewModel: ApplicationViewModel = koinInject(),
+fun DebugActivityScreen(
+    viewModel: DebugActivityViewModel = koinInject(),
+    applicationViewModel: EdifikanaApplicationViewModel = koinInject(),
 ) {
     val navController = rememberNavController()
 
-    val viewModelEvent by viewModel.event.collectAsState(${NAME}ActivityEvent.Noop)
+    val viewModelEvent by viewModel.event.collectAsState(DebugActivityEvent.Noop)
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
     }
 
     LaunchedEffect(viewModelEvent) {
         when (val event = viewModelEvent) {
-            ${NAME}ActivityEvent.Noop -> Unit
-            is ${NAME}ActivityEvent.Navigate -> {
+            DebugActivityEvent.Noop -> Unit
+            is DebugActivityEvent.Navigate -> {
                 navController.navigate(event.destination.path)
             }
-            is ${NAME}ActivityEvent.CloseActivity -> {
+
+            is DebugActivityEvent.CloseActivity -> {
                 viewModel.closeActivity()
             }
-            is ${NAME}ActivityEvent.TriggerApplicationEvent -> {
+
+            is DebugActivityEvent.TriggerApplicationEvent -> {
                 applicationViewModel.executeEvent(event.applicationEvent)
             }
         }
     }
 
-    Scaffold { innerPadding ->
+    Scaffold(
+        topBar = {
+            EdifikanaTopBar(
+                title = "Debug Menu",
+                navHostController = navController,
+                onCloseClicked = { viewModel.closeActivity() },
+            )
+        },
+    ) { innerPadding ->
         NavigationHost(
             navController = navController,
             modifier = Modifier.padding(innerPadding),
@@ -61,13 +75,13 @@ private fun NavigationHost(
 ) {
     NavHost(
         navController,
-        startDestination = ${NAME}ActivityRoute.Example.route,
+        startDestination = DebugActivityRoute.Debug.route,
         modifier = modifier,
     ) {
-        ${NAME}ActivityRoute.entries.forEach {
+        DebugActivityRoute.entries.forEach {
             when (it) {
-                ${NAME}ActivityRoute.Example -> composable(it.route) {
-                    // ExampleScreen()
+                DebugActivityRoute.Debug -> composable(it.route) {
+                    DebugScreen()
                 }
             }
         }

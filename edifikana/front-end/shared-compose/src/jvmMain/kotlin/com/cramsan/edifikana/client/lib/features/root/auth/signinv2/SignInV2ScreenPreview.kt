@@ -23,6 +23,7 @@ private fun SignInV2ScreenPreview() {
         onPasswordValueChange = { },
         onSignInClicked = { },
         onSignUpClicked = { },
+        onInfoClicked = { },
     )
 }
 
@@ -45,5 +46,6 @@ private fun SignInV2ContentPreview() = AppTheme {
         onPasswordValueChange = {},
         onSignInClicked = {},
         onSignUpClicked = {},
+        onInfoClicked = {},
     )
 }

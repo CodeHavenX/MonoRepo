@@ -13,6 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import com.cramsan.edifikana.client.lib.features.root.account.AccountActivityScreen
 import com.cramsan.edifikana.client.lib.features.root.admin.AdminActivityScreen
 import com.cramsan.edifikana.client.lib.features.root.auth.AuthActivityScreen
+import com.cramsan.edifikana.client.lib.features.root.debug.DebugActivityScreen
 import com.cramsan.edifikana.client.lib.features.root.main.MainActivityScreen
 import com.cramsan.edifikana.client.lib.features.root.splash.SplashActivityScreen
 import com.cramsan.edifikana.client.lib.ui.theme.AppTheme
@@ -97,6 +98,9 @@ private fun ApplicationNavigationHost(
                 }
                 ApplicationRoute.Admin -> composable(route.route) {
                     AdminActivityScreen()
+                }
+                ApplicationRoute.Debug -> composable(route.route) {
+                    DebugActivityScreen()
                 }
             }
         }

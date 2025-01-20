@@ -7,7 +7,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -70,6 +74,7 @@ fun SignInV2Screen(
         onPasswordValueChange = { viewModel.onPasswordValueChange(it) },
         onSignInClicked = { viewModel.signIn() },
         onSignUpClicked = { viewModel.navigateToSignUpPage() },
+        onInfoClicked = { viewModel.navigateToDebugPage() },
     )
 }
 
@@ -80,6 +85,7 @@ internal fun SignInV2Content(
     onPasswordValueChange: (String) -> Unit,
     onSignInClicked: () -> Unit,
     onSignUpClicked: () -> Unit,
+    onInfoClicked: () -> Unit,
 ) {
     Box(
         modifier = Modifier
@@ -124,6 +130,16 @@ internal fun SignInV2Content(
             ) {
                 Text("Sign Up")
             }
+        }
+
+        IconButton(
+            modifier = Modifier.align(Alignment.BottomEnd),
+            onClick = onInfoClicked,
+        ) {
+            Icon(
+                imageVector = Icons.Default.Info,
+                contentDescription = null,
+            )
         }
     }
     LoadingAnimationOverlay(uistate.isLoading)

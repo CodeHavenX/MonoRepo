@@ -60,6 +60,9 @@ suspend inline fun ApplicationCall.handleCall(
 /**
  * Get the authenticated client context from a client context. If the client context is not authenticated, an exception
  * will be thrown.
+ *
+ * TODO: We need to have this function be an inline function due to a weird java.lang.NoSuchMethodError when being
+ * invoked. I dont know the source of this issue, but making this function inline fixes it for now.
  */
 @Suppress("UseCheckOrError")
 inline fun getAuthenticatedClientContext(clientContext: ClientContext): ClientContext.AuthenticatedClientContext {

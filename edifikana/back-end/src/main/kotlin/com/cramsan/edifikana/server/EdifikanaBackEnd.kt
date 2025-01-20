@@ -13,7 +13,9 @@ import com.cramsan.edifikana.server.core.controller.TimeCardController.Companion
 import com.cramsan.edifikana.server.core.controller.UserController
 import com.cramsan.edifikana.server.core.controller.UserController.Companion.registerRoutes
 import com.cramsan.edifikana.server.di.ApplicationModule
+import com.cramsan.edifikana.server.di.DummyStorageModule
 import com.cramsan.edifikana.server.di.FrameworkModule
+import com.cramsan.edifikana.server.di.SupabaseStorageModule
 import com.cramsan.edifikana.server.di.createKtorModule
 import com.cramsan.framework.logging.logI
 import io.ktor.serialization.kotlinx.json.json
@@ -37,6 +39,14 @@ fun main(args: Array<String>) = io.ktor.server.netty.EngineMain.main(args)
  */
 fun Application.module() = runBlocking {
     initializeDependencies()
+    startServer()
+}
+
+/**
+ * Debug entry point of the application.
+ */
+fun Application.debugModule() = runBlocking {
+    initializeDebugDependencies()
     startServer()
 }
 
@@ -85,6 +95,21 @@ fun Application.initializeDependencies() {
             createKtorModule(this@initializeDependencies),
             FrameworkModule,
             ApplicationModule,
+            SupabaseStorageModule,
+        )
+    }
+}
+
+/**
+ * Initialize the service debug dependencies.
+ */
+fun Application.initializeDebugDependencies() {
+    startKoin {
+        modules(
+            createKtorModule(this@initializeDebugDependencies),
+            FrameworkModule,
+            ApplicationModule,
+            DummyStorageModule,
         )
     }
 }

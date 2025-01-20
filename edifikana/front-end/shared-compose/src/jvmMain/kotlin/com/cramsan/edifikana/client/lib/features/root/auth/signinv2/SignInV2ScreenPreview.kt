@@ -2,13 +2,14 @@ package com.cramsan.edifikana.client.lib.features.root.auth.signinv2
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
+import com.cramsan.edifikana.client.lib.ui.theme.AppTheme
 
 /**
  * Preview for the SignInV2 screen.
  */
 @Preview
 @Composable
-fun SignInV2ScreenPreview() {
+private fun SignInV2ScreenPreview() {
     SignInV2Content(
         uistate = SignInV2UIState(
             isLoading = false,
@@ -22,5 +23,27 @@ fun SignInV2ScreenPreview() {
         onPasswordValueChange = { },
         onSignInClicked = { },
         onSignUpClicked = { },
+    )
+}
+
+/**
+ * Preview for the SignInV2 screen.
+ */
+@Preview
+@Composable
+private fun SignInV2ContentPreview() = AppTheme {
+    SignInV2Content(
+        uistate = SignInV2UIState(
+            isLoading = true,
+            signInForm = SignInFormUIModel(
+                email = "username",
+                password = "password",
+                errorMessage = "",
+            ),
+        ),
+        onUsernameValueChange = {},
+        onPasswordValueChange = {},
+        onSignInClicked = {},
+        onSignUpClicked = {},
     )
 }

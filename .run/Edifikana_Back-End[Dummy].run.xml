@@ -1,7 +1,8 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Edifikana:Back-End" type="JetRunConfigurationType">
+  <configuration default="false" name="Edifikana:Back-End[Dummy]" type="JetRunConfigurationType">
     <option name="MAIN_CLASS_NAME" value="com.cramsan.edifikana.server.EdifikanaBackEndKt" />
     <module name="MonoRepo.edifikana.back-end.main" />
+    <option name="PROGRAM_PARAMETERS" value="--config=application.conf --config=application.debug.conf" />
     <shortenClasspath name="NONE" />
     <method v="2">
       <option name="Make" enabled="true" />

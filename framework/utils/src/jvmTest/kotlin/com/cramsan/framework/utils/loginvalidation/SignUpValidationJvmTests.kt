@@ -1,8 +1,10 @@
 package com.cramsan.framework.utils.loginvalidation
 
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvFileSource
 import org.junit.jupiter.params.provider.CsvSource
+import kotlin.math.exp
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
@@ -15,7 +17,7 @@ class SignUpValidationJvmTests {
      */
     @ParameterizedTest
     @CsvFileSource(resources = ["/loginvalidation/validateUsernameEmailNegativeCases.csv"], numLinesToSkip = 1)
-    fun validateUsernameEmail_for_negative_and_positive_use_cases(username: String, expectedMsg: String) {
+    fun validateUsernameEmail_for_negative_use_cases_returns_list(username: String, expectedMsg: String) {
         // Act
         val result = validateUsernameEmail(username)
         // Assert
@@ -80,12 +82,40 @@ class SignUpValidationJvmTests {
     @ParameterizedTest
     @CsvSource("'', Jones, First name cannot be empty.",
         "Mary,'', Last name cannot be empty.",
-        "'','', First name cannot be empty.")
+        "'','', 'First name cannot be empty., Last name cannot be empty.'")
     fun validateName_has_blank_field_and_returns_a_list(firstName:String, lastName:String, expectedMsg: String) {
         // Act
         val result = validateName(firstName, lastName)
+        val expectedError = expectedMsg.split(", ").map { it.trim() }
         // Assert
         assertTrue(result.isNotEmpty())
-        assertTrue { result.contains(expectedMsg) }
+        assertTrue { result.containsAll(expectedError) }
+    }
+
+    /**
+     * Validate the [validateName] function returns an empty list when the first name and last name are valid
+     */
+    @Test
+    fun validateName_has_valid_first_and_last_name_and_returns_empty_list() {
+        // Arrange
+        val firstName = "John"
+        val lastName = "Doe"
+        // Act
+        val result = validateName(firstName, lastName)
+        // Assert
+        assertTrue(result.isEmpty())
+    }
+
+    @ParameterizedTest
+    @CsvFileSource(resources = ["/loginvalidation/validatePassword.csv"], numLinesToSkip = 1)
+    fun validaPassword_negative_uses_cases_returns_list_of_errors(password: String, expectedSize: String, expectedMsg: String) {
+        // Act
+        val result = validatePassword(password)
+        val expectedErrors = expectedMsg.split(", ").map { it.trim('\'') }
+
+        // Assert
+        assertTrue(result.isNotEmpty())
+        assertEquals(expectedSize.toInt(), result.size)
+        assertEquals(expectedErrors, result)
     }
 }

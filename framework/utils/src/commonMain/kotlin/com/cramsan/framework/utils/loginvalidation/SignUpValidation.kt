@@ -1,5 +1,8 @@
 package com.cramsan.framework.utils.loginvalidation
 
+private const val PASSWORD_MIN_LENGTH = 6
+private const val PASSWORD_MAX_LENGTH = 24
+
 /**
  * Validate that the [username] is a valid email address. Returns a list of error messages
  * if the username is invalid. An empty list indicates that the username is valid.
@@ -42,7 +45,7 @@ fun validatePassword(password: String): List<String> {
     if (password.isBlank()) {
         return listOf("Password cannot be empty.")
     }
-    if (password.length < 6 || password.length > 24) {
+    if (password.length < PASSWORD_MIN_LENGTH || password.length > PASSWORD_MAX_LENGTH) {
         errors.add("Password must be between 6 and 24 characters long.")
     }
     if (!password.contains(Regex("[A-Z]"))) {

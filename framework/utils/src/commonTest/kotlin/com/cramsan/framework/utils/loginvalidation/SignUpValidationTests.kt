@@ -170,7 +170,7 @@ class SignUpValidationTests {
     @Test
     fun validPassword_has_invalid_password_and_returns_list() {
         // Arrange
-        val password = "password"
+        val password = "pswrd"
         // Act
         val result = validatePassword(password)
         // Assert

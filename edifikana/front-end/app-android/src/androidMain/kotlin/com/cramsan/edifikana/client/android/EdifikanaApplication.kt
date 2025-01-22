@@ -4,6 +4,8 @@ import android.app.Application
 import com.cramsan.edifikana.client.lib.di.koin.ExtrasModule
 import com.cramsan.edifikana.client.lib.di.koin.FrameworkModule
 import com.cramsan.edifikana.client.lib.di.koin.ManagerModule
+import com.cramsan.edifikana.client.lib.di.koin.SupabaseModule
+import com.cramsan.edifikana.client.lib.di.koin.SupabaseOverridesModule
 import com.cramsan.edifikana.client.lib.di.koin.ViewModelModule
 import com.cramsan.edifikana.client.lib.koin.ExtrasPlatformModule
 import com.cramsan.edifikana.client.lib.koin.FrameworkPlatformDelegatesModule
@@ -33,6 +35,8 @@ class EdifikanaApplication : Application() {
                 ExtrasPlatformModule,
                 ManagerModule,
                 ManagerPlatformModule,
+                SupabaseModule,
+                SupabaseOverridesModule,
                 ViewModelModule,
             )
         }

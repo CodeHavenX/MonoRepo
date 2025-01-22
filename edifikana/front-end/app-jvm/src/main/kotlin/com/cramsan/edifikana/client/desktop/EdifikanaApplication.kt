@@ -5,6 +5,8 @@ import androidx.compose.ui.window.application
 import com.cramsan.edifikana.client.lib.di.koin.ExtrasModule
 import com.cramsan.edifikana.client.lib.di.koin.FrameworkModule
 import com.cramsan.edifikana.client.lib.di.koin.ManagerModule
+import com.cramsan.edifikana.client.lib.di.koin.SupabaseModule
+import com.cramsan.edifikana.client.lib.di.koin.SupabaseOverridesModule
 import com.cramsan.edifikana.client.lib.di.koin.ViewModelModule
 import com.cramsan.edifikana.client.lib.features.application.EdifikanaJvmMainScreenEventHandler
 import com.cramsan.edifikana.client.lib.features.root.EdifikanaApplicationScreen
@@ -27,8 +29,11 @@ fun main() = application {
             ExtrasPlatformModule,
             ManagerModule,
             ManagerPlatformModule,
+            SupabaseModule,
+            SupabaseOverridesModule,
             ViewModelModule,
             ViewModelPlatformModule,
+
         )
     }
     Window(

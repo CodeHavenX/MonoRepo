@@ -40,9 +40,10 @@ import com.cramsan.edifikana.client.lib.features.root.auth.AuthActivityViewModel
 import com.cramsan.edifikana.client.lib.ui.components.LoadingAnimationOverlay
 import com.cramsan.edifikana.client.lib.ui.theme.Padding
 import com.cramsan.edifikana.client.lib.ui.theme.Size
-import edifikana_lib.*
 import edifikana_lib.Res
 import edifikana_lib.sign_up_screen_text_email
+import edifikana_lib.sign_up_screen_text_first_name
+import edifikana_lib.sign_up_screen_text_last_name
 import edifikana_lib.sign_up_screen_text_password
 import edifikana_lib.sign_up_screen_text_phone_number
 import edifikana_lib.sign_up_screen_text_policy

@@ -1,12 +1,14 @@
 package com.cramsan.edifikana.client.lib.features.root.auth.signup
 
-import com.cramsan.edifikana.client.lib.features.root.ActivityRouteDestination
-import com.cramsan.edifikana.client.lib.features.root.EdifikanaApplicationEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logI
+import com.cramsan.framework.utils.loginvalidation.validateName
+import com.cramsan.framework.utils.loginvalidation.validatePassword
+import com.cramsan.framework.utils.loginvalidation.validateUsernameEmail
+import com.cramsan.framework.utils.loginvalidation.validateUsernamePhoneNumber
 import edifikana_lib.Res
 import edifikana_lib.error_message_unexpected_error
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -46,13 +48,25 @@ class SignUpViewModel(
     }
 
     /**
-     * Called when the username value changes.
+     * Called when the email username value changes.
      */
-    fun onUsernameValueChange(username: String) {
-        logD(TAG, "onUsernameValueChange called")
+    fun onUsernameEmailValueChange(username: String) {
+        // Here we can implement any validation logic.
         _uiState.update {
             it.copy(
-                signUpForm = it.signUpForm.copy(email = username)
+                signUpForm = it.signUpForm.copy(usernameEmail = username)
+            )
+        }
+    }
+
+    /**
+     * Called when the phone number username value changes.
+     */
+    fun onUsernamePhoneNumberValueChange(username: String) {
+        // Here we can implement any validation logic.
+        _uiState.update {
+            it.copy(
+                signUpForm = it.signUpForm.copy(usernamePhone = username)
             )
         }
     }
@@ -61,7 +75,7 @@ class SignUpViewModel(
      * Called when the password value changes.
      */
     fun onPasswordValueChange(password: String) {
-        logD(TAG, "onPasswordValueChange called")
+        // Here we can implement any validation logic.
         _uiState.update {
             it.copy(
                 signUpForm = it.signUpForm.copy(password = password)
@@ -70,15 +84,62 @@ class SignUpViewModel(
     }
 
     /**
+     * Called when the first name value changes.
+     */
+    fun onFirstNameValueChange(firstName: String) {
+        // Here we can implement any validation logic.
+        _uiState.update {
+            it.copy(
+                signUpForm = it.signUpForm.copy(firstName = firstName)
+            )
+        }
+    }
+
+    /**
+     * Called when the first name value changes.
+     */
+    fun onLastNameValueChange(lastName: String) {
+        // Here we can implement any validation logic.
+        _uiState.update {
+            it.copy(
+                signUpForm = it.signUpForm.copy(lastName = lastName)
+            )
+        }
+    }
+
+    /**
      * Call this function request to create the account.
      */
     fun signUp() {
-        logI(TAG, "signIn called")
+        logI(TAG, "signUp called")
         viewModelScope.launch {
-            val email = _uiState.value.signUpForm.email.trim()
+            val firstName = _uiState.value.signUpForm.firstName.trim()
+            val lastName = _uiState.value.signUpForm.firstName.trim()
+            val usernameEmail = _uiState.value.signUpForm.usernameEmail.trim()
+            val usernamePhone = _uiState.value.signUpForm.usernamePhone.trim()
             val password = _uiState.value.signUpForm.password
+
+            val errorMessages = listOf(
+                validateName(firstName, lastName),
+                validateUsernameEmail(usernameEmail),
+                validateUsernamePhoneNumber(usernamePhone),
+                validatePassword(password),
+            ).flatten().joinToString("\n")
+
+            if (errorMessages.isNotEmpty()) {
+                _uiState.update {
+                    it.copy(
+                        signUpForm = it.signUpForm.copy(
+                            errorMessage = errorMessages
+                        )
+                    )
+                }
+                return@launch
+            }
+
+            // TODO: This should be updated to call the right API. See Auth Service, UserController and update as needed
             val user = auth.signIn(
-                email = email,
+                email = usernameEmail,
                 password = password,
             ).getOrElse { exception ->
                 logD(TAG, "Error signing up: $exception")
@@ -93,11 +154,14 @@ class SignUpViewModel(
             }
 
             if (user != null) {
+                logD(TAG, "User signed up: $user")
+                /*
                 _events.emit(
                     SignUpEvent.TriggerEdifikanaApplicationEvent(
                         EdifikanaApplicationEvent.NavigateToActivity(ActivityRouteDestination.MainDestination)
                     )
                 )
+                 */
             } else {
                 _uiState.update {
                     it.copy(
@@ -107,6 +171,20 @@ class SignUpViewModel(
                     )
                 }
             }
+        }
+    }
+
+    /**
+     * Called when the policy checkbox is checked or unchecked.
+     */
+    fun onPolicyChecked(checked: Boolean) {
+        _uiState.update {
+            it.copy(
+                signUpForm = it.signUpForm.copy(
+                    policyChecked = checked,
+                    registerEnabled = checked,
+                )
+            )
         }
     }
 

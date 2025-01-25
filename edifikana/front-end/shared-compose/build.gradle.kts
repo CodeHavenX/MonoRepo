@@ -24,7 +24,8 @@ kotlin {
             implementation(project(":framework:core"))
             implementation(project(":framework:core-compose"))
             implementation(project(":framework:preferences"))
-
+            implementation(project(":framework:preferences"))
+            implementation(project(":framework:utils"))
             implementation(project(":edifikana:shared"))
 
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:_")

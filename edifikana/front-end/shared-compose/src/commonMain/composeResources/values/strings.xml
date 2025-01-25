@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">Administración Cenit</string>
 
-    <string name="sign_in">Iniciar Sesión</string>
     <string name="sign_out">Cerrar Sessión</string>
     <string name="role_admin">Administrator</string>
     <string name="role_security">Seguridad</string>
@@ -83,7 +82,16 @@
     <string name="title_timecard_view_staff">Empleado</string>
     <string name="title_timecard_staff_list">Lista de Empleados</string>
 
-    <string name="text_email">Correo Electronico</string>
-    <string name="text_password">Contrasenha</string>
+    <string name="sign_in_screen_text_sign_in">Iniciar Sesión</string>
+    <string name="sign_in_screen_text_email">Correo/# Telefónico</string>
+    <string name="sign_in_screen_text_password">Contraseña</string>
+
+    <string name="sign_up_screen_text_first_name">Nombre</string>
+    <string name="sign_up_screen_text_last_name">Apellido</string>
+    <string name="sign_up_screen_text_email">Correo</string>
+    <string name="sign_up_screen_text_phone_number"># Telefónico</string>
+    <string name="sign_up_screen_text_password">Contraseña</string>
+    <string name="sign_up_screen_text_sign_up">Registrarse</string>
+    <string name="sign_up_screen_text_policy">"By creating an account, I accept Edifikans's Terms of Service and Privacy Policy."</string>
 
 </resources>

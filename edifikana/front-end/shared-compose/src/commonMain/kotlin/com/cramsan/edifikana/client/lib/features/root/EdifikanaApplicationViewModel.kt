@@ -1,6 +1,5 @@
 package com.cramsan.edifikana.client.lib.features.root
 
-import com.cramsan.edifikana.client.lib.managers.AttachmentManager
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.EventLogManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
@@ -22,7 +21,6 @@ import kotlin.time.Duration.Companion.seconds
 class EdifikanaApplicationViewModel(
     private val auth: AuthManager,
     private val eventLogManager: EventLogManager,
-    private val attachmentManager: AttachmentManager,
     private val timeCardManager: TimeCardManager,
     private val propertyManager: PropertyManager,
     dependencies: ViewModelDependencies,
@@ -59,6 +57,7 @@ class EdifikanaApplicationViewModel(
         if (result.isFailure) {
             logW(TAG, "Failure when enforcing auth.", result.exceptionOrNull())
         } else {
+            logI(TAG, "EnforceAuth result: ${result.getOrThrow()}")
             if (!result.getOrThrow()) {
                 propertyManager.setActiveProperty(null)
                 _events.emit(EdifikanaApplicationEvent.NavigateToActivity(ActivityRouteDestination.AuthDestination))
@@ -108,7 +107,6 @@ class EdifikanaApplicationViewModel(
         viewModelScope.launch {
             delay(1.seconds)
             eventLogManager.startUpload()
-            attachmentManager.startUpload()
             timeCardManager.startUpload()
         }
     }

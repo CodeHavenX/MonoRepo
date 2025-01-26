@@ -1,9 +1,6 @@
 package com.cramsan.edifikana.client.lib.managers
 
-import com.cramsan.edifikana.client.lib.db.models.TimeCardRecordDao
-import com.cramsan.edifikana.client.lib.db.models.TimeCardRecordEntity
-import com.cramsan.edifikana.client.lib.managers.mappers.toDomainModel
-import com.cramsan.edifikana.client.lib.managers.mappers.toEntity
+import com.cramsan.edifikana.client.lib.db.TimeCardCache
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
 import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.edifikana.client.lib.service.TimeCardService
@@ -29,7 +26,7 @@ import kotlinx.coroutines.sync.withLock
  */
 class TimeCardManager(
     private val timeCardService: TimeCardService,
-    private val timeCardRecordDao: TimeCardRecordDao,
+    private val timeCardCache: TimeCardCache,
     private val storageService: StorageService,
     private val dependencies: ManagerDependencies,
     private val ioDependencies: IODependencies,
@@ -42,7 +39,7 @@ class TimeCardManager(
      */
     suspend fun getRecords(staffPK: StaffId): Result<List<TimeCardRecordModel>> = dependencies.getOrCatch(TAG) {
         logI(TAG, "getRecords")
-        val cachedData = timeCardRecordDao.getAll(staffPK.staffId).map { it.toDomainModel() }
+        val cachedData = timeCardCache.getRecords(staffPK)
 
         val onlineData = timeCardService.getRecords(staffPK).getOrThrow()
         (cachedData + onlineData).sortedByDescending { it.eventTime }
@@ -53,7 +50,7 @@ class TimeCardManager(
      */
     suspend fun getAllRecords(): Result<List<TimeCardRecordModel>> = dependencies.getOrCatch(TAG) {
         logI(TAG, "getAllRecords")
-        val cachedData = timeCardRecordDao.getAll().map { it.toDomainModel() }
+        val cachedData = timeCardCache.getAllRecords()
 
         val onlineData = timeCardService.getAllRecords().getOrThrow()
         (cachedData + onlineData).sortedByDescending { it.eventTime }
@@ -74,20 +71,19 @@ class TimeCardManager(
      */
     suspend fun addRecord(timeCardRecord: TimeCardRecordModel, cachedImageUrl: CoreUri) = dependencies.getOrCatch(TAG) {
         logI(TAG, "addRecord")
-        val entity = timeCardRecord.toEntity(cachedImageUrl)
-        timeCardRecordDao.insert(entity)
+        timeCardCache.addRecord(timeCardRecord, cachedImageUrl)
 
         coroutineScope {
-            uploadRecord(entity)
+            uploadRecord(timeCardRecord)
             triggerFullUpload()
         }
         Unit
     }
 
     @Suppress("MagicNumber")
-    private suspend fun uploadRecord(entity: TimeCardRecordEntity) = runCatching {
+    private suspend fun uploadRecord(model: TimeCardRecordModel) = runCatching {
         mutex.withLock {
-            val localImageUri = CoreUri.createUri(requireNotNull(entity.cachedImageUrl))
+            val localImageUri = CoreUri.createUri(requireNotNull(model.imageUrl))
 
             val remoteImageRef = runCatching {
                 val imageData = readBytes(localImageUri, ioDependencies).getOrThrow()
@@ -102,18 +98,18 @@ class TimeCardManager(
             }
 
             val imageUrl = remoteImageRef.getOrThrow()
-            val processedRecord = entity.toDomainModel().copy(imageUrl = imageUrl)
+            val processedRecord = model.copy(imageUrl = imageUrl)
 
             timeCardService.addRecord(processedRecord).getOrThrow()
 
-            timeCardRecordDao.delete(entity)
+            timeCardCache.deleteRecord(model)
         }
     }.onFailure { logE(TAG, "Failed to upload time card", it) }
 
     private suspend fun triggerFullUpload(): Job {
         uploadJob?.cancel()
         return dependencies.appScope.launch {
-            val pending = timeCardRecordDao.getAll()
+            val pending = timeCardCache.getAllRecords()
 
             pending.forEach { record ->
                 uploadRecord(record)

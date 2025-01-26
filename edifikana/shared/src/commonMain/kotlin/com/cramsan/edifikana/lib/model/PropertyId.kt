@@ -1,5 +1,7 @@
 package com.cramsan.edifikana.lib.model
 
+import kotlin.jvm.JvmInline
+
 /**
  * Domain model representing a property ID.
  */

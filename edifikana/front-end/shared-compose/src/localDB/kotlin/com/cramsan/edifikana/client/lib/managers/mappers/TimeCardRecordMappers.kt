@@ -2,8 +2,10 @@ package com.cramsan.edifikana.client.lib.managers.mappers
 
 import com.cramsan.edifikana.client.lib.db.models.TimeCardRecordEntity
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
+import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.framework.core.CoreUri
 
 /**
@@ -14,7 +16,7 @@ fun TimeCardRecordModel.toEntity(cachedImageUrl: CoreUri): TimeCardRecordEntity 
         requireNotNull(entityId),
         staffPk.staffId,
         propertyId.propertyId,
-        eventType,
+        eventType.name,
         eventTime,
         cachedImageUrl.toString(),
     )
@@ -29,7 +31,7 @@ fun TimeCardRecordEntity.toDomainModel(): TimeCardRecordModel {
         id,
         StaffId(staffDocumentId ?: TODO("Staff document ID cannot be null")),
         PropertyId(propertyId ?: TODO("Property ID cannot be null")),
-        eventType ?: TODO("Event type cannot be null"),
+        TimeCardEventType.fromString(eventType),
         eventTime ?: TODO("Event time cannot be null"),
         cachedImageUrl,
         null,

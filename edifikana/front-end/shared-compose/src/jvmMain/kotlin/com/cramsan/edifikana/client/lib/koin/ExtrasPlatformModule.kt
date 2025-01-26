@@ -3,8 +3,10 @@ package com.cramsan.edifikana.client.lib.koin
 import androidx.room.Room
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.cramsan.edifikana.client.lib.db.AppDatabase
+import com.cramsan.edifikana.client.lib.di.koin.DEBUG_KEY
 import com.cramsan.edifikana.client.lib.service.impl.AuthRequestPlugin
 import com.cramsan.edifikana.lib.serialization.createJson
+import com.cramsan.framework.preferences.Preferences
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
@@ -39,7 +41,11 @@ val ExtrasPlatformModule = module {
             install(ContentNegotiation) {
                 json(createJson())
             }
-            install(AuthRequestPlugin(get()))
+
+            val preferences = get<Preferences>()
+            if (preferences.loadBoolean(DEBUG_KEY) == true) {
+                install(AuthRequestPlugin(get()))
+            }
         }
     }
 }

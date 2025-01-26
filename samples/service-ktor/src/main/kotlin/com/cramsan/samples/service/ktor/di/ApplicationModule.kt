@@ -9,7 +9,7 @@ import org.koin.dsl.module
 /**
  * Class to initialize all the application level components.
  */
-val ApplicationModule = module(createdAtStart = true) {
+val ApplicationModule = module {
 
     single<CoroutineScope> {
         GlobalScope

@@ -2,12 +2,12 @@ package com.cramsan.edifikana.client.lib.features.root.main.eventlog.viewrecord
 
 import com.cramsan.edifikana.client.lib.features.root.EdifikanaApplicationEvent
 import com.cramsan.edifikana.client.lib.features.root.main.MainActivityEvent
-import com.cramsan.edifikana.client.lib.managers.AttachmentManager
 import com.cramsan.edifikana.client.lib.managers.EventLogManager
 import com.cramsan.edifikana.client.lib.models.AttachmentHolder
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.edifikana.lib.model.EventLogEntryId
+import com.cramsan.framework.assertlib.assertFalse
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
@@ -25,7 +25,6 @@ import org.jetbrains.compose.resources.getString
  */
 class ViewRecordViewModel(
     private val eventLogManager: EventLogManager,
-    private val attachmentManager: AttachmentManager,
     private val storageService: StorageService,
     dependencies: ViewModelDependencies,
 ) : BaseViewModel(dependencies) {
@@ -114,8 +113,9 @@ class ViewRecordViewModel(
         val recordPk = record?.id ?: return@launch
 
         _uiState.value = _uiState.value.copy(isLoading = true)
-        attachmentManager.addAttachment(uris, recordPk)
         _uiState.value = _uiState.value.copy(isLoading = false)
+
+        assertFalse(uris.isNotEmpty(), TAG, "No URIs to upload")
 
         loadRecord(recordPk)
     }
@@ -145,5 +145,9 @@ class ViewRecordViewModel(
                 )
             )
         )
+    }
+
+    companion object {
+        private const val TAG = "ViewRecordViewModel"
     }
 }

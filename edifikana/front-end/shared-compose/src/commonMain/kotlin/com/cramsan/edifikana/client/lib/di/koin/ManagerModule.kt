@@ -1,6 +1,5 @@
 package com.cramsan.edifikana.client.lib.di.koin
 
-import com.cramsan.edifikana.client.lib.managers.AttachmentManager
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.EventLogManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
@@ -32,7 +31,6 @@ val ManagerModule = module {
     single { ManagerDependencies(get(), get()) }
 
     singleOf(::EventLogManager)
-    singleOf(::AttachmentManager)
     singleOf(::TimeCardManager)
     singleOf(::StaffManager)
     singleOf(::AuthManager)
@@ -74,6 +72,7 @@ val ManagerModule = module {
     }
     singleOf(::StorageServiceImpl) {
         bind<StorageService>()
+        bind<StorageServiceImpl>()
     }
     singleOf(::TimeCardServiceImpl) {
         bind<TimeCardService>()

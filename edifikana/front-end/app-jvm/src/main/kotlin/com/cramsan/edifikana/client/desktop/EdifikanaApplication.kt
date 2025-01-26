@@ -10,6 +10,8 @@ import com.cramsan.edifikana.client.lib.di.koin.SupabaseOverridesModule
 import com.cramsan.edifikana.client.lib.di.koin.ViewModelModule
 import com.cramsan.edifikana.client.lib.features.application.EdifikanaJvmMainScreenEventHandler
 import com.cramsan.edifikana.client.lib.features.root.EdifikanaApplicationScreen
+import com.cramsan.edifikana.client.lib.init.Initializer
+import com.cramsan.edifikana.client.lib.koin.CacheModule
 import com.cramsan.edifikana.client.lib.koin.ExtrasPlatformModule
 import com.cramsan.edifikana.client.lib.koin.FrameworkPlatformDelegatesModule
 import com.cramsan.edifikana.client.lib.koin.ManagerPlatformModule
@@ -29,6 +31,7 @@ fun main() = application {
             ExtrasPlatformModule,
             ManagerModule,
             ManagerPlatformModule,
+            CacheModule,
             SupabaseModule,
             SupabaseOverridesModule,
             ViewModelModule,
@@ -36,6 +39,10 @@ fun main() = application {
 
         )
     }
+
+    val initializer = Initializer()
+    initializer.start()
+
     Window(
         onCloseRequest = ::exitApplication,
         title = "Edifikana",

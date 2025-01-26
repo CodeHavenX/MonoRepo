@@ -18,7 +18,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import org.koin.dsl.module
 
-val FrameworkPlatformDelegatesModule = module(createdAtStart = true) {
+val FrameworkPlatformDelegatesModule = module {
 
     single<ThreadUtilDelegate> {
         ThreadUtilDelegateNoop

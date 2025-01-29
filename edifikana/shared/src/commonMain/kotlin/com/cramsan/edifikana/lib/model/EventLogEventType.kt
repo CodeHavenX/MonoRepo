@@ -15,7 +15,7 @@ enum class EventLogEventType {
         /**
          * Converts a string to an EventLogEventType.
          */
-        fun fromString(value: String): EventLogEventType {
+        fun fromString(value: String?): EventLogEventType {
             return when (value) {
                 "GUEST" -> GUEST
                 "INCIDENT" -> INCIDENT

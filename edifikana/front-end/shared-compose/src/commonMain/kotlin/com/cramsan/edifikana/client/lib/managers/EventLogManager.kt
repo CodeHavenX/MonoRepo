@@ -1,10 +1,6 @@
 package com.cramsan.edifikana.client.lib.managers
 
-import com.cramsan.edifikana.client.lib.db.models.EventLogRecordDao
-import com.cramsan.edifikana.client.lib.db.models.FileAttachmentDao
-import com.cramsan.edifikana.client.lib.managers.mappers.toDomainModel
-import com.cramsan.edifikana.client.lib.managers.mappers.toEntity
-import com.cramsan.edifikana.client.lib.models.AttachmentHolder
+import com.cramsan.edifikana.client.lib.db.EventLogCache
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.client.lib.service.EventLogService
 import com.cramsan.edifikana.lib.model.EventLogEntryId
@@ -23,8 +19,7 @@ import kotlinx.coroutines.sync.withLock
  */
 class EventLogManager(
     private val eventLogService: EventLogService,
-    private val eventLogRecordDao: EventLogRecordDao,
-    private val attachmentDao: FileAttachmentDao,
+    private val eventLogCache: EventLogCache,
     private val dependencies: ManagerDependencies,
 ) {
     private val mutex = Mutex()
@@ -36,7 +31,7 @@ class EventLogManager(
     suspend fun getRecords(): Result<List<EventLogRecordModel>> = dependencies.getOrCatch(TAG) {
         logI(TAG, "getRecords")
 
-        val cachedData = eventLogRecordDao.getAll().map { it.toDomainModel() }
+        val cachedData = eventLogCache.getRecords()
 
         val onlineData = eventLogService.getRecords()
             .getOrThrow()
@@ -51,12 +46,9 @@ class EventLogManager(
         eventLogRecordPK: EventLogEntryId,
     ): Result<EventLogRecordModel> = dependencies.getOrCatch(TAG) {
         logI(TAG, "getRecord")
-        val localAttachments = attachmentDao.getAll()
-            .filter { it.eventLogRecordPK == eventLogRecordPK.eventLogEntryId }
-            .mapNotNull { it.fileUri?.let { uri -> AttachmentHolder(publicUrl = uri, storageRef = null) } }
         val record = eventLogService.getRecord(eventLogRecordPK).getOrThrow()
         record.copy(
-            attachments = localAttachments + record.attachments,
+            attachments = record.attachments,
         )
     }
 
@@ -65,7 +57,7 @@ class EventLogManager(
      */
     suspend fun addRecord(eventLogRecord: EventLogRecordModel) = dependencies.getOrCatch(TAG) {
         logI(TAG, "addRecord")
-        eventLogRecordDao.insert(eventLogRecord.toEntity())
+        eventLogCache.addRecord(eventLogRecord)
 
         coroutineScope {
             uploadRecord(eventLogRecord)
@@ -79,7 +71,7 @@ class EventLogManager(
         mutex.withLock {
             eventLogService.addRecord(eventLogRecord).getOrThrow()
 
-            eventLogRecordDao.delete(eventLogRecord.toEntity())
+            eventLogCache.deleteRecord(eventLogRecord)
         }
     }.onFailure { logE(TAG, "Failed to upload event record", it) }
 
@@ -87,10 +79,10 @@ class EventLogManager(
         logI(TAG, "triggerFullUpload")
         uploadJob?.cancel()
         return dependencies.appScope.launch {
-            val pending = eventLogRecordDao.getAll()
+            val pending = eventLogCache.getRecords()
 
             pending.forEach { record ->
-                uploadRecord(record.toDomainModel())
+                uploadRecord(record)
             }
         }.also {
             uploadJob = it

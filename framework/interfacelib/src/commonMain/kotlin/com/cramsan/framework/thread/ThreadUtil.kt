@@ -16,19 +16,19 @@ import kotlin.native.concurrent.ThreadLocal
 @ThreadLocal
 object ThreadUtil {
 
-    private lateinit var _singleton: ThreadUtilInterface
+    private lateinit var _singleton_asdasd: ThreadUtilInterface
 
     /**
      * Global [ThreadUtilInterface] singleton
      */
     val singleton: ThreadUtilInterface
-        get() = _singleton
+        get() = _singleton_asdasd
 
     /**
      * Set the instance to be used for the [singleton].
      */
     fun setInstance(threadUtil: ThreadUtilInterface) {
-        _singleton = threadUtil
+        _singleton_asdasd = threadUtil
     }
 }
 

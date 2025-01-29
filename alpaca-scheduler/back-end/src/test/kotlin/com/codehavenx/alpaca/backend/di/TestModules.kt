@@ -46,7 +46,7 @@ fun testFrameworkModule() = module(createdAtStart = true) {
     }
     single<HaltUtilDelegate> { HaltUtilJVM() }
     single<HaltUtil> { HaltUtilImpl(get()) }
-    single<AssertUtilInterface>(createdAtStart = true) {
+    single<AssertUtilInterface> {
         val impl = AssertUtilImpl(
             true,
             get(),

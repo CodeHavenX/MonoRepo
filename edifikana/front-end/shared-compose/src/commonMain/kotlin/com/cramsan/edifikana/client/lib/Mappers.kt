@@ -23,12 +23,11 @@ import edifikana_lib.role_unknown
 import edifikana_lib.time_card_event_clock_in
 import edifikana_lib.time_card_event_clock_out
 import kotlinx.datetime.Instant
-import kotlinx.datetime.toJavaLocalDateTime
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
-import java.time.format.DateTimeFormatter
-import java.util.TimeZone
 
 /**
  * Converts the [StaffRole] to a friendly string.
@@ -57,7 +56,7 @@ fun StaffRole?.toRoleFriendlyNameCompose(): String {
     }
 }
 
-private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+private val dateTimeFormatter = LocalDateTime.Formats.ISO
 
 /**
  * Converts a [Long] timestamp to a friendly date time string.
@@ -65,9 +64,9 @@ private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 fun Long?.toFriendlyDateTime(): String {
     if (this == null) return ""
 
-    val tz = kotlinx.datetime.TimeZone.of(TimeZone.getDefault().id)
+    val tz = TimeZone.currentSystemDefault()
     val instant = Instant.fromEpochSeconds(this)
-    return dateFormatter.format(instant.toLocalDateTime(tz).toJavaLocalDateTime())
+    return dateTimeFormatter.format(instant.toLocalDateTime(tz))
 }
 
 /**

@@ -7,7 +7,6 @@ import com.cramsan.edifikana.client.lib.service.EventLogService
 import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.edifikana.client.lib.utils.IODependencies
 import com.cramsan.edifikana.client.lib.utils.getFilename
-import com.cramsan.edifikana.client.lib.utils.publicDownloadUrl
 import com.cramsan.edifikana.client.lib.utils.readBytes
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.utils.requireNotBlank
@@ -45,7 +44,7 @@ class AttachmentManager(
     ): Result<Unit> = dependencies.getOrCatch(TAG) {
         logI(TAG, "Adding attachment to event log record: $eventLogRecordPK")
         fileUris.forEach { fileUri ->
-            val entity = FileAttachmentEntity.create(eventLogRecordPK, clock, fileUri)
+            val entity = FileAttachmentEntity.create(eventLogRecordPK.eventLogEntryId, clock, fileUri)
             attachmentDao.insert(entity)
         }
         triggerFullUpload()
@@ -74,7 +73,7 @@ class AttachmentManager(
 
             val updatedRecord = eventLogRecord.copy(
                 attachments = eventLogRecord.attachments + AttachmentHolder(
-                    publicUrl = publicDownloadUrl(imagePhotoRef, ""),
+                    publicUrl = imagePhotoRef,
                     storageRef = imagePhotoRef,
                 )
             )

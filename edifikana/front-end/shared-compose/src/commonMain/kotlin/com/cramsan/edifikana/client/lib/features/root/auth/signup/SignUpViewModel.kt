@@ -146,7 +146,7 @@ class SignUpViewModel(
                 _uiState.update {
                     it.copy(
                         signUpForm = it.signUpForm.copy(
-                            errorMessage = exception.localizedMessage
+                            errorMessage = exception.message
                         )
                     )
                 }

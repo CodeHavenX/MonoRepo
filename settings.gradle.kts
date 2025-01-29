@@ -64,6 +64,7 @@ include("edifikana:shared")
 include("edifikana:front-end:shared-compose")
 include("edifikana:front-end:app-android")
 include("edifikana:front-end:app-jvm")
+include("edifikana:front-end:app-wasm")
 
 include("alpaca-scheduler:back-end")
 include("alpaca-scheduler:shared")

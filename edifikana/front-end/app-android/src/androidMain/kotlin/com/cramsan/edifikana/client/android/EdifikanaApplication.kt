@@ -7,6 +7,8 @@ import com.cramsan.edifikana.client.lib.di.koin.ManagerModule
 import com.cramsan.edifikana.client.lib.di.koin.SupabaseModule
 import com.cramsan.edifikana.client.lib.di.koin.SupabaseOverridesModule
 import com.cramsan.edifikana.client.lib.di.koin.ViewModelModule
+import com.cramsan.edifikana.client.lib.init.Initializer
+import com.cramsan.edifikana.client.lib.koin.CacheModule
 import com.cramsan.edifikana.client.lib.koin.ExtrasPlatformModule
 import com.cramsan.edifikana.client.lib.koin.FrameworkPlatformDelegatesModule
 import com.cramsan.edifikana.client.lib.koin.ManagerPlatformModule
@@ -35,10 +37,14 @@ class EdifikanaApplication : Application() {
                 ExtrasPlatformModule,
                 ManagerModule,
                 ManagerPlatformModule,
+                CacheModule,
                 SupabaseModule,
                 SupabaseOverridesModule,
                 ViewModelModule,
             )
         }
+
+        val initializer = Initializer()
+        initializer.start()
     }
 }

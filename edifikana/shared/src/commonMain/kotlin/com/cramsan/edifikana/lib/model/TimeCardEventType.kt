@@ -13,7 +13,7 @@ enum class TimeCardEventType {
         /**
          * Converts a string to a TimeCardEventType.
          */
-        fun fromString(value: String): TimeCardEventType {
+        fun fromString(value: String?): TimeCardEventType {
             return when (value) {
                 "CLOCK_IN" -> CLOCK_IN
                 "CLOCK_OUT" -> CLOCK_OUT

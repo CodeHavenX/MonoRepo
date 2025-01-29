@@ -23,6 +23,7 @@ import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.plugins.calllogging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.plugins.cors.routing.CORS
 import io.ktor.server.routing.routing
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
@@ -83,6 +84,10 @@ fun Application.configureKtorEngine() {
     install(CallLogging)
     install(ContentNegotiation) {
         json(json)
+    }
+    install(CORS) {
+        // Allow the localhost origin for development purposes.
+        allowHost("localhost:8080")
     }
 }
 

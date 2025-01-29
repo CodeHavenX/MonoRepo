@@ -1,6 +1,5 @@
 package com.cramsan.edifikana.client.lib.di.koin
 
-import com.cramsan.edifikana.client.lib.db.AppDatabase
 import com.cramsan.framework.logging.logE
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -21,10 +20,4 @@ val ExtrasModule = module {
 
     @OptIn(DelicateCoroutinesApi::class)
     single<CoroutineScope> { GlobalScope }
-
-    single { get<AppDatabase>().eventLogRecordDao() }
-
-    single { get<AppDatabase>().timeCardRecordDao() }
-
-    single { get<AppDatabase>().fileAttachmentDao() }
 }

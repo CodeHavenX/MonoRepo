@@ -72,7 +72,7 @@ val FrameworkModule = module(createdAtStart = true) {
 
     single<HaltUtil> { HaltUtilImpl(get()) }
 
-    single<AssertUtilInterface>(createdAtStart = true) {
+    single<AssertUtilInterface> {
         val impl = AssertUtilImpl(
             get(named(NAME_LOG_TO_FILE)),
             get(),

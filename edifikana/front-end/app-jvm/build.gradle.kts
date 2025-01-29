@@ -26,10 +26,3 @@ compose.desktop {
         }
     }
 }
-
-// https://github.com/JetBrains/compose-multiplatform/issues/4711
-// Temporary mitigation for the issue above regarding the latest versions of Compose MP and Jetpack Navigation
-configurations.all {
-    resolutionStrategy {
-        force(AndroidX.compose.material.ripple) }
-}

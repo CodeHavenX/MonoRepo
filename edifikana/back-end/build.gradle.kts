@@ -31,6 +31,7 @@ dependencies {
 
     implementation("io.ktor:ktor-server-core-jvm:_")
     implementation("io.ktor:ktor-server-netty-jvm:_")
+    implementation("io.ktor:ktor-server-cors:_")
     implementation("io.ktor:ktor-server-content-negotiation:_")
     implementation("io.ktor:ktor-serialization-kotlinx-json:_")
     implementation("io.ktor:ktor-server-call-logging:_")

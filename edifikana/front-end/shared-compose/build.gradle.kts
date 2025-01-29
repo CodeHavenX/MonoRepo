@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
+
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
@@ -11,8 +13,17 @@ plugins {
 apply(from = "$rootDir/gradle/kotlin-mpp-target-common-compose.gradle")
 apply(from = "$rootDir/gradle/kotlin-mpp-target-android-lib-compose.gradle")
 apply(from = "$rootDir/gradle/kotlin-mpp-target-jvm-compose.gradle")
+apply(from = "$rootDir/gradle/kotlin-mpp-target-wasm.gradle")
 
 kotlin {
+    wasmJs {
+        browser {}
+        binaries.executable()
+    }
+
+    // Apply the default hierarchy again. It'll create, for example, the iosMain source set:
+    applyDefaultHierarchyTemplate()
+
     sourceSets {
         commonMain.dependencies {
             implementation(project(":framework:assert"))
@@ -33,7 +44,6 @@ kotlin {
             implementation("org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose:_")
             implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:_")
             implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:_")
-            implementation("androidx.room:room-runtime:_")
 
             implementation("io.insert-koin:koin-core:_")
             implementation("io.insert-koin:koin-compose:_")
@@ -41,7 +51,6 @@ kotlin {
             implementation("io.coil-kt.coil3:coil:")
             implementation("io.coil-kt.coil3:coil-compose:_")
             implementation("io.coil-kt.coil3:coil-network-ktor3:_")
-            implementation("io.ktor:ktor-client-android:_")
 
             implementation("io.github.jan-tennert.supabase:postgrest-kt:_")
             implementation("io.github.jan-tennert.supabase:storage-kt:_")
@@ -51,16 +60,44 @@ kotlin {
             implementation("io.github.jan-tennert.supabase:coil3-integration:_")
         }
 
-        jvmMain.dependencies {
-            implementation("org.apache.logging.log4j:log4j-core:_")
-            implementation("org.apache.logging.log4j:log4j-slf4j-impl:_")
+        val localDB by creating {
+            dependsOn(commonMain.get())
 
-            implementation("io.ktor:ktor-client-cio:_")
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:_")
+            dependencies {
+                implementation("androidx.room:room-runtime:_")
+            }
+        }
 
-            // Room
-            implementation("androidx.room:room-runtime:_")
-            implementation("androidx.sqlite:sqlite-bundled-jvm:_")
+        val noDB by creating {
+            dependsOn(commonMain.get())
+        }
+
+        jvmMain {
+            dependsOn(localDB)
+
+            dependencies {
+                implementation("org.apache.logging.log4j:log4j-core:_")
+                implementation("org.apache.logging.log4j:log4j-slf4j-impl:_")
+
+                implementation("io.ktor:ktor-client-cio:_")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:_")
+
+                // Room
+                implementation("androidx.room:room-runtime:_")
+                implementation("androidx.sqlite:sqlite-bundled-jvm:_")
+            }
+        }
+
+        androidMain {
+            dependsOn(localDB)
+        }
+
+        wasmJsMain {
+            dependsOn(noDB)
+
+            dependencies {
+                implementation("io.ktor:ktor-client-js:_")
+            }
         }
     }
 }

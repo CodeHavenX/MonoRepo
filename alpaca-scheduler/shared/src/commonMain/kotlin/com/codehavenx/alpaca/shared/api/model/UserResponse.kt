@@ -9,6 +9,7 @@ import kotlinx.serialization.Serializable
  */
 @NetworkModel
 @Serializable
+@ConsistentCopyVisibility
 data class UserResponse internal constructor(
     @SerialName("id")
     val id: String,

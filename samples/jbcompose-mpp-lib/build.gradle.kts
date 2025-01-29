@@ -1,6 +1,7 @@
 @file:Suppress("OPT_IN_IS_NOT_ENABLED")
+@file:OptIn(ExperimentalWasmDsl::class)
 
-import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 
 plugins {
@@ -27,7 +28,6 @@ android {
 }
 
 kotlin {
-    @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
         browser {}
         binaries.executable()

@@ -1,5 +1,6 @@
+@file:OptIn(ExperimentalWasmDsl::class)
 
-import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
@@ -12,7 +13,6 @@ apply(from = "$rootDir/gradle/kotlin-mpp-target-common-compose.gradle")
 apply(from = "$rootDir/gradle/kotlin-mpp-target-wasm-compose-application.gradle")
 
 kotlin {
-    @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
         moduleName = "composeApp"
         browser {
@@ -45,7 +45,7 @@ kotlin {
 // https://kotlinlang.slack.com/archives/C01F2HV7868/p1712948201704499
 // https://github.com/Kotlin/kotlin-wasm-examples/blob/main/compose-imageviewer/webApp/build.gradle.kts
 // TODO: Verify if the program runs without this workaround. If it does, remove this workaround.
-val copyWasmResources = tasks.create("copyWasmResourcesWorkaround", Copy::class.java) {
+val copyWasmResources = tasks.register("copyWasmResourcesWorkaround", Copy::class.java) {
     from(project(":alpaca-scheduler:front-end:appcore").file("src/commonMain/composeResources"))
     into("build/processedResources/wasmJs/main")
 }

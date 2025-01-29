@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.root
 
+import androidx.compose.material3.SnackbarResult
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.EventLogManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
@@ -108,6 +109,16 @@ class EdifikanaApplicationViewModel(
             delay(1.seconds)
             eventLogManager.startUpload()
             timeCardManager.startUpload()
+        }
+    }
+
+    /**
+     * Handle snackbar result and emits it as a delegated event. Any observer can then consume this event.
+     */
+    fun handleSnackbarResult(result: SnackbarResult) {
+        viewModelScope.launch {
+            logI(TAG, "Result from snackbar: $result")
+            _delegatedEvents.emit(EdifikanaApplicationDelegatedEvent.HandleSnackbarResult(result))
         }
     }
 

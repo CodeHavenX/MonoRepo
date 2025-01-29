@@ -1,9 +1,16 @@
 package com.cramsan.edifikana.client.lib.features.root
 
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.navigation.NavHostController
@@ -17,6 +24,7 @@ import com.cramsan.edifikana.client.lib.features.root.debug.DebugActivityScreen
 import com.cramsan.edifikana.client.lib.features.root.main.MainActivityScreen
 import com.cramsan.edifikana.client.lib.features.root.splash.SplashActivityScreen
 import com.cramsan.edifikana.client.lib.ui.theme.AppTheme
+import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 /**
@@ -30,6 +38,9 @@ fun EdifikanaApplicationScreen(
 ) {
     val event by viewModel.events.collectAsState(EdifikanaApplicationEvent.Noop)
     val navController = rememberNavController()
+
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
         viewModel.enforceAuth()
@@ -50,27 +61,58 @@ fun EdifikanaApplicationScreen(
             is EdifikanaApplicationEvent.ShareContent -> {
                 eventHandler.shareContent(mainActivityEvent)
             }
-            is EdifikanaApplicationEvent.ShowSnackbar -> {
-                eventHandler.showSnackbar(mainActivityEvent)
-            }
             is EdifikanaApplicationEvent.NavigateToActivity -> {
                 navController.navigate(mainActivityEvent.destination.path)
             }
             is EdifikanaApplicationEvent.CloseActivity -> {
                 navController.popBackStack()
             }
+            is EdifikanaApplicationEvent.ShowSnackbar -> {
+                scope.launch {
+                    handleSnackbarEvent(
+                        snackbarHostState = snackbarHostState,
+                        event = mainActivityEvent,
+                    ) { result ->
+                        viewModel.handleSnackbarResult(result)
+                    }
+                }
+            }
         }
     }
 
     ComposableKoinContext {
         AppTheme(
-            coil3 = koinInject(),
+            coil3Provider = koinInject(),
         ) {
-            ApplicationNavigationHost(
-                navHostController = navController,
-            )
+            Scaffold(
+                snackbarHost = {
+                    SnackbarHost(hostState = snackbarHostState)
+                },
+            ) {
+                ApplicationNavigationHost(
+                    navHostController = navController,
+                )
+            }
         }
     }
+}
+
+/**
+ * Handle the [event] and use it to display a snackbar from the [snackbarHostState].
+ * The [onResult] callback is called with the result of the snackbar.
+ */
+private suspend fun handleSnackbarEvent(
+    snackbarHostState: SnackbarHostState,
+    event: EdifikanaApplicationEvent.ShowSnackbar,
+    onResult: (SnackbarResult) -> Unit,
+) {
+    snackbarHostState.currentSnackbarData?.dismiss()
+    val result = snackbarHostState
+        .showSnackbar(
+            message = event.message,
+            duration = SnackbarDuration.Short,
+        )
+    onResult(result)
 }
 
 @OptIn(RouteSafePath::class)

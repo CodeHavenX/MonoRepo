@@ -25,10 +25,6 @@ class EdifikanaJvmMainScreenEventHandler : EdifikanaMainScreenEventHandler {
         logE(TAG, "Sharing content is not supported on JVM")
     }
 
-    override fun showSnackbar(event: EdifikanaApplicationEvent.ShowSnackbar) {
-        logE(TAG, "Showing snackbar is not supported on JVM")
-    }
-
     companion object {
         private const val TAG = "EdifikanaJvmMainScreenEventHandler"
     }

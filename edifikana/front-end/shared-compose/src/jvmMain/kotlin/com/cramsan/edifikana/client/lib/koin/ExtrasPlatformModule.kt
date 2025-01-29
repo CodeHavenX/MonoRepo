@@ -3,15 +3,15 @@ package com.cramsan.edifikana.client.lib.koin
 import androidx.room.Room
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.cramsan.edifikana.client.lib.db.AppDatabase
-import com.cramsan.edifikana.client.lib.di.koin.DEBUG_KEY
 import com.cramsan.edifikana.client.lib.service.impl.AuthRequestPlugin
+import com.cramsan.edifikana.client.lib.settings.Overrides
 import com.cramsan.edifikana.lib.serialization.createJson
-import com.cramsan.framework.preferences.Preferences
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.Dispatchers
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import java.io.File
 
@@ -42,8 +42,8 @@ val ExtrasPlatformModule = module {
                 json(createJson())
             }
 
-            val preferences = get<Preferences>()
-            if (preferences.loadBoolean(DEBUG_KEY) == true) {
+            val isDummyMode = get<Boolean>(named(Overrides.KEY_DUMMY_MODE))
+            if (!isDummyMode) {
                 install(AuthRequestPlugin(get()))
             }
         }

@@ -19,9 +19,19 @@ sealed class Field {
     data object Divider : Field()
 
     /**
+     * This field is a label used to provide some context or a title to a section.
+     */
+    data class Label(
+        val label: String,
+        val subtitle: String? = null,
+    ) : Field()
+
+    /**
      * This is a string field that represents a text input.
      */
     data class StringField(
+        val title: String,
+        val subtitle: String?,
         val key: String,
         val value: String,
     ) : Field()
@@ -30,6 +40,8 @@ sealed class Field {
      * This is a boolean field that represents a boolean toggle.
      */
     data class BooleanField(
+        val title: String,
+        val subtitle: String?,
         val key: String,
         val value: Boolean,
     ) : Field()

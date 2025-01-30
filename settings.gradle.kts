@@ -59,9 +59,12 @@ include("samples:service-ktor")
 include("framework-samples:android-app")
 include("framework-samples:jvm-app")
 
+include("ui-catalog")
+
 include("edifikana:back-end")
 include("edifikana:shared")
-include("edifikana:front-end:shared-compose")
+include("edifikana:front-end:shared-ui")
+include("edifikana:front-end:shared-app")
 include("edifikana:front-end:app-android")
 include("edifikana:front-end:app-jvm")
 include("edifikana:front-end:app-wasm")

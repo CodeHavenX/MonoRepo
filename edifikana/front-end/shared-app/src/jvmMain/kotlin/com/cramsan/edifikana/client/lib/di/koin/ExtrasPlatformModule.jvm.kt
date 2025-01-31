@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.client.lib.koin
+package com.cramsan.edifikana.client.lib.di.koin
 
 import androidx.room.Room
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
@@ -16,7 +16,7 @@ import org.koin.dsl.module
 import java.io.File
 
 @Suppress("InjectDispatcher")
-val ExtrasPlatformModule = module {
+actual val ExtrasPlatformModule = module {
 
     single {
         val dbFile = File(System.getProperty("java.io.tmpdir"), "my_room.db")
@@ -42,8 +42,8 @@ val ExtrasPlatformModule = module {
                 json(createJson())
             }
 
-            val isDummyMode = get<Boolean>(named(Overrides.KEY_DUMMY_MODE))
-            if (!isDummyMode) {
+            val disableSupabase = get<Boolean>(named(Overrides.KEY_DISABLE_SUPABASE))
+            if (!disableSupabase) {
                 install(AuthRequestPlugin(get()))
             }
         }

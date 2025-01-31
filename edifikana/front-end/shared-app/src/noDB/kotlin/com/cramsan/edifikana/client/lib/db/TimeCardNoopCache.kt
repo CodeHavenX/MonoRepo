@@ -25,13 +25,7 @@ class TimeCardNoopCache : TimeCardCache {
     /**
      * Add a time card record.
      */
-    override suspend fun addRecord(timeCardRecord: TimeCardRecordModel, cachedImageUrl: CoreUri) {
-    }
+    override suspend fun addRecord(timeCardRecord: TimeCardRecordModel, cachedImageUrl: CoreUri) = Unit
 
-    override suspend fun deleteRecord(timeCardRecord: TimeCardRecordModel) {
-    }
-
-    companion object {
-        private const val TAG = "TimeCardNoopCache"
-    }
+    override suspend fun deleteRecord(timeCardRecord: TimeCardRecordModel) = Unit
 }

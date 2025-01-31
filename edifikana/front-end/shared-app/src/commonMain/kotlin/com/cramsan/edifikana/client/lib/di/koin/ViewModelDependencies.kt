@@ -23,7 +23,7 @@ import com.cramsan.framework.core.compose.ViewModelDependencies
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-val ViewModelModule = module {
+internal val ViewModelModule = module {
 
     singleOf(::ViewModelDependencies)
 

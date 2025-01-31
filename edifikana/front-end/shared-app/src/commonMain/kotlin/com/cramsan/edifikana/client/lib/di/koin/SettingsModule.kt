@@ -6,10 +6,10 @@ import com.cramsan.framework.preferences.Preferences
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-val SettingsModule = module {
-    factory<Boolean>(named(Overrides.KEY_DUMMY_MODE)) {
+internal val SettingsModule = module {
+    factory<Boolean>(named(Overrides.KEY_DISABLE_SUPABASE)) {
         val preferences = get<Preferences>()
-        preferences.loadBoolean(Overrides.KEY_DUMMY_MODE) ?: false
+        preferences.loadBoolean(Overrides.KEY_DISABLE_SUPABASE) ?: false
     }
 
     factory<Boolean>(named(Overrides.KEY_HALT_ON_FAILURE)) {
@@ -35,5 +35,10 @@ val SettingsModule = module {
     factory<Boolean>(named(Overrides.KEY_SUPABASE_OVERRIDE_ENABLED)) {
         val preferences = get<Preferences>()
         preferences.loadBoolean(Overrides.KEY_SUPABASE_OVERRIDE_ENABLED) ?: false
+    }
+
+    factory<Boolean>(named(Overrides.KEY_DISABLE_BE)) {
+        val preferences = get<Preferences>()
+        preferences.loadBoolean(Overrides.KEY_DISABLE_BE) ?: false
     }
 }

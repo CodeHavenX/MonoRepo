@@ -22,7 +22,7 @@ tasks.register("releaseIos") {
     group = 'release'
     description = 'Run all the steps to build a releaseIos artifact'
     dependsOn 'compileKotlinIosSimulatorArm64'
-    dependsOn 'detektIosSimulatorArm64Main' // Run the code analyzer on the common-code source set
+    dependsOn 'detektMetadataMain' // Run the code analyzer on the common-code source set
     dependsOn 'detektIosSimulatorArm64Main' // Run the code analyzer
     dependsOn 'iosSimulatorArm64Test'
 }

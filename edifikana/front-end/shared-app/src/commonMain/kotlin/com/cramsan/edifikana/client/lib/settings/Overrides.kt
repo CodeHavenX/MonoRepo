@@ -6,7 +6,8 @@ package com.cramsan.edifikana.client.lib.settings
  * These strings are keys to be used for the preferences.
  */
 object Overrides {
-    const val KEY_DUMMY_MODE = "KEY_DUMMY_MODE"
+    const val KEY_DISABLE_SUPABASE = "KEY_DISABLE_SUPABASE"
+    const val KEY_DISABLE_BE = "KEY_DISABLE_BE"
     const val KEY_HALT_ON_FAILURE = "KEY_HALT_ON_FAILURE"
     const val KEY_LOGGING_SEVERITY = "KEY_LOGGING_TARGET"
     const val KEY_SUPABASE_OVERRIDE_URL = "KEY_SUPABASE_OVERRIDE_URL"

@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.client.lib.koin
+package com.cramsan.edifikana.client.lib.di.koin
 
 import com.cramsan.edifikana.client.lib.service.impl.AuthRequestPlugin
 import com.cramsan.edifikana.client.lib.settings.Overrides
@@ -11,7 +11,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-val ExtrasPlatformModule = module {
+actual val ExtrasPlatformModule = module {
 
     single { androidContext().contentResolver }
 
@@ -23,8 +23,8 @@ val ExtrasPlatformModule = module {
             install(ContentNegotiation) {
                 json(createJson())
             }
-            val isDummyMode = get<Boolean>(named(Overrides.KEY_DUMMY_MODE))
-            if (!isDummyMode) {
+            val disableSupabase = get<Boolean>(named(Overrides.KEY_DISABLE_SUPABASE))
+            if (!disableSupabase) {
                 install(AuthRequestPlugin(get()))
             }
         }

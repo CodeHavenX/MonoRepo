@@ -95,10 +95,16 @@ class DebugViewModel(
                     listOf(
                         Field.Label("Application Settings"),
                         Field.BooleanField(
-                            title = "Enable Dummy Mode(requires restart)",
-                            subtitle = "This will allow this client to use fake dependencies.",
-                            key = Overrides.KEY_DUMMY_MODE,
-                            value = preferences.loadBoolean(Overrides.KEY_DUMMY_MODE) ?: false,
+                            title = "Disable Supabase(requires restart)",
+                            subtitle = "This will allow this client to use fake a Supabase dependency.",
+                            key = Overrides.KEY_DISABLE_SUPABASE,
+                            value = preferences.loadBoolean(Overrides.KEY_DISABLE_SUPABASE) ?: false,
+                        ),
+                        Field.BooleanField(
+                            title = "Disable BackEnd(requires restart)",
+                            subtitle = "This will allow this client not make calls to the BE.",
+                            key = Overrides.KEY_DISABLE_BE,
+                            value = preferences.loadBoolean(Overrides.KEY_DISABLE_BE) ?: false,
                         ),
                         Field.Divider,
                         Field.Label(

@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.client.lib.koin
+package com.cramsan.edifikana.client.lib.di.koin
 
 import com.cramsan.framework.core.DispatcherProvider
 import com.cramsan.framework.core.UIDispatcherProvider
@@ -8,25 +8,25 @@ import com.cramsan.framework.logging.EventLoggerDelegate
 import com.cramsan.framework.logging.EventLoggerErrorCallbackDelegate
 import com.cramsan.framework.logging.implementation.EventLoggerDelegateNoop
 import com.cramsan.framework.logging.implementation.NoopEventLoggerErrorCallbackDelegate
-import com.cramsan.framework.preferences.Preferences
 import com.cramsan.framework.preferences.PreferencesDelegate
 import com.cramsan.framework.preferences.implementation.InMemoryPreferencesDelegate
-import com.cramsan.framework.preferences.implementation.PreferencesImpl
 import com.cramsan.framework.thread.ThreadUtilDelegate
 import com.cramsan.framework.thread.implemantation.ThreadUtilDelegateNoop
 import org.koin.dsl.module
 
-val FrameworkPlatformDelegatesModule = module {
+actual val FrameworkPlatformDelegatesModule = module {
 
     single<ThreadUtilDelegate> {
         ThreadUtilDelegateNoop
     }
 
     single<EventLoggerErrorCallbackDelegate> {
-        NoopEventLoggerErrorCallbackDelegate }
+        NoopEventLoggerErrorCallbackDelegate
+    }
 
     single<EventLoggerDelegate> {
-        EventLoggerDelegateNoop }
+        EventLoggerDelegateNoop
+    }
 
     single<HaltUtilDelegate> {
         HaltUtilDelegateImpl

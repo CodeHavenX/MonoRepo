@@ -13,11 +13,11 @@ import io.github.jan.supabase.coil.Coil3Integration
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-val SupabaseOverridesModule = module {
+internal val SupabaseOverridesModule = module {
 
     single<AuthService> {
-        val isDummyMode = get<Boolean>(named(Overrides.KEY_DUMMY_MODE))
-        if (isDummyMode) {
+        val disableSupabase = get<Boolean>(named(Overrides.KEY_DISABLE_SUPABASE))
+        if (disableSupabase) {
             DummyAuthService()
         } else {
             get<AuthServiceImpl>()
@@ -25,8 +25,8 @@ val SupabaseOverridesModule = module {
     }
 
     single<StorageService> {
-        val isDummyMode = get<Boolean>(named(Overrides.KEY_DUMMY_MODE))
-        if (isDummyMode) {
+        val disableSupabase = get<Boolean>(named(Overrides.KEY_DISABLE_SUPABASE))
+        if (disableSupabase) {
             DummyStorageService()
         } else {
             get<StorageServiceImpl>()
@@ -34,8 +34,8 @@ val SupabaseOverridesModule = module {
     }
 
     single<Coil3Provider> {
-        val isDummyMode = get<Boolean>(named(Overrides.KEY_DUMMY_MODE))
-        val coil3Integration = if (isDummyMode) {
+        val disableSupabase = get<Boolean>(named(Overrides.KEY_DISABLE_SUPABASE))
+        val coil3Integration = if (disableSupabase) {
             DummyCoil3Integration()
         } else {
             get<Coil3Integration>()

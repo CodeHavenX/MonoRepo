@@ -1,7 +1,6 @@
 package com.cramsan.edifikana.client.lib.db
 
 import com.cramsan.edifikana.client.lib.db.models.EventLogRecordDao
-import com.cramsan.edifikana.client.lib.db.models.FileAttachmentDao
 import com.cramsan.edifikana.client.lib.managers.mappers.toDomainModel
 import com.cramsan.edifikana.client.lib.managers.mappers.toEntity
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel

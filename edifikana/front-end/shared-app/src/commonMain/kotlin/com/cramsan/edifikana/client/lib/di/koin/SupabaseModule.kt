@@ -22,11 +22,11 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 @OptIn(SupabaseExperimental::class)
-val SupabaseModule = module {
+internal val SupabaseModule = module {
     single {
-        val isDummyMode = get<Boolean>(named(Overrides.KEY_DUMMY_MODE))
+        val disableSupabase = get<Boolean>(named(Overrides.KEY_DISABLE_SUPABASE))
         assertFalse(
-            isDummyMode,
+            disableSupabase,
             TAG,
             "SupabaseClient was loaded while in debug mode. This may be due to incorrectly configured DI.",
         )

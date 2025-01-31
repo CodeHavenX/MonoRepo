@@ -23,5 +23,4 @@ actual fun getColorScheme(
  * Window decorations.
  */
 @Composable
-actual fun WindowDecorations(colorScheme: ColorScheme, darkTheme: Boolean) {
-}
+actual fun WindowDecorations(colorScheme: ColorScheme, darkTheme: Boolean) = Unit

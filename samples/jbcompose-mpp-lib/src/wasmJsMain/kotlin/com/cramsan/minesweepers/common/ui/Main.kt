@@ -1,12 +1,15 @@
+package com.cramsan.minesweepers.common.ui
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import com.cramsan.minesweepers.common.game.Status
 import com.cramsan.minesweepers.common.game.Tile
 import com.cramsan.minesweepers.common.game.TileCoverMode
-import com.cramsan.minesweepers.common.ui.GameBar
-import com.cramsan.minesweepers.common.ui.GameMap
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+/**
+ * Main view for the game.
+ */
 @Composable
 fun MainView(
     time: Int,
@@ -23,6 +26,9 @@ fun MainView(
     }
 }
 
+/**
+ * Preview for the main view.
+ */
 @Preview
 @Composable
 fun AppPreview() {

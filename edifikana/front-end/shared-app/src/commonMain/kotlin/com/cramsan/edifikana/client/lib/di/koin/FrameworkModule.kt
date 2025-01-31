@@ -16,7 +16,7 @@ import com.cramsan.framework.thread.implementation.ThreadUtilImpl
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-val FrameworkModule = module {
+internal val FrameworkModule = module {
 
     single<AssertUtilInterface> {
         AssertUtilImpl(

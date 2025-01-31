@@ -141,6 +141,7 @@ tasks.register("releaseAndroid") {
     dependsOn 'bundle' // Assembles and test this project
     dependsOn 'detektMetadataMain' // Run the code analyzer on the common-code source set
     dependsOn 'detektAndroidPreprodDebug' // Run the code analyzer
+    // TODO: Identify the right task to run tests
 }
 
 release.dependsOn('releaseAndroid')

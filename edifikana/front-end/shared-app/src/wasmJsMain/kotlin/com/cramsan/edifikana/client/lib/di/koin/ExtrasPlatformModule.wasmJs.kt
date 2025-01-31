@@ -1,9 +1,8 @@
-package com.cramsan.edifikana.client.lib.koin
+package com.cramsan.edifikana.client.lib.di.koin
 
 import com.cramsan.edifikana.client.lib.service.impl.AuthRequestPlugin
 import com.cramsan.edifikana.client.lib.settings.Overrides
 import com.cramsan.edifikana.lib.serialization.createJson
-import com.cramsan.framework.preferences.Preferences
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
@@ -12,7 +11,7 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 @Suppress("InjectDispatcher")
-val ExtrasPlatformModule = module {
+actual val ExtrasPlatformModule = module {
 
     single<HttpClient> {
         HttpClient {
@@ -22,8 +21,8 @@ val ExtrasPlatformModule = module {
             install(ContentNegotiation) {
                 json(createJson())
             }
-            val isDummyMode = get<Boolean>(named(Overrides.KEY_DUMMY_MODE))
-            if (!isDummyMode) {
+            val disableSupabase = get<Boolean>(named(Overrides.KEY_DISABLE_SUPABASE))
+            if (!disableSupabase) {
                 install(AuthRequestPlugin(get()))
             }
         }

@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.client.lib.koin
+package com.cramsan.edifikana.client.lib.di.koin
 
 import com.cramsan.framework.core.DispatcherProvider
 import com.cramsan.framework.core.UIDispatcherProvider
@@ -17,7 +17,7 @@ import com.cramsan.framework.thread.implementation.ThreadUtilJVM
 import org.apache.logging.log4j.Logger
 import org.koin.dsl.module
 
-val FrameworkPlatformDelegatesModule = module {
+actual val FrameworkPlatformDelegatesModule = module {
 
     single<ThreadUtilDelegate> {
         ThreadUtilJVM(

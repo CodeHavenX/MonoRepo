@@ -2,7 +2,6 @@ package com.cramsan.edifikana.client.lib.managers.mappers
 
 import com.cramsan.edifikana.client.lib.db.models.TimeCardRecordEntity
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
-import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.TimeCardEventType

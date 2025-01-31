@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.client.lib.koin
+package com.cramsan.edifikana.client.lib.di.koin
 
 import com.cramsan.edifikana.client.lib.db.AppDatabase
 import com.cramsan.edifikana.client.lib.db.EventLogCache
@@ -9,7 +9,7 @@ import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-val CacheModule = module {
+actual val CacheModule = module {
     single { get<AppDatabase>().eventLogRecordDao() }
 
     single { get<AppDatabase>().timeCardRecordDao() }
@@ -24,4 +24,3 @@ val CacheModule = module {
         bind<TimeCardCache>()
     }
 }
-

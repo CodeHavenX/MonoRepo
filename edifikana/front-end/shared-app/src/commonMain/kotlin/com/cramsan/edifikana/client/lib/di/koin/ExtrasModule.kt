@@ -8,7 +8,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.datetime.Clock
 import org.koin.dsl.module
 
-val ExtrasModule = module {
+internal val ExtrasModule = module {
 
     single<Clock> { Clock.System }
 

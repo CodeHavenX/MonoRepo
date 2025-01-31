@@ -27,7 +27,7 @@ import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-val ManagerModule = module {
+internal val ManagerModule = module {
     single { ManagerDependencies(get(), get()) }
 
     singleOf(::EventLogManager)
@@ -65,9 +65,11 @@ val ManagerModule = module {
         bind<AuthServiceImpl>()
     }
     singleOf(::EventLogServiceImpl) {
+        bind<EventLogServiceImpl>()
         bind<EventLogService>()
     }
     singleOf(::PropertyServiceImpl) {
+        bind<PropertyServiceImpl>()
         bind<PropertyService>()
     }
     singleOf(::StorageServiceImpl) {
@@ -75,9 +77,11 @@ val ManagerModule = module {
         bind<StorageServiceImpl>()
     }
     singleOf(::TimeCardServiceImpl) {
+        bind<TimeCardServiceImpl>()
         bind<TimeCardService>()
     }
     singleOf(::StaffServiceImpl) {
+        bind<StaffServiceImpl>()
         bind<StaffService>()
     }
 }

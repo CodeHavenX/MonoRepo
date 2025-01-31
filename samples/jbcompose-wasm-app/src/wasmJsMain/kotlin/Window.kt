@@ -4,7 +4,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.window.CanvasBasedWindow
 import com.cramsan.minesweepers.common.game.Game
+import com.cramsan.minesweepers.common.ui.MainView
 
+/**
+ * Main function for the web application.
+ */
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
     val game = Game()

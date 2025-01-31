@@ -1,6 +1,7 @@
 @file:OptIn(ExperimentalWasmDsl::class)
 
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import io.gitlab.arturbosch.detekt.Detekt
 
 plugins {
     kotlin("multiplatform")
@@ -18,13 +19,12 @@ apply(from = "$rootDir/gradle/kotlin-mpp-target-jvm-compose.gradle")
 apply(from = "$rootDir/gradle/kotlin-mpp-target-wasm.gradle")
 
 kotlin {
+    applyDefaultHierarchyTemplate()
+
     wasmJs {
         browser {}
         binaries.executable()
     }
-
-    // Apply the default hierarchy again. It'll create, for example, the iosMain source set:
-    applyDefaultHierarchyTemplate()
 
     sourceSets {
         commonMain.dependencies {
@@ -166,4 +166,34 @@ dependencies {
 
 room {
     schemaDirectory("$projectDir/schemas")
+}
+
+// We need to manually create a detekt task for the NoDB source-set since the detekt plugin only auto-generates tasks
+// for the default targets. This behaviour is not very well documented. I am making this conclusion based on this page:
+// https://detekt.dev/docs/gettingstarted/gradle#available-plugin-tasks
+tasks.register<Detekt>("detektMetadataNoDB") {
+    // This task is configured following the global implementation found here:
+    // $rootDir/gradle/detekt.gradle
+    description = "Run detekt on the noDB source-set."
+
+    setSource(files("src/noDB/"))
+
+    autoCorrect = true
+
+    val localConfigFile = file("$projectDir/config/detekt-config.yml")
+    val globalConfigFile = file("$rootDir/config/detekt-config.yml")
+    val existingFiles = listOf(globalConfigFile, localConfigFile)
+        .filter { it.exists() }
+        .map { it.path }
+    config = files(existingFiles)
+
+    val baselineFile = file("$projectDir/config/detekt-baseline.xml")
+    if (baselineFile.exists()) {
+        baseline = baselineFile
+    }
+}
+
+tasks.getByName("release") {
+    dependsOn("detektMetadataLocalDB")
+    dependsOn("detektMetadataNoDB")
 }

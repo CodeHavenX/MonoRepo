@@ -11,5 +11,4 @@ actual class StringFormatter actual constructor() {
     actual fun format(string: String, vararg args: Any?): String {
         TODO("Not yet implemented")
     }
-
 }

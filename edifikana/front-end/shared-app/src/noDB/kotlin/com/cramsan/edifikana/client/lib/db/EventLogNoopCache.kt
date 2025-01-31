@@ -16,11 +16,7 @@ class EventLogNoopCache : EventLogCache {
     /**
      * Add a new event log record.
      */
-    override suspend fun addRecord(eventLogRecord: EventLogRecordModel) {}
+    override suspend fun addRecord(eventLogRecord: EventLogRecordModel) = Unit
 
-    override suspend fun deleteRecord(eventLogRecord: EventLogRecordModel) {}
-
-    companion object {
-        private const val TAG = "EventLogNoopCache"
-    }
+    override suspend fun deleteRecord(eventLogRecord: EventLogRecordModel) = Unit
 }

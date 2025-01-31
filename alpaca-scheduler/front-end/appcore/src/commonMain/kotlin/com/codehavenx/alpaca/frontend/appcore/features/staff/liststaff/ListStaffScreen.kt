@@ -26,6 +26,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
@@ -144,16 +145,35 @@ private fun RowScope.StaffSearchBar() {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
     ) {
+        val onActiveChange = { _: Boolean -> } // the callback to be invoked when
+        // this search bar's active state is changed
         SearchBar(
-            query = searchText, // text showed on SearchBar
-            onQueryChange = { searchText = it }, // update the value of searchText
-            onSearch = { }, // the callback to be invoked when the input service triggers the ImeAction.Search action
-            active = false, // whether the user is searching or not
-            onActiveChange = { }, // the callback to be invoked when this search bar's active state is changed
-            placeholder = { Text("Search") },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-        }
+            inputField = {
+                SearchBarDefaults.InputField(
+                    query = searchText,
+                    onQueryChange = { searchText = it },
+                    onSearch = { },
+                    expanded = false,
+                    onExpandedChange = onActiveChange,
+                    enabled = true,
+                    placeholder = { Text("Search") },
+                    leadingIcon = null,
+                    trailingIcon = null,
+                    interactionSource = null,
+                )
+                // text showed on SearchBar
+                // update the value of searchText
+                // the callback to be invoked when the input service triggers the ImeAction.Search action
+            },
+            expanded = false, // whether the user is searching or not
+            onExpandedChange = onActiveChange,
+            modifier = Modifier.fillMaxWidth(),
+            shape = SearchBarDefaults.inputFieldShape,
+            tonalElevation = SearchBarDefaults.TonalElevation,
+            shadowElevation = SearchBarDefaults.ShadowElevation,
+            windowInsets = SearchBarDefaults.windowInsets,
+            content = { },
+        )
     }
 }
 

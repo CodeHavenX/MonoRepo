@@ -7,6 +7,7 @@ import kotlinx.serialization.Serializable
  * If a value is present, [isPresent] will return `true` and [get] will return the value.
  */
 @Serializable
+@ConsistentCopyVisibility
 data class Optional<T> private constructor(private val value: T?) {
 
     /**

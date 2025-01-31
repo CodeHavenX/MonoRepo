@@ -9,6 +9,7 @@ import kotlinx.serialization.Serializable
  */
 @NetworkModel
 @Serializable
+@ConsistentCopyVisibility
 data class AddressResponse internal constructor(
     @SerialName("street_address")
     val streetAddress: String,

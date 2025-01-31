@@ -9,6 +9,7 @@ import kotlinx.serialization.Serializable
  */
 @NetworkModel
 @Serializable
+@ConsistentCopyVisibility
 data class CreateUserRequest internal constructor(
     @SerialName("username")
     val username: String,

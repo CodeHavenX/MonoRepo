@@ -25,10 +25,6 @@ class EdifikanaWasmMainScreenEventHandler : EdifikanaMainScreenEventHandler {
         logE(TAG, "Sharing content is not supported on Wasm")
     }
 
-    override fun showSnackbar(event: EdifikanaApplicationEvent.ShowSnackbar) {
-        logE(TAG, "Showing snackbar is not supported on Wasm")
-    }
-
     companion object {
         private const val TAG = "EdifikanaWasmMainScreenEventHandler"
     }

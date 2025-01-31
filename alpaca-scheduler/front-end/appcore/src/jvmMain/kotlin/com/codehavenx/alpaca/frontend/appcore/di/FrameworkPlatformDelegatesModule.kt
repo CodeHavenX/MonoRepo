@@ -10,10 +10,8 @@ import com.cramsan.framework.logging.Severity
 import com.cramsan.framework.logging.implementation.Log4J2Helpers
 import com.cramsan.framework.logging.implementation.LoggerJVM
 import com.cramsan.framework.logging.implementation.NoopEventLoggerErrorCallbackDelegate
-import com.cramsan.framework.preferences.Preferences
 import com.cramsan.framework.preferences.PreferencesDelegate
 import com.cramsan.framework.preferences.implementation.JVMPreferencesDelegate
-import com.cramsan.framework.preferences.implementation.PreferencesImpl
 import com.cramsan.framework.thread.ThreadUtilDelegate
 import com.cramsan.framework.thread.implementation.ThreadUtilJVM
 import org.apache.logging.log4j.Logger
@@ -43,8 +41,4 @@ val FrameworkPlatformDelegatesModule = module {
     single<DispatcherProvider> { UIDispatcherProvider() }
 
     single<PreferencesDelegate> { JVMPreferencesDelegate() }
-
-    single<Preferences> {
-        PreferencesImpl(get())
-    }
 }

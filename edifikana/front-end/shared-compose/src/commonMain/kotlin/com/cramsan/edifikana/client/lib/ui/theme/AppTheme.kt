@@ -10,7 +10,7 @@ import coil3.ImageLoader
 import coil3.compose.setSingletonImageLoaderFactory
 import coil3.network.ktor3.KtorNetworkFetcherFactory
 import coil3.util.DebugLogger
-import io.github.jan.supabase.coil.Coil3Integration
+import com.cramsan.edifikana.client.lib.ui.di.Coil3Provider
 
 @Suppress("MagicNumber")
 private val md_theme_light_primary = Color(0xFF13BC9A)
@@ -30,14 +30,14 @@ fun AppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
-    coil3: Coil3Integration? = null,
+    coil3Provider: Coil3Provider? = null,
     content: @Composable () -> Unit
 ) {
     val colorScheme = getColorScheme(darkTheme, dynamicColor, DarkThemeColors, LightThemeColors)
 
     WindowDecorations(colorScheme, darkTheme)
 
-    coil3?.let {
+    coil3Provider?.coil3Integration?.let {
         setSingletonImageLoaderFactory { platformContext ->
             ImageLoader.Builder(platformContext)
                 .components {

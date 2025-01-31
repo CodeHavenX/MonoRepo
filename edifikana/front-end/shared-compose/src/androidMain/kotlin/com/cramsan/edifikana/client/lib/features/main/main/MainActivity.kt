@@ -3,7 +3,6 @@ package com.cramsan.edifikana.client.lib.features.main.main
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.PickVisualMediaRequest
@@ -76,10 +75,6 @@ class MainActivity : ComponentActivity(), EdifikanaMainScreenEventHandler {
         lifecycleScope.launch {
             (this@MainActivity as Context).shareContent(TAG, event.text, event.imageUri)
         }
-    }
-
-    override fun showSnackbar(event: EdifikanaApplicationEvent.ShowSnackbar) {
-        Toast.makeText(this, event.message, Toast.LENGTH_SHORT).show()
     }
 
     companion object {

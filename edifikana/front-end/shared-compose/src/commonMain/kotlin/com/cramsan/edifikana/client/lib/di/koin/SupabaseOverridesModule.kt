@@ -6,15 +6,18 @@ import com.cramsan.edifikana.client.lib.service.dummy.DummyAuthService
 import com.cramsan.edifikana.client.lib.service.dummy.DummyStorageService
 import com.cramsan.edifikana.client.lib.service.impl.AuthServiceImpl
 import com.cramsan.edifikana.client.lib.service.impl.StorageServiceImpl
-import com.cramsan.framework.preferences.Preferences
+import com.cramsan.edifikana.client.lib.settings.Overrides
+import com.cramsan.edifikana.client.lib.ui.di.Coil3Provider
+import com.cramsan.edifikana.client.lib.ui.di.DummyCoil3Integration
+import io.github.jan.supabase.coil.Coil3Integration
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val SupabaseOverridesModule = module {
 
     single<AuthService> {
-        val preferences = get<Preferences>()
-
-        if (preferences.loadBoolean(DEBUG_KEY) == true) {
+        val isDummyMode = get<Boolean>(named(Overrides.KEY_DUMMY_MODE))
+        if (isDummyMode) {
             DummyAuthService()
         } else {
             get<AuthServiceImpl>()
@@ -22,14 +25,22 @@ val SupabaseOverridesModule = module {
     }
 
     single<StorageService> {
-        val preferences = get<Preferences>()
-
-        if (preferences.loadBoolean(DEBUG_KEY) == true) {
+        val isDummyMode = get<Boolean>(named(Overrides.KEY_DUMMY_MODE))
+        if (isDummyMode) {
             DummyStorageService()
         } else {
             get<StorageServiceImpl>()
         }
     }
-}
 
-const val DEBUG_KEY = "DEBUG_KEY"
+    single<Coil3Provider> {
+        val isDummyMode = get<Boolean>(named(Overrides.KEY_DUMMY_MODE))
+        val coil3Integration = if (isDummyMode) {
+            DummyCoil3Integration()
+        } else {
+            get<Coil3Integration>()
+        }
+
+        Coil3Provider(coil3Integration)
+    }
+}

@@ -1,5 +1,7 @@
 package com.cramsan.edifikana.client.lib.di.koin
 
+import com.cramsan.edifikana.client.lib.settings.Overrides
+import com.cramsan.framework.assertlib.assertFalse
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.annotations.SupabaseExperimental
 import io.github.jan.supabase.auth.Auth
@@ -22,6 +24,13 @@ import org.koin.dsl.module
 @OptIn(SupabaseExperimental::class)
 val SupabaseModule = module {
     single {
+        val isDummyMode = get<Boolean>(named(Overrides.KEY_DUMMY_MODE))
+        assertFalse(
+            isDummyMode,
+            TAG,
+            "SupabaseClient was loaded while in debug mode. This may be due to incorrectly configured DI.",
+        )
+
         val supabaseUrl = get<String>(named(EDIFIKANA_SUPABASE_URL))
         val supabaseKey = get<String>(named(EDIFIKANA_SUPABASE_KEY))
 
@@ -64,3 +73,5 @@ val SupabaseModule = module {
         get<SupabaseClient>().coil3
     }
 }
+
+private const val TAG = "SupabaseModule"

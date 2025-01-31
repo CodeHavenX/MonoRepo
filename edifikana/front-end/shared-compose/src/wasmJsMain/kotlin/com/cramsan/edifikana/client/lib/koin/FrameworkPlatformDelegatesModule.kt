@@ -37,8 +37,4 @@ val FrameworkPlatformDelegatesModule = module {
     }
 
     single<PreferencesDelegate> { InMemoryPreferencesDelegate() }
-
-    single<Preferences> {
-        PreferencesImpl(get())
-    }
 }

@@ -24,9 +24,4 @@ interface EdifikanaMainScreenEventHandler {
      * Share content.
      */
     fun shareContent(event: EdifikanaApplicationEvent.ShareContent)
-
-    /**
-     * Show a snackbar.
-     */
-    fun showSnackbar(event: EdifikanaApplicationEvent.ShowSnackbar)
 }

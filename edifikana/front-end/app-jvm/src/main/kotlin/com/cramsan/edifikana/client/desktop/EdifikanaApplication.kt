@@ -5,6 +5,7 @@ import androidx.compose.ui.window.application
 import com.cramsan.edifikana.client.lib.di.koin.ExtrasModule
 import com.cramsan.edifikana.client.lib.di.koin.FrameworkModule
 import com.cramsan.edifikana.client.lib.di.koin.ManagerModule
+import com.cramsan.edifikana.client.lib.di.koin.SettingsModule
 import com.cramsan.edifikana.client.lib.di.koin.SupabaseModule
 import com.cramsan.edifikana.client.lib.di.koin.SupabaseOverridesModule
 import com.cramsan.edifikana.client.lib.di.koin.ViewModelModule
@@ -27,6 +28,7 @@ fun main() = application {
         modules(
             FrameworkModule,
             FrameworkPlatformDelegatesModule,
+            SettingsModule,
             ExtrasModule,
             ExtrasPlatformModule,
             ManagerModule,

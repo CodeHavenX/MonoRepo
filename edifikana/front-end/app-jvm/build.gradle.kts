@@ -9,7 +9,7 @@ plugins {
 apply(from = "$rootDir/gradle/kotlin-jvm-target-lib-compose.gradle")
 
 dependencies {
-    implementation(project(":edifikana:front-end:shared-compose"))
+    implementation(project(":edifikana:front-end:shared-app"))
 
     implementation("io.insert-koin:koin-core:_")
     implementation("io.insert-koin:koin-compose:_")

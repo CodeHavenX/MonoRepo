@@ -47,7 +47,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":edifikana:front-end:shared-compose"))
+    implementation(project(":edifikana:front-end:shared-app"))
 
     implementation("io.insert-koin:koin-core:_")
     implementation("io.insert-koin:koin-android:_")

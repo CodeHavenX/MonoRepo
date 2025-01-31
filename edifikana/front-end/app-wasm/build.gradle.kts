@@ -32,7 +32,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(project(":edifikana:front-end:shared-compose"))
+                implementation(project(":edifikana:front-end:shared-app"))
 
                 implementation(project(":framework:interfacelib"))
 

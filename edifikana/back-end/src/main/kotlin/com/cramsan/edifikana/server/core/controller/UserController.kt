@@ -38,9 +38,11 @@ class UserController(
         val createUserRequest = call.receive<CreateUserNetworkRequest>()
 
         val newUser = userService.createUser(
-            createUserRequest.username,
+            createUserRequest.usernameEmail,
+            createUserRequest.usernamePhone,
             createUserRequest.password,
-            createUserRequest.fullname,
+            createUserRequest.firstName,
+            createUserRequest.lastName,
         ).toUserNetworkResponse()
 
         HttpResponse(

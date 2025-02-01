@@ -141,10 +141,12 @@ class SignUpViewModel(
                 return@launch
             }
 
-            // TODO: This should be updated to call the right API. See Auth Service, UserController and update as needed
-            val user = auth.signIn(
-                email = usernameEmail,
+            val user = auth.signUp(
+                usernameEmail = usernameEmail,
+                usernamePhone = usernamePhone,
                 password = password,
+                firstName = firstName,
+                lastName = lastName,
             ).getOrElse { exception ->
                 logD(TAG, "Error signing up: $exception")
                 updateUiState {

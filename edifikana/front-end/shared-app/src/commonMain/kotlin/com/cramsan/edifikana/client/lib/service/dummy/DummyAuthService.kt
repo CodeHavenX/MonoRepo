@@ -43,13 +43,23 @@ class DummyAuthService : AuthService {
         return user.asStateFlow()
     }
 
-    override suspend fun signUp(username: String, password: String, fullname: String): Result<UserModel> {
+    override suspend fun signUp(
+        usernameEmail: String,
+        usernamePhone: String,
+        password: String,
+        firstName: String,
+        lastName: String
+    ): Result<UserModel> {
         user.value = USER_1.id
         return Result.success(USER_1)
     }
 
     override suspend fun verifyPermissions(): Result<Boolean> {
         return Result.success(true)
+    }
+
+    override suspend fun passwordReset(usernameEmail: String?, usernamePhone: String?): Result<Unit> {
+        TODO("Not yet implemented")
     }
 
     companion object {

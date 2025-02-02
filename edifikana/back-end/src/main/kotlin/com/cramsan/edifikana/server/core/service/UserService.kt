@@ -26,7 +26,7 @@ class UserService(
         password: String,
         firstName: String,
         lastName: String,
-    ): User {
+    ): Result<User> {
         logD(TAG, "createUser")
         return userDatabase.createUser(
             request = CreateUserRequest(
@@ -36,7 +36,7 @@ class UserService(
                 firstName = firstName,
                 lastName = lastName,
             ),
-        ).getOrThrow()
+        )
     }
 
     /**

@@ -21,24 +21,36 @@ import kotlinx.datetime.Instant
 val USER_1 = User(
     id = UserId("user_id_1"),
     email = "user1@test.com",
+    phone = "1234567890",
+    firstName = "John",
+    lastName = "Doe",
     hasGlobalPerms = false,
 )
 
 val USER_2 = User(
     id = UserId("user_id_2"),
     email = "user2@test.com",
+    phone = "0987654321",
+    firstName = "Jane",
+    lastName = "Smith",
     hasGlobalPerms = false,
 )
 
 val USER_3 = User(
     id = UserId("user_id_3"),
     email = "user3@test.com",
+    phone = "1122334455",
+    firstName = "Alice",
+    lastName = "Johnson",
     hasGlobalPerms = false,
 )
 
 val USER_4 = User(
     id = UserId("user_id_4"),
     email = "user4@test.com",
+    phone = "5566778899",
+    firstName = "Bob",
+    lastName = "Brown",
     hasGlobalPerms = true,
 )
 

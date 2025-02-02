@@ -11,6 +11,9 @@ import kotlinx.serialization.Serializable
 data class UserEntity(
     val id: String,
     val email: String,
+    val phone: String,
+    val firstName: String,
+    val lastName: String,
 ) {
     companion object {
         const val COLLECTION = "users"
@@ -24,5 +27,8 @@ data class UserEntity(
     data class CreateUserEntity(
         val id: String,
         val email: String,
+        val phone: String,
+        val firstName: String,
+        val lastName: String,
     )
 }

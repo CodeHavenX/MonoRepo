@@ -7,6 +7,7 @@ import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logI
 import com.cramsan.framework.utils.loginvalidation.validateName
 import com.cramsan.framework.utils.loginvalidation.validatePassword
+import com.cramsan.framework.utils.loginvalidation.validateUsername
 import com.cramsan.framework.utils.loginvalidation.validateUsernameEmail
 import com.cramsan.framework.utils.loginvalidation.validateUsernamePhoneNumber
 import edifikana_lib.Res
@@ -121,8 +122,7 @@ class SignUpViewModel(
 
             val errorMessages = listOf(
                 validateName(firstName, lastName),
-                validateUsernameEmail(usernameEmail),
-                validateUsernamePhoneNumber(usernamePhone),
+                validateUsername(usernameEmail, usernamePhone),
                 validatePassword(password),
             ).flatten().joinToString("\n")
 

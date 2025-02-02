@@ -29,7 +29,8 @@ private fun SignUpScreenSuccessPreview() = AppTheme {
         onUsernameEmailValueChange = {},
         onUsernamePhoneNumberValueChange = {},
         onPasswordValueChange = {},
-        onFullNameValueChange = {},
+        onFirstNameValueChange = {},
+        onLastNameValueChange = {},
         onPolicyChecked = {},
         onSignUpClicked = {},
     )
@@ -56,7 +57,8 @@ private fun SignUpScreenFailurePreview() = AppTheme {
         onUsernameEmailValueChange = {},
         onUsernamePhoneNumberValueChange = {},
         onPasswordValueChange = {},
-        onFullNameValueChange = {},
+        onFirstNameValueChange = {},
+        onLastNameValueChange = {},
         onPolicyChecked = {},
         onSignUpClicked = {},
     )

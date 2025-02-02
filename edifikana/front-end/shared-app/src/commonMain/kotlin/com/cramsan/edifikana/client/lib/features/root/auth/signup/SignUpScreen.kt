@@ -88,7 +88,8 @@ fun SignUpScreen(
         onUsernameEmailValueChange = { viewModel.onUsernameEmailValueChange(it) },
         onUsernamePhoneNumberValueChange = { viewModel.onUsernameEmailValueChange(it) },
         onPasswordValueChange = { viewModel.onPasswordValueChange(it) },
-        onFullNameValueChange = { viewModel.onFirstNameValueChange(it) },
+        onFirstNameValueChange = { viewModel.onFirstNameValueChange(it) },
+        onLastNameValueChange = { viewModel.onLastNameValueChange(it) },
         onPolicyChecked = { viewModel.onPolicyChecked(it) },
         onSignUpClicked = { viewModel.signUp() },
     )
@@ -97,7 +98,8 @@ fun SignUpScreen(
 @Composable
 internal fun SignUpContent(
     uistate: SignUpUIState,
-    onFullNameValueChange: (String) -> Unit,
+    onFirstNameValueChange: (String) -> Unit,
+    onLastNameValueChange: (String) -> Unit,
     onUsernameEmailValueChange: (String) -> Unit,
     onUsernamePhoneNumberValueChange: (String) -> Unit,
     onPasswordValueChange: (String) -> Unit,
@@ -138,14 +140,14 @@ internal fun SignUpContent(
 
             TextField(
                 value = uistate.signUpForm.firstName,
-                onValueChange = { onFullNameValueChange(it) },
+                onValueChange = { onFirstNameValueChange(it) },
                 label = { Text(stringResource(Res.string.sign_up_screen_text_first_name)) },
                 maxLines = 1,
             )
 
             TextField(
                 value = uistate.signUpForm.lastName,
-                onValueChange = { onFullNameValueChange(it) },
+                onValueChange = { onLastNameValueChange(it) },
                 label = { Text(stringResource(Res.string.sign_up_screen_text_last_name)) },
                 maxLines = 1,
             )

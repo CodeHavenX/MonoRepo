@@ -6,7 +6,6 @@ import com.cramsan.edifikana.client.lib.di.koin.moduleList
 import com.cramsan.edifikana.client.lib.features.application.EdifikanaWasmMainScreenEventHandler
 import com.cramsan.edifikana.client.lib.features.root.EdifikanaApplicationScreen
 import com.cramsan.edifikana.client.lib.init.Initializer
-import com.cramsan.edifikana.client.lib.koin.NoopCacheModule
 import org.koin.core.context.startKoin
 import org.koin.core.logger.PrintLogger
 

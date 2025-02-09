@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
@@ -86,7 +88,7 @@ fun SignUpScreen(
     SignUpContent(
         uistate = uiState,
         onUsernameEmailValueChange = { viewModel.onUsernameEmailValueChange(it) },
-        onUsernamePhoneNumberValueChange = { viewModel.onUsernameEmailValueChange(it) },
+        onUsernamePhoneNumberValueChange = { viewModel.onUsernamePhoneNumberValueChange(it) },
         onPasswordValueChange = { viewModel.onPasswordValueChange(it) },
         onFirstNameValueChange = { viewModel.onFirstNameValueChange(it) },
         onLastNameValueChange = { viewModel.onLastNameValueChange(it) },
@@ -109,7 +111,8 @@ internal fun SignUpContent(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
+            .background(MaterialTheme.colorScheme.background)
+            .verticalScroll(rememberScrollState()),
         contentAlignment = Alignment.Center,
     ) {
         Column(

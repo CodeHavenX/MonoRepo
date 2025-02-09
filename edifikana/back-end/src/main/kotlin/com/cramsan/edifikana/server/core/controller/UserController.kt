@@ -53,7 +53,7 @@ class UserController(
             createUserRequest.lastName,
         )
 
-        val newUser = newUserResult.requireSuccess()
+        val newUser = newUserResult.requireSuccess().toUserNetworkResponse()
         HttpResponse(
             status = HttpStatusCode.OK,
             body = newUser,

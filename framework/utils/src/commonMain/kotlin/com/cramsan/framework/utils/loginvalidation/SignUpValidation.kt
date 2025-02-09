@@ -28,7 +28,7 @@ fun validateUsernameEmail(email: String): List<String> {
         return listOf("Email cannot be empty.")
     }
     if (!email.matches(Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"))) {
-        return listOf("Username must be a valid email address.")
+        return listOf("Invalid email format.")
     }
     return emptyList()
 }
@@ -46,7 +46,7 @@ fun validateUsernamePhoneNumber(phoneNumber: String): List<String> {
     val username = phoneNumber.replace(Regex("[\\s()-]"), "")
 
     if (!username.matches(Regex("\\d{10}"))) {
-        return listOf("Username must be a valid phone number.")
+        return listOf("Invalid phone number format.")
     }
     return emptyList()
 }

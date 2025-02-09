@@ -10,8 +10,6 @@ import com.cramsan.framework.logging.logI
 import com.cramsan.framework.utils.loginvalidation.validateName
 import com.cramsan.framework.utils.loginvalidation.validatePassword
 import com.cramsan.framework.utils.loginvalidation.validateUsername
-import com.cramsan.framework.utils.loginvalidation.validateUsernameEmail
-import com.cramsan.framework.utils.loginvalidation.validateUsernamePhoneNumber
 import edifikana_lib.Res
 import edifikana_lib.error_message_unexpected_error
 import kotlinx.coroutines.launch
@@ -118,11 +116,11 @@ class SignUpViewModel(
     fun signUp() {
         logI(TAG, "signUp called")
         viewModelScope.launch {
-            val firstName = uiState.value.signUpForm.firstName.trim()
-            val lastName = uiState.value.signUpForm.firstName.trim()
-            val usernameEmail = uiState.value.signUpForm.usernameEmail.trim()
-            val usernamePhone = uiState.value.signUpForm.usernamePhone.trim()
-            val password = uiState.value.signUpForm.password
+            val firstName = _uiState.value.signUpForm.firstName.trim()
+            val lastName = _uiState.value.signUpForm.lastName.trim()
+            val usernameEmail = _uiState.value.signUpForm.usernameEmail.trim()
+            val usernamePhone = _uiState.value.signUpForm.usernamePhone.trim()
+            val password = _uiState.value.signUpForm.password
 
             val errorMessages = listOf(
                 validateName(firstName, lastName),
@@ -152,7 +150,7 @@ class SignUpViewModel(
                 updateUiState {
                     it.copy(
                         signUpForm = it.signUpForm.copy(
-                            errorMessage = exception.message
+                            errorMessage = "Oops! Something went wrong. Please try again."
                         )
                     )
                 }
@@ -161,6 +159,7 @@ class SignUpViewModel(
 
             if (user != null) {
                 logD(TAG, "User signed up: $user")
+                // TODO: reload or navigate to sign in page when successful
                 emitEvent(
                     SignUpEvent.TriggerEdifikanaApplicationEvent(
                         EdifikanaApplicationEvent.NavigateToActivity(ActivityDestination.MainDestination)

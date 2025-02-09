@@ -1,12 +1,13 @@
 package com.codehavenx.alpaca.frontend.appcore.features.signin
 
 import com.codehavenx.alpaca.frontend.appcore.features.application.ApplicationEvent
+import com.cramsan.framework.core.compose.ViewModelEvent
 import kotlin.random.Random
 
 /**
  * Events for the Sign In screen.
  */
-sealed class SignInEvent {
+sealed class SignInEvent : ViewModelEvent {
 
     /**
      * No operation

@@ -57,7 +57,7 @@ fun ListClientsScreen(
     viewModel: ListClientViewModel = koinInject()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val viewModelEvent by viewModel.event.collectAsState(ListClientEvent.Noop)
+    val viewModelEvent by viewModel.events.collectAsState(ListClientEvent.Noop)
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         viewModel.loadPage()

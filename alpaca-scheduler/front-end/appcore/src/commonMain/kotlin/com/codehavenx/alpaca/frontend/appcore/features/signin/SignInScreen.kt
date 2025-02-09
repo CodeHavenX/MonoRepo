@@ -39,7 +39,7 @@ fun SignInScreen(
     viewModel: SignInViewModel = koinInject()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val event by viewModel.event.collectAsState(SignInEvent.Noop)
+    val event by viewModel.events.collectAsState(SignInEvent.Noop)
 
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
         viewModel.startFlow()

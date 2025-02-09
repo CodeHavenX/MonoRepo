@@ -6,10 +6,6 @@ import com.codehavenx.alpaca.frontend.appcore.managers.StaffManager
 import com.codehavenx.alpaca.frontend.appcore.models.Staff
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 /**
@@ -18,41 +14,28 @@ import kotlinx.coroutines.launch
 class ListStaffsViewModel(
     private val staffManager: StaffManager,
     dependencies: ViewModelDependencies,
-) : BaseViewModel(dependencies) {
-
-    private val _uiState = MutableStateFlow(
-        ListStaffsUIState(
-            users = StaffPageUIModel(emptyList()),
-            pagination = StaffPaginationUIModel(
-                firstPage = null,
-                previousPage = null,
-                nextPage = null,
-                lastPage = null,
-                pages = emptyList(),
-            ),
-            isLoading = true,
-        )
-    )
-    val uiState: StateFlow<ListStaffsUIState> = _uiState
-
-    private val _event = MutableSharedFlow<ListStaffsEvent>()
-    val event: SharedFlow<ListStaffsEvent> = _event
-
+) : BaseViewModel<ListStaffsEvent, ListStaffsUIState>(
+    dependencies,
+    ListStaffsUIState.Initial,
+    TAG,
+) {
     /**
      * Load the page.
      */
     fun loadPage() {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true)
+            updateUiState { it.copy(isLoading = true) }
             val users = staffManager.getStaff().getOrThrow()
-            _uiState.value = _uiState.value.copy(
-                users = StaffPageUIModel(
-                    users.map {
-                        it.toUListStaffUIModel()
-                    }
-                ),
-                isLoading = false,
-            )
+            updateUiState {
+                it.copy(
+                    users = StaffPageUIModel(
+                        users.map {
+                            it.toUListStaffUIModel()
+                        }
+                    ),
+                    isLoading = false,
+                )
+            }
         }
     }
 
@@ -61,7 +44,7 @@ class ListStaffsViewModel(
      */
     fun addStaff() {
         viewModelScope.launch {
-            _event.emit(ListStaffsEvent.TriggerApplicationEvent(ApplicationEvent.Navigate(Route.addStaff())))
+            emitEvent(ListStaffsEvent.TriggerApplicationEvent(ApplicationEvent.Navigate(Route.addStaff())))
         }
     }
 
@@ -70,8 +53,12 @@ class ListStaffsViewModel(
      */
     fun openStaffPage(staffId: String) {
         viewModelScope.launch {
-            _event.emit(ListStaffsEvent.TriggerApplicationEvent(ApplicationEvent.Navigate(Route.viewStaff(staffId))))
+            emitEvent(ListStaffsEvent.TriggerApplicationEvent(ApplicationEvent.Navigate(Route.viewStaff(staffId))))
         }
+    }
+
+    companion object {
+        private const val TAG = "ListStaffsViewModel"
     }
 }
 

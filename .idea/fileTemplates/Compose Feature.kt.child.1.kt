@@ -13,25 +13,11 @@ import kotlinx.coroutines.flow.StateFlow
  // TODO: Register this ViewModel for dependecy injection
 class ${NAME}ViewModel(
     dependencies: ViewModelDependencies,
-) : BaseViewModel(dependencies) {
-
-    private val _uiState = MutableStateFlow(${NAME}UIState(
-        content = ${NAME}UIModel(""),
-        isLoading = false,
-    ))
-    
-    /**
-     * UI state of the screen.
-     */
-    val uiState: StateFlow<${NAME}UIState> = _uiState
-
-    private val _event = MutableSharedFlow<${NAME}Event>()
-
-    /**
-     * Event flow to be observed.
-     */
-    val event: SharedFlow<${NAME}Event> = _event
-    
+) : BaseViewModel<${NAME}Event, ${NAME}UIState>(
+    dependencies,
+    ${NAME}UIState.Initial,
+    TAG,
+) {
     companion object {
         private const val TAG = "${NAME}ViewModel"
     }

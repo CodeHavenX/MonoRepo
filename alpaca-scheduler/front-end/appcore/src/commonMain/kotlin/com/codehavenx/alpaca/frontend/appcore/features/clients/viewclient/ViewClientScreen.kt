@@ -16,7 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
@@ -38,7 +37,7 @@ fun ViewClientScreen(
     viewModel: ViewClientViewModel = koinInject()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val viewModelEvent by viewModel.event.collectAsState(ViewClientEvent.Noop)
+    val viewModelEvent by viewModel.events.collectAsState(ViewClientEvent.Noop)
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         viewModel.loadClient(clientId)

@@ -2,6 +2,9 @@ package com.cramsan.edifikana.client.lib.features.root.admin.properties
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
+import com.cramsan.edifikana.client.lib.features.admin.properties.PropertyManagerContent
+import com.cramsan.edifikana.client.lib.features.admin.properties.PropertyManagerUIModel
+import com.cramsan.edifikana.client.lib.features.admin.properties.PropertyUIModel
 import com.cramsan.edifikana.lib.model.PropertyId
 
 /**

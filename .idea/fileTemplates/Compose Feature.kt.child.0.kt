@@ -1,5 +1,6 @@
 package ${PACKAGE_NAME}
 
+import com.cramsan.framework.core.compose.ViewModelEvent
 import kotlin.random.Random
 
 /**
@@ -8,7 +9,7 @@ import kotlin.random.Random
  * Events are triggered from a ViewModel and are consumed by the UI.
  *
  */
-sealed class ${NAME}Event {
+sealed class ${NAME}Event : ViewModelEvent {
 
     /**
      * No operation.
@@ -21,18 +22,6 @@ sealed class ${NAME}Event {
     data class TriggerApplicationEvent(
         // Update this with the respective ApplicationEvent type.
         val applicationEvent: ApplicationEvent,
-        val id: Int = Random.nextInt(),
-    ) : ${NAME}Event()
-    
-    /**
-     * Trigger activity event. This event is triggered within a feature ViewModel and it will be
-     * consumed by the activity that is hosting this feature.
-     *
-     * This event is optional, it can be removed if not needed.
-     */
-    data class TriggerActivityEvent(
-        // Update this with the respective ActivityEvent type.
-        val activityEvent: ActivityEvent,
         val id: Int = Random.nextInt(),
     ) : ${NAME}Event()
 }

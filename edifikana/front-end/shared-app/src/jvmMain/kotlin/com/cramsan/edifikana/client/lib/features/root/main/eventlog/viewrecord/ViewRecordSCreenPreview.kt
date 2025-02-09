@@ -2,6 +2,9 @@ package com.cramsan.edifikana.client.lib.features.root.main.eventlog.viewrecord
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import com.cramsan.edifikana.client.lib.features.main.eventlog.viewrecord.SingleRecord
+import com.cramsan.edifikana.client.lib.features.main.eventlog.viewrecord.ViewRecordUIModel
 import com.cramsan.edifikana.client.lib.models.AttachmentHolder
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 
@@ -10,6 +13,7 @@ import com.cramsan.edifikana.lib.model.EventLogEntryId
 private fun ViewRecordScreenPreview() {
     SingleRecord(
         false,
+        Modifier,
         ViewRecordUIModel(
             title = "Delivery of pizza",
             eventType = "Invitado",

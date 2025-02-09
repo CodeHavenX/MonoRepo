@@ -2,6 +2,8 @@ package com.cramsan.edifikana.client.lib.features.root.main.timecard.viewstaff
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
+import com.cramsan.edifikana.client.lib.features.main.timecard.viewstaff.ViewStaffContent
+import com.cramsan.edifikana.client.lib.features.main.timecard.viewstaff.ViewStaffUIModel
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType

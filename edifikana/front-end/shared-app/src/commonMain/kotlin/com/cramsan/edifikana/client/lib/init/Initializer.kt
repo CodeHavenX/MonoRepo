@@ -1,34 +1,30 @@
 package com.cramsan.edifikana.client.lib.init
 
-import com.cramsan.framework.assertlib.AssertUtil
 import com.cramsan.framework.assertlib.AssertUtilInterface
-import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.EventLoggerInterface
-import com.cramsan.framework.thread.ThreadUtil
+import com.cramsan.framework.logging.Severity
 import com.cramsan.framework.thread.ThreadUtilInterface
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 /**
  * Initializer class for the application.
  */
-class Initializer : KoinComponent {
-
-    private val eventLogger by inject<EventLoggerInterface>()
-
-    private val assertUtil by inject<AssertUtilInterface>()
-
-    private val threadUtil by inject<ThreadUtilInterface>()
+@Suppress("UnusedPrivateProperty")
+class Initializer(
+    private val eventLogger: EventLoggerInterface,
+    private val assertUtil: AssertUtilInterface, // This is here to force the initialization of the assert util
+    private val threadUtil: ThreadUtilInterface, // This is here to force the initialization of the thread util
+) : KoinComponent {
 
     /**
-     * Perform code at the start of the application.
+     * Start the initialization steps.
      */
-    fun start() {
-        eventLogger.i(TAG, "Starting application")
-
-        EventLogger.setInstance(eventLogger)
-        AssertUtil.setInstance(assertUtil)
-        ThreadUtil.setInstance(threadUtil)
+    fun startStep() {
+        eventLogger.log(
+            Severity.INFO,
+            TAG,
+            "Starting initialization steps",
+        )
     }
 
     companion object {

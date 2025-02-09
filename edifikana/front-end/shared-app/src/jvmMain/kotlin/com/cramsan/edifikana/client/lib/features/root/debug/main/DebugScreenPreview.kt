@@ -2,6 +2,10 @@ package com.cramsan.edifikana.client.lib.features.root.debug.main
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import com.cramsan.edifikana.client.lib.features.debug.main.DebugContent
+import com.cramsan.edifikana.client.lib.features.debug.main.DebugUIModelUI
+import com.cramsan.edifikana.client.lib.features.debug.main.Field
 
 /**
  * Preview for the Debug feature screen.
@@ -10,7 +14,7 @@ import androidx.compose.runtime.Composable
 @Composable
 private fun DebugScreenPreview() {
     DebugContent(
-        content = DebugUIModel(
+        content = DebugUIModelUI(
             listOf(
                 Field.Label("This is the first section"),
                 Field.StringField(
@@ -43,6 +47,7 @@ private fun DebugScreenPreview() {
                 ),
             )
         ),
+        modifier = Modifier,
         bufferChanges = { _, _ -> },
         saveChanges = { _, _ -> },
     )

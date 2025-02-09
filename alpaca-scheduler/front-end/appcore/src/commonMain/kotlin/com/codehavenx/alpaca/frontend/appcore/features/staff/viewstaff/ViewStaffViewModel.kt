@@ -7,10 +7,6 @@ import com.codehavenx.alpaca.frontend.appcore.models.Staff
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 /**
@@ -19,30 +15,28 @@ import kotlinx.coroutines.launch
 class ViewStaffViewModel(
     private val staffManager: StaffManager,
     dependencies: ViewModelDependencies,
-) : BaseViewModel(dependencies) {
-    private val _uiState = MutableStateFlow(
-        ViewStaffUIState(
-            content = null,
-            isLoading = true,
-        )
-    )
-    val uiState: StateFlow<ViewStaffUIState> = _uiState
-
-    private val _event = MutableSharedFlow<ViewStaffEvent>()
-    val event: SharedFlow<ViewStaffEvent> = _event
-
+) : BaseViewModel<ViewStaffEvent, ViewStaffUIState>(
+    dependencies,
+    ViewStaffUIState.Initial,
+    TAG,
+) {
     /**
      * Load the staff member.
      */
     @Suppress("MagicNumber")
     fun loadStaff(staffId: String) {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true)
+            updateUiState {
+                it.copy(isLoading = true)
+            }
             delay(2000)
-            _uiState.value = _uiState.value.copy(
-                content = staffManager.getStaffById(staffId).getOrThrow().toViewUIModel(),
-                isLoading = false,
-            )
+            val staff = staffManager.getStaffById(staffId).getOrThrow().toViewUIModel()
+            updateUiState {
+                it.copy(
+                    content = staff,
+                    isLoading = false,
+                )
+            }
         }
     }
 
@@ -51,8 +45,12 @@ class ViewStaffViewModel(
      */
     fun editStaff(staffId: String) {
         viewModelScope.launch {
-            _event.emit(ViewStaffEvent.TriggerApplicationEvent(ApplicationEvent.Navigate(Route.updateStaff(staffId))))
+            emitEvent(ViewStaffEvent.TriggerApplicationEvent(ApplicationEvent.Navigate(Route.updateStaff(staffId))))
         }
+    }
+
+    companion object {
+        private const val TAG = "ViewStaffViewModel"
     }
 }
 

@@ -21,7 +21,7 @@ fun HomeScreen(
     viewModel: HomeViewModel = koinInject()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val viewModelEvent by viewModel.event.collectAsState(HomeEvent.Noop)
+    val viewModelEvent by viewModel.events.collectAsState(HomeEvent.Noop)
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
     }

@@ -1,21 +1,19 @@
 package com.codehavenx.alpaca.frontend.appcore.features.application
 
+import com.cramsan.framework.core.compose.ViewModelUIState
+
 /**
  * The UI model for the application.
  */
-sealed class ApplicationUIModel {
+data class ApplicationUIModelUI(
+    val navBar: List<NavBarSegment>,
 
-    /**
-     * The user is signed in.
-     */
-    data class SignedIn(
-        val navBar: List<NavBarSegment>,
-    ) : ApplicationUIModel()
-
-    /**
-     * The user is signed out.
-     */
-    data object SignedOut : ApplicationUIModel()
+) : ViewModelUIState {
+    companion object {
+        val Initial = ApplicationUIModelUI(
+            navBar = emptyList(),
+        )
+    }
 }
 
 /**

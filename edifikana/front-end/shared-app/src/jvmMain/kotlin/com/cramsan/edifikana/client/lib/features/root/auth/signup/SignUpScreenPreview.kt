@@ -4,6 +4,10 @@ package com.cramsan.edifikana.client.lib.features.root.auth.signup
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import com.cramsan.edifikana.client.lib.features.auth.signup.SignUpContent
+import com.cramsan.edifikana.client.lib.features.auth.signup.SignUpFormUIModel
+import com.cramsan.edifikana.client.lib.features.auth.signup.SignUpUIState
 import com.cramsan.edifikana.client.ui.theme.AppTheme
 
 /**
@@ -26,10 +30,12 @@ private fun SignUpScreenSuccessPreview() = AppTheme {
                 errorMessage = null,
             ),
         ),
+        modifier = Modifier,
         onUsernameEmailValueChange = {},
         onUsernamePhoneNumberValueChange = {},
         onPasswordValueChange = {},
-        onFullNameValueChange = {},
+        onFirstNameValueChange = {},
+        onLastNameValueChange = {},
         onPolicyChecked = {},
         onSignUpClicked = {},
     )
@@ -53,10 +59,12 @@ private fun SignUpScreenFailurePreview() = AppTheme {
                     "Password must be at least 8 characters long, contain at last 1 uppercase, 1 lowercase, and 1 number.",
             ),
         ),
+        modifier = Modifier,
         onUsernameEmailValueChange = {},
         onUsernamePhoneNumberValueChange = {},
         onPasswordValueChange = {},
-        onFullNameValueChange = {},
+        onFirstNameValueChange = {},
+        onLastNameValueChange = {},
         onPolicyChecked = {},
         onSignUpClicked = {},
     )

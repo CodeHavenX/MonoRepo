@@ -2,26 +2,20 @@
 <project version="4">
   <component name="ExportableFileTemplateSettings">
     <default_templates>
-      <template name="Compose Activity.kt" file-name="${NAME}ActivityScreen" reformat="true" live-template-enabled="false">
-        <template name="Compose Activity.kt.child.0.kt" file-name="${NAME}ActivityViewModel" reformat="true" live-template-enabled="false" />
-        <template name="Compose Activity.kt.child.1.kt" file-name="${NAME}ActivityRoute" reformat="true" live-template-enabled="false" />
-        <template name="Compose Activity.kt.child.2.kt" file-name="${NAME}ActivityEvent" reformat="true" live-template-enabled="false" />
+      <template name="Compose Activity Graph Nav.kt" file-name="${NAME}ActivityGraphNav" reformat="true" live-template-enabled="false">
+        <template name="Compose Activity Graph Nav.kt.child.0.kt" file-name="${NAME}ActivityRoute" reformat="true" live-template-enabled="false" />
       </template>
-      <template name="Compose Activity.kt.child.0.kt" file-name="${NAME}ActivityViewModel" reformat="true" live-template-enabled="false" />
-      <template name="Compose Activity.kt.child.1.kt" file-name="${NAME}ActivityRoute" reformat="true" live-template-enabled="false" />
-      <template name="Compose Activity.kt.child.2.kt" file-name="${NAME}ActivityEvent" reformat="true" live-template-enabled="false" />
+      <template name="Compose Activity Graph Nav.kt.child.0.kt" file-name="${NAME}ActivityRoute" reformat="true" live-template-enabled="false" />
       <template name="Compose Feature.kt" file-name="${NAME}Screen" reformat="true" live-template-enabled="false">
-        <template name="Compose Feature.kt.child.1.kt" file-name="${NAME}ViewModel" reformat="true" live-template-enabled="false" />
-        <template name="Compose Feature.kt.child.4.kt" file-name="${NAME}ScreenPreview" reformat="true" live-template-enabled="false" />
-        <template name="Compose Feature.kt.child.3.kt" file-name="${NAME}UIModel" reformat="true" live-template-enabled="false" />
-        <template name="Compose Feature.kt.child.2.kt" file-name="${NAME}UIState" reformat="true" live-template-enabled="false" />
         <template name="Compose Feature.kt.child.0.kt" file-name="${NAME}Event" reformat="true" live-template-enabled="false" />
+        <template name="Compose Feature.kt.child.1.kt" file-name="${NAME}ViewModel" reformat="true" live-template-enabled="false" />
+        <template name="Compose Feature.kt.child.2.kt" file-name="${NAME}UIState" reformat="true" live-template-enabled="false" />
+        <template name="Compose Feature.kt.child.3.kt" file-name="${NAME}ScreenPreview" reformat="true" live-template-enabled="false" />
       </template>
       <template name="Compose Feature.kt.child.0.kt" file-name="${NAME}Event" reformat="true" live-template-enabled="false" />
       <template name="Compose Feature.kt.child.1.kt" file-name="${NAME}ViewModel" reformat="true" live-template-enabled="false" />
       <template name="Compose Feature.kt.child.2.kt" file-name="${NAME}UIState" reformat="true" live-template-enabled="false" />
-      <template name="Compose Feature.kt.child.3.kt" file-name="${NAME}UIModel" reformat="true" live-template-enabled="false" />
-      <template name="Compose Feature.kt.child.4.kt" file-name="${NAME}ScreenPreview" reformat="true" live-template-enabled="false" />
+      <template name="Compose Feature.kt.child.3.kt" file-name="${NAME}ScreenPreview" reformat="true" live-template-enabled="false" />
     </default_templates>
   </component>
 </project>

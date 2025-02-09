@@ -1,19 +1,16 @@
 package ${PACKAGE_NAME}
 
-/**
- * ${NAME} UI model. You can use one or multiple models to represent
- * specific sections and component of the UI.
- */
-data class ${NAME}UIModel(
-    val name: String,
-)
+import androidx.compose.runtime.Composable
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
+// TODO: Move this file to the desktop source set. Once done, remove this line
 /**
- * Converts the given [Any] object to an [${NAME}UIModel] object.
+ * Preview for the ${NAME} feature screen.
  */
-fun Any.to${NAME}UIModel(): ${NAME}UIModel {
-    // This is just a placeholder implementation. Replace the Any type and implement the conversion logic.
-    return ${NAME}UIModel(
-        name = TODO(),
+@Preview
+@Composable
+private fun ${NAME}ScreenPreview() {
+    ${NAME}Content(
+        content = ${NAME}UIState(true),
     )
 }

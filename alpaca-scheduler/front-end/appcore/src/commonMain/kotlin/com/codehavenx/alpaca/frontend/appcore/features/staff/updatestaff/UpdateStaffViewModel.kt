@@ -6,10 +6,6 @@ import com.codehavenx.alpaca.frontend.appcore.models.Staff
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 /**
@@ -18,28 +14,20 @@ import kotlinx.coroutines.launch
 class UpdateStaffViewModel(
     private val staffManager: StaffManager,
     dependencies: ViewModelDependencies,
-) : BaseViewModel(dependencies) {
-
-    private val _uiState = MutableStateFlow(
-        UpdateStaffUIState(
-            content = null,
-            isLoading = false,
-        )
-    )
-    val uiState: StateFlow<UpdateStaffUIState> = _uiState
-
-    private val _event = MutableSharedFlow<UpdateStaffEvent>()
-    val event: SharedFlow<UpdateStaffEvent> = _event
-
+) : BaseViewModel<UpdateStaffEvent, UpdateStaffUIState>(
+    dependencies,
+    UpdateStaffUIState.Initial,
+    TAG,
+) {
     /**
      * Update the staff member.
      */
     @Suppress("MagicNumber")
     fun updateStaff() {
-        _uiState.value = _uiState.value.copy(isLoading = true)
+        updateUiState { it.copy(isLoading = true) }
         viewModelScope.launch {
             delay(2000)
-            _event.emit(UpdateStaffEvent.TriggerApplicationEvent(ApplicationEvent.NavigateBack()))
+            emitEvent(UpdateStaffEvent.TriggerApplicationEvent(ApplicationEvent.NavigateBack()))
         }
     }
 
@@ -49,13 +37,20 @@ class UpdateStaffViewModel(
     @Suppress("MagicNumber")
     fun loadStaff(staffId: String) {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true)
+            updateUiState { it.copy(isLoading = true) }
             delay(2000)
-            _uiState.value = _uiState.value.copy(
-                content = staffManager.getStaffById(staffId).getOrThrow().toViewUIModel(),
-                isLoading = false,
-            )
+            val staff = staffManager.getStaffById(staffId).getOrThrow().toViewUIModel()
+            updateUiState {
+                it.copy(
+                    content = staff,
+                    isLoading = false,
+                )
+            }
         }
+    }
+
+    companion object {
+        private const val TAG = "UpdateStaffViewModel"
     }
 }
 

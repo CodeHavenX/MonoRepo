@@ -1,7 +1,7 @@
 @file:OptIn(ExperimentalWasmDsl::class)
 
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import io.gitlab.arturbosch.detekt.Detekt
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     kotlin("multiplatform")
@@ -50,6 +50,7 @@ kotlin {
 
             implementation("io.insert-koin:koin-core:_")
             implementation("io.insert-koin:koin-compose:_")
+            implementation("io.insert-koin:koin-compose-viewmodel:_")
 
             implementation("io.coil-kt.coil3:coil:")
             implementation("io.coil-kt.coil3:coil-compose:_")

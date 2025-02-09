@@ -85,6 +85,7 @@
     <string name="sign_in_screen_text_sign_in">Iniciar Sesión</string>
     <string name="sign_in_screen_text_email">Correo/# Telefónico</string>
     <string name="sign_in_screen_text_password">Contraseña</string>
+    <string name="sign_in_screen_text_sign_up">Sign Up</string>
 
     <string name="sign_up_screen_text_first_name">Nombre</string>
     <string name="sign_up_screen_text_last_name">Apellido</string>

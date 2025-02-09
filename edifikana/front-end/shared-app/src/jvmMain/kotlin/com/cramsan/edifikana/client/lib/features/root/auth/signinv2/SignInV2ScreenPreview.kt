@@ -2,6 +2,9 @@ package com.cramsan.edifikana.client.lib.features.root.auth.signinv2
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
+import com.cramsan.edifikana.client.lib.features.auth.signin.SignInContent
+import com.cramsan.edifikana.client.lib.features.auth.signin.SignInFormUIModel
+import com.cramsan.edifikana.client.lib.features.auth.signin.SignInUIState
 import com.cramsan.edifikana.client.ui.theme.AppTheme
 
 /**
@@ -9,9 +12,9 @@ import com.cramsan.edifikana.client.ui.theme.AppTheme
  */
 @Preview
 @Composable
-private fun SignInV2ScreenPreview() {
-    SignInV2Content(
-        uistate = SignInV2UIState(
+private fun SignInScreenPreview() {
+    SignInContent(
+        uistate = SignInUIState(
             isLoading = false,
             signInForm = SignInFormUIModel(
                 email = "",
@@ -32,9 +35,9 @@ private fun SignInV2ScreenPreview() {
  */
 @Preview
 @Composable
-private fun SignInV2ContentPreview() = AppTheme {
-    SignInV2Content(
-        uistate = SignInV2UIState(
+private fun SignInContentPreview() = AppTheme {
+    SignInContent(
+        uistate = SignInUIState(
             isLoading = true,
             signInForm = SignInFormUIModel(
                 email = "username",

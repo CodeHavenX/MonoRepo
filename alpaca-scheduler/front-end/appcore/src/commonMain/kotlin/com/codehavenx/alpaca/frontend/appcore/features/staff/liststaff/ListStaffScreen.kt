@@ -57,7 +57,7 @@ fun ListStaffsScreen(
     viewModel: ListStaffsViewModel = koinInject()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val viewModelEvent by viewModel.event.collectAsState(ListStaffsEvent.Noop)
+    val viewModelEvent by viewModel.events.collectAsState(ListStaffsEvent.Noop)
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         viewModel.loadPage()

@@ -7,10 +7,6 @@ import com.codehavenx.alpaca.frontend.appcore.models.Client
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 /**
@@ -19,18 +15,11 @@ import kotlinx.coroutines.launch
 class ViewClientViewModel(
     private val clientManager: ClientManager,
     dependencies: ViewModelDependencies,
-) : BaseViewModel(dependencies) {
-
-    private val _uiState = MutableStateFlow(
-        ViewClientUIState(
-            content = null,
-            isLoading = true,
-        )
-    )
-    val uiState: StateFlow<ViewClientUIState> = _uiState
-
-    private val _event = MutableSharedFlow<ViewClientEvent>()
-    val event: SharedFlow<ViewClientEvent> = _event
+) : BaseViewModel<ViewClientEvent, ViewClientUIState>(
+    dependencies,
+    ViewClientUIState.Initial,
+    TAG,
+) {
 
     /**
      * Load the client with the given ID.
@@ -38,12 +27,9 @@ class ViewClientViewModel(
     @Suppress("MagicNumber")
     fun loadClient(clientId: String) {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true)
+            updateUiState { it.copy(isLoading = true) }
             delay(2000)
-            _uiState.value = _uiState.value.copy(
-                content = clientManager.getClientById(clientId).getOrThrow().toViewUIModel(),
-                isLoading = false,
-            )
+            clientManager.getClientById(clientId).getOrThrow().toViewUIModel()
         }
     }
 
@@ -52,10 +38,14 @@ class ViewClientViewModel(
      */
     fun editClient(clientId: String) {
         viewModelScope.launch {
-            _event.emit(
+            emitEvent(
                 ViewClientEvent.TriggerApplicationEvent(ApplicationEvent.Navigate(Route.updateClient(clientId)))
             )
         }
+    }
+
+    companion object {
+        private const val TAG = "ViewClientViewModel"
     }
 }
 

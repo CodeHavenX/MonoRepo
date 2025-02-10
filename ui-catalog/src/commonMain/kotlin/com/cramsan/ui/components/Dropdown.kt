@@ -13,12 +13,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
  * Dropdown component.
@@ -31,9 +29,10 @@ fun <T> Dropdown(
     items: List<T>,
     itemLabels: List<String>,
     startValueMatcher: ((T) -> Boolean)?,
+    expanded: Boolean = false,
     valueSelected: (T) -> Unit,
 ) {
-    var expanded by remember { mutableStateOf(false) }
+    var expanded by remember(expanded) { mutableStateOf(false) }
     var selectedIndex by remember {
         val startIndex = startValueMatcher?.let {
             items.indexOfFirst(startValueMatcher)
@@ -83,20 +82,5 @@ fun <T> Dropdown(
                 )
             }
         }
-    }
-}
-
-@Preview
-@Composable
-private fun DropdownPreview() {
-    var selected by remember { mutableIntStateOf(0) }
-    Dropdown(
-        label = "Dropdown",
-        modifier = Modifier.fillMaxWidth(),
-        items = listOf("One", "Two", "Three"),
-        itemLabels = listOf("One", "Two", "Three"),
-        startValueMatcher = { it == "Two" },
-    ) {
-        selected = 1
     }
 }

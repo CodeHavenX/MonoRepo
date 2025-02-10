@@ -30,7 +30,6 @@ import com.codehavenx.alpaca.frontend.appcore.features.clients.updateclient.Upda
 import com.codehavenx.alpaca.frontend.appcore.features.clients.viewclient.ViewClientScreen
 import com.codehavenx.alpaca.frontend.appcore.features.createaccount.CreateAccountScreen
 import com.codehavenx.alpaca.frontend.appcore.features.home.HomeScreen
-import com.codehavenx.alpaca.frontend.appcore.features.signin.SignInScreen
 import com.codehavenx.alpaca.frontend.appcore.features.staff.addstaff.AddStaffScreen
 import com.codehavenx.alpaca.frontend.appcore.features.staff.liststaff.ListStaffsScreen
 import com.codehavenx.alpaca.frontend.appcore.features.staff.updatestaff.UpdateStaffScreen
@@ -99,23 +98,13 @@ fun AlpacaApplicationScreen(
                 targetState = state,
                 label = "animated content"
             ) {
-                when (state) {
-                    ApplicationUIModel.SignedOut -> {
-                        SignInScreen(
-                            delegatedEvent,
-                            onApplicationEventInvoke = { viewModel.executeApplicationEvent(it) },
-                        )
-                    }
-                    is ApplicationUIModel.SignedIn -> {
-                        NavigationHost(
-                            navController = navController,
-                            delegatedEvent = delegatedEvent,
-                            onApplicationEventInvoke = { viewModel.executeApplicationEvent(it) },
-                            onSignOutClicked = { viewModel.signOut() },
-                            navBar = state.navBar,
-                        )
-                    }
-                }
+                NavigationHost(
+                    navController = navController,
+                    delegatedEvent = delegatedEvent,
+                    onApplicationEventInvoke = { viewModel.executeApplicationEvent(it) },
+                    onSignOutClicked = { viewModel.signOut() },
+                    navBar = state.navBar,
+                )
             }
         }
     }

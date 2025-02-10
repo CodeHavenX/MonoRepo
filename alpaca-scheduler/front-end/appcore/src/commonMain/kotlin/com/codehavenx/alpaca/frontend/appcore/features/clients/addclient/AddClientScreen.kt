@@ -25,7 +25,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.codehavenx.alpaca.frontend.appcore.features.application.ApplicationDelegatedEvent
 import com.codehavenx.alpaca.frontend.appcore.features.application.ApplicationEvent
-import com.codehavenx.alpaca.frontend.appcore.ui.components.LoadingAnimationOverlay
 import com.codehavenx.alpaca.frontend.appcore.ui.theme.Padding
 import org.koin.compose.koinInject
 
@@ -39,7 +38,7 @@ fun AddClientScreen(
     viewModel: AddClientViewModel = koinInject()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val viewModelEvent by viewModel.event.collectAsState(AddClientEvent.Noop)
+    val viewModelEvent by viewModel.events.collectAsState(AddClientEvent.Noop)
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
     }
@@ -60,8 +59,7 @@ fun AddClientScreen(
     }
 
     AddClientContent(
-        uiState.content,
-        uiState.isLoading,
+        uiState,
         onAddClientButtonClicked = { viewModel.saveClient() }
     )
 }
@@ -70,7 +68,6 @@ fun AddClientScreen(
 @Composable
 internal fun AddClientContent(
     content: AddClientUIModel,
-    loading: Boolean,
     onAddClientButtonClicked: () -> Unit = {},
 ) {
     Box(
@@ -154,6 +151,5 @@ internal fun AddClientContent(
                 Text("Add New Client")
             }
         }
-        LoadingAnimationOverlay(isLoading = loading)
     }
 }

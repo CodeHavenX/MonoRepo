@@ -1,12 +1,13 @@
 package com.codehavenx.alpaca.frontend.appcore.features.clients.listclients
 
 import com.codehavenx.alpaca.frontend.appcore.features.application.ApplicationEvent
+import com.cramsan.framework.core.compose.ViewModelEvent
 import kotlin.random.Random
 
 /**
  * Events for the List Clients screen.
  */
-sealed class ListClientEvent {
+sealed class ListClientEvent : ViewModelEvent {
 
     /**
      * No operation

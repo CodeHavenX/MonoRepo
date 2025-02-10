@@ -1,16 +1,19 @@
 package com.cramsan.edifikana.client.lib.di.koin
 
 import com.cramsan.edifikana.client.lib.settings.Overrides
+import com.cramsan.framework.assertlib.AssertUtil
 import com.cramsan.framework.assertlib.AssertUtilInterface
 import com.cramsan.framework.assertlib.implementation.AssertUtilImpl
 import com.cramsan.framework.halt.HaltUtil
 import com.cramsan.framework.halt.implementation.HaltUtilImpl
+import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.EventLoggerErrorCallback
 import com.cramsan.framework.logging.EventLoggerInterface
 import com.cramsan.framework.logging.implementation.EventLoggerErrorCallbackImpl
 import com.cramsan.framework.logging.implementation.EventLoggerImpl
 import com.cramsan.framework.preferences.Preferences
 import com.cramsan.framework.preferences.implementation.PreferencesImpl
+import com.cramsan.framework.thread.ThreadUtil
 import com.cramsan.framework.thread.ThreadUtilInterface
 import com.cramsan.framework.thread.implementation.ThreadUtilImpl
 import org.koin.core.qualifier.named
@@ -23,7 +26,9 @@ internal val FrameworkModule = module {
             get(named(Overrides.KEY_HALT_ON_FAILURE)),
             get(),
             get(),
-        )
+        ).also {
+            AssertUtil.setInstance(it)
+        }
     }
 
     single<EventLoggerErrorCallback> {
@@ -35,13 +40,17 @@ internal val FrameworkModule = module {
             get(named(Overrides.KEY_LOGGING_SEVERITY)),
             get(),
             get(),
-        )
+        ).also {
+            EventLogger.setInstance(it)
+        }
     }
 
     single<HaltUtil> { HaltUtilImpl(get()) }
 
     single<ThreadUtilInterface> {
-        ThreadUtilImpl(get())
+        ThreadUtilImpl(get()).also {
+            ThreadUtil.setInstance(it)
+        }
     }
 
     single<Preferences> {

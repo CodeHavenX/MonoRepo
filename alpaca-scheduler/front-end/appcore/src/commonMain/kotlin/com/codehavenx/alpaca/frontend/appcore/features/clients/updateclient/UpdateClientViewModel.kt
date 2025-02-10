@@ -6,61 +6,47 @@ import com.codehavenx.alpaca.frontend.appcore.models.Client
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 /**
  * The ViewModel for the Update Client screen.
  */
+@Suppress("UnusedPrivateProperty")
 class UpdateClientViewModel(
     private val clientManager: ClientManager,
     dependencies: ViewModelDependencies,
-) : BaseViewModel(dependencies) {
-    private val _uiState = MutableStateFlow(
-        UpdateClientUIState(
-            content = null,
-            isLoading = false,
-        )
-    )
-    val uiState: StateFlow<UpdateClientUIState> = _uiState
-
-    private val _event = MutableSharedFlow<UpdateClientEvent>()
-    val event: SharedFlow<UpdateClientEvent> = _event
-
+) : BaseViewModel<UpdateClientEvent, UpdateClientUIState>(
+    dependencies,
+    UpdateClientUIState.Initial,
+    TAG,
+) {
     /**
      * Update the client information.
      */
     @Suppress("MagicNumber")
     fun updateClient() {
-        _uiState.value = _uiState.value.copy(isLoading = true)
+        updateUiState { it.copy(isLoading = true) }
         viewModelScope.launch {
             delay(2000)
-            _event.emit(UpdateClientEvent.TriggerApplicationEvent(ApplicationEvent.NavigateBack()))
+            emitEvent(UpdateClientEvent.TriggerApplicationEvent(ApplicationEvent.NavigateBack()))
         }
     }
 
     /**
      * Load the client information.
      */
-    @Suppress("MagicNumber")
-    fun loadClient(clientId: String) {
-        viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true)
-            delay(2000)
-            _uiState.value = _uiState.value.copy(
-                content = clientManager.getClientById(clientId).getOrThrow().toViewUIModel(),
-                isLoading = false,
-            )
-        }
+    @Suppress("UnusedParameter")
+    fun loadClient(clientId: String) = Unit
+
+    companion object {
+        private const val TAG = "UpdateClientViewModel"
     }
 }
 
 /**
  * Convert the Client to the UI Model.
  */
+@Suppress("UnusedPrivateMember")
 private fun Client.toViewUIModel(): UpdateClientUIModel {
     return UpdateClientUIModel(
         id = id,

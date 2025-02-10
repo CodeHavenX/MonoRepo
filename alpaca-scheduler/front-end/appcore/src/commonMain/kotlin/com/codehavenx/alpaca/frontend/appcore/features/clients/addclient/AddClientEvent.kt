@@ -1,12 +1,13 @@
 package com.codehavenx.alpaca.frontend.appcore.features.clients.addclient
 
 import com.codehavenx.alpaca.frontend.appcore.features.application.ApplicationEvent
+import com.cramsan.framework.core.compose.ViewModelEvent
 import kotlin.random.Random
 
 /**
  * Events for the Add Client screen.
  */
-sealed class AddClientEvent {
+sealed class AddClientEvent : ViewModelEvent {
 
     /**
      * No operation

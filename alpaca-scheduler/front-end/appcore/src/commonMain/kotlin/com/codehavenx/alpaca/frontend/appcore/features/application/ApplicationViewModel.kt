@@ -5,9 +5,7 @@ import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logI
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 /**
@@ -16,18 +14,14 @@ import kotlinx.coroutines.launch
 class ApplicationViewModel(
     private val authenticationManager: AuthenticationManager,
     dependencies: ViewModelDependencies,
-) : BaseViewModel(dependencies) {
-
-    private val _events = MutableSharedFlow<ApplicationEvent>()
-    val events: SharedFlow<ApplicationEvent> = _events
+) : BaseViewModel<ApplicationEvent, ApplicationUIModelUI>(
+    dependencies,
+    ApplicationUIModelUI.Initial,
+    TAG,
+) {
 
     private val _delegatedEvents = MutableSharedFlow<ApplicationDelegatedEvent>()
     val delegatedEvents: SharedFlow<ApplicationDelegatedEvent> = _delegatedEvents
-
-    private val _uiState = MutableStateFlow<ApplicationUIModel>(
-        ApplicationUIModel.SignedOut
-    )
-    val uiState: StateFlow<ApplicationUIModel> = _uiState
 
     init {
         viewModelScope.launch {
@@ -42,7 +36,7 @@ class ApplicationViewModel(
      */
     fun executeApplicationEvent(event: ApplicationEvent) = viewModelScope.launch {
         logI(TAG, "Executing application event: $event")
-        _events.emit(event)
+        emitEvent(event)
     }
 
     /**
@@ -50,33 +44,37 @@ class ApplicationViewModel(
      */
     fun setSignInStatus(signedIn: Boolean) {
         logI(TAG, "Setting sign in status to: $signedIn")
-        _uiState.value = if (signedIn) {
-            ApplicationUIModel.SignedIn(
-                navBar = listOf(
-                    NavBarSegment.NavBarItem(
-                        name = "Home",
-                        path = Route.home(),
-                    ),
-                    NavBarSegment.NavBarItem(
-                        name = "Clients",
-                        path = Route.listClients(),
-                    ),
-                    NavBarSegment.NavBarItem(
-                        name = "Staff",
-                        path = Route.listStaff(),
-                    ),
-                    NavBarSegment.NavBarItem(
-                        name = "Appointments",
-                        path = Route.appointments(),
-                    ),
-                    NavBarSegment.NavBarItem(
-                        name = "Classes and Courses",
-                        path = Route.coursesAndClasses(),
-                    ),
+        updateUiState {
+            if (signedIn) {
+                ApplicationUIModelUI(
+                    navBar = listOf(
+                        NavBarSegment.NavBarItem(
+                            name = "Home",
+                            path = Route.home(),
+                        ),
+                        NavBarSegment.NavBarItem(
+                            name = "Clients",
+                            path = Route.listClients(),
+                        ),
+                        NavBarSegment.NavBarItem(
+                            name = "Staff",
+                            path = Route.listStaff(),
+                        ),
+                        NavBarSegment.NavBarItem(
+                            name = "Appointments",
+                            path = Route.appointments(),
+                        ),
+                        NavBarSegment.NavBarItem(
+                            name = "Classes and Courses",
+                            path = Route.coursesAndClasses(),
+                        ),
+                    )
                 )
-            )
-        } else {
-            ApplicationUIModel.SignedOut
+            } else {
+                ApplicationUIModelUI(
+                    navBar = listOf()
+                )
+            }
         }
     }
 

@@ -6,10 +6,6 @@ import com.codehavenx.alpaca.frontend.appcore.managers.ClientManager
 import com.codehavenx.alpaca.frontend.appcore.models.Client
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 /**
@@ -18,41 +14,31 @@ import kotlinx.coroutines.launch
 class ListClientViewModel(
     private val clientManager: ClientManager,
     dependencies: ViewModelDependencies,
-) : BaseViewModel(dependencies) {
-
-    private val _uiState = MutableStateFlow(
-        ListClientUIState(
-            users = ClientPageUIModel(emptyList()),
-            pagination = ClientPaginationUIModel(
-                firstPage = null,
-                previousPage = null,
-                nextPage = null,
-                lastPage = null,
-                pages = emptyList(),
-            ),
-            isLoading = true,
-        )
-    )
-    val uiState: StateFlow<ListClientUIState> = _uiState
-
-    private val _event = MutableSharedFlow<ListClientEvent>()
-    val event: SharedFlow<ListClientEvent> = _event
+) : BaseViewModel<ListClientEvent, ListClientUIState>(
+    dependencies,
+    ListClientUIState.Initial,
+    TAG,
+) {
 
     /**
      * Load the page of clients.
      */
     fun loadPage() {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true)
+            updateUiState {
+                it.copy(isLoading = true)
+            }
             val users = clientManager.getClients().getOrThrow()
-            _uiState.value = _uiState.value.copy(
-                users = ClientPageUIModel(
-                    users.map {
-                        it.toUListClientUIModel()
-                    }
-                ),
-                isLoading = false,
-            )
+            updateUiState {
+                it.copy(
+                    users = ClientPageUIModel(
+                        users.map {
+                            it.toUListClientUIModel()
+                        }
+                    ),
+                    isLoading = false,
+                )
+            }
         }
     }
 
@@ -61,7 +47,7 @@ class ListClientViewModel(
      */
     fun addClient() {
         viewModelScope.launch {
-            _event.emit(ListClientEvent.TriggerApplicationEvent(ApplicationEvent.Navigate(Route.addClient())))
+            emitEvent(ListClientEvent.TriggerApplicationEvent(ApplicationEvent.Navigate(Route.addClient())))
         }
     }
 
@@ -70,8 +56,12 @@ class ListClientViewModel(
      */
     fun openClientPage(clientId: String) {
         viewModelScope.launch {
-            _event.emit(ListClientEvent.TriggerApplicationEvent(ApplicationEvent.Navigate(Route.viewClient(clientId))))
+            emitEvent(ListClientEvent.TriggerApplicationEvent(ApplicationEvent.Navigate(Route.viewClient(clientId))))
         }
+    }
+
+    companion object {
+        private const val TAG = "ListClientViewModel"
     }
 }
 

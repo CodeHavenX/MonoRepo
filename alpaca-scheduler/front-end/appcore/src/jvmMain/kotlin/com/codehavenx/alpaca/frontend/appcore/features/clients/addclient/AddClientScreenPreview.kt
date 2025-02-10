@@ -8,6 +8,5 @@ import androidx.compose.runtime.Composable
 private fun AddClientScreenPreview() {
     AddClientContent(
         content = AddClientUIModel(""),
-        loading = false,
     )
 }

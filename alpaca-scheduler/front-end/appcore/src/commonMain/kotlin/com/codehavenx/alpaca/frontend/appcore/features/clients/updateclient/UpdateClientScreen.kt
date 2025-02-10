@@ -40,7 +40,7 @@ fun UpdateClientScreen(
     viewModel: UpdateClientViewModel = koinInject()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val viewModelEvent by viewModel.event.collectAsState(UpdateClientEvent.Noop)
+    val viewModelEvent by viewModel.events.collectAsState(UpdateClientEvent.Noop)
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         viewModel.loadClient(clientId)

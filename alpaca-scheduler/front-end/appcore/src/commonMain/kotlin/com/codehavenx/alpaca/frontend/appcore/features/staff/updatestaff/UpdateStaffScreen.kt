@@ -40,7 +40,7 @@ fun UpdateStaffScreen(
     viewModel: UpdateStaffViewModel = koinInject()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val viewModelEvent by viewModel.event.collectAsState(UpdateStaffEvent.Noop)
+    val viewModelEvent by viewModel.events.collectAsState(UpdateStaffEvent.Noop)
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         viewModel.loadStaff(staffId)

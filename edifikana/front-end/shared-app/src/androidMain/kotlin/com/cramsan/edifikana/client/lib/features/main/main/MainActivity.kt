@@ -9,11 +9,11 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationScreen
+import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
+import com.cramsan.edifikana.client.lib.features.EdifikanaMainScreenEventHandler
 import com.cramsan.edifikana.client.lib.features.main.camera.CameraContract
-import com.cramsan.edifikana.client.lib.features.root.EdifikanaApplicationEvent
-import com.cramsan.edifikana.client.lib.features.root.EdifikanaApplicationScreen
-import com.cramsan.edifikana.client.lib.features.root.EdifikanaApplicationViewModel
-import com.cramsan.edifikana.client.lib.features.root.EdifikanaMainScreenEventHandler
 import com.cramsan.edifikana.client.lib.utils.shareContent
 import com.cramsan.framework.core.CoreUri
 import kotlinx.coroutines.launch
@@ -44,7 +44,6 @@ class MainActivity : ComponentActivity(), EdifikanaMainScreenEventHandler {
 
         setContent {
             EdifikanaApplicationScreen(
-                viewModel = viewModel,
                 eventHandler = this,
             )
         }

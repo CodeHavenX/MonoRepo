@@ -1,11 +1,12 @@
 package com.codehavenx.alpaca.frontend.appcore.features.application
 
+import com.cramsan.framework.core.compose.ViewModelEvent
 import kotlin.random.Random
 
 /**
  * This file contains the application level events that can be handled.
  */
-sealed class ApplicationEvent {
+sealed class ApplicationEvent : ViewModelEvent {
     /**
      * No operation event.
      */

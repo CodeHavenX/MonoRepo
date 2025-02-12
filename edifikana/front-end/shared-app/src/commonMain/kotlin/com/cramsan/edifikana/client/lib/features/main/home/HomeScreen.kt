@@ -79,6 +79,35 @@ fun HomeScreen(
         }
     }
 
+    HomeScreenContent(
+        uiState,
+        onAccountButtonClicked = { viewModel.navigateToAccount() },
+        onAdminButtonClicked = { viewModel.navigateToAdmin() },
+        onPropertySelected = { viewModel.selectProperty(it) },
+    )
+}
+
+private val BottomBarDestinationUiModels = listOf(
+    BottomBarDestinationUiModel(
+        Tabs.EventLog,
+        Res.drawable.two_pager,
+        Res.string.string_event_log_title,
+        isStartDestination = true,
+    ),
+    BottomBarDestinationUiModel(
+        Tabs.TimeCard,
+        Res.drawable.schedule,
+        Res.string.string_assistance,
+    ),
+)
+
+@Composable
+internal fun HomeScreenContent(
+    uiState: HomeUIModel,
+    onAccountButtonClicked: () -> Unit,
+    onAdminButtonClicked: () -> Unit,
+    onPropertySelected: (PropertyId) -> Unit,
+) {
     var selectedTab by remember { mutableStateOf(Tabs.EventLog) }
 
     Scaffold(
@@ -90,22 +119,18 @@ fun HomeScreen(
                 PropertyDropDown(
                     label = uiState.label,
                     list = uiState.availableProperties,
-                    onPropertySelected = { propertyId -> viewModel.selectProperty(propertyId) }
+                    onPropertySelected = onPropertySelected,
                 )
 
                 // Admin Menu button
-                IconButton(onClick = {
-                    viewModel.navigateToAdmin()
-                }) {
+                IconButton(onClick = onAdminButtonClicked) {
                     Icon(
                         imageVector = Icons.Default.Settings,
                         contentDescription = ""
                     )
                 }
                 // Account button
-                IconButton(onClick = {
-                    viewModel.navigateToAccount()
-                }) {
+                IconButton(onClick = onAccountButtonClicked) {
                     Icon(
                         imageVector = Icons.Default.AccountCircle,
                         contentDescription = ""
@@ -140,20 +165,6 @@ fun HomeScreen(
         )
     }
 }
-
-private val BottomBarDestinationUiModels = listOf(
-    BottomBarDestinationUiModel(
-        Tabs.EventLog,
-        Res.drawable.two_pager,
-        Res.string.string_event_log_title,
-        isStartDestination = true,
-    ),
-    BottomBarDestinationUiModel(
-        Tabs.TimeCard,
-        Res.drawable.schedule,
-        Res.string.string_assistance,
-    ),
-)
 
 @Composable
 private fun PropertyDropDown(
@@ -206,7 +217,7 @@ private fun PropertyDropDown(
  * Content of the AccountEdit screen.
  */
 @Composable
-internal fun HomeContent(
+private fun HomeContent(
     modifier: Modifier,
     selectedTab: Tabs,
 ) {

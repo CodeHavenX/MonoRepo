@@ -31,7 +31,6 @@ import com.cramsan.ui.components.LoadingAnimationOverlay
 import edifikana_lib.Res
 import edifikana_lib.text_upload
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -74,7 +73,7 @@ fun EventLogScreen(
 }
 
 @Composable
-private fun RecordList(
+internal fun RecordList(
     records: List<EventLogRecordUIModel>,
     isLoading: Boolean,
     modifier: Modifier = Modifier,
@@ -158,33 +157,4 @@ private fun RecordItem(
         }
     }
     HorizontalDivider()
-}
-
-@Preview
-@Composable
-private fun PreviewEventLogScreen() {
-    RecordList(
-        modifier = Modifier,
-        records = listOf(
-            EventLogRecordUIModel(
-                "Arrived package for dpt 1801",
-                "DELIVERY",
-                "1801",
-                "2021-09-01T00:00:00Z",
-                EventLogEntryId("1"),
-                true,
-            ),
-            EventLogRecordUIModel(
-                "Arrived package for dpt 1801",
-                "DELIVERY",
-                "1801",
-                "2021-09-01T00:00:00Z",
-                EventLogEntryId("1"),
-                false,
-            ),
-        ),
-        isLoading = true,
-        onRecordSelected = { },
-        onAddRecordClicked = { },
-    )
 }

@@ -28,7 +28,6 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.ui.components.LoadingAnimationOverlay
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -71,7 +70,7 @@ fun TimeCardScreen(
 }
 
 @Composable
-private fun EventList(
+internal fun EventList(
     isLoading: Boolean,
     events: List<TimeCardUIModel>,
     modifier: Modifier = Modifier,
@@ -122,28 +121,4 @@ private fun StaffItem(
         Text(staff.eventTime)
     }
     HorizontalDivider()
-}
-
-@Preview
-@Composable
-private fun TimeCardScreenPreview() {
-    EventList(
-        isLoading = true,
-        events = listOf(
-            TimeCardUIModel(
-                "Cesar Andres Ramirez Sanchez",
-                "Marco salida",
-                "2024 02 12 - 03:24:01",
-                StaffId("John"),
-            ),
-            TimeCardUIModel(
-                "Antonio",
-                "Marco entrada",
-                "2024 02 12 - 03:24:01",
-                StaffId("Jane"),
-            ),
-        ),
-        onStaffClick = {},
-        onAddEventClick = {},
-    )
 }

@@ -15,9 +15,9 @@ import kotlinx.coroutines.launch
 class HomeViewModel(
     dependencies: ViewModelDependencies,
     private val propertyManager: PropertyManager,
-) : BaseViewModel<HomeEvent, HomeUIModelUI>(
+) : BaseViewModel<HomeEvent, HomeUIModel>(
     dependencies,
-    HomeUIModelUI.Empty,
+    HomeUIModel.Empty,
     TAG,
 ) {
 

@@ -1,5 +1,8 @@
 {
     "id": "user123",
     "email": "updated.email@example.com",
+    "phone_number": "",
+    "first_name": "Updated",
+    "last_name": "Email",
     "has_global_perms": false
 }

@@ -1,5 +1,7 @@
 {
-    "username": "john.doe@example.com",
+    "email": "john.doe@example.com",
+    "phone_number": "",
     "password": "password",
-    "fullname": "John Doe"
+    "first_name": "John",
+    "last_name": "Doe"
 }

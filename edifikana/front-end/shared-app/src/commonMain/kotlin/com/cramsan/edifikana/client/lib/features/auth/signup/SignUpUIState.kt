@@ -16,8 +16,8 @@ data class SignUpUIState(
             signUpForm = SignUpFormUIModel(
                 firstName = "",
                 lastName = "",
-                usernameEmail = "",
-                usernamePhone = "",
+                email = "",
+                phoneNumber = "",
                 password = "",
                 policyChecked = false,
                 registerEnabled = false,

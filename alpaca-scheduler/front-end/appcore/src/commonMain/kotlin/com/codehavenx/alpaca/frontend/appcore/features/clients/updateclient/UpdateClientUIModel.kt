@@ -2,6 +2,7 @@ package com.codehavenx.alpaca.frontend.appcore.features.clients.updateclient
 
 /**
  * UI Model for the Update Client screen.
+ * TODO: change the phone to phoneNumber in ALL places used
  */
 data class UpdateClientUIModel(
     val id: String,

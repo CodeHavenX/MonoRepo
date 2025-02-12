@@ -4,14 +4,34 @@ package com.cramsan.edifikana.lib.utils
  * Custom exceptions for server errors. This class is used to validate calls to the api contain what we
  * expect and return custom error messaging with corresponding 400 status codes.
  */
+@Suppress("MagicNumber")
 abstract class ClientRequestExceptions(
     val statusCode: Int,
     override val message: String
 ) : Throwable() {
+    /**
+     * Invalid request exception.
+     */
     class InvalidRequestException(message: String) : ClientRequestExceptions(400, message)
+
+    /**
+     * Unauthorized exception.
+     */
     class UnauthorizedException(message: String) : ClientRequestExceptions(401, message)
-    class ForbiddenException(message: String) :ClientRequestExceptions(403, message)
+
+    /**
+     * Forbidden exception.
+     */
+    class ForbiddenException(message: String) : ClientRequestExceptions(403, message)
+
+    /**
+     * Not found exception.
+     */
     class NotFoundException(message: String) : ClientRequestExceptions(404, message)
+
+    /**
+     * Conflict exception.
+     */
     class ConflictException(message: String) : ClientRequestExceptions(409, message)
 }
 

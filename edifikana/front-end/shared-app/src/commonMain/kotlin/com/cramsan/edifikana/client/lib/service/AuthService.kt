@@ -39,15 +39,15 @@ interface AuthService {
      * Sign up the user with the provided usernames, [password], and [firstName] & [lastName]. Returns the user model if successful.
      */
     suspend fun signUp(
-        usernameEmail: String,
-        usernamePhone: String,
+        email: String,
+        phoneNumber: String,
         password: String,
         firstName: String,
         lastName: String
     ): Result<UserModel>
 
     /**
-     * Request a password reset for the user with the given [usernameEmail] or [usernamePhone].
+     * Request a password reset for the user with the given [email] or [phoneNumber].
      */
     suspend fun passwordReset(usernameEmail: String?, usernamePhone: String?): Result<Unit>
 

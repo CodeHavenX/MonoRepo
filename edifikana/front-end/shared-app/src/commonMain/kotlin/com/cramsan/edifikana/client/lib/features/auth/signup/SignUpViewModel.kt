@@ -40,11 +40,11 @@ class SignUpViewModel(
     /**
      * Called when the email username value changes.
      */
-    fun onUsernameEmailValueChange(username: String) {
+    fun onEmailValueChange(username: String) {
         // Here we can implement any validation logic.
         updateUiState {
             it.copy(
-                signUpForm = it.signUpForm.copy(usernameEmail = username)
+                signUpForm = it.signUpForm.copy(email = username)
             )
         }
     }
@@ -52,11 +52,11 @@ class SignUpViewModel(
     /**
      * Called when the phone number username value changes.
      */
-    fun onUsernamePhoneNumberValueChange(username: String) {
+    fun onPhoneNumberValueChange(username: String) {
         // Here we can implement any validation logic.
         updateUiState {
             it.copy(
-                signUpForm = it.signUpForm.copy(usernamePhone = username)
+                signUpForm = it.signUpForm.copy(phoneNumber = username)
             )
         }
     }
@@ -118,13 +118,13 @@ class SignUpViewModel(
         viewModelScope.launch {
             val firstName = _uiState.value.signUpForm.firstName.trim()
             val lastName = _uiState.value.signUpForm.lastName.trim()
-            val usernameEmail = _uiState.value.signUpForm.usernameEmail.trim()
-            val usernamePhone = _uiState.value.signUpForm.usernamePhone.trim()
+            val email = _uiState.value.signUpForm.email.trim()
+            val phoneNumber = _uiState.value.signUpForm.phoneNumber.trim()
             val password = _uiState.value.signUpForm.password
 
             val errorMessages = listOf(
                 validateName(firstName, lastName),
-                validateUsername(usernameEmail, usernamePhone),
+                validateUsername(email, phoneNumber),
                 validatePassword(password),
             ).flatten().joinToString("\n")
 
@@ -140,8 +140,8 @@ class SignUpViewModel(
             }
 
             val user = auth.signUp(
-                usernameEmail = usernameEmail,
-                usernamePhone = usernamePhone,
+                email = email,
+                phoneNumber = phoneNumber,
                 password = password,
                 firstName = firstName,
                 lastName = lastName,

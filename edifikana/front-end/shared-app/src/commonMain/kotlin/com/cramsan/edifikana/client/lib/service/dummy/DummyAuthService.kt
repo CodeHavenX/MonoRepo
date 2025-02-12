@@ -44,8 +44,8 @@ class DummyAuthService : AuthService {
     }
 
     override suspend fun signUp(
-        usernameEmail: String,
-        usernamePhone: String,
+        email: String,
+        phoneNumber: String,
         password: String,
         firstName: String,
         lastName: String

@@ -82,8 +82,8 @@ class AuthServiceImpl(
 
     @OptIn(NetworkModel::class)
     override suspend fun signUp(
-        usernameEmail: String,
-        usernamePhone: String,
+        email: String,
+        phoneNumber: String,
         password: String,
         firstName: String,
         lastName: String,
@@ -91,8 +91,8 @@ class AuthServiceImpl(
         val response = http.post(Routes.User.PATH) {
             setBody(
                 CreateUserNetworkRequest(
-                    usernameEmail = usernameEmail,
-                    usernamePhone = usernamePhone,
+                    email = email,
+                    phoneNumber = phoneNumber,
                     password = password,
                     firstName = firstName,
                     lastName = lastName,
@@ -105,7 +105,7 @@ class AuthServiceImpl(
         userModel
     }
 
-    override suspend fun passwordReset(usernameEmail: String?, usernamePhone: String?): Result<Unit> = runSuspendCatching(TAG) {
+    override suspend fun passwordReset(email: String?, phoneNumber: String?): Result<Unit> = runSuspendCatching(TAG) {
         TODO("Implement functionality to reset password and authenticate user.")
     }
 

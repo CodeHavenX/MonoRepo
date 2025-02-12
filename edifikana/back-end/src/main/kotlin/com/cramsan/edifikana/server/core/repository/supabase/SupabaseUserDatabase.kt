@@ -31,10 +31,10 @@ class SupabaseUserDatabase(
     override suspend fun createUser(
         request: CreateUserRequest,
     ): Result<User> = runSuspendCatching(TAG) {
-        logD(TAG, "Creating user: %s", request.usernameEmail)
+        logD(TAG, "Creating user: %s", request.email)
 
         val supabaseUser = auth.admin.createUserWithEmail {
-            email = request.usernameEmail
+            email = request.email
             password = request.password
             autoConfirm = true
         }

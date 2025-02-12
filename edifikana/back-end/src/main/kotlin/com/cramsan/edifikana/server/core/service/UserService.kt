@@ -21,8 +21,8 @@ class UserService(
      * Creates a user with the provided information.
      */
     suspend fun createUser(
-        usernameEmail: String,
-        usernamePhone: String,
+        email: String,
+        phoneNumber: String,
         password: String,
         firstName: String,
         lastName: String,
@@ -30,8 +30,8 @@ class UserService(
         logD(TAG, "createUser")
         return userDatabase.createUser(
             request = CreateUserRequest(
-                usernameEmail = usernameEmail,
-                usernamePhone = usernamePhone,
+                email = email,
+                phoneNumber = phoneNumber,
                 password = password,
                 firstName = firstName,
                 lastName = lastName,

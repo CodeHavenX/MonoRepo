@@ -35,8 +35,8 @@ class DummyAuthService : AuthService {
     }
 
     override suspend fun signUp(
-        usernameEmail: String,
-        usernamePhone: String,
+        email: String,
+        phoneNumber: String,
         password: String,
         firstName: String,
         lastName: String
@@ -44,7 +44,7 @@ class DummyAuthService : AuthService {
         return Result.success(USER_1)
     }
 
-    override suspend fun passwordReset(usernameEmail: String?, usernamePhone: String?): Result<Unit> {
+    override suspend fun passwordReset(email: String?, phoneNumber: String?): Result<Unit> {
         TODO("Not yet implemented")
     }
 

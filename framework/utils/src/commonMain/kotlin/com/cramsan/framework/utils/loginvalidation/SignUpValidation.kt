@@ -4,16 +4,16 @@ private const val PASSWORD_MIN_LENGTH = 6
 private const val PASSWORD_MAX_LENGTH = 24
 
 /**
- * Validate that the [usernameEmail] and [usernamePhone] are not empty. Returns a list of error messages
+ * Validate that the [email] and [phoneNumber] are not empty. Returns a list of error messages
  */
-fun validateUsername(usernameEmail: String, usernamePhone: String): List<String> {
-    return if (usernameEmail.isNotBlank() && usernamePhone.isBlank()) {
-        validateUsernameEmail(usernameEmail)
-    } else if (usernamePhone.isNotBlank() && usernameEmail.isBlank()) {
-        validateUsernamePhoneNumber(usernamePhone)
-    } else if (usernameEmail.isNotBlank() && usernamePhone.isNotBlank()) {
-        validateUsernameEmail(usernameEmail) +
-                validateUsernamePhoneNumber(usernamePhone)
+fun validateUsername(email: String, phoneNumber: String): List<String> {
+    return if (email.isNotBlank() && phoneNumber.isBlank()) {
+        validateEmail(email)
+    } else if (phoneNumber.isNotBlank() && email.isBlank()) {
+        validatePhoneNumber(phoneNumber)
+    } else if (email.isNotBlank() && phoneNumber.isNotBlank()) {
+        validateEmail(email) +
+            validatePhoneNumber(phoneNumber)
     } else {
         listOf("An Email or Phone Number is required.")
     }
@@ -23,7 +23,7 @@ fun validateUsername(usernameEmail: String, usernamePhone: String): List<String>
  * Validate that the [email] is a valid email address. Returns a list of error messages
  * if the username is invalid. An empty list indicates that the username is valid.
  */
-fun validateUsernameEmail(email: String): List<String> {
+fun validateEmail(email: String): List<String> {
     if (email.isBlank()) {
         return listOf("Email cannot be empty.")
     }
@@ -38,7 +38,7 @@ fun validateUsernameEmail(email: String): List<String> {
  * if the username is invalid. An empty list indicates that the username is valid.
  * Currently only supports US phone numbers
  */
-fun validateUsernamePhoneNumber(phoneNumber: String): List<String> {
+fun validatePhoneNumber(phoneNumber: String): List<String> {
     if (phoneNumber.isBlank()) {
         return listOf("Phone number cannot be empty.")
     }

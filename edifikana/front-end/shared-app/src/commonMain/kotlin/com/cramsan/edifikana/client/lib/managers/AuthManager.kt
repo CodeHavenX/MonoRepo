@@ -39,8 +39,8 @@ class AuthManager(
      * Signs up the user with the given email and password.
      */
     suspend fun signUp(
-        usernameEmail: String,
-        usernamePhone: String,
+        email: String,
+        phoneNumber: String,
         password: String,
         firstName: String,
         lastName: String,
@@ -48,7 +48,7 @@ class AuthManager(
         TAG
     ) {
         logI(TAG, "signUp")
-        authService.signUp(usernameEmail, usernamePhone, password, firstName, lastName).getOrThrow()
+        authService.signUp(email, phoneNumber, password, firstName, lastName).getOrThrow()
     }
 
     /**

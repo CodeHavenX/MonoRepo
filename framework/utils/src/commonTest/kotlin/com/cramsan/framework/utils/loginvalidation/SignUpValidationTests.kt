@@ -9,83 +9,83 @@ import kotlin.test.assertTrue
  */
 class SignUpValidationTests {
     /**
-     * Test that the [validateUsernameEmail] function returns error message when the username is blank
+     * Test that the [validateEmail] function returns error message when the username is blank
      */
     @Test
-    fun validateUsernameEmail_has_blank_username_and_returns_list() {
+    fun validateEmail_has_blank_username_and_returns_list() {
         // Arrange
         val username = ""
         // Act
-        val result = validateUsernameEmail(username)
+        val result = validateEmail(username)
         // Assert
         assertTrue(result.isNotEmpty())
-        assertTrue { result.contains("Username cannot be empty.") }
+        assertTrue { result.contains("Email cannot be empty.") }
     }
 
     /**
-     * Test that the [validateUsernameEmail] function returns error message when the username is invalid
+     * Test that the [validateEmail] function returns error message when the username is invalid
      */
     @Test
-    fun validateUsernameEmail_has_invalid_email_and_returns_list() {
+    fun validateEmail_has_invalid_email_and_returns_list() {
         // Arrange
         val username = "test"
         // Act
-        val result = validateUsernameEmail(username)
+        val result = validateEmail(username)
         // Assert
         assertTrue(result.isNotEmpty())
-        assertTrue { result.contains("Username must be a valid email address.") }
+        assertTrue { result.contains("Invalid email format.") }
     }
 
     /**
-     * Test that the [validateUsernameEmail] function returns an empty list when the username is valid
+     * Test that the [validateEmail] function returns an empty list when the username is valid
      */
     @Test
-    fun validateUsernameEmail_has_valid_email_and_returns_empty_list() {
+    fun validateEmail_has_valid_email_and_returns_empty_list() {
         // Arrange
         val username = "test@gmail.com"
         // Act
-        val result = validateUsernameEmail(username)
+        val result = validateEmail(username)
         // Assert
         assertTrue(result.isEmpty())
     }
 
     /**
-     * Test that the [validateUsernamePhoneNumber] function returns error message when the phone number is blank
+     * Test that the [validatePhoneNumber] function returns error message when the phone number is blank
      */
     @Test
-    fun validateUsernamePhoneNumber_has_blank_username_and_returns_list() {
+    fun validatePhoneNumber_has_blank_username_and_returns_list() {
         // Arrange
         val username = ""
         // Act
-        val result = validateUsernamePhoneNumber(username)
+        val result = validatePhoneNumber(username)
         // Assert
         assertTrue(result.isNotEmpty())
-        assertTrue { result.contains("Username cannot be empty.") }
+        assertTrue { result.contains("Phone number cannot be empty.") }
     }
 
     /**
-     * Test that the [validateUsernamePhoneNumber] function returns error message when the phone number is invalid
+     * Test that the [validatePhoneNumber] function returns error message when the phone number is invalid
      */
     @Test
-    fun validateUsernamePhoneNumber_has_invalid_phone_number_and_returns_list() {
+    fun validatePhoneNumber_has_invalid_phone_number_and_returns_list() {
         // Arrange
         val username = "123456789"
         // Act
-        val result = validateUsernamePhoneNumber(username)
+        val result = validatePhoneNumber(username)
         // Assert
         assertTrue(result.isNotEmpty())
-        assertTrue { result.contains("Username must be a valid phone number.") }
+        assertTrue { result.contains("Invalid phone number format.") }
     }
 
     /**
-     * Validate the [validateUsernamePhoneNumber] function returns an empty list when the phone number is valid
+     * Validate the [validatePhoneNumber] function returns an empty list when the phone number is valid
      */
     @Test
-    fun validateUsernamePhoneNumber_has_valid_phone_number_and_returns_empty_list() {
+    fun validatePhoneNumber_has_valid_phone_number_and_returns_empty_list() {
         // Arrange
         val username = "234-567-8901"
         // Act
-        val result = validateUsernamePhoneNumber(username)
+        val result = validatePhoneNumber(username)
         // Assert
         assertTrue(result.isEmpty())
     }

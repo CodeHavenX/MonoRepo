@@ -1,8 +1,0 @@
-username, expectedMsg
-"", "Username cannot be empty."
-" ", "Username cannot be empty."
-test,"Username must be a valid email address."
-test@, "Username must be a valid email address."
-@testis#@user.com, "Username must be a valid email address."
-whyuse?tnhis@hotmail.com, "Username must be a valid email address."
-Iam!invalid@yahoo.com, "Username must be a valid email address."

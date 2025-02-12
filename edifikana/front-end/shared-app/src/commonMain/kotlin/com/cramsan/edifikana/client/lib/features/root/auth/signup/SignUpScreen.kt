@@ -87,8 +87,8 @@ fun SignUpScreen(
 
     SignUpContent(
         uistate = uiState,
-        onUsernameEmailValueChange = { viewModel.onUsernameEmailValueChange(it) },
-        onUsernamePhoneNumberValueChange = { viewModel.onUsernamePhoneNumberValueChange(it) },
+        onEmailValueChange = { viewModel.onEmailValueChange(it) },
+        onPhoneNumberValueChange = { viewModel.onPhoneNumberValueChange(it) },
         onPasswordValueChange = { viewModel.onPasswordValueChange(it) },
         onFirstNameValueChange = { viewModel.onFirstNameValueChange(it) },
         onLastNameValueChange = { viewModel.onLastNameValueChange(it) },
@@ -102,8 +102,8 @@ internal fun SignUpContent(
     uistate: SignUpUIState,
     onFirstNameValueChange: (String) -> Unit,
     onLastNameValueChange: (String) -> Unit,
-    onUsernameEmailValueChange: (String) -> Unit,
-    onUsernamePhoneNumberValueChange: (String) -> Unit,
+    onEmailValueChange: (String) -> Unit,
+    onPhoneNumberValueChange: (String) -> Unit,
     onPasswordValueChange: (String) -> Unit,
     onPolicyChecked: (Boolean) -> Unit,
     onSignUpClicked: () -> Unit,
@@ -156,14 +156,14 @@ internal fun SignUpContent(
             )
 
             TextField(
-                value = uistate.signUpForm.usernameEmail,
-                onValueChange = { onUsernameEmailValueChange(it) },
+                value = uistate.signUpForm.email,
+                onValueChange = { onEmailValueChange(it) },
                 label = { Text(stringResource(Res.string.sign_up_screen_text_email)) },
                 maxLines = 1,
             )
             TextField(
-                value = uistate.signUpForm.usernamePhone,
-                onValueChange = { onUsernamePhoneNumberValueChange(it) },
+                value = uistate.signUpForm.phoneNumber,
+                onValueChange = { onPhoneNumberValueChange(it) },
                 label = { Text(stringResource(Res.string.sign_up_screen_text_phone_number)) },
                 maxLines = 1,
             )

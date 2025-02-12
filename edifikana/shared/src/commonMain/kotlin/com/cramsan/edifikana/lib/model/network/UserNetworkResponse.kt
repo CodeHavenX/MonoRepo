@@ -14,8 +14,8 @@ data class UserNetworkResponse(
     val id: String,
     @SerialName("email")
     val email: String,
-    @SerialName("phone")
-    val phone: String,
+    @SerialName("phone_number")
+    val phoneNumber: String,
     @SerialName("first_name")
     val firstName: String,
     @SerialName("last_name")

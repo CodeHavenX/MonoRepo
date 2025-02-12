@@ -1,0 +1,8 @@
+email, expectedMsg
+"", "Email cannot be empty."
+" ", "Email cannot be empty."
+test,"Invalid email format."
+test@, "Invalid email format."
+@testis#@user.com, "Invalid email format."
+whyuse?tnhis@hotmail.com, "Invalid email format."
+Iam!invalid@yahoo.com, "Invalid email format."

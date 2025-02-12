@@ -41,13 +41,13 @@ class UserController(
 
         requireAtLeastOne(
             "An email or phone number must be provided.",
-            createUserRequest.usernameEmail,
-            createUserRequest.usernamePhone
+            createUserRequest.email,
+            createUserRequest.phoneNumber
         )
 
         val newUserResult = userService.createUser(
-            createUserRequest.usernameEmail,
-            createUserRequest.usernamePhone,
+            createUserRequest.email,
+            createUserRequest.phoneNumber,
             createUserRequest.password,
             createUserRequest.firstName,
             createUserRequest.lastName,

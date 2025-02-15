@@ -3,22 +3,22 @@ package com.cramsan.edifikana.client.lib.features.debug.main
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,7 +34,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
+import com.cramsan.edifikana.client.ui.components.SectionHolder
 import com.cramsan.ui.theme.Padding
+import com.cramsan.ui.theme.Size
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -74,25 +76,16 @@ fun DebugScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            EdifikanaTopBar(
-                title = "Debug Menu",
-                onCloseClicked = { viewModel.navigateBack() },
-            )
+    DebugContent(
+        uiState,
+        bufferChanges = { key: String, value: Any ->
+            viewModel.bufferChanges(key, value)
         },
-    ) { innerPadding ->
-        // Render the screen
-        DebugContent(
-            uiState,
-            modifier = Modifier.padding(innerPadding),
-            bufferChanges = { key: String, value: Any ->
-                viewModel.bufferChanges(key, value)
-            },
-        ) { key: String, value: Any ->
+        saveChanges = { key: String, value: Any ->
             viewModel.saveValue(key, value)
-        }
-    }
+        },
+        onCloseSelected = { viewModel.navigateBack() },
+    )
 }
 
 /**
@@ -101,38 +94,54 @@ fun DebugScreen(
 @Composable
 internal fun DebugContent(
     content: DebugUIModelUI,
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     bufferChanges: (String, Any) -> Unit,
     saveChanges: (key: String, value: Any) -> Unit,
+    onCloseSelected: () -> Unit,
 ) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(Padding.MEDIUM),
-        modifier = modifier
-            .fillMaxHeight()
-            .verticalScroll(rememberScrollState())
-    ) {
-        val modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = Padding.MEDIUM)
+    Scaffold(
+        modifier = modifier,
+        topBar = {
+            EdifikanaTopBar(
+                title = "Debug Menu",
+                onCloseClicked = onCloseSelected,
+            )
+        },
+    ) { innerPadding ->
+        // Render the screen
+        Box(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+            contentAlignment = Alignment.TopCenter,
+        ) {
+            Column(
+                modifier = Modifier.sizeIn(maxWidth = Size.COLUMN_MAX_WIDTH),
+            ) {
+                SectionHolder { modifier ->
+                    content.fields.forEach {
+                        when (it) {
+                            is Field.BooleanField -> {
+                                BooleanRow(it, modifier, saveChanges)
+                            }
 
-        Spacer(modifier.height(Padding.MEDIUM))
-        content.fields.forEach {
-            when (it) {
-                is Field.BooleanField -> {
-                    BooleanRow(it, modifier, saveChanges)
-                }
-                is Field.StringField -> {
-                    StringRow(it, modifier, bufferChanges, saveChanges)
-                }
-                Field.Divider -> {
-                    HorizontalDivider(modifier)
-                }
-                is Field.Label -> {
-                    LabelRow(it, modifier)
+                            is Field.StringField -> {
+                                StringRow(it, modifier, bufferChanges, saveChanges)
+                            }
+
+                            Field.Divider -> {
+                                HorizontalDivider(modifier)
+                            }
+
+                            is Field.Label -> {
+                                LabelRow(it, modifier)
+                            }
+                        }
+                    }
                 }
             }
         }
-        Spacer(modifier.height(Padding.MEDIUM))
     }
 }
 
@@ -143,12 +152,14 @@ private fun LabelRow(label: Field.Label, modifier: Modifier) {
     ) {
         Text(
             text = label.label,
-            style = MaterialTheme.typography.titleLarge,
+            style = MaterialTheme.typography.labelLarge,
         )
-        Text(
-            text = label.label,
-            style = MaterialTheme.typography.titleSmall,
-        )
+        label.subtitle?.let {
+            Text(
+                text = it,
+                style = MaterialTheme.typography.labelMedium,
+            )
+        }
     }
 }
 
@@ -177,12 +188,12 @@ private fun BooleanRow(
         ) {
             Text(
                 field.title,
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.labelLarge,
             )
             field.subtitle?.let {
                 Text(
                     it,
-                    style = MaterialTheme.typography.titleSmall,
+                    style = MaterialTheme.typography.labelMedium,
                 )
             }
         }
@@ -206,7 +217,7 @@ private fun StringRow(
     Column(
         modifier = modifier,
     ) {
-        TextField(
+        OutlinedTextField(
             label = { Text(field.title) },
             singleLine = true,
             value = stringValue,
@@ -225,7 +236,7 @@ private fun StringRow(
         field.subtitle?.let {
             Text(
                 it,
-                style = MaterialTheme.typography.titleSmall,
+                style = MaterialTheme.typography.labelMedium,
             )
         }
     }

@@ -13,10 +13,12 @@ import org.jetbrains.compose.resources.StringResource
 data class HomeUIModel(
     val label: String,
     val availableProperties: List<PropertyUiModel>,
+    val selectedTab: Tabs,
 ) : ViewModelUIState {
     companion object {
         val Empty = HomeUIModel(
             label = "",
+            selectedTab = Tabs.None,
             availableProperties = emptyList(),
         )
     }
@@ -36,6 +38,7 @@ data class BottomBarDestinationUiModel(
  * UI model for the bottom bar.
  */
 enum class Tabs {
+    None,
     TimeCard,
     EventLog,
 }

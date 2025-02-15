@@ -4,7 +4,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Apartment
@@ -14,6 +16,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -27,6 +30,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
@@ -36,6 +40,7 @@ import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.ui.theme.Padding
 import edifikana_lib.Res
+import edifikana_lib.app_name
 import edifikana_lib.schedule
 import edifikana_lib.string_assistance
 import edifikana_lib.string_event_log_title
@@ -84,6 +89,7 @@ fun HomeScreen(
         onAccountButtonClicked = { viewModel.navigateToAccount() },
         onAdminButtonClicked = { viewModel.navigateToAdmin() },
         onPropertySelected = { viewModel.selectProperty(it) },
+        onTabSelected = { viewModel.selectTab(it) },
     )
 }
 
@@ -107,13 +113,12 @@ internal fun HomeScreenContent(
     onAccountButtonClicked: () -> Unit,
     onAdminButtonClicked: () -> Unit,
     onPropertySelected: (PropertyId) -> Unit,
+    onTabSelected: (Tabs) -> Unit,
 ) {
-    var selectedTab by remember { mutableStateOf(Tabs.EventLog) }
-
     Scaffold(
         topBar = {
             EdifikanaTopBar(
-                title = "Home",
+                title = stringResource(Res.string.app_name),
             ) {
                 // Property dropdown
                 PropertyDropDown(
@@ -141,12 +146,12 @@ internal fun HomeScreenContent(
         bottomBar = {
             NavigationBar {
                 BottomBarDestinationUiModels.forEach { dest ->
-                    val selected = dest.destination == selectedTab
+                    val selected = dest.destination == uiState.selectedTab
                     val label = stringResource(dest.text)
 
                     NavigationBarItem(
                         onClick = {
-                            selectedTab = dest.destination
+                            onTabSelected(dest.destination)
                         },
                         icon = {
                             Icon(painterResource(dest.icon), contentDescription = label)
@@ -161,7 +166,7 @@ internal fun HomeScreenContent(
         // Render the screen
         HomeContent(
             modifier = Modifier.padding(innerPadding),
-            selectedTab,
+            uiState.selectedTab,
         )
     }
 }
@@ -170,25 +175,28 @@ internal fun HomeScreenContent(
 private fun PropertyDropDown(
     label: String,
     list: List<PropertyUiModel>,
+    modifier: Modifier = Modifier,
     onPropertySelected: (PropertyId) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
     val interactionSource = remember { MutableInteractionSource() }
 
     Box(
-        modifier = Modifier
-            .padding(Padding.SMALL)
+        modifier = modifier
     ) {
         Row(
             modifier = Modifier
+                .clip(MaterialTheme.shapes.small)
                 .clickable(
                     interactionSource = interactionSource,
                     indication = ripple(),
                 ) {
                     expanded = !expanded
                 }
+                .padding(Padding.X_SMALL)
         ) {
             Text(label)
+            Spacer(Modifier.width(Padding.X_SMALL))
             Icon(Icons.Default.Apartment, contentDescription = "")
         }
         DropdownMenu(
@@ -225,8 +233,12 @@ private fun HomeContent(
         Tabs.EventLog -> {
             EventLogScreen(modifier)
         }
+
         Tabs.TimeCard -> {
             TimeCardScreen(modifier)
+        }
+        Tabs.None -> {
+            // No content
         }
     }
 }

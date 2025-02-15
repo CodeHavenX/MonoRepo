@@ -51,54 +51,57 @@ fun StaffListScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            EdifikanaTopBar(
-                title = "Staff List",
-                onCloseClicked = { viewModel.navigateBack() },
-            )
+    StaffList(
+        uiState,
+        onStaffClick = { staffPK ->
+            viewModel.navigateToStaff(staffPK)
         },
-    ) { innerPadding ->
-        StaffList(
-            isLoading = uiState.isLoading,
-            Modifier.padding(innerPadding),
-            uiState.staffs,
-            onStaffClick = { staffPK ->
-                viewModel.navigateToStaff(staffPK)
-            },
-            onAddStaffClick = {
-                viewModel.navigateToAddStaff()
-            },
-        )
-    }
+        onAddStaffClick = {
+            viewModel.navigateToAddStaff()
+        },
+        onCloseSelected = {
+            viewModel.navigateBack()
+        },
+    )
 }
 
 @Composable
 internal fun StaffList(
-    isLoading: Boolean,
+    uiState: StaffListUIState,
     modifier: Modifier = Modifier,
-    staffs: List<StaffUIModel>,
     onStaffClick: (StaffId) -> Unit,
     onAddStaffClick: () -> Unit,
+    onCloseSelected: () -> Unit,
 ) {
-    LazyColumn(
-        modifier.fillMaxSize(),
-    ) {
-        items(staffs) { staff ->
-            StaffItem(
-                staff,
-                Modifier.fillMaxWidth(),
-                onStaffClick,
+    Scaffold(
+        topBar = {
+            EdifikanaTopBar(
+                title = "Staff List",
+                onCloseClicked = onCloseSelected,
             )
+        },
+    ) { innerPadding ->
+        LazyColumn(
+            modifier
+                .padding(innerPadding)
+                .fillMaxSize(),
+        ) {
+            items(uiState.staffs) { staff ->
+                StaffItem(
+                    staff,
+                    Modifier.fillMaxWidth(),
+                    onStaffClick,
+                )
+            }
+            item {
+                StaffOtherItem(
+                    Modifier.fillMaxWidth(),
+                    onAddStaffClick,
+                )
+            }
         }
-        item {
-            StaffOtherItem(
-                Modifier.fillMaxWidth(),
-                onAddStaffClick,
-            )
-        }
+        LoadingAnimationOverlay(uiState.isLoading)
     }
-    LoadingAnimationOverlay(isLoading)
 }
 
 @Composable

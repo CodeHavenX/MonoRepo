@@ -11,7 +11,12 @@ data class AccountUIState(
 ) : ViewModelUIState {
     companion object {
         val Empty = AccountUIState(
-            content = AccountUIModel(""),
+            content = AccountUIModel(
+                firstName = "",
+                lastName = "",
+                email = "",
+                phoneNumber = "",
+            ),
             isLoading = false,
         )
     }

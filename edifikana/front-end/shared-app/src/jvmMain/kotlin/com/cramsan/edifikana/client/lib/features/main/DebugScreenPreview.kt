@@ -50,5 +50,6 @@ private fun DebugScreenPreview() {
         modifier = Modifier,
         bufferChanges = { _, _ -> },
         saveChanges = { _, _ -> },
+        onCloseSelected = {},
     )
 }

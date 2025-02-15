@@ -10,21 +10,25 @@ import com.cramsan.edifikana.lib.model.EventLogEntryId
 @Composable
 private fun ViewRecordScreenPreview() {
     SingleRecord(
-        false,
-        Modifier,
-        ViewRecordUIModel(
-            title = "Delivery of pizza",
-            eventType = "Invitado",
-            timeRecorded = "2024 12 02 12:12:12",
-            unit = "302",
-            description = "Pizza delivery to the main entrance. The delivery was made by the main entrance. ",
-            attachments = listOf(
-                AttachmentHolder("url", "url"),
-                AttachmentHolder("url", "url"),
-                AttachmentHolder("url", "url"),
+        ViewRecordUIState(
+            ViewRecordUIModel(
+                title = "Delivery of pizza",
+                eventType = "Invitado",
+                timeRecorded = "2024 12 02 12:12:12",
+                unit = "302",
+                description = "Pizza delivery to the main entrance. The delivery was made by the main entrance. ",
+                attachments = listOf(
+                    AttachmentHolder("url", "url"),
+                    AttachmentHolder("url", "url"),
+                    AttachmentHolder("url", "url"),
+                ),
+                recordPK = EventLogEntryId("1"),
             ),
-            recordPK = EventLogEntryId("1"),
+            title = "Delivery of pizza",
+            isLoading = false,
         ),
+        Modifier,
+        {},
         {},
         {},
         {},

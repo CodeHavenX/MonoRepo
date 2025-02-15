@@ -1,18 +1,17 @@
 package com.cramsan.edifikana.client.lib.features.main.eventlog.addrecord
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -20,17 +19,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.lib.toFriendlyStringCompose
+import com.cramsan.edifikana.client.ui.components.ButtonHolder
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
+import com.cramsan.edifikana.client.ui.components.SectionHolder
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.ui.components.Dropdown
 import com.cramsan.ui.components.LoadingAnimationOverlay
+import com.cramsan.ui.theme.Size
 import edifikana_lib.Res
 import edifikana_lib.text_add
 import edifikana_lib.text_appartment
@@ -67,43 +69,33 @@ fun AddRecordScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            EdifikanaTopBar(
-                title = "Add Record",
-                onCloseClicked = { viewModel.navigateBack() },
-            )
-        },
-    ) { innerPadding ->
-        AddRecord(
-            uiState.records,
-            Modifier.padding(innerPadding),
-            uiState.isLoading,
-        ) { staffDocumentId,
+    AddRecord(
+        uiState,
+        onBackSelected = { viewModel.navigateBack() },
+    ) { staffDocumentId,
+        unit,
+        eventType,
+        fallbackStaffName,
+        fallbackEventType,
+        title,
+        description ->
+        viewModel.addRecord(
+            staffDocumentId,
             unit,
             eventType,
             fallbackStaffName,
             fallbackEventType,
             title,
-            description ->
-            viewModel.addRecord(
-                staffDocumentId,
-                unit,
-                eventType,
-                fallbackStaffName,
-                fallbackEventType,
-                title,
-                description,
-            )
-        }
+            description,
+        )
     }
 }
 
 @Composable
 internal fun AddRecord(
-    staffs: List<AddRecordUIModel>,
+    uiState: AddRecordUIState,
     modifier: Modifier = Modifier,
-    isLoading: Boolean,
+    onBackSelected: () -> Unit,
     onAddRecordClicked: (
         staffDocumentId: StaffId?,
         unit: String?,
@@ -114,6 +106,7 @@ internal fun AddRecord(
         description: String?,
     ) -> Unit,
 ) {
+    val staffs = uiState.records
     var staffPK by remember { mutableStateOf(staffs.firstOrNull()?.staffPK) }
     var eventType by remember { mutableStateOf(EventLogEventType.OTHER) }
     var unit by remember { mutableStateOf("") }
@@ -122,106 +115,115 @@ internal fun AddRecord(
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .imePadding(),
-    ) {
-        Column(
+    Scaffold(
+        modifier = modifier,
+        topBar = {
+            EdifikanaTopBar(
+                title = "Add Record",
+                onCloseClicked = onBackSelected,
+            )
+        },
+    ) { innerPadding ->
+        Box(
             modifier = Modifier
-                .weight(1f)
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+                .padding(innerPadding)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+            contentAlignment = Alignment.TopCenter,
         ) {
-            Dropdown(
-                label = stringResource(Res.string.text_staff),
-                items = staffs,
-                itemLabels = staffs.map { it.fullName },
-                modifier = Modifier.fillMaxWidth(),
-                startValueMatcher = { it.staffPK == staffPK },
+            Column(
+                modifier = Modifier.sizeIn(maxWidth = Size.COLUMN_MAX_WIDTH),
             ) {
-                staffPK = it.staffPK
+                SectionHolder { sectionModifier ->
+                    Dropdown(
+                        label = stringResource(Res.string.text_staff),
+                        items = staffs,
+                        itemLabels = staffs.map { it.fullName },
+                        modifier = sectionModifier,
+                        startValueMatcher = { it.staffPK == staffPK },
+                    ) {
+                        staffPK = it.staffPK
+                    }
+
+                    if (staffPK == null) {
+                        OutlinedTextField(
+                            value = fallbackName,
+                            onValueChange = { fallbackName = it },
+                            label = { Text(stringResource(Res.string.text_staff_name)) },
+                            modifier = sectionModifier,
+                            isError = fallbackName.isBlank(),
+                        )
+                    }
+
+                    HorizontalDivider(modifier = sectionModifier)
+
+                    Dropdown(
+                        label = stringResource(Res.string.text_event_type),
+                        items = EventLogEventType.entries,
+                        itemLabels = EventLogEventType.entries.map { it.toFriendlyStringCompose() },
+                        modifier = sectionModifier,
+                        startValueMatcher = { it == eventType },
+                    ) {
+                        eventType = it
+                    }
+
+                    if (eventType == EventLogEventType.OTHER) {
+                        OutlinedTextField(
+                            value = fallbackEventType,
+                            onValueChange = { fallbackEventType = it },
+                            label = { Text(stringResource(Res.string.text_event_type)) },
+                            modifier = sectionModifier,
+                            isError = fallbackEventType.isBlank(),
+                        )
+                    }
+
+                    HorizontalDivider(modifier = sectionModifier)
+
+                    OutlinedTextField(
+                        value = unit,
+                        onValueChange = { unit = it },
+                        label = { Text(stringResource(Res.string.text_appartment)) },
+                        modifier = sectionModifier,
+                        isError = unit.isBlank(),
+                    )
+
+                    OutlinedTextField(
+                        value = title,
+                        onValueChange = { title = it },
+                        label = { Text(stringResource(Res.string.text_simple_desc)) },
+                        modifier = sectionModifier,
+                        singleLine = true,
+                        isError = title.isBlank(),
+                    )
+
+                    OutlinedTextField(
+                        value = description,
+                        onValueChange = { description = it },
+                        label = { Text(stringResource(Res.string.text_full_desc)) },
+                        modifier = sectionModifier,
+                        isError = description.isBlank(),
+                    )
+                }
+                ButtonHolder { buttonModifier ->
+                    Button(
+                        modifier = buttonModifier,
+                        onClick = {
+                            onAddRecordClicked(
+                                staffPK,
+                                unit,
+                                eventType,
+                                fallbackName,
+                                fallbackEventType,
+                                title,
+                                description,
+                            )
+                        },
+                    ) {
+                        Text(text = stringResource(Res.string.text_add))
+                    }
+                }
             }
-
-            if (staffPK == null) {
-                TextField(
-                    value = fallbackName,
-                    onValueChange = { fallbackName = it },
-                    label = { Text(stringResource(Res.string.text_staff_name)) },
-                    modifier = Modifier.fillMaxWidth(),
-                    isError = fallbackName.isBlank(),
-                )
-            }
-
-            HorizontalDivider()
-
-            Dropdown(
-                label = stringResource(Res.string.text_event_type),
-                items = EventLogEventType.entries,
-                itemLabels = EventLogEventType.entries.map { it.toFriendlyStringCompose() },
-                modifier = Modifier.fillMaxWidth(),
-                startValueMatcher = { it == eventType },
-            ) {
-                eventType = it
-            }
-
-            if (eventType == EventLogEventType.OTHER) {
-                TextField(
-                    value = fallbackEventType,
-                    onValueChange = { fallbackEventType = it },
-                    label = { Text(stringResource(Res.string.text_event_type)) },
-                    modifier = Modifier.fillMaxWidth(),
-                    isError = fallbackEventType.isBlank(),
-                )
-            }
-
-            HorizontalDivider()
-
-            TextField(
-                value = unit,
-                onValueChange = { unit = it },
-                label = { Text(stringResource(Res.string.text_appartment)) },
-                modifier = Modifier.fillMaxWidth(),
-                isError = unit.isBlank(),
-            )
-
-            TextField(
-                value = title,
-                onValueChange = { title = it },
-                label = { Text(stringResource(Res.string.text_simple_desc)) },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                isError = title.isBlank(),
-            )
-
-            TextField(
-                value = description,
-                onValueChange = { description = it },
-                label = { Text(stringResource(Res.string.text_full_desc)) },
-                modifier = Modifier.fillMaxWidth(),
-                isError = description.isBlank(),
-            )
-        }
-
-        Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            onClick = {
-                onAddRecordClicked(
-                    staffPK,
-                    unit,
-                    eventType,
-                    fallbackName,
-                    fallbackEventType,
-                    title,
-                    description,
-                )
-            },
-        ) {
-            Text(text = stringResource(Res.string.text_add))
+            LoadingAnimationOverlay(uiState.isLoading)
         }
     }
-    LoadingAnimationOverlay(isLoading)
 }

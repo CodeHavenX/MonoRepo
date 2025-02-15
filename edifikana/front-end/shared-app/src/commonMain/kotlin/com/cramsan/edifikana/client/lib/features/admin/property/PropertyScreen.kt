@@ -52,21 +52,10 @@ fun PropertyScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            EdifikanaTopBar(
-                title = "Property",
-                onCloseClicked = { viewModel.navigateBack() },
-            )
-        },
-    ) { innerPadding ->
-        // Render the screen
-        PropertyContent(
-            uiState.content,
-            modifier = Modifier.padding(innerPadding),
-            uiState.isLoading,
-        )
-    }
+    PropertyContent(
+        uiState,
+        onBackSelected = { viewModel.navigateBack() },
+    )
 }
 
 /**
@@ -74,16 +63,27 @@ fun PropertyScreen(
  */
 @Composable
 internal fun PropertyContent(
-    content: PropertyUIModel?,
+    content: PropertyUIState,
     modifier: Modifier = Modifier,
-    loading: Boolean,
+    onBackSelected: () -> Unit,
 ) {
-    Box(
+    Scaffold(
         modifier = modifier,
-    ) {
-        Column {
-            content?.let { Text(it.name) }
+        topBar = {
+            EdifikanaTopBar(
+                title = "Property",
+                onCloseClicked = onBackSelected,
+            )
+        },
+    ) { innerPadding ->
+        // Render the screen
+        Box(
+            modifier = Modifier.padding(innerPadding),
+        ) {
+            Column {
+                content.content?.let { Text(it.name) }
+            }
+            LoadingAnimationOverlay(isLoading = content.isLoading)
         }
-        LoadingAnimationOverlay(isLoading = loading)
     }
 }

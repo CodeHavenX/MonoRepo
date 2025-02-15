@@ -2,17 +2,16 @@ package com.cramsan.edifikana.client.lib.features.main.eventlog.viewrecord
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.PhotoLibrary
 import androidx.compose.material.icons.sharp.Share
@@ -27,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
@@ -36,9 +36,12 @@ import coil3.compose.AsyncImage
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationDelegatedEvent
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.lib.models.AttachmentHolder
+import com.cramsan.edifikana.client.ui.components.ButtonHolder
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
+import com.cramsan.edifikana.client.ui.components.SectionHolder
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.ui.components.LoadingAnimationOverlay
+import com.cramsan.ui.theme.Size
 import edifikana_lib.Res
 import edifikana_lib.string_field_date_time
 import edifikana_lib.string_field_event
@@ -87,170 +90,168 @@ fun ViewRecordScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            EdifikanaTopBar(
-                title = "View Record",
-                onCloseClicked = { viewModel.navigateBack() },
-            )
-        },
-    ) { innerPadding ->
-        SingleRecord(
-            uiState.isLoading,
-            Modifier.padding(innerPadding),
-            uiState.record,
-            onShareClicked = { viewModel.share() },
-            onPickMultipleVisualMediaClicked = { viewModel.pickMultipleVisualMedia() },
-            onImageClicked = { viewModel.openImage(it) },
-        )
-    }
+    SingleRecord(
+        uiState,
+        onShareClicked = { viewModel.share() },
+        onPickMultipleVisualMediaClicked = { viewModel.pickMultipleVisualMedia() },
+        onImageClicked = { viewModel.openImage(it) },
+        onCloseSelected = { viewModel.navigateBack() },
+    )
 }
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun SingleRecord(
-    isLoading: Boolean,
+    uiState: ViewRecordUIState,
     modifier: Modifier = Modifier,
-    eventLogRecord: ViewRecordUIModel?,
     onShareClicked: () -> Unit,
     onPickMultipleVisualMediaClicked: () -> Unit,
     onImageClicked: (AttachmentHolder) -> Unit,
+    onCloseSelected: () -> Unit,
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(top = 16.dp)
-            .padding(horizontal = 16.dp),
-    ) {
-        eventLogRecord?.let {
+    Scaffold(
+        modifier = modifier,
+        topBar = {
+            EdifikanaTopBar(
+                title = "View Record",
+                onCloseClicked = onCloseSelected,
+            )
+        },
+    ) { innerPadding ->
+        val eventLogRecord = uiState.record
+        Box(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize(),
+            contentAlignment = Alignment.TopCenter,
+        ) {
             Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.sizeIn(maxWidth = Size.COLUMN_MAX_WIDTH),
             ) {
-                Text(
-                    text = eventLogRecord.title,
-                    style = MaterialTheme.typography.titleMedium,
-                )
-                HorizontalDivider()
-                Row {
-                    Text(
-                        text = stringResource(Res.string.string_field_event),
-                        modifier = Modifier.weight(1f),
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                    Text(
-                        text = eventLogRecord.eventType,
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                }
-                HorizontalDivider()
-                Row {
-                    Text(
-                        text = stringResource(Res.string.string_field_date_time),
-                        modifier = Modifier.weight(1f),
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                    Text(
-                        text = eventLogRecord.timeRecorded,
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                }
-                HorizontalDivider()
-                Row {
-                    Text(
-                        text = stringResource(Res.string.string_field_unit),
-                        modifier = Modifier.weight(1f),
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                    Text(
-                        text = eventLogRecord.unit,
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                }
-                HorizontalDivider()
-                Text(
-                    text = eventLogRecord.description,
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-                if (eventLogRecord.attachments.isNotEmpty()) {
-                    HorizontalDivider()
-                    FlowRow(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(1.dp),
-                        maxItemsInEachRow = COLUMNS,
-                    ) {
-                        val itemModifier = Modifier
-                            .padding(4.dp)
-                            .height(80.dp)
-                            .weight(1f)
-                        eventLogRecord.attachments.forEach {
-                            AsyncImage(
-                                modifier = itemModifier.clickable {
-                                    onImageClicked(it)
-                                },
-                                model = it.publicUrl,
-                                contentDescription = null,
-                                contentScale = ContentScale.Crop,
+                SectionHolder { sectionModifier ->
+                    eventLogRecord?.let {
+                        Text(
+                            text = eventLogRecord.title,
+                            modifier = sectionModifier,
+                            style = MaterialTheme.typography.titleMedium,
+                        )
+                        HorizontalDivider(modifier = sectionModifier)
+                        Row(
+                            modifier = sectionModifier,
+                        ) {
+                            Text(
+                                text = stringResource(Res.string.string_field_event),
+                                modifier = Modifier.weight(1f),
+                                style = MaterialTheme.typography.titleMedium,
                             )
+                            Text(
+                                text = eventLogRecord.eventType,
+                                style = MaterialTheme.typography.titleMedium,
+                            )
+                        }
+                        HorizontalDivider(modifier = sectionModifier)
+                        Row(
+                            modifier = sectionModifier,
+                        ) {
+                            Text(
+                                text = stringResource(Res.string.string_field_date_time),
+                                modifier = Modifier.weight(1f),
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                            Text(
+                                text = eventLogRecord.timeRecorded,
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                        }
+                        HorizontalDivider(modifier = sectionModifier)
+                        Row(modifier = sectionModifier) {
+                            Text(
+                                text = stringResource(Res.string.string_field_unit),
+                                modifier = Modifier.weight(1f),
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                            Text(
+                                text = eventLogRecord.unit,
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                        }
+                        HorizontalDivider(modifier = sectionModifier)
+                        Text(
+                            text = eventLogRecord.description,
+                            modifier = sectionModifier,
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                        if (eventLogRecord.attachments.isNotEmpty()) {
+                            HorizontalDivider(modifier = sectionModifier)
+                            FlowRow(
+                                modifier = sectionModifier,
+                                horizontalArrangement = Arrangement.spacedBy(1.dp),
+                                maxItemsInEachRow = COLUMNS,
+                            ) {
+                                val itemModifier = Modifier
+                                    .padding(4.dp)
+                                    .height(80.dp)
+                                    .weight(1f)
+                                eventLogRecord.attachments.forEach {
+                                    AsyncImage(
+                                        modifier = itemModifier.clickable {
+                                            onImageClicked(it)
+                                        },
+                                        model = it.publicUrl,
+                                        contentDescription = null,
+                                        contentScale = ContentScale.Crop,
+                                    )
+                                }
+                            }
                         }
                     }
                 }
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-            ) {
-                Button(
-                    modifier = Modifier
-                        .padding(8.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.surface,
-                        contentColor = MaterialTheme.colorScheme.onSurface,
-                    ),
-                    enabled = !isLoading,
-                    onClick = {
-                        onPickMultipleVisualMediaClicked()
-                    },
-                ) {
-                    Text(text = stringResource(Res.string.string_gallery))
-                    Icon(
-                        imageVector = Icons.Sharp.PhotoLibrary,
-                        contentDescription = "",
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .size(34.dp),
-                    )
+                ButtonHolder { buttonModifier ->
+                    Button(
+                        modifier = buttonModifier,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.surface,
+                            contentColor = MaterialTheme.colorScheme.onSurface,
+                        ),
+                        enabled = !uiState.isLoading,
+                        onClick = {
+                            onPickMultipleVisualMediaClicked()
+                        },
+                    ) {
+                        Text(text = stringResource(Res.string.string_gallery))
+                        Icon(
+                            imageVector = Icons.Sharp.PhotoLibrary,
+                            contentDescription = "",
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .size(34.dp),
+                        )
+                    }
+                    Button(
+                        modifier = buttonModifier,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.surface,
+                            contentColor = MaterialTheme.colorScheme.onSurface,
+                        ),
+                        enabled = !uiState.isLoading,
+                        onClick = {
+                            onShareClicked()
+                        },
+                    ) {
+                        Text(text = stringResource(Res.string.string_share))
+                        Icon(
+                            imageVector = Icons.Sharp.Share,
+                            contentDescription = "",
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .size(24.dp),
+                        )
+                    }
                 }
             }
-            HorizontalDivider()
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    contentColor = MaterialTheme.colorScheme.onSurface,
-                ),
-                enabled = !isLoading,
-                onClick = {
-                    onShareClicked()
-                },
-            ) {
-                Text(text = stringResource(Res.string.string_share))
-                Icon(
-                    imageVector = Icons.Sharp.Share,
-                    contentDescription = "",
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .size(24.dp),
-                )
-            }
+            LoadingAnimationOverlay(uiState.isLoading)
         }
     }
-    LoadingAnimationOverlay(isLoading)
 }
 
 private const val COLUMNS = 4

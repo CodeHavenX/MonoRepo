@@ -8,7 +8,14 @@ import com.cramsan.edifikana.client.ui.theme.AppTheme
 @Composable
 private fun AccountScreenPreview() = AppTheme {
     AccountContent(
-        content = AccountUIModel(""),
+        content = AccountUIModel(
+            firstName = "Luis Antonio",
+            lastName = "Vega",
+            email = "lvega@gmail.com",
+            phoneNumber = "+51 987654321",
+        ),
+        onBackNavigation = {},
         onSignOutClicked = {},
+        onEditClicked = {},
     )
 }

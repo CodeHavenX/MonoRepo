@@ -21,13 +21,13 @@ import org.jetbrains.compose.resources.stringResource
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EdifikanaTopBar(
-    title: String,
+    title: String? = null,
     onCloseClicked: (() -> Unit)? = null,
     content: (@Composable RowScope.() -> Unit)? = null,
 ) {
     TopAppBar(
         title = {
-            Text(title)
+            title?.let { Text(it) }
         },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,

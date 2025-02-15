@@ -8,18 +8,22 @@ import com.cramsan.edifikana.lib.model.StaffId
 @Composable
 private fun StaffListScreenPreview() {
     StaffList(
-        isLoading = true,
-        staffs = listOf(
-            StaffUIModel(
-                "Cesar Andres Ramirez Sanchez",
-                StaffId("John"),
+        StaffListUIState(
+            isLoading = true,
+            staffs = listOf(
+                StaffUIModel(
+                    "Cesar Andres Ramirez Sanchez",
+                    StaffId("John"),
+                ),
+                StaffUIModel(
+                    "2",
+                    StaffId("Jane"),
+                ),
             ),
-            StaffUIModel(
-                "2",
-                StaffId("Jane"),
-            ),
+            title = ""
         ),
         onStaffClick = {},
         onAddStaffClick = {},
+        onCloseSelected = {}
     )
 }

@@ -1,12 +1,16 @@
 package com.cramsan.edifikana.client.lib.features.admin.properties
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -14,14 +18,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
+import com.cramsan.edifikana.client.ui.components.SectionHolder
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.ui.components.LoadingAnimationOverlay
-import com.cramsan.ui.theme.Padding
+import com.cramsan.ui.theme.Size
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -58,27 +64,18 @@ fun PropertyManagerScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            EdifikanaTopBar(
-                title = "Properties",
-                onCloseClicked = { viewModel.navigateBack() },
-            )
+    PropertyManagerContent(
+        uiState,
+        onPropertyClicked = { property ->
+            viewModel.navigateToPropertyDetails(property)
         },
-    ) { innerPadding ->
-        // Render the screen
-        PropertyManagerContent(
-            uiState.content,
-            Modifier.padding(innerPadding),
-            uiState.isLoading,
-            onPropertyClicked = { property ->
-                viewModel.navigateToPropertyDetails(property)
-            },
-            onAddPropertyClicked = {
-                viewModel.navigateToAddProperty()
-            }
-        )
-    }
+        onAddPropertyClicked = {
+            viewModel.navigateToAddProperty()
+        },
+        onBackSelected = {
+            viewModel.navigateBack()
+        },
+    )
 }
 
 /**
@@ -86,27 +83,51 @@ fun PropertyManagerScreen(
  */
 @Composable
 internal fun PropertyManagerContent(
-    content: PropertyManagerUIModel,
+    content: PropertyManagerUIState,
     modifier: Modifier = Modifier,
-    loading: Boolean,
     onPropertyClicked: (PropertyId) -> Unit,
     onAddPropertyClicked: () -> Unit,
+    onBackSelected: () -> Unit,
 ) {
-    Column(
+    Scaffold(
         modifier = modifier,
-    ) {
-        Row {
-            Button(onClick = onAddPropertyClicked) {
-                Text("Add Property")
+        topBar = {
+            EdifikanaTopBar(
+                title = "Properties",
+                onCloseClicked = onBackSelected,
+            )
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = onAddPropertyClicked,
+            ) {
+                Icon(Icons.Filled.Add, "Add a property")
             }
         }
-        LazyColumn {
-            items(content.properties) {
-                PropertyRow(it, onClick = { onPropertyClicked(it.id) })
+    ) { innerPadding ->
+        // Render the screen
+        Box(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize(),
+            contentAlignment = Alignment.TopCenter,
+        ) {
+            Column(
+                modifier = Modifier.sizeIn(maxWidth = Size.COLUMN_MAX_WIDTH),
+            ) {
+                SectionHolder { sectionModifier ->
+                    content.content.properties.forEach {
+                        PropertyRow(
+                            it,
+                            modifier = sectionModifier,
+                            onClick = { onPropertyClicked(it.id) },
+                        )
+                    }
+                }
             }
+            LoadingAnimationOverlay(isLoading = content.isLoading)
         }
     }
-    LoadingAnimationOverlay(isLoading = loading)
 }
 
 @Composable
@@ -116,18 +137,18 @@ private fun PropertyRow(
     onClick: () -> Unit,
 ) {
     Row(
-        modifier = modifier
-            .padding(Padding.X_SMALL)
-            .clickable { onClick() },
+        modifier = Modifier
+            .clickable { onClick() }
+            .then(modifier),
     ) {
         Column {
             Text(
                 property.name,
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.labelLarge,
             )
             Text(
                 property.address,
-                style = MaterialTheme.typography.labelSmall,
+                style = MaterialTheme.typography.labelMedium,
             )
         }
     }

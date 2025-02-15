@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Administración Cenit</string>
+    <string name="app_name">Edifikana</string>
 
     <string name="sign_out">Cerrar Sessión</string>
     <string name="role_admin">Administrator</string>

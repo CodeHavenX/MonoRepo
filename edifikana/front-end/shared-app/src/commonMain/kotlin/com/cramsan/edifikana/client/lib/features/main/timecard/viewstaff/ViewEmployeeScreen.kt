@@ -82,85 +82,86 @@ fun ViewStaffScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            EdifikanaTopBar(
-                title = "Employee Screen",
-                onCloseClicked = { viewModel.navigateBack() },
-            )
+    ViewStaffContent(
+        uiState,
+        onClockInClick = {
+            viewModel.onClockEventSelected(TimeCardEventType.CLOCK_IN)
         },
-    ) { innerPadding ->
-        ViewStaffContent(
-            uiState.isLoading,
-            Modifier.padding(innerPadding),
-            uiState.staff,
-            uiState.records,
-            onClockInClick = {
-                viewModel.onClockEventSelected(TimeCardEventType.CLOCK_IN)
-            },
-            onClockOutClick = {
-                viewModel.onClockEventSelected(TimeCardEventType.CLOCK_OUT)
-            },
-            onShareClick = {
-                viewModel.share(it)
-            },
-        )
-    }
+        onClockOutClick = {
+            viewModel.onClockEventSelected(TimeCardEventType.CLOCK_OUT)
+        },
+        onShareClick = {
+            viewModel.share(it)
+        },
+        onCloseSelected = {
+            viewModel.navigateBack()
+        },
+    )
 }
 
 @Composable
 internal fun ViewStaffContent(
-    isLoading: Boolean,
+    uiState: ViewStaffUIState,
     modifier: Modifier = Modifier,
-    staff: ViewStaffUIModel.StaffUIModel?,
-    records: List<ViewStaffUIModel.TimeCardRecordUIModel>,
     onClockInClick: (ViewStaffUIModel.StaffUIModel) -> Unit,
     onClockOutClick: (ViewStaffUIModel.StaffUIModel) -> Unit,
     onShareClick: (TimeCardEventId?) -> Unit,
+    onCloseSelected: () -> Unit,
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(16.dp),
-    ) {
-        if (staff != null) {
-            Text(
-                text = staff.fullName,
-                style = MaterialTheme.typography.bodyLarge,
+    Scaffold(
+        topBar = {
+            EdifikanaTopBar(
+                title = "Employee Screen",
+                onCloseClicked = onCloseSelected,
             )
-            Text(
-                text = staff.role,
-                style = MaterialTheme.typography.bodyMedium,
-            )
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-            ) {
-                Button(
-                    onClick = { onClockInClick(staff) },
-                    modifier = Modifier.weight(1f),
-                ) {
-                    Text(text = stringResource(Res.string.text_clock_in))
-                }
-                Button(
-                    onClick = { onClockOutClick(staff) },
-                    modifier = Modifier.weight(1f),
-                ) {
-                    Text(text = stringResource(Res.string.text_clock_out))
-                }
-            }
-        }
-        LazyColumn(
-            modifier = Modifier.weight(1f)
+        },
+    ) { innerPadding ->
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(16.dp),
         ) {
-            items(records) { record ->
-                TimeCardRecordItem(record, onShareClick)
+            val staff = uiState.staff
+            val records = uiState.records
+            if (staff != null) {
+                Text(
+                    text = staff.fullName,
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+                Text(
+                    text = staff.role,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    Button(
+                        onClick = { onClockInClick(staff) },
+                        modifier = Modifier.weight(1f),
+                    ) {
+                        Text(text = stringResource(Res.string.text_clock_in))
+                    }
+                    Button(
+                        onClick = { onClockOutClick(staff) },
+                        modifier = Modifier.weight(1f),
+                    ) {
+                        Text(text = stringResource(Res.string.text_clock_out))
+                    }
+                }
+            }
+            LazyColumn(
+                modifier = Modifier.weight(1f)
+            ) {
+                items(records) { record ->
+                    TimeCardRecordItem(record, onShareClick)
+                }
             }
         }
+        LoadingAnimationOverlay(uiState.isLoading)
     }
-    LoadingAnimationOverlay(isLoading)
 }
 
 @Composable

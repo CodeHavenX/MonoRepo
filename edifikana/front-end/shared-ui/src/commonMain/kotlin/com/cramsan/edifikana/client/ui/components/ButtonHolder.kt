@@ -1,13 +1,11 @@
 package com.cramsan.edifikana.client.ui.components
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.cramsan.edifikana.client.ui.ActionSectionModifier
 import com.cramsan.ui.theme.Padding
 
 /**
@@ -18,15 +16,11 @@ import com.cramsan.ui.theme.Padding
  */
 @Composable
 fun ButtonHolder(
-    modifier: Modifier = ActionSectionModifier,
+    modifier: Modifier = Modifier,
     buttons: @Composable ColumnScope.(Modifier) -> Unit,
 ) {
     Column(
-        modifier = modifier
-            .padding(
-                vertical = Padding.X_SMALL,
-            ),
-        verticalArrangement = Arrangement.spacedBy(Padding.SMALL),
+        modifier = modifier,
         content = {
             buttons(
                 Modifier

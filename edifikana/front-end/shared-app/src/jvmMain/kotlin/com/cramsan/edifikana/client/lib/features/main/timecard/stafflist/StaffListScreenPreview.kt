@@ -16,7 +16,7 @@ private fun StaffListScreenPreview() {
                     StaffId("John"),
                 ),
                 StaffUIModel(
-                    "2",
+                    "Jane Smith",
                     StaffId("Jane"),
                 ),
             ),

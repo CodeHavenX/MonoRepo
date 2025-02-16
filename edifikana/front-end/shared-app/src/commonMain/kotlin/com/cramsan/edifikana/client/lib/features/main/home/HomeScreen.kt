@@ -67,7 +67,7 @@ fun HomeScreen(
     /**
      * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
      */
-    LifecycleEventEffect(Lifecycle.Event.ON_START) {
+    LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
         viewModel.loadProperties()
     }
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
@@ -110,12 +110,14 @@ private val BottomBarDestinationUiModels = listOf(
 @Composable
 internal fun HomeScreenContent(
     uiState: HomeUIModel,
+    modifier: Modifier = Modifier,
     onAccountButtonClicked: () -> Unit,
     onAdminButtonClicked: () -> Unit,
     onPropertySelected: (PropertyId) -> Unit,
     onTabSelected: (Tabs) -> Unit,
 ) {
     Scaffold(
+        modifier = modifier,
         topBar = {
             EdifikanaTopBar(
                 title = stringResource(Res.string.app_name),

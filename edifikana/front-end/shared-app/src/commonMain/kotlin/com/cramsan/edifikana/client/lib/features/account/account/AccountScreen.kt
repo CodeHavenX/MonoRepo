@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
@@ -23,11 +22,9 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
-import com.cramsan.edifikana.client.ui.components.ButtonHolder
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
-import com.cramsan.edifikana.client.ui.components.SectionHolder
+import com.cramsan.edifikana.client.ui.components.ScreenLayout
 import com.cramsan.ui.theme.Padding
-import com.cramsan.ui.theme.Size
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -92,10 +89,8 @@ internal fun AccountContent(
                 .fillMaxSize(),
             contentAlignment = Alignment.TopCenter,
         ) {
-            Column(
-                modifier = Modifier.sizeIn(maxWidth = Size.COLUMN_MAX_WIDTH),
-            ) {
-                SectionHolder { modifier ->
+            ScreenLayout(
+                sectionContent = { modifier ->
                     // First name
                     ContentLine(
                         text = content.firstName,
@@ -123,9 +118,8 @@ internal fun AccountContent(
                         label = "Email",
                         modifier = modifier,
                     )
-                }
-
-                ButtonHolder { modifier ->
+                },
+                buttonContent = { modifier ->
                     // Sign Out button
                     Button(
                         modifier = modifier,
@@ -133,8 +127,8 @@ internal fun AccountContent(
                     ) {
                         Text("Sign Out")
                     }
-                }
-            }
+                },
+            )
         }
     }
 }

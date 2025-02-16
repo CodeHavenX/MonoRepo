@@ -9,10 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -34,9 +31,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
-import com.cramsan.edifikana.client.ui.components.SectionHolder
+import com.cramsan.edifikana.client.ui.components.ScreenLayout
 import com.cramsan.ui.theme.Padding
-import com.cramsan.ui.theme.Size
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -112,14 +108,11 @@ internal fun DebugContent(
         Box(
             modifier = Modifier
                 .padding(innerPadding)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
+                .fillMaxSize(),
             contentAlignment = Alignment.TopCenter,
         ) {
-            Column(
-                modifier = Modifier.sizeIn(maxWidth = Size.COLUMN_MAX_WIDTH),
-            ) {
-                SectionHolder { modifier ->
+            ScreenLayout(
+                sectionContent = { modifier ->
                     content.fields.forEach {
                         when (it) {
                             is Field.BooleanField -> {
@@ -140,7 +133,7 @@ internal fun DebugContent(
                         }
                     }
                 }
-            }
+            )
         }
     }
 }

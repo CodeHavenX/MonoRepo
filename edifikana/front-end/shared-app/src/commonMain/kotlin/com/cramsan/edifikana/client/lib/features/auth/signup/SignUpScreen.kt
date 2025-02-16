@@ -7,14 +7,10 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
@@ -37,12 +33,10 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
-import com.cramsan.edifikana.client.ui.components.ButtonHolder
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
-import com.cramsan.edifikana.client.ui.components.SectionHolder
+import com.cramsan.edifikana.client.ui.components.ScreenLayout
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.theme.Padding
-import com.cramsan.ui.theme.Size
 import edifikana_lib.Res
 import edifikana_lib.sign_up_screen_text_email
 import edifikana_lib.sign_up_screen_text_first_name
@@ -122,15 +116,11 @@ internal fun SignUpContent(
         Box(
             modifier = Modifier
                 .padding(innerPadding)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
+                .fillMaxSize(),
             contentAlignment = Alignment.Center,
         ) {
-            Column(
-                modifier = Modifier
-                    .sizeIn(maxWidth = Size.COLUMN_MAX_WIDTH),
-            ) {
-                SectionHolder { modifier ->
+            ScreenLayout(
+                sectionContent = { modifier ->
                     AnimatedContent(
                         uistate.signUpForm.errorMessage,
                         modifier = modifier,
@@ -218,8 +208,8 @@ internal fun SignUpContent(
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
-                }
-                ButtonHolder { modifier ->
+                },
+                buttonContent = { modifier ->
                     Button(
                         modifier = modifier,
                         enabled = uistate.signUpForm.registerEnabled,
@@ -227,8 +217,8 @@ internal fun SignUpContent(
                     ) {
                         Text(stringResource(Res.string.sign_up_screen_text_sign_up))
                     }
-                }
-            }
+                },
+            )
         }
         LoadingAnimationOverlay(uistate.isLoading)
     }

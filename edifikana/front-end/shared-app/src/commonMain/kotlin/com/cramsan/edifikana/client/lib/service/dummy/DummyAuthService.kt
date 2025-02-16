@@ -12,21 +12,30 @@ import kotlinx.coroutines.flow.asStateFlow
  */
 class DummyAuthService : AuthService {
 
-    private val user = MutableStateFlow(USER_1.id)
+    private val user = MutableStateFlow<UserId?>(null)
 
     override suspend fun isSignedIn(): Result<Boolean> {
-        return Result.success(false)
+        return Result.success(user.value != null)
     }
 
     override suspend fun getUser(): Result<UserModel> {
-        return Result.success(USER_1)
+        val user = user.value?.let {
+            USER_1
+        }
+        return if (user == null) {
+            TODO()
+        } else {
+            Result.success(user)
+        }
     }
 
     override suspend fun signIn(email: String, password: String): Result<UserModel> {
+        user.value = USER_1.id
         return Result.success(USER_1)
     }
 
     override suspend fun signOut(): Result<Unit> {
+        user.value = null
         return Result.success(Unit)
     }
 
@@ -35,6 +44,7 @@ class DummyAuthService : AuthService {
     }
 
     override suspend fun signUp(username: String, password: String, fullname: String): Result<UserModel> {
+        user.value = USER_1.id
         return Result.success(USER_1)
     }
 

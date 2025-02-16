@@ -6,11 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -20,14 +16,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
-import com.cramsan.edifikana.client.ui.components.SectionHolder
+import com.cramsan.edifikana.client.ui.components.ScreenLayout
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.ui.components.LoadingAnimationOverlay
-import com.cramsan.ui.theme.Size
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -97,13 +93,6 @@ internal fun PropertyManagerContent(
                 onCloseClicked = onBackSelected,
             )
         },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = onAddPropertyClicked,
-            ) {
-                Icon(Icons.Filled.Add, "Add a property")
-            }
-        }
     ) { innerPadding ->
         // Render the screen
         Box(
@@ -112,10 +101,10 @@ internal fun PropertyManagerContent(
                 .fillMaxSize(),
             contentAlignment = Alignment.TopCenter,
         ) {
-            Column(
-                modifier = Modifier.sizeIn(maxWidth = Size.COLUMN_MAX_WIDTH),
-            ) {
-                SectionHolder { sectionModifier ->
+            ScreenLayout(
+                maxWith = Dp.Unspecified,
+                fixedFooter = true,
+                sectionContent = { sectionModifier ->
                     content.content.properties.forEach {
                         PropertyRow(
                             it,
@@ -123,8 +112,16 @@ internal fun PropertyManagerContent(
                             onClick = { onPropertyClicked(it.id) },
                         )
                     }
+                },
+                buttonContent = { buttonModifier ->
+                    Button(
+                        modifier = buttonModifier,
+                        onClick = onAddPropertyClicked,
+                    ) {
+                        Text(text = "Add Property")
+                    }
                 }
-            }
+            )
             LoadingAnimationOverlay(isLoading = content.isLoading)
         }
     }

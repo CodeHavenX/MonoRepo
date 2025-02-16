@@ -18,7 +18,7 @@ data class HomeUIModel(
     companion object {
         val Empty = HomeUIModel(
             label = "",
-            selectedTab = Tabs.None,
+            selectedTab = Tabs.EventLog,
             availableProperties = emptyList(),
         )
     }

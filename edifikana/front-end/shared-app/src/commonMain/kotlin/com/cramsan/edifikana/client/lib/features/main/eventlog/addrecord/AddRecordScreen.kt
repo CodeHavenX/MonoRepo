@@ -1,12 +1,8 @@
 package com.cramsan.edifikana.client.lib.features.main.eventlog.addrecord
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedTextField
@@ -25,14 +21,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.lib.toFriendlyStringCompose
-import com.cramsan.edifikana.client.ui.components.ButtonHolder
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
-import com.cramsan.edifikana.client.ui.components.SectionHolder
+import com.cramsan.edifikana.client.ui.components.ScreenLayout
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.ui.components.Dropdown
 import com.cramsan.ui.components.LoadingAnimationOverlay
-import com.cramsan.ui.theme.Size
 import edifikana_lib.Res
 import edifikana_lib.text_add
 import edifikana_lib.text_appartment
@@ -127,14 +121,11 @@ internal fun AddRecord(
         Box(
             modifier = Modifier
                 .padding(innerPadding)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
+                .fillMaxSize(),
             contentAlignment = Alignment.TopCenter,
         ) {
-            Column(
-                modifier = Modifier.sizeIn(maxWidth = Size.COLUMN_MAX_WIDTH),
-            ) {
-                SectionHolder { sectionModifier ->
+            ScreenLayout(
+                sectionContent = { sectionModifier ->
                     Dropdown(
                         label = stringResource(Res.string.text_staff),
                         items = staffs,
@@ -155,7 +146,7 @@ internal fun AddRecord(
                         )
                     }
 
-                    HorizontalDivider(modifier = sectionModifier)
+                    HorizontalDivider(sectionModifier)
 
                     Dropdown(
                         label = stringResource(Res.string.text_event_type),
@@ -177,7 +168,7 @@ internal fun AddRecord(
                         )
                     }
 
-                    HorizontalDivider(modifier = sectionModifier)
+                    HorizontalDivider(sectionModifier)
 
                     OutlinedTextField(
                         value = unit,
@@ -203,8 +194,8 @@ internal fun AddRecord(
                         modifier = sectionModifier,
                         isError = description.isBlank(),
                     )
-                }
-                ButtonHolder { buttonModifier ->
+                },
+                buttonContent = { buttonModifier ->
                     Button(
                         modifier = buttonModifier,
                         onClick = {
@@ -222,7 +213,7 @@ internal fun AddRecord(
                         Text(text = stringResource(Res.string.text_add))
                     }
                 }
-            }
+            )
             LoadingAnimationOverlay(uiState.isLoading)
         }
     }

@@ -26,7 +26,6 @@ class HomeViewModel(
      */
     fun loadProperties() {
         logI(TAG, "Loading properties.")
-        updateUiState { it.copy(selectedTab = Tabs.EventLog) }
         viewModelScope.launch {
             updatePropertyList()
         }

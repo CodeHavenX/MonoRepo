@@ -8,13 +8,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -22,10 +17,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
+import com.cramsan.edifikana.client.ui.components.ScreenLayout
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import org.koin.compose.koinInject
@@ -77,26 +74,31 @@ internal fun EventList(
     onStaffClick: (StaffId) -> Unit,
     onAddEventClick: () -> Unit,
 ) {
-    Box(modifier = modifier.fillMaxSize()) {
-        LazyColumn(
-            Modifier.fillMaxSize(),
-        ) {
-            items(events) { staff ->
-                StaffItem(
-                    staff,
-                    Modifier.fillMaxWidth(),
-                    onStaffClick,
-                )
-            }
-        }
-        FloatingActionButton(
-            onClick = onAddEventClick,
-            modifier = Modifier
-                .padding(32.dp)
-                .align(Alignment.BottomEnd),
-        ) {
-            Icon(Icons.Filled.Add, "")
-        }
+    Box(
+        modifier = modifier
+            .fillMaxSize(),
+    ) {
+        ScreenLayout(
+            fixedFooter = true,
+            maxWith = Dp.Unspecified,
+            sectionContent = { sectionModifier ->
+                events.forEach { staff ->
+                    StaffItem(
+                        staff,
+                        Modifier.fillMaxWidth(),
+                        onStaffClick,
+                    )
+                }
+            },
+            buttonContent = { buttonModifier ->
+                Button(
+                    modifier = buttonModifier,
+                    onClick = onAddEventClick,
+                ) {
+                    Text(text = "Agregar")
+                }
+            },
+        )
         LoadingAnimationOverlay(isLoading)
     }
 }

@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 /**
  * Base ViewModel class that provides a [viewModelScope] and logs when the ViewModel is created and cleared.
@@ -44,6 +45,16 @@ open class BaseViewModel<E : ViewModelEvent, UI : ViewModelUIState> (
 
     init {
         logD(tag, "ViewModel created: %s", this.hashCode())
+        viewModelScope.launch {
+            uiState.collect { value ->
+                logD(tag, "UI State: %s", value)
+            }
+        }
+        viewModelScope.launch {
+            events.collect { value ->
+                logD(tag, "Event: %s", value)
+            }
+        }
     }
 
     override fun onCleared() {

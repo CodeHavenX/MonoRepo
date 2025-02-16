@@ -2,6 +2,7 @@ package com.cramsan.edifikana.client.lib.managers
 
 import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.client.lib.service.AuthService
+import com.cramsan.edifikana.client.lib.service.PropertyService
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.getOrCatch
@@ -15,6 +16,7 @@ import org.koin.core.component.inject
  */
 class AuthManager(
     private val dependencies: ManagerDependencies,
+    private val propertyService: PropertyService,
 ) : KoinComponent {
 
     private val authService: AuthService by inject()
@@ -32,7 +34,14 @@ class AuthManager(
      */
     suspend fun signIn(email: String, password: String): Result<UserModel> = dependencies.getOrCatch(TAG) {
         logI(TAG, "signIn")
-        authService.signIn(email, password).getOrThrow()
+        val userModel = authService.signIn(email, password).getOrThrow()
+
+        val properties = propertyService.getPropertyList(false).getOrThrow()
+        if (properties.isNotEmpty()) {
+            propertyService.setActiveProperty(properties.firstOrNull()?.id)
+        }
+
+        userModel
     }
 
     /**

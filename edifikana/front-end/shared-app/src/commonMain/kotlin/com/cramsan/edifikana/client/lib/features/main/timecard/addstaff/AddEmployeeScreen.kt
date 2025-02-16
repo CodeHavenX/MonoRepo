@@ -1,16 +1,12 @@
 package com.cramsan.edifikana.client.lib.features.main.timecard.addstaff
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -18,12 +14,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.lib.toIdTypeFriendlyName
 import com.cramsan.edifikana.client.lib.toRoleFriendlyNameCompose
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
+import com.cramsan.edifikana.client.ui.components.ScreenLayout
 import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.StaffRole
 import com.cramsan.ui.components.Dropdown
@@ -59,27 +56,19 @@ fun AddStaffScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            EdifikanaTopBar(
-                title = "Debug Menu",
-                onCloseClicked = { viewModel.navigateBack() },
-            )
-        },
-    ) { innerPadding ->
-        AddStaffForm(
-            uiState.isLoading,
-            Modifier.padding(innerPadding),
-        ) { id, idType, name, lastName, role ->
-            viewModel.saveStaff(id, idType, name, lastName, role)
-        }
+    AddStaffForm(
+        uiState,
+        onBackSelected = { viewModel.navigateBack() }
+    ) { id, idType, name, lastName, role ->
+        viewModel.saveStaff(id, idType, name, lastName, role)
     }
 }
 
 @Composable
 internal fun AddStaffForm(
-    isLoading: Boolean,
+    uiState: AddStaffUIState,
     modifier: Modifier = Modifier,
+    onBackSelected: () -> Unit,
     onSaveDataClicked: (
         id: String?,
         idType: IdType?,
@@ -88,70 +77,86 @@ internal fun AddStaffForm(
         role: StaffRole?,
     ) -> Unit,
 ) {
-    Column(
-        modifier = modifier
-            .padding(16.dp)
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
-        var id by remember { mutableStateOf("") }
-        var idType by remember { mutableStateOf(IdType.DNI) }
-        var name by remember { mutableStateOf("") }
-        var lastName by remember { mutableStateOf("") }
-        var role by remember { mutableStateOf(StaffRole.SECURITY) }
-
-        TextField(
-            value = id,
-            onValueChange = { id = it },
-            label = { Text(stringResource(Res.string.string_id_number)) },
-            modifier = Modifier.fillMaxWidth(),
-            isError = id.isEmpty()
-        )
-
-        Dropdown(
-            label = stringResource(Res.string.string_id_type),
-            items = IdType.entries,
-            itemLabels = IdType.entries.map { it.toIdTypeFriendlyName() },
-            modifier = Modifier.fillMaxWidth(),
-            startValueMatcher = { it == idType },
+    Scaffold(
+        modifier = modifier,
+        topBar = {
+            EdifikanaTopBar(
+                title = "Debug Menu",
+                onCloseClicked = onBackSelected,
+            )
+        },
+    ) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize(),
+            contentAlignment = Alignment.TopCenter,
         ) {
-            idType = it
-        }
+            var id by remember { mutableStateOf("") }
+            var idType by remember { mutableStateOf(IdType.DNI) }
+            var name by remember { mutableStateOf("") }
+            var lastName by remember { mutableStateOf("") }
+            var role by remember { mutableStateOf(StaffRole.SECURITY) }
+            ScreenLayout(
+                sectionContent = { sectionModifier ->
+                    OutlinedTextField(
+                        value = id,
+                        onValueChange = { id = it },
+                        modifier = sectionModifier,
+                        label = { Text(stringResource(Res.string.string_id_number)) },
+                        isError = id.isEmpty()
+                    )
 
-        TextField(
-            value = name,
-            onValueChange = { name = it },
-            label = { Text(stringResource(Res.string.string_names)) },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true,
-            isError = name.isEmpty()
-        )
+                    Dropdown(
+                        label = stringResource(Res.string.string_id_type),
+                        items = IdType.entries,
+                        modifier = sectionModifier,
+                        itemLabels = IdType.entries.map { it.toIdTypeFriendlyName() },
+                        startValueMatcher = { it == idType },
+                    ) {
+                        idType = it
+                    }
 
-        TextField(
-            value = lastName,
-            onValueChange = { lastName = it },
-            label = { Text(stringResource(Res.string.string_last_names)) },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true,
-            isError = lastName.isEmpty()
-        )
+                    OutlinedTextField(
+                        value = name,
+                        onValueChange = { name = it },
+                        modifier = sectionModifier,
+                        label = { Text(stringResource(Res.string.string_names)) },
+                        singleLine = true,
+                        isError = name.isEmpty()
+                    )
 
-        Dropdown(
-            label = stringResource(Res.string.string_role),
-            items = StaffRole.entries,
-            itemLabels = StaffRole.entries.map { it.toRoleFriendlyNameCompose() },
-            modifier = Modifier.fillMaxWidth(),
-            startValueMatcher = { it == role },
-        ) {
-            role = it
-        }
+                    OutlinedTextField(
+                        value = lastName,
+                        onValueChange = { lastName = it },
+                        modifier = sectionModifier,
+                        label = { Text(stringResource(Res.string.string_last_names)) },
+                        singleLine = true,
+                        isError = lastName.isEmpty()
+                    )
 
-        Button(onClick = {
-            onSaveDataClicked(id, idType, name, lastName, role)
-        }) {
-            Text(stringResource(Res.string.string_save))
+                    Dropdown(
+                        label = stringResource(Res.string.string_role),
+                        items = StaffRole.entries,
+                        modifier = sectionModifier,
+                        itemLabels = StaffRole.entries.map { it.toRoleFriendlyNameCompose() },
+                        startValueMatcher = { it == role },
+                    ) {
+                        role = it
+                    }
+                },
+                buttonContent = { buttonModifier ->
+                    Button(
+                        modifier = buttonModifier,
+                        onClick = {
+                            onSaveDataClicked(id, idType, name, lastName, role)
+                        }
+                    ) {
+                        Text(stringResource(Res.string.string_save))
+                    }
+                }
+            )
+            LoadingAnimationOverlay(uiState.isLoading)
         }
     }
-    LoadingAnimationOverlay(isLoading)
 }

@@ -11,10 +11,13 @@ import com.cramsan.edifikana.lib.model.PropertyId
 @Composable
 private fun PropertyScreenPreview() {
     PropertyContent(
-        content = PropertyUIModel(
-            PropertyId(""),
-            "Property 1",
+        content = PropertyUIState(
+            PropertyUIModel(
+                PropertyId(""),
+                "Property 1",
+            ),
+            isLoading = false,
         ),
-        loading = false,
+        onBackSelected = {},
     )
 }

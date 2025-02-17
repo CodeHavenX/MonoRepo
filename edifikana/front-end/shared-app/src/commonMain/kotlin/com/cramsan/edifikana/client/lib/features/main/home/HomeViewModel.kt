@@ -103,6 +103,13 @@ class HomeViewModel(
         )
     }
 
+    /**
+     * Set the selected tab.
+     */
+    fun selectTab(selectedTab: Tabs) {
+        updateUiState { it.copy(selectedTab = selectedTab) }
+    }
+
     companion object {
         private const val TAG = "HomeViewModel"
     }

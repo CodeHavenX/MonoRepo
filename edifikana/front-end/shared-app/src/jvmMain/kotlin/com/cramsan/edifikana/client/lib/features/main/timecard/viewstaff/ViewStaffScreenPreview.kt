@@ -14,34 +14,38 @@ private fun ViewStaffScreenPreview() {
     AssertUtil.setInstance(NoopAssertUtil)
 
     ViewStaffContent(
-        isLoading = true,
-        staff = ViewStaffUIModel.StaffUIModel(
-            fullName = "Cesar Andres Ramirez Sanchez",
-            role = "Descansero",
-            staffPK = StaffId("123"),
-        ),
-        records = listOf(
-            ViewStaffUIModel.TimeCardRecordUIModel(
-                eventType = "Entrada",
-                timeRecorded = "2021-01-01 12:00:00",
-                "storage/1",
-                TimeCardEventType.CLOCK_IN,
-                null,
-                TimeCardEventId("123-123-123"),
-                true,
+        ViewStaffUIState(
+            isLoading = true,
+            staff = ViewStaffUIModel.StaffUIModel(
+                fullName = "Cesar Andres Ramirez Sanchez",
+                role = "Descansero",
+                staffPK = StaffId("123"),
             ),
-            ViewStaffUIModel.TimeCardRecordUIModel(
-                eventType = "Salida",
-                timeRecorded = "2021-01-01 12:00:00",
-                "storage/2",
-                TimeCardEventType.CLOCK_OUT,
-                null,
-                TimeCardEventId("321"),
-                false,
+            records = listOf(
+                ViewStaffUIModel.TimeCardRecordUIModel(
+                    eventType = "Entrada",
+                    timeRecorded = "2021-01-01 12:00:00",
+                    "storage/1",
+                    TimeCardEventType.CLOCK_IN,
+                    null,
+                    TimeCardEventId("123-123-123"),
+                    true,
+                ),
+                ViewStaffUIModel.TimeCardRecordUIModel(
+                    eventType = "Salida",
+                    timeRecorded = "2021-01-01 12:00:00",
+                    "storage/2",
+                    TimeCardEventType.CLOCK_OUT,
+                    null,
+                    TimeCardEventId("321"),
+                    false,
+                ),
             ),
+            title = "",
         ),
         onClockInClick = {},
         onClockOutClick = {},
         onShareClick = {},
+        onCloseSelected = {},
     )
 }

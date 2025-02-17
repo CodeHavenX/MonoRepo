@@ -7,7 +7,11 @@ import androidx.compose.runtime.Composable
 @Composable
 private fun AddStaffScreenPreview() {
     AddStaffForm(
-        isLoading = true,
+        uiState = AddStaffUIState(
+            isLoading = true,
+            title = ""
+        ),
         onSaveDataClicked = { _, _, _, _, _ -> },
+        onBackSelected = { }
     )
 }

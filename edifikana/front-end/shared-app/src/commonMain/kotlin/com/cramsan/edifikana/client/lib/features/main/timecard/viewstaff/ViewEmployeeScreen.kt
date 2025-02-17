@@ -1,15 +1,11 @@
 package com.cramsan.edifikana.client.lib.features.main.timecard.viewstaff
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material3.Button
@@ -32,6 +28,8 @@ import coil3.compose.AsyncImage
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationDelegatedEvent
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
+import com.cramsan.edifikana.client.ui.components.ListCell
+import com.cramsan.edifikana.client.ui.components.ScreenLayout
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
@@ -82,90 +80,96 @@ fun ViewStaffScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            EdifikanaTopBar(
-                title = "Employee Screen",
-                onCloseClicked = { viewModel.navigateBack() },
-            )
+    ViewStaffContent(
+        uiState,
+        onClockInClick = {
+            viewModel.onClockEventSelected(TimeCardEventType.CLOCK_IN)
         },
-    ) { innerPadding ->
-        ViewStaffContent(
-            uiState.isLoading,
-            Modifier.padding(innerPadding),
-            uiState.staff,
-            uiState.records,
-            onClockInClick = {
-                viewModel.onClockEventSelected(TimeCardEventType.CLOCK_IN)
-            },
-            onClockOutClick = {
-                viewModel.onClockEventSelected(TimeCardEventType.CLOCK_OUT)
-            },
-            onShareClick = {
-                viewModel.share(it)
-            },
-        )
-    }
+        onClockOutClick = {
+            viewModel.onClockEventSelected(TimeCardEventType.CLOCK_OUT)
+        },
+        onShareClick = {
+            viewModel.share(it)
+        },
+        onCloseSelected = {
+            viewModel.navigateBack()
+        },
+    )
 }
 
 @Composable
 internal fun ViewStaffContent(
-    isLoading: Boolean,
+    uiState: ViewStaffUIState,
     modifier: Modifier = Modifier,
-    staff: ViewStaffUIModel.StaffUIModel?,
-    records: List<ViewStaffUIModel.TimeCardRecordUIModel>,
     onClockInClick: (ViewStaffUIModel.StaffUIModel) -> Unit,
     onClockOutClick: (ViewStaffUIModel.StaffUIModel) -> Unit,
     onShareClick: (TimeCardEventId?) -> Unit,
+    onCloseSelected: () -> Unit,
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(16.dp),
-    ) {
-        if (staff != null) {
-            Text(
-                text = staff.fullName,
-                style = MaterialTheme.typography.bodyLarge,
+    Scaffold(
+        modifier = modifier,
+        topBar = {
+            EdifikanaTopBar(
+                title = "Employee Screen",
+                onCloseClicked = onCloseSelected,
             )
-            Text(
-                text = staff.role,
-                style = MaterialTheme.typography.bodyMedium,
-            )
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-            ) {
-                Button(
-                    onClick = { onClockInClick(staff) },
-                    modifier = Modifier.weight(1f),
-                ) {
-                    Text(text = stringResource(Res.string.text_clock_in))
-                }
-                Button(
-                    onClick = { onClockOutClick(staff) },
-                    modifier = Modifier.weight(1f),
-                ) {
-                    Text(text = stringResource(Res.string.text_clock_out))
-                }
-            }
-        }
-        LazyColumn(
-            modifier = Modifier.weight(1f)
+        },
+    ) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize(),
+            contentAlignment = Alignment.TopCenter,
         ) {
-            items(records) { record ->
-                TimeCardRecordItem(record, onShareClick)
-            }
+            val staff = uiState.staff
+            val records = uiState.records
+            ScreenLayout(
+                fixedFooter = true,
+                sectionContent = { sectionModifier ->
+                    Text(
+                        text = staff?.fullName.orEmpty(),
+                        modifier = sectionModifier,
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                    Text(
+                        text = staff?.role.orEmpty(),
+                        modifier = sectionModifier,
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                    records.forEach { record ->
+                        TimeCardRecordItem(
+                            record,
+                            modifier = sectionModifier,
+                            onShareClick,
+                        )
+                    }
+                },
+                buttonContent = { buttonModifier ->
+                    Button(
+                        enabled = staff != null,
+                        onClick = { staff?.let { it1 -> onClockInClick(it1) } },
+                        modifier = buttonModifier,
+                    ) {
+                        Text(text = stringResource(Res.string.text_clock_in))
+                    }
+                    Button(
+                        enabled = staff != null,
+                        onClick = { staff?.let { it1 -> onClockOutClick(it1) } },
+                        modifier = buttonModifier,
+                    ) {
+                        Text(text = stringResource(Res.string.text_clock_out))
+                    }
+                }
+            )
+            LoadingAnimationOverlay(uiState.isLoading)
         }
     }
-    LoadingAnimationOverlay(isLoading)
 }
 
 @Composable
 internal fun TimeCardRecordItem(
     record: ViewStaffUIModel.TimeCardRecordUIModel,
+    modifier: Modifier = Modifier,
     onShareClick: (TimeCardEventId?) -> Unit,
 ) {
     val textColor = if (record.clickable) {
@@ -173,13 +177,28 @@ internal fun TimeCardRecordItem(
     } else {
         MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
     }
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onShareClick(record.timeCardRecordPK) }
-            .padding(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
+    ListCell(
+        modifier = modifier,
+        onSelection = { onShareClick(record.timeCardRecordPK) },
+        startSlot = {
+            if (!record.clickable) {
+                Icon(
+                    imageVector = Icons.Default.Upload,
+                    contentDescription = stringResource(Res.string.text_upload),
+                    modifier = Modifier
+                )
+            }
+        },
+        endSlot = {
+            record.publicImageUrl?.let {
+                AsyncImage(
+                    modifier = Modifier.size(64.dp),
+                    model = authenticatedStorageItem("time_card_events", it),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                )
+            }
+        }
     ) {
         Column {
             Text(
@@ -189,21 +208,6 @@ internal fun TimeCardRecordItem(
             Text(
                 text = record.timeRecorded,
                 color = textColor,
-            )
-        }
-        if (!record.clickable) {
-            Icon(
-                imageVector = Icons.Default.Upload,
-                contentDescription = stringResource(Res.string.text_upload),
-                modifier = Modifier
-            )
-        }
-        record.publicImageUrl?.let {
-            AsyncImage(
-                modifier = Modifier.size(64.dp),
-                model = authenticatedStorageItem("time_card_events", it),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
             )
         }
     }

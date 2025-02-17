@@ -35,6 +35,7 @@ private fun SignUpScreenSuccessPreview() = AppTheme {
         onLastNameValueChange = {},
         onPolicyChecked = {},
         onSignUpClicked = {},
+        onCloseClicked = {},
     )
 }
 
@@ -64,5 +65,6 @@ private fun SignUpScreenFailurePreview() = AppTheme {
         onLastNameValueChange = {},
         onPolicyChecked = {},
         onSignUpClicked = {},
+        onCloseClicked = {},
     )
 }

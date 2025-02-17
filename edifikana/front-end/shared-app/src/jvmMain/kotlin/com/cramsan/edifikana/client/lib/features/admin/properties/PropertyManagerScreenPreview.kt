@@ -11,15 +11,18 @@ import com.cramsan.edifikana.lib.model.PropertyId
 @Composable
 private fun PropertyManagerScreenPreview() {
     PropertyManagerContent(
-        content = PropertyManagerUIModel(
-            listOf(
-                PropertyUIModel(PropertyId(""), "Property 1", "Address 1"),
-                PropertyUIModel(PropertyId(""), "Property 2", "Address 2"),
-                PropertyUIModel(PropertyId(""), "Property 3", "Address 3"),
-            )
+        content = PropertyManagerUIState(
+            content = PropertyManagerUIModel(
+                listOf(
+                    PropertyUIModel(PropertyId(""), "Sunset Villa", "123 Sunset Blvd"),
+                    PropertyUIModel(PropertyId(""), "Ocean Breeze", "456 Ocean Ave"),
+                    PropertyUIModel(PropertyId(""), "Mountain Retreat", "789 Mountain Rd"),
+                )
+            ),
+            isLoading = false,
         ),
-        loading = false,
         onPropertyClicked = {},
         onAddPropertyClicked = {},
+        onBackSelected = {},
     )
 }

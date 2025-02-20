@@ -16,7 +16,7 @@ import com.cramsan.edifikana.client.ui.theme.AppTheme
 @Preview
 @Composable
 private fun SectionHolderPreview() = AppTheme {
-    SectionHolder { sectionModifier ->
+    ContentSection { sectionModifier ->
         OutlinedTextField(
             value = "Value",
             onValueChange = {},

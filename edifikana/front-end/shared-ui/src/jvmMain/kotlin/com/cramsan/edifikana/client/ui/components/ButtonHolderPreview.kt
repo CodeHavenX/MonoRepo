@@ -11,7 +11,7 @@ import com.cramsan.edifikana.client.ui.theme.AppTheme
 @Preview
 @Composable
 private fun ButtonHolderPreview() = AppTheme {
-    ButtonHolder { buttonModifier ->
+    ActionSection { buttonModifier ->
         Button(
             onClick = {},
             modifier = buttonModifier,

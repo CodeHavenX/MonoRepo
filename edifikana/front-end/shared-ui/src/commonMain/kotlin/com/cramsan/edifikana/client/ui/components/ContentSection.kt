@@ -9,24 +9,25 @@ import androidx.compose.ui.Modifier
 import com.cramsan.ui.theme.Padding
 
 /**
- * This component represents the action section within a two-part screen(top section and bottom actions).
+ * This component represents the content section within a two-part screen(top section and bottom actions).
  *
- * This component will define the style and padding for the action section. The [buttons] will get a [Modifier] that
+ * This component will define the style and padding for the content section. The [content] will get a [Modifier] that
  * will define the padding and width of the content.
  */
 @Composable
-fun ButtonHolder(
+fun ContentSection(
     modifier: Modifier = Modifier,
-    buttons: @Composable ColumnScope.(Modifier) -> Unit,
+    content: @Composable ColumnScope.(Modifier) -> Unit,
 ) {
     Column(
         modifier = modifier,
         content = {
-            buttons(
+            content(
                 Modifier
                     .fillMaxWidth()
                     .padding(
                         horizontal = Padding.MEDIUM,
+                        vertical = Padding.X_SMALL,
                     )
             )
         },

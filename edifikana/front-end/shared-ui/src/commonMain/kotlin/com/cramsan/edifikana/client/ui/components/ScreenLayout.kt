@@ -17,7 +17,7 @@ import com.cramsan.ui.theme.Size
 
 /**
  * This component represents the layout of an entire screen. It will contain two sections: the content section and the
- * button section.
+ * action section.
  */
 @Composable
 fun ScreenLayout(
@@ -38,7 +38,7 @@ fun ScreenLayout(
             },
         verticalArrangement = Arrangement.spacedBy(Padding.MEDIUM),
     ) {
-        SectionHolder(
+        ContentSection(
             modifier = Modifier.ifTrue(fixedFooter) {
                 weight(1f)
                     .verticalScroll(rememberScrollState())
@@ -46,7 +46,7 @@ fun ScreenLayout(
             content = sectionContent,
         )
         buttonContent?.let {
-            ButtonHolder(buttons = it)
+            ActionSection(buttons = it)
         }
     }
 }

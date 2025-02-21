@@ -16,7 +16,7 @@ import org.koin.compose.viewmodel.koinViewModel
  * This function provides the boilerplate needed to wire up the screen within the rest of the
  * application. This includes observing the view model's state and event flows and rendering the screen.
  */
- // TODO: Register this screen as a new route within it's.
+ // TODO: Register this screen as a new route within it's router.
 @Composable
 fun ${NAME}Screen(
     viewModel: ${NAME}ViewModel = koinViewModel(),

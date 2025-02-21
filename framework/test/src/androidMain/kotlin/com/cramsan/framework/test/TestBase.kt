@@ -1,7 +1,6 @@
 package com.cramsan.framework.test
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.cramsan.framework.core.DispatcherProvider
 import io.mockk.MockKAnnotations
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -37,6 +36,4 @@ actual abstract class TestBase {
      */
     actual val testCoroutineScope: CoroutineScope
         get() = testCoroutineRule.testCoroutineScope
-
-    val dispatcherProvider: DispatcherProvider = TestDispatcherProviderImpl(testCoroutineRule.testCoroutineDispatcher)
 }

@@ -16,6 +16,7 @@ import com.cramsan.edifikana.server.core.service.TimeCardService
 import com.cramsan.edifikana.server.core.service.UserService
 import com.cramsan.edifikana.server.core.service.password.PasswordGenerator
 import com.cramsan.edifikana.server.core.service.password.SimplePasswordGenerator
+import com.cramsan.edifikana.server.util.readSimpleProperty
 import com.cramsan.framework.assertlib.assertFalse
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.Auth
@@ -61,15 +62,23 @@ val ApplicationModule = module {
 
     // Supabase
     single {
-        val supabaseUrl = System.getenv("EDIFIKANA_SUPABASE_URL")
-        val supabaseKey = System.getenv("EDIFIKANA_SUPABASE_KEY")
+        val supabaseUrl = readSimpleProperty("ediifkana.supabase.url") ?: System.getenv("EDIFIKANA_SUPABASE_URL")
+        val supabaseKey = readSimpleProperty("edifikana.supabase.key") ?: System.getenv("EDIFIKANA_SUPABASE_KEY")
 
-        assertFalse(supabaseUrl.isNullOrBlank(), TAG, "EDIFIKANA_SUPABASE_URL cannot be blank")
-        assertFalse(supabaseKey.isNullOrBlank(), TAG, "EDIFIKANA_SUPABASE_KEY cannot be blank")
+        assertFalse(
+            supabaseUrl.isNullOrBlank(),
+            TAG,
+            "EDIFIKANA_SUPABASE_URL or ediifkana.supabase.url cannot be blank"
+        )
+        assertFalse(
+            supabaseKey.isNullOrBlank(),
+            TAG,
+            "EDIFIKANA_SUPABASE_KEY or edifikana.supabase.key cannot be blank"
+        )
 
         createSupabaseClient(
-            supabaseUrl = supabaseUrl,
-            supabaseKey = supabaseKey,
+            supabaseUrl = supabaseUrl.orEmpty(),
+            supabaseKey = supabaseKey.orEmpty(),
         ) {
             install(Postgrest)
             install(Storage)

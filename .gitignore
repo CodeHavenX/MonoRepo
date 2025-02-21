@@ -10,6 +10,9 @@ node_modules/
 .caching
 .kotlin/
 
+# Application runtime configuations
+config.properties
+
 ### Fastlane ###
 **/fastlane/report.xml
 **/fastlane/Preview.html

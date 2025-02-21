@@ -116,11 +116,11 @@ class SignUpViewModel(
     fun signUp() {
         logI(TAG, "signUp called")
         viewModelScope.launch {
-            val firstName = _uiState.value.signUpForm.firstName.trim()
-            val lastName = _uiState.value.signUpForm.lastName.trim()
-            val email = _uiState.value.signUpForm.email.trim()
-            val phoneNumber = _uiState.value.signUpForm.phoneNumber.trim()
-            val password = _uiState.value.signUpForm.password
+            val firstName = uiState.value.signUpForm.firstName.trim()
+            val lastName = uiState.value.signUpForm.lastName.trim()
+            val email = uiState.value.signUpForm.email.trim()
+            val phoneNumber = uiState.value.signUpForm.phoneNumber.trim()
+            val password = uiState.value.signUpForm.password
 
             val errorMessages = listOf(
                 validateName(firstName, lastName),

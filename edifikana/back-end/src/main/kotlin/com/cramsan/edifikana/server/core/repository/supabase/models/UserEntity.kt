@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.server.core.repository.supabase.models
 
 import com.cramsan.edifikana.server.core.repository.supabase.SupabaseModel
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
@@ -11,8 +12,11 @@ import kotlinx.serialization.Serializable
 data class UserEntity(
     val id: String,
     val email: String,
-    val phone: String,
+    @SerialName("phone_number")
+    val phoneNumber: String,
+    @SerialName("first_name")
     val firstName: String,
+    @SerialName("last_name")
     val lastName: String,
 ) {
     companion object {
@@ -27,8 +31,11 @@ data class UserEntity(
     data class CreateUserEntity(
         val id: String,
         val email: String,
-        val phone: String,
+        @SerialName("phone_number")
+        val phoneNumber: String,
+        @SerialName("first_name")
         val firstName: String,
+        @SerialName("last_name")
         val lastName: String,
     )
 }

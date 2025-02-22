@@ -79,6 +79,11 @@ class AuthManager(
      */
     fun activeUser(): StateFlow<UserId?> = authService.activeUser()
 
+    suspend fun verifyPermissions() = dependencies.getOrCatch(TAG) {
+        logI(TAG, "verifyPermissions")
+        authService.verifyPermissions().getOrThrow()
+    }
+
     companion object {
         private const val TAG = "AuthManager"
     }

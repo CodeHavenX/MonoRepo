@@ -15,8 +15,10 @@ import com.cramsan.edifikana.server.core.controller.UserController.Companion.reg
 import com.cramsan.edifikana.server.di.ApplicationModule
 import com.cramsan.edifikana.server.di.DummyStorageModule
 import com.cramsan.edifikana.server.di.FrameworkModule
+import com.cramsan.edifikana.server.di.SettingsModule
 import com.cramsan.edifikana.server.di.SupabaseStorageModule
 import com.cramsan.edifikana.server.di.createKtorModule
+import com.cramsan.edifikana.server.settings.Overrides
 import com.cramsan.framework.logging.logI
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
@@ -27,7 +29,10 @@ import io.ktor.server.plugins.cors.routing.CORS
 import io.ktor.server.routing.routing
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
+import org.koin.core.context.loadKoinModules
 import org.koin.core.context.startKoin
+import org.koin.core.qualifier.named
+import org.koin.ktor.ext.get
 import org.koin.ktor.ext.inject
 
 /**
@@ -36,18 +41,10 @@ import org.koin.ktor.ext.inject
 fun main(args: Array<String>) = io.ktor.server.netty.EngineMain.main(args)
 
 /**
- * Production entry point of the application.
+ * Entry point of the application.
  */
 fun Application.module() = runBlocking {
     initializeDependencies()
-    startServer()
-}
-
-/**
- * Debug entry point of the application.
- */
-fun Application.debugModule() = runBlocking {
-    initializeDebugDependencies()
     startServer()
 }
 
@@ -99,23 +96,14 @@ fun Application.initializeDependencies() {
         modules(
             createKtorModule(this@initializeDependencies),
             FrameworkModule,
+            SettingsModule,
             ApplicationModule,
             SupabaseStorageModule,
         )
-    }
-}
-
-/**
- * Initialize the service debug dependencies.
- */
-fun Application.initializeDebugDependencies() {
-    startKoin {
-        modules(
-            createKtorModule(this@initializeDebugDependencies),
-            FrameworkModule,
-            ApplicationModule,
-            DummyStorageModule,
-        )
+        val disableSupabase: Boolean = get(named(Overrides.KEY_SUPABASE_DISABLE))
+        if (disableSupabase) {
+            loadKoinModules(DummyStorageModule)
+        }
     }
 }
 

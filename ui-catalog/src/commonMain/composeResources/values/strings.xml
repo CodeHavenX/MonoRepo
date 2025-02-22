@@ -1,0 +1,4 @@
+<resources>
+    <string name="password_outlined_textfield_toggle_visibility_description_visible">Password visible. Toggle visibility.</string>
+    <string name="password_outlined_textfield_toggle_visibility_description_hidden">Password hidden. Toggle visibility.</string>
+</resources>

@@ -121,10 +121,11 @@ class DebugViewModel(
                         value = preferences.loadString(Overrides.KEY_SUPABASE_OVERRIDE_URL) ?: "",
                     ),
                     Field.StringField(
-                        title = "Supabase Key",
-                        subtitle = "Provide an override Api Key",
+                        title = "Supabase Anon Key",
+                        subtitle = "Provide an override Api Anon Key",
                         key = Overrides.KEY_SUPABASE_OVERRIDE_KEY,
                         value = preferences.loadString(Overrides.KEY_SUPABASE_OVERRIDE_KEY) ?: "",
+                        secure = true,
                     ),
                     Field.Divider,
                     Field.Label("Core Framework Settings"),

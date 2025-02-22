@@ -14,8 +14,6 @@ import io.github.jan.supabase.compose.auth.appleNativeLogin
 import io.github.jan.supabase.compose.auth.composeAuth
 import io.github.jan.supabase.compose.auth.googleNativeLogin
 import io.github.jan.supabase.createSupabaseClient
-import io.github.jan.supabase.postgrest.Postgrest
-import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.storage.Storage
 import io.github.jan.supabase.storage.storage
 import org.koin.core.qualifier.named
@@ -38,7 +36,6 @@ internal val SupabaseModule = module {
             supabaseUrl = supabaseUrl,
             supabaseKey = supabaseKey,
         ) {
-            install(Postgrest)
             install(Storage)
             install(Auth) {
                 sessionManager = SettingsSessionManager(key = "$supabaseUrl-client")
@@ -63,10 +60,6 @@ internal val SupabaseModule = module {
 
     single {
         get<SupabaseClient>().storage
-    }
-
-    single {
-        get<SupabaseClient>().postgrest
     }
 
     single {

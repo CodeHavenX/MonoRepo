@@ -39,4 +39,9 @@ interface AuthService {
      * Sign up the user with the given [username] and [password]. Returns the user model if successful.
      */
     suspend fun signUp(username: String, password: String, fullname: String): Result<UserModel>
+
+    /**
+     * Verify the permissions of the user.
+     */
+    suspend fun verifyPermissions(): Result<Boolean>
 }

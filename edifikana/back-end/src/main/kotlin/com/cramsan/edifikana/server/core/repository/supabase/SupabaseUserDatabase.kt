@@ -29,6 +29,7 @@ class SupabaseUserDatabase(
      */
     @OptIn(SupabaseModel::class)
     override suspend fun createUser(
+        // TODO: Use phoneNum, fN, and lN. Integrate into request or someting
         request: CreateUserRequest,
     ): Result<User> = runSuspendCatching(TAG) {
         logD(TAG, "Creating user: %s", request.email)

@@ -44,6 +44,7 @@ import edifikana_lib.string_field_event
 import edifikana_lib.string_field_unit
 import edifikana_lib.string_gallery
 import edifikana_lib.string_share
+import edifikana_lib.view_record_screen_title
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
@@ -109,7 +110,7 @@ internal fun SingleRecord(
         modifier = modifier,
         topBar = {
             EdifikanaTopBar(
-                title = "View Record",
+                title = stringResource(Res.string.view_record_screen_title),
                 onCloseClicked = onCloseSelected,
             )
         },
@@ -214,7 +215,7 @@ internal fun SingleRecord(
                         Text(text = stringResource(Res.string.string_gallery))
                         Icon(
                             imageVector = Icons.Sharp.PhotoLibrary,
-                            contentDescription = "",
+                            contentDescription = null,
                             modifier = Modifier
                                 .padding(4.dp)
                                 .size(34.dp),
@@ -234,7 +235,7 @@ internal fun SingleRecord(
                         Text(text = stringResource(Res.string.string_share))
                         Icon(
                             imageVector = Icons.Sharp.Share,
-                            contentDescription = "",
+                            contentDescription = null,
                             modifier = Modifier
                                 .padding(4.dp)
                                 .size(24.dp),

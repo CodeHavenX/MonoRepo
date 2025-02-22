@@ -28,6 +28,7 @@ import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.ui.components.Dropdown
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import edifikana_lib.Res
+import edifikana_lib.add_record_screen_title
 import edifikana_lib.text_add
 import edifikana_lib.text_appartment
 import edifikana_lib.text_event_type
@@ -113,7 +114,7 @@ internal fun AddRecord(
         modifier = modifier,
         topBar = {
             EdifikanaTopBar(
-                title = "Add Record",
+                title = stringResource(Res.string.add_record_screen_title),
                 onCloseClicked = onBackSelected,
             )
         },

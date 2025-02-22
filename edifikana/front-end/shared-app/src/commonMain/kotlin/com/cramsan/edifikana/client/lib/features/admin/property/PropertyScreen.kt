@@ -71,7 +71,7 @@ internal fun PropertyContent(
         modifier = modifier,
         topBar = {
             EdifikanaTopBar(
-                title = "Property",
+                title = content.content?.name,
                 onCloseClicked = onBackSelected,
             )
         },

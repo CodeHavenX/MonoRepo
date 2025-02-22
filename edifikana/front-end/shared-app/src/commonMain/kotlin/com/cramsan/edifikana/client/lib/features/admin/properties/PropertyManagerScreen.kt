@@ -24,6 +24,10 @@ import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.edifikana.client.ui.components.ScreenLayout
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.ui.components.LoadingAnimationOverlay
+import edifikana_lib.Res
+import edifikana_lib.properties_screen_add_button
+import edifikana_lib.properties_screen_title
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -89,7 +93,7 @@ internal fun PropertyManagerContent(
         modifier = modifier,
         topBar = {
             EdifikanaTopBar(
-                title = "Properties",
+                title = stringResource(Res.string.properties_screen_title),
                 onCloseClicked = onBackSelected,
             )
         },
@@ -118,7 +122,7 @@ internal fun PropertyManagerContent(
                         modifier = buttonModifier,
                         onClick = onAddPropertyClicked,
                     ) {
-                        Text(text = "Add Property")
+                        Text(text = stringResource(Res.string.properties_screen_add_button))
                     }
                 }
             )

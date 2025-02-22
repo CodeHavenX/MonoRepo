@@ -25,6 +25,9 @@ import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.ui.components.ScreenLayout
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.ui.components.LoadingAnimationOverlay
+import edifikana_lib.Res
+import edifikana_lib.time_card_screen_add_event
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -95,7 +98,7 @@ internal fun EventList(
                     modifier = buttonModifier,
                     onClick = onAddEventClick,
                 ) {
-                    Text(text = "Agregar")
+                    Text(text = stringResource(Res.string.time_card_screen_add_event))
                 }
             },
         )

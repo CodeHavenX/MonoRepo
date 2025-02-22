@@ -110,7 +110,7 @@ internal fun ViewStaffContent(
         modifier = modifier,
         topBar = {
             EdifikanaTopBar(
-                title = "Employee Screen",
+                title = uiState.title,
                 onCloseClicked = onCloseSelected,
             )
         },

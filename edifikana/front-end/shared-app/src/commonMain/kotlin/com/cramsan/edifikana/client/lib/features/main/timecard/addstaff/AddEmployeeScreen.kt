@@ -26,6 +26,7 @@ import com.cramsan.edifikana.lib.model.StaffRole
 import com.cramsan.ui.components.Dropdown
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import edifikana_lib.Res
+import edifikana_lib.add_staff_screen_title
 import edifikana_lib.string_id_number
 import edifikana_lib.string_id_type
 import edifikana_lib.string_last_names
@@ -81,7 +82,7 @@ internal fun AddStaffForm(
         modifier = modifier,
         topBar = {
             EdifikanaTopBar(
-                title = "Debug Menu",
+                title = stringResource(Res.string.add_staff_screen_title),
                 onCloseClicked = onBackSelected,
             )
         },

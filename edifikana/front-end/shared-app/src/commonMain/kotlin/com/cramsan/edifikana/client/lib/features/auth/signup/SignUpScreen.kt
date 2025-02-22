@@ -45,6 +45,7 @@ import edifikana_lib.sign_up_screen_text_password
 import edifikana_lib.sign_up_screen_text_phone_number
 import edifikana_lib.sign_up_screen_text_policy
 import edifikana_lib.sign_up_screen_text_sign_up
+import edifikana_lib.signup_screen_title
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
@@ -107,7 +108,7 @@ internal fun SignUpContent(
         modifier = modifier,
         topBar = {
             EdifikanaTopBar(
-                title = "Sign Up",
+                title = stringResource(Res.string.signup_screen_title),
                 onCloseClicked = onCloseClicked,
             )
         },

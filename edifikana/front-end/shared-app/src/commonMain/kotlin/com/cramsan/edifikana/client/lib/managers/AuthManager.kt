@@ -79,6 +79,10 @@ class AuthManager(
      */
     fun activeUser(): StateFlow<UserId?> = authService.activeUser()
 
+    /**
+     * Verifies the permissions of the library. This is used to ensure that we
+     * have the right permissions and also to prevent using admin credentials.
+     */
     suspend fun verifyPermissions() = dependencies.getOrCatch(TAG) {
         logI(TAG, "verifyPermissions")
         authService.verifyPermissions().getOrThrow()

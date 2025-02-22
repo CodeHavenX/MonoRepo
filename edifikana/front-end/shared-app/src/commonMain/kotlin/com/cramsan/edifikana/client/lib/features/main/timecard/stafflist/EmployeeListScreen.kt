@@ -24,6 +24,10 @@ import com.cramsan.edifikana.client.ui.components.ListCell
 import com.cramsan.edifikana.client.ui.components.ScreenLayout
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.ui.components.LoadingAnimationOverlay
+import edifikana_lib.Res
+import edifikana_lib.employee_list_screen_add_button_description
+import edifikana_lib.employee_list_screen_title
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -77,13 +81,13 @@ internal fun StaffList(
         modifier = modifier,
         topBar = {
             EdifikanaTopBar(
-                title = "Staff List",
+                title = stringResource(Res.string.employee_list_screen_title),
                 onCloseClicked = onCloseSelected,
             ) {
                 IconButton(onClick = onAddStaffClick) {
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = ""
+                        contentDescription = stringResource(Res.string.employee_list_screen_add_button_description),
                     )
                 }
             }

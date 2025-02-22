@@ -41,6 +41,10 @@ import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.ui.theme.Padding
 import edifikana_lib.Res
 import edifikana_lib.app_name
+import edifikana_lib.home_screen_account_description
+import edifikana_lib.home_screen_property_dropdown_description
+import edifikana_lib.home_screen_property_dropdown_selected_description
+import edifikana_lib.home_screen_settings_description
 import edifikana_lib.schedule
 import edifikana_lib.string_assistance
 import edifikana_lib.string_event_log_title
@@ -133,14 +137,14 @@ internal fun HomeScreenContent(
                 IconButton(onClick = onAdminButtonClicked) {
                     Icon(
                         imageVector = Icons.Default.Settings,
-                        contentDescription = ""
+                        contentDescription = stringResource(Res.string.home_screen_settings_description),
                     )
                 }
                 // Account button
                 IconButton(onClick = onAccountButtonClicked) {
                     Icon(
                         imageVector = Icons.Default.AccountCircle,
-                        contentDescription = ""
+                        contentDescription = stringResource(Res.string.home_screen_account_description),
                     )
                 }
             }
@@ -199,7 +203,10 @@ private fun PropertyDropDown(
         ) {
             Text(label)
             Spacer(Modifier.width(Padding.X_SMALL))
-            Icon(Icons.Default.Apartment, contentDescription = "")
+            Icon(
+                Icons.Default.Apartment,
+                contentDescription = stringResource(Res.string.home_screen_property_dropdown_description)
+            )
         }
         DropdownMenu(
             expanded = expanded,
@@ -214,7 +221,12 @@ private fun PropertyDropDown(
                     },
                     trailingIcon = {
                         if (uiModel.selected) {
-                            Icon(Icons.Default.Check, contentDescription = "")
+                            Icon(
+                                Icons.Default.Check,
+                                contentDescription = stringResource(
+                                    Res.string.home_screen_property_dropdown_selected_description
+                                )
+                            )
                         }
                     }
                 )

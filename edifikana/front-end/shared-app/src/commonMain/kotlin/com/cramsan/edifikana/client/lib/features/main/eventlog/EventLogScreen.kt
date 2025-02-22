@@ -27,6 +27,7 @@ import com.cramsan.edifikana.client.ui.components.ScreenLayout
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import edifikana_lib.Res
+import edifikana_lib.event_log_screen_add_record
 import edifikana_lib.text_upload
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
@@ -95,7 +96,7 @@ internal fun RecordList(
                     modifier = buttonModifier,
                     onClick = onAddRecordClicked,
                 ) {
-                    Text(text = "Agregar")
+                    Text(text = stringResource(Res.string.event_log_screen_add_record))
                 }
             }
         )

@@ -25,6 +25,15 @@ import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.edifikana.client.ui.components.ScreenLayout
 import com.cramsan.ui.theme.Padding
+import edifikana_lib.Res
+import edifikana_lib.account_screen_edit_button
+import edifikana_lib.account_screen_email
+import edifikana_lib.account_screen_first_name
+import edifikana_lib.account_screen_last_name
+import edifikana_lib.account_screen_phone_number
+import edifikana_lib.account_screen_sign_out
+import edifikana_lib.account_screen_title
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -71,13 +80,13 @@ internal fun AccountContent(
         modifier = modifier,
         topBar = {
             EdifikanaTopBar(
-                title = "Account",
+                title = stringResource(Res.string.account_screen_title),
                 onCloseClicked = onBackNavigation,
             ) {
                 IconButton(onClick = onEditClicked) {
                     Icon(
                         imageVector = Icons.Default.Edit,
-                        contentDescription = ""
+                        contentDescription = stringResource(Res.string.account_screen_edit_button),
                     )
                 }
             }
@@ -94,28 +103,28 @@ internal fun AccountContent(
                     // First name
                     ContentLine(
                         text = content.firstName,
-                        label = "First Name",
+                        label = stringResource(Res.string.account_screen_first_name),
                         modifier = modifier,
                     )
 
                     // Last name
                     ContentLine(
                         text = content.lastName,
-                        label = "Last Name",
+                        label = stringResource(Res.string.account_screen_last_name),
                         modifier = modifier,
                     )
 
                     // Phonenumber
                     ContentLine(
                         text = content.phoneNumber,
-                        label = "Phone Number",
+                        label = stringResource(Res.string.account_screen_phone_number),
                         modifier = modifier,
                     )
 
                     // Email
                     ContentLine(
                         text = content.email,
-                        label = "Email",
+                        label = stringResource(Res.string.account_screen_email),
                         modifier = modifier,
                     )
                 },
@@ -125,7 +134,9 @@ internal fun AccountContent(
                         modifier = modifier,
                         onClick = onSignOutClicked,
                     ) {
-                        Text("Sign Out")
+                        Text(
+                            text = stringResource(Res.string.account_screen_sign_out),
+                        )
                     }
                 },
             )

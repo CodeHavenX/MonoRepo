@@ -5,11 +5,6 @@
     <option name="PROGRAM_PARAMETERS" value="-config=application.conf -config=application.debug.conf" />
     <shortenClasspath name="NONE" />
     <option name="WORKING_DIRECTORY" value="edifikana/back-end" />
-    <extension name="software.aws.toolkits.jetbrains.core.execution.JavaAwsConnectionExtension">
-      <option name="credential" />
-      <option name="region" />
-      <option name="useCurrentConnection" value="false" />
-    </extension>
     <method v="2">
       <option name="Make" enabled="true" />
     </method>

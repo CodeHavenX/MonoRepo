@@ -30,7 +30,7 @@ fun UserEntity.toUser(hasGlobalPerms: Boolean): User {
     return User(
         id = UserId(this.id),
         email = this.email,
-        phone = this.phoneNumber,
+        phoneNumber = this.phoneNumber,
         firstName = this.firstName,
         lastName = this.lastName,
         hasGlobalPerms = hasGlobalPerms,

@@ -56,7 +56,7 @@ class UserControllerTest : TestBase(), KoinTest {
                 User(
                     id = UserId("user123"),
                     email = "john.doe@example.com",
-                    phone = "",
+                    phoneNumber = "",
                     firstName = "John",
                     lastName = "Doe",
                     hasGlobalPerms = false,
@@ -95,7 +95,7 @@ class UserControllerTest : TestBase(), KoinTest {
             User(
                 id = UserId("user123"),
                 email = "john.doe@example.com",
-                phone = "",
+                phoneNumber = "",
                 firstName = "John",
                 lastName = "Doe",
                 hasGlobalPerms = false,
@@ -131,7 +131,7 @@ class UserControllerTest : TestBase(), KoinTest {
                 User(
                     id = UserId("user123"),
                     email = "john.doe@example.com",
-                    phone = "",
+                    phoneNumber = "",
                     firstName = "John",
                     lastName = "Doe",
                     hasGlobalPerms = false,
@@ -139,7 +139,7 @@ class UserControllerTest : TestBase(), KoinTest {
                 User(
                     id = UserId("user456"),
                     email = "jane.smith@example.com",
-                    phone = "",
+                    phoneNumber = "",
                     firstName = "Jane",
                     lastName = "Smith",
                     hasGlobalPerms = false,
@@ -179,7 +179,7 @@ class UserControllerTest : TestBase(), KoinTest {
             User(
                 id = UserId("user123"),
                 email = "updated.email@example.com",
-                phone = "",
+                phoneNumber = "",
                 firstName = "Updated",
                 lastName = "Email",
                 hasGlobalPerms = false,

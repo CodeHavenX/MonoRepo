@@ -16,6 +16,7 @@ import com.cramsan.edifikana.server.core.service.TimeCardService
 import com.cramsan.edifikana.server.core.service.UserService
 import com.cramsan.edifikana.server.core.service.password.PasswordGenerator
 import com.cramsan.edifikana.server.core.service.password.SimplePasswordGenerator
+import com.cramsan.edifikana.server.settings.Overrides
 import com.cramsan.edifikana.server.util.readSimpleProperty
 import com.cramsan.framework.assertlib.assertFalse
 import io.github.jan.supabase.SupabaseClient
@@ -33,6 +34,7 @@ import kotlinx.datetime.Clock
 import kotlinx.serialization.json.Json
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 /**
@@ -62,6 +64,13 @@ val ApplicationModule = module {
 
     // Supabase
     single {
+        val disableSupabase: Boolean = get(named(Overrides.KEY_SUPABASE_DISABLE))
+        assertFalse(
+            disableSupabase,
+            TAG,
+            "SupabaseClient was loaded while in debug mode. This may be due to incorrectly configured DI.",
+        )
+
         val supabaseUrl = readSimpleProperty("ediifkana.supabase.url") ?: System.getenv("EDIFIKANA_SUPABASE_URL")
         val supabaseKey = readSimpleProperty("edifikana.supabase.key") ?: System.getenv("EDIFIKANA_SUPABASE_KEY")
 

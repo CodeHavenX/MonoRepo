@@ -38,7 +38,9 @@ class EdifikanaApplicationViewModel(
     val delegatedEvents: SharedFlow<EdifikanaApplicationDelegatedEvent> = _delegatedEvents
 
     init {
-        initHandler.startStep()
+        viewModelScope.launch {
+            initHandler.startStep()
+        }
 
         viewModelScope.launch {
             delegatedEvents.collect {

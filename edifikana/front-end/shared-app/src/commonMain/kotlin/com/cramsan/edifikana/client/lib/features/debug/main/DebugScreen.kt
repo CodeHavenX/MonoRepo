@@ -32,6 +32,7 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.edifikana.client.ui.components.ScreenLayout
+import com.cramsan.ui.components.PasswordOutlinedTextField
 import com.cramsan.ui.theme.Padding
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
@@ -207,25 +208,39 @@ private fun StringRow(
 ) {
     var stringValue by remember(field.value) { mutableStateOf(field.value) }
 
+    val fieldModifier = Modifier
+        .fillMaxWidth()
+        .onFocusChanged {
+            if (!it.isFocused) {
+                onFocusChange(field.key, stringValue)
+            }
+        }
+
     Column(
         modifier = modifier,
     ) {
-        OutlinedTextField(
-            label = { Text(field.title) },
-            singleLine = true,
-            value = stringValue,
-            modifier = Modifier
-                .fillMaxWidth()
-                .onFocusChanged {
-                    if (!it.isFocused) {
-                        onFocusChange(field.key, stringValue)
-                    }
+        if (field.secure) {
+            PasswordOutlinedTextField(
+                label = { Text(field.title) },
+                value = stringValue,
+                modifier = fieldModifier,
+                onValueChange = {
+                    stringValue = it
+                    onValueChanged(field.key, it)
                 },
-            onValueChange = {
-                stringValue = it
-                onValueChanged(field.key, it)
-            },
-        )
+            )
+        } else {
+            OutlinedTextField(
+                label = { Text(field.title) },
+                singleLine = true,
+                value = stringValue,
+                modifier = fieldModifier,
+                onValueChange = {
+                    stringValue = it
+                    onValueChanged(field.key, it)
+                },
+            )
+        }
         field.subtitle?.let {
             Text(
                 it,

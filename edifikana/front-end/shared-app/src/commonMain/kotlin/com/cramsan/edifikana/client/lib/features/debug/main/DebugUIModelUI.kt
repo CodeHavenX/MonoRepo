@@ -44,6 +44,7 @@ sealed class Field {
         val subtitle: String?,
         val key: String,
         val value: String,
+        val secure: Boolean = false,
     ) : Field()
 
     /**

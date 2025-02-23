@@ -48,6 +48,10 @@ class DummyAuthService : AuthService {
         return Result.success(USER_1)
     }
 
+    override suspend fun verifyPermissions(): Result<Boolean> {
+        return Result.success(true)
+    }
+
     companion object {
         private val USER_1 = UserModel(
             UserId("user_id_1"),

@@ -7,10 +7,12 @@ import com.cramsan.edifikana.lib.annotations.NetworkModel
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.model.network.CreateUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
+import com.cramsan.framework.assertlib.assertFalse
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logE
 import io.github.jan.supabase.auth.Auth
+import io.github.jan.supabase.auth.exception.AuthRestException
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.exceptions.RestException
 import io.ktor.client.HttpClient
@@ -97,6 +99,20 @@ class AuthServiceImpl(
         val userModel = response.toUserModel()
         _activeUser.value = userModel.id
         userModel
+    }
+
+    override suspend fun verifyPermissions(): Result<Boolean> {
+        // call the admin API. If the call succeeds, the user then we have the wrong credentials.
+        val hasServicePermissions = try {
+            auth.admin.retrieveUsers()
+            true
+        } catch (_: AuthRestException) {
+            // This exception is expected, it means the user does not have admin permissions.
+            false
+        }
+        assertFalse(hasServicePermissions, TAG, "User has admin permissions, this is not allowed!")
+
+        return Result.success(!hasServicePermissions)
     }
 
     companion object {

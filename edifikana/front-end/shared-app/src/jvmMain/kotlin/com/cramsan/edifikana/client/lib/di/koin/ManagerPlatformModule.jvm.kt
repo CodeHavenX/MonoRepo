@@ -22,11 +22,11 @@ actual val ManagerPlatformModule = module {
         val overrideUrl = get<String>(named(Overrides.KEY_SUPABASE_OVERRIDE_URL))
 
         val supabaseUrl = System.getenv("EDIFIKANA_SUPABASE_URL")
-        assertFalse(supabaseUrl.isNullOrBlank(), TAG, "EDIFIKANA_SUPABASE_URL cannot be blank")
 
-        if (enabledOverride && overrideUrl.isNotBlank()) {
+        if (enabledOverride) {
             overrideUrl
         } else {
+            assertFalse(supabaseUrl.isNullOrBlank(), TAG, "EDIFIKANA_SUPABASE_URL cannot be blank")
             supabaseUrl
         }
     }
@@ -36,11 +36,11 @@ actual val ManagerPlatformModule = module {
         val overrideKey = get<String>(named(Overrides.KEY_SUPABASE_OVERRIDE_KEY))
 
         val supabaseKey = System.getenv("EDIFIKANA_SUPABASE_KEY")
-        assertFalse(supabaseKey.isNullOrBlank(), TAG, "EDIFIKANA_SUPABASE_KEY cannot be blank")
 
-        if (enabledOverride && overrideKey.isNotBlank()) {
+        if (enabledOverride) {
             overrideKey
         } else {
+            assertFalse(supabaseKey.isNullOrBlank(), TAG, "EDIFIKANA_SUPABASE_KEY cannot be blank")
             supabaseKey
         }
     }

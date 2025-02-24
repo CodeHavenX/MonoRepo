@@ -6,6 +6,7 @@ import androidx.navigation.navigation
 import com.cramsan.edifikana.client.lib.features.auth.signin.SignInScreen
 import com.cramsan.edifikana.client.lib.features.auth.signup.SignUpScreen
 import com.cramsan.framework.core.compose.RouteSafePath
+import com.cramsan.edifikana.client.lib.features.auth.validation.ValidationScreen
 
 /**
  * Auth Activity Route.
@@ -25,6 +26,9 @@ fun NavGraphBuilder.authActivityNavigation(
                 }
                 AuthRoute.SignUp -> composable(it.route) {
                     SignUpScreen()
+                }
+                AuthRoute.Validation -> composable(it.route) {
+                    ValidationScreen()
                 }
             }
         }

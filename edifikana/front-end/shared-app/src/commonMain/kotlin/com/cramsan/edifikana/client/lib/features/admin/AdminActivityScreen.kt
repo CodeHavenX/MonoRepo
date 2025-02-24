@@ -3,9 +3,9 @@ package com.cramsan.edifikana.client.lib.features.admin
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.cramsan.edifikana.client.lib.features.RouteSafePath
 import com.cramsan.edifikana.client.lib.features.admin.properties.PropertyManagerScreen
 import com.cramsan.edifikana.client.lib.features.admin.property.PropertyScreen
+import com.cramsan.framework.core.compose.RouteSafePath
 
 /**
  * Admin Activity Route.

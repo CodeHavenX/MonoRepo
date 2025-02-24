@@ -22,10 +22,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
-import com.cramsan.edifikana.client.ui.components.ListCell
-import com.cramsan.edifikana.client.ui.components.ScreenLayout
 import com.cramsan.edifikana.lib.model.EventLogEntryId
+import com.cramsan.ui.components.ListCell
 import com.cramsan.ui.components.LoadingAnimationOverlay
+import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
 import edifikana_lib.event_log_screen_add_record
 import edifikana_lib.text_upload

@@ -21,6 +21,7 @@ import com.cramsan.framework.logging.Severity
 import com.cramsan.framework.logging.implementation.EventLoggerImpl
 import com.cramsan.framework.logging.implementation.Log4J2Helpers
 import com.cramsan.framework.logging.implementation.LoggerJVM
+import com.cramsan.framework.logging.implementation.NoopEventLogger
 import com.cramsan.framework.thread.ThreadUtil
 import com.cramsan.framework.thread.ThreadUtilDelegate
 import com.cramsan.framework.thread.ThreadUtilInterface
@@ -44,7 +45,7 @@ fun testFrameworkModule() = module(createdAtStart = true) {
         EventLogger.setInstance(instance)
         EventLogger.singleton
     }
-    single<HaltUtilDelegate> { HaltUtilJVM() }
+    single<HaltUtilDelegate> { HaltUtilJVM(NoopEventLogger()) }
     single<HaltUtil> { HaltUtilImpl(get()) }
     single<AssertUtilInterface> {
         val impl = AssertUtilImpl(

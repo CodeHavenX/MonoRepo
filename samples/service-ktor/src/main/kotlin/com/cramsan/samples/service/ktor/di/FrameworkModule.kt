@@ -19,6 +19,7 @@ import com.cramsan.framework.logging.implementation.EventLoggerErrorCallbackImpl
 import com.cramsan.framework.logging.implementation.EventLoggerImpl
 import com.cramsan.framework.logging.implementation.Log4J2Helpers
 import com.cramsan.framework.logging.implementation.LoggerJVM
+import com.cramsan.framework.logging.implementation.NoopEventLogger
 import org.apache.logging.log4j.Logger
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -59,7 +60,7 @@ val FrameworkModule = module(createdAtStart = true) {
         EventLogger.singleton
     }
 
-    single<HaltUtilDelegate> { HaltUtilJVM() }
+    single<HaltUtilDelegate> { HaltUtilJVM(NoopEventLogger()) }
 
     single<HaltUtil> { HaltUtilImpl(get()) }
 

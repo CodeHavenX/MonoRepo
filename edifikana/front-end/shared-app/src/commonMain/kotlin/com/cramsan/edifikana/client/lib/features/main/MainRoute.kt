@@ -4,10 +4,10 @@
 package com.cramsan.edifikana.client.lib.features.main
 
 import com.cramsan.edifikana.client.lib.features.Destination
-import com.cramsan.edifikana.client.lib.features.RouteSafePath
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.utils.requireNotBlank
+import com.cramsan.framework.core.compose.RouteSafePath
 
 /**
  * Routes in the main activity.

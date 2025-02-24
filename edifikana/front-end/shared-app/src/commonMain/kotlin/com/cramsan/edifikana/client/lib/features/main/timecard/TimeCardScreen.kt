@@ -22,9 +22,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
-import com.cramsan.edifikana.client.ui.components.ScreenLayout
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.ui.components.LoadingAnimationOverlay
+import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
 import edifikana_lib.time_card_screen_add_event
 import org.jetbrains.compose.resources.stringResource

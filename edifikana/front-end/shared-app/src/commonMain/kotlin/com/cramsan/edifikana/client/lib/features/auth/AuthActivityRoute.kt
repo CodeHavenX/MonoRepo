@@ -5,7 +5,7 @@ package com.cramsan.edifikana.client.lib.features.auth
 
 import com.cramsan.edifikana.client.lib.features.ApplicationRoute
 import com.cramsan.edifikana.client.lib.features.Destination
-import com.cramsan.edifikana.client.lib.features.RouteSafePath
+import com.cramsan.framework.core.compose.RouteSafePath
 
 /**
  * Routes in the auth activity.

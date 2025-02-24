@@ -72,7 +72,7 @@ val FrameworkModule = module(createdAtStart = true) {
         EventLogger.singleton
     }
 
-    single<HaltUtilDelegate> { HaltUtilJVM() }
+    single<HaltUtilDelegate> { HaltUtilJVM(get()) }
 
     single<HaltUtil> { HaltUtilImpl(get()) }
 

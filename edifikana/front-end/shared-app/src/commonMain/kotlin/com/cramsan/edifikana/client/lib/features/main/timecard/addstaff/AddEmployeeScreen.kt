@@ -20,11 +20,11 @@ import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.lib.toIdTypeFriendlyName
 import com.cramsan.edifikana.client.lib.toRoleFriendlyNameCompose
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
-import com.cramsan.edifikana.client.ui.components.ScreenLayout
 import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.StaffRole
 import com.cramsan.ui.components.Dropdown
 import com.cramsan.ui.components.LoadingAnimationOverlay
+import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
 import edifikana_lib.add_staff_screen_title
 import edifikana_lib.string_id_number

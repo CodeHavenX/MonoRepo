@@ -25,6 +25,7 @@ import com.cramsan.edifikana.client.lib.features.main.mainActivityNavigation
 import com.cramsan.edifikana.client.lib.features.splash.SplashActivityScreen
 import com.cramsan.edifikana.client.lib.ui.di.Coil3Provider
 import com.cramsan.edifikana.client.ui.theme.AppTheme
+import com.cramsan.framework.core.compose.RouteSafePath
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject

@@ -3,8 +3,8 @@ package com.cramsan.edifikana.client.lib.features.debug
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.cramsan.edifikana.client.lib.features.RouteSafePath
 import com.cramsan.edifikana.client.lib.features.debug.main.DebugScreen
+import com.cramsan.framework.core.compose.RouteSafePath
 
 /**
  * Debug Activity Route.

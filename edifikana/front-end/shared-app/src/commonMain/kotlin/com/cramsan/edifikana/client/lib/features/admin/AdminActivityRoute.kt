@@ -5,9 +5,9 @@ package com.cramsan.edifikana.client.lib.features.admin
 
 import com.cramsan.edifikana.client.lib.features.ApplicationRoute
 import com.cramsan.edifikana.client.lib.features.Destination
-import com.cramsan.edifikana.client.lib.features.RouteSafePath
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.utils.requireNotBlank
+import com.cramsan.framework.core.compose.RouteSafePath
 
 /**
  * Routes in the Admin activity.

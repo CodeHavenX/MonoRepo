@@ -28,6 +28,7 @@ import edifikana_lib.Res
 import edifikana_lib.properties_screen_add_button
 import edifikana_lib.properties_screen_title
 import org.jetbrains.compose.resources.stringResource
+import com.cramsan.ui.components.ScreenLayout
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 

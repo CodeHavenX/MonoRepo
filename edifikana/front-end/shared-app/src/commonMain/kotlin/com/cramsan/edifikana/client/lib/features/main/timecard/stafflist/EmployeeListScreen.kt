@@ -28,6 +28,7 @@ import edifikana_lib.Res
 import edifikana_lib.employee_list_screen_add_button_description
 import edifikana_lib.employee_list_screen_title
 import org.jetbrains.compose.resources.stringResource
+import com.cramsan.ui.components.ScreenLayout
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 

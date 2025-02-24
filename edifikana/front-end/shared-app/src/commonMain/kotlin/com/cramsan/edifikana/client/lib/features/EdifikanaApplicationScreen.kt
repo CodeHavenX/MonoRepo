@@ -117,7 +117,7 @@ private fun handleApplicationEvent(
             }
             navController.navigate(event.destination.path)
         }
-        is EdifikanaApplicationEvent.NavigateToScreem -> {
+        is EdifikanaApplicationEvent.NavigateToScreen -> {
             navController.navigate(event.destination.path)
         }
         is EdifikanaApplicationEvent.NavigateBack -> {

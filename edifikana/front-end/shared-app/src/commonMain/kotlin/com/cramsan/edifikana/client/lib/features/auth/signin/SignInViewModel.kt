@@ -94,7 +94,7 @@ class SignInViewModel(
         viewModelScope.launch {
             emitEvent(
                 SignInEvent.TriggerEdifikanaApplicationEvent(
-                    EdifikanaApplicationEvent.NavigateToScreem(AuthRouteDestination.SignUpDestination)
+                    EdifikanaApplicationEvent.NavigateToScreen(AuthRouteDestination.SignUpDestination)
                 )
             )
         }

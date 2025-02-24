@@ -6,6 +6,7 @@ import com.cramsan.edifikana.client.lib.features.admin.properties.PropertyManage
 import com.cramsan.edifikana.client.lib.features.admin.property.PropertyViewModel
 import com.cramsan.edifikana.client.lib.features.auth.signin.SignInViewModel
 import com.cramsan.edifikana.client.lib.features.auth.signup.SignUpViewModel
+import com.cramsan.edifikana.client.lib.features.auth.validation.ValidationViewModel
 import com.cramsan.edifikana.client.lib.features.debug.main.DebugViewModel
 import com.cramsan.edifikana.client.lib.features.main.eventlog.EventLogViewModel
 import com.cramsan.edifikana.client.lib.features.main.eventlog.addrecord.AddRecordViewModel
@@ -41,4 +42,5 @@ internal val ViewModelModule = module {
     viewModelOf(::PropertyViewModel)
     viewModelOf(::DebugViewModel)
     viewModelOf(::HomeViewModel)
+    viewModelOf(::ValidationViewModel)
 }

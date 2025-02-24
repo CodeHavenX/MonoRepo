@@ -52,7 +52,7 @@ sealed class EdifikanaApplicationEvent : ViewModelEvent {
     /**
      * Navigate to destination.
      */
-    data class NavigateToScreem(
+    data class NavigateToScreen(
         val destination: Destination,
         val id: Int = Random.nextInt(),
     ) : EdifikanaApplicationEvent()

@@ -1,0 +1,4 @@
+<resources>
+    <!-- We need to move these into the common module -->
+    <string name="app_name">Framework App</string>
+</resources>

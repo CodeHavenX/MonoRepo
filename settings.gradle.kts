@@ -56,8 +56,10 @@ include("samples:jvm-application")
 include("samples:nodejs-app")
 include("samples:service-ktor")
 
-include("framework-samples:android-app")
-include("framework-samples:jvm-app")
+include("framework-samples:framework-sample-app")
+include("framework-samples:app-android")
+include("framework-samples:app-jvm")
+include("framework-samples:app-wasm")
 
 include("ui-catalog")
 

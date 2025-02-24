@@ -22,11 +22,11 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.lib.toFriendlyStringCompose
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
-import com.cramsan.edifikana.client.ui.components.ScreenLayout
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.ui.components.Dropdown
 import com.cramsan.ui.components.LoadingAnimationOverlay
+import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
 import edifikana_lib.add_record_screen_title
 import edifikana_lib.text_add

@@ -12,6 +12,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import com.cramsan.edifikana.client.ui.theme.AppTheme
+import com.cramsan.ui.components.ContentSection
+import com.cramsan.ui.components.ListCell
 
 @Preview
 @Composable

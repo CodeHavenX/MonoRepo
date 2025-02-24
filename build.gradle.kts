@@ -52,8 +52,10 @@ tasks.register("releaseAll") {
     dependsOn("samples:nodejs-app:release")
     dependsOn("samples:service-ktor:release")
 
-    dependsOn("framework-samples:android-app:release")
-    dependsOn("framework-samples:jvm-app:release")
+    dependsOn("framework-samples:framework-sample-app:release")
+    dependsOn("framework-samples:app-android:release")
+    dependsOn("framework-samples:app-jvm:release")
+    dependsOn("framework-samples:app-wasm:release")
 
     dependsOn("ui-catalog:release")
 

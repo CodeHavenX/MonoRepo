@@ -23,7 +23,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
-import com.cramsan.edifikana.client.ui.components.ScreenLayout
+import com.cramsan.ui.components.ScreenLayout
 import com.cramsan.ui.theme.Padding
 import edifikana_lib.Res
 import edifikana_lib.account_screen_edit_button

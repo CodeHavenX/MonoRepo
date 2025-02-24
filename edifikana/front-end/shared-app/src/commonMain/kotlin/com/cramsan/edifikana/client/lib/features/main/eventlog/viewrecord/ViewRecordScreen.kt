@@ -35,9 +35,9 @@ import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationDelegatedEv
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.lib.models.AttachmentHolder
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
-import com.cramsan.edifikana.client.ui.components.ScreenLayout
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.ui.components.LoadingAnimationOverlay
+import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
 import edifikana_lib.string_field_date_time
 import edifikana_lib.string_field_event

@@ -28,6 +28,16 @@ kotlin {
     }
 }
 
+kotlin {
+    sourceSets {
+        commonMain{
+            dependencies {
+                implementation(project(":framework:core-compose"))
+            }
+        }
+    }
+}
+
 android {
     namespace = "com.cramsan.ui"
 

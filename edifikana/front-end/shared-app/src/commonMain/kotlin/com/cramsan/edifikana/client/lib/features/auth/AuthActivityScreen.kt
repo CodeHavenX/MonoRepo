@@ -3,9 +3,9 @@ package com.cramsan.edifikana.client.lib.features.auth
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.cramsan.edifikana.client.lib.features.RouteSafePath
 import com.cramsan.edifikana.client.lib.features.auth.signin.SignInScreen
 import com.cramsan.edifikana.client.lib.features.auth.signup.SignUpScreen
+import com.cramsan.framework.core.compose.RouteSafePath
 
 /**
  * Auth Activity Route.

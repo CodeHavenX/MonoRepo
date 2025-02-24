@@ -3,7 +3,6 @@ package com.cramsan.edifikana.client.lib.features.main
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.cramsan.edifikana.client.lib.features.RouteSafePath
 import com.cramsan.edifikana.client.lib.features.main.eventlog.addrecord.AddRecordScreen
 import com.cramsan.edifikana.client.lib.features.main.eventlog.viewrecord.ViewRecordScreen
 import com.cramsan.edifikana.client.lib.features.main.home.HomeScreen
@@ -12,6 +11,7 @@ import com.cramsan.edifikana.client.lib.features.main.timecard.stafflist.StaffLi
 import com.cramsan.edifikana.client.lib.features.main.timecard.viewstaff.ViewStaffScreen
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.framework.core.compose.RouteSafePath
 
 /**
  * Main Activity Route.

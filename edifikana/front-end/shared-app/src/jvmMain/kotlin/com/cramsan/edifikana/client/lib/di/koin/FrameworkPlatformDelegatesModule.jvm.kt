@@ -35,7 +35,7 @@ actual val FrameworkPlatformDelegatesModule = module {
     single<EventLoggerDelegate> { LoggerJVM(get()) }
 
     single<HaltUtilDelegate> {
-        HaltUtilJVM()
+        HaltUtilJVM(get())
     }
 
     single<DispatcherProvider> { UIDispatcherProvider() }

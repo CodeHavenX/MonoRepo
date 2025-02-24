@@ -20,9 +20,9 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
-import com.cramsan.edifikana.client.ui.components.ScreenLayout
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.PasswordOutlinedTextField
+import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
 import edifikana_lib.sign_in_screen_text_email
 import edifikana_lib.sign_in_screen_text_password

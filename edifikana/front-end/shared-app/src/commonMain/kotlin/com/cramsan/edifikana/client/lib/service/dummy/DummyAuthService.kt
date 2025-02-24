@@ -3,9 +3,11 @@ package com.cramsan.edifikana.client.lib.service.dummy
 import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.client.lib.service.AuthService
 import com.cramsan.edifikana.lib.model.UserId
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * Dummy implementation of [AuthService] for testing purposes.
@@ -30,6 +32,7 @@ class DummyAuthService : AuthService {
     }
 
     override suspend fun signIn(email: String, password: String): Result<UserModel> {
+        delay(2.seconds)
         user.value = USER_1.id
         return Result.success(USER_1)
     }
@@ -50,6 +53,7 @@ class DummyAuthService : AuthService {
         firstName: String,
         lastName: String
     ): Result<UserModel> {
+        delay(2.seconds)
         user.value = USER_1.id
         return Result.success(USER_1)
     }
@@ -67,6 +71,7 @@ class DummyAuthService : AuthService {
             UserId("user_id_1"),
             "user_1@test.com",
             true,
+            isVerified = false,
         )
     }
 }

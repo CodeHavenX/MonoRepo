@@ -71,7 +71,7 @@ val ApplicationModule = module {
             "SupabaseClient was loaded while in debug mode. This may be due to incorrectly configured DI.",
         )
 
-        val supabaseUrl = readSimpleProperty("ediifkana.supabase.url") ?: System.getenv("EDIFIKANA_SUPABASE_URL")
+        val supabaseUrl = readSimpleProperty("edifikana.supabase.url") ?: System.getenv("EDIFIKANA_SUPABASE_URL")
         val supabaseKey = readSimpleProperty("edifikana.supabase.key") ?: System.getenv("EDIFIKANA_SUPABASE_KEY")
 
         assertFalse(

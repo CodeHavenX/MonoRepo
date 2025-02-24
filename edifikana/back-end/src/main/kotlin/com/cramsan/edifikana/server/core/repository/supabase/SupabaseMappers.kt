@@ -22,11 +22,12 @@ import com.cramsan.edifikana.server.core.service.models.requests.CreateTimeCardE
 import com.cramsan.edifikana.server.core.service.models.requests.CreateUserRequest
 import kotlinx.datetime.Instant
 
+// TODO Wire up the isVerified field to the rest of the system.
 /**
  * Maps a [UserEntity] to the [User] model.
  */
 @SupabaseModel
-fun UserEntity.toUser(hasGlobalPerms: Boolean): User {
+fun UserEntity.toUser(hasGlobalPerms: Boolean, isVerified: Boolean = false): User {
     return User(
         id = UserId(this.id),
         email = this.email,
@@ -34,6 +35,7 @@ fun UserEntity.toUser(hasGlobalPerms: Boolean): User {
         firstName = this.firstName,
         lastName = this.lastName,
         hasGlobalPerms = hasGlobalPerms,
+        isVerified = isVerified,
     )
 }
 

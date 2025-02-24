@@ -8,6 +8,8 @@ import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.model.network.CreateUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdatePasswordNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdateUserNetworkRequest
+import com.cramsan.edifikana.lib.utils.requireAtLeastOne
+import com.cramsan.edifikana.lib.utils.requireSuccess
 import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
 import com.cramsan.edifikana.server.core.service.UserService
 import com.cramsan.framework.core.ktor.HttpResponse
@@ -37,12 +39,21 @@ class UserController(
     suspend fun createUser(call: ApplicationCall) = call.handleCall(TAG, "createUser", contextRetriever) {
         val createUserRequest = call.receive<CreateUserNetworkRequest>()
 
-        val newUser = userService.createUser(
-            createUserRequest.username,
-            createUserRequest.password,
-            createUserRequest.fullname,
-        ).toUserNetworkResponse()
+        requireAtLeastOne(
+            "An email or phone number must be provided.",
+            createUserRequest.email,
+            createUserRequest.phoneNumber
+        )
 
+        val newUserResult = userService.createUser(
+            createUserRequest.email,
+            createUserRequest.phoneNumber,
+            createUserRequest.password,
+            createUserRequest.firstName,
+            createUserRequest.lastName,
+        )
+
+        val newUser = newUserResult.requireSuccess().toUserNetworkResponse()
         HttpResponse(
             status = HttpStatusCode.OK,
             body = newUser,

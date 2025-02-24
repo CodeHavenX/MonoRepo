@@ -36,9 +36,20 @@ interface AuthService {
     fun activeUser(): StateFlow<UserId?>
 
     /**
-     * Sign up the user with the given [username] and [password]. Returns the user model if successful.
+     * Sign up the user with the provided usernames, [password], and [firstName] & [lastName]. Returns the user model if successful.
      */
-    suspend fun signUp(username: String, password: String, fullname: String): Result<UserModel>
+    suspend fun signUp(
+        email: String,
+        phoneNumber: String,
+        password: String,
+        firstName: String,
+        lastName: String
+    ): Result<UserModel>
+
+    /**
+     * Request a password reset for the user with the given [email] or [phoneNumber].
+     */
+    suspend fun passwordReset(usernameEmail: String?, usernamePhone: String?): Result<Unit>
 
     /**
      * Verify the permissions of the user.

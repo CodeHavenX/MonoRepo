@@ -4,33 +4,49 @@ private const val PASSWORD_MIN_LENGTH = 6
 private const val PASSWORD_MAX_LENGTH = 24
 
 /**
- * Validate that the [username] is a valid email address. Returns a list of error messages
+ * Validate that the [email] and [phoneNumber] are not empty. Returns a list of error messages
+ */
+fun validateUsername(email: String, phoneNumber: String): List<String> {
+    return if (email.isNotBlank() && phoneNumber.isBlank()) {
+        validateEmail(email)
+    } else if (phoneNumber.isNotBlank() && email.isBlank()) {
+        validatePhoneNumber(phoneNumber)
+    } else if (email.isNotBlank() && phoneNumber.isNotBlank()) {
+        validateEmail(email) +
+            validatePhoneNumber(phoneNumber)
+    } else {
+        listOf("An Email or Phone Number is required.")
+    }
+}
+
+/**
+ * Validate that the [email] is a valid email address. Returns a list of error messages
  * if the username is invalid. An empty list indicates that the username is valid.
  */
-fun validateUsernameEmail(username: String): List<String> {
-    if (username.isBlank()) {
-        return listOf("Username cannot be empty.")
+fun validateEmail(email: String): List<String> {
+    if (email.isBlank()) {
+        return listOf("Email cannot be empty.")
     }
-    if (!username.matches(Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"))) {
-        return listOf("Username must be a valid email address.")
+    if (!email.matches(Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"))) {
+        return listOf("Invalid email format.")
     }
     return emptyList()
 }
 
 /**
- * Validate that the [username] is a valid email address. Returns a list of error messages
+ * Validate that the [phoneNumber] is a valid email address. Returns a list of error messages
  * if the username is invalid. An empty list indicates that the username is valid.
  * Currently only supports US phone numbers
  */
-fun validateUsernamePhoneNumber(phoneNumber: String): List<String> {
+fun validatePhoneNumber(phoneNumber: String): List<String> {
     if (phoneNumber.isBlank()) {
-        return listOf("Username cannot be empty.")
+        return listOf("Phone number cannot be empty.")
     }
     // remove spaces, parenthesis, and dashes from phone number
     val username = phoneNumber.replace(Regex("[\\s()-]"), "")
 
     if (!username.matches(Regex("\\d{10}"))) {
-        return listOf("Username must be a valid phone number.")
+        return listOf("Invalid phone number format.")
     }
     return emptyList()
 }

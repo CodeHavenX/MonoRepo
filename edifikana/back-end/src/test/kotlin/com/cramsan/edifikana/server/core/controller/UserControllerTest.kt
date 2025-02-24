@@ -25,6 +25,7 @@ import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+// TODO: Add tests for phoneNumber & no email, and email & phoneNumber
 class UserControllerTest : TestBase(), KoinTest {
 
     override fun setupTest() {
@@ -44,15 +45,22 @@ class UserControllerTest : TestBase(), KoinTest {
         val userService = get<UserService>()
         coEvery {
             userService.createUser(
-                username = "john.doe@example.com",
+                email = "john.doe@example.com",
+                phoneNumber = "",
                 password = "password",
-                fullname = "John Doe",
+                firstName = "John",
+                lastName = "Doe",
             )
         }.answers {
-            User(
-                id = UserId("user123"),
-                email = "john.doe@example.com",
-                hasGlobalPerms = false,
+            Result.success(
+                User(
+                    id = UserId("user123"),
+                    email = "john.doe@example.com",
+                    phoneNumber = "",
+                    firstName = "John",
+                    lastName = "Doe",
+                    hasGlobalPerms = false,
+                )
             )
         }
         val contextRetriever = get<ContextRetriever>()
@@ -87,6 +95,9 @@ class UserControllerTest : TestBase(), KoinTest {
             User(
                 id = UserId("user123"),
                 email = "john.doe@example.com",
+                phoneNumber = "",
+                firstName = "John",
+                lastName = "Doe",
                 hasGlobalPerms = false,
             )
         }
@@ -120,11 +131,17 @@ class UserControllerTest : TestBase(), KoinTest {
                 User(
                     id = UserId("user123"),
                     email = "john.doe@example.com",
+                    phoneNumber = "",
+                    firstName = "John",
+                    lastName = "Doe",
                     hasGlobalPerms = false,
                 ),
                 User(
                     id = UserId("user456"),
                     email = "jane.smith@example.com",
+                    phoneNumber = "",
+                    firstName = "Jane",
+                    lastName = "Smith",
                     hasGlobalPerms = false,
                 )
             )
@@ -162,6 +179,9 @@ class UserControllerTest : TestBase(), KoinTest {
             User(
                 id = UserId("user123"),
                 email = "updated.email@example.com",
+                phoneNumber = "",
+                firstName = "Updated",
+                lastName = "Email",
                 hasGlobalPerms = false,
             )
         }

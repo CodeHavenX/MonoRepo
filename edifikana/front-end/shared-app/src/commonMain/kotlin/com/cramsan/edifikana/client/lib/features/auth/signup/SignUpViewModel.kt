@@ -9,8 +9,7 @@ import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logI
 import com.cramsan.framework.utils.loginvalidation.validateName
 import com.cramsan.framework.utils.loginvalidation.validatePassword
-import com.cramsan.framework.utils.loginvalidation.validateUsernameEmail
-import com.cramsan.framework.utils.loginvalidation.validateUsernamePhoneNumber
+import com.cramsan.framework.utils.loginvalidation.validateUsername
 import edifikana_lib.Res
 import edifikana_lib.error_message_unexpected_error
 import kotlinx.coroutines.launch
@@ -41,11 +40,11 @@ class SignUpViewModel(
     /**
      * Called when the email username value changes.
      */
-    fun onUsernameEmailValueChange(username: String) {
+    fun onEmailValueChange(username: String) {
         // Here we can implement any validation logic.
         updateUiState {
             it.copy(
-                signUpForm = it.signUpForm.copy(usernameEmail = username)
+                signUpForm = it.signUpForm.copy(email = username)
             )
         }
     }
@@ -53,11 +52,11 @@ class SignUpViewModel(
     /**
      * Called when the phone number username value changes.
      */
-    fun onUsernamePhoneNumberValueChange(username: String) {
+    fun onPhoneNumberValueChange(username: String) {
         // Here we can implement any validation logic.
         updateUiState {
             it.copy(
-                signUpForm = it.signUpForm.copy(usernamePhone = username)
+                signUpForm = it.signUpForm.copy(phoneNumber = username)
             )
         }
     }
@@ -118,15 +117,14 @@ class SignUpViewModel(
         logI(TAG, "signUp called")
         viewModelScope.launch {
             val firstName = uiState.value.signUpForm.firstName.trim()
-            val lastName = uiState.value.signUpForm.firstName.trim()
-            val usernameEmail = uiState.value.signUpForm.usernameEmail.trim()
-            val usernamePhone = uiState.value.signUpForm.usernamePhone.trim()
+            val lastName = uiState.value.signUpForm.lastName.trim()
+            val email = uiState.value.signUpForm.email.trim()
+            val phoneNumber = uiState.value.signUpForm.phoneNumber.trim()
             val password = uiState.value.signUpForm.password
 
             val errorMessages = listOf(
                 validateName(firstName, lastName),
-                validateUsernameEmail(usernameEmail),
-                validateUsernamePhoneNumber(usernamePhone),
+                validateUsername(email, phoneNumber),
                 validatePassword(password),
             ).flatten().joinToString("\n")
 
@@ -141,16 +139,18 @@ class SignUpViewModel(
                 return@launch
             }
 
-            // TODO: This should be updated to call the right API. See Auth Service, UserController and update as needed
-            val user = auth.signIn(
-                email = usernameEmail,
+            val user = auth.signUp(
+                email = email,
+                phoneNumber = phoneNumber,
                 password = password,
+                firstName = firstName,
+                lastName = lastName,
             ).getOrElse { exception ->
                 logD(TAG, "Error signing up: $exception")
                 updateUiState {
                     it.copy(
                         signUpForm = it.signUpForm.copy(
-                            errorMessage = exception.message
+                            errorMessage = "Oops! Something went wrong. Please try again."
                         )
                     )
                 }
@@ -159,6 +159,7 @@ class SignUpViewModel(
 
             if (user != null) {
                 logD(TAG, "User signed up: $user")
+                // TODO: reload or navigate to sign in page when successful
                 emitEvent(
                     SignUpEvent.TriggerEdifikanaApplicationEvent(
                         EdifikanaApplicationEvent.NavigateToActivity(ActivityDestination.MainDestination)

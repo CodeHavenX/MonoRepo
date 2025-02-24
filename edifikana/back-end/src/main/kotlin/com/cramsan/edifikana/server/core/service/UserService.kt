@@ -18,21 +18,25 @@ class UserService(
 ) {
 
     /**
-     * Creates a user with the provided [username].
+     * Creates a user with the provided information.
      */
     suspend fun createUser(
-        username: String,
+        email: String,
+        phoneNumber: String,
         password: String,
-        fullname: String,
-    ): User {
+        firstName: String,
+        lastName: String,
+    ): Result<User> {
         logD(TAG, "createUser")
         return userDatabase.createUser(
             request = CreateUserRequest(
-                username = username,
+                email = email,
+                phoneNumber = phoneNumber,
                 password = password,
-                fullname = fullname,
+                firstName = firstName,
+                lastName = lastName,
             ),
-        ).getOrThrow()
+        )
     }
 
     /**

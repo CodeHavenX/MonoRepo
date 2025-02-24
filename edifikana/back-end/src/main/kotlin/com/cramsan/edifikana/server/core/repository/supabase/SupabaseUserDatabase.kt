@@ -29,12 +29,13 @@ class SupabaseUserDatabase(
      */
     @OptIn(SupabaseModel::class)
     override suspend fun createUser(
+        // TODO: Use phoneNum, fN, and lN. Integrate into request or someting
         request: CreateUserRequest,
     ): Result<User> = runSuspendCatching(TAG) {
-        logD(TAG, "Creating user: %s", request.username)
+        logD(TAG, "Creating user: %s", request.email)
 
         val supabaseUser = auth.admin.createUserWithEmail {
-            email = request.username
+            email = request.email
             password = request.password
             autoConfirm = true
         }

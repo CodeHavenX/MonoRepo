@@ -30,6 +30,9 @@ fun UserEntity.toUser(hasGlobalPerms: Boolean): User {
     return User(
         id = UserId(this.id),
         email = this.email,
+        phoneNumber = this.phoneNumber,
+        firstName = this.firstName,
+        lastName = this.lastName,
         hasGlobalPerms = hasGlobalPerms,
     )
 }
@@ -41,7 +44,10 @@ fun UserEntity.toUser(hasGlobalPerms: Boolean): User {
 fun CreateUserRequest.toUserEntity(supabaseUserId: String): UserEntity.CreateUserEntity {
     return UserEntity.CreateUserEntity(
         id = supabaseUserId,
-        email = username,
+        email = email,
+        phoneNumber = phoneNumber,
+        firstName = firstName,
+        lastName = lastName,
     )
 }
 

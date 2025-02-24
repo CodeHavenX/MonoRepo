@@ -80,8 +80,8 @@ fun SignUpScreen(
 
     SignUpContent(
         uistate = uiState,
-        onUsernameEmailValueChange = { viewModel.onUsernameEmailValueChange(it) },
-        onUsernamePhoneNumberValueChange = { viewModel.onUsernameEmailValueChange(it) },
+        onEmailValueChange = { viewModel.onEmailValueChange(it) },
+        onPhoneNumberValueChange = { viewModel.onPhoneNumberValueChange(it) },
         onPasswordValueChange = { viewModel.onPasswordValueChange(it) },
         onFirstNameValueChange = { viewModel.onFirstNameValueChange(it) },
         onLastNameValueChange = { viewModel.onLastNameValueChange(it) },
@@ -97,8 +97,8 @@ internal fun SignUpContent(
     modifier: Modifier = Modifier,
     onFirstNameValueChange: (String) -> Unit,
     onLastNameValueChange: (String) -> Unit,
-    onUsernameEmailValueChange: (String) -> Unit,
-    onUsernamePhoneNumberValueChange: (String) -> Unit,
+    onEmailValueChange: (String) -> Unit,
+    onPhoneNumberValueChange: (String) -> Unit,
     onPasswordValueChange: (String) -> Unit,
     onPolicyChecked: (Boolean) -> Unit,
     onSignUpClicked: () -> Unit,
@@ -158,15 +158,15 @@ internal fun SignUpContent(
                         maxLines = 1,
                     )
                     OutlinedTextField(
-                        value = uistate.signUpForm.usernameEmail,
-                        onValueChange = { onUsernameEmailValueChange(it) },
+                        value = uistate.signUpForm.email,
+                        onValueChange = { onEmailValueChange(it) },
                         modifier = modifier,
                         label = { Text(stringResource(Res.string.sign_up_screen_text_email)) },
                         maxLines = 1,
                     )
                     OutlinedTextField(
-                        value = uistate.signUpForm.usernamePhone,
-                        onValueChange = { onUsernamePhoneNumberValueChange(it) },
+                        value = uistate.signUpForm.phoneNumber,
+                        onValueChange = { onPhoneNumberValueChange(it) },
                         modifier = modifier,
                         label = { Text(stringResource(Res.string.sign_up_screen_text_phone_number)) },
                         maxLines = 1,

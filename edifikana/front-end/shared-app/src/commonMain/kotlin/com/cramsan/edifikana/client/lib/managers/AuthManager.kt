@@ -48,14 +48,16 @@ class AuthManager(
      * Signs up the user with the given email and password.
      */
     suspend fun signUp(
-        username: String,
+        email: String,
+        phoneNumber: String,
         password: String,
-        fullname: String,
+        firstName: String,
+        lastName: String,
     ): Result<UserModel> = dependencies.getOrCatch(
         TAG
     ) {
         logI(TAG, "signUp")
-        authService.signUp(username, password, fullname).getOrThrow()
+        authService.signUp(email, phoneNumber, password, firstName, lastName).getOrThrow()
     }
 
     /**

@@ -20,6 +20,9 @@ fun User.toUserNetworkResponse(): UserNetworkResponse {
     return UserNetworkResponse(
         id = id.userId,
         email = email,
+        phoneNumber = phoneNumber,
+        firstName = firstName,
+        lastName = lastName,
         hasGlobalPerms = hasGlobalPerms,
     )
 }

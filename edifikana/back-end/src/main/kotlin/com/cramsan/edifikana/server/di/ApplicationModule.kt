@@ -77,7 +77,7 @@ val ApplicationModule = module {
         assertFalse(
             supabaseUrl.isNullOrBlank(),
             TAG,
-            "EDIFIKANA_SUPABASE_URL or ediifkana.supabase.url cannot be blank"
+            "EDIFIKANA_SUPABASE_URL or edifikana.supabase.url cannot be blank"
         )
         assertFalse(
             supabaseKey.isNullOrBlank(),

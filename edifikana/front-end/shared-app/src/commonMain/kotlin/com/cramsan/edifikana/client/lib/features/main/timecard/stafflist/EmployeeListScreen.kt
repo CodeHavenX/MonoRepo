@@ -23,11 +23,11 @@ import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.ui.components.ListCell
 import com.cramsan.ui.components.LoadingAnimationOverlay
+import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
 import edifikana_lib.employee_list_screen_add_button_description
 import edifikana_lib.employee_list_screen_title
 import org.jetbrains.compose.resources.stringResource
-import com.cramsan.ui.components.ScreenLayout
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 

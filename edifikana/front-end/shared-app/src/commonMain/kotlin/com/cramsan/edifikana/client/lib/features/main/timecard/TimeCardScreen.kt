@@ -24,10 +24,10 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.ui.components.LoadingAnimationOverlay
+import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
 import edifikana_lib.time_card_screen_add_event
 import org.jetbrains.compose.resources.stringResource
-import com.cramsan.ui.components.ScreenLayout
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 

@@ -4,5 +4,6 @@
     "phone_number": "",
     "first_name": "John",
     "last_name": "Doe",
-    "has_global_perms": false
+    "has_global_perms": false,
+    "is_verified": false
 }

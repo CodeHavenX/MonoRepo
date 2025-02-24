@@ -28,8 +28,8 @@ fun ValidationScreen(
     /**
      * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
      */
-    LifecycleEventEffect(Lifecycle.Event.ON_START) {
-        // Call this feature's viewModel
+    LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
+        viewModel.verifyAccount()
     }
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         // Call this feature's viewModel

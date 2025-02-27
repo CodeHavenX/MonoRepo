@@ -71,9 +71,9 @@ class AuthManager(
     /**
      * Gets the current user.
      */
-    suspend fun getUser(): Result<UserModel> = dependencies.getOrCatch(TAG) {
+    suspend fun getUser(checkGlobalPerms: Boolean = false): Result<UserModel> = dependencies.getOrCatch(TAG) {
         logI(TAG, "getUser")
-        authService.getUser().getOrThrow()
+        authService.getUser(checkGlobalPerms).getOrThrow()
     }
 
     /**

@@ -23,6 +23,5 @@ private fun PropertyManagerScreenPreview() {
         ),
         onPropertyClicked = {},
         onAddPropertyClicked = {},
-        onBackSelected = {},
     )
 }

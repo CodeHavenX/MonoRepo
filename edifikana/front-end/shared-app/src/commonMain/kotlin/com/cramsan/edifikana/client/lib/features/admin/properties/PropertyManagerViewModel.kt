@@ -65,13 +65,13 @@ class PropertyManagerViewModel(
      * Navigate to the add property screen.
      */
     fun navigateToAddProperty() {
-        /*
         viewModelScope.launch {
-            emitEvent(PropertyManagerEvent.TriggerActivityEvent(
-                AdminActivityEvent.Navigate(propertyId)),
+            emitEvent(
+                PropertyManagerEvent.TriggerApplicationEvent(
+                    EdifikanaApplicationEvent.NavigateToScreem(AdminRouteDestination.AddPropertyAdminDestination)
+                ),
             )
         }
-         */
     }
 
     /**

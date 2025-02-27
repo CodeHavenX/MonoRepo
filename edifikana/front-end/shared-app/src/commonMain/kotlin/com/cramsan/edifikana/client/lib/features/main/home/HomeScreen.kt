@@ -72,7 +72,7 @@ fun HomeScreen(
      * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
      */
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
-        viewModel.loadProperties()
+        viewModel.loadContent()
     }
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         // Call this feature's viewModel
@@ -127,18 +127,22 @@ internal fun HomeScreenContent(
                 title = stringResource(Res.string.app_name),
             ) {
                 // Property dropdown
-                PropertyDropDown(
-                    label = uiState.label,
-                    list = uiState.availableProperties,
-                    onPropertySelected = onPropertySelected,
-                )
+                if (uiState.availableProperties.isNotEmpty()) {
+                    PropertyDropDown(
+                        label = uiState.label,
+                        list = uiState.availableProperties,
+                        onPropertySelected = onPropertySelected,
+                    )
+                }
 
                 // Admin Menu button
-                IconButton(onClick = onAdminButtonClicked) {
-                    Icon(
-                        imageVector = Icons.Default.Settings,
-                        contentDescription = stringResource(Res.string.home_screen_settings_description),
-                    )
+                if (uiState.showAdminButton) {
+                    IconButton(onClick = onAdminButtonClicked) {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = stringResource(Res.string.home_screen_settings_description),
+                        )
+                    }
                 }
                 // Account button
                 IconButton(onClick = onAccountButtonClicked) {

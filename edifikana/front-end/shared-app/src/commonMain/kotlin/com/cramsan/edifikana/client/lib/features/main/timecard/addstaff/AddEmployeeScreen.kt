@@ -105,7 +105,8 @@ internal fun AddStaffForm(
                         onValueChange = { id = it },
                         modifier = sectionModifier,
                         label = { Text(stringResource(Res.string.string_id_number)) },
-                        isError = id.isEmpty()
+                        isError = id.isEmpty(),
+                        singleLine = true,
                     )
 
                     Dropdown(
@@ -124,7 +125,7 @@ internal fun AddStaffForm(
                         modifier = sectionModifier,
                         label = { Text(stringResource(Res.string.string_names)) },
                         singleLine = true,
-                        isError = name.isEmpty()
+                        isError = name.isEmpty(),
                     )
 
                     OutlinedTextField(

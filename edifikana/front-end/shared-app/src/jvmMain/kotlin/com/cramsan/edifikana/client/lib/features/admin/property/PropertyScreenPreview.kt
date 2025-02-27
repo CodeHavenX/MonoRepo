@@ -2,7 +2,6 @@ package com.cramsan.edifikana.client.lib.features.admin.property
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
-import com.cramsan.edifikana.lib.model.PropertyId
 
 /**
  * Preview for the Property feature screen.
@@ -12,12 +11,16 @@ import com.cramsan.edifikana.lib.model.PropertyId
 private fun PropertyScreenPreview() {
     PropertyContent(
         content = PropertyUIState(
-            PropertyUIModel(
-                PropertyId(""),
-                "Property 1",
-            ),
+            propertyName = "Property Name",
+            address = "Address",
             isLoading = false,
+            managers = listOf("Manager 1", "Manager 2"),
+            addManagerError = false,
+            addManagerEmail = "",
         ),
         onBackSelected = {},
+        onNewManagerSelected = { _ -> },
+        onRemoveManagerSelected = { _ -> },
+        onSaveChangesSelected = { _, _ -> }
     )
 }

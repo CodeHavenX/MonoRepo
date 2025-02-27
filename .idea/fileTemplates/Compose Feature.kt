@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.ui.components.LoadingAnimationOverlay
@@ -19,6 +20,7 @@ import org.koin.compose.viewmodel.koinViewModel
  // TODO: Register this screen as a new route within it's router.
 @Composable
 fun ${NAME}Screen(
+    modifier: Modifier = Modifier,
     viewModel: ${NAME}ViewModel = koinViewModel(),
     applicationViewModel: ApplicationViewModel = koinInject(), // TODO: Update this to the respective application viewmodel. Remove if not necessary.
 ) {

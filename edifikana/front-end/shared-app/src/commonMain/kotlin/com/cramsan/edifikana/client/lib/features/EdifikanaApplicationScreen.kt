@@ -54,7 +54,7 @@ private fun ApplicationContent(
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    LifecycleEventEffect(Lifecycle.Event.ON_START) {
+    LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
         viewModel.enforceAuth()
     }
 

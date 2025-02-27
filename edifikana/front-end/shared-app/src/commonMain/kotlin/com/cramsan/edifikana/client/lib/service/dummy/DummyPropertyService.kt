@@ -45,4 +45,12 @@ class DummyPropertyService : PropertyService {
     override suspend fun getProperty(propertyId: PropertyId): Result<PropertyModel> {
         return Result.success(PROPERTY_1)
     }
+
+    override suspend fun addProperty(propertyName: String, address: String): Result<PropertyModel> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateProperty(propertyId: PropertyId, name: String, address: String): Result<PropertyModel> {
+        TODO("Not yet implemented")
+    }
 }

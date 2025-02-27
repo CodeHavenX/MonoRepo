@@ -12,4 +12,6 @@ import kotlinx.serialization.Serializable
 data class CreatePropertyNetworkRequest(
     @SerialName("name")
     val name: String,
+    @SerialName("address")
+    val address: String,
 )

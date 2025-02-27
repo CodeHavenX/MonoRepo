@@ -9,10 +9,21 @@ import com.cramsan.framework.core.compose.ViewModelUIState
  * For modeling more specific details of the page, see the respective UI model class.
  */
 data class PropertyUIState(
-    val content: PropertyUIModel?,
+    val propertyName: String?,
+    val address: String?,
     val isLoading: Boolean,
+    val managers: List<String>,
+    val addManagerError: Boolean,
+    val addManagerEmail: String,
 ) : ViewModelUIState {
     companion object {
-        val Empty = PropertyUIState(null, false)
+        val Empty = PropertyUIState(
+            propertyName = null,
+            address = null,
+            isLoading = false,
+            managers = emptyList(),
+            addManagerError = false,
+            addManagerEmail = "",
+        )
     }
 }

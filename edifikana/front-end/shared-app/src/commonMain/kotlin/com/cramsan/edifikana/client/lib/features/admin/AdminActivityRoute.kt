@@ -3,6 +3,7 @@
 
 package com.cramsan.edifikana.client.lib.features.admin
 
+import androidx.navigation.NavBackStackEntry
 import com.cramsan.edifikana.client.lib.features.ApplicationRoute
 import com.cramsan.edifikana.client.lib.features.Destination
 import com.cramsan.edifikana.lib.model.PropertyId
@@ -18,6 +19,8 @@ enum class AdminActivityRoute(
 ) {
     Properties(route = "${ApplicationRoute.Admin.route}/properties"),
     Property(route = "${ApplicationRoute.Admin.route}property/{propertyId}"),
+    AddProperty(route = "${ApplicationRoute.Admin.route}/add-property"),
+    Hub(route = "${ApplicationRoute.Admin.route}/hub"),
     ;
 }
 
@@ -44,5 +47,29 @@ sealed class AdminRouteDestination(
         val propertyId: PropertyId,
     ) : AdminRouteDestination(
         AdminActivityRoute.Property.route.replace("{propertyId}", requireNotBlank(propertyId.propertyId)),
+    ) {
+        companion object {
+
+            /**
+             * Create a [PropertyAdminDestination] from a NavBackStackEntry.
+             */
+            fun fromPath(backstackEntry: NavBackStackEntry): PropertyAdminDestination {
+                return PropertyAdminDestination(PropertyId(backstackEntry.arguments?.getString("propertyId").orEmpty()))
+            }
+        }
+    }
+
+    /**
+     * A class representing navigating to the add property screen.
+     */
+    data object AddPropertyAdminDestination : AdminRouteDestination(
+        AdminActivityRoute.AddProperty.route,
+    )
+
+    /**
+     * A class representing navigating to the hub screen.
+     */
+    data object HubAdminDestination : AdminRouteDestination(
+        AdminActivityRoute.Hub.route,
     )
 }

@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 /**
  * ViewModel for the ${NAME} screen.
  **/
- // TODO: Register this ViewModel for dependecy injection
+ // TODO: Register this ViewModel for dependency injection
 class ${NAME}ViewModel(
     dependencies: ViewModelDependencies,
 ) : BaseViewModel<${NAME}Event, ${NAME}UIState>(

@@ -1,4 +1,4 @@
-package ${PACKAGE_NAME}
+package com.cramsan.edifikana.client.lib.features.admin.addprimary
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -7,25 +7,26 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
- * ${NAME} screen.
+ * AddPrimaryStaff screen.
  *
  * This function provides the boilerplate needed to wire up the screen within the rest of the
  * application. This includes observing the view model's state and event flows and rendering the screen.
  */
- // TODO: Register this screen as a new route within it's router.
+// TODO: Register this screen as a new route within it's router.
 @Composable
-fun ${NAME}Screen(
+fun AddPrimaryStaffScreen(
     modifier: Modifier = Modifier,
-    viewModel: ${NAME}ViewModel = koinViewModel(),
-    applicationViewModel: ApplicationViewModel = koinInject(), // TODO: Update this to the respective application viewmodel. Remove if not necessary.
+    viewModel: AddPrimaryStaffViewModel = koinViewModel(),
+    applicationViewModel: EdifikanaApplicationViewModel = koinInject(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val viewModelEvent by viewModel.events.collectAsState(${NAME}ViewModelEvent.Noop)
+    val viewModelEvent by viewModel.events.collectAsState(AddPrimaryStaffEvent.Noop)
 
     /**
      * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
@@ -39,8 +40,8 @@ fun ${NAME}Screen(
 
     LaunchedEffect(viewModelEvent) {
         when (val event = viewModelEvent) {
-            ${NAME}Event.Noop -> Unit
-            is ${NAME}Event.TriggerApplicationEvent -> {
+            AddPrimaryStaffEvent.Noop -> Unit
+            is AddPrimaryStaffEvent.TriggerApplicationEvent -> {
                 // Call the application's viewmodel
                 applicationViewModel.executeEvent(event.applicationEvent)
             }
@@ -48,7 +49,7 @@ fun ${NAME}Screen(
     }
 
     // Render the screen
-    ${NAME}Content(
+    AddPrimaryStaffContent(
         uiState,
         modifier,
     )
@@ -58,8 +59,8 @@ fun ${NAME}Screen(
  * Content of the AccountEdit screen.
  */
 @Composable
-internal fun ${NAME}Content(
-    content: ${NAME}UIState,
+internal fun AddPrimaryStaffContent(
+    content: AddPrimaryStaffUIState,
     modifier: Modifier = Modifier,
 ) {
     LoadingAnimationOverlay(isLoading = content.isLoading)

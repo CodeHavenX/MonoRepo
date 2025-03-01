@@ -1,13 +1,19 @@
 package ${PACKAGE_NAME}
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.ui.components.LoadingAnimationOverlay
+import com.cramsan.ui.components.ScreenLayout
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -25,7 +31,7 @@ fun ${NAME}Screen(
     applicationViewModel: ApplicationViewModel = koinInject(), // TODO: Update this to the respective application viewmodel. Remove if not necessary.
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val viewModelEvent by viewModel.events.collectAsState(${NAME}ViewModelEvent.Noop)
+    val viewModelEvent by viewModel.events.collectAsState(${NAME}Event.Noop)
 
     /**
      * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
@@ -49,8 +55,9 @@ fun ${NAME}Screen(
 
     // Render the screen
     ${NAME}Content(
-        uiState,
-        modifier,
+        content = uiState,
+        onBackSelected = { viewModel.onBackSelected() },
+        modifier = modifier,
     )
 }
 
@@ -60,13 +67,14 @@ fun ${NAME}Screen(
 @Composable
 internal fun ${NAME}Content(
     content: ${NAME}UIState,
-    onBackSelected: ()->Unit,
+    onBackSelected: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
         modifier = modifier,
         topBar = {
-            EdifikanaTopBar(
+            // TODO: Update this function to the respective invocation.
+            TopBar(
                 title = content.title,
                 onCloseClicked = onBackSelected,
             )

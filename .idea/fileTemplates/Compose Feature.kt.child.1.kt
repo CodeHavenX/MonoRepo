@@ -11,6 +11,9 @@ import androidx.compose.desktop.ui.tooling.preview.Preview
 @Composable
 private fun ${NAME}ScreenPreview() {
     ${NAME}Content(
-        content = ${NAME}UIState(true),
+        content = ${NAME}UIState(
+            title = "${NAME}ScreenPreview",
+            isLoading = true,
+        ),
     )
 }

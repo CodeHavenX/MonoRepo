@@ -1,7 +1,7 @@
-package com.cramsan.edifikana.client.lib.features.admin.addprimary
+package com.cramsan.edifikana.client.lib.features.admin.addprimarystaff
 
-import androidx.compose.runtime.Composable
 import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.runtime.Composable
 
 /**
  * Preview for the AddPrimaryStaff feature screen.
@@ -10,6 +10,7 @@ import androidx.compose.desktop.ui.tooling.preview.Preview
 @Composable
 private fun AddPrimaryStaffScreenPreview() {
     AddPrimaryStaffContent(
-        content = AddPrimaryStaffUIState(true),
+        content = AddPrimaryStaffUIState(true, null),
+        onBackSelected = {}
     )
 }

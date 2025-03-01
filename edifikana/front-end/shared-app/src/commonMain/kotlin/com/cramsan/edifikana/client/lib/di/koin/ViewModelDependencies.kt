@@ -2,8 +2,9 @@ package com.cramsan.edifikana.client.lib.di.koin
 
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.lib.features.account.account.AccountViewModel
-import com.cramsan.edifikana.client.lib.features.admin.addprimary.AddPrimaryStaffViewModel
+import com.cramsan.edifikana.client.lib.features.admin.addprimarystaff.AddPrimaryStaffViewModel
 import com.cramsan.edifikana.client.lib.features.admin.addproperty.AddPropertyViewModel
+import com.cramsan.edifikana.client.lib.features.admin.addstaffsecondary.AddSecondaryStaffViewModel
 import com.cramsan.edifikana.client.lib.features.admin.hub.HubViewModel
 import com.cramsan.edifikana.client.lib.features.admin.properties.PropertyManagerViewModel
 import com.cramsan.edifikana.client.lib.features.admin.property.PropertyViewModel
@@ -47,4 +48,5 @@ internal val ViewModelModule = module {
     viewModelOf(::AddPropertyViewModel)
     viewModelOf(::HubViewModel)
     viewModelOf(::AddPrimaryStaffViewModel)
+    viewModelOf(::AddSecondaryStaffViewModel)
 }

@@ -1,21 +1,21 @@
-package com.cramsan.edifikana.client.lib.features.admin.addprimary
+package com.cramsan.edifikana.client.lib.features.admin.addstaffsecondary
 
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
 import com.cramsan.framework.core.compose.ViewModelEvent
 import kotlin.random.Random
 
 /**
- * Events that can be triggered within the domain of the AddPrimaryStaff feature.
+ * Events that can be triggered within the domain of the AddSecondary feature.
  *
  * Events are triggered from a ViewModel and are consumed by the UI.
  *
  */
-sealed class AddPrimaryStaffEvent : ViewModelEvent {
+sealed class AddSecondaryStaffEvent : ViewModelEvent {
 
     /**
      * No operation.
      */
-    data object Noop : AddPrimaryStaffEvent()
+    data object Noop : AddSecondaryStaffEvent()
 
     /**
      * Trigger application event. This event is sent to the application's view model to be handled.
@@ -23,5 +23,5 @@ sealed class AddPrimaryStaffEvent : ViewModelEvent {
     data class TriggerApplicationEvent(
         val applicationEvent: EdifikanaApplicationEvent,
         val id: Int = Random.nextInt(),
-    ) : AddPrimaryStaffEvent()
+    ) : AddSecondaryStaffEvent()
 }

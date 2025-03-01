@@ -1,11 +1,9 @@
-package com.cramsan.edifikana.client.lib.features.admin.addprimary
+package com.cramsan.edifikana.client.lib.features.admin.addprimarystaff
 
+import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 /**
  * ViewModel for the AddPrimaryStaff screen.
@@ -17,6 +15,16 @@ class AddPrimaryStaffViewModel(
     AddPrimaryStaffUIState.Initial,
     TAG,
 ) {
+
+    /**
+     * Trigger the back event.
+     */
+    fun onBackSelected() {
+        viewModelScope.launch {
+            emitEvent(AddPrimaryStaffEvent.TriggerApplicationEvent(EdifikanaApplicationEvent.NavigateBack()))
+        }
+    }
+
     companion object {
         private const val TAG = "AddPrimaryStaffViewModel"
     }

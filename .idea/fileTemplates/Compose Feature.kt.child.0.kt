@@ -1,27 +1,26 @@
 package ${PACKAGE_NAME}
 
-import com.cramsan.framework.core.compose.ViewModelEvent
-import kotlin.random.Random
+import com.cramsan.framework.core.compose.BaseViewModel
+import com.cramsan.framework.core.compose.ViewModelDependencies
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 
 /**
- * Events that can be triggered within the domain of the ${NAME} feature.
- *
- * Events are triggered from a ViewModel and are consumed by the UI.
- *
- */
-sealed class ${NAME}Event : ViewModelEvent {
-
-    /**
-     * No operation.
-     */
-    data object Noop : ${NAME}Event()
-
-    /**
-     * Trigger application event. This event is sent to the application's view model to be handled.
-     */
-    data class TriggerApplicationEvent(
-        // TODO: Update this with the respective ApplicationEvent type.
-        val applicationEvent: ApplicationEvent,
-        val id: Int = Random.nextInt(),
-    ) : ${NAME}Event()
+ * ViewModel for the ${NAME} screen.
+ **/
+ // TODO: Register this ViewModel for dependecy injection
+ // Look for where the ViewModel is configure and add this line
+ // viewModelOf(::${NAME}ViewModel)
+class ${NAME}ViewModel(
+    dependencies: ViewModelDependencies,
+) : BaseViewModel<${NAME}Event, ${NAME}UIState>(
+    dependencies,
+    ${NAME}UIState.Initial,
+    TAG,
+) {
+    companion object {
+        private const val TAG = "${NAME}ViewModel"
+    }
 }

@@ -67,6 +67,15 @@ fun StaffListScreen(
     StaffListContent(
         uiState,
         modifier = modifier,
+        onStaffSelected = { staffId ->
+            viewModel.navigateToStaff(staffId)
+        },
+        onAddPrimaryStaffSelected = {
+            viewModel.navigateToAddPrimaryStaff()
+        },
+        onAddSecondaryStaffSelected = {
+            viewModel.navigateToAddSecondaryStaff()
+        },
     )
 }
 
@@ -77,8 +86,9 @@ fun StaffListScreen(
 internal fun StaffListContent(
     content: StaffListUIState,
     modifier: Modifier = Modifier,
-    onStaffSelected: (StaffId) -> Unit = {},
-    onAddStaffSelected: () -> Unit = {},
+    onStaffSelected: (StaffId) -> Unit,
+    onAddPrimaryStaffSelected: () -> Unit,
+    onAddSecondaryStaffSelected: () -> Unit,
 ) {
     Box(
         modifier = modifier
@@ -104,7 +114,7 @@ internal fun StaffListContent(
                 Button(
                     modifier = buttonModifier,
                     onClick = {
-                        onAddStaffSelected()
+                        onAddPrimaryStaffSelected()
                     },
                 ) {
                     Text(text = stringResource(Res.string.text_add))
@@ -112,7 +122,7 @@ internal fun StaffListContent(
                 OutlinedButton(
                     modifier = buttonModifier,
                     onClick = {
-                        onAddStaffSelected()
+                        onAddSecondaryStaffSelected()
                     },
                 ) {
                     Text(text = stringResource(Res.string.text_add))

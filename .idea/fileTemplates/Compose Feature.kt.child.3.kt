@@ -1,16 +1,27 @@
 package ${PACKAGE_NAME}
 
-import androidx.compose.runtime.Composable
-import androidx.compose.desktop.ui.tooling.preview.Preview
+import com.cramsan.framework.core.compose.ViewModelEvent
+import kotlin.random.Random
 
 /**
- * Preview for the ${NAME} feature screen.
- * TODO: Move this file to the JVM target, since the common target does not support previews.
+ * Events that can be triggered within the domain of the ${NAME} feature.
+ *
+ * Events are triggered from a ViewModel and are consumed by the UI.
+ *
  */
-@Preview
-@Composable
-private fun ${NAME}ScreenPreview() {
-    ${NAME}Content(
-        content = ${NAME}UIState(true),
-    )
+sealed class ${NAME}Event : ViewModelEvent {
+
+    /**
+     * No operation.
+     */
+    data object Noop : ${NAME}Event()
+
+    /**
+     * Trigger application event. This event is sent to the application's view model to be handled.
+     */
+    data class TriggerApplicationEvent(
+        // TODO: Update this with the respective ApplicationEvent type.
+        val applicationEvent: ApplicationEvent,
+        val id: Int = Random.nextInt(),
+    ) : ${NAME}Event()
 }

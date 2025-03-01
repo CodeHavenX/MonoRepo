@@ -3,7 +3,9 @@ package com.cramsan.edifikana.client.lib.features.admin
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.cramsan.edifikana.client.lib.features.admin.addprimarystaff.AddPrimaryStaffScreen
 import com.cramsan.edifikana.client.lib.features.admin.addproperty.AddPropertyScreen
+import com.cramsan.edifikana.client.lib.features.admin.addstaffsecondary.AddSecondaryStaffScreen
 import com.cramsan.edifikana.client.lib.features.admin.hub.HubScreen
 import com.cramsan.edifikana.client.lib.features.admin.properties.PropertyManagerScreen
 import com.cramsan.edifikana.client.lib.features.admin.property.PropertyScreen
@@ -35,6 +37,12 @@ fun NavGraphBuilder.adminActivityNavigation(
                 }
                 AdminRoute.Hub -> composable(it.route) {
                     HubScreen()
+                }
+                AdminRoute.AddPrimaryStaff -> composable(it.route) {
+                    AddPrimaryStaffScreen()
+                }
+                AdminRoute.AddSecondaryStaff -> composable(it.route) {
+                    AddSecondaryStaffScreen()
                 }
             }
         }

@@ -14,5 +14,8 @@ private fun StaffListScreenPreview() {
             true,
             listOf("Staff 1", "Staff 2", "Staff 3"),
         ),
+        onAddPrimaryStaffSelected = {},
+        onStaffSelected = {},
+        onAddSecondaryStaffSelected = {},
     )
 }

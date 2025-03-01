@@ -21,6 +21,8 @@ enum class AdminRoute(
     Property(route = "${ApplicationRoute.Admin.route}property/{propertyId}"),
     AddProperty(route = "${ApplicationRoute.Admin.route}/add-property"),
     Hub(route = "${ApplicationRoute.Admin.route}/hub"),
+    AddPrimaryStaff(route = "${ApplicationRoute.Admin.route}/add-primary-staff"),
+    AddSecondaryStaff(route = "${ApplicationRoute.Admin.route}/add-secondary-staff"),
     ;
 }
 
@@ -71,5 +73,19 @@ sealed class AdminDestination(
      */
     data object HubAdminDestination : AdminDestination(
         AdminRoute.Hub.route,
+    )
+
+    /**
+     * A class representing navigating to the add primary staff screen.
+     */
+    data object AddPrimaryStaffAdminDestination : AdminDestination(
+        AdminRoute.AddPrimaryStaff.route,
+    )
+
+    /**
+     * A class representing navigating to the add secondary staff screen.
+     */
+    data object AddSecondaryStaffAdminDestination : AdminDestination(
+        AdminRoute.AddSecondaryStaff.route,
     )
 }

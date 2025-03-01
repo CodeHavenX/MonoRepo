@@ -94,7 +94,6 @@ class HomeViewModel(
             emitApplicationEvent(
                 EdifikanaApplicationEvent.NavigateToActivity(
                     ActivityDestination.AccountDestination,
-                    clearStack = true,
                 )
             )
         }

@@ -6,6 +6,7 @@ import com.cramsan.edifikana.client.lib.features.admin.addproperty.AddPropertyVi
 import com.cramsan.edifikana.client.lib.features.admin.hub.HubViewModel
 import com.cramsan.edifikana.client.lib.features.admin.properties.PropertyManagerViewModel
 import com.cramsan.edifikana.client.lib.features.admin.property.PropertyViewModel
+import com.cramsan.edifikana.client.lib.features.admin.stafflist.StaffListViewModel
 import com.cramsan.edifikana.client.lib.features.auth.signin.SignInViewModel
 import com.cramsan.edifikana.client.lib.features.auth.signup.SignUpViewModel
 import com.cramsan.edifikana.client.lib.features.debug.main.DebugViewModel
@@ -15,7 +16,6 @@ import com.cramsan.edifikana.client.lib.features.main.eventlog.viewrecord.ViewRe
 import com.cramsan.edifikana.client.lib.features.main.home.HomeViewModel
 import com.cramsan.edifikana.client.lib.features.main.timecard.TimeCartViewModel
 import com.cramsan.edifikana.client.lib.features.main.timecard.addstaff.AddStaffViewModel
-import com.cramsan.edifikana.client.lib.features.main.timecard.stafflist.StaffListViewModel
 import com.cramsan.edifikana.client.lib.features.main.timecard.viewstaff.ViewStaffViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import org.koin.core.module.dsl.singleOf

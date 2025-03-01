@@ -18,22 +18,22 @@ fun NavGraphBuilder.adminActivityNavigation(
 ) {
     navigation(
         route = route,
-        startDestination = AdminActivityRoute.Hub.route,
+        startDestination = AdminRoute.Hub.route,
     ) {
-        AdminActivityRoute.entries.forEach {
+        AdminRoute.entries.forEach {
             when (it) {
-                AdminActivityRoute.Properties -> composable(it.route) {
+                AdminRoute.Properties -> composable(it.route) {
                     PropertyManagerScreen()
                 }
-                AdminActivityRoute.Property -> composable(it.route) { backstackEntry ->
+                AdminRoute.Property -> composable(it.route) { backstackEntry ->
                     PropertyScreen(
-                        AdminRouteDestination.PropertyAdminDestination.fromPath(backstackEntry)
+                        AdminDestination.PropertyAdminDestination.unpack(backstackEntry)
                     )
                 }
-                AdminActivityRoute.AddProperty -> composable(it.route) {
+                AdminRoute.AddProperty -> composable(it.route) {
                     AddPropertyScreen()
                 }
-                AdminActivityRoute.Hub -> composable(it.route) {
+                AdminRoute.Hub -> composable(it.route) {
                     HubScreen()
                 }
             }

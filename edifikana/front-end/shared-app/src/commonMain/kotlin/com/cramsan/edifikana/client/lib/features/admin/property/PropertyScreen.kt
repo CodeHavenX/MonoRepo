@@ -32,7 +32,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
-import com.cramsan.edifikana.client.lib.features.admin.AdminRouteDestination
+import com.cramsan.edifikana.client.lib.features.admin.AdminDestination
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
@@ -50,7 +50,7 @@ import org.koin.compose.viewmodel.koinViewModel
  */
 @Composable
 fun PropertyScreen(
-    destination: AdminRouteDestination.PropertyAdminDestination,
+    destination: AdminDestination.PropertyAdminDestination,
     applicationViewModel: EdifikanaApplicationViewModel = koinInject(),
     viewModel: PropertyViewModel = koinViewModel()
 ) {

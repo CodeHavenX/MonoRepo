@@ -119,7 +119,7 @@ private fun handleApplicationEvent(
             navController.navigate(event.destination.path)
         }
         is EdifikanaApplicationEvent.NavigateToScreem -> {
-            navController.navigate(event.destination.path)
+            navController.navigate(event.destination.rawRoute)
         }
         is EdifikanaApplicationEvent.NavigateBack -> {
             navController.popBackStack()

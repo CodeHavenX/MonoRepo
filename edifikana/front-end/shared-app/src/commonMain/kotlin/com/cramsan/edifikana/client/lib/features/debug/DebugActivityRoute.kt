@@ -23,7 +23,7 @@ enum class DebugActivityRoute(
  */
 sealed class DebugRouteDestination(
     @RouteSafePath
-    override val path: String,
+    override val rawRoute: String,
 ) : Destination {
 
     /**

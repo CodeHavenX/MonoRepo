@@ -13,7 +13,7 @@ import com.cramsan.framework.core.compose.RouteSafePath
 /**
  * Routes in the Admin activity.
  */
-enum class AdminActivityRoute(
+enum class AdminRoute(
     @RouteSafePath
     val route: String,
 ) {
@@ -27,17 +27,17 @@ enum class AdminActivityRoute(
 /**
  * Destinations in the Admin activity.
  */
-sealed class AdminRouteDestination(
+sealed class AdminDestination(
     @RouteSafePath
-    override val path: String,
+    override val rawRoute: String,
 ) : Destination {
 
     /**
      * A class representing navigating to the property list screen within
      * the Admin activity.
      */
-    data object PropertiesAdminDestination : AdminRouteDestination(
-        AdminActivityRoute.Properties.route,
+    data object PropertiesAdminDestination : AdminDestination(
+        AdminRoute.Properties.route,
     )
 
     /**
@@ -45,15 +45,15 @@ sealed class AdminRouteDestination(
      */
     data class PropertyAdminDestination(
         val propertyId: PropertyId,
-    ) : AdminRouteDestination(
-        AdminActivityRoute.Property.route.replace("{propertyId}", requireNotBlank(propertyId.propertyId)),
+    ) : AdminDestination(
+        AdminRoute.Property.route.replace("{propertyId}", requireNotBlank(propertyId.propertyId)),
     ) {
         companion object {
 
             /**
              * Create a [PropertyAdminDestination] from a NavBackStackEntry.
              */
-            fun fromPath(backstackEntry: NavBackStackEntry): PropertyAdminDestination {
+            fun unpack(backstackEntry: NavBackStackEntry): PropertyAdminDestination {
                 return PropertyAdminDestination(PropertyId(backstackEntry.arguments?.getString("propertyId").orEmpty()))
             }
         }
@@ -62,14 +62,14 @@ sealed class AdminRouteDestination(
     /**
      * A class representing navigating to the add property screen.
      */
-    data object AddPropertyAdminDestination : AdminRouteDestination(
-        AdminActivityRoute.AddProperty.route,
+    data object AddPropertyAdminDestination : AdminDestination(
+        AdminRoute.AddProperty.route,
     )
 
     /**
      * A class representing navigating to the hub screen.
      */
-    data object HubAdminDestination : AdminRouteDestination(
-        AdminActivityRoute.Hub.route,
+    data object HubAdminDestination : AdminDestination(
+        AdminRoute.Hub.route,
     )
 }

@@ -25,7 +25,7 @@ fun ${NAME}Screen(
     applicationViewModel: ApplicationViewModel = koinInject(), // TODO: Update this to the respective application viewmodel. Remove if not necessary.
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val viewModelEvent by viewModel.events.collectAsState(${NAME}Event.Noop)
+    val viewModelEvent by viewModel.events.collectAsState(ViewModelEvent.Noop)
 
     /**
      * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
@@ -50,6 +50,7 @@ fun ${NAME}Screen(
     // Render the screen
     ${NAME}Content(
         uiState,
+        modifier,
     )
 }
 
@@ -57,6 +58,9 @@ fun ${NAME}Screen(
  * Content of the AccountEdit screen.
  */
 @Composable
-internal fun ${NAME}Content(content: ${NAME}UIState) {
+internal fun ${NAME}Content(
+    content: ${NAME}UIState,
+    modifier: Modifier = Modifier,
+) {
     LoadingAnimationOverlay(isLoading = content.isLoading)
 }

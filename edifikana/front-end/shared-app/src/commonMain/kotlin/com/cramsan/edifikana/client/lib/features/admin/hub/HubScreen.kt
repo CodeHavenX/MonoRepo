@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.lib.features.admin.properties.PropertyManagerScreen
+import com.cramsan.edifikana.client.lib.features.admin.stafflist.StaffListScreen
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import edifikana_lib.Res
 import edifikana_lib.app_name
@@ -156,7 +157,7 @@ private fun HubContent(
 ) {
     when (selectedTab) {
         Tabs.Properties -> PropertyManagerScreen(modifier)
-        Tabs.Staff -> TODO()
+        Tabs.Staff -> StaffListScreen(modifier)
         Tabs.None -> {
             // No content
         }

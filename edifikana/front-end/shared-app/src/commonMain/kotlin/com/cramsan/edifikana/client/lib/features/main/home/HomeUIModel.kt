@@ -14,6 +14,7 @@ data class HomeUIModel(
     val label: String,
     val availableProperties: List<PropertyUiModel>,
     val selectedTab: Tabs,
+    val showAdminButton: Boolean = false,
 ) : ViewModelUIState {
     companion object {
         val Empty = HomeUIModel(

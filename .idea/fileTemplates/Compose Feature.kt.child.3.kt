@@ -20,7 +20,7 @@ sealed class ${NAME}Event : ViewModelEvent {
      * Trigger application event. This event is sent to the application's view model to be handled.
      */
     data class TriggerApplicationEvent(
-        // Update this with the respective ApplicationEvent type.
+        // TODO: Update this with the respective ApplicationEvent type.
         val applicationEvent: ApplicationEvent,
         val id: Int = Random.nextInt(),
     ) : ${NAME}Event()

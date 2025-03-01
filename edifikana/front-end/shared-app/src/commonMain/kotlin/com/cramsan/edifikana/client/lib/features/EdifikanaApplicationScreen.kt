@@ -54,7 +54,7 @@ private fun ApplicationContent(
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    LifecycleEventEffect(Lifecycle.Event.ON_START) {
+    LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
         viewModel.enforceAuth()
     }
 
@@ -119,7 +119,7 @@ private fun handleApplicationEvent(
             navController.navigate(event.destination.path)
         }
         is EdifikanaApplicationEvent.NavigateToScreem -> {
-            navController.navigate(event.destination.path)
+            navController.navigate(event.destination.rawRoute)
         }
         is EdifikanaApplicationEvent.NavigateBack -> {
             navController.popBackStack()

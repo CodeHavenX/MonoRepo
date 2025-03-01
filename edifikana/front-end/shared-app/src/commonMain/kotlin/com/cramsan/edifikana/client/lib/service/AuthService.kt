@@ -17,7 +17,9 @@ interface AuthService {
     /**
      * Get the current user.
      */
-    suspend fun getUser(): Result<UserModel>
+    suspend fun getUser(
+        checkGlobalPerms: Boolean = false,
+    ): Result<UserModel>
 
     /**
      * Sign in the user with the given email and password.

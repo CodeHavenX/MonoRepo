@@ -34,4 +34,14 @@ interface PropertyService {
      * Get the property with the given id.
      */
     suspend fun getProperty(propertyId: PropertyId): Result<PropertyModel>
+
+    /**
+     * Add a new property.
+     */
+    suspend fun addProperty(propertyName: String, address: String): Result<PropertyModel>
+
+    /**
+     * Update the property with the given [propertyId].
+     */
+    suspend fun updateProperty(propertyId: PropertyId, name: String, address: String): Result<PropertyModel>
 }

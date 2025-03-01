@@ -18,7 +18,7 @@ class DummyAuthService : AuthService {
         return Result.success(user.value != null)
     }
 
-    override suspend fun getUser(): Result<UserModel> {
+    override suspend fun getUser(checkGlobalPerms: Boolean): Result<UserModel> {
         val user = user.value?.let {
             USER_1
         }

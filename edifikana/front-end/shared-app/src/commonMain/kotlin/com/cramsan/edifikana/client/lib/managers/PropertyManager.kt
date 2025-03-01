@@ -46,6 +46,22 @@ class PropertyManager(
         propertyService.getProperty(propertyId).getOrThrow()
     }
 
+    /**
+     * Add a new property.
+     */
+    suspend fun addProperty(propertyName: String, address: String) = dependencies.getOrCatch(TAG) {
+        logI(TAG, "addProperty")
+        propertyService.addProperty(propertyName, address).getOrThrow()
+    }
+
+    /**
+     * Update the property with the given [propertyId].
+     */
+    suspend fun updateProperty(propertyId: PropertyId, name: String, address: String) = dependencies.getOrCatch(TAG) {
+        logI(TAG, "updateProperty")
+        propertyService.updateProperty(propertyId, name, address).getOrThrow()
+    }
+
     companion object {
         private const val TAG = "PropertyManager"
     }

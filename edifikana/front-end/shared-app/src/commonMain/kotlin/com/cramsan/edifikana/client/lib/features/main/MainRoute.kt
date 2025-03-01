@@ -31,7 +31,7 @@ enum class MainRoute(
 sealed class MainRouteDestination(
     val route: MainRoute,
     @RouteSafePath
-    override val path: String,
+    override val rawRoute: String,
 ) : Destination {
     /**
      * A class representing navigating to the home screen.

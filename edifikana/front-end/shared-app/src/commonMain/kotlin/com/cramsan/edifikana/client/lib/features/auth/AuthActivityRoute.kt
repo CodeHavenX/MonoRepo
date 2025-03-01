@@ -24,7 +24,7 @@ enum class AuthRoute(
  */
 sealed class AuthRouteDestination(
     @RouteSafePath
-    override val path: String,
+    override val rawRoute: String,
 ) : Destination {
 
     /**

@@ -7,7 +7,7 @@ import androidx.navigation.NavBackStackEntry
 import com.cramsan.edifikana.client.lib.features.ApplicationRoute
 import com.cramsan.edifikana.client.lib.features.Destination
 import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.utils.requireNotBlank
+import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.framework.core.compose.RouteSafePath
 
 /**
@@ -23,6 +23,7 @@ enum class AdminRoute(
     Hub(route = "${ApplicationRoute.Admin.route}/hub"),
     AddPrimaryStaff(route = "${ApplicationRoute.Admin.route}/add-primary-staff"),
     AddSecondaryStaff(route = "${ApplicationRoute.Admin.route}/add-secondary-staff"),
+    Staff(route = "${ApplicationRoute.Admin.route}/staff/{staffId}"),
     ;
 }
 
@@ -48,7 +49,7 @@ sealed class AdminDestination(
     data class PropertyAdminDestination(
         val propertyId: PropertyId,
     ) : AdminDestination(
-        AdminRoute.Property.route.replace("{propertyId}", requireNotBlank(propertyId.propertyId)),
+        AdminRoute.Property.route.replace("{propertyId}", propertyId.propertyId),
     ) {
         companion object {
 
@@ -88,4 +89,22 @@ sealed class AdminDestination(
     data object AddSecondaryStaffAdminDestination : AdminDestination(
         AdminRoute.AddSecondaryStaff.route,
     )
+
+    /**
+     * A class representing navigating to the Staff Screen.
+     */
+    data class StaffDestination(
+        val staffId: StaffId,
+    ) : AdminDestination(
+        AdminRoute.Staff.route.replace("{staffId}", staffId.staffId),
+    ) {
+        companion object {
+            /**
+             * Create a [StaffDestination] from a NavBackStackEntry.
+             */
+            fun unpack(backstackEntry: NavBackStackEntry): StaffDestination {
+                return StaffDestination(StaffId(backstackEntry.arguments?.getString("staffId").orEmpty()))
+            }
+        }
+    }
 }

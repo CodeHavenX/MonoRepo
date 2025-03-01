@@ -8,6 +8,7 @@ import com.cramsan.edifikana.client.lib.features.admin.addstaffsecondary.AddSeco
 import com.cramsan.edifikana.client.lib.features.admin.hub.HubViewModel
 import com.cramsan.edifikana.client.lib.features.admin.properties.PropertyManagerViewModel
 import com.cramsan.edifikana.client.lib.features.admin.property.PropertyViewModel
+import com.cramsan.edifikana.client.lib.features.admin.staff.StaffViewModel
 import com.cramsan.edifikana.client.lib.features.admin.stafflist.StaffListViewModel
 import com.cramsan.edifikana.client.lib.features.auth.signin.SignInViewModel
 import com.cramsan.edifikana.client.lib.features.auth.signup.SignUpViewModel
@@ -49,4 +50,5 @@ internal val ViewModelModule = module {
     viewModelOf(::HubViewModel)
     viewModelOf(::AddPrimaryStaffViewModel)
     viewModelOf(::AddSecondaryStaffViewModel)
+    viewModelOf(::StaffViewModel)
 }

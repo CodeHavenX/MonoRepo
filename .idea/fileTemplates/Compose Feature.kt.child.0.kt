@@ -8,7 +8,7 @@ import kotlinx.coroutines.launch
  * ViewModel for the ${NAME} screen.
  **/
  // TODO: Register this ViewModel for dependency injection
- // Look for where the ViewModel is configure and add this line
+ // Look for where the ViewModel is configured and add this line
  // viewModelOf(::${NAME}ViewModel)
 class ${NAME}ViewModel(
     dependencies: ViewModelDependencies,

@@ -9,6 +9,7 @@ import com.cramsan.edifikana.client.lib.features.admin.addstaffsecondary.AddSeco
 import com.cramsan.edifikana.client.lib.features.admin.hub.HubScreen
 import com.cramsan.edifikana.client.lib.features.admin.properties.PropertyManagerScreen
 import com.cramsan.edifikana.client.lib.features.admin.property.PropertyScreen
+import com.cramsan.edifikana.client.lib.features.admin.staff.StaffScreen
 import com.cramsan.framework.core.compose.RouteSafePath
 
 /**
@@ -43,6 +44,11 @@ fun NavGraphBuilder.adminActivityNavigation(
                 }
                 AdminRoute.AddSecondaryStaff -> composable(it.route) {
                     AddSecondaryStaffScreen()
+                }
+                AdminRoute.Staff -> composable(it.route) { backstackEntry ->
+                    StaffScreen(
+                        AdminDestination.StaffDestination.unpack(backstackEntry)
+                    )
                 }
             }
         }

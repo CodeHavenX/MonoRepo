@@ -15,5 +15,6 @@ private fun ${NAME}ScreenPreview() {
             title = "${NAME}ScreenPreview",
             isLoading = true,
         ),
+        onBackSelected = {},
     )
 }

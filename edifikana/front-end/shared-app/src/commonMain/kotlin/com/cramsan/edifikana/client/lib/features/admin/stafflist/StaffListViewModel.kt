@@ -70,7 +70,13 @@ class StaffListViewModel(
      * Navigate to the staff screen.
      */
     fun navigateToStaff(staffId: StaffId) {
-        TODO("Implement this function that uses $staffId")
+        viewModelScope.launch {
+            emitEvent(
+                StaffListEvent.TriggerApplicationEvent(
+                    EdifikanaApplicationEvent.NavigateToScreem(AdminDestination.StaffDestination(staffId))
+                )
+            )
+        }
     }
 
     companion object {

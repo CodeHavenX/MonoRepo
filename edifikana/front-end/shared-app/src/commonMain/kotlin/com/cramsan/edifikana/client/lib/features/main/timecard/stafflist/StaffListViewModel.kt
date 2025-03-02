@@ -60,19 +60,6 @@ class StaffListViewModel(
     }
 
     /**
-     * Navigate to add staff member.
-     */
-    fun navigateToAddStaff() = viewModelScope.launch {
-        emitEvent(
-            StaffListEvent.TriggerEdifikanaApplicationEvent(
-                EdifikanaApplicationEvent.NavigateToScreem(
-                    MainRouteDestination.TimeCardAddStaffDestination
-                )
-            )
-        )
-    }
-
-    /**
      * Navigate back.
      */
     fun navigateBack() = viewModelScope.launch {

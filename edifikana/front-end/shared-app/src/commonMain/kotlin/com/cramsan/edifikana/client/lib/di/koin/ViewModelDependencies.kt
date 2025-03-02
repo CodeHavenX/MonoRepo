@@ -18,12 +18,13 @@ import com.cramsan.edifikana.client.lib.features.main.eventlog.addrecord.AddReco
 import com.cramsan.edifikana.client.lib.features.main.eventlog.viewrecord.ViewRecordViewModel
 import com.cramsan.edifikana.client.lib.features.main.home.HomeViewModel
 import com.cramsan.edifikana.client.lib.features.main.timecard.TimeCartViewModel
-import com.cramsan.edifikana.client.lib.features.main.timecard.addstaff.AddStaffViewModel
 import com.cramsan.edifikana.client.lib.features.main.timecard.viewstaff.ViewStaffViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
+
+typealias SelectStaffViewModel = com.cramsan.edifikana.client.lib.features.main.timecard.stafflist.StaffListViewModel
 
 internal val ViewModelModule = module {
 
@@ -36,7 +37,6 @@ internal val ViewModelModule = module {
     viewModelOf(::TimeCartViewModel)
     viewModelOf(::StaffListViewModel)
     viewModelOf(::ViewRecordViewModel)
-    viewModelOf(::AddStaffViewModel)
     viewModelOf(::AddRecordViewModel)
     viewModelOf(::ViewStaffViewModel)
     viewModelOf(::SignInViewModel)
@@ -51,4 +51,5 @@ internal val ViewModelModule = module {
     viewModelOf(::AddPrimaryStaffViewModel)
     viewModelOf(::AddSecondaryStaffViewModel)
     viewModelOf(::StaffViewModel)
+    viewModelOf(::SelectStaffViewModel)
 }

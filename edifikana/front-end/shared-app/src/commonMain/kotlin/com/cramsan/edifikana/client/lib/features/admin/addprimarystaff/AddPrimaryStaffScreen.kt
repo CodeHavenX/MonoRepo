@@ -1,15 +1,27 @@
 package com.cramsan.edifikana.client.lib.features.admin.addprimarystaff
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
@@ -59,8 +71,11 @@ fun AddPrimaryStaffScreen(
         uiState,
         modifier,
         onBackSelected = {
-            viewModel.onBackSelected()
+            viewModel.navigateBack()
         },
+        onInviteSelected = {
+            viewModel.invite(it)
+        }
     )
 }
 
@@ -71,7 +86,8 @@ fun AddPrimaryStaffScreen(
 internal fun AddPrimaryStaffContent(
     content: AddPrimaryStaffUIState,
     modifier: Modifier = Modifier,
-    onBackSelected: () -> Unit = { },
+    onBackSelected: () -> Unit,
+    onInviteSelected: (String) -> Unit,
 ) {
     Scaffold(
         modifier = modifier,
@@ -88,10 +104,39 @@ internal fun AddPrimaryStaffContent(
                 .fillMaxSize(),
             contentAlignment = Alignment.TopCenter,
         ) {
+            var textFieldValue by remember { mutableStateOf(TextFieldValue()) }
             ScreenLayout(
                 sectionContent = { sectionModifier ->
+                    AnimatedContent(
+                        content.errorMessage,
+                        modifier = modifier,
+                        transitionSpec = {
+                            fadeIn() togetherWith fadeOut()
+                        },
+                    ) {
+                        if (!it.isNullOrBlank()) {
+                            Text(
+                                content.errorMessage.orEmpty(),
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.error,
+                            )
+                        }
+                    }
+                    OutlinedTextField(
+                        value = textFieldValue,
+                        onValueChange = { textFieldValue = it },
+                        label = { Text("Email") },
+                        modifier = sectionModifier,
+                        isError = !content.errorMessage.isNullOrBlank(),
+                    )
                 },
                 buttonContent = { buttonModifier ->
+                    Button(
+                        modifier = buttonModifier,
+                        onClick = { onInviteSelected(textFieldValue.text) },
+                    ) {
+                        Text("Invite")
+                    }
                 }
             )
             LoadingAnimationOverlay(content.isLoading)

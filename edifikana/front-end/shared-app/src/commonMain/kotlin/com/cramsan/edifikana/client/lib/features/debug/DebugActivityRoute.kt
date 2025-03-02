@@ -14,7 +14,7 @@ enum class DebugActivityRoute(
     @RouteSafePath
     val route: String,
 ) {
-    Debug(route = "${ApplicationRoute.Debug.route}/"),
+    Debug(route = "${ApplicationRoute.Debug.rawRoute}/"),
     ;
 }
 

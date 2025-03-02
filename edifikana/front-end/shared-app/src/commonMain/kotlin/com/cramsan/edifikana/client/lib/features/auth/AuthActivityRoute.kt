@@ -14,8 +14,8 @@ enum class AuthRoute(
     @RouteSafePath
     val route: String,
 ) {
-    SignIn(route = "${ApplicationRoute.Auth.route}/signin"),
-    SignUp(route = "${ApplicationRoute.Auth.route}/signup"),
+    SignIn(route = "${ApplicationRoute.Auth.rawRoute}/signin"),
+    SignUp(route = "${ApplicationRoute.Auth.rawRoute}/signup"),
     ;
 }
 

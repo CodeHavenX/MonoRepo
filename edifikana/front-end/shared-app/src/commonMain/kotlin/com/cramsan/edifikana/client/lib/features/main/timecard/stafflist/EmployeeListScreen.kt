@@ -3,11 +3,7 @@ package com.cramsan.edifikana.client.lib.features.main.timecard.stafflist
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,7 +21,6 @@ import com.cramsan.ui.components.ListCell
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
-import edifikana_lib.employee_list_screen_add_button_description
 import edifikana_lib.employee_list_screen_title
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
@@ -60,9 +55,6 @@ fun StaffListScreen(
         onStaffClick = { staffPK ->
             viewModel.navigateToStaff(staffPK)
         },
-        onAddStaffClick = {
-            viewModel.navigateToAddStaff()
-        },
         onCloseSelected = {
             viewModel.navigateBack()
         },
@@ -74,7 +66,6 @@ internal fun StaffList(
     uiState: StaffListUIState,
     modifier: Modifier = Modifier,
     onStaffClick: (StaffId) -> Unit,
-    onAddStaffClick: () -> Unit,
     onCloseSelected: () -> Unit,
 ) {
     Scaffold(
@@ -83,14 +74,7 @@ internal fun StaffList(
             EdifikanaTopBar(
                 title = stringResource(Res.string.employee_list_screen_title),
                 onCloseClicked = onCloseSelected,
-            ) {
-                IconButton(onClick = onAddStaffClick) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = stringResource(Res.string.employee_list_screen_add_button_description),
-                    )
-                }
-            }
+            ) { }
         },
     ) { innerPadding ->
         Box(

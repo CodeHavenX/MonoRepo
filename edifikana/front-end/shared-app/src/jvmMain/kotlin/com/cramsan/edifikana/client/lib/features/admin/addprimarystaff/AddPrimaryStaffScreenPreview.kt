@@ -10,7 +10,12 @@ import androidx.compose.runtime.Composable
 @Composable
 private fun AddPrimaryStaffScreenPreview() {
     AddPrimaryStaffContent(
-        content = AddPrimaryStaffUIState(true, null),
-        onBackSelected = {}
+        content = AddPrimaryStaffUIState(
+            isLoading = true,
+            title = null,
+            errorMessage = null,
+        ),
+        onBackSelected = {},
+        onInviteSelected = {},
     )
 }

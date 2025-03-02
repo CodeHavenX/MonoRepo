@@ -23,7 +23,6 @@ private fun StaffListScreenPreview() {
             title = ""
         ),
         onStaffClick = {},
-        onAddStaffClick = {},
         onCloseSelected = {}
     )
 }

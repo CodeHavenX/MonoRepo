@@ -14,5 +14,6 @@ private fun AddSecondaryScreenPreview() {
     AddSecondaryContent(
         content = AddSecondaryStaffUIState(true, null),
         onBackSelected = {},
+        onSaveDataClicked = { _, _, _, _, _ -> },
     )
 }

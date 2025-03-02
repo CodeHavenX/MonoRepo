@@ -6,7 +6,6 @@ import androidx.navigation.navigation
 import com.cramsan.edifikana.client.lib.features.main.eventlog.addrecord.AddRecordScreen
 import com.cramsan.edifikana.client.lib.features.main.eventlog.viewrecord.ViewRecordScreen
 import com.cramsan.edifikana.client.lib.features.main.home.HomeScreen
-import com.cramsan.edifikana.client.lib.features.main.timecard.addstaff.AddStaffScreen
 import com.cramsan.edifikana.client.lib.features.main.timecard.stafflist.StaffListScreen
 import com.cramsan.edifikana.client.lib.features.main.timecard.viewstaff.ViewStaffScreen
 import com.cramsan.edifikana.lib.model.EventLogEntryId
@@ -36,9 +35,6 @@ fun NavGraphBuilder.mainActivityNavigation(
                     ViewStaffScreen(
                         StaffId(backStackEntry.arguments?.getString("staffPk").orEmpty()),
                     )
-                }
-                MainRoute.TimeCardAddStaff -> composable(it.route) {
-                    AddStaffScreen()
                 }
                 MainRoute.EventLogSingleItem -> composable(it.route) { backStackEntry ->
                     ViewRecordScreen(

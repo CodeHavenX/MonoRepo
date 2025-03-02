@@ -17,13 +17,13 @@ enum class AdminRoute(
     @RouteSafePath
     val route: String,
 ) {
-    Properties(route = "${ApplicationRoute.Admin.route}/properties"),
-    Property(route = "${ApplicationRoute.Admin.route}property/{propertyId}"),
-    AddProperty(route = "${ApplicationRoute.Admin.route}/add-property"),
-    Hub(route = "${ApplicationRoute.Admin.route}/hub"),
-    AddPrimaryStaff(route = "${ApplicationRoute.Admin.route}/add-primary-staff"),
-    AddSecondaryStaff(route = "${ApplicationRoute.Admin.route}/add-secondary-staff"),
-    Staff(route = "${ApplicationRoute.Admin.route}/staff/{staffId}"),
+    Properties(route = "${ApplicationRoute.Admin.rawRoute}/properties"),
+    Property(route = "${ApplicationRoute.Admin.rawRoute}property/{propertyId}"),
+    AddProperty(route = "${ApplicationRoute.Admin.rawRoute}/add-property"),
+    Hub(route = "${ApplicationRoute.Admin.rawRoute}/hub"),
+    AddPrimaryStaff(route = "${ApplicationRoute.Admin.rawRoute}/add-primary-staff"),
+    AddSecondaryStaff(route = "${ApplicationRoute.Admin.rawRoute}/add-secondary-staff"),
+    Staff(route = "${ApplicationRoute.Admin.rawRoute}/staff/{staffId}"),
     ;
 }
 

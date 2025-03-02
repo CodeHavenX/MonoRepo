@@ -11,8 +11,13 @@ import com.cramsan.framework.core.compose.ViewModelUIState
 data class AddPrimaryStaffUIState(
     val isLoading: Boolean,
     val title: String?,
+    val errorMessage: String?,
 ) : ViewModelUIState {
     companion object {
-        val Initial = AddPrimaryStaffUIState(true, null)
+        val Initial = AddPrimaryStaffUIState(
+            isLoading = false,
+            title = null,
+            errorMessage = null,
+        )
     }
 }

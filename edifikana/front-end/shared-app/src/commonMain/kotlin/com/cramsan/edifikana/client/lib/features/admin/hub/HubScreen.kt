@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.admin.hub
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -155,11 +156,13 @@ private fun HubContent(
     modifier: Modifier,
     selectedTab: Tabs,
 ) {
-    when (selectedTab) {
-        Tabs.Properties -> PropertyManagerScreen(modifier)
-        Tabs.Staff -> StaffListScreen(modifier)
-        Tabs.None -> {
-            // No content
+    Crossfade(selectedTab) {
+        when (it) {
+            Tabs.Properties -> PropertyManagerScreen(modifier)
+            Tabs.Staff -> StaffListScreen(modifier)
+            Tabs.None -> {
+                // No content
+            }
         }
     }
 }

@@ -2,6 +2,7 @@ package com.cramsan.ui.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -25,6 +26,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import com.cramsan.ui.theme.Padding
 import org.jetbrains.compose.resources.stringResource
 import ui_catalog.Res
 import ui_catalog.password_outlined_textfield_toggle_visibility_description_hidden
@@ -103,6 +105,7 @@ fun PasswordOutlinedTextField(
                 modifier = Modifier
                     .clip(CircleShape)
                     .clickable { showPassword = !showPassword }
+                    .padding(Padding.XX_SMALL)
             )
         },
         prefix = prefix,

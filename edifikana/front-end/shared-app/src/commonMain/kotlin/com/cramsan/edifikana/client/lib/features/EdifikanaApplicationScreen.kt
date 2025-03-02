@@ -1,5 +1,8 @@
 package com.cramsan.edifikana.client.lib.features
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -170,22 +173,26 @@ private fun ApplicationNavigationHost(
 ) {
     NavHost(
         navController = navHostController,
-        startDestination = ApplicationRoute.Splash.route,
+        startDestination = ApplicationRoute.Splash.rawRoute,
+        enterTransition = { fadeIn(animationSpec = tween(TRANSITION_ANIMATION_DURATION_MS)) },
+        exitTransition = { fadeOut(animationSpec = tween(TRANSITION_ANIMATION_DURATION_MS)) },
     ) {
         ApplicationRoute.entries.forEach { route ->
             when (route) {
-                ApplicationRoute.Splash -> composable(route.route) {
+                ApplicationRoute.Splash -> composable(route.rawRoute) {
                     SplashActivityScreen()
                 }
-                ApplicationRoute.Auth -> authActivityNavigation(route.route)
-                ApplicationRoute.Main -> mainActivityNavigation(route.route)
-                ApplicationRoute.Account -> accountActivityNavigation(route.route)
-                ApplicationRoute.Admin -> adminActivityNavigation(route.route)
-                ApplicationRoute.Debug -> debugActivityNavigation(route.route)
+                ApplicationRoute.Auth -> authActivityNavigation(route.rawRoute)
+                ApplicationRoute.Main -> mainActivityNavigation(route.rawRoute)
+                ApplicationRoute.Account -> accountActivityNavigation(route.rawRoute)
+                ApplicationRoute.Admin -> adminActivityNavigation(route.rawRoute)
+                ApplicationRoute.Debug -> debugActivityNavigation(route.rawRoute)
             }
         }
     }
 }
+
+private const val TRANSITION_ANIMATION_DURATION_MS = 400
 
 /**
  * Edifikana main screen event handler.

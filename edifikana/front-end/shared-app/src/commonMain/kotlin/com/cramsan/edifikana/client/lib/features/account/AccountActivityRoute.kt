@@ -3,6 +3,7 @@
 
 package com.cramsan.edifikana.client.lib.features.account
 
+import com.cramsan.edifikana.client.lib.features.Destination
 import com.cramsan.framework.core.compose.RouteSafePath
 
 /**
@@ -13,6 +14,7 @@ enum class AccountActivityRoute(
     val route: String,
 ) {
     Account(route = "signin"),
+    Notifications(route = "notifications")
     ;
 }
 
@@ -21,13 +23,20 @@ enum class AccountActivityRoute(
  */
 sealed class AccountRouteDestination(
     @RouteSafePath
-    val path: String,
-) {
+    override val rawRoute: String,
+) : Destination {
 
     /**
      * A class representing navigating to the account screen within the account activity.
      */
     data object AccountDestination : AccountRouteDestination(
         AccountActivityRoute.Account.route,
+    )
+
+    /**
+     * A class representing navigating to the Staff Screen.
+     */
+    data object NotificationsDestination : AccountRouteDestination(
+        AccountActivityRoute.Notifications.route,
     )
 }

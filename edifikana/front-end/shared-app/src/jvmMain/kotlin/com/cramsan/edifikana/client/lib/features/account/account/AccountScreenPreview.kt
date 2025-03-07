@@ -6,7 +6,7 @@ import com.cramsan.edifikana.client.ui.theme.AppTheme
 
 @Preview
 @Composable
-private fun AccountScreenPreview() = AppTheme {
+private fun AccountScreenPreview() = AppTheme(debugLayoutInspection = true) {
     AccountContent(
         content = AccountUIModel(
             firstName = "Luis Antonio",

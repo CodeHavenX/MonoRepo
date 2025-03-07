@@ -2,6 +2,7 @@ package com.cramsan.edifikana.client.lib.features.main.home
 
 import com.cramsan.edifikana.client.lib.features.ActivityDestination
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.features.account.AccountRouteDestination
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.lib.model.PropertyId
@@ -122,6 +123,18 @@ class HomeViewModel(
      */
     fun selectTab(selectedTab: Tabs) {
         updateUiState { it.copy(selectedTab = selectedTab) }
+    }
+
+    /**
+     * Navigate to the notifications page.
+     */
+    fun navigateToNotifications() {
+        logI(TAG, "Navigating to notifications page.")
+        viewModelScope.launch {
+            emitApplicationEvent(
+                EdifikanaApplicationEvent.NavigateToScreem(AccountRouteDestination.NotificationsDestination)
+            )
+        }
     }
 
     companion object {

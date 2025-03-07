@@ -4,9 +4,11 @@ import com.cramsan.edifikana.client.lib.models.PropertyModel
 import com.cramsan.edifikana.client.lib.service.PropertyService
 import com.cramsan.edifikana.lib.model.PropertyId
 import io.ktor.client.request.get
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * Dummy implementation for the [PropertyService] with hardcoded responses.
@@ -16,6 +18,7 @@ class DummyPropertyService : PropertyService {
     private val _activeProperty = MutableStateFlow<PropertyId?>(PROPERTY_1.id)
 
     override suspend fun getPropertyList(showAll: Boolean): Result<List<PropertyModel>> {
+        delay(1.seconds)
         return Result.success(
             listOf(
                 PROPERTY_1,
@@ -34,6 +37,7 @@ class DummyPropertyService : PropertyService {
     }
 
     override suspend fun getAdminPropertyList(): Result<List<PropertyModel>> {
+        delay(1.seconds)
         return Result.success(
             listOf(
                 PROPERTY_1,
@@ -43,6 +47,7 @@ class DummyPropertyService : PropertyService {
     }
 
     override suspend fun getProperty(propertyId: PropertyId): Result<PropertyModel> {
+        delay(1.seconds)
         return Result.success(PROPERTY_1)
     }
 

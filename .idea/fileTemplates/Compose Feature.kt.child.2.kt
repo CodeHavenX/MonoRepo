@@ -1,21 +1,27 @@
 package ${PACKAGE_NAME}
 
-import com.cramsan.framework.core.compose.ViewModelUIState
+import com.cramsan.framework.core.compose.ViewModelEvent
+import kotlin.random.Random
 
 /**
- * UI state of the ${NAME} feature.
+ * Events that can be triggered within the domain of the ${NAME} feature.
  *
- * This class models the top level state of the page.
- * For modeling more specific details of the page, see the respective UI model class.
+ * Events are triggered from a ViewModel and are consumed by the UI.
+ *
  */
-data class ${NAME}UIState(
-    val title: String?,
-    val isLoading: Boolean,
-) : ViewModelUIState {
-    companion object {
-        val Initial = ${NAME}UIState(
-            title = null,
-            isLoading = true,
-        )
-    }
+sealed class ${NAME}Event : ViewModelEvent {
+
+    /**
+     * No operation.
+     */
+    data object Noop : ${NAME}Event()
+
+    /**
+     * Trigger application event. This event is sent to the application's view model to be handled.
+     */
+    data class TriggerApplicationEvent(
+        // TODO: Update this with the respective ApplicationEvent type.
+        val applicationEvent: ApplicationEvent,
+        val id: Int = Random.nextInt(),
+    ) : ${NAME}Event()
 }

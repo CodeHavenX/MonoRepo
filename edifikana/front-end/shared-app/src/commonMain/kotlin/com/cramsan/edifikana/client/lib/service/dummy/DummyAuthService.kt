@@ -3,9 +3,11 @@ package com.cramsan.edifikana.client.lib.service.dummy
 import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.client.lib.service.AuthService
 import com.cramsan.edifikana.lib.model.UserId
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * Dummy implementation of [AuthService] for testing purposes.
@@ -15,10 +17,12 @@ class DummyAuthService : AuthService {
     private val user = MutableStateFlow<UserId?>(null)
 
     override suspend fun isSignedIn(): Result<Boolean> {
+        delay(2.seconds)
         return Result.success(user.value != null)
     }
 
     override suspend fun getUser(checkGlobalPerms: Boolean): Result<UserModel> {
+        delay(1.seconds)
         val user = user.value?.let {
             USER_1
         }
@@ -30,11 +34,13 @@ class DummyAuthService : AuthService {
     }
 
     override suspend fun signIn(email: String, password: String): Result<UserModel> {
+        delay(1.seconds)
         user.value = USER_1.id
         return Result.success(USER_1)
     }
 
     override suspend fun signOut(): Result<Unit> {
+        delay(1.seconds)
         user.value = null
         return Result.success(Unit)
     }
@@ -50,11 +56,13 @@ class DummyAuthService : AuthService {
         firstName: String,
         lastName: String
     ): Result<UserModel> {
+        delay(1.seconds)
         user.value = USER_1.id
         return Result.success(USER_1)
     }
 
     override suspend fun verifyPermissions(): Result<Boolean> {
+        delay(1.seconds)
         return Result.success(true)
     }
 

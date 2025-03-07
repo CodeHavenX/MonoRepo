@@ -2,11 +2,12 @@ package com.cramsan.edifikana.client.lib.features.main.timecard.stafflist
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
+import com.cramsan.edifikana.client.ui.theme.AppTheme
 import com.cramsan.edifikana.lib.model.StaffId
 
 @Preview
 @Composable
-private fun StaffListScreenPreview() {
+private fun StaffListScreenPreview() = AppTheme {
     StaffList(
         StaffListUIState(
             isLoading = true,
@@ -23,6 +24,7 @@ private fun StaffListScreenPreview() {
             title = ""
         ),
         onStaffClick = {},
-        onCloseSelected = {}
+        onCloseSelected = {},
+        onAddStaffSelected = {},
     )
 }

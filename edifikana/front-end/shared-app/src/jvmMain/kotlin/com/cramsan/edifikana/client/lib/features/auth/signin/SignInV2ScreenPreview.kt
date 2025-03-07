@@ -9,7 +9,7 @@ import com.cramsan.edifikana.client.ui.theme.AppTheme
  */
 @Preview
 @Composable
-private fun SignInScreenPreview() {
+private fun SignInScreenPreview() = AppTheme {
     SignInContent(
         uistate = SignInUIState(
             isLoading = false,

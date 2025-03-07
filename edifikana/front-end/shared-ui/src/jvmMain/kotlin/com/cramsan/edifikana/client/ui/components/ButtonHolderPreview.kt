@@ -7,12 +7,12 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import com.cramsan.edifikana.client.ui.theme.AppTheme
-import com.cramsan.ui.components.ActionSection
+import com.cramsan.ui.components.ButtonSection
 
 @Preview
 @Composable
 private fun ButtonHolderPreview() = AppTheme {
-    ActionSection { buttonModifier ->
+    ButtonSection { buttonModifier ->
         Button(
             onClick = {},
             modifier = buttonModifier,

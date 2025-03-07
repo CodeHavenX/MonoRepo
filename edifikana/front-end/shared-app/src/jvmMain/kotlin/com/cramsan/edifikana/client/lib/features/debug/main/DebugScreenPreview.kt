@@ -1,18 +1,16 @@
-package com.cramsan.edifikana.client.lib.features.main
+package com.cramsan.edifikana.client.lib.features.debug.main
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.cramsan.edifikana.client.lib.features.debug.main.DebugContent
-import com.cramsan.edifikana.client.lib.features.debug.main.DebugUIModelUI
-import com.cramsan.edifikana.client.lib.features.debug.main.Field
+import com.cramsan.edifikana.client.ui.theme.AppTheme
 
 /**
  * Preview for the Debug feature screen.
  */
 @Preview
 @Composable
-private fun DebugScreenPreview() {
+private fun DebugScreenPreview() = AppTheme {
     DebugContent(
         content = DebugUIModelUI(
             listOf(

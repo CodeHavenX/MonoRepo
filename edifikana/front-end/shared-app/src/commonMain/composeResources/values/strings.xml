@@ -122,4 +122,7 @@
     <string name="add_staff_screen_title">Add Staff</string>
 
     <string name="time_card_screen_add_event">Add Event</string>
+
+    <string name="hub_screen_properties_button_title">Properties</string>
+    <string name="hub_screen_staff_button_title">Staff</string>
 </resources>

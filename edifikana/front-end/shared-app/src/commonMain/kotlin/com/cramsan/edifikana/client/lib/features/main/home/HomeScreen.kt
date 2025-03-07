@@ -96,6 +96,7 @@ fun HomeScreen(
         onAdminButtonClicked = { viewModel.navigateToAdmin() },
         onPropertySelected = { viewModel.selectProperty(it) },
         onTabSelected = { viewModel.selectTab(it) },
+        onNotificationsButtonSelected = { viewModel.navigateToNotifications() }
     )
 }
 
@@ -121,6 +122,7 @@ internal fun HomeScreenContent(
     onAdminButtonClicked: () -> Unit,
     onPropertySelected: (PropertyId) -> Unit,
     onTabSelected: (Tabs) -> Unit,
+    onNotificationsButtonSelected: () -> Unit,
 ) {
     Scaffold(
         modifier = modifier,
@@ -147,12 +149,10 @@ internal fun HomeScreenContent(
                     }
                 }
                 // Account button
-                IconButton(onClick = onAccountButtonClicked) {
-                    Icon(
-                        imageVector = Icons.Default.AccountCircle,
-                        contentDescription = stringResource(Res.string.home_screen_account_description),
-                    )
-                }
+                AccountDropDown(
+                    onAccountSelected = onAccountButtonClicked,
+                    onNotificationsSelected = onNotificationsButtonSelected,
+                )
             }
         },
         bottomBar = {
@@ -239,6 +239,48 @@ private fun PropertyDropDown(
                     }
                 )
             }
+        }
+    }
+}
+
+/**
+ * A simple dropdown menu that shows a list of accounts and notifications.
+ */
+@Composable
+fun AccountDropDown(
+    modifier: Modifier = Modifier,
+    onAccountSelected: () -> Unit,
+    onNotificationsSelected: () -> Unit,
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Box(
+        modifier = modifier
+    ) {
+        IconButton(onClick = { expanded = !expanded }) {
+            Icon(
+                imageVector = Icons.Default.AccountCircle,
+                contentDescription = stringResource(Res.string.home_screen_account_description),
+            )
+        }
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            DropdownMenuItem(
+                text = { Text("My Account") },
+                onClick = {
+                    onAccountSelected()
+                    expanded = false
+                },
+            )
+            DropdownMenuItem(
+                text = { Text("Notifications") },
+                onClick = {
+                    onNotificationsSelected()
+                    expanded = false
+                },
+            )
         }
     }
 }

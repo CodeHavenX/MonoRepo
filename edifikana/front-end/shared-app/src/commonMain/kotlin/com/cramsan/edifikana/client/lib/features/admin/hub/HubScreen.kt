@@ -3,7 +3,6 @@ package com.cramsan.edifikana.client.lib.features.admin.hub
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Apartment
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
@@ -21,13 +20,13 @@ import androidx.compose.ui.Modifier
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.lib.features.admin.properties.PropertyManagerScreen
 import com.cramsan.edifikana.client.lib.features.admin.stafflist.StaffListScreen
+import com.cramsan.edifikana.client.lib.features.main.home.AccountDropDown
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import edifikana_lib.Res
 import edifikana_lib.app_name
-import edifikana_lib.home_screen_account_description
 import edifikana_lib.home_screen_settings_description
-import edifikana_lib.string_assistance
-import edifikana_lib.string_event_log_title
+import edifikana_lib.hub_screen_properties_button_title
+import edifikana_lib.hub_screen_staff_button_title
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
@@ -67,6 +66,9 @@ fun HubScreen(
         onUserHomeSelected = {
             viewModel.navigateToUserHome()
         },
+        onNotificationsButtonSelected = {
+            viewModel.navigateToNotifications()
+        }
     )
 }
 
@@ -77,13 +79,13 @@ val BottomBarDestinationUiModels
             BottomBarDestinationUiModel(
                 Tabs.Properties,
                 Icons.Default.Apartment,
-                Res.string.string_event_log_title,
+                Res.string.hub_screen_properties_button_title,
                 isStartDestination = true,
             ),
             BottomBarDestinationUiModel(
                 Tabs.Staff,
                 Icons.Default.Person,
-                Res.string.string_assistance,
+                Res.string.hub_screen_staff_button_title,
             ),
         )
 
@@ -94,6 +96,7 @@ internal fun HubScreenContent(
     onAccountButtonClicked: () -> Unit,
     onTabSelected: (Tabs) -> Unit,
     onUserHomeSelected: () -> Unit,
+    onNotificationsButtonSelected: () -> Unit,
 ) {
     Scaffold(
         modifier = modifier,
@@ -112,12 +115,10 @@ internal fun HubScreenContent(
                 }
 
                 // Account button
-                IconButton(onClick = onAccountButtonClicked) {
-                    Icon(
-                        imageVector = Icons.Default.AccountCircle,
-                        contentDescription = stringResource(Res.string.home_screen_account_description),
-                    )
-                }
+                AccountDropDown(
+                    onAccountSelected = onAccountButtonClicked,
+                    onNotificationsSelected = onNotificationsButtonSelected,
+                )
             }
         },
         bottomBar = {

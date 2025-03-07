@@ -1,9 +1,16 @@
 package com.cramsan.edifikana.client.lib.features.admin.addproperty
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -16,6 +23,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.input.ImeAction
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
@@ -84,6 +93,7 @@ internal fun AddPropertyContent(
 ) {
     var propertyName by remember { mutableStateOf("") }
     var address by remember { mutableStateOf("") }
+    var newManager by remember { mutableStateOf("") }
 
     Scaffold(
         modifier = modifier,
@@ -114,6 +124,14 @@ internal fun AddPropertyContent(
                         value = address,
                         onValueChange = { address = it },
                         label = { Text("Address") },
+                        modifier = sectionModifier,
+                        singleLine = true,
+                    )
+
+                    OutlinedTextField(
+                        value = newManager,
+                        onValueChange = { newManager = it },
+                        label = { Text("New manager's email") },
                         modifier = sectionModifier,
                         singleLine = true,
                     )

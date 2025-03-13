@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.admin.properties
 
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
-import com.cramsan.edifikana.client.lib.features.admin.AdminRouteDestination
+import com.cramsan.edifikana.client.lib.features.admin.AdminDestination
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.core.compose.BaseViewModel
@@ -52,7 +52,7 @@ class PropertyManagerViewModel(
             emitEvent(
                 PropertyManagerEvent.TriggerApplicationEvent(
                     EdifikanaApplicationEvent.NavigateToScreem(
-                        AdminRouteDestination.PropertyAdminDestination(
+                        AdminDestination.PropertyAdminDestination(
                             propertyId
                         )
                     )
@@ -65,13 +65,13 @@ class PropertyManagerViewModel(
      * Navigate to the add property screen.
      */
     fun navigateToAddProperty() {
-        /*
         viewModelScope.launch {
-            emitEvent(PropertyManagerEvent.TriggerActivityEvent(
-                AdminActivityEvent.Navigate(propertyId)),
+            emitEvent(
+                PropertyManagerEvent.TriggerApplicationEvent(
+                    EdifikanaApplicationEvent.NavigateToScreem(AdminDestination.AddPropertyAdminDestination)
+                ),
             )
         }
-         */
     }
 
     /**

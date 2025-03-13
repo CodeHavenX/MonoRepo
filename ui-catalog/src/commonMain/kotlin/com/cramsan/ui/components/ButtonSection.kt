@@ -15,20 +15,19 @@ import com.cramsan.ui.theme.Padding
  * will define the padding and width of the content.
  */
 @Composable
-fun ActionSection(
+fun ButtonSection(
     modifier: Modifier = Modifier,
     buttons: @Composable ColumnScope.(Modifier) -> Unit,
 ) {
+    val buttonModifier = Modifier
+        .fillMaxWidth()
+        .padding(
+            horizontal = Padding.MEDIUM,
+        )
     Column(
         modifier = modifier,
         content = {
-            buttons(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        horizontal = Padding.MEDIUM,
-                    )
-            )
+            buttons(debugModifier(buttonModifier))
         },
     )
 }

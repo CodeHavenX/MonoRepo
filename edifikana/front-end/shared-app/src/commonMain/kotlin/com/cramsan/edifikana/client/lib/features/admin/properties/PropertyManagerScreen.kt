@@ -5,10 +5,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -20,13 +18,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
-import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
 import edifikana_lib.properties_screen_add_button
-import edifikana_lib.properties_screen_title
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
@@ -39,6 +35,7 @@ import org.koin.compose.viewmodel.koinViewModel
  */
 @Composable
 fun PropertyManagerScreen(
+    modifier: Modifier = Modifier,
     applicationViewModel: EdifikanaApplicationViewModel = koinInject(),
     viewModel: PropertyManagerViewModel = koinViewModel()
 ) {
@@ -66,14 +63,12 @@ fun PropertyManagerScreen(
 
     PropertyManagerContent(
         uiState,
+        modifier,
         onPropertyClicked = { property ->
             viewModel.navigateToPropertyDetails(property)
         },
         onAddPropertyClicked = {
             viewModel.navigateToAddProperty()
-        },
-        onBackSelected = {
-            viewModel.navigateBack()
         },
     )
 }
@@ -87,47 +82,35 @@ internal fun PropertyManagerContent(
     modifier: Modifier = Modifier,
     onPropertyClicked: (PropertyId) -> Unit,
     onAddPropertyClicked: () -> Unit,
-    onBackSelected: () -> Unit,
 ) {
-    Scaffold(
-        modifier = modifier,
-        topBar = {
-            EdifikanaTopBar(
-                title = stringResource(Res.string.properties_screen_title),
-                onCloseClicked = onBackSelected,
-            )
-        },
-    ) { innerPadding ->
-        // Render the screen
-        Box(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize(),
-            contentAlignment = Alignment.TopCenter,
-        ) {
-            ScreenLayout(
-                maxWith = Dp.Unspecified,
-                fixedFooter = true,
-                sectionContent = { sectionModifier ->
-                    content.content.properties.forEach {
-                        PropertyRow(
-                            it,
-                            modifier = sectionModifier,
-                            onClick = { onPropertyClicked(it.id) },
-                        )
-                    }
-                },
-                buttonContent = { buttonModifier ->
-                    Button(
-                        modifier = buttonModifier,
-                        onClick = onAddPropertyClicked,
-                    ) {
-                        Text(text = stringResource(Res.string.properties_screen_add_button))
-                    }
+    // Render the screen
+    Box(
+        modifier = modifier
+            .fillMaxSize(),
+        contentAlignment = Alignment.TopCenter,
+    ) {
+        ScreenLayout(
+            maxWith = Dp.Unspecified,
+            fixedFooter = true,
+            sectionContent = { sectionModifier ->
+                content.content.properties.forEach {
+                    PropertyRow(
+                        it,
+                        modifier = sectionModifier,
+                        onClick = { onPropertyClicked(it.id) },
+                    )
                 }
-            )
-            LoadingAnimationOverlay(isLoading = content.isLoading)
-        }
+            },
+            buttonContent = { buttonModifier ->
+                Button(
+                    modifier = buttonModifier,
+                    onClick = onAddPropertyClicked,
+                ) {
+                    Text(text = stringResource(Res.string.properties_screen_add_button))
+                }
+            }
+        )
+        LoadingAnimationOverlay(isLoading = content.isLoading)
     }
 }
 

@@ -1,24 +1,20 @@
 package ${PACKAGE_NAME}
 
-import com.cramsan.framework.core.compose.BaseViewModel
-import com.cramsan.framework.core.compose.ViewModelDependencies
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
+import androidx.compose.runtime.Composable
+import androidx.compose.desktop.ui.tooling.preview.Preview
 
 /**
- * ViewModel for the ${NAME} screen.
- **/
- // TODO: Register this ViewModel for dependecy injection
-class ${NAME}ViewModel(
-    dependencies: ViewModelDependencies,
-) : BaseViewModel<${NAME}Event, ${NAME}UIState>(
-    dependencies,
-    ${NAME}UIState.Initial,
-    TAG,
-) {
-    companion object {
-        private const val TAG = "${NAME}ViewModel"
-    }
+ * Preview for the ${NAME} feature screen.
+ * TODO: Move this file to the JVM target, since the common target does not support previews.
+ */
+@Preview
+@Composable
+private fun ${NAME}ScreenPreview() {
+    ${NAME}Content(
+        content = ${NAME}UIState(
+            title = "${NAME}ScreenPreview",
+            isLoading = true,
+        ),
+        onBackSelected = {},
+    )
 }

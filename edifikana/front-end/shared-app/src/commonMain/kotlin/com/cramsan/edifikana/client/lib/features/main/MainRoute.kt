@@ -19,7 +19,6 @@ enum class MainRoute(
     Home(route = "home_2"),
     TimeCardStaffList(route = "clockin/staffs"),
     TimeCardSingleStaff(route = "clockin/staffs/{staffPk}"),
-    TimeCardAddStaff(route = "clockin/add"),
     EventLogSingleItem(route = "eventlog/{eventLogRecordPk}"),
     EventLogAddItem(route = "eventlog/add"),
     ;
@@ -31,7 +30,7 @@ enum class MainRoute(
 sealed class MainRouteDestination(
     val route: MainRoute,
     @RouteSafePath
-    override val path: String,
+    override val rawRoute: String,
 ) : Destination {
     /**
      * A class representing navigating to the home screen.
@@ -55,14 +54,6 @@ sealed class MainRouteDestination(
     data class TimeCardSingleStaffDestination(val staffPk: StaffId) : MainRouteDestination(
         MainRoute.TimeCardSingleStaff,
         MainRoute.TimeCardSingleStaff.route.replace("{staffPk}", requireNotBlank(staffPk.staffId)),
-    )
-
-    /**
-     * A class representing navigating to the time card add staff screen.
-     */
-    data object TimeCardAddStaffDestination : MainRouteDestination(
-        MainRoute.TimeCardAddStaff,
-        MainRoute.TimeCardAddStaff.route,
     )
 
     /**

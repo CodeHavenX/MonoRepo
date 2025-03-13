@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.client.lib.features.main.timecard.addstaff
+package com.cramsan.edifikana.client.lib.features.admin.addstaffsecondary
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +16,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.lib.toIdTypeFriendlyName
 import com.cramsan.edifikana.client.lib.toRoleFriendlyNameCompose
@@ -38,38 +40,60 @@ import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
- * Add staff screen.
+ * AddSecondary screen.
+ *
+ * This function provides the boilerplate needed to wire up the screen within the rest of the
+ * application. This includes observing the view model's state and event flows and rendering the screen.
  */
 @Composable
-fun AddStaffScreen(
-    viewModel: AddStaffViewModel = koinViewModel(),
+fun AddSecondaryStaffScreen(
+    modifier: Modifier = Modifier,
+    viewModel: AddSecondaryStaffViewModel = koinViewModel(),
     applicationViewModel: EdifikanaApplicationViewModel = koinInject(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val event by viewModel.events.collectAsState(AddStaffEvent.Noop)
+    val viewModelEvent by viewModel.events.collectAsState(AddSecondaryStaffEvent.Noop)
 
-    LaunchedEffect(event) {
-        when (val viewModelEvent = event) {
-            AddStaffEvent.Noop -> Unit
-            is AddStaffEvent.TriggerEdifikanaApplicationEvent -> {
-                applicationViewModel.executeEvent(viewModelEvent.edifikanaApplicationEvent)
+    /**
+     * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
+     */
+    LifecycleEventEffect(Lifecycle.Event.ON_START) {
+        // Call this feature's viewModel
+    }
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        // Call this feature's viewModel
+    }
+
+    LaunchedEffect(viewModelEvent) {
+        when (val event = viewModelEvent) {
+            AddSecondaryStaffEvent.Noop -> Unit
+            is AddSecondaryStaffEvent.TriggerApplicationEvent -> {
+                // Call the application's viewmodel
+                applicationViewModel.executeEvent(event.applicationEvent)
             }
         }
     }
 
-    AddStaffForm(
+    // Render the screen
+    AddSecondaryContent(
         uiState,
-        onBackSelected = { viewModel.navigateBack() }
+        onBackSelected = {
+            viewModel.onBackSelected()
+        },
+        modifier,
     ) { id, idType, name, lastName, role ->
         viewModel.saveStaff(id, idType, name, lastName, role)
     }
 }
 
+/**
+ * Content of the AccountEdit screen.
+ */
 @Composable
-internal fun AddStaffForm(
-    uiState: AddStaffUIState,
-    modifier: Modifier = Modifier,
+internal fun AddSecondaryContent(
+    content: AddSecondaryStaffUIState,
     onBackSelected: () -> Unit,
+    modifier: Modifier = Modifier,
     onSaveDataClicked: (
         id: String?,
         idType: IdType?,
@@ -105,7 +129,8 @@ internal fun AddStaffForm(
                         onValueChange = { id = it },
                         modifier = sectionModifier,
                         label = { Text(stringResource(Res.string.string_id_number)) },
-                        isError = id.isEmpty()
+                        isError = id.isEmpty(),
+                        singleLine = true,
                     )
 
                     Dropdown(
@@ -124,7 +149,7 @@ internal fun AddStaffForm(
                         modifier = sectionModifier,
                         label = { Text(stringResource(Res.string.string_names)) },
                         singleLine = true,
-                        isError = name.isEmpty()
+                        isError = name.isEmpty(),
                     )
 
                     OutlinedTextField(
@@ -157,7 +182,7 @@ internal fun AddStaffForm(
                     }
                 }
             )
-            LoadingAnimationOverlay(uiState.isLoading)
+            LoadingAnimationOverlay(content.isLoading)
         }
     }
 }

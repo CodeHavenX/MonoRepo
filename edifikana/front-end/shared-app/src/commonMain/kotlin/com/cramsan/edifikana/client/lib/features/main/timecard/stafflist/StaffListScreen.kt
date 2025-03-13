@@ -60,12 +60,12 @@ fun StaffListScreen(
         onStaffClick = { staffPK ->
             viewModel.navigateToStaff(staffPK)
         },
-        onAddStaffClick = {
-            viewModel.navigateToAddStaff()
-        },
         onCloseSelected = {
             viewModel.navigateBack()
         },
+        onAddStaffSelected = {
+            viewModel.navigateToAddStaff()
+        }
     )
 }
 
@@ -74,8 +74,8 @@ internal fun StaffList(
     uiState: StaffListUIState,
     modifier: Modifier = Modifier,
     onStaffClick: (StaffId) -> Unit,
-    onAddStaffClick: () -> Unit,
     onCloseSelected: () -> Unit,
+    onAddStaffSelected: () -> Unit,
 ) {
     Scaffold(
         modifier = modifier,
@@ -84,7 +84,7 @@ internal fun StaffList(
                 title = stringResource(Res.string.employee_list_screen_title),
                 onCloseClicked = onCloseSelected,
             ) {
-                IconButton(onClick = onAddStaffClick) {
+                IconButton(onClick = onAddStaffSelected) {
                     Icon(
                         imageVector = Icons.Default.Add,
                         contentDescription = stringResource(Res.string.employee_list_screen_add_button_description),

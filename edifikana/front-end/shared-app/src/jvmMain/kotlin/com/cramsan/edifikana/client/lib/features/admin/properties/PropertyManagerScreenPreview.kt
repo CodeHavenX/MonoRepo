@@ -2,6 +2,7 @@ package com.cramsan.edifikana.client.lib.features.admin.properties
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
+import com.cramsan.edifikana.client.ui.theme.AppTheme
 import com.cramsan.edifikana.lib.model.PropertyId
 
 /**
@@ -9,7 +10,7 @@ import com.cramsan.edifikana.lib.model.PropertyId
  */
 @Preview
 @Composable
-private fun PropertyManagerScreenPreview() {
+private fun PropertyManagerScreenPreview() = AppTheme {
     PropertyManagerContent(
         content = PropertyManagerUIState(
             content = PropertyManagerUIModel(
@@ -23,6 +24,5 @@ private fun PropertyManagerScreenPreview() {
         ),
         onPropertyClicked = {},
         onAddPropertyClicked = {},
-        onBackSelected = {},
     )
 }

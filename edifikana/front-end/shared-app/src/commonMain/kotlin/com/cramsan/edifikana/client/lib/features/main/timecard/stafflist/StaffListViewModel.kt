@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.main.timecard.stafflist
 
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.features.admin.AdminDestination
 import com.cramsan.edifikana.client.lib.features.main.MainRouteDestination
 import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.lib.model.StaffId
@@ -66,7 +67,7 @@ class StaffListViewModel(
         emitEvent(
             StaffListEvent.TriggerEdifikanaApplicationEvent(
                 EdifikanaApplicationEvent.NavigateToScreem(
-                    MainRouteDestination.TimeCardAddStaffDestination
+                    AdminDestination.AddSecondaryStaffAdminDestination,
                 )
             )
         )

@@ -2,6 +2,8 @@ package com.cramsan.edifikana.client.lib.features.main.home
 
 import com.cramsan.edifikana.client.lib.features.ActivityDestination
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.features.account.AccountRouteDestination
+import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.core.compose.BaseViewModel
@@ -15,6 +17,7 @@ import kotlinx.coroutines.launch
 class HomeViewModel(
     dependencies: ViewModelDependencies,
     private val propertyManager: PropertyManager,
+    private val authManager: AuthManager,
 ) : BaseViewModel<HomeEvent, HomeUIModel>(
     dependencies,
     HomeUIModel.Empty,
@@ -24,9 +27,10 @@ class HomeViewModel(
     /**
      * Load properties.
      */
-    fun loadProperties() {
+    fun loadContent() {
         logI(TAG, "Loading properties.")
         viewModelScope.launch {
+            loadUserInformation()
             updatePropertyList()
         }
     }
@@ -61,6 +65,15 @@ class HomeViewModel(
         }
     }
 
+    private suspend fun loadUserInformation() {
+        val user = authManager.getUser(checkGlobalPerms = true).getOrThrow()
+        updateUiState {
+            it.copy(
+                showAdminButton = user.hasGlobalPerms,
+            )
+        }
+    }
+
     /**
      * Navigate back.
      */
@@ -80,7 +93,9 @@ class HomeViewModel(
         logI(TAG, "Navigating to account page.")
         viewModelScope.launch {
             emitApplicationEvent(
-                EdifikanaApplicationEvent.NavigateToActivity(ActivityDestination.AccountDestination)
+                EdifikanaApplicationEvent.NavigateToActivity(
+                    ActivityDestination.AccountDestination,
+                )
             )
         }
     }
@@ -108,6 +123,18 @@ class HomeViewModel(
      */
     fun selectTab(selectedTab: Tabs) {
         updateUiState { it.copy(selectedTab = selectedTab) }
+    }
+
+    /**
+     * Navigate to the notifications page.
+     */
+    fun navigateToNotifications() {
+        logI(TAG, "Navigating to notifications page.")
+        viewModelScope.launch {
+            emitApplicationEvent(
+                EdifikanaApplicationEvent.NavigateToScreem(AccountRouteDestination.NotificationsDestination)
+            )
+        }
     }
 
     companion object {

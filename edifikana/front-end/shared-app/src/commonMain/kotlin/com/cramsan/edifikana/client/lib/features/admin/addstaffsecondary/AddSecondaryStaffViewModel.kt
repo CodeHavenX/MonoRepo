@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.client.lib.features.main.timecard.addstaff
+package com.cramsan.edifikana.client.lib.features.admin.addstaffsecondary
 
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
@@ -16,13 +16,26 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 
 /**
- * View model for adding a staff member.
- */
-class AddStaffViewModel(
+ * ViewModel for the AddSecondary screen.
+ **/
+class AddSecondaryStaffViewModel(
     private val staffManager: StaffManager,
     private val propertyManager: PropertyManager,
     dependencies: ViewModelDependencies,
-) : BaseViewModel<AddStaffEvent, AddStaffUIState>(dependencies, AddStaffUIState.Initial, TAG) {
+) : BaseViewModel<AddSecondaryStaffEvent, AddSecondaryStaffUIState>(
+    dependencies,
+    AddSecondaryStaffUIState.Initial,
+    TAG,
+) {
+
+    /**
+     * Trigger the back event.
+     */
+    fun onBackSelected() {
+        viewModelScope.launch {
+            emitEvent(AddSecondaryStaffEvent.TriggerApplicationEvent(EdifikanaApplicationEvent.NavigateBack()))
+        }
+    }
 
     /**
      * Save staff member.
@@ -43,7 +56,7 @@ class AddStaffViewModel(
             role == null
         ) {
             emitEvent(
-                AddStaffEvent.TriggerEdifikanaApplicationEvent(
+                AddSecondaryStaffEvent.TriggerApplicationEvent(
                     // TODO: Add compose resource loading
                     EdifikanaApplicationEvent.ShowSnackbar(getString(Res.string.text_please_complete_fields))
                 )
@@ -51,7 +64,7 @@ class AddStaffViewModel(
             return@launch
         }
 
-        val state = AddStaffUIState(
+        val state = AddSecondaryStaffUIState(
             isLoading = true,
             getString(Res.string.title_timecard_add_staff)
         )
@@ -69,7 +82,7 @@ class AddStaffViewModel(
 
         if (result.isFailure || result.isFailure) {
             emitEvent(
-                AddStaffEvent.TriggerEdifikanaApplicationEvent(
+                AddSecondaryStaffEvent.TriggerApplicationEvent(
                     // TODO: Add compose resource loading
                     EdifikanaApplicationEvent.ShowSnackbar(
                         getString(Res.string.text_there_was_an_error_processing_request)
@@ -78,23 +91,14 @@ class AddStaffViewModel(
             )
         } else {
             emitEvent(
-                AddStaffEvent.TriggerEdifikanaApplicationEvent(
+                AddSecondaryStaffEvent.TriggerApplicationEvent(
                     EdifikanaApplicationEvent.NavigateBack()
                 )
             )
         }
     }
 
-    /**
-     * Navigate back.
-     */
-    fun navigateBack() {
-        viewModelScope.launch {
-            emitEvent(AddStaffEvent.TriggerEdifikanaApplicationEvent(EdifikanaApplicationEvent.NavigateBack()))
-        }
-    }
-
     companion object {
-        private const val TAG = "AddStaffViewModel"
+        private const val TAG = "AddSecondaryViewModel"
     }
 }

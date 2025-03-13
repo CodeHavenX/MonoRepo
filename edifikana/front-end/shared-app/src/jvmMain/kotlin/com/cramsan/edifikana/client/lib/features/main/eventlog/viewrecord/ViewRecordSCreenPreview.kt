@@ -4,11 +4,12 @@ import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.cramsan.edifikana.client.lib.models.AttachmentHolder
+import com.cramsan.edifikana.client.ui.theme.AppTheme
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 
 @Preview
 @Composable
-private fun ViewRecordScreenPreview() {
+private fun ViewRecordScreenPreview() = AppTheme(debugLayoutInspection = true) {
     SingleRecord(
         ViewRecordUIState(
             ViewRecordUIModel(

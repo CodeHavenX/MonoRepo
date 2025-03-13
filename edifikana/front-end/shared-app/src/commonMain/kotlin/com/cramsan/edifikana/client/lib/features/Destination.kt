@@ -7,5 +7,5 @@ import com.cramsan.framework.core.compose.RouteSafePath
  */
 interface Destination {
     @RouteSafePath
-    val path: String
+    val rawRoute: String
 }

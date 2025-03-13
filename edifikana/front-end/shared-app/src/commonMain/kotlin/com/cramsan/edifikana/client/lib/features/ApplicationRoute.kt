@@ -10,7 +10,7 @@ import com.cramsan.framework.core.compose.RouteSafePath
  */
 enum class ApplicationRoute(
     @RouteSafePath
-    val route: String,
+    val rawRoute: String,
 ) {
     Main("home"),
     Splash("splash"),
@@ -20,7 +20,7 @@ enum class ApplicationRoute(
     Debug("debug"),
     ;
     companion object {
-        private val mapping = entries.associateBy(ApplicationRoute::route)
+        private val mapping = entries.associateBy(ApplicationRoute::rawRoute)
 
         /**
          * Get the [ApplicationRoute] from the route string.
@@ -49,7 +49,7 @@ sealed class ActivityDestination(
      */
     data object MainDestination : ActivityDestination(
         ApplicationRoute.Main,
-        ApplicationRoute.Main.route,
+        ApplicationRoute.Main.rawRoute,
     )
 
     /**
@@ -57,7 +57,7 @@ sealed class ActivityDestination(
      */
     data object SplashDestination : ActivityDestination(
         ApplicationRoute.Splash,
-        ApplicationRoute.Splash.route,
+        ApplicationRoute.Splash.rawRoute,
     )
 
     /**
@@ -65,7 +65,7 @@ sealed class ActivityDestination(
      */
     data object AuthDestination : ActivityDestination(
         ApplicationRoute.Auth,
-        ApplicationRoute.Auth.route,
+        ApplicationRoute.Auth.rawRoute,
     )
 
     /**
@@ -73,7 +73,7 @@ sealed class ActivityDestination(
      */
     data object AccountDestination : ActivityDestination(
         ApplicationRoute.Account,
-        ApplicationRoute.Account.route,
+        ApplicationRoute.Account.rawRoute,
     )
 
     /**
@@ -81,7 +81,7 @@ sealed class ActivityDestination(
      */
     data object AdminDestination : ActivityDestination(
         ApplicationRoute.Admin,
-        ApplicationRoute.Admin.route,
+        ApplicationRoute.Admin.rawRoute,
     )
 
     /**
@@ -89,6 +89,6 @@ sealed class ActivityDestination(
      */
     data object DebugDestination : ActivityDestination(
         ApplicationRoute.Debug,
-        ApplicationRoute.Debug.route,
+        ApplicationRoute.Debug.rawRoute,
     )
 }

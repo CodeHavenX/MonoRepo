@@ -6,10 +6,4 @@ package com.cramsan.framework.core.compose
  * Events are triggered from a ViewModel and are consumed by the UI.
  *
  */
-interface ViewModelEvent {
-
-    /**
-     * No operation
-     */
-    data object Noop : ViewModelEvent
-}
+interface ViewModelEvent

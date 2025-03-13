@@ -5,11 +5,13 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import coil3.ImageLoader
 import coil3.compose.setSingletonImageLoaderFactory
 import coil3.network.ktor3.KtorNetworkFetcherFactory
 import coil3.util.DebugLogger
+import com.cramsan.ui.components.LocalDebugLayoutInspection
 import io.github.jan.supabase.coil.Coil3Integration
 
 @Suppress("MagicNumber")
@@ -31,6 +33,7 @@ fun AppTheme(
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     coil3: Coil3Integration? = null,
+    debugLayoutInspection: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = getColorScheme(darkTheme, dynamicColor, DarkThemeColors, LightThemeColors)
@@ -49,10 +52,12 @@ fun AppTheme(
         }
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        content = content
-    )
+    CompositionLocalProvider(LocalDebugLayoutInspection provides debugLayoutInspection) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            content = content
+        )
+    }
 }
 
 /**
@@ -74,3 +79,5 @@ expect fun WindowDecorations(
     colorScheme: ColorScheme,
     darkTheme: Boolean,
 )
+
+const val LARGE_SCREEN_BREAK = 600

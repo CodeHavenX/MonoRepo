@@ -1,5 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.main.home
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -72,7 +74,7 @@ fun HomeScreen(
      * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
      */
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
-        viewModel.loadProperties()
+        viewModel.loadContent()
     }
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         // Call this feature's viewModel
@@ -94,6 +96,7 @@ fun HomeScreen(
         onAdminButtonClicked = { viewModel.navigateToAdmin() },
         onPropertySelected = { viewModel.selectProperty(it) },
         onTabSelected = { viewModel.selectTab(it) },
+        onNotificationsButtonSelected = { viewModel.navigateToNotifications() }
     )
 }
 
@@ -119,6 +122,7 @@ internal fun HomeScreenContent(
     onAdminButtonClicked: () -> Unit,
     onPropertySelected: (PropertyId) -> Unit,
     onTabSelected: (Tabs) -> Unit,
+    onNotificationsButtonSelected: () -> Unit,
 ) {
     Scaffold(
         modifier = modifier,
@@ -127,26 +131,28 @@ internal fun HomeScreenContent(
                 title = stringResource(Res.string.app_name),
             ) {
                 // Property dropdown
-                PropertyDropDown(
-                    label = uiState.label,
-                    list = uiState.availableProperties,
-                    onPropertySelected = onPropertySelected,
-                )
+                if (uiState.availableProperties.isNotEmpty()) {
+                    PropertyDropDown(
+                        label = uiState.label,
+                        list = uiState.availableProperties,
+                        onPropertySelected = onPropertySelected,
+                    )
+                }
 
                 // Admin Menu button
-                IconButton(onClick = onAdminButtonClicked) {
-                    Icon(
-                        imageVector = Icons.Default.Settings,
-                        contentDescription = stringResource(Res.string.home_screen_settings_description),
-                    )
+                if (uiState.showAdminButton) {
+                    IconButton(onClick = onAdminButtonClicked) {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = stringResource(Res.string.home_screen_settings_description),
+                        )
+                    }
                 }
                 // Account button
-                IconButton(onClick = onAccountButtonClicked) {
-                    Icon(
-                        imageVector = Icons.Default.AccountCircle,
-                        contentDescription = stringResource(Res.string.home_screen_account_description),
-                    )
-                }
+                AccountDropDown(
+                    onAccountSelected = onAccountButtonClicked,
+                    onNotificationsSelected = onNotificationsButtonSelected,
+                )
             }
         },
         bottomBar = {
@@ -190,23 +196,25 @@ private fun PropertyDropDown(
     Box(
         modifier = modifier
     ) {
-        Row(
-            modifier = Modifier
-                .clip(MaterialTheme.shapes.small)
-                .clickable(
-                    interactionSource = interactionSource,
-                    indication = ripple(),
-                ) {
-                    expanded = !expanded
-                }
-                .padding(Padding.X_SMALL)
-        ) {
-            Text(label)
-            Spacer(Modifier.width(Padding.X_SMALL))
-            Icon(
-                Icons.Default.Apartment,
-                contentDescription = stringResource(Res.string.home_screen_property_dropdown_description)
-            )
+        AnimatedContent(label) {
+            Row(
+                modifier = Modifier
+                    .clip(MaterialTheme.shapes.small)
+                    .clickable(
+                        interactionSource = interactionSource,
+                        indication = ripple(),
+                    ) {
+                        expanded = !expanded
+                    }
+                    .padding(Padding.X_SMALL)
+            ) {
+                Text(it)
+                Spacer(Modifier.width(Padding.X_SMALL))
+                Icon(
+                    Icons.Default.Apartment,
+                    contentDescription = stringResource(Res.string.home_screen_property_dropdown_description)
+                )
+            }
         }
         DropdownMenu(
             expanded = expanded,
@@ -236,6 +244,48 @@ private fun PropertyDropDown(
 }
 
 /**
+ * A simple dropdown menu that shows a list of accounts and notifications.
+ */
+@Composable
+fun AccountDropDown(
+    modifier: Modifier = Modifier,
+    onAccountSelected: () -> Unit,
+    onNotificationsSelected: () -> Unit,
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Box(
+        modifier = modifier
+    ) {
+        IconButton(onClick = { expanded = !expanded }) {
+            Icon(
+                imageVector = Icons.Default.AccountCircle,
+                contentDescription = stringResource(Res.string.home_screen_account_description),
+            )
+        }
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            DropdownMenuItem(
+                text = { Text("My Account") },
+                onClick = {
+                    onAccountSelected()
+                    expanded = false
+                },
+            )
+            DropdownMenuItem(
+                text = { Text("Notifications") },
+                onClick = {
+                    onNotificationsSelected()
+                    expanded = false
+                },
+            )
+        }
+    }
+}
+
+/**
  * Content of the AccountEdit screen.
  */
 @Composable
@@ -243,16 +293,18 @@ private fun HomeContent(
     modifier: Modifier,
     selectedTab: Tabs,
 ) {
-    when (selectedTab) {
-        Tabs.EventLog -> {
-            EventLogScreen(modifier)
-        }
+    Crossfade(selectedTab) {
+        when (it) {
+            Tabs.EventLog -> {
+                EventLogScreen(modifier)
+            }
 
-        Tabs.TimeCard -> {
-            TimeCardScreen(modifier)
-        }
-        Tabs.None -> {
-            // No content
+            Tabs.TimeCard -> {
+                TimeCardScreen(modifier)
+            }
+            Tabs.None -> {
+                // No content
+            }
         }
     }
 }

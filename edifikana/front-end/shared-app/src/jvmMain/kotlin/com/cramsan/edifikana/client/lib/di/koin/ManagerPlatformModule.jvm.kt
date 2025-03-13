@@ -17,7 +17,7 @@ actual val ManagerPlatformModule = module {
         JvmDownloadStrategy()
     }
 
-    single(named(EDIFIKANA_SUPABASE_URL)) {
+    single<String>(named(EDIFIKANA_SUPABASE_URL)) {
         val enabledOverride = get<Boolean>(named(Overrides.KEY_SUPABASE_OVERRIDE_ENABLED))
         val overrideUrl = get<String>(named(Overrides.KEY_SUPABASE_OVERRIDE_URL))
 
@@ -27,11 +27,11 @@ actual val ManagerPlatformModule = module {
             overrideUrl
         } else {
             assertFalse(supabaseUrl.isNullOrBlank(), TAG, "EDIFIKANA_SUPABASE_URL cannot be blank")
-            supabaseUrl
+            supabaseUrl.orEmpty()
         }
     }
 
-    single(named(EDIFIKANA_SUPABASE_KEY)) {
+    single<String>(named(EDIFIKANA_SUPABASE_KEY)) {
         val enabledOverride = get<Boolean>(named(Overrides.KEY_SUPABASE_OVERRIDE_ENABLED))
         val overrideKey = get<String>(named(Overrides.KEY_SUPABASE_OVERRIDE_KEY))
 
@@ -41,7 +41,7 @@ actual val ManagerPlatformModule = module {
             overrideKey
         } else {
             assertFalse(supabaseKey.isNullOrBlank(), TAG, "EDIFIKANA_SUPABASE_KEY cannot be blank")
-            supabaseKey
+            supabaseKey.orEmpty()
         }
     }
 }

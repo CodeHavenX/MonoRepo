@@ -14,6 +14,10 @@ apply(from = "$rootDir/gradle/kotlin-mpp-target-wasm-compose-application.gradle"
 
 kotlin {
     wasmJs {
+        // Refactored from KotlinWebpackConfig to avoid serialization issues
+        // https://youtrack.jetbrains.com/issue/KT-68614/Wasm.-KotlinWebpack-cannot-serialize-Gradle-script-object-references
+        val projectDirPath = project.projectDir.path
+
         moduleName = "composeApp"
         browser {
             commonWebpackConfig {
@@ -21,7 +25,7 @@ kotlin {
                 devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
                     static = (static ?: mutableListOf()).apply {
                         // Serve sources to debug inside browser
-                        add(project.projectDir.path)
+                        add(projectDirPath)
                     }
                 }
             }

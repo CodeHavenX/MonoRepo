@@ -65,7 +65,7 @@ class HubViewModel(
         logI(TAG, "Navigate to the notifications screen")
         viewModelScope.launch {
             emitApplicationEvent(
-                EdifikanaApplicationEvent.NavigateToScreem(
+                EdifikanaApplicationEvent.NavigateToScreen(
                     AccountRouteDestination.NotificationsDestination,
                 )
             )

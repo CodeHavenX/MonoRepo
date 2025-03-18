@@ -28,6 +28,7 @@ refreshVersions {
 }
 
 include("framework:assert")
+include("framework:configuration")
 include("framework:crashhandler")
 include("framework:core")
 include("framework:core-compose")

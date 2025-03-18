@@ -26,6 +26,7 @@ tasks.register("releaseAll") {
     description = "Builds all target"
 
     dependsOn("framework:assert:release")
+    dependsOn("framework:configuration:release")
     dependsOn("framework:crashhandler:release")
     dependsOn("framework:core:release")
     dependsOn("framework:core-compose:release")

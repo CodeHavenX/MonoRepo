@@ -17,8 +17,8 @@ import com.cramsan.edifikana.server.core.service.UserService
 import com.cramsan.edifikana.server.core.service.password.PasswordGenerator
 import com.cramsan.edifikana.server.core.service.password.SimplePasswordGenerator
 import com.cramsan.edifikana.server.settings.Overrides
-import com.cramsan.edifikana.server.util.readSimpleProperty
 import com.cramsan.framework.assertlib.assertFalse
+import com.cramsan.framework.configuration.Configuration
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.SettingsSessionManager
@@ -71,8 +71,10 @@ val ApplicationModule = module {
             "SupabaseClient was loaded while in debug mode. This may be due to incorrectly configured DI.",
         )
 
-        val supabaseUrl = readSimpleProperty("ediifkana.supabase.url") ?: System.getenv("EDIFIKANA_SUPABASE_URL")
-        val supabaseKey = readSimpleProperty("edifikana.supabase.key") ?: System.getenv("EDIFIKANA_SUPABASE_KEY")
+        val configuration = get<Configuration>()
+
+        val supabaseUrl = configuration.readKey("ediifkana.supabase.url") ?: System.getenv("EDIFIKANA_SUPABASE_URL")
+        val supabaseKey = configuration.readKey("edifikana.supabase.key") ?: System.getenv("EDIFIKANA_SUPABASE_KEY")
 
         assertFalse(
             supabaseUrl.isNullOrBlank(),

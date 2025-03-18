@@ -6,7 +6,7 @@ import java.util.Properties
 /**
  * A simple configuration implementation that reads config properties from a file.
  */
-class SimpleConfiguration(private val configFile: String) : Configuration{
+class SimpleConfiguration(private val configFile: String) : Configuration {
     /**
      * Reads a key from the config file.
      */
@@ -48,4 +48,3 @@ class SimpleConfiguration(private val configFile: String) : Configuration{
         return properties.getProperty(key)
     }
 }
-

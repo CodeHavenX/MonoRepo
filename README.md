@@ -50,7 +50,7 @@ The code is configured to follow a pre-defined format style. This is enforced by
 You can read more about testing in the [Testing](https://dev.azure.com/CRamsan/Framework/_wiki/wikis/Framework.wiki/31/Testing) page.
 
 ### Create a new module
-If you want to start a new project and need a new module, look at the [New Module](https://dev.azure.com/CRamsan/Framework/_wiki/wikis/Framework.wiki/30/Creating-a-new-module) page for some examples about how to get started.
+If you want to start a new project and need a new module, look at the [New Module](./NEW_MODULE.md) page for some examples about how to get started.
 
 ### More information
 To learn more about the project, please look at the [documentation](https://dev.azure.com/CRamsan/Framework/_wiki/wikis/Framework.wiki/22/Project-Wiki).

@@ -7,10 +7,22 @@ import java.util.Properties
  * A simple configuration implementation that reads config properties from a file.
  */
 class SimpleConfiguration(private val configFile: String) : Configuration {
+    // Properties object to store the config properties.
+    val properties = Properties()
+
+    /**
+     * Initializes the configuration by loading the properties from the config file.
+     */
+    init {
+        File(configFile).inputStream().use {
+            properties.load(it)
+        }
+    }
+
     /**
      * Reads a key from the config file.
      */
-    override fun readKey(key: String): String? {
+    override fun readString(key: String): String? {
         return readSimpleConfig(key)
     }
 
@@ -18,21 +30,21 @@ class SimpleConfiguration(private val configFile: String) : Configuration {
      * Reads an integer from the config file.
      */
     override fun readInt(key: String): Int? {
-        return readSimpleConfig(key)?.toInt()
+        return readSimpleConfig(key)?.toIntOrNull()
     }
 
     /**
      * Reads a long from the config file.
      */
     override fun readLong(key: String): Long? {
-        return readSimpleConfig(key)?.toLong()
+        return readSimpleConfig(key)?.toLongOrNull()
     }
 
     /**
      * Reads a double from the config file.
      */
     override fun readBoolean(key: String): Boolean? {
-        return readSimpleConfig(key)?.toBoolean()
+        return readSimpleConfig(key)?.toBooleanStrictOrNull()
     }
 
     /**
@@ -41,10 +53,6 @@ class SimpleConfiguration(private val configFile: String) : Configuration {
     private fun readSimpleConfig(
         key: String,
     ): String? {
-        val properties = Properties()
-        File(configFile).inputStream().use {
-            properties.load(it)
-        }
         return properties.getProperty(key)
     }
 }

@@ -6,6 +6,9 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertNull
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
 
 /**
  * Simple unit tests for ensuring our read actions are returning expected vals from the config file.
@@ -26,7 +29,7 @@ class SimpleConfigurationTest {
         stringKey=testValue
         intKey=543
         longKey=1234567890
-        boleanKey=true
+        booleanKey=true
      """.trimIndent()
         )
         configuration = SimpleConfiguration(configFile.absolutePath)
@@ -41,9 +44,22 @@ class SimpleConfigurationTest {
     }
 
     @Test
-    fun `test readKey`() {
-        val result = configuration.readKey("stringKey")
+    fun `test readString`() {
+        val result = configuration.readString("stringKey")
         assertEquals("testValue", result)
+    }
+
+    @Test
+    fun `test readString with nonExistent key`() {
+        val result = configuration.readString("nonExistentKey")
+        assertEquals(null, result)
+    }
+
+    @ParameterizedTest
+    @CsvSource("intKey, 543", "longKey, 1234567890", "booleanKey, true")
+    fun `test readString with wrong key type returns string value`(key: String, expected: String) {
+        val result = configuration.readString(key)
+        assertEquals(expected, result)
     }
 
     @Test
@@ -53,14 +69,53 @@ class SimpleConfigurationTest {
     }
 
     @Test
+    fun `test readInt with nonExistent key`() {
+        val result = configuration.readInt("nonExistentKey")
+        assertEquals(null, result)
+    }
+
+    @ParameterizedTest
+    @CsvSource("stringKey", "booleanKey")
+    fun `test readInt with wrong key type returns null`(key: String) {
+        val result = configuration.readInt(key)
+        assertNull(result)
+    }
+
+    @Test
     fun `test readLong`() {
         val result = configuration.readLong("longKey")
         assertEquals(1234567890, result)
     }
 
     @Test
+    fun `test readLong with nonExistent key`() {
+        val result = configuration.readLong("nonExistentKey")
+        assertEquals(null, result)
+    }
+
+    @ParameterizedTest
+    @CsvSource("stringKey", "booleanKey")
+    fun `test readLong with wrong key type returns null`(key: String) {
+        val result = configuration.readLong(key)
+        assertNull(result)
+    }
+
+    @Test
     fun `test readBoolean`() {
-        val result = configuration.readBoolean("boleanKey")
+        val result = configuration.readBoolean("booleanKey")
         assertTrue(result!!)
+    }
+
+    @Test
+    fun `test readBoolean with nonExistent key`() {
+        val result = configuration.readBoolean("nonExistentKey")
+        assertNull(result)
+    }
+
+    @ParameterizedTest
+    @CsvSource("stringKey", "intKey", "longKey")
+    fun `test readBoolean with wrong key type returns null`(key: String) {
+        val result = configuration.readBoolean(key)
+        assertNull(result)
     }
 }

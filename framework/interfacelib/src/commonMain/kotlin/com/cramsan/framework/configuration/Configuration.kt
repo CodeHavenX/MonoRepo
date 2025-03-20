@@ -6,12 +6,12 @@ package com.cramsan.framework.configuration
  */
 interface Configuration {
     /**
-     * Read [value] of type [String] as the specified [key]
+     * Read [key] as nullable [String]
      */
-    fun readKey(key: String): String?
+    fun readString(key: String): String?
 
     /**
-     * Read [key] as a nullable [String]
+     * Read [key] as a nullable [Int]
      */
     fun readInt(key: String): Int?
 

@@ -73,8 +73,8 @@ val ApplicationModule = module {
 
         val configuration = get<Configuration>()
 
-        val supabaseUrl = configuration.readKey("ediifkana.supabase.url") ?: System.getenv("EDIFIKANA_SUPABASE_URL")
-        val supabaseKey = configuration.readKey("edifikana.supabase.key") ?: System.getenv("EDIFIKANA_SUPABASE_KEY")
+        val supabaseUrl = configuration.readString("ediifkana.supabase.url") ?: System.getenv("EDIFIKANA_SUPABASE_URL")
+        val supabaseKey = configuration.readString("edifikana.supabase.key") ?: System.getenv("EDIFIKANA_SUPABASE_KEY")
 
         assertFalse(
             supabaseUrl.isNullOrBlank(),

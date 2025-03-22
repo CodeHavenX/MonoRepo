@@ -1,5 +1,3 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-
 plugins {
     kotlin("plugin.serialization")
     id("io.ktor.plugin")
@@ -20,6 +18,7 @@ dependencies {
     implementation(project(":framework:preferences"))
     implementation(project(":framework:thread"))
     implementation(project(":framework:utils"))
+    implementation(project(":framework:configuration"))
 
     implementation(project(":edifikana:shared"))
 

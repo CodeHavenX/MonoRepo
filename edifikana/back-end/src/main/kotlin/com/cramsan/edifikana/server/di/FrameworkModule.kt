@@ -3,6 +3,8 @@ package com.cramsan.edifikana.server.di
 import com.cramsan.framework.assertlib.AssertUtil
 import com.cramsan.framework.assertlib.AssertUtilInterface
 import com.cramsan.framework.assertlib.implementation.AssertUtilImpl
+import com.cramsan.framework.configuration.Configuration
+import com.cramsan.framework.configuration.SimpleConfiguration
 import com.cramsan.framework.core.BEDispatcherProvider
 import com.cramsan.framework.core.DispatcherProvider
 import com.cramsan.framework.halt.HaltUtil
@@ -91,6 +93,10 @@ val FrameworkModule = module(createdAtStart = true) {
     }
 
     single<DispatcherProvider> { BEDispatcherProvider() }
+
+    single<Configuration> {
+        SimpleConfiguration("config.properties")
+    }
 }
 
 // Environment variables

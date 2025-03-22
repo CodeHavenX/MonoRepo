@@ -19,9 +19,9 @@ A lot of the code is kept in a shared module called **Framework** that abstract 
 ## Getting started
  
 ### Prerequisites
-- JDK 17 _(installed from IDE or web)_
-- Gradle 8.0 _(installed from the wrapper)_
-- IDEA 2024.1 UE / 2023.3.6 CE
+- JDK 21 _(installed from IDE or web)_
+- Gradle 8.12.1 _(installed from the wrapper)_
+- IDEA 2025.1 Beta
 - Ensure you have the following plugins installed:
   - [Android](https://plugins.jetbrains.com/plugin/22989-android)
   - [Compose Multiplatform IDE Support](https://plugins.jetbrains.com/plugin/16541-compose-multiplatform-ide-support)

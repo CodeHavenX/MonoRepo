@@ -37,7 +37,7 @@ class SupabaseUserDatabase(
         val supabaseUser = auth.admin.createUserWithEmail {
             email = request.email
             password = request.password
-            autoConfirm = false
+            autoConfirm = true
         }
 
         val requestEntity: UserEntity.CreateUserEntity = request.toUserEntity(supabaseUser.id)

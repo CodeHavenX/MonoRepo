@@ -77,3 +77,9 @@ Ensure you have followed the steps in the [README.md](README.md) to ensure you h
 Open each file and verify that you can see the Previews:
 - [Window.kt](samples/jbcompose-desktop-app/src/main/kotlin/com/cramsan/minesweepers/jvm/Window.kt)
 - [MainActivity.kt](samples/jbcompose-android-app/src/androidMain/kotlin/com/cramsan/minesweepers/android/app/MainActivity.kt)
+
+## Upgrade documentation
+
+We have some documentation that references specific versions for things such as tools. We need to ensure those
+are also updated. The documents to update are:
+- [README.md](README.md)

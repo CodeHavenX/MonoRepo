@@ -1,5 +1,6 @@
 package com.cramsan.framework.test
 
+import kotlin.test.BeforeTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -17,7 +18,9 @@ class CommonCoroutineTests : TestBase() {
     lateinit var viewModel: SimpleViewModel
     lateinit var repository: Repository
 
-    override fun setupTest() {
+    @BeforeTest
+
+    fun setupTest() {
         this.repository = Repository()
         this.viewModel = SimpleViewModel(testCoroutineScope, repository)
     }

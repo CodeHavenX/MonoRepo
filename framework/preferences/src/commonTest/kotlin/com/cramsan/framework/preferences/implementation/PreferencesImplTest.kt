@@ -1,6 +1,7 @@
 package com.cramsan.framework.preferences.implementation
 
 import com.cramsan.framework.preferences.PreferencesTest
+import kotlin.test.BeforeTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
@@ -10,7 +11,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @OptIn(ExperimentalCoroutinesApi::class)
 class PreferencesImplTest : PreferencesTest() {
 
-    override fun setupTest() {
+    @BeforeTest
+    fun setupTest() {
         val preferencesDelegate = InMemoryPreferencesDelegate()
         preferences = PreferencesImpl(preferencesDelegate)
     }

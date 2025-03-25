@@ -1,16 +1,16 @@
 package com.cramsan.framework.test
 
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import kotlin.test.BeforeTest
 
 @OptIn(ExperimentalCoroutinesApi::class)
 actual abstract class TestBase {
 
-    val testCoroutineDispatcher = StandardTestDispatcher()
+    actual val testCoroutineDispatcher: CoroutineDispatcher = UnconfinedTestDispatcher()
     private val _testCoroutineScope = TestScope(testCoroutineDispatcher)
 
     actual fun runBlockingTest(block: suspend TestScope.() -> Unit) {
@@ -22,11 +22,4 @@ actual abstract class TestBase {
      * classes as well.
      */
     actual val testCoroutineScope: CoroutineScope = _testCoroutineScope
-
-    @BeforeTest
-    fun internalSetupTest() {
-        setupTest()
-    }
-
-    actual abstract fun setupTest()
 }

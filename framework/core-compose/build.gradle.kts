@@ -35,6 +35,10 @@ kotlin {
             implementation("org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose:_")
             implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:_")
         }
+
+        commonTest.dependencies {
+            implementation(project(":framework:test"))
+        }
     }
 }
 

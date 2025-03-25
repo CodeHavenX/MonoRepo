@@ -1,6 +1,7 @@
 package com.cramsan.framework.test
 
 import io.mockk.MockKAnnotations
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
@@ -11,6 +12,7 @@ import kotlin.test.BeforeTest
  * This is a copy-paste of the Android version of this file. We are waiting for support of code sharing
  * between Android and JVM so we can finally use a single file.
  */
+@Suppress("UnnecessaryAbstractClass")
 @OptIn(ExperimentalCoroutinesApi::class)
 actual abstract class TestBase {
 
@@ -26,11 +28,11 @@ actual abstract class TestBase {
     actual val testCoroutineScope: CoroutineScope
         get() = testCoroutineRule.testCoroutineScope
 
+    actual val testCoroutineDispatcher: CoroutineDispatcher
+        get() = testCoroutineRule.testCoroutineDispatcher
+
     @BeforeTest
     fun internalSetupTest() {
         MockKAnnotations.init(this)
-        setupTest()
     }
-
-    actual abstract fun setupTest()
 }

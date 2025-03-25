@@ -6,6 +6,7 @@ import com.cramsan.framework.logging.implementation.NoopEventLogger
 import com.cramsan.framework.test.TestBase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlin.concurrent.thread
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 
 /**
@@ -13,7 +14,8 @@ import kotlin.test.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class HaltUtilTest : TestBase() {
 
-    override fun setupTest() = Unit
+    @BeforeTest
+    fun setupTest() = Unit
 
     @Test
     fun testStopThread() = runBlockingTest {

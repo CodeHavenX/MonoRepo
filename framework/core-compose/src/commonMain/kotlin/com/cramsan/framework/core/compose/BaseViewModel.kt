@@ -23,9 +23,11 @@ open class BaseViewModel<E : ViewModelEvent, UI : ViewModelUIState> (
     private val tag: String,
 ) : ViewModel() {
 
-    protected val viewModelScope: CoroutineScope = CoroutineScope(
-        SupervisorJob() + dependencies.coroutineExceptionHandler + dependencies.dispatcherProvider.uiDispatcher()
-    )
+    protected val viewModelScope: CoroutineScope by lazy {
+        CoroutineScope(
+            SupervisorJob() + dependencies.coroutineExceptionHandler + dependencies.dispatcherProvider.uiDispatcher()
+        )
+    }
 
     private val _uiState = MutableStateFlow(initialState)
 

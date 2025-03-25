@@ -6,7 +6,7 @@ import com.cramsan.framework.logging.EventLoggerInterface
 import com.cramsan.framework.logging.Severity
 
 /**
- * A no-op implementation of the [EventLoggerInterface]. This is useful when you want to disable
+ * A no-op implementation of the [com.cramsan.framework.logging.EventLoggerInterface]. This is useful when you want to disable
  * logging.
  */
 class NoopEventLogger : EventLoggerInterface {

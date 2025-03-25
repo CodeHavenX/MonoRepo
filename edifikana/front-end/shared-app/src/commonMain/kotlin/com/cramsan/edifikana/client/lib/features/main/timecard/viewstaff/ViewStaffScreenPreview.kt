@@ -12,7 +12,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Preview
 @Composable
 private fun ViewStaffScreenPreview() = AppTheme(debugLayoutInspection = true) {
-    AssertUtil.setInstance(NoopAssertUtil)
+    AssertUtil.setInstance(NoopAssertUtil())
 
     ViewStaffContent(
         ViewStaffUIState(

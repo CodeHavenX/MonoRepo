@@ -17,8 +17,8 @@ import org.jetbrains.compose.resources.getString
  * Sign in ViewModel.
  */
 class SignInViewModel(
-    private val auth: AuthManager,
     dependencies: ViewModelDependencies,
+    private val auth: AuthManager,
 ) : BaseViewModel<SignInEvent, SignInUIState>(dependencies, SignInUIState.Initial, TAG) {
 
     init {

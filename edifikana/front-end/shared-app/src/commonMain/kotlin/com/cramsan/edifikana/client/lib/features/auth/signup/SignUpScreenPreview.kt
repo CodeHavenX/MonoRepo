@@ -14,7 +14,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 private fun SignUpScreenSuccessPreview() = AppTheme {
     SignUpContent(
-        uistate = SignUpUIState(
+        uiState = SignUpUIState(
             isLoading = false,
             signUpForm = SignUpFormUIModel(
                 firstName = "Roberto",
@@ -43,7 +43,7 @@ private fun SignUpScreenSuccessPreview() = AppTheme {
 @Composable
 private fun SignUpScreenFailurePreview() = AppTheme {
     SignUpContent(
-        uistate = SignUpUIState(
+        uiState = SignUpUIState(
             isLoading = false,
             signUpForm = SignUpFormUIModel(
                 firstName = "Donkey",

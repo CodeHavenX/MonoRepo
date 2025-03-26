@@ -10,8 +10,14 @@ import com.cramsan.framework.core.compose.ViewModelUIState
  */
 data class ValidationUIState(
     val isLoading: Boolean,
+    val otpCode: String,
+    val errorMessage: String?,
 ) : ViewModelUIState {
     companion object {
-        val Initial = ValidationUIState(true)
+        val Initial = ValidationUIState(
+            isLoading = true,
+            otpCode = "",
+            errorMessage = null,
+            )
     }
 }

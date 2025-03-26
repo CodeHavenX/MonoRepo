@@ -1,13 +1,23 @@
 package com.cramsan.edifikana.client.lib.features.auth.validation
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
-import com.cramsan.ui.components.LoadingAnimationOverlay
+import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
+import com.cramsan.ui.components.ScreenLayout
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -47,7 +57,10 @@ fun ValidationScreen(
 
     // Render the screen
     ValidationContent(
-        uiState,
+        uiState = uiState,
+        onCloseClicked = {
+            // TODO: ADD FUNCTIONALITY
+        }
     )
 }
 
@@ -55,6 +68,52 @@ fun ValidationScreen(
  * Content of the AccountEdit screen.
  */
 @Composable
-internal fun ValidationContent(content: ValidationUIState) {
-    LoadingAnimationOverlay(isLoading = content.isLoading)
+internal fun ValidationContent(
+    uiState: ValidationUIState,
+    modifier: Modifier = Modifier,
+    onCloseClicked: () -> Unit,
+    ) {
+    Scaffold(
+        modifier = modifier,
+        topBar = {
+            EdifikanaTopBar   (
+                title = "Validation",
+                onCloseClicked = onCloseClicked,
+            )
+        },
+    ) { innerPadding ->
+        // Render the screen
+        Box(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center,
+        ) {
+            ScreenLayout(
+                sectionContent = { modifier ->
+                    AnimatedContent(
+                        uiState.errorMessage,
+                        modifier = modifier
+                    ) {
+                        val showErrorMessage = it.isNullOrBlank().not()
+                        if (showErrorMessage) {
+                            // Render the error message
+                            Text(
+                                it.orEmpty(),
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    }
+
+                    Text(
+                        "GET VALIDATED!",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            )
+        }
+
+    }
 }

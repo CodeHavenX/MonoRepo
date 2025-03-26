@@ -76,7 +76,7 @@ fun SignUpScreen(
     }
 
     SignUpContent(
-        uistate = uiState,
+        uiState = uiState,
         onEmailValueChange = { viewModel.onEmailValueChange(it) },
         onPhoneNumberValueChange = { viewModel.onPhoneNumberValueChange(it) },
         onPasswordValueChange = { viewModel.onPasswordValueChange(it) },
@@ -90,7 +90,7 @@ fun SignUpScreen(
 
 @Composable
 internal fun SignUpContent(
-    uistate: SignUpUIState,
+    uiState: SignUpUIState,
     modifier: Modifier = Modifier,
     onFirstNameValueChange: (String) -> Unit,
     onLastNameValueChange: (String) -> Unit,
@@ -120,7 +120,7 @@ internal fun SignUpContent(
             ScreenLayout(
                 sectionContent = { modifier ->
                     AnimatedContent(
-                        uistate.signUpForm.errorMessage,
+                        uiState.signUpForm.errorMessage,
                         modifier = modifier,
                         transitionSpec = {
                             fadeIn()
@@ -140,7 +140,7 @@ internal fun SignUpContent(
                     }
 
                     OutlinedTextField(
-                        value = uistate.signUpForm.firstName,
+                        value = uiState.signUpForm.firstName,
                         onValueChange = { onFirstNameValueChange(it) },
                         modifier = modifier,
                         label = { Text(stringResource(Res.string.sign_up_screen_text_first_name)) },
@@ -148,28 +148,28 @@ internal fun SignUpContent(
                     )
 
                     OutlinedTextField(
-                        value = uistate.signUpForm.lastName,
+                        value = uiState.signUpForm.lastName,
                         onValueChange = { onLastNameValueChange(it) },
                         modifier = modifier,
                         label = { Text(stringResource(Res.string.sign_up_screen_text_last_name)) },
                         maxLines = 1,
                     )
                     OutlinedTextField(
-                        value = uistate.signUpForm.email,
+                        value = uiState.signUpForm.email,
                         onValueChange = { onEmailValueChange(it) },
                         modifier = modifier,
                         label = { Text(stringResource(Res.string.sign_up_screen_text_email)) },
                         maxLines = 1,
                     )
                     OutlinedTextField(
-                        value = uistate.signUpForm.phoneNumber,
+                        value = uiState.signUpForm.phoneNumber,
                         onValueChange = { onPhoneNumberValueChange(it) },
                         modifier = modifier,
                         label = { Text(stringResource(Res.string.sign_up_screen_text_phone_number)) },
                         maxLines = 1,
                     )
                     PasswordOutlinedTextField(
-                        value = uistate.signUpForm.password,
+                        value = uiState.signUpForm.password,
                         onValueChange = { onPasswordValueChange(it) },
                         modifier = modifier,
                         label = { Text(stringResource(Res.string.sign_up_screen_text_password)) },
@@ -191,7 +191,7 @@ internal fun SignUpContent(
                             .padding(Padding.XX_SMALL)
                     ) {
                         Checkbox(
-                            checked = uistate.signUpForm.policyChecked,
+                            checked = uiState.signUpForm.policyChecked,
                             onCheckedChange = null,
                             modifier = Modifier.padding(end = Padding.SMALL),
                         )
@@ -205,7 +205,7 @@ internal fun SignUpContent(
                 buttonContent = { modifier ->
                     Button(
                         modifier = modifier,
-                        enabled = uistate.signUpForm.registerEnabled,
+                        enabled = uiState.signUpForm.registerEnabled,
                         onClick = onSignUpClicked,
                     ) {
                         Text(stringResource(Res.string.sign_up_screen_text_sign_up))
@@ -213,6 +213,6 @@ internal fun SignUpContent(
                 },
             )
         }
-        LoadingAnimationOverlay(uistate.isLoading)
+        LoadingAnimationOverlay(uiState.isLoading)
     }
 }

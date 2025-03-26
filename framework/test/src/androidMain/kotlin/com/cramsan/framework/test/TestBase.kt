@@ -2,12 +2,14 @@ package com.cramsan.framework.test
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import io.mockk.MockKAnnotations
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
 import org.junit.Rule
 import kotlin.test.BeforeTest
 
+@Suppress("UnnecessaryAbstractClass")
 @OptIn(ExperimentalCoroutinesApi::class)
 actual abstract class TestBase {
     // This is needed so that we can run APIs that interface with the different Android Loopers.
@@ -25,10 +27,7 @@ actual abstract class TestBase {
     @BeforeTest
     fun internalSetupTest() {
         MockKAnnotations.init(this)
-        setupTest()
     }
-
-    actual abstract fun setupTest()
 
     /**
      * Reference to the Scope used to run the tests. This scope can be injected into
@@ -36,4 +35,7 @@ actual abstract class TestBase {
      */
     actual val testCoroutineScope: CoroutineScope
         get() = testCoroutineRule.testCoroutineScope
+
+    actual val testCoroutineDispatcher: CoroutineDispatcher
+        get() = testCoroutineRule.testCoroutineDispatcher
 }

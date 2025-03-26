@@ -10,13 +10,15 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.minutes
 
 class CalendarServiceTest : TestBase() {
 
-    override fun setupTest() = Unit
+    @BeforeTest
+    fun setupTest() = Unit
 
     @Test
     fun `test getAvailableTimeSlots for staff`() = runBlockingTest {

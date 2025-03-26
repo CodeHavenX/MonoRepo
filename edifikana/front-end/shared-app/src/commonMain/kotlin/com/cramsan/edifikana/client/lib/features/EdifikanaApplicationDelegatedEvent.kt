@@ -2,7 +2,6 @@ package com.cramsan.edifikana.client.lib.features
 
 import androidx.compose.material3.SnackbarResult
 import com.cramsan.framework.core.CoreUri
-import kotlin.random.Random
 
 /**
  * Delegated events that can be triggered in the application. These events
@@ -21,7 +20,6 @@ sealed class EdifikanaApplicationDelegatedEvent {
      */
     data class HandleReceivedImage(
         val uri: CoreUri,
-        val id: Int = Random.nextInt(),
     ) : EdifikanaApplicationDelegatedEvent()
 
     /**
@@ -29,7 +27,6 @@ sealed class EdifikanaApplicationDelegatedEvent {
      */
     data class HandleReceivedImages(
         val uris: List<CoreUri>,
-        val id: Int = Random.nextInt(),
     ) : EdifikanaApplicationDelegatedEvent()
 
     /**
@@ -37,6 +34,5 @@ sealed class EdifikanaApplicationDelegatedEvent {
      */
     data class HandleSnackbarResult(
         val result: SnackbarResult,
-        val id: Int = Random.nextInt(),
     ) : EdifikanaApplicationDelegatedEvent()
 }

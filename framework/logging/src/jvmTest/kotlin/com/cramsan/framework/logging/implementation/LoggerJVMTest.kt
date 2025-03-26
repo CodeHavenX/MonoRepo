@@ -4,13 +4,15 @@ import com.cramsan.framework.logging.Severity
 import com.cramsan.framework.test.TestBase
 import io.mockk.mockk
 import io.mockk.verify
+import kotlin.test.BeforeTest
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.Logger
 import kotlin.test.Test
 
 class LoggerJVMTest : TestBase() {
 
-    override fun setupTest() = Unit
+    @BeforeTest
+    fun setupTest() = Unit
 
     @Test
     fun `test logging simple message`() = runBlockingTest {

@@ -18,6 +18,7 @@ import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
 import org.koin.test.get
 import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -29,7 +30,8 @@ class UserControllerTest : TestBase(), KoinTest {
     /**
      * Setup the test.
      */
-    override fun setupTest() = Unit
+    @BeforeTest
+    fun setupTest() = Unit
 
     /**
      * Clean up the test.

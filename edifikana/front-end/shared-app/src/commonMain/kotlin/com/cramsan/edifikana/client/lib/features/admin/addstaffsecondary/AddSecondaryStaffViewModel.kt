@@ -33,7 +33,7 @@ class AddSecondaryStaffViewModel(
      */
     fun onBackSelected() {
         viewModelScope.launch {
-            emitEvent(AddSecondaryStaffEvent.TriggerApplicationEvent(EdifikanaApplicationEvent.NavigateBack()))
+            emitEvent(AddSecondaryStaffEvent.TriggerApplicationEvent(EdifikanaApplicationEvent.NavigateBack))
         }
     }
 
@@ -92,7 +92,7 @@ class AddSecondaryStaffViewModel(
         } else {
             emitEvent(
                 AddSecondaryStaffEvent.TriggerApplicationEvent(
-                    EdifikanaApplicationEvent.NavigateBack()
+                    EdifikanaApplicationEvent.NavigateBack
                 )
             )
         }

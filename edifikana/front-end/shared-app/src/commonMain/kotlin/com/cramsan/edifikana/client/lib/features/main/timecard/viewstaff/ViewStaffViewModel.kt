@@ -186,7 +186,7 @@ class ViewStaffViewModel(
      */
     fun navigateBack() {
         viewModelScope.launch {
-            emitEvent(ViewStaffEvent.TriggerEdifikanaApplicationEvent(EdifikanaApplicationEvent.NavigateBack()))
+            emitEvent(ViewStaffEvent.TriggerEdifikanaApplicationEvent(EdifikanaApplicationEvent.NavigateBack))
         }
     }
 

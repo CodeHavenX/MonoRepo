@@ -13,6 +13,7 @@ import com.cramsan.framework.logging.logW
 import com.cramsan.framework.test.TestBase
 import io.mockk.mockk
 import io.mockk.verify
+import kotlin.test.BeforeTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -22,7 +23,8 @@ class EventLoggerCommonTest : TestBase() {
 
     private lateinit var platformDelegate: EventLoggerDelegate
 
-    override fun setupTest() {
+    @BeforeTest
+    fun setupTest() {
         platformDelegate = mockk(relaxUnitFun = true)
     }
 

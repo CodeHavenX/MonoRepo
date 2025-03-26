@@ -4,6 +4,7 @@ import com.cramsan.framework.preferences.PreferencesDelegateTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.jupiter.api.Test
 import java.util.prefs.Preferences
+import kotlin.test.BeforeTest
 
 /**
  * @Author cramsan
@@ -12,7 +13,8 @@ import java.util.prefs.Preferences
 @OptIn(ExperimentalCoroutinesApi::class)
 class JVMPreferencesDelegateTest : PreferencesDelegateTest() {
 
-    override fun setupTest() {
+    @BeforeTest
+    fun setupTest() {
         // Clear any stored preferences
         val prefs: Preferences = Preferences.userNodeForPackage(JVMPreferencesDelegate::class.java)
         prefs.removeNode()

@@ -86,7 +86,7 @@ class EventLogViewModel(
         viewModelScope.launch {
             emitEvent(
                 EventLogEvent.TriggerEdifikanaApplicationEvent(
-                    EdifikanaApplicationEvent.NavigateBack()
+                    EdifikanaApplicationEvent.NavigateBack
                 )
             )
         }

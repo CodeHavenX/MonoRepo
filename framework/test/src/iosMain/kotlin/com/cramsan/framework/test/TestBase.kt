@@ -6,11 +6,13 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 
 @OptIn(ExperimentalCoroutinesApi::class)
 actual abstract class TestBase {
 
-    val testCoroutineDispatcher = StandardTestDispatcher()
+    actual val testCoroutineDispatcher: CoroutineDispatcher = UnconfinedTestDispatcher()
     private val _testCoroutineScope = TestScope(testCoroutineDispatcher)
 
     actual fun runBlockingTest(block: suspend TestScope.() -> Unit) =
@@ -22,10 +24,4 @@ actual abstract class TestBase {
      */
     actual val testCoroutineScope: CoroutineScope = _testCoroutineScope
 
-    @BeforeTest
-    fun internalSetupTest() {
-        setupTest()
-    }
-
-    actual abstract fun setupTest()
 }

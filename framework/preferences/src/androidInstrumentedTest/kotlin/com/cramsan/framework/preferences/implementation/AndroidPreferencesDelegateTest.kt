@@ -20,7 +20,8 @@ import kotlin.test.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class AndroidPreferencesDelegateTest : PreferencesDelegateTest() {
 
-    override fun setupTest() {
+    @BeforeTest
+    fun setupTest() {
         val mockContext: Context = ApplicationProvider.getApplicationContext()
         preferencesDelegate = PreferencesAndroid(mockContext)
     }

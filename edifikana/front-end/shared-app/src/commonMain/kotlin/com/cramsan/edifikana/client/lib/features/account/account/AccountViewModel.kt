@@ -39,7 +39,7 @@ class AccountViewModel(
         viewModelScope.launch {
             emitEvent(
                 AccountEvent.TriggerEdifikanaApplicationEvent(
-                    EdifikanaApplicationEvent.NavigateBack()
+                    EdifikanaApplicationEvent.NavigateBack
                 )
             )
         }

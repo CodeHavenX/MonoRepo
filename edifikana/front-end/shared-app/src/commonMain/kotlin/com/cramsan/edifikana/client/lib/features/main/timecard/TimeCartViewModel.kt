@@ -72,7 +72,7 @@ class TimeCartViewModel(
      */
     fun navigateBack() {
         viewModelScope.launch {
-            emitEvent(TimeCardEvent.TriggerEdifikanaApplicationEvent(EdifikanaApplicationEvent.NavigateBack()))
+            emitEvent(TimeCardEvent.TriggerEdifikanaApplicationEvent(EdifikanaApplicationEvent.NavigateBack))
         }
     }
 

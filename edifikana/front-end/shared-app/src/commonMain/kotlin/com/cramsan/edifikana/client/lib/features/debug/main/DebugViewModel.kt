@@ -80,7 +80,7 @@ class DebugViewModel(
         viewModelScope.launch {
             emitEvent(
                 DebugEvent.TriggerApplicationEvent(
-                    EdifikanaApplicationEvent.NavigateBack()
+                    EdifikanaApplicationEvent.NavigateBack
                 )
             )
         }

@@ -22,13 +22,15 @@ import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
 import org.koin.test.get
 import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 // TODO: Add tests for phoneNumber & no email, and email & phoneNumber
 class UserControllerTest : TestBase(), KoinTest {
 
-    override fun setupTest() {
+    @BeforeTest
+    fun setupTest() {
         startTestKoin()
     }
 

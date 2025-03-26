@@ -81,7 +81,7 @@ class PropertyManagerViewModel(
         viewModelScope.launch {
             emitEvent(
                 PropertyManagerEvent.TriggerApplicationEvent(
-                    EdifikanaApplicationEvent.NavigateBack()
+                    EdifikanaApplicationEvent.NavigateBack
                 )
             )
         }

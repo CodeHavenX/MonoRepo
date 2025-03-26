@@ -79,7 +79,7 @@ class StaffListViewModel(
     fun navigateBack() = viewModelScope.launch {
         emitEvent(
             StaffListEvent.TriggerEdifikanaApplicationEvent(
-                EdifikanaApplicationEvent.NavigateBack()
+                EdifikanaApplicationEvent.NavigateBack
             )
         )
     }

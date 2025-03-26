@@ -78,7 +78,7 @@ class ViewRecordViewModel(
     fun pickMultipleVisualMedia() = viewModelScope.launch {
         emitEvent(
             ViewRecordEvent.TriggerEdifikanaApplicationEvent(
-                EdifikanaApplicationEvent.OpenPhotoPicker()
+                EdifikanaApplicationEvent.OpenPhotoPicker
             )
         )
     }
@@ -129,7 +129,7 @@ class ViewRecordViewModel(
         viewModelScope.launch {
             emitEvent(
                 ViewRecordEvent.TriggerEdifikanaApplicationEvent(
-                    EdifikanaApplicationEvent.NavigateBack()
+                    EdifikanaApplicationEvent.NavigateBack
                 )
             )
         }

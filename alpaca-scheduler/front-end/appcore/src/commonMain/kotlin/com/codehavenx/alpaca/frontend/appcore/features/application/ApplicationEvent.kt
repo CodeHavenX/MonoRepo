@@ -1,7 +1,6 @@
 package com.codehavenx.alpaca.frontend.appcore.features.application
 
 import com.cramsan.framework.core.compose.ViewModelEvent
-import kotlin.random.Random
 
 /**
  * This file contains the application level events that can be handled.
@@ -20,7 +19,6 @@ sealed class ApplicationEvent : ViewModelEvent {
      */
     data class Navigate(
         val route: String,
-        val id: Int = Random.nextInt(),
     ) : ApplicationEvent()
 
     /**
@@ -28,9 +26,7 @@ sealed class ApplicationEvent : ViewModelEvent {
      *
      * @param id The id of the event. This is automatically generated. It is made accessible for testing purposes.
      */
-    data class NavigateBack(
-        val id: Int = Random.nextInt(),
-    ) : ApplicationEvent()
+    data object NavigateBack : ApplicationEvent()
 
     /**
      * Navigate to the [route] from the root page.
@@ -40,7 +36,6 @@ sealed class ApplicationEvent : ViewModelEvent {
      */
     data class NavigateFromRootPage(
         val route: String,
-        val id: Int = Random.nextInt(),
     ) : ApplicationEvent()
 
     /**
@@ -50,7 +45,6 @@ sealed class ApplicationEvent : ViewModelEvent {
      * @param isSignedIn The sign in status.
      */
     data class SignInStatusChange(
-        val id: Int = Random.nextInt(),
         val isSignedIn: Boolean,
     ) : ApplicationEvent()
 }

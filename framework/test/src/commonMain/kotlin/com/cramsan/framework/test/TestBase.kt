@@ -1,5 +1,6 @@
 package com.cramsan.framework.test
 
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
@@ -16,6 +17,8 @@ expect abstract class TestBase() {
      */
     val testCoroutineScope: CoroutineScope
 
+    val testCoroutineDispatcher: CoroutineDispatcher
+
     /**
      * We need to make sure that tests will be started with this function. Each platform will provide
      * the right configuration and rules to run unit tests. Ideally we should be able to use
@@ -25,6 +28,4 @@ expect abstract class TestBase() {
      */
     @OptIn(ExperimentalCoroutinesApi::class)
     fun runBlockingTest(block: suspend TestScope.() -> Unit)
-
-    abstract fun setupTest()
 }

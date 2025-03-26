@@ -2,8 +2,8 @@ package com.cramsan.framework.test
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -19,7 +19,7 @@ import org.junit.jupiter.api.extension.ExtensionContext
 @ExperimentalCoroutinesApi
 class TestCoroutineRule : AfterEachCallback, BeforeEachCallback {
 
-    val testCoroutineDispatcher = StandardTestDispatcher()
+    val testCoroutineDispatcher = UnconfinedTestDispatcher()
     val testCoroutineScope = TestScope(testCoroutineDispatcher)
 
     fun runBlockingTest(block: suspend TestScope.() -> Unit) = testCoroutineScope.runTest { block() }

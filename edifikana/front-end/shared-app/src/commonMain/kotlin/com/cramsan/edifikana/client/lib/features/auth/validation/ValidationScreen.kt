@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -13,6 +14,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
@@ -72,11 +74,11 @@ internal fun ValidationContent(
     uiState: ValidationUIState,
     modifier: Modifier = Modifier,
     onCloseClicked: () -> Unit,
-    ) {
+) {
     Scaffold(
         modifier = modifier,
         topBar = {
-            EdifikanaTopBar   (
+            EdifikanaTopBar(
                 title = "Validation",
                 onCloseClicked = onCloseClicked,
             )
@@ -90,10 +92,9 @@ internal fun ValidationContent(
             contentAlignment = Alignment.Center,
         ) {
             ScreenLayout(
-                sectionContent = { modifier ->
+                sectionContent = { sectionModifier ->
                     AnimatedContent(
                         uiState.errorMessage,
-                        modifier = modifier
                     ) {
                         val showErrorMessage = it.isNullOrBlank().not()
                         if (showErrorMessage) {
@@ -101,19 +102,24 @@ internal fun ValidationContent(
                             Text(
                                 it.orEmpty(),
                                 style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.error
+                                color = MaterialTheme.colorScheme.error,
+                                modifier = sectionModifier
+                                    .wrapContentWidth(),
                             )
                         }
                     }
 
                     Text(
                         "GET VALIDATED!",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurface
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        textAlign = TextAlign.Center,
+                        modifier = sectionModifier
+                            .wrapContentWidth(),
+
                     )
                 }
             )
         }
-
     }
 }

@@ -18,6 +18,6 @@ data class ValidationUIState(
             isLoading = true,
             otpCode = "",
             errorMessage = null,
-            )
+        )
     }
 }

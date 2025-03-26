@@ -19,8 +19,8 @@ import org.jetbrains.compose.resources.getString
  * Sign Up feature ViewModel.
  */
 class SignUpViewModel(
-    private val auth: AuthManager,
     dependencies: ViewModelDependencies,
+    private val auth: AuthManager,
 ) : BaseViewModel<SignUpEvent, SignUpUIState>(dependencies, SignUpUIState.Initial, TAG) {
 
     /**

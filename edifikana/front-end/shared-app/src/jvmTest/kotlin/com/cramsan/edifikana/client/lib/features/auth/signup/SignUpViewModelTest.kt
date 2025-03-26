@@ -3,6 +3,7 @@ package com.cramsan.edifikana.client.lib.features.auth.signup
 import app.cash.turbine.test
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
+import com.cramsan.framework.core.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.SharedFlowApplicationReceiver
 import com.cramsan.framework.core.compose.ViewModelDependencies

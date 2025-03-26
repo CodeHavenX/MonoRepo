@@ -25,7 +25,7 @@ sealed class ApplicationEvent : ViewModelEvent {
     /**
      * Navigate to destination.
      */
-    data class NavigateToScreem(
+    data class NavigateToScreen(
         val destination: Destination,
     ) : ApplicationEvent()
 

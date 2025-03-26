@@ -16,6 +16,7 @@ enum class AuthRoute(
 ) {
     SignIn(route = "${ApplicationRoute.Auth.rawRoute}/signin"),
     SignUp(route = "${ApplicationRoute.Auth.rawRoute}/signup"),
+    Validation(route = "${ApplicationRoute.Auth.rawRoute}/validation"),
     ;
 }
 
@@ -39,5 +40,12 @@ sealed class AuthRouteDestination(
      */
     data object SignUpDestination : AuthRouteDestination(
         AuthRoute.SignUp.route,
+    )
+
+    /**
+     * A class representing navigating to the validation screen.
+     */
+    data object ValidationDestination : AuthRouteDestination(
+        AuthRoute.Validation.route,
     )
 }

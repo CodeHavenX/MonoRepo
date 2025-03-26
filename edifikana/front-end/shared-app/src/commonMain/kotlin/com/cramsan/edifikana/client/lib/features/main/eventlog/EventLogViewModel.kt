@@ -60,7 +60,7 @@ class EventLogViewModel(
         } else {
             emitEvent(
                 EventLogEvent.TriggerEdifikanaApplicationEvent(
-                    EdifikanaApplicationEvent.NavigateToScreem(
+                    EdifikanaApplicationEvent.NavigateToScreen(
                         MainRouteDestination.EventLogSingleItemDestination(recordPk)
                     )
                 )
@@ -74,7 +74,7 @@ class EventLogViewModel(
     fun openAddRecordScreen() = viewModelScope.launch {
         emitEvent(
             EventLogEvent.TriggerEdifikanaApplicationEvent(
-                EdifikanaApplicationEvent.NavigateToScreem(MainRouteDestination.EventLogAddItemDestination)
+                EdifikanaApplicationEvent.NavigateToScreen(MainRouteDestination.EventLogAddItemDestination)
             )
         )
     }

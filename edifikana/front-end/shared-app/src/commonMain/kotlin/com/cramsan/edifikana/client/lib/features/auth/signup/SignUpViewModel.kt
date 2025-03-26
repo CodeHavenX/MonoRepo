@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.auth.signup
 
-import com.cramsan.edifikana.client.lib.features.ActivityDestination
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.features.auth.AuthRouteDestination
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
@@ -113,6 +113,7 @@ class SignUpViewModel(
     /**
      * Call this function request to create the account.
      */
+    @Suppress("LongMethod")
     fun signUp() {
         logI(TAG, "signUp called")
         viewModelScope.launch {
@@ -139,6 +140,8 @@ class SignUpViewModel(
                 return@launch
             }
 
+            updateUiState { it.copy(isLoading = true) }
+
             val user = auth.signUp(
                 email = email,
                 phoneNumber = phoneNumber,
@@ -149,6 +152,7 @@ class SignUpViewModel(
                 logD(TAG, "Error signing up: $exception")
                 updateUiState {
                     it.copy(
+                        isLoading = false,
                         signUpForm = it.signUpForm.copy(
                             errorMessage = "Oops! Something went wrong. Please try again."
                         )
@@ -157,24 +161,31 @@ class SignUpViewModel(
                 return@launch
             }
 
-            if (user != null) {
-                logD(TAG, "User signed up: $user")
-                // TODO: reload or navigate to sign in page when successful
-                emitEvent(
-                    SignUpEvent.TriggerEdifikanaApplicationEvent(
-                        EdifikanaApplicationEvent.NavigateToActivity(ActivityDestination.MainDestination)
-                    )
-                )
-            } else {
+            logD(TAG, "User signed up: $user")
+
+            // On successful sign up, navigate to the validation screen and automatically sign in user
+            auth.signIn(
+                email = email,
+                password = password,
+            ).onFailure {
                 val message = getString(Res.string.error_message_unexpected_error)
                 updateUiState {
                     it.copy(
+                        isLoading = false,
                         signUpForm = it.signUpForm.copy(
                             errorMessage = message
                         )
                     )
                 }
+                return@launch
             }
+
+            logD(TAG, "User signed in: $user")
+            emitEvent(
+                SignUpEvent.TriggerEdifikanaApplicationEvent(
+                    EdifikanaApplicationEvent.NavigateToScreen(AuthRouteDestination.ValidationDestination)
+                )
+            )
         }
     }
 

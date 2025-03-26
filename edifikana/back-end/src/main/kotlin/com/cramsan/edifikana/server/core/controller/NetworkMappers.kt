@@ -24,6 +24,7 @@ fun User.toUserNetworkResponse(): UserNetworkResponse {
         firstName = firstName,
         lastName = lastName,
         hasGlobalPerms = hasGlobalPerms,
+        isVerified = isVerified,
     )
 }
 

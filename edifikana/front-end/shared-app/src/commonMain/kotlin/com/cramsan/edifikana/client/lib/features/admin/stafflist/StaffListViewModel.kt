@@ -47,7 +47,7 @@ class StaffListViewModel(
         viewModelScope.launch {
             emitEvent(
                 StaffListEvent.TriggerApplicationEvent(
-                    EdifikanaApplicationEvent.NavigateToScreem(AdminDestination.AddPrimaryStaffAdminDestination)
+                    EdifikanaApplicationEvent.NavigateToScreen(AdminDestination.AddPrimaryStaffAdminDestination)
                 )
             )
         }
@@ -60,7 +60,7 @@ class StaffListViewModel(
         viewModelScope.launch {
             emitEvent(
                 StaffListEvent.TriggerApplicationEvent(
-                    EdifikanaApplicationEvent.NavigateToScreem(AdminDestination.AddSecondaryStaffAdminDestination)
+                    EdifikanaApplicationEvent.NavigateToScreen(AdminDestination.AddSecondaryStaffAdminDestination)
                 )
             )
         }
@@ -73,7 +73,7 @@ class StaffListViewModel(
         viewModelScope.launch {
             emitEvent(
                 StaffListEvent.TriggerApplicationEvent(
-                    EdifikanaApplicationEvent.NavigateToScreem(AdminDestination.StaffDestination(staffId))
+                    EdifikanaApplicationEvent.NavigateToScreen(AdminDestination.StaffDestination(staffId))
                 )
             )
         }

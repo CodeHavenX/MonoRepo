@@ -51,7 +51,7 @@ class TimeCartViewModel(
     fun navigateToStaff(staffPK: StaffId) = viewModelScope.launch {
         emitEvent(
             TimeCardEvent.TriggerEdifikanaApplicationEvent(
-                EdifikanaApplicationEvent.NavigateToScreem(MainRouteDestination.TimeCardSingleStaffDestination(staffPK))
+                EdifikanaApplicationEvent.NavigateToScreen(MainRouteDestination.TimeCardSingleStaffDestination(staffPK))
             )
         )
     }
@@ -62,7 +62,7 @@ class TimeCartViewModel(
     fun navigateToStaffList() = viewModelScope.launch {
         emitEvent(
             TimeCardEvent.TriggerEdifikanaApplicationEvent(
-                EdifikanaApplicationEvent.NavigateToScreem(MainRouteDestination.TimeCardStaffListDestination)
+                EdifikanaApplicationEvent.NavigateToScreen(MainRouteDestination.TimeCardStaffListDestination)
             )
         )
     }

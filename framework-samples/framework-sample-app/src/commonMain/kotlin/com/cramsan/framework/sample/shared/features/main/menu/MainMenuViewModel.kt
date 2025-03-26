@@ -20,7 +20,7 @@ class MainMenuViewModel(
         viewModelScope.launch {
             emitEvent(
                 MainMenuEvent.TriggerApplicationEvent(
-                    ApplicationEvent.NavigateToScreem(MainRouteDestination.HaltUtilDestination)
+                    ApplicationEvent.NavigateToScreen(MainRouteDestination.HaltUtilDestination)
                 )
             )
         }

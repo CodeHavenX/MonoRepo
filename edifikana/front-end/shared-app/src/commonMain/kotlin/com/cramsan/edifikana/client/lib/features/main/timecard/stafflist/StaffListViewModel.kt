@@ -53,7 +53,7 @@ class StaffListViewModel(
     fun navigateToStaff(staffPK: StaffId) = viewModelScope.launch {
         emitEvent(
             StaffListEvent.TriggerEdifikanaApplicationEvent(
-                EdifikanaApplicationEvent.NavigateToScreem(
+                EdifikanaApplicationEvent.NavigateToScreen(
                     MainRouteDestination.TimeCardSingleStaffDestination(staffPK)
                 )
             )
@@ -66,7 +66,7 @@ class StaffListViewModel(
     fun navigateToAddStaff() = viewModelScope.launch {
         emitEvent(
             StaffListEvent.TriggerEdifikanaApplicationEvent(
-                EdifikanaApplicationEvent.NavigateToScreem(
+                EdifikanaApplicationEvent.NavigateToScreen(
                     AdminDestination.AddSecondaryStaffAdminDestination,
                 )
             )

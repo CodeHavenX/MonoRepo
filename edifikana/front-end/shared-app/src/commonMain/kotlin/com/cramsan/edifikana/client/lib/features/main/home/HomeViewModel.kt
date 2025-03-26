@@ -81,7 +81,7 @@ class HomeViewModel(
         viewModelScope.launch {
             logI(TAG, "Navigating back.")
             emitApplicationEvent(
-                EdifikanaApplicationEvent.NavigateBack()
+                EdifikanaApplicationEvent.NavigateBack
             )
         }
     }

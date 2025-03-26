@@ -21,7 +21,7 @@ class NotificationsViewModel(
      */
     fun onBackSelected() {
         viewModelScope.launch {
-            emitEvent(NotificationsEvent.TriggerApplicationEvent(EdifikanaApplicationEvent.NavigateBack()))
+            emitEvent(NotificationsEvent.TriggerApplicationEvent(EdifikanaApplicationEvent.NavigateBack))
         }
     }
 

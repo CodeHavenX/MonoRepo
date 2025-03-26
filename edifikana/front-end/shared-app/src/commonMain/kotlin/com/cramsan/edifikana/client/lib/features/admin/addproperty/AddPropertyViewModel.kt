@@ -22,7 +22,7 @@ class AddPropertyViewModel(
      */
     fun navigateBack() {
         viewModelScope.launch {
-            emitEvent(AddPropertyEvent.TriggerApplicationEvent(EdifikanaApplicationEvent.NavigateBack()))
+            emitEvent(AddPropertyEvent.TriggerApplicationEvent(EdifikanaApplicationEvent.NavigateBack))
         }
     }
 
@@ -46,7 +46,7 @@ class AddPropertyViewModel(
             )
             emitEvent(
                 AddPropertyEvent.TriggerApplicationEvent(
-                    EdifikanaApplicationEvent.NavigateBack()
+                    EdifikanaApplicationEvent.NavigateBack
                 )
             )
         }

@@ -7,4 +7,8 @@ sealed class TestableEvent : ViewModelEvent {
      */
     data object Noop : TestableEvent()
 
+    /**
+     * Emit a number.
+     */
+    data class EmitNumber(val number: Int) : TestableEvent()
 }

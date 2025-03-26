@@ -104,7 +104,7 @@ class SignUpViewModel(
         viewModelScope.launch {
             emitEvent(
                 SignUpEvent.TriggerEdifikanaApplicationEvent(
-                    EdifikanaApplicationEvent.NavigateBack()
+                    EdifikanaApplicationEvent.NavigateBack
                 )
             )
         }

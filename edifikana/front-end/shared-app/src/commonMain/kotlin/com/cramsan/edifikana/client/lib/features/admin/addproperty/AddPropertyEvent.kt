@@ -2,7 +2,6 @@ package com.cramsan.edifikana.client.lib.features.admin.addproperty
 
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
 import com.cramsan.framework.core.compose.ViewModelEvent
-import kotlin.random.Random
 
 /**
  * Events that can be triggered within the domain of the AddProperty feature.
@@ -22,6 +21,5 @@ sealed class AddPropertyEvent : ViewModelEvent {
      */
     data class TriggerApplicationEvent(
         val applicationEvent: EdifikanaApplicationEvent,
-        val id: Int = Random.nextInt(),
     ) : AddPropertyEvent()
 }

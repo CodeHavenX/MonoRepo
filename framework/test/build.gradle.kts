@@ -49,6 +49,7 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:_")
                 implementation("org.jetbrains.kotlin:kotlin-test-common:_")
                 implementation("org.jetbrains.kotlin:kotlin-test-annotations-common:_")
+                implementation("app.cash.turbine:turbine:_")
             }
         }
         jvmMain {
@@ -68,6 +69,11 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:_")
                 implementation("org.jetbrains.kotlin:kotlin-test-js:_")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:_")
+            }
+        }
+        wasmJsMain {
+            dependencies {
+                implementation("org.jetbrains.kotlin:kotlin-test-wasm-js:_")
             }
         }
     }

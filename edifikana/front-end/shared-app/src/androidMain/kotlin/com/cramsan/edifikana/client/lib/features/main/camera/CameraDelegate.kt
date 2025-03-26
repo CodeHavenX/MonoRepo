@@ -176,10 +176,10 @@ class CameraDelegate(
     fun handleBackNavigation() {
         scope.launch {
             when (_uiState.value) {
-                is CameraUiState.PermissionDenied -> _event.emit(CameraEvent.CancelFlow())
-                is CameraUiState.Error -> _event.emit(CameraEvent.CancelFlow())
+                is CameraUiState.PermissionDenied -> _event.emit(CameraEvent.CancelFlow)
+                is CameraUiState.Error -> _event.emit(CameraEvent.CancelFlow)
                 is CameraUiState.PhotoConfirmation -> displayFrontCameraPreview()
-                is CameraUiState.PreviewCamera -> _event.emit(CameraEvent.CancelFlow())
+                is CameraUiState.PreviewCamera -> _event.emit(CameraEvent.CancelFlow)
             }
         }
     }
@@ -200,7 +200,7 @@ class CameraDelegate(
      */
     fun openAppSettings() {
         scope.launch {
-            _event.emit(CameraEvent.OpenSettings())
+            _event.emit(CameraEvent.OpenSettings)
         }
     }
 

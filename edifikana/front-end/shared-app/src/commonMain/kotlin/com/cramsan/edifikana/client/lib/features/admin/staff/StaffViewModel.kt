@@ -39,7 +39,7 @@ class StaffViewModel(
      */
     fun onBackSelected() {
         viewModelScope.launch {
-            emitEvent(StaffEvent.TriggerApplicationEvent(EdifikanaApplicationEvent.NavigateBack()))
+            emitEvent(StaffEvent.TriggerApplicationEvent(EdifikanaApplicationEvent.NavigateBack))
         }
     }
 

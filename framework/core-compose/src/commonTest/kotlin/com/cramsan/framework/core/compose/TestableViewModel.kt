@@ -25,6 +25,14 @@ class TestableViewModel(
         }
     }
 
+    fun emitNumbers() {
+        viewModelScope.launch {
+            emitEvent(TestableEvent.EmitNumber(1))
+            emitEvent(TestableEvent.EmitNumber(2))
+            emitEvent(TestableEvent.EmitNumber(3))
+        }
+    }
+
     fun throwError(exception: Throwable = IllegalStateException()) {
         viewModelScope.launch {
             throw exception

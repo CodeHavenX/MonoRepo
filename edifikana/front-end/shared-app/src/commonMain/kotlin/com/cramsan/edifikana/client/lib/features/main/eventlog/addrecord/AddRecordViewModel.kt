@@ -98,7 +98,7 @@ class AddRecordViewModel(
         } else {
             emitEvent(
                 AddRecordEvent.TriggerEdifikanaApplicationEvent(
-                    EdifikanaApplicationEvent.NavigateBack()
+                    EdifikanaApplicationEvent.NavigateBack
                 )
             )
         }
@@ -109,7 +109,7 @@ class AddRecordViewModel(
      */
     fun navigateBack() {
         viewModelScope.launch {
-            emitEvent(AddRecordEvent.TriggerEdifikanaApplicationEvent(EdifikanaApplicationEvent.NavigateBack()))
+            emitEvent(AddRecordEvent.TriggerEdifikanaApplicationEvent(EdifikanaApplicationEvent.NavigateBack))
         }
     }
 

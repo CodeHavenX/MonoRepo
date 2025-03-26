@@ -2,7 +2,6 @@ package com.cramsan.framework.sample.shared.features.main.halt
 
 import com.cramsan.framework.core.compose.ViewModelEvent
 import com.cramsan.framework.sample.shared.features.ApplicationEvent
-import kotlin.random.Random
 
 /**
  * Events that can be triggered within the domain of the HaltUtil feature.
@@ -23,6 +22,5 @@ sealed class HaltUtilEvent : ViewModelEvent {
     data class TriggerApplicationEvent(
         // Update this with the respective ApplicationEvent type.
         val applicationEvent: ApplicationEvent,
-        val id: Int = Random.nextInt(),
     ) : HaltUtilEvent()
 }

@@ -24,7 +24,7 @@ class AddClientViewModel(
     fun saveClient() {
         viewModelScope.launch {
             delay(2000)
-            emitEvent(AddClientEvent.TriggerApplicationEvent(ApplicationEvent.NavigateBack()))
+            emitEvent(AddClientEvent.TriggerApplicationEvent(ApplicationEvent.NavigateBack))
         }
     }
 

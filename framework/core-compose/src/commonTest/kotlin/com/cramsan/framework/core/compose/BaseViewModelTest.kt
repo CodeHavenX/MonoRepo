@@ -1,13 +1,18 @@
 package com.cramsan.framework.core.compose
 
+import app.cash.turbine.test
 import com.cramsan.framework.core.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.test.TestBase
+import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
 import com.cramsan.framework.test.applyNoopFrameworkSingletons
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.yield
 
 /**
  * Test the [BaseViewModel] class.
@@ -45,6 +50,22 @@ class BaseViewModelTest : TestBase() {
         viewModel.setTitle("Test")
 
         assertEquals("Test", viewModel.uiState.value.title)
+    }
+
+    @Test
+    fun `test emitting some numbers`() = runBlockingTest {
+        val verificationJob = launch {
+            viewModel.events.test {
+                assertEquals(TestableEvent.EmitNumber(1), awaitItem())
+                assertEquals(TestableEvent.EmitNumber(2), awaitItem())
+                assertEquals(TestableEvent.EmitNumber(3), awaitItem())
+                advanceUntilIdleAndAwaitComplete(this)
+            }
+        }
+
+        viewModel.emitNumbers()
+
+        verificationJob.join()
     }
 
     @Test

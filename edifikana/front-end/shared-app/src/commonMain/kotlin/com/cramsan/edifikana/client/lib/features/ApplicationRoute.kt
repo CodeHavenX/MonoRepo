@@ -40,15 +40,13 @@ enum class ApplicationRoute(
  * the value of {id} would be 123.
  */
 sealed class ActivityDestination(
-    val route: ApplicationRoute,
     @RouteSafePath
-    val path: String,
-) {
+    override val rawRoute: String,
+) : Destination {
     /**
      * A class representing navigating to the main screen.
      */
     data object MainDestination : ActivityDestination(
-        ApplicationRoute.Main,
         ApplicationRoute.Main.rawRoute,
     )
 
@@ -56,7 +54,6 @@ sealed class ActivityDestination(
      * A class representing navigating to the splash screen.
      */
     data object SplashDestination : ActivityDestination(
-        ApplicationRoute.Splash,
         ApplicationRoute.Splash.rawRoute,
     )
 
@@ -64,7 +61,6 @@ sealed class ActivityDestination(
      * A class representing navigating to the auth screen.
      */
     data object AuthDestination : ActivityDestination(
-        ApplicationRoute.Auth,
         ApplicationRoute.Auth.rawRoute,
     )
 
@@ -72,7 +68,6 @@ sealed class ActivityDestination(
      * A class representing navigating to the account page.
      */
     data object AccountDestination : ActivityDestination(
-        ApplicationRoute.Account,
         ApplicationRoute.Account.rawRoute,
     )
 
@@ -80,7 +75,6 @@ sealed class ActivityDestination(
      * A class representing navigating to the admin page.
      */
     data object AdminDestination : ActivityDestination(
-        ApplicationRoute.Admin,
         ApplicationRoute.Admin.rawRoute,
     )
 
@@ -88,7 +82,6 @@ sealed class ActivityDestination(
      * A class representing navigating to the debug page.
      */
     data object DebugDestination : ActivityDestination(
-        ApplicationRoute.Debug,
         ApplicationRoute.Debug.rawRoute,
     )
 }

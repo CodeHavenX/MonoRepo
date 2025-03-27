@@ -14,8 +14,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -25,7 +23,7 @@ import com.cramsan.edifikana.client.lib.features.admin.adminActivityNavigation
 import com.cramsan.edifikana.client.lib.features.auth.authActivityNavigation
 import com.cramsan.edifikana.client.lib.features.debug.debugActivityNavigation
 import com.cramsan.edifikana.client.lib.features.main.mainActivityNavigation
-import com.cramsan.edifikana.client.lib.features.splash.SplashActivityScreen
+import com.cramsan.edifikana.client.lib.features.splash.SplashScreen
 import com.cramsan.edifikana.client.lib.ui.di.Coil3Provider
 import com.cramsan.edifikana.client.ui.theme.AppTheme
 import com.cramsan.framework.core.compose.RouteSafePath
@@ -56,10 +54,6 @@ private fun ApplicationContent(
 
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
-
-    LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
-        viewModel.enforceAuth()
-    }
 
     LaunchedEffect(event) {
         handleApplicationEvent(
@@ -119,7 +113,7 @@ private fun handleApplicationEvent(
             } else if (event.clearTop) {
                 navController.popBackStack()
             }
-            navController.navigate(event.destination.path)
+            navController.navigate(event.destination.rawRoute)
         }
         is EdifikanaApplicationEvent.NavigateToScreem -> {
             navController.navigate(event.destination.rawRoute)
@@ -180,7 +174,7 @@ private fun ApplicationNavigationHost(
         ApplicationRoute.entries.forEach { route ->
             when (route) {
                 ApplicationRoute.Splash -> composable(route.rawRoute) {
-                    SplashActivityScreen()
+                    SplashScreen()
                 }
                 ApplicationRoute.Auth -> authActivityNavigation(route.rawRoute)
                 ApplicationRoute.Main -> mainActivityNavigation(route.rawRoute)

@@ -22,6 +22,5 @@ sealed class ${NAME}Event : ViewModelEvent {
     data class TriggerApplicationEvent(
         // TODO: Update this with the respective ApplicationEvent type.
         val applicationEvent: ApplicationEvent,
-        val id: Int = Random.nextInt(),
     ) : ${NAME}Event()
 }

@@ -20,6 +20,7 @@ import com.cramsan.edifikana.client.lib.features.main.eventlog.viewrecord.ViewRe
 import com.cramsan.edifikana.client.lib.features.main.home.HomeViewModel
 import com.cramsan.edifikana.client.lib.features.main.timecard.TimeCartViewModel
 import com.cramsan.edifikana.client.lib.features.main.timecard.viewstaff.ViewStaffViewModel
+import com.cramsan.edifikana.client.lib.features.splash.SplashViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
@@ -54,4 +55,5 @@ internal val ViewModelModule = module {
     viewModelOf(::StaffViewModel)
     viewModelOf(::SelectStaffViewModel)
     viewModelOf(::NotificationsViewModel)
+    viewModelOf(::SplashViewModel)
 }

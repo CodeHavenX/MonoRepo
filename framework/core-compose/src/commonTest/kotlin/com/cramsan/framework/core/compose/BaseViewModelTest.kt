@@ -1,7 +1,7 @@
 package com.cramsan.framework.core.compose
 
 import app.cash.turbine.test
-import com.cramsan.framework.core.CollectorCoroutineExceptionHandler
+import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.test.TestBase
 import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete

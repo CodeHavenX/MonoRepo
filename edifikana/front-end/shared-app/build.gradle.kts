@@ -37,6 +37,7 @@ kotlin {
             implementation(project(":framework:core"))
             implementation(project(":framework:core-compose"))
             implementation(project(":framework:preferences"))
+            implementation(project(":framework:test"))
             implementation(project(":framework:utils"))
             implementation(project(":ui-catalog"))
             implementation(project(":edifikana:shared"))

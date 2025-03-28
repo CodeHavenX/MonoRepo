@@ -7,9 +7,10 @@ import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logI
+import com.cramsan.framework.utils.loginvalidation.validateEmail
 import com.cramsan.framework.utils.loginvalidation.validateName
 import com.cramsan.framework.utils.loginvalidation.validatePassword
-import com.cramsan.framework.utils.loginvalidation.validateUsername
+import com.cramsan.framework.utils.loginvalidation.validatePhoneNumber
 import edifikana_lib.Res
 import edifikana_lib.error_message_unexpected_error
 import kotlinx.coroutines.launch
@@ -125,9 +126,10 @@ class SignUpViewModel(
 
             val errorMessages = listOf(
                 validateName(firstName, lastName),
-                validateUsername(email, phoneNumber),
+                validateEmail(email),
+                validatePhoneNumber(phoneNumber),
                 validatePassword(password),
-            ).flatten().joinToString("\n")
+            ).flatten()
 
             if (errorMessages.isNotEmpty()) {
                 updateUiState {
@@ -154,7 +156,7 @@ class SignUpViewModel(
                     it.copy(
                         isLoading = false,
                         signUpForm = it.signUpForm.copy(
-                            errorMessage = "Oops! Something went wrong. Please try again."
+                            errorMessage = listOf("Oops! Something went wrong. Please try again.")
                         )
                     )
                 }
@@ -173,7 +175,7 @@ class SignUpViewModel(
                     it.copy(
                         isLoading = false,
                         signUpForm = it.signUpForm.copy(
-                            errorMessage = message
+                            errorMessage = listOf(message)
                         )
                     )
                 }

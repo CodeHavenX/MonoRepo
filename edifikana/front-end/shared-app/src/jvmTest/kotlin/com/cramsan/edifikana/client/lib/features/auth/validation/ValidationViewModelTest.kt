@@ -10,11 +10,11 @@ import com.cramsan.framework.test.applyNoopFrameworkSingletons
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlin.test.BeforeTest
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
 
 /**
  * Test the [ValidationViewModel] class.
@@ -29,7 +29,7 @@ class ValidationViewModelTest : TestBase() {
     /**
      * Setup the test.
      */
-    @BeforeEach
+    @BeforeTest
     fun setupTest() {
         applyNoopFrameworkSingletons()
         authManager = mockk()

@@ -129,13 +129,14 @@ internal fun SignUpContent(
                                 )
                         },
                     ) {
-                        val showErrorMessage = it.isNullOrBlank().not()
-                        if (showErrorMessage) {
-                            Text(
-                                it.orEmpty(),
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.error,
-                            )
+                        if (!uiState.signUpForm.errorMessage.isNullOrEmpty()) {
+                            it?.forEach { errorMessage ->
+                                Text(
+                                    text = errorMessage,
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = MaterialTheme.colorScheme.error,
+                                )
+                            }
                         }
                     }
 

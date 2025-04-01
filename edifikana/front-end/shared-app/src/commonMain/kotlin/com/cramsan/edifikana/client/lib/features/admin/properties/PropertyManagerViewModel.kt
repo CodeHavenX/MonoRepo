@@ -51,7 +51,7 @@ class PropertyManagerViewModel(
         viewModelScope.launch {
             emitEvent(
                 PropertyManagerEvent.TriggerApplicationEvent(
-                    EdifikanaApplicationEvent.NavigateToScreem(
+                    EdifikanaApplicationEvent.NavigateToScreen(
                         AdminDestination.PropertyAdminDestination(
                             propertyId
                         )
@@ -68,7 +68,7 @@ class PropertyManagerViewModel(
         viewModelScope.launch {
             emitEvent(
                 PropertyManagerEvent.TriggerApplicationEvent(
-                    EdifikanaApplicationEvent.NavigateToScreem(AdminDestination.AddPropertyAdminDestination)
+                    EdifikanaApplicationEvent.NavigateToScreen(AdminDestination.AddPropertyAdminDestination)
                 ),
             )
         }

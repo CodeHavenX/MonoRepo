@@ -14,7 +14,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 private fun SignUpScreenSuccessPreview() = AppTheme {
     SignUpContent(
-        uistate = SignUpUIState(
+        uiState = SignUpUIState(
             isLoading = false,
             signUpForm = SignUpFormUIModel(
                 firstName = "Roberto",
@@ -43,14 +43,14 @@ private fun SignUpScreenSuccessPreview() = AppTheme {
 @Composable
 private fun SignUpScreenFailurePreview() = AppTheme {
     SignUpContent(
-        uistate = SignUpUIState(
+        uiState = SignUpUIState(
             isLoading = false,
             signUpForm = SignUpFormUIModel(
                 firstName = "Donkey",
                 lastName = "Kong",
                 email = "",
                 phoneNumber = "1234567890",
-                password = "kong_is_king",
+                password = "kong_is_king1!",
                 policyChecked = false,
                 registerEnabled = false,
                 errorMessage = "Invalid username, please use a valid email address or phone number.\n" +

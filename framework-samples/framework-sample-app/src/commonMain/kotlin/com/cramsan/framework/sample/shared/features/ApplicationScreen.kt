@@ -83,7 +83,7 @@ private fun handleApplicationEvent(
             }
             navController.navigate(event.destination.path)
         }
-        is ApplicationEvent.NavigateToScreem -> {
+        is ApplicationEvent.NavigateToScreen -> {
             navController.navigate(event.destination.path)
         }
         is ApplicationEvent.NavigateBack -> {

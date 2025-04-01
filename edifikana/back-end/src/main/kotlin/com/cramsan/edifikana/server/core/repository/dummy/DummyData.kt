@@ -25,6 +25,7 @@ val USER_1 = User(
     firstName = "John",
     lastName = "Doe",
     hasGlobalPerms = false,
+    isVerified = true,
 )
 
 val USER_2 = User(
@@ -34,6 +35,8 @@ val USER_2 = User(
     firstName = "Jane",
     lastName = "Smith",
     hasGlobalPerms = false,
+    isVerified = true,
+
 )
 
 val USER_3 = User(
@@ -43,6 +46,8 @@ val USER_3 = User(
     firstName = "Alice",
     lastName = "Johnson",
     hasGlobalPerms = false,
+    isVerified = false,
+
 )
 
 val USER_4 = User(
@@ -52,6 +57,8 @@ val USER_4 = User(
     firstName = "Bob",
     lastName = "Brown",
     hasGlobalPerms = true,
+    isVerified = false,
+
 )
 
 val PROPERTY_1 = Property(

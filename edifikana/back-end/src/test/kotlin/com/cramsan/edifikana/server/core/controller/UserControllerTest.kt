@@ -62,6 +62,7 @@ class UserControllerTest : TestBase(), KoinTest {
                     firstName = "John",
                     lastName = "Doe",
                     hasGlobalPerms = false,
+                    isVerified = false,
                 )
             )
         }
@@ -101,6 +102,8 @@ class UserControllerTest : TestBase(), KoinTest {
                 firstName = "John",
                 lastName = "Doe",
                 hasGlobalPerms = false,
+                isVerified = false,
+
             )
         }
         val contextRetriever = get<ContextRetriever>()
@@ -137,6 +140,7 @@ class UserControllerTest : TestBase(), KoinTest {
                     firstName = "John",
                     lastName = "Doe",
                     hasGlobalPerms = false,
+                    isVerified = false,
                 ),
                 User(
                     id = UserId("user456"),
@@ -145,6 +149,7 @@ class UserControllerTest : TestBase(), KoinTest {
                     firstName = "Jane",
                     lastName = "Smith",
                     hasGlobalPerms = false,
+                    isVerified = false,
                 )
             )
         }
@@ -185,6 +190,7 @@ class UserControllerTest : TestBase(), KoinTest {
                 firstName = "Updated",
                 lastName = "Email",
                 hasGlobalPerms = false,
+                isVerified = false,
             )
         }
         val contextRetriever = get<ContextRetriever>()

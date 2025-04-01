@@ -132,7 +132,7 @@ class HomeViewModel(
         logI(TAG, "Navigating to notifications page.")
         viewModelScope.launch {
             emitApplicationEvent(
-                EdifikanaApplicationEvent.NavigateToScreem(AccountRouteDestination.NotificationsDestination)
+                EdifikanaApplicationEvent.NavigateToScreen(AccountRouteDestination.NotificationsDestination)
             )
         }
     }

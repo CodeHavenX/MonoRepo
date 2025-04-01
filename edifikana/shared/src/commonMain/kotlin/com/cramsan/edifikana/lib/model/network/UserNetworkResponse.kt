@@ -22,4 +22,6 @@ data class UserNetworkResponse(
     val lastName: String,
     @SerialName("has_global_perms")
     val hasGlobalPerms: Boolean,
+    @SerialName("is_verified")
+    val isVerified: Boolean,
 )

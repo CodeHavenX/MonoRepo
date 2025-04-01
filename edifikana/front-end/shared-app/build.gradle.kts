@@ -92,6 +92,12 @@ kotlin {
             }
         }
 
+        jvmTest {
+            dependencies {
+                implementation(project(":framework:test"))
+            }
+        }
+
         androidMain {
             dependsOn(localDB)
         }

@@ -75,6 +75,7 @@ class DummyAuthService : AuthService {
             UserId("user_id_1"),
             "user_1@test.com",
             true,
+            isVerified = false,
         )
     }
 }

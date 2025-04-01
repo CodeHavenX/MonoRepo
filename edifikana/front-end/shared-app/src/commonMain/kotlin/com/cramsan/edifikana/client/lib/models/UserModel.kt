@@ -9,4 +9,5 @@ data class UserModel(
     val id: UserId,
     val email: String,
     val hasGlobalPerms: Boolean,
+    val isVerified: Boolean,
 )

@@ -32,6 +32,7 @@
     <string name="string_confirm">Confirm</string>
     <string name="string_cancel">Cancel</string>
     <string name="error_message_unexpected_error">There was an unexpected error.</string>
+    <string name="error_message_invalid_credentials">Username and/or password didn't match our records.</string>
     <string name="string_field_event">Event:</string>
     <string name="string_field_date_time">Date and Time:</string>
     <string name="string_field_unit">Unit #:</string>

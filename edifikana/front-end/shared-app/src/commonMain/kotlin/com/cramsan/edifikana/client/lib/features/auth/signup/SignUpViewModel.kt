@@ -28,14 +28,7 @@ class SignUpViewModel(
      * Initialize the page.
      */
     fun initializePage() {
-        updateUiState { SignUpUIState.Initial }
-    }
-
-    /**
-     * Clear the page.
-     */
-    fun clearPage() {
-        updateUiState { SignUpUIState.Initial }
+        logI(TAG, "SignUpViewModel initialized")
     }
 
     /**

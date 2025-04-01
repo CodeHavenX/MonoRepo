@@ -45,8 +45,7 @@ class SignUpViewModelTest : TestBase() {
                 appScope = testCoroutineScope,
                 dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),
                 coroutineExceptionHandler = exceptionHandler,
-            ),
-            authManager
+            ), authManager
         )
     }
 
@@ -63,22 +62,10 @@ class SignUpViewModelTest : TestBase() {
     }
 
     /**
-     * Test the [SignUpViewModel.clearPage] method.
-     */
-    @Test
-    fun `test clearPage has expected UI state`() = runTest {
-        // Act
-        viewModel.clearPage()
-
-        // Assert
-        assertEquals(SignUpUIState.Initial, viewModel.uiState.value)
-    }
-
-    /**
      * Test the [SignUpViewModel.onEmailValueChange] method.
      */
     @Test
-    fun `test onEmailValueChange updates email value`() {
+    fun `test onEmailValueChange updates email value`() = runTest {
         // Arrange
         val email = "test@example.com"
 
@@ -193,8 +180,7 @@ class SignUpViewModelTest : TestBase() {
         val verificationJob = launch {
             viewModel.events.test {
                 assertEquals(
-                    SignUpEvent.TriggerEdifikanaApplicationEvent(EdifikanaApplicationEvent.NavigateBack),
-                    awaitItem()
+                    SignUpEvent.TriggerEdifikanaApplicationEvent(EdifikanaApplicationEvent.NavigateBack), awaitItem()
                 )
             }
         }
@@ -218,22 +204,19 @@ class SignUpViewModelTest : TestBase() {
 
         coEvery {
             authManager.signUp(
-                email,
-                phoneNumber,
-                password,
-                firstName,
-                lastName
+                email, phoneNumber, password, firstName, lastName
             )
         } returns Result.success(mockk())
         coEvery { authManager.signIn(email, password) } returns Result.success(mockk())
 
-        // Act
         viewModel.onFirstNameValueChange(firstName)
         viewModel.onLastNameValueChange(lastName)
         viewModel.onEmailValueChange(email)
         viewModel.onPhoneNumberValueChange(phoneNumber)
         viewModel.onPasswordValueChange(password)
         viewModel.onPolicyChecked(true)
+
+        // Act
         viewModel.signUp()
 
         // Verify
@@ -282,7 +265,9 @@ class SignUpViewModelTest : TestBase() {
         val password = "p@ssWord123"
         val expectedErrorMessage = listOf("Oops! Something went wrong. Please try again.")
 
-        coEvery { authManager.signUp(email, phoneNumber, password, firstName, lastName) } returns Result.failure(Exception("Sign in failed"))
+        coEvery { authManager.signUp(email, phoneNumber, password, firstName, lastName) } returns Result.failure(
+            Exception("Sign in failed")
+        )
 
         viewModel.onFirstNameValueChange(firstName)
         viewModel.onLastNameValueChange(lastName)
@@ -311,7 +296,11 @@ class SignUpViewModelTest : TestBase() {
         val password = "p@ssWord123"
         val expectedErrorMessage = listOf("There was an unexpected error.")
 
-        coEvery { authManager.signUp(email, phoneNumber, password, firstName, lastName) } returns Result.success(mockk())
+        coEvery {
+            authManager.signUp(
+                email, phoneNumber, password, firstName, lastName
+            )
+        } returns Result.success(mockk())
         coEvery { authManager.signIn(email, password) } returns Result.failure(Exception("Sign in failed"))
 
         viewModel.onFirstNameValueChange(firstName)
@@ -326,8 +315,9 @@ class SignUpViewModelTest : TestBase() {
 
         // Assert & verify
         coVerify { authManager.signUp(email, phoneNumber, password, firstName, lastName) }
-        assertEquals(expectedErrorMessage.toString(), viewModel.uiState.value.signUpForm.errorMessage
-            .toString())
+        assertEquals(
+            expectedErrorMessage.toString(), viewModel.uiState.value.signUpForm.errorMessage.toString()
+        )
 
     }
 }

@@ -9,7 +9,9 @@ import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logI
 import edifikana_lib.Res
+import edifikana_lib.error_message_invalid_credentials
 import edifikana_lib.error_message_unexpected_error
+import io.github.jan.supabase.auth.exception.AuthRestException
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 
@@ -21,13 +23,11 @@ class SignInViewModel(
     private val auth: AuthManager,
 ) : BaseViewModel<SignInEvent, SignInUIState>(dependencies, SignInUIState.Initial, TAG) {
 
-    init {
+    /**
+     * Initialize the page.
+     */
+    fun initializePage() {
         logI(TAG, "SignInViewModel initialized")
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        logI(TAG, "SignInViewModel cleared")
     }
 
     /**
@@ -55,7 +55,7 @@ class SignInViewModel(
     }
 
     /**
-     * Call this function to sign out the user.
+     * Call this function to sign in the user.
      */
     fun signIn() {
         logI(TAG, "signIn called")
@@ -65,8 +65,12 @@ class SignInViewModel(
             auth.signIn(
                 email = email,
                 password = password,
-            ).onFailure {
-                val message = getString(Res.string.error_message_unexpected_error)
+            ).onFailure { error ->
+                val message = if (error is AuthRestException) {
+                    getString(Res.string.error_message_invalid_credentials)
+                } else {
+                    getString(Res.string.error_message_unexpected_error)
+                }
                 updateUiState {
                     it.copy(
                         signInForm = it.signInForm.copy(
@@ -88,7 +92,7 @@ class SignInViewModel(
     }
 
     /**
-     * Navigate to the sign up page.
+     * Navigate to the signUp page.
      */
     fun navigateToSignUpPage() {
         viewModelScope.launch {

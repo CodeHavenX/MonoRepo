@@ -44,6 +44,7 @@ fun SignInScreen(
     val event by viewModel.events.collectAsState(SignInEvent.Noop)
 
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
+        viewModel.initializePage()
     }
 
     LifecycleEventEffect(Lifecycle.Event.ON_STOP) {

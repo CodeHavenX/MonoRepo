@@ -19,6 +19,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.params.ParameterizedTest
@@ -160,6 +161,7 @@ class SignInViewModelTest : TestBase() {
         viewModel.signIn()
 
         // Assert & Verify
+        advanceUntilIdle()
         coVerify { authManager.signIn(username, password) }
         assertEquals(errorMessage, viewModel.uiState.value.signInForm.errorMessage)
         verificationJob.join()
@@ -193,6 +195,7 @@ class SignInViewModelTest : TestBase() {
         viewModel.signIn()
 
         // Assert & Verify
+        advanceUntilIdle()
         coVerify { authManager.signIn(username, password) }
         assertEquals(errorMessage, viewModel.uiState.value.signInForm.errorMessage)
         verificationJob.join()

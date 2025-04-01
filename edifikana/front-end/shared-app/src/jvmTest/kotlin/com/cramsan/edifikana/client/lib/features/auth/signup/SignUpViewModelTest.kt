@@ -18,6 +18,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvFileSource
@@ -314,6 +315,7 @@ class SignUpViewModelTest : TestBase() {
         viewModel.signUp()
 
         // Assert & verify
+        advanceUntilIdle()
         coVerify { authManager.signUp(email, phoneNumber, password, firstName, lastName) }
         assertEquals(
             expectedErrorMessage.toString(), viewModel.uiState.value.signUpForm.errorMessage.toString()

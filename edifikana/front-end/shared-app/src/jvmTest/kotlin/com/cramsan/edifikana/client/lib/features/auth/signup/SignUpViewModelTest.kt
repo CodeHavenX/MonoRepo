@@ -324,7 +324,6 @@ class SignUpViewModelTest : TestBase() {
         viewModel.signUp()
 
         // Assert & verify
-        advanceUntilIdle()
         coVerify { authManager.signUp(email, phoneNumber, password, firstName, lastName) }
         assertEquals(
             expectedErrorMessage.toString(), viewModel.uiState.value.signUpForm.errorMessage.toString()

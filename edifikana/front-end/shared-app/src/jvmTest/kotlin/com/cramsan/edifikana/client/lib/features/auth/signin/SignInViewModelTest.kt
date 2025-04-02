@@ -162,9 +162,9 @@ class SignInViewModelTest : TestBase() {
 
         // Assert & Verify
         advanceUntilIdle()
+        verificationJob.join()
         coVerify { authManager.signIn(username, password) }
         assertEquals(errorMessage, viewModel.uiState.value.signInForm.errorMessage)
-        verificationJob.join()
     }
 
     /**
@@ -196,9 +196,9 @@ class SignInViewModelTest : TestBase() {
 
         // Assert & Verify
         advanceUntilIdle()
+        verificationJob.join()
         coVerify { authManager.signIn(username, password) }
         assertEquals(errorMessage, viewModel.uiState.value.signInForm.errorMessage)
-        verificationJob.join()
     }
 
     /**

@@ -37,7 +37,7 @@ class SignInViewModel(
         logD(TAG, "onUsernameValueChange called")
         updateUiState {
             it.copy(
-                signInForm = it.signInForm.copy(email = username)
+                email = username,
             )
         }
     }
@@ -49,7 +49,7 @@ class SignInViewModel(
         logD(TAG, "onPasswordValueChange called")
         updateUiState {
             it.copy(
-                signInForm = it.signInForm.copy(password = password)
+                password = password,
             )
         }
     }
@@ -60,8 +60,8 @@ class SignInViewModel(
     fun signIn() {
         logI(TAG, "signIn called")
         viewModelScope.launch {
-            val email = uiState.value.signInForm.email.trim()
-            val password = uiState.value.signInForm.password
+            val email = uiState.value.email.trim()
+            val password = uiState.value.password
             auth.signIn(
                 email = email,
                 password = password,
@@ -73,9 +73,7 @@ class SignInViewModel(
                 }
                 updateUiState {
                     it.copy(
-                        signInForm = it.signInForm.copy(
-                            errorMessage = message
-                        )
+                        errorMessage = message
                     )
                 }
                 return@launch

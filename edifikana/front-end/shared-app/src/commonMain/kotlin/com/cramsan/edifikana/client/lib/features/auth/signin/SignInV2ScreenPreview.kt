@@ -13,11 +13,9 @@ private fun SignInScreenPreview() = AppTheme {
     SignInContent(
         uistate = SignInUIState(
             isLoading = false,
-            signInForm = SignInFormUIModel(
-                email = "",
-                password = "",
-                errorMessage = null,
-            ),
+            email = "",
+            password = "",
+            errorMessage = null,
         ),
         onUsernameValueChange = { },
         onPasswordValueChange = { },
@@ -36,11 +34,9 @@ private fun SignInContentPreview() = AppTheme {
     SignInContent(
         uistate = SignInUIState(
             isLoading = true,
-            signInForm = SignInFormUIModel(
-                email = "username",
-                password = "password",
-                errorMessage = "",
-            ),
+            email = "username",
+            password = "password",
+            errorMessage = "",
         ),
         onUsernameValueChange = {},
         onPasswordValueChange = {},

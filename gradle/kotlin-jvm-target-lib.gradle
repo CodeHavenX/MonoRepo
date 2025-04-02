@@ -25,6 +25,14 @@ dependencies {
 // Enable outputting the results of the tests
 test {
     useJUnitPlatform()
+    testLogging {
+        showStandardStreams = true
+        showStackTraces = true
+        showCauses = true
+        showExceptions = true
+        exceptionFormat = 'full'
+        events "passed", "skipped", "failed"
+    }
 }
 
 // Release task that will build and test the project.

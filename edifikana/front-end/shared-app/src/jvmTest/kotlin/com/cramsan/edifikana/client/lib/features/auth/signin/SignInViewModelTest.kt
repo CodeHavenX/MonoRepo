@@ -75,7 +75,7 @@ class SignInViewModelTest : TestBase() {
         viewModel.onUsernameValueChange(username)
 
         // Assert
-        assertEquals(username, viewModel.uiState.value.signInForm.email)
+        assertEquals(username, viewModel.uiState.value.email)
     }
 
     /**
@@ -90,7 +90,7 @@ class SignInViewModelTest : TestBase() {
         viewModel.onPasswordValueChange(password)
 
         // Assert
-        assertEquals(password, viewModel.uiState.value.signInForm.password)
+        assertEquals(password, viewModel.uiState.value.password)
     }
 
     /**
@@ -163,7 +163,7 @@ class SignInViewModelTest : TestBase() {
         // Assert & Verify
         advanceUntilIdle()
         coVerify { authManager.signIn(username, password) }
-        assertEquals(errorMessage, viewModel.uiState.value.signInForm.errorMessage)
+        assertEquals(errorMessage, viewModel.uiState.value.errorMessage)
         verificationJob.join()
     }
 
@@ -197,7 +197,7 @@ class SignInViewModelTest : TestBase() {
         // Assert & Verify
         advanceUntilIdle()
         coVerify { authManager.signIn(username, password) }
-        assertEquals(errorMessage, viewModel.uiState.value.signInForm.errorMessage)
+        assertEquals(errorMessage, viewModel.uiState.value.errorMessage)
         verificationJob.join()
     }
 

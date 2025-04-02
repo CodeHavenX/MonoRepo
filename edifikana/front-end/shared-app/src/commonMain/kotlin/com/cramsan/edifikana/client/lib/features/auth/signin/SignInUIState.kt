@@ -7,17 +7,17 @@ import com.cramsan.framework.core.compose.ViewModelUIState
  */
 data class SignInUIState(
     val isLoading: Boolean,
-    val signInForm: SignInFormUIModel,
+    val email: String,
+    val password: String,
+    val errorMessage: String?,
 ) : ViewModelUIState {
 
     companion object {
         val Initial = SignInUIState(
             isLoading = false,
-            signInForm = SignInFormUIModel(
-                email = "",
-                password = "",
-                errorMessage = null,
-            ),
+            email = "",
+            password = "",
+            errorMessage = null,
         )
     }
 }

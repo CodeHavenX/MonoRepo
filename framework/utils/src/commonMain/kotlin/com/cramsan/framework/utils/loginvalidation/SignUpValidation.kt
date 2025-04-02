@@ -4,7 +4,8 @@ private const val PASSWORD_MIN_LENGTH = 6
 private const val PASSWORD_MAX_LENGTH = 24
 // TODO: Update strings to be from resources instead of hardcoded
 /**
- * Validate that the [email] and [phoneNumber] are not empty. Returns a list of error messages
+ * Validate that the [email] and [phoneNumber] are not empty. Returns a list of error messages.
+ * Helpful when either email or phone number is required. Keeping for reference.
  */
 fun validateUsername(email: String, phoneNumber: String): List<String> {
     return if (email.isNotBlank() && phoneNumber.isBlank()) {

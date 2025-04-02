@@ -53,8 +53,11 @@ private fun SignUpScreenFailurePreview() = AppTheme {
                 password = "kong_is_king1!",
                 policyChecked = false,
                 registerEnabled = false,
-                errorMessage = "Invalid username, please use a valid email address or phone number.\n" +
-                    "Password must be at least 8 characters long, contain at last 1 uppercase, 1 lowercase, and 1 number.",
+                errorMessage = listOf(
+                    "Invalid username, please use a valid email address or phone number.\n" +
+                        "Password must be at least 8 characters long, contain at last 1 uppercase, 1 lowercase, and 1 " +
+                        "number."
+                ),
             ),
         ),
         modifier = Modifier,

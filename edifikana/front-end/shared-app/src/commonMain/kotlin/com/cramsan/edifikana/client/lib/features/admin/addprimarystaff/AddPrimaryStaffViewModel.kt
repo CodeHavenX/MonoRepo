@@ -3,7 +3,7 @@ package com.cramsan.edifikana.client.lib.features.admin.addprimarystaff
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
-import com.cramsan.framework.utils.loginvalidation.validateUsername
+import com.cramsan.framework.utils.loginvalidation.validateEmail
 import kotlinx.coroutines.launch
 
 /**
@@ -30,7 +30,7 @@ class AddPrimaryStaffViewModel(
      * Invite staff member.
      */
     fun invite(email: String) {
-        val errorMessages = validateUsername(email.trim(), "")
+        val errorMessages = validateEmail(email.trim())
         if (errorMessages.isNotEmpty()) {
             updateUiState {
                 it.copy(

@@ -44,6 +44,7 @@ fun SignInScreen(
     val event by viewModel.events.collectAsState(SignInEvent.Noop)
 
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
+        viewModel.initializePage()
     }
 
     LifecycleEventEffect(Lifecycle.Event.ON_STOP) {
@@ -91,18 +92,18 @@ internal fun SignInContent(
         ) {
             ScreenLayout(
                 sectionContent = { modifier ->
-                    uistate.signInForm.errorMessage?.let {
+                    uistate.errorMessage?.let {
                         Text(it)
                     }
                     OutlinedTextField(
-                        value = uistate.signInForm.email,
+                        value = uistate.email,
                         onValueChange = { onUsernameValueChange(it) },
                         modifier = modifier,
                         label = { Text(stringResource(Res.string.sign_in_screen_text_email)) },
                         maxLines = 1,
                     )
                     PasswordOutlinedTextField(
-                        value = uistate.signInForm.password,
+                        value = uistate.password,
                         onValueChange = { onPasswordValueChange(it) },
                         modifier = modifier,
                         label = { Text(stringResource(Res.string.sign_in_screen_text_password)) },

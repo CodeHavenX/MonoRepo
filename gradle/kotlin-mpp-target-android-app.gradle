@@ -74,16 +74,16 @@ android {
         unitTests {
             includeAndroidResources = true
 
-            // Allows framework calls to return default values. I should look if I can remove this.
-            // Instead we could relly on the testing framework to mock system calls.
-            returnDefaultValues = true
-
             all {
                 // Enable printing the result of the unit tests.
                 testLogging {
                     events "passed", "skipped", "failed"
                 }
             }
+
+            // Allows framework calls to return default values. I should look if I can remove this.
+            // Instead we could relly on the testing framework to mock system calls.
+            returnDefaultValues = true
         }
     }
 }

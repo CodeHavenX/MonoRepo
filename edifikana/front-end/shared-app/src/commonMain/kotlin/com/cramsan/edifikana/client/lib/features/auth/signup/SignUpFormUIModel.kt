@@ -13,5 +13,5 @@ data class SignUpFormUIModel(
     val password: String,
     val policyChecked: Boolean,
     val registerEnabled: Boolean,
-    val errorMessage: String?,
+    val errorMessage: List<String>?,
 )

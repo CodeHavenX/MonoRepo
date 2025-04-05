@@ -6,7 +6,6 @@ import com.cramsan.framework.halt.HaltUtilDelegate
 import com.cramsan.framework.halt.implementation.HaltUtilJVM
 import com.cramsan.framework.logging.EventLoggerDelegate
 import com.cramsan.framework.logging.EventLoggerErrorCallbackDelegate
-import com.cramsan.framework.logging.Severity
 import com.cramsan.framework.logging.implementation.Log4J2Helpers
 import com.cramsan.framework.logging.implementation.LoggerJVM
 import com.cramsan.framework.logging.implementation.NoopEventLoggerErrorCallbackDelegate
@@ -27,12 +26,12 @@ val FrameworkPlatformDelegatesModule = module {
     }
 
     single<Logger> {
-        Log4J2Helpers.getRootLogger(true, Severity.VERBOSE)
+        Log4J2Helpers.getRootLogger(true, get())
     }
 
-    single<EventLoggerErrorCallbackDelegate> { NoopEventLoggerErrorCallbackDelegate }
+    single<EventLoggerErrorCallbackDelegate> { NoopEventLoggerErrorCallbackDelegate() }
 
-    single<EventLoggerDelegate> { LoggerJVM(get()) }
+    single<EventLoggerDelegate> { LoggerJVM(get(), get()) }
 
     single<HaltUtilDelegate> {
         HaltUtilJVM(get())

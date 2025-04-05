@@ -6,6 +6,6 @@ import com.cramsan.framework.logging.Severity
 /**
  * A no-op implementation of [EventLoggerErrorCallbackDelegate].
  */
-object NoopEventLoggerErrorCallbackDelegate : EventLoggerErrorCallbackDelegate {
+class NoopEventLoggerErrorCallbackDelegate : EventLoggerErrorCallbackDelegate {
     override fun handleErrorEvent(tag: String, message: String, throwable: Throwable, severity: Severity) = Unit
 }

@@ -5,8 +5,10 @@ import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.framework.core.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.logging.EventLogger
+import com.cramsan.framework.logging.implementation.PassthroughEventLogger
+import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.TestBase
-import com.cramsan.framework.test.applyNoopFrameworkSingletons
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -31,7 +33,7 @@ class ValidationViewModelTest : TestBase() {
      */
     @BeforeTest
     fun setupTest() {
-        applyNoopFrameworkSingletons()
+        EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         authManager = mockk()
         exceptionHandler = CollectorCoroutineExceptionHandler()
         viewModel = ValidationViewModel(

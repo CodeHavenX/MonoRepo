@@ -31,6 +31,4 @@ class LoggerAndroid : EventLoggerDelegate {
             Severity.DISABLED -> Unit
         }
     }
-
-    override fun setTargetSeverity(targetSeverity: Severity) = Unit
 }

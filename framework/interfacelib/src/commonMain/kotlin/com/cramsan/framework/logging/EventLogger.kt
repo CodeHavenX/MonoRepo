@@ -1,6 +1,5 @@
 package com.cramsan.framework.logging
 
-import com.cramsan.framework.assertlib.AssertUtil.singleton
 import com.cramsan.framework.logging.EventLogger.singleton
 import kotlin.native.concurrent.ThreadLocal
 
@@ -22,16 +21,19 @@ object EventLogger {
      * Global [EventLoggerInterface] singleton
      */
     val singleton: EventLoggerInterface
-        get() = _singleton
+        get() {
+            return if (::_singleton.isInitialized) {
+                _singleton
+            } else {
+                error("EventLogger not initialized. Please call EventLogger.setInstance() before using it.")
+            }
+        }
 
     /**
      * Set the instance to be used for the [singleton].
      */
     fun setInstance(eventLogger: EventLoggerInterface) {
         _singleton = eventLogger
-        Severity.entries.forEach {
-            _singleton.log(it, "EventLoggerImpl", "Probing logger for severity: $it", null, false)
-        }
     }
 }
 
@@ -46,7 +48,7 @@ object EventLogger {
  * @see EventLoggerInterface.log
  */
 fun logV(tag: String, message: String, vararg args: Any?) {
-    EventLogger.singleton.v(tag, message, *args)
+    singleton.v(tag, message, *args)
 }
 
 /**
@@ -56,7 +58,7 @@ fun logV(tag: String, message: String, vararg args: Any?) {
  * @see EventLoggerInterface.log
  */
 fun logD(tag: String, message: String, vararg args: Any?) {
-    EventLogger.singleton.d(tag, message, *args)
+    singleton.d(tag, message, *args)
 }
 
 /**
@@ -66,7 +68,7 @@ fun logD(tag: String, message: String, vararg args: Any?) {
  * @see EventLoggerInterface.log
  */
 fun logI(tag: String, message: String) {
-    EventLogger.singleton.i(tag, message)
+    singleton.i(tag, message)
 }
 
 /**
@@ -76,7 +78,7 @@ fun logI(tag: String, message: String) {
  * @see EventLoggerInterface.log
  */
 fun logW(tag: String, message: String, throwable: Throwable? = null) {
-    EventLogger.singleton.w(tag, message, throwable)
+    singleton.w(tag, message, throwable)
 }
 
 /**
@@ -86,5 +88,5 @@ fun logW(tag: String, message: String, throwable: Throwable? = null) {
  * @see EventLoggerInterface.log
  */
 fun logE(tag: String, message: String, throwable: Throwable? = null) {
-    EventLogger.singleton.e(tag, message, throwable)
+    singleton.e(tag, message, throwable)
 }

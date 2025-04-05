@@ -4,14 +4,16 @@ import com.cramsan.framework.logging.EventLoggerDelegate
 import com.cramsan.framework.logging.Severity
 
 /**
- * Noop implementation of [EventLoggerDelegate] that does nothing.
+ * A simple implementation of [EventLoggerDelegate] that logs to standard output.
  */
-object EventLoggerDelegateNoop : EventLoggerDelegate {
+class StdOutEventLoggerDelegate : EventLoggerDelegate {
 
     override fun log(severity: Severity, tag: String, message: String, throwable: Throwable?, vararg args: Any?) {
-        println("[$severity][$tag] $message, args: $args")
+        if (args.isEmpty()) {
+            println("[$severity][$tag] $message")
+        } else {
+            println("[$severity][$tag] $message, args: ${args.toList()}")
+        }
         throwable?.printStackTrace()
     }
-
-    override fun setTargetSeverity(targetSeverity: Severity) = Unit
 }

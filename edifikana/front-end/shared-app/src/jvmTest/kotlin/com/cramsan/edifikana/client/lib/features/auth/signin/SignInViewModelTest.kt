@@ -8,9 +8,11 @@ import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.framework.core.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.logging.EventLogger
+import com.cramsan.framework.logging.implementation.PassthroughEventLogger
+import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.TestBase
 import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
-import com.cramsan.framework.test.applyNoopFrameworkSingletons
 import io.github.jan.supabase.auth.exception.AuthRestException
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -20,7 +22,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
@@ -40,7 +41,7 @@ class SignInViewModelTest : TestBase() {
      */
     @BeforeEach
     fun setupTest() {
-        applyNoopFrameworkSingletons()
+        EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         authManager = mockk()
         exceptionHandler = CollectorCoroutineExceptionHandler()
         viewModel = SignInViewModel(
@@ -57,7 +58,7 @@ class SignInViewModelTest : TestBase() {
      * Test the [SignInViewModel.initializePage] method
      */
     @Test
-    fun `test initializePage has expected UI state`() = runTest {
+    fun `test initializePage has expected UI state`() = runBlockingTest {
         // ACT
         viewModel.initializePage()
 
@@ -70,7 +71,7 @@ class SignInViewModelTest : TestBase() {
      */
     @ParameterizedTest
     @CsvSource("test@example.com", "5456879123")
-    fun `test onUsernameValueChange updates username value`(username: String) = runTest {
+    fun `test onUsernameValueChange updates username value`(username: String) = runBlockingTest {
         // Act
         viewModel.onUsernameValueChange(username)
 
@@ -82,7 +83,7 @@ class SignInViewModelTest : TestBase() {
      * Test the [SignInViewModel.onPasswordValueChange] method
      */
     @Test
-    fun `test onPasswordValueChange updates password value`() = runTest {
+    fun `test onPasswordValueChange updates password value`() = runBlockingTest {
         // Arrange
         val password = "Password123"
 

@@ -9,27 +9,6 @@ package com.cramsan.framework.logging
 interface EventLoggerInterface {
 
     /**
-     * The minimum [Severity] to start logging
-     */
-    val targetSeverity: Severity
-
-    /**
-     * Optional callback to handle when logging events of severity [Severity.WARNING] or [Severity.ERROR]
-     */
-    val errorCallback: EventLoggerErrorCallback?
-
-    /**
-     * Delegate that will implement the logging logic based on the platform
-     */
-    val platformDelegate: EventLoggerDelegate
-
-    /**
-     * Set the [newErrorCallback] as the callback listener for this instance. If there is already a registered
-     * instance, it will be replaced with the new [EventLoggerErrorCallback]. [newErrorCallback] can be null.
-     */
-    fun setErrorCallback(newErrorCallback: EventLoggerErrorCallback?)
-
-    /**
      * Log a [message] and [tag]. If the [severity] is less than [targetSeverity], the message is not logged.
      * There is an optional [throwable] that can be logged.
      *

@@ -5,7 +5,7 @@ import com.cramsan.framework.thread.ThreadUtilDelegate
 /**
  * Noop implementation of [ThreadUtilDelegate] that does nothing.
  */
-object ThreadUtilDelegateNoop : ThreadUtilDelegate {
+class ThreadUtilDelegateNoop : ThreadUtilDelegate {
 
     override fun isUIThread(): Boolean = false
 

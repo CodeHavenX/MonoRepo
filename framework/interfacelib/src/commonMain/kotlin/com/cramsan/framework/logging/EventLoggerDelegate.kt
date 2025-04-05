@@ -17,9 +17,4 @@ interface EventLoggerDelegate {
         throwable: Throwable?,
         vararg args: Any?,
     )
-
-    /**
-     * Notify when the target severity for the [EventLoggerInterface] changes.
-     */
-    fun setTargetSeverity(targetSeverity: Severity)
 }

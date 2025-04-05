@@ -26,8 +26,8 @@ import com.cramsan.framework.logging.Severity
 import com.cramsan.framework.logging.implementation.EventLoggerImpl
 import com.cramsan.framework.logging.implementation.Log4J2Helpers
 import com.cramsan.framework.logging.implementation.LoggerJVM
-import com.cramsan.framework.logging.implementation.NoopEventLogger
-import com.cramsan.framework.thread.ThreadUtil
+import com.cramsan.framework.logging.implementation.NoopEventLoggerDelegate
+import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.thread.ThreadUtilDelegate
 import com.cramsan.framework.thread.ThreadUtilInterface
 import com.cramsan.framework.thread.implementation.ThreadUtilImpl
@@ -44,14 +44,19 @@ import org.koin.dsl.module
  */
 fun testFrameworkModule() = module(createdAtStart = true) {
     single<Logger> {
-        Log4J2Helpers.getRootLogger(false, Severity.DEBUG)
+        Log4J2Helpers.getRootLogger(false, get())
     }
+
+    single {
+        Severity.DEBUG
+    }
+
     single<EventLoggerInterface> {
-        val instance = EventLoggerImpl(Severity.DEBUG, null, LoggerJVM(get()))
+        val instance = EventLoggerImpl(get(), null, LoggerJVM(get(), get()))
         EventLogger.setInstance(instance)
         EventLogger.singleton
     }
-    single<HaltUtilDelegate> { HaltUtilJVM(NoopEventLogger()) }
+    single<HaltUtilDelegate> { HaltUtilJVM(PassthroughEventLogger(NoopEventLoggerDelegate())) }
     single<HaltUtil> { HaltUtilImpl(get()) }
     single<AssertUtilInterface>(createdAtStart = true) {
         val impl = AssertUtilImpl(
@@ -64,9 +69,7 @@ fun testFrameworkModule() = module(createdAtStart = true) {
     }
     single<ThreadUtilDelegate> { ThreadUtilJVM(get(), get()) }
     single<ThreadUtilInterface> {
-        val instance = ThreadUtilImpl(get())
-        ThreadUtil.setInstance(instance)
-        ThreadUtil.singleton
+        ThreadUtilImpl(get())
     }
 }
 

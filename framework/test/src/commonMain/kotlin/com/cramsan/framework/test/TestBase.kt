@@ -1,8 +1,7 @@
 package com.cramsan.framework.test
 
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.TestScope
 
 /**
@@ -15,9 +14,9 @@ expect abstract class TestBase() {
      * Reference to the Scope used to run the tests. This scope can be injected into
      * classes as well.
      */
-    val testCoroutineScope: CoroutineScope
+    val testCoroutineScope: TestScope
 
-    val testCoroutineDispatcher: CoroutineDispatcher
+    val testCoroutineDispatcher: TestDispatcher
 
     /**
      * We need to make sure that tests will be started with this function. Each platform will provide

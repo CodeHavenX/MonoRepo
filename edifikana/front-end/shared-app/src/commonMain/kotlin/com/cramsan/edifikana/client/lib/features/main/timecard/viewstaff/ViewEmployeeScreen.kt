@@ -1,6 +1,5 @@
 package com.cramsan.edifikana.client.lib.features.main.timecard.viewstaff
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,9 +14,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -39,6 +38,7 @@ import edifikana_lib.text_clock_in
 import edifikana_lib.text_clock_out
 import edifikana_lib.text_upload
 import io.github.jan.supabase.storage.authenticatedStorageItem
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
@@ -53,30 +53,28 @@ fun ViewStaffScreen(
     edifikanaApplicationViewModel: EdifikanaApplicationViewModel = koinInject(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val event by viewModel.events.collectAsState(ViewStaffEvent.Noop)
-    val mainActivityDelegatedEvent by edifikanaApplicationViewModel.delegatedEvents.collectAsState(
-        EdifikanaApplicationDelegatedEvent.Noop
-    )
+    val screenScope = rememberCoroutineScope()
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         viewModel.loadStaff(staffPK)
     }
 
-    LaunchedEffect(event) {
-        when (val localEvent = event) {
-            is ViewStaffEvent.Noop -> { }
-            is ViewStaffEvent.TriggerEdifikanaApplicationEvent -> {
-                edifikanaApplicationViewModel.executeEvent(localEvent.edifikanaApplicationEvent)
+    screenScope.launch {
+        viewModel.events.collect { event ->
+            when (event) {
+                ViewStaffEvent.Noop -> Unit
             }
         }
     }
 
-    LaunchedEffect(mainActivityDelegatedEvent) {
-        when (val delegatedEvent = mainActivityDelegatedEvent) {
-            is EdifikanaApplicationDelegatedEvent.HandleReceivedImage -> {
-                viewModel.recordClockEvent(delegatedEvent.uri)
+    screenScope.launch {
+        edifikanaApplicationViewModel.delegatedEvents.collect { event ->
+            when (event) {
+                is EdifikanaApplicationDelegatedEvent.HandleReceivedImage -> {
+                    viewModel.recordClockEvent(event.uri)
+                }
+                else -> Unit
             }
-            else -> Unit
         }
     }
 
@@ -111,7 +109,7 @@ internal fun ViewStaffContent(
         topBar = {
             EdifikanaTopBar(
                 title = uiState.title,
-                onCloseClicked = onCloseSelected,
+                onNavigationIconSelected = onCloseSelected,
             )
         },
     ) { innerPadding ->

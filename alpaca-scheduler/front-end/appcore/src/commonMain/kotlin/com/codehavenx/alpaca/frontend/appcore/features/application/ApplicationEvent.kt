@@ -1,15 +1,11 @@
 package com.codehavenx.alpaca.frontend.appcore.features.application
 
-import com.cramsan.framework.core.compose.ViewModelEvent
+import com.cramsan.framework.core.compose.ApplicationViewModelEvent
 
 /**
  * This file contains the application level events that can be handled.
  */
-sealed class ApplicationEvent : ViewModelEvent {
-    /**
-     * No operation event.
-     */
-    data object Noop : ApplicationEvent()
+sealed class ApplicationEvent : ApplicationViewModelEvent {
 
     /**
      * Navigate to a route.

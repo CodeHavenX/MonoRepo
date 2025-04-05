@@ -9,6 +9,6 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 private fun EdifikanaTopBarPreview() = AppTheme {
     EdifikanaTopBar(
         title = "Title",
-        onCloseClicked = {},
+        onNavigationIconSelected = {},
     )
 }

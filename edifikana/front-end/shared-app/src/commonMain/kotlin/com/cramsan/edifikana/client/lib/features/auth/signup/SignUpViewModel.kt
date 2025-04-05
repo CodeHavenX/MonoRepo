@@ -102,10 +102,8 @@ class SignUpViewModel(
      */
     fun navigateBack() {
         viewModelScope.launch {
-            emitEvent(
-                SignUpEvent.TriggerEdifikanaApplicationEvent(
-                    EdifikanaApplicationEvent.NavigateBack
-                )
+            emitApplicationEvent(
+                EdifikanaApplicationEvent.NavigateBack
             )
         }
     }
@@ -183,10 +181,8 @@ class SignUpViewModel(
             }
 
             logD(TAG, "User signed in: $user")
-            emitEvent(
-                SignUpEvent.TriggerEdifikanaApplicationEvent(
-                    EdifikanaApplicationEvent.NavigateToScreen(AuthRouteDestination.ValidationDestination)
-                )
+            emitApplicationEvent(
+                EdifikanaApplicationEvent.NavigateToScreen(AuthRouteDestination.ValidationDestination)
             )
         }
     }

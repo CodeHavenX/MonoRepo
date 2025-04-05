@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.auth.signin
 
-import com.cramsan.edifikana.client.lib.features.ActivityDestination
+import com.cramsan.edifikana.client.lib.features.ActivityRouteDestination
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
 import com.cramsan.edifikana.client.lib.features.auth.AuthRouteDestination
 import com.cramsan.edifikana.client.lib.managers.AuthManager
@@ -82,12 +82,10 @@ class SignInViewModel(
                 }
                 return@launch
             }
-            emitEvent(
-                SignInEvent.TriggerEdifikanaApplicationEvent(
-                    EdifikanaApplicationEvent.NavigateToActivity(
-                        ActivityDestination.MainDestination,
-                        clearTop = true,
-                    )
+            emitApplicationEvent(
+                EdifikanaApplicationEvent.NavigateToActivity(
+                    ActivityRouteDestination.ManagementRouteDestination,
+                    clearTop = true,
                 )
             )
         }
@@ -98,10 +96,8 @@ class SignInViewModel(
      */
     fun navigateToSignUpPage() {
         viewModelScope.launch {
-            emitEvent(
-                SignInEvent.TriggerEdifikanaApplicationEvent(
-                    EdifikanaApplicationEvent.NavigateToScreen(AuthRouteDestination.SignUpDestination)
-                )
+            emitApplicationEvent(
+                EdifikanaApplicationEvent.NavigateToScreen(AuthRouteDestination.SignUpDestination)
             )
         }
     }
@@ -111,10 +107,8 @@ class SignInViewModel(
      */
     fun navigateToDebugPage() {
         viewModelScope.launch {
-            emitEvent(
-                SignInEvent.TriggerEdifikanaApplicationEvent(
-                    EdifikanaApplicationEvent.NavigateToActivity(ActivityDestination.DebugDestination)
-                )
+            emitApplicationEvent(
+                EdifikanaApplicationEvent.NavigateToActivity(ActivityRouteDestination.DebugRouteDestination)
             )
         }
     }

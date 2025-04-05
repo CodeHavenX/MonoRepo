@@ -11,11 +11,10 @@ private fun HubScreenPreview() = AppTheme {
         uiState = HubUIModel(
             label = "Admin Hub",
             selectedTab = Tabs.None,
-            showUserHomeButton = true,
         ),
         onTabSelected = {},
-        onUserHomeSelected = {},
         onAccountButtonClicked = {},
         onNotificationsButtonSelected = {},
+        onNavigationIconSelected = {},
     )
 }

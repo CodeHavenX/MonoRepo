@@ -24,7 +24,7 @@ class ${NAME}ViewModel(
     fun onBackSelected() {
         viewModelScope.launch {
             // TODO: Update this with the respective ApplicationEvent type.
-            emitEvent(${NAME}Event.TriggerApplicationEvent(ApplicationEvent.NavigateBack()))
+            emitApplicationEvent(ApplicationEvent.NavigateBack)
         }
     }
 

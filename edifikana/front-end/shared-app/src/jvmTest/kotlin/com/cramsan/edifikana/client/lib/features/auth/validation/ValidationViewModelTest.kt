@@ -2,12 +2,14 @@ package com.cramsan.edifikana.client.lib.features.auth.validation
 
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.models.UserModel
-import com.cramsan.framework.core.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.core.UnifiedDispatcherProvider
+import com.cramsan.framework.core.compose.ApplicationEventReceiver
+import com.cramsan.framework.core.compose.SharedFlowApplicationReceiver
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
+import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.test.TestBase
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -28,6 +30,8 @@ class ValidationViewModelTest : TestBase() {
     private lateinit var viewModel: ValidationViewModel
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
 
+    private lateinit var applicationEventReceiver: SharedFlowApplicationReceiver
+
     /**
      * Setup the test.
      */
@@ -36,11 +40,13 @@ class ValidationViewModelTest : TestBase() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         authManager = mockk()
         exceptionHandler = CollectorCoroutineExceptionHandler()
+        applicationEventReceiver = SharedFlowApplicationReceiver()
         viewModel = ValidationViewModel(
             dependencies = ViewModelDependencies(
                 appScope = testCoroutineScope,
                 dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),
                 coroutineExceptionHandler = exceptionHandler,
+                applicationEventReceiver = applicationEventReceiver,
             ),
             authManager)
     }

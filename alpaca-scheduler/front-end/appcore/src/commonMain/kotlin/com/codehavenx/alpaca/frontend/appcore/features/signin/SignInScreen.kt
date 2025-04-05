@@ -10,7 +10,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -22,8 +21,6 @@ import appcore.message_sign_in_error
 import appcore.string_password
 import appcore.string_sign_in
 import appcore.string_username
-import com.codehavenx.alpaca.frontend.appcore.features.application.ApplicationDelegatedEvent
-import com.codehavenx.alpaca.frontend.appcore.features.application.ApplicationEvent
 import com.codehavenx.alpaca.frontend.appcore.ui.components.LoadingAnimationOverlay
 import com.codehavenx.alpaca.frontend.appcore.ui.theme.Padding
 import org.jetbrains.compose.resources.stringResource
@@ -34,30 +31,12 @@ import org.koin.compose.koinInject
  */
 @Composable
 fun SignInScreen(
-    activityDelegatedEvent: ApplicationDelegatedEvent,
-    onApplicationEventInvoke: (ApplicationEvent) -> Unit,
     viewModel: SignInViewModel = koinInject()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val event by viewModel.events.collectAsState(SignInEvent.Noop)
 
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
         viewModel.startFlow()
-    }
-
-    LaunchedEffect(event) {
-        when (val viewModelEvent = event) {
-            SignInEvent.Noop -> Unit
-            is SignInEvent.TriggerApplicationEvent -> {
-                onApplicationEventInvoke(viewModelEvent.applicationEvent)
-            }
-        }
-    }
-
-    LaunchedEffect(activityDelegatedEvent) {
-        when (activityDelegatedEvent) {
-            ApplicationDelegatedEvent.Noop -> Unit
-        }
     }
 
     SignInContent(

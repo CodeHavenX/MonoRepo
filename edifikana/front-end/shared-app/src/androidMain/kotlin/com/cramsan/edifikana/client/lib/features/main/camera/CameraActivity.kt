@@ -7,9 +7,9 @@ import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.addCallback
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.main.camera.compose.CameraPreview
@@ -17,6 +17,7 @@ import com.cramsan.edifikana.client.lib.features.main.camera.compose.PermissionD
 import com.cramsan.edifikana.client.lib.features.main.camera.compose.PhotoConfirmation
 import com.cramsan.edifikana.client.lib.features.main.camera.compose.PhotoErrorScreen
 import com.cramsan.edifikana.client.lib.managers.remoteconfig.ImageConfig
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
 /**
@@ -39,31 +40,32 @@ class CameraActivity : ComponentActivity() {
 
         setContent {
             val uiState by cameraDelegate.uiState.collectAsState()
-            val event by cameraDelegate.event.collectAsState(CameraEvent.Noop)
+            val scope = rememberCoroutineScope()
 
             LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
                 cameraDelegate.requestCameraPermission()
             }
 
-            LaunchedEffect(event) {
-                when (val viewModelEvent = event) {
-                    CameraEvent.Noop -> Unit
-                    is CameraEvent.CompleteFlow -> {
-                        setResult(
-                            RESULT_OK,
-                            Intent().apply {
-                                putExtra(RESULT_URI, viewModelEvent.uri.toString())
-                            }
-                        )
-                        finish()
-                    }
-                    is CameraEvent.CancelFlow -> finish()
-                    is CameraEvent.OpenSettings -> {
-                        val intent = Intent(
-                            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                            Uri.fromParts("package", this@CameraActivity.packageName, null)
-                        )
-                        startActivity(intent)
+            scope.launch {
+                cameraDelegate.event.collect { event ->
+                    when (event) {
+                        is CameraEvent.CompleteFlow -> {
+                            setResult(
+                                RESULT_OK,
+                                Intent().apply {
+                                    putExtra(RESULT_URI, event.uri.toString())
+                                }
+                            )
+                            finish()
+                        }
+                        is CameraEvent.CancelFlow -> finish()
+                        is CameraEvent.OpenSettings -> {
+                            val intent = Intent(
+                                Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                Uri.fromParts("package", this@CameraActivity.packageName, null)
+                            )
+                            startActivity(intent)
+                        }
                     }
                 }
             }

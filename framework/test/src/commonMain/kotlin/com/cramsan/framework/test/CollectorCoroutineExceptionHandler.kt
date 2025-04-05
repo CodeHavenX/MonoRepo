@@ -1,4 +1,4 @@
-package com.cramsan.framework.core
+package com.cramsan.framework.test
 
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlin.coroutines.AbstractCoroutineContextElement
@@ -9,7 +9,7 @@ import kotlin.coroutines.CoroutineContext
  */
 class CollectorCoroutineExceptionHandler :
     AbstractCoroutineContextElement(
-        CoroutineExceptionHandler,
+        CoroutineExceptionHandler.Key,
     ),
     CoroutineExceptionHandler {
 
@@ -18,6 +18,8 @@ class CollectorCoroutineExceptionHandler :
         get() = _exceptions.toList()
 
     override fun handleException(context: CoroutineContext, exception: Throwable) {
+        println("Exception detected by CollectorCoroutineExceptionHandler")
+        exception.printStackTrace()
         _exceptions.add(exception)
     }
 

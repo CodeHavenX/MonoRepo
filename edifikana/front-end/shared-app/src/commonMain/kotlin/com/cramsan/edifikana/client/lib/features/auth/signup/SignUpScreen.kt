@@ -18,18 +18,17 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.PasswordOutlinedTextField
@@ -44,8 +43,8 @@ import edifikana_lib.sign_up_screen_text_phone_number
 import edifikana_lib.sign_up_screen_text_policy
 import edifikana_lib.sign_up_screen_text_sign_up
 import edifikana_lib.signup_screen_title
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -54,10 +53,8 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun SignUpScreen(
     viewModel: SignUpViewModel = koinViewModel(),
-    applicationViewModel: EdifikanaApplicationViewModel = koinInject(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val event by viewModel.events.collectAsState(SignUpEvent.Noop)
 
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
         viewModel.initializePage()
@@ -66,11 +63,11 @@ fun SignUpScreen(
     LifecycleEventEffect(Lifecycle.Event.ON_STOP) {
     }
 
-    LaunchedEffect(event) {
-        when (val localEvent = event) {
-            SignUpEvent.Noop -> Unit
-            is SignUpEvent.TriggerEdifikanaApplicationEvent -> {
-                applicationViewModel.executeEvent(localEvent.applicationEvent)
+    val screenScope = rememberCoroutineScope()
+    screenScope.launch {
+        viewModel.events.collect { event ->
+            when (event) {
+                SignUpEvent.Noop -> Unit
             }
         }
     }
@@ -106,7 +103,7 @@ internal fun SignUpContent(
         topBar = {
             EdifikanaTopBar(
                 title = stringResource(Res.string.signup_screen_title),
-                onCloseClicked = onCloseClicked,
+                onNavigationIconSelected = onCloseClicked,
             )
         },
     ) { innerPadding ->

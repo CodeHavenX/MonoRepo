@@ -20,7 +20,13 @@ object AssertUtil {
      * Global [AssertUtilInterface] singleton
      */
     val singleton: AssertUtilInterface
-        get() = _singleton
+        get() {
+            return if (::_singleton.isInitialized) {
+                _singleton
+            } else {
+                error("AssertUtil not initialized. Please call AssertUtil.setInstance() before using it.")
+            }
+        }
 
     /**
      * Set the instance to be used for the [singleton].

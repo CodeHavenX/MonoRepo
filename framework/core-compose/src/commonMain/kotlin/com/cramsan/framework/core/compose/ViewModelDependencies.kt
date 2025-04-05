@@ -11,4 +11,5 @@ data class ViewModelDependencies(
     val appScope: CoroutineScope,
     val dispatcherProvider: DispatcherProvider,
     val coroutineExceptionHandler: CoroutineExceptionHandler,
+    val applicationEventReceiver: ApplicationEventReceiver,
 )

@@ -44,7 +44,7 @@ class ListStaffsViewModel(
      */
     fun addStaff() {
         viewModelScope.launch {
-            emitEvent(ListStaffsEvent.TriggerApplicationEvent(ApplicationEvent.Navigate(Route.addStaff())))
+            emitApplicationEvent(ApplicationEvent.Navigate(Route.addStaff()))
         }
     }
 
@@ -53,7 +53,7 @@ class ListStaffsViewModel(
      */
     fun openStaffPage(staffId: String) {
         viewModelScope.launch {
-            emitEvent(ListStaffsEvent.TriggerApplicationEvent(ApplicationEvent.Navigate(Route.viewStaff(staffId))))
+            emitApplicationEvent(ApplicationEvent.Navigate(Route.viewStaff(staffId)))
         }
     }
 

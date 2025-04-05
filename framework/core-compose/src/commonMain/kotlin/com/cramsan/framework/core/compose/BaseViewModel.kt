@@ -1,6 +1,7 @@
 package com.cramsan.framework.core.compose
 
 import androidx.lifecycle.ViewModel
+import com.cramsan.framework.assertlib.assertFalse
 import com.cramsan.framework.logging.logD
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -18,7 +19,7 @@ import kotlinx.coroutines.launch
  */
 @Suppress("UNCHECKED_CAST")
 open class BaseViewModel<E : ViewModelEvent, UI : ViewModelUIState> (
-    dependencies: ViewModelDependencies,
+    private val dependencies: ViewModelDependencies,
     initialState: UI,
     private val tag: String,
 ) : ViewModel() {
@@ -66,10 +67,19 @@ open class BaseViewModel<E : ViewModelEvent, UI : ViewModelUIState> (
     }
 
     protected suspend fun emitEvent(event: E) {
+        assertFalse(
+            event is ApplicationViewModelEvent,
+            tag,
+            "Application events should be emitted using emitApplicationEvent()",
+        )
         _events.emit(event)
     }
 
-    protected suspend fun updateUiState(block: suspend (UI) -> UI) {
+    protected suspend fun emitApplicationEvent(event: ApplicationViewModelEvent) {
+        dependencies.applicationEventReceiver.receiveApplicationEvent(event)
+    }
+
+    protected fun updateUiState(block: (UI) -> UI) {
         _uiState.value = block(_uiState.value)
     }
 }

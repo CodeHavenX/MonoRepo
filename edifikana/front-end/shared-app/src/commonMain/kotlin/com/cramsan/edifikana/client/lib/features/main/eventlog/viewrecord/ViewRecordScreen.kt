@@ -21,9 +21,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -45,6 +45,7 @@ import edifikana_lib.string_field_unit
 import edifikana_lib.string_gallery
 import edifikana_lib.string_share
 import edifikana_lib.view_record_screen_title
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
@@ -59,31 +60,28 @@ fun ViewRecordScreen(
     edifikanaApplicationViewModel: EdifikanaApplicationViewModel = koinInject(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val event by viewModel.events.collectAsState(ViewRecordEvent.Noop)
-    val mainActivityDelegatedEvent by edifikanaApplicationViewModel.delegatedEvents.collectAsState(
-        EdifikanaApplicationDelegatedEvent.Noop
-    )
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         viewModel.loadRecord(eventLogRecordPK)
     }
 
-    LaunchedEffect(event) {
-        when (val viewModelEvent = event) {
-            ViewRecordEvent.Noop -> Unit
-            is ViewRecordEvent.TriggerEdifikanaApplicationEvent -> {
-                edifikanaApplicationViewModel.executeEvent(viewModelEvent.edifikanaApplicationEvent)
+    val screenScope = rememberCoroutineScope()
+    screenScope.launch {
+        viewModel.events.collect { event ->
+            when (event) {
+                ViewRecordEvent.Noop -> Unit
             }
         }
     }
 
-    LaunchedEffect(mainActivityDelegatedEvent) {
-        when (val delegatedEvent = mainActivityDelegatedEvent) {
-            EdifikanaApplicationDelegatedEvent.Noop -> Unit
-            is EdifikanaApplicationDelegatedEvent.HandleReceivedImages -> {
-                viewModel.upload(delegatedEvent.uris)
+    screenScope.launch {
+        edifikanaApplicationViewModel.delegatedEvents.collect { event ->
+            when (event) {
+                is EdifikanaApplicationDelegatedEvent.HandleReceivedImages -> {
+                    viewModel.upload(event.uris)
+                }
+                else -> Unit
             }
-            else -> Unit
         }
     }
 
@@ -111,7 +109,7 @@ internal fun SingleRecord(
         topBar = {
             EdifikanaTopBar(
                 title = stringResource(Res.string.view_record_screen_title),
-                onCloseClicked = onCloseSelected,
+                onNavigationIconSelected = onCloseSelected,
             )
         },
     ) { innerPadding ->

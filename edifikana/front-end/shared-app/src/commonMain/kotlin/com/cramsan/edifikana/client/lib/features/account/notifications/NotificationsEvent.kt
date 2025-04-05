@@ -1,6 +1,5 @@
 package com.cramsan.edifikana.client.lib.features.account.notifications
 
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
 import com.cramsan.framework.core.compose.ViewModelEvent
 
 /**
@@ -10,16 +9,8 @@ import com.cramsan.framework.core.compose.ViewModelEvent
  *
  */
 sealed class NotificationsEvent : ViewModelEvent {
-
     /**
-     * No operation.
+     * No operation
      */
     data object Noop : NotificationsEvent()
-
-    /**
-     * Trigger application event. This event is sent to the application's view model to be handled.
-     */
-    data class TriggerApplicationEvent(
-        val applicationEvent: EdifikanaApplicationEvent,
-    ) : NotificationsEvent()
 }

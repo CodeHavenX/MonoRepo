@@ -1,7 +1,5 @@
 package com.cramsan.framework.core.compose
 
-import com.cramsan.framework.core.compose.BaseViewModel
-import com.cramsan.framework.core.compose.ViewModelDependencies
 import kotlinx.coroutines.launch
 
 /**
@@ -30,6 +28,12 @@ class TestableViewModel(
             emitEvent(TestableEvent.EmitNumber(1))
             emitEvent(TestableEvent.EmitNumber(2))
             emitEvent(TestableEvent.EmitNumber(3))
+        }
+    }
+
+    fun emitApplicationEvent() {
+        viewModelScope.launch {
+            emitApplicationEvent(TestableApplicationEvent.Signal)
         }
     }
 

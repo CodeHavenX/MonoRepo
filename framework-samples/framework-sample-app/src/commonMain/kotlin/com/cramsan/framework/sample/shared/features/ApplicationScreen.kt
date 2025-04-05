@@ -7,8 +7,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -35,22 +33,23 @@ fun ApplicationScreen() {
 private fun ApplicationContent(
     viewModel: ApplicationViewModel = koinViewModel(),
 ) {
-    val event by viewModel.events.collectAsState(ApplicationEvent.Noop)
     val navController = rememberNavController()
 
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    LaunchedEffect(event) {
-        handleApplicationEvent(
-            navController = navController,
-            scope = scope,
-            snackbarHostState = snackbarHostState,
-            applicationEvent = event,
-        )
+    scope.launch {
+        viewModel.events.collect { event ->
+            handleApplicationEvent(
+                navController = navController,
+                scope = scope,
+                snackbarHostState = snackbarHostState,
+                applicationEvent = event,
+            )
+        }
     }
 
-    MaterialTheme() {
+    MaterialTheme {
         Scaffold(
             snackbarHost = {
                 SnackbarHost(hostState = snackbarHostState)
@@ -72,7 +71,6 @@ private fun handleApplicationEvent(
     applicationEvent: ApplicationEvent,
 ) {
     when (val event = applicationEvent) {
-        ApplicationEvent.Noop -> Unit
         is ApplicationEvent.NavigateToActivity -> {
             if (event.clearStack) {
                 while (navController.currentBackStack.value.isNotEmpty()) {

@@ -1,9 +1,8 @@
 package com.cramsan.edifikana.client.lib.features.main.home
 
-import com.cramsan.edifikana.client.lib.features.ActivityDestination
+import com.cramsan.edifikana.client.lib.features.ActivityRouteDestination
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
 import com.cramsan.edifikana.client.lib.features.account.AccountRouteDestination
-import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.core.compose.BaseViewModel
@@ -17,7 +16,6 @@ import kotlinx.coroutines.launch
 class HomeViewModel(
     dependencies: ViewModelDependencies,
     private val propertyManager: PropertyManager,
-    private val authManager: AuthManager,
 ) : BaseViewModel<HomeEvent, HomeUIModel>(
     dependencies,
     HomeUIModel.Empty,
@@ -30,7 +28,6 @@ class HomeViewModel(
     fun loadContent() {
         logI(TAG, "Loading properties.")
         viewModelScope.launch {
-            loadUserInformation()
             updatePropertyList()
         }
     }
@@ -65,15 +62,6 @@ class HomeViewModel(
         }
     }
 
-    private suspend fun loadUserInformation() {
-        val user = authManager.getUser(checkGlobalPerms = true).getOrThrow()
-        updateUiState {
-            it.copy(
-                showAdminButton = user.hasGlobalPerms,
-            )
-        }
-    }
-
     /**
      * Navigate back.
      */
@@ -94,28 +82,10 @@ class HomeViewModel(
         viewModelScope.launch {
             emitApplicationEvent(
                 EdifikanaApplicationEvent.NavigateToActivity(
-                    ActivityDestination.AccountDestination,
+                    ActivityRouteDestination.AccountRouteDestination,
                 )
             )
         }
-    }
-
-    /**
-     * Navigate to the admin page.
-     */
-    fun navigateToAdmin() {
-        logI(TAG, "Navigating to admin page.")
-        viewModelScope.launch {
-            emitApplicationEvent(
-                EdifikanaApplicationEvent.NavigateToActivity(ActivityDestination.AdminDestination)
-            )
-        }
-    }
-
-    private suspend fun emitApplicationEvent(applicationEvent: EdifikanaApplicationEvent) {
-        emitEvent(
-            HomeEvent.TriggerApplicationEvent(applicationEvent)
-        )
     }
 
     /**

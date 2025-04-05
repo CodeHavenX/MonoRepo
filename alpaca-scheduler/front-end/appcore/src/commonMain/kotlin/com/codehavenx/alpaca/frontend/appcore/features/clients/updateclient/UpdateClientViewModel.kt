@@ -28,7 +28,7 @@ class UpdateClientViewModel(
         viewModelScope.launch {
             updateUiState { it.copy(isLoading = true) }
             delay(2000)
-            emitEvent(UpdateClientEvent.TriggerApplicationEvent(ApplicationEvent.NavigateBack))
+            emitApplicationEvent(ApplicationEvent.NavigateBack)
         }
     }
 

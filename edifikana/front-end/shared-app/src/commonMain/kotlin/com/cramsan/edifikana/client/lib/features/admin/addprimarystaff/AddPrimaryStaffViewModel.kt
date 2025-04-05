@@ -22,7 +22,7 @@ class AddPrimaryStaffViewModel(
      */
     fun navigateBack() {
         viewModelScope.launch {
-            emitEvent(AddPrimaryStaffEvent.TriggerApplicationEvent(EdifikanaApplicationEvent.NavigateBack))
+            emitApplicationEvent(EdifikanaApplicationEvent.NavigateBack)
         }
     }
 
@@ -40,7 +40,7 @@ class AddPrimaryStaffViewModel(
                     )
                 }
                 updateUiState { it.copy(isLoading = true, errorMessage = null) }
-                emitEvent(AddPrimaryStaffEvent.TriggerApplicationEvent(EdifikanaApplicationEvent.NavigateBack))
+                emitApplicationEvent(EdifikanaApplicationEvent.NavigateBack)
             }
         }
     }

@@ -8,7 +8,7 @@ import com.cramsan.framework.thread.ThreadUtilInterface
  *
  * @see [ThreadUtilInterface]
  */
-class ThreadUtilImpl(override val platformDelegate: ThreadUtilDelegate) : ThreadUtilInterface {
+class ThreadUtilImpl(private val platformDelegate: ThreadUtilDelegate) : ThreadUtilInterface {
 
     override fun isUIThread(): Boolean {
         return platformDelegate.isUIThread()

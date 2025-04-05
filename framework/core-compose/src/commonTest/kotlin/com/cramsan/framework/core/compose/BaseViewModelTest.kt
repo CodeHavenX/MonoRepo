@@ -3,16 +3,16 @@ package com.cramsan.framework.core.compose
 import app.cash.turbine.test
 import com.cramsan.framework.core.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.core.UnifiedDispatcherProvider
+import com.cramsan.framework.logging.EventLogger
+import com.cramsan.framework.logging.implementation.PassthroughEventLogger
+import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.TestBase
 import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
-import com.cramsan.framework.test.applyNoopFrameworkSingletons
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.advanceUntilIdle
-import kotlinx.coroutines.yield
 
 /**
  * Test the [BaseViewModel] class.
@@ -34,8 +34,8 @@ class BaseViewModelTest : TestBase() {
     @BeforeTest
     fun setupTest() {
         // Apply the Noop framework singletons to avoid side effects
-        applyNoopFrameworkSingletons()
         exceptionHandler = CollectorCoroutineExceptionHandler()
+        EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         viewModel = TestableViewModel(
             dependencies = ViewModelDependencies(
                 appScope = testCoroutineScope,

@@ -27,6 +27,4 @@ class LoggerJS : EventLoggerDelegate {
             it.printStackTrace()
         }
     }
-
-    override fun setTargetSeverity(targetSeverity: Severity) = Unit
 }

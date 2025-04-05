@@ -12,7 +12,7 @@ import com.cramsan.framework.metrics.MetricsInterface
  * it logs the operation to the [eventLoggerInterface].
  */
 class MetricsImpl(
-    override val platformDelegate: MetricsDelegate,
+    private val platformDelegate: MetricsDelegate,
     private val eventLoggerInterface: EventLoggerInterface,
 ) : MetricsInterface {
 

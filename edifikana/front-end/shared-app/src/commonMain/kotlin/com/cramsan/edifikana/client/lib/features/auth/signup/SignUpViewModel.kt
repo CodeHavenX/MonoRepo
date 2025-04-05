@@ -162,7 +162,8 @@ class SignUpViewModel(
             auth.signIn(
                 email = email,
                 password = password,
-            ).onFailure {
+            ).onFailure { exception ->
+                logD(TAG, "Error signing in: $exception")
                 val message = getString(Res.string.error_message_unexpected_error)
                 updateUiState {
                     it.copy(

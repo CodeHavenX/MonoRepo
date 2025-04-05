@@ -12,7 +12,16 @@ import org.apache.logging.log4j.core.config.Configurator
  */
 class LoggerJVM(
     private val logger: Logger,
+    targetSeverity: Severity,
 ) : EventLoggerDelegate {
+
+    init {
+        // Set the logger level to the target severity
+        Configurator.setAllLevels(
+            LogManager.getRootLogger().name,
+            targetSeverity.toLevel(),
+        )
+    }
 
     override fun log(
         severity: Severity,
@@ -30,10 +39,6 @@ class LoggerJVM(
         val logMessage = "[$tag]$formattedMessage"
         logger.log(level, logMessage, throwable)
         throwable?.printStackTrace()
-    }
-
-    override fun setTargetSeverity(targetSeverity: Severity) {
-        Configurator.setAllLevels(LogManager.getRootLogger().name, targetSeverity.toLevel())
     }
 
     companion object {

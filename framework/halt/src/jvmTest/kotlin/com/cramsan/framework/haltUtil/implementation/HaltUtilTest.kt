@@ -2,7 +2,8 @@ package com.cramsan.framework.haltUtil.implementation
 
 import com.cramsan.framework.halt.implementation.HaltUtilImpl
 import com.cramsan.framework.halt.implementation.HaltUtilJVM
-import com.cramsan.framework.logging.implementation.NoopEventLogger
+import com.cramsan.framework.logging.implementation.NoopEventLoggerDelegate
+import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.test.TestBase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlin.concurrent.thread
@@ -19,7 +20,7 @@ class HaltUtilTest : TestBase() {
 
     @Test
     fun testStopThread() = runBlockingTest {
-        val haltUtil = HaltUtilImpl(HaltUtilJVM(NoopEventLogger()))
+        val haltUtil = HaltUtilImpl(HaltUtilJVM(PassthroughEventLogger(NoopEventLoggerDelegate())))
 
         thread {
             Thread.sleep(1500)

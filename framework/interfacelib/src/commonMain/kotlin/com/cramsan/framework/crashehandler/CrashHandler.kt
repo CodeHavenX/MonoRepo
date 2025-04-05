@@ -10,13 +10,6 @@ package com.cramsan.framework.crashehandler
 interface CrashHandler {
 
     /**
-     * The delegate that will catch the unhandled exceptions.
-     *
-     * @see [CrashHandlerDelegate]
-     */
-    val platformDelegate: CrashHandlerDelegate
-
-    /**
      * Initialize the [platformDelegate] to start tracking crashes.
      *
      * @see [CrashHandlerDelegate.initialize]

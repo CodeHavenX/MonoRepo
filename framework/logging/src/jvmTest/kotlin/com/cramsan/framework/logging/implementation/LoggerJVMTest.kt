@@ -17,7 +17,7 @@ class LoggerJVMTest : TestBase() {
     @Test
     fun `test logging simple message`() = runBlockingTest {
         val log4jLogger: Logger = mockk(relaxed = true)
-        val logger = LoggerJVM(log4jLogger)
+        val logger = LoggerJVM(log4jLogger, Severity.VERBOSE)
 
         val exception: Throwable? = null
 
@@ -29,7 +29,7 @@ class LoggerJVMTest : TestBase() {
     @Test
     fun `test logging formatted message`() = runBlockingTest {
         val log4jLogger: Logger = mockk(relaxed = true)
-        val logger = LoggerJVM(log4jLogger)
+        val logger = LoggerJVM(log4jLogger, Severity.VERBOSE)
 
         val exception = IllegalStateException()
 

@@ -1,9 +1,8 @@
 package com.cramsan.framework.test
 
 import io.mockk.MockKAnnotations
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.TestScope
 import org.junit.jupiter.api.extension.ExtendWith
 import kotlin.test.BeforeTest
@@ -25,10 +24,10 @@ actual abstract class TestBase {
      * Reference to the Scope used to run the tests. This scope can be injected into
      * classes as well.
      */
-    actual val testCoroutineScope: CoroutineScope
+    actual val testCoroutineScope: TestScope
         get() = testCoroutineRule.testCoroutineScope
 
-    actual val testCoroutineDispatcher: CoroutineDispatcher
+    actual val testCoroutineDispatcher: TestDispatcher
         get() = testCoroutineRule.testCoroutineDispatcher
 
     @BeforeTest

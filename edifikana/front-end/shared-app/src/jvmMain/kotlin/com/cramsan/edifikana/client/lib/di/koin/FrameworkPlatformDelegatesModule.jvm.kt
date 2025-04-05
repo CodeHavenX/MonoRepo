@@ -26,13 +26,17 @@ actual val FrameworkPlatformDelegatesModule = module {
         )
     }
 
-    single<Logger> {
-        Log4J2Helpers.getRootLogger(true, Severity.VERBOSE)
+    single {
+        Severity.VERBOSE
     }
 
-    single<EventLoggerErrorCallbackDelegate> { NoopEventLoggerErrorCallbackDelegate }
+    single<Logger> {
+        Log4J2Helpers.getRootLogger(true, get())
+    }
 
-    single<EventLoggerDelegate> { LoggerJVM(get()) }
+    single<EventLoggerErrorCallbackDelegate> { NoopEventLoggerErrorCallbackDelegate() }
+
+    single<EventLoggerDelegate> { LoggerJVM(get(), get()) }
 
     single<HaltUtilDelegate> {
         HaltUtilJVM(get())

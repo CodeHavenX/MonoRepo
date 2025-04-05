@@ -11,13 +11,11 @@ import org.jetbrains.compose.resources.StringResource
 data class HubUIModel(
     val label: String,
     val selectedTab: Tabs,
-    val showUserHomeButton: Boolean = false,
 ) : ViewModelUIState {
     companion object {
         val Empty = HubUIModel(
             label = "",
             selectedTab = Tabs.Properties,
-            showUserHomeButton = true,
         )
     }
 }

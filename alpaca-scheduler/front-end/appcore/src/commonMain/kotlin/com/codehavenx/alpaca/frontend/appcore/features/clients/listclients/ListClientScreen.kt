@@ -30,7 +30,6 @@ import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,8 +39,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
-import com.codehavenx.alpaca.frontend.appcore.features.application.ApplicationDelegatedEvent
-import com.codehavenx.alpaca.frontend.appcore.features.application.ApplicationEvent
 import com.codehavenx.alpaca.frontend.appcore.ui.components.ListItem
 import com.codehavenx.alpaca.frontend.appcore.ui.components.LoadingAnimationOverlay
 import com.codehavenx.alpaca.frontend.appcore.ui.theme.Padding
@@ -52,30 +49,12 @@ import org.koin.compose.koinInject
  */
 @Composable
 fun ListClientsScreen(
-    activityDelegatedEvent: ApplicationDelegatedEvent,
-    onApplicationEventInvoke: (ApplicationEvent) -> Unit,
     viewModel: ListClientViewModel = koinInject()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val viewModelEvent by viewModel.events.collectAsState(ListClientEvent.Noop)
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         viewModel.loadPage()
-    }
-
-    LaunchedEffect(activityDelegatedEvent) {
-        when (activityDelegatedEvent) {
-            ApplicationDelegatedEvent.Noop -> Unit
-        }
-    }
-
-    LaunchedEffect(viewModelEvent) {
-        when (val event = viewModelEvent) {
-            ListClientEvent.Noop -> Unit
-            is ListClientEvent.TriggerApplicationEvent -> {
-                onApplicationEventInvoke(event.applicationEvent)
-            }
-        }
     }
 
     ListClientsContent(

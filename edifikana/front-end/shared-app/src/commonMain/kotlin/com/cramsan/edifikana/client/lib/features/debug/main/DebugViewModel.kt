@@ -45,10 +45,8 @@ class DebugViewModel(
             bufferedValue = null
             logI(TAG, "Debug key $key changed to $value")
             loadDataImpl()
-            emitEvent(
-                DebugEvent.TriggerApplicationEvent(
-                    EdifikanaApplicationEvent.ShowSnackbar("Value saved")
-                )
+            emitApplicationEvent(
+                EdifikanaApplicationEvent.ShowSnackbar("Value saved")
             )
         }
     }
@@ -78,10 +76,8 @@ class DebugViewModel(
      */
     fun navigateBack() {
         viewModelScope.launch {
-            emitEvent(
-                DebugEvent.TriggerApplicationEvent(
-                    EdifikanaApplicationEvent.NavigateBack
-                )
+            emitApplicationEvent(
+                EdifikanaApplicationEvent.NavigateBack
             )
         }
     }

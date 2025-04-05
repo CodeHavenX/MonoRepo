@@ -26,7 +26,7 @@ class PropertyViewModel(
      */
     fun navigateBack() {
         viewModelScope.launch {
-            emitEvent(PropertyEvent.TriggerApplicationEvent(EdifikanaApplicationEvent.NavigateBack))
+            emitApplicationEvent(EdifikanaApplicationEvent.NavigateBack)
         }
     }
 
@@ -41,10 +41,8 @@ class PropertyViewModel(
             propertyManager.updateProperty(propertyId, name, address).onFailure {
                 updateUiState { it.copy(isLoading = false) }
                 val message = getString(Res.string.error_message_unexpected_error)
-                emitEvent(
-                    PropertyEvent.TriggerApplicationEvent(
-                        EdifikanaApplicationEvent.ShowSnackbar(message)
-                    )
+                emitApplicationEvent(
+                    EdifikanaApplicationEvent.ShowSnackbar(message)
                 )
                 return@launch
             }

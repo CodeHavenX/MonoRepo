@@ -11,11 +11,6 @@ import com.cramsan.framework.core.CoreUri
 sealed class EdifikanaApplicationDelegatedEvent {
 
     /**
-     * No operation.
-     */
-    data object Noop : EdifikanaApplicationDelegatedEvent()
-
-    /**
      * Handle received image.
      */
     data class HandleReceivedImage(

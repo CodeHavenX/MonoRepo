@@ -1,16 +1,17 @@
 package com.cramsan.edifikana.client.lib.features.auth.signin
 
 import app.cash.turbine.test
-import com.cramsan.edifikana.client.lib.features.ActivityDestination
+import com.cramsan.edifikana.client.lib.features.ActivityRouteDestination
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
 import com.cramsan.edifikana.client.lib.features.auth.AuthRouteDestination
 import com.cramsan.edifikana.client.lib.managers.AuthManager
-import com.cramsan.framework.core.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.core.UnifiedDispatcherProvider
+import com.cramsan.framework.core.compose.SharedFlowApplicationReceiver
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
+import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.test.TestBase
 import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
 import io.github.jan.supabase.auth.exception.AuthRestException
@@ -36,6 +37,8 @@ class SignInViewModelTest : TestBase() {
     private lateinit var viewModel: SignInViewModel
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
 
+    private lateinit var applicationEventReceiver: SharedFlowApplicationReceiver
+
     /**
      * Setup the test.
      */
@@ -43,12 +46,14 @@ class SignInViewModelTest : TestBase() {
     fun setupTest() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         authManager = mockk()
+        applicationEventReceiver = SharedFlowApplicationReceiver()
         exceptionHandler = CollectorCoroutineExceptionHandler()
         viewModel = SignInViewModel(
             dependencies = ViewModelDependencies(
                 appScope = testCoroutineScope,
                 dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),
                 coroutineExceptionHandler = exceptionHandler,
+                applicationEventReceiver = applicationEventReceiver,
             ),
             authManager
         )
@@ -115,13 +120,11 @@ class SignInViewModelTest : TestBase() {
 
         // Act
         val verificationJob = launch {
-            viewModel.events.test {
+            applicationEventReceiver.events.test {
                 assertEquals(
-                    SignInEvent.TriggerEdifikanaApplicationEvent(
-                        EdifikanaApplicationEvent.NavigateToActivity(
-                            ActivityDestination.MainDestination,
-                            clearTop = true,
-                        )
+                    EdifikanaApplicationEvent.NavigateToActivity(
+                        ActivityRouteDestination.ManagementRouteDestination,
+                        clearTop = true,
                     ),
                     awaitItem()
                 )
@@ -216,13 +219,9 @@ class SignInViewModelTest : TestBase() {
 
         // Act
         val verificationJob = launch {
-            viewModel.events.test {
+            applicationEventReceiver.events.test {
                 assertEquals(
-                    SignInEvent.TriggerEdifikanaApplicationEvent(
-                        EdifikanaApplicationEvent.NavigateToScreen(
-                            AuthRouteDestination.SignUpDestination
-                        )
-                    ),
+                    EdifikanaApplicationEvent.NavigateToScreen(AuthRouteDestination.SignUpDestination),
                     awaitItem()
                 )
             }
@@ -243,13 +242,9 @@ class SignInViewModelTest : TestBase() {
 
         // Act
         val verificationJob = launch {
-            viewModel.events.test {
+            applicationEventReceiver.events.test {
                 assertEquals(
-                    SignInEvent.TriggerEdifikanaApplicationEvent(
-                        EdifikanaApplicationEvent.NavigateToActivity(
-                            ActivityDestination.DebugDestination
-                        )
-                    ),
+                    EdifikanaApplicationEvent.NavigateToActivity(ActivityRouteDestination.DebugRouteDestination),
                     awaitItem()
                 )
             }

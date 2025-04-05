@@ -3,12 +3,13 @@ package com.cramsan.edifikana.client.lib.features.auth.signup
 import app.cash.turbine.test
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
-import com.cramsan.framework.core.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.core.UnifiedDispatcherProvider
+import com.cramsan.framework.core.compose.SharedFlowApplicationReceiver
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
+import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.test.TestBase
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -34,6 +35,9 @@ class SignUpViewModelTest : TestBase() {
     private lateinit var viewModel: SignUpViewModel
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
 
+    private lateinit var applicationEventReceiver: SharedFlowApplicationReceiver
+
+
     /**
      * Setup the test.
      */
@@ -42,11 +46,13 @@ class SignUpViewModelTest : TestBase() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         authManager = mockk()
         exceptionHandler = CollectorCoroutineExceptionHandler()
+        applicationEventReceiver = SharedFlowApplicationReceiver()
         viewModel = SignUpViewModel(
             dependencies = ViewModelDependencies(
                 appScope = testCoroutineScope,
                 dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),
                 coroutineExceptionHandler = exceptionHandler,
+                applicationEventReceiver = applicationEventReceiver,
             ), authManager
         )
     }
@@ -180,9 +186,9 @@ class SignUpViewModelTest : TestBase() {
 
         // Act
         val verificationJob = launch {
-            viewModel.events.test {
+            applicationEventReceiver.events.test {
                 assertEquals(
-                    SignUpEvent.TriggerEdifikanaApplicationEvent(EdifikanaApplicationEvent.NavigateBack), awaitItem()
+                    EdifikanaApplicationEvent.NavigateBack, awaitItem()
                 )
             }
         }

@@ -14,14 +14,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.ui.components.ScreenLayout
 import com.cramsan.ui.theme.Padding
@@ -33,8 +32,8 @@ import edifikana_lib.account_screen_last_name
 import edifikana_lib.account_screen_phone_number
 import edifikana_lib.account_screen_sign_out
 import edifikana_lib.account_screen_title
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -43,19 +42,17 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun AccountScreen(
     viewModel: AccountViewModel = koinViewModel(),
-    applicationViewModel: EdifikanaApplicationViewModel = koinInject(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val viewModelEvent by viewModel.events.collectAsState(AccountEvent.Noop)
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
     }
 
-    LaunchedEffect(viewModelEvent) {
-        when (val event = viewModelEvent) {
-            AccountEvent.Noop -> Unit
-            is AccountEvent.TriggerEdifikanaApplicationEvent -> {
-                applicationViewModel.executeEvent(event.edifikanaApplicationEvent)
+    val screenScope = rememberCoroutineScope()
+    screenScope.launch {
+        viewModel.events.collect { event ->
+            when (event) {
+                AccountEvent.Noop -> Unit
             }
         }
     }
@@ -81,7 +78,7 @@ internal fun AccountContent(
         topBar = {
             EdifikanaTopBar(
                 title = stringResource(Res.string.account_screen_title),
-                onCloseClicked = onBackNavigation,
+                onNavigationIconSelected = onBackNavigation,
             ) {
                 IconButton(onClick = onEditClicked) {
                     Icon(

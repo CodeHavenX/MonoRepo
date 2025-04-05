@@ -45,7 +45,7 @@ class ViewStaffViewModel(
      */
     fun editStaff(staffId: String) {
         viewModelScope.launch {
-            emitEvent(ViewStaffEvent.TriggerApplicationEvent(ApplicationEvent.Navigate(Route.updateStaff(staffId))))
+            emitApplicationEvent(ApplicationEvent.Navigate(Route.updateStaff(staffId)))
         }
     }
 

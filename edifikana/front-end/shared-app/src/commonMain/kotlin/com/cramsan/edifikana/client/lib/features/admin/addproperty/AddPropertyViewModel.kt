@@ -22,7 +22,7 @@ class AddPropertyViewModel(
      */
     fun navigateBack() {
         viewModelScope.launch {
-            emitEvent(AddPropertyEvent.TriggerApplicationEvent(EdifikanaApplicationEvent.NavigateBack))
+            emitApplicationEvent(EdifikanaApplicationEvent.NavigateBack)
         }
     }
 
@@ -37,17 +37,13 @@ class AddPropertyViewModel(
                 TODO("Handle error when adding property")
             }.getOrThrow()
 
-            emitEvent(
-                AddPropertyEvent.TriggerApplicationEvent(
-                    EdifikanaApplicationEvent.ShowSnackbar(
-                        "Property ${newProperty.name} added successfully"
-                    )
+            emitApplicationEvent(
+                EdifikanaApplicationEvent.ShowSnackbar(
+                    "Property ${newProperty.name} added successfully"
                 )
             )
-            emitEvent(
-                AddPropertyEvent.TriggerApplicationEvent(
-                    EdifikanaApplicationEvent.NavigateBack
-                )
+            emitApplicationEvent(
+                EdifikanaApplicationEvent.NavigateBack
             )
         }
     }

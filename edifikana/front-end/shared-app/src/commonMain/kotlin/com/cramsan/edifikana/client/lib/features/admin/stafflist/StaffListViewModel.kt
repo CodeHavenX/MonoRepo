@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.admin.stafflist
 
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
-import com.cramsan.edifikana.client.lib.features.admin.AdminDestination
+import com.cramsan.edifikana.client.lib.features.management.ManagementDestination
 import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.framework.core.compose.BaseViewModel
@@ -45,10 +45,8 @@ class StaffListViewModel(
      */
     fun navigateToAddPrimaryStaff() {
         viewModelScope.launch {
-            emitEvent(
-                StaffListEvent.TriggerApplicationEvent(
-                    EdifikanaApplicationEvent.NavigateToScreen(AdminDestination.AddPrimaryStaffAdminDestination)
-                )
+            emitApplicationEvent(
+                EdifikanaApplicationEvent.NavigateToScreen(ManagementDestination.AddPrimaryStaffManagementDestination)
             )
         }
     }
@@ -58,10 +56,8 @@ class StaffListViewModel(
      */
     fun navigateToAddSecondaryStaff() {
         viewModelScope.launch {
-            emitEvent(
-                StaffListEvent.TriggerApplicationEvent(
-                    EdifikanaApplicationEvent.NavigateToScreen(AdminDestination.AddSecondaryStaffAdminDestination)
-                )
+            emitApplicationEvent(
+                EdifikanaApplicationEvent.NavigateToScreen(ManagementDestination.AddSecondaryStaffManagementDestination)
             )
         }
     }
@@ -71,10 +67,8 @@ class StaffListViewModel(
      */
     fun navigateToStaff(staffId: StaffId) {
         viewModelScope.launch {
-            emitEvent(
-                StaffListEvent.TriggerApplicationEvent(
-                    EdifikanaApplicationEvent.NavigateToScreen(AdminDestination.StaffDestination(staffId))
-                )
+            emitApplicationEvent(
+                EdifikanaApplicationEvent.NavigateToScreen(ManagementDestination.StaffDestination(staffId))
             )
         }
     }

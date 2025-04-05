@@ -96,10 +96,8 @@ class AddRecordViewModel(
         if (result.isFailure) {
             updateUiState { it.copy(isLoading = false) }
         } else {
-            emitEvent(
-                AddRecordEvent.TriggerEdifikanaApplicationEvent(
-                    EdifikanaApplicationEvent.NavigateBack
-                )
+            emitApplicationEvent(
+                EdifikanaApplicationEvent.NavigateBack
             )
         }
     }
@@ -109,7 +107,7 @@ class AddRecordViewModel(
      */
     fun navigateBack() {
         viewModelScope.launch {
-            emitEvent(AddRecordEvent.TriggerEdifikanaApplicationEvent(EdifikanaApplicationEvent.NavigateBack))
+            emitApplicationEvent(EdifikanaApplicationEvent.NavigateBack)
         }
     }
 

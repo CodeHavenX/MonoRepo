@@ -12,11 +12,10 @@ enum class ApplicationRoute(
     @RouteSafePath
     val rawRoute: String,
 ) {
-    Main("home"),
     Splash("splash"),
     Auth("auth"),
     Account("account"),
-    Admin("admin"),
+    Management("management"),
     Debug("debug"),
     ;
     companion object {
@@ -39,56 +38,43 @@ enum class ApplicationRoute(
  * In this case, the route would be "user/{id}"(as registered in the router) and the path would be "user/123",  where
  * the value of {id} would be 123.
  */
-sealed class ActivityDestination(
-    val route: ApplicationRoute,
+sealed class ActivityRouteDestination(
     @RouteSafePath
-    val path: String,
-) {
-    /**
-     * A class representing navigating to the main screen.
-     */
-    data object MainDestination : ActivityDestination(
-        ApplicationRoute.Main,
-        ApplicationRoute.Main.rawRoute,
-    )
+    override val rawRoute: String,
+) : Destination {
 
     /**
      * A class representing navigating to the splash screen.
      */
-    data object SplashDestination : ActivityDestination(
-        ApplicationRoute.Splash,
+    data object SplashRouteDestination : ActivityRouteDestination(
         ApplicationRoute.Splash.rawRoute,
     )
 
     /**
      * A class representing navigating to the auth screen.
      */
-    data object AuthDestination : ActivityDestination(
-        ApplicationRoute.Auth,
+    data object AuthRouteDestination : ActivityRouteDestination(
         ApplicationRoute.Auth.rawRoute,
     )
 
     /**
      * A class representing navigating to the account page.
      */
-    data object AccountDestination : ActivityDestination(
-        ApplicationRoute.Account,
+    data object AccountRouteDestination : ActivityRouteDestination(
         ApplicationRoute.Account.rawRoute,
     )
 
     /**
-     * A class representing navigating to the admin page.
+     * A class representing navigating to the Staff Screen.
      */
-    data object AdminDestination : ActivityDestination(
-        ApplicationRoute.Admin,
-        ApplicationRoute.Admin.rawRoute,
+    data object ManagementRouteDestination : ActivityRouteDestination(
+        ApplicationRoute.Management.rawRoute,
     )
 
     /**
      * A class representing navigating to the debug page.
      */
-    data object DebugDestination : ActivityDestination(
-        ApplicationRoute.Debug,
+    data object DebugRouteDestination : ActivityRouteDestination(
         ApplicationRoute.Debug.rawRoute,
     )
 }

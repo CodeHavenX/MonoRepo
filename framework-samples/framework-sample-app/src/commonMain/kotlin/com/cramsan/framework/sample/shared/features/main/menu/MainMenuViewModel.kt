@@ -18,10 +18,8 @@ class MainMenuViewModel(
      */
     fun navigateToHaltUtil() {
         viewModelScope.launch {
-            emitEvent(
-                MainMenuEvent.TriggerApplicationEvent(
-                    ApplicationEvent.NavigateToScreen(MainRouteDestination.HaltUtilDestination)
-                )
+            emitApplicationEvent(
+                ApplicationEvent.NavigateToScreen(MainRouteDestination.HaltUtilDestination)
             )
         }
     }

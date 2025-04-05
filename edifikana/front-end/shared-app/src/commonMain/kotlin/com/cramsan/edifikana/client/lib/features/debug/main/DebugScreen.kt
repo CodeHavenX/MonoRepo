@@ -18,23 +18,22 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.ui.components.PasswordOutlinedTextField
 import com.cramsan.ui.components.ScreenLayout
 import com.cramsan.ui.theme.Padding
-import org.koin.compose.koinInject
+import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -46,10 +45,8 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun DebugScreen(
     viewModel: DebugViewModel = koinViewModel(),
-    applicationViewModel: EdifikanaApplicationViewModel = koinInject()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val viewModelEvent by viewModel.events.collectAsState(DebugEvent.Noop)
 
     /**
      * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
@@ -64,11 +61,11 @@ fun DebugScreen(
         viewModel.saveBufferedChanges()
     }
 
-    LaunchedEffect(viewModelEvent) {
-        when (val event = viewModelEvent) {
-            DebugEvent.Noop -> Unit
-            is DebugEvent.TriggerApplicationEvent -> {
-                applicationViewModel.executeEvent(event.event)
+    val screenScope = rememberCoroutineScope()
+    screenScope.launch {
+        viewModel.events.collect { event ->
+            when (event) {
+                DebugEvent.Noop -> Unit
             }
         }
     }
@@ -101,7 +98,7 @@ internal fun DebugContent(
         topBar = {
             EdifikanaTopBar(
                 title = "Debug Menu",
-                onCloseClicked = onCloseSelected,
+                onNavigationIconSelected = onCloseSelected,
             )
         },
     ) { innerPadding ->

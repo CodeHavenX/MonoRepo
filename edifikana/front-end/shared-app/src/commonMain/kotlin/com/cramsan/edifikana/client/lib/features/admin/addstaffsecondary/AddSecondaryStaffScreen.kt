@@ -8,17 +8,16 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.lib.toIdTypeFriendlyName
 import com.cramsan.edifikana.client.lib.toRoleFriendlyNameCompose
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
@@ -35,8 +34,8 @@ import edifikana_lib.string_last_names
 import edifikana_lib.string_names
 import edifikana_lib.string_role
 import edifikana_lib.string_save
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -49,10 +48,8 @@ import org.koin.compose.viewmodel.koinViewModel
 fun AddSecondaryStaffScreen(
     modifier: Modifier = Modifier,
     viewModel: AddSecondaryStaffViewModel = koinViewModel(),
-    applicationViewModel: EdifikanaApplicationViewModel = koinInject(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val viewModelEvent by viewModel.events.collectAsState(AddSecondaryStaffEvent.Noop)
 
     /**
      * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
@@ -64,12 +61,11 @@ fun AddSecondaryStaffScreen(
         // Call this feature's viewModel
     }
 
-    LaunchedEffect(viewModelEvent) {
-        when (val event = viewModelEvent) {
-            AddSecondaryStaffEvent.Noop -> Unit
-            is AddSecondaryStaffEvent.TriggerApplicationEvent -> {
-                // Call the application's viewmodel
-                applicationViewModel.executeEvent(event.applicationEvent)
+    val screenScope = rememberCoroutineScope()
+    screenScope.launch {
+        viewModel.events.collect { event ->
+            when (event) {
+                AddSecondaryStaffEvent.Noop -> Unit
             }
         }
     }
@@ -107,7 +103,7 @@ internal fun AddSecondaryContent(
         topBar = {
             EdifikanaTopBar(
                 title = stringResource(Res.string.add_staff_screen_title),
-                onCloseClicked = onBackSelected,
+                onNavigationIconSelected = onBackSelected,
             )
         },
     ) { innerPadding ->

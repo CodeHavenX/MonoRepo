@@ -1,8 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.main.timecard.stafflist
 
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
-import com.cramsan.edifikana.client.lib.features.admin.AdminDestination
-import com.cramsan.edifikana.client.lib.features.main.MainRouteDestination
+import com.cramsan.edifikana.client.lib.features.management.ManagementDestination
 import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.framework.core.compose.BaseViewModel
@@ -51,11 +50,9 @@ class StaffListViewModel(
      * Navigate to staff member.
      */
     fun navigateToStaff(staffPK: StaffId) = viewModelScope.launch {
-        emitEvent(
-            StaffListEvent.TriggerEdifikanaApplicationEvent(
-                EdifikanaApplicationEvent.NavigateToScreen(
-                    MainRouteDestination.TimeCardSingleStaffDestination(staffPK)
-                )
+        emitApplicationEvent(
+            EdifikanaApplicationEvent.NavigateToScreen(
+                ManagementDestination.TimeCardSingleStaffDestination(staffPK)
             )
         )
     }
@@ -64,11 +61,9 @@ class StaffListViewModel(
      * Navigate to add staff member.
      */
     fun navigateToAddStaff() = viewModelScope.launch {
-        emitEvent(
-            StaffListEvent.TriggerEdifikanaApplicationEvent(
-                EdifikanaApplicationEvent.NavigateToScreen(
-                    AdminDestination.AddSecondaryStaffAdminDestination,
-                )
+        emitApplicationEvent(
+            EdifikanaApplicationEvent.NavigateToScreen(
+                ManagementDestination.AddSecondaryStaffManagementDestination,
             )
         )
     }
@@ -77,10 +72,8 @@ class StaffListViewModel(
      * Navigate back.
      */
     fun navigateBack() = viewModelScope.launch {
-        emitEvent(
-            StaffListEvent.TriggerEdifikanaApplicationEvent(
-                EdifikanaApplicationEvent.NavigateBack
-            )
+        emitApplicationEvent(
+            EdifikanaApplicationEvent.NavigateBack
         )
     }
 

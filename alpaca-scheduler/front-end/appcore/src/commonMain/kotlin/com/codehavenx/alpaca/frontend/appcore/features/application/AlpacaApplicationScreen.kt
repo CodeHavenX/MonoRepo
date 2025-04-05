@@ -9,11 +9,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -37,6 +37,7 @@ import com.codehavenx.alpaca.frontend.appcore.features.staff.viewstaff.ViewStaff
 import com.codehavenx.alpaca.frontend.appcore.ui.components.NavigationBar
 import com.codehavenx.alpaca.frontend.appcore.ui.components.TopBar
 import com.codehavenx.alpaca.frontend.appcore.ui.theme.AlpacaTheme
+import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 /**
@@ -51,8 +52,7 @@ fun AlpacaApplicationScreen(
     @Suppress("UnusedParameter")
     eventHandler: PlatformEventHandler,
 ) {
-    val event by viewModel.events.collectAsState(ApplicationEvent.Noop)
-    val delegatedEvent by viewModel.delegatedEvents.collectAsState(ApplicationDelegatedEvent.Noop)
+    val scope = rememberCoroutineScope()
     val uiState by viewModel.uiState.collectAsState()
     val navController = rememberNavController()
 
@@ -60,37 +60,39 @@ fun AlpacaApplicationScreen(
         // Do something on create
     }
 
-    LaunchedEffect(Unit) {
-        when (val applicationEvent = event) {
-            ApplicationEvent.Noop -> Unit
-            is ApplicationEvent.Navigate -> {
-                navController.navigate(applicationEvent.route) {
-                    launchSingleTop = true
-                }
-            }
-            is ApplicationEvent.NavigateBack -> {
-                navController.popBackStack()
-            }
-            is ApplicationEvent.NavigateFromRootPage -> {
-                navController.navigate(applicationEvent.route) {
-                    // Pop up to the start destination of the graph to
-                    // avoid building up a large stack of destinations
-                    // on the back stack as users select items
-                    popUpTo(navController.graph.findStartDestination().route!!) {
-                        saveState = true
+    scope.launch {
+        viewModel.events.collect { applicationEvent ->
+            when (applicationEvent) {
+                is ApplicationEvent.Navigate -> {
+                    navController.navigate(applicationEvent.route) {
+                        launchSingleTop = true
                     }
-                    // Avoid multiple copies of the same destination when
-                    // reselecting the same item
-                    launchSingleTop = true
-                    // Restore state when reselecting a previously selected item
-                    restoreState = true
                 }
-            }
-            is ApplicationEvent.SignInStatusChange -> {
-                viewModel.setSignInStatus(applicationEvent.isSignedIn)
+                is ApplicationEvent.NavigateBack -> {
+                    navController.popBackStack()
+                }
+                is ApplicationEvent.NavigateFromRootPage -> {
+                    navController.navigate(applicationEvent.route) {
+                        // Pop up to the start destination of the graph to
+                        // avoid building up a large stack of destinations
+                        // on the back stack as users select items
+                        popUpTo(navController.graph.findStartDestination().route!!) {
+                            saveState = true
+                        }
+                        // Avoid multiple copies of the same destination when
+                        // reselecting the same item
+                        launchSingleTop = true
+                        // Restore state when reselecting a previously selected item
+                        restoreState = true
+                    }
+                }
+                is ApplicationEvent.SignInStatusChange -> {
+                    viewModel.setSignInStatus(applicationEvent.isSignedIn)
+                }
             }
         }
     }
+
     ComposableKoinContext {
         AlpacaTheme {
             val state = uiState
@@ -100,8 +102,6 @@ fun AlpacaApplicationScreen(
             ) {
                 NavigationHost(
                     navController = navController,
-                    delegatedEvent = delegatedEvent,
-                    onApplicationEventInvoke = { viewModel.executeApplicationEvent(it) },
                     onSignOutClicked = { viewModel.signOut() },
                     navBar = state.navBar,
                 )
@@ -117,8 +117,6 @@ internal expect fun ComposableKoinContext(content: @Composable () -> Unit)
 @Composable
 private fun NavigationHost(
     navController: NavHostController,
-    delegatedEvent: ApplicationDelegatedEvent,
-    onApplicationEventInvoke: (ApplicationEvent) -> Unit,
     navBar: List<NavBarSegment>,
     onSignOutClicked: () -> Unit,
 ) {
@@ -147,8 +145,6 @@ private fun NavigationHost(
                 modifier = Modifier
                     .fillMaxSize()
                     .border(1.dp, MaterialTheme.colorScheme.primaryContainer),
-                activityDelegatedEvent = delegatedEvent,
-                onApplicationEventInvoke = onApplicationEventInvoke,
             )
         }
     }
@@ -160,8 +156,6 @@ private fun NavigationRoutes(
     navController: NavHostController,
     startDestination: String,
     modifier: Modifier = Modifier,
-    activityDelegatedEvent: ApplicationDelegatedEvent,
-    onApplicationEventInvoke: (ApplicationEvent) -> Unit,
 ) {
     NavHost(
         navController,
@@ -169,69 +163,46 @@ private fun NavigationRoutes(
         modifier = modifier,
     ) {
         composable(Route.HOME.route) { _ ->
-            HomeScreen(
-                activityDelegatedEvent,
-                onApplicationEventInvoke,
-            )
+            HomeScreen()
         }
         composable(Route.CLIENTS_LIST.route) { _ ->
-            ListClientsScreen(
-                activityDelegatedEvent,
-                onApplicationEventInvoke,
-            )
+            ListClientsScreen()
         }
 
         composable(Route.CLIENTS_ADD.route) { _ ->
-            AddClientScreen(
-                activityDelegatedEvent,
-                onApplicationEventInvoke,
-            )
+            AddClientScreen()
         }
 
         composable(Route.CLIENTS_UPDATE.route) { backStackEntry ->
             UpdateClientScreen(
                 backStackEntry.arguments?.getString("clientId")!!,
-                activityDelegatedEvent,
-                onApplicationEventInvoke,
             )
         }
 
         composable(Route.CLIENTS_VIEW.route) { backStackEntry ->
             ViewClientScreen(
                 backStackEntry.arguments?.getString("clientId")!!,
-                activityDelegatedEvent,
-                onApplicationEventInvoke,
             )
         }
 
         composable(Route.STAFF_LIST.route) { _ ->
-            ListStaffsScreen(
-                activityDelegatedEvent,
-                onApplicationEventInvoke,
-            )
+            ListStaffsScreen()
         }
 
         composable(Route.STAFF_UPDATE.route) { backStackEntry ->
             UpdateStaffScreen(
                 backStackEntry.arguments?.getString("staffId")!!,
-                activityDelegatedEvent,
-                onApplicationEventInvoke,
             )
         }
 
         composable(Route.STAFF_VIEW.route) { backStackEntry ->
             ViewStaffScreen(
                 backStackEntry.arguments?.getString("staffId")!!,
-                activityDelegatedEvent,
-                onApplicationEventInvoke,
             )
         }
 
         composable(Route.STAFF_ADD.route) { _ ->
-            AddStaffScreen(
-                activityDelegatedEvent,
-                onApplicationEventInvoke,
-            )
+            AddStaffScreen()
         }
 
         composable(Route.APPOINTMENTS.route) { _ ->
@@ -241,10 +212,7 @@ private fun NavigationRoutes(
         }
 
         composable(Route.CREATE_ACCOUNT.route) { _ ->
-            CreateAccountScreen(
-                activityDelegatedEvent,
-                onApplicationEventInvoke,
-            )
+            CreateAccountScreen()
         }
     }
 }

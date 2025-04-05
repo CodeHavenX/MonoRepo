@@ -13,7 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Apartment
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -25,19 +25,19 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.lib.features.main.eventlog.EventLogScreen
 import com.cramsan.edifikana.client.lib.features.main.timecard.TimeCardScreen
+import com.cramsan.edifikana.client.lib.features.management.drawer.ManagementViewModel
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.ui.theme.Padding
@@ -46,14 +46,13 @@ import edifikana_lib.app_name
 import edifikana_lib.home_screen_account_description
 import edifikana_lib.home_screen_property_dropdown_description
 import edifikana_lib.home_screen_property_dropdown_selected_description
-import edifikana_lib.home_screen_settings_description
 import edifikana_lib.schedule
 import edifikana_lib.string_assistance
 import edifikana_lib.string_event_log_title
 import edifikana_lib.two_pager
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -64,11 +63,10 @@ import org.koin.compose.viewmodel.koinViewModel
  */
 @Composable
 fun HomeScreen(
-    applicationViewModel: EdifikanaApplicationViewModel = koinInject(),
+    managementViewModel: ManagementViewModel = koinViewModel(),
     viewModel: HomeViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val viewModelEvent by viewModel.events.collectAsState(HomeEvent.Noop)
 
     /**
      * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
@@ -80,12 +78,11 @@ fun HomeScreen(
         // Call this feature's viewModel
     }
 
-    LaunchedEffect(viewModelEvent) {
-        when (val event = viewModelEvent) {
-            HomeEvent.Noop -> Unit
-            is HomeEvent.TriggerApplicationEvent -> {
-                // Call the application's viewmodel
-                applicationViewModel.executeEvent(event.applicationEvent)
+    val screenScope = rememberCoroutineScope()
+    screenScope.launch {
+        viewModel.events.collect { event ->
+            when (event) {
+                HomeEvent.Noop -> Unit
             }
         }
     }
@@ -93,10 +90,10 @@ fun HomeScreen(
     HomeScreenContent(
         uiState,
         onAccountButtonClicked = { viewModel.navigateToAccount() },
-        onAdminButtonClicked = { viewModel.navigateToAdmin() },
         onPropertySelected = { viewModel.selectProperty(it) },
         onTabSelected = { viewModel.selectTab(it) },
-        onNotificationsButtonSelected = { viewModel.navigateToNotifications() }
+        onNotificationsButtonSelected = { viewModel.navigateToNotifications() },
+        onNavigationIconSelected = { managementViewModel.toggleNavigationState() },
     )
 }
 
@@ -119,7 +116,7 @@ internal fun HomeScreenContent(
     uiState: HomeUIModel,
     modifier: Modifier = Modifier,
     onAccountButtonClicked: () -> Unit,
-    onAdminButtonClicked: () -> Unit,
+    onNavigationIconSelected: () -> Unit,
     onPropertySelected: (PropertyId) -> Unit,
     onTabSelected: (Tabs) -> Unit,
     onNotificationsButtonSelected: () -> Unit,
@@ -129,6 +126,8 @@ internal fun HomeScreenContent(
         topBar = {
             EdifikanaTopBar(
                 title = stringResource(Res.string.app_name),
+                navigationIcon = Icons.Default.Menu,
+                onNavigationIconSelected = onNavigationIconSelected,
             ) {
                 // Property dropdown
                 if (uiState.availableProperties.isNotEmpty()) {
@@ -139,15 +138,6 @@ internal fun HomeScreenContent(
                     )
                 }
 
-                // Admin Menu button
-                if (uiState.showAdminButton) {
-                    IconButton(onClick = onAdminButtonClicked) {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = stringResource(Res.string.home_screen_settings_description),
-                        )
-                    }
-                }
                 // Account button
                 AccountDropDown(
                     onAccountSelected = onAccountButtonClicked,

@@ -80,10 +80,8 @@ class ViewStaffViewModel(
     fun share(timeCardRecordPK: TimeCardEventId?) = viewModelScope.launch {
         if (timeCardRecordPK == null) {
             logW(TAG, "TimeCardRecord PK is null")
-            emitEvent(
-                ViewStaffEvent.TriggerEdifikanaApplicationEvent(
-                    EdifikanaApplicationEvent.ShowSnackbar(getString(Res.string.error_message_currently_uploading))
-                )
+            emitApplicationEvent(
+                EdifikanaApplicationEvent.ShowSnackbar(getString(Res.string.error_message_currently_uploading))
             )
             return@launch
         }
@@ -99,12 +97,10 @@ class ViewStaffViewModel(
         val imageUri = record.publicImageUrl?.let {
             storageService.downloadFile(it).getOrThrow()
         }
-        emitEvent(
-            ViewStaffEvent.TriggerEdifikanaApplicationEvent(
-                EdifikanaApplicationEvent.ShareContent(
-                    formatShareMessage(staff, record.timeRecorded, record.eventType),
-                    imageUri,
-                )
+        emitApplicationEvent(
+            EdifikanaApplicationEvent.ShareContent(
+                formatShareMessage(staff, record.timeRecorded, record.eventType),
+                imageUri,
             )
         )
         updateUiState { it.copy(isLoading = false) }
@@ -116,10 +112,8 @@ class ViewStaffViewModel(
     fun onClockEventSelected(eventType: TimeCardEventType) = viewModelScope.launch {
         this@ViewStaffViewModel.eventType = eventType
         // TODO: Set the filename
-        emitEvent(
-            ViewStaffEvent.TriggerEdifikanaApplicationEvent(
-                EdifikanaApplicationEvent.OpenCamera(eventType.toString())
-            )
+        emitApplicationEvent(
+            EdifikanaApplicationEvent.OpenCamera(eventType.toString())
         )
     }
 
@@ -159,16 +153,14 @@ class ViewStaffViewModel(
             }
             eventType = null
         } else {
-            emitEvent(
-                ViewStaffEvent.TriggerEdifikanaApplicationEvent(
-                    EdifikanaApplicationEvent.ShareContent(
-                        formatShareMessage(
-                            staff,
-                            newRecord.eventTime.toFriendlyDateTime(),
-                            eventType.eventTypeFriendlyName()
-                        ),
-                        photoUri,
-                    )
+            emitApplicationEvent(
+                EdifikanaApplicationEvent.ShareContent(
+                    formatShareMessage(
+                        staff,
+                        newRecord.eventTime.toFriendlyDateTime(),
+                        eventType.eventTypeFriendlyName()
+                    ),
+                    photoUri,
                 )
             )
             eventType = null
@@ -186,7 +178,7 @@ class ViewStaffViewModel(
      */
     fun navigateBack() {
         viewModelScope.launch {
-            emitEvent(ViewStaffEvent.TriggerEdifikanaApplicationEvent(EdifikanaApplicationEvent.NavigateBack))
+            emitApplicationEvent(EdifikanaApplicationEvent.NavigateBack)
         }
     }
 

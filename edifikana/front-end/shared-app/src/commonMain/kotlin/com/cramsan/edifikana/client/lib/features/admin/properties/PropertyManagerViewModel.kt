@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.admin.properties
 
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
-import com.cramsan.edifikana.client.lib.features.admin.AdminDestination
+import com.cramsan.edifikana.client.lib.features.management.ManagementDestination
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.core.compose.BaseViewModel
@@ -49,12 +49,10 @@ class PropertyManagerViewModel(
      */
     fun navigateToPropertyDetails(propertyId: PropertyId) {
         viewModelScope.launch {
-            emitEvent(
-                PropertyManagerEvent.TriggerApplicationEvent(
-                    EdifikanaApplicationEvent.NavigateToScreen(
-                        AdminDestination.PropertyAdminDestination(
-                            propertyId
-                        )
+            emitApplicationEvent(
+                EdifikanaApplicationEvent.NavigateToScreen(
+                    ManagementDestination.PropertyManagementDestination(
+                        propertyId
                     )
                 )
             )
@@ -66,10 +64,8 @@ class PropertyManagerViewModel(
      */
     fun navigateToAddProperty() {
         viewModelScope.launch {
-            emitEvent(
-                PropertyManagerEvent.TriggerApplicationEvent(
-                    EdifikanaApplicationEvent.NavigateToScreen(AdminDestination.AddPropertyAdminDestination)
-                ),
+            emitApplicationEvent(
+                EdifikanaApplicationEvent.NavigateToScreen(ManagementDestination.AddPropertyManagementDestination)
             )
         }
     }
@@ -79,10 +75,8 @@ class PropertyManagerViewModel(
      */
     fun navigateBack() {
         viewModelScope.launch {
-            emitEvent(
-                PropertyManagerEvent.TriggerApplicationEvent(
-                    EdifikanaApplicationEvent.NavigateBack
-                )
+            emitApplicationEvent(
+                EdifikanaApplicationEvent.NavigateBack
             )
         }
     }

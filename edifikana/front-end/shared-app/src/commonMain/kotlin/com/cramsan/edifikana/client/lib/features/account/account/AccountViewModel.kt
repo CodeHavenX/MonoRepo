@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.account.account
 
-import com.cramsan.edifikana.client.lib.features.ActivityDestination
+import com.cramsan.edifikana.client.lib.features.ActivityRouteDestination
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.framework.core.compose.BaseViewModel
@@ -21,12 +21,10 @@ class AccountViewModel(
     fun signOut() {
         viewModelScope.launch {
             auth.signOut()
-            emitEvent(
-                AccountEvent.TriggerEdifikanaApplicationEvent(
-                    EdifikanaApplicationEvent.NavigateToActivity(
-                        ActivityDestination.AuthDestination,
-                        clearStack = true,
-                    )
+            emitApplicationEvent(
+                EdifikanaApplicationEvent.NavigateToActivity(
+                    ActivityRouteDestination.AuthRouteDestination,
+                    clearStack = true,
                 )
             )
         }
@@ -37,11 +35,7 @@ class AccountViewModel(
      */
     fun navigateBack() {
         viewModelScope.launch {
-            emitEvent(
-                AccountEvent.TriggerEdifikanaApplicationEvent(
-                    EdifikanaApplicationEvent.NavigateBack
-                )
-            )
+            emitApplicationEvent(EdifikanaApplicationEvent.NavigateBack)
         }
     }
 

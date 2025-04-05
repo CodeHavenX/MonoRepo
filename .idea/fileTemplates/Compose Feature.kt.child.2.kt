@@ -10,18 +10,8 @@ import kotlin.random.Random
  *
  */
 sealed class ${NAME}Event : ViewModelEvent {
-
     /**
      * No operation.
      */
     data object Noop : ${NAME}Event()
-
-    /**
-     * Trigger application event. This event is sent to the application's view model to be handled.
-     */
-    data class TriggerApplicationEvent(
-        // TODO: Update this with the respective ApplicationEvent type.
-        val applicationEvent: ApplicationEvent,
-        val id: Int = Random.nextInt(),
-    ) : ${NAME}Event()
 }

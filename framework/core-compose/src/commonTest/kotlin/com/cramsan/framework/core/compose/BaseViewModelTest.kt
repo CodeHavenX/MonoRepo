@@ -1,7 +1,9 @@
 package com.cramsan.framework.core.compose
 
 import app.cash.turbine.test
-import com.cramsan.framework.core.CollectorCoroutineExceptionHandler
+import com.cramsan.framework.assertlib.AssertUtil
+import com.cramsan.framework.assertlib.implementation.NoopAssertUtil
+import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
@@ -31,16 +33,20 @@ class BaseViewModelTest : TestBase() {
 
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
 
+    private lateinit var applicationEventReceiver: SharedFlowApplicationReceiver
+
     @BeforeTest
     fun setupTest() {
-        // Apply the Noop framework singletons to avoid side effects
         exceptionHandler = CollectorCoroutineExceptionHandler()
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
+        AssertUtil.setInstance(NoopAssertUtil())
+        applicationEventReceiver = SharedFlowApplicationReceiver()
         viewModel = TestableViewModel(
             dependencies = ViewModelDependencies(
                 appScope = testCoroutineScope,
                 dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),
                 coroutineExceptionHandler = exceptionHandler,
+                applicationEventReceiver = applicationEventReceiver,
             )
         )
     }
@@ -64,6 +70,20 @@ class BaseViewModelTest : TestBase() {
         }
 
         viewModel.emitNumbers()
+
+        verificationJob.join()
+    }
+
+    @Test
+    fun `test emitting an application event`() = runBlockingTest {
+        val verificationJob = launch {
+            applicationEventReceiver.events.test {
+                assertEquals(TestableApplicationEvent.Signal, awaitItem())
+                advanceUntilIdleAndAwaitComplete(this)
+            }
+        }
+
+        viewModel.emitApplicationEvent()
 
         verificationJob.join()
     }

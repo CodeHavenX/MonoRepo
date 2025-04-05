@@ -19,11 +19,11 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,15 +31,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.input.ImeAction
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
-import com.cramsan.edifikana.client.lib.features.admin.AdminDestination
+import com.cramsan.edifikana.client.lib.features.management.ManagementDestination
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
 import edifikana_lib.string_save
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -50,12 +49,10 @@ import org.koin.compose.viewmodel.koinViewModel
  */
 @Composable
 fun PropertyScreen(
-    destination: AdminDestination.PropertyAdminDestination,
-    applicationViewModel: EdifikanaApplicationViewModel = koinInject(),
+    destination: ManagementDestination.PropertyManagementDestination,
     viewModel: PropertyViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val viewModelEvent by viewModel.events.collectAsState(PropertyEvent.Noop)
 
     /**
      * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
@@ -64,12 +61,11 @@ fun PropertyScreen(
         viewModel.loadContent(destination.propertyId)
     }
 
-    LaunchedEffect(viewModelEvent) {
-        when (val event = viewModelEvent) {
-            PropertyEvent.Noop -> Unit
-            is PropertyEvent.TriggerApplicationEvent -> {
-                // Call the application's viewmodel
-                applicationViewModel.executeEvent(event.applicationEvent)
+    val screenScope = rememberCoroutineScope()
+    screenScope.launch {
+        viewModel.events.collect { event ->
+            when (event) {
+                PropertyEvent.Noop -> Unit
             }
         }
     }
@@ -110,7 +106,7 @@ internal fun PropertyContent(
         topBar = {
             EdifikanaTopBar(
                 title = content.propertyName.orEmpty(),
-                onCloseClicked = onBackSelected,
+                onNavigationIconSelected = onBackSelected,
             )
         },
     ) { innerPadding ->

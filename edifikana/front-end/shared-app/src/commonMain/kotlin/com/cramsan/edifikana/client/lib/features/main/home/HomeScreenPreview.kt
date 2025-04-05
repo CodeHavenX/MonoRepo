@@ -16,13 +16,12 @@ private fun HomeScreenPreview() {
                 label = "Cenit, Barranco",
                 availableProperties = emptyList(),
                 selectedTab = Tabs.None,
-                showAdminButton = true,
             ),
             onAccountButtonClicked = {},
-            onAdminButtonClicked = {},
             onPropertySelected = {},
             onTabSelected = {},
             onNotificationsButtonSelected = {},
+            onNavigationIconSelected = {},
         )
     }
 }

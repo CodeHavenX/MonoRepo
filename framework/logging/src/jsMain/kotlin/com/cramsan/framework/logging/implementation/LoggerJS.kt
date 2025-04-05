@@ -14,7 +14,7 @@ class LoggerJS : EventLoggerDelegate {
         throwable: Throwable?,
         vararg args: Any?,
     ) {
-        val formattedString = "[${severity.name}][$tag]$message-$args"
+        val formattedString = "[${severity.name}][$tag]$message-${JSON.stringify(args)}"
         when (severity) {
             Severity.VERBOSE, Severity.DEBUG -> console.log(formattedString)
             Severity.INFO -> console.info(formattedString)

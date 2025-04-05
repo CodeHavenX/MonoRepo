@@ -38,8 +38,8 @@ class ViewClientViewModel(
      */
     fun editClient(clientId: String) {
         viewModelScope.launch {
-            emitEvent(
-                ViewClientEvent.TriggerApplicationEvent(ApplicationEvent.Navigate(Route.updateClient(clientId)))
+            emitApplicationEvent(
+                ApplicationEvent.Navigate(Route.updateClient(clientId))
             )
         }
     }

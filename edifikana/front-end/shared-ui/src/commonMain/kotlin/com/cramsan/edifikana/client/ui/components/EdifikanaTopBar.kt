@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.vector.ImageVector
 import edifikana_ui.Res
 import edifikana_ui.string_back_navigation
 import org.jetbrains.compose.resources.stringResource
@@ -21,7 +22,8 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun EdifikanaTopBar(
     title: String? = null,
-    onCloseClicked: (() -> Unit)? = null,
+    navigationIcon: ImageVector? = Icons.Default.Close,
+    onNavigationIconSelected: (() -> Unit)? = null,
     content: (@Composable RowScope.() -> Unit)? = null,
 ) {
     TopAppBar(
@@ -29,18 +31,18 @@ fun EdifikanaTopBar(
             title?.let { Text(it) }
         },
         colors = TopAppBarDefaults.topAppBarColors(),
-        navigationIcon = onCloseClicked?.let {
-            {
+        navigationIcon = {
+            if (navigationIcon != null && onNavigationIconSelected != null) {
                 IconButton(
-                    onClick = it,
+                    onClick = onNavigationIconSelected,
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Close,
+                        imageVector = navigationIcon,
                         contentDescription = stringResource(Res.string.string_back_navigation)
                     )
                 }
             }
-        } ?: {},
+        },
         actions = { content?.invoke(this) }
     )
 }

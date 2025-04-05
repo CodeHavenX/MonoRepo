@@ -24,7 +24,7 @@ class SignInViewModel(
     fun startFlow() {
         viewModelScope.launch {
             if (authManager.isUserSignedIn().getOrNull() == true) {
-                emitEvent(SignInEvent.TriggerApplicationEvent(ApplicationEvent.SignInStatusChange(isSignedIn = true)))
+                emitApplicationEvent(ApplicationEvent.SignInStatusChange(isSignedIn = true))
             } else {
                 updateUiState {
                     it.copy(isLoading = false)

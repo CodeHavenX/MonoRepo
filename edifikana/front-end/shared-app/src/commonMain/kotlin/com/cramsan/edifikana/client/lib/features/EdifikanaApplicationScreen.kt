@@ -9,23 +9,18 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.cramsan.edifikana.client.lib.features.account.accountActivityNavigation
-import com.cramsan.edifikana.client.lib.features.admin.adminActivityNavigation
 import com.cramsan.edifikana.client.lib.features.auth.authActivityNavigation
 import com.cramsan.edifikana.client.lib.features.debug.debugActivityNavigation
-import com.cramsan.edifikana.client.lib.features.main.mainActivityNavigation
-import com.cramsan.edifikana.client.lib.features.splash.SplashActivityScreen
+import com.cramsan.edifikana.client.lib.features.management.managementActivityNavigation
+import com.cramsan.edifikana.client.lib.features.splash.SplashScreen
 import com.cramsan.edifikana.client.lib.ui.di.Coil3Provider
 import com.cramsan.edifikana.client.ui.theme.AppTheme
 import com.cramsan.framework.core.compose.RouteSafePath
@@ -51,25 +46,22 @@ private fun ApplicationContent(
     viewModel: EdifikanaApplicationViewModel = koinViewModel(),
     eventHandler: EdifikanaMainScreenEventHandler,
 ) {
-    val event by viewModel.events.collectAsState(EdifikanaApplicationEvent.Noop)
     val navController = rememberNavController()
 
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
-        viewModel.enforceAuth()
-    }
-
-    LaunchedEffect(event) {
-        handleApplicationEvent(
-            eventHandler = eventHandler,
-            navController = navController,
-            scope = scope,
-            snackbarHostState = snackbarHostState,
-            viewModel = viewModel,
-            applicationEvent = event,
-        )
+    scope.launch {
+        viewModel.events.collect { event ->
+            handleApplicationEvent(
+                eventHandler = eventHandler,
+                navController = navController,
+                scope = scope,
+                snackbarHostState = snackbarHostState,
+                viewModel = viewModel,
+                applicationEvent = event,
+            )
+        }
     }
 
     AppTheme(
@@ -98,7 +90,6 @@ private fun handleApplicationEvent(
     applicationEvent: EdifikanaApplicationEvent,
 ) {
     when (val event = applicationEvent) {
-        EdifikanaApplicationEvent.Noop -> Unit
         is EdifikanaApplicationEvent.OpenCamera -> {
             eventHandler.openCamera(event)
         }
@@ -119,7 +110,7 @@ private fun handleApplicationEvent(
             } else if (event.clearTop) {
                 navController.popBackStack()
             }
-            navController.navigate(event.destination.path)
+            navController.navigate(event.destination.rawRoute)
         }
         is EdifikanaApplicationEvent.NavigateToScreen -> {
             navController.navigate(event.destination.rawRoute)
@@ -180,13 +171,12 @@ private fun ApplicationNavigationHost(
         ApplicationRoute.entries.forEach { route ->
             when (route) {
                 ApplicationRoute.Splash -> composable(route.rawRoute) {
-                    SplashActivityScreen()
+                    SplashScreen()
                 }
                 ApplicationRoute.Auth -> authActivityNavigation(route.rawRoute)
-                ApplicationRoute.Main -> mainActivityNavigation(route.rawRoute)
                 ApplicationRoute.Account -> accountActivityNavigation(route.rawRoute)
-                ApplicationRoute.Admin -> adminActivityNavigation(route.rawRoute)
                 ApplicationRoute.Debug -> debugActivityNavigation(route.rawRoute)
+                ApplicationRoute.Management -> managementActivityNavigation(route.rawRoute)
             }
         }
     }

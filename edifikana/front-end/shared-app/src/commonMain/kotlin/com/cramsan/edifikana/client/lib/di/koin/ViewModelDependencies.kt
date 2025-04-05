@@ -21,9 +21,16 @@ import com.cramsan.edifikana.client.lib.features.main.eventlog.viewrecord.ViewRe
 import com.cramsan.edifikana.client.lib.features.main.home.HomeViewModel
 import com.cramsan.edifikana.client.lib.features.main.timecard.TimeCartViewModel
 import com.cramsan.edifikana.client.lib.features.main.timecard.viewstaff.ViewStaffViewModel
+import com.cramsan.edifikana.client.lib.features.management.drawer.ManagementViewModel
+import com.cramsan.edifikana.client.lib.features.splash.SplashViewModel
+import com.cramsan.framework.core.compose.ApplicationEventEmitter
+import com.cramsan.framework.core.compose.ApplicationEventReceiver
+import com.cramsan.framework.core.compose.SharedFlowApplicationReceiver
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
+import org.koin.core.module.dsl.withOptions
 import org.koin.dsl.module
 
 typealias SelectStaffViewModel = com.cramsan.edifikana.client.lib.features.main.timecard.stafflist.StaffListViewModel
@@ -31,6 +38,12 @@ typealias SelectStaffViewModel = com.cramsan.edifikana.client.lib.features.main.
 internal val ViewModelModule = module {
 
     // These objects are singletons and are not scoped to any particular navigation graph.
+    single {
+        SharedFlowApplicationReceiver()
+    } withOptions {
+        bind<ApplicationEventReceiver>()
+        bind<ApplicationEventEmitter>()
+    }
     singleOf(::ViewModelDependencies)
     singleOf(::EdifikanaApplicationViewModel)
 
@@ -56,4 +69,6 @@ internal val ViewModelModule = module {
     viewModelOf(::StaffViewModel)
     viewModelOf(::SelectStaffViewModel)
     viewModelOf(::NotificationsViewModel)
+    viewModelOf(::SplashViewModel)
+    viewModelOf(::ManagementViewModel)
 }

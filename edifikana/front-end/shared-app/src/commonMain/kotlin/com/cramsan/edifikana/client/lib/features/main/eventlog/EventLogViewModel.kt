@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.main.eventlog
 
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
-import com.cramsan.edifikana.client.lib.features.main.MainRouteDestination
+import com.cramsan.edifikana.client.lib.features.management.ManagementDestination
 import com.cramsan.edifikana.client.lib.managers.EventLogManager
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.framework.core.compose.BaseViewModel
@@ -50,19 +50,15 @@ class EventLogViewModel(
     fun openRecordScreen(recordPk: EventLogEntryId?) = viewModelScope.launch {
         if (recordPk == null) {
             logW(TAG, "Record PK is null")
-            emitEvent(
-                EventLogEvent.TriggerEdifikanaApplicationEvent(
-                    EdifikanaApplicationEvent.ShowSnackbar(
-                        getString(Res.string.error_message_currently_uploading)
-                    )
+            emitApplicationEvent(
+                EdifikanaApplicationEvent.ShowSnackbar(
+                    getString(Res.string.error_message_currently_uploading)
                 )
             )
         } else {
-            emitEvent(
-                EventLogEvent.TriggerEdifikanaApplicationEvent(
-                    EdifikanaApplicationEvent.NavigateToScreen(
-                        MainRouteDestination.EventLogSingleItemDestination(recordPk)
-                    )
+            emitApplicationEvent(
+                EdifikanaApplicationEvent.NavigateToScreen(
+                    ManagementDestination.EventLogSingleItemDestination(recordPk)
                 )
             )
         }
@@ -72,10 +68,8 @@ class EventLogViewModel(
      * Open the add record screen.
      */
     fun openAddRecordScreen() = viewModelScope.launch {
-        emitEvent(
-            EventLogEvent.TriggerEdifikanaApplicationEvent(
-                EdifikanaApplicationEvent.NavigateToScreen(MainRouteDestination.EventLogAddItemDestination)
-            )
+        emitApplicationEvent(
+            EdifikanaApplicationEvent.NavigateToScreen(ManagementDestination.EventLogAddItemDestination)
         )
     }
 
@@ -84,10 +78,8 @@ class EventLogViewModel(
      */
     fun navigateBack() {
         viewModelScope.launch {
-            emitEvent(
-                EventLogEvent.TriggerEdifikanaApplicationEvent(
-                    EdifikanaApplicationEvent.NavigateBack
-                )
+            emitApplicationEvent(
+                EdifikanaApplicationEvent.NavigateBack
             )
         }
     }

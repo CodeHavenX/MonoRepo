@@ -12,14 +12,13 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.PasswordOutlinedTextField
 import com.cramsan.ui.components.ScreenLayout
@@ -28,8 +27,8 @@ import edifikana_lib.sign_in_screen_text_email
 import edifikana_lib.sign_in_screen_text_password
 import edifikana_lib.sign_in_screen_text_sign_in
 import edifikana_lib.sign_in_screen_text_sign_up
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -38,10 +37,8 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun SignInScreen(
     viewModel: SignInViewModel = koinViewModel(),
-    applicationViewModel: EdifikanaApplicationViewModel = koinInject(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val event by viewModel.events.collectAsState(SignInEvent.Noop)
 
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
         viewModel.initializePage()
@@ -50,11 +47,11 @@ fun SignInScreen(
     LifecycleEventEffect(Lifecycle.Event.ON_STOP) {
     }
 
-    LaunchedEffect(event) {
-        when (val localEvent = event) {
-            is SignInEvent.Noop -> { }
-            is SignInEvent.TriggerEdifikanaApplicationEvent -> {
-                applicationViewModel.executeEvent(localEvent.edifikanaApplicationEvent)
+    val screenScope = rememberCoroutineScope()
+    screenScope.launch {
+        viewModel.events.collect { event ->
+            when (event) {
+                SignInEvent.Noop -> Unit
             }
         }
     }

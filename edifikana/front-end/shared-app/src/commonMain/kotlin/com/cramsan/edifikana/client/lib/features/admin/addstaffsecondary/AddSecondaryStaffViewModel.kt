@@ -33,7 +33,7 @@ class AddSecondaryStaffViewModel(
      */
     fun onBackSelected() {
         viewModelScope.launch {
-            emitEvent(AddSecondaryStaffEvent.TriggerApplicationEvent(EdifikanaApplicationEvent.NavigateBack))
+            emitApplicationEvent(EdifikanaApplicationEvent.NavigateBack)
         }
     }
 
@@ -55,11 +55,9 @@ class AddSecondaryStaffViewModel(
             lastName.isNullOrBlank() ||
             role == null
         ) {
-            emitEvent(
-                AddSecondaryStaffEvent.TriggerApplicationEvent(
-                    // TODO: Add compose resource loading
-                    EdifikanaApplicationEvent.ShowSnackbar(getString(Res.string.text_please_complete_fields))
-                )
+            emitApplicationEvent(
+                // TODO: Add compose resource loading
+                EdifikanaApplicationEvent.ShowSnackbar(getString(Res.string.text_please_complete_fields))
             )
             return@launch
         }
@@ -81,19 +79,15 @@ class AddSecondaryStaffViewModel(
         )
 
         if (result.isFailure || result.isFailure) {
-            emitEvent(
-                AddSecondaryStaffEvent.TriggerApplicationEvent(
-                    // TODO: Add compose resource loading
-                    EdifikanaApplicationEvent.ShowSnackbar(
-                        getString(Res.string.text_there_was_an_error_processing_request)
-                    )
+            emitApplicationEvent(
+                // TODO: Add compose resource loading
+                EdifikanaApplicationEvent.ShowSnackbar(
+                    getString(Res.string.text_there_was_an_error_processing_request)
                 )
             )
         } else {
-            emitEvent(
-                AddSecondaryStaffEvent.TriggerApplicationEvent(
-                    EdifikanaApplicationEvent.NavigateBack
-                )
+            emitApplicationEvent(
+                EdifikanaApplicationEvent.NavigateBack
             )
         }
     }

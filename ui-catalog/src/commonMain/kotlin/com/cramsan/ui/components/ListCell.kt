@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
  */
 @Composable
 fun ListCell(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     onSelection: (() -> Unit)?,
     startSlot: @Composable (() -> Unit)? = null,
     endSlot: @Composable (() -> Unit)? = null,

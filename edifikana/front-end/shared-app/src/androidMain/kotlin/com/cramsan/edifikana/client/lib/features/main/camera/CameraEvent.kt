@@ -8,11 +8,6 @@ import android.net.Uri
 sealed class CameraEvent {
 
     /**
-     * No operation.
-     */
-    data object Noop : CameraEvent()
-
-    /**
      * Cancel flow.
      */
     data object CancelFlow : CameraEvent()

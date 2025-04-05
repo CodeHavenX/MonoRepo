@@ -65,10 +65,8 @@ class ViewRecordViewModel(
             "${record.timeRecorded}\n" +
             "Dpto: ${record.unit}\n" +
             record.description
-        emitEvent(
-            ViewRecordEvent.TriggerEdifikanaApplicationEvent(
-                EdifikanaApplicationEvent.ShowSnackbar(message)
-            )
+        emitApplicationEvent(
+            EdifikanaApplicationEvent.ShowSnackbar(message)
         )
     }
 
@@ -76,10 +74,8 @@ class ViewRecordViewModel(
      * Delete a record.
      */
     fun pickMultipleVisualMedia() = viewModelScope.launch {
-        emitEvent(
-            ViewRecordEvent.TriggerEdifikanaApplicationEvent(
-                EdifikanaApplicationEvent.OpenPhotoPicker
-            )
+        emitApplicationEvent(
+            EdifikanaApplicationEvent.OpenPhotoPicker
         )
     }
 
@@ -115,10 +111,8 @@ class ViewRecordViewModel(
             CoreUri.createUri(attachmentHolder.publicUrl)
         }
 
-        emitEvent(
-            ViewRecordEvent.TriggerEdifikanaApplicationEvent(
-                EdifikanaApplicationEvent.OpenImageExternally(imageUri)
-            )
+        emitApplicationEvent(
+            EdifikanaApplicationEvent.OpenImageExternally(imageUri)
         )
     }
 
@@ -127,10 +121,8 @@ class ViewRecordViewModel(
      */
     fun navigateBack() {
         viewModelScope.launch {
-            emitEvent(
-                ViewRecordEvent.TriggerEdifikanaApplicationEvent(
-                    EdifikanaApplicationEvent.NavigateBack
-                )
+            emitApplicationEvent(
+                EdifikanaApplicationEvent.NavigateBack
             )
         }
     }

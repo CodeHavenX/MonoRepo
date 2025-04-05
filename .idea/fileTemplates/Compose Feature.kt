@@ -23,7 +23,7 @@ import org.koin.compose.viewmodel.koinViewModel
  * TODO: If the Destination has arguments, make this class into a `data class` add them arguments.
  */
 data object ${NAME}Destination : RouteDestination( // TODO: Update the Destination to match the respective Route.
-    Route.${NAME}.route, // TODO: Update to the respective route Enum
+    Route.${NAME}.rawRoute, // TODO: Update to the respective route Enum
 ) {
     // TODO: If the this class is an `object class` remove the `companion object` block.
     companion object {
@@ -49,10 +49,9 @@ fun ${NAME}Screen(
     destination: ${NAME}Destination, // TODO: If the destination is a data object, it can be removed as an argument.
     modifier: Modifier = Modifier,
     viewModel: ${NAME}ViewModel = koinViewModel(),
-    applicationViewModel: ApplicationViewModel = koinInject(), // TODO: Update this to the respective application viewmodel. Remove if not necessary.
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val viewModelEvent by viewModel.events.collectAsState(${NAME}Event.Noop)
+    val screenScope = rememberCoroutineScope()
 
     /**
      * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
@@ -64,12 +63,10 @@ fun ${NAME}Screen(
         // Call this feature's viewModel
     }
 
-    LaunchedEffect(viewModelEvent) {
-        when (val event = viewModelEvent) {
-            ${NAME}Event.Noop -> Unit
-            is ${NAME}Event.TriggerApplicationEvent -> {
-                // Call the application's viewmodel
-                applicationViewModel.executeEvent(event.applicationEvent)
+    screenScope.launch {
+        viewModel.events.collect { event ->
+            when (event) {
+                ${NAME}Event.Noop -> Unit
             }
         }
     }

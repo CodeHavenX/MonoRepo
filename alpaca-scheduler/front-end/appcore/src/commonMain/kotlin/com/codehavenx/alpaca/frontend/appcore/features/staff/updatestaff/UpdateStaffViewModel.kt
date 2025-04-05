@@ -27,7 +27,7 @@ class UpdateStaffViewModel(
         updateUiState { it.copy(isLoading = true) }
         viewModelScope.launch {
             delay(2000)
-            emitEvent(UpdateStaffEvent.TriggerApplicationEvent(ApplicationEvent.NavigateBack))
+            emitApplicationEvent(ApplicationEvent.NavigateBack)
         }
     }
 

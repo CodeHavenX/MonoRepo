@@ -9,18 +9,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.ui.components.ScreenLayout
-import org.koin.compose.koinInject
+import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -32,10 +31,9 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun ValidationScreen(
     viewModel: ValidationViewModel = koinViewModel(),
-    applicationViewModel: EdifikanaApplicationViewModel = koinInject(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val viewModelEvent by viewModel.events.collectAsState(ValidationEvent.Noop)
+    val screenScope = rememberCoroutineScope()
 
     /**
      * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
@@ -47,12 +45,10 @@ fun ValidationScreen(
         // Call this feature's viewModel
     }
 
-    LaunchedEffect(viewModelEvent) {
-        when (val event = viewModelEvent) {
-            ValidationEvent.Noop -> Unit
-            is ValidationEvent.TriggerApplicationEvent -> {
-                // Call the application's viewmodel
-                applicationViewModel.executeEvent(event.applicationEvent)
+    screenScope.launch {
+        viewModel.events.collect { event ->
+            when (event) {
+                ValidationEvent.Noop -> Unit
             }
         }
     }
@@ -80,7 +76,7 @@ internal fun ValidationContent(
         topBar = {
             EdifikanaTopBar(
                 title = "Validation",
-                onCloseClicked = onCloseClicked,
+                onNavigationIconSelected = onCloseClicked,
             )
         },
     ) { innerPadding ->

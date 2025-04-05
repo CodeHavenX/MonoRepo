@@ -4,31 +4,29 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Apartment
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.lib.features.admin.properties.PropertyManagerScreen
 import com.cramsan.edifikana.client.lib.features.admin.stafflist.StaffListScreen
 import com.cramsan.edifikana.client.lib.features.main.home.AccountDropDown
+import com.cramsan.edifikana.client.lib.features.management.drawer.ManagementViewModel
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import edifikana_lib.Res
 import edifikana_lib.app_name
-import edifikana_lib.home_screen_settings_description
 import edifikana_lib.hub_screen_properties_button_title
 import edifikana_lib.hub_screen_staff_button_title
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -39,18 +37,16 @@ import org.koin.compose.viewmodel.koinViewModel
  */
 @Composable
 fun HubScreen(
-    applicationViewModel: EdifikanaApplicationViewModel = koinInject(),
+    managementViewModel: ManagementViewModel = koinViewModel(),
     viewModel: HubViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val viewModelEvent by viewModel.events.collectAsState(HubEvent.Noop)
 
-    LaunchedEffect(viewModelEvent) {
-        when (val event = viewModelEvent) {
-            HubEvent.Noop -> Unit
-            is HubEvent.TriggerApplicationEvent -> {
-                // Call the application's viewmodel
-                applicationViewModel.executeEvent(event.event)
+    val screenScope = rememberCoroutineScope()
+    screenScope.launch {
+        viewModel.events.collect { event ->
+            when (event) {
+                HubEvent.Noop -> Unit
             }
         }
     }
@@ -63,12 +59,12 @@ fun HubScreen(
         onTabSelected = { tab ->
             viewModel.selectTab(tab)
         },
-        onUserHomeSelected = {
-            viewModel.navigateToUserHome()
-        },
         onNotificationsButtonSelected = {
             viewModel.navigateToNotifications()
-        }
+        },
+        onNavigationIconSelected = {
+            managementViewModel.toggleNavigationState()
+        },
     )
 }
 
@@ -95,25 +91,17 @@ internal fun HubScreenContent(
     modifier: Modifier = Modifier,
     onAccountButtonClicked: () -> Unit,
     onTabSelected: (Tabs) -> Unit,
-    onUserHomeSelected: () -> Unit,
     onNotificationsButtonSelected: () -> Unit,
+    onNavigationIconSelected: () -> Unit,
 ) {
     Scaffold(
         modifier = modifier,
         topBar = {
             EdifikanaTopBar(
                 title = stringResource(Res.string.app_name),
+                navigationIcon = Icons.Default.Menu,
+                onNavigationIconSelected = onNavigationIconSelected,
             ) {
-                // User Home button
-                if (uiState.showUserHomeButton) {
-                    IconButton(onClick = onUserHomeSelected) {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = stringResource(Res.string.home_screen_settings_description),
-                        )
-                    }
-                }
-
                 // Account button
                 AccountDropDown(
                     onAccountSelected = onAccountButtonClicked,

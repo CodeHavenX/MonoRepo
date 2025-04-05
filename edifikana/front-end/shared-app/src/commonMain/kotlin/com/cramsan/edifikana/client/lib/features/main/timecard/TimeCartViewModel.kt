@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.main.timecard
 
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
-import com.cramsan.edifikana.client.lib.features.main.MainRouteDestination
+import com.cramsan.edifikana.client.lib.features.management.ManagementDestination
 import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.client.lib.managers.TimeCardManager
 import com.cramsan.edifikana.lib.model.StaffId
@@ -49,10 +49,8 @@ class TimeCartViewModel(
      * Navigate to staff.
      */
     fun navigateToStaff(staffPK: StaffId) = viewModelScope.launch {
-        emitEvent(
-            TimeCardEvent.TriggerEdifikanaApplicationEvent(
-                EdifikanaApplicationEvent.NavigateToScreen(MainRouteDestination.TimeCardSingleStaffDestination(staffPK))
-            )
+        emitApplicationEvent(
+            EdifikanaApplicationEvent.NavigateToScreen(ManagementDestination.TimeCardSingleStaffDestination(staffPK))
         )
     }
 
@@ -60,10 +58,8 @@ class TimeCartViewModel(
      * Navigate to staff list.
      */
     fun navigateToStaffList() = viewModelScope.launch {
-        emitEvent(
-            TimeCardEvent.TriggerEdifikanaApplicationEvent(
-                EdifikanaApplicationEvent.NavigateToScreen(MainRouteDestination.TimeCardStaffListDestination)
-            )
+        emitApplicationEvent(
+            EdifikanaApplicationEvent.NavigateToScreen(ManagementDestination.TimeCardStaffListDestination)
         )
     }
 
@@ -72,7 +68,7 @@ class TimeCartViewModel(
      */
     fun navigateBack() {
         viewModelScope.launch {
-            emitEvent(TimeCardEvent.TriggerEdifikanaApplicationEvent(EdifikanaApplicationEvent.NavigateBack))
+            emitApplicationEvent(EdifikanaApplicationEvent.NavigateBack)
         }
     }
 

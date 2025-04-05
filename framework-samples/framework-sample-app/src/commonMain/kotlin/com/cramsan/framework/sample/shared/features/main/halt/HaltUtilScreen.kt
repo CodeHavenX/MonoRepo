@@ -5,16 +5,15 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
-import com.cramsan.framework.sample.shared.features.ApplicationViewModel
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
-import org.koin.compose.koinInject
+import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -26,10 +25,9 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun HaltUtilScreen(
     viewModel: HaltUtilViewModel = koinViewModel(),
-    applicationViewModel: ApplicationViewModel = koinInject(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val viewModelEvent by viewModel.events.collectAsState(HaltUtilEvent.Noop)
+    val screenScope = rememberCoroutineScope()
 
     /**
      * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
@@ -41,12 +39,10 @@ fun HaltUtilScreen(
         // Call this feature's viewModel
     }
 
-    LaunchedEffect(viewModelEvent) {
-        when (val event = viewModelEvent) {
-            HaltUtilEvent.Noop -> Unit
-            is HaltUtilEvent.TriggerApplicationEvent -> {
-                // Call the application's viewmodel
-                applicationViewModel.executeEvent(event.applicationEvent)
+    screenScope.launch {
+        viewModel.events.collect { event ->
+            when (event) {
+                HaltUtilEvent.Noop -> Unit
             }
         }
     }

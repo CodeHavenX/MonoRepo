@@ -47,7 +47,7 @@ class ListClientViewModel(
      */
     fun addClient() {
         viewModelScope.launch {
-            emitEvent(ListClientEvent.TriggerApplicationEvent(ApplicationEvent.Navigate(Route.addClient())))
+            emitApplicationEvent(ApplicationEvent.Navigate(Route.addClient()))
         }
     }
 
@@ -56,7 +56,7 @@ class ListClientViewModel(
      */
     fun openClientPage(clientId: String) {
         viewModelScope.launch {
-            emitEvent(ListClientEvent.TriggerApplicationEvent(ApplicationEvent.Navigate(Route.viewClient(clientId))))
+            emitApplicationEvent(ApplicationEvent.Navigate(Route.viewClient(clientId)))
         }
     }
 

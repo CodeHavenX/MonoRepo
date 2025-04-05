@@ -1,6 +1,5 @@
 package com.cramsan.edifikana.client.lib.features.admin.hub
 
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
 import com.cramsan.framework.core.compose.ViewModelEvent
 
 /**
@@ -10,16 +9,8 @@ import com.cramsan.framework.core.compose.ViewModelEvent
  *
  */
 sealed class HubEvent : ViewModelEvent {
-
     /**
-     * No operation.
+     * No operation
      */
     data object Noop : HubEvent()
-
-    /**
-     * Trigger application event. This event is sent to the application's view model to be handled.
-     */
-    data class TriggerApplicationEvent(
-        val event: EdifikanaApplicationEvent,
-    ) : HubEvent()
 }

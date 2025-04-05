@@ -1,18 +1,13 @@
 package com.cramsan.edifikana.client.lib.features
 
 import com.cramsan.framework.core.CoreUri
-import com.cramsan.framework.core.compose.ViewModelEvent
+import com.cramsan.framework.core.compose.ApplicationViewModelEvent
 
 /**
  * Events that can be triggered in the whole application. These events are intended to be
  * triggered by a feature screen, and it will be handled by the application.
  */
-sealed class EdifikanaApplicationEvent : ViewModelEvent {
-
-    /**
-     * No operation.
-     */
-    data object Noop : EdifikanaApplicationEvent()
+sealed class EdifikanaApplicationEvent : ApplicationViewModelEvent {
 
     /**
      * Open the camera.
@@ -38,7 +33,7 @@ sealed class EdifikanaApplicationEvent : ViewModelEvent {
      * Navigate to activity.
      */
     data class NavigateToActivity(
-        val destination: ActivityDestination,
+        val destination: ActivityRouteDestination,
         val clearTop: Boolean = false,
         val clearStack: Boolean = false,
     ) : EdifikanaApplicationEvent()

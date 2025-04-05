@@ -11,14 +11,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.ui.components.ListCell
@@ -27,8 +26,8 @@ import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
 import edifikana_lib.employee_list_screen_add_button_description
 import edifikana_lib.employee_list_screen_title
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -37,20 +36,18 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun StaffListScreen(
     viewModel: StaffListViewModel = koinViewModel(),
-    applicationViewModel: EdifikanaApplicationViewModel = koinInject(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val event by viewModel.events.collectAsState(StaffListEvent.Noop)
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         viewModel.loadStaffs()
     }
 
-    LaunchedEffect(event) {
-        when (val viewModelEvent = event) {
-            StaffListEvent.Noop -> Unit
-            is StaffListEvent.TriggerEdifikanaApplicationEvent -> {
-                applicationViewModel.executeEvent(viewModelEvent.edifikanaApplicationEvent)
+    val screenScope = rememberCoroutineScope()
+    screenScope.launch {
+        viewModel.events.collect { event ->
+            when (event) {
+                StaffListEvent.Noop -> Unit
             }
         }
     }
@@ -82,7 +79,7 @@ internal fun StaffList(
         topBar = {
             EdifikanaTopBar(
                 title = stringResource(Res.string.employee_list_screen_title),
-                onCloseClicked = onCloseSelected,
+                onNavigationIconSelected = onCloseSelected,
             ) {
                 IconButton(onClick = onAddStaffSelected) {
                     Icon(

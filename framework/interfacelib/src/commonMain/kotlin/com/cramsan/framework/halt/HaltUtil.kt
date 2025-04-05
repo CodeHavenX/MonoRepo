@@ -9,11 +9,6 @@ package com.cramsan.framework.halt
 interface HaltUtil {
 
     /**
-     * Platform delegate
-     */
-    val platformDelegate: HaltUtilDelegate
-
-    /**
      * If the current thread is halted, resume it.
      *
      * @see [HaltUtilDelegate.resumeThread]

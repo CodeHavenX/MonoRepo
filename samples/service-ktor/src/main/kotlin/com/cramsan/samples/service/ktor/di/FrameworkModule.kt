@@ -19,7 +19,8 @@ import com.cramsan.framework.logging.implementation.EventLoggerErrorCallbackImpl
 import com.cramsan.framework.logging.implementation.EventLoggerImpl
 import com.cramsan.framework.logging.implementation.Log4J2Helpers
 import com.cramsan.framework.logging.implementation.LoggerJVM
-import com.cramsan.framework.logging.implementation.NoopEventLogger
+import com.cramsan.framework.logging.implementation.NoopEventLoggerDelegate
+import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import org.apache.logging.log4j.Logger
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -34,7 +35,14 @@ val FrameworkModule = module(createdAtStart = true) {
         Log4J2Helpers.getRootLogger(get(named(IS_DEBUG_NAME)), Severity.INFO)
     }
 
-    single<EventLoggerDelegate> { LoggerJVM(get()) }
+    single {
+        when (get<Boolean>(named(IS_DEBUG_NAME))) {
+            true -> Severity.VERBOSE
+            false -> Severity.VERBOSE
+        }
+    }
+
+    single<EventLoggerDelegate> { LoggerJVM(get(), get()) }
 
     single<EventLoggerErrorCallback> {
         EventLoggerErrorCallbackImpl(
@@ -51,16 +59,12 @@ val FrameworkModule = module(createdAtStart = true) {
     }
 
     single<EventLoggerInterface> {
-        val severity: Severity = when (get<Boolean>(named(IS_DEBUG_NAME))) {
-            true -> Severity.VERBOSE
-            false -> Severity.VERBOSE
-        }
-        val instance = EventLoggerImpl(severity, get(), get())
+        val instance = EventLoggerImpl(get(), get(), get())
         EventLogger.setInstance(instance)
         EventLogger.singleton
     }
 
-    single<HaltUtilDelegate> { HaltUtilJVM(NoopEventLogger()) }
+    single<HaltUtilDelegate> { HaltUtilJVM(PassthroughEventLogger(NoopEventLoggerDelegate())) }
 
     single<HaltUtil> { HaltUtilImpl(get()) }
 

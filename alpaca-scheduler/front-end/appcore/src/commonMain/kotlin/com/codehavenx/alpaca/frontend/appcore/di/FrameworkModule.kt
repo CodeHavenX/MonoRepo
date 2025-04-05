@@ -11,7 +11,6 @@ import com.cramsan.framework.logging.EventLoggerInterface
 import com.cramsan.framework.logging.Severity
 import com.cramsan.framework.logging.implementation.EventLoggerErrorCallbackImpl
 import com.cramsan.framework.logging.implementation.EventLoggerImpl
-import com.cramsan.framework.thread.ThreadUtil
 import com.cramsan.framework.thread.ThreadUtilInterface
 import com.cramsan.framework.thread.implementation.ThreadUtilImpl
 import org.koin.dsl.module
@@ -33,16 +32,14 @@ val FrameworkModule = module(createdAtStart = true) {
         EventLoggerErrorCallbackImpl(get(), get())
     }
 
+    single {
+        Severity.VERBOSE
+    }
+
     single<EventLoggerInterface> {
-        // TODO: Move this flag into an injectable property
-        val severity = if (true) {
-            Severity.VERBOSE
-        } else {
-            Severity.INFO
-        }
         val instance =
             EventLoggerImpl(
-                severity,
+                get(),
                 get(),
                 get(),
             )
@@ -53,8 +50,6 @@ val FrameworkModule = module(createdAtStart = true) {
     single<HaltUtil> { HaltUtilImpl(get()) }
 
     single<ThreadUtilInterface> {
-        val instance = ThreadUtilImpl(get())
-        ThreadUtil.setInstance(instance)
-        ThreadUtil.singleton
+        ThreadUtilImpl(get())
     }
 }

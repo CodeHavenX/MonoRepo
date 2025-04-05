@@ -6,8 +6,10 @@ import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.framework.core.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.logging.EventLogger
+import com.cramsan.framework.logging.implementation.PassthroughEventLogger
+import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.TestBase
-import com.cramsan.framework.test.applyNoopFrameworkSingletons
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -19,7 +21,6 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvFileSource
 
@@ -38,7 +39,7 @@ class SignUpViewModelTest : TestBase() {
      */
     @BeforeTest
     fun setupTest() {
-        applyNoopFrameworkSingletons()
+        EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         authManager = mockk()
         exceptionHandler = CollectorCoroutineExceptionHandler()
         viewModel = SignUpViewModel(
@@ -54,7 +55,7 @@ class SignUpViewModelTest : TestBase() {
      * Test the [SignUpViewModel.initializePage] method.
      */
     @Test
-    fun `test initializePage has expected UI state`() = runTest {
+    fun `test initializePage has expected UI state`() = runBlockingTest {
         // Act
         viewModel.initializePage()
 
@@ -66,7 +67,7 @@ class SignUpViewModelTest : TestBase() {
      * Test the [SignUpViewModel.onEmailValueChange] method.
      */
     @Test
-    fun `test onEmailValueChange updates email value`() = runTest {
+    fun `test onEmailValueChange updates email value`() = runBlockingTest {
         // Arrange
         val email = "test@example.com"
 
@@ -81,7 +82,7 @@ class SignUpViewModelTest : TestBase() {
      * Test the [SignUpViewModel.onPhoneNumberValueChange] method.
      */
     @Test
-    fun `test onPhoneNumberValueChange updates phone number value`() = runTest {
+    fun `test onPhoneNumberValueChange updates phone number value`() = runBlockingTest {
         // Arrange
         val phoneNumber = "1234567890"
 
@@ -96,7 +97,7 @@ class SignUpViewModelTest : TestBase() {
      * Test the [SignUpViewModel.onPasswordValueChange] method.
      */
     @Test
-    fun `test onPasswordValueChange updates password value`() = runTest {
+    fun `test onPasswordValueChange updates password value`() = runBlockingTest {
         // Arrange
         val password = "p@ssWord123"
 
@@ -111,7 +112,7 @@ class SignUpViewModelTest : TestBase() {
      * Test the [SignUpViewModel.onFirstNameValueChange] method.
      */
     @Test
-    fun `test onFirstNameValueChange updates first name value`() = runTest {
+    fun `test onFirstNameValueChange updates first name value`() = runBlockingTest {
         // Arrange
         val firstName = "John"
 
@@ -126,7 +127,7 @@ class SignUpViewModelTest : TestBase() {
      * Test the [SignUpViewModel.onLastNameValueChange] method.
      */
     @Test
-    fun `test onLastNameValueChange updates last name value`() = runTest {
+    fun `test onLastNameValueChange updates last name value`() = runBlockingTest {
         // Arrange
         val lastName = "Doe"
 
@@ -141,7 +142,7 @@ class SignUpViewModelTest : TestBase() {
      * Test the [SignUpViewModel.onPolicyChecked] method.
      */
     @Test
-    fun `test onPolicyChecked updates policy checked value true`() = runTest {
+    fun `test onPolicyChecked updates policy checked value true`() = runBlockingTest {
         // Arrange
         val isChecked = true
 
@@ -157,7 +158,7 @@ class SignUpViewModelTest : TestBase() {
      * Test the [SignUpViewModel.onPolicyChecked] method with false value.
      */
     @Test
-    fun `test onPolicyChecked updates policy checked value to false`() = runTest {
+    fun `test onPolicyChecked updates policy checked value to false`() = runBlockingTest {
         // Arrange
         val isChecked = false
 
@@ -248,7 +249,6 @@ class SignUpViewModelTest : TestBase() {
 
         // Act
         viewModel.signUp()
-
 
         // Assert
         assertEquals(expectedErrorCount, viewModel.uiState.value.signUpForm.errorMessage?.size ?: 0)

@@ -19,7 +19,7 @@ actual val FrameworkPlatformDelegatesModule = module {
         ThreadUtilAndroid(get())
     }
 
-    single<EventLoggerErrorCallbackDelegate> { NoopEventLoggerErrorCallbackDelegate }
+    single<EventLoggerErrorCallbackDelegate> { NoopEventLoggerErrorCallbackDelegate() }
 
     single<EventLoggerDelegate> { LoggerAndroid() }
 

@@ -6,11 +6,6 @@ package com.cramsan.framework.metrics
 interface MetricsInterface {
 
     /**
-     * [MetricsDelegate] that will for this [MetricsInterface].
-     */
-    val platformDelegate: MetricsDelegate
-
-    /**
      * Initialize the module
      */
     fun initialize()

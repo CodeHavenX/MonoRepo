@@ -13,7 +13,6 @@ import com.cramsan.framework.logging.implementation.EventLoggerErrorCallbackImpl
 import com.cramsan.framework.logging.implementation.EventLoggerImpl
 import com.cramsan.framework.preferences.Preferences
 import com.cramsan.framework.preferences.implementation.PreferencesImpl
-import com.cramsan.framework.thread.ThreadUtil
 import com.cramsan.framework.thread.ThreadUtilInterface
 import com.cramsan.framework.thread.implementation.ThreadUtilImpl
 import org.koin.core.qualifier.named
@@ -48,9 +47,7 @@ internal val FrameworkModule = module {
     single<HaltUtil> { HaltUtilImpl(get()) }
 
     single<ThreadUtilInterface> {
-        ThreadUtilImpl(get()).also {
-            ThreadUtil.setInstance(it)
-        }
+        ThreadUtilImpl(get())
     }
 
     single<Preferences> {

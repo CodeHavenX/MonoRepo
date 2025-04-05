@@ -12,7 +12,7 @@ import com.cramsan.framework.userevents.UserEventsInterface
  * Maybe we should call it UserEventMetrics.
  */
 class UserEventsImpl(
-    override val platformDelegate: UserEventsDelegate,
+    private val platformDelegate: UserEventsDelegate,
     private val eventLoggerInterface: EventLoggerInterface,
 ) : UserEventsInterface {
 

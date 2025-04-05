@@ -23,7 +23,6 @@ import com.cramsan.framework.preferences.Preferences
 import com.cramsan.framework.preferences.PreferencesDelegate
 import com.cramsan.framework.preferences.implementation.JVMPreferencesDelegate
 import com.cramsan.framework.preferences.implementation.PreferencesImpl
-import com.cramsan.framework.thread.ThreadUtil
 import com.cramsan.framework.thread.ThreadUtilDelegate
 import com.cramsan.framework.thread.ThreadUtilInterface
 import com.cramsan.framework.thread.implementation.ThreadUtilImpl
@@ -46,7 +45,7 @@ val FrameworkModule = module(createdAtStart = true) {
         Log4J2Helpers.getRootLogger(get(named(IS_DEBUG_NAME)), Severity.DEBUG)
     }
 
-    single<EventLoggerDelegate> { LoggerJVM(get()) }
+    single<EventLoggerDelegate> { LoggerJVM(get(), get()) }
 
     single<EventLoggerErrorCallback> {
         EventLoggerErrorCallbackImpl(
@@ -89,9 +88,7 @@ val FrameworkModule = module(createdAtStart = true) {
     single<ThreadUtilDelegate> { ThreadUtilJVM(get(), get()) }
 
     single<ThreadUtilInterface> {
-        val instance = ThreadUtilImpl(get())
-        ThreadUtil.setInstance(instance)
-        ThreadUtil.singleton
+        ThreadUtilImpl(get())
     }
 
     single<DispatcherProvider> { BEDispatcherProvider() }

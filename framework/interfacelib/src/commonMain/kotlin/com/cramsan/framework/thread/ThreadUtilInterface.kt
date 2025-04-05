@@ -6,11 +6,6 @@ package com.cramsan.framework.thread
 interface ThreadUtilInterface {
 
     /**
-     * [ThreadUtilDelegate] that will be used for this instance of [ThreadUtilInterface].
-     */
-    val platformDelegate: ThreadUtilDelegate
-
-    /**
      * Return true is the current thread is the UI thread
      */
     fun isUIThread(): Boolean

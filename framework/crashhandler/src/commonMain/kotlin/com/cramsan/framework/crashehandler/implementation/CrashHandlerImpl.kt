@@ -6,7 +6,7 @@ import com.cramsan.framework.crashehandler.CrashHandlerDelegate
 /**
  *  Module implementation that delegates the initialization to the [platformDelegate]
  */
-class CrashHandlerImpl(override val platformDelegate: CrashHandlerDelegate) : CrashHandler {
+class CrashHandlerImpl(private val platformDelegate: CrashHandlerDelegate) : CrashHandler {
     override fun initialize() {
         platformDelegate.initialize()
     }

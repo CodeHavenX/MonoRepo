@@ -1,7 +1,7 @@
 package com.cramsan.framework.test.roborazzi
 
-import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.activity.ComponentActivity
+import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.takahirom.roborazzi.ComposePreviewTester
 import com.github.takahirom.roborazzi.ExperimentalRoborazziApi

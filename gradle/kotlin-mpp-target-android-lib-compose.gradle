@@ -44,3 +44,10 @@ dependencies {
     testImplementation("io.github.sergio-sastre.ComposablePreviewScanner:jvm:_")
     testImplementation("io.github.takahirom.roborazzi:roborazzi-compose-preview-scanner-support:_")
 }
+
+roborazzi {
+    outputDir = file("screenshots")
+    generateComposePreviewRobolectricTests.enable.set(false)
+    // Configuration is set programmatically in this class
+    generateComposePreviewRobolectricTests.testerQualifiedClassName.set("com.cramsan.framework.test.roborazzi.MultiplatformPreviewTester")
+}

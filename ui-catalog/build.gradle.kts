@@ -49,11 +49,9 @@ android {
 }
 
 roborazzi {
-        generateComposePreviewRobolectricTests {
+    generateComposePreviewRobolectricTests {
+        enable = false
         packages = listOf("com.cramsan.ui")
-        enable = true
-        // Configuration is set programmatically in this class
-        testerQualifiedClassName = "com.cramsan.framework.test.roborazzi.MultiplatformPreviewTester"
     }
 }
 

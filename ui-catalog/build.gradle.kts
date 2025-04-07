@@ -1,5 +1,6 @@
-@file:OptIn(ExperimentalWasmDsl::class)
+@file:OptIn(ExperimentalWasmDsl::class, ExperimentalRoborazziApi::class)
 
+import com.github.takahirom.roborazzi.ExperimentalRoborazziApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
@@ -8,6 +9,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.android.library")
     id("com.google.devtools.ksp")
+    id("io.github.takahirom.roborazzi")
 }
 
 apply(from = "$rootDir/gradle/kotlin-mpp-target-common-compose.gradle")
@@ -22,17 +24,17 @@ kotlin {
     }
 
     sourceSets {
-        commonMain.dependencies {
-            implementation("org.jetbrains.kotlinx:kotlinx-datetime:_")
-        }
-    }
-}
-
-kotlin {
-    sourceSets {
         commonMain{
             dependencies {
                 implementation(project(":framework:core-compose"))
+
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:_")
+            }
+        }
+
+        androidUnitTest {
+            dependencies {
+                implementation(project(":framework:test-roborazzi"))
             }
         }
     }
@@ -44,6 +46,15 @@ android {
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     sourceSets["main"].res.srcDirs("src/androidMain/res")
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
+}
+
+roborazzi {
+        generateComposePreviewRobolectricTests {
+        packages = listOf("com.cramsan.ui")
+        enable = true
+        // Configuration is set programmatically in this class
+        testerQualifiedClassName = "com.cramsan.framework.test.roborazzi.MultiplatformPreviewTester"
+    }
 }
 
 compose.resources {

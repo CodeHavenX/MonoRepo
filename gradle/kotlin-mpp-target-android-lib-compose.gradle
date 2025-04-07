@@ -8,6 +8,7 @@ apply plugin: "org.jetbrains.kotlin.multiplatform"
 apply plugin: "com.android.library"
 apply plugin: "org.jetbrains.compose"
 apply plugin: "org.jetbrains.kotlin.plugin.compose"
+apply plugin: "io.github.takahirom.roborazzi"
 apply from: "$rootDir/gradle/kotlin-mpp-target-android-lib.gradle"
 
 android {
@@ -16,10 +17,30 @@ android {
     buildFeatures {
         compose = true
     }
+
+    testOptions {
+        unitTests {
+            all {
+                testLogging {
+                    systemProperty("robolectric.pixelCopyRenderMode", "hardware")
+                }
+            }
+        }
+    }
 }
 
 dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview:_")
     debugImplementation("androidx.compose.ui:ui-tooling:_")
     implementation("androidx.compose.foundation:foundation:_")
+
+    testImplementation("org.robolectric:robolectric:_")
+    testImplementation("androidx.compose.ui:ui-test-junit4:_")
+    testImplementation("androidx.compose.ui:ui-test-manifest:_")
+    testImplementation("io.github.takahirom.roborazzi:roborazzi:_")
+    testImplementation("io.github.takahirom.roborazzi:roborazzi-compose:_")
+    testImplementation("io.github.takahirom.roborazzi:roborazzi-junit-rule:_")
+    testImplementation("io.github.sergio-sastre.ComposablePreviewScanner:android:_")
+    testImplementation("io.github.sergio-sastre.ComposablePreviewScanner:jvm:_")
+    testImplementation("io.github.takahirom.roborazzi:roborazzi-compose-preview-scanner-support:_")
 }

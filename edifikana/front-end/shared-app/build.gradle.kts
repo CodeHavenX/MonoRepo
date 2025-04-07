@@ -11,6 +11,7 @@ plugins {
     id("com.android.library")
     id("androidx.room")
     id("com.google.devtools.ksp")
+    id("io.github.takahirom.roborazzi")
 }
 
 apply(from = "$rootDir/gradle/kotlin-mpp-target-common-compose.gradle")
@@ -101,6 +102,11 @@ kotlin {
 
         androidMain {
             dependsOn(localDB)
+        }
+        androidUnitTest {
+            dependencies {
+                implementation(project(":framework:test-roborazzi"))
+            }
         }
 
         wasmJsMain {
@@ -204,4 +210,11 @@ tasks.register<Detekt>("detektMetadataNoDB") {
 tasks.getByName("release") {
     dependsOn("detektMetadataLocalDB")
     dependsOn("detektMetadataNoDB")
+}
+
+roborazzi {
+    generateComposePreviewRobolectricTests {
+        enable = true
+        packages = listOf("com.cramsan.edifikana.client.lib")
+    }
 }

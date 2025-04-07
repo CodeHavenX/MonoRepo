@@ -5,7 +5,7 @@ package com.cramsan.edifikana.lib.utils
  * expect and return custom error messaging with corresponding 400 status codes.
  */
 @Suppress("MagicNumber")
-abstract class ClientRequestExceptions(
+sealed class ClientRequestExceptions(
     val statusCode: Int,
     override val message: String
 ) : Throwable() {

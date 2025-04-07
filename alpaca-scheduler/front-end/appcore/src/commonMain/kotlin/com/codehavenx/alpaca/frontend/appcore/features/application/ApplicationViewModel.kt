@@ -44,36 +44,38 @@ class ApplicationViewModel(
      */
     fun setSignInStatus(signedIn: Boolean) {
         logI(TAG, "Setting sign in status to: $signedIn")
-        updateUiState {
-            if (signedIn) {
-                ApplicationUIModelUI(
-                    navBar = listOf(
-                        NavBarSegment.NavBarItem(
-                            name = "Home",
-                            path = Route.home(),
-                        ),
-                        NavBarSegment.NavBarItem(
-                            name = "Clients",
-                            path = Route.listClients(),
-                        ),
-                        NavBarSegment.NavBarItem(
-                            name = "Staff",
-                            path = Route.listStaff(),
-                        ),
-                        NavBarSegment.NavBarItem(
-                            name = "Appointments",
-                            path = Route.appointments(),
-                        ),
-                        NavBarSegment.NavBarItem(
-                            name = "Classes and Courses",
-                            path = Route.coursesAndClasses(),
-                        ),
+        viewModelScope.launch {
+            updateUiState {
+                if (signedIn) {
+                    ApplicationUIModelUI(
+                        navBar = listOf(
+                            NavBarSegment.NavBarItem(
+                                name = "Home",
+                                path = Route.home(),
+                            ),
+                            NavBarSegment.NavBarItem(
+                                name = "Clients",
+                                path = Route.listClients(),
+                            ),
+                            NavBarSegment.NavBarItem(
+                                name = "Staff",
+                                path = Route.listStaff(),
+                            ),
+                            NavBarSegment.NavBarItem(
+                                name = "Appointments",
+                                path = Route.appointments(),
+                            ),
+                            NavBarSegment.NavBarItem(
+                                name = "Classes and Courses",
+                                path = Route.coursesAndClasses(),
+                            ),
+                        )
                     )
-                )
-            } else {
-                ApplicationUIModelUI(
-                    navBar = listOf()
-                )
+                } else {
+                    ApplicationUIModelUI(
+                        navBar = listOf()
+                    )
+                }
             }
         }
     }

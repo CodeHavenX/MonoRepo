@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.core.repository.supabase
 
+import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
 import com.cramsan.edifikana.server.core.repository.UserDatabase
 import com.cramsan.edifikana.server.core.repository.supabase.models.GlobalPermOverrideEntity
 import com.cramsan.edifikana.server.core.repository.supabase.models.UserEntity
@@ -13,6 +14,7 @@ import com.cramsan.framework.assertlib.assertNull
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.auth.Auth
+import io.github.jan.supabase.auth.exception.AuthRestException
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.query.Count
 
@@ -34,10 +36,17 @@ class SupabaseUserDatabase(
     ): Result<User> = runSuspendCatching(TAG) {
         logD(TAG, "Creating user: %s", request.email)
 
-        val supabaseUser = auth.admin.createUserWithEmail {
-            email = request.email
-            password = request.password
-            autoConfirm = true
+        val supabaseUser = try {
+            auth.admin.createUserWithEmail {
+                email = request.email
+                password = request.password
+                autoConfirm = true
+            }
+        } catch (e: AuthRestException) {
+            logD(TAG, "Error creating user: %s", e.message)
+            throw ClientRequestExceptions.ConflictException(
+                message = "Error: User with email ${request.email} already exists.",
+            )
         }
 
         val requestEntity: UserEntity.CreateUserEntity = request.toUserEntity(supabaseUser.id)

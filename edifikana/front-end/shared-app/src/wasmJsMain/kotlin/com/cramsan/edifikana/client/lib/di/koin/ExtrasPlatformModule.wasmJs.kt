@@ -15,6 +15,7 @@ actual val ExtrasPlatformModule = module {
 
     single<HttpClient> {
         HttpClient {
+            expectSuccess = true
             defaultRequest {
                 url("http://0.0.0.0:9292")
             }

@@ -21,8 +21,10 @@ class StaffViewModel(
      * Load the staff with the given [staffId].
      */
     fun loadStaff(staffId: StaffId) {
-        updateUiState {
-            it.copy(isLoading = true)
+        viewModelScope.launch {
+            updateUiState {
+                it.copy(isLoading = true)
+            }
         }
         viewModelScope.launch {
             updateUiState {

@@ -69,7 +69,7 @@ open class BaseViewModel<E : ViewModelEvent, UI : ViewModelUIState> (
         _events.emit(event)
     }
 
-    protected fun updateUiState(block: (UI) -> UI) {
+    protected suspend fun updateUiState(block: suspend (UI) -> UI) {
         _uiState.value = block(_uiState.value)
     }
 }

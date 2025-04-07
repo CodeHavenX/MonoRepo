@@ -87,58 +87,60 @@ class DebugViewModel(
     }
 
     private fun loadDataImpl() {
-        updateUiState {
-            it.copy(
-                fields = listOf(
-                    Field.Label("Application Settings"),
-                    Field.BooleanField(
-                        title = "Disable Supabase(requires restart)",
-                        subtitle = "This will allow this client to use fake a Supabase dependency.",
-                        key = Overrides.KEY_DISABLE_SUPABASE,
-                        value = preferences.loadBoolean(Overrides.KEY_DISABLE_SUPABASE) ?: false,
+        viewModelScope.launch {
+            updateUiState {
+                it.copy(
+                    fields = listOf(
+                        Field.Label("Application Settings"),
+                        Field.BooleanField(
+                            title = "Disable Supabase(requires restart)",
+                            subtitle = "This will allow this client to use fake a Supabase dependency.",
+                            key = Overrides.KEY_DISABLE_SUPABASE,
+                            value = preferences.loadBoolean(Overrides.KEY_DISABLE_SUPABASE) ?: false,
+                        ),
+                        Field.BooleanField(
+                            title = "Disable BackEnd(requires restart)",
+                            subtitle = "This will allow this client not make calls to the BE.",
+                            key = Overrides.KEY_DISABLE_BE,
+                            value = preferences.loadBoolean(Overrides.KEY_DISABLE_BE) ?: false,
+                        ),
+                        Field.Divider,
+                        Field.Label(
+                            "Supabase Settings",
+                            "These settings are used to override the default Supabase settings. (Require restart)",
+                        ),
+                        Field.BooleanField(
+                            title = "Enable the override settings",
+                            subtitle = "This will allow this client to use fake dependencies.",
+                            key = Overrides.KEY_SUPABASE_OVERRIDE_ENABLED,
+                            value = preferences.loadBoolean(Overrides.KEY_SUPABASE_OVERRIDE_ENABLED) ?: false,
+                        ),
+                        Field.StringField(
+                            title = "Supabase URL",
+                            subtitle = "Provide an override URL",
+                            key = Overrides.KEY_SUPABASE_OVERRIDE_URL,
+                            value = preferences.loadString(Overrides.KEY_SUPABASE_OVERRIDE_URL) ?: "",
+                        ),
+                        Field.StringField(
+                            title = "Supabase Anon Key",
+                            subtitle = "Provide an override Api Anon Key",
+                            key = Overrides.KEY_SUPABASE_OVERRIDE_KEY,
+                            value = preferences.loadString(Overrides.KEY_SUPABASE_OVERRIDE_KEY) ?: "",
+                            secure = true,
+                        ),
+                        Field.Divider,
+                        Field.Label("Core Framework Settings"),
+                        Field.BooleanField(
+                            title = "Halt on failure",
+                            subtitle = "Enable the halt-on-faiilure mechanism when in a supported platform. " +
+                                "This will cause the application to freeze when an error is found. Allowing " +
+                                "you the chance to connect the debugger and inspect tha application state.",
+                            key = Overrides.KEY_HALT_ON_FAILURE,
+                            value = preferences.loadBoolean(Overrides.KEY_HALT_ON_FAILURE) ?: false,
+                        ),
                     ),
-                    Field.BooleanField(
-                        title = "Disable BackEnd(requires restart)",
-                        subtitle = "This will allow this client not make calls to the BE.",
-                        key = Overrides.KEY_DISABLE_BE,
-                        value = preferences.loadBoolean(Overrides.KEY_DISABLE_BE) ?: false,
-                    ),
-                    Field.Divider,
-                    Field.Label(
-                        "Supabase Settings",
-                        "These settings are used to override the default Supabase settings. (Require restart)",
-                    ),
-                    Field.BooleanField(
-                        title = "Enable the override settings",
-                        subtitle = "This will allow this client to use fake dependencies.",
-                        key = Overrides.KEY_SUPABASE_OVERRIDE_ENABLED,
-                        value = preferences.loadBoolean(Overrides.KEY_SUPABASE_OVERRIDE_ENABLED) ?: false,
-                    ),
-                    Field.StringField(
-                        title = "Supabase URL",
-                        subtitle = "Provide an override URL",
-                        key = Overrides.KEY_SUPABASE_OVERRIDE_URL,
-                        value = preferences.loadString(Overrides.KEY_SUPABASE_OVERRIDE_URL) ?: "",
-                    ),
-                    Field.StringField(
-                        title = "Supabase Anon Key",
-                        subtitle = "Provide an override Api Anon Key",
-                        key = Overrides.KEY_SUPABASE_OVERRIDE_KEY,
-                        value = preferences.loadString(Overrides.KEY_SUPABASE_OVERRIDE_KEY) ?: "",
-                        secure = true,
-                    ),
-                    Field.Divider,
-                    Field.Label("Core Framework Settings"),
-                    Field.BooleanField(
-                        title = "Halt on failure",
-                        subtitle = "Enable the halt-on-faiilure mechanism when in a supported platform. " +
-                            "This will cause the application to freeze when an error is found. Allowing " +
-                            "you the chance to connect the debugger and inspect tha application state.",
-                        key = Overrides.KEY_HALT_ON_FAILURE,
-                        value = preferences.loadBoolean(Overrides.KEY_HALT_ON_FAILURE) ?: false,
-                    ),
-                ),
-            )
+                )
+            }
         }
     }
 

@@ -1,5 +1,7 @@
 package com.cramsan.edifikana.server.core.controller
 
+import co.touchlab.kermit.Logger.Companion.tag
+import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
 import com.cramsan.edifikana.server.core.controller.auth.ClientContext
 import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
 import com.cramsan.framework.core.ktor.HttpResponse
@@ -43,17 +45,75 @@ suspend inline fun ApplicationCall.handleCall(
                 is ByteArray -> {
                     respondBytes(body)
                 }
+
                 else -> {
                     respondNullable(functionResponse.body)
                 }
             }
         }
     } else {
-        logE(tag, "Unexpected failure when handing request", result.exceptionOrNull())
+        validateClientError(result)
+    }
+}
+
+/**
+ * Validate the client error. This function will log the error and respond to the client with the result.
+ */
+suspend fun ApplicationCall.validateClientError(
+    result: Result<HttpResponse>,
+) {
+    // Handle the error based on our created exceptions.
+    val exception = result.exceptionOrNull() as? ClientRequestExceptions
+    if (exception == null) {
+        logE(tag, "Unexpected failure when handing request")
         respond(
             HttpStatusCode.InternalServerError,
-            result.exceptionOrNull()?.localizedMessage.orEmpty(),
+            "Unexpected error",
         )
+        return
+    }
+    logE(tag, "Client Request Exception:", exception)
+
+    when (exception) {
+        is ClientRequestExceptions.ConflictException -> {
+            respond(
+                HttpStatusCode.Conflict,
+                exception.localizedMessage.orEmpty(),
+            )
+            return
+        }
+
+        is ClientRequestExceptions.ForbiddenException -> {
+            respond(
+                HttpStatusCode.Forbidden,
+                exception.localizedMessage.orEmpty(),
+            )
+            return
+        }
+
+        is ClientRequestExceptions.InvalidRequestException -> {
+            respond(
+                HttpStatusCode.BadRequest,
+                exception.localizedMessage.orEmpty(),
+            )
+            return
+        }
+
+        is ClientRequestExceptions.NotFoundException -> {
+            respond(
+                HttpStatusCode.NotFound,
+                exception.localizedMessage.orEmpty(),
+            )
+            return
+        }
+
+        is ClientRequestExceptions.UnauthorizedException -> {
+            respond(
+                HttpStatusCode.Unauthorized,
+                exception.localizedMessage.orEmpty(),
+            )
+            return
+        }
     }
 }
 
@@ -70,6 +130,7 @@ inline fun getAuthenticatedClientContext(clientContext: ClientContext): ClientCo
         is ClientContext.AuthenticatedClientContext -> {
             return clientContext
         }
+
         is ClientContext.UnauthenticatedClientContext -> {
             throw IllegalStateException("Client is not authenticated")
         }

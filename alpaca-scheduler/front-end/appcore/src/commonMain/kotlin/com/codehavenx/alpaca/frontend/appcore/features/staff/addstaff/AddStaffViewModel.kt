@@ -22,10 +22,12 @@ class AddStaffViewModel(
      */
     @Suppress("MagicNumber")
     fun saveStaff() {
-        updateUiState { it.copy(isLoading = true) }
         viewModelScope.launch {
-            delay(2000)
-            emitEvent(AddStaffEvent.TriggerApplicationEvent(ApplicationEvent.NavigateBack))
+            updateUiState { it.copy(isLoading = true) }
+            viewModelScope.launch {
+                delay(2000)
+                emitEvent(AddStaffEvent.TriggerApplicationEvent(ApplicationEvent.NavigateBack))
+            }
         }
     }
 

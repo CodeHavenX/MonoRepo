@@ -34,11 +34,13 @@ class SignInViewModel(
      * Called when the username value changes.
      */
     fun onUsernameValueChange(username: String) {
-        logD(TAG, "onUsernameValueChange called")
-        updateUiState {
-            it.copy(
-                email = username,
-            )
+        viewModelScope.launch {
+            logD(TAG, "onUsernameValueChange called")
+            updateUiState {
+                it.copy(
+                    email = username,
+                )
+            }
         }
     }
 
@@ -46,11 +48,13 @@ class SignInViewModel(
      * Called when the password value changes.
      */
     fun onPasswordValueChange(password: String) {
-        logD(TAG, "onPasswordValueChange called")
-        updateUiState {
-            it.copy(
-                password = password,
-            )
+        viewModelScope.launch {
+            logD(TAG, "onPasswordValueChange called")
+            updateUiState {
+                it.copy(
+                    password = password,
+                )
+            }
         }
     }
 

@@ -25,8 +25,8 @@ class UpdateClientViewModel(
      */
     @Suppress("MagicNumber")
     fun updateClient() {
-        updateUiState { it.copy(isLoading = true) }
         viewModelScope.launch {
+            updateUiState { it.copy(isLoading = true) }
             delay(2000)
             emitEvent(UpdateClientEvent.TriggerApplicationEvent(ApplicationEvent.NavigateBack))
         }

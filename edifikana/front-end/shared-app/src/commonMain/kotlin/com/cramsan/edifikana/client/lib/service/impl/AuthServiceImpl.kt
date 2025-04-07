@@ -38,6 +38,9 @@ class AuthServiceImpl(
 
     private val _activeUser = MutableStateFlow<UserId?>(null)
 
+    /**
+     * Check if the user is signed in.
+     */
     override suspend fun isSignedIn(): Result<Boolean> = runSuspendCatching(TAG) {
         auth.awaitInitialization()
         val user = auth.currentUserOrNull()
@@ -56,6 +59,9 @@ class AuthServiceImpl(
         }
     }
 
+    /**
+     * Get the signed-in user from the server.
+     */
     @OptIn(NetworkModel::class)
     override suspend fun getUser(
         checkGlobalPerms: Boolean,
@@ -69,6 +75,9 @@ class AuthServiceImpl(
         userModel
     }
 
+    /**
+     * Signs in the user with the given email and password.
+     */
     override suspend fun signIn(email: String, password: String): Result<UserModel> = runSuspendCatching(TAG) {
         auth.signInWith(Email) {
             this.email = email
@@ -77,15 +86,24 @@ class AuthServiceImpl(
         getUser().getOrThrow()
     }
 
+    /**
+     * Signs the user out of the application.
+     */
     override suspend fun signOut() = runSuspendCatching(TAG) {
         auth.signOut()
         _activeUser.value = null
     }
 
+    /**
+     * Get the active user as an observable flow.
+     */
     override fun activeUser(): StateFlow<UserId?> {
         return _activeUser.asStateFlow()
     }
 
+    /**
+     * Signs up the user with the given email, phone number, password, first name and last name.
+     */
     @OptIn(NetworkModel::class)
     override suspend fun signUp(
         email: String,
@@ -111,10 +129,16 @@ class AuthServiceImpl(
         userModel
     }
 
+    /**
+     * Resets the password for the user with the given email or phone number.
+     */
     override suspend fun passwordReset(email: String?, phoneNumber: String?): Result<Unit> = runSuspendCatching(TAG) {
         TODO("Implement functionality to reset password and authenticate user.")
     }
 
+    /**
+     * Verifies if the user has the required permissions to access the service.
+     */
     override suspend fun verifyPermissions(): Result<Boolean> {
         // call the admin API. If the call succeeds, the user then we have the wrong credentials.
         val hasServicePermissions = try {
@@ -129,6 +153,9 @@ class AuthServiceImpl(
         return Result.success(!hasServicePermissions)
     }
 
+    /**
+     * Static tag for logging
+     */
     companion object {
         private const val TAG = "AuthServiceImpl"
     }

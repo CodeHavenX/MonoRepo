@@ -34,7 +34,9 @@ class HubViewModel(
      * Set the selected tab.
      */
     fun selectTab(selectedTab: Tabs) {
-        updateUiState { it.copy(selectedTab = selectedTab) }
+        viewModelScope.launch {
+            updateUiState { it.copy(selectedTab = selectedTab) }
+        }
     }
 
     private suspend fun emitApplicationEvent(applicationEvent: EdifikanaApplicationEvent) {

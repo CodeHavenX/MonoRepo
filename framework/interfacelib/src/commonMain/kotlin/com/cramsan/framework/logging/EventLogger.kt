@@ -1,6 +1,5 @@
 package com.cramsan.framework.logging
 
-import com.cramsan.framework.assertlib.AssertUtil.singleton
 import com.cramsan.framework.logging.EventLogger.singleton
 import kotlin.native.concurrent.ThreadLocal
 

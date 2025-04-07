@@ -3,6 +3,7 @@ package com.cramsan.edifikana.client.lib.features.auth.signup
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
 import com.cramsan.edifikana.client.lib.features.auth.AuthRouteDestination
 import com.cramsan.edifikana.client.lib.managers.AuthManager
+import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logD
@@ -35,11 +36,12 @@ class SignUpViewModel(
      * Called when the email username value changes.
      */
     fun onEmailValueChange(username: String) {
-        // Here we can implement any validation logic.
-        updateUiState {
-            it.copy(
-                signUpForm = it.signUpForm.copy(email = username)
-            )
+        viewModelScope.launch {
+            updateUiState {
+                it.copy(
+                    signUpForm = it.signUpForm.copy(email = username)
+                )
+            }
         }
     }
 
@@ -47,11 +49,12 @@ class SignUpViewModel(
      * Called when the phone number username value changes.
      */
     fun onPhoneNumberValueChange(username: String) {
-        // Here we can implement any validation logic.
-        updateUiState {
-            it.copy(
-                signUpForm = it.signUpForm.copy(phoneNumber = username)
-            )
+        viewModelScope.launch {
+            updateUiState {
+                it.copy(
+                    signUpForm = it.signUpForm.copy(phoneNumber = username)
+                )
+            }
         }
     }
 
@@ -59,11 +62,12 @@ class SignUpViewModel(
      * Called when the password value changes.
      */
     fun onPasswordValueChange(password: String) {
-        // Here we can implement any validation logic.
-        updateUiState {
-            it.copy(
-                signUpForm = it.signUpForm.copy(password = password)
-            )
+        viewModelScope.launch {
+            updateUiState {
+                it.copy(
+                    signUpForm = it.signUpForm.copy(password = password)
+                )
+            }
         }
     }
 
@@ -71,11 +75,12 @@ class SignUpViewModel(
      * Called when the first name value changes.
      */
     fun onFirstNameValueChange(firstName: String) {
-        // Here we can implement any validation logic.
-        updateUiState {
-            it.copy(
-                signUpForm = it.signUpForm.copy(firstName = firstName)
-            )
+        viewModelScope.launch {
+            updateUiState {
+                it.copy(
+                    signUpForm = it.signUpForm.copy(firstName = firstName)
+                )
+            }
         }
     }
 
@@ -83,11 +88,12 @@ class SignUpViewModel(
      * Called when the first name value changes.
      */
     fun onLastNameValueChange(lastName: String) {
-        // Here we can implement any validation logic.
-        updateUiState {
-            it.copy(
-                signUpForm = it.signUpForm.copy(lastName = lastName)
-            )
+        viewModelScope.launch {
+            updateUiState {
+                it.copy(
+                    signUpForm = it.signUpForm.copy(lastName = lastName)
+                )
+            }
         }
     }
 
@@ -149,7 +155,7 @@ class SignUpViewModel(
                     it.copy(
                         isLoading = false,
                         signUpForm = it.signUpForm.copy(
-                            errorMessage = listOf("Oops! Something went wrong. Please try again.")
+                            errorMessage = listOf(getErrorMessage(exception))
                         )
                     )
                 }
@@ -188,17 +194,36 @@ class SignUpViewModel(
      * Called when the policy checkbox is checked or unchecked.
      */
     fun onPolicyChecked(checked: Boolean) {
-        updateUiState {
-            it.copy(
-                signUpForm = it.signUpForm.copy(
-                    policyChecked = checked,
-                    registerEnabled = checked,
+        viewModelScope.launch {
+            updateUiState {
+                it.copy(
+                    signUpForm = it.signUpForm.copy(
+                        policyChecked = checked,
+                        registerEnabled = checked,
+                    )
                 )
-            )
+            }
         }
     }
 
     companion object {
         private const val TAG = "SignUpViewModel"
+    }
+
+    /**
+     * Get the custom client error message based on the exception type.
+     */
+    private suspend fun getErrorMessage(exception: Throwable): String {
+        return when (exception) {
+            is ClientRequestExceptions.UnauthorizedException ->
+                "Invalid login credentials. Please check your " +
+                    "username and password and try again."
+
+            is ClientRequestExceptions.ConflictException ->
+                "This email is already registered. You can reset your " +
+                    "password or use another email."
+
+            else -> getString(Res.string.error_message_unexpected_error)
+        }
     }
 }

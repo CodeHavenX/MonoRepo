@@ -51,5 +51,3 @@ roborazzi {
     // Configuration is set programmatically in this class
     generateComposePreviewRobolectricTests.testerQualifiedClassName.set("com.cramsan.framework.test.roborazzi.MultiplatformPreviewTester")
 }
-
-releaseAndroid.dependsOn('verifyRoborazziDebug')

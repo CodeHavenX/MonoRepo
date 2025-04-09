@@ -52,7 +52,7 @@ jobs:
       - name: Clear All Snapshots
         uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
         with:
-          arguments: verifyRoborazziDebug
+          arguments: clearRoborazziDebug
       - name: Record New Snapshots(Android-Debug)
         uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
         with:

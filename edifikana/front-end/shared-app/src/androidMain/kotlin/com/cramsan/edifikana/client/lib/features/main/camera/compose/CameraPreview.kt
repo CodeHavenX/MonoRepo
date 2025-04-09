@@ -124,15 +124,3 @@ private suspend fun Context.getCameraProvider(): ProcessCameraProvider = suspend
         )
     }
 }
-
-@Preview
-@Composable
-private fun PreviewCameraView() {
-    CameraPreview(
-        CameraSelector.LENS_FACING_BACK,
-        0,
-        0,
-        onShutterButtonClick = { _ -> },
-        onToggleCameraClick = {},
-    )
-}

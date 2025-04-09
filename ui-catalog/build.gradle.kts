@@ -50,7 +50,7 @@ android {
 
 roborazzi {
     generateComposePreviewRobolectricTests {
-        enable = false
+        enable = true
         packages = listOf("com.cramsan.ui")
     }
 }

@@ -8,6 +8,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.android.library")
     id("com.google.devtools.ksp")
+    id("io.github.takahirom.roborazzi")
 }
 
 apply(from = "$rootDir/gradle/kotlin-mpp-target-common-compose.gradle")
@@ -35,6 +36,11 @@ kotlin {
 
             implementation("io.github.jan-tennert.supabase:coil3-integration:_")
         }
+        androidUnitTest {
+            dependencies {
+                implementation(project(":framework:test-roborazzi"))
+            }
+        }
     }
 }
 
@@ -48,4 +54,11 @@ android {
 
 compose.resources {
     packageOfResClass = "edifikana_ui"
+}
+
+roborazzi {
+    generateComposePreviewRobolectricTests {
+        enable = true
+        packages = listOf("com.cramsan.edifikana.client.ui")
+    }
 }

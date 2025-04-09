@@ -9,6 +9,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.android.library")
     id("com.google.devtools.ksp")
+    id("io.github.takahirom.roborazzi")
 }
 
 apply(from = "$rootDir/gradle/kotlin-mpp-target-common-compose.gradle")
@@ -62,6 +63,11 @@ kotlin {
             dependencies {
             }
         }
+        androidUnitTest {
+            dependencies {
+                implementation(project(":framework:test-roborazzi"))
+            }
+        }
 
         wasmJsMain {
             dependencies {
@@ -95,4 +101,11 @@ dependencies {
     implementation("io.insert-koin:koin-core:_")
     implementation("io.insert-koin:koin-android:_")
     implementation("io.insert-koin:koin-androidx-compose:_")
+}
+
+roborazzi {
+    generateComposePreviewRobolectricTests {
+        enable = true
+        packages = listOf("com.cramsan.framework.sample.shared")
+    }
 }

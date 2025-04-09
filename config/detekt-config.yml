@@ -41,6 +41,7 @@ comments:
   UndocumentedPublicClass:
     active: true
   UndocumentedPublicFunction:
+    ignoreAnnotated: [ 'Preview' ]
     active: true
   UndocumentedPublicProperty:
     active: false

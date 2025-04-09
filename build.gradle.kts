@@ -11,6 +11,7 @@ plugins {
     id("androidx.navigation.safeargs.kotlin") apply false
     id("com.squareup.sqldelight") apply false
     id("io.gitlab.arturbosch.detekt") apply false
+    id("io.github.takahirom.roborazzi") apply false
 }
 
 subprojects {
@@ -40,6 +41,7 @@ tasks.register("releaseAll") {
     dependsOn("framework:preferences:release")
     dependsOn("framework:thread:release")
     dependsOn("framework:test:release")
+    dependsOn("framework:test-roborazzi:release")
     dependsOn("framework:utils:release")
 
     dependsOn("samples:android-app:release")

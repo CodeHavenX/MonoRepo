@@ -42,6 +42,7 @@ include("framework:userevents")
 include("framework:preferences")
 include("framework:thread")
 include("framework:test")
+include("framework:test-roborazzi")
 include("framework:utils")
 
 include("samples:android-app")

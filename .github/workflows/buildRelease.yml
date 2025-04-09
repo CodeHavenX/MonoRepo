@@ -59,8 +59,9 @@ jobs:
           arguments: recordRoborazziDebug
       - name: Verify No Changes To Screenshots
         run: |
-          if [ -z "$(git status --porcelain)" ]; then
-            echo "No changes"
+          git status --porcelain
+          if [ -z "$?" ]; then
+            exit 0
           else
-            echo "Changes present"
+            exit 1
           fi

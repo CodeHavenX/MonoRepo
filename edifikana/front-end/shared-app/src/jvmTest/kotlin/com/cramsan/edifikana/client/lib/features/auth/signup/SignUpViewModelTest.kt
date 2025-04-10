@@ -3,7 +3,6 @@ package com.cramsan.edifikana.client.lib.features.auth.signup
 import app.cash.turbine.test
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
-import com.cramsan.framework.core.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.SharedFlowApplicationReceiver
 import com.cramsan.framework.core.compose.ViewModelDependencies
@@ -82,7 +81,7 @@ class SignUpViewModelTest : TestBase() {
         viewModel.onEmailValueChange(email)
 
         // Assert
-        assertEquals(email, viewModel.uiState.value.signUpForm.email)
+        assertEquals(email, viewModel.uiState.value.email)
     }
 
     /**
@@ -97,7 +96,7 @@ class SignUpViewModelTest : TestBase() {
         viewModel.onPhoneNumberValueChange(phoneNumber)
 
         // Assert
-        assertEquals(phoneNumber, viewModel.uiState.value.signUpForm.phoneNumber)
+        assertEquals(phoneNumber, viewModel.uiState.value.phoneNumber)
     }
 
     /**
@@ -112,7 +111,7 @@ class SignUpViewModelTest : TestBase() {
         viewModel.onPasswordValueChange(password)
 
         // Assert
-        assertEquals(password, viewModel.uiState.value.signUpForm.password)
+        assertEquals(password, viewModel.uiState.value.password)
     }
 
     /**
@@ -127,7 +126,7 @@ class SignUpViewModelTest : TestBase() {
         viewModel.onFirstNameValueChange(firstName)
 
         // Assert
-        assertEquals(firstName, viewModel.uiState.value.signUpForm.firstName)
+        assertEquals(firstName, viewModel.uiState.value.firstName)
     }
 
     /**
@@ -142,7 +141,7 @@ class SignUpViewModelTest : TestBase() {
         viewModel.onLastNameValueChange(lastName)
 
         // Assert
-        assertEquals(lastName, viewModel.uiState.value.signUpForm.lastName)
+        assertEquals(lastName, viewModel.uiState.value.lastName)
     }
 
     /**
@@ -157,8 +156,8 @@ class SignUpViewModelTest : TestBase() {
         viewModel.onPolicyChecked(isChecked)
 
         // Assert
-        assertTrue(viewModel.uiState.value.signUpForm.policyChecked)
-        assertTrue(viewModel.uiState.value.signUpForm.registerEnabled)
+        assertTrue(viewModel.uiState.value.policyChecked)
+        assertTrue(viewModel.uiState.value.registerEnabled)
     }
 
     /**
@@ -173,8 +172,8 @@ class SignUpViewModelTest : TestBase() {
         viewModel.onPolicyChecked(isChecked)
 
         // Assert
-        assertFalse(viewModel.uiState.value.signUpForm.policyChecked)
-        assertFalse(viewModel.uiState.value.signUpForm.registerEnabled)
+        assertFalse(viewModel.uiState.value.policyChecked)
+        assertFalse(viewModel.uiState.value.registerEnabled)
     }
 
     /**
@@ -258,7 +257,7 @@ class SignUpViewModelTest : TestBase() {
         viewModel.signUp()
 
         // Assert
-        assertEquals(expectedErrorCount, viewModel.uiState.value.signUpForm.errorMessage?.size ?: 0)
+        assertEquals(expectedErrorCount, viewModel.uiState.value.errorMessage?.size ?: 0)
     }
 
     /**
@@ -289,7 +288,7 @@ class SignUpViewModelTest : TestBase() {
 
         // Assert & verify
         coVerify { authManager.signUp(email, phoneNumber, password, firstName, lastName) }
-        assertEquals(expectedErrorMessage.toString(), viewModel.uiState.value.signUpForm.errorMessage.toString())
+        assertEquals(expectedErrorMessage.toString(), viewModel.uiState.value.errorMessage.toString())
     }
 
     /**
@@ -326,7 +325,7 @@ class SignUpViewModelTest : TestBase() {
         // Assert & verify
         coVerify { authManager.signUp(email, phoneNumber, password, firstName, lastName) }
         assertEquals(
-            expectedErrorMessage.toString(), viewModel.uiState.value.signUpForm.errorMessage.toString()
+            expectedErrorMessage.toString(), viewModel.uiState.value.errorMessage.toString()
         )
 
     }

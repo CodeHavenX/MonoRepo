@@ -16,16 +16,14 @@ private fun SignUpScreenSuccessPreview() = AppTheme {
     SignUpContent(
         uiState = SignUpUIState(
             isLoading = false,
-            signUpForm = SignUpFormUIModel(
-                firstName = "Roberto",
-                lastName = "Burritos",
-                email = "rob_burritos@gmail.com",
-                phoneNumber = "",
-                password = "iLikeBurrit0s",
-                policyChecked = true,
-                registerEnabled = true,
-                errorMessage = null,
-            ),
+            firstName = "Roberto",
+            lastName = "Burritos",
+            email = "rob_burritos@gmail.com",
+            phoneNumber = "",
+            password = "iLikeBurrit0s",
+            policyChecked = true,
+            registerEnabled = true,
+            errorMessage = null,
         ),
         modifier = Modifier,
         onEmailValueChange = {},
@@ -45,19 +43,17 @@ private fun SignUpScreenFailurePreview() = AppTheme {
     SignUpContent(
         uiState = SignUpUIState(
             isLoading = false,
-            signUpForm = SignUpFormUIModel(
-                firstName = "Donkey",
-                lastName = "Kong",
-                email = "",
-                phoneNumber = "1234567890",
-                password = "kong_is_king1!",
-                policyChecked = false,
-                registerEnabled = false,
-                errorMessage = listOf(
-                    "Invalid username, please use a valid email address or phone number.\n" +
-                        "Password must be at least 8 characters long, contain at last 1 uppercase, 1 lowercase, and 1 " +
-                        "number."
-                ),
+            firstName = "Donkey",
+            lastName = "Kong",
+            email = "",
+            phoneNumber = "1234567890",
+            password = "kong_is_king1!",
+            policyChecked = false,
+            registerEnabled = false,
+            errorMessage = listOf(
+                "Invalid username, please use a valid email address or phone number.\n" +
+                    "Password must be at least 8 characters long, contain at last 1 uppercase, 1 lowercase, and 1 " +
+                    "number."
             ),
         ),
         modifier = Modifier,

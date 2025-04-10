@@ -27,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import edifikana_lib.Res
 import edifikana_lib.text_flip_camera
 import edifikana_lib.text_take_photo
@@ -45,7 +46,7 @@ import kotlin.coroutines.suspendCoroutine
  */
 @Composable
 fun CameraPreview(
-    lensFacing: Int,
+    lensFacing: Int?,
     captureWidth: Int,
     captureHeight: Int,
     onShutterButtonClick: (ImageCapture) -> Unit,
@@ -53,7 +54,7 @@ fun CameraPreview(
 ) {
     // 1
     val context = LocalContext.current
-    val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
+    val lifecycleOwner = LocalLifecycleOwner.current
 
     val preview = androidx.camera.core.Preview.Builder().build()
     val previewView = remember { PreviewView(context) }
@@ -62,20 +63,24 @@ fun CameraPreview(
             .setTargetResolution(Size(captureWidth, captureHeight))
             .build()
     }
-    val cameraSelector = CameraSelector.Builder()
-        .requireLensFacing(lensFacing)
-        .build()
 
     // 2
     LaunchedEffect(lensFacing) {
         val cameraProvider = context.getCameraProvider()
         cameraProvider.unbindAll()
-        cameraProvider.bindToLifecycle(
-            lifecycleOwner,
-            cameraSelector,
-            preview,
-            imageCapture
-        )
+
+        lensFacing?.let {
+            val cameraSelector = CameraSelector.Builder()
+                .requireLensFacing(lensFacing)
+                .build()
+
+            cameraProvider.bindToLifecycle(
+                lifecycleOwner,
+                cameraSelector,
+                preview,
+                imageCapture
+            )
+        }
 
         preview.setSurfaceProvider(previewView.surfaceProvider)
     }
@@ -123,4 +128,16 @@ private suspend fun Context.getCameraProvider(): ProcessCameraProvider = suspend
             ContextCompat.getMainExecutor(this),
         )
     }
+}
+
+@Preview
+@Composable
+private fun PreviewCameraView() {
+    CameraPreview(
+        null,
+        0,
+        0,
+        onShutterButtonClick = { _ -> },
+        onToggleCameraClick = {},
+    )
 }

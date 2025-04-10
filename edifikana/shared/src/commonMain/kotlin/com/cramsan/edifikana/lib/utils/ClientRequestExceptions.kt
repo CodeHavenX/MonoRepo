@@ -55,7 +55,27 @@ fun <T> requireAtLeastOne(
 }
 
 /**
- * Requires that at least one of the string values is not null or blank.
+ * Requires that all the values are not null.
+ *
+ * @param message The message to use if any of the values are null.
+ * @param predicate The predicate to use to check if the value is valid.
+ * @param values The values to check.
+ * @throws ClientRequestExceptions.InvalidRequestException If any of the values are null.
+ */
+fun <T> requireAll(
+    message: String = "All fields must be provided.",
+    predicate: (T?) -> Boolean = { it != null },
+    vararg values: T?,
+) {
+    if (values.all(predicate)) {
+        return
+    }
+    throw ClientRequestExceptions.InvalidRequestException(message)
+}
+
+
+/**
+ * Helper function: Requires that at least one of the string values is not null or blank.
  *
  * @param message The message to use if none of the values are not null.
  * @param values The values to check.
@@ -66,6 +86,16 @@ fun requireAtLeastOne(
     vararg values: String?,
 ) {
     requireAtLeastOne(message, { !it.isNullOrBlank() }, *values)
+}
+
+/**
+ * Helper function: Requires that all the string values are not null or blank.
+ */
+fun requireAll(
+    message: String = "All fields must be provided.",
+    vararg values: String?,
+) {
+    requireAll(message, { !it.isNullOrBlank() }, *values)
 }
 
 /**

@@ -7,22 +7,27 @@ import com.cramsan.framework.core.compose.ViewModelUIState
  */
 data class SignUpUIState(
     val isLoading: Boolean,
-    val signUpForm: SignUpFormUIModel,
+    val firstName: String,
+    val lastName: String,
+    val email: String,
+    val phoneNumber: String,
+    val password: String,
+    val policyChecked: Boolean,
+    val registerEnabled: Boolean,
+    val errorMessage: List<String>?,
 ) : ViewModelUIState {
 
     companion object {
         val Initial = SignUpUIState(
             isLoading = false,
-            signUpForm = SignUpFormUIModel(
-                firstName = "",
-                lastName = "",
-                email = "",
-                phoneNumber = "",
-                password = "",
-                policyChecked = false,
-                registerEnabled = false,
-                errorMessage = null,
-            ),
+            firstName = "",
+            lastName = "",
+            email = "",
+            phoneNumber = "",
+            password = "",
+            policyChecked = false,
+            registerEnabled = false,
+            errorMessage = null,
         )
     }
 }

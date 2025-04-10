@@ -38,7 +38,7 @@ class SignUpViewModel(
         // Here we can implement any validation logic.
         updateUiState {
             it.copy(
-                signUpForm = it.signUpForm.copy(email = username)
+                email = username
             )
         }
     }
@@ -50,7 +50,7 @@ class SignUpViewModel(
         // Here we can implement any validation logic.
         updateUiState {
             it.copy(
-                signUpForm = it.signUpForm.copy(phoneNumber = username)
+                phoneNumber = username
             )
         }
     }
@@ -62,7 +62,7 @@ class SignUpViewModel(
         // Here we can implement any validation logic.
         updateUiState {
             it.copy(
-                signUpForm = it.signUpForm.copy(password = password)
+                password = password
             )
         }
     }
@@ -74,7 +74,7 @@ class SignUpViewModel(
         // Here we can implement any validation logic.
         updateUiState {
             it.copy(
-                signUpForm = it.signUpForm.copy(firstName = firstName)
+                firstName = firstName
             )
         }
     }
@@ -86,7 +86,7 @@ class SignUpViewModel(
         // Here we can implement any validation logic.
         updateUiState {
             it.copy(
-                signUpForm = it.signUpForm.copy(lastName = lastName)
+                lastName = lastName
             )
         }
     }
@@ -109,11 +109,11 @@ class SignUpViewModel(
     fun signUp() {
         logI(TAG, "signUp called")
         viewModelScope.launch {
-            val firstName = uiState.value.signUpForm.firstName.trim()
-            val lastName = uiState.value.signUpForm.lastName.trim()
-            val email = uiState.value.signUpForm.email.trim()
-            val phoneNumber = uiState.value.signUpForm.phoneNumber.trim()
-            val password = uiState.value.signUpForm.password
+            val firstName = uiState.value.firstName.trim()
+            val lastName = uiState.value.lastName.trim()
+            val email = uiState.value.email.trim()
+            val phoneNumber = uiState.value.phoneNumber.trim()
+            val password = uiState.value.password
 
             val errorMessages = listOf(
                 validateName(firstName, lastName),
@@ -125,9 +125,8 @@ class SignUpViewModel(
             if (errorMessages.isNotEmpty()) {
                 updateUiState {
                     it.copy(
-                        signUpForm = it.signUpForm.copy(
-                            errorMessage = errorMessages
-                        )
+
+                        errorMessage = errorMessages
                     )
                 }
                 return@launch
@@ -146,9 +145,8 @@ class SignUpViewModel(
                 updateUiState {
                     it.copy(
                         isLoading = false,
-                        signUpForm = it.signUpForm.copy(
-                            errorMessage = listOf("Oops! Something went wrong. Please try again.")
-                        )
+
+                        errorMessage = listOf("Oops! Something went wrong. Please try again.")
                     )
                 }
                 return@launch
@@ -166,9 +164,8 @@ class SignUpViewModel(
                 updateUiState {
                     it.copy(
                         isLoading = false,
-                        signUpForm = it.signUpForm.copy(
-                            errorMessage = listOf(message)
-                        )
+
+                        errorMessage = listOf(message)
                     )
                 }
                 return@launch
@@ -187,10 +184,9 @@ class SignUpViewModel(
     fun onPolicyChecked(checked: Boolean) {
         updateUiState {
             it.copy(
-                signUpForm = it.signUpForm.copy(
-                    policyChecked = checked,
-                    registerEnabled = checked,
-                )
+
+                policyChecked = checked,
+                registerEnabled = checked,
             )
         }
     }

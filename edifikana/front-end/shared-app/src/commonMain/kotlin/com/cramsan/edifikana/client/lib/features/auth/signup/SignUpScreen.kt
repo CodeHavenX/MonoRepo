@@ -117,7 +117,7 @@ internal fun SignUpContent(
             ScreenLayout(
                 sectionContent = { modifier ->
                     AnimatedContent(
-                        uiState.signUpForm.errorMessage,
+                        uiState.errorMessage,
                         modifier = modifier,
                         transitionSpec = {
                             fadeIn()
@@ -126,7 +126,7 @@ internal fun SignUpContent(
                                 )
                         },
                     ) {
-                        if (!uiState.signUpForm.errorMessage.isNullOrEmpty()) {
+                        if (!uiState.errorMessage.isNullOrEmpty()) {
                             it?.forEach { errorMessage ->
                                 Text(
                                     text = errorMessage,
@@ -138,7 +138,7 @@ internal fun SignUpContent(
                     }
 
                     OutlinedTextField(
-                        value = uiState.signUpForm.firstName,
+                        value = uiState.firstName,
                         onValueChange = { onFirstNameValueChange(it) },
                         modifier = modifier,
                         label = { Text(stringResource(Res.string.sign_up_screen_text_first_name)) },
@@ -146,28 +146,28 @@ internal fun SignUpContent(
                     )
 
                     OutlinedTextField(
-                        value = uiState.signUpForm.lastName,
+                        value = uiState.lastName,
                         onValueChange = { onLastNameValueChange(it) },
                         modifier = modifier,
                         label = { Text(stringResource(Res.string.sign_up_screen_text_last_name)) },
                         maxLines = 1,
                     )
                     OutlinedTextField(
-                        value = uiState.signUpForm.email,
+                        value = uiState.email,
                         onValueChange = { onEmailValueChange(it) },
                         modifier = modifier,
                         label = { Text(stringResource(Res.string.sign_up_screen_text_email)) },
                         maxLines = 1,
                     )
                     OutlinedTextField(
-                        value = uiState.signUpForm.phoneNumber,
+                        value = uiState.phoneNumber,
                         onValueChange = { onPhoneNumberValueChange(it) },
                         modifier = modifier,
                         label = { Text(stringResource(Res.string.sign_up_screen_text_phone_number)) },
                         maxLines = 1,
                     )
                     PasswordOutlinedTextField(
-                        value = uiState.signUpForm.password,
+                        value = uiState.password,
                         onValueChange = { onPasswordValueChange(it) },
                         modifier = modifier,
                         label = { Text(stringResource(Res.string.sign_up_screen_text_password)) },
@@ -189,7 +189,7 @@ internal fun SignUpContent(
                             .padding(Padding.XX_SMALL)
                     ) {
                         Checkbox(
-                            checked = uiState.signUpForm.policyChecked,
+                            checked = uiState.policyChecked,
                             onCheckedChange = null,
                             modifier = Modifier.padding(end = Padding.SMALL),
                         )
@@ -203,7 +203,7 @@ internal fun SignUpContent(
                 buttonContent = { modifier ->
                     Button(
                         modifier = modifier,
-                        enabled = uiState.signUpForm.registerEnabled,
+                        enabled = uiState.registerEnabled,
                         onClick = onSignUpClicked,
                     ) {
                         Text(stringResource(Res.string.sign_up_screen_text_sign_up))

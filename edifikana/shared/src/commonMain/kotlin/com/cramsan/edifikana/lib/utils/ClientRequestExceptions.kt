@@ -73,7 +73,6 @@ fun <T> requireAll(
     throw ClientRequestExceptions.InvalidRequestException(message)
 }
 
-
 /**
  * Helper function: Requires that at least one of the string values is not null or blank.
  *

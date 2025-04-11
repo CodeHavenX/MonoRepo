@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.server.core.controller
 
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
 import com.cramsan.edifikana.server.core.controller.auth.ClientContext
 import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
 import com.cramsan.edifikana.server.core.service.UserService
@@ -25,8 +26,8 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
-// TODO: Add tests for phoneNumber & no email, and email & phoneNumber
 class UserControllerTest : TestBase(), KoinTest {
 
     @BeforeTest
@@ -48,7 +49,7 @@ class UserControllerTest : TestBase(), KoinTest {
         coEvery {
             userService.createUser(
                 email = "john.doe@example.com",
-                phoneNumber = "",
+                phoneNumber = "5051352468",
                 password = "password",
                 firstName = "John",
                 lastName = "Doe",
@@ -58,7 +59,7 @@ class UserControllerTest : TestBase(), KoinTest {
                 User(
                     id = UserId("user123"),
                     email = "john.doe@example.com",
-                    phoneNumber = "",
+                    phoneNumber = "5051352468",
                     firstName = "John",
                     lastName = "Doe",
                     hasGlobalPerms = false,
@@ -87,6 +88,88 @@ class UserControllerTest : TestBase(), KoinTest {
         assertEquals(expectedResponse, response.bodyAsText())
     }
 
+    /**
+     * Test to verify that createUser throws an exception when an unknown error occurs.
+     * This test simulates an unexpected error during the user creation process.
+     */
+    @Test
+    fun `test createUser throws exception when unknown error occurs`() = testEdifikanaApplication {
+        // Configure
+        val requestBody = readFileContent("requests/create_user_request.json")
+        val userService = get<UserService>()
+        coEvery {
+            userService.createUser(
+                email = "john.doe@example.com",
+                phoneNumber = "5051352468",
+                password = "password",
+                firstName = "John",
+                lastName = "Doe",
+            )
+        }.answers {
+            Result.failure(RuntimeException("There was an unexpected error."))
+        }
+        val contextRetriever = get<ContextRetriever>()
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            ClientContext.AuthenticatedClientContext(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
+        }
+
+        // Act
+        val response = client.post("user") {
+            setBody(requestBody)
+            contentType(ContentType.Application.Json)
+        }
+
+        // Assert
+        assertEquals(HttpStatusCode.InternalServerError, response.status)
+        assertTrue(response.bodyAsText().contains("There was an unexpected error."))
+    }
+
+    /**
+     * Test to verify that createUser throws an exception when the user already exists.
+     * This test simulates a conflict error during the user creation process.
+     */
+    @Test
+    fun `test createUser throws exception when user already exists`() = testEdifikanaApplication {
+        // Configure
+        val requestBody = readFileContent("requests/create_user_request.json")
+        val userService = get<UserService>()
+        coEvery {
+            userService.createUser(
+                email = "john.doe@example.com",
+                phoneNumber = "5051352468",
+                password = "password",
+                firstName = "John",
+                lastName = "Doe",
+            )
+        }.answers {
+            Result.failure(ClientRequestExceptions.ConflictException("Error: User with this email already exists."))
+        }
+        val contextRetriever = get<ContextRetriever>()
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            ClientContext.AuthenticatedClientContext(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
+        }
+
+        // Act
+        val response = client.post("user") {
+            setBody(requestBody)
+            contentType(ContentType.Application.Json)
+        }
+
+        // Assert
+        assertEquals(HttpStatusCode.Conflict, response.status)
+        assertTrue(response.bodyAsText().contains("Error: User with this email already exists."))
+    }
+
     @Test
     fun `test getUser`() = testEdifikanaApplication {
         // Configure
@@ -98,7 +181,7 @@ class UserControllerTest : TestBase(), KoinTest {
             User(
                 id = UserId("user123"),
                 email = "john.doe@example.com",
-                phoneNumber = "",
+                phoneNumber = "5051352468",
                 firstName = "John",
                 lastName = "Doe",
                 hasGlobalPerms = false,
@@ -136,7 +219,7 @@ class UserControllerTest : TestBase(), KoinTest {
                 User(
                     id = UserId("user123"),
                     email = "john.doe@example.com",
-                    phoneNumber = "",
+                    phoneNumber = "5051352468",
                     firstName = "John",
                     lastName = "Doe",
                     hasGlobalPerms = false,
@@ -145,7 +228,7 @@ class UserControllerTest : TestBase(), KoinTest {
                 User(
                     id = UserId("user456"),
                     email = "jane.smith@example.com",
-                    phoneNumber = "",
+                    phoneNumber = "5051352469",
                     firstName = "Jane",
                     lastName = "Smith",
                     hasGlobalPerms = false,
@@ -186,7 +269,7 @@ class UserControllerTest : TestBase(), KoinTest {
             User(
                 id = UserId("user123"),
                 email = "updated.email@example.com",
-                phoneNumber = "",
+                phoneNumber = "5051382468",
                 firstName = "Updated",
                 lastName = "Email",
                 hasGlobalPerms = false,

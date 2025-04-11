@@ -56,20 +56,23 @@ suspend inline fun ApplicationCall.handleCall(
     }
 }
 
-
 /**
  * Validate the client error. This function will log the error and respond to the client with the result.
+ * TODO: We need to have this function be an inline function due to a weird java.lang.NoSuchMethodError when being
+ * invoked. I dont know the source of this issue, but making this function inline fixes it for now.
+ * @param result The result of the function call.
  */
-suspend fun ApplicationCall.validateClientError(
+suspend inline fun ApplicationCall.validateClientError(
     result: Result<HttpResponse>,
 ) {
     // Handle the error based on our created exceptions.
-    val exception = result.exceptionOrNull() as? ClientRequestExceptions
+    val originalException = result.exceptionOrNull()
+    val exception = originalException as? ClientRequestExceptions
     if (exception == null) {
         logE(tag, "Unexpected failure when handing request")
         respond(
             HttpStatusCode.InternalServerError,
-            "Unexpected error",
+            originalException?.localizedMessage.orEmpty(),
         )
         return
     }
@@ -124,6 +127,8 @@ suspend fun ApplicationCall.validateClientError(
  *
  * TODO: We need to have this function be an inline function due to a weird java.lang.NoSuchMethodError when being
  * invoked. I dont know the source of this issue, but making this function inline fixes it for now.
+ * @param clientContext The client context to get the authenticated client context from.
+ * @return The authenticated client context.
  */
 @Suppress("UseCheckOrError")
 inline fun getAuthenticatedClientContext(clientContext: ClientContext): ClientContext.AuthenticatedClientContext {
@@ -131,6 +136,7 @@ inline fun getAuthenticatedClientContext(clientContext: ClientContext): ClientCo
         is ClientContext.AuthenticatedClientContext -> {
             return clientContext
         }
+
         is ClientContext.UnauthenticatedClientContext -> {
             throw IllegalStateException("Client is not authenticated")
         }

@@ -33,7 +33,8 @@ class SupabaseUserDatabase(
     override suspend fun createUser(
         // TODO: Use phoneNum, fN, and lN. Integrate into request or someting
         request: CreateUserRequest,
-    ): Result<User> = runSuspendCatching(TAG) {logD(TAG, "Creating user: %s", request.email)
+    ): Result<User> = runSuspendCatching(TAG) {
+        logD(TAG, "Creating user: %s", request.email)
 
         val supabaseUser = try {
             auth.admin.createUserWithEmail {

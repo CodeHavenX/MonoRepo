@@ -8,6 +8,7 @@ import com.cramsan.edifikana.lib.annotations.NetworkModel
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.model.network.CreateUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
+import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
 import com.cramsan.framework.assertlib.assertFalse
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
@@ -70,9 +71,14 @@ class AuthServiceImpl(
     }
 
     override suspend fun signIn(email: String, password: String): Result<UserModel> = runSuspendCatching(TAG) {
-        auth.signInWith(Email) {
-            this.email = email
-            this.password = password
+        try {
+            auth.signInWith(Email) {
+                this.email = email
+                this.password = password
+            }
+        } catch (e: AuthRestException) {
+            logE(TAG, "Error signing in", e)
+            throw ClientRequestExceptions.UnauthorizedException("ERROR: Invalid credentials.")
         }
         getUser().getOrThrow()
     }

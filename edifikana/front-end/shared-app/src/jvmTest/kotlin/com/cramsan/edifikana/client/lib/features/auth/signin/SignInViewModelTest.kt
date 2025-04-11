@@ -5,6 +5,7 @@ import com.cramsan.edifikana.client.lib.features.ActivityRouteDestination
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
 import com.cramsan.edifikana.client.lib.features.auth.AuthRouteDestination
 import com.cramsan.edifikana.client.lib.managers.AuthManager
+import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.SharedFlowApplicationReceiver
 import com.cramsan.framework.core.compose.ViewModelDependencies
@@ -14,11 +15,9 @@ import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.test.TestBase
 import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
-import io.github.jan.supabase.auth.exception.AuthRestException
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -142,19 +141,18 @@ class SignInViewModelTest : TestBase() {
      * TODO: Fix logging capabilities to be able to figure out why this test fails on CI but no on local
      *
      */
-    @Ignore
     @Test
     fun `test SignIn fails with invalid login credentials`() = runBlockingTest {
         // Arrange
         val username = "wrongUser@email.com"
         val password = "ValidPassword123"
-        val errorMessage = "Username and/or password didn't match our records."
+        val errorMessage = "Invalid login credentials. Please check your username and password and try again."
         coEvery {
             authManager.signIn(
                 username,
                 password,
             )
-        } returns Result.failure(mockk<AuthRestException>())
+        } returns Result.failure(mockk<ClientRequestExceptions.UnauthorizedException>())
 
         viewModel.onUsernameValueChange(username)
         viewModel.onPasswordValueChange(password)
@@ -178,7 +176,6 @@ class SignInViewModelTest : TestBase() {
      * TODO: Fix logging capabilities to be able to figure out why this test fails on CI but no on local
      *
      */
-    @Ignore
     @Test
     fun `test SignIn fails for unexpected reason`() = runBlockingTest {
         // Arrange

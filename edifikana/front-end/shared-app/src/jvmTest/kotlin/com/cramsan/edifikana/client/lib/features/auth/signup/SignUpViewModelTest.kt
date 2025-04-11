@@ -15,7 +15,6 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlin.test.BeforeTest
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -295,7 +294,6 @@ class SignUpViewModelTest : TestBase() {
      * Test the [SignUpViewModel.signUp] method with valid inputs but fails to sign in
      * TODO: Fix logging capabilities to be able to figure out why this test fails on CI but no on local
      */
-    @Ignore
     @Test
     fun `test signUp fails with valid inputs when trying to signIn`() = runBlockingTest {
         val firstName = "Diana"
@@ -321,7 +319,6 @@ class SignUpViewModelTest : TestBase() {
 
         // Act
         viewModel.signUp()
-
         // Assert & verify
         coVerify { authManager.signUp(email, phoneNumber, password, firstName, lastName) }
         assertEquals(

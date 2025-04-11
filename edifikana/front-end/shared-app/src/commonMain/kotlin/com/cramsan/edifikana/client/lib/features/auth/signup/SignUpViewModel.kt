@@ -3,6 +3,7 @@ package com.cramsan.edifikana.client.lib.features.auth.signup
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
 import com.cramsan.edifikana.client.lib.features.auth.AuthRouteDestination
 import com.cramsan.edifikana.client.lib.managers.AuthManager
+import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logD
@@ -125,7 +126,6 @@ class SignUpViewModel(
             if (errorMessages.isNotEmpty()) {
                 updateUiState {
                     it.copy(
-
                         errorMessage = errorMessages
                     )
                 }
@@ -145,10 +145,10 @@ class SignUpViewModel(
                 updateUiState {
                     it.copy(
                         isLoading = false,
-
-                        errorMessage = listOf("Oops! Something went wrong. Please try again.")
+                        errorMessage = listOf(getErrorMessage(exception))
                     )
                 }
+
                 return@launch
             }
 
@@ -193,5 +193,22 @@ class SignUpViewModel(
 
     companion object {
         private const val TAG = "SignUpViewModel"
+    }
+
+    /**
+     * Get the custom client error message based on the exception type.
+     */
+    private suspend fun getErrorMessage(exception: Throwable): String {
+        return when (exception) {
+            is ClientRequestExceptions.UnauthorizedException ->
+                "Invalid login credentials. Please check your " +
+                    "username and password and try again."
+
+            is ClientRequestExceptions.ConflictException ->
+                "This email is already registered. You can reset your " +
+                    "password or use another email."
+
+            else -> getString(Res.string.error_message_unexpected_error)
+        }
     }
 }

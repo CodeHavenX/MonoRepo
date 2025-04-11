@@ -3,9 +3,9 @@ package com.cramsan.edifikana.client.lib.di.koin
 import androidx.room.Room
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.cramsan.edifikana.client.lib.db.AppDatabase
-import java.io.File
 import kotlinx.coroutines.Dispatchers
 import org.koin.dsl.module
+import java.io.File
 
 @Suppress("InjectDispatcher")
 actual val ExtrasPlatformModule = module {
@@ -24,5 +24,4 @@ actual val ExtrasPlatformModule = module {
             .setQueryCoroutineContext(Dispatchers.IO)
             .build()
     }
-
 }

@@ -6,5 +6,4 @@ import org.koin.dsl.module
 actual val ExtrasPlatformModule = module {
 
     single { androidContext().contentResolver }
-
 }

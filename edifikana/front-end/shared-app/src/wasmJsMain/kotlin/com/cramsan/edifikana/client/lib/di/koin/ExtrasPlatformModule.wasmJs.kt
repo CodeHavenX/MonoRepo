@@ -4,5 +4,4 @@ import org.koin.dsl.module
 
 @Suppress("InjectDispatcher")
 actual val ExtrasPlatformModule = module {
-
 }

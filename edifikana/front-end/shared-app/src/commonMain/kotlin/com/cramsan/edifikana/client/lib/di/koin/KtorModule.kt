@@ -26,5 +26,4 @@ internal val KtorModule = module {
             }
         }
     }
-
 }

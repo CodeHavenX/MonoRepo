@@ -3,17 +3,9 @@ package com.cramsan.edifikana.client.lib.di.koin
 import androidx.room.Room
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.cramsan.edifikana.client.lib.db.AppDatabase
-import com.cramsan.edifikana.client.lib.service.impl.AuthRequestPlugin
-import com.cramsan.edifikana.client.lib.settings.Overrides
-import com.cramsan.edifikana.lib.serialization.createJson
-import io.ktor.client.HttpClient
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.defaultRequest
-import io.ktor.serialization.kotlinx.json.json
-import kotlinx.coroutines.Dispatchers
-import org.koin.core.qualifier.named
-import org.koin.dsl.module
 import java.io.File
+import kotlinx.coroutines.Dispatchers
+import org.koin.dsl.module
 
 @Suppress("InjectDispatcher")
 actual val ExtrasPlatformModule = module {
@@ -33,19 +25,4 @@ actual val ExtrasPlatformModule = module {
             .build()
     }
 
-    single {
-        HttpClient {
-            defaultRequest {
-                url("http://0.0.0.0:9292")
-            }
-            install(ContentNegotiation) {
-                json(createJson())
-            }
-
-            val disableSupabase = get<Boolean>(named(Overrides.KEY_DISABLE_SUPABASE))
-            if (!disableSupabase) {
-                install(AuthRequestPlugin(get()))
-            }
-        }
-    }
 }

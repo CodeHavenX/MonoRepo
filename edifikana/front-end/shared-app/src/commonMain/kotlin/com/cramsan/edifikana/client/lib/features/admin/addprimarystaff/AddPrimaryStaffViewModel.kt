@@ -30,19 +30,19 @@ class AddPrimaryStaffViewModel(
      * Invite staff member.
      */
     fun invite(email: String) {
-        val errorMessages = validateEmail(email.trim())
-        if (errorMessages.isNotEmpty()) {
-            updateUiState {
-                it.copy(
-                    isLoading = false,
-                    errorMessage = errorMessages.first()
-                )
-            }
-            return
-        }
         viewModelScope.launch {
-            updateUiState { it.copy(isLoading = true, errorMessage = null) }
-            emitApplicationEvent(EdifikanaApplicationEvent.NavigateBack)
+            val errorMessages = validateEmail(email.trim())
+            if (errorMessages.isNotEmpty()) {
+                updateUiState {
+                    it.copy(
+                        isLoading = false,
+                        errorMessage = errorMessages.first()
+                    )
+                }
+            } else {
+                updateUiState { it.copy(isLoading = true, errorMessage = null) }
+                emitApplicationEvent(EdifikanaApplicationEvent.NavigateBack)
+            }
         }
     }
 

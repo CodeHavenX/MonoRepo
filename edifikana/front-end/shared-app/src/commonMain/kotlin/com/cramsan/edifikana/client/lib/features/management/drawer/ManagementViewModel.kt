@@ -29,8 +29,10 @@ class ManagementViewModel(
      * Select a drawer item.
      */
     fun selectDrawerItem(drawerItem: SelectableDrawerItem) {
-        updateUiState {
-            it.copy(selectedItem = drawerItem)
+        viewModelScope.launch {
+            updateUiState {
+                it.copy(selectedItem = drawerItem)
+            }
         }
     }
 

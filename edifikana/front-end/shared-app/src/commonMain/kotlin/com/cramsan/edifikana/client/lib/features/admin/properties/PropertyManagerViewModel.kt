@@ -20,10 +20,10 @@ class PropertyManagerViewModel(
      * Load the page.
      */
     fun loadPage() {
-        updateUiState {
-            it.copy(isLoading = true)
-        }
         viewModelScope.launch {
+            updateUiState {
+                it.copy(isLoading = true)
+            }
             val properties = propertyManager.getPropertyList(
                 showAll = true,
             ).getOrElse {

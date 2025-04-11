@@ -270,7 +270,7 @@ class SignUpViewModelTest : TestBase() {
         val email = "valid@email.com"
         val phoneNumber = "5051113234"
         val password = "p@ssWord123"
-        val expectedErrorMessage = listOf("Oops! Something went wrong. Please try again.")
+        val expectedErrorMessage = listOf("There was an unexpected error.")
 
         coEvery { authManager.signUp(email, phoneNumber, password, firstName, lastName) } returns Result.failure(
             Exception("Sign in failed")

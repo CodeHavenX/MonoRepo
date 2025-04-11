@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.core.controller
 
+import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
 import com.cramsan.edifikana.server.core.controller.auth.ClientContext
 import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
 import com.cramsan.framework.core.ktor.HttpResponse
@@ -43,17 +44,81 @@ suspend inline fun ApplicationCall.handleCall(
                 is ByteArray -> {
                     respondBytes(body)
                 }
+
                 else -> {
                     respondNullable(functionResponse.body)
                 }
             }
         }
     } else {
-        logE(tag, "Unexpected failure when handing request", result.exceptionOrNull())
+        validateClientError(tag, result)
+    }
+}
+
+/**
+ * Validate the client error. This function will log the error and respond to the client with the result.
+ * TODO: We need to have this function be an inline function due to a weird java.lang.NoSuchMethodError when being
+ * invoked. I dont know the source of this issue, but making this function inline fixes it for now.
+ * @param result The result of the function call.
+ */
+suspend inline fun ApplicationCall.validateClientError(
+    tag: String,
+    result: Result<HttpResponse>,
+) {
+    // Handle the error based on our created exceptions.
+    val originalException = result.exceptionOrNull()
+    val exception = originalException as? ClientRequestExceptions
+    if (exception == null) {
+        // If the exception is not a ClientRequestException, we need to log it and return a 500 error.
+        logE(tag, "Unexpected failure when handing request", exception)
         respond(
             HttpStatusCode.InternalServerError,
-            result.exceptionOrNull()?.localizedMessage.orEmpty(),
+            originalException?.localizedMessage.orEmpty(),
         )
+        return
+    }
+    // Log the error
+    logE(tag, "Client Request Exception:", exception)
+    when (exception) {
+        is ClientRequestExceptions.ConflictException -> {
+            respond(
+                HttpStatusCode.Conflict,
+                exception.localizedMessage.orEmpty(),
+            )
+            return
+        }
+
+        is ClientRequestExceptions.ForbiddenException -> {
+            respond(
+                HttpStatusCode.Forbidden,
+                exception.localizedMessage.orEmpty(),
+            )
+            return
+        }
+
+        is ClientRequestExceptions.InvalidRequestException -> {
+            respond(
+                HttpStatusCode.BadRequest,
+                exception.localizedMessage.orEmpty(),
+            )
+            return
+        }
+
+        is ClientRequestExceptions.NotFoundException -> {
+            respond(
+                HttpStatusCode.NotFound,
+                exception.localizedMessage.orEmpty(),
+            )
+            return
+        }
+
+        is ClientRequestExceptions.UnauthorizedException -> {
+            respond(
+                HttpStatusCode.Unauthorized,
+                exception.localizedMessage.orEmpty(),
+            )
+            return
+        }
     }
 }
 
@@ -63,6 +128,8 @@ suspend inline fun ApplicationCall.handleCall(
  *
  * TODO: We need to have this function be an inline function due to a weird java.lang.NoSuchMethodError when being
  * invoked. I dont know the source of this issue, but making this function inline fixes it for now.
+ * @param clientContext The client context to get the authenticated client context from.
+ * @return The authenticated client context.
  */
 @Suppress("UseCheckOrError")
 inline fun getAuthenticatedClientContext(clientContext: ClientContext): ClientContext.AuthenticatedClientContext {
@@ -70,6 +137,7 @@ inline fun getAuthenticatedClientContext(clientContext: ClientContext): ClientCo
         is ClientContext.AuthenticatedClientContext -> {
             return clientContext
         }
+
         is ClientContext.UnauthenticatedClientContext -> {
             throw IllegalStateException("Client is not authenticated")
         }

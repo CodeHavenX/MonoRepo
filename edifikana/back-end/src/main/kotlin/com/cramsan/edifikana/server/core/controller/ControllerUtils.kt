@@ -1,6 +1,5 @@
 package com.cramsan.edifikana.server.core.controller
 
-import co.touchlab.kermit.Logger.Companion.tag
 import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
 import com.cramsan.edifikana.server.core.controller.auth.ClientContext
 import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
@@ -52,7 +51,7 @@ suspend inline fun ApplicationCall.handleCall(
             }
         }
     } else {
-        validateClientError(result)
+        validateClientError(tag, result)
     }
 }
 
@@ -63,6 +62,7 @@ suspend inline fun ApplicationCall.handleCall(
  * @param result The result of the function call.
  */
 suspend inline fun ApplicationCall.validateClientError(
+    tag: String,
     result: Result<HttpResponse>,
 ) {
     // Handle the error based on our created exceptions.

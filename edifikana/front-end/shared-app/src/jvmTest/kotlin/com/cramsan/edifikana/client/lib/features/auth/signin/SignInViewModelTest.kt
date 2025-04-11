@@ -5,6 +5,7 @@ import com.cramsan.edifikana.client.lib.features.ActivityRouteDestination
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
 import com.cramsan.edifikana.client.lib.features.auth.AuthRouteDestination
 import com.cramsan.edifikana.client.lib.managers.AuthManager
+import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.SharedFlowApplicationReceiver
 import com.cramsan.framework.core.compose.ViewModelDependencies
@@ -14,7 +15,6 @@ import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.test.TestBase
 import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
-import io.github.jan.supabase.auth.exception.AuthRestException
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -148,13 +148,13 @@ class SignInViewModelTest : TestBase() {
         // Arrange
         val username = "wrongUser@email.com"
         val password = "ValidPassword123"
-        val errorMessage = "Username and/or password didn't match our records."
+        val errorMessage = "Invalid login credentials. Please check your username and password and try again."
         coEvery {
             authManager.signIn(
                 username,
                 password,
             )
-        } returns Result.failure(mockk<AuthRestException>())
+        } returns Result.failure(mockk<ClientRequestExceptions.UnauthorizedException>())
 
         viewModel.onUsernameValueChange(username)
         viewModel.onPasswordValueChange(password)

@@ -92,7 +92,9 @@ class HomeViewModel(
      * Set the selected tab.
      */
     fun selectTab(selectedTab: Tabs) {
-        updateUiState { it.copy(selectedTab = selectedTab) }
+        viewModelScope.launch {
+            updateUiState { it.copy(selectedTab = selectedTab) }
+        }
     }
 
     /**

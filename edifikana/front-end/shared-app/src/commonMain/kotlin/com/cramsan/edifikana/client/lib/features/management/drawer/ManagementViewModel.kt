@@ -37,6 +37,9 @@ class ManagementViewModel(
         viewModelScope.launch {
             emitEvent(ManagementEvent.CloseDrawer)
         }
+        viewModelScope.launch {
+            emitEvent(ManagementEvent.CloseDrawer)
+        }
     }
 
     /**

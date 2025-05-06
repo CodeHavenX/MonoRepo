@@ -8,6 +8,7 @@ import com.cramsan.edifikana.lib.annotations.NetworkModel
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.edifikana.lib.model.StaffStatus
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.model.network.CreateEventLogEntryNetworkRequest
@@ -97,6 +98,8 @@ fun StaffNetworkResponse.toStaffModel(): StaffModel {
         lastName = lastName,
         role = role,
         idType = idType,
+        email = "email",
+        status = StaffStatus.PENDING,
     )
 }
 
@@ -139,6 +142,9 @@ fun UserNetworkResponse.toUserModel(): UserModel {
     return UserModel(
         id = UserId(id),
         email = email,
+        phoneNumber = phoneNumber,
+        firstName = firstName,
+        lastName = lastName,
         hasGlobalPerms = hasGlobalPerms,
         isVerified = isVerified,
     )

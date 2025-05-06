@@ -1,16 +1,21 @@
 package com.cramsan.edifikana.client.lib.features.admin.addprimarystaff
 
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.utils.loginvalidation.validateEmail
+import edifikana_lib.Res
+import edifikana_lib.text_there_was_an_error_processing_request
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.getString
 
 /**
  * ViewModel for the AddPrimaryStaff screen.
  **/
 class AddPrimaryStaffViewModel(
     dependencies: ViewModelDependencies,
+    private val staffManager: StaffManager,
 ) : BaseViewModel<AddPrimaryStaffEvent, AddPrimaryStaffUIState>(
     dependencies,
     AddPrimaryStaffUIState.Initial,
@@ -39,8 +44,26 @@ class AddPrimaryStaffViewModel(
                         errorMessage = errorMessages.first()
                     )
                 }
+                return@launch
+            }
+            updateUiState { it.copy(isLoading = true, errorMessage = null) }
+
+            val result = staffManager.inviteStaff(email)
+
+            if (result.isFailure) {
+                val errorMessage = getString(Res.string.text_there_was_an_error_processing_request)
+                updateUiState {
+                    it.copy(
+                        isLoading = false,
+                        errorMessage = errorMessage,
+                    )
+                }
             } else {
-                updateUiState { it.copy(isLoading = true, errorMessage = null) }
+                emitApplicationEvent(
+                    EdifikanaApplicationEvent.ShowSnackbar(
+                        "Email was sent to $email to join this organization."
+                    )
+                )
                 emitApplicationEvent(EdifikanaApplicationEvent.NavigateBack)
             }
         }

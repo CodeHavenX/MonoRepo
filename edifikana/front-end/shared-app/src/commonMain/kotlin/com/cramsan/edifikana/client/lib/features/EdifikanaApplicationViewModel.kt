@@ -18,7 +18,7 @@ class EdifikanaApplicationViewModel(
     private val initHandler: Initializer,
     dependencies: ViewModelDependencies,
     private val applicationEventEmitter: ApplicationEventEmitter,
-) : BaseViewModel<EdifikanaApplicationEvent, EdifikanaApplicationUIState>(
+) : BaseViewModel<EdifikanaApplicationViewModelEvent, EdifikanaApplicationUIState>(
     dependencies,
     EdifikanaApplicationUIState,
     TAG
@@ -41,7 +41,11 @@ class EdifikanaApplicationViewModel(
         viewModelScope.launch {
             applicationEventEmitter.events.collect { event ->
                 logI(TAG, "Application event received: $event")
-                emitEvent(event as EdifikanaApplicationEvent)
+                emitEvent(
+                    EdifikanaApplicationViewModelEvent.EdifikanaApplicationEventWrapper(
+                        event as EdifikanaApplicationEvent
+                    )
+                )
             }
         }
     }

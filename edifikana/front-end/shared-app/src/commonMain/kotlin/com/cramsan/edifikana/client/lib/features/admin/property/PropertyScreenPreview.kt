@@ -18,10 +18,13 @@ private fun PropertyScreenPreview() = AppTheme {
             managers = listOf("Manager 1", "Manager 2"),
             addManagerError = false,
             addManagerEmail = "",
+            suggestions = listOf()
         ),
         onBackSelected = {},
         onNewManagerSelected = { _ -> },
         onRemoveManagerSelected = { _ -> },
-        onSaveChangesSelected = { _, _ -> }
+        onSaveChangesSelected = { _, _ -> },
+        onSuggestionSelected = { },
+        onNewSuggestionsRequested = { _ -> },
     )
 }

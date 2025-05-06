@@ -14,4 +14,9 @@ sealed class ManagementEvent : ViewModelEvent {
      * Trigger closing or opening the navigation drawer.
      */
     data object ToggleDrawer : ManagementEvent()
+
+    /**
+     * Trigger closing the navigation drawer.
+     */
+    data object CloseDrawer : ManagementEvent()
 }

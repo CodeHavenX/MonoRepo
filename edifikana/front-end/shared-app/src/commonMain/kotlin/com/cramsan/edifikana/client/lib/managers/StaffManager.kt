@@ -39,6 +39,14 @@ class StaffManager(
         staffService.createStaff(staff).getOrThrow()
     }
 
+    /**
+     * Invite a staff.
+     */
+    suspend fun inviteStaff(email: String) = dependencies.getOrCatch(TAG) {
+        logI(TAG, "inviteStaff")
+        staffService.inviteStaff(email).getOrThrow()
+    }
+
     companion object {
         private const val TAG = "StaffManager"
     }

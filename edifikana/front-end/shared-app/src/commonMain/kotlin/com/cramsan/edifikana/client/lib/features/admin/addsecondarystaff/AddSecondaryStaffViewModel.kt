@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.client.lib.features.admin.addstaffsecondary
+package com.cramsan.edifikana.client.lib.features.admin.addsecondarystaff
 
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
 import com.cramsan.edifikana.client.lib.managers.PropertyManager

@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.client.lib.features.admin.addstaffsecondary
+package com.cramsan.edifikana.client.lib.features.admin.addsecondarystaff
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

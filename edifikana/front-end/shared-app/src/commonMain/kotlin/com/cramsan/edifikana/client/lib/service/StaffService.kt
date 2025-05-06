@@ -22,4 +22,9 @@ interface StaffService {
      * Create a new staff.
      */
     suspend fun createStaff(staff: StaffModel.CreateStaffRequest): Result<StaffModel>
+
+    /**
+     * Invite a staff member.
+     */
+    suspend fun inviteStaff(email: String): Result<Unit>
 }

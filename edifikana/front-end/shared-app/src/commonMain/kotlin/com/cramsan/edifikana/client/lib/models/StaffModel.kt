@@ -4,6 +4,7 @@ import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.StaffRole
+import com.cramsan.edifikana.lib.model.StaffStatus
 
 /**
  * Model for a staff.
@@ -15,6 +16,8 @@ data class StaffModel(
     val name: String, // TODO: Rename to first name
     val lastName: String,
     val role: StaffRole,
+    val email: String?,
+    val status: StaffStatus,
 ) {
 
     /**

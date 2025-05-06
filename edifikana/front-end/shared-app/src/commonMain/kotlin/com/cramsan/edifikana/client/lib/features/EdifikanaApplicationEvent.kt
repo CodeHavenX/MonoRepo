@@ -1,13 +1,13 @@
 package com.cramsan.edifikana.client.lib.features
 
 import com.cramsan.framework.core.CoreUri
-import com.cramsan.framework.core.compose.ApplicationViewModelEvent
+import com.cramsan.framework.core.compose.ApplicationEvent
 
 /**
  * Events that can be triggered in the whole application. These events are intended to be
  * triggered by a feature screen, and it will be handled by the application.
  */
-sealed class EdifikanaApplicationEvent : ApplicationViewModelEvent {
+sealed class EdifikanaApplicationEvent : ApplicationEvent {
 
     /**
      * Open the camera.

@@ -1,6 +1,6 @@
 package com.codehavenx.alpaca.frontend.appcore.features.clients.addclient
 
-import com.codehavenx.alpaca.frontend.appcore.features.application.ApplicationEvent
+import com.codehavenx.alpaca.frontend.appcore.features.application.AlpacaApplicationEvent
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import kotlinx.coroutines.delay
@@ -24,7 +24,7 @@ class AddClientViewModel(
     fun saveClient() {
         viewModelScope.launch {
             delay(2000)
-            emitApplicationEvent(ApplicationEvent.NavigateBack)
+            emitApplicationEvent(AlpacaApplicationEvent.NavigateBack)
         }
     }
 

@@ -1,6 +1,8 @@
 package com.cramsan.edifikana.client.lib.features.admin.staff
 
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.managers.StaffManager
+import com.cramsan.edifikana.client.lib.models.fullName
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
@@ -11,6 +13,7 @@ import kotlinx.coroutines.launch
  **/
 class StaffViewModel(
     dependencies: ViewModelDependencies,
+    private val staffManager: StaffManager,
 ) : BaseViewModel<StaffEvent, StaffUIState>(
     dependencies,
     StaffUIState.Initial,
@@ -22,10 +25,26 @@ class StaffViewModel(
      */
     fun loadStaff(staffId: StaffId) {
         viewModelScope.launch {
+            val staffResult = staffManager.getStaff(staffId)
+
+            if (staffResult.isFailure) {
+                updateUiState {
+                    it.copy(
+                        title = "",
+                        isLoading = false,
+                    )
+                }
+                return@launch
+            }
+            val staff = staffResult.getOrThrow()
             updateUiState {
                 it.copy(
-                    title = staffId.staffId,
+                    title = staff.fullName(),
                     isLoading = false,
+                    idType = staff.idType,
+                    firstName = staff.name,
+                    lastName = staff.lastName,
+                    role = staff.role,
                 )
             }
         }

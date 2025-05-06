@@ -25,6 +25,5 @@ private fun StaffListScreenPreview() = AppTheme {
         ),
         onStaffClick = {},
         onCloseSelected = {},
-        onAddStaffSelected = {},
     )
 }

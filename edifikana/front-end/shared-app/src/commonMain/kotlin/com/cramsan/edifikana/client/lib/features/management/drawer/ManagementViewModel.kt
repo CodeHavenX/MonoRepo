@@ -34,6 +34,9 @@ class ManagementViewModel(
                 it.copy(selectedItem = drawerItem)
             }
         }
+        viewModelScope.launch {
+            emitEvent(ManagementEvent.CloseDrawer)
+        }
     }
 
     /**

@@ -2,12 +2,15 @@ package com.cramsan.edifikana.client.lib.features.admin.property
 
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
+import com.cramsan.edifikana.client.lib.managers.StaffManager
+import com.cramsan.edifikana.client.lib.models.StaffModel
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.utils.loginvalidation.validateEmail
 import edifikana_lib.Res
 import edifikana_lib.error_message_unexpected_error
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 
@@ -16,10 +19,13 @@ import org.jetbrains.compose.resources.getString
  **/
 class PropertyViewModel(
     private val propertyManager: PropertyManager,
+    private val staffManager: StaffManager,
     dependencies: ViewModelDependencies,
 ) : BaseViewModel<PropertyEvent, PropertyUIState>(dependencies, PropertyUIState.Empty, TAG) {
 
     private var propertyId: PropertyId? = null
+    private var cachedStaff: List<StaffModel> = emptyList()
+    private var suggestionQueryJob: Job? = null
 
     /**
      * Navigate back to the previous screen.
@@ -61,9 +67,11 @@ class PropertyViewModel(
             updateUiState {
                 PropertyUIState.Empty.copy(
                     propertyName = property.name,
-                    address = property.address
+                    address = property.address,
+                    managers = listOf(),
                 )
             }
+            cachedStaff = staffManager.getStaffList().getOrThrow()
         }
     }
 
@@ -100,6 +108,41 @@ class PropertyViewModel(
             updateUiState {
                 it.copy(
                     managers = it.managers - email
+                )
+            }
+        }
+    }
+
+    /**
+     * Select a suggestion.
+     */
+    fun selectSuggestion(staffSuggestion: String) {
+        addManager(staffSuggestion)
+    }
+
+    /**
+     * Request new suggestions based on the query.
+     */
+    @Suppress("MagicNumber")
+    fun requestNewSuggestions(query: String) {
+        if (query.length < 3) {
+            updateUiState {
+                it.copy(
+                    suggestions = emptyList(),
+                )
+            }
+            return
+        }
+        suggestionQueryJob?.cancel()
+        suggestionQueryJob = null
+        suggestionQueryJob = viewModelScope.launch {
+            val suggestions = cachedStaff
+                .filter { it.email?.contains(query) == true }
+                .mapNotNull { it.email }
+            updateUiState {
+                it.copy(
+                    suggestions = suggestions,
+                    addManagerEmail = query,
                 )
             }
         }

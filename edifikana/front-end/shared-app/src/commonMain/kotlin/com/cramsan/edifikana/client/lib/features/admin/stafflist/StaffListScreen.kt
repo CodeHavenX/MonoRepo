@@ -1,8 +1,11 @@
 package com.cramsan.edifikana.client.lib.features.admin.stafflist
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,9 +18,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.edifikana.lib.model.StaffStatus
 import com.cramsan.ui.components.ListCell
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
+import com.cramsan.ui.theme.Padding
 import edifikana_lib.Res
 import edifikana_lib.text_add
 import kotlinx.coroutines.launch
@@ -96,13 +101,42 @@ internal fun StaffListContent(
             maxWith = Dp.Unspecified,
             sectionContent = { sectionModifier ->
                 content.staffList.forEach { staff ->
+                    val isStaffPending = staff.status == StaffStatus.PENDING
+                    val textColor = if (isStaffPending) {
+                        MaterialTheme.colorScheme.secondary
+                    } else {
+                        MaterialTheme.colorScheme.onSurface
+                    }
                     ListCell(
                         modifier = sectionModifier,
                         onSelection = {
-                            onStaffSelected(StaffId(staff))
+                            onStaffSelected(staff.id)
                         },
+                        endSlot = {
+                            if (isStaffPending) {
+                                Text(
+                                    text = "Invitation sent",
+                                    color = textColor,
+                                )
+                            }
+                        }
                     ) {
-                        Text(text = staff)
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(Padding.SMALL),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = staff.name,
+                                color = textColor,
+                            )
+                            staff.email?.let {
+                                Text(
+                                    it,
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = textColor,
+                                )
+                            }
+                        }
                     }
                 }
             },

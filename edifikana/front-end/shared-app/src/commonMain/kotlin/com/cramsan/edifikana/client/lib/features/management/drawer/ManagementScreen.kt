@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -60,6 +61,11 @@ fun ManagementScreen(
                         }
                     }
                 }
+                ManagementEvent.CloseDrawer -> {
+                    if (!drawerState.isAnimationRunning) {
+                        drawerState.close()
+                    }
+                }
             }
         }
     }
@@ -100,6 +106,7 @@ internal fun ManagementContent(
         drawerContent = {
             ModalDrawerSheet {
                 Column(
+                    verticalArrangement = Arrangement.spacedBy(Padding.SMALL),
                     modifier = Modifier.padding(horizontal = Padding.MEDIUM)
                 ) {
                     content.drawerItems.forEach { item ->
@@ -124,6 +131,7 @@ internal fun ManagementContent(
                     HubScreen()
                 }
                 SelectableDrawerItem.ResidentMode -> Unit
+                null -> Unit
             }
         }
     }
@@ -132,7 +140,7 @@ internal fun ManagementContent(
 @Composable
 private fun DrawerItem(
     item: DrawerItem,
-    selectedItem: SelectableDrawerItem,
+    selectedItem: SelectableDrawerItem?,
     modifier: Modifier = Modifier,
     onClick: (SelectableDrawerItem) -> Unit = {},
 ) {

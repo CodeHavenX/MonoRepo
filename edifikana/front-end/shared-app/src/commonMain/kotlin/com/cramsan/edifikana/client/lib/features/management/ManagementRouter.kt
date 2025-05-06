@@ -5,7 +5,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.cramsan.edifikana.client.lib.features.admin.addprimarystaff.AddPrimaryStaffScreen
 import com.cramsan.edifikana.client.lib.features.admin.addproperty.AddPropertyScreen
-import com.cramsan.edifikana.client.lib.features.admin.addstaffsecondary.AddSecondaryStaffScreen
+import com.cramsan.edifikana.client.lib.features.admin.addsecondarystaff.AddSecondaryStaffScreen
 import com.cramsan.edifikana.client.lib.features.admin.properties.PropertyManagerScreen
 import com.cramsan.edifikana.client.lib.features.admin.property.PropertyScreen
 import com.cramsan.edifikana.client.lib.features.admin.staff.StaffScreen

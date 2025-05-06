@@ -53,14 +53,18 @@ private fun ApplicationContent(
 
     scope.launch {
         viewModel.events.collect { event ->
-            handleApplicationEvent(
-                eventHandler = eventHandler,
-                navController = navController,
-                scope = scope,
-                snackbarHostState = snackbarHostState,
-                viewModel = viewModel,
-                applicationEvent = event,
-            )
+            when (event) {
+                is EdifikanaApplicationViewModelEvent.EdifikanaApplicationEventWrapper -> {
+                    handleApplicationEvent(
+                        eventHandler = eventHandler,
+                        navController = navController,
+                        scope = scope,
+                        snackbarHostState = snackbarHostState,
+                        viewModel = viewModel,
+                        applicationEvent = event.event,
+                    )
+                }
+            }
         }
     }
 

@@ -74,6 +74,9 @@ class DummyAuthService : AuthService {
         private val USER_1 = UserModel(
             UserId("user_id_1"),
             "user_1@test.com",
+            "1234567890",
+            "User",
+            "One",
             true,
             isVerified = false,
         )

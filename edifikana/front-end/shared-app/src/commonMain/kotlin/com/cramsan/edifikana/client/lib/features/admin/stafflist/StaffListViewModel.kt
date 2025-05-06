@@ -3,6 +3,7 @@ package com.cramsan.edifikana.client.lib.features.admin.stafflist
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
 import com.cramsan.edifikana.client.lib.features.management.ManagementDestination
 import com.cramsan.edifikana.client.lib.managers.StaffManager
+import com.cramsan.edifikana.client.lib.models.StaffModel
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
@@ -32,12 +33,21 @@ class StaffListViewModel(
                 return@launch
             }
                 .getOrThrow()
-                .map { it.name }
+                .map { it.toUIModel() }
 
             updateUiState {
                 it.copy(isLoading = false, staffList = staffList)
             }
         }
+    }
+
+    private fun StaffModel.toUIModel(): StaffUIModel {
+        return StaffUIModel(
+            id = id,
+            name = name,
+            email = email,
+            status = status,
+        )
     }
 
     /**

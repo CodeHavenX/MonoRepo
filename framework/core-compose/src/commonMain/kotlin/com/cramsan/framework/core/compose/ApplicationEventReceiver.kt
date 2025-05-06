@@ -15,14 +15,14 @@ interface ApplicationEventReceiver {
      *
      * @param event The application event to be received.
      */
-    suspend fun receiveApplicationEvent(event: ApplicationViewModelEvent)
+    suspend fun receiveApplicationEvent(event: ApplicationEvent)
 }
 
 /**
  * Interface for emitting application-wide events.
  */
 interface ApplicationEventEmitter {
-    val events: Flow<ApplicationViewModelEvent>
+    val events: Flow<ApplicationEvent>
 }
 
 /**
@@ -30,11 +30,11 @@ interface ApplicationEventEmitter {
  * This is used when no action is needed for the event.
  */
 class NoopApplicationEventReceiver : ApplicationEventReceiver, ApplicationEventEmitter {
-    override suspend fun receiveApplicationEvent(event: ApplicationViewModelEvent) {
+    override suspend fun receiveApplicationEvent(event: ApplicationEvent) {
         // No operation
     }
 
-    override val events: Flow<ApplicationViewModelEvent>
+    override val events: Flow<ApplicationEvent>
         get() = flow { }
 }
 
@@ -43,11 +43,11 @@ class NoopApplicationEventReceiver : ApplicationEventReceiver, ApplicationEventE
  * This is used to indicate that the receiver should not be used.
  */
 class InvalidApplicationEventReceiver : ApplicationEventReceiver, ApplicationEventEmitter {
-    override suspend fun receiveApplicationEvent(event: ApplicationViewModelEvent) {
+    override suspend fun receiveApplicationEvent(event: ApplicationEvent) {
         error("Do not use this receiver.")
     }
 
-    override val events: Flow<ApplicationViewModelEvent>
+    override val events: Flow<ApplicationEvent>
         get() = error("Do not use this receiver.")
 }
 
@@ -56,13 +56,13 @@ class InvalidApplicationEventReceiver : ApplicationEventReceiver, ApplicationEve
  * This is used to share events between different parts of the application.
  */
 class SharedFlowApplicationReceiver(
-    private val sharedFlow: MutableSharedFlow<ApplicationViewModelEvent> = MutableSharedFlow(),
+    private val sharedFlow: MutableSharedFlow<ApplicationEvent> = MutableSharedFlow(),
 ) : ApplicationEventReceiver, ApplicationEventEmitter {
 
-    override val events: Flow<ApplicationViewModelEvent>
+    override val events: Flow<ApplicationEvent>
         get() = sharedFlow.asSharedFlow()
 
-    override suspend fun receiveApplicationEvent(event: ApplicationViewModelEvent) {
+    override suspend fun receiveApplicationEvent(event: ApplicationEvent) {
         sharedFlow.emit(event)
     }
 }

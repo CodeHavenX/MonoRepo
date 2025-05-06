@@ -1,6 +1,6 @@
 package com.codehavenx.alpaca.frontend.appcore.features.clients.listclients
 
-import com.codehavenx.alpaca.frontend.appcore.features.application.ApplicationEvent
+import com.codehavenx.alpaca.frontend.appcore.features.application.AlpacaApplicationEvent
 import com.codehavenx.alpaca.frontend.appcore.features.application.Route
 import com.codehavenx.alpaca.frontend.appcore.managers.ClientManager
 import com.codehavenx.alpaca.frontend.appcore.models.Client
@@ -47,7 +47,7 @@ class ListClientViewModel(
      */
     fun addClient() {
         viewModelScope.launch {
-            emitApplicationEvent(ApplicationEvent.Navigate(Route.addClient()))
+            emitApplicationEvent(AlpacaApplicationEvent.Navigate(Route.addClient()))
         }
     }
 
@@ -56,7 +56,7 @@ class ListClientViewModel(
      */
     fun openClientPage(clientId: String) {
         viewModelScope.launch {
-            emitApplicationEvent(ApplicationEvent.Navigate(Route.viewClient(clientId)))
+            emitApplicationEvent(AlpacaApplicationEvent.Navigate(Route.viewClient(clientId)))
         }
     }
 

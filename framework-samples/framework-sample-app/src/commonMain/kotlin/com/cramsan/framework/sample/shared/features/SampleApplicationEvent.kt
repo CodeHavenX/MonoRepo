@@ -1,12 +1,12 @@
 package com.cramsan.framework.sample.shared.features
 
-import com.cramsan.framework.core.compose.ApplicationViewModelEvent
+import com.cramsan.framework.core.compose.ApplicationEvent
 
 /**
  * Events that can be triggered in the whole application. These events are intended to be
  * triggered by a feature screen, and it will be handled by the application.
  */
-sealed class ApplicationEvent : ApplicationViewModelEvent {
+sealed class SampleApplicationEvent : ApplicationEvent {
 
     /**
      * Navigate to activity.
@@ -15,29 +15,29 @@ sealed class ApplicationEvent : ApplicationViewModelEvent {
         val destination: ActivityDestination,
         val clearTop: Boolean = false,
         val clearStack: Boolean = false,
-    ) : ApplicationEvent()
+    ) : SampleApplicationEvent()
 
     /**
      * Navigate to destination.
      */
     data class NavigateToScreen(
         val destination: Destination,
-    ) : ApplicationEvent()
+    ) : SampleApplicationEvent()
 
     /**
      * Close the activity.
      */
-    data object CloseActivity : ApplicationEvent()
+    data object CloseActivity : SampleApplicationEvent()
 
     /**
      * Show a snackbar.
      */
     data class ShowSnackbar(
         val message: String,
-    ) : ApplicationEvent()
+    ) : SampleApplicationEvent()
 
     /**
      * Navigate back.
      */
-    data object NavigateBack : ApplicationEvent()
+    data object NavigateBack : SampleApplicationEvent()
 }

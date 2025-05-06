@@ -68,14 +68,14 @@ open class BaseViewModel<E : ViewModelEvent, UI : ViewModelUIState> (
 
     protected suspend fun emitEvent(event: E) {
         assertFalse(
-            event is ApplicationViewModelEvent,
+            event is ApplicationEvent,
             tag,
             "Application events should be emitted using emitApplicationEvent()",
         )
         _events.emit(event)
     }
 
-    protected suspend fun emitApplicationEvent(event: ApplicationViewModelEvent) {
+    protected suspend fun emitApplicationEvent(event: ApplicationEvent) {
         dependencies.applicationEventReceiver.receiveApplicationEvent(event)
     }
 

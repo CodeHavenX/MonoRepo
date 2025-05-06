@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
@@ -26,10 +28,13 @@ import androidx.compose.ui.unit.dp
  */
 @Composable
 fun ColorPreviewer(
+    modifier: Modifier = Modifier,
     colorScheme: ColorScheme = MaterialTheme.colorScheme,
 ) {
-    Row {
-        Column {
+    Row(modifier) {
+        Column(
+            modifier = Modifier.verticalScroll(rememberScrollState())
+        ) {
             ColorPreview(colorScheme.primary, "primary")
             ColorPreview(colorScheme.onPrimary, "onPrimary")
             ColorPreview(colorScheme.primaryContainer, "primaryContainer")
@@ -50,7 +55,9 @@ fun ColorPreviewer(
             ColorPreview(colorScheme.surfaceVariant, "surfaceVariant")
             ColorPreview(colorScheme.onSurfaceVariant, "onSurfaceVariant")
         }
-        Column {
+        Column(
+            modifier = Modifier.verticalScroll(rememberScrollState())
+        ) {
             ColorPreview(colorScheme.surfaceTint, "surfaceTint")
             ColorPreview(colorScheme.inverseSurface, "inverseSurface")
             ColorPreview(colorScheme.inverseOnSurface, "inverseOnSurface")
@@ -78,9 +85,10 @@ fun ColorPreviewer(
  */
 @Composable
 fun ShapePreviewer(
+    modifier: Modifier = Modifier,
     shapes: Shapes = MaterialTheme.shapes,
 ) {
-    Column {
+    Column(modifier) {
         ShapePreview(shapes.extraSmall, "extraSmall")
         ShapePreview(shapes.small, "small")
         ShapePreview(shapes.medium, "medium")
@@ -95,9 +103,10 @@ fun ShapePreviewer(
  */
 @Composable
 fun TypographyPreviewer(
+    modifier: Modifier = Modifier,
     typography: Typography = MaterialTheme.typography,
 ) {
-    Column {
+    Column(modifier) {
         TypographyPreview(typography.displayLarge, "displayLarge")
         TypographyPreview(typography.displayMedium, "displayMedium")
         TypographyPreview(typography.displaySmall, "displaySmall")

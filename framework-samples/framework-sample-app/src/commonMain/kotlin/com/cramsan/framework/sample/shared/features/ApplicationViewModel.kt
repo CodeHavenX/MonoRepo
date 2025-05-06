@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 class ApplicationViewModel(
     private val initHandler: Initializer,
     dependencies: ViewModelDependencies,
-) : BaseViewModel<ApplicationEvent, ApplicationUIState>(
+) : BaseViewModel<SampleApplicationViewModelEvent, ApplicationUIState>(
     dependencies,
     ApplicationUIState,
     TAG
@@ -27,7 +27,7 @@ class ApplicationViewModel(
      * Execute application-wide events. The implementation that handles the events is up to the
      * consumer of the view model's events.
      */
-    fun executeEvent(event: ApplicationEvent) = viewModelScope.launch {
+    fun executeEvent(event: SampleApplicationViewModelEvent) = viewModelScope.launch {
         emitEvent(event)
     }
 

@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 class ApplicationViewModel(
     private val authenticationManager: AuthenticationManager,
     dependencies: ViewModelDependencies,
-) : BaseViewModel<ApplicationEvent, ApplicationUIModelUI>(
+) : BaseViewModel<AlpacaApplicationViewModelEvent, ApplicationUIModelUI>(
     dependencies,
     ApplicationUIModelUI.Initial,
     TAG,
@@ -34,7 +34,7 @@ class ApplicationViewModel(
     /**
      * Execute the given [ApplicationEvent].
      */
-    fun executeApplicationEvent(event: ApplicationEvent) = viewModelScope.launch {
+    fun executeApplicationEvent(event: AlpacaApplicationViewModelEvent) = viewModelScope.launch {
         logI(TAG, "Executing application event: $event")
         emitEvent(event)
     }

@@ -5,7 +5,7 @@ import com.cramsan.edifikana.client.lib.features.account.account.AccountViewMode
 import com.cramsan.edifikana.client.lib.features.account.notifications.NotificationsViewModel
 import com.cramsan.edifikana.client.lib.features.admin.addprimarystaff.AddPrimaryStaffViewModel
 import com.cramsan.edifikana.client.lib.features.admin.addproperty.AddPropertyViewModel
-import com.cramsan.edifikana.client.lib.features.admin.addstaffsecondary.AddSecondaryStaffViewModel
+import com.cramsan.edifikana.client.lib.features.admin.addsecondarystaff.AddSecondaryStaffViewModel
 import com.cramsan.edifikana.client.lib.features.admin.hub.HubViewModel
 import com.cramsan.edifikana.client.lib.features.admin.properties.PropertyManagerViewModel
 import com.cramsan.edifikana.client.lib.features.admin.property.PropertyViewModel

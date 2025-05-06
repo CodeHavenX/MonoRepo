@@ -50,4 +50,8 @@ class StaffServiceImpl(
         val staffModel = response.toStaffModel()
         staffModel
     }
+
+    override suspend fun inviteStaff(email: String): Result<Unit> {
+        TODO("Not yet implemented")
+    }
 }

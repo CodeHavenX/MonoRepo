@@ -1,5 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.admin.stafflist
 
+import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.edifikana.lib.model.StaffStatus
 import com.cramsan.framework.core.compose.ViewModelUIState
 
 /**
@@ -10,9 +12,21 @@ import com.cramsan.framework.core.compose.ViewModelUIState
  */
 data class StaffListUIState(
     val isLoading: Boolean,
-    val staffList: List<String>,
+    val staffList: List<StaffUIModel>,
 ) : ViewModelUIState {
     companion object {
         val Initial = StaffListUIState(true, emptyList())
     }
 }
+
+/**
+ * UI model for a staff member.
+ *
+ * This class models the data that is displayed in the staff list.
+ */
+data class StaffUIModel(
+    val id: StaffId,
+    val name: String,
+    val email: String?,
+    val status: StaffStatus,
+)

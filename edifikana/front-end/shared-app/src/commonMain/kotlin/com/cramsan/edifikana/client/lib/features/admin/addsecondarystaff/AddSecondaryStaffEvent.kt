@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.client.lib.features.admin.addstaffsecondary
+package com.cramsan.edifikana.client.lib.features.admin.addsecondarystaff
 
 import com.cramsan.framework.core.compose.ViewModelEvent
 

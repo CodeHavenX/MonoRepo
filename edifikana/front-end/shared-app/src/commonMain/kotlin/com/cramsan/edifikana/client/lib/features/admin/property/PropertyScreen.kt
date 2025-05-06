@@ -13,12 +13,18 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -81,6 +87,12 @@ fun PropertyScreen(
         },
         onSaveChangesSelected = { name, address ->
             viewModel.saveChanges(name, address)
+        },
+        onSuggestionSelected = {
+            viewModel.selectSuggestion(it)
+        },
+        onNewSuggestionsRequested = {
+            viewModel.requestNewSuggestions(it)
         }
     )
 }
@@ -88,6 +100,7 @@ fun PropertyScreen(
 /**
  * Content of the AccountEdit screen.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun PropertyContent(
     content: PropertyUIState,
@@ -96,10 +109,12 @@ internal fun PropertyContent(
     onNewManagerSelected: (email: String) -> Unit,
     onRemoveManagerSelected: (email: String) -> Unit,
     onSaveChangesSelected: (name: String, address: String) -> Unit,
+    onSuggestionSelected: (suggestion: String) -> Unit,
+    onNewSuggestionsRequested: (String) -> Unit,
 ) {
     var propertyName by remember(content) { mutableStateOf(content.propertyName.orEmpty()) }
     var address by remember(content) { mutableStateOf(content.address.orEmpty()) }
-    var newManager by remember(content.addManagerEmail) { mutableStateOf(content.addManagerEmail) }
+    var newManager by remember(content) { mutableStateOf(content.addManagerEmail) }
 
     Scaffold(
         modifier = modifier,
@@ -142,33 +157,71 @@ internal fun PropertyContent(
                         }
                     }
 
-                    OutlinedTextField(
-                        value = newManager,
-                        onValueChange = { newManager = it },
-                        label = { Text("New manager's email") },
-                        modifier = sectionModifier,
-                        singleLine = true,
-                        isError = content.addManagerError,
-                        trailingIcon = {
-                            Icon(
-                                Icons.Filled.Add,
-                                contentDescription = "Add",
-                                modifier = Modifier
-                                    .clip(CircleShape)
-                                    .clickable {
-                                        onNewManagerSelected(newManager)
-                                    }
-                            )
-                        },
-                        keyboardOptions = KeyboardOptions.Default.copy(
-                            imeAction = ImeAction.Done
-                        ),
-                        keyboardActions = KeyboardActions(
-                            onDone = {
-                                onNewManagerSelected(newManager)
+                    var expanded by remember { mutableStateOf(false) }
+                    ExposedDropdownMenuBox(
+                        expanded = expanded,
+                        onExpandedChange = { expanded = it },
+                    ) {
+                        LaunchedEffect(content.suggestions) {
+                            if (content.suggestions.isNotEmpty()) {
+                                expanded = true
                             }
+                        }
+
+                        /**
+                         * There is a bug in the Material dropdown menu that will cause focus to be stuck when the
+                         * dropdown is opened.
+                         * https://github.com/JetBrains/compose-multiplatform/issues/4782
+                         * https://issuetracker.google.com/issues/369748464
+                         */
+
+                        OutlinedTextField(
+                            value = newManager,
+                            onValueChange = {
+                                newManager = it
+                                onNewSuggestionsRequested(it)
+                            },
+                            label = { Text("New manager's email") },
+                            modifier = sectionModifier
+                                .menuAnchor(MenuAnchorType.PrimaryEditable, enabled = false),
+                            singleLine = true,
+                            isError = content.addManagerError,
+                            trailingIcon = {
+                                Icon(
+                                    Icons.Filled.Add,
+                                    contentDescription = "Add",
+                                    modifier = Modifier
+                                        .clip(CircleShape)
+                                        .clickable {
+                                            onNewManagerSelected(newManager)
+                                        }
+                                )
+                            },
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                imeAction = ImeAction.Done
+                            ),
+                            keyboardActions = KeyboardActions(
+                                onDone = {
+                                    onNewManagerSelected(newManager)
+                                }
+                            )
                         )
-                    )
+                        ExposedDropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false },
+                        ) {
+                            content.suggestions.forEach { s ->
+                                DropdownMenuItem(
+                                    text = { Text(s) },
+                                    onClick = {
+                                        expanded = false
+                                        onSuggestionSelected(s)
+                                    },
+                                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                                )
+                            }
+                        }
+                    }
                 },
                 buttonContent = { buttonModifier ->
                     Button(

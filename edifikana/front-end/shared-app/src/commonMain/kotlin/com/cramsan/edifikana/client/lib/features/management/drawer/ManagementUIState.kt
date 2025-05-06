@@ -10,7 +10,7 @@ import com.cramsan.framework.core.compose.ViewModelUIState
  */
 data class ManagementUIState(
     val title: String?,
-    val selectedItem: SelectableDrawerItem = SelectableDrawerItem.Property,
+    val selectedItem: SelectableDrawerItem? = SelectableDrawerItem.Property,
     val drawerItems: List<DrawerItem> = emptyList(),
 ) : ViewModelUIState {
     companion object {

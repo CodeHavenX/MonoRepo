@@ -8,7 +8,7 @@ sealed class TestableEvent : ViewModelEvent {
     data class EmitNumber(val number: Int) : TestableEvent()
 }
 
-sealed class TestableApplicationEvent : ApplicationViewModelEvent {
+sealed class TestableApplicationEvent : ApplicationEvent {
     /**
      * Emit a number.
      */

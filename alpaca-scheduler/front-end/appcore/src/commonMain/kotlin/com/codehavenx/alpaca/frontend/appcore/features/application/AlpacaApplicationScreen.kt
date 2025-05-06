@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -63,32 +64,11 @@ fun AlpacaApplicationScreen(
     scope.launch {
         viewModel.events.collect { applicationEvent ->
             when (applicationEvent) {
-                is ApplicationEvent.Navigate -> {
-                    navController.navigate(applicationEvent.route) {
-                        launchSingleTop = true
-                    }
-                }
-                is ApplicationEvent.NavigateBack -> {
-                    navController.popBackStack()
-                }
-                is ApplicationEvent.NavigateFromRootPage -> {
-                    navController.navigate(applicationEvent.route) {
-                        // Pop up to the start destination of the graph to
-                        // avoid building up a large stack of destinations
-                        // on the back stack as users select items
-                        popUpTo(navController.graph.findStartDestination().route!!) {
-                            saveState = true
-                        }
-                        // Avoid multiple copies of the same destination when
-                        // reselecting the same item
-                        launchSingleTop = true
-                        // Restore state when reselecting a previously selected item
-                        restoreState = true
-                    }
-                }
-                is ApplicationEvent.SignInStatusChange -> {
-                    viewModel.setSignInStatus(applicationEvent.isSignedIn)
-                }
+                is AlpacaApplicationViewModelEvent.AlpacaApplicationEventWrapper -> handleEvent(
+                    navController,
+                    viewModel,
+                    applicationEvent.event,
+                )
             }
         }
     }
@@ -106,6 +86,41 @@ fun AlpacaApplicationScreen(
                     navBar = state.navBar,
                 )
             }
+        }
+    }
+}
+
+private fun handleEvent(
+    navController: NavController,
+    viewModel: ApplicationViewModel,
+    applicationEvent: AlpacaApplicationEvent,
+) {
+    when (val event = applicationEvent) {
+        is AlpacaApplicationEvent.Navigate -> {
+            navController.navigate(event.route) {
+                launchSingleTop = true
+            }
+        }
+        is AlpacaApplicationEvent.NavigateBack -> {
+            navController.popBackStack()
+        }
+        is AlpacaApplicationEvent.NavigateFromRootPage -> {
+            navController.navigate(event.route) {
+                // Pop up to the start destination of the graph to
+                // avoid building up a large stack of destinations
+                // on the back stack as users select items
+                popUpTo(navController.graph.findStartDestination().route!!) {
+                    saveState = true
+                }
+                // Avoid multiple copies of the same destination when
+                // reselecting the same item
+                launchSingleTop = true
+                // Restore state when reselecting a previously selected item
+                restoreState = true
+            }
+        }
+        is AlpacaApplicationEvent.SignInStatusChange -> {
+            viewModel.setSignInStatus(event.isSignedIn)
         }
     }
 }

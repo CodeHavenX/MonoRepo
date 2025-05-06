@@ -7,7 +7,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavHostController
@@ -40,12 +39,16 @@ private fun ApplicationContent(
 
     scope.launch {
         viewModel.events.collect { event ->
-            handleApplicationEvent(
-                navController = navController,
-                scope = scope,
-                snackbarHostState = snackbarHostState,
-                applicationEvent = event,
-            )
+            when (event) {
+                is SampleApplicationViewModelEvent.SampleApplicationEventWrapper -> {
+                    handleApplicationEvent(
+                        navController = navController,
+                        scope = scope,
+                        snackbarHostState = snackbarHostState,
+                        applicationEvent = event.event,
+                    )
+                }
+            }
         }
     }
 
@@ -68,10 +71,10 @@ private fun handleApplicationEvent(
     navController: NavHostController,
     scope: CoroutineScope,
     snackbarHostState: SnackbarHostState,
-    applicationEvent: ApplicationEvent,
+    applicationEvent: SampleApplicationEvent,
 ) {
     when (val event = applicationEvent) {
-        is ApplicationEvent.NavigateToActivity -> {
+        is SampleApplicationEvent.NavigateToActivity -> {
             if (event.clearStack) {
                 while (navController.currentBackStack.value.isNotEmpty()) {
                     navController.popBackStack()
@@ -81,13 +84,13 @@ private fun handleApplicationEvent(
             }
             navController.navigate(event.destination.path)
         }
-        is ApplicationEvent.NavigateToScreen -> {
+        is SampleApplicationEvent.NavigateToScreen -> {
             navController.navigate(event.destination.path)
         }
-        is ApplicationEvent.NavigateBack -> {
+        is SampleApplicationEvent.NavigateBack -> {
             navController.popBackStack()
         }
-        is ApplicationEvent.CloseActivity -> {
+        is SampleApplicationEvent.CloseActivity -> {
             val currentActivity = navController.currentBackStack.value.reversed().find {
                 ApplicationRoute.fromRoute(it.destination.route) != null
             }
@@ -95,7 +98,7 @@ private fun handleApplicationEvent(
                 navController.popBackStack(it, inclusive = true)
             }
         }
-        is ApplicationEvent.ShowSnackbar -> {
+        is SampleApplicationEvent.ShowSnackbar -> {
             scope.launch {
                 handleSnackbarEvent(
                     snackbarHostState = snackbarHostState,
@@ -112,7 +115,7 @@ private fun handleApplicationEvent(
  */
 private suspend fun handleSnackbarEvent(
     snackbarHostState: SnackbarHostState,
-    event: ApplicationEvent.ShowSnackbar,
+    event: SampleApplicationEvent.ShowSnackbar,
     onResult: (SnackbarResult) -> Unit,
 ) {
     snackbarHostState.currentSnackbarData?.dismiss()

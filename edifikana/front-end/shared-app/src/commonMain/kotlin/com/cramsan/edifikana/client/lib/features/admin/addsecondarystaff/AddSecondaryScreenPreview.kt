@@ -1,8 +1,6 @@
-package com.cramsan.edifikana.client.lib.features.admin.addsecondary
+package com.cramsan.edifikana.client.lib.features.admin.addsecondarystaff
 
 import androidx.compose.runtime.Composable
-import com.cramsan.edifikana.client.lib.features.admin.addstaffsecondary.AddSecondaryContent
-import com.cramsan.edifikana.client.lib.features.admin.addstaffsecondary.AddSecondaryStaffUIState
 import com.cramsan.edifikana.client.ui.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 

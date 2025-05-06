@@ -45,7 +45,8 @@ fun AccountScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+    LifecycleEventEffect(Lifecycle.Event.ON_START) {
+        viewModel.loadUserData()
     }
 
     val screenScope = rememberCoroutineScope()

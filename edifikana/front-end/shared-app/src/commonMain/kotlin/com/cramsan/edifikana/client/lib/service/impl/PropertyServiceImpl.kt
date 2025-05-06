@@ -68,15 +68,6 @@ class PropertyServiceImpl(
     }
 
     @OptIn(NetworkModel::class)
-    override suspend fun getAdminPropertyList(): Result<List<PropertyModel>> = runSuspendCatching(TAG) {
-        val response = http.get(Routes.Property.PATH).body<List<PropertyNetworkResponse>>()
-        val propertyList = response.map {
-            it.toPropertyModel()
-        }
-        propertyList
-    }
-
-    @OptIn(NetworkModel::class)
     override suspend fun getProperty(propertyId: PropertyId): Result<PropertyModel> = runSuspendCatching(TAG) {
         val response = http.get("${Routes.Property.PATH}/$propertyId").body<PropertyNetworkResponse>()
         response.toPropertyModel()

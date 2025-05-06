@@ -80,7 +80,6 @@ internal fun AddPropertyContent(
 ) {
     var propertyName by remember { mutableStateOf("") }
     var address by remember { mutableStateOf("") }
-    var newManager by remember { mutableStateOf("") }
 
     Scaffold(
         modifier = modifier,
@@ -111,14 +110,6 @@ internal fun AddPropertyContent(
                         value = address,
                         onValueChange = { address = it },
                         label = { Text("Address") },
-                        modifier = sectionModifier,
-                        singleLine = true,
-                    )
-
-                    OutlinedTextField(
-                        value = newManager,
-                        onValueChange = { newManager = it },
-                        label = { Text("New manager's email") },
                         modifier = sectionModifier,
                         singleLine = true,
                     )

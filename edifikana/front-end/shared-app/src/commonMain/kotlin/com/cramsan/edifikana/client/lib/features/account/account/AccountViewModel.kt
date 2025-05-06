@@ -39,6 +39,32 @@ class AccountViewModel(
         }
     }
 
+    /**
+     * Load the user data.
+     */
+    fun loadUserData() {
+        updateUiState { it.copy(isLoading = true) }
+        viewModelScope.launch {
+            val response = auth.getUser()
+            if (response.isFailure) {
+                updateUiState { it.copy(isLoading = false) }
+                return@launch
+            }
+            val user = response.getOrThrow()
+            updateUiState {
+                it.copy(
+                    isLoading = false,
+                    content = AccountUIModel(
+                        firstName = user.firstName,
+                        lastName = user.lastName,
+                        email = user.email,
+                        phoneNumber = user.phoneNumber,
+                    )
+                )
+            }
+        }
+    }
+
     companion object {
         const val TAG = "AccountViewModel"
     }

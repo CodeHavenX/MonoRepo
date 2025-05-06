@@ -103,6 +103,11 @@ internal fun AddPrimaryStaffContent(
             var textFieldValue by remember { mutableStateOf(TextFieldValue()) }
             ScreenLayout(
                 sectionContent = { sectionModifier ->
+                    Text(
+                        text = "Invite a user to be part of this organization.",
+                        modifier = sectionModifier,
+                        style = MaterialTheme.typography.labelSmall,
+                    )
                     AnimatedContent(
                         content.errorMessage,
                         modifier = modifier,
@@ -123,6 +128,7 @@ internal fun AddPrimaryStaffContent(
                         onValueChange = { textFieldValue = it },
                         label = { Text("Email") },
                         modifier = sectionModifier,
+                        singleLine = true,
                         isError = !content.errorMessage.isNullOrBlank(),
                     )
                 },

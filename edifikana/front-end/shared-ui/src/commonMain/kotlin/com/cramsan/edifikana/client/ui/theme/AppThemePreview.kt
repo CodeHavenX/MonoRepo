@@ -1,6 +1,11 @@
 package com.cramsan.edifikana.client.ui.theme
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.cramsan.framework.core.compose.ui.ColorPreviewer
 import com.cramsan.framework.core.compose.ui.ShapePreviewer
 import com.cramsan.framework.core.compose.ui.TypographyPreviewer
@@ -10,7 +15,11 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 private fun ThemeColorPreviewer() {
     AppTheme {
-        ColorPreviewer()
+        ColorPreviewer(
+            Modifier
+                .background(MaterialTheme.colorScheme.background)
+                .padding(16.dp)
+        )
     }
 }
 
@@ -18,7 +27,11 @@ private fun ThemeColorPreviewer() {
 @Composable
 private fun ThemeShapePreviewer() {
     AppTheme {
-        ShapePreviewer()
+        ShapePreviewer(
+            Modifier
+                .background(MaterialTheme.colorScheme.background)
+                .padding(16.dp)
+        )
     }
 }
 
@@ -26,6 +39,10 @@ private fun ThemeShapePreviewer() {
 @Composable
 private fun ThemeTypographyPreviewer() {
     AppTheme {
-        TypographyPreviewer()
+        TypographyPreviewer(
+            Modifier
+                .background(MaterialTheme.colorScheme.background)
+                .padding(16.dp)
+        )
     }
 }

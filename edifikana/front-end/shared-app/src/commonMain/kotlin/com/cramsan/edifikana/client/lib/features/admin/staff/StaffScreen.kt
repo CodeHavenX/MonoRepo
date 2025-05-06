@@ -3,7 +3,9 @@ package com.cramsan.edifikana.client.lib.features.admin.staff
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -86,6 +88,33 @@ internal fun StaffContent(
         ) {
             ScreenLayout(
                 sectionContent = { sectionModifier ->
+
+                    OutlinedTextField(
+                        value = content.firstName.orEmpty(),
+                        onValueChange = { },
+                        modifier = sectionModifier,
+                        label = { Text("First name") },
+                        singleLine = true,
+                        readOnly = true,
+                    )
+
+                    OutlinedTextField(
+                        value = content.lastName.orEmpty(),
+                        onValueChange = { },
+                        modifier = sectionModifier,
+                        label = { Text("Last name") },
+                        singleLine = true,
+                        readOnly = true,
+                    )
+
+                    OutlinedTextField(
+                        value = content.role?.name.orEmpty(),
+                        onValueChange = { },
+                        modifier = sectionModifier,
+                        label = { Text("Role") },
+                        singleLine = true,
+                        readOnly = true,
+                    )
                 },
                 buttonContent = { buttonModifier ->
                 }

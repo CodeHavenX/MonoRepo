@@ -1,6 +1,6 @@
 package com.codehavenx.alpaca.frontend.appcore.features.clients.updateclient
 
-import com.codehavenx.alpaca.frontend.appcore.features.application.ApplicationEvent
+import com.codehavenx.alpaca.frontend.appcore.features.application.AlpacaApplicationEvent
 import com.codehavenx.alpaca.frontend.appcore.managers.ClientManager
 import com.codehavenx.alpaca.frontend.appcore.models.Client
 import com.cramsan.framework.core.compose.BaseViewModel
@@ -28,7 +28,7 @@ class UpdateClientViewModel(
         viewModelScope.launch {
             updateUiState { it.copy(isLoading = true) }
             delay(2000)
-            emitApplicationEvent(ApplicationEvent.NavigateBack)
+            emitApplicationEvent(AlpacaApplicationEvent.NavigateBack)
         }
     }
 

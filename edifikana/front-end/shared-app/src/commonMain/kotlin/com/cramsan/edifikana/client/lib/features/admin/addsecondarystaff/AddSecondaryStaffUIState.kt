@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.client.lib.features.admin.addstaffsecondary
+package com.cramsan.edifikana.client.lib.features.admin.addsecondarystaff
 
 import com.cramsan.framework.core.compose.ViewModelUIState
 
@@ -13,6 +13,6 @@ data class AddSecondaryStaffUIState(
     val title: String?,
 ) : ViewModelUIState {
     companion object {
-        val Initial = AddSecondaryStaffUIState(true, null)
+        val Initial = AddSecondaryStaffUIState(false, null)
     }
 }

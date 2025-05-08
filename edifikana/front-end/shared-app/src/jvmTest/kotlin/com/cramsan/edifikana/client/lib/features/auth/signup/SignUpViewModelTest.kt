@@ -295,7 +295,6 @@ class SignUpViewModelTest : TestBase() {
      * Test the [SignUpViewModel.signUp] method with valid inputs but fails to sign in
      * TODO: Fix logging capabilities to be able to figure out why this test fails on CI but no on local
      */
-    @Ignore
     @Test
     fun `test signUp fails with valid inputs when trying to signIn`() = runBlockingTest {
         val firstName = "Diana"

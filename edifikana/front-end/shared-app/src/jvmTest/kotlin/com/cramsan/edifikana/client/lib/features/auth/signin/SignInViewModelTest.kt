@@ -142,7 +142,6 @@ class SignInViewModelTest : TestBase() {
      * TODO: Fix logging capabilities to be able to figure out why this test fails on CI but no on local
      *
      */
-    @Ignore
     @Test
     fun `test SignIn fails with invalid login credentials`() = runBlockingTest {
         // Arrange
@@ -178,7 +177,6 @@ class SignInViewModelTest : TestBase() {
      * TODO: Fix logging capabilities to be able to figure out why this test fails on CI but no on local
      *
      */
-    @Ignore
     @Test
     fun `test SignIn fails for unexpected reason`() = runBlockingTest {
         // Arrange

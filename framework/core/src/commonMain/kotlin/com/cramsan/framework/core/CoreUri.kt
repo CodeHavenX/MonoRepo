@@ -12,6 +12,10 @@ expect class CoreUri {
 
     override fun toString(): String
 
+    override fun equals(other: Any?): Boolean
+
+    override fun hashCode(): Int
+
     companion object {
         /**
          * Create a URI object from a string.

@@ -4,7 +4,6 @@ import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
-import kotlin.random.Random
 
 /**
  * Model for an event log record.
@@ -43,7 +42,7 @@ data class EventLogRecordModel(
             // TODO: Use a better entity Id
             return EventLogRecordModel(
                 id = null,
-                entityId = Random.nextInt().toString(),
+                entityId = "${staffPk?.staffId}_$timeRecorded",
                 staffPk = staffPk,
                 timeRecorded = timeRecorded,
                 unit = unit.trim(),

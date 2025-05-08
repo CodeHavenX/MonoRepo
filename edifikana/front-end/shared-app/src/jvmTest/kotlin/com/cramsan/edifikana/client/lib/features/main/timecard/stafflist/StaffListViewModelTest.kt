@@ -12,11 +12,14 @@ import com.cramsan.edifikana.lib.model.StaffStatus
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.SharedFlowApplicationReceiver
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.test.TestBase
+import edifikana_lib.Res
+import edifikana_lib.title_timecard_staff_list
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -33,6 +36,7 @@ class StaffListViewModelTest : TestBase() {
     private lateinit var viewModel: StaffListViewModel
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
     private lateinit var applicationEventReceiver: SharedFlowApplicationReceiver
+    private lateinit var stringProvider: StringProvider
 
     @BeforeEach
     fun setUp() {
@@ -40,13 +44,18 @@ class StaffListViewModelTest : TestBase() {
         staffManager = mockk()
         exceptionHandler = CollectorCoroutineExceptionHandler()
         applicationEventReceiver = SharedFlowApplicationReceiver()
+        stringProvider = mockk()
         val dependencies = ViewModelDependencies(
             appScope = testCoroutineScope,
             dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),
             coroutineExceptionHandler = exceptionHandler,
             applicationEventReceiver = applicationEventReceiver,
         )
-        viewModel = StaffListViewModel(staffManager, dependencies)
+        viewModel = StaffListViewModel(
+            staffManager,
+            stringProvider = stringProvider,
+            dependencies,
+        )
     }
 
     @Test
@@ -64,6 +73,7 @@ class StaffListViewModelTest : TestBase() {
             )
         )
         coEvery { staffManager.getStaffList() } returns Result.success(staffList)
+        coEvery { stringProvider.getString(Res.string.title_timecard_staff_list) } returns "Staff List"
 
         // Act
         viewModel.loadStaffs()
@@ -80,6 +90,7 @@ class StaffListViewModelTest : TestBase() {
     fun `test loadStaffs handles failure`() = runBlockingTest {
         // Arrange
         coEvery { staffManager.getStaffList() } returns Result.failure(Exception("Error"))
+        coEvery { stringProvider.getString(Res.string.title_timecard_staff_list) } returns "Staff List"
 
         // Act
         viewModel.loadStaffs()

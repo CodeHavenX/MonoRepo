@@ -11,11 +11,16 @@ import com.cramsan.edifikana.lib.model.StaffRole
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.SharedFlowApplicationReceiver
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.test.TestBase
+import edifikana_lib.Res
+import edifikana_lib.text_please_complete_fields
+import edifikana_lib.text_there_was_an_error_processing_request
+import edifikana_lib.title_timecard_add_staff
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -35,6 +40,7 @@ class AddSecondaryStaffViewModelTest : TestBase() {
     private lateinit var propertyManager: PropertyManager
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
     private lateinit var applicationEventReceiver: SharedFlowApplicationReceiver
+    private lateinit var stringProvider: StringProvider
 
     @BeforeEach
     fun setupTest() {
@@ -43,6 +49,7 @@ class AddSecondaryStaffViewModelTest : TestBase() {
         exceptionHandler = CollectorCoroutineExceptionHandler()
         staffManager = mockk(relaxed = true)
         propertyManager = mockk(relaxed = true)
+        stringProvider = mockk()
         viewModel = AddSecondaryStaffViewModel(
             staffManager = staffManager,
             propertyManager = propertyManager,
@@ -51,7 +58,8 @@ class AddSecondaryStaffViewModelTest : TestBase() {
                 dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),
                 coroutineExceptionHandler = exceptionHandler,
                 applicationEventReceiver = applicationEventReceiver,
-            )
+            ),
+            stringProvider = stringProvider,
         )
     }
 
@@ -77,6 +85,7 @@ class AddSecondaryStaffViewModelTest : TestBase() {
     @Test
     fun `test saveStaff with invalid data shows error snackbar`() = runBlockingTest {
         // Setup
+        coEvery { stringProvider.getString(Res.string.text_please_complete_fields) } returns "Please complete all fields."
 
         // Act
         val verificationJob = launch {
@@ -104,6 +113,7 @@ class AddSecondaryStaffViewModelTest : TestBase() {
         val propertyId = PropertyId("propertyId")
         coEvery { propertyManager.activeProperty() } returns MutableStateFlow(propertyId)
         coEvery { staffManager.addStaff(any()) } returns Result.success(mockk())
+        coEvery { stringProvider.getString(Res.string.title_timecard_add_staff) } returns "Add Staff"
 
         // Act
         val verificationJob = launch {
@@ -141,6 +151,8 @@ class AddSecondaryStaffViewModelTest : TestBase() {
         val propertyId = PropertyId("propertyId")
         coEvery { propertyManager.activeProperty() } returns MutableStateFlow(propertyId)
         coEvery { staffManager.addStaff(any()) } returns Result.failure(Exception("Error"))
+        coEvery { stringProvider.getString(Res.string.title_timecard_add_staff) } returns "Add Staff"
+        coEvery { stringProvider.getString(Res.string.text_there_was_an_error_processing_request) } returns "There was an error processing the request."
 
         // Act
         val verificationJob = launch {

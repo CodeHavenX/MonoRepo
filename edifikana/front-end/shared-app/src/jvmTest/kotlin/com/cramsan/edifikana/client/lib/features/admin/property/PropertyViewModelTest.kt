@@ -14,11 +14,14 @@ import com.cramsan.edifikana.lib.model.StaffStatus
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.SharedFlowApplicationReceiver
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.test.TestBase
+import edifikana_lib.Res
+import edifikana_lib.error_message_unexpected_error
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -37,6 +40,7 @@ class PropertyViewModelTest : TestBase() {
     private lateinit var staffManager: StaffManager
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
     private lateinit var applicationEventReceiver: SharedFlowApplicationReceiver
+    private lateinit var stringProvider: StringProvider
 
     @BeforeEach
     fun setupTest() {
@@ -45,6 +49,7 @@ class PropertyViewModelTest : TestBase() {
         exceptionHandler = CollectorCoroutineExceptionHandler()
         propertyManager = mockk(relaxed = true)
         staffManager = mockk(relaxed = true)
+        stringProvider = mockk()
         viewModel = PropertyViewModel(
             propertyManager = propertyManager,
             staffManager = staffManager,
@@ -53,7 +58,8 @@ class PropertyViewModelTest : TestBase() {
                 dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),
                 coroutineExceptionHandler = exceptionHandler,
                 applicationEventReceiver = applicationEventReceiver,
-            )
+            ),
+            stringProvider = stringProvider,
         )
     }
 
@@ -104,7 +110,7 @@ class PropertyViewModelTest : TestBase() {
         )
         coEvery { propertyManager.updateProperty(propertyId, name, address) } returns Result.failure(Exception("Error"))
         coEvery { staffManager.getStaffList() } returns Result.success(emptyList())
-
+        coEvery { stringProvider.getString(Res.string.error_message_unexpected_error) } returns "There was an unexpected error."
 
         val verificationJob = launch {
             applicationEventReceiver.events.test {

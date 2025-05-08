@@ -7,11 +7,11 @@ import com.cramsan.edifikana.client.lib.managers.TimeCardManager
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.resources.StringProvider
 import edifikana_lib.Res
 import edifikana_lib.title_timecard
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.getString
 
 /**
  * Represents the UI state of the Time Card screen.
@@ -19,6 +19,7 @@ import org.jetbrains.compose.resources.getString
 class TimeCartViewModel(
     private val timeCardManager: TimeCardManager,
     private val staffManager: StaffManager,
+    private val stringProvider: StringProvider,
     dependencies: ViewModelDependencies,
 ) : BaseViewModel<TimeCardEvent, TimeCardUIState>(dependencies, TimeCardUIState.Empty, TAG) {
 
@@ -31,15 +32,15 @@ class TimeCartViewModel(
         val result = timeCardManager.getAllRecords()
         val staffsResult = staffsJob.await()
         if (result.isFailure || staffsResult.isFailure) {
-            val updatedState = TimeCardUIState(emptyList(), false, getString(Res.string.title_timecard))
+            val updatedState = TimeCardUIState(emptyList(), false, stringProvider.getString(Res.string.title_timecard))
             updateUiState { updatedState }
         } else {
             val events = result.getOrThrow()
             val staffs = staffsResult.getOrThrow()
             val updatedState = TimeCardUIState(
-                events.toUIModel(staffs),
+                events.toUIModel(staffs, stringProvider),
                 false,
-                getString(Res.string.title_timecard)
+                stringProvider.getString(Res.string.title_timecard)
             )
             updateUiState { updatedState }
         }

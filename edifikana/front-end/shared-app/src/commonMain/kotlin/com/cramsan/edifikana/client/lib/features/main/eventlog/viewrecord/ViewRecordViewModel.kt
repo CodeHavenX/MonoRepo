@@ -10,10 +10,10 @@ import com.cramsan.framework.assertlib.assertFalse
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.resources.StringProvider
 import edifikana_lib.Res
 import edifikana_lib.title_event_log_view
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.getString
 
 /**
  * Represents the UI state of the View Record screen.
@@ -21,6 +21,7 @@ import org.jetbrains.compose.resources.getString
 class ViewRecordViewModel(
     private val eventLogManager: EventLogManager,
     private val storageService: StorageService,
+    private val stringProvider: StringProvider,
     dependencies: ViewModelDependencies,
 ) : BaseViewModel<ViewRecordEvent, ViewRecordUIState>(dependencies, ViewRecordUIState.Empty, TAG) {
 
@@ -38,16 +39,16 @@ class ViewRecordViewModel(
             val state = ViewRecordUIState(
                 null,
                 false,
-                getString(Res.string.title_event_log_view)
+                stringProvider.getString(Res.string.title_event_log_view)
             )
             updateUiState { state }
         } else {
             val loadedRecord = result.getOrThrow()
             this@ViewRecordViewModel.record = loadedRecord
             val state = ViewRecordUIState(
-                loadedRecord.toUIModel(),
+                loadedRecord.toUIModel(stringProvider),
                 isLoading = false,
-                getString(Res.string.title_event_log_view),
+                stringProvider.getString(Res.string.title_event_log_view),
             )
             updateUiState { state }
         }

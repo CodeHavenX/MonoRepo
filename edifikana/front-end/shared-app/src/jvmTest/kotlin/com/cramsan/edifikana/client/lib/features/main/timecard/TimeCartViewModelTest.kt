@@ -17,11 +17,16 @@ import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.SharedFlowApplicationReceiver
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.test.TestBase
+import edifikana_lib.Res
+import edifikana_lib.time_card_event_clock_in
+import edifikana_lib.time_card_event_clock_out
+import edifikana_lib.title_timecard
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -39,6 +44,7 @@ class TimeCartViewModelTest : TestBase() {
     private lateinit var viewModel: TimeCartViewModel
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
     private lateinit var applicationEventReceiver: SharedFlowApplicationReceiver
+    private lateinit var stringProvider: StringProvider
 
     @BeforeEach
     fun setUp() {
@@ -47,13 +53,19 @@ class TimeCartViewModelTest : TestBase() {
         staffManager = mockk()
         exceptionHandler = CollectorCoroutineExceptionHandler()
         applicationEventReceiver = SharedFlowApplicationReceiver()
+        stringProvider = mockk()
         val dependencies = ViewModelDependencies(
             appScope = testCoroutineScope,
             dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),
             coroutineExceptionHandler = exceptionHandler,
             applicationEventReceiver = applicationEventReceiver,
         )
-        viewModel = TimeCartViewModel(timeCardManager, staffManager, dependencies)
+        viewModel = TimeCartViewModel(
+            timeCardManager,
+            staffManager,
+            stringProvider = stringProvider,
+            dependencies,
+        )
     }
 
     @Test
@@ -103,6 +115,9 @@ class TimeCartViewModelTest : TestBase() {
         )
         coEvery { timeCardManager.getAllRecords() } returns Result.success(events)
         coEvery { staffManager.getStaffList() } returns Result.success(staffs)
+        coEvery { stringProvider.getString(Res.string.title_timecard) } returns "Time Card"
+        coEvery { stringProvider.getString(Res.string.time_card_event_clock_out) } returns "Clock Out"
+        coEvery { stringProvider.getString(Res.string.time_card_event_clock_in) } returns "Clock In"
 
         // Act
         viewModel.loadEvents()
@@ -119,6 +134,7 @@ class TimeCartViewModelTest : TestBase() {
         // Arrange
         coEvery { timeCardManager.getAllRecords() } returns Result.failure(Exception("Error"))
         coEvery { staffManager.getStaffList() } returns Result.failure(Exception("Error"))
+        coEvery { stringProvider.getString(Res.string.title_timecard) } returns "Time Card"
 
         // Act
         viewModel.loadEvents()

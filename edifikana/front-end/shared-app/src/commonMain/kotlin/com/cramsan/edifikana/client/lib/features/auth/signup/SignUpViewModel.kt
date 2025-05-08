@@ -6,6 +6,7 @@ import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logI
 import com.cramsan.framework.utils.loginvalidation.validateEmail
@@ -15,7 +16,6 @@ import com.cramsan.framework.utils.loginvalidation.validatePhoneNumber
 import edifikana_lib.Res
 import edifikana_lib.error_message_unexpected_error
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.getString
 
 /**
  * Sign Up feature ViewModel.
@@ -23,6 +23,7 @@ import org.jetbrains.compose.resources.getString
 class SignUpViewModel(
     dependencies: ViewModelDependencies,
     private val auth: AuthManager,
+    private val stringProvider: StringProvider,
 ) : BaseViewModel<SignUpEvent, SignUpUIState>(dependencies, SignUpUIState.Initial, TAG) {
 
     /**
@@ -170,7 +171,7 @@ class SignUpViewModel(
                 password = password,
             ).onFailure { exception ->
                 logD(TAG, "Error signing in: $exception")
-                val message = getString(Res.string.error_message_unexpected_error)
+                val message = stringProvider.getString(Res.string.error_message_unexpected_error)
                 updateUiState {
                     it.copy(
                         isLoading = false,

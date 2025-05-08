@@ -9,6 +9,7 @@ import com.cramsan.edifikana.client.lib.toRoleFriendlyName
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
+import com.cramsan.framework.core.compose.resources.StringProvider
 
 /**
  * Represents the UI state of the View Staff screen.
@@ -41,10 +42,12 @@ object ViewStaffUIModel {
 /**
  * Converts a [StaffModel] to a [ViewStaffUIModel.StaffUIModel].
  */
-suspend fun StaffModel.toUIModel(): ViewStaffUIModel.StaffUIModel {
+suspend fun StaffModel.toUIModel(
+    stringProvider: StringProvider,
+): ViewStaffUIModel.StaffUIModel {
     return ViewStaffUIModel.StaffUIModel(
         fullName = fullName(),
-        role = role.toRoleFriendlyName(),
+        role = role.toRoleFriendlyName(stringProvider),
         staffPK = id,
     )
 }
@@ -52,9 +55,11 @@ suspend fun StaffModel.toUIModel(): ViewStaffUIModel.StaffUIModel {
 /**
  * Converts a [TimeCardRecordModel] to a [ViewStaffUIModel.TimeCardRecordUIModel].
  */
-suspend fun TimeCardRecordModel.toUIModel(): ViewStaffUIModel.TimeCardRecordUIModel {
+suspend fun TimeCardRecordModel.toUIModel(
+    stringProvider: StringProvider,
+): ViewStaffUIModel.TimeCardRecordUIModel {
     return ViewStaffUIModel.TimeCardRecordUIModel(
-        eventType = eventType.eventTypeFriendlyName(),
+        eventType = eventType.eventTypeFriendlyName(stringProvider),
         timeRecorded = eventTime.toFriendlyDateTime(),
         imageRef = imageRef,
         eventTypeEnum = eventType,

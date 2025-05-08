@@ -8,12 +8,12 @@ import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.StaffRole
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.resources.StringProvider
 import edifikana_lib.Res
 import edifikana_lib.text_please_complete_fields
 import edifikana_lib.text_there_was_an_error_processing_request
 import edifikana_lib.title_timecard_add_staff
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.getString
 
 /**
  * ViewModel for the AddSecondary screen.
@@ -21,6 +21,7 @@ import org.jetbrains.compose.resources.getString
 class AddSecondaryStaffViewModel(
     private val staffManager: StaffManager,
     private val propertyManager: PropertyManager,
+    private val stringProvider: StringProvider,
     dependencies: ViewModelDependencies,
 ) : BaseViewModel<AddSecondaryStaffEvent, AddSecondaryStaffUIState>(
     dependencies,
@@ -57,14 +58,14 @@ class AddSecondaryStaffViewModel(
         ) {
             emitApplicationEvent(
                 // TODO: Add compose resource loading
-                EdifikanaApplicationEvent.ShowSnackbar(getString(Res.string.text_please_complete_fields))
+                EdifikanaApplicationEvent.ShowSnackbar(stringProvider.getString(Res.string.text_please_complete_fields))
             )
             return@launch
         }
 
         val state = AddSecondaryStaffUIState(
             isLoading = true,
-            getString(Res.string.title_timecard_add_staff)
+            stringProvider.getString(Res.string.title_timecard_add_staff)
         )
         updateUiState { state }
 
@@ -82,7 +83,7 @@ class AddSecondaryStaffViewModel(
             emitApplicationEvent(
                 // TODO: Add compose resource loading
                 EdifikanaApplicationEvent.ShowSnackbar(
-                    getString(Res.string.text_there_was_an_error_processing_request)
+                    stringProvider.getString(Res.string.text_there_was_an_error_processing_request)
                 )
             )
         } else {

@@ -6,18 +6,19 @@ import com.cramsan.edifikana.client.lib.managers.EventLogManager
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.logW
 import edifikana_lib.Res
 import edifikana_lib.error_message_currently_uploading
 import edifikana_lib.title_event_log
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.getString
 
 /**
  * Represents the UI state of the Event Log screen.
  */
 class EventLogViewModel(
     private val eventLogManager: EventLogManager,
+    private val stringProvider: StringProvider,
     dependencies: ViewModelDependencies,
 ) : BaseViewModel<EventLogEvent, EventLogUIState>(dependencies, EventLogUIState.Empty, TAG) {
 
@@ -29,16 +30,16 @@ class EventLogViewModel(
         val result = eventLogManager.getRecords()
 
         if (result.isFailure) {
-            val title = getString(Res.string.title_event_log)
+            val title = stringProvider.getString(Res.string.title_event_log)
             updateUiState {
                 EventLogUIState(emptyList(), false, title)
             }
         } else {
             val records = result.getOrThrow()
             val recordList = EventLogUIState(
-                records.map { it.toUIModel() },
+                records.map { it.toUIModel(stringProvider) },
                 false,
-                getString(Res.string.title_event_log)
+                stringProvider.getString(Res.string.title_event_log)
             )
             updateUiState { recordList }
         }
@@ -52,7 +53,7 @@ class EventLogViewModel(
             logW(TAG, "Record PK is null")
             emitApplicationEvent(
                 EdifikanaApplicationEvent.ShowSnackbar(
-                    getString(Res.string.error_message_currently_uploading)
+                    stringProvider.getString(Res.string.error_message_currently_uploading)
                 )
             )
         } else {

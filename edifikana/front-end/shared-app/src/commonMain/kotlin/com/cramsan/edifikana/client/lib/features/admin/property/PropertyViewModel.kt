@@ -7,12 +7,12 @@ import com.cramsan.edifikana.client.lib.models.StaffModel
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.utils.loginvalidation.validateEmail
 import edifikana_lib.Res
 import edifikana_lib.error_message_unexpected_error
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.getString
 
 /**
  * ViewModel for the Property screen.
@@ -20,6 +20,7 @@ import org.jetbrains.compose.resources.getString
 class PropertyViewModel(
     private val propertyManager: PropertyManager,
     private val staffManager: StaffManager,
+    private val stringProvider: StringProvider,
     dependencies: ViewModelDependencies,
 ) : BaseViewModel<PropertyEvent, PropertyUIState>(dependencies, PropertyUIState.Empty, TAG) {
 
@@ -46,7 +47,7 @@ class PropertyViewModel(
             updateUiState { it.copy(isLoading = true) }
             propertyManager.updateProperty(propertyId, name, address).onFailure {
                 updateUiState { it.copy(isLoading = false) }
-                val message = getString(Res.string.error_message_unexpected_error)
+                val message = stringProvider.getString(Res.string.error_message_unexpected_error)
                 emitApplicationEvent(
                     EdifikanaApplicationEvent.ShowSnackbar(message)
                 )

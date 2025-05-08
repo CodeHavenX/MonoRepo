@@ -15,6 +15,7 @@ import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.SharedFlowApplicationReceiver
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
@@ -43,6 +44,7 @@ class AddRecordViewModelTest : TestBase() {
     private lateinit var applicationEventReceiver: SharedFlowApplicationReceiver
     private lateinit var clock: Clock
     private lateinit var propertyManager: PropertyManager
+    private lateinit var stringProvider: StringProvider
 
     @BeforeEach
     fun setUp() {
@@ -53,13 +55,21 @@ class AddRecordViewModelTest : TestBase() {
         propertyManager = mockk()
         exceptionHandler = CollectorCoroutineExceptionHandler()
         applicationEventReceiver = SharedFlowApplicationReceiver()
+        stringProvider = mockk()
         val dependencies = ViewModelDependencies(
             appScope = testCoroutineScope,
             dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),
             coroutineExceptionHandler = exceptionHandler,
             applicationEventReceiver = applicationEventReceiver,
         )
-        viewModel = AddRecordViewModel(staffManager, eventLogManager, clock, propertyManager, dependencies)
+        viewModel = AddRecordViewModel(
+            staffManager,
+            eventLogManager,
+            clock,
+            propertyManager,
+            stringProvider = stringProvider,
+            dependencies,
+        )
     }
 
     @Test

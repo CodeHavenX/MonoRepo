@@ -14,6 +14,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.cramsan.edifikana.client.lib.managers.remoteconfig.ImageConfig
+import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.logE
 import edifikana_lib.Res
 import edifikana_lib.text_error_take_photo
@@ -22,7 +23,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.getString
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -34,7 +34,8 @@ import java.util.Locale
  */
 class CameraDelegate(
     private val activity: ComponentActivity,
-    private val imageConfig: ImageConfig
+    private val imageConfig: ImageConfig,
+    private val stringProvider: StringProvider,
 ) {
 
     private val _uiState = MutableStateFlow<CameraUiState>(
@@ -103,7 +104,7 @@ class CameraDelegate(
     private suspend fun openImageConfirmation(uri: Uri?) {
         if (uri == null) {
             displayErrorMessage(
-                getString(Res.string.text_error_take_photo),
+                stringProvider.getString(Res.string.text_error_take_photo),
                 RuntimeException("Failed to save image")
             )
             return
@@ -155,7 +156,7 @@ class CameraDelegate(
                 override fun onError(exception: ImageCaptureException) {
                     activity.lifecycleScope.launch {
                         displayErrorMessage(
-                            getString(Res.string.text_error_take_photo),
+                            stringProvider.getString(Res.string.text_error_take_photo),
                             exception,
                         )
                     }

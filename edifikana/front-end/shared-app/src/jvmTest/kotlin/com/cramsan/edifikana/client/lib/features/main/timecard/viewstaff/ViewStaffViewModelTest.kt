@@ -19,11 +19,18 @@ import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.SharedFlowApplicationReceiver
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.test.TestBase
+import edifikana_lib.Res
+import edifikana_lib.role_admin
+import edifikana_lib.role_security
+import edifikana_lib.time_card_event_clock_in
+import edifikana_lib.time_card_event_clock_out
+import edifikana_lib.title_timecard_view_staff
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -43,6 +50,7 @@ class ViewStaffViewModelTest : TestBase() {
     private lateinit var viewModel: ViewStaffViewModel
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
     private lateinit var applicationEventReceiver: SharedFlowApplicationReceiver
+    private lateinit var stringProvider: StringProvider
 
     @BeforeEach
     fun setUp() {
@@ -59,13 +67,15 @@ class ViewStaffViewModelTest : TestBase() {
             coroutineExceptionHandler = exceptionHandler,
             applicationEventReceiver = applicationEventReceiver,
         )
+        stringProvider = mockk()
         viewModel = ViewStaffViewModel(
             staffManager,
             timeCardManager,
             storageService,
             propertyManager,
             mockk(),
-            dependencies
+            stringProvider = stringProvider,
+            dependencies,
         )
     }
 
@@ -106,6 +116,10 @@ class ViewStaffViewModelTest : TestBase() {
         )
         coEvery { staffManager.getStaff(staffId) } returns Result.success(staff)
         coEvery { timeCardManager.getRecords(staffId) } returns Result.success(records)
+        coEvery { stringProvider.getString(Res.string.title_timecard_view_staff) } returns "View Staff"
+        coEvery { stringProvider.getString(Res.string.role_security) } returns "Security"
+        coEvery { stringProvider.getString(Res.string.time_card_event_clock_out) } returns "Clock Out"
+        coEvery { stringProvider.getString(Res.string.time_card_event_clock_in) } returns "Clock In"
 
         // Act
         viewModel.loadStaff(staffId)
@@ -164,6 +178,10 @@ class ViewStaffViewModelTest : TestBase() {
         coEvery { storageService.downloadFile(any()) } returns Result.success(CoreUri.createUri("http://example.com/image.jpg"))
         coEvery { staffManager.getStaff(any()) } returns Result.success(staff)
         coEvery { timeCardManager.getRecords(any()) } returns Result.success(listOf(record))
+        coEvery { stringProvider.getString(Res.string.title_timecard_view_staff) } returns "View Staff"
+        coEvery { stringProvider.getString(Res.string.role_security) } returns "Security"
+        coEvery { stringProvider.getString(Res.string.time_card_event_clock_out) } returns "Clock-Out"
+        coEvery { stringProvider.getString(Res.string.time_card_event_clock_in) } returns "Clock-In"
 
         // Act
         val verificationJob = launch {
@@ -173,7 +191,7 @@ class ViewStaffViewModelTest : TestBase() {
                         "Clock-In de John Doe\n1970-09-30T02:35:43",
                         CoreUri.createUri("http://example.com/image.jpg")
                     ),
-                    awaitItem()
+                    awaitItem(),
                 )
             }
         }

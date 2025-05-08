@@ -6,16 +6,17 @@ import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.resources.StringProvider
 import edifikana_lib.Res
 import edifikana_lib.title_timecard_staff_list
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.getString
 
 /**
  * Represents the UI state of the Staff List screen.
  */
 class StaffListViewModel(
     private val staffManager: StaffManager,
+    private val stringProvider: StringProvider,
     dependencies: ViewModelDependencies,
 ) : BaseViewModel<StaffListEvent, StaffListUIState>(dependencies, StaffListUIState.Empty, TAG) {
 
@@ -30,7 +31,7 @@ class StaffListViewModel(
             val state = StaffListUIState(
                 emptyList(),
                 false,
-                getString(Res.string.title_timecard_staff_list),
+                stringProvider.getString(Res.string.title_timecard_staff_list),
             )
             updateUiState { state }
         } else {
@@ -40,7 +41,7 @@ class StaffListViewModel(
                     it.toUIModel()
                 },
                 false,
-                getString(Res.string.title_timecard_staff_list)
+                stringProvider.getString(Res.string.title_timecard_staff_list)
             )
             updateUiState { state }
         }

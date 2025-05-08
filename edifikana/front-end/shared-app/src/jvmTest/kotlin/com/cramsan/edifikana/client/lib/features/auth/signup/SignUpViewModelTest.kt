@@ -6,11 +6,14 @@ import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.SharedFlowApplicationReceiver
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.test.TestBase
+import edifikana_lib.Res
+import edifikana_lib.error_message_unexpected_error
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -36,6 +39,7 @@ class SignUpViewModelTest : TestBase() {
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
 
     private lateinit var applicationEventReceiver: SharedFlowApplicationReceiver
+    private lateinit var stringProvider: StringProvider
 
 
     /**
@@ -47,13 +51,16 @@ class SignUpViewModelTest : TestBase() {
         authManager = mockk()
         exceptionHandler = CollectorCoroutineExceptionHandler()
         applicationEventReceiver = SharedFlowApplicationReceiver()
+        stringProvider = mockk()
         viewModel = SignUpViewModel(
             dependencies = ViewModelDependencies(
                 appScope = testCoroutineScope,
                 dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),
                 coroutineExceptionHandler = exceptionHandler,
                 applicationEventReceiver = applicationEventReceiver,
-            ), authManager
+            ),
+            auth = authManager,
+            stringProvider = stringProvider,
         )
     }
 
@@ -295,9 +302,7 @@ class SignUpViewModelTest : TestBase() {
 
     /**
      * Test the [SignUpViewModel.signUp] method with valid inputs but fails to sign in
-     * TODO: Fix logging capabilities to be able to figure out why this test fails on CI but no on local
      */
-    @Ignore
     @Test
     fun `test signUp fails with valid inputs when trying to signIn`() = runBlockingTest {
         val firstName = "Diana"
@@ -313,15 +318,15 @@ class SignUpViewModelTest : TestBase() {
             )
         } returns Result.success(mockk())
         coEvery { authManager.signIn(email, password) } returns Result.failure(Exception("Sign in failed"))
+        coEvery { stringProvider.getString(Res.string.error_message_unexpected_error) } returns "There was an unexpected error."
 
+        // Act
         viewModel.onFirstNameValueChange(firstName)
         viewModel.onLastNameValueChange(lastName)
         viewModel.onEmailValueChange(email)
         viewModel.onPhoneNumberValueChange(phoneNumber)
         viewModel.onPasswordValueChange(password)
         viewModel.onPolicyChecked(true)
-
-        // Act
         viewModel.signUp()
         // Assert & verify
         coVerify { authManager.signUp(email, phoneNumber, password, firstName, lastName) }

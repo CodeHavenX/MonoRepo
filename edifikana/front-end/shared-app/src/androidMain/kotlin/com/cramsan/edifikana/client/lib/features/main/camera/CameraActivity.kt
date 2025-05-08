@@ -17,6 +17,7 @@ import com.cramsan.edifikana.client.lib.features.main.camera.compose.PermissionD
 import com.cramsan.edifikana.client.lib.features.main.camera.compose.PhotoConfirmation
 import com.cramsan.edifikana.client.lib.features.main.camera.compose.PhotoErrorScreen
 import com.cramsan.edifikana.client.lib.managers.remoteconfig.ImageConfig
+import com.cramsan.framework.core.compose.resources.StringProvider
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
@@ -27,12 +28,14 @@ class CameraActivity : ComponentActivity() {
 
     private val imageConfig: ImageConfig by inject()
 
+    private val stringProvider: StringProvider by inject()
+
     private lateinit var cameraDelegate: CameraDelegate
 
     @Suppress("LongMethod")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        cameraDelegate = CameraDelegate(this, imageConfig)
+        cameraDelegate = CameraDelegate(this, imageConfig, stringProvider)
 
         onBackPressedDispatcher.addCallback {
             cameraDelegate.handleBackNavigation()

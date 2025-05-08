@@ -6,11 +6,14 @@ import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.SharedFlowApplicationReceiver
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.test.TestBase
+import edifikana_lib.Res
+import edifikana_lib.text_there_was_an_error_processing_request
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -28,6 +31,7 @@ class AddPrimaryStaffViewModelTest : TestBase() {
     private lateinit var staffManager: StaffManager
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
     private lateinit var applicationEventReceiver: SharedFlowApplicationReceiver
+    private lateinit var stringProvider: StringProvider
 
     @BeforeEach
     fun setupTest() {
@@ -35,6 +39,7 @@ class AddPrimaryStaffViewModelTest : TestBase() {
         applicationEventReceiver = SharedFlowApplicationReceiver()
         exceptionHandler = CollectorCoroutineExceptionHandler()
         staffManager = mockk(relaxed = true)
+        stringProvider = mockk()
         viewModel = AddPrimaryStaffViewModel(
             dependencies = ViewModelDependencies(
                 appScope = testCoroutineScope,
@@ -42,7 +47,8 @@ class AddPrimaryStaffViewModelTest : TestBase() {
                 coroutineExceptionHandler = exceptionHandler,
                 applicationEventReceiver = applicationEventReceiver,
             ),
-            staffManager = staffManager
+            staffManager = staffManager,
+            stringProvider = stringProvider,
         )
     }
 
@@ -101,6 +107,7 @@ class AddPrimaryStaffViewModelTest : TestBase() {
     fun `test invite with valid email but failure response updates UI state with error`() = runBlockingTest {
         val validEmail = "test@example.com"
         coEvery { staffManager.inviteStaff(validEmail) } returns Result.failure(Exception("Error"))
+        coEvery { stringProvider.getString(Res.string.text_there_was_an_error_processing_request) } returns "There was an error processing the request."
 
         viewModel.invite(validEmail)
 

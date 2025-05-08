@@ -9,12 +9,15 @@ import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.SharedFlowApplicationReceiver
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.test.TestBase
 import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
+import edifikana_lib.Res
+import edifikana_lib.error_message_invalid_credentials
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -38,6 +41,7 @@ class SignInViewModelTest : TestBase() {
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
 
     private lateinit var applicationEventReceiver: SharedFlowApplicationReceiver
+    private lateinit var stringProvider: StringProvider
 
     /**
      * Setup the test.
@@ -48,6 +52,7 @@ class SignInViewModelTest : TestBase() {
         authManager = mockk()
         applicationEventReceiver = SharedFlowApplicationReceiver()
         exceptionHandler = CollectorCoroutineExceptionHandler()
+        stringProvider = mockk()
         viewModel = SignInViewModel(
             dependencies = ViewModelDependencies(
                 appScope = testCoroutineScope,
@@ -55,7 +60,8 @@ class SignInViewModelTest : TestBase() {
                 coroutineExceptionHandler = exceptionHandler,
                 applicationEventReceiver = applicationEventReceiver,
             ),
-            authManager
+            auth = authManager,
+            stringProvider = stringProvider,
         )
     }
 
@@ -139,10 +145,7 @@ class SignInViewModelTest : TestBase() {
 
     /**
      * Test the [SignInViewModel.signIn] method fails with invalid login credentials
-     * TODO: Fix logging capabilities to be able to figure out why this test fails on CI but no on local
-     *
      */
-    @Ignore
     @Test
     fun `test SignIn fails with invalid login credentials`() = runBlockingTest {
         // Arrange
@@ -155,6 +158,7 @@ class SignInViewModelTest : TestBase() {
                 password,
             )
         } returns Result.failure(mockk<ClientRequestExceptions.UnauthorizedException>())
+        coEvery { stringProvider.getString(Res.string.error_message_invalid_credentials) } returns errorMessage
 
         viewModel.onUsernameValueChange(username)
         viewModel.onPasswordValueChange(password)
@@ -165,6 +169,8 @@ class SignInViewModelTest : TestBase() {
                 advanceUntilIdleAndAwaitComplete(this)
             }
         }
+        viewModel.onUsernameValueChange(username)
+        viewModel.onPasswordValueChange(password)
         viewModel.signIn()
 
         // Assert & Verify
@@ -175,10 +181,8 @@ class SignInViewModelTest : TestBase() {
 
     /**
      * Test the [SignInViewModel.signIn] method fails with unexpected error
-     * TODO: Fix logging capabilities to be able to figure out why this test fails on CI but no on local
      *
      */
-    @Ignore
     @Test
     fun `test SignIn fails for unexpected reason`() = runBlockingTest {
         // Arrange
@@ -191,9 +195,7 @@ class SignInViewModelTest : TestBase() {
                 password,
             )
         } returns Result.failure(mockk<Exception>())
-
-        viewModel.onUsernameValueChange(username)
-        viewModel.onPasswordValueChange(password)
+        coEvery { stringProvider.getString(Res.string.error_message_unexpected_error) } returns errorMessage
 
         // Act
         val verificationJob = launch {
@@ -201,6 +203,8 @@ class SignInViewModelTest : TestBase() {
                 advanceUntilIdleAndAwaitComplete(this)
             }
         }
+        viewModel.onUsernameValueChange(username)
+        viewModel.onPasswordValueChange(password)
         viewModel.signIn()
 
         // Assert & Verify

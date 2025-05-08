@@ -13,11 +13,16 @@ import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.SharedFlowApplicationReceiver
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.test.TestBase
+import edifikana_lib.Res
+import edifikana_lib.event_type_delivery
+import edifikana_lib.event_type_guest
+import edifikana_lib.title_event_log
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -34,6 +39,7 @@ class EventLogViewModelTest : TestBase() {
     private lateinit var viewModel: EventLogViewModel
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
     private lateinit var applicationEventReceiver: SharedFlowApplicationReceiver
+    private lateinit var stringProvider: StringProvider
 
     @BeforeEach
     fun setUp() {
@@ -41,13 +47,18 @@ class EventLogViewModelTest : TestBase() {
         eventLogManager = mockk()
         exceptionHandler = CollectorCoroutineExceptionHandler()
         applicationEventReceiver = SharedFlowApplicationReceiver()
+        stringProvider = mockk()
         val dependencies = ViewModelDependencies(
             appScope = testCoroutineScope,
             dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),
             coroutineExceptionHandler = exceptionHandler,
             applicationEventReceiver = applicationEventReceiver,
         )
-        viewModel = EventLogViewModel(eventLogManager, dependencies)
+        viewModel = EventLogViewModel(
+            eventLogManager,
+            stringProvider = stringProvider,
+            dependencies,
+        )
     }
 
     @Test
@@ -84,6 +95,9 @@ class EventLogViewModelTest : TestBase() {
             )
         )
         coEvery { eventLogManager.getRecords() } returns Result.success(records)
+        coEvery { stringProvider.getString(Res.string.event_type_guest) } returns "Guest"
+        coEvery { stringProvider.getString(Res.string.event_type_delivery) } returns "Delivery"
+        coEvery { stringProvider.getString(Res.string.title_event_log) } returns "Event Log"
 
         // Act
         viewModel.loadRecords()
@@ -99,6 +113,7 @@ class EventLogViewModelTest : TestBase() {
     fun `test loadRecords handles failure`() = runBlockingTest {
         // Arrange
         coEvery { eventLogManager.getRecords() } returns Result.failure(Exception("Error"))
+        coEvery { stringProvider.getString(Res.string.title_event_log) } returns "Event Log"
 
         // Act
         viewModel.loadRecords()

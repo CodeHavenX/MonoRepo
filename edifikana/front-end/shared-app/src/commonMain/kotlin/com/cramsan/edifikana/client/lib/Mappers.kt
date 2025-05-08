@@ -5,6 +5,7 @@ import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.StaffRole
 import com.cramsan.edifikana.lib.model.TimeCardEventType
+import com.cramsan.framework.core.compose.resources.StringProvider
 import edifikana_lib.Res
 import edifikana_lib.event_type_delivery
 import edifikana_lib.event_type_guest
@@ -26,19 +27,20 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 
 /**
  * Converts the [StaffRole] to a friendly string.
  */
-suspend fun StaffRole?.toRoleFriendlyName(): String {
+suspend fun StaffRole?.toRoleFriendlyName(
+    stringProvider: StringProvider,
+): String {
     return when (this) {
-        StaffRole.ADMIN -> getString(Res.string.role_admin)
-        StaffRole.SECURITY -> getString(Res.string.role_security)
-        StaffRole.SECURITY_COVER -> getString(Res.string.role_security_cover)
-        StaffRole.CLEANING -> getString(Res.string.role_limpieza)
-        null -> getString(Res.string.role_unknown)
+        StaffRole.ADMIN -> stringProvider.getString(Res.string.role_admin)
+        StaffRole.SECURITY -> stringProvider.getString(Res.string.role_security)
+        StaffRole.SECURITY_COVER -> stringProvider.getString(Res.string.role_security_cover)
+        StaffRole.CLEANING -> stringProvider.getString(Res.string.role_limpieza)
+        null -> stringProvider.getString(Res.string.role_unknown)
     }
 }
 
@@ -72,11 +74,13 @@ fun Long?.toFriendlyDateTime(): String {
 /**
  * Converts the [TimeCardEventType] to a friendly string.
  */
-suspend fun TimeCardEventType?.eventTypeFriendlyName(): String {
+suspend fun TimeCardEventType?.eventTypeFriendlyName(
+    stringProvider: StringProvider,
+): String {
     return when (this) {
-        TimeCardEventType.CLOCK_IN -> getString(Res.string.time_card_event_clock_in)
-        TimeCardEventType.CLOCK_OUT -> getString(Res.string.time_card_event_clock_out)
-        TimeCardEventType.OTHER, null -> getString(Res.string.role_unknown)
+        TimeCardEventType.CLOCK_IN -> stringProvider.getString(Res.string.time_card_event_clock_in)
+        TimeCardEventType.CLOCK_OUT -> stringProvider.getString(Res.string.time_card_event_clock_out)
+        TimeCardEventType.OTHER, null -> stringProvider.getString(Res.string.role_unknown)
     }
 }
 
@@ -96,13 +100,15 @@ fun IdType.toIdTypeFriendlyName(): String {
 /**
  * Converts the [EventLogEventType] to a friendly string.
  */
-suspend fun EventLogEventType?.toFriendlyString(): String {
+suspend fun EventLogEventType?.toFriendlyString(
+    stringProvider: StringProvider,
+): String {
     return when (this) {
-        EventLogEventType.GUEST -> getString(Res.string.event_type_guest)
-        EventLogEventType.DELIVERY -> getString(Res.string.event_type_delivery)
-        EventLogEventType.INCIDENT -> getString(Res.string.event_type_incident)
-        EventLogEventType.MAINTENANCE_SERVICE -> getString(Res.string.event_type_maintenance_service)
-        else -> getString(Res.string.event_type_other)
+        EventLogEventType.GUEST -> stringProvider.getString(Res.string.event_type_guest)
+        EventLogEventType.DELIVERY -> stringProvider.getString(Res.string.event_type_delivery)
+        EventLogEventType.INCIDENT -> stringProvider.getString(Res.string.event_type_incident)
+        EventLogEventType.MAINTENANCE_SERVICE -> stringProvider.getString(Res.string.event_type_maintenance_service)
+        else -> stringProvider.getString(Res.string.event_type_other)
     }
 }
 

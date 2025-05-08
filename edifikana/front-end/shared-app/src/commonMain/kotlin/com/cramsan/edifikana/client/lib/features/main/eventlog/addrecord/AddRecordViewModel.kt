@@ -10,12 +10,12 @@ import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.resources.StringProvider
 import edifikana_lib.Res
 import edifikana_lib.string_other
 import edifikana_lib.title_event_log_add
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
-import org.jetbrains.compose.resources.getString
 
 /**
  * Represents the UI state of the Add Record screen.
@@ -25,6 +25,7 @@ class AddRecordViewModel(
     private val eventLogManager: EventLogManager,
     private val clock: Clock,
     private val propertyManager: PropertyManager,
+    private val stringProvider: StringProvider,
     dependencies: ViewModelDependencies,
 ) : BaseViewModel<AddRecordEvent, AddRecordUIState>(dependencies, AddRecordUIState.Empty, TAG) {
 
@@ -36,7 +37,7 @@ class AddRecordViewModel(
         val result = staffManager.getStaffList()
 
         if (result.isFailure) {
-            val state = AddRecordUIState(listOf(), false, getString(Res.string.title_event_log_add))
+            val state = AddRecordUIState(listOf(), false, stringProvider.getString(Res.string.title_event_log_add))
             updateUiState { state }
         } else {
             val staffs = result.getOrThrow()
@@ -45,9 +46,9 @@ class AddRecordViewModel(
             }
             val state = AddRecordUIState(
                 // TODO: Move this resources
-                staffList + AddRecordUIModel(getString(Res.string.string_other), null),
+                staffList + AddRecordUIModel(stringProvider.getString(Res.string.string_other), null),
                 false,
-                getString(Res.string.title_event_log_add)
+                stringProvider.getString(Res.string.title_event_log_add)
             )
             updateUiState { state }
         }

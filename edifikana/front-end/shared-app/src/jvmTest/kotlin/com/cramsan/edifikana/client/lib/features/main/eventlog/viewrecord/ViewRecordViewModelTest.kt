@@ -13,11 +13,16 @@ import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.SharedFlowApplicationReceiver
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.test.TestBase
+import edifikana_lib.Res
+import edifikana_lib.event_type_delivery
+import edifikana_lib.event_type_guest
+import edifikana_lib.title_event_log_view
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -35,6 +40,7 @@ class ViewRecordViewModelTest : TestBase() {
     private lateinit var viewModel: ViewRecordViewModel
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
     private lateinit var applicationEventReceiver: SharedFlowApplicationReceiver
+    private lateinit var stringProvider: StringProvider
 
     @BeforeEach
     fun setUp() {
@@ -43,13 +49,19 @@ class ViewRecordViewModelTest : TestBase() {
         storageService = mockk()
         exceptionHandler = CollectorCoroutineExceptionHandler()
         applicationEventReceiver = SharedFlowApplicationReceiver()
+        stringProvider = mockk()
         val dependencies = ViewModelDependencies(
             appScope = testCoroutineScope,
             dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),
             coroutineExceptionHandler = exceptionHandler,
             applicationEventReceiver = applicationEventReceiver,
         )
-        viewModel = ViewRecordViewModel(eventLogManager, storageService, dependencies)
+        viewModel = ViewRecordViewModel(
+            eventLogManager,
+            storageService,
+            stringProvider = stringProvider,
+            dependencies,
+        )
     }
 
     @Test
@@ -71,6 +83,8 @@ class ViewRecordViewModelTest : TestBase() {
             attachments = emptyList(),
         )
         coEvery { eventLogManager.getRecord(recordId) } returns Result.success(record)
+        coEvery { stringProvider.getString(Res.string.title_event_log_view) } returns "View Record"
+        coEvery { stringProvider.getString(Res.string.event_type_delivery) } returns "Delivery"
 
         // Act
         viewModel.loadRecord(recordId)
@@ -87,6 +101,7 @@ class ViewRecordViewModelTest : TestBase() {
         // Arrange
         val recordId = EventLogEntryId("123")
         coEvery { eventLogManager.getRecord(recordId) } returns Result.failure(Exception("Error"))
+        coEvery { stringProvider.getString(Res.string.title_event_log_view) } returns "View Record"
 
         // Act
         viewModel.loadRecord(recordId)

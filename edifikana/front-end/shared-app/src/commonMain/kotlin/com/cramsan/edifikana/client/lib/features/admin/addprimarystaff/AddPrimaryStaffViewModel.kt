@@ -4,11 +4,11 @@ import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
 import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.utils.loginvalidation.validateEmail
 import edifikana_lib.Res
 import edifikana_lib.text_there_was_an_error_processing_request
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.getString
 
 /**
  * ViewModel for the AddPrimaryStaff screen.
@@ -16,6 +16,7 @@ import org.jetbrains.compose.resources.getString
 class AddPrimaryStaffViewModel(
     dependencies: ViewModelDependencies,
     private val staffManager: StaffManager,
+    private val stringProvider: StringProvider,
 ) : BaseViewModel<AddPrimaryStaffEvent, AddPrimaryStaffUIState>(
     dependencies,
     AddPrimaryStaffUIState.Initial,
@@ -51,7 +52,7 @@ class AddPrimaryStaffViewModel(
             val result = staffManager.inviteStaff(email)
 
             if (result.isFailure) {
-                val errorMessage = getString(Res.string.text_there_was_an_error_processing_request)
+                val errorMessage = stringProvider.getString(Res.string.text_there_was_an_error_processing_request)
                 updateUiState {
                     it.copy(
                         isLoading = false,

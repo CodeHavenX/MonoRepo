@@ -17,6 +17,7 @@ import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.logW
 import edifikana_lib.Res
 import edifikana_lib.error_message_currently_uploading
@@ -24,7 +25,6 @@ import edifikana_lib.title_timecard_view_staff
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
-import org.jetbrains.compose.resources.getString
 import kotlin.random.Random
 
 /**
@@ -36,6 +36,7 @@ class ViewStaffViewModel(
     private val storageService: StorageService,
     private val propertyManager: PropertyManager,
     private val clock: Clock,
+    private val stringProvider: StringProvider,
     dependencies: ViewModelDependencies,
 ) : BaseViewModel<ViewStaffEvent, ViewStaffUIState>(dependencies, ViewStaffUIState.Empty, TAG) {
 
@@ -66,9 +67,9 @@ class ViewStaffViewModel(
             staff = staffResult.getOrThrow()
             val uiState = ViewStaffUIState(
                 false,
-                staffResult.getOrThrow().toUIModel(),
-                recordsResult.getOrThrow().map { it.toUIModel() },
-                getString(Res.string.title_timecard_view_staff)
+                staffResult.getOrThrow().toUIModel(stringProvider),
+                recordsResult.getOrThrow().map { it.toUIModel(stringProvider) },
+                stringProvider.getString(Res.string.title_timecard_view_staff)
             )
             updateUiState { uiState }
         }
@@ -81,7 +82,9 @@ class ViewStaffViewModel(
         if (timeCardRecordPK == null) {
             logW(TAG, "TimeCardRecord PK is null")
             emitApplicationEvent(
-                EdifikanaApplicationEvent.ShowSnackbar(getString(Res.string.error_message_currently_uploading))
+                EdifikanaApplicationEvent.ShowSnackbar(
+                    stringProvider.getString(Res.string.error_message_currently_uploading)
+                )
             )
             return@launch
         }
@@ -158,7 +161,7 @@ class ViewStaffViewModel(
                     formatShareMessage(
                         staff,
                         newRecord.eventTime.toFriendlyDateTime(),
-                        eventType.eventTypeFriendlyName()
+                        eventType.eventTypeFriendlyName(stringProvider)
                     ),
                     photoUri,
                 )

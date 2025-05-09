@@ -121,7 +121,7 @@ class SignInViewModel(
             is ClientRequestExceptions.UnauthorizedException ->
                 "Invalid login credentials. Please check your " +
                     "username and password and try again."
-            else -> getString(Res.string.error_message_unexpected_error)
+            else -> stringProvider.getString(Res.string.error_message_unexpected_error)
         }
     }
 }

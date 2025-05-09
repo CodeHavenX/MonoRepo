@@ -18,10 +18,10 @@ import com.cramsan.framework.test.TestBase
 import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
 import edifikana_lib.Res
 import edifikana_lib.error_message_invalid_credentials
+import edifikana_lib.error_message_unexpected_error
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi

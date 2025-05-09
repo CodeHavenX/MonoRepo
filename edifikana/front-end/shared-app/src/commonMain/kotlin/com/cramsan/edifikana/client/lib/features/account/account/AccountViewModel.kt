@@ -43,8 +43,8 @@ class AccountViewModel(
      * Load the user data.
      */
     fun loadUserData() {
-        updateUiState { it.copy(isLoading = true) }
         viewModelScope.launch {
+            updateUiState { it.copy(isLoading = true) }
             val response = auth.getUser()
             if (response.isFailure) {
                 updateUiState { it.copy(isLoading = false) }

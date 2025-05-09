@@ -125,25 +125,27 @@ class PropertyViewModel(
      */
     @Suppress("MagicNumber")
     fun requestNewSuggestions(query: String) {
-        if (query.length < 3) {
-            updateUiState {
-                it.copy(
-                    suggestions = emptyList(),
-                )
+        viewModelScope.launch {
+            if (query.length < 3) {
+                updateUiState {
+                    it.copy(
+                        suggestions = emptyList(),
+                    )
+                }
+                return@launch
             }
-            return
-        }
-        suggestionQueryJob?.cancel()
-        suggestionQueryJob = null
-        suggestionQueryJob = viewModelScope.launch {
-            val suggestions = cachedStaff
-                .filter { it.email?.contains(query) == true }
-                .mapNotNull { it.email }
-            updateUiState {
-                it.copy(
-                    suggestions = suggestions,
-                    addManagerEmail = query,
-                )
+            suggestionQueryJob?.cancel()
+            suggestionQueryJob = null
+            suggestionQueryJob = viewModelScope.launch {
+                val suggestions = cachedStaff
+                    .filter { it.email?.contains(query) == true }
+                    .mapNotNull { it.email }
+                updateUiState {
+                    it.copy(
+                        suggestions = suggestions,
+                        addManagerEmail = query,
+                    )
+                }
             }
         }
     }

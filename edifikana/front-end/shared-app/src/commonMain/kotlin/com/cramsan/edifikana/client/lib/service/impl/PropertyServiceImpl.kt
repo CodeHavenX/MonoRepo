@@ -109,6 +109,10 @@ class PropertyServiceImpl(
         response.toPropertyModel()
     }
 
+    override suspend fun removeProperty(propertyId: PropertyId): Result<Unit> = runSuspendCatching(TAG) {
+        TODO("Not yet implemented")
+    }
+
     companion object {
         const val TAG = "PropertyServiceImpl"
         const val PREF_ACTIVE_PROPERTY = "activeProperty"

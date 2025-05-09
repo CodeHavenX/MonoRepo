@@ -14,6 +14,6 @@ class ComposeStringProvider : StringProvider {
      * @return The string from resources.
      */
     override suspend fun getString(res: StringResource): String {
-        return getString(res)
+        return org.jetbrains.compose.resources.getString(res)
     }
 }

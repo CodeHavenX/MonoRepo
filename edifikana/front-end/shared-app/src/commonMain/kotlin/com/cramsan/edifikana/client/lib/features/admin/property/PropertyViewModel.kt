@@ -151,6 +151,34 @@ class PropertyViewModel(
         }
     }
 
+    /**
+     * Show the remove dialog.
+     */
+    fun showRemoveDialog() {
+        viewModelScope.launch {
+            emitEvent(PropertyEvent.ShowRemoveDialog)
+        }
+    }
+
+    /**
+     * Confirm the removal of the property.
+     */
+    fun removeProperty() {
+        viewModelScope.launch {
+            updateUiState { it.copy(isLoading = true) }
+            propertyManager.removeProperty(propertyId ?: return@launch).onFailure {
+                updateUiState { it.copy(isLoading = false) }
+                val message = stringProvider.getString(Res.string.error_message_unexpected_error)
+                emitApplicationEvent(
+                    EdifikanaApplicationEvent.ShowSnackbar(message)
+                )
+                return@launch
+            }
+            updateUiState { it.copy(isLoading = false) }
+            emitApplicationEvent(EdifikanaApplicationEvent.NavigateBack)
+        }
+    }
+
     companion object {
         private const val TAG = "PropertyViewModel"
     }

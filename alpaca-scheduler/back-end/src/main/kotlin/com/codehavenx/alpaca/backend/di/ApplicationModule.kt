@@ -12,6 +12,7 @@ import com.codehavenx.alpaca.backend.core.service.ReservationService
 import com.codehavenx.alpaca.backend.core.service.UserService
 import com.codehavenx.alpaca.shared.api.serialization.createJson
 import com.cramsan.framework.assertlib.assertFalse
+import com.cramsan.framework.utils.time.Chronos
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.auth
@@ -41,8 +42,9 @@ val ApplicationModule = module {
         createJson()
     }
 
-    single<Clock> {
-        Clock.System
+    single<Clock>(createdAtStart = true) {
+        Chronos.initializeClock(clock = Clock.System)
+        Chronos.clock()
     }
 
     // Supabase

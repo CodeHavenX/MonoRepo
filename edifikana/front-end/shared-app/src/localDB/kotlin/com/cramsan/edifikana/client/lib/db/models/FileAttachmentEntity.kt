@@ -3,7 +3,7 @@ package com.cramsan.edifikana.client.lib.db.models
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.cramsan.framework.core.CoreUri
-import kotlinx.datetime.Clock
+import com.cramsan.framework.utils.time.Chronos
 
 /**
  * Database model for representing a [EventLogRecord]
@@ -22,10 +22,9 @@ data class FileAttachmentEntity(
          */
         fun create(
             eventLogRecordPK: String,
-            clock: Clock,
             fileUri: CoreUri,
         ): FileAttachmentEntity {
-            val id = "$eventLogRecordPK-$fileUri-${clock.now().epochSeconds}"
+            val id = "$eventLogRecordPK-$fileUri-${Chronos.currentInstant().epochSeconds}"
             return FileAttachmentEntity(
                 id,
                 eventLogRecordPK,

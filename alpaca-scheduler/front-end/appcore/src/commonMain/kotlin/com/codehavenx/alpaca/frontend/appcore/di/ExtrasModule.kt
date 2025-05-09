@@ -1,6 +1,7 @@
 package com.codehavenx.alpaca.frontend.appcore.di
 
 import com.cramsan.framework.logging.logE
+import com.cramsan.framework.utils.time.Chronos
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.auth
@@ -27,7 +28,10 @@ import org.koin.dsl.module
 
 val ExtrasModule = module {
 
-    single<Clock> { Clock.System }
+    single<Clock> {
+        Chronos.initializeClock(clock = Clock.System)
+        Chronos.clock()
+    }
 
     single {
         CoroutineExceptionHandler { _, throwable ->

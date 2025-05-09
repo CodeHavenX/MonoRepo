@@ -12,6 +12,7 @@ import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.framework.annotations.TestOnly
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.SharedFlowApplicationReceiver
 import com.cramsan.framework.core.compose.ViewModelDependencies
@@ -21,10 +22,12 @@ import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.test.TestBase
+import com.cramsan.framework.utils.time.Chronos
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -34,7 +37,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import org.junit.jupiter.api.BeforeEach
 
-@OptIn(ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalCoroutinesApi::class, TestOnly::class)
 class AddRecordViewModelTest : TestBase() {
 
     private lateinit var eventLogManager: EventLogManager
@@ -65,11 +68,16 @@ class AddRecordViewModelTest : TestBase() {
         viewModel = AddRecordViewModel(
             staffManager,
             eventLogManager,
-            clock,
             propertyManager,
             stringProvider = stringProvider,
             dependencies,
         )
+        Chronos.initializeClock(clock)
+    }
+
+    @AfterTest
+    fun tearDown() {
+        Chronos.clear()
     }
 
     @Test

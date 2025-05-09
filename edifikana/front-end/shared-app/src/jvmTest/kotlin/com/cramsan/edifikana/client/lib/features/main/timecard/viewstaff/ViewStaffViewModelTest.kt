@@ -73,7 +73,6 @@ class ViewStaffViewModelTest : TestBase() {
             timeCardManager,
             storageService,
             propertyManager,
-            mockk(),
             stringProvider = stringProvider,
             dependencies,
         )

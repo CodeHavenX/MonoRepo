@@ -10,6 +10,7 @@ import com.cramsan.edifikana.lib.model.network.CreateTimeCardEventNetworkRequest
 import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
 import com.cramsan.edifikana.server.core.service.TimeCardService
 import com.cramsan.framework.core.ktor.HttpResponse
+import com.cramsan.framework.utils.time.Chronos
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.request.receive
@@ -17,14 +18,12 @@ import io.ktor.server.routing.Routing
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
-import kotlinx.datetime.Clock
 
 /**
  * Controller for time card related operations.
  */
 class TimeCardController(
     private val timeCardService: TimeCardService,
-    private val clock: Clock,
     private val contextRetriever: ContextRetriever,
 ) {
 
@@ -45,7 +44,7 @@ class TimeCardController(
             propertyId = PropertyId(createTimeCardRequest.propertyId),
             type = createTimeCardRequest.type,
             imageUrl = createTimeCardRequest.imageUrl,
-            timestamp = clock.now(),
+            timestamp = Chronos.currentInstant(),
         ).toTimeCardEventNetworkResponse()
 
         HttpResponse(

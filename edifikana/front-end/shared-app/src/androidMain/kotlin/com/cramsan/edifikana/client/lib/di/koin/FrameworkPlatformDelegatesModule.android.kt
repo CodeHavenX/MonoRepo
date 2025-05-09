@@ -8,6 +8,8 @@ import com.cramsan.framework.logging.EventLoggerDelegate
 import com.cramsan.framework.logging.EventLoggerErrorCallbackDelegate
 import com.cramsan.framework.logging.implementation.LoggerAndroid
 import com.cramsan.framework.logging.implementation.NoopEventLoggerErrorCallbackDelegate
+import com.cramsan.framework.preferences.PreferencesDelegate
+import com.cramsan.framework.preferences.implementation.PreferencesAndroid
 import com.cramsan.framework.thread.ThreadUtilDelegate
 import com.cramsan.framework.thread.implementation.ThreadUtilAndroid
 import org.koin.android.ext.koin.androidApplication
@@ -28,4 +30,6 @@ actual val FrameworkPlatformDelegatesModule = module {
     }
 
     single<DispatcherProvider> { DispatcherProviderImpl() }
+
+    single<PreferencesDelegate> { PreferencesAndroid(androidApplication()) }
 }

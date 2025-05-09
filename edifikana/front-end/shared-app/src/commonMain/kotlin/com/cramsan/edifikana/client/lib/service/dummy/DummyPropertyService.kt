@@ -66,4 +66,14 @@ class DummyPropertyService : PropertyService {
         properties[properties.indexOf(property)] = updatedProperty
         return Result.success(updatedProperty)
     }
+
+    override suspend fun removeProperty(propertyId: PropertyId): Result<Unit> {
+        delay(500.milliseconds)
+        val property = properties.firstOrNull { it.id == propertyId }
+        if (property == null) {
+            return Result.failure(IllegalArgumentException("Property not found"))
+        }
+        properties.remove(property)
+        return Result.success(Unit)
+    }
 }

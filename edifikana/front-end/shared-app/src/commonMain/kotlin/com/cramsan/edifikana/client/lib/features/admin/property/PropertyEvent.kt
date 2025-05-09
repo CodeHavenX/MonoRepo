@@ -9,8 +9,9 @@ import com.cramsan.framework.core.compose.ViewModelEvent
  *
  */
 sealed class PropertyEvent : ViewModelEvent {
+
     /**
-     * No operation
+     * Event to show the dialog for removing a property.
      */
-    data object Noop : PropertyEvent()
+    data object ShowRemoveDialog : PropertyEvent()
 }

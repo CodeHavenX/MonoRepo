@@ -11,6 +11,8 @@ import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.StaffRole
 import com.cramsan.edifikana.lib.model.StaffStatus
+import com.cramsan.framework.assertlib.AssertUtil
+import com.cramsan.framework.assertlib.implementation.NoopAssertUtil
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.SharedFlowApplicationReceiver
 import com.cramsan.framework.core.compose.ViewModelDependencies
@@ -45,6 +47,7 @@ class PropertyViewModelTest : TestBase() {
     @BeforeEach
     fun setupTest() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
+        AssertUtil.setInstance(NoopAssertUtil())
         applicationEventReceiver = SharedFlowApplicationReceiver()
         exceptionHandler = CollectorCoroutineExceptionHandler()
         propertyManager = mockk(relaxed = true)
@@ -175,5 +178,64 @@ class PropertyViewModelTest : TestBase() {
     fun `test requestNewSuggestions with short query clears suggestions`() = runBlockingTest {
         viewModel.requestNewSuggestions("te")
         assertTrue(viewModel.uiState.value.suggestions.isEmpty())
+    }
+
+    @Test
+    fun `test showRemoveDialog will emit the right event`() = runBlockingTest {
+        // Arrange
+
+        // Act
+        val verificationJob = launch {
+            viewModel.events.test {
+                assertEquals(
+                    PropertyEvent.ShowRemoveDialog,
+                    awaitItem()
+                )
+            }
+        }
+        viewModel.showRemoveDialog()
+
+        // Assert
+        verificationJob.join()
+    }
+
+    @Test
+    fun `test removeProperty with success navigates back`() = runBlockingTest {
+        val propertyId = PropertyId("123")
+        coEvery { propertyManager.removeProperty(propertyId) } returns Result.success(Unit)
+
+        viewModel.loadContent(propertyId)
+
+        val verificationJob = launch {
+            applicationEventReceiver.events.test {
+                assertEquals(EdifikanaApplicationEvent.NavigateBack, awaitItem())
+            }
+        }
+        viewModel.removeProperty()
+
+        coVerify { propertyManager.removeProperty(propertyId) }
+        verificationJob.join()
+    }
+
+    @Test
+    fun `test removeProperty with failure shows error snackbar`() = runBlockingTest {
+        val propertyId = PropertyId("123")
+        coEvery { propertyManager.removeProperty(propertyId) } returns Result.failure(Exception("Error"))
+        coEvery { stringProvider.getString(Res.string.error_message_unexpected_error) } returns "There was an unexpected error."
+
+        viewModel.loadContent(propertyId)
+
+        val verificationJob = launch {
+            applicationEventReceiver.events.test {
+                assertEquals(
+                    EdifikanaApplicationEvent.ShowSnackbar("There was an unexpected error."),
+                    awaitItem()
+                )
+            }
+        }
+        viewModel.removeProperty()
+
+        coVerify { propertyManager.removeProperty(propertyId) }
+        verificationJob.join()
     }
 }

@@ -26,5 +26,6 @@ private fun PropertyScreenPreview() = AppTheme {
         onSaveChangesSelected = { _, _ -> },
         onSuggestionSelected = { },
         onNewSuggestionsRequested = { _ -> },
+        onShowRemoveDialogSelected = { },
     )
 }

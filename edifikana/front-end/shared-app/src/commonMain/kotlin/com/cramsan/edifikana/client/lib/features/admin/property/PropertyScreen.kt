@@ -11,6 +11,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
@@ -19,6 +20,7 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -39,6 +41,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.management.ManagementDestination
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
+import com.cramsan.framework.core.compose.rememberDialogController
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
@@ -59,6 +62,7 @@ fun PropertyScreen(
     viewModel: PropertyViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val dialogController = rememberDialogController()
 
     /**
      * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
@@ -68,10 +72,20 @@ fun PropertyScreen(
     }
 
     val screenScope = rememberCoroutineScope()
-    screenScope.launch {
-        viewModel.events.collect { event ->
-            when (event) {
-                PropertyEvent.Noop -> Unit
+    LaunchedEffect(screenScope) {
+        screenScope.launch {
+            viewModel.events.collect { event ->
+                when (event) {
+                    PropertyEvent.ShowRemoveDialog -> {
+                        dialogController.showDialog(
+                            ConfirmRemoveDialog(
+                                onConfirmed = {
+                                    viewModel.removeProperty()
+                                }
+                            )
+                        )
+                    }
+                }
             }
         }
     }
@@ -93,8 +107,12 @@ fun PropertyScreen(
         },
         onNewSuggestionsRequested = {
             viewModel.requestNewSuggestions(it)
+        },
+        onShowRemoveDialogSelected = {
+            viewModel.showRemoveDialog()
         }
     )
+    dialogController.Render()
 }
 
 /**
@@ -111,6 +129,7 @@ internal fun PropertyContent(
     onSaveChangesSelected: (name: String, address: String) -> Unit,
     onSuggestionSelected: (suggestion: String) -> Unit,
     onNewSuggestionsRequested: (String) -> Unit,
+    onShowRemoveDialogSelected: () -> Unit,
 ) {
     var propertyName by remember(content) { mutableStateOf(content.propertyName.orEmpty()) }
     var address by remember(content) { mutableStateOf(content.address.orEmpty()) }
@@ -122,7 +141,14 @@ internal fun PropertyContent(
             EdifikanaTopBar(
                 title = content.propertyName.orEmpty(),
                 onNavigationIconSelected = onBackSelected,
-            )
+            ) {
+                IconButton(onClick = onShowRemoveDialogSelected) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Remove",
+                    )
+                }
+            }
         },
     ) { innerPadding ->
         Box(

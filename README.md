@@ -28,6 +28,7 @@ A lot of the code is kept in a shared module called **Framework** that abstract 
   - [Compose colors preview](https://plugins.jetbrains.com/plugin/21298-compose-colors-preview)
   - [Jetpack Compose](https://plugins.jetbrains.com/plugin/18409-jetpack-compose)
   - [Android Design Tools](https://plugins.jetbrains.com/plugin/22990-android-design-tools)
+  - [Image Diff](https://plugins.jetbrains.com/plugin/12691-image-diff)
 - Verify your Android SDK Manager is pointing to your android SDK _(installed from IDE or web)_
 - [Node JS](https://nodejs.org/en/download)
 - Node Version Manager (NVM) - _optional_

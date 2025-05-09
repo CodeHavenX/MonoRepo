@@ -71,21 +71,23 @@ class PropertyViewModel(
      * Add a new manager to the property.
      */
     fun addManager(email: String) {
-        val isEmailValid = validateEmail(email).isEmpty()
-        if (isEmailValid) {
-            updateUiState {
-                it.copy(
-                    managers = it.managers + email,
-                    addManagerError = false,
-                    addManagerEmail = "",
-                )
-            }
-        } else {
-            updateUiState {
-                it.copy(
-                    addManagerError = true,
-                    addManagerEmail = email,
-                )
+        viewModelScope.launch {
+            val isEmailValid = validateEmail(email).isEmpty()
+            if (isEmailValid) {
+                updateUiState {
+                    it.copy(
+                        managers = it.managers + email,
+                        addManagerError = false,
+                        addManagerEmail = "",
+                    )
+                }
+            } else {
+                updateUiState {
+                    it.copy(
+                        addManagerError = true,
+                        addManagerEmail = email,
+                    )
+                }
             }
         }
     }
@@ -94,10 +96,12 @@ class PropertyViewModel(
      * Remove a manager from the property.
      */
     fun removeManager(email: String) {
-        updateUiState {
-            it.copy(
-                managers = it.managers - email
-            )
+        viewModelScope.launch {
+            updateUiState {
+                it.copy(
+                    managers = it.managers - email
+                )
+            }
         }
     }
 

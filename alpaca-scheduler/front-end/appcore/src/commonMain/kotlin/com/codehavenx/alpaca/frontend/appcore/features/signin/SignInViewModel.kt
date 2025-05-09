@@ -37,10 +37,12 @@ class SignInViewModel(
      * Handle the username change.
      */
     fun onUsernameChanged(name: String) {
-        updateUiState {
-            it.copy(
-                content = it.content.copy(username = name)
-            )
+        viewModelScope.launch {
+            updateUiState {
+                it.copy(
+                    content = it.content.copy(username = name)
+                )
+            }
         }
     }
 
@@ -48,10 +50,12 @@ class SignInViewModel(
      * Handle the password change.
      */
     fun onPasswordChanged(password: String) {
-        updateUiState {
-            it.copy(
-                content = it.content.copy(password = password)
-            )
+        viewModelScope.launch {
+            updateUiState {
+                it.copy(
+                    content = it.content.copy(password = password)
+                )
+            }
         }
     }
 

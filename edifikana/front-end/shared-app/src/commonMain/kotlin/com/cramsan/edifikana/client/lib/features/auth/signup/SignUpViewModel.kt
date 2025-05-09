@@ -3,6 +3,7 @@ package com.cramsan.edifikana.client.lib.features.auth.signup
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
 import com.cramsan.edifikana.client.lib.features.auth.AuthRouteDestination
 import com.cramsan.edifikana.client.lib.managers.AuthManager
+import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logD
@@ -36,10 +37,12 @@ class SignUpViewModel(
      */
     fun onEmailValueChange(username: String) {
         // Here we can implement any validation logic.
-        updateUiState {
-            it.copy(
-                email = username
-            )
+        viewModelScope.launch {
+            updateUiState {
+                it.copy(
+                    email = username
+                )
+            }
         }
     }
 
@@ -48,10 +51,12 @@ class SignUpViewModel(
      */
     fun onPhoneNumberValueChange(username: String) {
         // Here we can implement any validation logic.
-        updateUiState {
-            it.copy(
-                phoneNumber = username
-            )
+        viewModelScope.launch {
+            updateUiState {
+                it.copy(
+                    phoneNumber = username
+                )
+            }
         }
     }
 
@@ -60,10 +65,12 @@ class SignUpViewModel(
      */
     fun onPasswordValueChange(password: String) {
         // Here we can implement any validation logic.
-        updateUiState {
-            it.copy(
-                password = password
-            )
+        viewModelScope.launch {
+            updateUiState {
+                it.copy(
+                    password = password
+                )
+            }
         }
     }
 
@@ -72,10 +79,12 @@ class SignUpViewModel(
      */
     fun onFirstNameValueChange(firstName: String) {
         // Here we can implement any validation logic.
-        updateUiState {
-            it.copy(
-                firstName = firstName
-            )
+        viewModelScope.launch {
+            updateUiState {
+                it.copy(
+                    firstName = firstName
+                )
+            }
         }
     }
 
@@ -84,10 +93,12 @@ class SignUpViewModel(
      */
     fun onLastNameValueChange(lastName: String) {
         // Here we can implement any validation logic.
-        updateUiState {
-            it.copy(
-                lastName = lastName
-            )
+        viewModelScope.launch {
+            updateUiState {
+                it.copy(
+                    lastName = lastName
+                )
+            }
         }
     }
 
@@ -125,7 +136,6 @@ class SignUpViewModel(
             if (errorMessages.isNotEmpty()) {
                 updateUiState {
                     it.copy(
-
                         errorMessage = errorMessages
                     )
                 }
@@ -145,10 +155,10 @@ class SignUpViewModel(
                 updateUiState {
                     it.copy(
                         isLoading = false,
-
-                        errorMessage = listOf("Oops! Something went wrong. Please try again.")
+                        errorMessage = listOf(getErrorMessage(exception))
                     )
                 }
+
                 return@launch
             }
 
@@ -182,16 +192,35 @@ class SignUpViewModel(
      * Called when the policy checkbox is checked or unchecked.
      */
     fun onPolicyChecked(checked: Boolean) {
-        updateUiState {
-            it.copy(
+        viewModelScope.launch {
+            updateUiState {
+                it.copy(
 
-                policyChecked = checked,
-                registerEnabled = checked,
-            )
+                    policyChecked = checked,
+                    registerEnabled = checked,
+                )
+            }
         }
     }
 
     companion object {
         private const val TAG = "SignUpViewModel"
+    }
+
+    /**
+     * Get the custom client error message based on the exception type.
+     */
+    private suspend fun getErrorMessage(exception: Throwable): String {
+        return when (exception) {
+            is ClientRequestExceptions.UnauthorizedException ->
+                "Invalid login credentials. Please check your " +
+                    "username and password and try again."
+
+            is ClientRequestExceptions.ConflictException ->
+                "This email is already registered. You can reset your " +
+                    "password or use another email."
+
+            else -> getString(Res.string.error_message_unexpected_error)
+        }
     }
 }

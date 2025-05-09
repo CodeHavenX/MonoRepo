@@ -221,7 +221,7 @@ class SignUpViewModel(
                 "This email is already registered. You can reset your " +
                     "password or use another email."
 
-            else -> getString(Res.string.error_message_unexpected_error)
+            else -> stringProvider.getString(Res.string.error_message_unexpected_error)
         }
     }
 }

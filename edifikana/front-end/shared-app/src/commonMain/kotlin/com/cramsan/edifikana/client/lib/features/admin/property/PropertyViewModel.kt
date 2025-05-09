@@ -151,41 +151,6 @@ class PropertyViewModel(
         }
     }
 
-    /**
-     * Select a suggestion.
-     */
-    fun selectSuggestion(staffSuggestion: String) {
-        addManager(staffSuggestion)
-    }
-
-    /**
-     * Request new suggestions based on the query.
-     */
-    @Suppress("MagicNumber")
-    fun requestNewSuggestions(query: String) {
-        if (query.length < 3) {
-            updateUiState {
-                it.copy(
-                    suggestions = emptyList(),
-                )
-            }
-            return
-        }
-        suggestionQueryJob?.cancel()
-        suggestionQueryJob = null
-        suggestionQueryJob = viewModelScope.launch {
-            val suggestions = cachedStaff
-                .filter { it.email?.contains(query) == true }
-                .mapNotNull { it.email }
-            updateUiState {
-                it.copy(
-                    suggestions = suggestions,
-                    addManagerEmail = query,
-                )
-            }
-        }
-    }
-
     companion object {
         private const val TAG = "PropertyViewModel"
     }

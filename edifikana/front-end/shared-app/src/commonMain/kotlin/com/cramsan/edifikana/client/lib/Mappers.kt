@@ -6,6 +6,7 @@ import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.StaffRole
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.framework.core.compose.resources.StringProvider
+import com.cramsan.framework.utils.time.Chronos
 import edifikana_lib.Res
 import edifikana_lib.event_type_delivery
 import edifikana_lib.event_type_guest
@@ -25,7 +26,6 @@ import edifikana_lib.time_card_event_clock_in
 import edifikana_lib.time_card_event_clock_out
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.stringResource
 
@@ -66,7 +66,7 @@ private val dateTimeFormatter = LocalDateTime.Formats.ISO
 fun Long?.toFriendlyDateTime(): String {
     if (this == null) return ""
 
-    val tz = TimeZone.currentSystemDefault()
+    val tz = Chronos.timeZone()
     val instant = Instant.fromEpochSeconds(this)
     return dateTimeFormatter.format(instant.toLocalDateTime(tz))
 }

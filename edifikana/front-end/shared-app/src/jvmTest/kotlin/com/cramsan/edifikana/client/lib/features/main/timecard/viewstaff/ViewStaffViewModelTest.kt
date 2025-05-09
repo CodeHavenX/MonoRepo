@@ -15,6 +15,7 @@ import com.cramsan.edifikana.lib.model.StaffRole
 import com.cramsan.edifikana.lib.model.StaffStatus
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
+import com.cramsan.framework.annotations.TestOnly
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.SharedFlowApplicationReceiver
@@ -25,6 +26,7 @@ import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.test.TestBase
+import com.cramsan.framework.utils.time.Chronos
 import edifikana_lib.Res
 import edifikana_lib.role_admin
 import edifikana_lib.role_security
@@ -34,13 +36,15 @@ import edifikana_lib.title_timecard_view_staff
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
+import kotlinx.datetime.TimeZone
 import org.junit.jupiter.api.BeforeEach
 
-@OptIn(ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalCoroutinesApi::class, TestOnly::class)
 class ViewStaffViewModelTest : TestBase() {
 
     private lateinit var staffManager: StaffManager
@@ -76,6 +80,13 @@ class ViewStaffViewModelTest : TestBase() {
             stringProvider = stringProvider,
             dependencies,
         )
+        Chronos.initializeClock(mockk())
+        Chronos.setTimeZoneOverride(TimeZone.UTC)
+    }
+
+    @AfterTest
+    fun tearDown() {
+        Chronos.clear()
     }
 
     @Test
@@ -187,7 +198,7 @@ class ViewStaffViewModelTest : TestBase() {
             applicationEventReceiver.events.test {
                 assertEquals(
                     EdifikanaApplicationEvent.ShareContent(
-                        "Clock-In de John Doe\n1970-09-30T02:35:43",
+                        "Clock-In de John Doe\n1970-09-30T06:35:43",
                         CoreUri.createUri("http://example.com/image.jpg")
                     ),
                     awaitItem(),

@@ -19,6 +19,7 @@ import com.cramsan.edifikana.server.core.service.password.SimplePasswordGenerato
 import com.cramsan.edifikana.server.settings.Overrides
 import com.cramsan.framework.assertlib.assertFalse
 import com.cramsan.framework.configuration.Configuration
+import com.cramsan.framework.utils.time.Chronos
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.SettingsSessionManager
@@ -50,8 +51,9 @@ val ApplicationModule = module {
         createJson()
     }
 
-    single<Clock> {
-        Clock.System
+    single<Clock>(createdAtStart = true) {
+        Chronos.initializeClock(clock = Clock.System)
+        Chronos.clock()
     }
 
     singleOf(::SimplePasswordGenerator) {

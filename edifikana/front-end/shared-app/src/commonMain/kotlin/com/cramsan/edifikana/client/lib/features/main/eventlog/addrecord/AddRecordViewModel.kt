@@ -11,11 +11,11 @@ import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.core.compose.resources.StringProvider
+import com.cramsan.framework.utils.time.Chronos
 import edifikana_lib.Res
 import edifikana_lib.string_other
 import edifikana_lib.title_event_log_add
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
 
 /**
  * Represents the UI state of the Add Record screen.
@@ -23,7 +23,6 @@ import kotlinx.datetime.Clock
 class AddRecordViewModel(
     private val staffManager: StaffManager,
     private val eventLogManager: EventLogManager,
-    private val clock: Clock,
     private val propertyManager: PropertyManager,
     private val stringProvider: StringProvider,
     dependencies: ViewModelDependencies,
@@ -83,7 +82,7 @@ class AddRecordViewModel(
         val property: PropertyId = propertyManager.activeProperty().value ?: error("No active property")
         val eventLogRecord = EventLogRecordModel.createTemporary(
             staffPk = staffDocumentId,
-            timeRecorded = clock.now().epochSeconds,
+            timeRecorded = Chronos.currentInstant().epochSeconds,
             unit = unit.trim(),
             eventType = eventType ?: EventLogEventType.INCIDENT,
             fallbackStaffName = fallbackStaffName?.trim(),

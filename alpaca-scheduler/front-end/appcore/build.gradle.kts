@@ -41,6 +41,7 @@ kotlin {
             implementation(project(":framework:crashhandler"))
             implementation(project(":framework:core"))
             implementation(project(":framework:core-compose"))
+            implementation(project(":framework:utils"))
 
             implementation(project(":alpaca-scheduler:shared"))
 

@@ -2,6 +2,7 @@ package com.cramsan.framework.sample.shared.di
 
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.sample.shared.init.Initializer
+import com.cramsan.framework.utils.time.Chronos
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -12,7 +13,10 @@ import org.koin.dsl.module
 
 internal val ExtrasModule = module {
 
-    single<Clock> { Clock.System }
+    single<Clock>(createdAtStart = true) {
+        Chronos.initializeClock(clock = Clock.System)
+        Chronos.clock()
+    }
 
     single {
         CoroutineExceptionHandler { _, throwable ->

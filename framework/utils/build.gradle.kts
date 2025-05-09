@@ -28,6 +28,8 @@ kotlin {
             dependencies {
                 implementation(project(":framework:interfacelib"))
                 implementation(project(":framework:assert"))
+
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:_")
             }
         }
         commonTest {

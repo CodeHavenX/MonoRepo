@@ -13,6 +13,7 @@ import com.cramsan.edifikana.server.core.service.PropertyService
 import com.cramsan.edifikana.server.core.service.StaffService
 import com.cramsan.edifikana.server.core.service.TimeCardService
 import com.cramsan.edifikana.server.core.service.UserService
+import com.cramsan.framework.annotations.TestOnly
 import com.cramsan.framework.assertlib.AssertUtil
 import com.cramsan.framework.assertlib.AssertUtilInterface
 import com.cramsan.framework.assertlib.implementation.AssertUtilImpl
@@ -32,8 +33,10 @@ import com.cramsan.framework.thread.ThreadUtilDelegate
 import com.cramsan.framework.thread.ThreadUtilInterface
 import com.cramsan.framework.thread.implementation.ThreadUtilImpl
 import com.cramsan.framework.thread.implementation.ThreadUtilJVM
+import com.cramsan.framework.utils.time.Chronos
 import io.mockk.mockk
 import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
 import kotlinx.serialization.json.Json
 import org.apache.logging.log4j.Logger
 import org.koin.core.module.dsl.singleOf
@@ -88,10 +91,15 @@ fun testKtorModule() = module {
 /**
  * Produce a test module for the application.
  */
+@OptIn(TestOnly::class)
 fun testApplicationModule() = module {
     single<Json> { createJson() }
 
-    single<Clock> { mockk() }
+    single<Clock> {
+        Chronos.initializeClock(clock = mockk())
+        Chronos.setTimeZoneOverride(TimeZone.UTC)
+        Chronos.clock()
+    }
 
     single<ContextRetriever> { mockk() }
 

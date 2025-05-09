@@ -19,12 +19,12 @@ import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.logW
+import com.cramsan.framework.utils.time.Chronos
 import edifikana_lib.Res
 import edifikana_lib.error_message_currently_uploading
 import edifikana_lib.title_timecard_view_staff
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
 import kotlin.random.Random
 
 /**
@@ -35,7 +35,6 @@ class ViewStaffViewModel(
     private val timeCardManager: TimeCardManager,
     private val storageService: StorageService,
     private val propertyManager: PropertyManager,
-    private val clock: Clock,
     private val stringProvider: StringProvider,
     dependencies: ViewModelDependencies,
 ) : BaseViewModel<ViewStaffEvent, ViewStaffUIState>(dependencies, ViewStaffUIState.Empty, TAG) {
@@ -137,7 +136,7 @@ class ViewStaffViewModel(
             staffPk = staffPk,
             propertyId = PropertyId(propertyId),
             eventType = timeCardEventType,
-            eventTime = clock.now().epochSeconds,
+            eventTime = Chronos.currentInstant().epochSeconds,
             imageUrl = null,
             imageRef = null,
         )

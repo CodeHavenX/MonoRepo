@@ -19,7 +19,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlinx.datetime.Clock
 
 /**
  * Manager for attachments.
@@ -28,7 +27,6 @@ class AttachmentManager(
     private val eventLogService: EventLogService,
     private val storageService: StorageService,
     private val attachmentDao: FileAttachmentDao,
-    private val clock: Clock,
     private val dependencies: ManagerDependencies,
     private val ioDependencies: IODependencies,
 ) {
@@ -44,7 +42,7 @@ class AttachmentManager(
     ): Result<Unit> = dependencies.getOrCatch(TAG) {
         logI(TAG, "Adding attachment to event log record: $eventLogRecordPK")
         fileUris.forEach { fileUri ->
-            val entity = FileAttachmentEntity.create(eventLogRecordPK.eventLogEntryId, clock, fileUri)
+            val entity = FileAttachmentEntity.create(eventLogRecordPK.eventLogEntryId, fileUri)
             attachmentDao.insert(entity)
         }
         triggerFullUpload()

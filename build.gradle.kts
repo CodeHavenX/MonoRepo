@@ -77,4 +77,7 @@ tasks.register("releaseAll") {
     dependsOn("alpaca-scheduler:front-end:app-android:release")
     dependsOn("alpaca-scheduler:front-end:app-jvm:release")
     dependsOn("alpaca-scheduler:front-end:app-wasm:release")
+
+    dependsOn("token-manager:mpp-lib:release")
+    dependsOn("token-manager:desktop-app:release")
 }

@@ -80,3 +80,6 @@ include("alpaca-scheduler:front-end:appcore-db")
 include("alpaca-scheduler:front-end:app-android")
 include("alpaca-scheduler:front-end:app-jvm")
 include("alpaca-scheduler:front-end:app-wasm")
+
+include("token-manager:mpp-lib")
+include("token-manager:desktop-app")

@@ -8,6 +8,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -62,10 +63,12 @@ fun AddSecondaryStaffScreen(
     }
 
     val screenScope = rememberCoroutineScope()
-    screenScope.launch {
-        viewModel.events.collect { event ->
-            when (event) {
-                AddSecondaryStaffEvent.Noop -> Unit
+    LaunchedEffect(screenScope) {
+        screenScope.launch {
+            viewModel.events.collect { event ->
+                when (event) {
+                    AddSecondaryStaffEvent.Noop -> Unit
+                }
             }
         }
     }

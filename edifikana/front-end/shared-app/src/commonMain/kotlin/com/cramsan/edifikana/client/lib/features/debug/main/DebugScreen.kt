@@ -18,6 +18,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -62,10 +63,12 @@ fun DebugScreen(
     }
 
     val screenScope = rememberCoroutineScope()
-    screenScope.launch {
-        viewModel.events.collect { event ->
-            when (event) {
-                DebugEvent.Noop -> Unit
+    LaunchedEffect(screenScope) {
+        screenScope.launch {
+            viewModel.events.collect { event ->
+                when (event) {
+                    DebugEvent.Noop -> Unit
+                }
             }
         }
     }
@@ -201,16 +204,14 @@ private fun StringRow(
     field: Field.StringField,
     modifier: Modifier,
     onValueChanged: (String, String) -> Unit,
-    onFocusChange: (String, String) -> Unit,
+    onFocusLost: (String, String) -> Unit,
 ) {
     var stringValue by remember(field.value) { mutableStateOf(field.value) }
 
     val fieldModifier = Modifier
         .fillMaxWidth()
-        .onFocusChanged {
-            if (!it.isFocused) {
-                onFocusChange(field.key, stringValue)
-            }
+        .hasLostFocus {
+            onFocusLost(field.key, stringValue)
         }
 
     Column(
@@ -243,6 +244,23 @@ private fun StringRow(
                 it,
                 style = MaterialTheme.typography.labelMedium,
             )
+        }
+    }
+}
+
+@Composable
+fun Modifier.hasLostFocus(onFocusLost: () -> Unit): Modifier {
+    var hasFocus by remember { mutableStateOf(false) }
+    var initialFocusState  by remember { mutableStateOf(true) }
+    LaunchedEffect(hasFocus, initialFocusState) {
+        if (!hasFocus && !initialFocusState) {
+            onFocusLost()
+        }
+    }
+    return onFocusChanged {
+        hasFocus = it.isFocused
+        if (it.hasFocus) {
+            initialFocusState = false
         }
     }
 }

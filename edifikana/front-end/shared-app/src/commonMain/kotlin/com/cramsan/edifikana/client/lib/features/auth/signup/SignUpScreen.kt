@@ -18,6 +18,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -64,10 +65,12 @@ fun SignUpScreen(
     }
 
     val screenScope = rememberCoroutineScope()
-    screenScope.launch {
-        viewModel.events.collect { event ->
-            when (event) {
-                SignUpEvent.Noop -> Unit
+    LaunchedEffect(screenScope) {
+        screenScope.launch {
+            viewModel.events.collect { event ->
+                when (event) {
+                    SignUpEvent.Noop -> Unit
+                }
             }
         }
     }

@@ -62,6 +62,14 @@ class PropertyManager(
         propertyService.updateProperty(propertyId, name, address).getOrThrow()
     }
 
+    /**
+     * Remove the property with the given [propertyId].
+     */
+    suspend fun removeProperty(propertyId: PropertyId): Result<Unit> = dependencies.getOrCatch(TAG) {
+        logI(TAG, "removeProperty")
+        propertyService.removeProperty(propertyId)
+    }
+
     companion object {
         private const val TAG = "PropertyManager"
     }

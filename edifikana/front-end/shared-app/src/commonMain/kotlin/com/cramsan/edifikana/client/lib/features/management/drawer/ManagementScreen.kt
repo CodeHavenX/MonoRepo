@@ -22,6 +22,7 @@ import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -49,21 +50,23 @@ fun ManagementScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     val screenScope = rememberCoroutineScope()
-    screenScope.launch {
-        viewModel.events.collect { event ->
-            when (event) {
-                ManagementEvent.ToggleDrawer -> {
-                    if (!drawerState.isAnimationRunning) {
-                        if (drawerState.isOpen) {
-                            drawerState.close()
-                        } else {
-                            drawerState.open()
+    LaunchedEffect(screenScope) {
+        screenScope.launch {
+            viewModel.events.collect { event ->
+                when (event) {
+                    ManagementEvent.ToggleDrawer -> {
+                        if (!drawerState.isAnimationRunning) {
+                            if (drawerState.isOpen) {
+                                drawerState.close()
+                            } else {
+                                drawerState.open()
+                            }
                         }
                     }
-                }
-                ManagementEvent.CloseDrawer -> {
-                    if (!drawerState.isAnimationRunning) {
-                        drawerState.close()
+                    ManagementEvent.CloseDrawer -> {
+                        if (!drawerState.isAnimationRunning) {
+                            drawerState.close()
+                        }
                     }
                 }
             }

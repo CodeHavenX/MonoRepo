@@ -9,6 +9,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -51,18 +52,20 @@ private fun ApplicationContent(
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    scope.launch {
-        viewModel.events.collect { event ->
-            when (event) {
-                is EdifikanaApplicationViewModelEvent.EdifikanaApplicationEventWrapper -> {
-                    handleApplicationEvent(
-                        eventHandler = eventHandler,
-                        navController = navController,
-                        scope = scope,
-                        snackbarHostState = snackbarHostState,
-                        viewModel = viewModel,
-                        applicationEvent = event.event,
-                    )
+    LaunchedEffect(scope) {
+        scope.launch {
+            viewModel.events.collect { event ->
+                when (event) {
+                    is EdifikanaApplicationViewModelEvent.EdifikanaApplicationEventWrapper -> {
+                        handleApplicationEvent(
+                            eventHandler = eventHandler,
+                            navController = navController,
+                            scope = scope,
+                            snackbarHostState = snackbarHostState,
+                            viewModel = viewModel,
+                            applicationEvent = event.event,
+                        )
+                    }
                 }
             }
         }

@@ -50,7 +50,7 @@ class CameraActivity : ComponentActivity() {
                 cameraDelegate.requestCameraPermission()
             }
 
-            LaunchedEffect (scope) {
+            LaunchedEffect(scope) {
                 scope.launch {
                     cameraDelegate.event.collect { event ->
                         when (event) {

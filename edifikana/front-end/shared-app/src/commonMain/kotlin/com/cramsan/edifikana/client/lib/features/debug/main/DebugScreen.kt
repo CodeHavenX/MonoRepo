@@ -249,9 +249,9 @@ private fun StringRow(
 }
 
 @Composable
-fun Modifier.hasLostFocus(onFocusLost: () -> Unit): Modifier {
+private fun Modifier.hasLostFocus(onFocusLost: () -> Unit): Modifier {
     var hasFocus by remember { mutableStateOf(false) }
-    var initialFocusState  by remember { mutableStateOf(true) }
+    var initialFocusState by remember { mutableStateOf(true) }
     LaunchedEffect(hasFocus, initialFocusState) {
         if (!hasFocus && !initialFocusState) {
             onFocusLost()

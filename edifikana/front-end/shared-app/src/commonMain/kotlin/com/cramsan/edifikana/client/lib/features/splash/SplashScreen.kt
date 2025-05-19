@@ -4,9 +4,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
@@ -34,11 +34,12 @@ fun SplashScreen(
         viewModel.enforceAuth()
     }
 
-    val screenScope = rememberCoroutineScope()
-    screenScope.launch {
-        viewModel.events.collect { event ->
-            when (event) {
-                SplashEvent.Noop -> Unit
+    LaunchedEffect(Unit) {
+        launch {
+            viewModel.events.collect { event ->
+                when (event) {
+                    SplashEvent.Noop -> Unit
+                }
             }
         }
     }

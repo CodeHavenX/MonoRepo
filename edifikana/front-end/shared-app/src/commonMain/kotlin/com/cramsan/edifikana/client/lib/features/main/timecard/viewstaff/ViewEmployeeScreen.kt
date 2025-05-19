@@ -14,9 +14,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -53,27 +53,31 @@ fun ViewStaffScreen(
     edifikanaApplicationViewModel: EdifikanaApplicationViewModel = koinInject(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val screenScope = rememberCoroutineScope()
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         viewModel.loadStaff(staffPK)
     }
 
-    screenScope.launch {
-        viewModel.events.collect { event ->
-            when (event) {
-                ViewStaffEvent.Noop -> Unit
+    LaunchedEffect(Unit) {
+        launch {
+            viewModel.events.collect { event ->
+                when (event) {
+                    ViewStaffEvent.Noop -> Unit
+                }
             }
         }
     }
 
-    screenScope.launch {
-        edifikanaApplicationViewModel.delegatedEvents.collect { event ->
-            when (event) {
-                is EdifikanaApplicationDelegatedEvent.HandleReceivedImage -> {
-                    viewModel.recordClockEvent(event.uri)
+    LaunchedEffect(Unit) {
+        launch {
+            edifikanaApplicationViewModel.delegatedEvents.collect { event ->
+                when (event) {
+                    is EdifikanaApplicationDelegatedEvent.HandleReceivedImage -> {
+                        viewModel.recordClockEvent(event.uri)
+                    }
+
+                    else -> Unit
                 }
-                else -> Unit
             }
         }
     }

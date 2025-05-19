@@ -5,9 +5,9 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
@@ -27,7 +27,6 @@ fun HaltUtilScreen(
     viewModel: HaltUtilViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val screenScope = rememberCoroutineScope()
 
     /**
      * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
@@ -39,10 +38,12 @@ fun HaltUtilScreen(
         // Call this feature's viewModel
     }
 
-    screenScope.launch {
-        viewModel.events.collect { event ->
-            when (event) {
-                HaltUtilEvent.Noop -> Unit
+    LaunchedEffect(Unit) {
+        launch {
+            viewModel.events.collect { event ->
+                when (event) {
+                    HaltUtilEvent.Noop -> Unit
+                }
             }
         }
     }

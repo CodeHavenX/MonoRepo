@@ -7,6 +7,7 @@ import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.addCallback
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -49,25 +50,28 @@ class CameraActivity : ComponentActivity() {
                 cameraDelegate.requestCameraPermission()
             }
 
-            scope.launch {
-                cameraDelegate.event.collect { event ->
-                    when (event) {
-                        is CameraEvent.CompleteFlow -> {
-                            setResult(
-                                RESULT_OK,
-                                Intent().apply {
-                                    putExtra(RESULT_URI, event.uri.toString())
-                                }
-                            )
-                            finish()
-                        }
-                        is CameraEvent.CancelFlow -> finish()
-                        is CameraEvent.OpenSettings -> {
-                            val intent = Intent(
-                                Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                Uri.fromParts("package", this@CameraActivity.packageName, null)
-                            )
-                            startActivity(intent)
+            LaunchedEffect(scope) {
+                scope.launch {
+                    cameraDelegate.event.collect { event ->
+                        when (event) {
+                            is CameraEvent.CompleteFlow -> {
+                                setResult(
+                                    RESULT_OK,
+                                    Intent().apply {
+                                        putExtra(RESULT_URI, event.uri.toString())
+                                    }
+                                )
+                                finish()
+                            }
+
+                            is CameraEvent.CancelFlow -> finish()
+                            is CameraEvent.OpenSettings -> {
+                                val intent = Intent(
+                                    Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                    Uri.fromParts("package", this@CameraActivity.packageName, null)
+                                )
+                                startActivity(intent)
+                            }
                         }
                     }
                 }

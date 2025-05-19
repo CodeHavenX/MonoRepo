@@ -9,9 +9,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
@@ -55,11 +55,12 @@ fun StaffListScreen(
         // Call this feature's viewModel
     }
 
-    val screenScope = rememberCoroutineScope()
-    screenScope.launch {
-        viewModel.events.collect { event ->
-            when (event) {
-                StaffListEvent.Noop -> Unit
+    LaunchedEffect(Unit) {
+        launch {
+            viewModel.events.collect { event ->
+                when (event) {
+                    StaffListEvent.Noop -> Unit
+                }
             }
         }
     }

@@ -12,9 +12,9 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import com.cramsan.edifikana.client.lib.features.admin.properties.PropertyManagerScreen
 import com.cramsan.edifikana.client.lib.features.admin.stafflist.StaffListScreen
@@ -42,11 +42,12 @@ fun HubScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    val screenScope = rememberCoroutineScope()
-    screenScope.launch {
-        viewModel.events.collect { event ->
-            when (event) {
-                HubEvent.Noop -> Unit
+    LaunchedEffect(Unit) {
+        launch {
+            viewModel.events.collect { event ->
+                when (event) {
+                    HubEvent.Noop -> Unit
+                }
             }
         }
     }

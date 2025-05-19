@@ -31,7 +31,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -71,9 +70,8 @@ fun PropertyScreen(
         viewModel.loadContent(destination.propertyId)
     }
 
-    val screenScope = rememberCoroutineScope()
-    LaunchedEffect(screenScope) {
-        screenScope.launch {
+    LaunchedEffect(Unit) {
+        launch {
             viewModel.events.collect { event ->
                 when (event) {
                     PropertyEvent.ShowRemoveDialog -> {

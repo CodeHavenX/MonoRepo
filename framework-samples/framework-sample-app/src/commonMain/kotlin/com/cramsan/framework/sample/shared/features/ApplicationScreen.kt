@@ -9,7 +9,6 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
@@ -35,17 +34,16 @@ private fun ApplicationContent(
 ) {
     val navController = rememberNavController()
 
-    val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    LaunchedEffect(scope) {
-        scope.launch {
+    LaunchedEffect(Unit) {
+        launch {
             viewModel.events.collect { event ->
                 when (event) {
                     is SampleApplicationViewModelEvent.SampleApplicationEventWrapper -> {
                         handleApplicationEvent(
                             navController = navController,
-                            scope = scope,
+                            scope = this,
                             snackbarHostState = snackbarHostState,
                             applicationEvent = event.event,
                         )

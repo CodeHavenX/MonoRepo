@@ -12,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -49,18 +48,17 @@ private fun ApplicationContent(
 ) {
     val navController = rememberNavController()
 
-    val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    LaunchedEffect(scope) {
-        scope.launch {
+    LaunchedEffect(Unit) {
+        launch {
             viewModel.events.collect { event ->
                 when (event) {
                     is EdifikanaApplicationViewModelEvent.EdifikanaApplicationEventWrapper -> {
                         handleApplicationEvent(
                             eventHandler = eventHandler,
                             navController = navController,
-                            scope = scope,
+                            scope = this,
                             snackbarHostState = snackbarHostState,
                             viewModel = viewModel,
                             applicationEvent = event.event,

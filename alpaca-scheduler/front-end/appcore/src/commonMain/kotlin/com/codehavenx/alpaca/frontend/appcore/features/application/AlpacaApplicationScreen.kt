@@ -14,7 +14,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -54,7 +53,6 @@ fun AlpacaApplicationScreen(
     @Suppress("UnusedParameter")
     eventHandler: PlatformEventHandler,
 ) {
-    val scope = rememberCoroutineScope()
     val uiState by viewModel.uiState.collectAsState()
     val navController = rememberNavController()
 
@@ -62,8 +60,8 @@ fun AlpacaApplicationScreen(
         // Do something on create
     }
 
-    LaunchedEffect(scope) {
-        scope.launch {
+    LaunchedEffect(Unit) {
+        launch {
             viewModel.events.collect { applicationEvent ->
                 when (applicationEvent) {
                     is AlpacaApplicationViewModelEvent.AlpacaApplicationEventWrapper -> handleEvent(

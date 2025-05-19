@@ -15,7 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
@@ -48,9 +47,8 @@ fun SignInScreen(
     LifecycleEventEffect(Lifecycle.Event.ON_STOP) {
     }
 
-    val screenScope = rememberCoroutineScope()
-    LaunchedEffect(screenScope) {
-        screenScope.launch {
+    LaunchedEffect(Unit) {
+        launch {
             viewModel.events.collect { event ->
                 when (event) {
                     SignInEvent.Noop -> Unit

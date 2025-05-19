@@ -6,8 +6,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
@@ -22,16 +20,14 @@ import org.koin.compose.viewmodel.koinViewModel
 fun MainMenuScreen(
     viewModel: MainMenuViewModel = koinViewModel(),
 ) {
-    val screenScope = rememberCoroutineScope()
-
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
     }
 
     LifecycleEventEffect(Lifecycle.Event.ON_STOP) {
     }
 
-    LaunchedEffect(screenScope) {
-        screenScope.launch {
+    LaunchedEffect(Unit) {
+        launch {
             viewModel.events.collect { event ->
                 when (event) {
                     MainMenuEvent.Noop -> Unit

@@ -9,12 +9,16 @@ import com.cramsan.edifikana.server.core.service.models.requests.GetUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdatePasswordRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdateUserRequest
 import com.cramsan.framework.logging.logD
+import com.cramsan.framework.logging.logI
+import io.github.jan.supabase.auth.Auth
+import io.github.jan.supabase.auth.providers.builtin.OTP
 
 /**
  * Service for user operations.
  */
 class UserService(
     private val userDatabase: UserDatabase,
+    private val auth: Auth,
 ) {
 
     /**
@@ -26,9 +30,10 @@ class UserService(
         password: String,
         firstName: String,
         lastName: String,
+        authorizeMagicLink: Boolean = false,
     ): Result<User> {
         logD(TAG, "createUser")
-        return userDatabase.createUser(
+        val result = userDatabase.createUser(
             request = CreateUserRequest(
                 email = email,
                 phoneNumber = phoneNumber,
@@ -37,6 +42,13 @@ class UserService(
                 lastName = lastName,
             ),
         )
+        // Send a magic link if the user is created successfully and sendMagicLink is true
+        if (authorizeMagicLink && result.isSuccess) {
+            logI(TAG, "Sending magic link to user $email")
+            signInWithMagicLink(email)
+        }
+
+        return result
     }
 
     /**
@@ -45,6 +57,7 @@ class UserService(
     suspend fun getUser(
         id: UserId,
         checkGlobalPerms: Boolean,
+        authorizeMagicLink: Boolean = false,
     ): User? {
         logD(TAG, "getUser")
         val user = userDatabase.getUser(
@@ -53,6 +66,11 @@ class UserService(
                 checkGlobalPerms = checkGlobalPerms,
             ),
         ).getOrNull()
+        // Send a magic link if the user is not null and authorizeMagicLink is true
+        if (authorizeMagicLink && user != null) {
+            logI(TAG, "Sending magic link to user ${user.email}")
+            signInWithMagicLink(user.email)
+        }
 
         return user
     }
@@ -98,6 +116,7 @@ class UserService(
 
     /**
      * Updates the password for a user with the provided [userId].
+     * TODO: Remove as we are using passwordless authentication
      */
     suspend fun updatePassword(userId: UserId, password: String): Boolean {
         logD(TAG, "updatePassword")
@@ -107,6 +126,25 @@ class UserService(
                 password = password,
             ),
         ).getOrThrow()
+    }
+
+    /**
+     * Sends a magic link to the provided [email] using supabase auth
+     */
+    private suspend fun signInWithMagicLink(email: String) {
+        return try {
+            auth.signInWith(OTP) {
+                this.email = email
+            }
+            if (auth.currentUserOrNull() == null) {
+                logD(TAG, "Failed to sign in with magic link")
+            } else {
+                logD(TAG, "Successfully signed in with magic link")
+            }
+        } catch (e: Exception) {
+            logD(TAG, "Failed to sign in with magic link: ${e.message}")
+        }
+
     }
 
     companion object {

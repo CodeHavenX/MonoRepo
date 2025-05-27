@@ -57,7 +57,6 @@ class UserService(
     suspend fun getUser(
         id: UserId,
         checkGlobalPerms: Boolean,
-        authorizeMagicLink: Boolean = false,
     ): User? {
         logD(TAG, "getUser")
         val user = userDatabase.getUser(
@@ -66,11 +65,6 @@ class UserService(
                 checkGlobalPerms = checkGlobalPerms,
             ),
         ).getOrNull()
-        // Send a magic link if the user is not null and authorizeMagicLink is true
-        if (authorizeMagicLink && user != null) {
-            logI(TAG, "Sending magic link to user ${user.email}")
-            signInWithMagicLink(user.email)
-        }
 
         return user
     }
@@ -129,7 +123,7 @@ class UserService(
     }
 
     /**
-     * Sends a magic link to the provided [email] using supabase auth
+     * Sends a magic link to the provided [email]
      */
     private suspend fun signInWithMagicLink(email: String) {
         return try {
@@ -144,7 +138,6 @@ class UserService(
         } catch (e: Exception) {
             logD(TAG, "Failed to sign in with magic link: ${e.message}")
         }
-
     }
 
     companion object {

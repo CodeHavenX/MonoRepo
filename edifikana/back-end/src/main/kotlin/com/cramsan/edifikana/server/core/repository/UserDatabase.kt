@@ -49,4 +49,10 @@ interface UserDatabase {
      * indicating success.
      */
     suspend fun updatePassword(request: UpdatePasswordRequest): Result<Boolean>
+
+    /**
+     * Signs in a user with a magic link using the provided [email]. This method is used for passwordless
+     * sign in
+     */
+    suspend fun sendMagicLink(email: String): Result<Unit>
 }

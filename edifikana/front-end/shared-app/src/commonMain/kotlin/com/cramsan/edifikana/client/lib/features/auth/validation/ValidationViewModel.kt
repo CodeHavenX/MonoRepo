@@ -25,6 +25,15 @@ class ValidationViewModel(
         }
     }
 
+    /**
+     * Sign the user in with a magic link.
+     */
+    fun signInWithMagicLink(email: String, hashToken: String) {
+        viewModelScope.launch {
+            auth.signInWithMagicLink(email, hashToken)
+        }
+    }
+
     companion object {
         private const val TAG = "ValidationViewModel"
     }

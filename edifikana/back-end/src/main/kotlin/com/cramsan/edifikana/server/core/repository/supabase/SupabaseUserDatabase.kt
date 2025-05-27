@@ -14,6 +14,7 @@ import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.exception.AuthRestException
+import io.github.jan.supabase.auth.providers.builtin.OTP
 import io.github.jan.supabase.postgrest.Postgrest
 
 /**
@@ -133,6 +134,15 @@ class SupabaseUserDatabase(
         }
 
         true
+    }
+
+    /**
+     * Sends a magic link to the provided [email]
+     */
+    override suspend fun sendMagicLink(email: String): Result<Unit> = runSuspendCatching(TAG) {
+        auth.signInWith(OTP) {
+            this.email = email
+        }
     }
 
     companion object {

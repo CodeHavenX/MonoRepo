@@ -78,7 +78,6 @@ internal fun ValidationContent(
         modifier = modifier,
         topBar = {
             EdifikanaTopBar(
-                title = "Validation",
                 onNavigationIconSelected = onCloseClicked,
             )
         },

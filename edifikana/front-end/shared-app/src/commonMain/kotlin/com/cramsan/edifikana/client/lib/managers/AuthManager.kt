@@ -45,6 +45,17 @@ class AuthManager(
     }
 
     /**
+     * Sign in the user with a magic link that contains the user's [email] and a [hashToken] to verify.
+     */
+    suspend fun signInWithMagicLink(
+        email: String,
+        hashToken: String,
+    ): Result<UserModel> = dependencies.getOrCatch(TAG) {
+        logI(TAG, "signInWithMagicLink")
+        authService.signInWithMagicLink(email, hashToken).getOrThrow()
+    }
+
+    /**
      * Signs up the user with the given email and password.
      */
     suspend fun signUp(

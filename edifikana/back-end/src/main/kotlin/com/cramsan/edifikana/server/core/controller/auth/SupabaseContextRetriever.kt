@@ -5,13 +5,12 @@ import com.cramsan.edifikana.lib.serialization.HEADER_TOKEN_AUTH
 import com.cramsan.framework.assertlib.assertNull
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.auth.Auth
-import io.github.jan.supabase.auth.providers.builtin.OTP
 import io.ktor.server.application.ApplicationCall
 
 /**
  * A [ContextRetriever] that retrieves the client context from a supabse auth token.
  */
-class  SupabaseContextRetriever(
+class SupabaseContextRetriever(
     private val auth: Auth,
 ) : ContextRetriever {
 
@@ -35,15 +34,6 @@ class  SupabaseContextRetriever(
             userInfo = user,
             userId = UserId(user.id),
         )
-    }
-
-    /**
-     * Verify the user session from a magic link login with the provided [hash].
-     * TODO: Placeholder code for now.
-     */
-    suspend fun verifyMagicLink(hash: String ): Boolean {
-        val result = auth.verifyOTP(OTP.MagicLink(hash))
-        return result.isSuccess
     }
 
     companion object {

@@ -19,6 +19,7 @@ import com.cramsan.edifikana.server.di.SettingsModule
 import com.cramsan.edifikana.server.di.SupabaseStorageModule
 import com.cramsan.edifikana.server.di.createKtorModule
 import com.cramsan.edifikana.server.settings.Overrides
+import com.cramsan.framework.core.ktor.configureHealthEndpoint
 import com.cramsan.framework.logging.logI
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
@@ -61,6 +62,7 @@ fun Application.startServer() = runBlocking {
     val timeCardController: TimeCardController by inject()
     val healthCheckController: HealthCheckController by inject()
 
+    configureHealthEndpoint()
     configureEntryPoints(
         userController,
         eventLogController,

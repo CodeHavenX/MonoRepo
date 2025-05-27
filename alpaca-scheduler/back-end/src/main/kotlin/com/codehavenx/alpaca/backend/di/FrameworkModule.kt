@@ -61,12 +61,15 @@ val FrameworkModule = module(createdAtStart = true) {
         )
     }
 
-    single<EventLoggerInterface> {
-        val severity: Severity = when (get<Boolean>(named(IS_DEBUG_NAME))) {
+    single {
+        when (get<Boolean>(named(IS_DEBUG_NAME))) {
             true -> Severity.VERBOSE
             false -> Severity.VERBOSE
         }
-        val instance = EventLoggerImpl(severity, get(), get())
+    }
+
+    single<EventLoggerInterface> {
+        val instance = EventLoggerImpl(get(), get(), get())
         EventLogger.setInstance(instance)
         EventLogger.singleton
     }

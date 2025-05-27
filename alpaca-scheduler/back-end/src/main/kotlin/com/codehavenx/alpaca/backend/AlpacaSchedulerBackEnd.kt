@@ -9,6 +9,7 @@ import com.codehavenx.alpaca.backend.core.controller.UserController.Companion.re
 import com.codehavenx.alpaca.backend.di.ApplicationModule
 import com.codehavenx.alpaca.backend.di.FrameworkModule
 import com.codehavenx.alpaca.backend.di.createKtorModule
+import com.cramsan.framework.core.ktor.configureHealthEndpoint
 import com.cramsan.framework.logging.logI
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
@@ -44,6 +45,7 @@ fun Application.startServer() = runBlocking {
     val availabilityController: AvailabilityController by inject()
     val healthCheckController: HealthCheckController by inject()
 
+    configureHealthEndpoint()
     configureEntryPoints(userController, availabilityController, healthCheckController)
     startApplication()
 }

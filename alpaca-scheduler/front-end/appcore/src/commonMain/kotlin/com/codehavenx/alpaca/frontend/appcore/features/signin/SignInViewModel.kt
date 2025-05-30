@@ -1,6 +1,6 @@
 package com.codehavenx.alpaca.frontend.appcore.features.signin
 
-import com.codehavenx.alpaca.frontend.appcore.features.application.AlpacaApplicationEvent
+import com.codehavenx.alpaca.frontend.appcore.features.application.AlpacaWindowEvent
 import com.codehavenx.alpaca.frontend.appcore.managers.AuthenticationManager
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
@@ -24,7 +24,7 @@ class SignInViewModel(
     fun startFlow() {
         viewModelScope.launch {
             if (authManager.isUserSignedIn().getOrNull() == true) {
-                emitApplicationEvent(AlpacaApplicationEvent.SignInStatusChange(isSignedIn = true))
+                emitWindowEvent(AlpacaWindowEvent.SignInStatusChange(isSignedIn = true))
             } else {
                 updateUiState {
                     it.copy(isLoading = false)

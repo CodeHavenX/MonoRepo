@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.application
 
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
 import com.cramsan.edifikana.client.lib.features.EdifikanaMainScreenEventHandler
+import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.framework.logging.logE
 
 /**
@@ -9,19 +9,19 @@ import com.cramsan.framework.logging.logE
  */
 class EdifikanaWasmMainScreenEventHandler : EdifikanaMainScreenEventHandler {
 
-    override fun openCamera(event: EdifikanaApplicationEvent.OpenCamera) {
+    override fun openCamera(event: EdifikanaWindowsEvent.OpenCamera) {
         logE(TAG, "Opening camera is not supported on Wasm")
     }
 
-    override fun openImageExternally(event: EdifikanaApplicationEvent.OpenImageExternally) {
+    override fun openImageExternally(event: EdifikanaWindowsEvent.OpenImageExternally) {
         logE(TAG, "Opening image externally is not supported on Wasm")
     }
 
-    override fun openPhotoPicker(event: EdifikanaApplicationEvent.OpenPhotoPicker) {
+    override fun openPhotoPicker(event: EdifikanaWindowsEvent.OpenPhotoPicker) {
         logE(TAG, "Opening photo picker is not supported on Wasm")
     }
 
-    override fun shareContent(event: EdifikanaApplicationEvent.ShareContent) {
+    override fun shareContent(event: EdifikanaWindowsEvent.ShareContent) {
         logE(TAG, "Sharing content is not supported on Wasm")
     }
 

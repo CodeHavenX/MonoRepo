@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.auth.signup
 
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.features.auth.AuthRouteDestination
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
@@ -108,8 +108,8 @@ class SignUpViewModel(
      */
     fun navigateBack() {
         viewModelScope.launch {
-            emitApplicationEvent(
-                EdifikanaApplicationEvent.NavigateBack
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateBack
             )
         }
     }
@@ -183,8 +183,8 @@ class SignUpViewModel(
             }
 
             logD(TAG, "User signed in: $user")
-            emitApplicationEvent(
-                EdifikanaApplicationEvent.NavigateToScreen(AuthRouteDestination.ValidationDestination)
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateToScreen(AuthRouteDestination.ValidationDestination)
             )
         }
     }

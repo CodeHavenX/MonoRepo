@@ -5,4 +5,6 @@ import com.cramsan.framework.core.compose.ViewModelUIState
 /**
  * Application UI state.
  */
-data object EdifikanaApplicationUIState : ViewModelUIState
+data class EdifikanaApplicationUIState(
+    val showDebugWindow: Boolean = false,
+) : ViewModelUIState

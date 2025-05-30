@@ -39,9 +39,11 @@ kotlin {
                 implementation(project(":edifikana:front-end:shared-app"))
 
                 implementation(project(":framework:interfacelib"))
+                implementation(project(":framework:core-compose"))
 
                 implementation("io.insert-koin:koin-core:_")
                 implementation("io.insert-koin:koin-compose:_")
+                implementation("io.insert-koin:koin-compose-viewmodel:_")
             }
         }
     }

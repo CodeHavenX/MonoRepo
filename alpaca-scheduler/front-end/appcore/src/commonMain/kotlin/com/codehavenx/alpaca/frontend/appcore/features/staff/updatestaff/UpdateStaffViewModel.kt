@@ -1,6 +1,6 @@
 package com.codehavenx.alpaca.frontend.appcore.features.staff.updatestaff
 
-import com.codehavenx.alpaca.frontend.appcore.features.application.AlpacaApplicationEvent
+import com.codehavenx.alpaca.frontend.appcore.features.application.AlpacaWindowEvent
 import com.codehavenx.alpaca.frontend.appcore.managers.StaffManager
 import com.codehavenx.alpaca.frontend.appcore.models.Staff
 import com.cramsan.framework.core.compose.BaseViewModel
@@ -27,7 +27,7 @@ class UpdateStaffViewModel(
         viewModelScope.launch {
             updateUiState { it.copy(isLoading = true) }
             delay(2000)
-            emitApplicationEvent(AlpacaApplicationEvent.NavigateBack)
+            emitWindowEvent(AlpacaWindowEvent.NavigateBack)
         }
     }
 

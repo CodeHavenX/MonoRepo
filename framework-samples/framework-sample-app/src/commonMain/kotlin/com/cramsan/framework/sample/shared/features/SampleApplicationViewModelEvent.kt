@@ -9,9 +9,9 @@ import com.cramsan.framework.core.compose.ViewModelEvent
 sealed class SampleApplicationViewModelEvent : ViewModelEvent {
 
     /**
-     * Wrapper for [SampleApplicationEvent] to be used in the view model.
+     * Wrapper for [SampleWindowEvent] to be used in the view model.
      */
     data class SampleApplicationEventWrapper(
-        val event: SampleApplicationEvent,
+        val event: SampleWindowEvent,
     ) : SampleApplicationViewModelEvent()
 }

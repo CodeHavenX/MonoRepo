@@ -166,6 +166,7 @@ private fun BooleanRow(
         modifier = Modifier
             .clickable(
                 interactionSource = interactionSource,
+                enabled = field.enabled,
                 indication = ripple(),
                 onClick = { onValueChanged(field.key, !field.value) }
             )

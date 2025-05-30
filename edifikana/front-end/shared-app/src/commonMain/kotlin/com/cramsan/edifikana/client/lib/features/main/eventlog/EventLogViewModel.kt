@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.main.eventlog
 
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.features.management.ManagementDestination
 import com.cramsan.edifikana.client.lib.managers.EventLogManager
 import com.cramsan.edifikana.lib.model.EventLogEntryId
@@ -51,14 +51,14 @@ class EventLogViewModel(
     fun openRecordScreen(recordPk: EventLogEntryId?) = viewModelScope.launch {
         if (recordPk == null) {
             logW(TAG, "Record PK is null")
-            emitApplicationEvent(
-                EdifikanaApplicationEvent.ShowSnackbar(
+            emitWindowEvent(
+                EdifikanaWindowsEvent.ShowSnackbar(
                     stringProvider.getString(Res.string.error_message_currently_uploading)
                 )
             )
         } else {
-            emitApplicationEvent(
-                EdifikanaApplicationEvent.NavigateToScreen(
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateToScreen(
                     ManagementDestination.EventLogSingleItemDestination(recordPk)
                 )
             )
@@ -69,8 +69,8 @@ class EventLogViewModel(
      * Open the add record screen.
      */
     fun openAddRecordScreen() = viewModelScope.launch {
-        emitApplicationEvent(
-            EdifikanaApplicationEvent.NavigateToScreen(ManagementDestination.EventLogAddItemDestination)
+        emitWindowEvent(
+            EdifikanaWindowsEvent.NavigateToScreen(ManagementDestination.EventLogAddItemDestination)
         )
     }
 
@@ -79,8 +79,8 @@ class EventLogViewModel(
      */
     fun navigateBack() {
         viewModelScope.launch {
-            emitApplicationEvent(
-                EdifikanaApplicationEvent.NavigateBack
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateBack
             )
         }
     }

@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.management.drawer
 
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import kotlinx.coroutines.launch
@@ -21,7 +21,7 @@ class ManagementViewModel(
      */
     fun onBackSelected() {
         viewModelScope.launch {
-            emitApplicationEvent(EdifikanaApplicationEvent.NavigateBack)
+            emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
         }
     }
 

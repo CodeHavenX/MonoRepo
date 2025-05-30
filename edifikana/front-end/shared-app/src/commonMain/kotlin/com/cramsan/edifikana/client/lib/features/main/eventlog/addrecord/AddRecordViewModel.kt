@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.main.eventlog.addrecord
 
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.EventLogManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.managers.StaffManager
@@ -96,8 +96,8 @@ class AddRecordViewModel(
         if (result.isFailure) {
             updateUiState { it.copy(isLoading = false) }
         } else {
-            emitApplicationEvent(
-                EdifikanaApplicationEvent.NavigateBack
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateBack
             )
         }
     }
@@ -107,7 +107,7 @@ class AddRecordViewModel(
      */
     fun navigateBack() {
         viewModelScope.launch {
-            emitApplicationEvent(EdifikanaApplicationEvent.NavigateBack)
+            emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
         }
     }
 

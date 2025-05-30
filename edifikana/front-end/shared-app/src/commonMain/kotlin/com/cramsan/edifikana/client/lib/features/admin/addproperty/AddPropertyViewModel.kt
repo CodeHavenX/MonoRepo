@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.admin.addproperty
 
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
@@ -22,7 +22,7 @@ class AddPropertyViewModel(
      */
     fun navigateBack() {
         viewModelScope.launch {
-            emitApplicationEvent(EdifikanaApplicationEvent.NavigateBack)
+            emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
         }
     }
 
@@ -37,13 +37,13 @@ class AddPropertyViewModel(
                 TODO("Handle error when adding property")
             }.getOrThrow()
 
-            emitApplicationEvent(
-                EdifikanaApplicationEvent.ShowSnackbar(
+            emitWindowEvent(
+                EdifikanaWindowsEvent.ShowSnackbar(
                     "Property ${newProperty.name} added successfully"
                 )
             )
-            emitApplicationEvent(
-                EdifikanaApplicationEvent.NavigateBack
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateBack
             )
         }
     }

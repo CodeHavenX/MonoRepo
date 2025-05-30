@@ -1,18 +1,18 @@
 package com.cramsan.edifikana.client.lib.features.main.eventlog
 
 import app.cash.turbine.test
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.features.management.ManagementDestination
 import com.cramsan.edifikana.client.lib.managers.EventLogManager
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
-import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.framework.core.UnifiedDispatcherProvider
-import com.cramsan.framework.core.compose.SharedFlowApplicationReceiver
+import com.cramsan.framework.core.compose.ApplicationEventBus
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.WindowEventBus
 import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
@@ -26,11 +26,11 @@ import edifikana_lib.title_event_log
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import org.junit.jupiter.api.BeforeEach
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class EventLogViewModelTest : TestBase() {
@@ -38,21 +38,24 @@ class EventLogViewModelTest : TestBase() {
     private lateinit var eventLogManager: EventLogManager
     private lateinit var viewModel: EventLogViewModel
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
-    private lateinit var applicationEventReceiver: SharedFlowApplicationReceiver
+    private lateinit var applicationEventReceiver: ApplicationEventBus
     private lateinit var stringProvider: StringProvider
+    private lateinit var windowEventBus: WindowEventBus
 
     @BeforeEach
     fun setUp() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         eventLogManager = mockk()
         exceptionHandler = CollectorCoroutineExceptionHandler()
-        applicationEventReceiver = SharedFlowApplicationReceiver()
+        applicationEventReceiver = ApplicationEventBus()
+        windowEventBus = WindowEventBus()
         stringProvider = mockk()
         val dependencies = ViewModelDependencies(
             appScope = testCoroutineScope,
             dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),
             coroutineExceptionHandler = exceptionHandler,
             applicationEventReceiver = applicationEventReceiver,
+            windowEventReceiver = windowEventBus,
         )
         viewModel = EventLogViewModel(
             eventLogManager,
@@ -132,9 +135,9 @@ class EventLogViewModelTest : TestBase() {
 
         // Act
         val verificationJob = launch {
-            applicationEventReceiver.events.test {
+            windowEventBus.events.test {
                 assertEquals(
-                    EdifikanaApplicationEvent.NavigateToScreen(
+                    EdifikanaWindowsEvent.NavigateToScreen(
                         ManagementDestination.EventLogSingleItemDestination(recordId)
                     ),
                     awaitItem(),
@@ -151,9 +154,9 @@ class EventLogViewModelTest : TestBase() {
     fun `test openAddRecordScreen emits NavigateToScreen event`() = runBlockingTest {
         // Act
         val verificationJob = launch {
-            applicationEventReceiver.events.test {
+            windowEventBus.events.test {
                 assertEquals(
-                    EdifikanaApplicationEvent.NavigateToScreen(
+                    EdifikanaWindowsEvent.NavigateToScreen(
                         ManagementDestination.EventLogAddItemDestination
                     ),
                     awaitItem(),
@@ -170,9 +173,9 @@ class EventLogViewModelTest : TestBase() {
     fun `test navigateBack emits NavigateBack event`() = runBlockingTest {
         // Act
         val verificationJob = launch {
-            applicationEventReceiver.events.test {
+            windowEventBus.events.test {
                 assertEquals(
-                    EdifikanaApplicationEvent.NavigateBack,
+                    EdifikanaWindowsEvent.NavigateBack,
                     awaitItem(),
                 )
             }

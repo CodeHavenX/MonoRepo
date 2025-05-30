@@ -6,6 +6,10 @@ package com.cramsan.edifikana.client.lib.di.koin
  * the estimated dependency order of the modules. This is to make it easier to understand the dependencies between the
  * modules.
  */
+
+/**
+ * List of Koin modules that are loaded at the application level.
+ */
 val moduleList = listOf(
     FrameworkModule,
     FrameworkPlatformDelegatesModule,
@@ -19,6 +23,13 @@ val moduleList = listOf(
     CacheModule,
     SupabaseModule,
     SupabaseOverridesModule,
+    ApplicationViewModelModule,
+)
+
+/**
+ * List of Koin modules that are loaded at the window level.
+ */
+val windowModuleList = listOf(
     ViewModelModule,
     ViewModelPlatformModule,
 )

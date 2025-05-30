@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.main.timecard.stafflist
 
 import app.cash.turbine.test
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.features.management.ManagementDestination
 import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.client.lib.models.StaffModel
@@ -10,8 +10,9 @@ import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.StaffRole
 import com.cramsan.edifikana.lib.model.StaffStatus
 import com.cramsan.framework.core.UnifiedDispatcherProvider
-import com.cramsan.framework.core.compose.SharedFlowApplicationReceiver
+import com.cramsan.framework.core.compose.ApplicationEventBus
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.WindowEventBus
 import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
@@ -23,11 +24,11 @@ import edifikana_lib.title_timecard_staff_list
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import org.junit.jupiter.api.BeforeEach
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class StaffListViewModelTest : TestBase() {
@@ -35,7 +36,8 @@ class StaffListViewModelTest : TestBase() {
     private lateinit var staffManager: StaffManager
     private lateinit var viewModel: StaffListViewModel
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
-    private lateinit var applicationEventReceiver: SharedFlowApplicationReceiver
+    private lateinit var applicationEventReceiver: ApplicationEventBus
+    private lateinit var windowEventBus: WindowEventBus
     private lateinit var stringProvider: StringProvider
 
     @BeforeEach
@@ -43,13 +45,15 @@ class StaffListViewModelTest : TestBase() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         staffManager = mockk()
         exceptionHandler = CollectorCoroutineExceptionHandler()
-        applicationEventReceiver = SharedFlowApplicationReceiver()
+        applicationEventReceiver = ApplicationEventBus()
+        windowEventBus = WindowEventBus()
         stringProvider = mockk()
         val dependencies = ViewModelDependencies(
             appScope = testCoroutineScope,
             dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),
             coroutineExceptionHandler = exceptionHandler,
             applicationEventReceiver = applicationEventReceiver,
+            windowEventReceiver = windowEventBus,
         )
         viewModel = StaffListViewModel(
             staffManager,
@@ -109,9 +113,9 @@ class StaffListViewModelTest : TestBase() {
 
         // Act
         val verificationJob = launch {
-            applicationEventReceiver.events.test {
+            windowEventBus.events.test {
                 assertEquals(
-                    EdifikanaApplicationEvent.NavigateToScreen(
+                    EdifikanaWindowsEvent.NavigateToScreen(
                         ManagementDestination.TimeCardSingleStaffDestination(staffId)
                     ),
                     awaitItem(),
@@ -128,9 +132,9 @@ class StaffListViewModelTest : TestBase() {
     fun `test navigateBack emits NavigateBack event`() = runBlockingTest {
         // Act
         val verificationJob = launch {
-            applicationEventReceiver.events.test {
+            windowEventBus.events.test {
                 assertEquals(
-                    EdifikanaApplicationEvent.NavigateBack,
+                    EdifikanaWindowsEvent.NavigateBack,
                     awaitItem(),
                 )
             }

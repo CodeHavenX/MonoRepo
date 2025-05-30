@@ -1,21 +1,20 @@
 package com.cramsan.edifikana.client.lib.features.main.eventlog.addrecord
 
 import app.cash.turbine.test
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.EventLogManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
-import com.cramsan.edifikana.client.lib.service.dummy.PROPERTY_1
 import com.cramsan.edifikana.client.lib.service.dummy.STAFF_1
-import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.framework.annotations.TestOnly
 import com.cramsan.framework.core.UnifiedDispatcherProvider
-import com.cramsan.framework.core.compose.SharedFlowApplicationReceiver
+import com.cramsan.framework.core.compose.ApplicationEventBus
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.WindowEventBus
 import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
@@ -27,15 +26,15 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import kotlin.test.AfterTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import org.junit.jupiter.api.BeforeEach
+import kotlin.test.AfterTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class, TestOnly::class)
 class AddRecordViewModelTest : TestBase() {
@@ -44,7 +43,8 @@ class AddRecordViewModelTest : TestBase() {
     private lateinit var staffManager: StaffManager
     private lateinit var viewModel: AddRecordViewModel
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
-    private lateinit var applicationEventReceiver: SharedFlowApplicationReceiver
+    private lateinit var applicationEventReceiver: ApplicationEventBus
+    private lateinit var windowEventBus: WindowEventBus
     private lateinit var clock: Clock
     private lateinit var propertyManager: PropertyManager
     private lateinit var stringProvider: StringProvider
@@ -57,13 +57,15 @@ class AddRecordViewModelTest : TestBase() {
         eventLogManager = mockk()
         propertyManager = mockk()
         exceptionHandler = CollectorCoroutineExceptionHandler()
-        applicationEventReceiver = SharedFlowApplicationReceiver()
+        applicationEventReceiver = ApplicationEventBus()
+        windowEventBus = WindowEventBus()
         stringProvider = mockk()
         val dependencies = ViewModelDependencies(
             appScope = testCoroutineScope,
             dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),
             coroutineExceptionHandler = exceptionHandler,
             applicationEventReceiver = applicationEventReceiver,
+            windowEventReceiver = windowEventBus,
         )
         viewModel = AddRecordViewModel(
             staffManager,
@@ -103,9 +105,9 @@ class AddRecordViewModelTest : TestBase() {
 
         // Act
         val verificationJob = launch {
-            applicationEventReceiver.events.test {
+            windowEventBus.events.test {
                 assertEquals(
-                    EdifikanaApplicationEvent.NavigateBack,
+                    EdifikanaWindowsEvent.NavigateBack,
                     awaitItem(),
                 )
             }
@@ -170,9 +172,9 @@ class AddRecordViewModelTest : TestBase() {
     fun `test navigateBack emits NavigateBack event`() = runBlockingTest {
         // Act
         val verificationJob = launch {
-            applicationEventReceiver.events.test {
+            windowEventBus.events.test {
                 assertEquals(
-                    EdifikanaApplicationEvent.NavigateBack,
+                    EdifikanaWindowsEvent.NavigateBack,
                     awaitItem(),
                 )
             }

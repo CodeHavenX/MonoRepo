@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.admin.properties
 
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.features.management.ManagementDestination
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.lib.model.PropertyId
@@ -49,8 +49,8 @@ class PropertyManagerViewModel(
      */
     fun navigateToPropertyDetails(propertyId: PropertyId) {
         viewModelScope.launch {
-            emitApplicationEvent(
-                EdifikanaApplicationEvent.NavigateToScreen(
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateToScreen(
                     ManagementDestination.PropertyManagementDestination(
                         propertyId
                     )
@@ -64,8 +64,8 @@ class PropertyManagerViewModel(
      */
     fun navigateToAddProperty() {
         viewModelScope.launch {
-            emitApplicationEvent(
-                EdifikanaApplicationEvent.NavigateToScreen(ManagementDestination.AddPropertyManagementDestination)
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateToScreen(ManagementDestination.AddPropertyManagementDestination)
             )
         }
     }
@@ -75,8 +75,8 @@ class PropertyManagerViewModel(
      */
     fun navigateBack() {
         viewModelScope.launch {
-            emitApplicationEvent(
-                EdifikanaApplicationEvent.NavigateBack
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateBack
             )
         }
     }

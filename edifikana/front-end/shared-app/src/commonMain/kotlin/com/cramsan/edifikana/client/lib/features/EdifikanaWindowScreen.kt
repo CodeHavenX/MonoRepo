@@ -10,7 +10,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -30,20 +29,25 @@ import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
- * Edifikana application screen.
+ * Edifikana window screen.
  */
 @Composable
-fun EdifikanaApplicationScreen(
+fun EdifikanaWindowScreen(
     eventHandler: EdifikanaMainScreenEventHandler,
+    viewModel: EdifikanaWindowViewModel = koinViewModel(),
+    startDestination: ActivityRouteDestination = ActivityRouteDestination.SplashRouteDestination,
 ) {
-    ComposableKoinContext {
-        ApplicationContent(eventHandler = eventHandler)
-    }
+    WindowsContent(
+        eventHandler = eventHandler,
+        viewModel = viewModel,
+        startDestination = startDestination,
+    )
 }
 
 @Composable
-private fun ApplicationContent(
-    viewModel: EdifikanaApplicationViewModel = koinViewModel(),
+private fun WindowsContent(
+    startDestination: ActivityRouteDestination,
+    viewModel: EdifikanaWindowViewModel,
     eventHandler: EdifikanaMainScreenEventHandler,
 ) {
     val navController = rememberNavController()
@@ -54,14 +58,14 @@ private fun ApplicationContent(
         launch {
             viewModel.events.collect { event ->
                 when (event) {
-                    is EdifikanaApplicationViewModelEvent.EdifikanaApplicationEventWrapper -> {
-                        handleApplicationEvent(
+                    is EdifikanaWindowViewModelEvent.EdifikanaWindowEventWrapper -> {
+                        handleWindowEvent(
                             eventHandler = eventHandler,
                             navController = navController,
                             scope = this,
                             snackbarHostState = snackbarHostState,
                             viewModel = viewModel,
-                            applicationEvent = event.event,
+                            windowEvent = event.event,
                         )
                     }
                 }
@@ -77,8 +81,9 @@ private fun ApplicationContent(
                 SnackbarHost(hostState = snackbarHostState)
             },
         ) {
-            ApplicationNavigationHost(
+            WindowNavigationHost(
                 navHostController = navController,
+                startDestination = startDestination,
             )
         }
     }
@@ -86,28 +91,28 @@ private fun ApplicationContent(
 
 @Suppress("CyclomaticComplexMethod")
 @OptIn(RouteSafePath::class)
-private fun handleApplicationEvent(
+private fun handleWindowEvent(
     eventHandler: EdifikanaMainScreenEventHandler,
     navController: NavHostController,
     scope: CoroutineScope,
     snackbarHostState: SnackbarHostState,
-    viewModel: EdifikanaApplicationViewModel,
-    applicationEvent: EdifikanaApplicationEvent,
+    viewModel: EdifikanaWindowViewModel,
+    windowEvent: EdifikanaWindowsEvent,
 ) {
-    when (val event = applicationEvent) {
-        is EdifikanaApplicationEvent.OpenCamera -> {
+    when (val event = windowEvent) {
+        is EdifikanaWindowsEvent.OpenCamera -> {
             eventHandler.openCamera(event)
         }
-        is EdifikanaApplicationEvent.OpenImageExternally -> {
+        is EdifikanaWindowsEvent.OpenImageExternally -> {
             eventHandler.openImageExternally(event)
         }
-        is EdifikanaApplicationEvent.OpenPhotoPicker -> {
+        is EdifikanaWindowsEvent.OpenPhotoPicker -> {
             eventHandler.openPhotoPicker(event)
         }
-        is EdifikanaApplicationEvent.ShareContent -> {
+        is EdifikanaWindowsEvent.ShareContent -> {
             eventHandler.shareContent(event)
         }
-        is EdifikanaApplicationEvent.NavigateToActivity -> {
+        is EdifikanaWindowsEvent.NavigateToActivity -> {
             if (event.clearStack) {
                 while (navController.currentBackStack.value.isNotEmpty()) {
                     navController.popBackStack()
@@ -117,13 +122,13 @@ private fun handleApplicationEvent(
             }
             navController.navigate(event.destination.rawRoute)
         }
-        is EdifikanaApplicationEvent.NavigateToScreen -> {
+        is EdifikanaWindowsEvent.NavigateToScreen -> {
             navController.navigate(event.destination.rawRoute)
         }
-        is EdifikanaApplicationEvent.NavigateBack -> {
+        is EdifikanaWindowsEvent.NavigateBack -> {
             navController.popBackStack()
         }
-        is EdifikanaApplicationEvent.CloseActivity -> {
+        is EdifikanaWindowsEvent.CloseActivity -> {
             val currentActivity = navController.currentBackStack.value.reversed().find {
                 ApplicationRoute.fromRoute(it.destination.route) != null
             }
@@ -131,7 +136,7 @@ private fun handleApplicationEvent(
                 navController.popBackStack(it, inclusive = true)
             }
         }
-        is EdifikanaApplicationEvent.ShowSnackbar -> {
+        is EdifikanaWindowsEvent.ShowSnackbar -> {
             scope.launch {
                 handleSnackbarEvent(
                     snackbarHostState = snackbarHostState,
@@ -150,7 +155,7 @@ private fun handleApplicationEvent(
  */
 private suspend fun handleSnackbarEvent(
     snackbarHostState: SnackbarHostState,
-    event: EdifikanaApplicationEvent.ShowSnackbar,
+    event: EdifikanaWindowsEvent.ShowSnackbar,
     onResult: (SnackbarResult) -> Unit,
 ) {
     snackbarHostState.currentSnackbarData?.dismiss()
@@ -164,12 +169,13 @@ private suspend fun handleSnackbarEvent(
 
 @OptIn(RouteSafePath::class)
 @Composable
-private fun ApplicationNavigationHost(
+private fun WindowNavigationHost(
     navHostController: NavHostController,
+    startDestination: ActivityRouteDestination,
 ) {
     NavHost(
         navController = navHostController,
-        startDestination = ApplicationRoute.Splash.rawRoute,
+        startDestination = startDestination.rawRoute,
         enterTransition = { fadeIn(animationSpec = tween(TRANSITION_ANIMATION_DURATION_MS)) },
         exitTransition = { fadeOut(animationSpec = tween(TRANSITION_ANIMATION_DURATION_MS)) },
     ) {

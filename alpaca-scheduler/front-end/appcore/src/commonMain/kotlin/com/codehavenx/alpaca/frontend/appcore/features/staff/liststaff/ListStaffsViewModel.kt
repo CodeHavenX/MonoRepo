@@ -1,6 +1,6 @@
 package com.codehavenx.alpaca.frontend.appcore.features.staff.liststaff
 
-import com.codehavenx.alpaca.frontend.appcore.features.application.AlpacaApplicationEvent
+import com.codehavenx.alpaca.frontend.appcore.features.application.AlpacaWindowEvent
 import com.codehavenx.alpaca.frontend.appcore.features.application.Route
 import com.codehavenx.alpaca.frontend.appcore.managers.StaffManager
 import com.codehavenx.alpaca.frontend.appcore.models.Staff
@@ -44,7 +44,7 @@ class ListStaffsViewModel(
      */
     fun addStaff() {
         viewModelScope.launch {
-            emitApplicationEvent(AlpacaApplicationEvent.Navigate(Route.addStaff()))
+            emitWindowEvent(AlpacaWindowEvent.Navigate(Route.addStaff()))
         }
     }
 
@@ -53,7 +53,7 @@ class ListStaffsViewModel(
      */
     fun openStaffPage(staffId: String) {
         viewModelScope.launch {
-            emitApplicationEvent(AlpacaApplicationEvent.Navigate(Route.viewStaff(staffId)))
+            emitWindowEvent(AlpacaWindowEvent.Navigate(Route.viewStaff(staffId)))
         }
     }
 

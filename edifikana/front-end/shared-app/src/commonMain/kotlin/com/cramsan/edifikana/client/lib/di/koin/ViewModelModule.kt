@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.di.koin
 
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
+import com.cramsan.edifikana.client.lib.features.EdifikanaWindowDelegatedEvent
+import com.cramsan.edifikana.client.lib.features.EdifikanaWindowViewModel
 import com.cramsan.edifikana.client.lib.features.account.account.AccountViewModel
 import com.cramsan.edifikana.client.lib.features.account.notifications.NotificationsViewModel
 import com.cramsan.edifikana.client.lib.features.admin.addprimarystaff.AddPrimaryStaffViewModel
@@ -23,14 +24,19 @@ import com.cramsan.edifikana.client.lib.features.main.timecard.TimeCartViewModel
 import com.cramsan.edifikana.client.lib.features.main.timecard.viewstaff.ViewStaffViewModel
 import com.cramsan.edifikana.client.lib.features.management.drawer.ManagementViewModel
 import com.cramsan.edifikana.client.lib.features.splash.SplashViewModel
-import com.cramsan.framework.core.compose.ApplicationEventEmitter
-import com.cramsan.framework.core.compose.ApplicationEventReceiver
-import com.cramsan.framework.core.compose.SharedFlowApplicationReceiver
+import com.cramsan.framework.core.compose.ApplicationEvent
+import com.cramsan.framework.core.compose.ApplicationEventBus
+import com.cramsan.framework.core.compose.EventBus
+import com.cramsan.framework.core.compose.EventEmitter
+import com.cramsan.framework.core.compose.EventReceiver
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.WindowEvent
+import com.cramsan.framework.core.compose.WindowEventBus
 import org.koin.core.module.dsl.bind
-import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.module.dsl.withOptions
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 typealias SelectStaffViewModel = com.cramsan.edifikana.client.lib.features.main.timecard.stafflist.StaffListViewModel
@@ -38,14 +44,44 @@ typealias SelectStaffViewModel = com.cramsan.edifikana.client.lib.features.main.
 internal val ViewModelModule = module {
 
     // These objects are singletons and are not scoped to any particular navigation graph.
-    single {
-        SharedFlowApplicationReceiver()
+    single(named(APPLICATION_EVENT_SCOPE)) {
+        ApplicationEventBus()
     } withOptions {
-        bind<ApplicationEventReceiver>()
-        bind<ApplicationEventEmitter>()
+        bind<EventReceiver<ApplicationEvent>>()
+        bind<EventEmitter<ApplicationEvent>>()
     }
-    singleOf(::ViewModelDependencies)
-    singleOf(::EdifikanaApplicationViewModel)
+
+    single(named(APPLICATION_EVENT_SCOPE)) {
+        WindowEventBus()
+    } withOptions {
+        bind<EventReceiver<WindowEvent>>()
+        bind<EventEmitter<WindowEvent>>()
+    }
+
+    single(named(DELEGATED_EVENT_SCOPE)) {
+        EventBus<EdifikanaWindowDelegatedEvent>()
+    } withOptions {
+        bind<EventReceiver<EdifikanaWindowDelegatedEvent>>()
+        bind<EventEmitter<EdifikanaWindowDelegatedEvent>>()
+    }
+
+    single {
+        ViewModelDependencies(
+            get(),
+            get(),
+            get(),
+            get(named(APPLICATION_EVENT_SCOPE)),
+            get(named(APPLICATION_EVENT_SCOPE)),
+        )
+    }
+
+    viewModel {
+        EdifikanaWindowViewModel(
+            get(),
+            get(named(APPLICATION_EVENT_SCOPE)),
+            get(named(DELEGATED_EVENT_SCOPE)),
+        )
+    }
 
     // These objects are scoped to the screen in which they are used.
     viewModelOf(::EventLogViewModel)
@@ -72,3 +108,6 @@ internal val ViewModelModule = module {
     viewModelOf(::SplashViewModel)
     viewModelOf(::ManagementViewModel)
 }
+
+private const val APPLICATION_EVENT_SCOPE = "application_event_scope"
+private const val DELEGATED_EVENT_SCOPE = "delegated_event_scope"

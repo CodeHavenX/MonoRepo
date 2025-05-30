@@ -9,10 +9,10 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationScreen
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.lib.features.EdifikanaMainScreenEventHandler
+import com.cramsan.edifikana.client.lib.features.EdifikanaWindowScreen
+import com.cramsan.edifikana.client.lib.features.EdifikanaWindowViewModel
+import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.features.main.camera.CameraContract
 import com.cramsan.edifikana.client.lib.utils.shareContent
 import com.cramsan.framework.core.CoreUri
@@ -24,7 +24,7 @@ import org.koin.android.ext.android.inject
  */
 class MainActivity : ComponentActivity(), EdifikanaMainScreenEventHandler {
 
-    private val viewModel: EdifikanaApplicationViewModel by inject()
+    private val viewModel: EdifikanaWindowViewModel by inject()
 
     private val cameraLauncher = registerForActivityResult(CameraContract()) { filePath ->
         viewModel.handleReceivedImage(filePath?.let { CoreUri(it) })
@@ -43,17 +43,17 @@ class MainActivity : ComponentActivity(), EdifikanaMainScreenEventHandler {
         super.onCreate(savedInstanceState)
 
         setContent {
-            EdifikanaApplicationScreen(
+            EdifikanaWindowScreen(
                 eventHandler = this,
             )
         }
     }
 
-    override fun openCamera(event: EdifikanaApplicationEvent.OpenCamera) {
+    override fun openCamera(event: EdifikanaWindowsEvent.OpenCamera) {
         cameraLauncher.launch(event.filename)
     }
 
-    override fun openImageExternally(event: EdifikanaApplicationEvent.OpenImageExternally) {
+    override fun openImageExternally(event: EdifikanaWindowsEvent.OpenImageExternally) {
         ContextCompat.startActivity(
             this,
             Intent(
@@ -64,13 +64,13 @@ class MainActivity : ComponentActivity(), EdifikanaMainScreenEventHandler {
         )
     }
 
-    override fun openPhotoPicker(event: EdifikanaApplicationEvent.OpenPhotoPicker) {
+    override fun openPhotoPicker(event: EdifikanaWindowsEvent.OpenPhotoPicker) {
         mediaAttachmentLauncher.launch(
             PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
         )
     }
 
-    override fun shareContent(event: EdifikanaApplicationEvent.ShareContent) {
+    override fun shareContent(event: EdifikanaWindowsEvent.ShareContent) {
         lifecycleScope.launch {
             (this@MainActivity as Context).shareContent(TAG, event.text, event.imageUri)
         }

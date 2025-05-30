@@ -94,18 +94,18 @@ fun AlpacaApplicationScreen(
 private fun handleEvent(
     navController: NavController,
     viewModel: ApplicationViewModel,
-    applicationEvent: AlpacaApplicationEvent,
+    applicationEvent: AlpacaWindowEvent,
 ) {
     when (val event = applicationEvent) {
-        is AlpacaApplicationEvent.Navigate -> {
+        is AlpacaWindowEvent.Navigate -> {
             navController.navigate(event.route) {
                 launchSingleTop = true
             }
         }
-        is AlpacaApplicationEvent.NavigateBack -> {
+        is AlpacaWindowEvent.NavigateBack -> {
             navController.popBackStack()
         }
-        is AlpacaApplicationEvent.NavigateFromRootPage -> {
+        is AlpacaWindowEvent.NavigateFromRootPage -> {
             navController.navigate(event.route) {
                 // Pop up to the start destination of the graph to
                 // avoid building up a large stack of destinations
@@ -120,7 +120,7 @@ private fun handleEvent(
                 restoreState = true
             }
         }
-        is AlpacaApplicationEvent.SignInStatusChange -> {
+        is AlpacaWindowEvent.SignInStatusChange -> {
             viewModel.setSignInStatus(event.isSignedIn)
         }
     }

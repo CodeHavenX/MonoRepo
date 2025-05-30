@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.admin.staff
 
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.client.lib.models.fullName
 import com.cramsan.edifikana.lib.model.StaffId
@@ -55,7 +55,7 @@ class StaffViewModel(
      */
     fun onBackSelected() {
         viewModelScope.launch {
-            emitApplicationEvent(EdifikanaApplicationEvent.NavigateBack)
+            emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
         }
     }
 

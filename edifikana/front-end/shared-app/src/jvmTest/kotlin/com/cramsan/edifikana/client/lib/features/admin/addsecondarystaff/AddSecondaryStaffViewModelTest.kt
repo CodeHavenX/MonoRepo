@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.admin.addsecondarystaff
 
 import app.cash.turbine.test
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.client.lib.models.StaffModel
@@ -9,8 +9,9 @@ import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffRole
 import com.cramsan.framework.core.UnifiedDispatcherProvider
-import com.cramsan.framework.core.compose.SharedFlowApplicationReceiver
+import com.cramsan.framework.core.compose.ApplicationEventBus
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.WindowEventBus
 import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
@@ -25,12 +26,12 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
-import kotlinx.coroutines.flow.MutableStateFlow
-import org.junit.jupiter.api.BeforeEach
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AddSecondaryStaffViewModelTest : TestBase() {
@@ -39,17 +40,19 @@ class AddSecondaryStaffViewModelTest : TestBase() {
     private lateinit var staffManager: StaffManager
     private lateinit var propertyManager: PropertyManager
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
-    private lateinit var applicationEventReceiver: SharedFlowApplicationReceiver
+    private lateinit var applicationEventReceiver: ApplicationEventBus
+    private lateinit var windowEventBus: WindowEventBus
     private lateinit var stringProvider: StringProvider
 
     @BeforeEach
     fun setupTest() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
-        applicationEventReceiver = SharedFlowApplicationReceiver()
+        applicationEventReceiver = ApplicationEventBus()
         exceptionHandler = CollectorCoroutineExceptionHandler()
         staffManager = mockk(relaxed = true)
         propertyManager = mockk(relaxed = true)
         stringProvider = mockk()
+        windowEventBus = WindowEventBus()
         viewModel = AddSecondaryStaffViewModel(
             staffManager = staffManager,
             propertyManager = propertyManager,
@@ -58,6 +61,7 @@ class AddSecondaryStaffViewModelTest : TestBase() {
                 dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),
                 coroutineExceptionHandler = exceptionHandler,
                 applicationEventReceiver = applicationEventReceiver,
+                windowEventReceiver = windowEventBus,
             ),
             stringProvider = stringProvider,
         )
@@ -69,9 +73,9 @@ class AddSecondaryStaffViewModelTest : TestBase() {
 
         // Act
         val verificationJob = launch {
-            applicationEventReceiver.events.test {
+            windowEventBus.events.test {
                 assertEquals(
-                    EdifikanaApplicationEvent.NavigateBack,
+                    EdifikanaWindowsEvent.NavigateBack,
                     awaitItem()
                 )
             }
@@ -89,9 +93,9 @@ class AddSecondaryStaffViewModelTest : TestBase() {
 
         // Act
         val verificationJob = launch {
-            applicationEventReceiver.events.test {
+            windowEventBus.events.test {
                 assertEquals(
-                    EdifikanaApplicationEvent.ShowSnackbar("Please complete all fields."),
+                    EdifikanaWindowsEvent.ShowSnackbar("Please complete all fields."),
                     awaitItem()
                 )
             }
@@ -117,8 +121,8 @@ class AddSecondaryStaffViewModelTest : TestBase() {
 
         // Act
         val verificationJob = launch {
-            applicationEventReceiver.events.test {
-                assertEquals(EdifikanaApplicationEvent.NavigateBack, awaitItem())
+            windowEventBus.events.test {
+                assertEquals(EdifikanaWindowsEvent.NavigateBack, awaitItem())
             }
         }
 
@@ -156,9 +160,9 @@ class AddSecondaryStaffViewModelTest : TestBase() {
 
         // Act
         val verificationJob = launch {
-            applicationEventReceiver.events.test {
+            windowEventBus.events.test {
                 assertEquals(
-                    EdifikanaApplicationEvent.ShowSnackbar("There was an error processing the request."),
+                    EdifikanaWindowsEvent.ShowSnackbar("There was an error processing the request."),
                     awaitItem()
                 )
             }

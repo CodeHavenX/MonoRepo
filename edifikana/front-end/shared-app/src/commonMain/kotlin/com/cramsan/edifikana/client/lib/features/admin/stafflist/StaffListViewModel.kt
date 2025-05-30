@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.admin.stafflist
 
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.features.management.ManagementDestination
 import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.client.lib.models.StaffModel
@@ -55,8 +55,8 @@ class StaffListViewModel(
      */
     fun navigateToAddPrimaryStaff() {
         viewModelScope.launch {
-            emitApplicationEvent(
-                EdifikanaApplicationEvent.NavigateToScreen(ManagementDestination.AddPrimaryStaffManagementDestination)
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateToScreen(ManagementDestination.AddPrimaryStaffManagementDestination)
             )
         }
     }
@@ -66,8 +66,8 @@ class StaffListViewModel(
      */
     fun navigateToAddSecondaryStaff() {
         viewModelScope.launch {
-            emitApplicationEvent(
-                EdifikanaApplicationEvent.NavigateToScreen(ManagementDestination.AddSecondaryStaffManagementDestination)
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateToScreen(ManagementDestination.AddSecondaryStaffManagementDestination)
             )
         }
     }
@@ -77,8 +77,8 @@ class StaffListViewModel(
      */
     fun navigateToStaff(staffId: StaffId) {
         viewModelScope.launch {
-            emitApplicationEvent(
-                EdifikanaApplicationEvent.NavigateToScreen(ManagementDestination.StaffDestination(staffId))
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateToScreen(ManagementDestination.StaffDestination(staffId))
             )
         }
     }

@@ -3,9 +3,9 @@ package com.cramsan.edifikana.client.lib.features.auth.validation
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.framework.core.UnifiedDispatcherProvider
-import com.cramsan.framework.core.compose.ApplicationEventReceiver
-import com.cramsan.framework.core.compose.SharedFlowApplicationReceiver
+import com.cramsan.framework.core.compose.ApplicationEventBus
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.WindowEventBus
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
@@ -14,11 +14,11 @@ import com.cramsan.framework.test.TestBase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.jupiter.api.Assertions.assertTrue
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.jupiter.api.Assertions.assertTrue
 
 /**
  * Test the [ValidationViewModel] class.
@@ -29,8 +29,9 @@ class ValidationViewModelTest : TestBase() {
     private lateinit var authManager: AuthManager
     private lateinit var viewModel: ValidationViewModel
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
+    private lateinit var windowEventBus: WindowEventBus
 
-    private lateinit var applicationEventReceiver: SharedFlowApplicationReceiver
+    private lateinit var applicationEventReceiver: ApplicationEventBus
 
     /**
      * Setup the test.
@@ -40,13 +41,15 @@ class ValidationViewModelTest : TestBase() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         authManager = mockk()
         exceptionHandler = CollectorCoroutineExceptionHandler()
-        applicationEventReceiver = SharedFlowApplicationReceiver()
+        windowEventBus = WindowEventBus()
+        applicationEventReceiver = ApplicationEventBus()
         viewModel = ValidationViewModel(
             dependencies = ViewModelDependencies(
                 appScope = testCoroutineScope,
                 dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),
                 coroutineExceptionHandler = exceptionHandler,
                 applicationEventReceiver = applicationEventReceiver,
+                windowEventReceiver = windowEventBus,
             ),
             authManager)
     }

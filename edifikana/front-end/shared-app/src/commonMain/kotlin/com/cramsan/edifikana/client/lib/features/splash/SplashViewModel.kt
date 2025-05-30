@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.splash
 
 import com.cramsan.edifikana.client.lib.features.ActivityRouteDestination
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.framework.core.compose.BaseViewModel
@@ -28,7 +28,7 @@ class SplashViewModel(
      */
     fun onBackSelected() {
         viewModelScope.launch {
-            emitApplicationEvent(EdifikanaApplicationEvent.NavigateBack)
+            emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
         }
     }
 
@@ -53,15 +53,15 @@ class SplashViewModel(
     private suspend fun navigateToMainScreen() {
         val propertyResult = propertyManager.getPropertyList()
         propertyManager.setActiveProperty(propertyResult.getOrNull()?.firstOrNull()?.id)
-        emitApplicationEvent(
-            EdifikanaApplicationEvent.NavigateToActivity(ActivityRouteDestination.ManagementRouteDestination)
+        emitWindowEvent(
+            EdifikanaWindowsEvent.NavigateToActivity(ActivityRouteDestination.ManagementRouteDestination)
         )
     }
 
     private suspend fun navigateToSignInScreen() {
         propertyManager.setActiveProperty(null)
-        emitApplicationEvent(
-            EdifikanaApplicationEvent.NavigateToActivity(
+        emitWindowEvent(
+            EdifikanaWindowsEvent.NavigateToActivity(
                 ActivityRouteDestination.AuthRouteDestination,
                 clearStack = true,
             )

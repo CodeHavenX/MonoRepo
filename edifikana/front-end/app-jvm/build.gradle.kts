@@ -9,10 +9,13 @@ plugins {
 apply(from = "$rootDir/gradle/kotlin-jvm-target-lib-compose.gradle")
 
 dependencies {
+    implementation(project(":framework:core-compose"))
+
     implementation(project(":edifikana:front-end:shared-app"))
 
     implementation("io.insert-koin:koin-core:_")
     implementation("io.insert-koin:koin-compose:_")
+    implementation("io.insert-koin:koin-compose-viewmodel:_")
 }
 
 compose.desktop {

@@ -1,6 +1,6 @@
 package com.codehavenx.alpaca.frontend.appcore.features.clients.viewclient
 
-import com.codehavenx.alpaca.frontend.appcore.features.application.AlpacaApplicationEvent
+import com.codehavenx.alpaca.frontend.appcore.features.application.AlpacaWindowEvent
 import com.codehavenx.alpaca.frontend.appcore.features.application.Route
 import com.codehavenx.alpaca.frontend.appcore.managers.ClientManager
 import com.codehavenx.alpaca.frontend.appcore.models.Client
@@ -38,8 +38,8 @@ class ViewClientViewModel(
      */
     fun editClient(clientId: String) {
         viewModelScope.launch {
-            emitApplicationEvent(
-                AlpacaApplicationEvent.Navigate(Route.updateClient(clientId))
+            emitWindowEvent(
+                AlpacaWindowEvent.Navigate(Route.updateClient(clientId))
             )
         }
     }

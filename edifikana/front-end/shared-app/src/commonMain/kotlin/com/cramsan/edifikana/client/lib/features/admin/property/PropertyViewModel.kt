@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.admin.property
 
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.client.lib.models.StaffModel
@@ -33,7 +33,7 @@ class PropertyViewModel(
      */
     fun navigateBack() {
         viewModelScope.launch {
-            emitApplicationEvent(EdifikanaApplicationEvent.NavigateBack)
+            emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
         }
     }
 
@@ -48,8 +48,8 @@ class PropertyViewModel(
             propertyManager.updateProperty(propertyId, name, address).onFailure {
                 updateUiState { it.copy(isLoading = false) }
                 val message = stringProvider.getString(Res.string.error_message_unexpected_error)
-                emitApplicationEvent(
-                    EdifikanaApplicationEvent.ShowSnackbar(message)
+                emitWindowEvent(
+                    EdifikanaWindowsEvent.ShowSnackbar(message)
                 )
                 return@launch
             }
@@ -169,13 +169,13 @@ class PropertyViewModel(
             propertyManager.removeProperty(propertyId ?: return@launch).onFailure {
                 updateUiState { it.copy(isLoading = false) }
                 val message = stringProvider.getString(Res.string.error_message_unexpected_error)
-                emitApplicationEvent(
-                    EdifikanaApplicationEvent.ShowSnackbar(message)
+                emitWindowEvent(
+                    EdifikanaWindowsEvent.ShowSnackbar(message)
                 )
                 return@launch
             }
             updateUiState { it.copy(isLoading = false) }
-            emitApplicationEvent(EdifikanaApplicationEvent.NavigateBack)
+            emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
         }
     }
 

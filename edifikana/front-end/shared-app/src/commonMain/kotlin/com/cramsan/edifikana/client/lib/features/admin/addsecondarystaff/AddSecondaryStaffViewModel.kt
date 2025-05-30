@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.admin.addsecondarystaff
 
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.client.lib.models.StaffModel
@@ -34,7 +34,7 @@ class AddSecondaryStaffViewModel(
      */
     fun onBackSelected() {
         viewModelScope.launch {
-            emitApplicationEvent(EdifikanaApplicationEvent.NavigateBack)
+            emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
         }
     }
 
@@ -56,9 +56,9 @@ class AddSecondaryStaffViewModel(
             lastName.isNullOrBlank() ||
             role == null
         ) {
-            emitApplicationEvent(
+            emitWindowEvent(
                 // TODO: Add compose resource loading
-                EdifikanaApplicationEvent.ShowSnackbar(stringProvider.getString(Res.string.text_please_complete_fields))
+                EdifikanaWindowsEvent.ShowSnackbar(stringProvider.getString(Res.string.text_please_complete_fields))
             )
             return@launch
         }
@@ -80,15 +80,15 @@ class AddSecondaryStaffViewModel(
         )
 
         if (result.isFailure || result.isFailure) {
-            emitApplicationEvent(
+            emitWindowEvent(
                 // TODO: Add compose resource loading
-                EdifikanaApplicationEvent.ShowSnackbar(
+                EdifikanaWindowsEvent.ShowSnackbar(
                     stringProvider.getString(Res.string.text_there_was_an_error_processing_request)
                 )
             )
         } else {
-            emitApplicationEvent(
-                EdifikanaApplicationEvent.NavigateBack
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateBack
             )
         }
     }

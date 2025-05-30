@@ -1,25 +1,25 @@
 package com.cramsan.edifikana.client.lib.features
 
 import com.cramsan.framework.core.CoreUri
-import com.cramsan.framework.core.compose.ApplicationEvent
+import com.cramsan.framework.core.compose.WindowEvent
 
 /**
- * Events that can be triggered in the whole application. These events are intended to be
- * triggered by a feature screen, and it will be handled by the application.
+ * Events that can be triggered in the whole Window. These events are intended to be
+ * triggered by a feature screen, and it will be handled by the window.
  */
-sealed class EdifikanaApplicationEvent : ApplicationEvent {
+sealed class EdifikanaWindowsEvent : WindowEvent {
 
     /**
      * Open the camera.
      */
     data class OpenCamera(
         val filename: String,
-    ) : EdifikanaApplicationEvent()
+    ) : EdifikanaWindowsEvent()
 
     /**
      * Open the photo picker.
      */
-    data object OpenPhotoPicker : EdifikanaApplicationEvent()
+    data object OpenPhotoPicker : EdifikanaWindowsEvent()
 
     /**
      * Share content.
@@ -27,7 +27,7 @@ sealed class EdifikanaApplicationEvent : ApplicationEvent {
     data class ShareContent(
         val text: String,
         val imageUri: CoreUri? = null,
-    ) : EdifikanaApplicationEvent()
+    ) : EdifikanaWindowsEvent()
 
     /**
      * Navigate to activity.
@@ -36,36 +36,36 @@ sealed class EdifikanaApplicationEvent : ApplicationEvent {
         val destination: ActivityRouteDestination,
         val clearTop: Boolean = false,
         val clearStack: Boolean = false,
-    ) : EdifikanaApplicationEvent()
+    ) : EdifikanaWindowsEvent()
 
     /**
      * Navigate to destination.
      */
     data class NavigateToScreen(
         val destination: Destination,
-    ) : EdifikanaApplicationEvent()
+    ) : EdifikanaWindowsEvent()
 
     /**
      * Close the activity.
      */
-    data object CloseActivity : EdifikanaApplicationEvent()
+    data object CloseActivity : EdifikanaWindowsEvent()
 
     /**
      * Show a snackbar.
      */
     data class ShowSnackbar(
         val message: String,
-    ) : EdifikanaApplicationEvent()
+    ) : EdifikanaWindowsEvent()
 
     /**
      * Open an image externally.
      */
     data class OpenImageExternally(
         val imageUri: CoreUri,
-    ) : EdifikanaApplicationEvent()
+    ) : EdifikanaWindowsEvent()
 
     /**
      * Navigate back.
      */
-    data object NavigateBack : EdifikanaApplicationEvent()
+    data object NavigateBack : EdifikanaWindowsEvent()
 }

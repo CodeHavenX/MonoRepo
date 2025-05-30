@@ -2,6 +2,7 @@ package com.cramsan.edifikana.client.lib.di.koin
 
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.EventLogManager
+import com.cramsan.edifikana.client.lib.managers.PreferencesManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.client.lib.managers.TimeCardManager
@@ -35,6 +36,7 @@ internal val ManagerModule = module {
     singleOf(::StaffManager)
     singleOf(::AuthManager)
     singleOf(::PropertyManager)
+    singleOf(::PreferencesManager)
 
     single {
         RemoteConfig(

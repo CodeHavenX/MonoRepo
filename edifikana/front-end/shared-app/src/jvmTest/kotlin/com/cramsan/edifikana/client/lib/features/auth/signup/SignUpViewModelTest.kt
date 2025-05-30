@@ -1,11 +1,12 @@
 package com.cramsan.edifikana.client.lib.features.auth.signup
 
 import app.cash.turbine.test
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.framework.core.UnifiedDispatcherProvider
-import com.cramsan.framework.core.compose.SharedFlowApplicationReceiver
+import com.cramsan.framework.core.compose.ApplicationEventBus
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.WindowEventBus
 import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
@@ -17,16 +18,16 @@ import edifikana_lib.error_message_unexpected_error
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvFileSource
 import kotlin.test.BeforeTest
 import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.launch
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.CsvFileSource
 
 /**
  * Test the [SignUpViewModel] class.
@@ -37,8 +38,8 @@ class SignUpViewModelTest : TestBase() {
     private lateinit var authManager: AuthManager
     private lateinit var viewModel: SignUpViewModel
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
-
-    private lateinit var applicationEventReceiver: SharedFlowApplicationReceiver
+    private lateinit var windowEventBus: WindowEventBus
+    private lateinit var applicationEventReceiver: ApplicationEventBus
     private lateinit var stringProvider: StringProvider
 
 
@@ -50,7 +51,8 @@ class SignUpViewModelTest : TestBase() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         authManager = mockk()
         exceptionHandler = CollectorCoroutineExceptionHandler()
-        applicationEventReceiver = SharedFlowApplicationReceiver()
+        applicationEventReceiver = ApplicationEventBus()
+        windowEventBus = WindowEventBus()
         stringProvider = mockk()
         viewModel = SignUpViewModel(
             dependencies = ViewModelDependencies(
@@ -58,6 +60,7 @@ class SignUpViewModelTest : TestBase() {
                 dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),
                 coroutineExceptionHandler = exceptionHandler,
                 applicationEventReceiver = applicationEventReceiver,
+                windowEventReceiver = windowEventBus,
             ),
             auth = authManager,
             stringProvider = stringProvider,
@@ -193,9 +196,9 @@ class SignUpViewModelTest : TestBase() {
 
         // Act
         val verificationJob = launch {
-            applicationEventReceiver.events.test {
+            windowEventBus.events.test {
                 assertEquals(
-                    EdifikanaApplicationEvent.NavigateBack, awaitItem()
+                    EdifikanaWindowsEvent.NavigateBack, awaitItem()
                 )
             }
         }

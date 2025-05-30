@@ -9,9 +9,7 @@ import com.cramsan.framework.core.compose.ViewModelEvent
 sealed class EdifikanaApplicationViewModelEvent : ViewModelEvent {
 
     /**
-     * Wrapper for [EdifikanaApplicationEvent] to be used in the view model.
+     * Noop event.
      */
-    data class EdifikanaApplicationEventWrapper(
-        val event: EdifikanaApplicationEvent,
-    ) : EdifikanaApplicationViewModelEvent()
+    data object Noop : EdifikanaApplicationViewModelEvent()
 }

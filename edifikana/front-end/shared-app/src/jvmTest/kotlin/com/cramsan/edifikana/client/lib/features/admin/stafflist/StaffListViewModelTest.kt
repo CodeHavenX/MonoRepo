@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.admin.stafflist
 
 import app.cash.turbine.test
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.features.management.ManagementDestination
 import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.client.lib.models.StaffModel
@@ -10,8 +10,9 @@ import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.StaffRole
 import com.cramsan.edifikana.lib.model.StaffStatus
 import com.cramsan.framework.core.UnifiedDispatcherProvider
-import com.cramsan.framework.core.compose.SharedFlowApplicationReceiver
+import com.cramsan.framework.core.compose.ApplicationEventBus
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.WindowEventBus
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
@@ -21,10 +22,10 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
+import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
-import org.junit.jupiter.api.BeforeEach
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class StaffListViewModelTest : TestBase() {
@@ -32,20 +33,23 @@ class StaffListViewModelTest : TestBase() {
     private lateinit var viewModel: StaffListViewModel
     private lateinit var staffManager: StaffManager
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
-    private lateinit var applicationEventReceiver: SharedFlowApplicationReceiver
+    private lateinit var applicationEventReceiver: ApplicationEventBus
+    private lateinit var windowEventBus: WindowEventBus
 
     @BeforeEach
     fun setupTest() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
-        applicationEventReceiver = SharedFlowApplicationReceiver()
+        applicationEventReceiver = ApplicationEventBus()
         exceptionHandler = CollectorCoroutineExceptionHandler()
         staffManager = mockk(relaxed = true)
+        windowEventBus = WindowEventBus()
         viewModel = StaffListViewModel(
             dependencies = ViewModelDependencies(
                 appScope = testCoroutineScope,
                 dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),
                 coroutineExceptionHandler = exceptionHandler,
                 applicationEventReceiver = applicationEventReceiver,
+                windowEventReceiver = windowEventBus,
             ),
             staffManager = staffManager
         )
@@ -110,9 +114,9 @@ class StaffListViewModelTest : TestBase() {
     @Test
     fun `test navigateToAddPrimaryStaff emits NavigateToScreen event`() = runBlockingTest {
         val verificationJob = launch {
-            applicationEventReceiver.events.test {
+            windowEventBus.events.test {
                 assertEquals(
-                    EdifikanaApplicationEvent.NavigateToScreen(ManagementDestination.AddPrimaryStaffManagementDestination),
+                    EdifikanaWindowsEvent.NavigateToScreen(ManagementDestination.AddPrimaryStaffManagementDestination),
                     awaitItem()
                 )
             }
@@ -125,9 +129,9 @@ class StaffListViewModelTest : TestBase() {
     @Test
     fun `test navigateToAddSecondaryStaff emits NavigateToScreen event`() = runBlockingTest {
         val verificationJob = launch {
-            applicationEventReceiver.events.test {
+            windowEventBus.events.test {
                 assertEquals(
-                    EdifikanaApplicationEvent.NavigateToScreen(ManagementDestination.AddSecondaryStaffManagementDestination),
+                    EdifikanaWindowsEvent.NavigateToScreen(ManagementDestination.AddSecondaryStaffManagementDestination),
                     awaitItem()
                 )
             }
@@ -141,9 +145,9 @@ class StaffListViewModelTest : TestBase() {
     fun `test navigateToStaff emits NavigateToScreen event`() = runBlockingTest {
         val staffId = StaffId("123")
         val verificationJob = launch {
-            applicationEventReceiver.events.test {
+            windowEventBus.events.test {
                 assertEquals(
-                    EdifikanaApplicationEvent.NavigateToScreen(ManagementDestination.StaffDestination(staffId)),
+                    EdifikanaWindowsEvent.NavigateToScreen(ManagementDestination.StaffDestination(staffId)),
                     awaitItem()
                 )
             }

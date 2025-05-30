@@ -1,11 +1,11 @@
 package com.cramsan.edifikana.client.lib.features.debug.main
 
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
+import com.cramsan.edifikana.client.lib.managers.PreferencesManager
 import com.cramsan.edifikana.client.lib.settings.Overrides
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logI
-import com.cramsan.framework.preferences.Preferences
 import kotlinx.coroutines.launch
 
 /**
@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
  **/
 class DebugViewModel(
     dependencies: ViewModelDependencies,
-    private val preferences: Preferences,
+    private val preferencesManager: PreferencesManager,
 ) : BaseViewModel<DebugEvent, DebugUIModelUI>(
     dependencies,
     DebugUIModelUI.Initial,
@@ -29,6 +29,13 @@ class DebugViewModel(
      */
     fun loadData() {
         loadDataImpl()
+        viewModelScope.launch {
+            // Listen to changes in preferences
+            preferencesManager.modifiedKey.collect { key ->
+                logI(TAG, "Preference key modified: $key")
+                loadDataImpl()
+            }
+        }
     }
 
     /**
@@ -36,17 +43,13 @@ class DebugViewModel(
      */
     fun saveValue(key: String, value: Any) {
         viewModelScope.launch {
-            when (value) {
-                is String -> preferences.saveString(key, value)
-                is Boolean -> preferences.saveBoolean(key, value)
-                else -> throw IllegalArgumentException("Unsupported value type: $value with key $key")
-            }
+            preferencesManager.setPreference(key, value)
             bufferedKey = null
             bufferedValue = null
             logI(TAG, "Debug key $key changed to $value")
             loadDataImpl()
-            emitApplicationEvent(
-                EdifikanaApplicationEvent.ShowSnackbar("Value saved")
+            emitWindowEvent(
+                EdifikanaWindowsEvent.ShowSnackbar("Value saved")
             )
         }
     }
@@ -76,14 +79,30 @@ class DebugViewModel(
      */
     fun navigateBack() {
         viewModelScope.launch {
-            emitApplicationEvent(
-                EdifikanaApplicationEvent.NavigateBack
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateBack
             )
         }
     }
 
+    @Suppress("MaxLineLength", "MaximumLineLength", "LongMethod")
     private fun loadDataImpl() {
         viewModelScope.launch {
+            val disableSupabase = preferencesManager
+                .loadBooleanPreference(Overrides.KEY_DISABLE_SUPABASE).getOrThrow()
+            val disableBE = preferencesManager
+                .loadBooleanPreference(Overrides.KEY_DISABLE_BE).getOrThrow()
+            val supabaseOverrideEnabled = preferencesManager
+                .loadBooleanPreference(Overrides.KEY_SUPABASE_OVERRIDE_ENABLED).getOrThrow()
+            val supabaseOverrideUrl = preferencesManager
+                .loadStringPreference(Overrides.KEY_SUPABASE_OVERRIDE_URL).getOrThrow()
+            val supabaseOverrideKey = preferencesManager
+                .loadStringPreference(Overrides.KEY_SUPABASE_OVERRIDE_KEY).getOrThrow()
+            val haltOnFailure = preferencesManager
+                .loadBooleanPreference(Overrides.KEY_HALT_ON_FAILURE).getOrThrow()
+            val openDebugWindow = preferencesManager
+                .loadBooleanPreference(Overrides.KEY_OPEN_DEBUG_WINDOW).getOrThrow()
+
             updateUiState {
                 it.copy(
                     fields = listOf(
@@ -92,13 +111,13 @@ class DebugViewModel(
                             title = "Disable Supabase(requires restart)",
                             subtitle = "This will allow this client to use fake a Supabase dependency.",
                             key = Overrides.KEY_DISABLE_SUPABASE,
-                            value = preferences.loadBoolean(Overrides.KEY_DISABLE_SUPABASE) ?: false,
+                            value = disableSupabase
                         ),
                         Field.BooleanField(
                             title = "Disable BackEnd(requires restart)",
                             subtitle = "This will allow this client not make calls to the BE.",
                             key = Overrides.KEY_DISABLE_BE,
-                            value = preferences.loadBoolean(Overrides.KEY_DISABLE_BE) ?: false,
+                            value = disableBE,
                         ),
                         Field.Divider,
                         Field.Label(
@@ -109,19 +128,19 @@ class DebugViewModel(
                             title = "Enable the override settings",
                             subtitle = "This will allow this client to use fake dependencies.",
                             key = Overrides.KEY_SUPABASE_OVERRIDE_ENABLED,
-                            value = preferences.loadBoolean(Overrides.KEY_SUPABASE_OVERRIDE_ENABLED) ?: false,
+                            value = supabaseOverrideEnabled,
                         ),
                         Field.StringField(
                             title = "Supabase URL",
                             subtitle = "Provide an override URL",
                             key = Overrides.KEY_SUPABASE_OVERRIDE_URL,
-                            value = preferences.loadString(Overrides.KEY_SUPABASE_OVERRIDE_URL) ?: "",
+                            value = supabaseOverrideUrl,
                         ),
                         Field.StringField(
                             title = "Supabase Anon Key",
                             subtitle = "Provide an override Api Anon Key",
                             key = Overrides.KEY_SUPABASE_OVERRIDE_KEY,
-                            value = preferences.loadString(Overrides.KEY_SUPABASE_OVERRIDE_KEY) ?: "",
+                            value = supabaseOverrideKey,
                             secure = true,
                         ),
                         Field.Divider,
@@ -132,7 +151,15 @@ class DebugViewModel(
                                 "This will cause the application to freeze when an error is found. Allowing " +
                                 "you the chance to connect the debugger and inspect tha application state.",
                             key = Overrides.KEY_HALT_ON_FAILURE,
-                            value = preferences.loadBoolean(Overrides.KEY_HALT_ON_FAILURE) ?: false,
+                            value = haltOnFailure,
+                        ),
+                        Field.Divider,
+                        Field.BooleanField(
+                            title = "Open Debug Window",
+                            subtitle = "Currently only supported on desktop.",
+                            key = Overrides.KEY_OPEN_DEBUG_WINDOW,
+                            value = openDebugWindow,
+                            enabled = false, // Disabled while we set up the required infrastructure
                         ),
                     ),
                 )

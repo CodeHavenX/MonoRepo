@@ -1,12 +1,12 @@
 package com.codehavenx.alpaca.frontend.appcore.features.application
 
-import com.cramsan.framework.core.compose.ApplicationEvent
 import com.cramsan.framework.core.compose.ViewModelEvent
+import com.cramsan.framework.core.compose.WindowEvent
 
 /**
  * This file contains the application level events that can be handled.
  */
-sealed class AlpacaApplicationEvent : ApplicationEvent {
+sealed class AlpacaWindowEvent : WindowEvent {
 
     /**
      * Navigate to a route.
@@ -16,14 +16,14 @@ sealed class AlpacaApplicationEvent : ApplicationEvent {
      */
     data class Navigate(
         val route: String,
-    ) : AlpacaApplicationEvent()
+    ) : AlpacaWindowEvent()
 
     /**
      * Navigate back.
      *
      * @param id The id of the event. This is automatically generated. It is made accessible for testing purposes.
      */
-    data object NavigateBack : AlpacaApplicationEvent()
+    data object NavigateBack : AlpacaWindowEvent()
 
     /**
      * Navigate to the [route] from the root page.
@@ -33,7 +33,7 @@ sealed class AlpacaApplicationEvent : ApplicationEvent {
      */
     data class NavigateFromRootPage(
         val route: String,
-    ) : AlpacaApplicationEvent()
+    ) : AlpacaWindowEvent()
 
     /**
      * Sign in status change event.
@@ -43,7 +43,7 @@ sealed class AlpacaApplicationEvent : ApplicationEvent {
      */
     data class SignInStatusChange(
         val isSignedIn: Boolean,
-    ) : AlpacaApplicationEvent()
+    ) : AlpacaWindowEvent()
 }
 
 /**
@@ -52,9 +52,9 @@ sealed class AlpacaApplicationEvent : ApplicationEvent {
  */
 sealed class AlpacaApplicationViewModelEvent : ViewModelEvent {
     /**
-     * Wrapper for [AlpacaApplicationEvent] to be used in the view model.
+     * Wrapper for [AlpacaWindowEvent] to be used in the view model.
      */
     data class AlpacaApplicationEventWrapper(
-        val event: AlpacaApplicationEvent,
+        val event: AlpacaWindowEvent,
     ) : AlpacaApplicationViewModelEvent()
 }

@@ -1,21 +1,18 @@
 package com.cramsan.edifikana.client.lib.features.admin.property
 
 import app.cash.turbine.test
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.client.lib.models.PropertyModel
 import com.cramsan.edifikana.client.lib.models.StaffModel
-import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.StaffId
-import com.cramsan.edifikana.lib.model.StaffRole
-import com.cramsan.edifikana.lib.model.StaffStatus
 import com.cramsan.framework.assertlib.AssertUtil
 import com.cramsan.framework.assertlib.implementation.NoopAssertUtil
 import com.cramsan.framework.core.UnifiedDispatcherProvider
-import com.cramsan.framework.core.compose.SharedFlowApplicationReceiver
+import com.cramsan.framework.core.compose.ApplicationEventBus
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.WindowEventBus
 import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
@@ -29,10 +26,10 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
+import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
-import org.junit.jupiter.api.BeforeEach
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class PropertyViewModelTest : TestBase() {
@@ -41,14 +38,16 @@ class PropertyViewModelTest : TestBase() {
     private lateinit var propertyManager: PropertyManager
     private lateinit var staffManager: StaffManager
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
-    private lateinit var applicationEventReceiver: SharedFlowApplicationReceiver
+    private lateinit var applicationEventReceiver: ApplicationEventBus
+    private lateinit var windowEventBus: WindowEventBus
     private lateinit var stringProvider: StringProvider
 
     @BeforeEach
     fun setupTest() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         AssertUtil.setInstance(NoopAssertUtil())
-        applicationEventReceiver = SharedFlowApplicationReceiver()
+        applicationEventReceiver = ApplicationEventBus()
+        windowEventBus = WindowEventBus()
         exceptionHandler = CollectorCoroutineExceptionHandler()
         propertyManager = mockk(relaxed = true)
         staffManager = mockk(relaxed = true)
@@ -61,6 +60,7 @@ class PropertyViewModelTest : TestBase() {
                 dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),
                 coroutineExceptionHandler = exceptionHandler,
                 applicationEventReceiver = applicationEventReceiver,
+                windowEventReceiver = windowEventBus,
             ),
             stringProvider = stringProvider,
         )
@@ -69,8 +69,8 @@ class PropertyViewModelTest : TestBase() {
     @Test
     fun `test navigateBack emits NavigateBack event`() = runBlockingTest {
         val verificationJob = launch {
-            applicationEventReceiver.events.test {
-                assertEquals(EdifikanaApplicationEvent.NavigateBack, awaitItem())
+            windowEventBus.events.test {
+                assertEquals(EdifikanaWindowsEvent.NavigateBack, awaitItem())
             }
         }
         viewModel.navigateBack()
@@ -116,9 +116,9 @@ class PropertyViewModelTest : TestBase() {
         coEvery { stringProvider.getString(Res.string.error_message_unexpected_error) } returns "There was an unexpected error."
 
         val verificationJob = launch {
-            applicationEventReceiver.events.test {
+            windowEventBus.events.test {
                 assertEquals(
-                    EdifikanaApplicationEvent.ShowSnackbar("There was an unexpected error."),
+                    EdifikanaWindowsEvent.ShowSnackbar("There was an unexpected error."),
                     awaitItem()
                 )
             }
@@ -207,8 +207,8 @@ class PropertyViewModelTest : TestBase() {
         viewModel.loadContent(propertyId)
 
         val verificationJob = launch {
-            applicationEventReceiver.events.test {
-                assertEquals(EdifikanaApplicationEvent.NavigateBack, awaitItem())
+            windowEventBus.events.test {
+                assertEquals(EdifikanaWindowsEvent.NavigateBack, awaitItem())
             }
         }
         viewModel.removeProperty()
@@ -226,9 +226,9 @@ class PropertyViewModelTest : TestBase() {
         viewModel.loadContent(propertyId)
 
         val verificationJob = launch {
-            applicationEventReceiver.events.test {
+            windowEventBus.events.test {
                 assertEquals(
-                    EdifikanaApplicationEvent.ShowSnackbar("There was an unexpected error."),
+                    EdifikanaWindowsEvent.ShowSnackbar("There was an unexpected error."),
                     awaitItem()
                 )
             }

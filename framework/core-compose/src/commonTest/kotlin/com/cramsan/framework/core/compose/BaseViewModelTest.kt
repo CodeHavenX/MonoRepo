@@ -3,18 +3,18 @@ package com.cramsan.framework.core.compose
 import app.cash.turbine.test
 import com.cramsan.framework.assertlib.AssertUtil
 import com.cramsan.framework.assertlib.implementation.NoopAssertUtil
-import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
+import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.test.TestBase
 import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.launch
 
 /**
  * Test the [BaseViewModel] class.
@@ -33,20 +33,24 @@ class BaseViewModelTest : TestBase() {
 
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
 
-    private lateinit var applicationEventReceiver: SharedFlowApplicationReceiver
+    private lateinit var applicationEventReceiver: ApplicationEventBus
+
+    private lateinit var windowEventReceiver: WindowEventBus
 
     @BeforeTest
     fun setupTest() {
         exceptionHandler = CollectorCoroutineExceptionHandler()
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         AssertUtil.setInstance(NoopAssertUtil())
-        applicationEventReceiver = SharedFlowApplicationReceiver()
+        applicationEventReceiver = ApplicationEventBus()
+        windowEventReceiver = WindowEventBus()
         viewModel = TestableViewModel(
             dependencies = ViewModelDependencies(
                 appScope = testCoroutineScope,
                 dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),
                 coroutineExceptionHandler = exceptionHandler,
                 applicationEventReceiver = applicationEventReceiver,
+                windowEventReceiver = windowEventReceiver,
             )
         )
     }
@@ -77,7 +81,7 @@ class BaseViewModelTest : TestBase() {
     @Test
     fun `test emitting an application event`() = runBlockingTest {
         val verificationJob = launch {
-            applicationEventReceiver.events.test {
+            windowEventReceiver.events.test {
                 assertEquals(TestableApplicationEvent.Signal, awaitItem())
                 advanceUntilIdleAndAwaitComplete(this)
             }

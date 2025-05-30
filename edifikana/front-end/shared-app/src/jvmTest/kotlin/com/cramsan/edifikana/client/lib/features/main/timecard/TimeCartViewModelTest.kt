@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.main.timecard
 
 import app.cash.turbine.test
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.features.management.ManagementDestination
 import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.client.lib.managers.TimeCardManager
@@ -15,8 +15,9 @@ import com.cramsan.edifikana.lib.model.StaffStatus
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.framework.core.UnifiedDispatcherProvider
-import com.cramsan.framework.core.compose.SharedFlowApplicationReceiver
+import com.cramsan.framework.core.compose.ApplicationEventBus
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.WindowEventBus
 import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
@@ -30,11 +31,11 @@ import edifikana_lib.title_timecard
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import org.junit.jupiter.api.BeforeEach
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class TimeCartViewModelTest : TestBase() {
@@ -43,7 +44,8 @@ class TimeCartViewModelTest : TestBase() {
     private lateinit var staffManager: StaffManager
     private lateinit var viewModel: TimeCartViewModel
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
-    private lateinit var applicationEventReceiver: SharedFlowApplicationReceiver
+    private lateinit var applicationEventReceiver: ApplicationEventBus
+    private lateinit var windowEventBus: WindowEventBus
     private lateinit var stringProvider: StringProvider
 
     @BeforeEach
@@ -52,13 +54,15 @@ class TimeCartViewModelTest : TestBase() {
         timeCardManager = mockk()
         staffManager = mockk()
         exceptionHandler = CollectorCoroutineExceptionHandler()
-        applicationEventReceiver = SharedFlowApplicationReceiver()
+        applicationEventReceiver = ApplicationEventBus()
+        windowEventBus = WindowEventBus()
         stringProvider = mockk()
         val dependencies = ViewModelDependencies(
             appScope = testCoroutineScope,
             dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),
             coroutineExceptionHandler = exceptionHandler,
             applicationEventReceiver = applicationEventReceiver,
+            windowEventReceiver = windowEventBus,
         )
         viewModel = TimeCartViewModel(
             timeCardManager,
@@ -153,9 +157,9 @@ class TimeCartViewModelTest : TestBase() {
 
         // Act
         val verificationJob = launch {
-            applicationEventReceiver.events.test {
+            windowEventBus.events.test {
                 assertEquals(
-                    EdifikanaApplicationEvent.NavigateToScreen(
+                    EdifikanaWindowsEvent.NavigateToScreen(
                         ManagementDestination.TimeCardSingleStaffDestination(staffId)
                     ),
                     awaitItem(),
@@ -172,9 +176,9 @@ class TimeCartViewModelTest : TestBase() {
     fun `test navigateToStaffList emits NavigateToScreen event`() = runBlockingTest {
         // Act
         val verificationJob = launch {
-            applicationEventReceiver.events.test {
+            windowEventBus.events.test {
                 assertEquals(
-                    EdifikanaApplicationEvent.NavigateToScreen(
+                    EdifikanaWindowsEvent.NavigateToScreen(
                         ManagementDestination.TimeCardStaffListDestination
                     ),
                     awaitItem(),
@@ -191,9 +195,9 @@ class TimeCartViewModelTest : TestBase() {
     fun `test navigateBack emits NavigateBack event`() = runBlockingTest {
         // Act
         val verificationJob = launch {
-            applicationEventReceiver.events.test {
+            windowEventBus.events.test {
                 assertEquals(
-                    EdifikanaApplicationEvent.NavigateBack,
+                    EdifikanaWindowsEvent.NavigateBack,
                     awaitItem(),
                 )
             }

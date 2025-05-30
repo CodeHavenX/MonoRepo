@@ -8,20 +8,20 @@ interface EdifikanaMainScreenEventHandler {
     /**
      * Open the camera.
      */
-    fun openCamera(event: EdifikanaApplicationEvent.OpenCamera)
+    fun openCamera(event: EdifikanaWindowsEvent.OpenCamera)
 
     /**
      * Open the image externally.
      */
-    fun openImageExternally(event: EdifikanaApplicationEvent.OpenImageExternally)
+    fun openImageExternally(event: EdifikanaWindowsEvent.OpenImageExternally)
 
     /**
      * Open the photo picker.
      */
-    fun openPhotoPicker(event: EdifikanaApplicationEvent.OpenPhotoPicker)
+    fun openPhotoPicker(event: EdifikanaWindowsEvent.OpenPhotoPicker)
 
     /**
      * Share content.
      */
-    fun shareContent(event: EdifikanaApplicationEvent.ShareContent)
+    fun shareContent(event: EdifikanaWindowsEvent.ShareContent)
 }

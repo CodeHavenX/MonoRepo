@@ -1,6 +1,6 @@
 package com.codehavenx.alpaca.frontend.appcore.features.staff.viewstaff
 
-import com.codehavenx.alpaca.frontend.appcore.features.application.AlpacaApplicationEvent
+import com.codehavenx.alpaca.frontend.appcore.features.application.AlpacaWindowEvent
 import com.codehavenx.alpaca.frontend.appcore.features.application.Route
 import com.codehavenx.alpaca.frontend.appcore.managers.StaffManager
 import com.codehavenx.alpaca.frontend.appcore.models.Staff
@@ -45,7 +45,7 @@ class ViewStaffViewModel(
      */
     fun editStaff(staffId: String) {
         viewModelScope.launch {
-            emitApplicationEvent(AlpacaApplicationEvent.Navigate(Route.updateStaff(staffId)))
+            emitWindowEvent(AlpacaWindowEvent.Navigate(Route.updateStaff(staffId)))
         }
     }
 

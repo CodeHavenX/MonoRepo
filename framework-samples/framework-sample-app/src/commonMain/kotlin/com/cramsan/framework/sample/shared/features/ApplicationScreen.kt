@@ -72,10 +72,10 @@ private fun handleApplicationEvent(
     navController: NavHostController,
     scope: CoroutineScope,
     snackbarHostState: SnackbarHostState,
-    applicationEvent: SampleApplicationEvent,
+    applicationEvent: SampleWindowEvent,
 ) {
     when (val event = applicationEvent) {
-        is SampleApplicationEvent.NavigateToActivity -> {
+        is SampleWindowEvent.NavigateToActivity -> {
             if (event.clearStack) {
                 while (navController.currentBackStack.value.isNotEmpty()) {
                     navController.popBackStack()
@@ -85,13 +85,13 @@ private fun handleApplicationEvent(
             }
             navController.navigate(event.destination.path)
         }
-        is SampleApplicationEvent.NavigateToScreen -> {
+        is SampleWindowEvent.NavigateToScreen -> {
             navController.navigate(event.destination.path)
         }
-        is SampleApplicationEvent.NavigateBack -> {
+        is SampleWindowEvent.NavigateBack -> {
             navController.popBackStack()
         }
-        is SampleApplicationEvent.CloseActivity -> {
+        is SampleWindowEvent.CloseActivity -> {
             val currentActivity = navController.currentBackStack.value.reversed().find {
                 ApplicationRoute.fromRoute(it.destination.route) != null
             }
@@ -99,7 +99,7 @@ private fun handleApplicationEvent(
                 navController.popBackStack(it, inclusive = true)
             }
         }
-        is SampleApplicationEvent.ShowSnackbar -> {
+        is SampleWindowEvent.ShowSnackbar -> {
             scope.launch {
                 handleSnackbarEvent(
                     snackbarHostState = snackbarHostState,
@@ -116,7 +116,7 @@ private fun handleApplicationEvent(
  */
 private suspend fun handleSnackbarEvent(
     snackbarHostState: SnackbarHostState,
-    event: SampleApplicationEvent.ShowSnackbar,
+    event: SampleWindowEvent.ShowSnackbar,
     onResult: (SnackbarResult) -> Unit,
 ) {
     snackbarHostState.currentSnackbarData?.dismiss()

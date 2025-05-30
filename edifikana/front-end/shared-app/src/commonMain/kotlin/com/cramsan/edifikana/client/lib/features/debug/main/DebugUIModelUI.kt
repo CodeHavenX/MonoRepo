@@ -55,5 +55,6 @@ sealed class Field {
         val subtitle: String?,
         val key: String,
         val value: Boolean,
+        val enabled: Boolean = true,
     ) : Field()
 }

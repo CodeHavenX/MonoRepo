@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.main.timecard.viewstaff
 
 import com.cramsan.edifikana.client.lib.eventTypeFriendlyName
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.client.lib.managers.TimeCardManager
@@ -80,8 +80,8 @@ class ViewStaffViewModel(
     fun share(timeCardRecordPK: TimeCardEventId?) = viewModelScope.launch {
         if (timeCardRecordPK == null) {
             logW(TAG, "TimeCardRecord PK is null")
-            emitApplicationEvent(
-                EdifikanaApplicationEvent.ShowSnackbar(
+            emitWindowEvent(
+                EdifikanaWindowsEvent.ShowSnackbar(
                     stringProvider.getString(Res.string.error_message_currently_uploading)
                 )
             )
@@ -99,8 +99,8 @@ class ViewStaffViewModel(
         val imageUri = record.publicImageUrl?.let {
             storageService.downloadFile(it).getOrThrow()
         }
-        emitApplicationEvent(
-            EdifikanaApplicationEvent.ShareContent(
+        emitWindowEvent(
+            EdifikanaWindowsEvent.ShareContent(
                 formatShareMessage(staff, record.timeRecorded, record.eventType),
                 imageUri,
             )
@@ -114,8 +114,8 @@ class ViewStaffViewModel(
     fun onClockEventSelected(eventType: TimeCardEventType) = viewModelScope.launch {
         this@ViewStaffViewModel.eventType = eventType
         // TODO: Set the filename
-        emitApplicationEvent(
-            EdifikanaApplicationEvent.OpenCamera(eventType.toString())
+        emitWindowEvent(
+            EdifikanaWindowsEvent.OpenCamera(eventType.toString())
         )
     }
 
@@ -155,8 +155,8 @@ class ViewStaffViewModel(
             }
             eventType = null
         } else {
-            emitApplicationEvent(
-                EdifikanaApplicationEvent.ShareContent(
+            emitWindowEvent(
+                EdifikanaWindowsEvent.ShareContent(
                     formatShareMessage(
                         staff,
                         newRecord.eventTime.toFriendlyDateTime(),
@@ -180,7 +180,7 @@ class ViewStaffViewModel(
      */
     fun navigateBack() {
         viewModelScope.launch {
-            emitApplicationEvent(EdifikanaApplicationEvent.NavigateBack)
+            emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
         }
     }
 

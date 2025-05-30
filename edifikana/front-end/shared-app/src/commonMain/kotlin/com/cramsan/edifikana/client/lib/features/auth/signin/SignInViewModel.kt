@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.auth.signin
 
 import com.cramsan.edifikana.client.lib.features.ActivityRouteDestination
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.features.auth.AuthRouteDestination
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
@@ -78,8 +78,8 @@ class SignInViewModel(
                 }
                 return@launch
             }
-            emitApplicationEvent(
-                EdifikanaApplicationEvent.NavigateToActivity(
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateToActivity(
                     ActivityRouteDestination.ManagementRouteDestination,
                     clearTop = true,
                 )
@@ -92,8 +92,8 @@ class SignInViewModel(
      */
     fun navigateToSignUpPage() {
         viewModelScope.launch {
-            emitApplicationEvent(
-                EdifikanaApplicationEvent.NavigateToScreen(AuthRouteDestination.SignUpDestination)
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateToScreen(AuthRouteDestination.SignUpDestination)
             )
         }
     }
@@ -103,8 +103,8 @@ class SignInViewModel(
      */
     fun navigateToDebugPage() {
         viewModelScope.launch {
-            emitApplicationEvent(
-                EdifikanaApplicationEvent.NavigateToActivity(ActivityRouteDestination.DebugRouteDestination)
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateToActivity(ActivityRouteDestination.DebugRouteDestination)
             )
         }
     }

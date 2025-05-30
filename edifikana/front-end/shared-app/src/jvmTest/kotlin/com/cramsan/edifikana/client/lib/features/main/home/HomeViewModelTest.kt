@@ -2,14 +2,15 @@ package com.cramsan.edifikana.client.lib.features.main.home
 
 import app.cash.turbine.test
 import com.cramsan.edifikana.client.lib.features.ActivityRouteDestination
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.features.account.AccountRouteDestination
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.models.PropertyModel
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.core.UnifiedDispatcherProvider
-import com.cramsan.framework.core.compose.SharedFlowApplicationReceiver
+import com.cramsan.framework.core.compose.ApplicationEventBus
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.WindowEventBus
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
@@ -18,12 +19,12 @@ import com.cramsan.framework.test.TestBase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.junit.jupiter.api.BeforeEach
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class HomeViewModelTest : TestBase() {
@@ -31,19 +32,22 @@ class HomeViewModelTest : TestBase() {
     private lateinit var propertyManager: PropertyManager
     private lateinit var viewModel: HomeViewModel
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
-    private lateinit var applicationEventReceiver: SharedFlowApplicationReceiver
+    private lateinit var applicationEventReceiver: ApplicationEventBus
+    private lateinit var windowEventBus: WindowEventBus
 
     @BeforeEach
     fun setUp() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         propertyManager = mockk()
         exceptionHandler = CollectorCoroutineExceptionHandler()
-        applicationEventReceiver = SharedFlowApplicationReceiver()
+        applicationEventReceiver = ApplicationEventBus()
+        windowEventBus = WindowEventBus()
         val dependencies = ViewModelDependencies(
             appScope = testCoroutineScope,
             dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),
             coroutineExceptionHandler = exceptionHandler,
             applicationEventReceiver = applicationEventReceiver,
+            windowEventReceiver = windowEventBus,
         )
         viewModel = HomeViewModel(dependencies, propertyManager)
     }
@@ -88,9 +92,9 @@ class HomeViewModelTest : TestBase() {
     fun `test navigateBack emits NavigateBack event`() = runBlockingTest {
         // Act
         val verificationJob = launch {
-            applicationEventReceiver.events.test {
+            windowEventBus.events.test {
                 assertEquals(
-                    EdifikanaApplicationEvent.NavigateBack,
+                    EdifikanaWindowsEvent.NavigateBack,
                     awaitItem(),
                 )
             }
@@ -105,9 +109,9 @@ class HomeViewModelTest : TestBase() {
     fun `test navigateToAccount emits NavigateToActivity event`() = runBlockingTest {
         // Act
         val verificationJob = launch {
-            applicationEventReceiver.events.test {
+            windowEventBus.events.test {
                 assertEquals(
-                    EdifikanaApplicationEvent.NavigateToActivity(
+                    EdifikanaWindowsEvent.NavigateToActivity(
                         ActivityRouteDestination.AccountRouteDestination
                     ),
                     awaitItem(),
@@ -124,9 +128,9 @@ class HomeViewModelTest : TestBase() {
     fun `test navigateToNotifications emits NavigateToScreen event`() = runBlockingTest {
         // Act
         val verificationJob = launch {
-            applicationEventReceiver.events.test {
+            windowEventBus.events.test {
                 assertEquals(
-                    EdifikanaApplicationEvent.NavigateToScreen(
+                    EdifikanaWindowsEvent.NavigateToScreen(
                         AccountRouteDestination.NotificationsDestination
                     ),
                     awaitItem(),

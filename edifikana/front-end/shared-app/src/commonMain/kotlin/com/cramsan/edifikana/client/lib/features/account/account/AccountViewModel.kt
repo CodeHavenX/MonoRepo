@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.account.account
 
 import com.cramsan.edifikana.client.lib.features.ActivityRouteDestination
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
@@ -21,8 +21,8 @@ class AccountViewModel(
     fun signOut() {
         viewModelScope.launch {
             auth.signOut()
-            emitApplicationEvent(
-                EdifikanaApplicationEvent.NavigateToActivity(
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateToActivity(
                     ActivityRouteDestination.AuthRouteDestination,
                     clearStack = true,
                 )
@@ -35,7 +35,7 @@ class AccountViewModel(
      */
     fun navigateBack() {
         viewModelScope.launch {
-            emitApplicationEvent(EdifikanaApplicationEvent.NavigateBack)
+            emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
         }
     }
 

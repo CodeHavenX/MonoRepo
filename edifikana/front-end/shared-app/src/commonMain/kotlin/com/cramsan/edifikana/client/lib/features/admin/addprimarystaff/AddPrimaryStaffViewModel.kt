@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.admin.addprimarystaff
 
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
@@ -28,7 +28,7 @@ class AddPrimaryStaffViewModel(
      */
     fun navigateBack() {
         viewModelScope.launch {
-            emitApplicationEvent(EdifikanaApplicationEvent.NavigateBack)
+            emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
         }
     }
 
@@ -60,12 +60,12 @@ class AddPrimaryStaffViewModel(
                     )
                 }
             } else {
-                emitApplicationEvent(
-                    EdifikanaApplicationEvent.ShowSnackbar(
+                emitWindowEvent(
+                    EdifikanaWindowsEvent.ShowSnackbar(
                         "Email was sent to $email to join this organization."
                     )
                 )
-                emitApplicationEvent(EdifikanaApplicationEvent.NavigateBack)
+                emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
             }
         }
     }

@@ -1,13 +1,14 @@
 package com.cramsan.edifikana.client.lib.features.admin.addproperty
 
 import app.cash.turbine.test
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.models.PropertyModel
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.core.UnifiedDispatcherProvider
-import com.cramsan.framework.core.compose.SharedFlowApplicationReceiver
+import com.cramsan.framework.core.compose.ApplicationEventBus
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.WindowEventBus
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
@@ -18,10 +19,10 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
+import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
-import org.junit.jupiter.api.BeforeEach
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AddPropertyViewModelTest : TestBase() {
@@ -29,12 +30,14 @@ class AddPropertyViewModelTest : TestBase() {
     private lateinit var viewModel: AddPropertyViewModel
     private lateinit var propertyManager: PropertyManager
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
-    private lateinit var applicationEventReceiver: SharedFlowApplicationReceiver
+    private lateinit var applicationEventReceiver: ApplicationEventBus
+    private lateinit var windowEventBus: WindowEventBus
 
     @BeforeEach
     fun setupTest() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
-        applicationEventReceiver = SharedFlowApplicationReceiver()
+        applicationEventReceiver = ApplicationEventBus()
+        windowEventBus = WindowEventBus()
         exceptionHandler = CollectorCoroutineExceptionHandler()
         propertyManager = mockk(relaxed = true)
         viewModel = AddPropertyViewModel(
@@ -42,6 +45,7 @@ class AddPropertyViewModelTest : TestBase() {
                 appScope = testCoroutineScope,
                 dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),
                 coroutineExceptionHandler = exceptionHandler,
+                windowEventReceiver = windowEventBus,
                 applicationEventReceiver = applicationEventReceiver,
             ),
             propertyManager = propertyManager
@@ -51,9 +55,9 @@ class AddPropertyViewModelTest : TestBase() {
     @Test
     fun `test navigateBack emits NavigateBack event`() = runBlockingTest {
         val verificationJob = launch {
-            applicationEventReceiver.events.test {
+            windowEventBus.events.test {
                 assertEquals(
-                    EdifikanaApplicationEvent.NavigateBack,
+                    EdifikanaWindowsEvent.NavigateBack,
                     awaitItem()
                 )
             }
@@ -74,14 +78,14 @@ class AddPropertyViewModelTest : TestBase() {
         coEvery { propertyManager.addProperty(propertyName, address) } returns Result.success(newProperty)
 
         val verificationJob = launch {
-            applicationEventReceiver.events.test {
+            windowEventBus.events.test {
                 assertEquals(
-                    EdifikanaApplicationEvent.ShowSnackbar(
+                    EdifikanaWindowsEvent.ShowSnackbar(
                         "Property $propertyName added successfully"
                     ),
                     awaitItem()
                 )
-                assertEquals(EdifikanaApplicationEvent.NavigateBack, awaitItem())
+                assertEquals(EdifikanaWindowsEvent.NavigateBack, awaitItem())
             }
         }
 

@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.main.home
 
 import com.cramsan.edifikana.client.lib.features.ActivityRouteDestination
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.features.account.AccountRouteDestination
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.lib.model.PropertyId
@@ -68,8 +68,8 @@ class HomeViewModel(
     fun navigateBack() {
         viewModelScope.launch {
             logI(TAG, "Navigating back.")
-            emitApplicationEvent(
-                EdifikanaApplicationEvent.NavigateBack
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateBack
             )
         }
     }
@@ -80,8 +80,8 @@ class HomeViewModel(
     fun navigateToAccount() {
         logI(TAG, "Navigating to account page.")
         viewModelScope.launch {
-            emitApplicationEvent(
-                EdifikanaApplicationEvent.NavigateToActivity(
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateToActivity(
                     ActivityRouteDestination.AccountRouteDestination,
                 )
             )
@@ -103,8 +103,8 @@ class HomeViewModel(
     fun navigateToNotifications() {
         logI(TAG, "Navigating to notifications page.")
         viewModelScope.launch {
-            emitApplicationEvent(
-                EdifikanaApplicationEvent.NavigateToScreen(AccountRouteDestination.NotificationsDestination)
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateToScreen(AccountRouteDestination.NotificationsDestination)
             )
         }
     }

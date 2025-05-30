@@ -33,7 +33,7 @@ class TestableViewModel(
 
     fun emitApplicationEvent() {
         viewModelScope.launch {
-            emitApplicationEvent(TestableApplicationEvent.Signal)
+            emitWindowEvent(TestableApplicationEvent.Signal)
         }
     }
 

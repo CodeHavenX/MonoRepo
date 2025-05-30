@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.main.eventlog.viewrecord
 
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.EventLogManager
 import com.cramsan.edifikana.client.lib.models.AttachmentHolder
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
@@ -66,8 +66,8 @@ class ViewRecordViewModel(
             "${record.timeRecorded}\n" +
             "Dpto: ${record.unit}\n" +
             record.description
-        emitApplicationEvent(
-            EdifikanaApplicationEvent.ShowSnackbar(message)
+        emitWindowEvent(
+            EdifikanaWindowsEvent.ShowSnackbar(message)
         )
     }
 
@@ -75,8 +75,8 @@ class ViewRecordViewModel(
      * Delete a record.
      */
     fun pickMultipleVisualMedia() = viewModelScope.launch {
-        emitApplicationEvent(
-            EdifikanaApplicationEvent.OpenPhotoPicker
+        emitWindowEvent(
+            EdifikanaWindowsEvent.OpenPhotoPicker
         )
     }
 
@@ -112,8 +112,8 @@ class ViewRecordViewModel(
             CoreUri.createUri(attachmentHolder.publicUrl)
         }
 
-        emitApplicationEvent(
-            EdifikanaApplicationEvent.OpenImageExternally(imageUri)
+        emitWindowEvent(
+            EdifikanaWindowsEvent.OpenImageExternally(imageUri)
         )
     }
 
@@ -122,8 +122,8 @@ class ViewRecordViewModel(
      */
     fun navigateBack() {
         viewModelScope.launch {
-            emitApplicationEvent(
-                EdifikanaApplicationEvent.NavigateBack
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateBack
             )
         }
     }

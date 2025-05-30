@@ -2,13 +2,14 @@ package com.cramsan.edifikana.client.lib.features.auth.signin
 
 import app.cash.turbine.test
 import com.cramsan.edifikana.client.lib.features.ActivityRouteDestination
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationEvent
+import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.features.auth.AuthRouteDestination
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
 import com.cramsan.framework.core.UnifiedDispatcherProvider
-import com.cramsan.framework.core.compose.SharedFlowApplicationReceiver
+import com.cramsan.framework.core.compose.ApplicationEventBus
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.WindowEventBus
 import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
@@ -22,13 +23,13 @@ import edifikana_lib.error_message_unexpected_error
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 /**
  * Test the [SignInViewModel] class.
@@ -39,8 +40,8 @@ class SignInViewModelTest : TestBase() {
     private lateinit var authManager: AuthManager
     private lateinit var viewModel: SignInViewModel
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
-
-    private lateinit var applicationEventReceiver: SharedFlowApplicationReceiver
+    private lateinit var windowEventBus: WindowEventBus
+    private lateinit var applicationEventReceiver: ApplicationEventBus
     private lateinit var stringProvider: StringProvider
 
     /**
@@ -50,7 +51,8 @@ class SignInViewModelTest : TestBase() {
     fun setupTest() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         authManager = mockk()
-        applicationEventReceiver = SharedFlowApplicationReceiver()
+        applicationEventReceiver = ApplicationEventBus()
+        windowEventBus = WindowEventBus()
         exceptionHandler = CollectorCoroutineExceptionHandler()
         stringProvider = mockk()
         viewModel = SignInViewModel(
@@ -58,6 +60,7 @@ class SignInViewModelTest : TestBase() {
                 appScope = testCoroutineScope,
                 dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),
                 coroutineExceptionHandler = exceptionHandler,
+                windowEventReceiver = windowEventBus,
                 applicationEventReceiver = applicationEventReceiver,
             ),
             auth = authManager,
@@ -126,9 +129,9 @@ class SignInViewModelTest : TestBase() {
 
         // Act
         val verificationJob = launch {
-            applicationEventReceiver.events.test {
+            windowEventBus.events.test {
                 assertEquals(
-                    EdifikanaApplicationEvent.NavigateToActivity(
+                    EdifikanaWindowsEvent.NavigateToActivity(
                         ActivityRouteDestination.ManagementRouteDestination,
                         clearTop = true,
                     ),
@@ -223,9 +226,9 @@ class SignInViewModelTest : TestBase() {
 
         // Act
         val verificationJob = launch {
-            applicationEventReceiver.events.test {
+            windowEventBus.events.test {
                 assertEquals(
-                    EdifikanaApplicationEvent.NavigateToScreen(AuthRouteDestination.SignUpDestination),
+                    EdifikanaWindowsEvent.NavigateToScreen(AuthRouteDestination.SignUpDestination),
                     awaitItem()
                 )
             }
@@ -246,9 +249,9 @@ class SignInViewModelTest : TestBase() {
 
         // Act
         val verificationJob = launch {
-            applicationEventReceiver.events.test {
+            windowEventBus.events.test {
                 assertEquals(
-                    EdifikanaApplicationEvent.NavigateToActivity(ActivityRouteDestination.DebugRouteDestination),
+                    EdifikanaWindowsEvent.NavigateToActivity(ActivityRouteDestination.DebugRouteDestination),
                     awaitItem()
                 )
             }

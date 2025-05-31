@@ -24,12 +24,6 @@ val moduleList = listOf(
     SupabaseModule,
     SupabaseOverridesModule,
     ApplicationViewModelModule,
-)
-
-/**
- * List of Koin modules that are loaded at the window level.
- */
-val windowModuleList = listOf(
     ViewModelModule,
     ViewModelPlatformModule,
 )

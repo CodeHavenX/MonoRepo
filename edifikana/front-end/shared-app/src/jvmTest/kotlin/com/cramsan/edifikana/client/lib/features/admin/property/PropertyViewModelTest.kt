@@ -10,9 +10,10 @@ import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.assertlib.AssertUtil
 import com.cramsan.framework.assertlib.implementation.NoopAssertUtil
 import com.cramsan.framework.core.UnifiedDispatcherProvider
-import com.cramsan.framework.core.compose.ApplicationEventBus
+import com.cramsan.framework.core.compose.ApplicationEvent
+import com.cramsan.framework.core.compose.EventBus
 import com.cramsan.framework.core.compose.ViewModelDependencies
-import com.cramsan.framework.core.compose.WindowEventBus
+import com.cramsan.framework.core.compose.WindowEvent
 import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
@@ -38,16 +39,16 @@ class PropertyViewModelTest : TestBase() {
     private lateinit var propertyManager: PropertyManager
     private lateinit var staffManager: StaffManager
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
-    private lateinit var applicationEventReceiver: ApplicationEventBus
-    private lateinit var windowEventBus: WindowEventBus
+    private lateinit var applicationEventReceiver: EventBus<ApplicationEvent>
+    private lateinit var windowEventBus: EventBus<WindowEvent>
     private lateinit var stringProvider: StringProvider
 
     @BeforeEach
     fun setupTest() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         AssertUtil.setInstance(NoopAssertUtil())
-        applicationEventReceiver = ApplicationEventBus()
-        windowEventBus = WindowEventBus()
+        applicationEventReceiver = EventBus()
+        windowEventBus = EventBus()
         exceptionHandler = CollectorCoroutineExceptionHandler()
         propertyManager = mockk(relaxed = true)
         staffManager = mockk(relaxed = true)

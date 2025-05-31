@@ -4,9 +4,10 @@ import app.cash.turbine.test
 import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.framework.core.UnifiedDispatcherProvider
-import com.cramsan.framework.core.compose.ApplicationEventBus
 import com.cramsan.framework.core.compose.ViewModelDependencies
-import com.cramsan.framework.core.compose.WindowEventBus
+import com.cramsan.framework.core.compose.ApplicationEvent
+import com.cramsan.framework.core.compose.EventBus
+import com.cramsan.framework.core.compose.WindowEvent
 import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
@@ -38,8 +39,8 @@ class SignUpViewModelTest : TestBase() {
     private lateinit var authManager: AuthManager
     private lateinit var viewModel: SignUpViewModel
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
-    private lateinit var windowEventBus: WindowEventBus
-    private lateinit var applicationEventReceiver: ApplicationEventBus
+    private lateinit var windowEventBus: EventBus<WindowEvent>
+    private lateinit var applicationEventReceiver: EventBus<ApplicationEvent>
     private lateinit var stringProvider: StringProvider
 
 
@@ -51,8 +52,8 @@ class SignUpViewModelTest : TestBase() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         authManager = mockk()
         exceptionHandler = CollectorCoroutineExceptionHandler()
-        applicationEventReceiver = ApplicationEventBus()
-        windowEventBus = WindowEventBus()
+        applicationEventReceiver = EventBus()
+        windowEventBus = EventBus()
         stringProvider = mockk()
         viewModel = SignUpViewModel(
             dependencies = ViewModelDependencies(

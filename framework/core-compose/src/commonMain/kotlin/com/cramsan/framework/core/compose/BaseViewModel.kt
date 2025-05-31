@@ -76,7 +76,8 @@ open class BaseViewModel<E : ViewModelEvent, UI : ViewModelUIState> (
     }
 
     protected suspend fun emitWindowEvent(event: WindowEvent) {
-        dependencies.windowEventReceiver.emit(event)
+        logD(tag, "Emitting window event: %s", event)
+        dependencies.windowEventReceiver.push(event)
     }
 
     protected suspend fun updateUiState(block: suspend (UI) -> UI) {

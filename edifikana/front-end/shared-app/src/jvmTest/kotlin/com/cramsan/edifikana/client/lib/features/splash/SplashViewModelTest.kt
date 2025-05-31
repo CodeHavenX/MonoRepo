@@ -5,9 +5,10 @@ import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.framework.core.UnifiedDispatcherProvider
-import com.cramsan.framework.core.compose.ApplicationEventBus
+import com.cramsan.framework.core.compose.ApplicationEvent
+import com.cramsan.framework.core.compose.EventBus
 import com.cramsan.framework.core.compose.ViewModelDependencies
-import com.cramsan.framework.core.compose.WindowEventBus
+import com.cramsan.framework.core.compose.WindowEvent
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.test.TestBase
@@ -35,9 +36,9 @@ class SplashViewModelTest : TestBase() {
 
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
 
-    private lateinit var applicationEventReceiver: ApplicationEventBus
+    private lateinit var applicationEventReceiver: EventBus<ApplicationEvent>
 
-    private lateinit var windowEventBus: WindowEventBus
+    private lateinit var windowEventBus: EventBus<WindowEvent>
 
     @BeforeTest
     fun setupTest() {
@@ -66,7 +67,7 @@ class SplashViewModelTest : TestBase() {
         viewModel.onBackSelected()
 
         assertTrue(exceptionHandler.exceptions.isEmpty())
-        coVerify { windowEventBus.emit(EdifikanaWindowsEvent.NavigateBack) }
+        coVerify { windowEventBus.push(EdifikanaWindowsEvent.NavigateBack) }
     }
 
     @Test
@@ -78,7 +79,7 @@ class SplashViewModelTest : TestBase() {
 
         assertTrue(exceptionHandler.exceptions.isEmpty())
         coVerify { propertyManager.setActiveProperty(null) }
-        coVerify { windowEventBus.emit(
+        coVerify { windowEventBus.push(
             EdifikanaWindowsEvent.NavigateToActivity(
                 ActivityRouteDestination.AuthRouteDestination,
                 clearStack = true,
@@ -98,7 +99,7 @@ class SplashViewModelTest : TestBase() {
         assertTrue(exceptionHandler.exceptions.isEmpty())
         coVerify { propertyManager.setActiveProperty(null) }
         coVerify {
-            windowEventBus.emit(
+            windowEventBus.push(
                 EdifikanaWindowsEvent.NavigateToActivity(
                     ActivityRouteDestination.ManagementRouteDestination
                 )

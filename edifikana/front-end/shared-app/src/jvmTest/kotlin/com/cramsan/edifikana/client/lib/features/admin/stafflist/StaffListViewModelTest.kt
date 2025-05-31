@@ -10,9 +10,10 @@ import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.StaffRole
 import com.cramsan.edifikana.lib.model.StaffStatus
 import com.cramsan.framework.core.UnifiedDispatcherProvider
-import com.cramsan.framework.core.compose.ApplicationEventBus
+import com.cramsan.framework.core.compose.ApplicationEvent
+import com.cramsan.framework.core.compose.EventBus
 import com.cramsan.framework.core.compose.ViewModelDependencies
-import com.cramsan.framework.core.compose.WindowEventBus
+import com.cramsan.framework.core.compose.WindowEvent
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
@@ -33,16 +34,16 @@ class StaffListViewModelTest : TestBase() {
     private lateinit var viewModel: StaffListViewModel
     private lateinit var staffManager: StaffManager
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
-    private lateinit var applicationEventReceiver: ApplicationEventBus
-    private lateinit var windowEventBus: WindowEventBus
+    private lateinit var applicationEventReceiver: EventBus<ApplicationEvent>
+    private lateinit var windowEventBus: EventBus<WindowEvent>
 
     @BeforeEach
     fun setupTest() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
-        applicationEventReceiver = ApplicationEventBus()
+        applicationEventReceiver = EventBus()
         exceptionHandler = CollectorCoroutineExceptionHandler()
         staffManager = mockk(relaxed = true)
-        windowEventBus = WindowEventBus()
+        windowEventBus = EventBus()
         viewModel = StaffListViewModel(
             dependencies = ViewModelDependencies(
                 appScope = testCoroutineScope,

@@ -24,14 +24,11 @@ import com.cramsan.edifikana.client.lib.features.main.timecard.TimeCartViewModel
 import com.cramsan.edifikana.client.lib.features.main.timecard.viewstaff.ViewStaffViewModel
 import com.cramsan.edifikana.client.lib.features.management.drawer.ManagementViewModel
 import com.cramsan.edifikana.client.lib.features.splash.SplashViewModel
-import com.cramsan.framework.core.compose.ApplicationEvent
-import com.cramsan.framework.core.compose.ApplicationEventBus
 import com.cramsan.framework.core.compose.EventBus
 import com.cramsan.framework.core.compose.EventEmitter
 import com.cramsan.framework.core.compose.EventReceiver
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.core.compose.WindowEvent
-import com.cramsan.framework.core.compose.WindowEventBus
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
@@ -43,71 +40,65 @@ typealias SelectStaffViewModel = com.cramsan.edifikana.client.lib.features.main.
 
 internal val ViewModelModule = module {
 
-    // These objects are singletons and are not scoped to any particular navigation graph.
-    single(named(APPLICATION_EVENT_SCOPE)) {
-        ApplicationEventBus()
-    } withOptions {
-        bind<EventReceiver<ApplicationEvent>>()
-        bind<EventEmitter<ApplicationEvent>>()
-    }
+    scope<String> {
+        scoped(named(VIEW_MODEL_WINDOW_EVENT_BUS)) {
+            EventBus<WindowEvent>()
+        } withOptions {
+            bind<EventEmitter<WindowEvent>>()
+            bind<EventReceiver<WindowEvent>>()
+        }
 
-    single(named(APPLICATION_EVENT_SCOPE)) {
-        WindowEventBus()
-    } withOptions {
-        bind<EventReceiver<WindowEvent>>()
-        bind<EventEmitter<WindowEvent>>()
-    }
+        scoped(named(VIEW_MODEL_DELEGATED_EVENT_BUS)) {
+            EventBus<EdifikanaWindowDelegatedEvent>()
+        } withOptions {
+            bind<EventEmitter<EdifikanaWindowDelegatedEvent>>()
+            bind<EventReceiver<EdifikanaWindowDelegatedEvent>>()
+        }
 
-    single(named(DELEGATED_EVENT_SCOPE)) {
-        EventBus<EdifikanaWindowDelegatedEvent>()
-    } withOptions {
-        bind<EventReceiver<EdifikanaWindowDelegatedEvent>>()
-        bind<EventEmitter<EdifikanaWindowDelegatedEvent>>()
-    }
+        scoped {
+            ViewModelDependencies(
+                get(),
+                get(),
+                get(),
+                get(named(VIEW_MODEL_WINDOW_EVENT_BUS)),
+                get(named(APPLICATION_EVENT_BUS)),
+            )
+        }
 
-    single {
-        ViewModelDependencies(
-            get(),
-            get(),
-            get(),
-            get(named(APPLICATION_EVENT_SCOPE)),
-            get(named(APPLICATION_EVENT_SCOPE)),
-        )
-    }
+        viewModel {
+            EdifikanaWindowViewModel(
+                get(),
+                get(named(VIEW_MODEL_WINDOW_EVENT_BUS)),
+                get(named(VIEW_MODEL_DELEGATED_EVENT_BUS)),
+            )
+        }
 
-    viewModel {
-        EdifikanaWindowViewModel(
-            get(),
-            get(named(APPLICATION_EVENT_SCOPE)),
-            get(named(DELEGATED_EVENT_SCOPE)),
-        )
+        // These objects are scoped to the screen in which they are used.
+        viewModelOf(::EventLogViewModel)
+        viewModelOf(::TimeCartViewModel)
+        viewModelOf(::StaffListViewModel)
+        viewModelOf(::ViewRecordViewModel)
+        viewModelOf(::AddRecordViewModel)
+        viewModelOf(::ViewStaffViewModel)
+        viewModelOf(::SignInViewModel)
+        viewModelOf(::SignUpViewModel)
+        viewModelOf(::AccountViewModel)
+        viewModelOf(::PropertyManagerViewModel)
+        viewModelOf(::PropertyViewModel)
+        viewModelOf(::DebugViewModel)
+        viewModelOf(::HomeViewModel)
+        viewModelOf(::ValidationViewModel)
+        viewModelOf(::AddPropertyViewModel)
+        viewModelOf(::HubViewModel)
+        viewModelOf(::AddPrimaryStaffViewModel)
+        viewModelOf(::AddSecondaryStaffViewModel)
+        viewModelOf(::StaffViewModel)
+        viewModelOf(::SelectStaffViewModel)
+        viewModelOf(::NotificationsViewModel)
+        viewModelOf(::SplashViewModel)
+        viewModelOf(::ManagementViewModel)
     }
-
-    // These objects are scoped to the screen in which they are used.
-    viewModelOf(::EventLogViewModel)
-    viewModelOf(::TimeCartViewModel)
-    viewModelOf(::StaffListViewModel)
-    viewModelOf(::ViewRecordViewModel)
-    viewModelOf(::AddRecordViewModel)
-    viewModelOf(::ViewStaffViewModel)
-    viewModelOf(::SignInViewModel)
-    viewModelOf(::SignUpViewModel)
-    viewModelOf(::AccountViewModel)
-    viewModelOf(::PropertyManagerViewModel)
-    viewModelOf(::PropertyViewModel)
-    viewModelOf(::DebugViewModel)
-    viewModelOf(::HomeViewModel)
-    viewModelOf(::ValidationViewModel)
-    viewModelOf(::AddPropertyViewModel)
-    viewModelOf(::HubViewModel)
-    viewModelOf(::AddPrimaryStaffViewModel)
-    viewModelOf(::AddSecondaryStaffViewModel)
-    viewModelOf(::StaffViewModel)
-    viewModelOf(::SelectStaffViewModel)
-    viewModelOf(::NotificationsViewModel)
-    viewModelOf(::SplashViewModel)
-    viewModelOf(::ManagementViewModel)
 }
 
-private const val APPLICATION_EVENT_SCOPE = "application_event_scope"
-private const val DELEGATED_EVENT_SCOPE = "delegated_event_scope"
+private const val VIEW_MODEL_WINDOW_EVENT_BUS = "viewModelWindowEventBus"
+const val VIEW_MODEL_DELEGATED_EVENT_BUS = "viewModelDelegatedEventBus"

@@ -4,13 +4,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.window.CanvasBasedWindow
-import com.cramsan.edifikana.client.lib.di.koin.windowModuleList
 import com.cramsan.edifikana.client.lib.features.ComposableKoinContext
 import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.lib.features.EdifikanaWindowScreen
 import com.cramsan.edifikana.client.lib.features.application.EdifikanaWasmMainScreenEventHandler
 import org.koin.compose.koinInject
-import org.koin.compose.module.rememberKoinModules
+import org.koin.compose.scope.KoinScope
 
 /**
  * Main entry point for the application.
@@ -26,11 +25,11 @@ fun main() {
                 processViewModel.initialize()
             }
 
-            rememberKoinModules { windowModuleList }
-
-            EdifikanaWindowScreen(
-                eventHandler = eventHandler,
-            )
+            KoinScope<String>("root-window") {
+                EdifikanaWindowScreen(
+                    eventHandler = eventHandler,
+                )
+            }
         }
     }
 }

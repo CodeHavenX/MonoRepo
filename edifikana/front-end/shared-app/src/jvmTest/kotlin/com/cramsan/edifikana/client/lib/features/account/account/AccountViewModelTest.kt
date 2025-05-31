@@ -7,9 +7,10 @@ import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.framework.core.UnifiedDispatcherProvider
-import com.cramsan.framework.core.compose.ApplicationEventBus
+import com.cramsan.framework.core.compose.ApplicationEvent
+import com.cramsan.framework.core.compose.EventBus
 import com.cramsan.framework.core.compose.ViewModelDependencies
-import com.cramsan.framework.core.compose.WindowEventBus
+import com.cramsan.framework.core.compose.WindowEvent
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
@@ -31,15 +32,15 @@ class AccountViewModelTest : TestBase() {
     private lateinit var authManager: AuthManager
     private lateinit var viewModel: AccountViewModel
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
-    private lateinit var windowEventBus: WindowEventBus
-    private lateinit var applicationEventReceiver: ApplicationEventBus
+    private lateinit var windowEventBus: EventBus<WindowEvent>
+    private lateinit var applicationEventReceiver: EventBus<ApplicationEvent>
 
     @BeforeEach
     fun setUp() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         authManager = mockk()
-        applicationEventReceiver = ApplicationEventBus()
-        windowEventBus = WindowEventBus()
+        applicationEventReceiver = EventBus()
+        windowEventBus = EventBus()
         exceptionHandler = CollectorCoroutineExceptionHandler()
         val dependencies = ViewModelDependencies(
             appScope = testCoroutineScope,

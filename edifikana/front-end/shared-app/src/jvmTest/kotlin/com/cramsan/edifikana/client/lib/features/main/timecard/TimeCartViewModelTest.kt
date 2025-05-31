@@ -15,9 +15,10 @@ import com.cramsan.edifikana.lib.model.StaffStatus
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.framework.core.UnifiedDispatcherProvider
-import com.cramsan.framework.core.compose.ApplicationEventBus
+import com.cramsan.framework.core.compose.ApplicationEvent
+import com.cramsan.framework.core.compose.EventBus
 import com.cramsan.framework.core.compose.ViewModelDependencies
-import com.cramsan.framework.core.compose.WindowEventBus
+import com.cramsan.framework.core.compose.WindowEvent
 import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
@@ -44,8 +45,8 @@ class TimeCartViewModelTest : TestBase() {
     private lateinit var staffManager: StaffManager
     private lateinit var viewModel: TimeCartViewModel
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
-    private lateinit var applicationEventReceiver: ApplicationEventBus
-    private lateinit var windowEventBus: WindowEventBus
+    private lateinit var applicationEventReceiver: EventBus<ApplicationEvent>
+    private lateinit var windowEventBus: EventBus<WindowEvent>
     private lateinit var stringProvider: StringProvider
 
     @BeforeEach
@@ -54,8 +55,8 @@ class TimeCartViewModelTest : TestBase() {
         timeCardManager = mockk()
         staffManager = mockk()
         exceptionHandler = CollectorCoroutineExceptionHandler()
-        applicationEventReceiver = ApplicationEventBus()
-        windowEventBus = WindowEventBus()
+        applicationEventReceiver = EventBus()
+        windowEventBus = EventBus()
         stringProvider = mockk()
         val dependencies = ViewModelDependencies(
             appScope = testCoroutineScope,

@@ -33,17 +33,17 @@ class BaseViewModelTest : TestBase() {
 
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
 
-    private lateinit var applicationEventReceiver: ApplicationEventBus
+    private lateinit var applicationEventReceiver: EventBus<ApplicationEvent>
 
-    private lateinit var windowEventReceiver: WindowEventBus
+    private lateinit var windowEventReceiver: EventBus<WindowEvent>
 
     @BeforeTest
     fun setupTest() {
         exceptionHandler = CollectorCoroutineExceptionHandler()
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         AssertUtil.setInstance(NoopAssertUtil())
-        applicationEventReceiver = ApplicationEventBus()
-        windowEventReceiver = WindowEventBus()
+        applicationEventReceiver = EventBus()
+        windowEventReceiver = EventBus()
         viewModel = TestableViewModel(
             dependencies = ViewModelDependencies(
                 appScope = testCoroutineScope,

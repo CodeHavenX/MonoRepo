@@ -14,7 +14,7 @@ interface EventReceiver<T> {
      *
      * @param event The event to be received.
      */
-    suspend fun emit(event: T)
+    suspend fun push(event: T)
 }
 
 /**
@@ -33,7 +33,7 @@ class InvalidEventBus<T> : EventReceiver<T>, EventEmitter<T> {
     override val events: Flow<T>
         get() = error("Do not use this receiver.")
 
-    override suspend fun emit(event: T) {
+    override suspend fun push(event: T) {
         error("Do not use this receiver.")
     }
 }
@@ -48,25 +48,7 @@ open class EventBus<T>(
     override val events: Flow<T>
         get() = sharedFlow.asSharedFlow()
 
-    override suspend fun emit(event: T) {
+    override suspend fun push(event: T) {
         sharedFlow.emit(event)
     }
 }
-
-/**
- * Application-level event bus for handling application-wide events.
- */
-class ApplicationEventBus(
-    sharedFlow: MutableSharedFlow<ApplicationEvent> = MutableSharedFlow(),
-) : EventBus<ApplicationEvent>(
-    sharedFlow,
-)
-
-/**
- * Window-level event bus for handling window-specific events.
- */
-class WindowEventBus(
-    sharedFlow: MutableSharedFlow<WindowEvent> = MutableSharedFlow(),
-) : EventBus<WindowEvent>(
-    sharedFlow,
-)

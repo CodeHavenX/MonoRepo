@@ -9,9 +9,10 @@ import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffRole
 import com.cramsan.framework.core.UnifiedDispatcherProvider
-import com.cramsan.framework.core.compose.ApplicationEventBus
+import com.cramsan.framework.core.compose.ApplicationEvent
+import com.cramsan.framework.core.compose.EventBus
 import com.cramsan.framework.core.compose.ViewModelDependencies
-import com.cramsan.framework.core.compose.WindowEventBus
+import com.cramsan.framework.core.compose.WindowEvent
 import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
@@ -40,19 +41,19 @@ class AddSecondaryStaffViewModelTest : TestBase() {
     private lateinit var staffManager: StaffManager
     private lateinit var propertyManager: PropertyManager
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
-    private lateinit var applicationEventReceiver: ApplicationEventBus
-    private lateinit var windowEventBus: WindowEventBus
+    private lateinit var applicationEventReceiver: EventBus<ApplicationEvent>
+    private lateinit var windowEventBus: EventBus<WindowEvent>
     private lateinit var stringProvider: StringProvider
 
     @BeforeEach
     fun setupTest() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
-        applicationEventReceiver = ApplicationEventBus()
+        applicationEventReceiver = EventBus()
         exceptionHandler = CollectorCoroutineExceptionHandler()
         staffManager = mockk(relaxed = true)
         propertyManager = mockk(relaxed = true)
         stringProvider = mockk()
-        windowEventBus = WindowEventBus()
+        windowEventBus = EventBus()
         viewModel = AddSecondaryStaffViewModel(
             staffManager = staffManager,
             propertyManager = propertyManager,

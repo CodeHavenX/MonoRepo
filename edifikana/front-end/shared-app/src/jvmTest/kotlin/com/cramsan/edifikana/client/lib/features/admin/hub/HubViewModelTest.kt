@@ -5,9 +5,10 @@ import com.cramsan.edifikana.client.lib.features.ActivityRouteDestination
 import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.features.account.AccountRouteDestination
 import com.cramsan.framework.core.UnifiedDispatcherProvider
-import com.cramsan.framework.core.compose.ApplicationEventBus
+import com.cramsan.framework.core.compose.ApplicationEvent
+import com.cramsan.framework.core.compose.EventBus
 import com.cramsan.framework.core.compose.ViewModelDependencies
-import com.cramsan.framework.core.compose.WindowEventBus
+import com.cramsan.framework.core.compose.WindowEvent
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
@@ -24,14 +25,14 @@ class HubViewModelTest : TestBase() {
 
     private lateinit var viewModel: HubViewModel
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
-    private lateinit var windowEventBus: WindowEventBus
-    private lateinit var applicationEventReceiver: ApplicationEventBus
+    private lateinit var windowEventBus: EventBus<WindowEvent>
+    private lateinit var applicationEventReceiver: EventBus<ApplicationEvent>
 
     @BeforeEach
     fun setupTest() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
-        applicationEventReceiver = ApplicationEventBus()
-        windowEventBus = WindowEventBus()
+        applicationEventReceiver = EventBus()
+        windowEventBus = EventBus()
         exceptionHandler = CollectorCoroutineExceptionHandler()
         viewModel = HubViewModel(
             dependencies = ViewModelDependencies(

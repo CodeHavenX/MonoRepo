@@ -35,7 +35,7 @@ import com.cramsan.edifikana.client.lib.features.EdifikanaWindowDelegatedEvent
 import com.cramsan.edifikana.client.lib.models.AttachmentHolder
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.edifikana.lib.model.EventLogEntryId
-import com.cramsan.framework.core.compose.EventBus
+import com.cramsan.framework.core.compose.EventEmitter
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
@@ -57,7 +57,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun ViewRecordScreen(
     eventLogRecordPK: EventLogEntryId,
     viewModel: ViewRecordViewModel = koinViewModel(),
-    delegatedEventEmitter: EventBus<EdifikanaWindowDelegatedEvent> = koinInject(),
+    delegatedEventEmitter: EventEmitter<EdifikanaWindowDelegatedEvent> = koinInject(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 

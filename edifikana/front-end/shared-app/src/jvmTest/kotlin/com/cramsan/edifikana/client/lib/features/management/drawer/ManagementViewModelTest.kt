@@ -2,9 +2,10 @@ package com.cramsan.edifikana.client.lib.features.management.drawer
 
 import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.framework.core.UnifiedDispatcherProvider
-import com.cramsan.framework.core.compose.ApplicationEventBus
+import com.cramsan.framework.core.compose.ApplicationEvent
+import com.cramsan.framework.core.compose.EventBus
 import com.cramsan.framework.core.compose.ViewModelDependencies
-import com.cramsan.framework.core.compose.WindowEventBus
+import com.cramsan.framework.core.compose.WindowEvent
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.test.TestBase
@@ -29,9 +30,9 @@ class ManagementViewModelTest : TestBase() {
 
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
 
-    private lateinit var applicationEventReceiver: ApplicationEventBus
+    private lateinit var applicationEventReceiver: EventBus<ApplicationEvent>
 
-    private lateinit var windowEventBus: WindowEventBus
+    private lateinit var windowEventBus: EventBus<WindowEvent>
 
 
     @BeforeTest
@@ -65,6 +66,6 @@ class ManagementViewModelTest : TestBase() {
         viewModel.onBackSelected()
 
         // Assert
-        coVerify { windowEventBus.emit(EdifikanaWindowsEvent.NavigateBack) }
+        coVerify { windowEventBus.push(EdifikanaWindowsEvent.NavigateBack) }
     }
 }

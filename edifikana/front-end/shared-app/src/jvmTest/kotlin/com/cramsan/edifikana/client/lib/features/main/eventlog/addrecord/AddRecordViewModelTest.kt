@@ -12,9 +12,10 @@ import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.framework.annotations.TestOnly
 import com.cramsan.framework.core.UnifiedDispatcherProvider
-import com.cramsan.framework.core.compose.ApplicationEventBus
+import com.cramsan.framework.core.compose.ApplicationEvent
+import com.cramsan.framework.core.compose.EventBus
 import com.cramsan.framework.core.compose.ViewModelDependencies
-import com.cramsan.framework.core.compose.WindowEventBus
+import com.cramsan.framework.core.compose.WindowEvent
 import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
@@ -43,8 +44,8 @@ class AddRecordViewModelTest : TestBase() {
     private lateinit var staffManager: StaffManager
     private lateinit var viewModel: AddRecordViewModel
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
-    private lateinit var applicationEventReceiver: ApplicationEventBus
-    private lateinit var windowEventBus: WindowEventBus
+    private lateinit var applicationEventReceiver: EventBus<ApplicationEvent>
+    private lateinit var windowEventBus: EventBus<WindowEvent>
     private lateinit var clock: Clock
     private lateinit var propertyManager: PropertyManager
     private lateinit var stringProvider: StringProvider
@@ -57,8 +58,8 @@ class AddRecordViewModelTest : TestBase() {
         eventLogManager = mockk()
         propertyManager = mockk()
         exceptionHandler = CollectorCoroutineExceptionHandler()
-        applicationEventReceiver = ApplicationEventBus()
-        windowEventBus = WindowEventBus()
+        applicationEventReceiver = EventBus()
+        windowEventBus = EventBus()
         stringProvider = mockk()
         val dependencies = ViewModelDependencies(
             appScope = testCoroutineScope,

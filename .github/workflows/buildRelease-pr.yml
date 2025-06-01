@@ -51,13 +51,10 @@ jobs:
         uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
         with:
           arguments: recordRoborazziDebug
-      - name: Verify No Changes To Screenshots
+      - name: Commit and Push New Screenshots
         run: |
-          git status
-          if [ -z "$(git status --porcelain)" ]; then
-            echo "No changes to screenshots"
-            exit 0
-          else
-            echo "Changes to screenshots detected"
-            exit 1
-          fi
+          git config --local user.name "GitHub Actions"
+          git config --local user.email "ci@cramsan.com"
+          git add .
+          git commit -m "Update Roborazzi Debug Screenshots"
+          git push

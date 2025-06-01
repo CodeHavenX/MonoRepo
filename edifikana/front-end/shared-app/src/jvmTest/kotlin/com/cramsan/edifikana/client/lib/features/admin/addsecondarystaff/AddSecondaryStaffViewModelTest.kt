@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.admin.addsecondarystaff
 
 import app.cash.turbine.test
+import com.cramsan.edifikana.client.lib.features.management.addsecondarystaff.AddSecondaryStaffViewModel
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.managers.StaffManager

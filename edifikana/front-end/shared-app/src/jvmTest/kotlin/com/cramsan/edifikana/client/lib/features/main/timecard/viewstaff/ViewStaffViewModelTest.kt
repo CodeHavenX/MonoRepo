@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.main.timecard.viewstaff
 
 import app.cash.turbine.test
-import com.cramsan.edifikana.client.lib.features.main.viewstaff.ViewStaffViewModel
+import com.cramsan.edifikana.client.lib.features.management.viewstaff.ViewStaffViewModel
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.managers.StaffManager

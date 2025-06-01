@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.admin.staff
 
 import app.cash.turbine.test
+import com.cramsan.edifikana.client.lib.features.management.staff.StaffViewModel
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.client.lib.models.StaffModel

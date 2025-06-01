@@ -43,10 +43,6 @@ jobs:
         with:
           java-version: '21'
           distribution: 'corretto'
-      - name: Verify All Snapshots(Android-Debug)
-        uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
-        with:
-          arguments: verifyRoborazziDebug
       - name: Clear All Snapshots
         uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
         with:

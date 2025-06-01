@@ -179,19 +179,27 @@ private fun BooleanRow(
                 .wrapContentHeight()
                 .weight(1f)
         ) {
+            val textColor = if (field.enabled) {
+                MaterialTheme.colorScheme.onSurface
+            } else {
+                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+            }
             Text(
                 field.title,
                 style = MaterialTheme.typography.labelLarge,
+                color = textColor,
             )
             field.subtitle?.let {
                 Text(
                     it,
                     style = MaterialTheme.typography.labelMedium,
+                    color = textColor,
                 )
             }
         }
         Switch(
             checked = field.value,
+            enabled = field.enabled,
             onCheckedChange = null,
             interactionSource = null,
         )

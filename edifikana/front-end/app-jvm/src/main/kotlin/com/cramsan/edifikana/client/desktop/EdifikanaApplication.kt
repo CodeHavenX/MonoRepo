@@ -7,10 +7,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import com.cramsan.edifikana.client.lib.features.ComposableKoinContext
-import com.cramsan.edifikana.client.lib.features.EdifikanaApplicationViewModel
-import com.cramsan.edifikana.client.lib.features.EdifikanaWindowScreen
+import com.cramsan.edifikana.client.lib.features.application.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.lib.features.application.EdifikanaJvmMainScreenEventHandler
+import com.cramsan.edifikana.client.lib.features.window.ComposableKoinContext
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowScreen
 import org.koin.compose.koinInject
 import org.koin.compose.scope.KoinScope
 import org.koin.core.annotation.KoinExperimentalAPI

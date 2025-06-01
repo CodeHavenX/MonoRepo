@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.admin.property
 
-import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.client.lib.models.StaffModel

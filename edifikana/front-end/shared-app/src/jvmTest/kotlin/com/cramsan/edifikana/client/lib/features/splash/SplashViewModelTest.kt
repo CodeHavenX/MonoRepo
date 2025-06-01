@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.splash
 
-import com.cramsan.edifikana.client.lib.features.ActivityRouteDestination
-import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
+import com.cramsan.edifikana.client.lib.features.window.ActivityRouteDestination
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.framework.core.UnifiedDispatcherProvider

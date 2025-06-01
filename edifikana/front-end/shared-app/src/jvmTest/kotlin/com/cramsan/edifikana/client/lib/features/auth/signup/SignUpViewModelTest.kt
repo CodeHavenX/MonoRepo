@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.auth.signup
 
 import app.cash.turbine.test
-import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ViewModelDependencies

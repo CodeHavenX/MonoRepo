@@ -1,8 +1,8 @@
 package com.cramsan.edifikana.client.lib.features.admin.hub
 
 import app.cash.turbine.test
-import com.cramsan.edifikana.client.lib.features.ActivityRouteDestination
-import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
+import com.cramsan.edifikana.client.lib.features.window.ActivityRouteDestination
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.features.account.AccountRouteDestination
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent

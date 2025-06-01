@@ -1,8 +1,8 @@
 package com.cramsan.edifikana.client.lib.features.auth.signin
 
 import app.cash.turbine.test
-import com.cramsan.edifikana.client.lib.features.ActivityRouteDestination
-import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
+import com.cramsan.edifikana.client.lib.features.window.ActivityRouteDestination
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.features.auth.AuthRouteDestination
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.lib.utils.ClientRequestExceptions

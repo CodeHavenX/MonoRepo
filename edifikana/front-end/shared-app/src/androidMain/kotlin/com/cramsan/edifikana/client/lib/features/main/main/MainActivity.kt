@@ -9,11 +9,11 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import com.cramsan.edifikana.client.lib.features.EdifikanaMainScreenEventHandler
-import com.cramsan.edifikana.client.lib.features.EdifikanaWindowScreen
-import com.cramsan.edifikana.client.lib.features.EdifikanaWindowViewModel
-import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.features.main.camera.CameraContract
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaMainScreenEventHandler
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowScreen
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowViewModel
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.utils.shareContent
 import com.cramsan.framework.core.CoreUri
 import kotlinx.coroutines.launch

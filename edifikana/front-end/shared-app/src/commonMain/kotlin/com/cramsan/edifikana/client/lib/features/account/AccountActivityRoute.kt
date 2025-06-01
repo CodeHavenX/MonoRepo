@@ -3,7 +3,7 @@
 
 package com.cramsan.edifikana.client.lib.features.account
 
-import com.cramsan.edifikana.client.lib.features.Destination
+import com.cramsan.edifikana.client.lib.features.window.Destination
 import com.cramsan.framework.core.compose.RouteSafePath
 
 /**

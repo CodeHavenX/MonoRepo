@@ -9,10 +9,10 @@ import com.cramsan.edifikana.client.lib.features.admin.addsecondarystaff.AddSeco
 import com.cramsan.edifikana.client.lib.features.admin.properties.PropertyManagerScreen
 import com.cramsan.edifikana.client.lib.features.admin.property.PropertyScreen
 import com.cramsan.edifikana.client.lib.features.admin.staff.StaffScreen
-import com.cramsan.edifikana.client.lib.features.main.eventlog.addrecord.AddRecordScreen
-import com.cramsan.edifikana.client.lib.features.main.eventlog.viewrecord.ViewRecordScreen
-import com.cramsan.edifikana.client.lib.features.main.timecard.stafflist.StaffListScreen
-import com.cramsan.edifikana.client.lib.features.main.timecard.viewstaff.ViewStaffScreen
+import com.cramsan.edifikana.client.lib.features.main.addrecord.AddRecordScreen
+import com.cramsan.edifikana.client.lib.features.main.stafflist.StaffListScreen
+import com.cramsan.edifikana.client.lib.features.main.viewrecord.ViewRecordScreen
+import com.cramsan.edifikana.client.lib.features.main.viewstaff.ViewStaffScreen
 import com.cramsan.edifikana.client.lib.features.management.drawer.ManagementScreen
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.StaffId

@@ -43,6 +43,13 @@ private fun DebugScreenPreview() = AppTheme {
                     key = "debug_key",
                     value = false,
                 ),
+                Field.BooleanField(
+                    title = "Apply debug settings",
+                    subtitle = "Currently disabled",
+                    key = "debug_key",
+                    value = true,
+                    enabled = false,
+                ),
             )
         ),
         modifier = Modifier,

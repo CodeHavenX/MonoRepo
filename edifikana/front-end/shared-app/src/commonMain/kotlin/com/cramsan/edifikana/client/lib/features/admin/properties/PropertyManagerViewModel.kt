@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.admin.properties
 
-import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.features.management.ManagementDestination
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.core.compose.BaseViewModel

@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.main.timecard
 
-import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.features.management.ManagementDestination
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.client.lib.managers.TimeCardManager
 import com.cramsan.edifikana.lib.model.StaffId

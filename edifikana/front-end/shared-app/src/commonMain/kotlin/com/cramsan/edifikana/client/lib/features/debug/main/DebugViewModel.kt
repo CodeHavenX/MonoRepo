@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.debug.main
 
-import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.PreferencesManager
 import com.cramsan.edifikana.client.lib.settings.Overrides
 import com.cramsan.framework.core.compose.BaseViewModel

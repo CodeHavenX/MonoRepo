@@ -22,10 +22,7 @@ jobs:
   build:
     runs-on: self-hosted
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-      with:
-        ref: ${{ github.head_ref }}  # Checkout the PR branch
+    - uses: actions/checkout@v3
     - name: Set up JDK 21
       uses: actions/setup-java@v3
       with:
@@ -35,31 +32,3 @@ jobs:
       uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
       with:
         arguments: releaseAll
-
-  snapshots:
-    runs-on: self-hosted
-    needs: build
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up JDK 21
-        uses: actions/setup-java@v3
-        with:
-          java-version: '21'
-          distribution: 'corretto'
-      - name: Clear All Snapshots
-        uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
-        with:
-          arguments: clearRoborazziDebug
-      - name: Record New Snapshots(Android-Debug)
-        uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
-        with:
-          arguments: recordRoborazziDebug
-      - name: Commit and Push New Screenshots
-        env:
-          PAT: ${{ secrets.ACTIONS_PAT }}
-        run: |
-          git config --local user.name "GitHub Actions"
-          git config --local user.email "ci@cramsan.com"
-          git add .
-          git commit -m "Update Roborazzi Debug Screenshots"
-          git push https://x-access-token:${PAT}@github.com/${{ github.repository }} HEAD:${{ github.head_ref }}

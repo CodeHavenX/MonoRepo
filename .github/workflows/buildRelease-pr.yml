@@ -22,7 +22,10 @@ jobs:
   build:
     runs-on: self-hosted
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ github.head_ref }}  # Checkout the PR branch
     - name: Set up JDK 21
       uses: actions/setup-java@v3
       with:
@@ -52,9 +55,11 @@ jobs:
         with:
           arguments: recordRoborazziDebug
       - name: Commit and Push New Screenshots
+        env:
+          PAT: ${{ secrets.ACTIONS_PAT }}
         run: |
           git config --local user.name "GitHub Actions"
           git config --local user.email "ci@cramsan.com"
           git add .
           git commit -m "Update Roborazzi Debug Screenshots"
-          git push
+          git push https://x-access-token:${PAT}@github.com/${{ github.repository }} HEAD:${{ github.head_ref }}

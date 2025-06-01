@@ -4,8 +4,8 @@
 package com.cramsan.edifikana.client.lib.features.management
 
 import androidx.navigation.NavBackStackEntry
-import com.cramsan.edifikana.client.lib.features.ApplicationRoute
-import com.cramsan.edifikana.client.lib.features.Destination
+import com.cramsan.edifikana.client.lib.features.window.ApplicationRoute
+import com.cramsan.edifikana.client.lib.features.window.Destination
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId

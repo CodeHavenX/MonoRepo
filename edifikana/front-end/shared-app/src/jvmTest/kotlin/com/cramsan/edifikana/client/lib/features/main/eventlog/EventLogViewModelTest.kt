@@ -1,8 +1,9 @@
 package com.cramsan.edifikana.client.lib.features.main.eventlog
 
 import app.cash.turbine.test
-import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.features.management.ManagementDestination
+import com.cramsan.edifikana.client.lib.features.management.eventlog.EventLogViewModel
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.EventLogManager
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.lib.model.EventLogEntryId

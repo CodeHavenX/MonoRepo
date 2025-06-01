@@ -1,8 +1,12 @@
 package com.cramsan.edifikana.client.lib.features.admin.properties
 
 import app.cash.turbine.test
-import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.features.management.ManagementDestination
+import com.cramsan.edifikana.client.lib.features.management.properties.PropertyManagerUIModel
+import com.cramsan.edifikana.client.lib.features.management.properties.PropertyManagerUIState
+import com.cramsan.edifikana.client.lib.features.management.properties.PropertyManagerViewModel
+import com.cramsan.edifikana.client.lib.features.management.properties.PropertyUIModel
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.models.PropertyModel
 import com.cramsan.edifikana.lib.model.PropertyId

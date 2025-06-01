@@ -28,8 +28,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
-import com.cramsan.edifikana.client.lib.features.admin.hub.HubScreen
-import com.cramsan.edifikana.client.lib.features.main.home.HomeScreen
+import com.cramsan.edifikana.client.lib.features.management.home.HomeScreen
+import com.cramsan.edifikana.client.lib.features.management.hub.HubScreen
 import com.cramsan.ui.theme.Padding
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel

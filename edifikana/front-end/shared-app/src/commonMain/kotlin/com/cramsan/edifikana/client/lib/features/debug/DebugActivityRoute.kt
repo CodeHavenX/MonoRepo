@@ -3,8 +3,8 @@
 
 package com.cramsan.edifikana.client.lib.features.debug
 
-import com.cramsan.edifikana.client.lib.features.ApplicationRoute
-import com.cramsan.edifikana.client.lib.features.Destination
+import com.cramsan.edifikana.client.lib.features.window.ApplicationRoute
+import com.cramsan.edifikana.client.lib.features.window.Destination
 import com.cramsan.framework.core.compose.RouteSafePath
 
 /**

@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.application
 
-import com.cramsan.edifikana.client.lib.features.EdifikanaMainScreenEventHandler
-import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaMainScreenEventHandler
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.framework.logging.logE
 
 /**

@@ -1,7 +1,9 @@
 package com.cramsan.edifikana.client.lib.features.admin.property
 
 import app.cash.turbine.test
-import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
+import com.cramsan.edifikana.client.lib.features.management.property.PropertyEvent
+import com.cramsan.edifikana.client.lib.features.management.property.PropertyViewModel
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.client.lib.models.PropertyModel

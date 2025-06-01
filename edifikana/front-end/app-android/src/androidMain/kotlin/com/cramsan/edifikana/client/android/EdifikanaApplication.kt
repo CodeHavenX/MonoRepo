@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.android
 
 import android.app.Application
-import com.cramsan.edifikana.client.lib.di.koin.moduleList
+import com.cramsan.edifikana.client.lib.di.moduleList
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin

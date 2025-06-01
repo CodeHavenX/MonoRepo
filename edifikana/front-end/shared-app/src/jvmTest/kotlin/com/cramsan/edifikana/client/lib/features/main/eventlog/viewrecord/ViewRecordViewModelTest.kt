@@ -1,7 +1,8 @@
 package com.cramsan.edifikana.client.lib.features.main.eventlog.viewrecord
 
 import app.cash.turbine.test
-import com.cramsan.edifikana.client.lib.features.EdifikanaWindowsEvent
+import com.cramsan.edifikana.client.lib.features.management.viewrecord.ViewRecordViewModel
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.EventLogManager
 import com.cramsan.edifikana.client.lib.models.AttachmentHolder
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel

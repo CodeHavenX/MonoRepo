@@ -30,7 +30,7 @@ class UserService(
         password: String,
         firstName: String,
         lastName: String,
-        authorizeMagicLink: Boolean = false,
+        authorizeOtp: Boolean,
     ): Result<User> {
         logD(TAG, "createUser")
         val result = userDatabase.createUser(
@@ -42,10 +42,10 @@ class UserService(
                 lastName = lastName,
             ),
         )
-        // Send a magic link if the user is created successfully and sendMagicLink is true
-        if (authorizeMagicLink && result.isSuccess) {
-            logI(TAG, "Sending magic link to user $email")
-            signInWithMagicLink(email)
+        // Send an OTP code if the user is created successfully and authorizeOtp is true
+        if (authorizeOtp && result.isSuccess) {
+            logI(TAG, "Sending OTP to user $email")
+            requestOtp(email)
         }
 
         return result
@@ -122,20 +122,11 @@ class UserService(
     }
 
     /**
-     * Sends a magic link to the provided [email]
+     * Sends an OTP to the provided [email]
      */
-    private suspend fun signInWithMagicLink(email: String) {
-        return try {
-            auth.signInWith(OTP) {
-                this.email = email
-            }
-            if (auth.currentUserOrNull() == null) {
-                logD(TAG, "Failed to sign in with magic link")
-            } else {
-                logD(TAG, "Successfully signed in with magic link")
-            }
-        } catch (e: Exception) {
-            logD(TAG, "Failed to sign in with magic link: ${e.message}")
+    private suspend fun requestOtp(email: String) {
+        auth.signInWith(OTP) {
+            this.email = email
         }
     }
 

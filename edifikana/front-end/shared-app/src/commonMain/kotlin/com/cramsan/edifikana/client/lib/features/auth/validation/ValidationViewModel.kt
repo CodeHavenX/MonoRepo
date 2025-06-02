@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.auth.validation
 
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
@@ -28,9 +29,20 @@ class ValidationViewModel(
     /**
      * Sign the user in with a magic link.
      */
-    fun signInWithMagicLink(email: String, hashToken: String) {
+    fun signInWithOtp(email: String, hashToken: String) {
         viewModelScope.launch {
-            auth.signInWithMagicLink(email, hashToken)
+            auth.signInWithOtp(email, hashToken)
+        }
+    }
+
+    /**
+     * Navigate to the main screen.
+     */
+    fun navigateBack() {
+        viewModelScope.launch {
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateBack
+            )
         }
     }
 

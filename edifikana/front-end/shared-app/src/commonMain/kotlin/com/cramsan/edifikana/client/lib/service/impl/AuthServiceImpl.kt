@@ -104,16 +104,16 @@ class AuthServiceImpl(
                     password = password,
                     firstName = firstName,
                     lastName = lastName,
+                    authorizeOtp = true, // Automatically set to true to send an OTP for verification
                 )
             )
             contentType(ContentType.Application.Json)
         }.body<UserNetworkResponse>()
         val userModel = response.toUserModel()
-        _activeUser.value = userModel.id
         userModel
     }
 
-    override suspend fun signInWithMagicLink(email: String, hashToken: String): Result<UserModel> = runSuspendCatching(
+    override suspend fun signInWithOtp(email: String, hashToken: String): Result<UserModel> = runSuspendCatching(
         TAG
     ) {
         auth.verifyEmailOtp(OtpType.Email.EMAIL, email, hashToken)

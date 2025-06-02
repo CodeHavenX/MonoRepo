@@ -61,7 +61,7 @@ class DummyAuthService : AuthService {
         return Result.success(USER_1)
     }
 
-    override suspend fun signInWithMagicLink(email: String, hashToken: String): Result<UserModel> {
+    override suspend fun signInWithOtp(email: String, hashToken: String): Result<UserModel> {
         delay(1.seconds)
         user.value = USER_1.id
         getUser().getOrThrow()

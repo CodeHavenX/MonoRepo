@@ -17,6 +17,6 @@ private fun ValidationScreenPreview() = AppTheme {
             otpCode = "123456",
         ),
         modifier = Modifier,
-        onCloseClicked = {}
+        onBackClicked = {}
     )
 }

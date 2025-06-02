@@ -1,13 +1,20 @@
 package com.cramsan.edifikana.client.lib.features.auth.validation
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -16,12 +23,17 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.ui.components.ScreenLayout
+import edifikana_lib.Res
+import edifikana_lib.alpacaIcon
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
+import kotlin.toString
 
 /**
  * Validation screen.
@@ -59,8 +71,8 @@ fun ValidationScreen(
     // Render the screen
     ValidationContent(
         uiState = uiState,
-        onCloseClicked = {
-            // TODO: ADD FUNCTIONALITY
+        onBackClicked = {
+            viewModel.navigateBack()
         }
     )
 }
@@ -72,13 +84,13 @@ fun ValidationScreen(
 internal fun ValidationContent(
     uiState: ValidationUIState,
     modifier: Modifier = Modifier,
-    onCloseClicked: () -> Unit,
+    onBackClicked: () -> Unit,
 ) {
     Scaffold(
         modifier = modifier,
         topBar = {
             EdifikanaTopBar(
-                onNavigationIconSelected = onCloseClicked,
+                onNavigationIconSelected = onBackClicked,
             )
         },
     ) { innerPadding ->
@@ -107,8 +119,18 @@ internal fun ValidationContent(
                         }
                     }
 
+                    // Image above the text
+                    Image(
+                        painter = painterResource(Res.drawable.alpacaIcon),
+                        contentDescription = "Validation Image",
+                        modifier = sectionModifier.size(
+                            width = 150.dp,
+                            height = 150.dp
+                        ),
+                    )
+
                     Text(
-                        "GET VALIDATED!",
+                        "We've sent an OTP code to your email. Please enter it below to complete your signup.",
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.onSurface,
                         textAlign = TextAlign.Center,
@@ -116,6 +138,26 @@ internal fun ValidationContent(
                             .wrapContentWidth(),
 
                     )
+                    // OTP input fields
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = sectionModifier
+                            .padding(top = 16.dp)
+                            .fillMaxSize()
+                    ) {
+                        repeat(6) {
+                            TextField(
+                                value = uiState.otpCode.getOrNull(it)?.toString() ?: "",
+                                onValueChange = { newValue ->
+                                    // Handle OTP input change
+                                },
+                                singleLine = true,
+                                modifier = Modifier.width(40.dp),
+                                shape = RoundedCornerShape(40)
+                            )
+                        }
+                    }
                 }
             )
         }

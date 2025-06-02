@@ -5,7 +5,7 @@ import com.cramsan.edifikana.client.lib.features.account.notifications.Notificat
 import com.cramsan.edifikana.client.lib.features.admin.stafflist.StaffListViewModel
 import com.cramsan.edifikana.client.lib.features.auth.signin.SignInViewModel
 import com.cramsan.edifikana.client.lib.features.auth.signup.SignUpViewModel
-import com.cramsan.edifikana.client.lib.features.auth.validation.ValidationViewModel
+import com.cramsan.edifikana.client.lib.features.auth.validation.OtpValidationViewModel
 import com.cramsan.edifikana.client.lib.features.debug.main.DebugViewModel
 import com.cramsan.edifikana.client.lib.features.management.addprimarystaff.AddPrimaryStaffViewModel
 import com.cramsan.edifikana.client.lib.features.management.addproperty.AddPropertyViewModel
@@ -87,7 +87,7 @@ internal val ViewModelModule = module {
         viewModelOf(::PropertyViewModel)
         viewModelOf(::DebugViewModel)
         viewModelOf(::HomeViewModel)
-        viewModelOf(::ValidationViewModel)
+        viewModelOf(::OtpValidationViewModel)
         viewModelOf(::AddPropertyViewModel)
         viewModelOf(::HubViewModel)
         viewModelOf(::AddPrimaryStaffViewModel)

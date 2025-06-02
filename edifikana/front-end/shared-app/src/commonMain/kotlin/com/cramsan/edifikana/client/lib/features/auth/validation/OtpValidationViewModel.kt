@@ -9,12 +9,12 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for the Validation screen.
  **/
-class ValidationViewModel(
+class OtpValidationViewModel(
     dependencies: ViewModelDependencies,
     private val auth: AuthManager,
-) : BaseViewModel<ValidationEvent, ValidationUIState>(
+) : BaseViewModel<OtpValidationEvent, OtpValidationUIState>(
     dependencies,
-    ValidationUIState.Initial,
+    OtpValidationUIState.Initial,
     TAG,
 ) {
     /**

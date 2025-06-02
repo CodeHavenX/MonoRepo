@@ -1,3 +1,5 @@
+<<<<<<<< HEAD:edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth/validation/ValidationViewModel.kt
+========
 package com.cramsan.edifikana.client.lib.features.auth.validation
 
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
@@ -160,3 +162,4 @@ class OtpValidationViewModel(
         private const val TAG = "ValidationViewModel"
     }
 }
+>>>>>>>> 32928c4c ([EDIFIKAN] #142 renamed auth files to Otp validation):edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth/validation/OtpValidationViewModel.kt

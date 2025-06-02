@@ -126,20 +126,11 @@ class UserService(
     }
 
     /**
-     * Sends a magic link to the provided [email]
+     * Sends an OTP to the provided [email]
      */
-    private suspend fun signInWithMagicLink(email: String) {
-        return try {
-            auth.signInWith(OTP) {
-                this.email = email
-            }
-            if (auth.currentUserOrNull() == null) {
-                logD(TAG, "Failed to sign in with magic link")
-            } else {
-                logD(TAG, "Successfully signed in with magic link")
-            }
-        } catch (e: Exception) {
-            logD(TAG, "Failed to sign in with magic link: ${e.message}")
+    private suspend fun requestOtp(email: String) {
+        auth.signInWith(OTP) {
+            this.email = email
         }
     }
 

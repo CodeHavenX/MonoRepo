@@ -1,3 +1,5 @@
+<<<<<<<< HEAD:edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth/validation/ValidationScreen.preview.kt
+========
 @file:Suppress("MaximumLineLength")
 
 package com.cramsan.edifikana.client.lib.features.auth.validation
@@ -39,5 +41,6 @@ private fun OtpInputFieldPreview() = AppTheme {
         onKeyboardBack = {},
         onValueChanged = {},
         modifier = Modifier,
+        onBackClicked = {}
     )
 }

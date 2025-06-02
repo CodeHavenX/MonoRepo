@@ -1,3 +1,5 @@
+<<<<<<<< HEAD:edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth/validation/ValidationScreen.kt
+========
 package com.cramsan.edifikana.client.lib.features.auth.validation
 
 import androidx.compose.animation.AnimatedContent
@@ -19,6 +21,7 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -145,6 +148,21 @@ internal fun OtpValidationContent(
         ) {
             ScreenLayout(
                 sectionContent = { sectionModifier ->
+                    AnimatedContent(
+                        uiState.errorMessage,
+                    ) {
+                        val showErrorMessage = it.isNullOrBlank().not()
+                        if (showErrorMessage) {
+                            // Render the error message
+                            Text(
+                                it.orEmpty(),
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.error,
+                                modifier = sectionModifier
+                                    .wrapContentWidth(),
+                            )
+                        }
+                    }
                     // Image above the text
                     Image(
                         painter = painterResource(Res.drawable.alpacaIcon),
@@ -229,6 +247,7 @@ internal fun OtpValidationContent(
         }
     }
 }
+>>>>>>>> 32928c4c ([EDIFIKAN] #142 renamed auth files to Otp validation):edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth/validation/OtpValidationScreen.kt
 
 /**
  * OTP field input box. Creates the field to enter an OTP code

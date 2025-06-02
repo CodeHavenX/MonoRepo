@@ -10,8 +10,8 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Preview
 @Composable
 private fun ValidationScreenPreview() = AppTheme {
-    ValidationContent(
-        uiState = ValidationUIState(
+    OtpValidationContent(
+        uiState = OtpValidationUIState(
             isLoading = true,
             errorMessage = "",
             otpCode = "123456",

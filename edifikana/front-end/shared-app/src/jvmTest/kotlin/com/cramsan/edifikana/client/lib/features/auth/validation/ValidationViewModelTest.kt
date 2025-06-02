@@ -22,13 +22,13 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 /**
- * Test the [ValidationViewModel] class.
+ * Test the [OtpValidationViewModel] class.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 @Suppress("UNCHECKED_CAST")
 class ValidationViewModelTest : TestBase() {
     private lateinit var authManager: AuthManager
-    private lateinit var viewModel: ValidationViewModel
+    private lateinit var viewModel: OtpValidationViewModel
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
     private lateinit var windowEventBus: EventBus<WindowEvent>
 
@@ -44,7 +44,7 @@ class ValidationViewModelTest : TestBase() {
         exceptionHandler = CollectorCoroutineExceptionHandler()
         windowEventBus = EventBus()
         applicationEventReceiver = EventBus()
-        viewModel = ValidationViewModel(
+        viewModel = OtpValidationViewModel(
             dependencies = ViewModelDependencies(
                 appScope = testCoroutineScope,
                 dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),
@@ -56,7 +56,7 @@ class ValidationViewModelTest : TestBase() {
     }
 
     /**
-     * Test that [ValidationViewModel.verifyAccount] succeeds when the user exists.
+     * Test that [OtpValidationViewModel.verifyAccount] succeeds when the user exists.
      */
     @Test
     fun `verifyAccount should succeed when user exists`() = runBlockingTest {
@@ -73,7 +73,7 @@ class ValidationViewModelTest : TestBase() {
     }
 
     /**
-     * Test that [ValidationViewModel.verifyAccount] fails when the user does not exist.
+     * Test that [OtpValidationViewModel.verifyAccount] fails when the user does not exist.
      */
     @Test
     fun `verifyAccount should throw exception when user does not exist`() = runBlockingTest {

@@ -21,7 +21,6 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -148,21 +147,6 @@ internal fun OtpValidationContent(
         ) {
             ScreenLayout(
                 sectionContent = { sectionModifier ->
-                    AnimatedContent(
-                        uiState.errorMessage,
-                    ) {
-                        val showErrorMessage = it.isNullOrBlank().not()
-                        if (showErrorMessage) {
-                            // Render the error message
-                            Text(
-                                it.orEmpty(),
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.error,
-                                modifier = sectionModifier
-                                    .wrapContentWidth(),
-                            )
-                        }
-                    }
                     // Image above the text
                     Image(
                         painter = painterResource(Res.drawable.alpacaIcon),
@@ -381,3 +365,132 @@ fun OtpSection(
 }
 
 private const val OTP_CODE_SIZE = 6
+
+/**
+ * OTP field input box. Creates the field to enter an OTP code
+ */
+@Composable
+fun OtpInputField(
+    value: Int?,
+    focusRequester: FocusRequester,
+    onFocusChanged: (Boolean) -> Unit,
+    onValueChanged: (Int?) -> Unit,
+    onKeyboardBack: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    // State to hold the text field value and focus state
+    var text by remember {
+        mutableStateOf(
+            TextFieldValue(
+                text = value?.toString().orEmpty(),
+                selection = TextRange(
+                    index = if (value != null) 1 else 0
+                )
+            )
+        )
+    }
+    // Handle focus changes
+    var isFocused by remember {
+        mutableStateOf(false)
+    }
+
+    Box(
+        modifier = modifier
+            .border(
+                width = 2.dp,
+                color = Color.Transparent,
+                shape = RoundedCornerShape(8.dp),
+            )
+            .background(Color.LightGray, RoundedCornerShape(8.dp)),
+        contentAlignment = Alignment.Center
+    ) {
+        BasicTextField(
+            value = text,
+            onValueChange = { newText ->
+                val newValue = newText.text
+                if (newValue.length <= 1) {
+                    onValueChanged(newValue.toIntOrNull())
+                }
+            },
+            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+            singleLine = true,
+            textStyle = TextStyle(
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Light,
+                fontSize = 36.sp,
+                color = Color.Black,
+            ),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+            ),
+            modifier = Modifier
+                .padding(10.dp)
+                .focusRequester(focusRequester)
+                .onFocusChanged {
+                    isFocused = it.isFocused
+                },
+//                .onKeyEvent { event ->
+//                    val didPressDelete = event.nativeKeyEvent == NativeKeyEvent
+//                    if (didPressDelete && value == null) {
+//                        onKeyboardBack()
+//                    }
+//                    false
+//                },
+            decorationBox = { innerBox ->
+                if (!isFocused && value == null) {
+                    Text (
+                        text = "",
+                        textAlign = TextAlign.Center,
+                        color = Color.Black,
+                        fontSize = 36.sp,
+                        fontWeight = FontWeight.Light,
+                        modifier = Modifier
+                            .wrapContentSize()
+                    )
+                }
+            }
+        )
+    }
+}
+
+/**
+ * Generates the OTP input section for the six digit code we expect for the sign in
+ */
+@Composable
+fun OtpSection(
+    uistate: OtpValidationUIState,
+    focusRequesters: List<FocusRequester>,
+    onOtpFieldFocused: (Int) -> Unit,
+    onEnterOtpValue: (Int? , Int) -> Unit,
+    onKeyboardBack: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        uistate.otpCode.forEachIndexed { index, value ->
+            OtpInputField(
+                value = value,
+                focusRequester = focusRequesters[index],
+                onFocusChanged = { isFocused ->
+                    if (isFocused) {
+                        onOtpFieldFocused(index)
+                    }
+                },
+                onValueChanged = { newValue ->
+                    onEnterOtpValue(newValue, index)
+                },
+                onKeyboardBack = {
+                    onKeyboardBack()
+                },
+                modifier = Modifier
+                    .size(48.dp)
+                    .weight(1f)
+            )
+        }
+    }
+}

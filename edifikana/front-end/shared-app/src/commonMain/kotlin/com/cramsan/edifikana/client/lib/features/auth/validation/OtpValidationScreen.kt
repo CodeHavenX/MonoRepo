@@ -95,6 +95,12 @@ fun OtpValidationScreen(
         },
         onOtpFieldFocused = {
             viewModel.onOtpFieldFocused(it)
+        },
+        onEnterOtpValue = { value, index ->
+            viewModel.onEnterOtpValue(value, index)
+        },
+        onKeyboardBack = {
+            viewModel.onKeyboardBack()
         }
     )
 }

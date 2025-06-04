@@ -49,6 +49,11 @@ interface AuthService {
     ): Result<UserModel>
 
     /**
+     * Verify the user session from an OTP code login with the provided [hashToken].
+     */
+    suspend fun signInWithOtp(email: String, hashToken: String): Result<UserModel>
+
+    /**
      * Request a password reset for the user with the given [email] or [phoneNumber].
      */
     suspend fun passwordReset(usernameEmail: String?, usernamePhone: String?): Result<Unit>

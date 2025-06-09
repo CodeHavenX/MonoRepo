@@ -61,14 +61,13 @@ class AuthManager(
     suspend fun signUp(
         email: String,
         phoneNumber: String,
-        password: String,
         firstName: String,
         lastName: String,
     ): Result<UserModel> = dependencies.getOrCatch(
         TAG
     ) {
         logI(TAG, "signUp")
-        authService.signUp(email, phoneNumber, password, firstName, lastName).getOrThrow()
+        authService.signUp(email, phoneNumber, firstName, lastName).getOrThrow()
     }
 
     /**

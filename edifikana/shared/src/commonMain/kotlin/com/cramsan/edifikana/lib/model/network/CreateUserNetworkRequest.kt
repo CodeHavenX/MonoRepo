@@ -15,7 +15,7 @@ data class CreateUserNetworkRequest(
     @SerialName("phone_number")
     val phoneNumber: String,
     @SerialName("password")
-    val password: String,
+    val password: String? = null,
     @SerialName("first_name")
     val firstName: String,
     @SerialName("last_name")

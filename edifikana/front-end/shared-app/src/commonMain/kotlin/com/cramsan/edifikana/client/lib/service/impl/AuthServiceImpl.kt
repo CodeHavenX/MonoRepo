@@ -97,7 +97,6 @@ class AuthServiceImpl(
     override suspend fun signUp(
         email: String,
         phoneNumber: String,
-        password: String,
         firstName: String,
         lastName: String,
     ): Result<UserModel> = runSuspendCatching(TAG) {
@@ -106,7 +105,6 @@ class AuthServiceImpl(
                 CreateUserNetworkRequest(
                     email = email,
                     phoneNumber = phoneNumber,
-                    password = password,
                     firstName = firstName,
                     lastName = lastName,
                     authorizeOtp = true, // Automatically set to true to send an OTP for verification

@@ -27,7 +27,7 @@ class UserService(
     suspend fun createUser(
         email: String,
         phoneNumber: String,
-        password: String,
+        password: String?,
         firstName: String,
         lastName: String,
         authorizeOtp: Boolean,

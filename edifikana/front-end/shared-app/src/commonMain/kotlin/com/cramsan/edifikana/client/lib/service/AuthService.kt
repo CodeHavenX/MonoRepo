@@ -42,7 +42,6 @@ interface AuthService {
     suspend fun signUp(
         email: String,
         phoneNumber: String,
-        password: String,
         firstName: String,
         lastName: String
     ): Result<UserModel>

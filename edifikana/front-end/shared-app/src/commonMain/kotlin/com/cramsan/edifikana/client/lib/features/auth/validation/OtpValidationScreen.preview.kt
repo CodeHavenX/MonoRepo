@@ -16,10 +16,16 @@ private fun ValidationScreenPreview() = AppTheme {
         uiState = OtpValidationUIState(
             isLoading = true,
             errorMessage = "",
-            otpCode = "123456",
+            email = "garcia.alicia1990@gmail.com",
+            otpCode = listOf(1,2,3,4,5,6),
+            focusedIndex = 0
         ),
         modifier = Modifier,
-        onBackClicked = {}
+        onBackClicked = {},
+        onKeyboardBack = {},
+        onEnterOtpValue = {_, _ ->},
+        onOtpFieldFocused = {},
+        onLoginClicked = {},
     )
 }
 

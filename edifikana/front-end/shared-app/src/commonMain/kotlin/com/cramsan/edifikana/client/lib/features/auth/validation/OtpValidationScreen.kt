@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -29,6 +30,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
@@ -46,6 +48,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.cramsan.edifikana.client.lib.features.auth.AuthRouteDestination
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
@@ -62,6 +66,7 @@ import org.koin.compose.viewmodel.koinViewModel
  */
 @Composable
 fun OtpValidationScreen(
+    destination: AuthRouteDestination.ValidationDestination,
     viewModel: OtpValidationViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -71,7 +76,7 @@ fun OtpValidationScreen(
      * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
      */
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
-        viewModel.verifyAccount()
+        viewModel.setEmailAddress(destination.userEmail)
     }
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         // Call this feature's viewModel
@@ -90,6 +95,9 @@ fun OtpValidationScreen(
     // Render the screen
     OtpValidationContent(
         uiState = uiState,
+        onLoginClicked = {
+            viewModel.signInWithOtp()
+        },
         onBackClicked = {
             viewModel.navigateBack()
         },
@@ -112,6 +120,7 @@ fun OtpValidationScreen(
 internal fun OtpValidationContent(
     uiState: OtpValidationUIState,
     modifier: Modifier = Modifier,
+    onLoginClicked: () -> Unit,
     onBackClicked: () -> Unit,
     onOtpFieldFocused: (Int) -> Unit,
     onEnterOtpValue: (Int? , Int) -> Unit,
@@ -171,7 +180,7 @@ internal fun OtpValidationContent(
                     }
                     // OTP input fields
                     val focusRequesters = remember {
-                        List(4) { FocusRequester() }
+                        List(6) { FocusRequester() }
                     }
                     val focusManager = LocalFocusManager.current
                     val keyboardManager = LocalSoftwareKeyboardController.current
@@ -196,9 +205,9 @@ internal fun OtpValidationContent(
                     OtpSection(uiState, focusRequesters, onOtpFieldFocused, onEnterOtpValue, onKeyboardBack)
 
                     // Submit button
-                    Button(
+                    ElevatedButton(
                         onClick = {
-                            // Handle OTP submission
+                            onLoginClicked()
                         },
                         enabled = uiState.otpCode.size == 6,
                         modifier = sectionModifier
@@ -244,11 +253,13 @@ fun OtpInputField(
     Box(
         modifier = modifier
             .border(
-                width = 2.dp,
+                width = 8.dp,
                 color = Color.Transparent,
                 shape = RoundedCornerShape(8.dp),
             )
-            .background(Color.LightGray, RoundedCornerShape(8.dp)),
+            .size(width = 45.dp, height = 65.dp)
+            .shadow(3.dp, RoundedCornerShape(20.dp))
+            .background(Color.LightGray, RoundedCornerShape(20.dp)),
         contentAlignment = Alignment.Center
     ) {
         BasicTextField(
@@ -313,7 +324,7 @@ fun OtpSection(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxSize()
@@ -335,8 +346,6 @@ fun OtpSection(
                     onKeyboardBack()
                 },
                 modifier = Modifier
-                    .size(48.dp)
-                    .weight(1f)
             )
         }
     }

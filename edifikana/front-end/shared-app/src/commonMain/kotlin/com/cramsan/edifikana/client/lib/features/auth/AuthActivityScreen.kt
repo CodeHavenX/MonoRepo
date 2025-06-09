@@ -27,8 +27,10 @@ fun NavGraphBuilder.authActivityNavigation(
                 AuthRoute.SignUp -> composable(it.route) {
                     SignUpScreen()
                 }
-                AuthRoute.Validation -> composable(it.route) {
-                    OtpValidationScreen()
+                AuthRoute.Validation -> composable(it.route) { backStackEntry ->
+                    OtpValidationScreen(
+                        AuthRouteDestination.ValidationDestination.unpack(backStackEntry)
+                    )
                 }
             }
         }

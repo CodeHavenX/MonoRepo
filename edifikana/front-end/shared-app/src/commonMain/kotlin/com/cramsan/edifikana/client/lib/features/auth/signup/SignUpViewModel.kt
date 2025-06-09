@@ -62,20 +62,6 @@ class SignUpViewModel(
     }
 
     /**
-     * Called when the password value changes.
-     */
-    fun onPasswordValueChange(password: String) {
-        // Here we can implement any validation logic.
-        viewModelScope.launch {
-            updateUiState {
-                it.copy(
-                    password = password
-                )
-            }
-        }
-    }
-
-    /**
      * Called when the first name value changes.
      */
     fun onFirstNameValueChange(firstName: String) {
@@ -125,13 +111,11 @@ class SignUpViewModel(
             val lastName = uiState.value.lastName.trim()
             val email = uiState.value.email.trim()
             val phoneNumber = uiState.value.phoneNumber.trim()
-            val password = uiState.value.password
 
             val errorMessages = listOf(
                 validateName(firstName, lastName),
                 validateEmail(email),
                 validatePhoneNumber(phoneNumber),
-                validatePassword(password),
             ).flatten()
 
             if (errorMessages.isNotEmpty()) {
@@ -148,7 +132,6 @@ class SignUpViewModel(
             val user = auth.signUp(
                 email = email,
                 phoneNumber = phoneNumber,
-                password = password,
                 firstName = firstName,
                 lastName = lastName,
             ).getOrElse { exception ->
@@ -164,27 +147,8 @@ class SignUpViewModel(
             }
 
             logD(TAG, "User signed up: $user")
-
-            // On successful sign up, navigate to the validation screen and automatically sign in user
-            auth.signIn(
-                email = email,
-                password = password,
-            ).onFailure { exception ->
-                logD(TAG, "Error signing in: $exception")
-                val message = stringProvider.getString(Res.string.error_message_unexpected_error)
-                updateUiState {
-                    it.copy(
-                        isLoading = false,
-
-                        errorMessage = listOf(message)
-                    )
-                }
-                return@launch
-            }
-
-            logD(TAG, "User signed in: $user")
             emitWindowEvent(
-                EdifikanaWindowsEvent.NavigateToScreen(AuthRouteDestination.ValidationDestination)
+                EdifikanaWindowsEvent.NavigateToScreen(AuthRouteDestination.ValidationDestination(email))
             )
         }
     }
@@ -196,7 +160,6 @@ class SignUpViewModel(
         viewModelScope.launch {
             updateUiState {
                 it.copy(
-
                     policyChecked = checked,
                     registerEnabled = checked,
                 )
@@ -215,7 +178,7 @@ class SignUpViewModel(
         return when (exception) {
             is ClientRequestExceptions.UnauthorizedException ->
                 "Invalid login credentials. Please check your " +
-                    "username and password and try again."
+                    "credentials and try again."
 
             is ClientRequestExceptions.ConflictException ->
                 "This email is already registered. You can reset your " +

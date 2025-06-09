@@ -5,6 +5,7 @@ import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.utils.loginvalidation.validatePhoneNumber
+import io.github.jan.supabase.auth.OtpType
 import kotlinx.coroutines.launch
 
 /**
@@ -19,20 +20,25 @@ class OtpValidationViewModel(
     TAG,
 ) {
     /**
-     * Verify the account has been created, has required fields.
+     * Initialize the page and set the user email variable
      */
-    fun verifyAccount() {
+    fun setEmailAddress(userEmail: String) {
         viewModelScope.launch {
-            auth.getUser().getOrThrow()
+            updateUiState {
+                it.copy(
+                    email = userEmail
+                )
+            }
         }
     }
-
     /**
-     * Sign the user in with a magic link.
+     * Sign the user in with an OTP token
      */
-    fun signInWithOtp(email: String, hashToken: String) {
+    fun signInWithOtp() {
+        val otpToken = uiState.value.otpCode
+        val email = uiState.value.email
         viewModelScope.launch {
-            auth.signInWithOtp(email, hashToken)
+            auth.signInWithOtp(email, otpToken.toString())
         }
     }
 

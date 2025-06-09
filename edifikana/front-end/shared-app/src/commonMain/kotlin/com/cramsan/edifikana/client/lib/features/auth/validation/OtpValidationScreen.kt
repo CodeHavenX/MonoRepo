@@ -397,11 +397,13 @@ fun OtpInputField(
     Box(
         modifier = modifier
             .border(
-                width = 2.dp,
+                width = 8.dp,
                 color = Color.Transparent,
                 shape = RoundedCornerShape(8.dp),
             )
-            .background(Color.LightGray, RoundedCornerShape(8.dp)),
+            .size(width = 45.dp, height = 65.dp)
+            .shadow(3.dp, RoundedCornerShape(20.dp))
+            .background(Color.LightGray, RoundedCornerShape(20.dp)),
         contentAlignment = Alignment.Center
     ) {
         BasicTextField(
@@ -466,7 +468,7 @@ fun OtpSection(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxSize()
@@ -488,8 +490,6 @@ fun OtpSection(
                     onKeyboardBack()
                 },
                 modifier = Modifier
-                    .size(48.dp)
-                    .weight(1f)
             )
         }
     }

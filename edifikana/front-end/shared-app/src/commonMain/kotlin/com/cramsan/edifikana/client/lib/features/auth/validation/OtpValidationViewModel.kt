@@ -7,6 +7,7 @@ import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.utils.loginvalidation.validatePhoneNumber
+import io.github.jan.supabase.auth.OtpType
 import kotlinx.coroutines.launch
 
 /**
@@ -32,7 +33,6 @@ class OtpValidationViewModel(
             }
         }
     }
-
     /**
      * Sign the user in with an OTP token
      */

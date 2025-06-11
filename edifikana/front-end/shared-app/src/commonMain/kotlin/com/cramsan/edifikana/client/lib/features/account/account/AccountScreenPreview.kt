@@ -14,6 +14,28 @@ private fun AccountScreenPreview() = AppTheme {
             email = "lvega@gmail.com",
             phoneNumber = "+51 987654321",
             isLoading = false,
+            isEditable = false,
+        ),
+        onBackNavigation = {},
+        onSignOutClicked = {},
+        onEditClicked = {},
+        onFirstNameChange = {},
+        onLastNameChange = {},
+        onEmailChange = {},
+        onPhoneNumberChange = {},
+    )
+}
+
+@Preview
+@Composable
+private fun AccountScreenPreview_Editable() = AppTheme {
+    AccountContent(
+        content = AccountUIState(
+            firstName = "Luis Antonio",
+            lastName = "Vega",
+            email = "lvega@gmail.com",
+            phoneNumber = "+51 987654321",
+            isLoading = false,
             isEditable = true,
         ),
         onBackNavigation = {},
@@ -31,10 +53,10 @@ private fun AccountScreenPreview() = AppTheme {
 private fun AccountScreenPreview_Loading() = AppTheme {
     AccountContent(
         content = AccountUIState(
-            firstName = null,
-            lastName = null,
-            email = null,
-            phoneNumber = null,
+            firstName = "Luis Antonio",
+            lastName = "Vega",
+            email = "lvega@gmail.com",
+            phoneNumber = "+51 987654321",
             isLoading = true,
             isEditable = false,
         ),

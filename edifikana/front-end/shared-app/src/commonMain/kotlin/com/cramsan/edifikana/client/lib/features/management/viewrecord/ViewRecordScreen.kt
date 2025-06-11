@@ -56,7 +56,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun ViewRecordScreen(
     eventLogRecordPK: EventLogEntryId,
-    viewModel: com.cramsan.edifikana.client.lib.features.management.viewrecord.ViewRecordViewModel = koinViewModel(),
+    viewModel: ViewRecordViewModel = koinViewModel(),
     delegatedEventEmitter: EventEmitter<EdifikanaWindowDelegatedEvent> = koinInject(),
 ) {
     val uiState by viewModel.uiState.collectAsState()

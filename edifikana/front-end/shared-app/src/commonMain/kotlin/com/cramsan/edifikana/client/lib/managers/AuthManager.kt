@@ -71,9 +71,9 @@ class AuthManager(
     /**
      * Gets the current user.
      */
-    suspend fun getUser(checkGlobalPerms: Boolean = false): Result<UserModel> = dependencies.getOrCatch(TAG) {
+    suspend fun getUser(): Result<UserModel> = dependencies.getOrCatch(TAG) {
         logI(TAG, "getUser")
-        authService.getUser(checkGlobalPerms).getOrThrow()
+        authService.getUser().getOrThrow()
     }
 
     /**
@@ -88,6 +88,24 @@ class AuthManager(
     suspend fun verifyPermissions() = dependencies.getOrCatch(TAG) {
         logI(TAG, "verifyPermissions")
         authService.verifyPermissions().getOrThrow()
+    }
+
+    /**
+     * Update the user information with the provided [firstName], [lastName], [email], and [phoneNumber].
+     */
+    suspend fun updateUser(
+        firstName: String?,
+        lastName: String?,
+        email: String?,
+        phoneNumber: String?,
+    ) = dependencies.getOrCatch(TAG) {
+        logI(TAG, "updateUser")
+        authService.updateUser(
+            firstName = firstName,
+            lastName = lastName,
+            email = email,
+            phoneNumber = phoneNumber
+        ).getOrThrow()
     }
 
     companion object {

@@ -22,7 +22,6 @@ import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -30,8 +29,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.management.home.HomeScreen
 import com.cramsan.edifikana.client.lib.features.management.hub.HubScreen
+import com.cramsan.framework.core.compose.rememberEventCollection
 import com.cramsan.ui.theme.Padding
-import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -48,24 +47,20 @@ fun ManagementScreen(
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val uiState by viewModel.uiState.collectAsState()
 
-    LaunchedEffect(Unit) {
-        launch {
-            viewModel.events.collect { event ->
-                when (event) {
-                    ManagementEvent.ToggleDrawer -> {
-                        if (!drawerState.isAnimationRunning) {
-                            if (drawerState.isOpen) {
-                                drawerState.close()
-                            } else {
-                                drawerState.open()
-                            }
-                        }
+    rememberEventCollection(viewModel) { event ->
+        when (event) {
+            ManagementEvent.ToggleDrawer -> {
+                if (!drawerState.isAnimationRunning) {
+                    if (drawerState.isOpen) {
+                        drawerState.close()
+                    } else {
+                        drawerState.open()
                     }
-                    ManagementEvent.CloseDrawer -> {
-                        if (!drawerState.isAnimationRunning) {
-                            drawerState.close()
-                        }
-                    }
+                }
+            }
+            ManagementEvent.CloseDrawer -> {
+                if (!drawerState.isAnimationRunning) {
+                    drawerState.close()
                 }
             }
         }

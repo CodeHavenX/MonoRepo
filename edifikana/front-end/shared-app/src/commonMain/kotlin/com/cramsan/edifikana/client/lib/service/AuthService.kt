@@ -17,9 +17,7 @@ interface AuthService {
     /**
      * Get the current user.
      */
-    suspend fun getUser(
-        checkGlobalPerms: Boolean = false,
-    ): Result<UserModel>
+    suspend fun getUser(): Result<UserModel>
 
     /**
      * Sign in the user with the given email and password.
@@ -38,7 +36,8 @@ interface AuthService {
     fun activeUser(): StateFlow<UserId?>
 
     /**
-     * Sign up the user with the provided usernames, [password], and [firstName] & [lastName]. Returns the user model if successful.
+     * Sign up the user with the provided usernames, [password], and [firstName] & [lastName].
+     * Returns the user model if successful.
      */
     suspend fun signUp(
         email: String,
@@ -57,4 +56,15 @@ interface AuthService {
      * Verify the permissions of the user.
      */
     suspend fun verifyPermissions(): Result<Boolean>
+
+    /**
+     * Update the user information with the provided [firstName], [lastName], [email], and [phoneNumber].
+     * Returns the updated user model if successful.
+     */
+    suspend fun updateUser(
+        firstName: String?,
+        lastName: String?,
+        email: String?,
+        phoneNumber: String?,
+    ): Result<UserModel>
 }

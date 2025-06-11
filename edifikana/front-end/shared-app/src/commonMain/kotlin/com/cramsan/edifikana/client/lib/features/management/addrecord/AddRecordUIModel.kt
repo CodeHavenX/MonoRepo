@@ -15,7 +15,7 @@ data class AddRecordUIModel(
 /**
  * Converts a [StaffModel] to a [com.cramsan.edifikana.client.lib.features.management.addrecord.AddRecordUIModel].
  */
-fun StaffModel.toUIModel(): com.cramsan.edifikana.client.lib.features.management.addrecord.AddRecordUIModel {
+fun StaffModel.toUIModel(): AddRecordUIModel {
     return AddRecordUIModel(
         fullName = fullName(),
         staffPK = id,

@@ -44,13 +44,11 @@ class UserService(
      */
     suspend fun getUser(
         id: UserId,
-        checkGlobalPerms: Boolean,
     ): User? {
         logD(TAG, "getUser")
         val user = userDatabase.getUser(
             request = GetUserRequest(
                 id = id,
-                checkGlobalPerms = checkGlobalPerms,
             ),
         ).getOrNull()
 

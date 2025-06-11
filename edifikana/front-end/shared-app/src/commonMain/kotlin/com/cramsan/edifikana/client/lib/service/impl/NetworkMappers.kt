@@ -145,7 +145,6 @@ fun UserNetworkResponse.toUserModel(): UserModel {
         phoneNumber = phoneNumber,
         firstName = firstName,
         lastName = lastName,
-        hasGlobalPerms = hasGlobalPerms,
         isVerified = isVerified,
     )
 }

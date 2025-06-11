@@ -9,9 +9,11 @@ import com.cramsan.framework.core.compose.WindowEvent
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.test.TestBase
+import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertNull
@@ -61,9 +63,11 @@ class ManagementViewModelTest : TestBase() {
     @Test
     fun `test events`() = runBlockingTest {
         // Set up
+        coEvery { windowEventBus.push(EdifikanaWindowsEvent.NavigateBack) } returns Unit
 
         // Act
         viewModel.onBackSelected()
+        advanceUntilIdle()
 
         // Assert
         coVerify { windowEventBus.push(EdifikanaWindowsEvent.NavigateBack) }

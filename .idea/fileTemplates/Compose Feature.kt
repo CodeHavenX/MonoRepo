@@ -18,12 +18,12 @@ import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
- * A class representing navigating to the Staff Screen.
+ * A class representing navigating to the ${NAME} screen.
  * TODO: Move this destination to the respective Route.
  * TODO: If the Destination has arguments, make this class into a `data class` add them arguments.
  */
 data object ${NAME}Destination : RouteDestination( // TODO: Update the Destination to match the respective Route.
-    Route.${NAME}.rawRoute, // TODO: Update to the respective route Enum
+    Route.${NAME}.route, // TODO: Update to the respective route Enum
 ) {
     // TODO: If the this class is an `object class` remove the `companion object` block.
     companion object {
@@ -51,7 +51,6 @@ fun ${NAME}Screen(
     viewModel: ${NAME}ViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val screenScope = rememberCoroutineScope()
 
     /**
      * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
@@ -63,10 +62,12 @@ fun ${NAME}Screen(
         // Call this feature's viewModel
     }
 
-    screenScope.launch {
-        viewModel.events.collect { event ->
-            when (event) {
-                ${NAME}Event.Noop -> Unit
+    LaunchedEffect(Unit) {
+        launch {
+            viewModel.events.collect { event ->
+                when (event) {
+                    ${NAME}Event.Noop -> Unit
+                }
             }
         }
     }

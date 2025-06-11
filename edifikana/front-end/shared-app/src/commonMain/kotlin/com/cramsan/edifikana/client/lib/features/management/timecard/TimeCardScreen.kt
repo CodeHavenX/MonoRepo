@@ -36,7 +36,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun TimeCardScreen(
     modifier: Modifier,
-    viewModel: com.cramsan.edifikana.client.lib.features.management.timecard.TimeCartViewModel = koinViewModel(),
+    viewModel: TimeCartViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -106,7 +106,7 @@ internal fun EventList(
 
 @Composable
 private fun StaffItem(
-    staff: com.cramsan.edifikana.client.lib.features.management.timecard.TimeCardUIModel,
+    staff: TimeCardUIModel,
     modifier: Modifier = Modifier,
     onStaffSelected: (StaffId) -> Unit,
 ) {

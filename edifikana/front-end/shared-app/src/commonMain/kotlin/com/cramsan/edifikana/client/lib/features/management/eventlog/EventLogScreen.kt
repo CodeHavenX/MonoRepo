@@ -38,7 +38,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun EventLogScreen(
     modifier: Modifier,
-    viewModel: com.cramsan.edifikana.client.lib.features.management.eventlog.EventLogViewModel = koinViewModel(),
+    viewModel: EventLogViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 

@@ -23,7 +23,6 @@ fun User.toUserNetworkResponse(): UserNetworkResponse {
         phoneNumber = phoneNumber,
         firstName = firstName,
         lastName = lastName,
-        hasGlobalPerms = hasGlobalPerms,
         isVerified = isVerified,
     )
 }

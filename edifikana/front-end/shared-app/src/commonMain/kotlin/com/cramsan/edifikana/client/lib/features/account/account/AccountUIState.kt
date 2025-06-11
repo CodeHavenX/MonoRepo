@@ -6,18 +6,21 @@ import com.cramsan.framework.core.compose.ViewModelUIState
  * Account UI state of the screen.
  */
 data class AccountUIState(
-    val content: AccountUIModel,
+    val firstName: String?,
+    val lastName: String?,
+    val email: String?,
+    val phoneNumber: String?,
     val isLoading: Boolean,
+    val isEditable: Boolean,
 ) : ViewModelUIState {
     companion object {
         val Empty = AccountUIState(
-            content = AccountUIModel(
-                firstName = "",
-                lastName = "",
-                email = "",
-                phoneNumber = "",
-            ),
+            firstName = "",
+            lastName = "",
+            email = "",
+            phoneNumber = "",
             isLoading = false,
+            isEditable = false,
         )
     }
 }

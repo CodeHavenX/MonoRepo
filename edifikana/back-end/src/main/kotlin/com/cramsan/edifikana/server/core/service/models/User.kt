@@ -11,6 +11,5 @@ data class User(
     val phoneNumber: String,
     val firstName: String,
     val lastName: String,
-    val hasGlobalPerms: Boolean,
     val isVerified: Boolean,
 )

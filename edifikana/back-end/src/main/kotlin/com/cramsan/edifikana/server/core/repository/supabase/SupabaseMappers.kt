@@ -27,14 +27,13 @@ import kotlinx.datetime.Instant
  * Maps a [UserEntity] to the [User] model.
  */
 @SupabaseModel
-fun UserEntity.toUser(hasGlobalPerms: Boolean, isVerified: Boolean = false): User {
+fun UserEntity.toUser(isVerified: Boolean = false): User {
     return User(
         id = UserId(this.id),
         email = this.email,
         phoneNumber = this.phoneNumber,
         firstName = this.firstName,
         lastName = this.lastName,
-        hasGlobalPerms = hasGlobalPerms,
         isVerified = isVerified,
     )
 }

@@ -12,20 +12,25 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 private fun PropertyScreenPreview() = AppTheme {
     PropertyContent(
         content = PropertyUIState(
+            title = "Property Management",
             propertyName = "Property Name",
             address = "Address",
             isLoading = false,
-            managers = listOf("Manager 1", "Manager 2"),
-            addManagerError = false,
-            addManagerEmail = "",
+            staff = listOf(
+                StaffUIModel(null, "Manager 1", false),
+                StaffUIModel(null, "Manager 2", true),
+            ),
+            addStaffError = false,
+            addStaffEmail = "",
             suggestions = listOf()
         ),
         onBackSelected = {},
-        onNewManagerSelected = { _ -> },
-        onRemoveManagerSelected = { _ -> },
-        onSaveChangesSelected = { _, _ -> },
-        onSuggestionSelected = { },
+        onNewStaffSelected = { _ -> },
+        onStaffActionSelected = { _ -> },
+        onSaveChangesSelected = { },
         onNewSuggestionsRequested = { _ -> },
         onShowRemoveDialogSelected = { },
+        onPropertyNameChanged = { },
+        onAddressChanged = { },
     )
 }

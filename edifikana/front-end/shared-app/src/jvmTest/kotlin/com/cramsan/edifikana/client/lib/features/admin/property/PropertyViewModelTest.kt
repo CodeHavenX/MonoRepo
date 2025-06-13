@@ -3,6 +3,7 @@ package com.cramsan.edifikana.client.lib.features.admin.property
 import app.cash.turbine.test
 import com.cramsan.edifikana.client.lib.features.management.property.PropertyEvent
 import com.cramsan.edifikana.client.lib.features.management.property.PropertyViewModel
+import com.cramsan.edifikana.client.lib.features.management.property.StaffUIModel
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.managers.StaffManager
@@ -29,6 +30,7 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.advanceUntilIdle
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -96,7 +98,11 @@ class PropertyViewModelTest : TestBase() {
         coEvery { staffManager.getStaffList() } returns Result.success(emptyList())
 
         viewModel.loadContent(propertyId)
-        viewModel.saveChanges(name, address)
+        viewModel.updatePropertyAddress(address)
+        viewModel.updatePropertyName(name)
+        advanceUntilIdle()
+        viewModel.saveChanges(false)
+        advanceUntilIdle()
 
         coVerify { propertyManager.updateProperty(propertyId, name, address) }
         assertTrue(exceptionHandler.exceptions.isEmpty())
@@ -127,7 +133,10 @@ class PropertyViewModelTest : TestBase() {
             }
         }
         viewModel.loadContent(propertyId)
-        viewModel.saveChanges(name, address)
+        viewModel.updatePropertyAddress(address)
+        viewModel.updatePropertyName(name)
+        viewModel.saveChanges(false)
+        advanceUntilIdle()
 
         verificationJob.join()
     }
@@ -135,25 +144,25 @@ class PropertyViewModelTest : TestBase() {
     @Test
     fun `test addManager with valid email updates UI state`() = runBlockingTest {
         val email = "test@example.com"
-        viewModel.addManager(email)
-        assertEquals(listOf(email), viewModel.uiState.value.managers)
-        assertTrue(!viewModel.uiState.value.addManagerError)
+        viewModel.addStaff(email)
+        assertEquals(listOf(StaffUIModel(null, "test@example.com", false)), viewModel.uiState.value.staff)
+        assertTrue(!viewModel.uiState.value.addStaffError)
     }
 
     @Test
     fun `test addManager with invalid email shows error`() = runBlockingTest {
         val email = "invalid-email"
-        viewModel.addManager(email)
-        assertTrue(viewModel.uiState.value.addManagerError)
-        assertEquals(email, viewModel.uiState.value.addManagerEmail)
+        viewModel.addStaff(email)
+        assertTrue(viewModel.uiState.value.addStaffError)
+        assertEquals(email, viewModel.uiState.value.addStaffEmail)
     }
 
     @Test
     fun `test removeManager updates UI state`() = runBlockingTest {
         val email = "test@example.com"
-        viewModel.addManager(email)
-        viewModel.removeManager(email)
-        assertTrue(viewModel.uiState.value.managers.isEmpty())
+        viewModel.addStaff(email)
+        viewModel.toggleStaffState(StaffUIModel(null, email, false))
+        assertTrue(viewModel.uiState.value.staff.first().isRemoving)
     }
 
     @Test

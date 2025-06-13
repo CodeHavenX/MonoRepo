@@ -28,23 +28,31 @@ class PropertyViewModel(
     private var cachedStaff: List<StaffModel> = emptyList()
     private var suggestionQueryJob: Job? = null
 
+    private var initialState: PropertyUIState? = null
+
     /**
      * Navigate back to the previous screen.
      */
     fun navigateBack() {
         viewModelScope.launch {
-            emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
+            if (initialState != null && initialState != uiState.value) {
+                emitEvent(PropertyEvent.ShowSaveBeforeExitingDialog)
+            } else {
+                emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
+            }
         }
     }
 
     /**
      * Save changes to the property.
      */
-    fun saveChanges(name: String, address: String) {
+    fun saveChanges(exitAfterSave: Boolean) {
         val propertyId = propertyId ?: return
 
         viewModelScope.launch {
             updateUiState { it.copy(isLoading = true) }
+            val name = uiState.value.propertyName.orEmpty()
+            val address = uiState.value.address.orEmpty()
             propertyManager.updateProperty(propertyId, name, address).onFailure {
                 updateUiState { it.copy(isLoading = false) }
                 val message = stringProvider.getString(Res.string.error_message_unexpected_error)
@@ -54,6 +62,10 @@ class PropertyViewModel(
                 return@launch
             }
             updateUiState { it.copy(isLoading = false) }
+            emitWindowEvent(EdifikanaWindowsEvent.ShowSnackbar("Changes saved successfully"))
+            if (exitAfterSave) {
+                emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
+            }
         }
     }
 
@@ -67,34 +79,35 @@ class PropertyViewModel(
             val property = propertyManager.getProperty(propertyId).getOrThrow()
             updateUiState {
                 PropertyUIState.Empty.copy(
+                    title = property.name,
                     propertyName = property.name,
                     address = property.address,
-                    managers = listOf(),
-                )
+                    staff = listOf(),
+                ).also { initialState = it }
             }
             cachedStaff = staffManager.getStaffList().getOrThrow()
         }
     }
 
     /**
-     * Add a new manager to the property.
+     * Add a new staff to the property.
      */
-    fun addManager(email: String) {
+    fun addStaff(email: String) {
         viewModelScope.launch {
             val isEmailValid = validateEmail(email).isEmpty()
             if (isEmailValid) {
                 updateUiState {
                     it.copy(
-                        managers = it.managers + email,
-                        addManagerError = false,
-                        addManagerEmail = "",
+                        staff = it.staff + StaffUIModel(null, email, false),
+                        addStaffError = false,
+                        addStaffEmail = "",
                     )
                 }
             } else {
                 updateUiState {
                     it.copy(
-                        addManagerError = true,
-                        addManagerEmail = email,
+                        addStaffError = true,
+                        addStaffEmail = email,
                     )
                 }
             }
@@ -102,23 +115,22 @@ class PropertyViewModel(
     }
 
     /**
-     * Remove a manager from the property.
+     * Remove a staff from the property.
      */
-    fun removeManager(email: String) {
+    fun toggleStaffState(staffUIModel: StaffUIModel) {
         viewModelScope.launch {
             updateUiState {
                 it.copy(
-                    managers = it.managers - email
+                    staff = it.staff.map { staff ->
+                        if (staff.email == staffUIModel.email) {
+                            staff.copy(isRemoving = staff.isRemoving.not())
+                        } else {
+                            staff
+                        }
+                    },
                 )
             }
         }
-    }
-
-    /**
-     * Select a suggestion.
-     */
-    fun selectSuggestion(staffSuggestion: String) {
-        addManager(staffSuggestion)
     }
 
     /**
@@ -144,7 +156,7 @@ class PropertyViewModel(
                 updateUiState {
                     it.copy(
                         suggestions = suggestions,
-                        addManagerEmail = query,
+                        addStaffEmail = query,
                     )
                 }
             }
@@ -176,6 +188,24 @@ class PropertyViewModel(
             }
             updateUiState { it.copy(isLoading = false) }
             emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
+        }
+    }
+
+    /**
+     * Update the property name in the UI state.
+     */
+    fun updatePropertyName(name: String) {
+        viewModelScope.launch {
+            updateUiState { it.copy(propertyName = name) }
+        }
+    }
+
+    /**
+     * Update the property address in the UI state.
+     */
+    fun updatePropertyAddress(address: String) {
+        viewModelScope.launch {
+            updateUiState { it.copy(address = address) }
         }
     }
 

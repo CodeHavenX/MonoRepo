@@ -14,4 +14,9 @@ sealed class PropertyEvent : ViewModelEvent {
      * Event to show the dialog for removing a property.
      */
     data object ShowRemoveDialog : PropertyEvent()
+
+    /**
+     * Event to show a dialog prompting the user to save changes before exiting.
+     */
+    data object ShowSaveBeforeExitingDialog : PropertyEvent()
 }

@@ -111,21 +111,6 @@ class SignUpViewModelTest : TestBase() {
     }
 
     /**
-     * Test the [SignUpViewModel.onPasswordValueChange] method.
-     */
-    @Test
-    fun `test onPasswordValueChange updates password value`() = runBlockingTest {
-        // Arrange
-        val password = "p@ssWord123"
-
-        // Act
-        viewModel.onPasswordValueChange(password)
-
-        // Assert
-        assertEquals(password, viewModel.uiState.value.password)
-    }
-
-    /**
      * Test the [SignUpViewModel.onFirstNameValueChange] method.
      */
     @Test
@@ -193,7 +178,7 @@ class SignUpViewModelTest : TestBase() {
     @Test
     fun `test navigateBack calls emitEvent`() = runBlockingTest {
         // Arrange
-        coEvery { authManager.signUp(any(), any(), any(), any(), any()) } returns Result.success(mockk())
+        coEvery { authManager.signUp(any(), any(), any(), any()) } returns Result.success(mockk())
 
         // Act
         val verificationJob = launch {
@@ -223,7 +208,7 @@ class SignUpViewModelTest : TestBase() {
 
         coEvery {
             authManager.signUp(
-                email, phoneNumber, password, firstName, lastName
+                email, phoneNumber, firstName, lastName
             )
         } returns Result.success(mockk())
         coEvery { authManager.signIn(email, password) } returns Result.success(mockk())
@@ -232,14 +217,13 @@ class SignUpViewModelTest : TestBase() {
         viewModel.onLastNameValueChange(lastName)
         viewModel.onEmailValueChange(email)
         viewModel.onPhoneNumberValueChange(phoneNumber)
-        viewModel.onPasswordValueChange(password)
         viewModel.onPolicyChecked(true)
 
         // Act
         viewModel.signUp()
 
         // Verify
-        coVerify { authManager.signUp(email, phoneNumber, password, firstName, lastName) }
+        coVerify { authManager.signUp(email, phoneNumber, firstName, lastName) }
         coVerify { authManager.signIn(email, password) }
         assertTrue(viewModel.uiState.value.isLoading)
     }
@@ -262,7 +246,6 @@ class SignUpViewModelTest : TestBase() {
         viewModel.onLastNameValueChange(lastName)
         viewModel.onEmailValueChange(email)
         viewModel.onPhoneNumberValueChange(phoneNumber)
-        viewModel.onPasswordValueChange(password)
 
         // Act
         viewModel.signUp()
@@ -285,7 +268,7 @@ class SignUpViewModelTest : TestBase() {
         val password = "p@ssWord123"
         val expectedErrorMessage = listOf("There was an unexpected error.")
 
-        coEvery { authManager.signUp(email, phoneNumber, password, firstName, lastName) } returns Result.failure(
+        coEvery { authManager.signUp(email, phoneNumber, firstName, lastName) } returns Result.failure(
             Exception("Sign in failed")
         )
 
@@ -293,14 +276,13 @@ class SignUpViewModelTest : TestBase() {
         viewModel.onLastNameValueChange(lastName)
         viewModel.onEmailValueChange(email)
         viewModel.onPhoneNumberValueChange(phoneNumber)
-        viewModel.onPasswordValueChange(password)
         viewModel.onPolicyChecked(true)
 
         // Act
         viewModel.signUp()
 
         // Assert & verify
-        coVerify { authManager.signUp(email, phoneNumber, password, firstName, lastName) }
+        coVerify { authManager.signUp(email, phoneNumber, firstName, lastName) }
         assertEquals(expectedErrorMessage.toString(), viewModel.uiState.value.errorMessage.toString())
     }
 
@@ -318,7 +300,7 @@ class SignUpViewModelTest : TestBase() {
 
         coEvery {
             authManager.signUp(
-                email, phoneNumber, password, firstName, lastName
+                email, phoneNumber, firstName, lastName
             )
         } returns Result.success(mockk())
         coEvery { authManager.signIn(email, password) } returns Result.failure(Exception("Sign in failed"))
@@ -329,11 +311,10 @@ class SignUpViewModelTest : TestBase() {
         viewModel.onLastNameValueChange(lastName)
         viewModel.onEmailValueChange(email)
         viewModel.onPhoneNumberValueChange(phoneNumber)
-        viewModel.onPasswordValueChange(password)
         viewModel.onPolicyChecked(true)
         viewModel.signUp()
         // Assert & verify
-        coVerify { authManager.signUp(email, phoneNumber, password, firstName, lastName) }
+        coVerify { authManager.signUp(email, phoneNumber, firstName, lastName) }
         assertEquals(
             expectedErrorMessage.toString(), viewModel.uiState.value.errorMessage.toString()
         )

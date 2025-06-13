@@ -10,22 +10,24 @@ import com.cramsan.framework.core.compose.ViewModelUIState
  * For modeling more specific details of the page, see the respective UI model class.
  */
 data class PropertyUIState(
+    val title: String?,
     val propertyName: String?,
     val address: String?,
     val isLoading: Boolean,
-    val managers: List<String>,
-    val addManagerError: Boolean,
-    val addManagerEmail: String,
+    val staff: List<StaffUIModel>,
+    val addStaffError: Boolean,
+    val addStaffEmail: String,
     val suggestions: List<String>,
 ) : ViewModelUIState {
     companion object {
         val Empty = PropertyUIState(
+            title = null,
             propertyName = null,
             address = null,
             isLoading = false,
-            managers = emptyList(),
-            addManagerError = false,
-            addManagerEmail = "",
+            staff = emptyList(),
+            addStaffError = false,
+            addStaffEmail = "",
             suggestions = emptyList(),
         )
     }
@@ -37,6 +39,7 @@ data class PropertyUIState(
  * This class models the data that is displayed in the staff list.
  */
 data class StaffUIModel(
+    val staffId: StaffId?,
     val email: String,
-    val staffId: StaffId,
+    val isRemoving: Boolean,
 )

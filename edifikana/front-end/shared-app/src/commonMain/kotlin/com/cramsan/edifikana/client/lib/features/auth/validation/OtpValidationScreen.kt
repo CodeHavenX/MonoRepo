@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -123,7 +122,7 @@ internal fun OtpValidationContent(
     onLoginClicked: () -> Unit,
     onBackClicked: () -> Unit,
     onOtpFieldFocused: (Int) -> Unit,
-    onEnterOtpValue: (Int? , Int) -> Unit,
+    onEnterOtpValue: (Int?, Int) -> Unit,
     onKeyboardBack: () -> Unit,
 ) {
     Scaffold(
@@ -185,7 +184,7 @@ internal fun OtpValidationContent(
                     val focusManager = LocalFocusManager.current
                     val keyboardManager = LocalSoftwareKeyboardController.current
 
-                    LaunchedEffect( uiState.focusedIndex) {
+                    LaunchedEffect(uiState.focusedIndex) {
                         uiState.focusedIndex?.let { index ->
                             focusRequesters.getOrNull(index)?.requestFocus()
                         }
@@ -193,7 +192,7 @@ internal fun OtpValidationContent(
 
                     LaunchedEffect(uiState.otpCode, keyboardManager) {
                         val allNumbersEntered = uiState.otpCode.none { it == null }
-                        if(allNumbersEntered) {
+                        if (allNumbersEntered) {
                             focusRequesters.forEach {
                                 it.freeFocus()
                             }
@@ -296,7 +295,7 @@ fun OtpInputField(
 //                },
             decorationBox = { innerBox ->
                 if (!isFocused && value == null) {
-                    Text (
+                    Text(
                         text = "",
                         textAlign = TextAlign.Center,
                         color = Color.Black,
@@ -319,7 +318,7 @@ fun OtpSection(
     uistate: OtpValidationUIState,
     focusRequesters: List<FocusRequester>,
     onOtpFieldFocused: (Int) -> Unit,
-    onEnterOtpValue: (Int? , Int) -> Unit,
+    onEnterOtpValue: (Int?, Int) -> Unit,
     onKeyboardBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {

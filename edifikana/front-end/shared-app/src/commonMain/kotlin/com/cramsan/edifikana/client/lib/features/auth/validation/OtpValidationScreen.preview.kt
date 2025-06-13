@@ -17,13 +17,13 @@ private fun ValidationScreenPreview() = AppTheme {
             isLoading = true,
             errorMessage = "",
             email = "garcia.alicia1990@gmail.com",
-            otpCode = listOf(1,2,3,4,5,6),
+            otpCode = listOf(1, 2, 3, 4, 5, 6),
             focusedIndex = 0
         ),
         modifier = Modifier,
         onBackClicked = {},
         onKeyboardBack = {},
-        onEnterOtpValue = {_, _ ->},
+        onEnterOtpValue = { _, _ -> },
         onOtpFieldFocused = {},
         onLoginClicked = {},
     )
@@ -39,5 +39,5 @@ private fun OtpInputFieldPreview() = AppTheme {
         onKeyboardBack = {},
         onValueChanged = {},
         modifier = Modifier,
-        )
+    )
 }

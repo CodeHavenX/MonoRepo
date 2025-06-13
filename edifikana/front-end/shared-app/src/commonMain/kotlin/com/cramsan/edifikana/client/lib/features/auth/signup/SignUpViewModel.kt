@@ -11,7 +11,6 @@ import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logI
 import com.cramsan.framework.utils.loginvalidation.validateEmail
 import com.cramsan.framework.utils.loginvalidation.validateName
-import com.cramsan.framework.utils.loginvalidation.validatePassword
 import com.cramsan.framework.utils.loginvalidation.validatePhoneNumber
 import edifikana_lib.Res
 import edifikana_lib.error_message_unexpected_error

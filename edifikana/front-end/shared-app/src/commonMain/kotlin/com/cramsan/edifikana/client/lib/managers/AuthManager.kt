@@ -45,19 +45,29 @@ class AuthManager(
     }
 
     /**
+     * Sign in the user with a magic link that contains the user's [email] and a [hashToken] to verify.
+     */
+    suspend fun signInWithOtp(
+        email: String,
+        hashToken: String,
+    ): Result<UserModel> = dependencies.getOrCatch(TAG) {
+        logI(TAG, "signing in with OTP code")
+        authService.signInWithOtp(email, hashToken).getOrThrow()
+    }
+
+    /**
      * Signs up the user with the given email and password.
      */
     suspend fun signUp(
         email: String,
         phoneNumber: String,
-        password: String,
         firstName: String,
         lastName: String,
     ): Result<UserModel> = dependencies.getOrCatch(
         TAG
     ) {
         logI(TAG, "signUp")
-        authService.signUp(email, phoneNumber, password, firstName, lastName).getOrThrow()
+        authService.signUp(email, phoneNumber, firstName, lastName).getOrThrow()
     }
 
     /**

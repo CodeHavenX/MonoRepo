@@ -9,12 +9,16 @@ import com.cramsan.edifikana.server.core.service.models.requests.GetUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdatePasswordRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdateUserRequest
 import com.cramsan.framework.logging.logD
+import com.cramsan.framework.logging.logI
+import io.github.jan.supabase.auth.Auth
+import io.github.jan.supabase.auth.providers.builtin.OTP
 
 /**
  * Service for user operations.
  */
 class UserService(
     private val userDatabase: UserDatabase,
+    private val auth: Auth,
 ) {
 
     /**
@@ -23,12 +27,13 @@ class UserService(
     suspend fun createUser(
         email: String,
         phoneNumber: String,
-        password: String,
+        password: String?,
         firstName: String,
         lastName: String,
+        authorizeOtp: Boolean,
     ): Result<User> {
         logD(TAG, "createUser")
-        return userDatabase.createUser(
+        val result = userDatabase.createUser(
             request = CreateUserRequest(
                 email = email,
                 phoneNumber = phoneNumber,
@@ -37,6 +42,13 @@ class UserService(
                 lastName = lastName,
             ),
         )
+        // Send an OTP code if the user is created successfully and authorizeOtp is true
+        if (authorizeOtp && result.isSuccess) {
+            logI(TAG, "Sending OTP to user $email")
+            requestOtp(email)
+        }
+
+        return result
     }
 
     /**
@@ -96,6 +108,7 @@ class UserService(
 
     /**
      * Updates the password for a user with the provided [userId].
+     * TODO: Remove as we are using passwordless authentication
      */
     suspend fun updatePassword(userId: UserId, password: String): Boolean {
         logD(TAG, "updatePassword")
@@ -105,6 +118,15 @@ class UserService(
                 password = password,
             ),
         ).getOrThrow()
+    }
+
+    /**
+     * Sends an OTP to the provided [email]
+     */
+    private suspend fun requestOtp(email: String) {
+        auth.signInWith(OTP) {
+            this.email = email
+        }
     }
 
     companion object {

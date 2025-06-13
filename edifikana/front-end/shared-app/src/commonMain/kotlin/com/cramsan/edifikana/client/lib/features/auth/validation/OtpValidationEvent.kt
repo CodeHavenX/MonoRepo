@@ -8,10 +8,10 @@ import com.cramsan.framework.core.compose.ViewModelEvent
  * Events are triggered from a ViewModel and are consumed by the UI.
  *
  */
-sealed class ValidationEvent : ViewModelEvent {
+sealed class OtpValidationEvent : ViewModelEvent {
 
     /**
      * No operation.
      */
-    data object Noop : ValidationEvent()
+    data object Noop : OtpValidationEvent()
 }

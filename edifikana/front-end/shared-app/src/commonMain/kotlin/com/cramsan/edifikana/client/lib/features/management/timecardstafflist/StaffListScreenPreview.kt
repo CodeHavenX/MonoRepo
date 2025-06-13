@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.client.lib.features.admin.stafflist
+package com.cramsan.edifikana.client.lib.features.management.timecardstafflist
 
 import androidx.compose.foundation.background
 import androidx.compose.material3.MaterialTheme

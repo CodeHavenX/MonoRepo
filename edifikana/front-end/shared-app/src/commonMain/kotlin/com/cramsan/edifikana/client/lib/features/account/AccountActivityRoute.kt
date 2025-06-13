@@ -13,8 +13,8 @@ enum class AccountActivityRoute(
     @RouteSafePath
     val route: String,
 ) {
-    Account(route = "signin"),
-    Notifications(route = "notifications")
+    Account(route = "view"),
+    Notifications(route = "notifications"),
     ;
 }
 
@@ -34,7 +34,7 @@ sealed class AccountRouteDestination(
     )
 
     /**
-     * A class representing navigating to the Staff Screen.
+     * A class representing navigating to the Notification Screen.
      */
     data object NotificationsDestination : AccountRouteDestination(
         AccountActivityRoute.Notifications.route,

@@ -1,6 +1,10 @@
 package com.cramsan.edifikana.client.lib.features.management.home
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.cramsan.edifikana.client.ui.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -22,6 +26,19 @@ private fun HomeScreenPreview() {
             onTabSelected = {},
             onNotificationsButtonSelected = {},
             onNavigationIconSelected = {},
+        )
+    }
+}
+
+@Composable
+@Preview
+private fun AccountDropDownPreview() {
+    AppTheme {
+        Box(Modifier.size(200.dp))
+        AccountDropDown(
+            Modifier,
+            {},
+            {},
         )
     }
 }

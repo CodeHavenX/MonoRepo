@@ -64,7 +64,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun HomeScreen(
     managementViewModel: ManagementViewModel = koinViewModel(),
-    viewModel: com.cramsan.edifikana.client.lib.features.management.home.HomeViewModel = koinViewModel(),
+    viewModel: HomeViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -114,12 +114,12 @@ private val BottomBarDestinationUiModels = listOf(
 
 @Composable
 internal fun HomeScreenContent(
-    uiState: com.cramsan.edifikana.client.lib.features.management.home.HomeUIModel,
+    uiState: HomeUIModel,
     modifier: Modifier = Modifier,
     onAccountButtonClicked: () -> Unit,
     onNavigationIconSelected: () -> Unit,
     onPropertySelected: (PropertyId) -> Unit,
-    onTabSelected: (com.cramsan.edifikana.client.lib.features.management.home.Tabs) -> Unit,
+    onTabSelected: (Tabs) -> Unit,
     onNotificationsButtonSelected: () -> Unit,
 ) {
     Scaffold(

@@ -44,7 +44,7 @@ import org.koin.compose.viewmodel.koinViewModel
  */
 @Composable
 fun AddRecordScreen(
-    viewModel: com.cramsan.edifikana.client.lib.features.management.addrecord.AddRecordViewModel = koinViewModel(),
+    viewModel: AddRecordViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -86,7 +86,7 @@ fun AddRecordScreen(
 
 @Composable
 internal fun AddRecord(
-    uiState: com.cramsan.edifikana.client.lib.features.management.addrecord.AddRecordUIState,
+    uiState: AddRecordUIState,
     modifier: Modifier = Modifier,
     onBackSelected: () -> Unit,
     onAddRecordClicked: (

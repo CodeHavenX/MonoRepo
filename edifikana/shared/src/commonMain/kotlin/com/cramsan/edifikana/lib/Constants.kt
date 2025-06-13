@@ -4,7 +4,6 @@ package com.cramsan.edifikana.lib
 
 // Constants for the API
 const val USER_ID = "user_id"
-const val CHECK_GLOBAL_PERMS = "check_global_perms"
 
 const val STAFF_ID = "staff_id"
 

@@ -20,8 +20,6 @@ data class UserNetworkResponse(
     val firstName: String,
     @SerialName("last_name")
     val lastName: String,
-    @SerialName("has_global_perms")
-    val hasGlobalPerms: Boolean,
     @SerialName("is_verified")
     val isVerified: Boolean,
 )

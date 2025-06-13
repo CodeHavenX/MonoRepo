@@ -61,7 +61,7 @@ fun StaffListScreen(
 
 @Composable
 internal fun StaffList(
-    uiState: com.cramsan.edifikana.client.lib.features.management.stafflist.StaffListUIState,
+    uiState: StaffListUIState,
     modifier: Modifier = Modifier,
     onStaffClick: (StaffId) -> Unit,
     onCloseSelected: () -> Unit,
@@ -99,7 +99,7 @@ internal fun StaffList(
 
 @Composable
 private fun StaffItem(
-    staff: com.cramsan.edifikana.client.lib.features.management.stafflist.StaffUIModel,
+    staff: StaffUIModel,
     modifier: Modifier = Modifier,
     onStaffSelected: (StaffId) -> Unit,
 ) {

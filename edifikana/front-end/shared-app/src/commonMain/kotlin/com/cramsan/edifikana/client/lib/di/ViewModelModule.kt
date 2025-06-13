@@ -2,7 +2,6 @@ package com.cramsan.edifikana.client.lib.di
 
 import com.cramsan.edifikana.client.lib.features.account.account.AccountViewModel
 import com.cramsan.edifikana.client.lib.features.account.notifications.NotificationsViewModel
-import com.cramsan.edifikana.client.lib.features.admin.stafflist.StaffListViewModel
 import com.cramsan.edifikana.client.lib.features.auth.signin.SignInViewModel
 import com.cramsan.edifikana.client.lib.features.auth.signup.SignUpViewModel
 import com.cramsan.edifikana.client.lib.features.auth.validation.ValidationViewModel
@@ -19,6 +18,7 @@ import com.cramsan.edifikana.client.lib.features.management.properties.PropertyM
 import com.cramsan.edifikana.client.lib.features.management.property.PropertyViewModel
 import com.cramsan.edifikana.client.lib.features.management.staff.StaffViewModel
 import com.cramsan.edifikana.client.lib.features.management.timecard.TimeCartViewModel
+import com.cramsan.edifikana.client.lib.features.management.timecardstafflist.StaffListViewModel
 import com.cramsan.edifikana.client.lib.features.management.viewrecord.ViewRecordViewModel
 import com.cramsan.edifikana.client.lib.features.management.viewstaff.ViewStaffViewModel
 import com.cramsan.edifikana.client.lib.features.splash.SplashViewModel

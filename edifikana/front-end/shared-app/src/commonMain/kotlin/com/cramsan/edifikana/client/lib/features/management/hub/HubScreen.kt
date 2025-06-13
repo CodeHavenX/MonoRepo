@@ -16,10 +16,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import com.cramsan.edifikana.client.lib.features.admin.stafflist.StaffListScreen
 import com.cramsan.edifikana.client.lib.features.management.drawer.ManagementViewModel
 import com.cramsan.edifikana.client.lib.features.management.home.AccountDropDown
 import com.cramsan.edifikana.client.lib.features.management.properties.PropertyManagerScreen
+import com.cramsan.edifikana.client.lib.features.management.timecardstafflist.StaffListScreen
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import edifikana_lib.Res
 import edifikana_lib.app_name

@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.client.lib.features.admin.stafflist
+package com.cramsan.edifikana.client.lib.features.management.timecardstafflist
 
 import com.cramsan.framework.core.compose.ViewModelEvent
 

@@ -15,7 +15,7 @@ data class StaffUIModel(
 /**
  * Represents the UI state of the Staff List screen.
  */
-fun StaffModel.toUIModel(): com.cramsan.edifikana.client.lib.features.management.stafflist.StaffUIModel {
+fun StaffModel.toUIModel(): StaffUIModel {
     return StaffUIModel(
         fullName = fullName(),
         staffPK = id,

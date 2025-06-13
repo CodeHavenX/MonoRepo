@@ -23,7 +23,7 @@ data class EventLogRecordUIModel(
  */
 suspend fun EventLogRecordModel.toUIModel(
     stringProvider: StringProvider,
-): com.cramsan.edifikana.client.lib.features.management.eventlog.EventLogRecordUIModel {
+): EventLogRecordUIModel {
     return EventLogRecordUIModel(
         title = title,
         eventType = eventType.toFriendlyString(stringProvider),

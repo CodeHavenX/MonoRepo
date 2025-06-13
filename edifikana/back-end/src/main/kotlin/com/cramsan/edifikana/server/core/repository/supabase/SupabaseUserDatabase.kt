@@ -2,7 +2,6 @@ package com.cramsan.edifikana.server.core.repository.supabase
 
 import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
 import com.cramsan.edifikana.server.core.repository.UserDatabase
-import com.cramsan.edifikana.server.core.repository.supabase.models.GlobalPermOverrideEntity
 import com.cramsan.edifikana.server.core.repository.supabase.models.UserEntity
 import com.cramsan.edifikana.server.core.service.models.User
 import com.cramsan.edifikana.server.core.service.models.requests.CreateUserRequest
@@ -16,7 +15,6 @@ import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.exception.AuthRestException
 import io.github.jan.supabase.postgrest.Postgrest
-import io.github.jan.supabase.postgrest.query.Count
 
 /**
  * Database for managing users.
@@ -73,19 +71,7 @@ class SupabaseUserDatabase(
             }
         }.decodeSingleOrNull<UserEntity>()
 
-        val hasGlobalPerms = if (request.checkGlobalPerms) {
-            val matchingRows = postgrest.from(GlobalPermOverrideEntity.COLLECTION).select {
-                filter {
-                    eq("id", request.id.userId)
-                }
-                count(Count.EXACT)
-            }.countOrNull()
-            matchingRows == 1L
-        } else {
-            false
-        }
-
-        userEntity?.toUser(hasGlobalPerms)
+        userEntity?.toUser()
     }
 
     @OptIn(SupabaseModel::class)

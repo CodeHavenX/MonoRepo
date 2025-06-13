@@ -2,7 +2,6 @@ package com.cramsan.edifikana.client.lib.service.impl
 
 import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.client.lib.service.AuthService
-import com.cramsan.edifikana.lib.CHECK_GLOBAL_PERMS
 import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.annotations.NetworkModel
 import com.cramsan.edifikana.lib.model.UserId
@@ -20,7 +19,6 @@ import io.github.jan.supabase.exceptions.RestException
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
-import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
@@ -58,12 +56,9 @@ class AuthServiceImpl(
     }
 
     @OptIn(NetworkModel::class)
-    override suspend fun getUser(
-        checkGlobalPerms: Boolean,
-    ): Result<UserModel> = runSuspendCatching(TAG) {
+    override suspend fun getUser(): Result<UserModel> = runSuspendCatching(TAG) {
         val userId = auth.currentUserOrNull()?.id ?: error("User not signed in")
         val response = http.get("${Routes.User.PATH}/$userId") {
-            parameter(CHECK_GLOBAL_PERMS, checkGlobalPerms)
         }.body<UserNetworkResponse>()
         val userModel = response.toUserModel()
         _activeUser.value = userModel.id
@@ -133,6 +128,15 @@ class AuthServiceImpl(
         assertFalse(hasServicePermissions, TAG, "User has admin permissions, this is not allowed!")
 
         return Result.success(!hasServicePermissions)
+    }
+
+    override suspend fun updateUser(
+        firstName: String?,
+        lastName: String?,
+        email: String?,
+        phoneNumber: String?
+    ): Result<UserModel> {
+        TODO()
     }
 
     companion object {

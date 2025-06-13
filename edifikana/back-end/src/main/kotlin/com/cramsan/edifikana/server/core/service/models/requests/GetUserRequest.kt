@@ -7,5 +7,4 @@ import com.cramsan.edifikana.lib.model.UserId
  */
 data class GetUserRequest(
     val id: UserId,
-    val checkGlobalPerms: Boolean,
 )

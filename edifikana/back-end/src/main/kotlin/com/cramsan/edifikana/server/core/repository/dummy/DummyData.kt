@@ -24,7 +24,6 @@ val USER_1 = User(
     phoneNumber = "1234567890",
     firstName = "John",
     lastName = "Doe",
-    hasGlobalPerms = false,
     isVerified = true,
 )
 
@@ -34,7 +33,6 @@ val USER_2 = User(
     phoneNumber = "0987654321",
     firstName = "Jane",
     lastName = "Smith",
-    hasGlobalPerms = false,
     isVerified = true,
 
 )
@@ -45,7 +43,6 @@ val USER_3 = User(
     phoneNumber = "1122334455",
     firstName = "Alice",
     lastName = "Johnson",
-    hasGlobalPerms = false,
     isVerified = false,
 
 )
@@ -56,7 +53,6 @@ val USER_4 = User(
     phoneNumber = "5566778899",
     firstName = "Bob",
     lastName = "Brown",
-    hasGlobalPerms = true,
     isVerified = false,
 
 )

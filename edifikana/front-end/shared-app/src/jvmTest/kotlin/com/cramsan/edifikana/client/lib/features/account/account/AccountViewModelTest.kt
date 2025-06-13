@@ -104,7 +104,6 @@ class AccountViewModelTest : TestBase() {
             lastName = "Doe",
             email = "john.doe@example.com",
             phoneNumber = "1234567890",
-            hasGlobalPerms = false,
             isVerified = true,
         )
         coEvery { authManager.getUser() } returns Result.success(user)
@@ -116,10 +115,10 @@ class AccountViewModelTest : TestBase() {
         coVerify { authManager.getUser() }
         val uiState = viewModel.uiState.value
         assertEquals(false, uiState.isLoading)
-        assertEquals("John", uiState.content.firstName)
-        assertEquals("Doe", uiState.content.lastName)
-        assertEquals("john.doe@example.com", uiState.content.email)
-        assertEquals("1234567890", uiState.content.phoneNumber)
+        assertEquals("John", uiState.firstName)
+        assertEquals("Doe", uiState.lastName)
+        assertEquals("john.doe@example.com", uiState.email)
+        assertEquals("1234567890", uiState.phoneNumber)
     }
 
     @Test
@@ -134,9 +133,9 @@ class AccountViewModelTest : TestBase() {
         coVerify { authManager.getUser() }
         val uiState = viewModel.uiState.value
         assertEquals(false, uiState.isLoading)
-        assertEquals("", uiState.content.firstName)
-        assertEquals("", uiState.content.lastName)
-        assertEquals("", uiState.content.email)
-        assertEquals("", uiState.content.phoneNumber)
+        assertEquals("", uiState.firstName)
+        assertEquals("", uiState.lastName)
+        assertEquals("", uiState.email)
+        assertEquals("", uiState.phoneNumber)
     }
 }

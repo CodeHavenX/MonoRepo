@@ -62,7 +62,6 @@ class UserControllerTest : TestBase(), KoinTest {
                     phoneNumber = "5051352468",
                     firstName = "John",
                     lastName = "Doe",
-                    hasGlobalPerms = false,
                     isVerified = false,
                 )
             )
@@ -176,7 +175,7 @@ class UserControllerTest : TestBase(), KoinTest {
         val expectedResponse = readFileContent("requests/get_user_response.json")
         val userService = get<UserService>()
         coEvery {
-            userService.getUser(UserId("user123"), false)
+            userService.getUser(UserId("user123"))
         }.answers {
             User(
                 id = UserId("user123"),
@@ -184,7 +183,6 @@ class UserControllerTest : TestBase(), KoinTest {
                 phoneNumber = "5051352468",
                 firstName = "John",
                 lastName = "Doe",
-                hasGlobalPerms = false,
                 isVerified = false,
 
             )
@@ -222,7 +220,6 @@ class UserControllerTest : TestBase(), KoinTest {
                     phoneNumber = "5051352468",
                     firstName = "John",
                     lastName = "Doe",
-                    hasGlobalPerms = false,
                     isVerified = false,
                 ),
                 User(
@@ -231,7 +228,6 @@ class UserControllerTest : TestBase(), KoinTest {
                     phoneNumber = "5051352469",
                     firstName = "Jane",
                     lastName = "Smith",
-                    hasGlobalPerms = false,
                     isVerified = false,
                 )
             )
@@ -272,7 +268,6 @@ class UserControllerTest : TestBase(), KoinTest {
                 phoneNumber = "5051382468",
                 firstName = "Updated",
                 lastName = "Email",
-                hasGlobalPerms = false,
                 isVerified = false,
             )
         }

@@ -20,6 +20,7 @@ class AccountViewModel(
      */
     fun signOut() {
         viewModelScope.launch {
+            updateUiState { it.copy(isLoading = true) }
             auth.signOut()
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToActivity(
@@ -54,14 +55,93 @@ class AccountViewModel(
             updateUiState {
                 it.copy(
                     isLoading = false,
-                    content = AccountUIModel(
-                        firstName = user.firstName,
-                        lastName = user.lastName,
-                        email = user.email,
-                        phoneNumber = user.phoneNumber,
-                    )
+                    firstName = user.firstName,
+                    lastName = user.lastName,
+                    email = user.email,
+                    phoneNumber = user.phoneNumber,
                 )
             }
+        }
+    }
+
+    /**
+     * Toggle between edit and save mode.
+     * If in edit mode, save changes; otherwise, enter edit mode.
+     */
+    fun editOrSave() {
+        if (uiState.value.isEditable) {
+            saveChanges()
+        } else {
+            viewModelScope.launch {
+                updateUiState { it.copy(isEditable = true) }
+            }
+        }
+    }
+
+    /**
+     * Update the user's first name.
+     */
+    fun updateFirstName(firstName: String) {
+        viewModelScope.launch {
+            updateUiState { it.copy(firstName = firstName) }
+        }
+    }
+
+    /**
+     * Update the user's last name.
+     */
+    fun updateLastName(lastName: String) {
+        viewModelScope.launch {
+            updateUiState { it.copy(lastName = lastName) }
+        }
+    }
+
+    /**
+     * Update the user's email.
+     */
+    fun updateEmail(email: String) {
+        viewModelScope.launch {
+            updateUiState { it.copy(email = email) }
+        }
+    }
+
+    /**
+     * Update the user's phone number.
+     */
+    fun updatePhoneNumber(phoneNumber: String) {
+        viewModelScope.launch {
+            updateUiState { it.copy(phoneNumber = phoneNumber) }
+        }
+    }
+
+    private fun saveChanges() {
+        viewModelScope.launch {
+            updateUiState { it.copy(isLoading = true) }
+            auth.updateUser(
+                firstName = uiState.value.firstName,
+                lastName = uiState.value.lastName,
+                email = uiState.value.email,
+                phoneNumber = uiState.value.phoneNumber,
+            ).onFailure {
+                updateUiState { it.copy(isLoading = false) }
+                emitWindowEvent(
+                    EdifikanaWindowsEvent.ShowSnackbar(
+                        "Failed to update account information. Please try again."
+                    )
+                )
+                return@launch
+            }
+            updateUiState {
+                it.copy(
+                    isLoading = false,
+                    isEditable = false,
+                )
+            }
+            emitWindowEvent(
+                EdifikanaWindowsEvent.ShowSnackbar(
+                    "Account information updated successfully."
+                )
+            )
         }
     }
 

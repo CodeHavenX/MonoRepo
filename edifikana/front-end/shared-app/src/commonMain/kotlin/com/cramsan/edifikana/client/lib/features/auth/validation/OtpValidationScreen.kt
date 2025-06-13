@@ -440,7 +440,7 @@ fun OtpInputField(
 //                },
             decorationBox = { innerBox ->
                 if (!isFocused && value == null) {
-                    Text (
+                    Text(
                         text = "",
                         textAlign = TextAlign.Center,
                         color = Color.Black,
@@ -463,7 +463,7 @@ fun OtpSection(
     uistate: OtpValidationUIState,
     focusRequesters: List<FocusRequester>,
     onOtpFieldFocused: (Int) -> Unit,
-    onEnterOtpValue: (Int? , Int) -> Unit,
+    onEnterOtpValue: (Int?, Int) -> Unit,
     onKeyboardBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {

@@ -90,7 +90,7 @@ internal fun StaffContent(
         ) {
             ScreenLayout(
                 sectionContent = { sectionModifier ->
-                    if (!content.isEditable) {
+                    if (content.isEditable == false) {
                         Text(
                             text = "This information is not editable. Ask the user to make changes to their account.",
                             style = MaterialTheme.typography.labelMedium,
@@ -104,7 +104,7 @@ internal fun StaffContent(
                         modifier = sectionModifier,
                         label = { Text("First name") },
                         singleLine = true,
-                        readOnly = content.isEditable,
+                        readOnly = content.isEditable != true,
                     )
 
                     OutlinedTextField(
@@ -113,7 +113,7 @@ internal fun StaffContent(
                         modifier = sectionModifier,
                         label = { Text("Last name") },
                         singleLine = true,
-                        readOnly = content.isEditable,
+                        readOnly = content.isEditable != true,
                     )
 
                     content.role?.let {
@@ -123,7 +123,7 @@ internal fun StaffContent(
                             modifier = sectionModifier,
                             label = { Text("Role") },
                             singleLine = true,
-                            readOnly = content.isEditable,
+                            readOnly = content.isEditable != true,
                         )
                     }
                 },

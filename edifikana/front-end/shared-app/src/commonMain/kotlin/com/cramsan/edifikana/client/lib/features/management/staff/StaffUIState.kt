@@ -19,7 +19,7 @@ data class StaffUIState(
     val lastName: String?,
     val email: String?,
     val role: StaffRole?,
-    val isEditable: Boolean,
+    val isEditable: Boolean?,
 ) : ViewModelUIState {
     companion object {
         val Initial = StaffUIState(
@@ -31,7 +31,7 @@ data class StaffUIState(
             lastName = null,
             email = null,
             role = null,
-            isEditable = false,
+            isEditable = null,
         )
     }
 }

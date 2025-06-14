@@ -2,7 +2,7 @@ package com.cramsan.edifikana.client.lib.features.main.timecard.stafflist
 
 import app.cash.turbine.test
 import com.cramsan.edifikana.client.lib.features.management.ManagementDestination
-import com.cramsan.edifikana.client.lib.features.management.stafflist.StaffListViewModel
+import com.cramsan.edifikana.client.lib.features.management.timecardstafflist.TimeCardStaffListViewModel
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.client.lib.models.StaffModel
@@ -36,7 +36,7 @@ import kotlin.test.assertEquals
 class StaffListViewModelTest : TestBase() {
 
     private lateinit var staffManager: StaffManager
-    private lateinit var viewModel: StaffListViewModel
+    private lateinit var viewModel: TimeCardStaffListViewModel
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
     private lateinit var applicationEventReceiver: EventBus<ApplicationEvent>
     private lateinit var windowEventBus: EventBus<WindowEvent>
@@ -57,7 +57,7 @@ class StaffListViewModelTest : TestBase() {
             applicationEventReceiver = applicationEventReceiver,
             windowEventReceiver = windowEventBus,
         )
-        viewModel = StaffListViewModel(
+        viewModel = TimeCardStaffListViewModel(
             staffManager,
             stringProvider = stringProvider,
             dependencies,

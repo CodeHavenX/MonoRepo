@@ -14,18 +14,24 @@ data class StaffUIState(
     val title: String?,
     val isLoading: Boolean,
     val idType: IdType?,
+    val idNNumber: String?,
     val firstName: String?,
     val lastName: String?,
+    val email: String?,
     val role: StaffRole?,
+    val isEditable: Boolean,
 ) : ViewModelUIState {
     companion object {
         val Initial = StaffUIState(
             title = null,
             isLoading = true,
             idType = null,
+            idNNumber = null,
             firstName = null,
             lastName = null,
+            email = null,
             role = null,
+            isEditable = false,
         )
     }
 }

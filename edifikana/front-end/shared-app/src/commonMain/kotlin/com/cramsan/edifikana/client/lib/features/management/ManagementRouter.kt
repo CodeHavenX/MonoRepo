@@ -11,7 +11,7 @@ import com.cramsan.edifikana.client.lib.features.management.drawer.ManagementScr
 import com.cramsan.edifikana.client.lib.features.management.properties.PropertyManagerScreen
 import com.cramsan.edifikana.client.lib.features.management.property.PropertyScreen
 import com.cramsan.edifikana.client.lib.features.management.staff.StaffScreen
-import com.cramsan.edifikana.client.lib.features.management.stafflist.StaffListScreen
+import com.cramsan.edifikana.client.lib.features.management.timecardstafflist.TimeCardStaffListScreen
 import com.cramsan.edifikana.client.lib.features.management.viewrecord.ViewRecordScreen
 import com.cramsan.edifikana.client.lib.features.management.viewstaff.ViewStaffScreen
 import com.cramsan.edifikana.lib.model.EventLogEntryId
@@ -54,7 +54,7 @@ fun NavGraphBuilder.managementActivityNavigation(
                     )
                 }
                 ManagementRoute.TimeCardStaffList -> composable(it.route) {
-                    StaffListScreen()
+                    TimeCardStaffListScreen()
                 }
                 ManagementRoute.TimeCardSingleStaff -> composable(it.route) { backStackEntry ->
                     ViewStaffScreen(

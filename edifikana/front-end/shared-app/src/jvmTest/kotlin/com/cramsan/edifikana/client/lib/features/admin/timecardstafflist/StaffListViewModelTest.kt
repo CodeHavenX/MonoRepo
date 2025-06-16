@@ -3,8 +3,8 @@ package com.cramsan.edifikana.client.lib.features.admin.timecardstafflist
 import app.cash.turbine.test
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.features.management.ManagementDestination
-import com.cramsan.edifikana.client.lib.features.management.timecardstafflist.StaffListViewModel
-import com.cramsan.edifikana.client.lib.features.management.timecardstafflist.StaffUIModel
+import com.cramsan.edifikana.client.lib.features.management.stafflist.StaffListViewModel
+import com.cramsan.edifikana.client.lib.features.management.stafflist.StaffUIModel
 import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.client.lib.models.StaffModel
 import com.cramsan.edifikana.lib.model.IdType

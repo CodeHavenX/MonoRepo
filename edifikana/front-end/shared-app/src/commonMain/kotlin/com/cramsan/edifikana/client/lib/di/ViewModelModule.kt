@@ -17,8 +17,9 @@ import com.cramsan.edifikana.client.lib.features.management.hub.HubViewModel
 import com.cramsan.edifikana.client.lib.features.management.properties.PropertyManagerViewModel
 import com.cramsan.edifikana.client.lib.features.management.property.PropertyViewModel
 import com.cramsan.edifikana.client.lib.features.management.staff.StaffViewModel
+import com.cramsan.edifikana.client.lib.features.management.stafflist.StaffListViewModel
 import com.cramsan.edifikana.client.lib.features.management.timecard.TimeCartViewModel
-import com.cramsan.edifikana.client.lib.features.management.timecardstafflist.StaffListViewModel
+import com.cramsan.edifikana.client.lib.features.management.timecardstafflist.TimeCardStaffListViewModel
 import com.cramsan.edifikana.client.lib.features.management.viewrecord.ViewRecordViewModel
 import com.cramsan.edifikana.client.lib.features.management.viewstaff.ViewStaffViewModel
 import com.cramsan.edifikana.client.lib.features.splash.SplashViewModel
@@ -35,8 +36,6 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.module.dsl.withOptions
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
-
-typealias SelectStaffViewModel = com.cramsan.edifikana.client.lib.features.management.stafflist.StaffListViewModel
 
 internal val ViewModelModule = module {
 
@@ -93,7 +92,7 @@ internal val ViewModelModule = module {
         viewModelOf(::AddPrimaryStaffViewModel)
         viewModelOf(::AddSecondaryStaffViewModel)
         viewModelOf(::StaffViewModel)
-        viewModelOf(::SelectStaffViewModel)
+        viewModelOf(::TimeCardStaffListViewModel)
         viewModelOf(::NotificationsViewModel)
         viewModelOf(::SplashViewModel)
         viewModelOf(::ManagementViewModel)

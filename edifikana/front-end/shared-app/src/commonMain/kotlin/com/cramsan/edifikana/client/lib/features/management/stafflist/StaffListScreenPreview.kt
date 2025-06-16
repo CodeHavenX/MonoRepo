@@ -1,29 +1,47 @@
 package com.cramsan.edifikana.client.lib.features.management.stafflist
 
+import androidx.compose.foundation.background
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import com.cramsan.edifikana.client.ui.theme.AppTheme
 import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.edifikana.lib.model.StaffStatus
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+/**
+ * Preview for the StaffList feature screen.
+ */
 @Preview
 @Composable
 private fun StaffListScreenPreview() = AppTheme {
-    StaffList(
-        StaffListUIState(
-            isLoading = true,
-            staffs = listOf(
+    StaffListContent(
+        modifier = Modifier.background(MaterialTheme.colorScheme.background),
+        content = StaffListUIState(
+            true,
+            listOf(
                 StaffUIModel(
-                    "Cesar Andres Ramirez Sanchez",
-                    StaffId("John"),
+                    id = StaffId("1"),
+                    name = "John Doe",
+                    email = "john@google.com",
+                    status = StaffStatus.ACTIVE,
                 ),
                 StaffUIModel(
-                    "Jane Smith",
-                    StaffId("Jane"),
+                    id = StaffId("2"),
+                    name = "Jane Doe",
+                    email = "jane@apple.com",
+                    status = StaffStatus.PENDING,
+                ),
+                StaffUIModel(
+                    id = StaffId("3"),
+                    name = "Jack Doe",
+                    email = "test@demo.com",
+                    status = StaffStatus.PENDING,
                 ),
             ),
-            title = ""
         ),
-        onStaffClick = {},
-        onCloseSelected = {},
+        onAddPrimaryStaffSelected = {},
+        onStaffSelected = {},
+        onAddSecondaryStaffSelected = {},
     )
 }

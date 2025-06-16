@@ -3,6 +3,7 @@ package com.cramsan.edifikana.client.lib.features.management.staff
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -89,6 +90,13 @@ internal fun StaffContent(
         ) {
             ScreenLayout(
                 sectionContent = { sectionModifier ->
+                    if (content.isEditable == false) {
+                        Text(
+                            text = "This information is not editable. Ask the user to make changes to their account.",
+                            style = MaterialTheme.typography.labelMedium,
+                            modifier = sectionModifier,
+                        )
+                    }
 
                     OutlinedTextField(
                         value = content.firstName.orEmpty(),
@@ -96,7 +104,7 @@ internal fun StaffContent(
                         modifier = sectionModifier,
                         label = { Text("First name") },
                         singleLine = true,
-                        readOnly = true,
+                        readOnly = content.isEditable != true,
                     )
 
                     OutlinedTextField(
@@ -105,17 +113,19 @@ internal fun StaffContent(
                         modifier = sectionModifier,
                         label = { Text("Last name") },
                         singleLine = true,
-                        readOnly = true,
+                        readOnly = content.isEditable != true,
                     )
 
-                    OutlinedTextField(
-                        value = content.role?.name.orEmpty(),
-                        onValueChange = { },
-                        modifier = sectionModifier,
-                        label = { Text("Role") },
-                        singleLine = true,
-                        readOnly = true,
-                    )
+                    content.role?.let {
+                        OutlinedTextField(
+                            value = it.name,
+                            onValueChange = { },
+                            modifier = sectionModifier,
+                            label = { Text("Role") },
+                            singleLine = true,
+                            readOnly = content.isEditable != true,
+                        )
+                    }
                 },
                 buttonContent = { buttonModifier ->
                 }

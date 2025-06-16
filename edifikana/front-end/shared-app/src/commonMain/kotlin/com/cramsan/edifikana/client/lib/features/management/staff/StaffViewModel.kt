@@ -37,6 +37,8 @@ class StaffViewModel(
                 return@launch
             }
             val staff = staffResult.getOrThrow()
+            val editable = staff.email == null || staff.email.isEmpty()
+
             updateUiState {
                 it.copy(
                     title = staff.fullName(),
@@ -45,6 +47,7 @@ class StaffViewModel(
                     firstName = staff.name,
                     lastName = staff.lastName,
                     role = staff.role,
+                    isEditable = editable,
                 )
             }
         }

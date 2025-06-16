@@ -59,7 +59,6 @@ class UserService(
      */
     suspend fun getUser(
         id: UserId,
-        authorizeMagicLink: Boolean = false,
     ): User? {
         logD(TAG, "getUser")
         val user = userDatabase.getUser(

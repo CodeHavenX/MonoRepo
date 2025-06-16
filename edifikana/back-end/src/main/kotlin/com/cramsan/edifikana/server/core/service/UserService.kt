@@ -42,7 +42,10 @@ class UserService(
         // Send an OTP code if the user is created successfully and authorizeOtp is true
         if (authorizeOtp && result.isSuccess) {
             logI(TAG, "Sending OTP to user $email")
-            userDatabase.sendOtpCode(email)
+            val otpResult = userDatabase.sendOtpCode(email)
+            if (!otpResult.isSuccess) {
+                logD(TAG, "Failed to send OTP to user $email: ${otpResult.exceptionOrNull()}")
+            }
         }
 
         return result
@@ -105,7 +108,6 @@ class UserService(
 
     /**
      * Updates the password for a user with the provided [userId].
-     * TODO: Remove as we are using passwordless authentication
      */
     suspend fun updatePassword(userId: UserId, password: String): Boolean {
         logD(TAG, "updatePassword")

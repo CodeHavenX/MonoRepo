@@ -89,7 +89,7 @@ class UserServiceTest {
         coEvery { userDatabase.getUser(any()) } returns Result.success(user)
 
         // Act
-        val result = userService.getUser(userId, true)
+        val result = userService.getUser(userId)
 
         // Assert
         assertEquals(user, result)

@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.server.core.utils
+package com.cramsan.edifikana.server.utils
 
 import com.cramsan.framework.utils.format.replaceWindowLEWithUnixLE
 

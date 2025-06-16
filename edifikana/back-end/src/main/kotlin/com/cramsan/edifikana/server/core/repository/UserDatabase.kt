@@ -54,5 +54,5 @@ interface UserDatabase {
      * Signs in a user with a magic link using the provided [email]. This method is used for passwordless
      * sign in
      */
-    suspend fun sendMagicLink(email: String): Result<Unit>
+    suspend fun sendOtpCode(email: String): Result<Unit>
 }

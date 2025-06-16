@@ -54,7 +54,7 @@ interface AuthService {
     /**
      * Request a password reset for the user with the given [email] or [phoneNumber].
      */
-    suspend fun passwordReset(usernameEmail: String?, usernamePhone: String?): Result<Unit>
+    suspend fun passwordReset(email: String?, phoneNumber: String?): Result<Unit>
 
     /**
      * Verify the permissions of the user.

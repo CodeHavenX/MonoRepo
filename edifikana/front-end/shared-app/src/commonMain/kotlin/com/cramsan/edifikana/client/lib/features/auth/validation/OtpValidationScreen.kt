@@ -35,6 +35,9 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextRange
@@ -179,7 +182,7 @@ internal fun OtpValidationContent(
                     }
                     // OTP input fields
                     val focusRequesters = remember {
-                        List(6) { FocusRequester() }
+                        List(OTP_CODE_SIZE) { FocusRequester() }
                     }
                     val focusManager = LocalFocusManager.current
                     val keyboardManager = LocalSoftwareKeyboardController.current
@@ -201,14 +204,20 @@ internal fun OtpValidationContent(
                         }
                     }
                     // generate the input fields
-                    OtpSection(uiState, focusRequesters, onOtpFieldFocused, onEnterOtpValue, onKeyboardBack)
+                    OtpSection(
+                        uiState,
+                        focusRequesters,
+                        onOtpFieldFocused,
+                        onEnterOtpValue,
+                        onKeyboardBack
+                    )
 
                     // Submit button
                     ElevatedButton(
                         onClick = {
                             onLoginClicked()
                         },
-                        enabled = uiState.otpCode.size == 6,
+                        enabled = uiState.otpCode.none { it == null },
                         modifier = sectionModifier
                             .padding(top = 16.dp)
                             .wrapContentWidth()
@@ -224,6 +233,7 @@ internal fun OtpValidationContent(
 /**
  * OTP field input box. Creates the field to enter an OTP code
  */
+@Suppress("UnusedParameter")
 @Composable
 fun OtpInputField(
     value: Int?,
@@ -285,15 +295,16 @@ fun OtpInputField(
                 .focusRequester(focusRequester)
                 .onFocusChanged {
                     isFocused = it.isFocused
+                }
+                .onKeyEvent { event ->
+                    val didPressDelete = event.key == Key.Delete
+                    if (didPressDelete && value == null) {
+                        onKeyboardBack()
+                    }
+                    false
                 },
-//                .onKeyEvent { event ->
-//                    val didPressDelete = event.nativeKeyEvent == NativeKeyEvent
-//                    if (didPressDelete && value == null) {
-//                        onKeyboardBack()
-//                    }
-//                    false
-//                },
             decorationBox = { innerBox ->
+                innerBox()
                 if (!isFocused && value == null) {
                     Text(
                         text = "",
@@ -349,3 +360,5 @@ fun OtpSection(
         }
     }
 }
+
+private const val OTP_CODE_SIZE = 6

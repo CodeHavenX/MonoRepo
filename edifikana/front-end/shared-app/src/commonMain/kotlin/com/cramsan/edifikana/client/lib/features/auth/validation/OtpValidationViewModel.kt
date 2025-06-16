@@ -80,6 +80,9 @@ class OtpValidationViewModel(
         }
     }
 
+    /**
+     * Called when the back button on the keyboard is pressed.
+     */
     fun onKeyboardBack() {
         val prevIndex = getPreviousFocusedIndex(uiState.value.focusedIndex)
         viewModelScope.launch {
@@ -128,7 +131,7 @@ class OtpValidationViewModel(
             return null
         }
         // If the current focused index is the last one, return it
-        if (currentFocusedIndex == 5) {
+        if (currentFocusedIndex == currentCode.lastIndex) {
             return currentFocusedIndex
         }
 

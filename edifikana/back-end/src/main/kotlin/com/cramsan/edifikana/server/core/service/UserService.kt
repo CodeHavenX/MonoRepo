@@ -10,15 +10,12 @@ import com.cramsan.edifikana.server.core.service.models.requests.UpdatePasswordR
 import com.cramsan.edifikana.server.core.service.models.requests.UpdateUserRequest
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logI
-import io.github.jan.supabase.auth.Auth
-import io.github.jan.supabase.auth.providers.builtin.OTP
 
 /**
  * Service for user operations.
  */
 class UserService(
     private val userDatabase: UserDatabase,
-    private val auth: Auth,
 ) {
 
     /**
@@ -45,7 +42,7 @@ class UserService(
         // Send an OTP code if the user is created successfully and authorizeOtp is true
         if (authorizeOtp && result.isSuccess) {
             logI(TAG, "Sending OTP to user $email")
-            requestOtp(email)
+            userDatabase.sendOtpCode(email)
         }
 
         return result
@@ -119,15 +116,6 @@ class UserService(
                 password = password,
             ),
         ).getOrThrow()
-    }
-
-    /**
-     * Sends an OTP to the provided [email]
-     */
-    private suspend fun requestOtp(email: String) {
-        auth.signInWith(OTP) {
-            this.email = email
-        }
     }
 
     companion object {

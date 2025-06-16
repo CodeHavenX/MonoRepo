@@ -139,7 +139,7 @@ class SupabaseUserDatabase(
     /**
      * Sends a magic link to the provided [email]
      */
-    override suspend fun sendMagicLink(email: String): Result<Unit> = runSuspendCatching(TAG) {
+    override suspend fun sendOtpCode(email: String): Result<Unit> = runSuspendCatching(TAG) {
         auth.signInWith(OTP) {
             this.email = email
         }

@@ -111,7 +111,6 @@ class UserService(
 
     /**
      * Updates the password for a user with the provided [userId].
-     * TODO: Remove as we are using passwordless authentication
      */
     suspend fun updatePassword(userId: UserId, password: String): Boolean {
         logD(TAG, "updatePassword")

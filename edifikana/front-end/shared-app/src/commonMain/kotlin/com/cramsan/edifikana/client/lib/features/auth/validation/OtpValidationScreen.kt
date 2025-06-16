@@ -369,6 +369,7 @@ private const val OTP_CODE_SIZE = 6
 /**
  * OTP field input box. Creates the field to enter an OTP code
  */
+@Suppress("UnusedParameter")
 @Composable
 fun OtpInputField(
     value: Int?,
@@ -430,15 +431,16 @@ fun OtpInputField(
                 .focusRequester(focusRequester)
                 .onFocusChanged {
                     isFocused = it.isFocused
+                }
+                .onKeyEvent { event ->
+                    val didPressDelete = event.key == Key.Delete
+                    if (didPressDelete && value == null) {
+                        onKeyboardBack()
+                    }
+                    false
                 },
-//                .onKeyEvent { event ->
-//                    val didPressDelete = event.nativeKeyEvent == NativeKeyEvent
-//                    if (didPressDelete && value == null) {
-//                        onKeyboardBack()
-//                    }
-//                    false
-//                },
             decorationBox = { innerBox ->
+                innerBox()
                 if (!isFocused && value == null) {
                     Text(
                         text = "",
@@ -494,3 +496,5 @@ fun OtpSection(
         }
     }
 }
+
+private const val OTP_CODE_SIZE = 6

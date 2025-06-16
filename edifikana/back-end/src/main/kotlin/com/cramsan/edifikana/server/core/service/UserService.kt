@@ -19,7 +19,6 @@ import com.cramsan.framework.logging.logI
  */
 class UserService(
     private val userDatabase: UserDatabase,
-    private val auth: Auth,
 ) {
 
     /**
@@ -123,15 +122,6 @@ class UserService(
                 password = password,
             ),
         ).getOrThrow()
-    }
-
-    /**
-     * Sends an OTP to the provided [email]
-     */
-    private suspend fun requestOtp(email: String) {
-        auth.signInWith(OTP) {
-            this.email = email
-        }
     }
 
     companion object {

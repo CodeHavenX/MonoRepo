@@ -4,6 +4,9 @@ import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.controller.startTestKoin
 import com.cramsan.edifikana.server.core.repository.UserDatabase
 import com.cramsan.edifikana.server.core.service.models.User
+import com.cramsan.framework.logging.EventLogger
+import com.cramsan.framework.logging.implementation.PassthroughEventLogger
+import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -27,11 +30,14 @@ class UserServiceTest {
      */
     @BeforeEach
     fun setUp() {
-        startTestKoin()
+        EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         userDatabase = mockk()
         userService = UserService(userDatabase)
     }
 
+    /**
+     * Cleans up the test environment by stopping Koin.
+     */
     @AfterTest
     fun cleanUp() {
         stopKoin()

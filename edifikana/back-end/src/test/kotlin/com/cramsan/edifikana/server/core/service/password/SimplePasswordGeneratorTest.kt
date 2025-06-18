@@ -52,3 +52,4 @@ class SimplePasswordGeneratorTest {
         assertTrue(password.isNotBlank())
     }
 }
+

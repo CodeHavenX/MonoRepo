@@ -53,13 +53,11 @@ class PropertyService(
      */
     suspend fun getProperties(
         userId: UserId,
-        showAll: Boolean,
     ): List<Property> {
         logD(TAG, "getProperties")
         val properties = propertyDatabase.getProperties(
             GetPropertyListsRequest(
                 userId,
-                showAll,
             )
         ).getOrThrow()
         return properties

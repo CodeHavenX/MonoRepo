@@ -4,10 +4,13 @@ import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.StaffRole
+import com.cramsan.edifikana.server.core.controller.startTestKoin
 import com.cramsan.edifikana.server.core.repository.StaffDatabase
 import com.cramsan.edifikana.server.core.service.models.Staff
+import com.cramsan.edifikana.server.core.service.models.requests.CreateStaffRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteStaffRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetStaffRequest
+import com.cramsan.edifikana.server.core.service.models.requests.UpdateStaffRequest
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
@@ -180,3 +183,4 @@ class StaffServiceTest {
         coVerify { staffDatabase.deleteStaff(DeleteStaffRequest(staffId)) }
     }
 }
+

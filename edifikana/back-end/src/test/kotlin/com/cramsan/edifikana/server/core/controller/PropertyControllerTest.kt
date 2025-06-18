@@ -117,7 +117,7 @@ class PropertyControllerTest : TestBase(), KoinTest {
         val expectedResponse = readFileContent("requests/get_properties_response.json")
         val propertyService = get<PropertyService>()
         coEvery {
-            propertyService.getProperties(UserId("user123"), false)
+            propertyService.getProperties(UserId("user123"))
         }.answers {
             listOf(
                 Property(

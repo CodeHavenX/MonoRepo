@@ -7,5 +7,4 @@ import com.cramsan.edifikana.lib.model.UserId
  */
 data class GetPropertyListsRequest(
     val userId: UserId,
-    val showAll: Boolean,
 )

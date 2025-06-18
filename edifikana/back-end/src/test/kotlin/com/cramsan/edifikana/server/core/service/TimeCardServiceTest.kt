@@ -57,7 +57,7 @@ class TimeCardServiceTest {
         // Arrange
         val staffId = StaffId("staff-1")
         val fallbackStaffName = "John Doe"
-        val propertyId = PropertyId("property-1")
+        val propertyId = PropertyId("CENIT")
         val type = TimeCardEventType.CLOCK_IN
         val imageUrl = "http://image.url"
         val timestamp = Instant.parse("2024-06-18T12:00:00Z")
@@ -87,7 +87,7 @@ class TimeCardServiceTest {
     @Test
     fun `getTimeCardEvent should call database and return event`() = runTest {
         // Arrange
-        val eventId = TimeCardEventId("event-1")
+        val eventId = TimeCardEventId("visitor")
         val event = mockk<TimeCardEvent>()
         coEvery { timeCardDatabase.getTimeCardEvent(any()) } returns Result.success(event)
 
@@ -105,7 +105,7 @@ class TimeCardServiceTest {
     @Test
     fun `getTimeCardEvent should return null if not found`() = runTest {
         // Arrange
-        val eventId = TimeCardEventId("event-2")
+        val eventId = TimeCardEventId("delivery")
         coEvery { timeCardDatabase.getTimeCardEvent(any()) } returns Result.failure(Exception("Not found"))
 
         // Act

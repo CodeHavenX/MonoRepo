@@ -83,7 +83,6 @@ class PropertyController(
 
         val properties = propertyService.getProperties(
             userId = userId,
-            showAll = showAll,
         ).map { it.toPropertyNetworkResponse() }
 
         HttpResponse(

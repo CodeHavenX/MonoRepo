@@ -2,6 +2,7 @@ package com.cramsan.edifikana.client.lib.features.main.eventlog.viewrecord
 
 import app.cash.turbine.test
 import com.cramsan.edifikana.client.lib.features.management.viewrecord.ViewRecordViewModel
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowDelegatedEvent
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.EventLogManager
 import com.cramsan.edifikana.client.lib.models.AttachmentHolder
@@ -14,6 +15,7 @@ import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
 import com.cramsan.framework.core.compose.EventBus
+import com.cramsan.framework.core.compose.EventEmitter
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.core.compose.WindowEvent
 import com.cramsan.framework.core.compose.resources.StringProvider
@@ -44,6 +46,7 @@ class ViewRecordViewModelTest : TestBase() {
     private lateinit var applicationEventReceiver: EventBus<ApplicationEvent>
     private lateinit var windowEventBus: EventBus<WindowEvent>
     private lateinit var stringProvider: StringProvider
+    private lateinit var delegatedEventEmitter: EventEmitter<EdifikanaWindowDelegatedEvent>
 
     @BeforeEach
     fun setUp() {
@@ -54,6 +57,7 @@ class ViewRecordViewModelTest : TestBase() {
         applicationEventReceiver = EventBus()
         windowEventBus = EventBus()
         stringProvider = mockk()
+        delegatedEventEmitter = mockk()
         val dependencies = ViewModelDependencies(
             appScope = testCoroutineScope,
             dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),
@@ -65,6 +69,7 @@ class ViewRecordViewModelTest : TestBase() {
             eventLogManager,
             storageService,
             stringProvider = stringProvider,
+            delegatedEventEmitter,
             dependencies,
         )
     }

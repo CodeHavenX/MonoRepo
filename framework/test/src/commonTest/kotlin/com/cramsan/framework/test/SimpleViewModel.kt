@@ -2,9 +2,11 @@ package com.cramsan.framework.test
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.time.Duration
 
 /**
  * Set of test for common coroutine scenarios in common code.
@@ -53,5 +55,12 @@ class SimpleViewModel(
     fun updateWithCoroutineAndBlockingWait() {
         observableInt.value = 0
         observableInt.value = repository.getDataBlocking()
+    }
+
+    fun postDelayed(delay: Duration, action: () -> Unit) {
+        testScope.launch {
+            delay(delay)
+            action()
+        }
     }
 }

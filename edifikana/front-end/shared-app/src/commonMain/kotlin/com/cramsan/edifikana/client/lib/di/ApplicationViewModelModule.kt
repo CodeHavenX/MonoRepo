@@ -15,39 +15,44 @@ import org.koin.dsl.module
 
 internal val ApplicationViewModelModule = module {
 
-    single(named(APPLICATION_EVENT_BUS)) {
+    single(named(ApplicationIdentifier.EVENT_BUS)) {
         EventBus<ApplicationEvent>()
     } withOptions {
         bind<EventReceiver<ApplicationEvent>>()
         bind<EventEmitter<ApplicationEvent>>()
     }
 
-    single(named(APPLICATION_WINDOW_EVENT_BUS)) {
+    single(named(ApplicationIdentifier.WINDOW_EVENT_BUS)) {
         InvalidEventBus<WindowEvent>()
     } withOptions {
         bind<EventReceiver<WindowEvent>>()
         bind<EventEmitter<WindowEvent>>()
     }
 
-    single(named(APPLICATION_VIEW_MODEL_DEPENDENCIES)) {
+    single(named(ApplicationIdentifier.VIEW_MODEL_DEPENDENCIES)) {
         ViewModelDependencies(
             get(),
             get(),
             get(),
-            get(named(APPLICATION_WINDOW_EVENT_BUS)),
-            get(named(APPLICATION_EVENT_BUS)),
+            get(named(ApplicationIdentifier.WINDOW_EVENT_BUS)),
+            get(named(ApplicationIdentifier.EVENT_BUS)),
         )
     }
 
     single {
         EdifikanaApplicationViewModel(
             get(),
-            get(named(APPLICATION_VIEW_MODEL_DEPENDENCIES)),
+            get(named(ApplicationIdentifier.VIEW_MODEL_DEPENDENCIES)),
             get(),
         )
     }
 }
 
-const val APPLICATION_EVENT_BUS = "applicationEventBus"
-private const val APPLICATION_WINDOW_EVENT_BUS = "applicationWindowEventBus"
-private const val APPLICATION_VIEW_MODEL_DEPENDENCIES = "applicationViewModelDependencies"
+/**
+ * Identifiers for various application-level components.
+ */
+enum class ApplicationIdentifier {
+    EVENT_BUS,
+    WINDOW_EVENT_BUS,
+    VIEW_MODEL_DEPENDENCIES,
+}

@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.management.viewrecord
 
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowDelegatedEvent
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.EventLogManager
 import com.cramsan.edifikana.client.lib.models.AttachmentHolder
@@ -9,6 +10,7 @@ import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.framework.assertlib.assertFalse
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.compose.BaseViewModel
+import com.cramsan.framework.core.compose.EventEmitter
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.core.compose.resources.StringProvider
 import edifikana_lib.Res
@@ -22,10 +24,24 @@ class ViewRecordViewModel(
     private val eventLogManager: EventLogManager,
     private val storageService: StorageService,
     private val stringProvider: StringProvider,
+    private val delegatedEventEmitter: EventEmitter<EdifikanaWindowDelegatedEvent>,
     dependencies: ViewModelDependencies,
 ) : BaseViewModel<ViewRecordEvent, ViewRecordUIState>(dependencies, ViewRecordUIState.Empty, TAG) {
 
     private var record: EventLogRecordModel? = null
+
+    init {
+        viewModelScope.launch {
+            delegatedEventEmitter.events.collect { event ->
+                when (event) {
+                    is EdifikanaWindowDelegatedEvent.HandleReceivedImages -> {
+                        upload(event.uris)
+                    }
+                    else -> Unit
+                }
+            }
+        }
+    }
 
     /**
      * Load a record.
@@ -83,7 +99,7 @@ class ViewRecordViewModel(
     /**
      * Delete a record.
      */
-    fun upload(uris: List<CoreUri>) = viewModelScope.launch {
+    private fun upload(uris: List<CoreUri>) = viewModelScope.launch {
         val recordPk = record?.id ?: return@launch
 
         updateUiState { it.copy(isLoading = true) }

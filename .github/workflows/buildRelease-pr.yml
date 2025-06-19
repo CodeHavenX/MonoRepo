@@ -13,7 +13,8 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
+  pull-requests: write
 
 env:
   ANDROID_HOME: "/opt/Android/sdk"
@@ -24,12 +25,21 @@ jobs:
     if: "!contains(github.event.head_commit.message, '[skip ci]')" # Skip if commit message contains [skip ci]
     steps:
     - uses: actions/checkout@v3
+      with:
+        ref: ${{ github.head_ref }}
+        token: ${{ secrets.GITHUB_TOKEN }}
     - name: Set up JDK 21
       uses: actions/setup-java@v3
       with:
         java-version: '21'
         distribution: 'corretto'
-    - name: Build with Gradle
-      uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
-      with:
-        arguments: releaseAll
+    - name: Make changes
+      run: |
+        echo "// auto-generated" >> README.md
+    - name: Commit and push changes
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git add .
+        git commit -m "[skip ci] Committing CI changes" || echo "No changes to commit"
+        git push

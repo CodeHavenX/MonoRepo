@@ -55,3 +55,4 @@ If you want to start a new project and need a new module, look at the [New Modul
 
 ### More information
 To learn more about the project, please look at the [documentation](https://dev.azure.com/CRamsan/Framework/_wiki/wikis/Framework.wiki/22/Project-Wiki).
+// auto-generated

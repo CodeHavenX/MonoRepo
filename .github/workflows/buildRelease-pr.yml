@@ -22,7 +22,7 @@ env:
 jobs:
   build:
     runs-on: self-hosted
-    if: "!contains(github.event.head_commit.message, '[skip job - success]')" # Skip if commit message contains [skip ci]
+    if: "!contains(github.event.head_commit.message, '[ignore-commit]')" # Skip if commit message contains keyword
     steps:
     - uses: actions/checkout@v3
       with:
@@ -40,7 +40,7 @@ jobs:
 
   snapshots:
     runs-on: self-hosted
-    if: "!contains(github.event.head_commit.message, '[skip job - success]')" # Skip if commit message contains [skip ci]
+    if: "!contains(github.event.head_commit.message, '[ignore-commit]')" # Skip if commit message contains keyword
     needs: build
     steps:
       - uses: actions/checkout@v3
@@ -65,5 +65,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "[skip job - success] Committing CI changes" || echo "No changes to commit"
+          git commit -m "[ignore-commit] Committing CI changes" || echo "No changes to commit"
           git push

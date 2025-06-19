@@ -7,9 +7,8 @@ import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.framework.assertlib.AssertUtil
 import com.cramsan.framework.assertlib.implementation.NoopAssertUtil
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
-/*
+/**
  * This is just a demo
  */
 @Composable

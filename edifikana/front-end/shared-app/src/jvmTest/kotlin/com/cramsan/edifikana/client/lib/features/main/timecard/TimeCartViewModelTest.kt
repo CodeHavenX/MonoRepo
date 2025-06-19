@@ -103,7 +103,7 @@ class TimeCartViewModelTest : TestBase() {
             StaffModel(
                 id = StaffId("1"),
                 idType = IdType.PASSPORT,
-                name = "John",
+                firstName = "John",
                 lastName = "Doe",
                 role = StaffRole.SECURITY,
                 email = "johndoe@test.com",
@@ -112,7 +112,7 @@ class TimeCartViewModelTest : TestBase() {
             StaffModel(
                 id = StaffId("2"),
                 idType = IdType.PASSPORT,
-                name = "Jane",
+                firstName = "Jane",
                 lastName = "Doe",
                 role = StaffRole.SECURITY,
                 email = "jane.doe@test.com",

@@ -44,7 +44,7 @@ class StaffListViewModel(
     private fun StaffModel.toUIModel(): StaffUIModel {
         return StaffUIModel(
             id = id,
-            name = name,
+            name = firstName,
             email = email,
             status = status,
         )

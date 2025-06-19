@@ -44,7 +44,7 @@ class StaffViewModel(
                     title = staff.fullName(),
                     isLoading = false,
                     idType = staff.idType,
-                    firstName = staff.name,
+                    firstName = staff.firstName,
                     lastName = staff.lastName,
                     role = staff.role,
                     isEditable = editable,

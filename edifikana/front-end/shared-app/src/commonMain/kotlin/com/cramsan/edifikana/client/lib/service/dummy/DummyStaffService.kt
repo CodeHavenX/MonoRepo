@@ -6,7 +6,6 @@ import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.StaffRole
 import com.cramsan.edifikana.lib.model.StaffStatus
-import io.ktor.client.request.get
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
 
@@ -38,7 +37,7 @@ class DummyStaffService : StaffService {
         delay(1.seconds)
         val newStaff = StaffModel(
             id = StaffId(staffList.size.toString()),
-            name = staff.firstName,
+            firstName = staff.firstName,
             lastName = staff.lastName,
             role = staff.role,
             idType = staff.idType,
@@ -57,7 +56,7 @@ class DummyStaffService : StaffService {
         }
         val newStaff = StaffModel(
             id = StaffId(staffList.size.toString()),
-            name = "Dummy",
+            firstName = "Dummy",
             lastName = "Staff",
             role = StaffRole.ADMIN,
             idType = IdType.DNI,

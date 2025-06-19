@@ -9,9 +9,8 @@ import com.cramsan.framework.assertlib.AssertUtil
 import com.cramsan.framework.assertlib.implementation.NoopAssertUtil
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-@Preview
 @Composable
-private fun ViewStaffScreenPreview() = AppTheme(debugLayoutInspection = true) {
+fun ViewStaffScreenPreview() = AppTheme(debugLayoutInspection = true) {
     AssertUtil.setInstance(NoopAssertUtil())
 
     ViewStaffContent(

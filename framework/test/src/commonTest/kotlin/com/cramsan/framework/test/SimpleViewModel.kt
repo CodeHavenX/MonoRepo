@@ -57,9 +57,9 @@ class SimpleViewModel(
         observableInt.value = repository.getDataBlocking()
     }
 
-    fun postDelayed(delay: Duration, action: () -> Unit) {
+    fun postDelayed(duration: Duration, action: () -> Unit) {
         testScope.launch {
-            delay(delay)
+            delay(duration)
             action()
         }
     }

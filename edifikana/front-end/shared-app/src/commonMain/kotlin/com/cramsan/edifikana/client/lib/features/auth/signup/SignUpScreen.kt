@@ -10,8 +10,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -31,14 +31,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.ui.components.LoadingAnimationOverlay
-import com.cramsan.ui.components.PasswordOutlinedTextField
 import com.cramsan.ui.components.ScreenLayout
 import com.cramsan.ui.theme.Padding
 import edifikana_lib.Res
 import edifikana_lib.sign_up_screen_text_email
 import edifikana_lib.sign_up_screen_text_first_name
 import edifikana_lib.sign_up_screen_text_last_name
-import edifikana_lib.sign_up_screen_text_password
 import edifikana_lib.sign_up_screen_text_phone_number
 import edifikana_lib.sign_up_screen_text_policy
 import edifikana_lib.sign_up_screen_text_sign_up
@@ -77,7 +75,6 @@ fun SignUpScreen(
         uiState = uiState,
         onEmailValueChange = { viewModel.onEmailValueChange(it) },
         onPhoneNumberValueChange = { viewModel.onPhoneNumberValueChange(it) },
-        onPasswordValueChange = { viewModel.onPasswordValueChange(it) },
         onFirstNameValueChange = { viewModel.onFirstNameValueChange(it) },
         onLastNameValueChange = { viewModel.onLastNameValueChange(it) },
         onPolicyChecked = { viewModel.onPolicyChecked(it) },
@@ -94,7 +91,6 @@ internal fun SignUpContent(
     onLastNameValueChange: (String) -> Unit,
     onEmailValueChange: (String) -> Unit,
     onPhoneNumberValueChange: (String) -> Unit,
-    onPasswordValueChange: (String) -> Unit,
     onPolicyChecked: (Boolean) -> Unit,
     onSignUpClicked: () -> Unit,
     onCloseClicked: () -> Unit,
@@ -167,13 +163,6 @@ internal fun SignUpContent(
                         label = { Text(stringResource(Res.string.sign_up_screen_text_phone_number)) },
                         maxLines = 1,
                     )
-                    PasswordOutlinedTextField(
-                        value = uiState.password,
-                        onValueChange = { onPasswordValueChange(it) },
-                        modifier = modifier,
-                        label = { Text(stringResource(Res.string.sign_up_screen_text_password)) },
-                    )
-
                     var isChecked by remember { mutableStateOf(false) }
                     val interactionSource = remember { MutableInteractionSource() }
                     Row(
@@ -202,7 +191,7 @@ internal fun SignUpContent(
                     }
                 },
                 buttonContent = { modifier ->
-                    Button(
+                    ElevatedButton(
                         modifier = modifier,
                         enabled = uiState.registerEnabled,
                         onClick = onSignUpClicked,

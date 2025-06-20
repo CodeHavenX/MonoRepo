@@ -9,7 +9,7 @@ import com.cramsan.edifikana.server.core.controller.auth.ClientContext
 import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
 import com.cramsan.edifikana.server.core.service.TimeCardService
 import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
-import com.cramsan.edifikana.server.core.utils.readFileContent
+import com.cramsan.edifikana.server.utils.readFileContent
 import com.cramsan.framework.test.TestBase
 import io.ktor.client.request.get
 import io.ktor.client.request.post

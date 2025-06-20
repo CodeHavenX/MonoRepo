@@ -1,14 +1,10 @@
 firstName, lastName, email, phoneNumber, password, expectedErrorCount
-"", "", "", "", "", 5
-Debbie, "", test@email.com, "", v@lidPass123, 2
-Debbie, "", "test@email.com", 1234567890, v@lidPass123, 1
-"", Jones, "", 1234567890, v@lidPass123, 2
-Jenny, Baker, email@test.com, "", invalidpass, 3
-Jenny, Baker, email@test.com, "6067778989", invalidPass, 1
-"", Baker, email@test.com, "6067778989", INVAL1DPASS, 2
-Jenny, Baker, email@test.com, "6067778989", invalidPasswordThat1ISuperLong, 1
-Jenny, Baker, email@test.com, "6067778989", short, 3
-Jenny, Baker, "", "", v@lidPass123, 2
-Jenny, Baker, "", "", "", 3
-Jenny, Baker, email@test.com, "606777898", v@lidPass123, 1
-Jenny, Baker, email#test.com, "6067778989", v@lidPass123, 1
+"", "", "", "", 4
+Debbie, "", test@email.com, "", 2
+Debbie, "", "test@email.com", 1234567890, 1
+"", Jones, "", 1234567890, 2
+"", Baker, email@test.com, "6067778989", 1
+Jenny, Baker, "", "", 2
+Jenny, Baker, "", "", 2
+Jenny, Baker, email@test.com, "606777898", 1
+Jenny, Baker, email#test.com, "6067778989", 1

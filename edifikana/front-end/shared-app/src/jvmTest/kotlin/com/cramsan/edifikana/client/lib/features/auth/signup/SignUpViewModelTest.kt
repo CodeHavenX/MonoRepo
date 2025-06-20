@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.auth.signup
 
 import app.cash.turbine.test
+import com.cramsan.edifikana.client.lib.features.auth.AuthRouteDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.framework.core.UnifiedDispatcherProvider
@@ -111,21 +112,6 @@ class SignUpViewModelTest : TestBase() {
     }
 
     /**
-     * Test the [SignUpViewModel.onPasswordValueChange] method.
-     */
-    @Test
-    fun `test onPasswordValueChange updates password value`() = runBlockingTest {
-        // Arrange
-        val password = "p@ssWord123"
-
-        // Act
-        viewModel.onPasswordValueChange(password)
-
-        // Assert
-        assertEquals(password, viewModel.uiState.value.password)
-    }
-
-    /**
      * Test the [SignUpViewModel.onFirstNameValueChange] method.
      */
     @Test
@@ -193,7 +179,7 @@ class SignUpViewModelTest : TestBase() {
     @Test
     fun `test navigateBack calls emitEvent`() = runBlockingTest {
         // Arrange
-        coEvery { authManager.signUp(any(), any(), any(), any(), any()) } returns Result.success(mockk())
+        coEvery { authManager.signUp(any(), any(), any(), any()) } returns Result.success(mockk())
 
         // Act
         val verificationJob = launch {
@@ -213,34 +199,39 @@ class SignUpViewModelTest : TestBase() {
      * Test the [SignUpViewModel.signUp] method with valid inputs
      */
     @Test
-    fun `test signUp success`() = runBlockingTest {
+    fun `test signUp redirects to otp validation screen`() = runBlockingTest {
         // Arrange
         val firstName = "Dwayne"
         val lastName = "Johnson"
         val email = "totalReal@email.com"
         val phoneNumber = "4456879214"
-        val password = "p@ssWord123"
 
         coEvery {
             authManager.signUp(
-                email, phoneNumber, password, firstName, lastName
+                email, phoneNumber, firstName, lastName
             )
         } returns Result.success(mockk())
-        coEvery { authManager.signIn(email, password) } returns Result.success(mockk())
 
         viewModel.onFirstNameValueChange(firstName)
         viewModel.onLastNameValueChange(lastName)
         viewModel.onEmailValueChange(email)
         viewModel.onPhoneNumberValueChange(phoneNumber)
-        viewModel.onPasswordValueChange(password)
         viewModel.onPolicyChecked(true)
 
         // Act
+        val verificationJob = launch {
+            windowEventBus.events.test {
+                assertEquals(
+                    EdifikanaWindowsEvent.NavigateToScreen(AuthRouteDestination.ValidationDestination(email)), awaitItem()
+                )
+            }
+        }
         viewModel.signUp()
 
+
         // Verify
-        coVerify { authManager.signUp(email, phoneNumber, password, firstName, lastName) }
-        coVerify { authManager.signIn(email, password) }
+        coVerify { authManager.signUp(email, phoneNumber, firstName, lastName) }
+        verificationJob.join()
         assertTrue(viewModel.uiState.value.isLoading)
     }
 
@@ -254,7 +245,6 @@ class SignUpViewModelTest : TestBase() {
         lastName: String,
         email: String,
         phoneNumber: String,
-        password: String,
         expectedErrorCount: Int,
     ) = runBlockingTest {
         // Arrange
@@ -262,81 +252,11 @@ class SignUpViewModelTest : TestBase() {
         viewModel.onLastNameValueChange(lastName)
         viewModel.onEmailValueChange(email)
         viewModel.onPhoneNumberValueChange(phoneNumber)
-        viewModel.onPasswordValueChange(password)
 
         // Act
         viewModel.signUp()
 
         // Assert
         assertEquals(expectedErrorCount, viewModel.uiState.value.errorMessage?.size ?: 0)
-    }
-
-    /**
-     * Test the [SignUpViewModel.signUp] method with valid inputs but fails to sign up
-     * TODO: Fix logging capabilities to be able to figure out why this test fails on CI but no on local
-     */
-    @Ignore
-    @Test
-    fun `test signUp fails with valid inputs`() = runBlockingTest {
-        val firstName = "Diana"
-        val lastName = "Prince"
-        val email = "valid@email.com"
-        val phoneNumber = "5051113234"
-        val password = "p@ssWord123"
-        val expectedErrorMessage = listOf("There was an unexpected error.")
-
-        coEvery { authManager.signUp(email, phoneNumber, password, firstName, lastName) } returns Result.failure(
-            Exception("Sign in failed")
-        )
-
-        viewModel.onFirstNameValueChange(firstName)
-        viewModel.onLastNameValueChange(lastName)
-        viewModel.onEmailValueChange(email)
-        viewModel.onPhoneNumberValueChange(phoneNumber)
-        viewModel.onPasswordValueChange(password)
-        viewModel.onPolicyChecked(true)
-
-        // Act
-        viewModel.signUp()
-
-        // Assert & verify
-        coVerify { authManager.signUp(email, phoneNumber, password, firstName, lastName) }
-        assertEquals(expectedErrorMessage.toString(), viewModel.uiState.value.errorMessage.toString())
-    }
-
-    /**
-     * Test the [SignUpViewModel.signUp] method with valid inputs but fails to sign in
-     */
-    @Test
-    fun `test signUp fails with valid inputs when trying to signIn`() = runBlockingTest {
-        val firstName = "Diana"
-        val lastName = "Prince"
-        val email = "valid@email.com"
-        val phoneNumber = "5051113234"
-        val password = "p@ssWord123"
-        val expectedErrorMessage = listOf("There was an unexpected error.")
-
-        coEvery {
-            authManager.signUp(
-                email, phoneNumber, password, firstName, lastName
-            )
-        } returns Result.success(mockk())
-        coEvery { authManager.signIn(email, password) } returns Result.failure(Exception("Sign in failed"))
-        coEvery { stringProvider.getString(Res.string.error_message_unexpected_error) } returns "There was an unexpected error."
-
-        // Act
-        viewModel.onFirstNameValueChange(firstName)
-        viewModel.onLastNameValueChange(lastName)
-        viewModel.onEmailValueChange(email)
-        viewModel.onPhoneNumberValueChange(phoneNumber)
-        viewModel.onPasswordValueChange(password)
-        viewModel.onPolicyChecked(true)
-        viewModel.signUp()
-        // Assert & verify
-        coVerify { authManager.signUp(email, phoneNumber, password, firstName, lastName) }
-        assertEquals(
-            expectedErrorMessage.toString(), viewModel.uiState.value.errorMessage.toString()
-        )
-
     }
 }

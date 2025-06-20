@@ -13,6 +13,7 @@ import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logE
 import io.github.jan.supabase.auth.Auth
+import io.github.jan.supabase.auth.OtpType
 import io.github.jan.supabase.auth.exception.AuthRestException
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.exceptions.RestException
@@ -91,7 +92,6 @@ class AuthServiceImpl(
     override suspend fun signUp(
         email: String,
         phoneNumber: String,
-        password: String,
         firstName: String,
         lastName: String,
     ): Result<UserModel> = runSuspendCatching(TAG) {
@@ -100,16 +100,22 @@ class AuthServiceImpl(
                 CreateUserNetworkRequest(
                     email = email,
                     phoneNumber = phoneNumber,
-                    password = password,
                     firstName = firstName,
                     lastName = lastName,
+                    authorizeOtp = true, // Automatically set to true to send an OTP for verification
                 )
             )
             contentType(ContentType.Application.Json)
         }.body<UserNetworkResponse>()
         val userModel = response.toUserModel()
-        _activeUser.value = userModel.id
         userModel
+    }
+
+    override suspend fun signInWithOtp(email: String, hashToken: String): Result<UserModel> = runSuspendCatching(
+        TAG
+    ) {
+        auth.verifyEmailOtp(OtpType.Email.EMAIL, email, hashToken)
+        getUser().getOrThrow()
     }
 
     override suspend fun passwordReset(email: String?, phoneNumber: String?): Result<Unit> = runSuspendCatching(TAG) {

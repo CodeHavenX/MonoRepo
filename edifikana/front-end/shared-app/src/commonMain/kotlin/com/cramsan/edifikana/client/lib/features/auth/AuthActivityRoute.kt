@@ -3,6 +3,7 @@
 
 package com.cramsan.edifikana.client.lib.features.auth
 
+import androidx.navigation.NavBackStackEntry
 import com.cramsan.edifikana.client.lib.features.window.ApplicationRoute
 import com.cramsan.edifikana.client.lib.features.window.Destination
 import com.cramsan.framework.core.compose.RouteSafePath
@@ -16,7 +17,7 @@ enum class AuthRoute(
 ) {
     SignIn(route = "${ApplicationRoute.Auth.rawRoute}/signin"),
     SignUp(route = "${ApplicationRoute.Auth.rawRoute}/signup"),
-    Validation(route = "${ApplicationRoute.Auth.rawRoute}/validation"),
+    Validation(route = "${ApplicationRoute.Auth.rawRoute}/validation/{email}"),
     ;
 }
 
@@ -45,7 +46,18 @@ sealed class AuthRouteDestination(
     /**
      * A class representing navigating to the validation screen.
      */
-    data object ValidationDestination : AuthRouteDestination(
-        AuthRoute.Validation.route,
-    )
+    data class ValidationDestination(val userEmail: String) : AuthRouteDestination(
+        AuthRoute.Validation.route.replace("{email}", userEmail),
+    ) {
+        companion object {
+            /**
+             * Unpack the NavBackStackEntry to create a [ValidationDestination].
+             */
+            fun unpack(backStackEntry: NavBackStackEntry): ValidationDestination {
+                return ValidationDestination(
+                    backStackEntry.arguments?.getString("email").orEmpty()
+                )
+            }
+        }
+    }
 }

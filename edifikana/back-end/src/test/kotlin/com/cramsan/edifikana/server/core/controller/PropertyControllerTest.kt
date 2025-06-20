@@ -6,7 +6,7 @@ import com.cramsan.edifikana.server.core.controller.auth.ClientContext
 import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
 import com.cramsan.edifikana.server.core.service.PropertyService
 import com.cramsan.edifikana.server.core.service.models.Property
-import com.cramsan.edifikana.server.core.utils.readFileContent
+import com.cramsan.edifikana.server.utils.readFileContent
 import com.cramsan.framework.test.TestBase
 import io.ktor.client.request.delete
 import io.ktor.client.request.get

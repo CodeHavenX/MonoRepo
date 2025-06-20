@@ -6,7 +6,7 @@ import com.cramsan.edifikana.server.core.controller.auth.ClientContext
 import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
 import com.cramsan.edifikana.server.core.service.UserService
 import com.cramsan.edifikana.server.core.service.models.User
-import com.cramsan.edifikana.server.core.utils.readFileContent
+import com.cramsan.edifikana.server.utils.readFileContent
 import com.cramsan.framework.test.TestBase
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
@@ -53,6 +53,7 @@ class UserControllerTest : TestBase(), KoinTest {
                 password = "password",
                 firstName = "John",
                 lastName = "Doe",
+                authorizeOtp = false,
             )
         }.answers {
             Result.success(
@@ -103,6 +104,7 @@ class UserControllerTest : TestBase(), KoinTest {
                 password = "password",
                 firstName = "John",
                 lastName = "Doe",
+                authorizeOtp = false,
             )
         }.answers {
             Result.failure(RuntimeException("There was an unexpected error."))
@@ -144,6 +146,7 @@ class UserControllerTest : TestBase(), KoinTest {
                 password = "password",
                 firstName = "John",
                 lastName = "Doe",
+                authorizeOtp = false,
             )
         }.answers {
             Result.failure(ClientRequestExceptions.ConflictException("Error: User with this email already exists."))

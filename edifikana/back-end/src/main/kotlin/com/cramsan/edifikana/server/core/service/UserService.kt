@@ -9,6 +9,7 @@ import com.cramsan.edifikana.server.core.service.models.requests.GetUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdatePasswordRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdateUserRequest
 import com.cramsan.framework.logging.logD
+import com.cramsan.framework.logging.logI
 
 /**
  * Service for user operations.
@@ -23,12 +24,13 @@ class UserService(
     suspend fun createUser(
         email: String,
         phoneNumber: String,
-        password: String,
+        password: String?,
         firstName: String,
         lastName: String,
+        authorizeOtp: Boolean,
     ): Result<User> {
         logD(TAG, "createUser")
-        return userDatabase.createUser(
+        val result = userDatabase.createUser(
             request = CreateUserRequest(
                 email = email,
                 phoneNumber = phoneNumber,
@@ -37,6 +39,16 @@ class UserService(
                 lastName = lastName,
             ),
         )
+        // Send an OTP code if the user is created successfully and authorizeOtp is true
+        if (authorizeOtp && result.isSuccess) {
+            logI(TAG, "Sending OTP to user $email")
+            val otpResult = userDatabase.sendOtpCode(email)
+            if (!otpResult.isSuccess) {
+                logD(TAG, "Failed to send OTP to user $email: ${otpResult.exceptionOrNull()}")
+            }
+        }
+
+        return result
     }
 
     /**

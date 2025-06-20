@@ -14,6 +14,7 @@ import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.exception.AuthRestException
+import io.github.jan.supabase.auth.providers.builtin.OTP
 import io.github.jan.supabase.postgrest.Postgrest
 
 /**
@@ -29,7 +30,7 @@ class SupabaseUserDatabase(
      */
     @OptIn(SupabaseModel::class)
     override suspend fun createUser(
-        // TODO: Use phoneNum, fN, and lN. Integrate into request or someting
+        // TODO: Update section so we can actually create a user with an OTP signIn
         request: CreateUserRequest,
     ): Result<User> = runSuspendCatching(TAG) {
         logD(TAG, "Creating user: %s", request.email)
@@ -37,7 +38,7 @@ class SupabaseUserDatabase(
         val supabaseUser = try {
             auth.admin.createUserWithEmail {
                 email = request.email
-                password = request.password
+                password = request.password.orEmpty()
                 autoConfirm = true
             }
         } catch (e: AuthRestException) {
@@ -133,6 +134,15 @@ class SupabaseUserDatabase(
         }
 
         true
+    }
+
+    /**
+     * Sends a magic link to the provided [email]
+     */
+    override suspend fun sendOtpCode(email: String): Result<Unit> = runSuspendCatching(TAG) {
+        auth.signInWith(OTP) {
+            this.email = email
+        }
     }
 
     companion object {

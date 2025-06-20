@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.server.core.di
+package com.cramsan.edifikana.server.di
 
 import com.cramsan.edifikana.lib.serialization.createJson
 import com.cramsan.edifikana.server.core.controller.EventLogController

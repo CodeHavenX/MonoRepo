@@ -13,7 +13,7 @@ import com.cramsan.edifikana.lib.model.StaffStatus
 data class StaffModel(
     val id: StaffId,
     val idType: IdType,
-    val name: String, // TODO: Rename to first name
+    val firstName: String, // TODO: Rename to first name
     val lastName: String,
     val role: StaffRole,
     val email: String?,
@@ -36,4 +36,4 @@ data class StaffModel(
 /**
  * Returns the full name of the staff.
  */
-fun StaffModel.fullName() = "$name $lastName".trim()
+fun StaffModel.fullName() = "$firstName $lastName".trim()

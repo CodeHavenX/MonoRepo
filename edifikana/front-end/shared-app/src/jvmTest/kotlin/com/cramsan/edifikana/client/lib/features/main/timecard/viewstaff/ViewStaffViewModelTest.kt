@@ -101,7 +101,7 @@ class ViewStaffViewModelTest : TestBase() {
         val staff = StaffModel(
             id = staffId,
             idType = IdType.PASSPORT,
-            name = "John",
+            firstName = "John",
             lastName = "Doe",
             role = StaffRole.SECURITY,
             email = "john.doe@test.com",
@@ -184,7 +184,7 @@ class ViewStaffViewModelTest : TestBase() {
         val staff = StaffModel(
             id = StaffId("123"),
             idType = IdType.PASSPORT,
-            name = "John",
+            firstName = "John",
             lastName = "Doe",
             role = StaffRole.SECURITY,
             email = "john.doe@test.com",

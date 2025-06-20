@@ -31,11 +31,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import coil3.compose.AsyncImage
-import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowDelegatedEvent
 import com.cramsan.edifikana.client.lib.models.AttachmentHolder
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.edifikana.lib.model.EventLogEntryId
-import com.cramsan.framework.core.compose.EventEmitter
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
@@ -47,7 +45,6 @@ import edifikana_lib.string_share
 import edifikana_lib.view_record_screen_title
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -57,7 +54,6 @@ import org.koin.compose.viewmodel.koinViewModel
 fun ViewRecordScreen(
     eventLogRecordPK: EventLogEntryId,
     viewModel: ViewRecordViewModel = koinViewModel(),
-    delegatedEventEmitter: EventEmitter<EdifikanaWindowDelegatedEvent> = koinInject(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -70,19 +66,6 @@ fun ViewRecordScreen(
             viewModel.events.collect { event ->
                 when (event) {
                     ViewRecordEvent.Noop -> Unit
-                }
-            }
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        launch {
-            delegatedEventEmitter.events.collect { event ->
-                when (event) {
-                    is EdifikanaWindowDelegatedEvent.HandleReceivedImages -> {
-                        viewModel.upload(event.uris)
-                    }
-                    else -> Unit
                 }
             }
         }

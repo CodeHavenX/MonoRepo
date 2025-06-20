@@ -40,14 +40,14 @@ import org.koin.dsl.module
 internal val ViewModelModule = module {
 
     scope<String> {
-        scoped(named(VIEW_MODEL_WINDOW_EVENT_BUS)) {
+        scoped(named(WindowIdentifier.EVENT_BUS)) {
             EventBus<WindowEvent>()
         } withOptions {
             bind<EventEmitter<WindowEvent>>()
             bind<EventReceiver<WindowEvent>>()
         }
 
-        scoped(named(VIEW_MODEL_DELEGATED_EVENT_BUS)) {
+        scoped(named(WindowIdentifier.DELEGATED_EVENT_BUS)) {
             EventBus<EdifikanaWindowDelegatedEvent>()
         } withOptions {
             bind<EventEmitter<EdifikanaWindowDelegatedEvent>>()
@@ -59,16 +59,16 @@ internal val ViewModelModule = module {
                 get(),
                 get(),
                 get(),
-                get(named(VIEW_MODEL_WINDOW_EVENT_BUS)),
-                get(named(APPLICATION_EVENT_BUS)),
+                get(named(WindowIdentifier.EVENT_BUS)),
+                get(named(ApplicationIdentifier.EVENT_BUS)),
             )
         }
 
         viewModel {
             EdifikanaWindowViewModel(
                 get(),
-                get(named(VIEW_MODEL_WINDOW_EVENT_BUS)),
-                get(named(VIEW_MODEL_DELEGATED_EVENT_BUS)),
+                get(named(WindowIdentifier.EVENT_BUS)),
+                get(named(WindowIdentifier.DELEGATED_EVENT_BUS)),
             )
         }
 
@@ -99,5 +99,10 @@ internal val ViewModelModule = module {
     }
 }
 
-private const val VIEW_MODEL_WINDOW_EVENT_BUS = "viewModelWindowEventBus"
-const val VIEW_MODEL_DELEGATED_EVENT_BUS = "viewModelDelegatedEventBus"
+/**
+ * Identifiers for various window-level components.
+ */
+enum class WindowIdentifier {
+    EVENT_BUS,
+    DELEGATED_EVENT_BUS,
+}

@@ -7,4 +7,6 @@ package com.cramsan.edifikana.server.settings
  */
 object Overrides {
     const val KEY_SUPABASE_DISABLE = "KEY_SUPABASE_DISABLE"
+    const val KEY_SUPABASE_URL = "KEY_SUPABASE_URL"
+    const val KEY_SUPABASE_KEY = "KEY_SUPABASE_KEY"
 }

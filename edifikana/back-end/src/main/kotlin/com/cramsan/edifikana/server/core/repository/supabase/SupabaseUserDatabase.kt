@@ -9,19 +9,18 @@ import com.cramsan.edifikana.server.core.service.models.requests.DeleteUserReque
 import com.cramsan.edifikana.server.core.service.models.requests.GetUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdatePasswordRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdateUserRequest
-import com.cramsan.framework.assertlib.assertNull
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
-import io.github.jan.supabase.auth.Auth
+import io.github.jan.supabase.auth.admin.AdminApi
 import io.github.jan.supabase.auth.exception.AuthRestException
-import io.github.jan.supabase.auth.providers.builtin.OTP
 import io.github.jan.supabase.postgrest.Postgrest
+import io.ktor.http.HttpStatusCode
 
 /**
  * Database for managing users.
  */
 class SupabaseUserDatabase(
-    private val auth: Auth,
+    private val adminApi: AdminApi,
     private val postgrest: Postgrest,
 ) : UserDatabase {
 
@@ -36,16 +35,21 @@ class SupabaseUserDatabase(
         logD(TAG, "Creating user: %s", request.email)
 
         val supabaseUser = try {
-            auth.admin.createUserWithEmail {
+            adminApi.createUserWithEmail {
                 email = request.email
                 password = request.password.orEmpty()
                 autoConfirm = true
             }
         } catch (e: AuthRestException) {
             logD(TAG, "Error creating user: %s", e.message)
-            throw ClientRequestExceptions.ConflictException(
-                message = "Error: User with email ${request.email} already exists.",
-            )
+            if (e.statusCode == HttpStatusCode.UnprocessableEntity.value) {
+                // Conflict error, user already exists
+                throw ClientRequestExceptions.ConflictException(
+                    message = "Error: User with email ${request.email} already exists.",
+                )
+            } else {
+                throw e
+            }
         }
 
         val requestEntity: UserEntity.CreateUserEntity = request.toUserEntity(supabaseUser.id)
@@ -112,7 +116,7 @@ class SupabaseUserDatabase(
     ): Result<Boolean> = runSuspendCatching(TAG) {
         logD(TAG, "Deleting user: %s", request.id)
 
-        auth.admin.deleteUser(request.id.userId)
+        adminApi.deleteUser(request.id.userId)
 
         postgrest.from(UserEntity.COLLECTION).delete {
             select()
@@ -125,11 +129,7 @@ class SupabaseUserDatabase(
     override suspend fun updatePassword(request: UpdatePasswordRequest): Result<Boolean> = runSuspendCatching(TAG) {
         logD(TAG, "Updating password for user: %s", request.id)
 
-        assertNull(auth.currentUserOrNull(), TAG, "We cannot have a user signed in on the BE")
-        // Sign out the client by using
-        // auth.signOut()
-
-        auth.admin.updateUserById(request.id.userId) {
+        adminApi.updateUserById(request.id.userId) {
             password = request.password
         }
 
@@ -137,12 +137,12 @@ class SupabaseUserDatabase(
     }
 
     /**
-     * Sends a magic link to the provided [email]
+     * Sends an OTP the provided [email]
      */
     override suspend fun sendOtpCode(email: String): Result<Unit> = runSuspendCatching(TAG) {
-        auth.signInWith(OTP) {
-            this.email = email
-        }
+        throw ClientRequestExceptions.InvalidRequestException(
+            message = "SupabaseUserDatabase does not support sending OTP codes.",
+        )
     }
 
     companion object {

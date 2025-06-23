@@ -36,7 +36,7 @@ class TimeCardServiceImpl(
         getRecordsImpl(null).getOrThrow()
     }
 
-    //TODO: THIS CURRENTLY PULLS RECORDS FOR ALL PROPERTIES. WE WANT TO UPDATE SO WE ONLY PULL RECORDS FOR SPECIFIED PROPERTIES
+    // TODO: THIS CURRENTLY PULLS RECORDS FOR ALL PROPERTIES. WE WANT TO UPDATE SO WE ONLY PULL RECORDS FOR SPECIFIED PROPERTIES
     @NetworkModel
     private suspend fun getRecordsImpl(
         staffPK: StaffId?,

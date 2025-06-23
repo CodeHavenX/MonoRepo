@@ -24,9 +24,7 @@ class PropertyManagerViewModel(
             updateUiState {
                 it.copy(isLoading = true)
             }
-            val properties = propertyManager.getPropertyList(
-                showAll = true,
-            ).getOrElse {
+            val properties = propertyManager.getPropertyList().getOrElse {
                 updateUiState {
                     it.copy(isLoading = false)
                 }

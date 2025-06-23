@@ -3,7 +3,6 @@ package com.cramsan.edifikana.client.lib.service.impl
 import com.cramsan.edifikana.client.lib.models.PropertyModel
 import com.cramsan.edifikana.client.lib.service.PropertyService
 import com.cramsan.edifikana.lib.Routes
-import com.cramsan.edifikana.lib.SHOW_ALL
 import com.cramsan.edifikana.lib.annotations.NetworkModel
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.network.CreatePropertyNetworkRequest
@@ -33,15 +32,9 @@ class PropertyServiceImpl(
     private val _activeProperty = MutableStateFlow<PropertyId?>(null)
 
     @OptIn(NetworkModel::class)
-    override suspend fun getPropertyList(
-        showAll: Boolean,
-    ): Result<List<PropertyModel>> = runSuspendCatching(TAG) {
+    override suspend fun getPropertyList(): Result<List<PropertyModel>> = runSuspendCatching(TAG) {
         val activePropertyId = preferences.loadString(PREF_ACTIVE_PROPERTY)
-        val response = http.get(Routes.Property.PATH) {
-            url {
-                parameters.append(SHOW_ALL, showAll.toString())
-            }
-        }.body<List<PropertyNetworkResponse>>()
+        val response = http.get(Routes.Property.PATH) {}.body<List<PropertyNetworkResponse>>()
         val propertyList = response.map {
             it.toPropertyModel()
         }

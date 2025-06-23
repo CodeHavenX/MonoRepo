@@ -1,7 +1,6 @@
 package com.cramsan.edifikana.server.core.service
 
 import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.server.core.controller.startTestKoin
 import com.cramsan.edifikana.server.core.repository.UserDatabase
 import com.cramsan.edifikana.server.core.service.models.User
 import com.cramsan.framework.logging.EventLogger

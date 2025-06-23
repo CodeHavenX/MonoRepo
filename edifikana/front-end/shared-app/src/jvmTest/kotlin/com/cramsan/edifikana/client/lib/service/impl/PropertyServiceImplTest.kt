@@ -56,7 +56,7 @@ class PropertyServiceImplTest {
 //            coEvery { body<List<PropertyNetworkResponse>>() } returns propertyList
         }
 
-        val result = service.getPropertyList(showAll = true)
+        val result = service.getPropertyList()
         assertTrue(result.isSuccess)
         assertEquals(2, result.getOrNull()?.size)
         assertEquals("Property 1", result.getOrNull()?.get(0)?.name)

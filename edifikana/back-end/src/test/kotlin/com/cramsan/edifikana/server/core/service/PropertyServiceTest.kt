@@ -108,7 +108,9 @@ class PropertyServiceTest {
     fun `getProperties should call propertyDatabase and return list`() = runTest {
         // Arrange
         val propertyList = listOf(mockk<Property>(), mockk<Property>())
-        coEvery { propertyDatabase.getProperties(GetPropertyListsRequest(UserId("TestId1"))) } returns Result.success(propertyList)
+        coEvery { propertyDatabase.getProperties(GetPropertyListsRequest(UserId("TestId1"))) } returns Result.success(
+            propertyList
+        )
 
         // Act
         val result = propertyService.getProperties(UserId("TestId1"))

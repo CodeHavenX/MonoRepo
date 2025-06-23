@@ -67,13 +67,6 @@ class DummyAuthService : AuthService {
         return Result.success(USER_1)
     }
 
-    override suspend fun signInWithOtp(email: String, hashToken: String): Result<UserModel> {
-        delay(1.seconds)
-        user.value = USER_1.id
-        getUser().getOrThrow()
-        return Result.success(USER_1)
-    }
-
     override suspend fun verifyPermissions(): Result<Boolean> {
         delay(1.seconds)
         return Result.success(true)

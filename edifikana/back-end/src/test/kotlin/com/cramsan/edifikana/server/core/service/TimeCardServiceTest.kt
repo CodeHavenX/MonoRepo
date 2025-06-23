@@ -6,7 +6,6 @@ import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.edifikana.server.core.repository.TimeCardDatabase
 import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
-import com.cramsan.edifikana.server.core.service.models.requests.CreateTimeCardEventRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetTimeCardEventListRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetTimeCardEventRequest
 import com.cramsan.framework.logging.EventLogger
@@ -65,19 +64,28 @@ class TimeCardServiceTest {
         coEvery { timeCardDatabase.createTimeCardEvent(any()) } returns Result.success(event)
 
         // Act
-        val result = timeCardService.createTimeCardEvent(staffId, fallbackStaffName, propertyId, type, imageUrl, timestamp)
+        val result = timeCardService.createTimeCardEvent(
+            staffId,
+            fallbackStaffName,
+            propertyId,
+            type,
+            imageUrl,
+            timestamp
+        )
 
         // Assert
         assertEquals(event, result)
         coVerify {
-            timeCardDatabase.createTimeCardEvent(match {
-                it.staffId == staffId &&
-                it.fallbackStaffName == fallbackStaffName &&
-                it.propertyId == propertyId &&
-                it.type == type &&
-                it.imageUrl == imageUrl &&
-                it.timestamp == timestamp
-            })
+            timeCardDatabase.createTimeCardEvent(
+                match {
+                    it.staffId == staffId &&
+                        it.fallbackStaffName == fallbackStaffName &&
+                        it.propertyId == propertyId &&
+                        it.type == type &&
+                        it.imageUrl == imageUrl &&
+                        it.timestamp == timestamp
+                }
+            )
         }
     }
 
@@ -134,4 +142,3 @@ class TimeCardServiceTest {
         coVerify { timeCardDatabase.getTimeCardEvents(GetTimeCardEventListRequest(staffId)) }
     }
 }
-

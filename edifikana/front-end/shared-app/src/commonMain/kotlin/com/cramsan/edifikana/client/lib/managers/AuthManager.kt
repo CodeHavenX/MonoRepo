@@ -36,7 +36,7 @@ class AuthManager(
         logI(TAG, "signIn")
         val userModel = authService.signIn(email, password).getOrThrow()
 
-        val properties = propertyService.getPropertyList(false).getOrThrow()
+        val properties = propertyService.getPropertyList().getOrThrow()
         if (properties.isNotEmpty()) {
             propertyService.setActiveProperty(properties.firstOrNull()?.id)
         }

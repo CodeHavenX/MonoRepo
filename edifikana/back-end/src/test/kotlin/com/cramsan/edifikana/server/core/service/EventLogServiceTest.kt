@@ -6,10 +6,8 @@ import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.server.core.repository.EventLogDatabase
 import com.cramsan.edifikana.server.core.service.models.EventLogEntry
-import com.cramsan.edifikana.server.core.service.models.requests.CreateEventLogEntryRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteEventLogEntryRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetEventLogEntryRequest
-import com.cramsan.edifikana.server.core.service.models.requests.UpdateEventLogEntryRequest
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
@@ -69,22 +67,34 @@ class EventLogServiceTest {
         coEvery { eventLogDatabase.createEventLogEntry(any()) } returns Result.success(entry)
 
         // Act
-        val result = eventLogService.createEventLogEntry(staffId, fallbackStaffName, propertyId, type, fallbackEventType, timestamp, title, description, unit)
+        val result = eventLogService.createEventLogEntry(
+            staffId,
+            fallbackStaffName,
+            propertyId,
+            type,
+            fallbackEventType,
+            timestamp,
+            title,
+            description,
+            unit
+        )
 
         // Assert
         assertEquals(entry, result)
         coVerify {
-            eventLogDatabase.createEventLogEntry(match {
-                it.staffId == staffId &&
-                it.fallbackStaffName == fallbackStaffName &&
-                it.propertyId == propertyId &&
-                it.type == type &&
-                it.fallbackEventType == fallbackEventType &&
-                it.timestamp == timestamp &&
-                it.title == title &&
-                it.description == description &&
-                it.unit == unit
-            })
+            eventLogDatabase.createEventLogEntry(
+                match {
+                    it.staffId == staffId &&
+                        it.fallbackStaffName == fallbackStaffName &&
+                        it.propertyId == propertyId &&
+                        it.type == type &&
+                        it.fallbackEventType == fallbackEventType &&
+                        it.timestamp == timestamp &&
+                        it.title == title &&
+                        it.description == description &&
+                        it.unit == unit
+                }
+            )
         }
     }
 
@@ -161,14 +171,16 @@ class EventLogServiceTest {
         // Assert
         assertEquals(entry, result)
         coVerify {
-            eventLogDatabase.updateEventLogEntry(match {
-                it.id == entryId &&
-                it.type == type &&
-                it.fallbackEventType == fallbackEventType &&
-                it.title == title &&
-                it.description == description &&
-                it.unit == unit
-            })
+            eventLogDatabase.updateEventLogEntry(
+                match {
+                    it.id == entryId &&
+                        it.type == type &&
+                        it.fallbackEventType == fallbackEventType &&
+                        it.title == title &&
+                        it.description == description &&
+                        it.unit == unit
+                }
+            )
         }
     }
 
@@ -189,4 +201,3 @@ class EventLogServiceTest {
         coVerify { eventLogDatabase.deleteEventLogEntry(DeleteEventLogEntryRequest(entryId)) }
     }
 }
-

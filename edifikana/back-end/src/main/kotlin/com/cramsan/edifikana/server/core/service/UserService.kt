@@ -10,9 +10,6 @@ import com.cramsan.edifikana.server.core.service.models.requests.UpdatePasswordR
 import com.cramsan.edifikana.server.core.service.models.requests.UpdateUserRequest
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logI
-import io.github.jan.supabase.auth.Auth
-import io.github.jan.supabase.auth.providers.builtin.OTP
-import com.cramsan.framework.logging.logI
 
 /**
  * Service for user operations.

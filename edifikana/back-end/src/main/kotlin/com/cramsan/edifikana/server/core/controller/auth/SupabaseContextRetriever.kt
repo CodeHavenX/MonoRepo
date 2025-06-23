@@ -15,7 +15,6 @@ class SupabaseContextRetriever(
 ) : ContextRetriever {
 
     override suspend fun getContext(applicationCall: ApplicationCall): ClientContext {
-        assertNull(auth.currentUserOrNull(), TAG, "We cannot have the library have a signed in user")
         val headerMap = applicationCall.request.headers.entries().associate {
             it.key to it.value
         }

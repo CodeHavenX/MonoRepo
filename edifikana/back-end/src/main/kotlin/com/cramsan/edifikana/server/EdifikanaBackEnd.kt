@@ -15,9 +15,10 @@ import com.cramsan.edifikana.server.core.controller.UserController.Companion.reg
 import com.cramsan.edifikana.server.di.ApplicationModule
 import com.cramsan.edifikana.server.di.DummyStorageModule
 import com.cramsan.edifikana.server.di.FrameworkModule
+import com.cramsan.edifikana.server.di.KtorModule
+import com.cramsan.edifikana.server.di.ServicesModule
 import com.cramsan.edifikana.server.di.SettingsModule
-import com.cramsan.edifikana.server.di.SupabaseStorageModule
-import com.cramsan.edifikana.server.di.createKtorModule
+import com.cramsan.edifikana.server.di.SupabaseModule
 import com.cramsan.edifikana.server.settings.Overrides
 import com.cramsan.framework.core.ktor.configureHealthEndpoint
 import com.cramsan.framework.logging.logI
@@ -96,11 +97,12 @@ fun Application.configureKtorEngine() {
 fun Application.initializeDependencies() {
     startKoin {
         modules(
-            createKtorModule(this@initializeDependencies),
             FrameworkModule,
             SettingsModule,
+            SupabaseModule,
             ApplicationModule,
-            SupabaseStorageModule,
+            ServicesModule,
+            KtorModule,
         )
         val disableSupabase: Boolean = get(named(Overrides.KEY_SUPABASE_DISABLE))
         if (disableSupabase) {

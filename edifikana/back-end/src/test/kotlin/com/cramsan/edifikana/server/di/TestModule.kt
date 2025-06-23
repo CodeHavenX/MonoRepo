@@ -17,6 +17,8 @@ import com.cramsan.framework.annotations.TestOnly
 import com.cramsan.framework.assertlib.AssertUtil
 import com.cramsan.framework.assertlib.AssertUtilInterface
 import com.cramsan.framework.assertlib.implementation.AssertUtilImpl
+import com.cramsan.framework.configuration.Configuration
+import com.cramsan.framework.configuration.NoopConfiguration
 import com.cramsan.framework.halt.HaltUtil
 import com.cramsan.framework.halt.HaltUtilDelegate
 import com.cramsan.framework.halt.implementation.HaltUtilImpl
@@ -63,7 +65,7 @@ fun testFrameworkModule() = module(createdAtStart = true) {
     single<HaltUtil> { HaltUtilImpl(get()) }
     single<AssertUtilInterface>(createdAtStart = true) {
         val impl = AssertUtilImpl(
-            true,
+            false,
             get(),
             get(),
         )
@@ -73,6 +75,9 @@ fun testFrameworkModule() = module(createdAtStart = true) {
     single<ThreadUtilDelegate> { ThreadUtilJVM(get(), get()) }
     single<ThreadUtilInterface> {
         ThreadUtilImpl(get())
+    }
+    single<Configuration> {
+        NoopConfiguration()
     }
 }
 

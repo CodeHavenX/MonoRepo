@@ -17,7 +17,6 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
-import kotlinx.coroutines.test.runTest
 
 /**
  * Unit tests for the StaffManager class.
@@ -45,7 +44,7 @@ class StaffManagerTest : TestBase() {
      * Tests that getStaffList returns the expected list from the service.
      */
     @Test
-    fun `getStaffList returns staff list`() = runTest {
+    fun `getStaffList returns staff list`() = runBlockingTest {
         // Arrange
         val staffList = listOf(mockk<StaffModel>(), mockk<StaffModel>())
         coEvery { staffService.getStaffList() } returns Result.success(staffList)
@@ -61,7 +60,7 @@ class StaffManagerTest : TestBase() {
      * Tests that getStaff returns the expected staff from the service.
      */
     @Test
-    fun `getStaff returns staff`() = runTest {
+    fun `getStaff returns staff`() = runBlockingTest {
         // Arrange
         val staffId = StaffId("staff-1")
         val staff = mockk<StaffModel>()
@@ -78,7 +77,7 @@ class StaffManagerTest : TestBase() {
      * Tests that addStaff calls the service and returns success.
      */
     @Test
-    fun `addStaff calls service`() = runTest {
+    fun `addStaff calls service`() = runBlockingTest {
         // Arrange
         val request = mockk<StaffModel.CreateStaffRequest>()
         coEvery { staffService.createStaff(request) } returns Result.success(mockk())
@@ -93,7 +92,7 @@ class StaffManagerTest : TestBase() {
      * Tests that inviteStaff calls the service and returns success.
      */
     @Test
-    fun `inviteStaff calls service`() = runTest {
+    fun `inviteStaff calls service`() = runBlockingTest {
         // Arrange
         val email = "test@example.com"
         coEvery { staffService.inviteStaff(email) } returns Result.success(Unit)

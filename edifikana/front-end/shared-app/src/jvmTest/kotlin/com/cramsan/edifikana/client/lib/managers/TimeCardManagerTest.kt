@@ -12,7 +12,6 @@ import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.UnifiedDispatcherProvider
-import com.cramsan.framework.core.getOrCatch
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
@@ -21,8 +20,6 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -61,7 +58,7 @@ class TimeCardManagerTest : TestBase() {
      * Tests that getRecords merges and sorts records from cache and service.
      */
     @Test
-    fun `getRecords returns merged and sorted records`() = runTest {
+    fun `getRecords returns merged and sorted records`() = runBlockingTest {
         // Arrange
         val staffId = StaffId("staff-1")
         val cached = listOf(
@@ -113,7 +110,7 @@ class TimeCardManagerTest : TestBase() {
      * Tests that getAllRecords merges and sorts records from cache and service.
      */
     @Test
-    fun `getAllRecords returns merged and sorted records`() = runTest {
+    fun `getAllRecords returns merged and sorted records`() = runBlockingTest {
         // Arrange
         val staffId = StaffId("staff-X")
 
@@ -155,7 +152,7 @@ class TimeCardManagerTest : TestBase() {
      * Tests that getRecord retrieves a specific record from the service.
      */
     @Test
-    fun `getRecord returns record from service`() = runTest {
+    fun `getRecord returns record from service`() = runBlockingTest {
         // Arrange
         val staffId = StaffId("staff-Y")
         val eventId = TimeCardEventId("event-X")
@@ -183,7 +180,7 @@ class TimeCardManagerTest : TestBase() {
      * Tests that addRecord adds to cache and triggers upload.
      */
     @Test
-    fun `addRecord adds to cache and triggers upload`() = runTest {
+    fun `addRecord adds to cache and triggers upload`() = runBlockingTest {
         // Arrange
         val staffId = StaffId("staff-Z")
         val record = TimeCardRecordModel(TimeCardEventId(

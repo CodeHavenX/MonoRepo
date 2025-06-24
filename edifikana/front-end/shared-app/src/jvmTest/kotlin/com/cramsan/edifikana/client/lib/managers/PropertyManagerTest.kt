@@ -18,7 +18,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.test.runTest
 
 /**
  * Unit tests for the PropertyManager class.
@@ -47,7 +46,7 @@ class PropertyManagerTest : TestBase() {
      * Tests that getPropertyList returns the expected list from the service.
      */
     @Test
-    fun `getPropertyList returns property list`() = runTest {
+    fun `getPropertyList returns property list`() = runBlockingTest {
         // Arrange
         val propertyList = listOf(mockk<PropertyModel>(), mockk<PropertyModel>())
         coEvery { propertyService.getPropertyList() } returns Result.success(propertyList)
@@ -63,7 +62,7 @@ class PropertyManagerTest : TestBase() {
      * Tests that setActiveProperty calls the service and returns success.
      */
     @Test
-    fun `setActiveProperty calls service`() = runTest {
+    fun `setActiveProperty calls service`() = runBlockingTest {
         // Arrange
         val propertyId = PropertyId("property-1")
         coEvery { propertyService.setActiveProperty(propertyId) } returns Result.success(Unit)
@@ -93,7 +92,7 @@ class PropertyManagerTest : TestBase() {
      * Tests that getProperty returns the expected property from the service.
      */
     @Test
-    fun `getProperty returns property`() = runTest {
+    fun `getProperty returns property`() = runBlockingTest {
         // Arrange
         val propertyId = PropertyId("property-1")
         val property = mockk<PropertyModel>()
@@ -110,7 +109,7 @@ class PropertyManagerTest : TestBase() {
      * Tests that addProperty calls the service and returns success.
      */
     @Test
-    fun `addProperty calls service with correct arguments`() = runTest {
+    fun `addProperty calls service with correct arguments`() = runBlockingTest {
         // Arrange
         val propertyName = "Cenit"
         val address = "Jiron Juan de Arona 123"
@@ -126,7 +125,7 @@ class PropertyManagerTest : TestBase() {
      * Tests that updateProperty calls the service and returns success.
      */
     @Test
-    fun `updateProperty calls service with correct arguments`() = runTest {
+    fun `updateProperty calls service with correct arguments`() = runBlockingTest {
         // Arrange
         val propertyId = PropertyId("property-1")
         val name = "Cenito"
@@ -143,7 +142,7 @@ class PropertyManagerTest : TestBase() {
      * Tests that removeProperty calls the service and returns success.
      */
     @Test
-    fun `removeProperty calls service with correct arguments`() = runTest {
+    fun `removeProperty calls service with correct arguments`() = runBlockingTest {
         // Arrange
         val propertyId = PropertyId("property-1")
         coEvery { propertyService.removeProperty(propertyId) } returns Result.success(Unit)

@@ -34,6 +34,7 @@ class SupabaseUserDatabase(
     ): Result<User> = runSuspendCatching(TAG) {
         logD(TAG, "Creating user: %s", request.email)
 
+        // Create the user in Supabase Auth
         val supabaseUser = try {
             adminApi.createUserWithEmail {
                 email = request.email
@@ -52,12 +53,14 @@ class SupabaseUserDatabase(
             }
         }
 
+        // Create the user entity in our database
         val requestEntity: UserEntity.CreateUserEntity = request.toUserEntity(supabaseUser.id)
-
         val createdUser = postgrest.from(UserEntity.COLLECTION).insert(requestEntity) {
             select()
         }.decodeSingle<UserEntity>()
         logD(TAG, "User created userId: %s", createdUser.id)
+
+        // Return the created user as a domain model
         createdUser.toUser(false)
     }
 

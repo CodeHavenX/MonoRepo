@@ -1,44 +1,25 @@
 package com.cramsan.edifikana.server.core.repository.supabase
 
+import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
+import com.cramsan.edifikana.server.core.service.models.User
 import com.cramsan.edifikana.server.core.service.models.requests.CreateUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetUserRequest
-import com.cramsan.edifikana.server.di.FrameworkModule
-import com.cramsan.edifikana.server.di.IntegTestApplicationModule
-import com.cramsan.edifikana.server.di.SettingsModule
-import com.cramsan.edifikana.server.di.SupabaseModule
-import com.cramsan.framework.test.TestBase
 import com.cramsan.framework.utils.uuid.UUID
-import org.koin.core.context.startKoin
-import org.koin.core.context.stopKoin
-import org.koin.test.KoinTest
-import org.koin.test.inject
-import kotlin.test.AfterTest
+import org.junit.jupiter.api.assertInstanceOf
 import kotlin.test.BeforeTest
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class SupabaseUserDatabaseIntegrationTest : TestBase(), KoinTest {
+class SupabaseUserDatabaseIntegrationTest : SupabaseIntegrationTest() {
 
-    private val database: SupabaseUserDatabase by inject()
     private lateinit var test_prefix: String
 
     @BeforeTest
     fun setup() {
         test_prefix = UUID.random()
-        startKoin {
-            modules(
-                FrameworkModule,
-                SettingsModule,
-                IntegTestApplicationModule,
-                SupabaseModule,
-            )
-        }
-    }
-
-    @AfterTest
-    fun tearDown() {
-        stopKoin()
     }
 
     @Test
@@ -47,20 +28,31 @@ class SupabaseUserDatabaseIntegrationTest : TestBase(), KoinTest {
         val request = CreateUserRequest(
             email = "${test_prefix}_user@test.com",
             phoneNumber = "123-456-7890",
-            password = "",
+            password = "Password1!",
             firstName = "${test_prefix}_First",
             lastName = "${test_prefix}_Last",
         )
 
         // Act
-        val result = database.createUser(request)
+        val result = userDatabase.createUser(request).registerUserForDeletion()
 
         // Assert
-        assertTrue(result.isSuccess)
+        assertEquals(
+            User(
+                id = result.getOrThrow().id,
+                email = request.email,
+                phoneNumber = request.phoneNumber,
+                firstName = request.firstName,
+                lastName = request.lastName,
+                isVerified = false,
+            ),
+            result.getOrNull(),
+        )
     }
 
     @Test
     fun `createUser should fail with existing email`() = runBlockingTest {
+        // Arrange
         val request = CreateUserRequest(
             email = "${test_prefix}_dupe@test.com",
             phoneNumber = "123-456-7890",
@@ -68,14 +60,20 @@ class SupabaseUserDatabaseIntegrationTest : TestBase(), KoinTest {
             firstName = "${test_prefix}_First",
             lastName = "${test_prefix}_Last",
         )
-        val first = database.createUser(request)
+
+        // Act
+        val first = userDatabase.createUser(request).registerUserForDeletion()
         assertTrue(first.isSuccess)
-        val second = database.createUser(request)
+        val second = userDatabase.createUser(request)
+
+        // Assert
         assertTrue(second.isFailure)
+        assertInstanceOf<ClientRequestExceptions.ConflictException>(second.exceptionOrNull())
     }
 
     @Test
     fun `createUser should fail with invalid email`() = runBlockingTest {
+        // Arrange
         val request = CreateUserRequest(
             email = "not-an-email",
             phoneNumber = "123-456-7890",
@@ -83,12 +81,17 @@ class SupabaseUserDatabaseIntegrationTest : TestBase(), KoinTest {
             firstName = "Invalid",
             lastName = "User",
         )
-        val result = database.createUser(request)
+
+        // Act
+        val result = userDatabase.createUser(request)
+
+        // Assert
         assertTrue(result.isFailure)
     }
 
     @Test
     fun `getUser should return created user`() = runBlockingTest {
+        // Arrange
         val request = CreateUserRequest(
             email = "${test_prefix}_getuser@test.com",
             phoneNumber = "123-456-7890",
@@ -96,10 +99,14 @@ class SupabaseUserDatabaseIntegrationTest : TestBase(), KoinTest {
             firstName = "Get",
             lastName = "User",
         )
-        val createResult = database.createUser(request)
+
+        // Act
+        val createResult = userDatabase.createUser(request).registerUserForDeletion()
         assertTrue(createResult.isSuccess)
         val user = createResult.getOrNull()!!
-        val getResult = database.getUser(GetUserRequest(user.id))
+        val getResult = userDatabase.getUser(GetUserRequest(user.id))
+
+        // Assert
         assertTrue(getResult.isSuccess)
         val fetched = getResult.getOrNull()
         assertTrue(fetched != null && fetched.email == request.email)
@@ -107,6 +114,7 @@ class SupabaseUserDatabaseIntegrationTest : TestBase(), KoinTest {
 
     @Test
     fun `deleteUser should remove user`() = runBlockingTest {
+        // Arrange
         val request = CreateUserRequest(
             email = "${test_prefix}_delete@test.com",
             phoneNumber = "123-456-7890",
@@ -114,19 +122,28 @@ class SupabaseUserDatabaseIntegrationTest : TestBase(), KoinTest {
             firstName = "Delete",
             lastName = "User",
         )
-        val createResult = database.createUser(request)
+
+        // Act
+        val createResult = userDatabase.createUser(request)
         assertTrue(createResult.isSuccess)
         val user = createResult.getOrNull()!!
-        val deleteResult = database.deleteUser(DeleteUserRequest(user.id))
+        val deleteResult = userDatabase.deleteUser(DeleteUserRequest(user.id))
+
+        // Assert
         assertTrue(deleteResult.isSuccess && deleteResult.getOrNull() == true)
-        val getResult = database.getUser(GetUserRequest(user.id))
+        val getResult = userDatabase.getUser(GetUserRequest(user.id))
         assertTrue(getResult.isSuccess && getResult.getOrNull() == null)
     }
 
     @Test
     fun `deleteUser should fail for non-existent user`() = runBlockingTest {
-        val fakeId = com.cramsan.edifikana.lib.model.UserId("fake-${test_prefix}")
-        val deleteResult = database.deleteUser(DeleteUserRequest(fakeId))
+        // Arrange
+        val fakeId = UserId("fake-${test_prefix}")
+
+        // Act
+        val deleteResult = userDatabase.deleteUser(DeleteUserRequest(fakeId))
+
+        // Assert
         assertTrue(deleteResult.isFailure || deleteResult.getOrNull() == false)
     }
 }

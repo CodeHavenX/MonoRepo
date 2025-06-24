@@ -2,8 +2,8 @@ package com.cramsan.edifikana.server.core.repository
 
 import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.core.service.models.requests.CreateTimeCardEventRequest
+import com.cramsan.edifikana.server.core.service.models.requests.DeleteTimeCardEventRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetTimeCardEventListRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetTimeCardEventRequest
 
 /**
  * Interface for interacting with the time card database.
@@ -21,7 +21,7 @@ interface TimeCardDatabase {
      * Retrieves a time card event for the given [request]. Returns the [Result] of the operation with the fetched [TimeCardEvent] if found.
      */
     suspend fun getTimeCardEvent(
-        request: GetTimeCardEventRequest,
+        request: DeleteTimeCardEventRequest,
     ): Result<TimeCardEvent?>
 
     /**
@@ -30,4 +30,11 @@ interface TimeCardDatabase {
     suspend fun getTimeCardEvents(
         request: GetTimeCardEventListRequest,
     ): Result<List<TimeCardEvent>>
+
+    /**
+     * Deletes a time card event for the given [request]. Returns the [Result] of the operation.
+     */
+    suspend fun deleteTimeCardEvent(
+        request: DeleteTimeCardEventRequest,
+    ): Result<Boolean>
 }

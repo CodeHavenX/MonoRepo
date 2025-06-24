@@ -5,78 +5,75 @@ import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.edifikana.server.core.service.models.requests.CreateTimeCardEventRequest
+import com.cramsan.edifikana.server.core.service.models.requests.DeleteTimeCardEventRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetTimeCardEventListRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetTimeCardEventRequest
-import com.cramsan.edifikana.server.di.FrameworkModule
-import com.cramsan.edifikana.server.di.IntegTestApplicationModule
-import com.cramsan.edifikana.server.di.SettingsModule
-import com.cramsan.edifikana.server.di.SupabaseModule
-import com.cramsan.framework.test.TestBase
 import com.cramsan.framework.utils.uuid.UUID
+import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Clock
-import org.koin.core.context.startKoin
-import org.koin.core.context.stopKoin
-import org.koin.test.KoinTest
-import org.koin.test.inject
-import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-class SupabaseTimeCardDatabaseIntegrationTest : TestBase(), KoinTest {
+class SupabaseTimeCardDatabaseIntegrationTest : SupabaseIntegrationTest() {
 
-    private val database: SupabaseTimeCardDatabase by inject()
     private lateinit var test_prefix: String
+    private var propertyId: PropertyId? = null
+    private var staffId: StaffId? = null
 
     @BeforeTest
     fun setup() {
         test_prefix = UUID.random()
-        startKoin {
-            modules(
-                FrameworkModule,
-                SettingsModule,
-                IntegTestApplicationModule,
-                SupabaseModule,
+        runBlocking {
+            propertyId = createTestProperty("${test_prefix}_Property")
+            staffId = createTestStaff(
+                propertyId = propertyId!!,
+                firstName = "${test_prefix}_FirstName",
+                lastName = "${test_prefix}_LastName",
             )
         }
     }
 
-    @AfterTest
-    fun tearDown() {
-        stopKoin()
-    }
-
     @Test
     fun `createTimeCardEvent should return event on success`() = runBlockingTest {
+        // Arrange
         val request = CreateTimeCardEventRequest(
             fallbackStaffName = "${test_prefix}_FallbackStaffName",
-            staffId = StaffId("${test_prefix}_test_staff_id"),
-            propertyId = PropertyId("${test_prefix}_test_property_id"),
+            staffId = staffId!!,
+            propertyId = propertyId!!,
             type = TimeCardEventType.CLOCK_OUT,
             imageUrl = null,
             timestamp = Clock.System.now(),
         )
-        val result = database.createTimeCardEvent(request)
+
+        // Act
+        val result = timeCardDatabase.createTimeCardEvent(request).registerTimeCardEventForDeletion()
+
+        // Assert
         assertTrue(result.isSuccess)
         assertNotNull(result.getOrNull())
     }
 
     @Test
     fun `getTimeCardEvent should return created event`() = runBlockingTest {
+        // Arrange
         val createRequest = CreateTimeCardEventRequest(
             fallbackStaffName = "${test_prefix}_FallbackStaffName",
-            staffId = StaffId("${test_prefix}_test_staff_id"),
-            propertyId = PropertyId("${test_prefix}_test_property_id"),
+            staffId = staffId!!,
+            propertyId = propertyId!!,
             type = TimeCardEventType.CLOCK_IN,
             imageUrl = null,
             timestamp = Clock.System.now(),
         )
-        val createResult = database.createTimeCardEvent(createRequest)
+
+        // Act
+        val createResult = timeCardDatabase.createTimeCardEvent(createRequest).registerTimeCardEventForDeletion()
         assertTrue(createResult.isSuccess)
         val event = createResult.getOrNull()!!
-        val getResult = database.getTimeCardEvent(GetTimeCardEventRequest(event.id))
+        val getResult = timeCardDatabase.getTimeCardEvent(DeleteTimeCardEventRequest(event.id))
+
+        // Assert
         assertTrue(getResult.isSuccess)
         val fetched = getResult.getOrNull()
         assertNotNull(fetched)
@@ -84,30 +81,35 @@ class SupabaseTimeCardDatabaseIntegrationTest : TestBase(), KoinTest {
 
     @Test
     fun `getTimeCardEventList should return all events`() = runBlockingTest {
+        // Arrange
         val request1 = CreateTimeCardEventRequest(
             fallbackStaffName = "${test_prefix}_FallbackStaffName1",
-            staffId = StaffId("${test_prefix}_test_staff_id1"),
-            propertyId = PropertyId("${test_prefix}_test_property_id1"),
+            staffId = staffId!!,
+            propertyId = propertyId!!,
             type = TimeCardEventType.CLOCK_IN,
             timestamp = Clock.System.now(),
             imageUrl = null,
         )
         val request2 = CreateTimeCardEventRequest(
-            staffId = StaffId("${test_prefix}_test_staff_id2"),
+            staffId = staffId!!,
             fallbackStaffName = "${test_prefix}_FallbackStaffName2",
-            propertyId = PropertyId("${test_prefix}_test_property_id2"),
+            propertyId = propertyId!!,
             type = TimeCardEventType.CLOCK_OUT,
             timestamp = Clock.System.now(),
             imageUrl = null,
         )
-        val result1 = database.createTimeCardEvent(request1)
-        val result2 = database.createTimeCardEvent(request2)
+
+        // Act
+        val result1 = timeCardDatabase.createTimeCardEvent(request1).registerTimeCardEventForDeletion()
+        val result2 = timeCardDatabase.createTimeCardEvent(request2).registerTimeCardEventForDeletion()
         assertTrue(result1.isSuccess)
         assertTrue(result2.isSuccess)
 
-        val getAllResult = database.getTimeCardEvents(
-            GetTimeCardEventListRequest(StaffId("${test_prefix}_test_staff_id1"))
+        val getAllResult = timeCardDatabase.getTimeCardEvents(
+            GetTimeCardEventListRequest(staffId!!)
         )
+
+        // Assert
         assertTrue(getAllResult.isSuccess)
 
         val events = getAllResult.getOrNull()
@@ -116,10 +118,14 @@ class SupabaseTimeCardDatabaseIntegrationTest : TestBase(), KoinTest {
 
     @Test
     fun `getTimeCardEvent should return null for non-existent event`() = runBlockingTest {
-        val fakeId = TimeCardEventId("fake-${'$'}test_prefix")
-        val getResult = database.getTimeCardEvent(GetTimeCardEventRequest(fakeId))
+        // Arrange
+        val fakeId = TimeCardEventId(UUID.random())
+
+        // Act
+        val getResult = timeCardDatabase.getTimeCardEvent(DeleteTimeCardEventRequest(fakeId))
+
+        // Assert
         assertTrue(getResult.isSuccess)
         assertNull(getResult.getOrNull())
     }
 }
-

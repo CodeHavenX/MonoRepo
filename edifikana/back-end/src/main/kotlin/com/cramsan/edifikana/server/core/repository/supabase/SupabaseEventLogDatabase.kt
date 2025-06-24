@@ -48,9 +48,7 @@ class SupabaseEventLogDatabase(
             filter {
                 EventLogEntryEntity::id eq request.id.eventLogEntryId
             }
-            limit(1)
-            single()
-        }.decodeAsOrNull<EventLogEntryEntity>()
+        }.decodeSingleOrNull<EventLogEntryEntity>()
 
         eventLogEntryEntity?.toEventLogEntry()
     }
@@ -86,7 +84,7 @@ class SupabaseEventLogDatabase(
             filter {
                 EventLogEntryEntity::id eq request.id
             }
-        }.decodeAs<EventLogEntryEntity>().toEventLogEntry()
+        }.decodeSingle<EventLogEntryEntity>().toEventLogEntry()
     }
 
     /**

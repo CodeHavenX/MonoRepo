@@ -8,73 +8,64 @@ import com.cramsan.edifikana.server.core.service.models.requests.CreateStaffRequ
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteStaffRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetStaffRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdateStaffRequest
-import com.cramsan.edifikana.server.di.FrameworkModule
-import com.cramsan.edifikana.server.di.IntegTestApplicationModule
-import com.cramsan.edifikana.server.di.SettingsModule
-import com.cramsan.edifikana.server.di.SupabaseModule
-import com.cramsan.framework.test.TestBase
 import com.cramsan.framework.utils.uuid.UUID
-import org.koin.core.context.startKoin
-import org.koin.core.context.stopKoin
-import org.koin.test.KoinTest
-import org.koin.test.inject
-import kotlin.test.AfterTest
+import kotlinx.coroutines.runBlocking
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-class SupabaseStaffDatabaseIntegrationTest : TestBase(), KoinTest {
+class SupabaseStaffDatabaseIntegrationTest : SupabaseIntegrationTest() {
 
-    private val database: SupabaseStaffDatabase by inject()
     private lateinit var test_prefix: String
+    private var propertyId: PropertyId? = null
 
     @BeforeTest
     fun setup() {
         test_prefix = UUID.random()
-        startKoin {
-            modules(
-                FrameworkModule,
-                SettingsModule,
-                IntegTestApplicationModule,
-                SupabaseModule,
-            )
+        runBlocking {
+            propertyId = createTestProperty("${test_prefix}_Property")
         }
-    }
-
-    @AfterTest
-    fun tearDown() {
-        stopKoin()
     }
 
     @Test
     fun `createStaff should return staff on success`() = runBlockingTest {
+        // Arrange
         val request = CreateStaffRequest(
             idType = IdType.PASSPORT,
-            firstName = "${'$'}{test_prefix}_First",
-            lastName = "${'$'}{test_prefix}_Last",
+            firstName = "${test_prefix}_First",
+            lastName = "${test_prefix}_Last",
             role = StaffRole.CLEANING,
-            propertyId = PropertyId("property-${'$'}{test_prefix}")
+            propertyId = propertyId!!,
         )
-        val result = database.createStaff(request)
+
+        // Act
+        val result = staffDatabase.createStaff(request).registerStaffForDeletion()
+
+        // Assert
         assertTrue(result.isSuccess)
         assertNotNull(result.getOrNull())
     }
 
     @Test
     fun `getStaff should return created staff`() = runBlockingTest {
+        // Arrange
         val createRequest = CreateStaffRequest(
-            firstName = "${'$'}{test_prefix}_GetFirst",
-            lastName = "${'$'}{test_prefix}_GetLast",
+            firstName = "${test_prefix}_GetFirst",
+            lastName = "${test_prefix}_GetLast",
             role = StaffRole.SECURITY_COVER,
             idType = IdType.DNI,
-            propertyId = PropertyId("property-${'$'}{test_prefix}")
+            propertyId = propertyId!!,
         )
-        val createResult = database.createStaff(createRequest)
+
+        // Act
+        val createResult = staffDatabase.createStaff(createRequest).registerStaffForDeletion()
         assertTrue(createResult.isSuccess)
         val staff = createResult.getOrNull()!!
-        val getResult = database.getStaff(GetStaffRequest(staff.id))
+        val getResult = staffDatabase.getStaff(GetStaffRequest(staff.id))
+
+        // Assert
         assertTrue(getResult.isSuccess)
         val fetched = getResult.getOrNull()
         assertNotNull(fetched)
@@ -83,25 +74,30 @@ class SupabaseStaffDatabaseIntegrationTest : TestBase(), KoinTest {
 
     @Test
     fun `getStaffs should return all staff`() = runBlockingTest {
+        // Arrange
         val request1 = CreateStaffRequest(
-            firstName = "${'$'}{test_prefix}_StaffA",
-            lastName = "${'$'}{test_prefix}_LastA",
+            firstName = "${test_prefix}_StaffA",
+            lastName = "${test_prefix}_LastA",
             role = StaffRole.SECURITY_COVER,
             idType = IdType.DNI,
-            propertyId = PropertyId("property-${'$'}{test_prefix}"),
+            propertyId = propertyId!!,
         )
         val request2 = CreateStaffRequest(
-            firstName = "${'$'}{test_prefix}_StaffB",
-            lastName = "${'$'}{test_prefix}_LastB",
+            firstName = "${test_prefix}_StaffB",
+            lastName = "${test_prefix}_LastB",
             role = StaffRole.CLEANING,
             idType = IdType.PASSPORT,
-            propertyId = PropertyId("property-${'$'}{test_prefix}"),
+            propertyId = propertyId!!,
         )
-        val result1 = database.createStaff(request1)
-        val result2 = database.createStaff(request2)
+
+        // Act
+        val result1 = staffDatabase.createStaff(request1).registerStaffForDeletion()
+        val result2 = staffDatabase.createStaff(request2).registerStaffForDeletion()
         assertTrue(result1.isSuccess)
         assertTrue(result2.isSuccess)
-        val getAllResult = database.getStaffs()
+        val getAllResult = staffDatabase.getStaffs()
+
+        // Assert
         assertTrue(getAllResult.isSuccess)
         val staffs = getAllResult.getOrNull()
         assertNotNull(staffs)
@@ -112,24 +108,29 @@ class SupabaseStaffDatabaseIntegrationTest : TestBase(), KoinTest {
 
     @Test
     fun `updateStaff should update staff fields`() = runBlockingTest {
+        // Arrange
         val createRequest = CreateStaffRequest(
-            firstName = "${'$'}{test_prefix}_ToUpdate",
-            lastName = "${'$'}{test_prefix}_LastToUpdate",
+            firstName = "${test_prefix}_ToUpdate",
+            lastName = "${test_prefix}_LastToUpdate",
             role = StaffRole.SECURITY,
             idType = IdType.DNI,
-            propertyId = PropertyId("property-${'$'}{test_prefix}")
+            propertyId = propertyId!!,
         )
-        val createResult = database.createStaff(createRequest)
+
+        // Act
+        val createResult = staffDatabase.createStaff(createRequest).registerStaffForDeletion()
         assertTrue(createResult.isSuccess)
         val staff = createResult.getOrNull()!!
         val updateRequest = UpdateStaffRequest(
             id = staff.id,
-            firstName = "${'$'}{test_prefix}_UpdatedFirst",
-            lastName = "${'$'}{test_prefix}_UpdatedLast",
+            firstName = "${test_prefix}_UpdatedFirst",
+            lastName = "${test_prefix}_UpdatedLast",
             role = StaffRole.CLEANING,
             idType = IdType.PASSPORT
         )
-        val updateResult = database.updateStaff(updateRequest)
+        val updateResult = staffDatabase.updateStaff(updateRequest)
+
+        // Assert
         assertTrue(updateResult.isSuccess)
         val updated = updateResult.getOrNull()
         assertNotNull(updated)
@@ -141,29 +142,38 @@ class SupabaseStaffDatabaseIntegrationTest : TestBase(), KoinTest {
 
     @Test
     fun `deleteStaff should remove staff`() = runBlockingTest {
+        // Arrange
         val createRequest = CreateStaffRequest(
-            firstName = "${'$'}{test_prefix}_ToDelete",
-            lastName = "${'$'}{test_prefix}_LastToDelete",
+            firstName = "${test_prefix}_ToDelete",
+            lastName = "${test_prefix}_LastToDelete",
             role = StaffRole.SECURITY,
             idType = IdType.DNI,
-            propertyId = PropertyId("property-${'$'}{test_prefix}")
+            propertyId = propertyId!!,
         )
-        val createResult = database.createStaff(createRequest)
+        val createResult = staffDatabase.createStaff(createRequest)
         assertTrue(createResult.isSuccess)
         val staff = createResult.getOrNull()!!
-        val deleteResult = database.deleteStaff(DeleteStaffRequest(staff.id))
+
+        // Act
+        val deleteResult = staffDatabase.deleteStaff(DeleteStaffRequest(staff.id))
+
+        // Assert
         assertTrue(deleteResult.isSuccess)
         assertTrue(deleteResult.getOrNull() == true)
-        val getResult = database.getStaff(GetStaffRequest(staff.id))
+        val getResult = staffDatabase.getStaff(GetStaffRequest(staff.id))
         assertTrue(getResult.isSuccess)
         assertNull(getResult.getOrNull())
     }
 
     @Test
     fun `deleteStaff should fail for non-existent staff`() = runBlockingTest {
-        val fakeId = StaffId("fake-${'$'}test_prefix")
-        val deleteResult = database.deleteStaff(DeleteStaffRequest(fakeId))
+        // Arrange
+        val fakeId = StaffId("fake-$test_prefix")
+
+        // Act
+        val deleteResult = staffDatabase.deleteStaff(DeleteStaffRequest(fakeId))
+
+        // Assert
         assertTrue(deleteResult.isFailure || deleteResult.getOrNull() == false)
     }
 }
-

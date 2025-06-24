@@ -2,6 +2,9 @@ package com.cramsan.edifikana.client.lib.managers
 
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.UnifiedDispatcherProvider
+import com.cramsan.framework.logging.EventLogger
+import com.cramsan.framework.logging.implementation.PassthroughEventLogger
+import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.preferences.Preferences
 import com.cramsan.framework.test.TestBase
 import io.mockk.coEvery
@@ -27,8 +30,12 @@ class PreferencesManagerTest : TestBase() {
     private lateinit var dependencies: ManagerDependencies
     private lateinit var manager: PreferencesManager
 
+    /**
+     * Sets up the test environment, initializing mocks and the PreferencesManager instance.
+     */
     @BeforeTest
     fun setup() {
+        EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         preferences = mockk(relaxed = true)
 
         dependencies = mockk(relaxed = true)

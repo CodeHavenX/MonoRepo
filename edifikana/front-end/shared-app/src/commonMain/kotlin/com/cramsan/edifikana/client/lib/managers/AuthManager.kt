@@ -8,8 +8,6 @@ import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.getOrCatch
 import com.cramsan.framework.logging.logI
 import kotlinx.coroutines.flow.StateFlow
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 /**
  * Manager for authentication.
@@ -17,10 +15,8 @@ import org.koin.core.component.inject
 class AuthManager(
     private val dependencies: ManagerDependencies,
     private val propertyService: PropertyService,
-) : KoinComponent {
-
-    private val authService: AuthService by inject()
-
+    private val authService: AuthService,
+) {
     /**
      * Signs in the user with the given email and password.
      */

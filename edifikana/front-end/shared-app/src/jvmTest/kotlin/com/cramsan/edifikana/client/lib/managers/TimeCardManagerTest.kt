@@ -122,8 +122,8 @@ class TimeCardManagerTest : TestBase() {
                 PropertyId("Muralla"),
                 TimeCardEventType.CLOCK_IN,
                 100,
-                null,
-                null)
+                "imageUrl1",
+                "imagerRef1")
         )
         val online = listOf(
             TimeCardRecordModel(
@@ -133,8 +133,8 @@ class TimeCardManagerTest : TestBase() {
                 PropertyId("Cenit"),
                 TimeCardEventType.CLOCK_OUT,
                 200,
-                null,
-                null)
+                "imagerUrl2",
+                "imagerRef2")
         )
         coEvery { timeCardCache.getAllRecords() } returns cached
         coEvery { timeCardService.getAllRecords() } returns Result.success(online)
@@ -163,8 +163,8 @@ class TimeCardManagerTest : TestBase() {
             PropertyId("Barranco"),
             TimeCardEventType.CLOCK_OUT,
             123,
-            null,
-            null)
+            "imagerUrl3",
+            "imagerRef3")
         coEvery { timeCardService.getRecord(eventId) } returns Result.success(record)
 
 
@@ -190,8 +190,8 @@ class TimeCardManagerTest : TestBase() {
             PropertyId("Cenit"),
             TimeCardEventType.CLOCK_IN,
             456,
-            null,
-            null)
+            "imagerUrl4",
+            "imagerRef4")
         val uri = mockk<CoreUri>()
         coEvery { timeCardCache.addRecord(record, uri) } returns Unit
 
@@ -202,5 +202,52 @@ class TimeCardManagerTest : TestBase() {
         assertTrue(result.isSuccess)
         coVerify { timeCardCache.addRecord(record, uri) }
     }
+
+    // Test data for time card records
+    val staffIdTest1 = StaffId("staff-Z")
+    val staffIdTest2 = StaffId("staff-Y")
+    val eventIdTest1 = TimeCardEventId("event-X")
+    val eventIdTest2 = TimeCardEventId("event-Y")
+    val eventIdTest3 = TimeCardEventId("event-Z")
+
+    val timeCardRecordTest1: TimeCardRecordModel = TimeCardRecordModel(
+        eventIdTest1,
+        "testId",
+        staffIdTest1,
+        PropertyId("test-property-id"),
+        TimeCardEventType.CLOCK_IN,
+        456,
+        "test-image-url",
+        "test-image-ref"
+    )
+    val timeCardRecordTest2 = TimeCardRecordModel(
+        eventIdTest1,
+        "testId4",
+        staffIdTest1,
+        PropertyId("Barranco"),
+        TimeCardEventType.CLOCK_OUT,
+        123,
+        "test-image-url",
+        "test-image-ref")
+
+    val timeCardRecordTest3 = TimeCardRecordModel(
+        eventIdTest2,
+        "testId3",
+        staffIdTest1,
+        PropertyId("Cenit"),
+        TimeCardEventType.CLOCK_OUT,
+        200,
+        "test-image-url",
+        "test-image-ref")
+
+    val timeCardRecordTest4 = TimeCardRecordModel(
+        eventIdTest3,
+        "testId3",
+        staffIdTest2,
+        PropertyId("Muralla"),
+        TimeCardEventType.CLOCK_IN,
+        100,
+        "test-image-url",
+        "test-image-ref")
 }
 

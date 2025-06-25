@@ -25,6 +25,8 @@ jobs:
     env:
       SUPABASE_DB_PASSWORD : ${{ secrets.EDIFIKANA_SUPABASE_DB_PASSWORD  }}
       PROJECT_ID: ${{ secrets.EDIFIKANA_PROJECT_ID }}
+      EDIFIKANA_SUPABASE_URL: ${{ secrets.EDIFIKANA_SUPABASE_URL }}
+      EDIFIKANA_SUPABASE_KEY: ${{ secrets.EDIFIKANA_SUPABASE_KEY }}
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK 21

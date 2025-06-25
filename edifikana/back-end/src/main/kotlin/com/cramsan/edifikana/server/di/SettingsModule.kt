@@ -14,14 +14,18 @@ val SettingsModule = module {
 
     factory<String>(named(Overrides.KEY_SUPABASE_KEY)) {
         val configuration = get<Configuration>()
-        configuration.readString("edifikana${getStageSegment()}.supabase.key")
-            ?: System.getenv("EDIFIKANA_SUPABASE_KEY").orEmpty()
+        val configSetting = configuration.readString("edifikana${getStageSegment()}.supabase.key").orEmpty()
+        configSetting.ifBlank {
+            System.getenv("EDIFIKANA_SUPABASE_KEY").orEmpty()
+        }
     }
 
     factory<String>(named(Overrides.KEY_SUPABASE_URL)) {
         val configuration = get<Configuration>()
-        configuration.readString("edifikana${getStageSegment()}.supabase.url")
-            ?: System.getenv("EDIFIKANA_SUPABASE_URL").orEmpty()
+        val configSetting = configuration.readString("edifikana${getStageSegment()}.supabase.url").orEmpty()
+        configSetting.ifBlank {
+            System.getenv("EDIFIKANA_SUPABASE_URL").orEmpty()
+        }
     }
 }
 

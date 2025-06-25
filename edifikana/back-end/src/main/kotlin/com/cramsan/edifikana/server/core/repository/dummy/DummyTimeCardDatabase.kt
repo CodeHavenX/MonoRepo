@@ -5,6 +5,7 @@ import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.core.service.models.requests.CreateTimeCardEventRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteTimeCardEventRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetTimeCardEventListRequest
+import com.cramsan.edifikana.server.core.service.models.requests.GetTimeCardEventRequest
 import com.cramsan.framework.logging.logD
 
 /**
@@ -16,7 +17,7 @@ class DummyTimeCardDatabase : TimeCardDatabase {
         return Result.success(TIME_CARD_EVENT_1)
     }
 
-    override suspend fun getTimeCardEvent(request: DeleteTimeCardEventRequest): Result<TimeCardEvent?> {
+    override suspend fun getTimeCardEvent(request: GetTimeCardEventRequest): Result<TimeCardEvent?> {
         logD(TAG, "getTimeCardEvent")
         return Result.success(TIME_CARD_EVENT_1)
     }

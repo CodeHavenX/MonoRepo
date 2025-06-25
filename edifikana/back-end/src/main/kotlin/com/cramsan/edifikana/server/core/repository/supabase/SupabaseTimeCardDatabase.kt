@@ -6,6 +6,7 @@ import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.core.service.models.requests.CreateTimeCardEventRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteTimeCardEventRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetTimeCardEventListRequest
+import com.cramsan.edifikana.server.core.service.models.requests.GetTimeCardEventRequest
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.postgrest.Postgrest
@@ -39,7 +40,7 @@ class SupabaseTimeCardDatabase(
      */
     @OptIn(SupabaseModel::class)
     override suspend fun getTimeCardEvent(
-        request: DeleteTimeCardEventRequest,
+        request: GetTimeCardEventRequest,
     ): Result<TimeCardEvent?> = runSuspendCatching(TAG) {
         logD(TAG, "Getting time card event: %s", request.id)
 

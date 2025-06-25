@@ -4,8 +4,8 @@ import com.cramsan.edifikana.server.core.repository.TimeCardDatabase
 import com.cramsan.edifikana.server.core.repository.supabase.models.TimeCardEventEntity
 import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.core.service.models.requests.CreateTimeCardEventRequest
+import com.cramsan.edifikana.server.core.service.models.requests.DeleteTimeCardEventRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetTimeCardEventListRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetTimeCardEventRequest
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.postgrest.Postgrest
@@ -39,7 +39,7 @@ class SupabaseTimeCardDatabase(
      */
     @OptIn(SupabaseModel::class)
     override suspend fun getTimeCardEvent(
-        request: GetTimeCardEventRequest,
+        request: DeleteTimeCardEventRequest,
     ): Result<TimeCardEvent?> = runSuspendCatching(TAG) {
         logD(TAG, "Getting time card event: %s", request.id)
 
@@ -47,9 +47,7 @@ class SupabaseTimeCardDatabase(
             filter {
                 TimeCardEventEntity::id eq request.id.timeCardEventId
             }
-            limit(1)
-            single()
-        }.decodeAsOrNull<TimeCardEventEntity>()
+        }.decodeSingleOrNull<TimeCardEventEntity>()
 
         timeCardEventEntity?.toTimeCardEvent()
     }
@@ -68,6 +66,23 @@ class SupabaseTimeCardDatabase(
             }
             select()
         }.decodeList<TimeCardEventEntity>().map { it.toTimeCardEvent() }
+    }
+
+    /**
+     * Deletes a time card event for the given [request]. Returns the [Result] of the operation.
+     */
+    @OptIn(SupabaseModel::class)
+    override suspend fun deleteTimeCardEvent(
+        request: DeleteTimeCardEventRequest,
+    ): Result<Boolean> = runSuspendCatching(TAG) {
+        logD(TAG, "Deleting time card event: %s", request.id)
+
+        postgrest.from(TimeCardEventEntity.COLLECTION).delete {
+            select()
+            filter {
+                TimeCardEventEntity::id eq request.id.timeCardEventId
+            }
+        }.decodeSingleOrNull<TimeCardEventEntity>() != null
     }
 
     companion object {

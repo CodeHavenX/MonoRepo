@@ -50,9 +50,7 @@ class SupabasePropertyDatabase(
             filter {
                 PropertyEntity::id eq request.propertyId.propertyId
             }
-            limit(1)
-            single()
-        }.decodeAsOrNull<PropertyEntity>()
+        }.decodeSingleOrNull<PropertyEntity>()
 
         propertyEntity?.toProperty()
     }
@@ -99,7 +97,7 @@ class SupabasePropertyDatabase(
             filter {
                 PropertyEntity::id eq request.propertyId.propertyId
             }
-        }.decodeAs<PropertyEntity>().toProperty()
+        }.decodeSingle<PropertyEntity>().toProperty()
     }
 
     /**

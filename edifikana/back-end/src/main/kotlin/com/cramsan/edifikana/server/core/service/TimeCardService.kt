@@ -7,8 +7,8 @@ import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.edifikana.server.core.repository.TimeCardDatabase
 import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.core.service.models.requests.CreateTimeCardEventRequest
+import com.cramsan.edifikana.server.core.service.models.requests.DeleteTimeCardEventRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetTimeCardEventListRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetTimeCardEventRequest
 import com.cramsan.framework.logging.logD
 import kotlinx.datetime.Instant
 
@@ -51,7 +51,7 @@ class TimeCardService(
     ): TimeCardEvent? {
         logD(TAG, "getTimeCardEvent")
         val timeCard = timeCardDatabase.getTimeCardEvent(
-            request = GetTimeCardEventRequest(
+            request = DeleteTimeCardEventRequest(
                 id = id,
             ),
         ).getOrNull()

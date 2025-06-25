@@ -48,9 +48,7 @@ class SupabaseStaffDatabase(
             filter {
                 StaffEntity::id eq request.id.staffId
             }
-            limit(1)
-            single()
-        }.decodeAsOrNull<StaffEntity>()
+        }.decodeSingleOrNull<StaffEntity>()
 
         staffEntity?.toStaff()
     }
@@ -85,7 +83,7 @@ class SupabaseStaffDatabase(
             filter {
                 StaffEntity::id eq request.id
             }
-        }.decodeAs<StaffEntity>().toStaff()
+        }.decodeSingle<StaffEntity>().toStaff()
     }
 
     /**

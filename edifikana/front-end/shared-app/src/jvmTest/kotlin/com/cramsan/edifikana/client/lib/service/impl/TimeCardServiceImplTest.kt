@@ -75,8 +75,8 @@ class TimeCardServiceImplTest {
         // Assert
         assertTrue(result.isSuccess)
         assertEquals(2, result.getOrNull()?.size)
-        assertEquals("event1", result.getOrNull()?.get(0)?.eventType.toString())
-        assertEquals("event2", result.getOrNull()?.get(1)?.eventType.toString())
+        assertEquals(TimeCardEventType.CLOCK_IN, result.getOrNull()?.get(0)?.eventType)
+        assertEquals(TimeCardEventType.CLOCK_OUT, result.getOrNull()?.get(1)?.eventType)
     }
 
     /**
@@ -110,7 +110,7 @@ class TimeCardServiceImplTest {
         // Assert
         assertTrue(result.isSuccess)
         assertEquals(1, result.getOrNull()?.size)
-        assertEquals("event1", result.getOrNull()?.get(0)?.eventType.toString())
+        assertEquals(TimeCardEventType.CLOCK_OUT, result.getOrNull()?.get(0)?.eventType)
     }
 
     /**
@@ -142,7 +142,7 @@ class TimeCardServiceImplTest {
 
         // Assert
         assertTrue(result.isSuccess)
-        assertEquals("event1", result.getOrNull()?.eventType.toString())
+        assertEquals(TimeCardEventType.CLOCK_OUT, result.getOrNull()?.eventType)
     }
 
     /**
@@ -171,6 +171,6 @@ class TimeCardServiceImplTest {
 
         // Assert
         assertTrue(result.isSuccess)
-        assertEquals("event-1", result.getOrNull().toString())
+        assertEquals("event1", result.getOrNull()?.entityId)
     }
 }

@@ -8,6 +8,8 @@
 name: Deploy Supabase To All Stages
 
 on:
+  push:
+    branches: [ "main" ]
   workflow_dispatch:
 
 permissions:
@@ -41,7 +43,7 @@ jobs:
         with:
           arguments: edifikana:back-end:assemble
       # Push the DB changes to Supabase
-      - run: scripts/edifikana/edifikana_push_changes.sh
+      - run: scripts/edifikana_push_changes.sh
       # Run the integration tests
       - name: Build with Gradle
         uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1

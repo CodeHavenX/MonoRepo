@@ -36,18 +36,10 @@ class PropertyServiceImplTest {
         val propertyId = "property-1"
         val propertyList = listOf(
             mockk<PropertyNetworkResponse> {
-//                coEvery { toPropertyModel() } returns PropertyModel(
-//                    PropertyId("property-1"),
-//                    "Muralla",
-//                    "253 Jiron Juan Fanning, Barranco, Lima, Peru",
-//                )
+//                coEvery { toPropertyModel() } returns testProperty1
             },
             mockk<PropertyNetworkResponse> {
-//                coEvery { toPropertyModel() } returns PropertyModel(
-//                    PropertyId("property-2"),
-//                    "VicaVerde",
-//                    "632 Avenida Grau, Barranco, Lima, Peru"
-//                )
+//                coEvery { toPropertyModel() } returns testProperty2
             }
         )
         coEvery { preferences.loadString(any()) } returns propertyId
@@ -59,10 +51,23 @@ class PropertyServiceImplTest {
         val result = service.getPropertyList()
         assertTrue(result.isSuccess)
         assertEquals(2, result.getOrNull()?.size)
-        assertEquals("Property 1", result.getOrNull()?.get(0)?.name)
-        assertEquals("Property 2", result.getOrNull()?.get(1)?.name)
+        assertEquals("Muralla", result.getOrNull()?.get(0)?.name)
+        assertEquals("VicaVerde", result.getOrNull()?.get(1)?.name)
     }
 
     // Additional tests for setActiveProperty, getActiveProperty, etc. can be added as needed
+
+    // Test properties for testing purposes
+    val testProperty1 = PropertyModel(
+        PropertyId("property-1"),
+        "Muralla",
+        "253 Jiron Juan Fanning, Barranco, Lima, Peru",
+    )
+
+    val testProperty2 = PropertyModel(
+        PropertyId("property-2"),
+        "VicaVerde",
+        "632 Avenida Grau, Barranco, Lima, Peru"
+    )
 }
 

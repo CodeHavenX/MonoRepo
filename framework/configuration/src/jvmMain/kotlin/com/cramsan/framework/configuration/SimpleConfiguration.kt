@@ -1,5 +1,6 @@
 package com.cramsan.framework.configuration
 
+import com.cramsan.framework.logging.logD
 import java.io.File
 import java.util.Properties
 
@@ -14,7 +15,11 @@ class SimpleConfiguration(private val configFile: String) : Configuration {
      * Initializes the configuration by loading the properties from the config file.
      */
     init {
-        File(configFile).inputStream().use {
+        val file = File(configFile)
+        if (file.createNewFile()) {
+            logD(TAG, "Config file created at: ${file.absolutePath}")
+        }
+        file.inputStream().use {
             properties.load(it)
         }
     }
@@ -56,3 +61,5 @@ class SimpleConfiguration(private val configFile: String) : Configuration {
         return properties.getProperty(key)
     }
 }
+
+const val TAG = "SimpleConfiguration"

@@ -1,0 +1,55 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+# This workflow will deploy the changes to a given stage. Changes
+# will be validated by running the build and tests.
+
+name: Deploy Supabase To All Stages
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  ANDROID_HOME: "/opt/Android/sdk"
+
+jobs:
+  stage:
+    runs-on: self-hosted
+    environment: "stage"
+    env:
+      SUPABASE_DB_PASSWORD : ${{ secrets.EDIFIKANA_SUPABASE_DB_PASSWORD  }}
+      PROJECT_ID: ${{ secrets.EDIFIKANA_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'corretto'
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      # Link the project to the Supabase CLI
+      - run: scripts/edifikana_link_project.sh
+      # Build the project. We do this first since building can take a while
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
+        with:
+          arguments: edifikana:back-end:assemble
+      # Push the DB changes to Supabase
+      - run: scripts/edifikana/edifikana_push_changes.sh
+      # Run the integration tests
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
+        with:
+          arguments: edifikana:back-end:integTest
+#jobs:
+#  deploy-stage:
+#    uses: ./.github/workflows/deploy_supabase_step.yml
+#    with:
+#      supabase_access_token: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+#      supabase_project_id: ${{ secrets.SUPABASE_PROJECT_ID }}

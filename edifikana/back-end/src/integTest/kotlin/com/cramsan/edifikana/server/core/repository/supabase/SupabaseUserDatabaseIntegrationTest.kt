@@ -18,7 +18,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
-class SupabaseUserDatabaseTest : TestBase(), KoinTest {
+class SupabaseUserDatabaseIntegrationTest : TestBase(), KoinTest {
 
     private val database: SupabaseUserDatabase by inject()
     private lateinit var test_prefix: String

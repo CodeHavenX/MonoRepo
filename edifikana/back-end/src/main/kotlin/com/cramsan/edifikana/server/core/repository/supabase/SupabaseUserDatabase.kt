@@ -143,7 +143,7 @@ class SupabaseUserDatabase(
     override suspend fun enrollUser(request: EnrollUserRequest): Result<User> = runSuspendCatching(TAG) {
         logD(
             TAG,
-            "Enrolling account for user: %s and enrollmentType",
+            "Enrolling account for user: %s and enrollmentType: %s",
             request.enrollmentIdentifier,
             request.enrollmentType,
         )

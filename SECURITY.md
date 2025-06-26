@@ -2,7 +2,8 @@
 
 ## Supported Versions
 
-The only supported versions are the latest ones published to Production channels. Please check the **Distribution** section under each project to identify the latest release.
+The only supported versions are the latest ones published to Production channels. Please refer to each project's 
+documentation for the latest version.
 
 ## Reporting a Vulnerability
 

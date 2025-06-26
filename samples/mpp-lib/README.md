@@ -1,3 +1,5 @@
-# Module Name
+# MPP Library
 
-Use this file to describe the module and its purpose. You can also include any other information that is relevant to the module, such as how it is used, how it interacts with other modules, and any other relevant information.
+This module provides a sample Kotlin Multiplatform library setup. It demonstrates how to share code across multiple
+platforms (JVM, Android, JS, etc.) using a single codebase. Use this as a template for creating your own 
+multiplatform libraries.

@@ -1,3 +1,4 @@
-# Module Name
+# JB Compose MPP Library
 
-Use this file to describe the module and its purpose. You can also include any other information that is relevant to the module, such as how it is used, how it interacts with other modules, and any other relevant information.
+This is a sample application that demonstrates how to use JB Compose MPP library to create a multiplatform application
+using JetBrains Compose. It is by itself not runnable, to run this module look at the other `jbcompose-*-app` modules.

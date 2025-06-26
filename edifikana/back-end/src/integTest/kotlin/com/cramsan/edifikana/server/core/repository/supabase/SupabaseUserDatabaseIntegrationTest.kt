@@ -173,7 +173,7 @@ class SupabaseUserDatabaseIntegrationTest : SupabaseIntegrationTest() {
         val user = result.getOrThrow()
 
         // Assert
-        assertEquals(user.id, user.id)
+        assertEquals(user.id, UserId(supabaseUser.id))
         assertEquals(user.email, email)
         assertEquals(user.phoneNumber, "")
         assertEquals(user.firstName, "")

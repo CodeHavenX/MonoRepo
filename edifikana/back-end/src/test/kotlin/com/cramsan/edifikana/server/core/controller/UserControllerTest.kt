@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.core.controller
 
+import com.cramsan.edifikana.lib.model.EnrollmentType
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
 import com.cramsan.edifikana.server.core.controller.auth.ClientContext
@@ -319,5 +320,46 @@ class UserControllerTest : TestBase(), KoinTest {
 
         // Assert
         assertEquals(HttpStatusCode.OK, response.status)
+    }
+
+    @Test
+    fun `test enrollUser`() = testEdifikanaApplication {
+        // Configure
+        val requestBody = readFileContent("requests/enroll_user_request.json")
+        val expectedResponse = readFileContent("requests/enroll_user_response.json")
+        val userService = get<UserService>()
+        val user = User(
+            id = UserId("user123"),
+            email = "test@gmail.com",
+            phoneNumber = "",
+            firstName = "",
+            lastName = "",
+            isVerified = true,
+        )
+        coEvery {
+            userService.enrollUser(
+                userId = UserId("user123"),
+                enrollmentIdentifier = "test@gmail.com",
+                enrollmentType = EnrollmentType.EMAIL,
+            )
+        }.answers {
+            Result.success(user)
+        }
+        val contextRetriever = get<ContextRetriever>()
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            ClientContext.UnauthenticatedClientContext
+        }
+
+        // Act
+        val response = client.post("user/enroll") {
+            setBody(requestBody)
+            contentType(ContentType.Application.Json)
+        }
+
+        // Assert
+        assertEquals(HttpStatusCode.OK, response.status)
+        assertEquals(expectedResponse, response.bodyAsText())
     }
 }

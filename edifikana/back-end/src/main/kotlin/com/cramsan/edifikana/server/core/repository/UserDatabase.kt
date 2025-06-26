@@ -3,6 +3,7 @@ package com.cramsan.edifikana.server.core.repository
 import com.cramsan.edifikana.server.core.service.models.User
 import com.cramsan.edifikana.server.core.service.models.requests.CreateUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteUserRequest
+import com.cramsan.edifikana.server.core.service.models.requests.EnrollUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdatePasswordRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdateUserRequest
@@ -51,8 +52,10 @@ interface UserDatabase {
     suspend fun updatePassword(request: UpdatePasswordRequest): Result<Boolean>
 
     /**
-     * Signs in a user with a magic link using the provided [email]. This method is used for passwordless
-     * sign in
+     * Enrolls a user for the given [request]. This is used for creating a new user account for users who may have
+     * previously signed in with a third-party provider.
+     *
+     * Returns the [Result] of the operation with the enrolled [User].
      */
-    suspend fun sendOtpCode(email: String): Result<Unit>
+    suspend fun enrollUser(request: EnrollUserRequest): Result<User>
 }

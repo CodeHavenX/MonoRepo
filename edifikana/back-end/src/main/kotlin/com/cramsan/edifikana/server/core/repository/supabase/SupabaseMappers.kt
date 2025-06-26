@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.core.repository.supabase
 
+import com.cramsan.edifikana.lib.model.EnrollmentType
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
@@ -20,6 +21,8 @@ import com.cramsan.edifikana.server.core.service.models.requests.CreatePropertyR
 import com.cramsan.edifikana.server.core.service.models.requests.CreateStaffRequest
 import com.cramsan.edifikana.server.core.service.models.requests.CreateTimeCardEventRequest
 import com.cramsan.edifikana.server.core.service.models.requests.CreateUserRequest
+import com.cramsan.edifikana.server.core.service.models.requests.EnrollUserRequest
+import com.cramsan.framework.assertlib.assert
 import kotlinx.datetime.Instant
 
 // TODO Wire up the isVerified field to the rest of the system.
@@ -49,6 +52,27 @@ fun CreateUserRequest.toUserEntity(supabaseUserId: String): UserEntity.CreateUse
         phoneNumber = phoneNumber,
         firstName = firstName,
         lastName = lastName,
+    )
+}
+
+/**
+ * Maps an [EnrollUserRequest] to the [UserEntity.CreateUserEntity] model.
+ * This is a placeholder function and needs to be implemented based on the actual requirements.
+ */
+@OptIn(SupabaseModel::class)
+fun EnrollUserRequest.toUserEntity(supabaseUserId: String): UserEntity.CreateUserEntity {
+    assert(
+        enrollmentType == EnrollmentType.EMAIL,
+        TAG,
+        "Only email enrollment is supported in this workflow.",
+    )
+
+    return UserEntity.CreateUserEntity(
+        id = supabaseUserId,
+        email = this.enrollmentIdentifier,
+        phoneNumber = "",
+        firstName = "",
+        lastName = "",
     )
 }
 
@@ -169,3 +193,5 @@ fun EventLogEntryEntity.toEventLogEntry(): EventLogEntry {
         unit = this.unit,
     )
 }
+
+private const val TAG = "SupabaseMappers"

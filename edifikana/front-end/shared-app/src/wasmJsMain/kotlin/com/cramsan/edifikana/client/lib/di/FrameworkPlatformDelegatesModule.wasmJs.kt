@@ -9,7 +9,7 @@ import com.cramsan.framework.logging.EventLoggerErrorCallbackDelegate
 import com.cramsan.framework.logging.implementation.NoopEventLoggerErrorCallbackDelegate
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.preferences.PreferencesDelegate
-import com.cramsan.framework.preferences.implementation.InMemoryPreferencesDelegate
+import com.cramsan.framework.preferences.implementation.BrowserLocalStoragePreferencesDelegate
 import com.cramsan.framework.thread.ThreadUtilDelegate
 import com.cramsan.framework.thread.implemantation.ThreadUtilDelegateNoop
 import org.koin.dsl.module
@@ -36,5 +36,5 @@ actual val FrameworkPlatformDelegatesModule = module {
         UIDispatcherProvider()
     }
 
-    single<PreferencesDelegate> { InMemoryPreferencesDelegate() }
+    single<PreferencesDelegate> { BrowserLocalStoragePreferencesDelegate() }
 }

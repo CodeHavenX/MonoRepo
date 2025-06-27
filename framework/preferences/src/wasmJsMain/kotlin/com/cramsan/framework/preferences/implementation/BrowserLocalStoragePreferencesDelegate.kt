@@ -1,11 +1,13 @@
 package com.cramsan.framework.preferences.implementation
 
-
 import com.cramsan.framework.logging.logW
 import com.cramsan.framework.preferences.PreferencesDelegate
 import org.w3c.dom.get
 import org.w3c.dom.set
 
+/**
+ * A [PreferencesDelegate] implementation that uses the browser's local storage.
+ */
 class BrowserLocalStoragePreferencesDelegate : PreferencesDelegate {
 
     private val storage = kotlinx.browser.localStorage
@@ -51,8 +53,11 @@ class BrowserLocalStoragePreferencesDelegate : PreferencesDelegate {
     }
 
     override fun clear() {
-        logW(TAG, "clear() is not supported in BrowserLocalStoragePreferencesDelegate. " +
-                "Use remove() for individual keys.")
+        logW(
+            TAG,
+            "clear() is not supported in BrowserLocalStoragePreferencesDelegate. " +
+                "Use remove() for individual keys."
+        )
     }
 
     companion object {

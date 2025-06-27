@@ -53,14 +53,6 @@ class BrowserLocalStoragePreferencesDelegate : PreferencesDelegate {
     }
 
     override fun clear() {
-        logW(
-            TAG,
-            "clear() is not supported in BrowserLocalStoragePreferencesDelegate. " +
-                "Use remove() for individual keys."
-        )
-    }
-
-    companion object {
-        private const val TAG = "BrowserLocalStoragePreferencesDelegate"
+        storage.clear()
     }
 }

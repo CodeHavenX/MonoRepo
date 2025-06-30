@@ -18,11 +18,9 @@ class PropertyManager(
     /**
      * Get the list of properties.
      */
-    suspend fun getPropertyList(
-        showAll: Boolean = false,
-    ): Result<List<PropertyModel>> = dependencies.getOrCatch(TAG) {
+    suspend fun getPropertyList(): Result<List<PropertyModel>> = dependencies.getOrCatch(TAG) {
         logI(TAG, "getPropertyList")
-        propertyService.getPropertyList(showAll).getOrThrow()
+        propertyService.getPropertyList().getOrThrow()
     }
 
     /**

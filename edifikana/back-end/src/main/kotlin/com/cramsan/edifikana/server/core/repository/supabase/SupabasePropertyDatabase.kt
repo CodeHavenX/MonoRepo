@@ -62,19 +62,14 @@ class SupabasePropertyDatabase(
         logD(TAG, "Getting all properties")
         val userId = request.userId
 
-        val propertyIds = if (request.showAll) {
-            emptyList()
-        } else {
+        val propertyIds =
             postgrest.from(UserPropertyMappingEntity.COLLECTION).select {
                 filter { UserPropertyMappingEntity::userId eq userId.userId }
                 select()
             }.decodeList<UserPropertyMappingEntity>().map { it.propertyId }
-        }
 
         postgrest.from(PropertyEntity.COLLECTION).select {
-            if (!request.showAll) {
-                filter { PropertyEntity::id isIn propertyIds }
-            }
+            filter { PropertyEntity::id isIn propertyIds }
             select()
         }.decodeList<PropertyEntity>().map { it.toProperty() }
     }

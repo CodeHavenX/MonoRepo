@@ -22,7 +22,7 @@ class DummyPropertyService : PropertyService {
 
     private val _activeProperty = MutableStateFlow<PropertyId?>(PROPERTY_1.id)
 
-    override suspend fun getPropertyList(showAll: Boolean): Result<List<PropertyModel>> {
+    override suspend fun getPropertyList(): Result<List<PropertyModel>> {
         delay(500.milliseconds)
         return Result.success(properties)
     }

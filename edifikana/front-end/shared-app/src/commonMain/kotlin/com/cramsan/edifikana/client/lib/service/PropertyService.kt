@@ -12,7 +12,7 @@ interface PropertyService {
     /**
      * Get a list of properties associated with current user.
      */
-    suspend fun getPropertyList(showAll: Boolean): Result<List<PropertyModel>>
+    suspend fun getPropertyList(): Result<List<PropertyModel>>
 
     /**
      * Get the observable reference to the active property. You can use this function to fetch the current

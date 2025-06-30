@@ -71,7 +71,7 @@ class StaffListViewModelTest : TestBase() {
             StaffModel(
                 id = StaffId("1"),
                 idType = IdType.OTHER,
-                name = "Staff 1",
+                firstName = "Staff 1",
                 lastName = "Last 1",
                 role = StaffRole.SECURITY,
                 email = "staff1@test.com",

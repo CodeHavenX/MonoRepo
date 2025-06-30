@@ -94,7 +94,7 @@ fun StaffModel.CreateStaffRequest.toCreateStaffNetworkRequest(): CreateStaffNetw
 fun StaffNetworkResponse.toStaffModel(): StaffModel {
     return StaffModel(
         id = StaffId(id),
-        name = firstName, // TODO: Rename to first name
+        firstName = firstName,
         lastName = lastName,
         role = role,
         idType = idType,

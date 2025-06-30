@@ -62,7 +62,7 @@ class PropertyManagerViewModelTest : TestBase() {
             PropertyModel(PropertyId("1"), "Property 1", "Address 1"),
             PropertyModel(PropertyId("2"), "Property 2", "Address 2")
         )
-        coEvery { propertyManager.getPropertyList(showAll = true) } returns Result.success(properties)
+        coEvery { propertyManager.getPropertyList() } returns Result.success(properties)
 
         viewModel.loadPage()
 
@@ -82,7 +82,7 @@ class PropertyManagerViewModelTest : TestBase() {
 
     @Test
     fun `test loadPage with failure updates UI state with loading false`() = runBlockingTest {
-        coEvery { propertyManager.getPropertyList(showAll = true) } returns Result.failure(Exception("Error"))
+        coEvery { propertyManager.getPropertyList() } returns Result.failure(Exception("Error"))
 
         viewModel.loadPage()
 

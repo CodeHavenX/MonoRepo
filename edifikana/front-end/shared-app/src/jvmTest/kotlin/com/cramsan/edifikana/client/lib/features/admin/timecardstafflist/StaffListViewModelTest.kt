@@ -63,7 +63,7 @@ class StaffListViewModelTest : TestBase() {
         val staffList = listOf(
             StaffModel(
                 id = StaffId("1"),
-                name = "John",
+                firstName = "John",
                 email = "john@example.com",
                 status = StaffStatus.PENDING,
                 idType = IdType.PASSPORT,
@@ -72,7 +72,7 @@ class StaffListViewModelTest : TestBase() {
             ),
             StaffModel(
                 id = StaffId("2"),
-                name = "Jane",
+                firstName = "Jane",
                 email = "jane@example.com",
                 status = StaffStatus.ACTIVE,
                 idType = IdType.DNI,

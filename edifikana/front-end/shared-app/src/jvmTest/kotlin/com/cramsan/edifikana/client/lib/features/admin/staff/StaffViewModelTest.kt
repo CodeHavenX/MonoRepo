@@ -62,7 +62,7 @@ class StaffViewModelTest : TestBase() {
         val staff = StaffModel(
             id = staffId,
             idType = IdType.DNI,
-            name = "John",
+            firstName = "John",
             lastName = "Doe",
             role = StaffRole.SECURITY_COVER,
             email = "test@test.com",

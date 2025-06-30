@@ -31,5 +31,10 @@ kotlin {
                 implementation(project(":framework:interfacelib-test"))
             }
         }
+        wasmJsMain {
+            dependencies {
+                implementation("org.jetbrains.kotlinx:kotlinx-browser:_")
+            }
+        }
     }
 }

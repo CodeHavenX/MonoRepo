@@ -80,7 +80,8 @@
     <string name="title_timecard_view_staff">Empleado</string>
     <string name="title_timecard_staff_list">Lista de Empleados</string>
 
-    <string name="sign_in_screen_text_sign_in">Iniciar Sesión</string>
+    <string name="sign_in_screen_text_sign_in">Usar Contraseña</string>
+    <string name="sign_in_screen_text_sign_in_otp">Iniciar Sesión con OTP</string>
     <string name="sign_in_screen_text_email">Correo/# Telefónico</string>
     <string name="sign_in_screen_text_password">Contraseña</string>
     <string name="sign_in_screen_text_sign_up">Registrarse</string>

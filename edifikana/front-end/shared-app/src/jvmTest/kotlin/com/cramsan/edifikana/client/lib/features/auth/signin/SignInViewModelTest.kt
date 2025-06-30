@@ -108,7 +108,7 @@ class SignInViewModelTest : CoroutineTest() {
     }
 
     /**
-     * Test the [SignInViewModel.signIn] method succeeds as expected
+     * Test the [SignInViewModel.signInWithPassword] method succeeds as expected
      */
     @Test
     fun `test SignIn success`() = runCoroutineTest {
@@ -138,7 +138,7 @@ class SignInViewModelTest : CoroutineTest() {
                 )
             }
         }
-        viewModel.signIn()
+        viewModel.signInWithPassword()
 
         // Verify
         coVerify { authManager.signIn(username, password) }
@@ -146,10 +146,10 @@ class SignInViewModelTest : CoroutineTest() {
     }
 
     /**
-     * Test the [SignInViewModel.signIn] method fails with invalid login credentials
+     * Test the [SignInViewModel.signInWithPassword] method fails with invalid login credentials
      */
     @Test
-    fun `test SignIn fails with invalid login credentials`() = runCoroutineTest {
+    fun `test SignIn fails with invalid login credentials`() = runBlockingTest {
         // Arrange
         val username = "wrongUser@email.com"
         val password = "ValidPassword123"
@@ -173,7 +173,7 @@ class SignInViewModelTest : CoroutineTest() {
         }
         viewModel.onUsernameValueChange(username)
         viewModel.onPasswordValueChange(password)
-        viewModel.signIn()
+        viewModel.signInWithPassword()
 
         // Assert & Verify
         coVerify { authManager.signIn(username, password) }
@@ -182,11 +182,11 @@ class SignInViewModelTest : CoroutineTest() {
     }
 
     /**
-     * Test the [SignInViewModel.signIn] method fails with unexpected error
+     * Test the [SignInViewModel.signInWithPassword] method fails with unexpected error
      *
      */
     @Test
-    fun `test SignIn fails for unexpected reason`() = runCoroutineTest {
+    fun `test SignIn fails for unexpected reason`() = runBlockingTest {
         // Arrange
         val username = "wrongUser@email.com"
         val password = "ValidPassword123"
@@ -207,7 +207,7 @@ class SignInViewModelTest : CoroutineTest() {
         }
         viewModel.onUsernameValueChange(username)
         viewModel.onPasswordValueChange(password)
-        viewModel.signIn()
+        viewModel.signInWithPassword()
 
         // Assert & Verify
         coVerify { authManager.signIn(username, password) }

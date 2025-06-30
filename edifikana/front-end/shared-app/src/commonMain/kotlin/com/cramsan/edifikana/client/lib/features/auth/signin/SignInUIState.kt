@@ -9,6 +9,7 @@ data class SignInUIState(
     val isLoading: Boolean,
     val email: String,
     val password: String,
+    val showPassword: Boolean,
     val errorMessage: String?,
 ) : ViewModelUIState {
 
@@ -17,6 +18,7 @@ data class SignInUIState(
             isLoading = false,
             email = "",
             password = "",
+            showPassword = false,
             errorMessage = null,
         )
     }

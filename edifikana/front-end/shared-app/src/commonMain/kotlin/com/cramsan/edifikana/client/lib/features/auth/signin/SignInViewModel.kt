@@ -61,9 +61,14 @@ class SignInViewModel(
     /**
      * Call this function to sign in the user.
      */
-    fun signIn() {
+    fun signInWithPassword() {
         logI(TAG, "signIn called")
         viewModelScope.launch {
+            updateUiState {
+                it.copy(
+                    showPassword = true
+                )
+            }
             val email = uiState.value.email.trim()
             val password = uiState.value.password
             auth.signIn(
@@ -85,6 +90,10 @@ class SignInViewModel(
                 )
             )
         }
+    }
+
+    fun signInWithOtp() {
+
     }
 
     /**

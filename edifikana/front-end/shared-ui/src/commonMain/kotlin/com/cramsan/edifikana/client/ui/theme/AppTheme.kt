@@ -14,16 +14,6 @@ import coil3.util.DebugLogger
 import com.cramsan.ui.components.LocalDebugLayoutInspection
 import io.github.jan.supabase.coil.Coil3Integration
 
-@Suppress("MagicNumber")
-private val md_theme_light_primary = Color(0xFF13BC9A)
-
-private val LightThemeColors = lightColorScheme(
-    primary = md_theme_light_primary,
-)
-private val DarkThemeColors = lightColorScheme(
-    primary = md_theme_light_primary,
-)
-
 /**
  * App theme.
  */
@@ -36,7 +26,7 @@ fun AppTheme(
     debugLayoutInspection: Boolean = false,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = getColorScheme(darkTheme, dynamicColor, DarkThemeColors, LightThemeColors)
+    val colorScheme = getColorScheme(darkTheme, dynamicColor, darkScheme, lightScheme)
 
     WindowDecorations(colorScheme, darkTheme)
 

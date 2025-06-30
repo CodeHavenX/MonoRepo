@@ -80,7 +80,8 @@
     <string name="title_timecard_view_staff">Staff</string>
     <string name="title_timecard_staff_list">Staff List</string>
 
-    <string name="sign_in_screen_text_sign_in">Sign In</string>
+    <string name="sign_in_screen_text_sign_in">Continue with password</string>
+    <string name="sign_in_screen_text_sign_in_otp">Sign in with OTP</string>
     <string name="sign_in_screen_text_email">Email/Phone Number</string>
     <string name="sign_in_screen_text_password">Password</string>
     <string name="sign_in_screen_text_sign_up">Sign Up</string>

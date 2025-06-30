@@ -15,14 +15,15 @@ private fun SignInScreenPreview() = AppTheme {
             isLoading = false,
             email = "",
             password = "",
+            showPassword = false,
             errorMessage = null,
         ),
         onUsernameValueChange = { },
         onPasswordValueChange = { },
-        onSignInClicked = { },
+        onSignInPWClicked = { },
+        onSignInOtpClicked = { },
         onSignUpClicked = { },
-        onInfoClicked = { },
-    )
+    ) { }
 }
 
 /**
@@ -36,12 +37,13 @@ private fun SignInContentPreview() = AppTheme {
             isLoading = true,
             email = "username",
             password = "password",
+            showPassword = true,
             errorMessage = "",
         ),
         onUsernameValueChange = {},
         onPasswordValueChange = {},
-        onSignInClicked = {},
+        onSignInPWClicked = { },
+        onSignInOtpClicked = { },
         onSignUpClicked = {},
-        onInfoClicked = {},
-    )
+    ) {}
 }

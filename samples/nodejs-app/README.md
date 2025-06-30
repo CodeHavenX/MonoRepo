@@ -1,3 +1,3 @@
-# Module Name
+# NodeJS App
 
-Use this file to describe the module and its purpose. You can also include any other information that is relevant to the module, such as how it is used, how it interacts with other modules, and any other relevant information.
+This is a sample project to showcase how to build a NodeJS app using Gradle and Kotlin.

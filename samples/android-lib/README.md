@@ -1,3 +1,4 @@
-# Module Name
+# Android Library
 
-Use this file to describe the module and its purpose. You can also include any other information that is relevant to the module, such as how it is used, how it interacts with other modules, and any other relevant information.
+This module is a sample Android library. It demonstrates how to create and structure an Android library 
+using Gradle within the monorepo. Use this as a template for your own Android libraries.

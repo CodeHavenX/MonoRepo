@@ -1,3 +1,5 @@
-# Module Name
+# JB Compose Desktop App
 
-Use this file to describe the module and its purpose. You can also include any other information that is relevant to the module, such as how it is used, how it interacts with other modules, and any other relevant information.
+This is a sample desktop app using JetBrains Compose. The core of the application is in the 
+[jbcompose-mpp-lib](../jbcompose-mpp-lib) folder and it is written in Kotlin Multiplatform. This module wraps 
+the core library and provides a desktop application using JetBrains Compose.

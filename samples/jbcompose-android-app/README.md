@@ -1,3 +1,4 @@
-# Module Name
+# JB Compose Android App
 
-Use this file to describe the module and its purpose. You can also include any other information that is relevant to the module, such as how it is used, how it interacts with other modules, and any other relevant information.
+This module is a sample Android application using JetBrains Compose. It demonstrates how to build a modern Android 
+app with Compose UI, leveraging shared code from the multiplatform library.

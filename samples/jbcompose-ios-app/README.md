@@ -1,3 +1,4 @@
-# Module Name
+# JB Compose iOS App
 
-Use this file to describe the module and its purpose. You can also include any other information that is relevant to the module, such as how it is used, how it interacts with other modules, and any other relevant information.
+This module is a sample iOS application using JetBrains Compose Multiplatform. It demonstrates how to build and run 
+an iOS app with shared Compose UI code.

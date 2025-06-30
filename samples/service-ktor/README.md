@@ -1,3 +1,5 @@
-# Module Name
+# Service Ktor
 
-Use this file to describe the module and its purpose. You can also include any other information that is relevant to the module, such as how it is used, how it interacts with other modules, and any other relevant information.
+This is a sample Ktor service that can be used as a starting point for your own Ktor applications. 
+It includes basic setup and configuration for Ktor, as well as some common features such as routing, serialization, 
+and dependency injection.

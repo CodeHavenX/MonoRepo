@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.core.service
 
+import com.cramsan.edifikana.lib.model.EnrollmentType
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.repository.UserDatabase
 import com.cramsan.edifikana.server.core.service.models.User
@@ -55,7 +56,6 @@ class UserServiceTest {
         val lastName = "Doe"
         val user = mockk<User>()
         coEvery { userDatabase.createUser(any()) } returns Result.success(user)
-        coEvery { userDatabase.sendOtpCode(email) } returns Result.success(Unit)
 
         // Act
         val result = userService.createUser(email, phone, password, firstName, lastName, true)
@@ -63,24 +63,6 @@ class UserServiceTest {
         // Assert
         assertTrue(result.isSuccess)
         coVerify { userDatabase.createUser(match { it.email == email }) }
-        coVerify { userDatabase.sendOtpCode(email) }
-    }
-
-    /**
-     * Tests that createUser does not send an OTP if authorizeOtp is false.
-     */
-    @Test
-    fun `createUser should not send OTP if authorizeOtp is false`() = runTest {
-        // Arrange
-        val email = "test@example.com"
-        val user = mockk<User>()
-        coEvery { userDatabase.createUser(any()) } returns Result.success(user)
-
-        // Act
-        userService.createUser(email, "123", null, "A", "B", false)
-
-        // Assert
-        coVerify(exactly = 0) { userDatabase.sendOtpCode(email) }
     }
 
     /**
@@ -154,21 +136,27 @@ class UserServiceTest {
         coVerify { userDatabase.deleteUser(match { it.id == userId }) }
     }
 
-    /**
-     * Tests that updatePassword updates a user's password and returns the result.
-     */
     @Test
-    fun `updatePassword should update password and return result`() = runTest {
+    fun `enrollUser should enroll user and return result`() = runTest {
         // Arrange
         val userId = UserId("id")
-        val password = "newpass"
-        coEvery { userDatabase.updatePassword(any()) } returns Result.success(true)
-
+        val enrollmentIdentifier = "test@google.com"
+        val enrollmentType = EnrollmentType.EMAIL
+        val user = mockk<User>()
+        coEvery { userDatabase.enrollUser(any()) } returns Result.success(user)
         // Act
-        val result = userService.updatePassword(userId, password)
-
+        val result = userService.enrollUser(userId, enrollmentIdentifier, enrollmentType)
         // Assert
-        assertTrue(result)
-        coVerify { userDatabase.updatePassword(match { it.id == userId && it.password == password }) }
+        assertTrue(result.isSuccess)
+        assertEquals(user, result.getOrThrow())
+        coVerify {
+            userDatabase.enrollUser(
+                match {
+                    it.userId == userId &&
+                        it.enrollmentIdentifier == enrollmentIdentifier &&
+                        it.enrollmentType == enrollmentType
+                }
+            )
+        }
     }
 }

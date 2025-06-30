@@ -5,6 +5,7 @@ import com.cramsan.edifikana.lib.USER_ID
 import com.cramsan.edifikana.lib.annotations.NetworkModel
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.model.network.CreateUserNetworkRequest
+import com.cramsan.edifikana.lib.model.network.EnrollUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdatePasswordNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdateUserNetworkRequest
 import com.cramsan.edifikana.lib.utils.requireAll
@@ -166,6 +167,26 @@ class UserController(
     }
 
     /**
+     * Handles the enrollment of a user. The [call] parameter is the request context.
+     * This method will enroll(or link) a user who may have already signed in with a different method.
+     */
+    @OptIn(NetworkModel::class)
+    suspend fun enrollUser(call: RoutingCall) = call.handleCall(TAG, "enrollUser", contextRetriever) {
+        val request = call.receive<EnrollUserNetworkRequest>()
+
+        val user = userService.enrollUser(
+            userId = UserId(request.userId),
+            enrollmentIdentifier = request.enrollmentIdentifier,
+            enrollmentType = request.enrollmentType,
+        ).requireSuccess().toUserNetworkResponse()
+
+        HttpResponse(
+            status = HttpStatusCode.OK,
+            body = user,
+        )
+    }
+
+    /**
      * Companion object.
      */
     companion object {
@@ -193,6 +214,9 @@ class UserController(
                 }
                 delete("{$USER_ID}") {
                     deleteUser(call)
+                }
+                post("enroll") {
+                    enrollUser(call)
                 }
             }
         }

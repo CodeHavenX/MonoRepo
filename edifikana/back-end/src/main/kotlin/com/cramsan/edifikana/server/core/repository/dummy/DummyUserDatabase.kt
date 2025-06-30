@@ -4,6 +4,7 @@ import com.cramsan.edifikana.server.core.repository.UserDatabase
 import com.cramsan.edifikana.server.core.service.models.User
 import com.cramsan.edifikana.server.core.service.models.requests.CreateUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteUserRequest
+import com.cramsan.edifikana.server.core.service.models.requests.EnrollUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdatePasswordRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdateUserRequest
@@ -43,9 +44,9 @@ class DummyUserDatabase : UserDatabase {
         return Result.success(true)
     }
 
-    override suspend fun sendOtpCode(email: String): Result<Unit> {
-        logD(TAG, "sendMagicLink to $email")
-        return Result.success(Unit)
+    override suspend fun enrollUser(request: EnrollUserRequest): Result<User> {
+        logD(TAG, "enrollUser")
+        return Result.success(USER_1)
     }
 
     companion object {

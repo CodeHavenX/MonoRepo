@@ -1,6 +1,5 @@
 package com.cramsan.framework.preferences.implementation
 
-import com.cramsan.framework.logging.logW
 import com.cramsan.framework.preferences.PreferencesDelegate
 import org.w3c.dom.get
 import org.w3c.dom.set

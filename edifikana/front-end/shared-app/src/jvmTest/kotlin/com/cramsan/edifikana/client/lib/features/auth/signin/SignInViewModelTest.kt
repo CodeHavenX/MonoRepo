@@ -16,7 +16,7 @@ import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
-import com.cramsan.framework.test.TestBase
+import com.cramsan.framework.test.CoroutineTest
 import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
 import edifikana_lib.Res
 import edifikana_lib.error_message_invalid_credentials
@@ -24,7 +24,6 @@ import edifikana_lib.error_message_unexpected_error
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.params.ParameterizedTest
@@ -35,9 +34,8 @@ import kotlin.test.assertEquals
 /**
  * Test the [SignInViewModel] class.
  */
-@OptIn(ExperimentalCoroutinesApi::class)
 @Suppress("UNCHECKED_CAST")
-class SignInViewModelTest : TestBase() {
+class SignInViewModelTest : CoroutineTest() {
     private lateinit var authManager: AuthManager
     private lateinit var viewModel: SignInViewModel
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
@@ -73,7 +71,7 @@ class SignInViewModelTest : TestBase() {
      * Test the [SignInViewModel.initializePage] method
      */
     @Test
-    fun `test initializePage has expected UI state`() = runBlockingTest {
+    fun `test initializePage has expected UI state`() = runCoroutineTest {
         // ACT
         viewModel.initializePage()
 
@@ -86,7 +84,7 @@ class SignInViewModelTest : TestBase() {
      */
     @ParameterizedTest
     @CsvSource("test@example.com", "5456879123")
-    fun `test onUsernameValueChange updates username value`(username: String) = runBlockingTest {
+    fun `test onUsernameValueChange updates username value`(username: String) = runCoroutineTest {
         // Act
         viewModel.onUsernameValueChange(username)
 
@@ -98,7 +96,7 @@ class SignInViewModelTest : TestBase() {
      * Test the [SignInViewModel.onPasswordValueChange] method
      */
     @Test
-    fun `test onPasswordValueChange updates password value`() = runBlockingTest {
+    fun `test onPasswordValueChange updates password value`() = runCoroutineTest {
         // Arrange
         val password = "Password123"
 
@@ -113,7 +111,7 @@ class SignInViewModelTest : TestBase() {
      * Test the [SignInViewModel.signIn] method succeeds as expected
      */
     @Test
-    fun `test SignIn success`() = runBlockingTest {
+    fun `test SignIn success`() = runCoroutineTest {
         // Arrange
         val username = "real@email.com"
         val password = "Password123"
@@ -151,7 +149,7 @@ class SignInViewModelTest : TestBase() {
      * Test the [SignInViewModel.signIn] method fails with invalid login credentials
      */
     @Test
-    fun `test SignIn fails with invalid login credentials`() = runBlockingTest {
+    fun `test SignIn fails with invalid login credentials`() = runCoroutineTest {
         // Arrange
         val username = "wrongUser@email.com"
         val password = "ValidPassword123"
@@ -188,7 +186,7 @@ class SignInViewModelTest : TestBase() {
      *
      */
     @Test
-    fun `test SignIn fails for unexpected reason`() = runBlockingTest {
+    fun `test SignIn fails for unexpected reason`() = runCoroutineTest {
         // Arrange
         val username = "wrongUser@email.com"
         val password = "ValidPassword123"
@@ -221,7 +219,7 @@ class SignInViewModelTest : TestBase() {
      * Test the [SignInViewModel.navigateToSignUpPage] method completes expected event
      */
     @Test
-    fun `test navigateToSignUpPage calls expected event`() = runBlockingTest {
+    fun `test navigateToSignUpPage calls expected event`() = runCoroutineTest {
         // Arrange
         coEvery { authManager.signIn(any(), any()) } returns Result.success(mockk())
 
@@ -244,7 +242,7 @@ class SignInViewModelTest : TestBase() {
      * Test the [SignInViewModel.navigateToDebugPage] method completes expected event
      */
     @Test
-    fun `test navigateToDebugPage calls expected event`() = runBlockingTest {
+    fun `test navigateToDebugPage calls expected event`() = runCoroutineTest {
         // Arrange
         coEvery { authManager.signIn(any(), any()) } returns Result.success(mockk())
 

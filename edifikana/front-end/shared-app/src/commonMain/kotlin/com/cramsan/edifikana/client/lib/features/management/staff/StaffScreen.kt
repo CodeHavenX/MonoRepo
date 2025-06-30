@@ -19,7 +19,6 @@ import com.cramsan.edifikana.client.lib.features.management.ManagementDestinatio
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
-import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -47,11 +46,9 @@ fun StaffScreen(
     }
 
     LaunchedEffect(Unit) {
-        launch {
-            viewModel.events.collect { event ->
-                when (event) {
-                    StaffEvent.Noop -> Unit
-                }
+        viewModel.events.collect { event ->
+            when (event) {
+                StaffEvent.Noop -> Unit
             }
         }
     }

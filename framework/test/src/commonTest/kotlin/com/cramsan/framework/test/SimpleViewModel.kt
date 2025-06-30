@@ -1,7 +1,6 @@
 package com.cramsan.framework.test
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -11,7 +10,6 @@ import kotlin.time.Duration
 /**
  * Set of test for common coroutine scenarios in common code.
  */
-@ExperimentalCoroutinesApi
 class SimpleViewModel(
     var testScope: CoroutineScope,
     val repository: Repository

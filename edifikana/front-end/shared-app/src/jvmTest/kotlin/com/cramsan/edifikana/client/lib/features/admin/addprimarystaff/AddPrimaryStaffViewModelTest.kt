@@ -14,21 +14,19 @@ import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
-import com.cramsan.framework.test.TestBase
+import com.cramsan.framework.test.CoroutineTest
 import edifikana_lib.Res
 import edifikana_lib.text_there_was_an_error_processing_request
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-@OptIn(ExperimentalCoroutinesApi::class)
-class AddPrimaryStaffViewModelTest : TestBase() {
+class AddPrimaryStaffViewModelTest : CoroutineTest() {
 
     private lateinit var viewModel: AddPrimaryStaffViewModel
     private lateinit var staffManager: StaffManager
@@ -59,7 +57,7 @@ class AddPrimaryStaffViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test navigateBack emits NavigateBack event`() = runBlockingTest {
+    fun `test navigateBack emits NavigateBack event`() = runCoroutineTest {
         val verificationJob = launch {
             windowEventBus.events.test {
                 assertEquals(
@@ -73,7 +71,7 @@ class AddPrimaryStaffViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test invite with invalid email updates UI state with error`() = runBlockingTest {
+    fun `test invite with invalid email updates UI state with error`() = runCoroutineTest {
         val invalidEmail = "invalid-email"
 
         viewModel.invite(invalidEmail)
@@ -86,7 +84,7 @@ class AddPrimaryStaffViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test invite with valid email sends invite and navigates back`() = runBlockingTest {
+    fun `test invite with valid email sends invite and navigates back`() = runCoroutineTest {
         val validEmail = "test@example.com"
         coEvery { staffManager.inviteStaff(validEmail) } returns Result.success(Unit)
 
@@ -110,7 +108,7 @@ class AddPrimaryStaffViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test invite with valid email but failure response updates UI state with error`() = runBlockingTest {
+    fun `test invite with valid email but failure response updates UI state with error`() = runCoroutineTest {
         val validEmail = "test@example.com"
         coEvery { staffManager.inviteStaff(validEmail) } returns Result.failure(Exception("Error"))
         coEvery { stringProvider.getString(Res.string.text_there_was_an_error_processing_request) } returns "There was an error processing the request."

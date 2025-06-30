@@ -25,7 +25,7 @@ import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
-import com.cramsan.framework.test.TestBase
+import com.cramsan.framework.test.CoroutineTest
 import edifikana_lib.Res
 import edifikana_lib.time_card_event_clock_in
 import edifikana_lib.time_card_event_clock_out
@@ -33,14 +33,12 @@ import edifikana_lib.title_timecard
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@OptIn(ExperimentalCoroutinesApi::class)
-class TimeCartViewModelTest : TestBase() {
+class TimeCartViewModelTest : CoroutineTest() {
 
     private lateinit var timeCardManager: TimeCardManager
     private lateinit var staffManager: StaffManager
@@ -75,7 +73,7 @@ class TimeCartViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test loadEvents successfully loads events`() = runBlockingTest {
+    fun `test loadEvents successfully loads events`() = runCoroutineTest {
         // Arrange
         val events = listOf(
             TimeCardRecordModel(
@@ -136,7 +134,7 @@ class TimeCartViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test loadEvents handles failure`() = runBlockingTest {
+    fun `test loadEvents handles failure`() = runCoroutineTest {
         // Arrange
         coEvery { timeCardManager.getAllRecords() } returns Result.failure(Exception("Error"))
         coEvery { staffManager.getStaffList() } returns Result.failure(Exception("Error"))
@@ -153,7 +151,7 @@ class TimeCartViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test navigateToStaff emits NavigateToScreen event`() = runBlockingTest {
+    fun `test navigateToStaff emits NavigateToScreen event`() = runCoroutineTest {
         // Arrange
         val staffId = StaffId("123")
 
@@ -175,7 +173,7 @@ class TimeCartViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test navigateToStaffList emits NavigateToScreen event`() = runBlockingTest {
+    fun `test navigateToStaffList emits NavigateToScreen event`() = runCoroutineTest {
         // Act
         val verificationJob = launch {
             windowEventBus.events.test {
@@ -194,7 +192,7 @@ class TimeCartViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test navigateBack emits NavigateBack event`() = runBlockingTest {
+    fun `test navigateBack emits NavigateBack event`() = runCoroutineTest {
         // Act
         val verificationJob = launch {
             windowEventBus.events.test {

@@ -1,7 +1,6 @@
 package com.cramsan.framework.preferences
 
-import com.cramsan.framework.test.TestBase
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import com.cramsan.framework.test.CoroutineTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -10,8 +9,7 @@ import kotlin.test.assertNull
  * @Author cramsan
  * @created 1/16/2021
  */
-@ExperimentalCoroutinesApi
-abstract class PreferencesDelegateTest : TestBase() {
+abstract class PreferencesDelegateTest : CoroutineTest() {
 
     protected lateinit var preferencesDelegate: PreferencesDelegate
 

@@ -34,7 +34,6 @@ import edifikana_lib.string_last_names
 import edifikana_lib.string_names
 import edifikana_lib.string_role
 import edifikana_lib.string_save
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -62,11 +61,9 @@ fun AddSecondaryStaffScreen(
     }
 
     LaunchedEffect(Unit) {
-        launch {
-            viewModel.events.collect { event ->
-                when (event) {
-                    AddSecondaryStaffEvent.Noop -> Unit
-                }
+        viewModel.events.collect { event ->
+            when (event) {
+                AddSecondaryStaffEvent.Noop -> Unit
             }
         }
     }

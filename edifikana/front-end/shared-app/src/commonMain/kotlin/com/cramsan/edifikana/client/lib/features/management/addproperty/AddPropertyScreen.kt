@@ -23,7 +23,6 @@ import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
 import edifikana_lib.text_add
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -50,11 +49,9 @@ fun AddPropertyScreen(
     }
 
     LaunchedEffect(Unit) {
-        launch {
-            viewModel.events.collect { event ->
-                when (event) {
-                    AddPropertyEvent.Noop -> Unit
-                }
+        viewModel.events.collect { event ->
+            when (event) {
+                AddPropertyEvent.Noop -> Unit
             }
         }
     }

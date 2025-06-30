@@ -10,7 +10,7 @@ import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
 import com.cramsan.edifikana.server.core.service.TimeCardService
 import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.utils.readFileContent
-import com.cramsan.framework.test.TestBase
+import com.cramsan.framework.test.CoroutineTest
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -31,7 +31,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class TimeCardControllerTest : TestBase(), KoinTest {
+class TimeCardControllerTest : CoroutineTest(), KoinTest {
 
     @BeforeTest
     fun setupTest() {

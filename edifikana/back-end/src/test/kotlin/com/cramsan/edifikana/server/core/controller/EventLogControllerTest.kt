@@ -10,7 +10,7 @@ import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
 import com.cramsan.edifikana.server.core.service.EventLogService
 import com.cramsan.edifikana.server.core.service.models.EventLogEntry
 import com.cramsan.edifikana.server.utils.readFileContent
-import com.cramsan.framework.test.TestBase
+import com.cramsan.framework.test.CoroutineTest
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.post
@@ -31,7 +31,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class EventLogControllerTest : TestBase(), KoinTest {
+class EventLogControllerTest : CoroutineTest(), KoinTest {
 
     /**
      * Setup the test.

@@ -15,7 +15,7 @@ import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
-import com.cramsan.framework.test.TestBase
+import com.cramsan.framework.test.CoroutineTest
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -29,7 +29,7 @@ import kotlin.test.assertTrue
 /**
  * Unit tests for the TimeCardManager class.
  */
-class TimeCardManagerTest : TestBase() {
+class TimeCardManagerTest : CoroutineTest() {
     private lateinit var timeCardService: TimeCardService
     private lateinit var timeCardCache: TimeCardCache
     private lateinit var storageService: StorageService
@@ -59,7 +59,7 @@ class TimeCardManagerTest : TestBase() {
      * Tests that getRecords merges and sorts records from cache and service.
      */
     @Test
-    fun `getRecords returns merged and sorted records`() = runBlockingTest {
+    fun `getRecords returns merged and sorted records`() = runCoroutineTest {
         // Arrange
         val cached = listOf(
             timeCardRecordTest1,
@@ -83,7 +83,7 @@ class TimeCardManagerTest : TestBase() {
      * Tests that getAllRecords merges and sorts records from cache and service.
      */
     @Test
-    fun `getAllRecords returns merged and sorted records`() = runBlockingTest {
+    fun `getAllRecords returns merged and sorted records`() = runCoroutineTest {
         // Arrange
         val cached = listOf(
             timeCardRecordTest1
@@ -107,7 +107,7 @@ class TimeCardManagerTest : TestBase() {
      * Tests that getRecord retrieves a specific record from the service.
      */
     @Test
-    fun `getRecord returns record from service`() = runBlockingTest {
+    fun `getRecord returns record from service`() = runCoroutineTest {
         // Arrange
         val record = timeCardRecordTest2
         coEvery { timeCardService.getRecord(eventIdCachedTest2) } returns Result.success(record)
@@ -127,7 +127,7 @@ class TimeCardManagerTest : TestBase() {
      */
     @Ignore
     @Test
-    fun `addRecord adds to cache and triggers upload`() = runBlockingTest {
+    fun `addRecord adds to cache and triggers upload`() = runCoroutineTest {
         // Arrange
         val record = timeCardRecordTest3
         val uri = mockk<CoreUri>()

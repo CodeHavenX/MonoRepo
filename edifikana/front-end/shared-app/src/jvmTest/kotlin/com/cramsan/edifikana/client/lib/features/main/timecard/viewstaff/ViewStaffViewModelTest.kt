@@ -28,7 +28,7 @@ import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
-import com.cramsan.framework.test.TestBase
+import com.cramsan.framework.test.CoroutineTest
 import com.cramsan.framework.utils.time.Chronos
 import edifikana_lib.Res
 import edifikana_lib.role_security
@@ -38,7 +38,6 @@ import edifikana_lib.title_timecard_view_staff
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import org.junit.jupiter.api.BeforeEach
@@ -46,8 +45,8 @@ import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@OptIn(ExperimentalCoroutinesApi::class, TestOnly::class)
-class ViewStaffViewModelTest : TestBase() {
+@OptIn(TestOnly::class)
+class ViewStaffViewModelTest : CoroutineTest() {
 
     private lateinit var staffManager: StaffManager
     private lateinit var timeCardManager: TimeCardManager
@@ -95,7 +94,7 @@ class ViewStaffViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test loadStaff successfully loads staff and records`() = runBlockingTest {
+    fun `test loadStaff successfully loads staff and records`() = runCoroutineTest {
         // Arrange
         val staffId = StaffId("123")
         val staff = StaffModel(
@@ -149,7 +148,7 @@ class ViewStaffViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test loadStaff handles failure`() = runBlockingTest {
+    fun `test loadStaff handles failure`() = runCoroutineTest {
         // Arrange
         val staffId = StaffId("123")
         coEvery { staffManager.getStaff(staffId) } returns Result.failure(Exception("Error"))
@@ -168,7 +167,7 @@ class ViewStaffViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test share emits ShareContent event`() = runBlockingTest {
+    fun `test share emits ShareContent event`() = runCoroutineTest {
         // Arrange
         val timeCardEventId = TimeCardEventId("1")
         val record = TimeCardRecordModel(
@@ -218,7 +217,7 @@ class ViewStaffViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test navigateBack emits NavigateBack event`() = runBlockingTest {
+    fun `test navigateBack emits NavigateBack event`() = runCoroutineTest {
         // Act
         val verificationJob = launch {
             windowEventBus.events.test {

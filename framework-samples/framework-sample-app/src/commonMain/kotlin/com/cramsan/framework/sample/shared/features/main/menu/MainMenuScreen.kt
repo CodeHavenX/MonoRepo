@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.ui.components.ScreenLayout
-import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -27,11 +26,9 @@ fun MainMenuScreen(
     }
 
     LaunchedEffect(Unit) {
-        launch {
-            viewModel.events.collect { event ->
-                when (event) {
-                    MainMenuEvent.Noop -> Unit
-                }
+        viewModel.events.collect { event ->
+            when (event) {
+                MainMenuEvent.Noop -> Unit
             }
         }
     }

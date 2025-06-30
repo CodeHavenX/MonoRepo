@@ -23,7 +23,6 @@ import com.cramsan.ui.components.ListCell
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
 import com.cramsan.ui.theme.Padding
-import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -53,11 +52,9 @@ fun StaffListScreen(
     }
 
     LaunchedEffect(Unit) {
-        launch {
-            viewModel.events.collect { event ->
-                when (event) {
-                    StaffListEvent.Noop -> Unit
-                }
+        viewModel.events.collect { event ->
+            when (event) {
+                StaffListEvent.Noop -> Unit
             }
         }
     }

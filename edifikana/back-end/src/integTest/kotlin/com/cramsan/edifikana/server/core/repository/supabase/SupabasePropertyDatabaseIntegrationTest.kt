@@ -28,7 +28,7 @@ class SupabasePropertyDatabaseIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `createProperty should return property on success`() = runBlockingTest {
+    fun `createProperty should return property on success`() = runCoroutineTest {
         // Arrange
         val request = CreatePropertyRequest(
             name = "${test_prefix}_Property",
@@ -50,7 +50,7 @@ class SupabasePropertyDatabaseIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getProperty should return created property`() = runBlockingTest {
+    fun `getProperty should return created property`() = runCoroutineTest {
         // Arrange
         val createRequest = CreatePropertyRequest(
             name = "${test_prefix}_GetProperty",
@@ -72,7 +72,7 @@ class SupabasePropertyDatabaseIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getProperties should return all properties for user`() = runBlockingTest {
+    fun `getProperties should return all properties for user`() = runCoroutineTest {
         // Arrange
         val request1 = CreatePropertyRequest(
             name = "${test_prefix}_PropertyA",
@@ -98,7 +98,7 @@ class SupabasePropertyDatabaseIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `updateProperty should update property fields`() = runBlockingTest {
+    fun `updateProperty should update property fields`() = runCoroutineTest {
         // Arrange
         val createRequest = CreatePropertyRequest(
             name = "${test_prefix}_ToUpdate",
@@ -122,7 +122,7 @@ class SupabasePropertyDatabaseIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `deleteProperty should remove property`() = runBlockingTest {
+    fun `deleteProperty should remove property`() = runCoroutineTest {
         // Arrange
         val createRequest = CreatePropertyRequest(
             name = "${test_prefix}_ToDelete",
@@ -143,7 +143,7 @@ class SupabasePropertyDatabaseIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `deleteProperty should fail for non-existent property`() = runBlockingTest {
+    fun `deleteProperty should fail for non-existent property`() = runCoroutineTest {
         // Arrange
         val fakeId = PropertyId("fake-${test_prefix}")
 

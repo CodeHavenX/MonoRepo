@@ -33,7 +33,6 @@ import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.ui.components.PasswordOutlinedTextField
 import com.cramsan.ui.components.ScreenLayout
 import com.cramsan.ui.theme.Padding
-import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -62,11 +61,9 @@ fun DebugScreen(
     }
 
     LaunchedEffect(Unit) {
-        launch {
-            viewModel.events.collect { event ->
-                when (event) {
-                    DebugEvent.Noop -> Unit
-                }
+        viewModel.events.collect { event ->
+            when (event) {
+                DebugEvent.Noop -> Unit
             }
         }
     }

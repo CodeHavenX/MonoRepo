@@ -41,7 +41,6 @@ import edifikana_lib.sign_up_screen_text_phone_number
 import edifikana_lib.sign_up_screen_text_policy
 import edifikana_lib.sign_up_screen_text_sign_up
 import edifikana_lib.signup_screen_title
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -62,11 +61,9 @@ fun SignUpScreen(
     }
 
     LaunchedEffect(Unit) {
-        launch {
-            viewModel.events.collect { event ->
-                when (event) {
-                    SignUpEvent.Noop -> Unit
-                }
+        viewModel.events.collect { event ->
+            when (event) {
+                SignUpEvent.Noop -> Unit
             }
         }
     }

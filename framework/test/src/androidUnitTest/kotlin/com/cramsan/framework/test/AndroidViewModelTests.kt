@@ -1,7 +1,6 @@
 package com.cramsan.framework.test
 
 import kotlin.test.BeforeTest
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -13,8 +12,7 @@ import kotlin.test.assertTrue
 /**
  * Perform some basic coroutine tests on an Android ViewModel.
  */
-@ExperimentalCoroutinesApi
-class AndroidViewModelTests : TestBase() {
+class AndroidViewModelTests : CoroutineTest() {
 
     lateinit var viewModel: AndroidViewModel
     lateinit var repository: Repository
@@ -35,7 +33,7 @@ class AndroidViewModelTests : TestBase() {
     }
 
     @Test
-    fun `Test for LiveData to be update in suspending function`() = runBlockingTest {
+    fun `Test for LiveData to be update in suspending function`() = runCoroutineTest {
         assertNull(viewModel.observableInt.value)
 
         viewModel.updateWithCoroutine()
@@ -44,7 +42,7 @@ class AndroidViewModelTests : TestBase() {
     }
 
     @Test
-    fun `Test for LiveData to be update in suspending function and blocking wait`() = runBlockingTest {
+    fun `Test for LiveData to be update in suspending function and blocking wait`() = runCoroutineTest {
         assertNull(viewModel.observableInt.value)
 
         viewModel.updateWithCoroutineAndBlockingWait()
@@ -53,7 +51,7 @@ class AndroidViewModelTests : TestBase() {
     }
 
     @Test
-    fun `Test for LiveData to be updated with IO dispatch`() = runBlockingTest {
+    fun `Test for LiveData to be updated with IO dispatch`() = runCoroutineTest {
         assertNull(viewModel.observableInt.value)
 
         viewModel.updateWithIODispatch()
@@ -63,7 +61,7 @@ class AndroidViewModelTests : TestBase() {
     }
 
     @Test
-    fun `Test for LiveData to be updated with IO dispatch and blocking wait`() = runBlockingTest {
+    fun `Test for LiveData to be updated with IO dispatch and blocking wait`() = runCoroutineTest {
         assertNull(viewModel.observableInt.value)
 
         viewModel.updateWithIODispatchAndBlockingWait()
@@ -73,7 +71,7 @@ class AndroidViewModelTests : TestBase() {
     }
 
     @Test
-    fun `Test for LiveData to be update in scope launch`() = runBlockingTest {
+    fun `Test for LiveData to be update in scope launch`() = runCoroutineTest {
         assertNull(viewModel.observableInt.value)
 
         viewModel.updateWithScopeLaunch()
@@ -83,7 +81,7 @@ class AndroidViewModelTests : TestBase() {
     }
 
     @Test
-    fun `Test for LiveData to be update in scope launch and blocking wait`() = runBlockingTest {
+    fun `Test for LiveData to be update in scope launch and blocking wait`() = runCoroutineTest {
         assertNull(viewModel.observableInt.value)
 
         viewModel.updateWithScopeLaunchAndBlockingWait()

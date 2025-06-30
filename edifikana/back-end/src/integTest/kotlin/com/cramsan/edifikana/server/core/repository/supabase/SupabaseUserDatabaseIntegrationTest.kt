@@ -23,7 +23,7 @@ class SupabaseUserDatabaseIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `createUser should return user on success`() = runBlockingTest {
+    fun `createUser should return user on success`() = runCoroutineTest {
         // Arrange
         val request = CreateUserRequest(
             email = "${test_prefix}_user@test.com",
@@ -51,7 +51,7 @@ class SupabaseUserDatabaseIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `createUser should fail with existing email`() = runBlockingTest {
+    fun `createUser should fail with existing email`() = runCoroutineTest {
         // Arrange
         val request = CreateUserRequest(
             email = "${test_prefix}_dupe@test.com",
@@ -72,7 +72,7 @@ class SupabaseUserDatabaseIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `createUser should fail with invalid email`() = runBlockingTest {
+    fun `createUser should fail with invalid email`() = runCoroutineTest {
         // Arrange
         val request = CreateUserRequest(
             email = "not-an-email",
@@ -90,7 +90,7 @@ class SupabaseUserDatabaseIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getUser should return created user`() = runBlockingTest {
+    fun `getUser should return created user`() = runCoroutineTest {
         // Arrange
         val request = CreateUserRequest(
             email = "${test_prefix}_getuser@test.com",
@@ -113,7 +113,7 @@ class SupabaseUserDatabaseIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `deleteUser should remove user`() = runBlockingTest {
+    fun `deleteUser should remove user`() = runCoroutineTest {
         // Arrange
         val request = CreateUserRequest(
             email = "${test_prefix}_delete@test.com",
@@ -136,7 +136,7 @@ class SupabaseUserDatabaseIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `deleteUser should fail for non-existent user`() = runBlockingTest {
+    fun `deleteUser should fail for non-existent user`() = runCoroutineTest {
         // Arrange
         val fakeId = UserId("fake-${test_prefix}")
 

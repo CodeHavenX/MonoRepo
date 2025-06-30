@@ -44,7 +44,6 @@ import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
 import edifikana_lib.string_save
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -70,27 +69,25 @@ fun PropertyScreen(
     }
 
     LaunchedEffect(Unit) {
-        launch {
-            viewModel.events.collect { event ->
-                when (event) {
-                    PropertyEvent.ShowRemoveDialog -> {
-                        dialogController.showDialog(
-                            ConfirmRemoveDialog(
-                                onConfirmed = {
-                                    viewModel.removeProperty()
-                                }
-                            )
+        viewModel.events.collect { event ->
+            when (event) {
+                PropertyEvent.ShowRemoveDialog -> {
+                    dialogController.showDialog(
+                        ConfirmRemoveDialog(
+                            onConfirmed = {
+                                viewModel.removeProperty()
+                            }
                         )
-                    }
-                    PropertyEvent.ShowSaveBeforeExitingDialog -> {
-                        dialogController.showDialog(
-                            ConfirmExitingDialog(
-                                onSaveSelected = {
-                                    viewModel.saveChanges(true)
-                                },
-                            )
+                    )
+                }
+                PropertyEvent.ShowSaveBeforeExitingDialog -> {
+                    dialogController.showDialog(
+                        ConfirmExitingDialog(
+                            onSaveSelected = {
+                                viewModel.saveChanges(true)
+                            },
                         )
-                    }
+                    )
                 }
             }
         }

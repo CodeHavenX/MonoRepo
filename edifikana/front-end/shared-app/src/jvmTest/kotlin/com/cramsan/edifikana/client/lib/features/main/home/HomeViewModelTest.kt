@@ -17,19 +17,17 @@ import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
-import com.cramsan.framework.test.TestBase
+import com.cramsan.framework.test.CoroutineTest
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@OptIn(ExperimentalCoroutinesApi::class)
-class HomeViewModelTest : TestBase() {
+class HomeViewModelTest : CoroutineTest() {
 
     private lateinit var propertyManager: PropertyManager
     private lateinit var viewModel: HomeViewModel
@@ -55,7 +53,7 @@ class HomeViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test loadContent successfully loads properties`() = runBlockingTest {
+    fun `test loadContent successfully loads properties`() = runCoroutineTest {
         // Arrange
         val properties = listOf(
             PropertyModel(id = PropertyId("1"), name = "Property 1", address = "Address 1"),
@@ -76,7 +74,7 @@ class HomeViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test selectProperty updates active property`() = runBlockingTest {
+    fun `test selectProperty updates active property`() = runCoroutineTest {
         // Arrange
         val propertyId = PropertyId("1")
         coEvery { propertyManager.setActiveProperty(propertyId) } returns Result.success(Unit)
@@ -91,7 +89,7 @@ class HomeViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test navigateBack emits NavigateBack event`() = runBlockingTest {
+    fun `test navigateBack emits NavigateBack event`() = runCoroutineTest {
         // Act
         val verificationJob = launch {
             windowEventBus.events.test {
@@ -108,7 +106,7 @@ class HomeViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test navigateToAccount emits NavigateToActivity event`() = runBlockingTest {
+    fun `test navigateToAccount emits NavigateToActivity event`() = runCoroutineTest {
         // Act
         val verificationJob = launch {
             windowEventBus.events.test {
@@ -127,7 +125,7 @@ class HomeViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test navigateToNotifications emits NavigateToScreen event`() = runBlockingTest {
+    fun `test navigateToNotifications emits NavigateToScreen event`() = runCoroutineTest {
         // Act
         val verificationJob = launch {
             windowEventBus.events.test {

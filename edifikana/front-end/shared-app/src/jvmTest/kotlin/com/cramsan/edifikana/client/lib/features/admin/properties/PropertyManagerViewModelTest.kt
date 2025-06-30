@@ -19,17 +19,15 @@ import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
-import com.cramsan.framework.test.TestBase
+import com.cramsan.framework.test.CoroutineTest
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@OptIn(ExperimentalCoroutinesApi::class)
-class PropertyManagerViewModelTest : TestBase() {
+class PropertyManagerViewModelTest : CoroutineTest() {
 
     private lateinit var viewModel: PropertyManagerViewModel
     private lateinit var propertyManager: PropertyManager
@@ -57,7 +55,7 @@ class PropertyManagerViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test loadPage updates UI state with property list`() = runBlockingTest {
+    fun `test loadPage updates UI state with property list`() = runCoroutineTest {
         val properties = listOf(
             PropertyModel(PropertyId("1"), "Property 1", "Address 1"),
             PropertyModel(PropertyId("2"), "Property 2", "Address 2")
@@ -81,7 +79,7 @@ class PropertyManagerViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test loadPage with failure updates UI state with loading false`() = runBlockingTest {
+    fun `test loadPage with failure updates UI state with loading false`() = runCoroutineTest {
         coEvery { propertyManager.getPropertyList() } returns Result.failure(Exception("Error"))
 
         viewModel.loadPage()
@@ -93,7 +91,7 @@ class PropertyManagerViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test navigateToPropertyDetails emits NavigateToScreen event`() = runBlockingTest {
+    fun `test navigateToPropertyDetails emits NavigateToScreen event`() = runCoroutineTest {
         val propertyId = PropertyId("123")
         val verificationJob = launch {
             windowEventBus.events.test {
@@ -111,7 +109,7 @@ class PropertyManagerViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test navigateToAddProperty emits NavigateToScreen event`() = runBlockingTest {
+    fun `test navigateToAddProperty emits NavigateToScreen event`() = runCoroutineTest {
         val verificationJob = launch {
             windowEventBus.events.test {
                 assertEquals(
@@ -128,7 +126,7 @@ class PropertyManagerViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test navigateBack emits NavigateBack event`() = runBlockingTest {
+    fun `test navigateBack emits NavigateBack event`() = runCoroutineTest {
         val verificationJob = launch {
             windowEventBus.events.test {
                 assertEquals(

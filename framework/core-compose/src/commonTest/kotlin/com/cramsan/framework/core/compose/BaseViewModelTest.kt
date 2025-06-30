@@ -8,9 +8,8 @@ import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
-import com.cramsan.framework.test.TestBase
+import com.cramsan.framework.test.CoroutineTest
 import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -20,14 +19,13 @@ import kotlin.test.assertEquals
  * Test the [BaseViewModel] class.
  * You can use this class as an example for how to test your own view models.
  *
- * It is recommended to use the [TestBase] class to run your tests. To run your tests annotate your functions with
+ * It is recommended to use the [CoroutineTest] class to run your tests. To run your tests annotate your functions with
  * `@Test` and use the `runBlockingTest` function to run your tests.
  *
- * @see TestBase
+ * @see CoroutineTest
  */
-@OptIn(ExperimentalCoroutinesApi::class)
 @Suppress("UNCHECKED_CAST")
-class BaseViewModelTest : TestBase() {
+class BaseViewModelTest : CoroutineTest() {
 
     private lateinit var viewModel: TestableViewModel
 
@@ -56,14 +54,14 @@ class BaseViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test updating the title`() = runBlockingTest {
+    fun `test updating the title`() = runCoroutineTest {
         viewModel.setTitle("Test")
 
         assertEquals("Test", viewModel.uiState.value.title)
     }
 
     @Test
-    fun `test emitting some numbers`() = runBlockingTest {
+    fun `test emitting some numbers`() = runCoroutineTest {
         val verificationJob = launch {
             viewModel.events.test {
                 assertEquals(TestableEvent.EmitNumber(1), awaitItem())
@@ -79,7 +77,7 @@ class BaseViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test emitting an application event`() = runBlockingTest {
+    fun `test emitting an application event`() = runCoroutineTest {
         val verificationJob = launch {
             windowEventReceiver.events.test {
                 assertEquals(TestableApplicationEvent.Signal, awaitItem())
@@ -93,7 +91,7 @@ class BaseViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test throwing an exception`() = runBlockingTest {
+    fun `test throwing an exception`() = runCoroutineTest {
         viewModel.throwError()
 
         assertEquals(1, exceptionHandler.exceptions.size)

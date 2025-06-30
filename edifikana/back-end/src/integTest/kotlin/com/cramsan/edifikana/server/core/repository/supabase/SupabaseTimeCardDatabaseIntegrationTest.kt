@@ -36,7 +36,7 @@ class SupabaseTimeCardDatabaseIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `createTimeCardEvent should return event on success`() = runBlockingTest {
+    fun `createTimeCardEvent should return event on success`() = runCoroutineTest {
         // Arrange
         val request = CreateTimeCardEventRequest(
             fallbackStaffName = "${test_prefix}_FallbackStaffName",
@@ -56,7 +56,7 @@ class SupabaseTimeCardDatabaseIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getTimeCardEvent should return created event`() = runBlockingTest {
+    fun `getTimeCardEvent should return created event`() = runCoroutineTest {
         // Arrange
         val createRequest = CreateTimeCardEventRequest(
             fallbackStaffName = "${test_prefix}_FallbackStaffName",
@@ -80,7 +80,7 @@ class SupabaseTimeCardDatabaseIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getTimeCardEventList should return all events`() = runBlockingTest {
+    fun `getTimeCardEventList should return all events`() = runCoroutineTest {
         // Arrange
         val request1 = CreateTimeCardEventRequest(
             fallbackStaffName = "${test_prefix}_FallbackStaffName1",
@@ -117,7 +117,7 @@ class SupabaseTimeCardDatabaseIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getTimeCardEvent should return null for non-existent event`() = runBlockingTest {
+    fun `getTimeCardEvent should return null for non-existent event`() = runCoroutineTest {
         // Arrange
         val fakeId = TimeCardEventId(UUID.random())
 

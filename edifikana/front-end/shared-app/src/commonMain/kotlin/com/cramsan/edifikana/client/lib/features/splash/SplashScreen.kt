@@ -11,7 +11,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
-import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -35,11 +34,9 @@ fun SplashScreen(
     }
 
     LaunchedEffect(Unit) {
-        launch {
-            viewModel.events.collect { event ->
-                when (event) {
-                    SplashEvent.Noop -> Unit
-                }
+        viewModel.events.collect { event ->
+            when (event) {
+                SplashEvent.Noop -> Unit
             }
         }
     }

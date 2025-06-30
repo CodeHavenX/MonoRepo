@@ -4,7 +4,7 @@ import com.codehavenx.alpaca.backend.core.service.UserService
 import com.codehavenx.alpaca.backend.core.service.models.User
 import com.codehavenx.alpaca.backend.core.service.models.UserId
 import com.codehavenx.alpaca.backend.utils.readFileContent
-import com.cramsan.framework.test.TestBase
+import com.cramsan.framework.test.CoroutineTest
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.put
@@ -25,7 +25,7 @@ import kotlin.test.assertEquals
 /**
  * Test the [UserController] class.
  */
-class UserControllerTest : TestBase(), KoinTest {
+class UserControllerTest : CoroutineTest(), KoinTest {
 
     /**
      * Setup the test.

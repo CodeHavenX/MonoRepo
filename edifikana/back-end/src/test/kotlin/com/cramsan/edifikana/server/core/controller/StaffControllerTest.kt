@@ -10,7 +10,7 @@ import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
 import com.cramsan.edifikana.server.core.service.StaffService
 import com.cramsan.edifikana.server.core.service.models.Staff
 import com.cramsan.edifikana.server.utils.readFileContent
-import com.cramsan.framework.test.TestBase
+import com.cramsan.framework.test.CoroutineTest
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.post
@@ -30,7 +30,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class StaffControllerTest : TestBase(), KoinTest {
+class StaffControllerTest : CoroutineTest(), KoinTest {
 
     @BeforeTest
     fun setupTest() {

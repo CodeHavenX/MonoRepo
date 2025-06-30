@@ -50,7 +50,6 @@ import edifikana_lib.schedule
 import edifikana_lib.string_assistance
 import edifikana_lib.string_event_log_title
 import edifikana_lib.two_pager
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -79,11 +78,9 @@ fun HomeScreen(
     }
 
     LaunchedEffect(Unit) {
-        launch {
-            viewModel.events.collect { event ->
-                when (event) {
-                    HomeEvent.Noop -> Unit
-                }
+        viewModel.events.collect { event ->
+            when (event) {
+                HomeEvent.Noop -> Unit
             }
         }
     }

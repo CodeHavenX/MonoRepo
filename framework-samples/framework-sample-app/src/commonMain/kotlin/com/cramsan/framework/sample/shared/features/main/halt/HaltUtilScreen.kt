@@ -13,7 +13,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
-import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -39,11 +38,9 @@ fun HaltUtilScreen(
     }
 
     LaunchedEffect(Unit) {
-        launch {
-            viewModel.events.collect { event ->
-                when (event) {
-                    HaltUtilEvent.Noop -> Unit
-                }
+        viewModel.events.collect { event ->
+            when (event) {
+                HaltUtilEvent.Noop -> Unit
             }
         }
     }

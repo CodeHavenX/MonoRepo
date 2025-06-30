@@ -25,7 +25,6 @@ import edifikana_lib.Res
 import edifikana_lib.app_name
 import edifikana_lib.hub_screen_properties_button_title
 import edifikana_lib.hub_screen_staff_button_title
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -43,11 +42,9 @@ fun HubScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(Unit) {
-        launch {
-            viewModel.events.collect { event ->
-                when (event) {
-                    HubEvent.Noop -> Unit
-                }
+        viewModel.events.collect { event ->
+            when (event) {
+                HubEvent.Noop -> Unit
             }
         }
     }

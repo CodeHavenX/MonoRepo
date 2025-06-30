@@ -14,18 +14,14 @@ import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
-import com.cramsan.framework.test.TestBase
-import edifikana_lib.Res
-import edifikana_lib.error_message_unexpected_error
+import com.cramsan.framework.test.CoroutineTest
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvFileSource
 import kotlin.test.BeforeTest
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -34,9 +30,8 @@ import kotlin.test.assertTrue
 /**
  * Test the [SignUpViewModel] class.
  */
-@OptIn(ExperimentalCoroutinesApi::class)
 @Suppress("UNCHECKED_CAST")
-class SignUpViewModelTest : TestBase() {
+class SignUpViewModelTest : CoroutineTest() {
     private lateinit var authManager: AuthManager
     private lateinit var viewModel: SignUpViewModel
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
@@ -73,7 +68,7 @@ class SignUpViewModelTest : TestBase() {
      * Test the [SignUpViewModel.initializePage] method.
      */
     @Test
-    fun `test initializePage has expected UI state`() = runBlockingTest {
+    fun `test initializePage has expected UI state`() = runCoroutineTest {
         // Act
         viewModel.initializePage()
 
@@ -85,7 +80,7 @@ class SignUpViewModelTest : TestBase() {
      * Test the [SignUpViewModel.onEmailValueChange] method.
      */
     @Test
-    fun `test onEmailValueChange updates email value`() = runBlockingTest {
+    fun `test onEmailValueChange updates email value`() = runCoroutineTest {
         // Arrange
         val email = "test@example.com"
 
@@ -100,7 +95,7 @@ class SignUpViewModelTest : TestBase() {
      * Test the [SignUpViewModel.onPhoneNumberValueChange] method.
      */
     @Test
-    fun `test onPhoneNumberValueChange updates phone number value`() = runBlockingTest {
+    fun `test onPhoneNumberValueChange updates phone number value`() = runCoroutineTest {
         // Arrange
         val phoneNumber = "1234567890"
 
@@ -115,7 +110,7 @@ class SignUpViewModelTest : TestBase() {
      * Test the [SignUpViewModel.onFirstNameValueChange] method.
      */
     @Test
-    fun `test onFirstNameValueChange updates first name value`() = runBlockingTest {
+    fun `test onFirstNameValueChange updates first name value`() = runCoroutineTest {
         // Arrange
         val firstName = "John"
 
@@ -130,7 +125,7 @@ class SignUpViewModelTest : TestBase() {
      * Test the [SignUpViewModel.onLastNameValueChange] method.
      */
     @Test
-    fun `test onLastNameValueChange updates last name value`() = runBlockingTest {
+    fun `test onLastNameValueChange updates last name value`() = runCoroutineTest {
         // Arrange
         val lastName = "Doe"
 
@@ -145,7 +140,7 @@ class SignUpViewModelTest : TestBase() {
      * Test the [SignUpViewModel.onPolicyChecked] method.
      */
     @Test
-    fun `test onPolicyChecked updates policy checked value true`() = runBlockingTest {
+    fun `test onPolicyChecked updates policy checked value true`() = runCoroutineTest {
         // Arrange
         val isChecked = true
 
@@ -161,7 +156,7 @@ class SignUpViewModelTest : TestBase() {
      * Test the [SignUpViewModel.onPolicyChecked] method with false value.
      */
     @Test
-    fun `test onPolicyChecked updates policy checked value to false`() = runBlockingTest {
+    fun `test onPolicyChecked updates policy checked value to false`() = runCoroutineTest {
         // Arrange
         val isChecked = false
 
@@ -177,7 +172,7 @@ class SignUpViewModelTest : TestBase() {
      * Test navigate back calls event
      */
     @Test
-    fun `test navigateBack calls emitEvent`() = runBlockingTest {
+    fun `test navigateBack calls emitEvent`() = runCoroutineTest {
         // Arrange
         coEvery { authManager.signUp(any(), any(), any(), any()) } returns Result.success(mockk())
 
@@ -199,7 +194,7 @@ class SignUpViewModelTest : TestBase() {
      * Test the [SignUpViewModel.signUp] method with valid inputs
      */
     @Test
-    fun `test signUp redirects to otp validation screen`() = runBlockingTest {
+    fun `test signUp redirects to otp validation screen`() = runCoroutineTest {
         // Arrange
         val firstName = "Dwayne"
         val lastName = "Johnson"
@@ -246,7 +241,7 @@ class SignUpViewModelTest : TestBase() {
         email: String,
         phoneNumber: String,
         expectedErrorCount: Int,
-    ) = runBlockingTest {
+    ) = runCoroutineTest {
         // Arrange
         viewModel.onFirstNameValueChange(firstName)
         viewModel.onLastNameValueChange(lastName)

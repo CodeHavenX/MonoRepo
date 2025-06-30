@@ -28,7 +28,7 @@ class SupabaseEventLogDatabaseIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `createEventLogEntry should return entry on success`() = runBlockingTest {
+    fun `createEventLogEntry should return entry on success`() = runCoroutineTest {
         // Arrange
         val request = CreateEventLogEntryRequest(
             title = "${test_prefix}_EventTitle",
@@ -50,7 +50,7 @@ class SupabaseEventLogDatabaseIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getEventLogEntry should return entry if exists`() = runBlockingTest {
+    fun `getEventLogEntry should return entry if exists`() = runCoroutineTest {
         // Arrange
         val createRequest = CreateEventLogEntryRequest(
             title = "${test_prefix}_EventTitle2",
@@ -80,7 +80,7 @@ class SupabaseEventLogDatabaseIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getEventLogEntries should return all entries`() = runBlockingTest {
+    fun `getEventLogEntries should return all entries`() = runCoroutineTest {
         // Arrange
         val request1 = CreateEventLogEntryRequest(
             title = "${test_prefix}_EventTitleA",
@@ -124,7 +124,7 @@ class SupabaseEventLogDatabaseIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `updateEventLogEntry should update entry fields`() = runBlockingTest {
+    fun `updateEventLogEntry should update entry fields`() = runCoroutineTest {
         // Arrange
         val createRequest = CreateEventLogEntryRequest(
             title = "${test_prefix}_EventTitleToUpdate",
@@ -162,7 +162,7 @@ class SupabaseEventLogDatabaseIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `deleteEventLogEntry should remove entry`() = runBlockingTest {
+    fun `deleteEventLogEntry should remove entry`() = runCoroutineTest {
         // Arrange
         val createRequest = CreateEventLogEntryRequest(
             title = "${test_prefix}_EventTitleToDelete",

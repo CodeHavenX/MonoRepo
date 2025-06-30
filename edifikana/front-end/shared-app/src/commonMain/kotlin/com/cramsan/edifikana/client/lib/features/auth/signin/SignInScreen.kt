@@ -27,7 +27,6 @@ import edifikana_lib.sign_in_screen_text_email
 import edifikana_lib.sign_in_screen_text_password
 import edifikana_lib.sign_in_screen_text_sign_in
 import edifikana_lib.sign_in_screen_text_sign_up
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -48,11 +47,9 @@ fun SignInScreen(
     }
 
     LaunchedEffect(Unit) {
-        launch {
-            viewModel.events.collect { event ->
-                when (event) {
-                    SignInEvent.Noop -> Unit
-                }
+        viewModel.events.collect { event ->
+            when (event) {
+                SignInEvent.Noop -> Unit
             }
         }
     }

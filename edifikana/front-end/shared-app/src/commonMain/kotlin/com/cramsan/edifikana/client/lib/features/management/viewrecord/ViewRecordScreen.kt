@@ -43,7 +43,6 @@ import edifikana_lib.string_field_unit
 import edifikana_lib.string_gallery
 import edifikana_lib.string_share
 import edifikana_lib.view_record_screen_title
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -62,11 +61,9 @@ fun ViewRecordScreen(
     }
 
     LaunchedEffect(Unit) {
-        launch {
-            viewModel.events.collect { event ->
-                when (event) {
-                    ViewRecordEvent.Noop -> Unit
-                }
+        viewModel.events.collect { event ->
+            when (event) {
+                ViewRecordEvent.Noop -> Unit
             }
         }
     }

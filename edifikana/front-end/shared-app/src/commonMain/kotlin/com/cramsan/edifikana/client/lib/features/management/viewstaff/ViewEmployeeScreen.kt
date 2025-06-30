@@ -38,7 +38,6 @@ import edifikana_lib.text_clock_in
 import edifikana_lib.text_clock_out
 import edifikana_lib.text_upload
 import io.github.jan.supabase.storage.authenticatedStorageItem
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
@@ -59,25 +58,21 @@ fun ViewStaffScreen(
     }
 
     LaunchedEffect(Unit) {
-        launch {
-            viewModel.events.collect { event ->
-                when (event) {
-                    ViewStaffEvent.Noop -> Unit
-                }
+        viewModel.events.collect { event ->
+            when (event) {
+                ViewStaffEvent.Noop -> Unit
             }
         }
     }
 
     LaunchedEffect(Unit) {
-        launch {
-            delegatedEventEmitter.events.collect { event ->
-                when (event) {
-                    is EdifikanaWindowDelegatedEvent.HandleReceivedImage -> {
-                        viewModel.recordClockEvent(event.uri)
-                    }
-
-                    else -> Unit
+        delegatedEventEmitter.events.collect { event ->
+            when (event) {
+                is EdifikanaWindowDelegatedEvent.HandleReceivedImage -> {
+                    viewModel.recordClockEvent(event.uri)
                 }
+
+                else -> Unit
             }
         }
     }

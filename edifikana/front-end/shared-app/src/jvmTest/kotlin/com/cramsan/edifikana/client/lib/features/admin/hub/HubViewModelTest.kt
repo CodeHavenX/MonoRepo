@@ -15,15 +15,13 @@ import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
-import com.cramsan.framework.test.TestBase
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import com.cramsan.framework.test.CoroutineTest
 import kotlinx.coroutines.launch
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@OptIn(ExperimentalCoroutinesApi::class)
-class HubViewModelTest : TestBase() {
+class HubViewModelTest : CoroutineTest() {
 
     private lateinit var viewModel: HubViewModel
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
@@ -48,7 +46,7 @@ class HubViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test navigateToAccount emits NavigateToActivity event`() = runBlockingTest {
+    fun `test navigateToAccount emits NavigateToActivity event`() = runCoroutineTest {
         val verificationJob = launch {
             windowEventBus.events.test {
                 assertEquals(
@@ -62,14 +60,14 @@ class HubViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test selectTab updates UI state`() = runBlockingTest {
+    fun `test selectTab updates UI state`() = runCoroutineTest {
         val selectedTab = Tabs.Properties
         viewModel.selectTab(selectedTab)
         assertEquals(selectedTab, viewModel.uiState.value.selectedTab)
     }
 
     @Test
-    fun `test navigateToNotifications emits NavigateToScreen event`() = runBlockingTest {
+    fun `test navigateToNotifications emits NavigateToScreen event`() = runCoroutineTest {
         val verificationJob = launch {
             windowEventBus.events.test {
                 assertEquals(

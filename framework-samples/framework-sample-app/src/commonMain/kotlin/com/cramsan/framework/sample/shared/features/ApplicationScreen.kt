@@ -37,17 +37,15 @@ private fun ApplicationContent(
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(Unit) {
-        launch {
-            viewModel.events.collect { event ->
-                when (event) {
-                    is SampleApplicationViewModelEvent.SampleApplicationEventWrapper -> {
-                        handleApplicationEvent(
-                            navController = navController,
-                            scope = this,
-                            snackbarHostState = snackbarHostState,
-                            applicationEvent = event.event,
-                        )
-                    }
+        viewModel.events.collect { event ->
+            when (event) {
+                is SampleApplicationViewModelEvent.SampleApplicationEventWrapper -> {
+                    handleApplicationEvent(
+                        navController = navController,
+                        scope = this,
+                        snackbarHostState = snackbarHostState,
+                        applicationEvent = event.event,
+                    )
                 }
             }
         }

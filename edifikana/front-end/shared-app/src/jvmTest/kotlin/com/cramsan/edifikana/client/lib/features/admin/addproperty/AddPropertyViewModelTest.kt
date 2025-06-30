@@ -15,19 +15,17 @@ import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
-import com.cramsan.framework.test.TestBase
+import com.cramsan.framework.test.CoroutineTest
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-@OptIn(ExperimentalCoroutinesApi::class)
-class AddPropertyViewModelTest : TestBase() {
+class AddPropertyViewModelTest : CoroutineTest() {
 
     private lateinit var viewModel: AddPropertyViewModel
     private lateinit var propertyManager: PropertyManager
@@ -55,7 +53,7 @@ class AddPropertyViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test navigateBack emits NavigateBack event`() = runBlockingTest {
+    fun `test navigateBack emits NavigateBack event`() = runCoroutineTest {
         val verificationJob = launch {
             windowEventBus.events.test {
                 assertEquals(
@@ -69,7 +67,7 @@ class AddPropertyViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test addProperty with valid data adds property and navigates back`() = runBlockingTest {
+    fun `test addProperty with valid data adds property and navigates back`() = runCoroutineTest {
         val propertyName = "Test Property"
         val address = "123 Test Street"
         val newProperty = PropertyModel(
@@ -99,7 +97,7 @@ class AddPropertyViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test addProperty with failure updates UI state with error`() = runBlockingTest {
+    fun `test addProperty with failure updates UI state with error`() = runCoroutineTest {
         val propertyName = "Test Property"
         val address = "123 Test Street"
         coEvery { propertyManager.addProperty(propertyName, address) } returns Result.failure(Exception("Error"))

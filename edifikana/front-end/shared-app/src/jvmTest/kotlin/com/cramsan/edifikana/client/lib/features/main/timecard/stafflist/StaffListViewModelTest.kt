@@ -20,20 +20,18 @@ import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
-import com.cramsan.framework.test.TestBase
+import com.cramsan.framework.test.CoroutineTest
 import edifikana_lib.Res
 import edifikana_lib.title_timecard_staff_list
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@OptIn(ExperimentalCoroutinesApi::class)
-class StaffListViewModelTest : TestBase() {
+class StaffListViewModelTest : CoroutineTest() {
 
     private lateinit var staffManager: StaffManager
     private lateinit var viewModel: TimeCardStaffListViewModel
@@ -65,7 +63,7 @@ class StaffListViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test loadStaffs successfully loads staff members`() = runBlockingTest {
+    fun `test loadStaffs successfully loads staff members`() = runCoroutineTest {
         // Arrange
         val staffList = listOf(
             StaffModel(
@@ -93,7 +91,7 @@ class StaffListViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test loadStaffs handles failure`() = runBlockingTest {
+    fun `test loadStaffs handles failure`() = runCoroutineTest {
         // Arrange
         coEvery { staffManager.getStaffList() } returns Result.failure(Exception("Error"))
         coEvery { stringProvider.getString(Res.string.title_timecard_staff_list) } returns "Staff List"
@@ -109,7 +107,7 @@ class StaffListViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test navigateToStaff emits NavigateToScreen event`() = runBlockingTest {
+    fun `test navigateToStaff emits NavigateToScreen event`() = runCoroutineTest {
         // Arrange
         val staffId = StaffId("123")
 
@@ -131,7 +129,7 @@ class StaffListViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test navigateBack emits NavigateBack event`() = runBlockingTest {
+    fun `test navigateBack emits NavigateBack event`() = runCoroutineTest {
         // Act
         val verificationJob = launch {
             windowEventBus.events.test {

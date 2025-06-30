@@ -30,7 +30,7 @@ class SupabaseStaffDatabaseIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `createStaff should return staff on success`() = runBlockingTest {
+    fun `createStaff should return staff on success`() = runCoroutineTest {
         // Arrange
         val request = CreateStaffRequest(
             idType = IdType.PASSPORT,
@@ -49,7 +49,7 @@ class SupabaseStaffDatabaseIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getStaff should return created staff`() = runBlockingTest {
+    fun `getStaff should return created staff`() = runCoroutineTest {
         // Arrange
         val createRequest = CreateStaffRequest(
             firstName = "${test_prefix}_GetFirst",
@@ -73,7 +73,7 @@ class SupabaseStaffDatabaseIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getStaffs should return all staff`() = runBlockingTest {
+    fun `getStaffs should return all staff`() = runCoroutineTest {
         // Arrange
         val request1 = CreateStaffRequest(
             firstName = "${test_prefix}_StaffA",
@@ -107,7 +107,7 @@ class SupabaseStaffDatabaseIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `updateStaff should update staff fields`() = runBlockingTest {
+    fun `updateStaff should update staff fields`() = runCoroutineTest {
         // Arrange
         val createRequest = CreateStaffRequest(
             firstName = "${test_prefix}_ToUpdate",
@@ -141,7 +141,7 @@ class SupabaseStaffDatabaseIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `deleteStaff should remove staff`() = runBlockingTest {
+    fun `deleteStaff should remove staff`() = runCoroutineTest {
         // Arrange
         val createRequest = CreateStaffRequest(
             firstName = "${test_prefix}_ToDelete",
@@ -166,7 +166,7 @@ class SupabaseStaffDatabaseIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `deleteStaff should fail for non-existent staff`() = runBlockingTest {
+    fun `deleteStaff should fail for non-existent staff`() = runCoroutineTest {
         // Arrange
         val fakeId = StaffId("fake-$test_prefix")
 

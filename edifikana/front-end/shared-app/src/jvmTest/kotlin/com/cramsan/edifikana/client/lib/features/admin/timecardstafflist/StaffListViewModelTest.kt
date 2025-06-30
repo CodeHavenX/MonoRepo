@@ -20,18 +20,16 @@ import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
-import com.cramsan.framework.test.TestBase
+import com.cramsan.framework.test.CoroutineTest
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-@OptIn(ExperimentalCoroutinesApi::class)
-class StaffListViewModelTest : TestBase() {
+class StaffListViewModelTest : CoroutineTest() {
 
     private lateinit var viewModel: StaffListViewModel
     private lateinit var staffManager: StaffManager
@@ -59,7 +57,7 @@ class StaffListViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test loadStaffList updates UI state with staff list`() = runBlockingTest {
+    fun `test loadStaffList updates UI state with staff list`() = runCoroutineTest {
         val staffList = listOf(
             StaffModel(
                 id = StaffId("1"),
@@ -105,7 +103,7 @@ class StaffListViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test loadStaffList with failure updates UI state with empty list`() = runBlockingTest {
+    fun `test loadStaffList with failure updates UI state with empty list`() = runCoroutineTest {
         coEvery { staffManager.getStaffList() } returns Result.failure(Exception("Error"))
 
         viewModel.loadStaffList()
@@ -115,7 +113,7 @@ class StaffListViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test navigateToAddPrimaryStaff emits NavigateToScreen event`() = runBlockingTest {
+    fun `test navigateToAddPrimaryStaff emits NavigateToScreen event`() = runCoroutineTest {
         val verificationJob = launch {
             windowEventBus.events.test {
                 assertEquals(
@@ -130,7 +128,7 @@ class StaffListViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test navigateToAddSecondaryStaff emits NavigateToScreen event`() = runBlockingTest {
+    fun `test navigateToAddSecondaryStaff emits NavigateToScreen event`() = runCoroutineTest {
         val verificationJob = launch {
             windowEventBus.events.test {
                 assertEquals(
@@ -145,7 +143,7 @@ class StaffListViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test navigateToStaff emits NavigateToScreen event`() = runBlockingTest {
+    fun `test navigateToStaff emits NavigateToScreen event`() = runCoroutineTest {
         val staffId = StaffId("123")
         val verificationJob = launch {
             windowEventBus.events.test {

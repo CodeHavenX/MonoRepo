@@ -4,22 +4,20 @@ import com.cramsan.framework.halt.implementation.HaltUtilImpl
 import com.cramsan.framework.halt.implementation.HaltUtilJVM
 import com.cramsan.framework.logging.implementation.NoopEventLoggerDelegate
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
-import com.cramsan.framework.test.TestBase
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import com.cramsan.framework.test.CoroutineTest
 import kotlin.concurrent.thread
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 
 /**
  */
-@OptIn(ExperimentalCoroutinesApi::class)
-class HaltUtilTest : TestBase() {
+class HaltUtilTest : CoroutineTest() {
 
     @BeforeTest
     fun setupTest() = Unit
 
     @Test
-    fun testStopThread() = runBlockingTest {
+    fun testStopThread() = runCoroutineTest {
         val haltUtil = HaltUtilImpl(HaltUtilJVM(PassthroughEventLogger(NoopEventLoggerDelegate())))
 
         thread {

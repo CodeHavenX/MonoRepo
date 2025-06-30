@@ -2,15 +2,13 @@ package com.cramsan.framework.test
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import io.mockk.MockKAnnotations
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.TestScope
 import org.junit.Rule
 import kotlin.test.BeforeTest
 
 @Suppress("UnnecessaryAbstractClass")
-@OptIn(ExperimentalCoroutinesApi::class)
-actual abstract class TestBase {
+actual abstract class CoroutineTest {
     // This is needed so that we can run APIs that interface with the different Android Loopers.
     // As a result all tasks that are dispatched to another looper, are executed instantaneously.
     // A prime example is MutableLiveData.postValue.
@@ -21,7 +19,13 @@ actual abstract class TestBase {
     @get:Rule
     var testCoroutineRule: TestCoroutineRule = TestCoroutineRule()
 
-    actual fun runBlockingTest(block: suspend TestScope.() -> Unit) = testCoroutineRule.runBlockingTest { block() }
+    actual fun runCoroutineTest(block: suspend TestScope.() -> Unit) = testCoroutineRule.runBlockingTest { block() }
+
+    @Deprecated(
+        message = "Use runCoroutineTest instead",
+        replaceWith = ReplaceWith(expression = "runCoroutineTest(block)")
+    )
+    actual fun runBlockingTest(block: suspend TestScope.() -> Unit) = runCoroutineTest(block)
 
     @BeforeTest
     fun internalSetupTest() {

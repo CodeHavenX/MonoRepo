@@ -5,7 +5,7 @@ import com.codehavenx.alpaca.backend.core.service.CalendarService
 import com.codehavenx.alpaca.backend.core.service.models.Event
 import com.codehavenx.alpaca.backend.core.service.models.StaffId
 import com.codehavenx.alpaca.backend.core.service.models.requests.GetEventsInRangeRequest
-import com.cramsan.framework.test.TestBase
+import com.cramsan.framework.test.CoroutineTest
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.datetime.LocalDateTime
@@ -15,13 +15,13 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.minutes
 
-class CalendarServiceTest : TestBase() {
+class CalendarServiceTest : CoroutineTest() {
 
     @BeforeTest
     fun setupTest() = Unit
 
     @Test
-    fun `test getAvailableTimeSlots for staff`() = runBlockingTest {
+    fun `test getAvailableTimeSlots for staff`() = runCoroutineTest {
         val calendarDatabase = mockk<CalendarDatabase>()
         val calendarService = CalendarService(
             calendarDatabase = calendarDatabase
@@ -160,7 +160,7 @@ class CalendarServiceTest : TestBase() {
     }
 
     @Test
-    fun `test getAvailableTimeSlots for multiple staff`() = runBlockingTest {
+    fun `test getAvailableTimeSlots for multiple staff`() = runCoroutineTest {
         val calendarDatabase = mockk<CalendarDatabase>()
         val calendarService = CalendarService(
             calendarDatabase = calendarDatabase

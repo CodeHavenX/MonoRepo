@@ -22,7 +22,6 @@ import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
 import edifikana_lib.properties_screen_add_button
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -50,11 +49,9 @@ fun PropertyManagerScreen(
     }
 
     LaunchedEffect(Unit) {
-        launch {
-            viewModel.events.collect { event ->
-                when (event) {
-                    PropertyManagerEvent.Noop -> Unit
-                }
+        viewModel.events.collect { event ->
+            when (event) {
+                PropertyManagerEvent.Noop -> Unit
             }
         }
     }

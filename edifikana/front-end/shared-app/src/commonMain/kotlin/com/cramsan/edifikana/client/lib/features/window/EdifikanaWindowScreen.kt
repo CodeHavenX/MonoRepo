@@ -55,19 +55,17 @@ private fun WindowsContent(
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(Unit) {
-        launch {
-            viewModel.events.collect { event ->
-                when (event) {
-                    is EdifikanaWindowViewModelEvent.EdifikanaWindowEventWrapper -> {
-                        handleWindowEvent(
-                            eventHandler = eventHandler,
-                            navController = navController,
-                            scope = this,
-                            snackbarHostState = snackbarHostState,
-                            viewModel = viewModel,
-                            windowEvent = event.event,
-                        )
-                    }
+        viewModel.events.collect { event ->
+            when (event) {
+                is EdifikanaWindowViewModelEvent.EdifikanaWindowEventWrapper -> {
+                    handleWindowEvent(
+                        eventHandler = eventHandler,
+                        navController = navController,
+                        scope = this,
+                        snackbarHostState = snackbarHostState,
+                        viewModel = viewModel,
+                        windowEvent = event.event,
+                    )
                 }
             }
         }

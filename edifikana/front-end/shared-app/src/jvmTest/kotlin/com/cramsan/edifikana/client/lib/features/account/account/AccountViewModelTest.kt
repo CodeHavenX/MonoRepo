@@ -15,19 +15,16 @@ import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
-import com.cramsan.framework.test.TestBase
+import com.cramsan.framework.test.CoroutineTest
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-
-@OptIn(ExperimentalCoroutinesApi::class)
-class AccountViewModelTest : TestBase() {
+class AccountViewModelTest : CoroutineTest() {
 
     private lateinit var authManager: AuthManager
     private lateinit var viewModel: AccountViewModel
@@ -53,7 +50,7 @@ class AccountViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test signOut emits NavigateToActivity event`() = runBlockingTest {
+    fun `test signOut emits NavigateToActivity event`() = runCoroutineTest {
         // Arrange
         coEvery { authManager.signOut() } returns Result.success(Unit)
 
@@ -78,7 +75,7 @@ class AccountViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test navigateBack emits NavigateBack event`() = runBlockingTest {
+    fun `test navigateBack emits NavigateBack event`() = runCoroutineTest {
         // Arrange
 
         // Act
@@ -96,7 +93,7 @@ class AccountViewModelTest : TestBase() {
         verificationJob.join()    }
 
     @Test
-    fun `test loadUserData updates UI state with user data`() = runBlockingTest {
+    fun `test loadUserData updates UI state with user data`() = runCoroutineTest {
         // Arrange
         val user = UserModel(
             id = UserId("123"),
@@ -122,7 +119,7 @@ class AccountViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test loadUserData handles failure`() = runBlockingTest {
+    fun `test loadUserData handles failure`() = runCoroutineTest {
         // Arrange
         coEvery { authManager.getUser() } returns Result.failure(Exception("Error"))
 

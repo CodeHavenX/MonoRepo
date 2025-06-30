@@ -6,7 +6,7 @@ import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.preferences.Preferences
-import com.cramsan.framework.test.TestBase
+import com.cramsan.framework.test.CoroutineTest
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.first
  *
  */
 @Ignore
-class PreferencesManagerTest : TestBase() {
+class PreferencesManagerTest : CoroutineTest() {
     private lateinit var preferences: Preferences
     private lateinit var dependencies: ManagerDependencies
     private lateinit var manager: PreferencesManager
@@ -49,7 +49,7 @@ class PreferencesManagerTest : TestBase() {
      * Tests that setPreference saves a String and emits the key.
      */
     @Test
-    fun `setPreference saves String and emits key`() = runBlockingTest {
+    fun `setPreference saves String and emits key`() = runCoroutineTest {
         // Arrange
         val key = "testKey"
         val value = "testValue"
@@ -65,7 +65,7 @@ class PreferencesManagerTest : TestBase() {
      * Tests that setPreference saves a Boolean and emits the key.
      */
     @Test
-    fun `setPreference saves Boolean and emits key`() = runBlockingTest {
+    fun `setPreference saves Boolean and emits key`() = runCoroutineTest {
         // Arrange
         val key = "boolKey"
         val value = true
@@ -81,7 +81,7 @@ class PreferencesManagerTest : TestBase() {
      * Tests that setPreference throws for unsupported type.
      */
     @Test
-    fun `setPreference throws for unsupported type`() = runBlockingTest {
+    fun `setPreference throws for unsupported type`() = runCoroutineTest {
         // Arrange
         val key = "unsupportedKey"
         val value = 123
@@ -96,7 +96,7 @@ class PreferencesManagerTest : TestBase() {
      * Tests that loadStringPreference returns the value from preferences.
      */
     @Test
-    fun `loadStringPreference returns value`() = runBlockingTest {
+    fun `loadStringPreference returns value`() = runCoroutineTest {
         // Arrange
         val key = "stringKey"
         val value = "storedValue"
@@ -112,7 +112,7 @@ class PreferencesManagerTest : TestBase() {
      * Tests that loadStringPreference returns empty string if not set.
      */
     @Test
-    fun `loadStringPreference returns empty string if not set`() = runBlockingTest {
+    fun `loadStringPreference returns empty string if not set`() = runCoroutineTest {
         // Arrange
         val key = "unsetKey"
         coEvery { preferences.loadString(key) } returns null

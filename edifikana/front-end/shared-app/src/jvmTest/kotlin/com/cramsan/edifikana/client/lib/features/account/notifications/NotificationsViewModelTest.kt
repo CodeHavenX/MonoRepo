@@ -11,8 +11,7 @@ import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
-import com.cramsan.framework.test.TestBase
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import com.cramsan.framework.test.CoroutineTest
 import kotlinx.coroutines.launch
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
@@ -21,8 +20,7 @@ import kotlin.test.assertEquals
 /**
  * Test the [NotificationsViewModel] class.
  */
-@OptIn(ExperimentalCoroutinesApi::class)
-class NotificationsViewModelTest : TestBase() {
+class NotificationsViewModelTest : CoroutineTest() {
 
     private lateinit var viewModel: NotificationsViewModel
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
@@ -53,7 +51,7 @@ class NotificationsViewModelTest : TestBase() {
      * Test the [NotificationsViewModel.onBackSelected] method emits NavigateBack event.
      */
     @Test
-    fun `test onBackSelected emits NavigateBack event`() = runBlockingTest {
+    fun `test onBackSelected emits NavigateBack event`() = runCoroutineTest {
         // Act
         val verificationJob = launch {
             windowEventBus.events.test {

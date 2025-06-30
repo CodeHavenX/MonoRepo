@@ -8,7 +8,7 @@ import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
-import com.cramsan.framework.test.TestBase
+import com.cramsan.framework.test.CoroutineTest
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -21,7 +21,7 @@ import kotlin.test.assertTrue
 /**
  * Unit tests for the StaffManager class.
  */
-class StaffManagerTest : TestBase() {
+class StaffManagerTest : CoroutineTest() {
     private lateinit var staffService: StaffService
     private lateinit var dependencies: ManagerDependencies
     private lateinit var manager: StaffManager
@@ -44,7 +44,7 @@ class StaffManagerTest : TestBase() {
      * Tests that getStaffList returns the expected list from the service.
      */
     @Test
-    fun `getStaffList returns staff list`() = runBlockingTest {
+    fun `getStaffList returns staff list`() = runCoroutineTest {
         // Arrange
         val staffList = listOf(mockk<StaffModel>(), mockk<StaffModel>())
         coEvery { staffService.getStaffList() } returns Result.success(staffList)
@@ -60,7 +60,7 @@ class StaffManagerTest : TestBase() {
      * Tests that getStaff returns the expected staff from the service.
      */
     @Test
-    fun `getStaff returns staff`() = runBlockingTest {
+    fun `getStaff returns staff`() = runCoroutineTest {
         // Arrange
         val staffId = StaffId("staff-1")
         val staff = mockk<StaffModel>()
@@ -77,7 +77,7 @@ class StaffManagerTest : TestBase() {
      * Tests that addStaff calls the service and returns success.
      */
     @Test
-    fun `addStaff calls service`() = runBlockingTest {
+    fun `addStaff calls service`() = runCoroutineTest {
         // Arrange
         val request = mockk<StaffModel.CreateStaffRequest>()
         coEvery { staffService.createStaff(request) } returns Result.success(mockk())
@@ -92,7 +92,7 @@ class StaffManagerTest : TestBase() {
      * Tests that inviteStaff calls the service and returns success.
      */
     @Test
-    fun `inviteStaff calls service`() = runBlockingTest {
+    fun `inviteStaff calls service`() = runCoroutineTest {
         // Arrange
         val email = "test@example.com"
         coEvery { staffService.inviteStaff(email) } returns Result.success(Unit)

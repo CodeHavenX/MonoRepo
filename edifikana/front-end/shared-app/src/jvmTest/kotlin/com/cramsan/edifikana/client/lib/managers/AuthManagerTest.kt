@@ -10,7 +10,7 @@ import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
-import com.cramsan.framework.test.TestBase
+import com.cramsan.framework.test.CoroutineTest
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -25,7 +25,7 @@ import kotlinx.coroutines.test.runTest
 /**
  * Unit tests for the AuthManager class.
  */
-class AuthManagerTest : TestBase() {
+class AuthManagerTest : CoroutineTest() {
     private lateinit var dependencies: ManagerDependencies
     private lateinit var propertyService: PropertyService
     private lateinit var authService: AuthService

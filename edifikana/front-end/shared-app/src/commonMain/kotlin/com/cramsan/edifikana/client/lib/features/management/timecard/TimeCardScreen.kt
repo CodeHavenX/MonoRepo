@@ -26,7 +26,6 @@ import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
 import edifikana_lib.time_card_screen_add_event
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -45,11 +44,9 @@ fun TimeCardScreen(
     }
 
     LaunchedEffect(Unit) {
-        launch {
-            viewModel.events.collect { event ->
-                when (event) {
-                    TimeCardEvent.Noop -> Unit
-                }
+        viewModel.events.collect { event ->
+            when (event) {
+                TimeCardEvent.Noop -> Unit
             }
         }
     }

@@ -18,18 +18,16 @@ import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
-import com.cramsan.framework.test.TestBase
+import com.cramsan.framework.test.CoroutineTest
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-@OptIn(ExperimentalCoroutinesApi::class)
-class StaffViewModelTest : TestBase() {
+class StaffViewModelTest : CoroutineTest() {
 
     private lateinit var viewModel: StaffViewModel
     private lateinit var staffManager: StaffManager
@@ -57,7 +55,7 @@ class StaffViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test loadStaff with valid staffId updates UI state`() = runBlockingTest {
+    fun `test loadStaff with valid staffId updates UI state`() = runCoroutineTest {
         val staffId = StaffId("123")
         val staff = StaffModel(
             id = staffId,
@@ -81,7 +79,7 @@ class StaffViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test loadStaff with invalid staffId updates UI state with empty title`() = runBlockingTest {
+    fun `test loadStaff with invalid staffId updates UI state with empty title`() = runCoroutineTest {
         val staffId = StaffId("123")
         coEvery { staffManager.getStaff(staffId) } returns Result.failure(Exception("Error"))
 
@@ -92,7 +90,7 @@ class StaffViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test onBackSelected emits NavigateBack event`() = runBlockingTest {
+    fun `test onBackSelected emits NavigateBack event`() = runCoroutineTest {
         val verificationJob = launch {
             windowEventBus.events.test {
                 assertEquals(EdifikanaWindowsEvent.NavigateBack, awaitItem())

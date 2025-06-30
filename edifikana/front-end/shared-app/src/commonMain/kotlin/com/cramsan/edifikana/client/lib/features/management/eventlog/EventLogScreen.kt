@@ -28,7 +28,6 @@ import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
 import edifikana_lib.event_log_screen_add_record
 import edifikana_lib.text_upload
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -47,11 +46,9 @@ fun EventLogScreen(
     }
 
     LaunchedEffect(Unit) {
-        launch {
-            viewModel.events.collect { event ->
-                when (event) {
-                    EventLogEvent.Noop -> Unit
-                }
+        viewModel.events.collect { event ->
+            when (event) {
+                EventLogEvent.Noop -> Unit
             }
         }
     }

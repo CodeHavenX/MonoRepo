@@ -21,7 +21,6 @@ import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
 import edifikana_lib.employee_list_screen_title
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -39,11 +38,9 @@ fun TimeCardStaffListScreen(
     }
 
     LaunchedEffect(Unit) {
-        launch {
-            viewModel.events.collect { event ->
-                when (event) {
-                    TimeCardStaffListEvent.Noop -> Unit
-                }
+        viewModel.events.collect { event ->
+            when (event) {
+                TimeCardStaffListEvent.Noop -> Unit
             }
         }
     }

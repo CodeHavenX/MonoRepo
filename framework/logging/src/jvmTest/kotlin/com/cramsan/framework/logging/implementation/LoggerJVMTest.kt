@@ -1,7 +1,7 @@
 package com.cramsan.framework.logging.implementation
 
 import com.cramsan.framework.logging.Severity
-import com.cramsan.framework.test.TestBase
+import com.cramsan.framework.test.CoroutineTest
 import io.mockk.mockk
 import io.mockk.verify
 import kotlin.test.BeforeTest
@@ -9,13 +9,13 @@ import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.Logger
 import kotlin.test.Test
 
-class LoggerJVMTest : TestBase() {
+class LoggerJVMTest : CoroutineTest() {
 
     @BeforeTest
     fun setupTest() = Unit
 
     @Test
-    fun `test logging simple message`() = runBlockingTest {
+    fun `test logging simple message`() = runCoroutineTest {
         val log4jLogger: Logger = mockk(relaxed = true)
         val logger = LoggerJVM(log4jLogger, Severity.VERBOSE)
 
@@ -27,7 +27,7 @@ class LoggerJVMTest : TestBase() {
     }
 
     @Test
-    fun `test logging formatted message`() = runBlockingTest {
+    fun `test logging formatted message`() = runCoroutineTest {
         val log4jLogger: Logger = mockk(relaxed = true)
         val logger = LoggerJVM(log4jLogger, Severity.VERBOSE)
 

@@ -22,13 +22,12 @@ import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
-import com.cramsan.framework.test.TestBase
+import com.cramsan.framework.test.CoroutineTest
 import com.cramsan.framework.utils.time.Chronos
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
@@ -38,8 +37,8 @@ import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@OptIn(ExperimentalCoroutinesApi::class, TestOnly::class)
-class AddRecordViewModelTest : TestBase() {
+@OptIn(TestOnly::class)
+class AddRecordViewModelTest : CoroutineTest() {
 
     private lateinit var eventLogManager: EventLogManager
     private lateinit var staffManager: StaffManager
@@ -85,7 +84,7 @@ class AddRecordViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test addRecord successfully adds a record`() = runBlockingTest {
+    fun `test addRecord successfully adds a record`() = runCoroutineTest {
         // Arrange
         val record = EventLogRecordModel(
             id = null,
@@ -132,7 +131,7 @@ class AddRecordViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test addRecord handles failure`() = runBlockingTest {
+    fun `test addRecord handles failure`() = runCoroutineTest {
         // Arrange
         val record = EventLogRecordModel(
             id = null,
@@ -171,7 +170,7 @@ class AddRecordViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test navigateBack emits NavigateBack event`() = runBlockingTest {
+    fun `test navigateBack emits NavigateBack event`() = runCoroutineTest {
         // Act
         val verificationJob = launch {
             windowEventBus.events.test {

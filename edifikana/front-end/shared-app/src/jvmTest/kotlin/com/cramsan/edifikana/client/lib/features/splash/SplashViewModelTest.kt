@@ -11,24 +11,22 @@ import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.core.compose.WindowEvent
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
-import com.cramsan.framework.test.TestBase
+import com.cramsan.framework.test.CoroutineTest
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
 /**
- * It is recommended to use the [TestBase] class to run your tests. To run your tests annotate your functions with
+ * It is recommended to use the [CoroutineTest] class to run your tests. To run your tests annotate your functions with
  * `@Test` and use the `runBlockingTest` function to run your tests.
  *
- * @see TestBase
+ * @see CoroutineTest
  */
-@OptIn(ExperimentalCoroutinesApi::class)
 @Suppress("UNCHECKED_CAST")
-class SplashViewModelTest : TestBase() {
+class SplashViewModelTest : CoroutineTest() {
 
     private lateinit var viewModel: SplashViewModel
     private lateinit var authManager: AuthManager
@@ -63,7 +61,7 @@ class SplashViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test onBackSelected emits NavigateBack event`() = runBlockingTest {
+    fun `test onBackSelected emits NavigateBack event`() = runCoroutineTest {
         viewModel.onBackSelected()
 
         assertTrue(exceptionHandler.exceptions.isEmpty())
@@ -71,7 +69,7 @@ class SplashViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test enforceAuth when not signed in`() = runBlockingTest {
+    fun `test enforceAuth when not signed in`() = runCoroutineTest {
         coEvery { authManager.isSignedIn() } returns Result.success(false)
         coEvery { propertyManager.setActiveProperty(null) } returns  Result.success(Unit)
 
@@ -89,7 +87,7 @@ class SplashViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test enforceAuth when signed in`() = runBlockingTest {
+    fun `test enforceAuth when signed in`() = runCoroutineTest {
         coEvery { authManager.isSignedIn() } returns Result.success(true)
         coEvery { propertyManager.getPropertyList() } returns Result.success(emptyList())
         coEvery { propertyManager.setActiveProperty(null) } returns  Result.success(Unit)

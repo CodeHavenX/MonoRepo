@@ -35,7 +35,6 @@ import edifikana_lib.text_full_desc
 import edifikana_lib.text_simple_desc
 import edifikana_lib.text_staff
 import edifikana_lib.text_staff_name
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -53,11 +52,9 @@ fun AddRecordScreen(
     }
 
     LaunchedEffect(Unit) {
-        launch {
-            viewModel.events.collect { event ->
-                when (event) {
-                    AddRecordEvent.Noop -> Unit
-                }
+        viewModel.events.collect { event ->
+            when (event) {
+                AddRecordEvent.Noop -> Unit
             }
         }
     }

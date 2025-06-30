@@ -1,6 +1,5 @@
 package com.cramsan.framework.test
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.TestScope
 
@@ -8,7 +7,7 @@ import kotlinx.coroutines.test.TestScope
  * Base class that should handle running unit tests. This class will be implemented on each platform
  * to provide the right approach for each one of them.
  */
-expect abstract class TestBase() {
+expect abstract class CoroutineTest() {
 
     /**
      * Reference to the Scope used to run the tests. This scope can be injected into
@@ -20,11 +19,13 @@ expect abstract class TestBase() {
 
     /**
      * We need to make sure that tests will be started with this function. Each platform will provide
-     * the right configuration and rules to run unit tests. Ideally we should be able to use
-     * [TestCoroutineScope] like we do in the Android implementation of [TestCoroutineRule], but we
-     * need to wait for [TestCoroutineScope] to be available for common code.
-     * https://github.com/Kotlin/kotlinx.coroutines/issues/1996
+     * the right configuration and rules to run unit tests.
      */
-    @OptIn(ExperimentalCoroutinesApi::class)
+    fun runCoroutineTest(block: suspend TestScope.() -> Unit)
+
+    @Deprecated(
+        message = "Use runCoroutineTest instead",
+        replaceWith = ReplaceWith("runCoroutineTest(block)")
+    )
     fun runBlockingTest(block: suspend TestScope.() -> Unit)
 }

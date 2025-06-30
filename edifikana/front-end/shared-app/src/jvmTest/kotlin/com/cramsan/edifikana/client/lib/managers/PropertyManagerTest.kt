@@ -8,7 +8,7 @@ import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
-import com.cramsan.framework.test.TestBase
+import com.cramsan.framework.test.CoroutineTest
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 /**
  * Unit tests for the PropertyManager class.
  */
-class PropertyManagerTest : TestBase() {
+class PropertyManagerTest : CoroutineTest() {
     private lateinit var propertyService: PropertyService
     private lateinit var dependencies: ManagerDependencies
     private lateinit var manager: PropertyManager
@@ -46,7 +46,7 @@ class PropertyManagerTest : TestBase() {
      * Tests that getPropertyList returns the expected list from the service.
      */
     @Test
-    fun `getPropertyList returns property list`() = runBlockingTest {
+    fun `getPropertyList returns property list`() = runCoroutineTest {
         // Arrange
         val propertyList = listOf(mockk<PropertyModel>(), mockk<PropertyModel>())
         coEvery { propertyService.getPropertyList() } returns Result.success(propertyList)
@@ -62,7 +62,7 @@ class PropertyManagerTest : TestBase() {
      * Tests that setActiveProperty calls the service and returns success.
      */
     @Test
-    fun `setActiveProperty calls service`() = runBlockingTest {
+    fun `setActiveProperty calls service`() = runCoroutineTest {
         // Arrange
         val propertyId = PropertyId("property-1")
         coEvery { propertyService.setActiveProperty(propertyId) } returns Result.success(Unit)
@@ -92,7 +92,7 @@ class PropertyManagerTest : TestBase() {
      * Tests that getProperty returns the expected property from the service.
      */
     @Test
-    fun `getProperty returns property`() = runBlockingTest {
+    fun `getProperty returns property`() = runCoroutineTest {
         // Arrange
         val propertyId = PropertyId("property-1")
         val property = mockk<PropertyModel>()
@@ -109,7 +109,7 @@ class PropertyManagerTest : TestBase() {
      * Tests that addProperty calls the service and returns success.
      */
     @Test
-    fun `addProperty calls service with correct arguments`() = runBlockingTest {
+    fun `addProperty calls service with correct arguments`() = runCoroutineTest {
         // Arrange
         val propertyName = "Cenit"
         val address = "Jiron Juan de Arona 123"
@@ -125,7 +125,7 @@ class PropertyManagerTest : TestBase() {
      * Tests that updateProperty calls the service and returns success.
      */
     @Test
-    fun `updateProperty calls service with correct arguments`() = runBlockingTest {
+    fun `updateProperty calls service with correct arguments`() = runCoroutineTest {
         // Arrange
         val propertyId = PropertyId("property-1")
         val name = "Cenito"
@@ -142,7 +142,7 @@ class PropertyManagerTest : TestBase() {
      * Tests that removeProperty calls the service and returns success.
      */
     @Test
-    fun `removeProperty calls service with correct arguments`() = runBlockingTest {
+    fun `removeProperty calls service with correct arguments`() = runCoroutineTest {
         // Arrange
         val propertyId = PropertyId("property-1")
         coEvery { propertyService.removeProperty(propertyId) } returns Result.success(Unit)

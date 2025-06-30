@@ -20,7 +20,7 @@ import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
-import com.cramsan.framework.test.TestBase
+import com.cramsan.framework.test.CoroutineTest
 import edifikana_lib.Res
 import edifikana_lib.event_type_delivery
 import edifikana_lib.event_type_guest
@@ -28,14 +28,12 @@ import edifikana_lib.title_event_log
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@OptIn(ExperimentalCoroutinesApi::class)
-class EventLogViewModelTest : TestBase() {
+class EventLogViewModelTest : CoroutineTest() {
 
     private lateinit var eventLogManager: EventLogManager
     private lateinit var viewModel: EventLogViewModel
@@ -67,7 +65,7 @@ class EventLogViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test loadRecords successfully loads records`() = runBlockingTest {
+    fun `test loadRecords successfully loads records`() = runCoroutineTest {
         // Arrange
         val records = listOf(
             EventLogRecordModel(
@@ -115,7 +113,7 @@ class EventLogViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test loadRecords handles failure`() = runBlockingTest {
+    fun `test loadRecords handles failure`() = runCoroutineTest {
         // Arrange
         coEvery { eventLogManager.getRecords() } returns Result.failure(Exception("Error"))
         coEvery { stringProvider.getString(Res.string.title_event_log) } returns "Event Log"
@@ -131,7 +129,7 @@ class EventLogViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test openRecordScreen emits NavigateToScreen event`() = runBlockingTest {
+    fun `test openRecordScreen emits NavigateToScreen event`() = runCoroutineTest {
         // Arrange
         val recordId = EventLogEntryId("123")
 
@@ -153,7 +151,7 @@ class EventLogViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test openAddRecordScreen emits NavigateToScreen event`() = runBlockingTest {
+    fun `test openAddRecordScreen emits NavigateToScreen event`() = runCoroutineTest {
         // Act
         val verificationJob = launch {
             windowEventBus.events.test {
@@ -172,7 +170,7 @@ class EventLogViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test navigateBack emits NavigateBack event`() = runBlockingTest {
+    fun `test navigateBack emits NavigateBack event`() = runCoroutineTest {
         // Act
         val verificationJob = launch {
             windowEventBus.events.test {

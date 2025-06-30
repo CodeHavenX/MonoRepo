@@ -8,25 +8,23 @@ import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.core.compose.WindowEvent
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
-import com.cramsan.framework.test.TestBase
+import com.cramsan.framework.test.CoroutineTest
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertNull
 
 /**
- * It is recommended to use the [TestBase] class to run your tests. To run your tests annotate your functions with
+ * It is recommended to use the [CoroutineTest] class to run your tests. To run your tests annotate your functions with
  * `@Test` and use the `runBlockingTest` function to run your tests.
  *
- * @see TestBase
+ * @see CoroutineTest
  */
-@OptIn(ExperimentalCoroutinesApi::class)
 @Suppress("UNCHECKED_CAST")
-class ManagementViewModelTest : TestBase() {
+class ManagementViewModelTest : CoroutineTest() {
 
     private lateinit var viewModel: ManagementViewModel
 
@@ -56,12 +54,12 @@ class ManagementViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test ui state`() = runBlockingTest {
+    fun `test ui state`() = runCoroutineTest {
         assertNull(viewModel.uiState.value.title)
     }
 
     @Test
-    fun `test events`() = runBlockingTest {
+    fun `test events`() = runCoroutineTest {
         // Set up
         coEvery { windowEventBus.push(EdifikanaWindowsEvent.NavigateBack) } returns Unit
 

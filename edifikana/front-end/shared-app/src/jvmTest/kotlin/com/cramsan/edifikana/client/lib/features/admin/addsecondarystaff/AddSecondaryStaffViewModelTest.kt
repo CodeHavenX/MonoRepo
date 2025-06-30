@@ -19,7 +19,7 @@ import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
-import com.cramsan.framework.test.TestBase
+import com.cramsan.framework.test.CoroutineTest
 import edifikana_lib.Res
 import edifikana_lib.text_please_complete_fields
 import edifikana_lib.text_there_was_an_error_processing_request
@@ -27,7 +27,6 @@ import edifikana_lib.title_timecard_add_staff
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.junit.jupiter.api.BeforeEach
@@ -35,8 +34,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-@OptIn(ExperimentalCoroutinesApi::class)
-class AddSecondaryStaffViewModelTest : TestBase() {
+class AddSecondaryStaffViewModelTest : CoroutineTest() {
 
     private lateinit var viewModel: AddSecondaryStaffViewModel
     private lateinit var staffManager: StaffManager
@@ -70,7 +68,7 @@ class AddSecondaryStaffViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test onBackSelected emits NavigateBack event`() = runBlockingTest {
+    fun `test onBackSelected emits NavigateBack event`() = runCoroutineTest {
         // Setup
 
         // Act
@@ -89,7 +87,7 @@ class AddSecondaryStaffViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test saveStaff with invalid data shows error snackbar`() = runBlockingTest {
+    fun `test saveStaff with invalid data shows error snackbar`() = runCoroutineTest {
         // Setup
         coEvery { stringProvider.getString(Res.string.text_please_complete_fields) } returns "Please complete all fields."
 
@@ -109,7 +107,7 @@ class AddSecondaryStaffViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test saveStaff with valid data saves staff and navigates back`() = runBlockingTest {
+    fun `test saveStaff with valid data saves staff and navigates back`() = runCoroutineTest {
         // Setup
         val id = "123"
         val idType = IdType.DNI
@@ -147,7 +145,7 @@ class AddSecondaryStaffViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test saveStaff with valid data but failure response shows error snackbar`() = runBlockingTest {
+    fun `test saveStaff with valid data but failure response shows error snackbar`() = runCoroutineTest {
         // Setup
         val id = "123"
         val idType = IdType.PASSPORT

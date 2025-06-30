@@ -27,7 +27,6 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
-import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -54,11 +53,9 @@ fun AddPrimaryStaffScreen(
     }
 
     LaunchedEffect(Unit) {
-        launch {
-            viewModel.events.collect { event ->
-                when (event) {
-                    AddPrimaryStaffEvent.Noop -> Unit
-                }
+        viewModel.events.collect { event ->
+            when (event) {
+                AddPrimaryStaffEvent.Noop -> Unit
             }
         }
     }

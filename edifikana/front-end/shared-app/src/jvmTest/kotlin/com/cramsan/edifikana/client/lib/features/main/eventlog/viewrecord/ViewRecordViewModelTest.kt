@@ -23,21 +23,19 @@ import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
-import com.cramsan.framework.test.TestBase
+import com.cramsan.framework.test.CoroutineTest
 import edifikana_lib.Res
 import edifikana_lib.event_type_delivery
 import edifikana_lib.title_event_log_view
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@OptIn(ExperimentalCoroutinesApi::class)
-class ViewRecordViewModelTest : TestBase() {
+class ViewRecordViewModelTest : CoroutineTest() {
 
     private lateinit var eventLogManager: EventLogManager
     private lateinit var storageService: StorageService
@@ -75,7 +73,7 @@ class ViewRecordViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test loadRecord successfully loads a record`() = runBlockingTest {
+    fun `test loadRecord successfully loads a record`() = runCoroutineTest {
         // Arrange
         val recordId = EventLogEntryId("123")
         val record = EventLogRecordModel(
@@ -107,7 +105,7 @@ class ViewRecordViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test loadRecord handles failure`() = runBlockingTest {
+    fun `test loadRecord handles failure`() = runCoroutineTest {
         // Arrange
         val recordId = EventLogEntryId("123")
         coEvery { eventLogManager.getRecord(recordId) } returns Result.failure(Exception("Error"))
@@ -124,7 +122,7 @@ class ViewRecordViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test navigateBack emits NavigateBack event`() = runBlockingTest {
+    fun `test navigateBack emits NavigateBack event`() = runCoroutineTest {
         // Act
         val verificationJob = launch {
             windowEventBus.events.test {
@@ -141,7 +139,7 @@ class ViewRecordViewModelTest : TestBase() {
     }
 
     @Test
-    fun `test openImage emits OpenImageExternally event`() = runBlockingTest {
+    fun `test openImage emits OpenImageExternally event`() = runCoroutineTest {
         // Arrange
         val attachmentHolder = AttachmentHolder(publicUrl = "http://example.com/image.jpg", storageRef = "")
         coEvery { storageService.downloadFile(any()) } returns Result.success(CoreUri.createUri("http://example.com/image.jpg"))

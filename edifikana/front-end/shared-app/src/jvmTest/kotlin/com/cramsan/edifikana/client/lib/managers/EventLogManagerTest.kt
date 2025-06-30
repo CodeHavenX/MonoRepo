@@ -11,7 +11,7 @@ import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
-import com.cramsan.framework.test.TestBase
+import com.cramsan.framework.test.CoroutineTest
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -25,7 +25,7 @@ import kotlinx.coroutines.test.runTest
 /**
  * Unit tests for the EventLogManager class.
  */
-class EventLogManagerTest : TestBase() {
+class EventLogManagerTest : CoroutineTest() {
     private lateinit var eventLogService: EventLogService
     private lateinit var eventLogCache: EventLogCache
     private lateinit var dependencies: ManagerDependencies

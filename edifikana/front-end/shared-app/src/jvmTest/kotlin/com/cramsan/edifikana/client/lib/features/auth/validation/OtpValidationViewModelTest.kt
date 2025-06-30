@@ -3,7 +3,6 @@ package com.cramsan.edifikana.client.lib.features.auth.validation
 import app.cash.turbine.test
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
-import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
 import com.cramsan.framework.core.compose.EventBus
@@ -13,26 +12,21 @@ import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
-import com.cramsan.framework.test.TestBase
+import com.cramsan.framework.test.CoroutineTest
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Assertions.assertTrue
 import kotlin.test.BeforeTest
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.todo
 
 /**
  * Test the [OtpValidationViewModel] class.
  */
-@OptIn(ExperimentalCoroutinesApi::class)
 @Suppress("UNCHECKED_CAST")
-class OtpValidationViewModelTest : TestBase() {
+class OtpValidationViewModelTest : CoroutineTest() {
     private lateinit var authManager: AuthManager
     private lateinit var viewModel: OtpValidationViewModel
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
@@ -65,7 +59,7 @@ class OtpValidationViewModelTest : TestBase() {
      * Test that the ViewModel initializes with the correct initial state.
      */
     @Test
-    fun `setEmailAddress should update email in UI state`() = runBlockingTest {
+    fun `setEmailAddress should update email in UI state`() = runCoroutineTest {
         // Act
         val email = "test@example.com"
         viewModel.setEmailAddress(email)
@@ -79,7 +73,7 @@ class OtpValidationViewModelTest : TestBase() {
      * Test that signInWithOtp calls authManager with the correct parameters.
      */
     @Test
-    fun `signInWithOtp should call authManager with correct params`() = runBlockingTest {
+    fun `signInWithOtp should call authManager with correct params`() = runCoroutineTest {
         // Arrange
         val email = "user@domain.com"
         val otp = listOf(1,2,3,4,5,6)
@@ -102,7 +96,7 @@ class OtpValidationViewModelTest : TestBase() {
      * Test that onOtpFieldFocused updates the focusedIndex in the UI state.
      */
     @Test
-    fun `onOtpFieldFocused should update focusedIndex`() = runBlockingTest {
+    fun `onOtpFieldFocused should update focusedIndex`() = runCoroutineTest {
         // Act
         viewModel.onOtpFieldFocused(3)
         this.testScheduler.advanceUntilIdle()
@@ -115,7 +109,7 @@ class OtpValidationViewModelTest : TestBase() {
      * Test that onEnterOtpValue updates the otpCode and focusedIndex in the UI state.
      */
     @Test
-    fun `onEnterOtpValue should update otpCode and focusedIndex`() = runBlockingTest {
+    fun `onEnterOtpValue should update otpCode and focusedIndex`() = runCoroutineTest {
         // Act
         viewModel.onOtpFieldFocused(0)
         this.testScheduler.advanceUntilIdle()
@@ -131,7 +125,7 @@ class OtpValidationViewModelTest : TestBase() {
      * Test that onKeyboardBack clears the previous otpCode and updates focusedIndex.
      */
     @Test
-    fun `onKeyboardBack should clear previous otpCode and update focusedIndex`() = runBlockingTest {
+    fun `onKeyboardBack should clear previous otpCode and update focusedIndex`() = runCoroutineTest {
         // Act
         viewModel.onOtpFieldFocused(2)
         this.testScheduler.advanceUntilIdle()
@@ -149,7 +143,7 @@ class OtpValidationViewModelTest : TestBase() {
      * Test that navigateBack emits a NavigateBack event on the window event bus.
      */
     @Test
-    fun `navigateBack should call emitEvent`() = runBlockingTest {
+    fun `navigateBack should call emitEvent`() = runCoroutineTest {
         // Act
         val verificationJob = launch {
             windowEventBus.events.test {

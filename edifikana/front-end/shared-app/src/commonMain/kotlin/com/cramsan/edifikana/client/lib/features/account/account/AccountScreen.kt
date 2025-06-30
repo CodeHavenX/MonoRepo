@@ -34,7 +34,6 @@ import edifikana_lib.account_screen_last_name
 import edifikana_lib.account_screen_phone_number
 import edifikana_lib.account_screen_sign_out
 import edifikana_lib.account_screen_title
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -52,11 +51,9 @@ fun AccountScreen(
     }
 
     LaunchedEffect(Unit) {
-        launch {
-            viewModel.events.collect { event ->
-                when (event) {
-                    AccountEvent.Noop -> Unit
-                }
+        viewModel.events.collect { event ->
+            when (event) {
+                AccountEvent.Noop -> Unit
             }
         }
     }

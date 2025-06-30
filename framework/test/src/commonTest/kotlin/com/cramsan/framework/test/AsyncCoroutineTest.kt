@@ -1,14 +1,12 @@
 package com.cramsan.framework.test
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.minutes
 
-@ExperimentalCoroutinesApi
-class AsyncCoroutineTest : TestBase() {
+class AsyncCoroutineTest : CoroutineTest() {
 
     lateinit var viewModel: SimpleViewModel
     lateinit var repository: Repository
@@ -21,7 +19,7 @@ class AsyncCoroutineTest : TestBase() {
     }
 
     @Test
-    fun test_that_async_code_is_executed_eagerly() = runBlockingTest {
+    fun test_that_async_code_is_executed_eagerly() = runCoroutineTest {
         var value = 0
         viewModel.postDelayed(2.minutes) {
             value = 2

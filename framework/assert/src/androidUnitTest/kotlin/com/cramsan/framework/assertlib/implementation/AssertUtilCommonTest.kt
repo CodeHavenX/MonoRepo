@@ -9,7 +9,7 @@ import com.cramsan.framework.assertlib.assertNull
 import com.cramsan.framework.halt.implementation.HaltUtilImpl
 import com.cramsan.framework.logging.Severity
 import com.cramsan.framework.logging.implementation.EventLoggerImpl
-import com.cramsan.framework.test.TestBase
+import com.cramsan.framework.test.CoroutineTest
 import io.mockk.Called
 import io.mockk.Runs
 import io.mockk.every
@@ -18,21 +18,19 @@ import io.mockk.mockk
 import io.mockk.mockkClass
 import io.mockk.verify
 import kotlin.test.BeforeTest
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 /**
  *
  */
-@OptIn(ExperimentalCoroutinesApi::class)
-class AssertUtilCommonTest : TestBase() {
+class AssertUtilCommonTest : CoroutineTest() {
 
     @BeforeTest
     fun setupTest() = Unit
 
     @Test
-    fun assertTrueWithHaltEnabled() = runBlockingTest {
+    fun assertTrueWithHaltEnabled() = runCoroutineTest {
         val eventLogger = mockkClass(EventLoggerImpl::class)
         val haltUtil = mockkClass(HaltUtilImpl::class)
         val assertUtil = AssertUtilImpl(true, eventLogger, haltUtil)
@@ -46,7 +44,7 @@ class AssertUtilCommonTest : TestBase() {
     }
 
     @Test
-    fun assertFalseWithHaltEnabled() = runBlockingTest {
+    fun assertFalseWithHaltEnabled() = runCoroutineTest {
         val eventLogger = mockkClass(EventLoggerImpl::class)
         val haltUtil = mockkClass(HaltUtilImpl::class)
         val assertUtil = AssertUtilImpl(true, eventLogger, haltUtil)
@@ -66,7 +64,7 @@ class AssertUtilCommonTest : TestBase() {
     }
 
     @Test
-    fun assertTrueWithHaltDisabled() = runBlockingTest {
+    fun assertTrueWithHaltDisabled() = runCoroutineTest {
         val eventLogger = mockkClass(EventLoggerImpl::class)
         val haltUtil = mockkClass(HaltUtilImpl::class)
         val assertUtil = AssertUtilImpl(false, eventLogger, haltUtil)
@@ -80,7 +78,7 @@ class AssertUtilCommonTest : TestBase() {
     }
 
     @Test
-    fun assertFalseWithHaltDisabled() = runBlockingTest {
+    fun assertFalseWithHaltDisabled() = runCoroutineTest {
         val eventLogger = mockkClass(EventLoggerImpl::class)
         val haltUtil = mockkClass(HaltUtilImpl::class)
         val assertUtil = AssertUtilImpl(false, eventLogger, haltUtil)
@@ -100,7 +98,7 @@ class AssertUtilCommonTest : TestBase() {
     }
 
     @Test
-    fun assertFailure() = runBlockingTest {
+    fun assertFailure() = runCoroutineTest {
         val eventLogger = mockkClass(EventLoggerImpl::class)
         val haltUtil = mockkClass(HaltUtilImpl::class)
         val assertUtil = AssertUtilImpl(false, eventLogger, haltUtil)
@@ -120,7 +118,7 @@ class AssertUtilCommonTest : TestBase() {
     }
 
     @Test
-    fun `test global functions`() = runBlockingTest {
+    fun `test global functions`() = runCoroutineTest {
         val assertUtil: AssertUtilImpl = mockk(relaxed = true)
         val tag = "TestTag"
         val message = "Error message"

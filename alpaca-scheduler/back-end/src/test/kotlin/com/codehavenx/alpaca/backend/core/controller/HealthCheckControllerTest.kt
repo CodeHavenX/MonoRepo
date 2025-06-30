@@ -1,6 +1,6 @@
 package com.codehavenx.alpaca.backend.core.controller
 
-import com.cramsan.framework.test.TestBase
+import com.cramsan.framework.test.CoroutineTest
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
@@ -14,7 +14,7 @@ import kotlin.test.assertEquals
 /**
  * Test the [HealthCheckController] class.
  */
-class HealthCheckControllerTest : TestBase(), KoinTest {
+class HealthCheckControllerTest : CoroutineTest(), KoinTest {
 
     /**
      * Setup the test.

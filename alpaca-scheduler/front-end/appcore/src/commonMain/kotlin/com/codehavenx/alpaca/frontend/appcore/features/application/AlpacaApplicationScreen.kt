@@ -38,7 +38,6 @@ import com.codehavenx.alpaca.frontend.appcore.features.staff.viewstaff.ViewStaff
 import com.codehavenx.alpaca.frontend.appcore.ui.components.NavigationBar
 import com.codehavenx.alpaca.frontend.appcore.ui.components.TopBar
 import com.codehavenx.alpaca.frontend.appcore.ui.theme.AlpacaTheme
-import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 /**
@@ -61,15 +60,13 @@ fun AlpacaApplicationScreen(
     }
 
     LaunchedEffect(Unit) {
-        launch {
-            viewModel.events.collect { applicationEvent ->
-                when (applicationEvent) {
-                    is AlpacaApplicationViewModelEvent.AlpacaApplicationEventWrapper -> handleEvent(
-                        navController,
-                        viewModel,
-                        applicationEvent.event,
-                    )
-                }
+        viewModel.events.collect { applicationEvent ->
+            when (applicationEvent) {
+                is AlpacaApplicationViewModelEvent.AlpacaApplicationEventWrapper -> handleEvent(
+                    navController,
+                    viewModel,
+                    applicationEvent.event,
+                )
             }
         }
     }

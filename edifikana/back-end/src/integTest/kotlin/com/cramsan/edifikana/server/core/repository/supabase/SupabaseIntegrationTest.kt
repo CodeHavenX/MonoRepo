@@ -23,7 +23,7 @@ import com.cramsan.edifikana.server.di.FrameworkModule
 import com.cramsan.edifikana.server.di.IntegTestApplicationModule
 import com.cramsan.edifikana.server.di.SettingsModule
 import com.cramsan.edifikana.server.di.SupabaseModule
-import com.cramsan.framework.test.TestBase
+import com.cramsan.framework.test.CoroutineTest
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
@@ -33,7 +33,7 @@ import org.koin.test.KoinTest
 import org.koin.test.inject
 import kotlin.test.AfterTest
 
-abstract class SupabaseIntegrationTest : TestBase(), KoinTest {
+abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
 
     protected val eventLogDatabase: SupabaseEventLogDatabase by inject()
     protected val propertyDatabase: SupabasePropertyDatabase by inject()

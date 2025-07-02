@@ -26,10 +26,12 @@ import edifikana_lib.title_timecard_view_staff
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlin.random.Random
+import kotlin.time.ExperimentalTime
 
 /**
  * View model for viewing staff.
  */
+@OptIn(ExperimentalTime::class)
 class ViewStaffViewModel(
     private val staffManager: StaffManager,
     private val timeCardManager: TimeCardManager,

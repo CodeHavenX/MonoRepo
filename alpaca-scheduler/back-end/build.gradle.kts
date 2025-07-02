@@ -1,5 +1,6 @@
 plugins {
     kotlin("plugin.serialization")
+    kotlin("jvm")
     id("io.ktor.plugin")
 }
 

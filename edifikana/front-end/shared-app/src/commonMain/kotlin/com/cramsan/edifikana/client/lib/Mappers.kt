@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalTime::class)
+
 package com.cramsan.edifikana.client.lib
 
 import androidx.compose.runtime.Composable
@@ -24,10 +26,11 @@ import edifikana_lib.role_security_cover
 import edifikana_lib.role_unknown
 import edifikana_lib.time_card_event_clock_in
 import edifikana_lib.time_card_event_clock_out
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.stringResource
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 /**
  * Converts the [StaffRole] to a friendly string.

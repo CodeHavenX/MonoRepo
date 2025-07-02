@@ -16,10 +16,12 @@ import edifikana_lib.Res
 import edifikana_lib.string_other
 import edifikana_lib.title_event_log_add
 import kotlinx.coroutines.launch
+import kotlin.time.ExperimentalTime
 
 /**
  * Represents the UI state of the Add Record screen.
  */
+@OptIn(ExperimentalTime::class)
 class AddRecordViewModel(
     private val staffManager: StaffManager,
     private val eventLogManager: EventLogManager,

@@ -44,8 +44,9 @@ import org.junit.jupiter.api.BeforeEach
 import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.time.ExperimentalTime
 
-@OptIn(TestOnly::class)
+@OptIn(TestOnly::class, ExperimentalTime::class)
 class ViewStaffViewModelTest : CoroutineTest() {
 
     private lateinit var staffManager: StaffManager

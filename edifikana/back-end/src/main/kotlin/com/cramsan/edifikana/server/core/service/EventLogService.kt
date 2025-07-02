@@ -11,11 +11,13 @@ import com.cramsan.edifikana.server.core.service.models.requests.DeleteEventLogE
 import com.cramsan.edifikana.server.core.service.models.requests.GetEventLogEntryRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdateEventLogEntryRequest
 import com.cramsan.framework.logging.logD
-import kotlinx.datetime.Instant
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 /**
  * Service for event log operations.
  */
+@OptIn(ExperimentalTime::class)
 class EventLogService(
     private val eventLogDatabase: EventLogDatabase,
 ) {

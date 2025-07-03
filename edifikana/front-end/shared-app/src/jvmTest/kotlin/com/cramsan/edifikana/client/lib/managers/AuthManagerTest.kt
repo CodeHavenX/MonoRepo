@@ -73,7 +73,7 @@ class AuthManagerTest : CoroutineTest() {
         val propertyList = listOf(mockk<com.cramsan.edifikana.client.lib.models.PropertyModel> {
             every { id } returns propertyId
         })
-        coEvery { authService.signIn(any(), any()) } returns Result.success(user)
+        coEvery { authService.signInWithPassword(any(), any()) } returns Result.success(user)
         coEvery { propertyService.getPropertyList() } returns Result.success(propertyList)
         coEvery { propertyService.setActiveProperty(propertyId) } returns Result.success(Unit)
         // Act
@@ -81,7 +81,7 @@ class AuthManagerTest : CoroutineTest() {
         // Assert
         assertTrue(result.isSuccess)
         assertEquals(user, result.getOrNull())
-        coVerify { authService.signIn("email", "password") }
+        coVerify { authService.signInWithPassword("email", "password") }
         coVerify { propertyService.getPropertyList() }
         coVerify { propertyService.setActiveProperty(propertyId) }
     }

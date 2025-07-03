@@ -50,14 +50,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cramsan.edifikana.client.lib.features.auth.AuthRouteDestination
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
 import edifikana_lib.alpacaIcon
+import edifikana_lib.otp_validation_screen_text
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -78,7 +79,7 @@ fun OtpValidationScreen(
      * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
      */
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
-        viewModel.setEmailAddress(destination.userEmail)
+        viewModel.initializeOTPValidationScreen(destination.userEmail)
     }
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         // Call this feature's viewModel
@@ -156,7 +157,7 @@ internal fun OtpValidationContent(
                     )
                     // Display text message
                     Text(
-                        "We've sent an OTP code to your email. Please enter it below to complete your signup.",
+                        text = stringResource(Res.string.otp_validation_screen_text),
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.onSurface,
                         textAlign = TextAlign.Center,

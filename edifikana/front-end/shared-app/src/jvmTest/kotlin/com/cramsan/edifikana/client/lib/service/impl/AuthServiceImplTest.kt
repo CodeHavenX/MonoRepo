@@ -8,6 +8,7 @@ import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import io.github.jan.supabase.auth.Auth
+import io.github.jan.supabase.auth.providers.builtin.OTP
 import io.github.jan.supabase.auth.user.UserInfo
 import io.github.jan.supabase.exceptions.RestException
 import io.ktor.client.HttpClient
@@ -147,5 +148,36 @@ class AuthServiceImplTest {
         // Assert
         assertTrue(result.isFailure)
     }
-}
 
+    /**
+     * Tests that sendOtpEmail returns success when auth signInWith succeeds.
+     */
+    @Test
+    fun `sendOtpEmail returns success when auth signInWith succeeds`() = runTest {
+        // Arrange
+        val email = "garcia.alicia1990@gmail.com"
+        coEvery { auth.signInWith(OTP, any()) } returns Unit
+
+        // Act
+        val result = service.sendOtpEmail(email)
+
+        // Assert
+        assertTrue(result.isSuccess)
+    }
+
+    /**
+     * Tests that sendOtpEmail returns failure when auth signInWith throws.
+     */
+    @Test
+    fun `sendOtpEmail returns failure when auth signInWith throws`() = runTest {
+        // Arrange
+        val email = "test@example.com"
+        coEvery { auth.signInWith(OTP, any()) } throws RuntimeException("fail")
+
+        // Act
+        val result = service.sendOtpEmail(email)
+
+        // Assert
+        assertTrue(result.isFailure)
+    }
+}

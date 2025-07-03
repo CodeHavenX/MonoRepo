@@ -260,4 +260,30 @@ class SignInViewModelTest : CoroutineTest() {
         // Assert & Verify
         verificationJob.join()
     }
+
+    /**
+     * Test the [SignInViewModel.signInWithOtp] method emits navigation event with trimmed email
+     */
+    @Test
+    fun `test signInWithOtp emits navigation event with trimmed email`() = runBlockingTest {
+        // Arrange
+        val email = " test@email.com "
+        viewModel.onUsernameValueChange(email)
+
+        // Act
+        val verificationJob = launch {
+            windowEventBus.events.test {
+                assertEquals(
+                    EdifikanaWindowsEvent.NavigateToScreen(
+                        AuthRouteDestination.ValidationDestination(email.trim())
+                    ),
+                    awaitItem()
+                )
+            }
+        }
+        viewModel.signInWithOtp()
+
+        // Assert
+        verificationJob.join()
+    }
 }

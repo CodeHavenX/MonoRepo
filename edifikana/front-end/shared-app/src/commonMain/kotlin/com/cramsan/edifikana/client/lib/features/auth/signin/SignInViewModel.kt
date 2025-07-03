@@ -59,16 +59,23 @@ class SignInViewModel(
     }
 
     /**
+     * Call this function to continue signing in with a password.
+     * We will show the password field and the button will change
+     * to enable the sign-in process.
+     */
+    fun onContinueWithPassword() {
+        logI(TAG, "continue sign in with a password.")
+        viewModelScope.launch {
+            updateUiState { it.copy(showPassword = true) }
+        }
+    }
+
+    /**
      * Call this function to sign in the user.
      */
     fun signInWithPassword() {
         logI(TAG, "signIn called")
         viewModelScope.launch {
-            updateUiState {
-                it.copy(
-                    showPassword = true
-                )
-            }
             val email = uiState.value.email.trim()
             val password = uiState.value.password
             auth.signIn(
@@ -92,8 +99,17 @@ class SignInViewModel(
         }
     }
 
+    /**
+     * Sign in with OTP - navigates to our otp validation screen, carrying the email with it.
+     */
     fun signInWithOtp() {
-
+        logI(TAG, "signIn with OTP called")
+        viewModelScope.launch {
+            val email = uiState.value.email.trim()
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateToScreen(AuthRouteDestination.ValidationDestination(email))
+            )
+        }
     }
 
     /**
@@ -130,6 +146,7 @@ class SignInViewModel(
             is ClientRequestExceptions.UnauthorizedException ->
                 "Invalid login credentials. Please check your " +
                     "username and password and try again."
+
             else -> stringProvider.getString(Res.string.error_message_unexpected_error)
         }
     }

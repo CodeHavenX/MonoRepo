@@ -81,8 +81,9 @@
     <string name="title_timecard_staff_list">Lista de Empleados</string>
 
     <string name="sign_in_screen_text_sign_in">Usar Contraseña</string>
+    <string name="sign_in_screen_text_sign_in_password">Iniciar Sesión</string>
     <string name="sign_in_screen_text_sign_in_otp">Iniciar Sesión con OTP</string>
-    <string name="sign_in_screen_text_email">Correo/# Telefónico</string>
+    <string name="sign_in_screen_text_email">Correo</string>
     <string name="sign_in_screen_text_password">Contraseña</string>
     <string name="sign_in_screen_text_sign_up">Registrarse</string>
 
@@ -93,6 +94,8 @@
     <string name="sign_up_screen_text_password">Contraseña</string>
     <string name="sign_up_screen_text_sign_up">Registrarse</string>
     <string name="sign_up_screen_text_policy">Al crear una cuenta, acepto los Términos de Servicio y la Política de Privacidad de Edifikans.</string>
+
+    <string name="otp_validation_screen_text">Se enviamos un código OTP a su correo electrónico. Introdúcelo a continuación.</string>
 
     <string name="account_screen_title">Mi Cuenta</string>
     <string name="account_screen_edit_button">Editar</string>

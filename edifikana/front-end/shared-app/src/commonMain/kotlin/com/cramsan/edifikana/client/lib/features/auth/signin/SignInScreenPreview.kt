@@ -20,14 +20,16 @@ private fun SignInScreenPreview() = AppTheme {
         ),
         onUsernameValueChange = { },
         onPasswordValueChange = { },
-        onSignInPWClicked = { },
+        onContinueWithPWClicked = { },
+        onPWSignInClicked = {},
         onSignInOtpClicked = { },
         onSignUpClicked = { },
     ) { }
 }
 
 /**
- * Preview for the SignInV2 screen.
+ * SignIn preview when user chooses to Contine with Password.
+ * Button should change from default preview
  */
 @Preview
 @Composable
@@ -42,7 +44,8 @@ private fun SignInContentPreview() = AppTheme {
         ),
         onUsernameValueChange = {},
         onPasswordValueChange = {},
-        onSignInPWClicked = { },
+        onContinueWithPWClicked = { },
+        onPWSignInClicked = {},
         onSignInOtpClicked = { },
         onSignUpClicked = {},
     ) {}

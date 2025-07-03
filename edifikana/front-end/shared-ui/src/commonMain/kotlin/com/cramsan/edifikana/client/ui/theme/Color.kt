@@ -1,8 +1,10 @@
+@file:Suppress("MagicNumber")
+
 package com.cramsan.edifikana.client.ui.theme
 
-import androidx.compose.ui.graphics.Color
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.ui.graphics.Color
 
 val primaryLight = Color(0xFF405F91)
 val onPrimaryLight = Color(0xFFFFFFFF)

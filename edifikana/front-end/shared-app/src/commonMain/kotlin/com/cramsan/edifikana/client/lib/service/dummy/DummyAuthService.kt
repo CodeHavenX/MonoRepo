@@ -33,7 +33,7 @@ class DummyAuthService : AuthService {
         }
     }
 
-    override suspend fun signIn(email: String, password: String): Result<UserModel> {
+    override suspend fun signInWithPassword(email: String, password: String): Result<UserModel> {
         delay(1.seconds)
         user.value = USER_1.id
         return Result.success(USER_1)
@@ -58,6 +58,10 @@ class DummyAuthService : AuthService {
         delay(1.seconds)
         user.value = USER_1.id
         return Result.success(USER_1)
+    }
+
+    override suspend fun sendOtpEmail(email: String): Result<Unit> {
+        return Result.success(Unit)
     }
 
     override suspend fun signInWithOtp(email: String, hashToken: String): Result<UserModel> {

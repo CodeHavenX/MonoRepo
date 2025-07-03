@@ -56,12 +56,8 @@ class TimeCardManagerTest : CoroutineTest() {
     }
 
     /**
-<<<<<<< Updated upstream
-     * Tests that getRecords merges and sorts records from cache and service.
-=======
      * Tests that getRecords merges cached and online records, sorts them by event time,
      * and returns the result.
->>>>>>> Stashed changes
      */
     @Test
     fun `getRecords returns merged and sorted records`() = runCoroutineTest {
@@ -85,12 +81,8 @@ class TimeCardManagerTest : CoroutineTest() {
     }
 
     /**
-<<<<<<< Updated upstream
-     * Tests that getAllRecords merges and sorts records from cache and service.
-=======
      * Tests that getAllRecords merges cached and online records, sorts them by event time,
      * and returns the result.
->>>>>>> Stashed changes
      */
     @Test
     fun `getAllRecords returns merged and sorted records`() = runCoroutineTest {
@@ -132,15 +124,10 @@ class TimeCardManagerTest : CoroutineTest() {
     }
 
     /**
-<<<<<<< Updated upstream
-     * Tests that addRecord adds to cache and triggers upload.
-     * TODO: NEED TO VERIFY PASSES AFTER IMPLEMENTING UPLOAD FUNCTIONALITY
+     * Tests that addRecord adds the record to the cache and triggers an upload.
+     * TODO: ENABLE ONCE FUNCTIONALITY IMPLEMENTED
      */
     @Ignore
-=======
-     * Tests that addRecord adds the record to the cache and triggers an upload.
-     */
->>>>>>> Stashed changes
     @Test
     fun `addRecord adds to cache and triggers upload`() = runCoroutineTest {
         // Arrange

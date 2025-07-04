@@ -33,7 +33,7 @@ class SignInViewModel(
     /**
      * Called when the username value changes.
      */
-    fun onUsernameValueChange(username: String) {
+    fun changeUsernameValue(username: String) {
         viewModelScope.launch {
             logD(TAG, "onUsernameValueChange called")
             updateUiState {
@@ -47,7 +47,7 @@ class SignInViewModel(
     /**
      * Called when the password value changes.
      */
-    fun onPasswordValueChange(password: String) {
+    fun changePasswordValue(password: String) {
         viewModelScope.launch {
             logD(TAG, "onPasswordValueChange called")
             updateUiState {
@@ -63,7 +63,7 @@ class SignInViewModel(
      * We will show the password field and the button will change
      * to enable the sign-in process.
      */
-    fun onContinueWithPassword() {
+    fun continueWithPassword() {
         logI(TAG, "continue sign in with a password.")
         viewModelScope.launch {
             updateUiState { it.copy(showPassword = true) }

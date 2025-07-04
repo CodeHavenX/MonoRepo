@@ -61,9 +61,9 @@ fun SignInScreen(
     SignInContent(
         uistate = uiState,
         modifier = Modifier,
-        onUsernameValueChange = { viewModel.onUsernameValueChange(it) },
-        onPasswordValueChange = { viewModel.onPasswordValueChange(it) },
-        onContinueWithPWClicked = { viewModel.onContinueWithPassword() },
+        onUsernameValueChange = { viewModel.changeUsernameValue(it) },
+        onPasswordValueChange = { viewModel.changePasswordValue(it) },
+        onContinueWithPWClicked = { viewModel.continueWithPassword() },
         onPWSignInClicked = { viewModel.signInWithPassword() },
         onSignInOtpClicked = { viewModel.signInWithOtp() },
         onSignUpClicked = { viewModel.navigateToSignUpPage() },

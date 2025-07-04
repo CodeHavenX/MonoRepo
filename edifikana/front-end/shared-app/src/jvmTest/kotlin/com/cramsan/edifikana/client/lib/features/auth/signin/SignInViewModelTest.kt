@@ -80,20 +80,20 @@ class SignInViewModelTest : CoroutineTest() {
     }
 
     /**
-     * Test the [SignInViewModel.onUsernameValueChange] method update to either email or phone number username
+     * Test the [SignInViewModel.changeUsernameValue] method update to either email or phone number username
      */
     @ParameterizedTest
     @CsvSource("test@example.com", "5456879123")
     fun `test onUsernameValueChange updates username value`(username: String) = runCoroutineTest {
         // Act
-        viewModel.onUsernameValueChange(username)
+        viewModel.changeUsernameValue(username)
 
         // Assert
         assertEquals(username, viewModel.uiState.value.email)
     }
 
     /**
-     * Test the [SignInViewModel.onPasswordValueChange] method
+     * Test the [SignInViewModel.changePasswordValue] method
      */
     @Test
     fun `test onPasswordValueChange updates password value`() = runCoroutineTest {
@@ -101,7 +101,7 @@ class SignInViewModelTest : CoroutineTest() {
         val password = "Password123"
 
         // Act
-        viewModel.onPasswordValueChange(password)
+        viewModel.changePasswordValue(password)
 
         // Assert
         assertEquals(password, viewModel.uiState.value.password)
@@ -123,8 +123,8 @@ class SignInViewModelTest : CoroutineTest() {
             )
         } returns Result.success(mockk())
 
-        viewModel.onUsernameValueChange(username)
-        viewModel.onPasswordValueChange(password)
+        viewModel.changeUsernameValue(username)
+        viewModel.changePasswordValue(password)
 
         // Act
         val verificationJob = launch {
@@ -162,8 +162,8 @@ class SignInViewModelTest : CoroutineTest() {
         } returns Result.failure(mockk<ClientRequestExceptions.UnauthorizedException>())
         coEvery { stringProvider.getString(Res.string.error_message_invalid_credentials) } returns errorMessage
 
-        viewModel.onUsernameValueChange(username)
-        viewModel.onPasswordValueChange(password)
+        viewModel.changeUsernameValue(username)
+        viewModel.changePasswordValue(password)
 
         // Act
         val verificationJob = launch {
@@ -171,8 +171,8 @@ class SignInViewModelTest : CoroutineTest() {
                 advanceUntilIdleAndAwaitComplete(this)
             }
         }
-        viewModel.onUsernameValueChange(username)
-        viewModel.onPasswordValueChange(password)
+        viewModel.changeUsernameValue(username)
+        viewModel.changePasswordValue(password)
         viewModel.signInWithPassword()
 
         // Assert & Verify
@@ -205,8 +205,8 @@ class SignInViewModelTest : CoroutineTest() {
                 advanceUntilIdleAndAwaitComplete(this)
             }
         }
-        viewModel.onUsernameValueChange(username)
-        viewModel.onPasswordValueChange(password)
+        viewModel.changeUsernameValue(username)
+        viewModel.changePasswordValue(password)
         viewModel.signInWithPassword()
 
         // Assert & Verify
@@ -268,7 +268,7 @@ class SignInViewModelTest : CoroutineTest() {
     fun `test signInWithOtp emits navigation event with trimmed email`() = runBlockingTest {
         // Arrange
         val email = " test@email.com "
-        viewModel.onUsernameValueChange(email)
+        viewModel.changeUsernameValue(email)
 
         // Act
         val verificationJob = launch {

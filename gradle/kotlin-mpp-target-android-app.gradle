@@ -86,6 +86,12 @@ android {
             returnDefaultValues = true
         }
     }
+
+    // TODO: Verify if we can remove this
+    // https://github.com/CodeHavenX/MonoRepo/issues/186
+    lint {
+        disable("NullSafeMutableLiveData")
+    }
 }
 
 dependencies {

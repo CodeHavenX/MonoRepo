@@ -12,6 +12,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
 /**
  * Service for managing calendar events. This service is responsible for creating and retrieving events.
@@ -101,6 +102,7 @@ class CalendarService(
     /**
      * Get the available time slots for the given staff member between the given start and end times.
      */
+    @OptIn(ExperimentalTime::class)
     @Suppress("LoopWithTooManyJumpStatements")
     suspend fun getAvailableTimeSlotsForStaff(
         startTime: LocalDateTime,

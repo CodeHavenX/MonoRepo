@@ -15,17 +15,19 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import kotlinx.datetime.Instant
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.koin.core.context.stopKoin
 import kotlin.test.AfterTest
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 /**
  * Test class for [EventLogService].
  */
+@OptIn(ExperimentalTime::class)
 class EventLogServiceTest {
     private lateinit var eventLogDatabase: EventLogDatabase
     private lateinit var eventLogService: EventLogService

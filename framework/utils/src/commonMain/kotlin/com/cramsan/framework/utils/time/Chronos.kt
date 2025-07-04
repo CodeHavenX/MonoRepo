@@ -1,12 +1,14 @@
 package com.cramsan.framework.utils.time
 
 import com.cramsan.framework.annotations.TestOnly
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
+import com.cramsan.framework.utils.time.Chronos.timeZone
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 /**
  * This class represent a globally accessible singleton object that provides
@@ -19,6 +21,7 @@ import kotlinx.datetime.toLocalDateTime
  * This library will provide a higher level of abstraction and convenience functions for cases in which
  * injection is not possible or practical.
  */
+@OptIn(ExperimentalTime::class)
 object Chronos {
 
     private var clock: Clock? = null

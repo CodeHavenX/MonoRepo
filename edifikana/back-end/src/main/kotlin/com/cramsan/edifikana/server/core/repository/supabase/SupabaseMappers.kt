@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalTime::class)
+
 package com.cramsan.edifikana.server.core.repository.supabase
 
 import com.cramsan.edifikana.lib.model.EventLogEntryId
@@ -20,7 +22,8 @@ import com.cramsan.edifikana.server.core.service.models.requests.CreatePropertyR
 import com.cramsan.edifikana.server.core.service.models.requests.CreateStaffRequest
 import com.cramsan.edifikana.server.core.service.models.requests.CreateTimeCardEventRequest
 import com.cramsan.edifikana.server.core.service.models.requests.CreateUserRequest
-import kotlinx.datetime.Instant
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 // TODO Wire up the isVerified field to the rest of the system.
 /**

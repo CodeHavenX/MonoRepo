@@ -22,7 +22,6 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.datetime.Instant
 import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
 import org.koin.test.get
@@ -30,7 +29,10 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
+@OptIn(ExperimentalTime::class)
 class EventLogControllerTest : CoroutineTest(), KoinTest {
 
     /**

@@ -23,15 +23,17 @@ import io.github.jan.supabase.storage.Storage
 import io.github.jan.supabase.storage.storage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
-import kotlinx.datetime.Clock
 import kotlinx.serialization.json.Json
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 /**
  * Class to initialize all the application level components.
  */
+@OptIn(ExperimentalTime::class)
 val ApplicationModule = module {
 
     single<CoroutineScope> {

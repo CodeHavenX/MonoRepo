@@ -4,11 +4,13 @@ import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
-import kotlinx.datetime.Instant
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 /**
  * Domain model representing a time card event such as clocking in or clocking out.
  */
+@OptIn(ExperimentalTime::class)
 data class TimeCardEvent(
     val id: TimeCardEventId,
     val staffId: StaffId?,

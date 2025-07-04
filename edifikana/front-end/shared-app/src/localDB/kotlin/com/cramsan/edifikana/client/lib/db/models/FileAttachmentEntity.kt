@@ -1,9 +1,12 @@
+@file:OptIn(ExperimentalTime::class)
+
 package com.cramsan.edifikana.client.lib.db.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.utils.time.Chronos
+import kotlin.time.ExperimentalTime
 
 /**
  * Database model for representing a [EventLogRecord]

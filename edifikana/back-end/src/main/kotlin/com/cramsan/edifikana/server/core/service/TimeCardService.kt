@@ -10,11 +10,13 @@ import com.cramsan.edifikana.server.core.service.models.requests.CreateTimeCardE
 import com.cramsan.edifikana.server.core.service.models.requests.GetTimeCardEventListRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetTimeCardEventRequest
 import com.cramsan.framework.logging.logD
-import kotlinx.datetime.Instant
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 /**
  * Service for time card operations.
  */
+@OptIn(ExperimentalTime::class)
 class TimeCardService(
     private val timeCardDatabase: TimeCardDatabase,
 ) {

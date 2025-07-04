@@ -1,4 +1,5 @@
 @file:Suppress("MagicNumber")
+@file:OptIn(ExperimentalTime::class)
 
 package com.cramsan.edifikana.server.core.repository.dummy
 
@@ -16,7 +17,8 @@ import com.cramsan.edifikana.server.core.service.models.Property
 import com.cramsan.edifikana.server.core.service.models.Staff
 import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.core.service.models.User
-import kotlinx.datetime.Instant
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 val USER_1 = User(
     id = UserId("user_id_1"),

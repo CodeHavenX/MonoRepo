@@ -3,11 +3,13 @@ package com.cramsan.edifikana.server.core.service.models.requests
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
-import kotlinx.datetime.Instant
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 /**
  * Domain model representing a time card event request.
  */
+@OptIn(ExperimentalTime::class)
 data class CreateTimeCardEventRequest(
     val staffId: StaffId,
     val fallbackStaffName: String?,

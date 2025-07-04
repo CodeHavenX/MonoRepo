@@ -30,7 +30,6 @@ enum class ManagementRoute(
     EventLogSingleItem(route = "eventlog/{eventLogRecordPk}"),
     EventLogAddItem(route = "eventlog/add"),
     ManagementHub(route = "/management")
-    ;
 }
 
 /**

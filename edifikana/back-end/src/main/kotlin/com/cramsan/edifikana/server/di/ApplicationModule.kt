@@ -6,16 +6,18 @@ import com.cramsan.edifikana.server.core.service.password.SimplePasswordGenerato
 import com.cramsan.framework.utils.time.Chronos
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
-import kotlinx.datetime.Clock
 import kotlinx.serialization.json.Json
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 /**
  * Class to initialize all the application level components.
  */
+@OptIn(ExperimentalTime::class)
 val ApplicationModule = module {
 
     single<CoroutineScope> {

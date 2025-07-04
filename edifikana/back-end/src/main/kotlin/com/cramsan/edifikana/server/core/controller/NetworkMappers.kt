@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalTime::class)
+
 package com.cramsan.edifikana.server.core.controller
 
 import com.cramsan.edifikana.lib.annotations.NetworkModel
@@ -11,6 +13,7 @@ import com.cramsan.edifikana.server.core.service.models.Property
 import com.cramsan.edifikana.server.core.service.models.Staff
 import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.core.service.models.User
+import kotlin.time.ExperimentalTime
 
 /**
  * Converts a [User] domain model to a [UserNetworkResponse] network model.

@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalTime::class)
+
 package com.codehavenx.alpaca.backend.core.repository.supabase
 
 import com.codehavenx.alpaca.backend.core.repository.supabase.models.AddressEntity
@@ -14,12 +16,13 @@ import com.codehavenx.alpaca.backend.core.service.models.UserId
 import com.codehavenx.alpaca.backend.core.service.models.requests.CreateConfigurationRequest
 import com.codehavenx.alpaca.backend.core.service.models.requests.CreateEventRequest
 import com.codehavenx.alpaca.backend.core.service.models.requests.CreateUserRequest
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 /**
  * Maps a LocalDateTime and a [timeZone] to a long.

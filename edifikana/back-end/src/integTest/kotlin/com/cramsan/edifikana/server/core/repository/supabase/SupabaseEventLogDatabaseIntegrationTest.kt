@@ -38,7 +38,7 @@ class SupabaseEventLogDatabaseIntegrationTest : SupabaseIntegrationTest() {
             propertyId = propertyId!!,
             type = EventLogEventType.DELIVERY, // Use a valid EventLogEventType
             fallbackEventType = null, // Set as needed
-            timestamp = kotlinx.datetime.Clock.System.now(),
+            timestamp = Clock.System.now(),
             unit = "TestUnit", // Use a valid unit
         )
         // Act
@@ -60,7 +60,7 @@ class SupabaseEventLogDatabaseIntegrationTest : SupabaseIntegrationTest() {
             propertyId = propertyId!!,
             type = EventLogEventType.DELIVERY, // Use a valid EventLogEventType
             fallbackEventType = null, // Set as needed
-            timestamp = kotlinx.datetime.Clock.System.now(),
+            timestamp = Clock.System.now(),
             unit = "TestUnit2", // Use a valid unit
         )
 
@@ -90,7 +90,7 @@ class SupabaseEventLogDatabaseIntegrationTest : SupabaseIntegrationTest() {
             propertyId = propertyId!!,
             type = EventLogEventType.DELIVERY, // Use a valid EventLogEventType
             fallbackEventType = null, // Set as needed
-            timestamp = kotlinx.datetime.Clock.System.now(),
+            timestamp = Clock.System.now(),
             unit = "TestUnitA", // Use a valid unit
         )
         val request2 = CreateEventLogEntryRequest(
@@ -101,7 +101,7 @@ class SupabaseEventLogDatabaseIntegrationTest : SupabaseIntegrationTest() {
             propertyId = propertyId!!,
             type = EventLogEventType.DELIVERY, // Use a valid EventLogEventType
             fallbackEventType = null, // Set as needed
-            timestamp = kotlinx.datetime.Clock.System.now(),
+            timestamp = Clock.System.now(),
             unit = "TestUnitB", // Use a valid unit
         )
 
@@ -134,7 +134,7 @@ class SupabaseEventLogDatabaseIntegrationTest : SupabaseIntegrationTest() {
             propertyId = propertyId!!,
             type = EventLogEventType.DELIVERY, // Use a valid EventLogEventType
             fallbackEventType = null, // Set as needed
-            timestamp = kotlinx.datetime.Clock.System.now(),
+            timestamp = Clock.System.now(),
             unit = "TestUnitToUpdate", // Use a valid unit
         )
 
@@ -172,7 +172,7 @@ class SupabaseEventLogDatabaseIntegrationTest : SupabaseIntegrationTest() {
             type = EventLogEventType.DELIVERY, // Use a valid EventLogEventType
             propertyId = propertyId!!,
             fallbackEventType = null, // Set as needed
-            timestamp = kotlinx.datetime.Clock.System.now(),
+            timestamp = Clock.System.now(),
             unit = "TestUnitToDelete", // Use a valid unit
         )
         val createResult = eventLogDatabase.createEventLogEntry(createRequest)

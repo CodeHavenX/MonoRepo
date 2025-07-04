@@ -37,12 +37,13 @@ import com.cramsan.framework.thread.implementation.ThreadUtilImpl
 import com.cramsan.framework.thread.implementation.ThreadUtilJVM
 import com.cramsan.framework.utils.time.Chronos
 import io.mockk.mockk
-import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.serialization.json.Json
 import org.apache.logging.log4j.Logger
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 /**
  * Produce a framework module for testing.
@@ -96,7 +97,7 @@ fun testKtorModule() = module {
 /**
  * Produce a test module for the application.
  */
-@OptIn(TestOnly::class)
+@OptIn(TestOnly::class, ExperimentalTime::class)
 fun testApplicationModule() = module {
     single<Json> { createJson() }
 

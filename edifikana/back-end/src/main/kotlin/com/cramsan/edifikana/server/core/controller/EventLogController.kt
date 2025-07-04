@@ -21,7 +21,8 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.put
 import io.ktor.server.routing.route
-import kotlinx.datetime.Instant
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 /**
  * Controller for event log related operations.
@@ -34,7 +35,7 @@ class EventLogController(
     /**
      * Handles the creation of a new event log entry. The [call] parameter is the request context.
      */
-    @OptIn(NetworkModel::class)
+    @OptIn(NetworkModel::class, ExperimentalTime::class)
     suspend fun createEventLogEntry(
         call: ApplicationCall,
     ) = call.handleCall(TAG, "createEventLogEntry", contextRetriever) { _ ->

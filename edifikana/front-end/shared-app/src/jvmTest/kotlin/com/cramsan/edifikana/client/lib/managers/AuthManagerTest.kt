@@ -77,7 +77,7 @@ class AuthManagerTest : CoroutineTest() {
         coEvery { propertyService.getPropertyList() } returns Result.success(propertyList)
         coEvery { propertyService.setActiveProperty(propertyId) } returns Result.success(Unit)
         // Act
-        val result = manager.signIn("email", "password")
+        val result = manager.signInWithPassword("email", "password")
         // Assert
         assertTrue(result.isSuccess)
         assertEquals(user, result.getOrNull())

@@ -117,7 +117,7 @@ class SignInViewModelTest : CoroutineTest() {
         val password = "Password123"
 
         coEvery {
-            authManager.signIn(
+            authManager.signInWithPassword(
                 username,
                 password,
             )
@@ -141,7 +141,7 @@ class SignInViewModelTest : CoroutineTest() {
         viewModel.signInWithPassword()
 
         // Verify
-        coVerify { authManager.signIn(username, password) }
+        coVerify { authManager.signInWithPassword(username, password) }
         verificationJob.join()
     }
 
@@ -155,7 +155,7 @@ class SignInViewModelTest : CoroutineTest() {
         val password = "ValidPassword123"
         val errorMessage = "Invalid login credentials. Please check your username and password and try again."
         coEvery {
-            authManager.signIn(
+            authManager.signInWithPassword(
                 username,
                 password,
             )
@@ -176,7 +176,7 @@ class SignInViewModelTest : CoroutineTest() {
         viewModel.signInWithPassword()
 
         // Assert & Verify
-        coVerify { authManager.signIn(username, password) }
+        coVerify { authManager.signInWithPassword(username, password) }
         assertEquals(errorMessage, viewModel.uiState.value.errorMessage)
         verificationJob.join()
     }
@@ -192,7 +192,7 @@ class SignInViewModelTest : CoroutineTest() {
         val password = "ValidPassword123"
         val errorMessage = "There was an unexpected error."
         coEvery {
-            authManager.signIn(
+            authManager.signInWithPassword(
                 username,
                 password,
             )
@@ -210,7 +210,7 @@ class SignInViewModelTest : CoroutineTest() {
         viewModel.signInWithPassword()
 
         // Assert & Verify
-        coVerify { authManager.signIn(username, password) }
+        coVerify { authManager.signInWithPassword(username, password) }
         assertEquals(errorMessage, viewModel.uiState.value.errorMessage)
         verificationJob.join()
     }
@@ -221,7 +221,7 @@ class SignInViewModelTest : CoroutineTest() {
     @Test
     fun `test navigateToSignUpPage calls expected event`() = runCoroutineTest {
         // Arrange
-        coEvery { authManager.signIn(any(), any()) } returns Result.success(mockk())
+        coEvery { authManager.signInWithPassword(any(), any()) } returns Result.success(mockk())
 
         // Act
         val verificationJob = launch {
@@ -244,7 +244,7 @@ class SignInViewModelTest : CoroutineTest() {
     @Test
     fun `test navigateToDebugPage calls expected event`() = runCoroutineTest {
         // Arrange
-        coEvery { authManager.signIn(any(), any()) } returns Result.success(mockk())
+        coEvery { authManager.signInWithPassword(any(), any()) } returns Result.success(mockk())
 
         // Act
         val verificationJob = launch {

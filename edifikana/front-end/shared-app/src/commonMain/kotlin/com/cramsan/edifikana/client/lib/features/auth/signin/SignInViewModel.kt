@@ -78,7 +78,7 @@ class SignInViewModel(
         viewModelScope.launch {
             val email = uiState.value.email.trim()
             val password = uiState.value.password
-            auth.signIn(
+            auth.signInWithPassword(
                 email = email,
                 password = password,
             ).onFailure { error ->

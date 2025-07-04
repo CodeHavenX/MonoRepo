@@ -28,7 +28,7 @@ class AuthManager(
     /**
      * Signs in the user with the given email and password.
      */
-    suspend fun signIn(email: String, password: String): Result<UserModel> = dependencies.getOrCatch(TAG) {
+    suspend fun signInWithPassword(email: String, password: String): Result<UserModel> = dependencies.getOrCatch(TAG) {
         logI(TAG, "signIn")
         val userModel = authService.signInWithPassword(email, password).getOrThrow()
 

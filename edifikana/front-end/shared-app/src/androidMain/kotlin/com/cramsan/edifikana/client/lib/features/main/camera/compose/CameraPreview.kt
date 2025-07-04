@@ -118,7 +118,6 @@ fun CameraPreview(
     }
 }
 
-@Suppress("RedundantSuspendModifier")
 private suspend fun Context.getCameraProvider(): ProcessCameraProvider = suspendCoroutine { continuation ->
     // TODO: Can we refactor this to use some sort of coroutine/future interop?
     ProcessCameraProvider.getInstance(this).also { cameraProvider ->

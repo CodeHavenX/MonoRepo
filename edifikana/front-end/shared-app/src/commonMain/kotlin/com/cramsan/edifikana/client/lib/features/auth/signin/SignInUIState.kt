@@ -10,7 +10,7 @@ data class SignInUIState(
     val email: String,
     val password: String,
     val showPassword: Boolean,
-    val errorMessage: String?,
+    val errorMessages: List<String>?,
 ) : ViewModelUIState {
 
     companion object {
@@ -19,7 +19,7 @@ data class SignInUIState(
             email = "",
             password = "",
             showPassword = false,
-            errorMessage = null,
+            errorMessages = null,
         )
     }
 }

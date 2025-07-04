@@ -268,8 +268,7 @@ fun OtpInputField(
                 shape = RoundedCornerShape(8.dp),
             )
             .size(width = 45.dp, height = 65.dp)
-            .shadow(3.dp, RoundedCornerShape(20.dp))
-            .background(Color.LightGray, RoundedCornerShape(20.dp)),
+            .shadow(3.dp, RoundedCornerShape(20.dp)),
         contentAlignment = Alignment.Center
     ) {
         BasicTextField(

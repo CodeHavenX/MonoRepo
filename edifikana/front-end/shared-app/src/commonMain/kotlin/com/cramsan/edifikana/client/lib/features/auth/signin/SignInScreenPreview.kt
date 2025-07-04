@@ -11,12 +11,12 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 private fun SignInScreenPreview() = AppTheme {
     SignInContent(
-        uistate = SignInUIState(
+        uiState = SignInUIState(
             isLoading = false,
             email = "",
             password = "",
             showPassword = false,
-            errorMessage = null,
+            errorMessages = null,
         ),
         onUsernameValueChange = { },
         onPasswordValueChange = { },
@@ -35,12 +35,12 @@ private fun SignInScreenPreview() = AppTheme {
 @Composable
 private fun SignInContentPreview() = AppTheme {
     SignInContent(
-        uistate = SignInUIState(
+        uiState = SignInUIState(
             isLoading = true,
             email = "username",
             password = "password",
             showPassword = true,
-            errorMessage = "",
+            errorMessages = null,
         ),
         onUsernameValueChange = {},
         onPasswordValueChange = {},

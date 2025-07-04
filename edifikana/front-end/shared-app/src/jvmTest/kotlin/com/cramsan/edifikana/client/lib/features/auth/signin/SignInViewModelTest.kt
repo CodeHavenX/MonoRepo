@@ -177,7 +177,7 @@ class SignInViewModelTest : CoroutineTest() {
 
         // Assert & Verify
         coVerify { authManager.signInWithPassword(username, password) }
-        assertEquals(errorMessage, viewModel.uiState.value.errorMessage)
+        assertEquals(errorMessage, viewModel.uiState.value.errorMessages)
         verificationJob.join()
     }
 
@@ -211,7 +211,7 @@ class SignInViewModelTest : CoroutineTest() {
 
         // Assert & Verify
         coVerify { authManager.signInWithPassword(username, password) }
-        assertEquals(errorMessage, viewModel.uiState.value.errorMessage)
+        assertEquals(errorMessage, viewModel.uiState.value.errorMessages)
         verificationJob.join()
     }
 

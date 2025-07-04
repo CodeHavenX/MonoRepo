@@ -10,6 +10,7 @@ import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logI
+import com.cramsan.framework.utils.loginvalidation.validateEmail
 import edifikana_lib.Res
 import edifikana_lib.error_message_unexpected_error
 import kotlinx.coroutines.launch
@@ -66,6 +67,9 @@ class SignInViewModel(
     fun continueWithPassword() {
         logI(TAG, "continue sign in with a password.")
         viewModelScope.launch {
+            if (!checkEmailValid(uiState.value.email.trim())) {
+                return@launch
+            }
             updateUiState { it.copy(showPassword = true) }
         }
     }
@@ -85,7 +89,7 @@ class SignInViewModel(
                 val message = getErrorMessage(error)
                 updateUiState {
                     it.copy(
-                        errorMessage = message
+                        errorMessages = listOf(message)
                     )
                 }
                 return@launch
@@ -106,6 +110,9 @@ class SignInViewModel(
         logI(TAG, "signIn with OTP called")
         viewModelScope.launch {
             val email = uiState.value.email.trim()
+            if (!checkEmailValid(email)) {
+                return@launch
+            }
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToScreen(AuthRouteDestination.ValidationDestination(email))
             )
@@ -136,6 +143,28 @@ class SignInViewModel(
 
     companion object {
         private const val TAG = "SignInViewModel"
+    }
+
+    /**
+     * Check if the email is valid before proceeding with the sign in option
+     */
+    private suspend fun checkEmailValid(email: String): Boolean {
+        val errorMessages = validateEmail(email)
+        if (errorMessages.isNotEmpty()) {
+            logD(TAG, "email field found to be invalid.")
+            updateUiState {
+                it.copy(
+                    errorMessages = errorMessages
+                )
+            }
+            return false
+        }
+        updateUiState {
+            it.copy(
+                errorMessages = emptyList<String>()
+            )
+        }
+        return true
     }
 
     /**

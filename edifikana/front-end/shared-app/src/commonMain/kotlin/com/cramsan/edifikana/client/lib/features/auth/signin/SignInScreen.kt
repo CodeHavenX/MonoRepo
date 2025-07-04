@@ -1,5 +1,9 @@
 package com.cramsan.edifikana.client.lib.features.auth.signin
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -8,6 +12,7 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -59,7 +64,7 @@ fun SignInScreen(
     }
 
     SignInContent(
-        uistate = uiState,
+        uiState = uiState,
         modifier = Modifier,
         onUsernameValueChange = { viewModel.changeUsernameValue(it) },
         onPasswordValueChange = { viewModel.changePasswordValue(it) },
@@ -73,7 +78,7 @@ fun SignInScreen(
 
 @Composable
 internal fun SignInContent(
-    uistate: SignInUIState,
+    uiState: SignInUIState,
     modifier: Modifier = Modifier,
     onUsernameValueChange: (String) -> Unit,
     onPasswordValueChange: (String) -> Unit,
@@ -95,19 +100,37 @@ internal fun SignInContent(
         ) {
             ScreenLayout(
                 sectionContent = { modifier ->
-                    uistate.errorMessage?.let {
-                        Text(it)
+                    AnimatedContent(
+                        uiState.errorMessages,
+                        modifier = modifier,
+                        transitionSpec = {
+                            fadeIn()
+                                .togetherWith(
+                                    fadeOut()
+                                )
+                        },
+                    ) {
+                        if (!uiState.errorMessages.isNullOrEmpty()) {
+                            it?.forEach { errorMessage ->
+                                Text(
+                                    text = errorMessage,
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = MaterialTheme.colorScheme.error,
+                                )
+                            }
+                        }
                     }
+
                     OutlinedTextField(
-                        value = uistate.email,
+                        value = uiState.email,
                         onValueChange = { onUsernameValueChange(it) },
                         modifier = modifier,
                         label = { Text(stringResource(Res.string.sign_in_screen_text_email)) },
                         maxLines = 1,
                     )
-                    if (uistate.showPassword) {
+                    if (uiState.showPassword) {
                         PasswordOutlinedTextField(
-                            value = uistate.password,
+                            value = uiState.password,
                             onValueChange = { onPasswordValueChange(it) },
                             modifier = modifier,
                             label = { Text(stringResource(Res.string.sign_in_screen_text_password)) },
@@ -115,7 +138,7 @@ internal fun SignInContent(
                     }
                 },
                 buttonContent = { modifier ->
-                    if (!uistate.showPassword) {
+                    if (!uiState.showPassword) {
                         Button(
                             onClick = onContinueWithPWClicked,
                             modifier = modifier,
@@ -164,5 +187,5 @@ internal fun SignInContent(
             }
         }
     }
-    LoadingAnimationOverlay(uistate.isLoading)
+    LoadingAnimationOverlay(uiState.isLoading)
 }

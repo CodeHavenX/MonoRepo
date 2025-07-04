@@ -12,6 +12,7 @@ import edifikana_lib.error_message_unexpected_error
 /**
  * Share the given [text] and [imageUri] with the system.
  */
+@Suppress("RedundantSuspendModifier")
 suspend fun Context.shareContent(tag: String, text: String, imageUri: CoreUri?): Boolean {
     val shareIntent = Intent(Intent.ACTION_SEND)
     shareIntent.putExtra(Intent.EXTRA_TEXT, text)

@@ -120,7 +120,7 @@ class SignUpViewModel(
             if (errorMessages.isNotEmpty()) {
                 updateUiState {
                     it.copy(
-                        errorMessage = errorMessages
+                        errorMessages = errorMessages
                     )
                 }
                 return@launch
@@ -138,7 +138,7 @@ class SignUpViewModel(
                 updateUiState {
                     it.copy(
                         isLoading = false,
-                        errorMessage = listOf(getErrorMessage(exception))
+                        errorMessages = listOf(getErrorMessage(exception))
                     )
                 }
 

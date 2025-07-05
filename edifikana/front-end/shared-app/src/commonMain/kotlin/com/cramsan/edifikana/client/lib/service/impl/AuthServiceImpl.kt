@@ -16,6 +16,7 @@ import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.OtpType
 import io.github.jan.supabase.auth.exception.AuthRestException
 import io.github.jan.supabase.auth.providers.builtin.Email
+import io.github.jan.supabase.auth.providers.builtin.OTP
 import io.github.jan.supabase.exceptions.RestException
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -66,18 +67,19 @@ class AuthServiceImpl(
         userModel
     }
 
-    override suspend fun signIn(email: String, password: String): Result<UserModel> = runSuspendCatching(TAG) {
-        try {
-            auth.signInWith(Email) {
-                this.email = email
-                this.password = password
+    override suspend fun signInWithPassword(email: String, password: String): Result<UserModel> =
+        runSuspendCatching(TAG) {
+            try {
+                auth.signInWith(Email) {
+                    this.email = email
+                    this.password = password
+                }
+            } catch (e: AuthRestException) {
+                logE(TAG, "Error signing in", e)
+                throw ClientRequestExceptions.UnauthorizedException("ERROR: Invalid credentials.")
             }
-        } catch (e: AuthRestException) {
-            logE(TAG, "Error signing in", e)
-            throw ClientRequestExceptions.UnauthorizedException("ERROR: Invalid credentials.")
+            getUser().getOrThrow()
         }
-        getUser().getOrThrow()
-    }
 
     override suspend fun signOut() = runSuspendCatching(TAG) {
         auth.signOut()
@@ -109,6 +111,13 @@ class AuthServiceImpl(
         }.body<UserNetworkResponse>()
         val userModel = response.toUserModel()
         userModel
+    }
+
+    override suspend fun sendOtpEmail(email: String): Result<Unit> = runSuspendCatching(TAG) {
+        auth.signInWith(OTP) {
+            this.email = email
+            createUser = false
+        }
     }
 
     override suspend fun signInWithOtp(email: String, hashToken: String): Result<UserModel> = runSuspendCatching(

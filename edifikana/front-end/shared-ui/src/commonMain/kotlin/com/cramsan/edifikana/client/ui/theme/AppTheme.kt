@@ -3,26 +3,14 @@ package com.cramsan.edifikana.client.ui.theme
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.ui.graphics.Color
 import coil3.ImageLoader
 import coil3.compose.setSingletonImageLoaderFactory
 import coil3.network.ktor3.KtorNetworkFetcherFactory
 import coil3.util.DebugLogger
 import com.cramsan.ui.components.LocalDebugLayoutInspection
 import io.github.jan.supabase.coil.Coil3Integration
-
-@Suppress("MagicNumber")
-private val md_theme_light_primary = Color(0xFF13BC9A)
-
-private val LightThemeColors = lightColorScheme(
-    primary = md_theme_light_primary,
-)
-private val DarkThemeColors = lightColorScheme(
-    primary = md_theme_light_primary,
-)
 
 /**
  * App theme.
@@ -36,7 +24,7 @@ fun AppTheme(
     debugLayoutInspection: Boolean = false,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = getColorScheme(darkTheme, dynamicColor, DarkThemeColors, LightThemeColors)
+    val colorScheme = getColorScheme(darkTheme, dynamicColor, darkScheme, lightScheme)
 
     WindowDecorations(colorScheme, darkTheme)
 

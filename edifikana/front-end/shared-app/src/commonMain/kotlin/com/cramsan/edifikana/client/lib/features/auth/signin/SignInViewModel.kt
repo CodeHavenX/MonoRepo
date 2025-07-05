@@ -10,6 +10,7 @@ import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logI
+import com.cramsan.framework.utils.loginvalidation.validateEmail
 import edifikana_lib.Res
 import edifikana_lib.error_message_unexpected_error
 import kotlinx.coroutines.launch
@@ -33,7 +34,7 @@ class SignInViewModel(
     /**
      * Called when the username value changes.
      */
-    fun onUsernameValueChange(username: String) {
+    fun changeUsernameValue(username: String) {
         viewModelScope.launch {
             logD(TAG, "onUsernameValueChange called")
             updateUiState {
@@ -47,7 +48,7 @@ class SignInViewModel(
     /**
      * Called when the password value changes.
      */
-    fun onPasswordValueChange(password: String) {
+    fun changePasswordValue(password: String) {
         viewModelScope.launch {
             logD(TAG, "onPasswordValueChange called")
             updateUiState {
@@ -59,21 +60,36 @@ class SignInViewModel(
     }
 
     /**
+     * Call this function to continue signing in with a password.
+     * We will show the password field and the button will change
+     * to enable the sign-in process.
+     */
+    fun continueWithPassword() {
+        logI(TAG, "continue sign in with a password.")
+        viewModelScope.launch {
+            if (!checkEmailValid(uiState.value.email.trim())) {
+                return@launch
+            }
+            updateUiState { it.copy(showPassword = true) }
+        }
+    }
+
+    /**
      * Call this function to sign in the user.
      */
-    fun signIn() {
+    fun signInWithPassword() {
         logI(TAG, "signIn called")
         viewModelScope.launch {
             val email = uiState.value.email.trim()
             val password = uiState.value.password
-            auth.signIn(
+            auth.signInWithPassword(
                 email = email,
                 password = password,
             ).onFailure { error ->
                 val message = getErrorMessage(error)
                 updateUiState {
                     it.copy(
-                        errorMessage = message
+                        errorMessages = listOf(message)
                     )
                 }
                 return@launch
@@ -83,6 +99,22 @@ class SignInViewModel(
                     ActivityRouteDestination.ManagementRouteDestination,
                     clearTop = true,
                 )
+            )
+        }
+    }
+
+    /**
+     * Sign in with OTP - navigates to our otp validation screen, carrying the email with it.
+     */
+    fun signInWithOtp() {
+        logI(TAG, "signIn with OTP called")
+        viewModelScope.launch {
+            val email = uiState.value.email.trim()
+            if (!checkEmailValid(email)) {
+                return@launch
+            }
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateToScreen(AuthRouteDestination.ValidationDestination(email))
             )
         }
     }
@@ -114,6 +146,28 @@ class SignInViewModel(
     }
 
     /**
+     * Check if the email is valid before proceeding with the sign in option
+     */
+    private suspend fun checkEmailValid(email: String): Boolean {
+        val errorMessages = validateEmail(email)
+        if (errorMessages.isNotEmpty()) {
+            logD(TAG, "email field found to be invalid.")
+            updateUiState {
+                it.copy(
+                    errorMessages = errorMessages
+                )
+            }
+            return false
+        }
+        updateUiState {
+            it.copy(
+                errorMessages = emptyList<String>()
+            )
+        }
+        return true
+    }
+
+    /**
      * Get the custom client error message based on the exception type.
      */
     private suspend fun getErrorMessage(exception: Throwable): String {
@@ -121,6 +175,7 @@ class SignInViewModel(
             is ClientRequestExceptions.UnauthorizedException ->
                 "Invalid login credentials. Please check your " +
                     "username and password and try again."
+
             else -> stringProvider.getString(Res.string.error_message_unexpected_error)
         }
     }

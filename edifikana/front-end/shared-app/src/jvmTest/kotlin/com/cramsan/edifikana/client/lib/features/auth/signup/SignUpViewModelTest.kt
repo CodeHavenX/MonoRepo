@@ -252,6 +252,6 @@ class SignUpViewModelTest : CoroutineTest() {
         viewModel.signUp()
 
         // Assert
-        assertEquals(expectedErrorCount, viewModel.uiState.value.errorMessage?.size ?: 0)
+        assertEquals(expectedErrorCount, viewModel.uiState.value.errorMessages?.size ?: 0)
     }
 }

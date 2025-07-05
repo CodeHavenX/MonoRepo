@@ -1,5 +1,9 @@
 package com.cramsan.edifikana.client.lib.features.auth.signin
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -8,9 +12,12 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -26,6 +33,8 @@ import edifikana_lib.Res
 import edifikana_lib.sign_in_screen_text_email
 import edifikana_lib.sign_in_screen_text_password
 import edifikana_lib.sign_in_screen_text_sign_in
+import edifikana_lib.sign_in_screen_text_sign_in_otp
+import edifikana_lib.sign_in_screen_text_sign_in_password
 import edifikana_lib.sign_in_screen_text_sign_up
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -55,11 +64,13 @@ fun SignInScreen(
     }
 
     SignInContent(
-        uistate = uiState,
+        uiState = uiState,
         modifier = Modifier,
-        onUsernameValueChange = { viewModel.onUsernameValueChange(it) },
-        onPasswordValueChange = { viewModel.onPasswordValueChange(it) },
-        onSignInClicked = { viewModel.signIn() },
+        onUsernameValueChange = { viewModel.changeUsernameValue(it) },
+        onPasswordValueChange = { viewModel.changePasswordValue(it) },
+        onContinueWithPWClicked = { viewModel.continueWithPassword() },
+        onPWSignInClicked = { viewModel.signInWithPassword() },
+        onSignInOtpClicked = { viewModel.signInWithOtp() },
         onSignUpClicked = { viewModel.navigateToSignUpPage() },
         onInfoClicked = { viewModel.navigateToDebugPage() },
     )
@@ -67,11 +78,13 @@ fun SignInScreen(
 
 @Composable
 internal fun SignInContent(
-    uistate: SignInUIState,
+    uiState: SignInUIState,
     modifier: Modifier = Modifier,
     onUsernameValueChange: (String) -> Unit,
     onPasswordValueChange: (String) -> Unit,
-    onSignInClicked: () -> Unit,
+    onContinueWithPWClicked: () -> Unit,
+    onPWSignInClicked: () -> Unit,
+    onSignInOtpClicked: () -> Unit,
     onSignUpClicked: () -> Unit,
     onInfoClicked: () -> Unit,
 ) {
@@ -87,33 +100,72 @@ internal fun SignInContent(
         ) {
             ScreenLayout(
                 sectionContent = { modifier ->
-                    uistate.errorMessage?.let {
-                        Text(it)
+                    AnimatedContent(
+                        uiState.errorMessages,
+                        modifier = modifier,
+                        transitionSpec = {
+                            fadeIn()
+                                .togetherWith(
+                                    fadeOut()
+                                )
+                        },
+                    ) {
+                        if (!uiState.errorMessages.isNullOrEmpty()) {
+                            it?.forEach { errorMessage ->
+                                Text(
+                                    text = errorMessage,
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = MaterialTheme.colorScheme.error,
+                                )
+                            }
+                        }
                     }
+
                     OutlinedTextField(
-                        value = uistate.email,
+                        value = uiState.email,
                         onValueChange = { onUsernameValueChange(it) },
                         modifier = modifier,
                         label = { Text(stringResource(Res.string.sign_in_screen_text_email)) },
                         maxLines = 1,
                     )
-                    PasswordOutlinedTextField(
-                        value = uistate.password,
-                        onValueChange = { onPasswordValueChange(it) },
-                        modifier = modifier,
-                        label = { Text(stringResource(Res.string.sign_in_screen_text_password)) },
-                    )
+                    if (uiState.showPassword) {
+                        PasswordOutlinedTextField(
+                            value = uiState.password,
+                            onValueChange = { onPasswordValueChange(it) },
+                            modifier = modifier,
+                            label = { Text(stringResource(Res.string.sign_in_screen_text_password)) },
+                        )
+                    }
                 },
                 buttonContent = { modifier ->
-                    Button(
-                        onClick = onSignInClicked,
+                    if (!uiState.showPassword) {
+                        Button(
+                            onClick = onContinueWithPWClicked,
+                            modifier = modifier,
+                        ) {
+                            Text(
+                                stringResource(Res.string.sign_in_screen_text_sign_in),
+                            )
+                        }
+                    } else {
+                        Button(
+                            onClick = onPWSignInClicked,
+                            modifier = modifier,
+                        ) {
+                            Text(
+                                stringResource(Res.string.sign_in_screen_text_sign_in_password),
+                            )
+                        }
+                    }
+                    OutlinedButton(
+                        onClick = onSignInOtpClicked,
                         modifier = modifier,
                     ) {
                         Text(
-                            stringResource(Res.string.sign_in_screen_text_sign_in),
+                            stringResource(Res.string.sign_in_screen_text_sign_in_otp)
                         )
                     }
-                    Button(
+                    TextButton(
                         onClick = onSignUpClicked,
                         modifier = modifier,
                     ) {
@@ -135,5 +187,5 @@ internal fun SignInContent(
             }
         }
     }
-    LoadingAnimationOverlay(uistate.isLoading)
+    LoadingAnimationOverlay(uiState.isLoading)
 }

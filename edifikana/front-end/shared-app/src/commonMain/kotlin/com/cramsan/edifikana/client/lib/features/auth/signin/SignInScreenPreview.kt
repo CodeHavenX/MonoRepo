@@ -11,37 +11,42 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 private fun SignInScreenPreview() = AppTheme {
     SignInContent(
-        uistate = SignInUIState(
+        uiState = SignInUIState(
             isLoading = false,
             email = "",
             password = "",
-            errorMessage = null,
+            showPassword = false,
+            errorMessages = null,
         ),
         onUsernameValueChange = { },
         onPasswordValueChange = { },
-        onSignInClicked = { },
+        onContinueWithPWClicked = { },
+        onPWSignInClicked = {},
+        onSignInOtpClicked = { },
         onSignUpClicked = { },
-        onInfoClicked = { },
-    )
+    ) { }
 }
 
 /**
- * Preview for the SignInV2 screen.
+ * SignIn preview when user chooses to Contine with Password.
+ * Button should change from default preview
  */
 @Preview
 @Composable
 private fun SignInContentPreview() = AppTheme {
     SignInContent(
-        uistate = SignInUIState(
+        uiState = SignInUIState(
             isLoading = true,
             email = "username",
             password = "password",
-            errorMessage = "",
+            showPassword = true,
+            errorMessages = null,
         ),
         onUsernameValueChange = {},
         onPasswordValueChange = {},
-        onSignInClicked = {},
+        onContinueWithPWClicked = { },
+        onPWSignInClicked = {},
+        onSignInOtpClicked = { },
         onSignUpClicked = {},
-        onInfoClicked = {},
-    )
+    ) {}
 }

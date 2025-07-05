@@ -111,7 +111,7 @@ internal fun SignUpContent(
             ScreenLayout(
                 sectionContent = { modifier ->
                     AnimatedContent(
-                        uiState.errorMessage,
+                        uiState.errorMessages,
                         modifier = modifier,
                         transitionSpec = {
                             fadeIn()
@@ -120,7 +120,7 @@ internal fun SignUpContent(
                                 )
                         },
                     ) {
-                        if (!uiState.errorMessage.isNullOrEmpty()) {
+                        if (!uiState.errorMessages.isNullOrEmpty()) {
                             it?.forEach { errorMessage ->
                                 Text(
                                     text = errorMessage,

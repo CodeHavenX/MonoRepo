@@ -59,30 +59,35 @@ class OtpValidationViewModelTest : CoroutineTest() {
      * Test that the ViewModel initializes with the correct initial state.
      */
     @Test
-    fun `setEmailAddress should update email in UI state`() = runCoroutineTest {
-        // Act
+    fun `setEmailAddress should update email in UI state and call sendOtpCode`() = runCoroutineTest {
+        // Arrange
         val email = "test@example.com"
-        viewModel.setEmailAddress(email)
+        coEvery { authManager.sendOtpCode(email) } returns Unit
+
+        // Act
+        viewModel.initializeOTPValidationScreen(email)
         this.testScheduler.advanceUntilIdle()
 
         // Assert
         Assertions.assertEquals(email, viewModel.uiState.value.email)
+        coVerify { authManager.sendOtpCode(email) }
+
     }
 
     /**
      * Test that signInWithOtp calls authManager with the correct parameters.
      */
     @Test
-    fun `signInWithOtp should call authManager with correct params`() = runCoroutineTest {
+    fun `signInWithOtp should call signInWithOtp on authManager with correct params`() = runCoroutineTest {
         // Arrange
         val email = "user@domain.com"
         val otp = listOf(1,2,3,4,5,6)
-        viewModel.setEmailAddress(email)
+        viewModel.initializeOTPValidationScreen(email)
         this.testScheduler.advanceUntilIdle()
         otp.forEachIndexed { index, value ->
             viewModel.onEnterOtpValue(value, index)
         }
-        coEvery { authManager.signInWithOtp(any(), any()) } returns Result.success(mockk())
+        coEvery { authManager.signInWithOtp(email, otp.toString()) } returns Result.success(mockk())
 
         // Act
         viewModel.signInWithOtp()

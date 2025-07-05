@@ -7,6 +7,7 @@ import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.edifikana.server.core.service.models.requests.CreateTimeCardEventRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteTimeCardEventRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetTimeCardEventListRequest
+import com.cramsan.edifikana.server.core.service.models.requests.GetTimeCardEventRequest
 import com.cramsan.framework.utils.uuid.UUID
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Clock
@@ -71,7 +72,7 @@ class SupabaseTimeCardDatabaseIntegrationTest : SupabaseIntegrationTest() {
         val createResult = timeCardDatabase.createTimeCardEvent(createRequest).registerTimeCardEventForDeletion()
         assertTrue(createResult.isSuccess)
         val event = createResult.getOrNull()!!
-        val getResult = timeCardDatabase.getTimeCardEvent(DeleteTimeCardEventRequest(event.id))
+        val getResult = timeCardDatabase.getTimeCardEvent(GetTimeCardEventRequest(event.id))
 
         // Assert
         assertTrue(getResult.isSuccess)
@@ -122,7 +123,7 @@ class SupabaseTimeCardDatabaseIntegrationTest : SupabaseIntegrationTest() {
         val fakeId = TimeCardEventId(UUID.random())
 
         // Act
-        val getResult = timeCardDatabase.getTimeCardEvent(DeleteTimeCardEventRequest(fakeId))
+        val getResult = timeCardDatabase.getTimeCardEvent(GetTimeCardEventRequest(fakeId))
 
         // Assert
         assertTrue(getResult.isSuccess)

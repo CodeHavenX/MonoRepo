@@ -80,8 +80,10 @@
     <string name="title_timecard_view_staff">Staff</string>
     <string name="title_timecard_staff_list">Staff List</string>
 
-    <string name="sign_in_screen_text_sign_in">Sign In</string>
-    <string name="sign_in_screen_text_email">Email/Phone Number</string>
+    <string name="sign_in_screen_text_sign_in">Continue with password</string>
+    <string name="sign_in_screen_text_sign_in_password">Sign in</string>
+    <string name="sign_in_screen_text_sign_in_otp">Sign in with OTP</string>
+    <string name="sign_in_screen_text_email">Email</string>
     <string name="sign_in_screen_text_password">Password</string>
     <string name="sign_in_screen_text_sign_up">Sign Up</string>
 
@@ -92,6 +94,8 @@
     <string name="sign_up_screen_text_password">Password</string>
     <string name="sign_up_screen_text_sign_up">Sign Up</string>
     <string name="sign_up_screen_text_policy">By creating an account, I accept Edifikans's Terms of Service and Privacy Policy.</string>
+
+    <string name="otp_validation_screen_text">We've sent an OTP code to your email. Please enter your code below.</string>
 
     <string name="account_screen_title">My Account</string>
     <string name="account_screen_edit_button">Edit</string>

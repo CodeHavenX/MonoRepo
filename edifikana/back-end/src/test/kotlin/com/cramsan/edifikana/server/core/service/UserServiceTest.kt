@@ -43,10 +43,10 @@ class UserServiceTest {
     }
 
     /**
-     * Tests that createUser creates a user and sends an OTP if authorizeOtp is true.
+     * Tests that createUser creates a user.
      */
     @Test
-    fun `createUser should create user and send OTP if authorizeOtp is true`() = runTest {
+    fun `createUser should create user`() = runTest {
         // Arrange
         val email = "test@example.com"
         val phone = "1234567890"
@@ -55,32 +55,13 @@ class UserServiceTest {
         val lastName = "Doe"
         val user = mockk<User>()
         coEvery { userDatabase.createUser(any()) } returns Result.success(user)
-        coEvery { userDatabase.sendOtpCode(email) } returns Result.success(Unit)
 
         // Act
-        val result = userService.createUser(email, phone, password, firstName, lastName, true)
+        val result = userService.createUser(email, phone, password, firstName, lastName)
 
         // Assert
         assertTrue(result.isSuccess)
         coVerify { userDatabase.createUser(match { it.email == email }) }
-        coVerify { userDatabase.sendOtpCode(email) }
-    }
-
-    /**
-     * Tests that createUser does not send an OTP if authorizeOtp is false.
-     */
-    @Test
-    fun `createUser should not send OTP if authorizeOtp is false`() = runTest {
-        // Arrange
-        val email = "test@example.com"
-        val user = mockk<User>()
-        coEvery { userDatabase.createUser(any()) } returns Result.success(user)
-
-        // Act
-        userService.createUser(email, "123", null, "A", "B", false)
-
-        // Assert
-        coVerify(exactly = 0) { userDatabase.sendOtpCode(email) }
     }
 
     /**

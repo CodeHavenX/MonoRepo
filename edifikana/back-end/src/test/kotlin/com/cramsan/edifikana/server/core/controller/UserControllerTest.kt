@@ -53,7 +53,6 @@ class UserControllerTest : CoroutineTest(), KoinTest {
                 password = "password",
                 firstName = "John",
                 lastName = "Doe",
-                authorizeOtp = false,
             )
         }.answers {
             Result.success(
@@ -104,7 +103,6 @@ class UserControllerTest : CoroutineTest(), KoinTest {
                 password = "password",
                 firstName = "John",
                 lastName = "Doe",
-                authorizeOtp = false,
             )
         }.answers {
             Result.failure(RuntimeException("There was an unexpected error."))
@@ -146,7 +144,6 @@ class UserControllerTest : CoroutineTest(), KoinTest {
                 password = "password",
                 firstName = "John",
                 lastName = "Doe",
-                authorizeOtp = false,
             )
         }.answers {
             Result.failure(ClientRequestExceptions.ConflictException("Error: User with this email already exists."))

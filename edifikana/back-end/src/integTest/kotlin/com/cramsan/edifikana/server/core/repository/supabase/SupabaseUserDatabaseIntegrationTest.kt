@@ -23,12 +23,40 @@ class SupabaseUserDatabaseIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `createUser should return user on success`() = runCoroutineTest {
+    fun `createUser with provided password should return user on success`() = runCoroutineTest {
         // Arrange
         val request = CreateUserRequest(
             email = "${test_prefix}_user@test.com",
             phoneNumber = "123-456-7890",
             password = "Password1!",
+            firstName = "${test_prefix}_First",
+            lastName = "${test_prefix}_Last",
+        )
+
+        // Act
+        val result = userDatabase.createUser(request).registerUserForDeletion()
+
+        // Assert
+        assertEquals(
+            User(
+                id = result.getOrThrow().id,
+                email = request.email,
+                phoneNumber = request.phoneNumber,
+                firstName = request.firstName,
+                lastName = request.lastName,
+                isVerified = false,
+            ),
+            result.getOrNull(),
+        )
+    }
+
+    @Test
+    fun `createUser with null password should return user on success`() = runCoroutineTest {
+        // Arrange
+        val request = CreateUserRequest(
+            email = "${test_prefix}_user@test.com",
+            phoneNumber = "123-456-7890",
+            password = null, // No password provided
             firstName = "${test_prefix}_First",
             lastName = "${test_prefix}_Last",
         )

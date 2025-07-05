@@ -72,7 +72,6 @@ class SupabasePropertyDatabaseIntegrationTest : SupabaseIntegrationTest() {
         // Clean up
     }
 
-    // TODO: UPDATE THIS TEST BECAUSE WITHOUT `SHOWALL` IT WON'T RUN AND NEEDS A VALID USERID
     @Ignore
     @Test
     fun `getProperties should return all properties for user`() = runCoroutineTest {

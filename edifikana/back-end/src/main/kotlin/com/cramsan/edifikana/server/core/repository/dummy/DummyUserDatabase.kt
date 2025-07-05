@@ -43,11 +43,6 @@ class DummyUserDatabase : UserDatabase {
         return Result.success(true)
     }
 
-    override suspend fun sendOtpCode(email: String): Result<Unit> {
-        logD(TAG, "sendMagicLink to $email")
-        return Result.success(Unit)
-    }
-
     companion object {
         private const val TAG = "DummyUserDatabase"
     }

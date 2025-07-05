@@ -50,7 +50,6 @@ class UserController(
             createUserRequest.password,
             createUserRequest.firstName,
             createUserRequest.lastName,
-            createUserRequest.authorizeOtp,
         )
 
         val newUser = newUserResult.requireSuccess().toUserNetworkResponse()

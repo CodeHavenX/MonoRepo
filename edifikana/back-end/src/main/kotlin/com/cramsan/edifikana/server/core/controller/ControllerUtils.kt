@@ -70,7 +70,7 @@ suspend inline fun ApplicationCall.validateClientError(
     val exception = originalException as? ClientRequestExceptions
     if (exception == null) {
         // If the exception is not a ClientRequestException, we need to log it and return a 500 error.
-        logE(tag, "Unexpected failure when handing request", exception)
+        logE(tag, "Unexpected failure when handing request", originalException)
         respond(
             HttpStatusCode.InternalServerError,
             originalException?.localizedMessage.orEmpty(),

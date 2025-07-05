@@ -7,6 +7,7 @@ import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.server.core.repository.supabase.models.AuthMetadata
 import com.cramsan.edifikana.server.core.repository.supabase.models.EventLogEntryEntity
 import com.cramsan.edifikana.server.core.repository.supabase.models.PropertyEntity
 import com.cramsan.edifikana.server.core.repository.supabase.models.StaffEntity
@@ -43,15 +44,22 @@ fun UserEntity.toUser(isVerified: Boolean = false): User {
 
 /**
  * Maps a [CreateUserRequest] to the [UserEntity.CreateUserEntity] model.
+ * This is used to create a new user in the database.
  */
 @OptIn(SupabaseModel::class)
-fun CreateUserRequest.toUserEntity(supabaseUserId: String): UserEntity.CreateUserEntity {
+fun CreateUserRequest.toUserEntity(
+    supabaseUserId: String,
+    canPasswordAuth: Boolean,
+): UserEntity.CreateUserEntity {
     return UserEntity.CreateUserEntity(
         id = supabaseUserId,
         email = email,
         phoneNumber = phoneNumber,
         firstName = firstName,
         lastName = lastName,
+        authMetadata = AuthMetadata(
+            canPasswordAuth = canPasswordAuth,
+        ),
     )
 }
 

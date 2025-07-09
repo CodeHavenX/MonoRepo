@@ -80,20 +80,20 @@ class SignInViewModelTest : CoroutineTest() {
     }
 
     /**
-     * Test the [SignInViewModel.onUsernameValueChange] method update to either email or phone number username
+     * Test the [SignInViewModel.changeUsernameValue] method update to either email or phone number username
      */
     @ParameterizedTest
     @CsvSource("test@example.com", "5456879123")
     fun `test onUsernameValueChange updates username value`(username: String) = runCoroutineTest {
         // Act
-        viewModel.onUsernameValueChange(username)
+        viewModel.changeUsernameValue(username)
 
         // Assert
         assertEquals(username, viewModel.uiState.value.email)
     }
 
     /**
-     * Test the [SignInViewModel.onPasswordValueChange] method
+     * Test the [SignInViewModel.changePasswordValue] method
      */
     @Test
     fun `test onPasswordValueChange updates password value`() = runCoroutineTest {
@@ -101,14 +101,14 @@ class SignInViewModelTest : CoroutineTest() {
         val password = "Password123"
 
         // Act
-        viewModel.onPasswordValueChange(password)
+        viewModel.changePasswordValue(password)
 
         // Assert
         assertEquals(password, viewModel.uiState.value.password)
     }
 
     /**
-     * Test the [SignInViewModel.signIn] method succeeds as expected
+     * Test the [SignInViewModel.signInWithPassword] method succeeds as expected
      */
     @Test
     fun `test SignIn success`() = runCoroutineTest {
@@ -117,14 +117,14 @@ class SignInViewModelTest : CoroutineTest() {
         val password = "Password123"
 
         coEvery {
-            authManager.signIn(
+            authManager.signInWithPassword(
                 username,
                 password,
             )
         } returns Result.success(mockk())
 
-        viewModel.onUsernameValueChange(username)
-        viewModel.onPasswordValueChange(password)
+        viewModel.changeUsernameValue(username)
+        viewModel.changePasswordValue(password)
 
         // Act
         val verificationJob = launch {
@@ -138,32 +138,32 @@ class SignInViewModelTest : CoroutineTest() {
                 )
             }
         }
-        viewModel.signIn()
+        viewModel.signInWithPassword()
 
         // Verify
-        coVerify { authManager.signIn(username, password) }
+        coVerify { authManager.signInWithPassword(username, password) }
         verificationJob.join()
     }
 
     /**
-     * Test the [SignInViewModel.signIn] method fails with invalid login credentials
+     * Test the [SignInViewModel.signInWithPassword] method fails with invalid login credentials
      */
     @Test
-    fun `test SignIn fails with invalid login credentials`() = runCoroutineTest {
+    fun `test SignIn fails with invalid login credentials`() = runBlockingTest {
         // Arrange
         val username = "wrongUser@email.com"
         val password = "ValidPassword123"
         val errorMessage = "Invalid login credentials. Please check your username and password and try again."
         coEvery {
-            authManager.signIn(
+            authManager.signInWithPassword(
                 username,
                 password,
             )
         } returns Result.failure(mockk<ClientRequestExceptions.UnauthorizedException>())
         coEvery { stringProvider.getString(Res.string.error_message_invalid_credentials) } returns errorMessage
 
-        viewModel.onUsernameValueChange(username)
-        viewModel.onPasswordValueChange(password)
+        viewModel.changeUsernameValue(username)
+        viewModel.changePasswordValue(password)
 
         // Act
         val verificationJob = launch {
@@ -171,28 +171,28 @@ class SignInViewModelTest : CoroutineTest() {
                 advanceUntilIdleAndAwaitComplete(this)
             }
         }
-        viewModel.onUsernameValueChange(username)
-        viewModel.onPasswordValueChange(password)
-        viewModel.signIn()
+        viewModel.changeUsernameValue(username)
+        viewModel.changePasswordValue(password)
+        viewModel.signInWithPassword()
 
         // Assert & Verify
-        coVerify { authManager.signIn(username, password) }
-        assertEquals(errorMessage, viewModel.uiState.value.errorMessage)
+        coVerify { authManager.signInWithPassword(username, password) }
+        assertEquals(listOf(errorMessage).toString(), viewModel.uiState.value.errorMessages.toString())
         verificationJob.join()
     }
 
     /**
-     * Test the [SignInViewModel.signIn] method fails with unexpected error
+     * Test the [SignInViewModel.signInWithPassword] method fails with unexpected error
      *
      */
     @Test
-    fun `test SignIn fails for unexpected reason`() = runCoroutineTest {
+    fun `test SignIn fails for unexpected reason`() = runBlockingTest {
         // Arrange
         val username = "wrongUser@email.com"
         val password = "ValidPassword123"
         val errorMessage = "There was an unexpected error."
         coEvery {
-            authManager.signIn(
+            authManager.signInWithPassword(
                 username,
                 password,
             )
@@ -205,13 +205,13 @@ class SignInViewModelTest : CoroutineTest() {
                 advanceUntilIdleAndAwaitComplete(this)
             }
         }
-        viewModel.onUsernameValueChange(username)
-        viewModel.onPasswordValueChange(password)
-        viewModel.signIn()
+        viewModel.changeUsernameValue(username)
+        viewModel.changePasswordValue(password)
+        viewModel.signInWithPassword()
 
         // Assert & Verify
-        coVerify { authManager.signIn(username, password) }
-        assertEquals(errorMessage, viewModel.uiState.value.errorMessage)
+        coVerify { authManager.signInWithPassword(username, password) }
+        assertEquals(listOf(errorMessage).toString(), viewModel.uiState.value.errorMessages.toString())
         verificationJob.join()
     }
 
@@ -221,7 +221,7 @@ class SignInViewModelTest : CoroutineTest() {
     @Test
     fun `test navigateToSignUpPage calls expected event`() = runCoroutineTest {
         // Arrange
-        coEvery { authManager.signIn(any(), any()) } returns Result.success(mockk())
+        coEvery { authManager.signInWithPassword(any(), any()) } returns Result.success(mockk())
 
         // Act
         val verificationJob = launch {
@@ -244,7 +244,7 @@ class SignInViewModelTest : CoroutineTest() {
     @Test
     fun `test navigateToDebugPage calls expected event`() = runCoroutineTest {
         // Arrange
-        coEvery { authManager.signIn(any(), any()) } returns Result.success(mockk())
+        coEvery { authManager.signInWithPassword(any(), any()) } returns Result.success(mockk())
 
         // Act
         val verificationJob = launch {
@@ -258,6 +258,32 @@ class SignInViewModelTest : CoroutineTest() {
         viewModel.navigateToDebugPage()
 
         // Assert & Verify
+        verificationJob.join()
+    }
+
+    /**
+     * Test the [SignInViewModel.signInWithOtp] method emits navigation event with trimmed email
+     */
+    @Test
+    fun `test signInWithOtp emits navigation event with trimmed email`() = runBlockingTest {
+        // Arrange
+        val email = " test@email.com "
+        viewModel.changeUsernameValue(email)
+
+        // Act
+        val verificationJob = launch {
+            windowEventBus.events.test {
+                assertEquals(
+                    EdifikanaWindowsEvent.NavigateToScreen(
+                        AuthRouteDestination.ValidationDestination(email.trim())
+                    ),
+                    awaitItem()
+                )
+            }
+        }
+        viewModel.signInWithOtp()
+
+        // Assert
         verificationJob.join()
     }
 }

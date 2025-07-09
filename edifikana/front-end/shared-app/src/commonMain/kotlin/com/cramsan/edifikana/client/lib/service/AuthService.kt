@@ -22,7 +22,7 @@ interface AuthService {
     /**
      * Sign in the user with the given email and password.
      */
-    suspend fun signIn(email: String, password: String): Result<UserModel>
+    suspend fun signInWithPassword(email: String, password: String): Result<UserModel>
 
     /**
      * Sign out the user.
@@ -47,7 +47,12 @@ interface AuthService {
     ): Result<UserModel>
 
     /**
-     * Verify the user session from an OTP code login with the provided [hashToken].
+     * Send an OTP email to the user with the provided [email] address.
+     */
+    suspend fun sendOtpEmail(email: String): Result<Unit>
+
+    /**
+     * Verify the user session from an OTP code login with the provided [hashToken] and log them in.
      */
     suspend fun signInWithOtp(email: String, hashToken: String): Result<UserModel>
 

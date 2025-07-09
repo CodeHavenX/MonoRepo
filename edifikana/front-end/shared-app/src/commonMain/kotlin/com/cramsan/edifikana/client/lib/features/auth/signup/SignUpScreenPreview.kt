@@ -22,7 +22,7 @@ private fun SignUpScreenSuccessPreview() = AppTheme {
             phoneNumber = "",
             policyChecked = true,
             registerEnabled = true,
-            errorMessage = null,
+            errorMessages = null,
         ),
         modifier = Modifier,
         onEmailValueChange = {},
@@ -47,7 +47,7 @@ private fun SignUpScreenFailurePreview() = AppTheme {
             phoneNumber = "1234567890",
             policyChecked = false,
             registerEnabled = false,
-            errorMessage = listOf(
+            errorMessages = listOf(
                 "Invalid username, please use a valid email address or phone number.\n" +
                     "Password must be at least 8 characters long, contain at last 1 uppercase, 1 lowercase, and 1 " +
                     "number."

@@ -28,9 +28,9 @@ class AuthManager(
     /**
      * Signs in the user with the given email and password.
      */
-    suspend fun signIn(email: String, password: String): Result<UserModel> = dependencies.getOrCatch(TAG) {
+    suspend fun signInWithPassword(email: String, password: String): Result<UserModel> = dependencies.getOrCatch(TAG) {
         logI(TAG, "signIn")
-        val userModel = authService.signIn(email, password).getOrThrow()
+        val userModel = authService.signInWithPassword(email, password).getOrThrow()
 
         val properties = propertyService.getPropertyList().getOrThrow()
         if (properties.isNotEmpty()) {
@@ -38,6 +38,16 @@ class AuthManager(
         }
 
         userModel
+    }
+
+    /**
+     * Sends an OTP code email to the user with the provided [email] address.
+     */
+    suspend fun sendOtpCode(
+        email: String
+    ) {
+        logI(TAG, "sending OTP code email")
+        authService.sendOtpEmail(email).getOrThrow()
     }
 
     /**

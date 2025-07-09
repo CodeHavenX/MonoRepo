@@ -13,7 +13,7 @@ data class SignUpUIState(
     val phoneNumber: String,
     val policyChecked: Boolean,
     val registerEnabled: Boolean,
-    val errorMessage: List<String>?,
+    val errorMessages: List<String>?,
 ) : ViewModelUIState {
 
     companion object {
@@ -25,7 +25,7 @@ data class SignUpUIState(
             phoneNumber = "",
             policyChecked = false,
             registerEnabled = false,
-            errorMessage = null,
+            errorMessages = null,
         )
     }
 }

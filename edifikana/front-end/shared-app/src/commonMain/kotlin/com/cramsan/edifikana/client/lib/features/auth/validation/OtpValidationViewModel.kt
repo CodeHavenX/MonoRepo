@@ -18,15 +18,16 @@ class OtpValidationViewModel(
     TAG,
 ) {
     /**
-     * Initialize the page and set the user email variable
+     * Initialize the page.
      */
-    fun setEmailAddress(userEmail: String) {
+    fun initializeOTPValidationScreen(userEmail: String) {
         viewModelScope.launch {
             updateUiState {
                 it.copy(
                     email = userEmail
                 )
             }
+            auth.sendOtpCode(userEmail)
         }
     }
 

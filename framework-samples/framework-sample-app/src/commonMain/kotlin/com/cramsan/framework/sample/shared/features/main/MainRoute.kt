@@ -15,7 +15,6 @@ enum class MainRoute(
 ) {
     MainMenu(route = "main_menu"),
     HaltUtil(route = "halt_util"),
-    ;
 }
 
 /**

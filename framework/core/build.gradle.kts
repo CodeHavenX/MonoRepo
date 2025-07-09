@@ -12,6 +12,12 @@ apply(from = "$rootDir/gradle/kotlin-mpp-target-wasm.gradle")
 
 android {
     namespace = "com.cramsan.framework.core"
+
+    // TODO: Verify if we can remove this
+    // https://github.com/CodeHavenX/MonoRepo/issues/186
+    lint {
+        disable += "NullSafeMutableLiveData"
+    }
 }
 
 dependencies {

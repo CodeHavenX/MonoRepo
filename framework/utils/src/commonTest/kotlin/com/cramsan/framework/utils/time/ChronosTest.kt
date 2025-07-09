@@ -1,19 +1,20 @@
 package com.cramsan.framework.utils.time
 
 import com.cramsan.framework.annotations.TestOnly
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 
-@OptIn(TestOnly::class)
+@OptIn(TestOnly::class, ExperimentalTime::class)
 class ChronosTest {
 
     lateinit var clockNow: Clock

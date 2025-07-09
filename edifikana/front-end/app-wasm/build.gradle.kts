@@ -18,7 +18,7 @@ kotlin {
         // https://youtrack.jetbrains.com/issue/KT-68614/Wasm.-KotlinWebpack-cannot-serialize-Gradle-script-object-references
         val projectDirPath = project.projectDir.path
 
-        moduleName = "composeApp"
+        outputModuleName = "composeApp"
         browser {
             commonWebpackConfig {
                 outputFileName = "composeApp.js"

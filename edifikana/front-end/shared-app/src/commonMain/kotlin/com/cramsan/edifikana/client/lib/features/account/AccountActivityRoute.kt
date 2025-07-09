@@ -15,7 +15,6 @@ enum class AccountActivityRoute(
 ) {
     Account(route = "view"),
     Notifications(route = "notifications"),
-    ;
 }
 
 /**

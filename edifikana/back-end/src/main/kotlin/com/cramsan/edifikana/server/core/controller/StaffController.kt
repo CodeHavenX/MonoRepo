@@ -33,7 +33,6 @@ class StaffController(
      * Handles the creation of a new staff. The [call] parameter is the request context.
      */
     @OptIn(NetworkModel::class)
-
     suspend fun createStaff(call: ApplicationCall) = call.handleCall(
         TAG,
         "createStaff",

@@ -18,7 +18,6 @@ enum class AuthRoute(
     SignIn(route = "${ApplicationRoute.Auth.rawRoute}/signin"),
     SignUp(route = "${ApplicationRoute.Auth.rawRoute}/signup"),
     Validation(route = "${ApplicationRoute.Auth.rawRoute}/validation/{email}"),
-    ;
 }
 
 /**

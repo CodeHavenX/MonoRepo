@@ -4,18 +4,23 @@ import com.cramsan.edifikana.server.core.repository.dummy.USER_1
 import com.cramsan.framework.logging.logI
 import io.github.jan.supabase.auth.user.UserInfo
 import io.ktor.server.application.ApplicationCall
+import kotlinx.datetime.toDeprecatedInstant
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 /**
  * A [ContextRetriever] that retrieves a dummy client context.
  */
 class DummyContextRetriever : ContextRetriever {
 
+    @OptIn(ExperimentalTime::class)
     override suspend fun getContext(applicationCall: ApplicationCall): ClientContext {
         logI(TAG, "DummyContextRetriever called")
         return ClientContext.AuthenticatedClientContext(
             userInfo = UserInfo(
                 aud = "aud",
                 id = "id",
+                createdAt = Clock.System.now().toDeprecatedInstant()
             ),
             userId = USER_1.id,
         )

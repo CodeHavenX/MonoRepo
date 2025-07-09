@@ -18,10 +18,12 @@ import io.ktor.server.routing.Routing
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
+import kotlin.time.ExperimentalTime
 
 /**
  * Controller for time card related operations.
  */
+@OptIn(ExperimentalTime::class)
 class TimeCardController(
     private val timeCardService: TimeCardService,
     private val contextRetriever: ContextRetriever,

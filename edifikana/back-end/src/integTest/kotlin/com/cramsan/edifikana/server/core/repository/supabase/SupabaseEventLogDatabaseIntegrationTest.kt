@@ -13,7 +13,10 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class SupabaseEventLogDatabaseIntegrationTest : SupabaseIntegrationTest() {
 
     private lateinit var test_prefix: String

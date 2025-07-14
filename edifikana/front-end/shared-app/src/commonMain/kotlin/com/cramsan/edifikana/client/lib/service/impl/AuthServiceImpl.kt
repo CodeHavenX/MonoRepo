@@ -5,7 +5,6 @@ import com.cramsan.edifikana.client.lib.service.AuthService
 import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.annotations.NetworkModel
 import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.lib.model.network.AssociateUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.CreateUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
 import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
@@ -141,10 +140,7 @@ class AuthServiceImpl(
 
         if (createUser) {
             // After the OTP is verified, we create the user in our system.
-            val response = http.post("${Routes.User.PATH}/associate") {
-                setBody(AssociateUserNetworkRequest(email = email))
-                contentType(ContentType.Application.Json)
-            }.body<UserNetworkResponse>()
+            val response = http.post("${Routes.User.PATH}/associate").body<UserNetworkResponse>()
         }
 
         getUser().getOrThrow()

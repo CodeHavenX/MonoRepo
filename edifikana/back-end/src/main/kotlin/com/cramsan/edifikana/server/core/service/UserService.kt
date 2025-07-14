@@ -3,13 +3,13 @@ package com.cramsan.edifikana.server.core.service
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.repository.UserDatabase
 import com.cramsan.edifikana.server.core.service.models.User
+import com.cramsan.edifikana.server.core.service.models.requests.AssociateUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.CreateUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdatePasswordRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdateUserRequest
 import com.cramsan.framework.logging.logD
-import com.cramsan.framework.logging.logI
 
 /**
  * Service for user operations.
@@ -27,7 +27,6 @@ class UserService(
         password: String?,
         firstName: String,
         lastName: String,
-        authorizeOtp: Boolean,
     ): Result<User> {
         logD(TAG, "createUser")
         val result = userDatabase.createUser(
@@ -39,16 +38,24 @@ class UserService(
                 lastName = lastName,
             ),
         )
-        // Send an OTP code if the user is created successfully and authorizeOtp is true
-        if (authorizeOtp && result.isSuccess) {
-            logI(TAG, "Sending OTP to user $email")
-            val otpResult = userDatabase.sendOtpCode(email)
-            if (!otpResult.isSuccess) {
-                logD(TAG, "Failed to send OTP to user $email: ${otpResult.exceptionOrNull()}")
-            }
-        }
 
         return result
+    }
+
+    /**
+     * Associate a user from another service with a new user in our system.
+     */
+    suspend fun associateUser(
+        id: UserId,
+        email: String,
+    ): Result<User> {
+        logD(TAG, "associateUser")
+        return userDatabase.associateUser(
+            request = AssociateUserRequest(
+                userId = id,
+                email = email,
+            ),
+        )
     }
 
     /**

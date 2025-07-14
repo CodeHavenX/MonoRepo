@@ -36,7 +36,7 @@ interface AuthService {
     fun activeUser(): StateFlow<UserId?>
 
     /**
-     * Sign up the user with the provided usernames, [password], and [firstName] & [lastName].
+     * Sign up the user with the provided [email], [phoneNumber], and [firstName] & [lastName].
      * Returns the user model if successful.
      */
     suspend fun signUp(
@@ -54,7 +54,7 @@ interface AuthService {
     /**
      * Verify the user session from an OTP code login with the provided [hashToken] and log them in.
      */
-    suspend fun signInWithOtp(email: String, hashToken: String): Result<UserModel>
+    suspend fun signInWithOtp(email: String, hashToken: String, createUser: Boolean): Result<UserModel>
 
     /**
      * Request a password reset for the user with the given [email] or [phoneNumber].

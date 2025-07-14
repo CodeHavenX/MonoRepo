@@ -24,6 +24,8 @@ import com.cramsan.edifikana.server.di.IntegTestApplicationModule
 import com.cramsan.edifikana.server.di.SettingsModule
 import com.cramsan.edifikana.server.di.SupabaseModule
 import com.cramsan.framework.test.CoroutineTest
+import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.auth.auth
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
@@ -34,6 +36,8 @@ import org.koin.test.inject
 import kotlin.test.AfterTest
 
 abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
+
+    protected val supabase: SupabaseClient by inject()
 
     protected val eventLogDatabase: SupabaseEventLogDatabase by inject()
     protected val propertyDatabase: SupabasePropertyDatabase by inject()
@@ -46,6 +50,7 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
     private val staffResources = mutableSetOf<StaffId>()
     private val timeCardResources = mutableSetOf<TimeCardEventId>()
     private val userResources = mutableSetOf<UserId>()
+    private val supabaseUsers = mutableSetOf<String>()
 
     companion object {
         @BeforeAll
@@ -126,6 +131,10 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
         }
     }
 
+    fun registerSupabaseUserForDeletion(userId: String) {
+        supabaseUsers.add(userId)
+    }
+
     protected fun createTestStaff(
         propertyId: PropertyId,
         firstName: String,
@@ -151,6 +160,9 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
         // Clean up resources created during tests
         // The order matters since there are foreign key constraints
         runBlocking {
+            supabase.auth.signOut()
+            supabase.auth.clearSession()
+
             eventLogResources.forEach {
                 eventLogDatabase.deleteEventLogEntry(DeleteEventLogEntryRequest(it)).getOrThrow()
             }
@@ -166,11 +178,15 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
             userResources.forEach {
                 userDatabase.deleteUser(DeleteUserRequest(it)).getOrThrow()
             }
+            supabaseUsers.forEach { userId ->
+                supabase.auth.admin.deleteUser(userId)
+            }
         }
         eventLogResources.clear()
         timeCardResources.clear()
         staffResources.clear()
         propertyResources.clear()
         userResources.clear()
+        supabaseUsers.clear()
     }
 }

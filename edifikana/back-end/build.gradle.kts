@@ -42,6 +42,13 @@ tasks.register<Test>("integTest") {
     useJUnitPlatform()
 }
 
+// When the `release` task is run, it will compile both the main and integTest sources
+// We do not want to run the integTest task directly as part of the release process,
+tasks.getByName("release") {
+    dependsOn("compileIntegTestJava")
+    dependsOn("compileIntegTestKotlin")
+}
+
 dependencies {
     implementation(project(":framework:interfacelib"))
     implementation(project(":framework:logging"))

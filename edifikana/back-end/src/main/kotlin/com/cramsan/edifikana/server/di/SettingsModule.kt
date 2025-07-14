@@ -29,7 +29,7 @@ val SettingsModule = module {
     }
 }
 
-private fun Scope.getStageSegment(): String {
+internal fun Scope.getStageSegment(): String {
     val stage = get<String>(named(STAGE_KEY)).trim()
     return if (stage.isEmpty()) {
         ".local"

@@ -62,7 +62,7 @@ val SupabaseModule = module {
             install(Postgrest)
             install(Storage)
             install(Auth) {
-                sessionManager = SettingsSessionManager(key = "$supabaseUrl-server")
+                sessionManager = SettingsSessionManager(key = "$supabaseUrl-server-${getStageSegment()}")
             }
         }
     }

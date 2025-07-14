@@ -2,6 +2,7 @@ package com.cramsan.edifikana.server.core.repository.dummy
 
 import com.cramsan.edifikana.server.core.repository.UserDatabase
 import com.cramsan.edifikana.server.core.service.models.User
+import com.cramsan.edifikana.server.core.service.models.requests.AssociateUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.CreateUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetUserRequest
@@ -15,6 +16,11 @@ import com.cramsan.framework.logging.logD
 class DummyUserDatabase : UserDatabase {
     override suspend fun createUser(request: CreateUserRequest): Result<User> {
         logD(TAG, "createUser")
+        return Result.success(USER_1)
+    }
+
+    override suspend fun associateUser(request: AssociateUserRequest): Result<User> {
+        logD(TAG, "associateUser")
         return Result.success(USER_1)
     }
 
@@ -41,11 +47,6 @@ class DummyUserDatabase : UserDatabase {
     override suspend fun updatePassword(request: UpdatePasswordRequest): Result<Boolean> {
         logD(TAG, "updatePassword")
         return Result.success(true)
-    }
-
-    override suspend fun sendOtpCode(email: String): Result<Unit> {
-        logD(TAG, "sendMagicLink to $email")
-        return Result.success(Unit)
     }
 
     companion object {

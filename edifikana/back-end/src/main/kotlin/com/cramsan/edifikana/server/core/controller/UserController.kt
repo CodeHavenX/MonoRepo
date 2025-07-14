@@ -8,6 +8,7 @@ import com.cramsan.edifikana.lib.model.network.CreateUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdatePasswordNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdateUserNetworkRequest
 import com.cramsan.edifikana.lib.utils.requireAll
+import com.cramsan.edifikana.lib.utils.requireNotBlank
 import com.cramsan.edifikana.lib.utils.requireSuccess
 import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
 import com.cramsan.edifikana.server.core.service.UserService
@@ -50,7 +51,6 @@ class UserController(
             createUserRequest.password,
             createUserRequest.firstName,
             createUserRequest.lastName,
-            createUserRequest.authorizeOtp,
         )
 
         val newUser = newUserResult.requireSuccess().toUserNetworkResponse()
@@ -166,6 +166,29 @@ class UserController(
     }
 
     /**
+     * Handle a call to associate a user created in another system (e.g., Supabase) with our system.
+     */
+    @OptIn(NetworkModel::class)
+    suspend fun associate(call: RoutingCall) = call.handleCall(TAG, "associate", contextRetriever) { context ->
+        val authenticatedContext = getAuthenticatedClientContext(context)
+        val userId = authenticatedContext.userId
+        val email = authenticatedContext.userInfo.email
+
+        requireNotBlank(email, "User does not have a configured email.")
+
+        val newUserResult = userService.associateUser(
+            userId,
+            email,
+        )
+
+        val newUser = newUserResult.requireSuccess().toUserNetworkResponse()
+        HttpResponse(
+            status = HttpStatusCode.OK,
+            body = newUser,
+        )
+    }
+
+    /**
      * Companion object.
      */
     companion object {
@@ -193,6 +216,9 @@ class UserController(
                 }
                 delete("{$USER_ID}") {
                     deleteUser(call)
+                }
+                post("associate") {
+                    associate(call)
                 }
             }
         }

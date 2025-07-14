@@ -18,6 +18,7 @@ import com.cramsan.edifikana.server.core.service.models.Property
 import com.cramsan.edifikana.server.core.service.models.Staff
 import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.core.service.models.User
+import com.cramsan.edifikana.server.core.service.models.requests.AssociateUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.CreateEventLogEntryRequest
 import com.cramsan.edifikana.server.core.service.models.requests.CreatePropertyRequest
 import com.cramsan.edifikana.server.core.service.models.requests.CreateStaffRequest
@@ -26,19 +27,17 @@ import com.cramsan.edifikana.server.core.service.models.requests.CreateUserReque
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
-// TODO Wire up the isVerified field to the rest of the system.
 /**
  * Maps a [UserEntity] to the [User] model.
  */
 @SupabaseModel
-fun UserEntity.toUser(isVerified: Boolean = false): User {
+fun UserEntity.toUser(): User {
     return User(
         id = UserId(this.id),
         email = this.email,
         phoneNumber = this.phoneNumber,
         firstName = this.firstName,
         lastName = this.lastName,
-        isVerified = isVerified,
     )
 }
 
@@ -48,18 +47,41 @@ fun UserEntity.toUser(isVerified: Boolean = false): User {
  */
 @OptIn(SupabaseModel::class)
 fun CreateUserRequest.toUserEntity(
-    supabaseUserId: String,
+    userId: UserId,
+    pendingAssociation: Boolean,
     canPasswordAuth: Boolean,
 ): UserEntity.CreateUserEntity {
     return UserEntity.CreateUserEntity(
-        id = supabaseUserId,
+        id = userId.userId,
         email = email,
         phoneNumber = phoneNumber,
         firstName = firstName,
         lastName = lastName,
         authMetadata = AuthMetadata(
+            pendingAssociation = pendingAssociation,
             canPasswordAuth = canPasswordAuth,
         ),
+    )
+}
+
+/**
+ * Maps an [AssociateUserRequest] to the [UserEntity.CreateUserEntity] model.
+ * This is used to associate a user from another service with a new user in our system.
+ */
+@OptIn(SupabaseModel::class)
+fun AssociateUserRequest.toUserEntity(
+    userId: UserId,
+    userEntity: UserEntity,
+): UserEntity.CreateUserEntity {
+    return UserEntity.CreateUserEntity(
+        id = userId.userId,
+        email = email,
+        phoneNumber = userEntity.phoneNumber,
+        firstName = userEntity.firstName,
+        lastName = userEntity.lastName,
+        authMetadata = userEntity.authMetadata.copy(
+            pendingAssociation = false,
+        )
     )
 }
 

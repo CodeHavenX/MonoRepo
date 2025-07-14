@@ -51,6 +51,8 @@ data class UserEntity(
 @Serializable
 @SupabaseModel
 data class AuthMetadata(
+    @SerialName("pending_association")
+    val pendingAssociation: Boolean = false,
     @SerialName("can_password_auth")
-    val canPasswordAuth: Boolean? = null,
+    val canPasswordAuth: Boolean = false,
 )

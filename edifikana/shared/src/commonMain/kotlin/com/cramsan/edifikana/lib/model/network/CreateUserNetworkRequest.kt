@@ -15,12 +15,9 @@ data class CreateUserNetworkRequest(
     @SerialName("phone_number")
     val phoneNumber: String,
     @SerialName("password")
-    val password: String? = null,
+    val password: String?,
     @SerialName("first_name")
     val firstName: String,
     @SerialName("last_name")
     val lastName: String,
-    // TODO: #157 Remove this field once the client is updated to handle OTP authorization.
-    @SerialName("authorize_otp")
-    val authorizeOtp: Boolean = false,
 )

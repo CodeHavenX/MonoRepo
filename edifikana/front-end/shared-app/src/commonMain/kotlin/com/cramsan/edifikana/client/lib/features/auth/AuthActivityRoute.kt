@@ -17,7 +17,7 @@ enum class AuthRoute(
 ) {
     SignIn(route = "${ApplicationRoute.Auth.rawRoute}/signin"),
     SignUp(route = "${ApplicationRoute.Auth.rawRoute}/signup"),
-    Validation(route = "${ApplicationRoute.Auth.rawRoute}/validation/{email}"),
+    Validation(route = "${ApplicationRoute.Auth.rawRoute}/validation/{email}/{accountCreationFlow}"),
 }
 
 /**
@@ -45,7 +45,10 @@ sealed class AuthRouteDestination(
     /**
      * A class representing navigating to the validation screen.
      */
-    data class ValidationDestination(val userEmail: String) : AuthRouteDestination(
+    data class ValidationDestination(
+        val userEmail: String,
+        val accountCreationFlow: Boolean,
+    ) : AuthRouteDestination(
         AuthRoute.Validation.route.replace("{email}", userEmail),
     ) {
         companion object {
@@ -54,7 +57,8 @@ sealed class AuthRouteDestination(
              */
             fun unpack(backStackEntry: NavBackStackEntry): ValidationDestination {
                 return ValidationDestination(
-                    backStackEntry.arguments?.getString("email").orEmpty()
+                    backStackEntry.arguments?.getString("email").orEmpty(),
+                    backStackEntry.arguments?.getBoolean("accountCreationFlow") ?: false,
                 )
             }
         }

@@ -15,12 +15,12 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.test.runTest
 
 /**
  * Unit tests for the AuthManager class.
@@ -93,13 +93,13 @@ class AuthManagerTest : CoroutineTest() {
     fun `signInWithOtp returns user`() = runTest {
         // Arrange
         val user = mockk<UserModel>()
-        coEvery { authService.signInWithOtp("email", "token") } returns Result.success(user)
+        coEvery { authService.signInWithOtp("email", "token", createUser = false) } returns Result.success(user)
         // Act
-        val result = manager.signInWithOtp("email", "token")
+        val result = manager.signInWithOtp("email", "token", createUser = false)
         // Assert
         assertTrue(result.isSuccess)
         assertEquals(user, result.getOrNull())
-        coVerify { authService.signInWithOtp("email", "token") }
+        coVerify { authService.signInWithOtp("email", "token", createUser = false) }
     }
 
     /**

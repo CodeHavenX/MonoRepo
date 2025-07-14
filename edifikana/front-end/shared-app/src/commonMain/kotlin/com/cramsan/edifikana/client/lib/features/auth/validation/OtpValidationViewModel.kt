@@ -20,11 +20,12 @@ class OtpValidationViewModel(
     /**
      * Initialize the page.
      */
-    fun initializeOTPValidationScreen(userEmail: String) {
+    fun initializeOTPValidationScreen(userEmail: String, accountCreationFlow: Boolean) {
         viewModelScope.launch {
             updateUiState {
                 it.copy(
-                    email = userEmail
+                    email = userEmail,
+                    accountCreationFlow = accountCreationFlow,
                 )
             }
             auth.sendOtpCode(userEmail)
@@ -38,7 +39,7 @@ class OtpValidationViewModel(
         val otpToken = uiState.value.otpCode
         val email = uiState.value.email
         viewModelScope.launch {
-            auth.signInWithOtp(email, otpToken.toString())
+            auth.signInWithOtp(email, otpToken.toString(), uiState.value.accountCreationFlow)
         }
     }
 

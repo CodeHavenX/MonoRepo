@@ -65,7 +65,7 @@ class OtpValidationViewModelTest : CoroutineTest() {
         coEvery { authManager.sendOtpCode(email) } returns Unit
 
         // Act
-        viewModel.initializeOTPValidationScreen(email)
+        viewModel.initializeOTPValidationScreen(email, accountCreationFlow = false)
         this.testScheduler.advanceUntilIdle()
 
         // Assert
@@ -82,19 +82,27 @@ class OtpValidationViewModelTest : CoroutineTest() {
         // Arrange
         val email = "user@domain.com"
         val otp = listOf(1,2,3,4,5,6)
-        viewModel.initializeOTPValidationScreen(email)
+        viewModel.initializeOTPValidationScreen(email, accountCreationFlow = false)
         this.testScheduler.advanceUntilIdle()
         otp.forEachIndexed { index, value ->
             viewModel.onEnterOtpValue(value, index)
         }
-        coEvery { authManager.signInWithOtp(email, otp.toString()) } returns Result.success(mockk())
+        coEvery { authManager.signInWithOtp(
+            email,
+            otp.toString(),
+            createUser = false,
+        ) } returns Result.success(mockk())
 
         // Act
         viewModel.signInWithOtp()
         this.testScheduler.advanceUntilIdle()
 
         // Assert
-        coVerify { authManager.signInWithOtp(email, otp.toString()) }
+        coVerify { authManager.signInWithOtp(
+            email,
+            otp.toString(),
+            createUser = false,
+        ) }
     }
 
     /**

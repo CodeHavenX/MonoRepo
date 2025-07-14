@@ -56,9 +56,10 @@ class AuthManager(
     suspend fun signInWithOtp(
         email: String,
         hashToken: String,
+        createUser: Boolean,
     ): Result<UserModel> = dependencies.getOrCatch(TAG) {
         logI(TAG, "signing in with OTP code")
-        authService.signInWithOtp(email, hashToken).getOrThrow()
+        authService.signInWithOtp(email, hashToken, createUser).getOrThrow()
     }
 
     /**

@@ -3,17 +3,24 @@ package com.cramsan.edifikana.server.core.repository.supabase
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
 import com.cramsan.edifikana.server.core.service.models.User
+import com.cramsan.edifikana.server.core.service.models.requests.AssociateUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.CreateUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetUserRequest
 import com.cramsan.framework.utils.uuid.UUID
+import io.github.jan.supabase.auth.Auth
+import io.github.jan.supabase.auth.providers.builtin.OTP
 import org.junit.jupiter.api.assertInstanceOf
+import org.koin.test.inject
 import kotlin.test.BeforeTest
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class SupabaseUserDatabaseIntegrationTest : SupabaseIntegrationTest() {
+
+    private val auth: Auth by inject()
 
     private lateinit var test_prefix: String
 
@@ -51,7 +58,7 @@ class SupabaseUserDatabaseIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `createUser with null password should return user on success`() = runCoroutineTest {
+    fun `createUser with null password should succeed with a temp user pending association`() = runCoroutineTest {
         // Arrange
         val request = CreateUserRequest(
             email = "${test_prefix}_user@test.com",
@@ -65,16 +72,18 @@ class SupabaseUserDatabaseIntegrationTest : SupabaseIntegrationTest() {
         val result = userDatabase.createUser(request).registerUserForDeletion()
 
         // Assert
+        assertTrue(result.isSuccess)
+        val user = result.getOrThrow()
         assertEquals(
             User(
-                id = result.getOrThrow().id,
+                id = user.id,
                 email = request.email,
                 phoneNumber = request.phoneNumber,
                 firstName = request.firstName,
                 lastName = request.lastName,
                 isVerified = false,
             ),
-            result.getOrNull(),
+            user,
         )
     }
 
@@ -173,5 +182,61 @@ class SupabaseUserDatabaseIntegrationTest : SupabaseIntegrationTest() {
 
         // Assert
         assertTrue(deleteResult.isFailure || deleteResult.getOrNull() == false)
+    }
+
+    @Test
+    fun `associateUser should fail for non-existent Supabase user`() = runCoroutineTest {
+        // Arrange: Use an email that does not exist
+        val associateRequest = AssociateUserRequest(
+            userId = UserId("non-existent-${test_prefix}"),
+            email = "${test_prefix}_notfound@test.com",
+        )
+
+        // Act
+        val associateResult = userDatabase.associateUser(associateRequest)
+
+        // Assert
+        assertTrue(associateResult.isFailure)
+        assertInstanceOf<ClientRequestExceptions.NotFoundException>(associateResult.exceptionOrNull())
+    }
+
+    // We cannot test this in the integration test because it requires a Supabase user to be created first.
+    // Right now we can create the user but we are not able to retrieve the user ID from Supabase Auth.
+    @Ignore
+    @Test
+    fun `associateUser should associate a pending user with a Supabase user`() = runCoroutineTest {
+        // Arrange: Create a user with a password (Supabase user)
+        val email = "${test_prefix}@test.com"
+        val createRequest = CreateUserRequest(
+            email = email,
+            phoneNumber = "123-456-7890",
+            password = null,
+            firstName = "Associate",
+            lastName = "User",
+        )
+        val createResult = userDatabase.createUser(createRequest).registerUserForDeletion()
+        val createdUser = createResult.getOrNull()!!
+        auth.signInWith(OTP) {
+            this.email = email
+            createUser = true // This will create a user in Supabase Auth.
+        }
+        val supabaseUserId = auth.currentUserOrNull()!!.id
+        registerSupabaseUserForDeletion(supabaseUserId)
+
+        // Act: Try to associate the created Supabase user with the pending user's email
+        val associateRequest = AssociateUserRequest(
+            userId = UserId(supabaseUserId),
+            email = email,
+        )
+        val associateResult = userDatabase.associateUser(associateRequest)
+
+        // Assert
+        assertTrue(associateResult.isSuccess)
+        val associatedUser = associateResult.getOrThrow()
+        assertEquals(createdUser.id, associatedUser.id)
+        assertEquals(createdUser.email, associatedUser.email)
+        assertEquals(createdUser.phoneNumber, associatedUser.phoneNumber)
+        assertEquals(createdUser.firstName, associatedUser.firstName)
+        assertEquals(createdUser.lastName, associatedUser.lastName)
     }
 }

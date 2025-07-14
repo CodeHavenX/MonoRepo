@@ -4,6 +4,7 @@ import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.USER_ID
 import com.cramsan.edifikana.lib.annotations.NetworkModel
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.network.AssociateUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.CreateUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdatePasswordNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdateUserNetworkRequest
@@ -165,6 +166,31 @@ class UserController(
     }
 
     /**
+     * Handle a call to associate a user created in another system (e.g., Supabase) with our system.
+     */
+    @OptIn(NetworkModel::class)
+    suspend fun associate(call: RoutingCall) = call.handleCall(TAG, "associate", contextRetriever) { context ->
+        val userId = getAuthenticatedClientContext(context).userId
+        val associateRequest = call.receive<AssociateUserNetworkRequest>()
+
+        requireAll(
+            "An email must be provided.",
+            associateRequest.email,
+        )
+
+        val newUserResult = userService.associateUser(
+            userId,
+            associateRequest.email,
+        )
+
+        val newUser = newUserResult.requireSuccess().toUserNetworkResponse()
+        HttpResponse(
+            status = HttpStatusCode.OK,
+            body = newUser,
+        )
+    }
+
+    /**
      * Companion object.
      */
     companion object {
@@ -192,6 +218,9 @@ class UserController(
                 }
                 delete("{$USER_ID}") {
                     deleteUser(call)
+                }
+                post("associate") {
+                    associate(call)
                 }
             }
         }

@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.server.core.repository
 
 import com.cramsan.edifikana.server.core.service.models.User
+import com.cramsan.edifikana.server.core.service.models.requests.AssociateUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.CreateUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetUserRequest
@@ -16,6 +17,14 @@ interface UserDatabase {
      */
     suspend fun createUser(
         request: CreateUserRequest,
+    ): Result<User>
+
+    /**
+     * Associates a user from another service with a new user in our system. Returns the [Result] of the operation with
+     * the created [User].
+     */
+    suspend fun associateUser(
+        request: AssociateUserRequest,
     ): Result<User>
 
     /**

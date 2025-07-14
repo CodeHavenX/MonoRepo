@@ -18,7 +18,8 @@ private fun ValidationScreenPreview() = AppTheme {
             errorMessage = "",
             email = "garcia.alicia1990@gmail.com",
             otpCode = listOf(1, 2, 3, 4, 5, 6),
-            focusedIndex = 0
+            focusedIndex = 0,
+            accountCreationFlow = true,
         ),
         modifier = Modifier,
         onBackClicked = {},

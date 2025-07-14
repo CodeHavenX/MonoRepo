@@ -114,7 +114,9 @@ class SignInViewModel(
                 return@launch
             }
             emitWindowEvent(
-                EdifikanaWindowsEvent.NavigateToScreen(AuthRouteDestination.ValidationDestination(email))
+                EdifikanaWindowsEvent.NavigateToScreen(
+                    AuthRouteDestination.ValidationDestination(email, accountCreationFlow = false)
+                )
             )
         }
     }

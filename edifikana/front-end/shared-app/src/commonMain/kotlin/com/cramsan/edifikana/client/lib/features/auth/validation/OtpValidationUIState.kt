@@ -14,6 +14,7 @@ data class OtpValidationUIState(
     val otpCode: List<Int?>,
     val focusedIndex: Int?,
     val errorMessage: String?,
+    val accountCreationFlow: Boolean,
 ) : ViewModelUIState {
     companion object {
         val Initial = OtpValidationUIState(
@@ -22,6 +23,7 @@ data class OtpValidationUIState(
             otpCode = (1..6).map { null },
             focusedIndex = null,
             errorMessage = null,
+            accountCreationFlow = true,
         )
     }
 }

@@ -5,9 +5,9 @@ import com.cramsan.edifikana.client.lib.features.auth.AuthRouteDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.framework.core.UnifiedDispatcherProvider
-import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.core.compose.ApplicationEvent
 import com.cramsan.framework.core.compose.EventBus
+import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.core.compose.WindowEvent
 import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.EventLogger
@@ -217,7 +217,9 @@ class SignUpViewModelTest : CoroutineTest() {
         val verificationJob = launch {
             windowEventBus.events.test {
                 assertEquals(
-                    EdifikanaWindowsEvent.NavigateToScreen(AuthRouteDestination.ValidationDestination(email)), awaitItem()
+                    EdifikanaWindowsEvent.NavigateToScreen(
+                        AuthRouteDestination.ValidationDestination(email, accountCreationFlow = true)
+                    ), awaitItem()
                 )
             }
         }

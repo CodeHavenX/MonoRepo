@@ -5,6 +5,7 @@ import com.cramsan.edifikana.client.lib.service.AuthService
 import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.annotations.NetworkModel
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.network.AssociateUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.CreateUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
 import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
@@ -97,6 +98,14 @@ class AuthServiceImpl(
         firstName: String,
         lastName: String,
     ): Result<UserModel> = runSuspendCatching(TAG) {
+        // The sign-in with OTP is used to create a user and send an OTP for verification.
+        // https://supabase.com/docs/reference/kotlin/auth-signinwithotp
+        auth.signInWith(OTP) {
+            this.email = email
+            createUser = true // This will create a user in Supabase Auth.
+        }
+
+        // Now we need to create the user in our system.
         val response = http.post(Routes.User.PATH) {
             setBody(
                 CreateUserNetworkRequest(
@@ -104,7 +113,7 @@ class AuthServiceImpl(
                     phoneNumber = phoneNumber,
                     firstName = firstName,
                     lastName = lastName,
-                    authorizeOtp = true, // Automatically set to true to send an OTP for verification
+                    password = null, // Password is not required for sign-up, but can be set later.
                 )
             )
             contentType(ContentType.Application.Json)
@@ -120,10 +129,24 @@ class AuthServiceImpl(
         }
     }
 
-    override suspend fun signInWithOtp(email: String, hashToken: String): Result<UserModel> = runSuspendCatching(
+    @OptIn(NetworkModel::class)
+    override suspend fun signInWithOtp(
+        email: String,
+        hashToken: String,
+        createUser: Boolean,
+    ): Result<UserModel> = runSuspendCatching(
         TAG
     ) {
         auth.verifyEmailOtp(OtpType.Email.EMAIL, email, hashToken)
+
+        if (createUser) {
+            // After the OTP is verified, we create the user in our system.
+            val response = http.post("${Routes.User.PATH}/associate") {
+                setBody(AssociateUserNetworkRequest(email = email))
+                contentType(ContentType.Application.Json)
+            }.body<UserNetworkResponse>()
+        }
+
         getUser().getOrThrow()
     }
 

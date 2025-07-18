@@ -4,7 +4,7 @@ import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.StaffRole
-import com.cramsan.edifikana.server.core.repository.StaffDatabase
+import com.cramsan.edifikana.server.core.datastore.StaffDatastore
 import com.cramsan.edifikana.server.core.service.models.Staff
 import com.cramsan.edifikana.server.core.service.models.requests.CreateStaffRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteStaffRequest
@@ -16,7 +16,7 @@ import com.cramsan.framework.logging.logD
  * Service for staff operations.
  */
 class StaffService(
-    private val staffDatabase: StaffDatabase,
+    private val staffDatastore: StaffDatastore,
 ) {
 
     /**
@@ -30,7 +30,7 @@ class StaffService(
         propertyId: PropertyId,
     ): Staff {
         logD(TAG, "createStaff")
-        return staffDatabase.createStaff(
+        return staffDatastore.createStaff(
             request = CreateStaffRequest(
                 idType = idType,
                 firstName = firstName,
@@ -48,7 +48,7 @@ class StaffService(
         id: StaffId,
     ): Staff? {
         logD(TAG, "getStaff")
-        val staff = staffDatabase.getStaff(
+        val staff = staffDatastore.getStaff(
             request = GetStaffRequest(
                 id = id,
             ),
@@ -62,7 +62,7 @@ class StaffService(
      */
     suspend fun getStaffs(): List<Staff> {
         logD(TAG, "getStaffs")
-        val staffs = staffDatabase.getStaffs().getOrThrow()
+        val staffs = staffDatastore.getStaffs().getOrThrow()
         return staffs
     }
 
@@ -77,7 +77,7 @@ class StaffService(
         role: StaffRole?,
     ): Staff {
         logD(TAG, "updateStaff")
-        return staffDatabase.updateStaff(
+        return staffDatastore.updateStaff(
             request = UpdateStaffRequest(
                 id = id,
                 idType = idType,
@@ -95,7 +95,7 @@ class StaffService(
         id: StaffId,
     ): Boolean {
         logD(TAG, "deleteStaff")
-        return staffDatabase.deleteStaff(
+        return staffDatastore.deleteStaff(
             request = DeleteStaffRequest(
                 id = id,
             )

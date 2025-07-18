@@ -4,7 +4,7 @@ import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
-import com.cramsan.edifikana.server.core.repository.EventLogDatabase
+import com.cramsan.edifikana.server.core.datastore.EventLogDatastore
 import com.cramsan.edifikana.server.core.service.models.EventLogEntry
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteEventLogEntryRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetEventLogEntryRequest
@@ -29,17 +29,17 @@ import kotlin.time.Instant
  */
 @OptIn(ExperimentalTime::class)
 class EventLogServiceTest {
-    private lateinit var eventLogDatabase: EventLogDatabase
+    private lateinit var eventLogDatastore: EventLogDatastore
     private lateinit var eventLogService: EventLogService
 
     /**
-     * Sets up the test environment by initializing mocks for [EventLogDatabase] and [eventLogService].
+     * Sets up the test environment by initializing mocks for [EventLogDatastore] and [eventLogService].
      */
     @BeforeEach
     fun setUp() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
-        eventLogDatabase = mockk()
-        eventLogService = EventLogService(eventLogDatabase)
+        eventLogDatastore = mockk()
+        eventLogService = EventLogService(eventLogDatastore)
     }
 
     /**
@@ -66,7 +66,7 @@ class EventLogServiceTest {
         val description = "Pipe burst in apartment 1608 resulting in a minor flooding that has affected..."
         val unit = "1608"
         val entry = mockk<EventLogEntry>()
-        coEvery { eventLogDatabase.createEventLogEntry(any()) } returns Result.success(entry)
+        coEvery { eventLogDatastore.createEventLogEntry(any()) } returns Result.success(entry)
 
         // Act
         val result = eventLogService.createEventLogEntry(
@@ -84,7 +84,7 @@ class EventLogServiceTest {
         // Assert
         assertEquals(entry, result)
         coVerify {
-            eventLogDatabase.createEventLogEntry(
+            eventLogDatastore.createEventLogEntry(
                 match {
                     it.staffId == staffId &&
                         it.fallbackStaffName == fallbackStaffName &&
@@ -108,14 +108,14 @@ class EventLogServiceTest {
         // Arrange
         val entryId = EventLogEntryId("entry-1")
         val entry = mockk<EventLogEntry>()
-        coEvery { eventLogDatabase.getEventLogEntry(any()) } returns Result.success(entry)
+        coEvery { eventLogDatastore.getEventLogEntry(any()) } returns Result.success(entry)
 
         // Act
         val result = eventLogService.getEventLogEntry(entryId)
 
         // Assert
         assertEquals(entry, result)
-        coVerify { eventLogDatabase.getEventLogEntry(GetEventLogEntryRequest(entryId)) }
+        coVerify { eventLogDatastore.getEventLogEntry(GetEventLogEntryRequest(entryId)) }
     }
 
     /**
@@ -125,14 +125,14 @@ class EventLogServiceTest {
     fun `getEventLogEntry should return null if not found`() = runTest {
         // Arrange
         val entryId = EventLogEntryId("entry-2")
-        coEvery { eventLogDatabase.getEventLogEntry(any()) } returns Result.failure(Exception("Not found"))
+        coEvery { eventLogDatastore.getEventLogEntry(any()) } returns Result.failure(Exception("Not found"))
 
         // Act
         val result = eventLogService.getEventLogEntry(entryId)
 
         // Assert
         assertNull(result)
-        coVerify { eventLogDatabase.getEventLogEntry(GetEventLogEntryRequest(entryId)) }
+        coVerify { eventLogDatastore.getEventLogEntry(GetEventLogEntryRequest(entryId)) }
     }
 
     /**
@@ -142,14 +142,14 @@ class EventLogServiceTest {
     fun `getEventLogEntries should call database and return list`() = runTest {
         // Arrange
         val entryList = listOf(mockk<EventLogEntry>(), mockk<EventLogEntry>())
-        coEvery { eventLogDatabase.getEventLogEntries() } returns Result.success(entryList)
+        coEvery { eventLogDatastore.getEventLogEntries() } returns Result.success(entryList)
 
         // Act
         val result = eventLogService.getEventLogEntries()
 
         // Assert
         assertEquals(entryList, result)
-        coVerify { eventLogDatabase.getEventLogEntries() }
+        coVerify { eventLogDatastore.getEventLogEntries() }
     }
 
     /**
@@ -165,7 +165,7 @@ class EventLogServiceTest {
         val description = "Jenny Hall visiting"
         val unit = "1801"
         val entry = mockk<EventLogEntry>()
-        coEvery { eventLogDatabase.updateEventLogEntry(any()) } returns Result.success(entry)
+        coEvery { eventLogDatastore.updateEventLogEntry(any()) } returns Result.success(entry)
 
         // Act
         val result = eventLogService.updateEventLogEntry(entryId, type, fallbackEventType, title, description, unit)
@@ -173,7 +173,7 @@ class EventLogServiceTest {
         // Assert
         assertEquals(entry, result)
         coVerify {
-            eventLogDatabase.updateEventLogEntry(
+            eventLogDatastore.updateEventLogEntry(
                 match {
                     it.id == entryId &&
                         it.type == type &&
@@ -193,13 +193,13 @@ class EventLogServiceTest {
     fun `deleteEventLogEntry should call database and return true`() = runTest {
         // Arrange
         val entryId = EventLogEntryId("entry-4")
-        coEvery { eventLogDatabase.deleteEventLogEntry(any()) } returns Result.success(true)
+        coEvery { eventLogDatastore.deleteEventLogEntry(any()) } returns Result.success(true)
 
         // Act
         val result = eventLogService.deleteEventLogEntry(entryId)
 
         // Assert
         assertEquals(true, result)
-        coVerify { eventLogDatabase.deleteEventLogEntry(DeleteEventLogEntryRequest(entryId)) }
+        coVerify { eventLogDatastore.deleteEventLogEntry(DeleteEventLogEntryRequest(entryId)) }
     }
 }

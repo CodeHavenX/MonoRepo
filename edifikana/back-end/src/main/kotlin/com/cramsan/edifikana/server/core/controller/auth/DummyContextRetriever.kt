@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.server.core.controller.auth
 
-import com.cramsan.edifikana.server.core.repository.dummy.USER_1
+import com.cramsan.edifikana.server.core.datastore.dummy.USER_1
 import com.cramsan.framework.logging.logI
 import io.github.jan.supabase.auth.user.UserInfo
 import io.ktor.server.application.ApplicationCall

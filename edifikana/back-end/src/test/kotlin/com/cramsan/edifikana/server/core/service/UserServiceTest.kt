@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.server.core.service
 
 import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.server.core.repository.UserDatabase
+import com.cramsan.edifikana.server.core.datastore.UserDatastore
 import com.cramsan.edifikana.server.core.service.models.User
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
@@ -21,17 +21,17 @@ import kotlin.test.AfterTest
  * Test class for [UserService].
  */
 class UserServiceTest {
-    private lateinit var userDatabase: UserDatabase
+    private lateinit var userDatastore: UserDatastore
     private lateinit var userService: UserService
 
     /**
-     * Sets up the test environment by initializing mocks for [UserDatabase] and [userService].
+     * Sets up the test environment by initializing mocks for [UserDatastore] and [userService].
      */
     @BeforeEach
     fun setUp() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
-        userDatabase = mockk()
-        userService = UserService(userDatabase)
+        userDatastore = mockk()
+        userService = UserService(userDatastore)
     }
 
     /**
@@ -54,14 +54,14 @@ class UserServiceTest {
         val firstName = "John"
         val lastName = "Doe"
         val user = mockk<User>()
-        coEvery { userDatabase.createUser(any()) } returns Result.success(user)
+        coEvery { userDatastore.createUser(any()) } returns Result.success(user)
 
         // Act
         val result = userService.createUser(email, phone, password, firstName, lastName)
 
         // Assert
         assertTrue(result.isSuccess)
-        coVerify { userDatabase.createUser(match { it.email == email }) }
+        coVerify { userDatastore.createUser(match { it.email == email }) }
     }
 
     /**
@@ -72,14 +72,14 @@ class UserServiceTest {
         // Arrange
         val userId = UserId("id")
         val user = mockk<User>()
-        coEvery { userDatabase.getUser(any()) } returns Result.success(user)
+        coEvery { userDatastore.getUser(any()) } returns Result.success(user)
 
         // Act
         val result = userService.getUser(userId)
 
         // Assert
         assertEquals(user, result)
-        coVerify { userDatabase.getUser(match { it.id == userId }) }
+        coVerify { userDatastore.getUser(match { it.id == userId }) }
     }
 
     /**
@@ -89,14 +89,14 @@ class UserServiceTest {
     fun `getUsers should return all users`() = runTest {
         // Arrange
         val users = listOf(mockk<User>(), mockk())
-        coEvery { userDatabase.getUsers() } returns Result.success(users)
+        coEvery { userDatastore.getUsers() } returns Result.success(users)
 
         // Act
         val result = userService.getUsers()
 
         // Assert
         assertEquals(users, result)
-        coVerify { userDatabase.getUsers() }
+        coVerify { userDatastore.getUsers() }
     }
 
     /**
@@ -108,14 +108,14 @@ class UserServiceTest {
         val userId = UserId("id")
         val email = "new@email.com"
         val user = mockk<User>()
-        coEvery { userDatabase.updateUser(any()) } returns Result.success(user)
+        coEvery { userDatastore.updateUser(any()) } returns Result.success(user)
 
         // Act
         val result = userService.updateUser(userId, email)
 
         // Assert
         assertEquals(user, result)
-        coVerify { userDatabase.updateUser(match { it.id == userId && it.email == email }) }
+        coVerify { userDatastore.updateUser(match { it.id == userId && it.email == email }) }
     }
 
     /**
@@ -125,14 +125,14 @@ class UserServiceTest {
     fun `deleteUser should delete user and return result`() = runTest {
         // Arrange
         val userId = UserId("id")
-        coEvery { userDatabase.deleteUser(any()) } returns Result.success(true)
+        coEvery { userDatastore.deleteUser(any()) } returns Result.success(true)
 
         // Act
         val result = userService.deleteUser(userId)
 
         // Assert
         assertTrue(result)
-        coVerify { userDatabase.deleteUser(match { it.id == userId }) }
+        coVerify { userDatastore.deleteUser(match { it.id == userId }) }
     }
 
     /**
@@ -143,13 +143,13 @@ class UserServiceTest {
         // Arrange
         val userId = UserId("id")
         val password = "newpass"
-        coEvery { userDatabase.updatePassword(any()) } returns Result.success(true)
+        coEvery { userDatastore.updatePassword(any()) } returns Result.success(true)
 
         // Act
         val result = userService.updatePassword(userId, password)
 
         // Assert
         assertTrue(result)
-        coVerify { userDatabase.updatePassword(match { it.id == userId && it.password == password }) }
+        coVerify { userDatastore.updatePassword(match { it.id == userId && it.password == password }) }
     }
 }

@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.server.core.service
 
 import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.server.core.repository.UserDatabase
+import com.cramsan.edifikana.server.core.datastore.UserDatastore
 import com.cramsan.edifikana.server.core.service.models.User
 import com.cramsan.edifikana.server.core.service.models.requests.AssociateUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.CreateUserRequest
@@ -15,7 +15,7 @@ import com.cramsan.framework.logging.logD
  * Service for user operations.
  */
 class UserService(
-    private val userDatabase: UserDatabase,
+    private val userDatastore: UserDatastore,
 ) {
 
     /**
@@ -29,7 +29,7 @@ class UserService(
         lastName: String,
     ): Result<User> {
         logD(TAG, "createUser")
-        val result = userDatabase.createUser(
+        val result = userDatastore.createUser(
             request = CreateUserRequest(
                 email = email,
                 phoneNumber = phoneNumber,
@@ -50,7 +50,7 @@ class UserService(
         email: String,
     ): Result<User> {
         logD(TAG, "associateUser")
-        return userDatabase.associateUser(
+        return userDatastore.associateUser(
             request = AssociateUserRequest(
                 userId = id,
                 email = email,
@@ -65,7 +65,7 @@ class UserService(
         id: UserId,
     ): User? {
         logD(TAG, "getUser")
-        val user = userDatabase.getUser(
+        val user = userDatastore.getUser(
             request = GetUserRequest(
                 id = id,
             ),
@@ -79,7 +79,7 @@ class UserService(
      */
     suspend fun getUsers(): List<User> {
         logD(TAG, "getUsers")
-        val users = userDatabase.getUsers().getOrThrow()
+        val users = userDatastore.getUsers().getOrThrow()
         return users
     }
 
@@ -91,7 +91,7 @@ class UserService(
         email: String?,
     ): User {
         logD(TAG, "updateUser")
-        return userDatabase.updateUser(
+        return userDatastore.updateUser(
             request = UpdateUserRequest(
                 id = id,
                 email = email,
@@ -106,7 +106,7 @@ class UserService(
         id: UserId,
     ): Boolean {
         logD(TAG, "deleteUser")
-        return userDatabase.deleteUser(
+        return userDatastore.deleteUser(
             request = DeleteUserRequest(
                 id = id,
             )
@@ -118,7 +118,7 @@ class UserService(
      */
     suspend fun updatePassword(userId: UserId, password: String): Boolean {
         logD(TAG, "updatePassword")
-        return userDatabase.updatePassword(
+        return userDatastore.updatePassword(
             request = UpdatePasswordRequest(
                 id = userId,
                 password = password,

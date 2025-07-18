@@ -4,7 +4,7 @@ import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
-import com.cramsan.edifikana.server.core.repository.TimeCardDatabase
+import com.cramsan.edifikana.server.core.datastore.TimeCardDatastore
 import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.core.service.models.requests.CreateTimeCardEventRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetTimeCardEventListRequest
@@ -18,7 +18,7 @@ import kotlin.time.Instant
  */
 @OptIn(ExperimentalTime::class)
 class TimeCardService(
-    private val timeCardDatabase: TimeCardDatabase,
+    private val timeCardDatastore: TimeCardDatastore,
 ) {
 
     /**
@@ -33,7 +33,7 @@ class TimeCardService(
         timestamp: Instant,
     ): TimeCardEvent {
         logD(TAG, "createTimeCardEvent")
-        return timeCardDatabase.createTimeCardEvent(
+        return timeCardDatastore.createTimeCardEvent(
             request = CreateTimeCardEventRequest(
                 staffId = staffId,
                 fallbackStaffName = fallbackStaffName,
@@ -52,7 +52,7 @@ class TimeCardService(
         id: TimeCardEventId,
     ): TimeCardEvent? {
         logD(TAG, "getTimeCardEvent")
-        val timeCard = timeCardDatabase.getTimeCardEvent(
+        val timeCard = timeCardDatastore.getTimeCardEvent(
             request = GetTimeCardEventRequest(
                 id = id,
             ),
@@ -68,7 +68,7 @@ class TimeCardService(
         staffId: StaffId?,
     ): List<TimeCardEvent> {
         logD(TAG, "getTimeCardEvents")
-        val timeCards = timeCardDatabase.getTimeCardEvents(
+        val timeCards = timeCardDatastore.getTimeCardEvents(
             request = GetTimeCardEventListRequest(
                 staffId = staffId,
             ),

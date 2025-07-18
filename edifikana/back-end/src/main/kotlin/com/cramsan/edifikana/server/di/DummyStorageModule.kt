@@ -2,36 +2,36 @@ package com.cramsan.edifikana.server.di
 
 import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
 import com.cramsan.edifikana.server.core.controller.auth.DummyContextRetriever
-import com.cramsan.edifikana.server.core.repository.EventLogDatabase
-import com.cramsan.edifikana.server.core.repository.PropertyDatabase
-import com.cramsan.edifikana.server.core.repository.StaffDatabase
-import com.cramsan.edifikana.server.core.repository.TimeCardDatabase
-import com.cramsan.edifikana.server.core.repository.UserDatabase
-import com.cramsan.edifikana.server.core.repository.dummy.DummyEventLogDatabase
-import com.cramsan.edifikana.server.core.repository.dummy.DummyPropertyDatabase
-import com.cramsan.edifikana.server.core.repository.dummy.DummyStaffDatabase
-import com.cramsan.edifikana.server.core.repository.dummy.DummyTimeCardDatabase
-import com.cramsan.edifikana.server.core.repository.dummy.DummyUserDatabase
+import com.cramsan.edifikana.server.core.datastore.EventLogDatastore
+import com.cramsan.edifikana.server.core.datastore.PropertyDatastore
+import com.cramsan.edifikana.server.core.datastore.StaffDatastore
+import com.cramsan.edifikana.server.core.datastore.TimeCardDatastore
+import com.cramsan.edifikana.server.core.datastore.UserDatastore
+import com.cramsan.edifikana.server.core.datastore.dummy.DummyEventLogDatastore
+import com.cramsan.edifikana.server.core.datastore.dummy.DummyPropertyDatastore
+import com.cramsan.edifikana.server.core.datastore.dummy.DummyStaffDatastore
+import com.cramsan.edifikana.server.core.datastore.dummy.DummyTimeCardDatastore
+import com.cramsan.edifikana.server.core.datastore.dummy.DummyUserDatastore
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val DummyStorageModule = module {
     // Storage
-    singleOf(::DummyUserDatabase) {
-        bind<UserDatabase>()
+    singleOf(::DummyUserDatastore) {
+        bind<UserDatastore>()
     }
-    singleOf(::DummyStaffDatabase) {
-        bind<StaffDatabase>()
+    singleOf(::DummyStaffDatastore) {
+        bind<StaffDatastore>()
     }
-    singleOf(::DummyPropertyDatabase) {
-        bind<PropertyDatabase>()
+    singleOf(::DummyPropertyDatastore) {
+        bind<PropertyDatastore>()
     }
-    singleOf(::DummyTimeCardDatabase) {
-        bind<TimeCardDatabase>()
+    singleOf(::DummyTimeCardDatastore) {
+        bind<TimeCardDatastore>()
     }
-    singleOf(::DummyEventLogDatabase) {
-        bind<EventLogDatabase>()
+    singleOf(::DummyEventLogDatastore) {
+        bind<EventLogDatastore>()
     }
     singleOf(::DummyContextRetriever) {
         bind<ContextRetriever>()

@@ -4,7 +4,7 @@ import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.StaffRole
-import com.cramsan.edifikana.server.core.repository.StaffDatabase
+import com.cramsan.edifikana.server.core.datastore.StaffDatastore
 import com.cramsan.edifikana.server.core.service.models.Staff
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteStaffRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetStaffRequest
@@ -26,17 +26,17 @@ import kotlin.test.AfterTest
  * Test class for [StaffService].
  */
 class StaffServiceTest {
-    private lateinit var staffDatabase: StaffDatabase
+    private lateinit var staffDatastore: StaffDatastore
     private lateinit var staffService: StaffService
 
     /**
-     * Sets up the test environment by initializing mocks for [StaffDatabase] and [staffService].
+     * Sets up the test environment by initializing mocks for [StaffDatastore] and [staffService].
      */
     @BeforeEach
     fun setUp() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
-        staffDatabase = mockk()
-        staffService = StaffService(staffDatabase)
+        staffDatastore = mockk()
+        staffService = StaffService(staffDatastore)
     }
 
     /**
@@ -51,7 +51,7 @@ class StaffServiceTest {
      * Tests that createStaff creates a staff and returns it.
      */
     @Test
-    fun `createStaff should call staffDatabase and return staff`() = runTest {
+    fun `createStaff should call staffDatastore and return staff`() = runTest {
         // Arrange
         val staff = mockk<Staff>()
         val idType = IdType.DNI
@@ -59,7 +59,7 @@ class StaffServiceTest {
         val lastName = "Doe"
         val role = StaffRole.ADMIN
         val propertyId = PropertyId("property-1")
-        coEvery { staffDatabase.createStaff(any()) } returns Result.success(staff)
+        coEvery { staffDatastore.createStaff(any()) } returns Result.success(staff)
 
         // Act
         val result = staffService.createStaff(idType, firstName, lastName, role, propertyId)
@@ -67,7 +67,7 @@ class StaffServiceTest {
         // Assert
         assertEquals(staff, result)
         coVerify {
-            staffDatabase.createStaff(
+            staffDatastore.createStaff(
                 match {
                     it.idType == idType &&
                         it.firstName == firstName &&
@@ -83,18 +83,18 @@ class StaffServiceTest {
      * Tests that getStaff retrieves a staff by ID and returns it.
      */
     @Test
-    fun `getStaff should call staffDatabase and return staff`() = runTest {
+    fun `getStaff should call staffDatastore and return staff`() = runTest {
         // Arrange
         val staff = mockk<Staff>()
         val staffId = StaffId("staff-1")
-        coEvery { staffDatabase.getStaff(any()) } returns Result.success(staff)
+        coEvery { staffDatastore.getStaff(any()) } returns Result.success(staff)
 
         // Act
         val result = staffService.getStaff(staffId)
 
         // Assert
         assertEquals(staff, result)
-        coVerify { staffDatabase.getStaff(GetStaffRequest(staffId)) }
+        coVerify { staffDatastore.getStaff(GetStaffRequest(staffId)) }
     }
 
     /**
@@ -104,38 +104,38 @@ class StaffServiceTest {
     fun `getStaff should return null if not found`() = runTest {
         // Arrange
         val staffId = StaffId("staff-2")
-        coEvery { staffDatabase.getStaff(any()) } returns Result.failure(Exception("Not found"))
+        coEvery { staffDatastore.getStaff(any()) } returns Result.failure(Exception("Not found"))
 
         // Act
         val result = staffService.getStaff(staffId)
 
         // Assert
         assertNull(result)
-        coVerify { staffDatabase.getStaff(GetStaffRequest(staffId)) }
+        coVerify { staffDatastore.getStaff(GetStaffRequest(staffId)) }
     }
 
     /**
      * Tests that getStaffs retrieves all staffs and returns a list.
      */
     @Test
-    fun `getStaffs should call staffDatabase and return list`() = runTest {
+    fun `getStaffs should call staffDatastore and return list`() = runTest {
         // Arrange
         val staffList = listOf(mockk<Staff>(), mockk<Staff>())
-        coEvery { staffDatabase.getStaffs() } returns Result.success(staffList)
+        coEvery { staffDatastore.getStaffs() } returns Result.success(staffList)
 
         // Act
         val result = staffService.getStaffs()
 
         // Assert
         assertEquals(staffList, result)
-        coVerify { staffDatabase.getStaffs() }
+        coVerify { staffDatastore.getStaffs() }
     }
 
     /**
      * Tests that updateStaff updates a staff and returns the updated staff.
      */
     @Test
-    fun `updateStaff should call staffDatabase and return updated staff`() = runTest {
+    fun `updateStaff should call staffDatastore and return updated staff`() = runTest {
         // Arrange
         val staff = mockk<Staff>()
         val staffId = StaffId("staff-3")
@@ -143,7 +143,7 @@ class StaffServiceTest {
         val firstName = "Jane"
         val lastName = "Smith"
         val role = StaffRole.ADMIN
-        coEvery { staffDatabase.updateStaff(any()) } returns Result.success(staff)
+        coEvery { staffDatastore.updateStaff(any()) } returns Result.success(staff)
 
         // Act
         val result = staffService.updateStaff(staffId, idType, firstName, lastName, role)
@@ -151,7 +151,7 @@ class StaffServiceTest {
         // Assert
         assertEquals(staff, result)
         coVerify {
-            staffDatabase.updateStaff(
+            staffDatastore.updateStaff(
                 match {
                     it.id == staffId &&
                         it.idType == idType &&
@@ -167,16 +167,16 @@ class StaffServiceTest {
      * Tests that deleteStaff deletes a staff and returns true.
      */
     @Test
-    fun `deleteStaff should call staffDatabase and return true`() = runTest {
+    fun `deleteStaff should call staffDatastore and return true`() = runTest {
         // Arrange
         val staffId = StaffId("staff-4")
-        coEvery { staffDatabase.deleteStaff(any()) } returns Result.success(true)
+        coEvery { staffDatastore.deleteStaff(any()) } returns Result.success(true)
 
         // Act
         val result = staffService.deleteStaff(staffId)
 
         // Assert
         assertEquals(true, result)
-        coVerify { staffDatabase.deleteStaff(DeleteStaffRequest(staffId)) }
+        coVerify { staffDatastore.deleteStaff(DeleteStaffRequest(staffId)) }
     }
 }

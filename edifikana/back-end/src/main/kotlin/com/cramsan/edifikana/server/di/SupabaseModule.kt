@@ -2,16 +2,16 @@ package com.cramsan.edifikana.server.di
 
 import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
 import com.cramsan.edifikana.server.core.controller.auth.SupabaseContextRetriever
-import com.cramsan.edifikana.server.core.repository.EventLogDatabase
-import com.cramsan.edifikana.server.core.repository.PropertyDatabase
-import com.cramsan.edifikana.server.core.repository.StaffDatabase
-import com.cramsan.edifikana.server.core.repository.TimeCardDatabase
-import com.cramsan.edifikana.server.core.repository.UserDatabase
-import com.cramsan.edifikana.server.core.repository.supabase.SupabaseEventLogDatabase
-import com.cramsan.edifikana.server.core.repository.supabase.SupabasePropertyDatabase
-import com.cramsan.edifikana.server.core.repository.supabase.SupabaseStaffDatabase
-import com.cramsan.edifikana.server.core.repository.supabase.SupabaseTimeCardDatabase
-import com.cramsan.edifikana.server.core.repository.supabase.SupabaseUserDatabase
+import com.cramsan.edifikana.server.core.datastore.EventLogDatastore
+import com.cramsan.edifikana.server.core.datastore.PropertyDatastore
+import com.cramsan.edifikana.server.core.datastore.StaffDatastore
+import com.cramsan.edifikana.server.core.datastore.TimeCardDatastore
+import com.cramsan.edifikana.server.core.datastore.UserDatastore
+import com.cramsan.edifikana.server.core.datastore.supabase.SupabaseEventLogDatastore
+import com.cramsan.edifikana.server.core.datastore.supabase.SupabasePropertyDatastore
+import com.cramsan.edifikana.server.core.datastore.supabase.SupabaseStaffDatastore
+import com.cramsan.edifikana.server.core.datastore.supabase.SupabaseTimeCardDatastore
+import com.cramsan.edifikana.server.core.datastore.supabase.SupabaseUserDatastore
 import com.cramsan.edifikana.server.settings.Overrides
 import com.cramsan.framework.assertlib.assertFalse
 import io.github.jan.supabase.SupabaseClient
@@ -84,21 +84,21 @@ val SupabaseModule = module {
         get<SupabaseClient>().postgrest
     }
 
-    // Supabase Databases
-    singleOf(::SupabaseUserDatabase) {
-        bind<UserDatabase>()
+    // Supabase Datastores
+    singleOf(::SupabaseUserDatastore) {
+        bind<UserDatastore>()
     }
-    singleOf(::SupabaseStaffDatabase) {
-        bind<StaffDatabase>()
+    singleOf(::SupabaseStaffDatastore) {
+        bind<StaffDatastore>()
     }
-    singleOf(::SupabasePropertyDatabase) {
-        bind<PropertyDatabase>()
+    singleOf(::SupabasePropertyDatastore) {
+        bind<PropertyDatastore>()
     }
-    singleOf(::SupabaseTimeCardDatabase) {
-        bind<TimeCardDatabase>()
+    singleOf(::SupabaseTimeCardDatastore) {
+        bind<TimeCardDatastore>()
     }
-    singleOf(::SupabaseEventLogDatabase) {
-        bind<EventLogDatabase>()
+    singleOf(::SupabaseEventLogDatastore) {
+        bind<EventLogDatastore>()
     }
 
     // Other Components

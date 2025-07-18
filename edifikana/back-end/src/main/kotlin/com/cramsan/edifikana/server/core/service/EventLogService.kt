@@ -4,7 +4,7 @@ import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
-import com.cramsan.edifikana.server.core.repository.EventLogDatabase
+import com.cramsan.edifikana.server.core.datastore.EventLogDatastore
 import com.cramsan.edifikana.server.core.service.models.EventLogEntry
 import com.cramsan.edifikana.server.core.service.models.requests.CreateEventLogEntryRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteEventLogEntryRequest
@@ -19,7 +19,7 @@ import kotlin.time.Instant
  */
 @OptIn(ExperimentalTime::class)
 class EventLogService(
-    private val eventLogDatabase: EventLogDatabase,
+    private val eventLogDatastore: EventLogDatastore,
 ) {
 
     /**
@@ -37,7 +37,7 @@ class EventLogService(
         unit: String,
     ): EventLogEntry {
         logD(TAG, "createEventLogEntry")
-        return eventLogDatabase.createEventLogEntry(
+        return eventLogDatastore.createEventLogEntry(
             request = CreateEventLogEntryRequest(
                 staffId = staffId,
                 fallbackStaffName = fallbackStaffName,
@@ -59,7 +59,7 @@ class EventLogService(
         id: EventLogEntryId,
     ): EventLogEntry? {
         logD(TAG, "getEventLogEntry")
-        val eventLog = eventLogDatabase.getEventLogEntry(
+        val eventLog = eventLogDatastore.getEventLogEntry(
             request = GetEventLogEntryRequest(
                 id = id,
             ),
@@ -72,7 +72,7 @@ class EventLogService(
      * Retrieves all event logs.
      */
     suspend fun getEventLogEntries(): List<EventLogEntry> {
-        val eventLogs = eventLogDatabase.getEventLogEntries().getOrThrow()
+        val eventLogs = eventLogDatastore.getEventLogEntries().getOrThrow()
         return eventLogs
     }
 
@@ -88,7 +88,7 @@ class EventLogService(
         unit: String?,
     ): EventLogEntry {
         logD(TAG, "updateEventLogEntry")
-        return eventLogDatabase.updateEventLogEntry(
+        return eventLogDatastore.updateEventLogEntry(
             request = UpdateEventLogEntryRequest(
                 id = id,
                 type = type,
@@ -107,7 +107,7 @@ class EventLogService(
         id: EventLogEntryId,
     ): Boolean {
         logD(TAG, "deleteEventLogEntry")
-        return eventLogDatabase.deleteEventLogEntry(
+        return eventLogDatastore.deleteEventLogEntry(
             request = DeleteEventLogEntryRequest(
                 id = id,
             )

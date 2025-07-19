@@ -10,7 +10,6 @@ apply(from = "$rootDir/gradle/kotlin-mpp-target-common-compose.gradle")
 apply(from = "$rootDir/gradle/kotlin-mpp-target-android-lib-compose.gradle")
 apply(from = "$rootDir/gradle/kotlin-mpp-target-jvm-compose.gradle")
 apply(from = "$rootDir/gradle/kotlin-mpp-target-ios.gradle")
-apply(from = "$rootDir/gradle/kotlin-mpp-target-js.gradle")
 apply(from = "$rootDir/gradle/kotlin-mpp-target-wasm.gradle")
 
 android {
@@ -22,10 +21,6 @@ android {
 }
 
 kotlin {
-    js {
-        nodejs()
-    }
-
     sourceSets {
         commonMain.dependencies {
             implementation(project(":framework:interfacelib"))

@@ -9,8 +9,6 @@ kotlin {
     }
 
     sourceSets {
-        wasmJs {
-        }
         wasmJsTest {
             dependencies {
                 implementation "org.jetbrains.kotlin:kotlin-test-wasm-js:_"

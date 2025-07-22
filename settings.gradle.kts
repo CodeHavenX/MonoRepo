@@ -63,6 +63,7 @@ include("samples:frontend-architecture-sample:front-end:shared-ui")
 include("samples:frontend-architecture-sample:front-end:shared-app")
 include("samples:frontend-architecture-sample:front-end:app-jvm")
 include("samples:frontend-architecture-sample:front-end:app-wasm")
+include("samples:frontend-architecture-sample:front-end:app-android")
 
 include("framework-samples:framework-sample-app")
 include("framework-samples:app-android")

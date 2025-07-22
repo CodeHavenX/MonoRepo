@@ -31,8 +31,11 @@ frontend-architecture-sample/
 │   ├── app-jvm/              # Desktop (JVM) application
 │   │   ├── src/main/         # JVM app entry point
 │   │   └── build.gradle.kts
-│   └── app-wasm/             # Web (WASM) application
-│       ├── src/wasmJsMain/   # WASM app entry point
+│   ├── app-wasm/             # Web (WASM) application
+│   │   ├── src/wasmJsMain/   # WASM app entry point
+│   │   └── build.gradle.kts
+│   └── app-android/          # Android application
+│       ├── src/main/         # Android app entry point
 │       └── build.gradle.kts
 └── README.md
 ```
@@ -41,6 +44,7 @@ frontend-architecture-sample/
 
 - **Desktop (JVM)**: Native desktop application using Compose for Desktop
 - **Web (WASM)**: Web application using Compose for Web with WebAssembly
+- **Android**: Native Android application using Jetpack Compose
 
 ## Key Architectural Principles
 
@@ -73,6 +77,11 @@ The sample implements a simple task management application that demonstrates:
 ./gradlew :samples:frontend-architecture-sample:front-end:app-wasm:wasmJsBrowserRun
 ```
 
+### Android
+```bash
+./gradlew :samples:frontend-architecture-sample:front-end:app-android:installDebug
+```
+
 ## Building
 
 To build all targets:
@@ -82,4 +91,5 @@ To build all targets:
 ./gradlew :samples:frontend-architecture-sample:front-end:shared-app:build
 ./gradlew :samples:frontend-architecture-sample:front-end:app-jvm:build
 ./gradlew :samples:frontend-architecture-sample:front-end:app-wasm:build
+./gradlew :samples:frontend-architecture-sample:front-end:app-android:build
 ```

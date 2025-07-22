@@ -63,7 +63,7 @@ fun ScreenSelectorScreen(
 }
 
 /**
- * Content of the AccountEdit screen.
+ * Content of the ScreenSelector screen.
  */
 @Composable
 internal fun ScreenSelectorContent(

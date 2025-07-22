@@ -71,7 +71,9 @@ fun validatePassword(
         return listOf("Password cannot be empty.")
     }
     if (minLength > maxLength) {
-        errors.add("Invalid password length range: minimum length ($minLength) cannot exceed maximum length ($maxLength).")
+        errors.add(
+            "Invalid password length range: minimum length ($minLength) cannot exceed maximum length ($maxLength)."
+        )
     } else if (minLength == maxLength) {
         if (password.length != minLength) {
             errors.add("Password must be exactly $minLength characters long.")

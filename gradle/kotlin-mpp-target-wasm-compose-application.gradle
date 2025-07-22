@@ -21,3 +21,6 @@ compose.experimental {
 //     from(project(":alpaca-scheduler:front-end:appcore").file("src/commonMain/composeResources"))
 //     into("build/processedResources/wasmJs/main")
 // }
+
+// TODO: Enable this to build WASM distributables as part of the release process.
+// release.dependsOn('wasmJsBrowserDistribution')

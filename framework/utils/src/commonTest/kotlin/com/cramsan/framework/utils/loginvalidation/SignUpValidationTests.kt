@@ -190,7 +190,19 @@ class SignUpValidationTests {
         // Act
         val result = validatePassword(password)
         // Assert
-        assertTrue(result.isEmpty())
+        assertTrue { result.contains("Password must contain at least one symbol.") }
     }
 
+    /**
+     * Test that the [validatePassword] function returns an empty list when the password is valid
+     */
+    @Test
+    fun validPassword_has_valid_password_with_symbol_and_returns_empty_list() {
+        // Arrange
+        val password = "Password1!"
+        // Act
+        val result = validatePassword(password)
+        // Assert
+        assertTrue(result.isEmpty())
+    }
 }

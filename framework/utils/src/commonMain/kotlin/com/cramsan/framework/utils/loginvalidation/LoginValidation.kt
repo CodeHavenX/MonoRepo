@@ -1,7 +1,5 @@
 package com.cramsan.framework.utils.loginvalidation
 
-import kotlin.math.max
-
 private const val PASSWORD_MIN_LENGTH = 6
 private const val PASSWORD_MAX_LENGTH = 24
 // TODO: Update strings to be from resources instead of hardcoded
@@ -72,9 +70,14 @@ fun validatePassword(
     if (password.isBlank()) {
         return listOf("Password cannot be empty.")
     }
-    val secureMinLength = max(minLength, PASSWORD_MIN_LENGTH)
-    if (password.length !in secureMinLength..maxLength) {
-        errors.add("Password must be between $secureMinLength and $maxLength characters long.")
+    if (minLength > maxLength) {
+        errors.add("Invalid password length range: minimum length ($minLength) cannot exceed maximum length ($maxLength).")
+    } else if (minLength == maxLength) {
+        if (password.length != minLength) {
+            errors.add("Password must be exactly $minLength characters long.")
+        }
+    } else if (password.length !in minLength..maxLength) {
+        errors.add("Password must be between $minLength and $maxLength characters long.")
     }
     if (includeUppercase && !password.contains(Regex("[A-Z]"))) {
         errors.add("Password must contain at least one uppercase letter.")

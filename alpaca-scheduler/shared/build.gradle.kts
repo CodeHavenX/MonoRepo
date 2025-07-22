@@ -4,19 +4,22 @@ import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     kotlin("multiplatform")
-    id("com.android.library")
+    // Temporarily commenting out Android plugin due to firewall restrictions
+    // id("com.android.library")
     kotlin("plugin.serialization")
 }
 
 apply(from = "$rootDir/gradle/kotlin-mpp-target-common.gradle")
-apply(from = "$rootDir/gradle/kotlin-mpp-target-android-lib.gradle")
+// Temporarily commenting out Android target due to firewall restrictions
+// apply(from = "$rootDir/gradle/kotlin-mpp-target-android-lib.gradle")
 apply(from = "$rootDir/gradle/kotlin-mpp-target-ios.gradle")
 apply(from = "$rootDir/gradle/kotlin-mpp-target-jvm.gradle")
 apply(from = "$rootDir/gradle/kotlin-mpp-target-wasm.gradle")
 
-android {
-    namespace = "com.codehavenx.alpaca.shared"
-}
+// Temporarily commenting out Android configuration
+// android {
+//     namespace = "com.codehavenx.alpaca.shared"
+// }
 
 kotlin {
     wasmJs {

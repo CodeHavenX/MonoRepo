@@ -57,4 +57,14 @@ sealed class Field {
         val value: Boolean,
         val enabled: Boolean = true,
     ) : Field()
+
+    /**
+     * This is an action field that represents a button or an action that can be performed.
+     */
+    data class ActionField(
+        val title: String,
+        val subtitle: String?,
+        val action: suspend () -> Unit,
+        val enabled: Boolean = true,
+    ) : Field()
 }

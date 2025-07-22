@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.debug.main
 
+import com.cramsan.edifikana.client.lib.features.debug.DebugRouteDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.PreferencesManager
 import com.cramsan.edifikana.client.lib.settings.Overrides
@@ -161,9 +162,31 @@ class DebugViewModel(
                             value = openDebugWindow,
                             enabled = false, // Disabled while we set up the required infrastructure
                         ),
+                        Field.Divider,
+                        Field.ActionField(
+                            title = "Open Screen Selector",
+                            subtitle = null,
+                            action = {
+                                emitWindowEvent(
+                                    EdifikanaWindowsEvent.NavigateToScreen(
+                                        DebugRouteDestination.ScreenSelectorDestination,
+                                    )
+                                )
+                            },
+                        ),
                     ),
                 )
             }
+        }
+    }
+
+    /**
+     * Run an action in the ViewModel scope.
+     * This is useful for actions that need to be run in the ViewModel scope.
+     */
+    fun runAction(action: suspend () -> Unit) {
+        viewModelScope.launch {
+            action()
         }
     }
 

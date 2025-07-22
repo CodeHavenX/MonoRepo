@@ -15,6 +15,7 @@ enum class DebugActivityRoute(
     val route: String,
 ) {
     Debug(route = "${ApplicationRoute.Debug.rawRoute}/"),
+    ScreenSelector(route = "${ApplicationRoute.Debug.rawRoute}/screen_selector")
 }
 
 /**
@@ -30,5 +31,12 @@ sealed class DebugRouteDestination(
      */
     data object MainDebugDestination : DebugRouteDestination(
         DebugActivityRoute.Debug.route,
+    )
+
+    /**
+     * A class representing navigating to the ScreenSelector screen.
+     */
+    data object ScreenSelectorDestination : DebugRouteDestination(
+        DebugActivityRoute.ScreenSelector.route,
     )
 }

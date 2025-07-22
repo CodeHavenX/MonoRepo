@@ -1,6 +1,7 @@
 package com.cramsan.framework.sample.shared.features
 
 import com.cramsan.framework.core.compose.BaseViewModel
+import com.cramsan.framework.core.compose.EventEmitter
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.sample.shared.init.Initializer
 import kotlinx.coroutines.launch
@@ -11,6 +12,7 @@ import kotlinx.coroutines.launch
 class ApplicationViewModel(
     private val initHandler: Initializer,
     dependencies: ViewModelDependencies,
+    private val eventEmitter: EventEmitter<SampleWindowEvent>,
 ) : BaseViewModel<SampleApplicationViewModelEvent, ApplicationUIState>(
     dependencies,
     ApplicationUIState,
@@ -20,6 +22,11 @@ class ApplicationViewModel(
     init {
         viewModelScope.launch {
             initHandler.startStep()
+        }
+        viewModelScope.launch {
+            eventEmitter.events.collect { event ->
+                emitEvent(SampleApplicationViewModelEvent.SampleApplicationEventWrapper(event))
+            }
         }
     }
 

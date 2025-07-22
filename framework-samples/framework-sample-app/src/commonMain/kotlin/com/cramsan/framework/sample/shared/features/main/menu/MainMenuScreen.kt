@@ -36,6 +36,7 @@ fun MainMenuScreen(
     MainMenuContent(
         modifier = Modifier,
         onHaltUtilSelected = { viewModel.navigateToHaltUtil() },
+        onLoggingSelected = { viewModel.navigateToLogging() },
     )
 }
 
@@ -43,6 +44,7 @@ fun MainMenuScreen(
 internal fun MainMenuContent(
     modifier: Modifier = Modifier,
     onHaltUtilSelected: () -> Unit,
+    onLoggingSelected: () -> Unit,
 ) {
     Scaffold(
         modifier = modifier,
@@ -57,6 +59,12 @@ internal fun MainMenuContent(
                     modifier = modifier,
                 ) {
                     Text("Halt Util")
+                }
+                Button(
+                    onClick = onLoggingSelected,
+                    modifier = modifier,
+                ) {
+                    Text("Logging")
                 }
             },
             buttonContent = { modifier ->

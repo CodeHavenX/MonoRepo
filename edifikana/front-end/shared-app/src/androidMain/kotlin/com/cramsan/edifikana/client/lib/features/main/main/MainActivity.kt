@@ -7,9 +7,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.LaunchedEffect
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import com.cramsan.edifikana.client.lib.features.application.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.lib.features.main.camera.CameraContract
+import com.cramsan.edifikana.client.lib.features.window.ComposableKoinContext
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaMainScreenEventHandler
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowScreen
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowViewModel
@@ -18,6 +21,9 @@ import com.cramsan.edifikana.client.lib.utils.shareContent
 import com.cramsan.framework.core.CoreUri
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import org.koin.compose.koinInject
+import org.koin.compose.scope.KoinScope
+import org.koin.core.annotation.KoinExperimentalAPI
 
 /**
  * Main activity for the application.
@@ -38,14 +44,24 @@ class MainActivity : ComponentActivity(), EdifikanaMainScreenEventHandler {
         viewModel.handleReceivedImages(uris.map { CoreUri(it) })
     }
 
+    @OptIn(KoinExperimentalAPI::class)
     @Suppress("LongMethod")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            EdifikanaWindowScreen(
-                eventHandler = this,
-            )
+            ComposableKoinContext {
+                val processViewModel: EdifikanaApplicationViewModel = koinInject()
+                LaunchedEffect(Unit) {
+                    processViewModel.initialize()
+                }
+
+                KoinScope<String>("root-window") {
+                    EdifikanaWindowScreen(
+                        eventHandler = this,
+                    )
+                }
+            }
         }
     }
 

@@ -2,10 +2,12 @@
 
 package com.cramsan.edifikana.client.lib.features.auth.validation
 
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.unit.dp
 import com.cramsan.edifikana.client.ui.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -39,6 +41,7 @@ private fun OtpInputFieldPreview() = AppTheme {
         onFocusChanged = {},
         onKeyboardBack = {},
         onValueChanged = {},
-        modifier = Modifier,
+        modifier = Modifier
+            .size(100.dp),
     )
 }

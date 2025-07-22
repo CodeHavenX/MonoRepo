@@ -2,7 +2,7 @@
 # This file configures the environment for building Kotlin Android applications
 # Compatible with MonoRepo using Gradle 8.14.2, Android Gradle Plugin 8.10.0, and JDK 21
 
-name: Copilot Setup for Kotlin Android Development
+name: Copilot Setup for MonoRepo Development
 
 steps:
   - name: Setup JDK 21
@@ -30,20 +30,7 @@ steps:
     action: setup-gradle
     with:
       gradle-version: '8.14.2'
-      cache-enabled: true
-      configuration-cache: true
-      parallel: false
-      jvm-args: '-Xmx8G'
 
-  - name: Set Environment Variables
-    description: Configure Android development environment variables
-    action: set-env
-    with:
-      ANDROID_HOME: "/opt/Android/sdk"
-      ANDROID_SDK_ROOT: "/opt/Android/sdk"
-      JAVA_HOME: "${{ steps.setup-java.outputs.java-home }}"
-      PATH: "$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH"
-      
   - name: Accept Android SDK Licenses
     description: Accept all Android SDK licenses to avoid build interruptions
     action: run-command
@@ -67,23 +54,6 @@ steps:
       - curl
       - build-essential
 
-  - name: Configure Gradle Properties
-    description: Set up Gradle properties for optimal build performance with this MonoRepo
-    action: configure-gradle
-    properties:
-      org.gradle.jvmargs: "-Xmx8G"
-      org.gradle.parallel: "false"
-      org.gradle.configuration-cache: "true"
-      org.gradle.caching: "true"
-      android.useAndroidX: "true"
-      kotlin.code.style: "official"
-      kotlin.native.disableCompilerDaemon: "true"
-      kotlin.mpp.androidSourceSetLayoutVersion: "2"
-      kotlin.mpp.enableCInteropCommonization: "true"
-      kotlin.native.ignoreDisabledTargets: "true"
-      kotlin.js.generate.executable.default: "false"
-      android.nonTransitiveRClass: "true"
-
   - name: Verify Setup
     description: Verify the development environment is properly configured
     action: run-command
@@ -94,113 +64,8 @@ steps:
       - ls -la $ANDROID_HOME/platforms/
       - $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --list
 
-  - name: Test Build
-    description: Test that the setup can build Kotlin projects
+  - name: Build All Projects
+    description: Build all projects in the MonoRepo using the releaseAll task
     action: run-command
     commands:
-      - ./gradlew samples:jvm-lib:build --no-daemon
-      - ./gradlew samples:mpp-lib:build --no-daemon
-    
-  - name: Test Android Build (if Android SDK available)
-    description: Test Android-specific builds if environment is fully configured
-    action: run-command
-    commands:
-      - ./gradlew samples:android-app:assembleDebug --no-daemon
-    optional: true
-
-# Build configuration for Kotlin Android projects in this MonoRepo
-build:
-  targets:
-    - android-apps
-    - kotlin-multiplatform
-    - compose-applications
-    - jvm-applications
-  
-  gradle-tasks:
-    - clean
-    - assembleDebug
-    - assembleRelease
-    - test
-    - lint
-    - detekt
-  
-  android-specific-tasks:
-    - samples:android-app:assembleDebug
-    - samples:jbcompose-android-app:assembleDebug
-    - alpaca-scheduler:front-end:app-android:assembleDebug
-    - edifikana:front-end:app-android:assembleDebug
-    - framework-samples:app-android:assembleDebug
-
-# Project-specific configurations for this MonoRepo
-project:
-  type: kotlin-android-multiplatform-monorepo
-  min-sdk: 30
-  target-sdk: 36
-  compile-sdk: 36
-  kotlin-version: "2.2.0"
-  gradle-version: "8.14.2"
-  android-gradle-plugin: "8.9.x" # Note: 8.10.0 may not be available yet, use latest stable
-  compose-version: "1.8.2"
-  compose-enabled: true
-  multiplatform-targets:
-    - android
-    - jvm
-    - js
-    - wasm
-  
-  frameworks:
-    - compose-multiplatform
-    - kotlin-multiplatform
-    - android-jetpack
-    - ktor
-    - roborazzi
-    - detekt
-
-# Key dependencies and plugins used in this MonoRepo
-dependencies:
-  gradle-plugins:
-    - com.android.application
-    - com.android.library
-    - kotlin.multiplatform
-    - kotlin.jvm
-    - org.jetbrains.compose
-    - org.jetbrains.kotlin.plugin.compose
-    - com.google.devtools.ksp
-    - com.google.dagger.hilt.android
-    - androidx.navigation.safeargs.kotlin
-    - com.squareup.sqldelight
-    - io.gitlab.arturbosch.detekt
-    - io.github.takahirom.roborazzi
-
-# Required permissions for Android development
-permissions:
-  - android.permission.INTERNET
-  - android.permission.ACCESS_NETWORK_STATE
-
-# Common build issues and solutions
-troubleshooting:
-  - issue: "Android Gradle Plugin not found"
-    solution: "Ensure Android SDK is installed and ANDROID_HOME is set correctly"
-  - issue: "JDK version mismatch"
-    solution: "This project requires JDK 21 for Kotlin 2.2.0 and Android Gradle Plugin 8.10.0"
-  - issue: "Out of memory during build"
-    solution: "Increase Gradle JVM args to -Xmx8G or higher"
-  - issue: "Kotlin Native compilation issues"
-    solution: "Set kotlin.native.disableCompilerDaemon=true in gradle.properties"
-  - issue: "Plugin version 8.10.0 not found"
-    solution: "Use latest stable Android Gradle Plugin version (8.7.x or 8.8.x) if 8.10.0 is not yet released"
-
-# Version compatibility notes
-version-notes:
-  - "This MonoRepo uses cutting-edge versions which may not always be available"
-  - "Android Gradle Plugin 8.10.0 requires JDK 21 minimum"
-  - "Kotlin 2.2.0 is compatible with Compose 1.8.2"
-  - "Gradle 8.14.2 supports configuration cache which improves build performance"
-  - "If build fails due to plugin versions, check versions.properties and use refreshVersions task"
-
-# Alternative setup for stable builds
-stable-alternative:
-  android-gradle-plugin: "8.7.2"
-  kotlin-version: "2.0.21" 
-  gradle-version: "8.10.2"
-  compose-version: "1.7.8"
+      - ./gradlew releaseAll --no-daemon

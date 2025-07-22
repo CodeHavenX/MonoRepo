@@ -59,6 +59,7 @@ jobs:
       PROJECT_ID: ${{ secrets.EDIFIKANA_PROJECT_ID }}
       EDIFIKANA_SUPABASE_URL: ${{ secrets.EDIFIKANA_SUPABASE_URL }}
       EDIFIKANA_SUPABASE_KEY: ${{ secrets.EDIFIKANA_SUPABASE_KEY }}
+    needs: integ
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK 21

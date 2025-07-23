@@ -2,6 +2,7 @@ package com.cramsan.framework.utils.loginvalidation
 
 private const val PASSWORD_MIN_LENGTH = 6
 private const val PASSWORD_MAX_LENGTH = 24
+private const val DEFAULT_ALLOWED_SYMBOLS = "!@#\$%^&*?\"|"
 // TODO: Update strings to be from resources instead of hardcoded
 /**
  * Validate that the [email] and [phoneNumber] are not empty. Returns a list of error messages.
@@ -56,22 +57,44 @@ fun validatePhoneNumber(phoneNumber: String): List<String> {
  * Validate that the [password] is meet security requirements. Returns a list of error messages if the password
  * is invalid. An empty list indicates that the password is valid.
  */
-fun validatePassword(password: String): List<String> {
+fun validatePassword(
+    password: String,
+    minLength: Int = PASSWORD_MIN_LENGTH,
+    maxLength: Int = PASSWORD_MAX_LENGTH,
+    includeUppercase: Boolean = true,
+    includeLowercase: Boolean = true,
+    includeDigits: Boolean = true,
+    includeSymbols: Boolean = true,
+    allowedSymbols: String = DEFAULT_ALLOWED_SYMBOLS
+): List<String> {
     val errors = mutableListOf<String>()
 
     if (password.isBlank()) {
         return listOf("Password cannot be empty.")
     }
-    if (password.length < PASSWORD_MIN_LENGTH || password.length > PASSWORD_MAX_LENGTH) {
-        errors.add("Password must be between 6 and 24 characters long.")
+    
+    if (minLength > maxLength) {
+        errors.add(
+            "Invalid password length range: minimum length ($minLength) cannot exceed maximum length ($maxLength)."
+        )
+    } else if (minLength == maxLength) {
+        if (password.length != minLength) {
+            errors.add("Password must be exactly $minLength characters long.")
+        }
+    } else if (password.length !in minLength..maxLength) {
+        errors.add("Password must be between $minLength and $maxLength characters long.")
     }
-    if (!password.contains(Regex("[A-Z]"))) {
+    
+    if (includeUppercase && !password.contains(Regex("[A-Z]"))) {
         errors.add("Password must contain at least one uppercase letter.")
     }
-    if (!password.contains(Regex("[a-z]"))) {
+    if (includeLowercase && !password.contains(Regex("[a-z]"))) {
         errors.add("Password must contain at least one lowercase letter.")
     }
-    if (!password.contains(Regex("\\d"))) {
+    if (includeSymbols && !password.contains(Regex("[${Regex.escape(allowedSymbols)}]"))) {
+        errors.add("Password must contain at least one symbol.")
+    }
+    if (includeDigits && !password.contains(Regex("\\d"))) {
         errors.add("Password must contain at least one number.")
     }
     return errors

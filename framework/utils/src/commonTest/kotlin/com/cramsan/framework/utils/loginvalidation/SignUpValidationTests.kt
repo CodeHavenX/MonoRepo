@@ -154,7 +154,7 @@ class SignUpValidationTests {
      * Test that the [validatePassword] function returns a error message when the password is blank
      */
     @Test
-    fun validPassword_has_blank_password_and_returns_list() {
+    fun validatePassword_has_blank_password_and_returns_list() {
         // Arrange
         val password = ""
         // Act
@@ -168,7 +168,7 @@ class SignUpValidationTests {
      * Test that the [validatePassword] function returns a list of error messages when the password is invalid
      */
     @Test
-    fun validPassword_has_invalid_password_and_returns_list() {
+    fun validatePassword_has_invalid_password_and_returns_list() {
         // Arrange
         val password = "pswrd"
         // Act
@@ -177,16 +177,31 @@ class SignUpValidationTests {
         assertTrue(result.isNotEmpty())
         assertTrue { result.contains("Password must be between 6 and 24 characters long.") }
         assertTrue { result.contains("Password must contain at least one uppercase letter.") }
+        assertTrue { result.contains("Password must contain at least one symbol.") }
         assertTrue { result.contains("Password must contain at least one number.") }
+    }
+
+    /**
+     * Test that the [validatePassword] function returns error when password is missing symbols
+     */
+    @Test
+    fun validatePassword_has_invalid_password_missing_symbols_and_returns_error() {
+        // Arrange
+        val password = "Password1"
+        // Act
+        val result = validatePassword(password)
+        // Assert
+        assertTrue(result.isNotEmpty())
+        assertTrue { result.contains("Password must contain at least one symbol.") }
     }
 
     /**
      * Validate the [validatePassword] function returns an empty list when the password is valid
      */
     @Test
-    fun validPassword_has_valid_password_and_returns_empty_list() {
+    fun validatePassword_has_valid_password_and_returns_empty_list() {
         // Arrange
-        val password = "Password1"
+        val password = "Password1!"
         // Act
         val result = validatePassword(password)
         // Assert

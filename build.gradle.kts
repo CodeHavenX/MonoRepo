@@ -46,6 +46,12 @@ tasks.register("releaseAll") {
 
     dependsOn("samples:android-app:release")
     dependsOn("samples:android-lib:release")
+    dependsOn("samples:frontend-architecture-sample:shared:release")
+    dependsOn("samples:frontend-architecture-sample:front-end:shared-ui:release")
+    dependsOn("samples:frontend-architecture-sample:front-end:shared-app:release")
+    dependsOn("samples:frontend-architecture-sample:front-end:app-android:release")
+    dependsOn("samples:frontend-architecture-sample:front-end:app-jvm:release")
+    dependsOn("samples:frontend-architecture-sample:front-end:app-wasm:release")
     dependsOn("samples:jbcompose-mpp-lib:release")
     dependsOn("samples:jbcompose-desktop-app:release")
     dependsOn("samples:jbcompose-android-app:release")

@@ -12,15 +12,15 @@ import kotlinx.coroutines.flow.map
  * In a real application, this would be replaced with a database implementation.
  */
 class InMemoryTaskRepository : TaskRepository {
-    
+
     private val _tasks = MutableStateFlow<List<Task>>(emptyList())
-    
+
     override fun getAllTasks(): Flow<List<Task>> = _tasks
-    
+
     override suspend fun getTaskById(id: TaskId): Task? {
         return _tasks.value.find { it.id == id }
     }
-    
+
     override suspend fun addTask(task: Task): Result<Unit> {
         return try {
             val currentTasks = _tasks.value.toMutableList()
@@ -36,12 +36,12 @@ class InMemoryTaskRepository : TaskRepository {
             Result.failure(e)
         }
     }
-    
+
     override suspend fun updateTask(task: Task): Result<Unit> {
         return try {
             val currentTasks = _tasks.value.toMutableList()
             val index = currentTasks.indexOfFirst { it.id == task.id }
-            
+
             if (index == -1) {
                 Result.failure(IllegalArgumentException("Task with ID ${task.id.value} not found"))
             } else {
@@ -53,12 +53,12 @@ class InMemoryTaskRepository : TaskRepository {
             Result.failure(e)
         }
     }
-    
+
     override suspend fun deleteTask(id: TaskId): Result<Unit> {
         return try {
             val currentTasks = _tasks.value.toMutableList()
             val removed = currentTasks.removeAll { it.id == id }
-            
+
             if (removed) {
                 _tasks.value = currentTasks
                 Result.success(Unit)
@@ -69,20 +69,20 @@ class InMemoryTaskRepository : TaskRepository {
             Result.failure(e)
         }
     }
-    
+
     override fun getTasksByCompletionStatus(completed: Boolean): Flow<List<Task>> {
         return _tasks.map { tasks ->
             tasks.filter { it.isCompleted == completed }
         }
     }
-    
+
     override suspend fun searchTasks(query: String): List<Task> {
         if (query.isBlank()) return _tasks.value
-        
+
         val lowerQuery = query.lowercase()
         return _tasks.value.filter { task ->
             task.title.lowercase().contains(lowerQuery) ||
-            task.description.lowercase().contains(lowerQuery)
+                task.description.lowercase().contains(lowerQuery)
         }
     }
 }

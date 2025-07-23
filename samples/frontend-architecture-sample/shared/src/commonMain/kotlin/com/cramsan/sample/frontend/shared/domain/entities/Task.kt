@@ -22,7 +22,7 @@ data class Task(
      * Business rule: A task can only be marked as completed if it has a title
      */
     fun canBeCompleted(): Boolean = title.isNotBlank()
-    
+
     /**
      * Business rule: Check if task is overdue
      */
@@ -37,20 +37,33 @@ data class Task(
  * Value object for task identifier
  */
 @Serializable
-@JvmInline
+@kotlin.jvm.JvmInline
 value class TaskId(val value: String)
+
+/**
+ * Constants for task priority sort orders
+ */
+private const val PRIORITY_SORT_ORDER_LOW = 1
+private const val PRIORITY_SORT_ORDER_MEDIUM = 2
+private const val PRIORITY_SORT_ORDER_HIGH = 3
+private const val PRIORITY_SORT_ORDER_URGENT = 4
 
 /**
  * Task priority levels following business requirements
  */
 @Serializable
 enum class TaskPriority(val displayName: String, val sortOrder: Int) {
-    LOW("Low", 1),
-    MEDIUM("Medium", 2),
-    HIGH("High", 3),
-    URGENT("Urgent", 4);
-    
+    LOW("Low", PRIORITY_SORT_ORDER_LOW),
+    MEDIUM("Medium", PRIORITY_SORT_ORDER_MEDIUM),
+    HIGH("High", PRIORITY_SORT_ORDER_HIGH),
+    URGENT("Urgent", PRIORITY_SORT_ORDER_URGENT);
+
     companion object {
+        /**
+         * Find a TaskPriority by its display name
+         * @param displayName The display name to search for
+         * @return The matching TaskPriority or null if not found
+         */
         fun fromDisplayName(displayName: String): TaskPriority? {
             return entries.find { it.displayName == displayName }
         }

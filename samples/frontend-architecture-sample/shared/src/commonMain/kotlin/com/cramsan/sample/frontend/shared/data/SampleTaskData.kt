@@ -3,8 +3,8 @@ package com.cramsan.sample.frontend.shared.data
 import com.cramsan.sample.frontend.shared.domain.entities.Task
 import com.cramsan.sample.frontend.shared.domain.entities.TaskId
 import com.cramsan.sample.frontend.shared.domain.entities.TaskPriority
+import com.cramsan.sample.frontend.shared.domain.repository.TaskRepository
 import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 
@@ -13,15 +13,20 @@ import kotlin.time.Duration.Companion.hours
  * Provides initial tasks for demonstration purposes.
  */
 object SampleTaskData {
-    
+
+    /**
+     * Create a list of sample tasks for demonstration purposes
+     * @return List of sample tasks with various priorities and states
+     */
     fun createSampleTasks(): List<Task> {
         val now = Clock.System.now()
-        
+
         return listOf(
             Task(
                 id = TaskId("sample_1"),
                 title = "Complete project proposal",
-                description = "Write and submit the Q4 project proposal document including budget estimates and timeline.",
+                description = "Write and submit the Q4 project proposal document " +
+                    "including budget estimates and timeline.",
                 priority = TaskPriority.HIGH,
                 createdAt = now - 2.days,
                 dueDate = now + 3.days
@@ -38,7 +43,8 @@ object SampleTaskData {
             Task(
                 id = TaskId("sample_3"),
                 title = "Update documentation",
-                description = "Update the API documentation to reflect recent changes in the user authentication endpoints.",
+                description = "Update the API documentation to reflect recent changes " +
+                    "in the user authentication endpoints.",
                 priority = TaskPriority.LOW,
                 createdAt = now - 3.days
             ),
@@ -60,11 +66,11 @@ object SampleTaskData {
             )
         )
     }
-    
+
     /**
      * Initialize repository with sample data
      */
-    suspend fun initializeWithSampleData(repository: InMemoryTaskRepository) {
+    suspend fun initializeWithSampleData(repository: TaskRepository) {
         createSampleTasks().forEach { task ->
             repository.addTask(task)
         }

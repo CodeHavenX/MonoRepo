@@ -15,6 +15,7 @@ class GetAllTasksUseCase(
 ) {
     /**
      * Get all tasks sorted by priority (highest first) and then by creation date
+     * @return Flow of sorted tasks
      */
     operator fun invoke(): Flow<List<Task>> {
         return taskRepository.getAllTasks().map { tasks ->
@@ -33,15 +34,20 @@ class GetAllTasksUseCase(
 class ToggleTaskCompletionUseCase(
     private val taskRepository: TaskRepository
 ) {
+    /**
+     * Toggle the completion status of a task
+     * @param taskId The ID of the task to toggle
+     * @return Result indicating success or failure with appropriate error
+     */
     suspend operator fun invoke(taskId: TaskId): Result<Unit> {
         val task = taskRepository.getTaskById(taskId)
             ?: return Result.failure(TaskNotFoundException(taskId))
-        
+
         // Apply business rule: check if task can be completed
         if (!task.isCompleted && !task.canBeCompleted()) {
             return Result.failure(TaskCannotBeCompletedException(task))
         }
-        
+
         val updatedTask = if (task.isCompleted) {
             // Mark as incomplete
             task.copy(
@@ -55,7 +61,7 @@ class ToggleTaskCompletionUseCase(
                 completedAt = kotlinx.datetime.Clock.System.now()
             )
         }
-        
+
         return taskRepository.updateTask(updatedTask)
     }
 }
@@ -67,6 +73,14 @@ class ToggleTaskCompletionUseCase(
 class CreateTaskUseCase(
     private val taskRepository: TaskRepository
 ) {
+    /**
+     * Create a new task with the given parameters
+     * @param title The task title (required, non-blank)
+     * @param description The task description
+     * @param priority The task priority level
+     * @param dueDate Optional due date for the task
+     * @return Result containing the created task or an error
+     */
     suspend operator fun invoke(
         title: String,
         description: String,
@@ -77,7 +91,7 @@ class CreateTaskUseCase(
         if (title.isBlank()) {
             return Result.failure(InvalidTaskDataException("Title cannot be empty"))
         }
-        
+
         val task = Task(
             id = TaskId(generateTaskId()),
             title = title.trim(),
@@ -86,10 +100,10 @@ class CreateTaskUseCase(
             createdAt = kotlinx.datetime.Clock.System.now(),
             dueDate = dueDate
         )
-        
+
         return taskRepository.addTask(task).map { task }
     }
-    
+
     private fun generateTaskId(): String {
         // Simple ID generation - in a real app, this might use UUID or database sequence
         return "task_${kotlinx.datetime.Clock.System.now().toEpochMilliseconds()}"

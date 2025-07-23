@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
@@ -27,7 +26,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -90,9 +88,9 @@ fun TaskItem(
                     }
                 )
             }
-            
+
             Spacer(modifier = Modifier.width(12.dp))
-            
+
             // Task content
             Column(
                 modifier = Modifier.weight(1f)
@@ -114,7 +112,7 @@ fun TaskItem(
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
-                
+
                 // Description (if not empty)
                 if (task.description.isNotBlank()) {
                     Spacer(modifier = Modifier.height(4.dp))
@@ -126,9 +124,9 @@ fun TaskItem(
                         overflow = TextOverflow.Ellipsis
                     )
                 }
-                
+
                 Spacer(modifier = Modifier.height(8.dp))
-                
+
                 // Priority and status indicators
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -136,7 +134,7 @@ fun TaskItem(
                 ) {
                     // Priority indicator
                     PriorityChip(priority = task.priority)
-                    
+
                     // Overdue indicator
                     if (task.isOverdue(Clock.System.now())) {
                         OverdueChip()
@@ -155,7 +153,7 @@ private fun PriorityChip(priority: TaskPriority) {
         TaskPriority.HIGH -> TaskColors.HighPriority
         TaskPriority.URGENT -> TaskColors.UrgentPriority
     }
-    
+
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(12.dp))

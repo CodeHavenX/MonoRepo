@@ -1,71 +1,28 @@
-# Copilot Setup Steps for Kotlin Android Development
+# Copilot Setup Steps for MonoRepo Development
 # This file configures the environment for building Kotlin Android applications
-# Compatible with MonoRepo using Gradle 8.14.2, Android Gradle Plugin 8.10.0, and JDK 21
+# Compatible with MonoRepo using Gradle, Android development, and JDK 21
 
 name: Copilot Setup for MonoRepo Development
 
 steps:
   - name: Setup JDK 21
-    description: Install OpenJDK 21 (Amazon Corretto distribution) - Required for Kotlin 2.2.0 and Android Gradle Plugin 8.10.0
-    action: setup-java
+    uses: actions/setup-java@v3
     with:
       java-version: '21'
       distribution: 'corretto'
 
   - name: Setup Android SDK
-    description: Install Android SDK and required build tools for API level 36
-    action: setup-android
+    uses: android-actions/setup-android@v3
     with:
       api-level: 36
       build-tools: '36.0.0'
-      target-api: 36
-      compile-api: 36
-      min-api: 30
       ndk: true
       cmake: true
-      cmdline-tools: 'latest'
 
   - name: Setup Gradle
-    description: Configure Gradle build system with caching and configuration cache
-    action: setup-gradle
+    uses: gradle/gradle-build-action@v2
     with:
-      gradle-version: '8.14.2'
-
-  - name: Accept Android SDK Licenses
-    description: Accept all Android SDK licenses to avoid build interruptions
-    action: run-command
-    commands:
-      - yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses
-
-  - name: Install Additional Android Components
-    description: Install additional Android SDK components required for builds
-    action: run-command
-    commands:
-      - $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
-      - $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "ndk;26.1.10909125" "cmake;3.22.1"
-
-  - name: Install Build Dependencies
-    description: Install additional system dependencies for Kotlin Android development
-    action: install-dependencies
-    packages:
-      - git
-      - unzip
-      - wget
-      - curl
-      - build-essential
-
-  - name: Verify Setup
-    description: Verify the development environment is properly configured
-    action: run-command
-    commands:
-      - java -version
-      - ./gradlew --version
-      - echo $ANDROID_HOME
-      - ls -la $ANDROID_HOME/platforms/
-      - $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --list
+      gradle-version: wrapper
 
   - name: Build All Projects
-    description: Build all projects in the MonoRepo using the releaseAll task
-    action: run-command
-    commands:
-      - ./gradlew releaseAll --no-daemon
+    run: ./gradlew releaseAll

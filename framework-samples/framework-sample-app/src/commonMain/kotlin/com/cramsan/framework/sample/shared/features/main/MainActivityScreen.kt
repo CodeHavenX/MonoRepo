@@ -5,6 +5,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.cramsan.framework.core.compose.RouteSafePath
 import com.cramsan.framework.sample.shared.features.main.halt.HaltUtilScreen
+import com.cramsan.framework.sample.shared.features.main.logging.LoggingScreen
 import com.cramsan.framework.sample.shared.features.main.menu.MainMenuScreen
 
 /**
@@ -25,6 +26,9 @@ fun NavGraphBuilder.mainActivityNavigation(
                 }
                 MainRoute.HaltUtil -> composable(it.route) {
                     HaltUtilScreen()
+                }
+                MainRoute.Logging -> composable(it.route) {
+                    LoggingScreen()
                 }
             }
         }

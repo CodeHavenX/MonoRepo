@@ -6,6 +6,7 @@ import com.cramsan.edifikana.client.lib.features.auth.signin.SignInViewModel
 import com.cramsan.edifikana.client.lib.features.auth.signup.SignUpViewModel
 import com.cramsan.edifikana.client.lib.features.auth.validation.OtpValidationViewModel
 import com.cramsan.edifikana.client.lib.features.debug.main.DebugViewModel
+import com.cramsan.edifikana.client.lib.features.debug.screenselector.ScreenSelectorViewModel
 import com.cramsan.edifikana.client.lib.features.management.addprimarystaff.AddPrimaryStaffViewModel
 import com.cramsan.edifikana.client.lib.features.management.addproperty.AddPropertyViewModel
 import com.cramsan.edifikana.client.lib.features.management.addrecord.AddRecordViewModel
@@ -96,6 +97,7 @@ internal val ViewModelModule = module {
         viewModelOf(::NotificationsViewModel)
         viewModelOf(::SplashViewModel)
         viewModelOf(::ManagementViewModel)
+        viewModelOf(::ScreenSelectorViewModel)
     }
 }
 

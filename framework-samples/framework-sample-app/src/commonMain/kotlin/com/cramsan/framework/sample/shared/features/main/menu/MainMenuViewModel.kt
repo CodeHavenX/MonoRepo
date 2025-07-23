@@ -24,6 +24,17 @@ class MainMenuViewModel(
         }
     }
 
+    /**
+     * Navigate to the Logging screen.
+     */
+    fun navigateToLogging() {
+        viewModelScope.launch {
+            emitWindowEvent(
+                SampleWindowEvent.NavigateToScreen(MainRouteDestination.LoggingDestination)
+            )
+        }
+    }
+
     companion object {
         private const val TAG = "MainMenuViewModel"
     }

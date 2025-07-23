@@ -22,14 +22,7 @@ import org.koin.compose.viewmodel.koinViewModel
  * Application screen.
  */
 @Composable
-fun ApplicationScreen() {
-    ComposableKoinContext {
-        ApplicationContent()
-    }
-}
-
-@Composable
-private fun ApplicationContent(
+fun ApplicationScreen(
     viewModel: ApplicationViewModel = koinViewModel(),
 ) {
     val navController = rememberNavController()

@@ -34,16 +34,18 @@ sealed class EdifikanaWindowsEvent : WindowEvent {
      */
     data class NavigateToActivity(
         val destination: ActivityRouteDestination,
-        val clearTop: Boolean = false,
-        val clearStack: Boolean = false,
-    ) : EdifikanaWindowsEvent()
+        override val clearTop: Boolean = false,
+        override val clearStack: Boolean = false,
+    ) : EdifikanaWindowsEvent(), NavigationEvent
 
     /**
      * Navigate to destination.
      */
     data class NavigateToScreen(
         val destination: Destination,
-    ) : EdifikanaWindowsEvent()
+        override val clearTop: Boolean = false,
+        override val clearStack: Boolean = false,
+    ) : EdifikanaWindowsEvent(), NavigationEvent
 
     /**
      * Close the activity.
@@ -68,4 +70,12 @@ sealed class EdifikanaWindowsEvent : WindowEvent {
      * Navigate back.
      */
     data object NavigateBack : EdifikanaWindowsEvent()
+}
+
+/**
+ * Interface for navigation events that can clear the top or stack of the navigation.
+ */
+interface NavigationEvent {
+    val clearTop: Boolean
+    val clearStack: Boolean
 }

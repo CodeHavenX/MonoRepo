@@ -15,6 +15,7 @@ enum class MainRoute(
 ) {
     MainMenu(route = "main_menu"),
     HaltUtil(route = "halt_util"),
+    Logging(route = "logging"),
 }
 
 /**
@@ -37,5 +38,12 @@ sealed class MainRouteDestination(
      */
     data object HaltUtilDestination : MainRouteDestination(
         MainRoute.HaltUtil.route,
+    )
+
+    /**
+     * A class representing a logging destination.
+     */
+    data object LoggingDestination : MainRouteDestination(
+        MainRoute.Logging.route,
     )
 }

@@ -56,5 +56,6 @@ private fun DebugScreenPreview() = AppTheme {
         bufferChanges = { _, _ -> },
         saveChanges = { _, _ -> },
         onCloseSelected = {},
+        onAction = { }
     )
 }

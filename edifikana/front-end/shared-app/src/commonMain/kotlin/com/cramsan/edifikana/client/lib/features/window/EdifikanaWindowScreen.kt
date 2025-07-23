@@ -111,16 +111,17 @@ private fun handleWindowEvent(
             eventHandler.shareContent(event)
         }
         is EdifikanaWindowsEvent.NavigateToActivity -> {
-            if (event.clearStack) {
-                while (navController.currentBackStack.value.isNotEmpty()) {
-                    navController.popBackStack()
-                }
-            } else if (event.clearTop) {
-                navController.popBackStack()
-            }
+            handleNavigationEvent(
+                navController = navController,
+                event = event,
+            )
             navController.navigate(event.destination.rawRoute)
         }
         is EdifikanaWindowsEvent.NavigateToScreen -> {
+            handleNavigationEvent(
+                navController = navController,
+                event = event,
+            )
             navController.navigate(event.destination.rawRoute)
         }
         is EdifikanaWindowsEvent.NavigateBack -> {
@@ -144,6 +145,19 @@ private fun handleWindowEvent(
                 }
             }
         }
+    }
+}
+
+private fun handleNavigationEvent(
+    navController: NavHostController,
+    event: NavigationEvent,
+) {
+    if (event.clearStack) {
+        while (navController.currentBackStack.value.isNotEmpty()) {
+            navController.popBackStack()
+        }
+    } else if (event.clearTop) {
+        navController.popBackStack()
     }
 }
 

@@ -4,6 +4,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.cramsan.edifikana.client.lib.features.debug.main.DebugScreen
+import com.cramsan.edifikana.client.lib.features.debug.screenselector.ScreenSelectorScreen
 import com.cramsan.framework.core.compose.RouteSafePath
 
 /**
@@ -21,6 +22,9 @@ fun NavGraphBuilder.debugActivityNavigation(
             when (it) {
                 DebugActivityRoute.Debug -> composable(it.route) {
                     DebugScreen()
+                }
+                DebugActivityRoute.ScreenSelector -> composable(it.route) {
+                    ScreenSelectorScreen()
                 }
             }
         }

@@ -58,7 +58,7 @@ sealed class AuthRouteDestination(
             fun unpack(backStackEntry: NavBackStackEntry): ValidationDestination {
                 return ValidationDestination(
                     backStackEntry.arguments?.getString("email").orEmpty(),
-                    backStackEntry.arguments?.getBoolean("accountCreationFlow") ?: false,
+                    backStackEntry.arguments?.getString("accountCreationFlow")?.toBooleanStrictOrNull() ?: false,
                 )
             }
         }

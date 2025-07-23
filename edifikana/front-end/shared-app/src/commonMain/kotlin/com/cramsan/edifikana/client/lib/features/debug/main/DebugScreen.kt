@@ -77,6 +77,7 @@ fun DebugScreen(
             viewModel.saveValue(key, value)
         },
         onCloseSelected = { viewModel.navigateBack() },
+        onAction = { viewModel.runAction(it.action) },
     )
 }
 
@@ -89,6 +90,7 @@ internal fun DebugContent(
     modifier: Modifier = Modifier,
     bufferChanges: (String, Any) -> Unit,
     saveChanges: (key: String, value: Any) -> Unit,
+    onAction: (Field.ActionField) -> Unit,
     onCloseSelected: () -> Unit,
 ) {
     Scaffold(
@@ -125,6 +127,10 @@ internal fun DebugContent(
 
                             is Field.Label -> {
                                 LabelRow(it, modifier)
+                            }
+
+                            is Field.ActionField -> {
+                                ActionRow(it, modifier, onAction)
                             }
                         }
                     }
@@ -265,6 +271,33 @@ private fun Modifier.hasLostFocus(onFocusLost: () -> Unit): Modifier {
         hasFocus = it.isFocused
         if (it.hasFocus) {
             initialFocusState = false
+        }
+    }
+}
+
+@Composable
+private fun ActionRow(
+    field: Field.ActionField,
+    modifier: Modifier,
+    onAction: (Field.ActionField) -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .clickable(
+                enabled = field.enabled,
+                onClick = { onAction(field) },
+            )
+            .then(modifier),
+    ) {
+        Text(
+            text = field.title,
+            style = MaterialTheme.typography.labelLarge,
+        )
+        field.subtitle?.let {
+            Text(
+                text = it,
+                style = MaterialTheme.typography.labelMedium,
+            )
         }
     }
 }

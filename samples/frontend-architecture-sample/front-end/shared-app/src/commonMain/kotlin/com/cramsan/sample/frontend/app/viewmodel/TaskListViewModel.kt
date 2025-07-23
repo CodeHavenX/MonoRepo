@@ -18,6 +18,11 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 /**
+ * Timeout in milliseconds for shared flow subscriptions
+ */
+private const val SUBSCRIPTION_TIMEOUT_MS = 5000L
+
+/**
  * ViewModel for the task list screen.
  * Demonstrates proper state management and use case integration.
  */
@@ -35,7 +40,7 @@ class TaskListViewModel(
     val tasks: StateFlow<List<Task>> = getAllTasksUseCase()
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
+            started = SharingStarted.WhileSubscribed(SUBSCRIPTION_TIMEOUT_MS),
             initialValue = emptyList()
         )
 
@@ -48,18 +53,26 @@ class TaskListViewModel(
         }
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
+        started = SharingStarted.WhileSubscribed(SUBSCRIPTION_TIMEOUT_MS),
         initialValue = emptyList()
     )
 
+    /**
+     * Handles task click events.
+     * @param task The task that was clicked
+     */
     fun onTaskClick(task: Task) {
         uiState = uiState.copy(selectedTaskId = task.id)
     }
 
+    /**
+     * Toggles the completion status of a task.
+     * @param task The task to toggle completion for
+     */
     fun onToggleTaskCompletion(task: Task) {
         viewModelScope.launch {
             uiState = uiState.copy(isLoading = true, errorMessage = null)
-            
+
             toggleTaskCompletionUseCase(task.id)
                 .onSuccess {
                     uiState = uiState.copy(isLoading = false)
@@ -73,18 +86,34 @@ class TaskListViewModel(
         }
     }
 
+    /**
+     * Changes the current task filter.
+     * @param filter The new filter to apply
+     */
     fun onFilterChange(filter: TaskFilter) {
         uiState = uiState.copy(currentFilter = filter)
     }
 
+    /**
+     * Shows the create task dialog.
+     */
     fun onShowCreateTask() {
         uiState = uiState.copy(showCreateTaskDialog = true)
     }
 
+    /**
+     * Hides the create task dialog.
+     */
     fun onHideCreateTask() {
         uiState = uiState.copy(showCreateTaskDialog = false)
     }
 
+    /**
+     * Creates a new task with the specified parameters.
+     * @param title The task title
+     * @param description The task description
+     * @param priority The task priority
+     */
     fun onCreateTask(title: String, description: String, priority: TaskPriority) {
         if (title.isBlank()) {
             uiState = uiState.copy(errorMessage = "Title cannot be empty")
@@ -93,7 +122,7 @@ class TaskListViewModel(
 
         viewModelScope.launch {
             uiState = uiState.copy(isLoading = true, errorMessage = null)
-            
+
             createTaskUseCase(title, description, priority)
                 .onSuccess {
                     uiState = uiState.copy(
@@ -110,6 +139,9 @@ class TaskListViewModel(
         }
     }
 
+    /**
+     * Dismisses the current error message.
+     */
     fun onErrorDismissed() {
         uiState = uiState.copy(errorMessage = null)
     }

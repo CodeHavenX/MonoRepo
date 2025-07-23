@@ -18,12 +18,12 @@ import org.koin.dsl.module
 val appModule = module {
     // Data layer
     singleOf(::InMemoryTaskRepository) bind TaskRepository::class
-    
+
     // Domain layer - Use cases
     factoryOf(::GetAllTasksUseCase)
     factoryOf(::ToggleTaskCompletionUseCase)
     factoryOf(::CreateTaskUseCase)
-    
+
     // Presentation layer - ViewModels
     factoryOf(::TaskListViewModel)
 }

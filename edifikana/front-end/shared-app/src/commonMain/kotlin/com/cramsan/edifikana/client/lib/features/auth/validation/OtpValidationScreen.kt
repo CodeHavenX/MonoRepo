@@ -291,7 +291,7 @@ fun OtpInputField(
                 .focusRequester(focusRequester)
                 .onFocusChanged {
                     isFocused = it.isFocused
-                    onFocusChanged(it.isFocused)
+                    onFocusChanged(isFocused)
                 }
                 .onKeyEvent { event ->
                     val didPressDelete = event.key == Key.Delete || event.key == Key.Backspace

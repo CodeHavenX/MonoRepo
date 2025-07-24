@@ -61,6 +61,7 @@ class OtpValidationViewModel(
      */
     fun onEnterOtpValue(otpValue: String?, index: Int) {
         // Check value entered is a digit, if not, do nothing
+        // NOTE: May need to add a check for an empty field in case this return false and doesn't allow new entry
         val isValid = otpValue == null || (otpValue.length == 1 && otpValue[0].isDigit())
         if (!isValid) {
             return

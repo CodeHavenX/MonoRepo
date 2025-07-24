@@ -2,6 +2,12 @@ package com.cramsan.framework.utils.loginvalidation
 
 private const val PASSWORD_MIN_LENGTH = 6
 private const val PASSWORD_MAX_LENGTH = 24
+
+private val UPPERCASE_REGEX = Regex("[A-Z]")
+private val LOWERCASE_LETTER = Regex("[a-z]")
+private val SYMBOL_REGEX = Regex("[!@#\$%^&*(),.?\":{}|<>]")
+private val NUMBER_REGEX = Regex("\\d")
+
 // TODO: Update strings to be from resources instead of hardcoded
 /**
  * Validate that the [email] and [phoneNumber] are not empty. Returns a list of error messages.
@@ -81,16 +87,16 @@ fun validatePassword(
     } else if (password.length !in minLength..maxLength) {
         errors.add("Password must be between $minLength and $maxLength characters long.")
     }
-    if (includeUppercase && !password.contains(Regex("[A-Z]"))) {
+    if (includeUppercase && !password.contains(UPPERCASE_REGEX)) {
         errors.add("Password must contain at least one uppercase letter.")
     }
-    if (includeLowercase && !password.contains(Regex("[a-z]"))) {
+    if (includeLowercase && !password.contains(LOWERCASE_LETTER)) {
         errors.add("Password must contain at least one lowercase letter.")
     }
-    if (includeSymbols && !password.contains(Regex("[!@#\$%^&*(),.?\":{}|<>]"))) {
+    if (includeSymbols && !password.contains(SYMBOL_REGEX)) {
         errors.add("Password must contain at least one symbol.")
     }
-    if (includeDigits && !password.contains(Regex("\\d"))) {
+    if (includeDigits && !password.contains(NUMBER_REGEX)) {
         errors.add("Password must contain at least one number.")
     }
     return errors

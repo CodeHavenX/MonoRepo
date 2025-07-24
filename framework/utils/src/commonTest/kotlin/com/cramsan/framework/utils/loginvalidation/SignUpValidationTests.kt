@@ -186,23 +186,82 @@ class SignUpValidationTests {
     @Test
     fun validPassword_has_valid_password_and_returns_empty_list() {
         // Arrange
-        val password = "Password1"
+        val password = "Password1@"
         // Act
         val result = validatePassword(password)
         // Assert
-        assertTrue { result.contains("Password must contain at least one symbol.") }
+        assertTrue(result.isEmpty())
     }
 
     /**
-     * Test that the [validatePassword] function returns an empty list when the password is valid
+     * Test validatePassword with custom minLength and maxLength.
      */
     @Test
-    fun validPassword_has_valid_password_with_symbol_and_returns_empty_list() {
-        // Arrange
-        val password = "Password1!"
-        // Act
-        val result = validatePassword(password)
-        // Assert
+    fun validatePassword_custom_min_and_max_length() {
+        val password = "Pass1@"
+        val result = validatePassword(password, minLength = 8, maxLength = 10)
+        assertTrue(result.contains("Password must be between 8 and 10 characters long."))
+    }
+
+    /**
+     * Test validatePassword with minLength == maxLength.
+     */
+    @Test
+    fun validatePassword_min_equals_max_length() {
+        val password = "Pass1@"
+        val result = validatePassword(password, minLength = 6, maxLength = 6)
+        assertTrue(result.isEmpty())
+        val result2 = validatePassword(password, minLength = 7, maxLength = 7)
+        assertTrue(result2.contains("Password must be exactly 7 characters long."))
+    }
+
+    /**
+     * Test validatePassword with minLength > maxLength.
+     */
+    @Test
+    fun validatePassword_min_greater_than_max_length() {
+        val password = "Pass1@"
+        val result = validatePassword(password, minLength = 10, maxLength = 6)
+        assertTrue(result.contains("Invalid password length range: minimum length (10) cannot exceed maximum length (6)."))
+    }
+
+    /**
+     * Test validatePassword with includeUppercase = false.
+     */
+    @Test
+    fun validatePassword_no_uppercase_required() {
+        val password = "password1@"
+        val result = validatePassword(password, includeUppercase = false)
+        assertTrue(result.isEmpty())
+    }
+
+    /**
+     * Test validatePassword with includeLowercase = false.
+     */
+    @Test
+    fun validatePassword_no_lowercase_required() {
+        val password = "PASSWORD1@"
+        val result = validatePassword(password, includeLowercase = false)
+        assertTrue(result.isEmpty())
+    }
+
+    /**
+     * Test validatePassword with includeDigits = false.
+     */
+    @Test
+    fun validatePassword_no_digits_required() {
+        val password = "Password@"
+        val result = validatePassword(password, includeDigits = false)
+        assertTrue(result.isEmpty())
+    }
+
+    /**
+     * Test validatePassword with includeSymbols = false.
+     */
+    @Test
+    fun validatePassword_no_symbols_required() {
+        val password = "Password1"
+        val result = validatePassword(password, includeSymbols = false)
         assertTrue(result.isEmpty())
     }
 }

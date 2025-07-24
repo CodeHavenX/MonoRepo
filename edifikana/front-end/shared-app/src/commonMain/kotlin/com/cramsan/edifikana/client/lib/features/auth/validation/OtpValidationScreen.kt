@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ElevatedButton
@@ -33,7 +32,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
@@ -41,18 +39,14 @@ import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.auth.AuthRouteDestination
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
-import com.cramsan.edifikana.client.ui.theme.surfaceContainerDark
 import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
 import edifikana_lib.alpacaIcon
@@ -127,7 +121,7 @@ internal fun OtpValidationContent(
     onLoginClicked: () -> Unit,
     onBackClicked: () -> Unit,
     onOtpFieldFocused: (Int) -> Unit,
-    onEnterOtpValue: (Int?, Int) -> Unit,
+    onEnterOtpValue: (String?, Int) -> Unit,
     onKeyboardBack: () -> Unit,
 ) {
     Scaffold(
@@ -238,10 +232,10 @@ internal fun OtpValidationContent(
 @Suppress("UnusedParameter")
 @Composable
 fun OtpInputField(
-    value: Int?,
+    value: String?,
     focusRequester: FocusRequester,
     onFocusChanged: (Boolean) -> Unit,
-    onValueChanged: (Int?) -> Unit,
+    onValueChanged: (String?) -> Unit,
     onKeyboardBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -281,8 +275,7 @@ fun OtpInputField(
             onValueChange = { newText ->
                 val newValue = newText.text
                 if (newValue.length <= 1) {
-                    text = newText
-                    onValueChanged(newValue.toIntOrNull())
+                    onValueChanged(newValue)
                 }
             },
             cursorBrush = SolidColor(MaterialTheme.colorScheme.outlineVariant),
@@ -332,7 +325,7 @@ fun OtpSection(
     uistate: OtpValidationUIState,
     focusRequesters: List<FocusRequester>,
     onOtpFieldFocused: (Int) -> Unit,
-    onEnterOtpValue: (Int?, Int) -> Unit,
+    onEnterOtpValue: (String?, Int) -> Unit,
     onKeyboardBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {

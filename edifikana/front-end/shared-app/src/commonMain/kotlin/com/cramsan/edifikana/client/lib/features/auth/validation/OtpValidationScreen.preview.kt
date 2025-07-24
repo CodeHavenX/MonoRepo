@@ -19,7 +19,7 @@ private fun ValidationScreenPreview() = AppTheme {
             isLoading = true,
             errorMessage = "",
             email = "garcia.alicia1990@gmail.com",
-            otpCode = listOf(1, 2, 3, 4, 5, 6),
+            otpCode = listOf("1", "2", "3", "4", "5", "6"),
             focusedIndex = 0,
             accountCreationFlow = true,
         ),
@@ -36,7 +36,7 @@ private fun ValidationScreenPreview() = AppTheme {
 @Composable
 private fun OtpInputFieldPreview() = AppTheme {
     OtpInputField(
-        value = 6,
+        value = "6",
         focusRequester = remember { FocusRequester() },
         onFocusChanged = {},
         onKeyboardBack = {},

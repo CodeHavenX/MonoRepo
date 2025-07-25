@@ -16,6 +16,11 @@ on:
 jobs:
   # The job MUST be called `copilot-setup-steps` or it will not be picked up by Copilot.
   copilot-setup-steps:
+    env:
+        ORG_GRADLE_DAEMON: false
+        ORG_GRADLE_WORKERS_MAX: 1
+        ORG_GRADLE_CACHING: true
+        ORG_GRADLE_JVMARGS: "-Xmx1024m -XX:MaxMetaspaceSize=512m"
     runs-on: ubuntu-latest
 
     # Set the permissions to the lowest permissions possible needed for your steps.
@@ -34,3 +39,7 @@ jobs:
         with:
           java-version: '21'
           distribution: 'corretto'
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          log-accepted-android-sdk-licenses: false

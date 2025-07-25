@@ -5,6 +5,13 @@ apply plugin: "org.jetbrains.kotlin.multiplatform"
 
 kotlin {
     js(IR) {
+        // Configure JS targets without eager configuration resolution
+        nodejs {
+            // Defer configuration to execution phase
+        }
+        browser {
+            // Defer configuration to execution phase
+        }
     }
 
     sourceSets {

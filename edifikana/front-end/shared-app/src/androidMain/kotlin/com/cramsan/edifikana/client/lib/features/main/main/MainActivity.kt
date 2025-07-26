@@ -48,7 +48,7 @@ class MainActivity : ComponentActivity(), EdifikanaMainScreenEventHandler {
     @Suppress("LongMethod")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        // TODO: #199 to address temp fix implemented here
         setContent {
             ComposableKoinContext {
                 val processViewModel: EdifikanaApplicationViewModel = koinInject()

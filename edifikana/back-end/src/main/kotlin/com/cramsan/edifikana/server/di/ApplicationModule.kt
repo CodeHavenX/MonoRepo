@@ -20,6 +20,7 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalTime::class)
 val ApplicationModule = module {
 
+    @OptIn(kotlinx.coroutines.DelicateCoroutinesApi::class)
     single<CoroutineScope> {
         GlobalScope
     }

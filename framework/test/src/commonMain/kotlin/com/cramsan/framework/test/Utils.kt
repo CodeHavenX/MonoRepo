@@ -1,3 +1,5 @@
+@file:OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
+
 package com.cramsan.framework.test
 
 import app.cash.turbine.ReceiveTurbine

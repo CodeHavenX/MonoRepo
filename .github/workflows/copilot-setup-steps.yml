@@ -34,3 +34,7 @@ jobs:
         with:
           java-version: '21'
           distribution: 'corretto'
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          log-accepted-android-sdk-licenses: false

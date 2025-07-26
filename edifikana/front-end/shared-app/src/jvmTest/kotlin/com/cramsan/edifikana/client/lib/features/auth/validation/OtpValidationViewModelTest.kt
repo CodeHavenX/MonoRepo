@@ -81,7 +81,7 @@ class OtpValidationViewModelTest : CoroutineTest() {
     fun `signInWithOtp should call signInWithOtp on authManager with correct params`() = runCoroutineTest {
         // Arrange
         val email = "user@domain.com"
-        val otp = listOf(1,2,3,4,5,6)
+        val otp = listOf("1","2","3","4","5","6")
         viewModel.initializeOTPValidationScreen(email, accountCreationFlow = false)
         this.testScheduler.advanceUntilIdle()
         otp.forEachIndexed { index, value ->
@@ -126,12 +126,30 @@ class OtpValidationViewModelTest : CoroutineTest() {
         // Act
         viewModel.onOtpFieldFocused(0)
         this.testScheduler.advanceUntilIdle()
-        viewModel.onEnterOtpValue(5, 0)
+        viewModel.onEnterOtpValue("5", 0)
         this.testScheduler.advanceUntilIdle()
 
         // Assert
-        Assertions.assertEquals(5, viewModel.uiState.value.otpCode[0])
+        Assertions.assertEquals("5", viewModel.uiState.value.otpCode[0])
         Assertions.assertEquals(1, viewModel.uiState.value.focusedIndex)
+    }
+
+    /**
+     * Test that non-digit values are not entered/updated in the otp field.
+     */
+    @Test
+    fun `onEnterOtpValue should ignore non-digit values`() = runCoroutineTest {
+        // Arrange
+        viewModel.onOtpFieldFocused(1)
+        this.testScheduler.advanceUntilIdle()
+        val initialOtp = viewModel.uiState.value.otpCode[1]
+
+        // Act
+        viewModel.onEnterOtpValue("a", 1) // non-digit character
+        this.testScheduler.advanceUntilIdle()
+
+        // Assert
+        Assertions.assertEquals(initialOtp, viewModel.uiState.value.otpCode[1])
     }
 
     /**
@@ -142,7 +160,7 @@ class OtpValidationViewModelTest : CoroutineTest() {
         // Act
         viewModel.onOtpFieldFocused(2)
         this.testScheduler.advanceUntilIdle()
-        viewModel.onEnterOtpValue(7, 2)
+        viewModel.onEnterOtpValue("7", 2)
         this.testScheduler.advanceUntilIdle()
         viewModel.onKeyboardBack()
         this.testScheduler.advanceUntilIdle()

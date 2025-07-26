@@ -58,6 +58,11 @@ include("samples:jvm-application")
 include("samples:nodejs-app")
 include("samples:service-ktor")
 
+include("samples:frontend-architecture-sample:shared-lib")
+include("samples:frontend-architecture-sample:app-android")
+include("samples:frontend-architecture-sample:app-desktop")
+include("samples:frontend-architecture-sample:app-web")
+
 include("framework-samples:framework-sample-app")
 include("framework-samples:app-android")
 include("framework-samples:app-jvm")

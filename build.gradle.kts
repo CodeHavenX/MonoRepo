@@ -55,6 +55,11 @@ tasks.register("releaseAll") {
     dependsOn("samples:nodejs-app:release")
     dependsOn("samples:service-ktor:release")
 
+    dependsOn("samples:frontend-architecture-sample:shared-lib:release")
+    dependsOn("samples:frontend-architecture-sample:app-android:release")
+    dependsOn("samples:frontend-architecture-sample:app-desktop:release")
+    dependsOn("samples:frontend-architecture-sample:app-web:release")
+
     dependsOn("framework-samples:framework-sample-app:release")
     dependsOn("framework-samples:app-android:release")
     dependsOn("framework-samples:app-jvm:release")

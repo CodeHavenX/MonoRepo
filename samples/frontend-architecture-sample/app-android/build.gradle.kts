@@ -24,8 +24,3 @@ dependencies {
     implementation("androidx.appcompat:appcompat:_")
     implementation("androidx.core:core-ktx:_")
 }
-
-tasks.register("release") {
-    group = "release"
-    dependsOn("assembleRelease")
-}

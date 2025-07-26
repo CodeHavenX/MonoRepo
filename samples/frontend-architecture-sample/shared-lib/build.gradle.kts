@@ -16,7 +16,6 @@ apply(from = "$rootDir/gradle/kotlin-mpp-target-common-compose.gradle")
 apply(from = "$rootDir/gradle/kotlin-mpp-target-android-lib-compose.gradle")
 apply(from = "$rootDir/gradle/kotlin-mpp-target-jvm-compose.gradle")
 apply(from = "$rootDir/gradle/kotlin-mpp-target-wasm.gradle")
-apply(from = "$rootDir/gradle/release-task.gradle")
 
 android {
     namespace = "com.cramsan.sample.frontend.architecture.shared"
@@ -36,6 +35,7 @@ kotlin {
         commonMain.dependencies {
             implementation("io.insert-koin:koin-core:_")
             implementation("io.insert-koin:koin-compose:_")
+            implementation("io.insert-koin:koin-compose-viewmodel:_")
 
             implementation("org.jetbrains.androidx.navigation:navigation-compose:_")
             implementation("org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose:_")
@@ -55,6 +55,7 @@ kotlin {
 
         commonTest.dependencies {
             implementation(kotlin("test"))
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:_")
         }
     }
 }

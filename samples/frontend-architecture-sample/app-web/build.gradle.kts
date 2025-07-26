@@ -9,11 +9,11 @@ plugins {
     id("org.jetbrains.compose")
 }
 
+apply(from = "$rootDir/gradle/kotlin-mpp-target-common-compose.gradle")
 apply(from = "$rootDir/gradle/kotlin-mpp-target-wasm-compose-application.gradle")
 
 kotlin {
     wasmJs {
-        moduleName = "notesapp"
         browser {
             commonWebpackConfig {
                 outputFileName = "notesapp.js"
@@ -27,9 +27,4 @@ kotlin {
             implementation(project(":samples:frontend-architecture-sample:shared-lib"))
         }
     }
-}
-
-tasks.register("release") {
-    group = "release"
-    dependsOn("build")
 }

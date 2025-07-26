@@ -134,10 +134,11 @@ fun NotesScreen(
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
+                        val selectedCategory = uiState.selectedCategory
                         Text(
                             text = when {
                                 uiState.searchQuery.isNotEmpty() -> "No notes found for \"${uiState.searchQuery}\""
-                                uiState.selectedCategory != null -> "No notes in ${uiState.selectedCategory.displayName}"
+                                selectedCategory != null -> "No notes in ${selectedCategory.displayName}"
                                 uiState.showFavoritesOnly -> "No favorite notes"
                                 else -> "No notes yet"
                             },
@@ -145,7 +146,7 @@ fun NotesScreen(
                             textAlign = TextAlign.Center
                         )
                         
-                        if (uiState.searchQuery.isEmpty() && uiState.selectedCategory == null && !uiState.showFavoritesOnly) {
+                        if (uiState.searchQuery.isEmpty() && selectedCategory == null && !uiState.showFavoritesOnly) {
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
                                 text = "Tap the + button to create your first note",

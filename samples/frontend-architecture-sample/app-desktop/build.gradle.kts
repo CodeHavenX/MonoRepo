@@ -36,8 +36,3 @@ compose.desktop {
         }
     }
 }
-
-tasks.register("release") {
-    group = "release"
-    dependsOn("build")
-}

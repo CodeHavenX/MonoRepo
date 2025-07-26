@@ -142,5 +142,5 @@ fun NoteCard(
 
 // Simple date formatting - in a real app, you'd want proper platform-specific formatting
 private fun formatDateTime(dateTime: kotlinx.datetime.LocalDateTime): String {
-    return "${dateTime.monthNumber}/${dateTime.dayOfMonth}/${dateTime.year}"
+    return "${dateTime.month.number}/${dateTime.dayOfMonth}/${dateTime.year}"
 }

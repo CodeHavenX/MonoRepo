@@ -2,6 +2,7 @@ package com.cramsan.edifikana.client.lib.features.auth.validation
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ElevatedButton
@@ -32,7 +32,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
@@ -40,13 +39,10 @@ import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.auth.AuthRouteDestination
@@ -125,7 +121,7 @@ internal fun OtpValidationContent(
     onLoginClicked: () -> Unit,
     onBackClicked: () -> Unit,
     onOtpFieldFocused: (Int) -> Unit,
-    onEnterOtpValue: (Int?, Int) -> Unit,
+    onEnterOtpValue: (String?, Int) -> Unit,
     onKeyboardBack: () -> Unit,
 ) {
     Scaffold(
@@ -236,15 +232,15 @@ internal fun OtpValidationContent(
 @Suppress("UnusedParameter")
 @Composable
 fun OtpInputField(
-    value: Int?,
+    value: String?,
     focusRequester: FocusRequester,
     onFocusChanged: (Boolean) -> Unit,
-    onValueChanged: (Int?) -> Unit,
+    onValueChanged: (String?) -> Unit,
     onKeyboardBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     // State to hold the text field value and focus state
-    var text by remember {
+    var text by remember(value) {
         mutableStateOf(
             TextFieldValue(
                 text = value?.toString().orEmpty(),
@@ -261,13 +257,17 @@ fun OtpInputField(
 
     Box(
         modifier = modifier
+            .shadow(3.dp, MaterialTheme.shapes.extraLarge)
             .border(
                 width = 8.dp,
-                color = Color.Transparent,
-                shape = RoundedCornerShape(8.dp),
+                color = MaterialTheme.colorScheme.surfaceContainer,
+                shape = MaterialTheme.shapes.extraLarge,
             )
-            .size(width = 45.dp, height = 65.dp)
-            .shadow(3.dp, RoundedCornerShape(20.dp)),
+            .background(
+                color = MaterialTheme.colorScheme.surfaceContainer,
+                shape = MaterialTheme.shapes.extraLarge,
+            )
+            .size(width = 45.dp, height = 65.dp),
         contentAlignment = Alignment.Center
     ) {
         BasicTextField(
@@ -275,16 +275,13 @@ fun OtpInputField(
             onValueChange = { newText ->
                 val newValue = newText.text
                 if (newValue.length <= 1) {
-                    onValueChanged(newValue.toIntOrNull())
+                    onValueChanged(newValue)
                 }
             },
-            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+            cursorBrush = SolidColor(MaterialTheme.colorScheme.outlineVariant),
             singleLine = true,
-            textStyle = TextStyle(
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Light,
-                fontSize = 36.sp,
-                color = Color.Black,
+            textStyle = MaterialTheme.typography.headlineMedium.copy(
+                textAlign = TextAlign.Center
             ),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number,
@@ -294,9 +291,10 @@ fun OtpInputField(
                 .focusRequester(focusRequester)
                 .onFocusChanged {
                     isFocused = it.isFocused
+                    onFocusChanged(isFocused)
                 }
                 .onKeyEvent { event ->
-                    val didPressDelete = event.key == Key.Delete
+                    val didPressDelete = event.key == Key.Delete || event.key == Key.Backspace
                     if (didPressDelete && value == null) {
                         onKeyboardBack()
                     }
@@ -308,9 +306,8 @@ fun OtpInputField(
                     Text(
                         text = "",
                         textAlign = TextAlign.Center,
-                        color = Color.Black,
-                        fontSize = 36.sp,
-                        fontWeight = FontWeight.Light,
+                        color = MaterialTheme.colorScheme.surfaceContainer,
+                        style = MaterialTheme.typography.headlineMedium,
                         modifier = Modifier
                             .wrapContentSize()
                     )
@@ -328,7 +325,7 @@ fun OtpSection(
     uistate: OtpValidationUIState,
     focusRequesters: List<FocusRequester>,
     onOtpFieldFocused: (Int) -> Unit,
-    onEnterOtpValue: (Int?, Int) -> Unit,
+    onEnterOtpValue: (String?, Int) -> Unit,
     onKeyboardBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {

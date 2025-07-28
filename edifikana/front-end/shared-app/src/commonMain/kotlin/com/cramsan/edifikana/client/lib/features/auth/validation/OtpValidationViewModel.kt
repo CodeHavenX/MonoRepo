@@ -59,15 +59,24 @@ class OtpValidationViewModel(
     /**
      * Called when the OTP value is entered or changed.
      */
-    fun onEnterOtpValue(value: Int?, index: Int) {
+    fun onEnterOtpValue(otpValue: String?, index: Int) {
+        // Check value entered is a digit, if not, do nothing
+        // NOTE: May need to add a check for an empty field in case this return false and doesn't allow new entry
+        val isValid = otpValue == null || (otpValue.length == 1 && otpValue[0].isDigit())
+        if (!isValid) {
+            return
+        }
+        // Update the OTP code at the specified index with the new value
         val newCode = uiState.value.otpCode.mapIndexed { currIndex, currVal ->
             if (currIndex == index) {
-                value
+                otpValue
             } else {
                 currVal
             }
         }
-        val wasValRemoved = value == null
+        // If the value is null, it means the user has removed the value from the field.
+        val wasValRemoved = otpValue == null
+        // Update the UI state with the new OTP code and focused index
         viewModelScope.launch {
             updateUiState {
                 it.copy(
@@ -125,7 +134,7 @@ class OtpValidationViewModel(
      * Returns the next focused index for the OTP field.
      */
     private fun getNextFocusedOtpFieldIndex(
-        currentCode: List<Int?>,
+        currentCode: List<String?>,
         currentFocusedIndex: Int?
     ): Int? {
         // If the current focused index is null, return null
@@ -144,7 +153,7 @@ class OtpValidationViewModel(
      * Returns the next focused index for the OTP field.
      */
     private fun getFirstEmptyFieldIndexAfterFocusedIndex(
-        code: List<Int?>,
+        code: List<String?>,
         currentFocusedIndex: Int
     ): Int {
         code.forEachIndexed { index, number ->

@@ -6,9 +6,14 @@ import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.annotations.NetworkModel
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.model.network.CreateUserNetworkRequest
+import com.cramsan.edifikana.lib.model.network.UpdatePasswordNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
 import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
+import com.cramsan.edifikana.lib.utils.requireSuccess
 import com.cramsan.framework.assertlib.assertFalse
+import com.cramsan.framework.core.Hashing
+import com.cramsan.framework.core.SecureString
+import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logE
@@ -22,6 +27,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.post
+import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
@@ -136,11 +142,16 @@ class AuthServiceImpl(
     ): Result<UserModel> = runSuspendCatching(
         TAG
     ) {
-        auth.verifyEmailOtp(OtpType.Email.EMAIL, email, hashToken)
+        try {
+            auth.verifyEmailOtp(OtpType.Email.EMAIL, email, hashToken)
+        } catch (e: AuthRestException) {
+            logE(TAG, "Error verifying OTP", e)
+            throw ClientRequestExceptions.UnauthorizedException("ERROR: Invalid OTP code.")
+        }
 
         if (createUser) {
             // After the OTP is verified, we create the user in our system.
-            val response = http.post("${Routes.User.PATH}/associate").body<UserNetworkResponse>()
+            http.post("${Routes.User.PATH}/associate").body<UserNetworkResponse>()
         }
 
         getUser().getOrThrow()
@@ -171,6 +182,36 @@ class AuthServiceImpl(
         phoneNumber: String?
     ): Result<UserModel> {
         TODO()
+    }
+
+    @OptIn(NetworkModel::class, SecureStringAccess::class)
+    override suspend fun changePassword(
+        currentPassword: SecureString,
+        newPassword: SecureString
+    ): Result<Unit> = runSuspendCatching(TAG) {
+        val email = getUser().requireSuccess().email
+
+        val hashedCurrentPassword = Hashing.murmurhash(currentPassword.reveal().encodeToByteArray()).toString()
+
+        http.put("${Routes.User.PATH}/password") {
+            setBody(
+                UpdatePasswordNetworkRequest(
+                    currentPasswordHashed = hashedCurrentPassword,
+                    newPassword = newPassword.reveal()
+                )
+            )
+            contentType(ContentType.Application.Json)
+        }
+
+        try {
+            auth.signInWith(Email) {
+                this.email = email
+                this.password = newPassword.reveal()
+            }
+        } catch (e: AuthRestException) {
+            logE(TAG, "Error signing in after changing password", e)
+            throw ClientRequestExceptions.UnauthorizedException("ERROR: Invalid credentials after changing password.")
+        }
     }
 
     companion object {

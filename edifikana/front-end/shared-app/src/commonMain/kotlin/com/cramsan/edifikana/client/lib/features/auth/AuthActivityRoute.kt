@@ -49,7 +49,9 @@ sealed class AuthRouteDestination(
         val userEmail: String,
         val accountCreationFlow: Boolean,
     ) : AuthRouteDestination(
-        AuthRoute.Validation.route.replace("{email}", userEmail),
+        AuthRoute.Validation.route
+            .replace("{email}", userEmail)
+            .replace("{accountCreationFlow}", accountCreationFlow.toString()),
     ) {
         companion object {
             /**

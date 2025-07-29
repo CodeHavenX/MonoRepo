@@ -15,6 +15,7 @@ enum class AccountActivityRoute(
 ) {
     Account(route = "view"),
     Notifications(route = "notifications"),
+    ChangePassword(route = "change_password"),
 }
 
 /**
@@ -37,5 +38,12 @@ sealed class AccountRouteDestination(
      */
     data object NotificationsDestination : AccountRouteDestination(
         AccountActivityRoute.Notifications.route,
+    )
+
+    /**
+     * A class representing navigating to the Change Password Screen.
+     */
+    data object ChangePasswordDestination : AccountRouteDestination(
+        AccountActivityRoute.ChangePassword.route,
     )
 }

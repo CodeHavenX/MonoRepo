@@ -54,8 +54,7 @@ interface UserDatastore {
     ): Result<Boolean>
 
     /**
-     * Updates the password for a user with the given [request]. Returns the [Result] of the operation with a [Boolean]
-     * indicating success.
+     * Updates the password for a user with the given [request]. Returns the [Result] of the operation.
      */
-    suspend fun updatePassword(request: UpdatePasswordRequest): Result<Boolean>
+    suspend fun updatePassword(request: UpdatePasswordRequest): Result<Unit>
 }

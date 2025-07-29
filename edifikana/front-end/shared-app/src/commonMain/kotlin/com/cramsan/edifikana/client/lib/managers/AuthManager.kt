@@ -5,6 +5,8 @@ import com.cramsan.edifikana.client.lib.service.AuthService
 import com.cramsan.edifikana.client.lib.service.PropertyService
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.framework.core.ManagerDependencies
+import com.cramsan.framework.core.SecureString
+import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.framework.core.getOrCatch
 import com.cramsan.framework.logging.logI
 import kotlinx.coroutines.flow.StateFlow
@@ -45,7 +47,7 @@ class AuthManager(
      */
     suspend fun sendOtpCode(
         email: String
-    ) {
+    ): Result<Unit> = dependencies.getOrCatch(TAG) {
         logI(TAG, "sending OTP code email")
         authService.sendOtpEmail(email).getOrThrow()
     }
@@ -123,6 +125,19 @@ class AuthManager(
             email = email,
             phoneNumber = phoneNumber
         ).getOrThrow()
+    }
+
+    /**
+     * Update the current user's password and set it to [newPassword]. If a password is already set, then
+     * [currentPassword] will need to be provided.
+     */
+    @OptIn(SecureStringAccess::class)
+    suspend fun changePassword(
+        currentPassword: SecureString,
+        newPassword: SecureString,
+    ): Result<Unit> = dependencies.getOrCatch(TAG) {
+        logI(TAG, "changePassword")
+        authService.changePassword(currentPassword, newPassword).getOrThrow()
     }
 
     companion object {

@@ -46,6 +46,7 @@ tasks.register("releaseAll") {
 
     dependsOn("samples:android-app:release")
     dependsOn("samples:android-lib:release")
+    dependsOn("samples:hello-world:release")
     dependsOn("samples:jbcompose-mpp-lib:release")
     dependsOn("samples:jbcompose-desktop-app:release")
     dependsOn("samples:jbcompose-android-app:release")

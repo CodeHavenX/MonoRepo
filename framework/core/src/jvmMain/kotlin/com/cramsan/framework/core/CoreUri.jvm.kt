@@ -14,10 +14,6 @@ actual class CoreUri(
         return uri
     }
 
-    actual override fun toString(): String {
-        return uri
-    }
-
     actual override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is CoreUri) return false

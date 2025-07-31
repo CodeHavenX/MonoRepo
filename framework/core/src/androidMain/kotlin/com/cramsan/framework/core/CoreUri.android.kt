@@ -7,17 +7,14 @@ import android.net.Uri
  * handling URIs across platforms.
  */
 actual class CoreUri(
-    private val uriString: String,
+    private val uri: Uri,
 ) {
-
-    // Lazily initialize the Android Uri only when needed
-    private val uri: Uri by lazy { Uri.parse(uriString) }
 
     /**
      * Get the URI as a string.
      */
     actual fun getUri(): String {
-        return uriString
+        return uri.toString()
     }
 
     /**
@@ -28,20 +25,7 @@ actual class CoreUri(
     }
 
     actual override fun toString(): String {
-        return uriString
-    }
-
-    actual override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is CoreUri) return false
-
-        if (uriString != other.uriString) return false
-
-        return true
-    }
-
-    actual override fun hashCode(): Int {
-        return uriString.hashCode()
+        return uri.toString()
     }
 
     actual companion object {
@@ -50,7 +34,7 @@ actual class CoreUri(
          * Create a URI object from a string.
          */
         actual fun createUri(uri: String): CoreUri {
-            return CoreUri(uri)
+            return CoreUri(Uri.parse(uri))
         }
     }
 }

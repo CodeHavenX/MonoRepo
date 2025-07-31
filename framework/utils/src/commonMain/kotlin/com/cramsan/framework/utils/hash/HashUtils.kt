@@ -5,6 +5,11 @@ package com.cramsan.framework.utils.hash
  */
 object HashUtils {
 
+    private const val FNV_OFFSET_BASIS = 0x811c9dc5u
+    private const val FNV_PRIME = 0x01000193u
+    private const val HEX_STRING_LENGTH = 8
+    private const val HEX_RADIX = 16
+
     /**
      * Computes a FNV-1a hash of the given byte array.
      * This is a fast, non-cryptographic hash function with good distribution properties
@@ -15,8 +20,8 @@ object HashUtils {
      */
     fun hash(bytes: ByteArray): String {
         // FNV-1a constants for 32-bit hash
-        var hash = 0x811c9dc5u // FNV offset basis
-        val prime = 0x01000193u // FNV prime
+        var hash = FNV_OFFSET_BASIS
+        val prime = FNV_PRIME
 
         for (byte in bytes) {
             // XOR with byte, then multiply by prime
@@ -24,6 +29,6 @@ object HashUtils {
         }
 
         // Convert to hex string (8 characters for 32-bit hash)
-        return hash.toString(16).padStart(8, '0')
+        return hash.toString(HEX_RADIX).padStart(HEX_STRING_LENGTH, '0')
     }
 }

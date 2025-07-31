@@ -191,7 +191,7 @@ class AuthServiceImpl(
     ): Result<Unit> = runSuspendCatching(TAG) {
         val email = getUser().requireSuccess().email
 
-        val hashedCurrentPassword = Hashing.murmurhash(currentPassword.reveal().encodeToByteArray()).toString()
+        val hashedCurrentPassword = Hashing.insecureHash(currentPassword.reveal().encodeToByteArray()).toString()
 
         http.put("${Routes.User.PATH}/password") {
             setBody(

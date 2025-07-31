@@ -12,11 +12,10 @@ object Hashing {
      * @return An integer representing the hash of the input data.
      */
     @Suppress("MagicNumber")
-    fun murmurhash(
+    fun insecureHash(
         data: ByteArray,
     ): Int {
         // https://github.com/CodeHavenX/MonoRepo/issues/215
-        // THIS IS NOT A MURMURHASH IMPLEMENTATION
         // This is placeholder code to simulate a hash function until a proper implementation is available.
         var hash = data.size
         for (byte in data) {

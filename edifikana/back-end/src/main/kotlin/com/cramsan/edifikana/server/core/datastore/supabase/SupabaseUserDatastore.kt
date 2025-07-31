@@ -258,7 +258,7 @@ class SupabaseUserDatastore(
             )
         }
 
-        val newHashedPassword = Hashing.murmurhash(request.newPassword.reveal().encodeToByteArray()).toString()
+        val newHashedPassword = Hashing.insecureHash(request.newPassword.reveal().encodeToByteArray()).toString()
 
         adminApi.updateUserById(user.id) {
             password = request.newPassword.reveal()

@@ -30,7 +30,7 @@ import kotlin.time.Instant
 /**
  * Maps a [UserEntity] to the [User] model.
  */
-@SupabaseModel
+@OptIn(SupabaseModel::class)
 fun UserEntity.toUser(): User {
     return User(
         id = UserId(this.id),

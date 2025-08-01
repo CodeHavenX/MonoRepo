@@ -67,9 +67,6 @@ class SignInViewModel(
     fun continueWithPassword() {
         logI(TAG, "continue sign in with a password.")
         viewModelScope.launch {
-            if (!checkEmailValid(uiState.value.email.trim())) {
-                return@launch
-            }
             updateUiState { it.copy(showPassword = true) }
         }
     }
@@ -80,6 +77,7 @@ class SignInViewModel(
     fun signInWithPassword() {
         logI(TAG, "signIn called")
         viewModelScope.launch {
+            updateUiState { it.copy(isLoading = true) }
             val email = uiState.value.email.trim()
             val password = uiState.value.password
             auth.signInWithPassword(
@@ -89,7 +87,8 @@ class SignInViewModel(
                 val message = getErrorMessage(error)
                 updateUiState {
                     it.copy(
-                        errorMessages = listOf(message)
+                        errorMessages = listOf(message),
+                        isLoading = false,
                     )
                 }
                 return@launch

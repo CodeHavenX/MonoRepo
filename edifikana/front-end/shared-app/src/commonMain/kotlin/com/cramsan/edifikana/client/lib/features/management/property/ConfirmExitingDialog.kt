@@ -48,7 +48,7 @@ class ConfirmExitingDialog(
 
 @Preview
 @Composable
-private fun ConfirmRemoveDialogPreview() {
+private fun ConfirmExitDialogPreview() {
     ConfirmExitingDialog(
         onSaveSelected = {},
     ).Content()

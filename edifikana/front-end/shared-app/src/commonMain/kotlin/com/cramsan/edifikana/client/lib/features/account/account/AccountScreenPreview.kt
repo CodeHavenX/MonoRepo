@@ -23,6 +23,7 @@ private fun AccountScreenPreview() = AppTheme {
         onLastNameChange = {},
         onEmailChange = {},
         onPhoneNumberChange = {},
+        onEditPasswordClicked = {},
     )
 }
 
@@ -45,6 +46,7 @@ private fun AccountScreenPreview_Editable() = AppTheme {
         onLastNameChange = {},
         onEmailChange = {},
         onPhoneNumberChange = {},
+        onEditPasswordClicked = {},
     )
 }
 
@@ -67,5 +69,6 @@ private fun AccountScreenPreview_Loading() = AppTheme {
         onLastNameChange = {},
         onEmailChange = {},
         onPhoneNumberChange = {},
+        onEditPasswordClicked = {},
     )
 }

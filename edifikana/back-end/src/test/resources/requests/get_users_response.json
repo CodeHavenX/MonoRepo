@@ -5,7 +5,7 @@
         "phone_number": "5051352468",
         "first_name": "John",
         "last_name": "Doe",
-        "is_verified": false
+        "auth_metadata": null
     },
     {
         "id": "user456",
@@ -13,6 +13,6 @@
         "phone_number": "5051352469",
         "first_name": "Jane",
         "last_name": "Smith",
-        "is_verified": false
+        "auth_metadata": null
     }
 ]

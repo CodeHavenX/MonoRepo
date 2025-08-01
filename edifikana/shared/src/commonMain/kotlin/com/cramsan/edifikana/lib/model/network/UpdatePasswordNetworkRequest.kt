@@ -10,6 +10,8 @@ import kotlinx.serialization.Serializable
 @NetworkModel
 @Serializable
 data class UpdatePasswordNetworkRequest(
+    @SerialName("old_password_hashed")
+    val currentPasswordHashed: String,
     @SerialName("new_password")
-    val password: String,
+    val newPassword: String,
 )

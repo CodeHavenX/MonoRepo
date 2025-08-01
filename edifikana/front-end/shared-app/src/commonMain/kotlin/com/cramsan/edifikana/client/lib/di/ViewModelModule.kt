@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.di
 
 import com.cramsan.edifikana.client.lib.features.account.account.AccountViewModel
+import com.cramsan.edifikana.client.lib.features.account.changepassword.ChangePasswordDialogViewModel
 import com.cramsan.edifikana.client.lib.features.account.notifications.NotificationsViewModel
 import com.cramsan.edifikana.client.lib.features.auth.signin.SignInViewModel
 import com.cramsan.edifikana.client.lib.features.auth.signup.SignUpViewModel
@@ -98,6 +99,7 @@ internal val ViewModelModule = module {
         viewModelOf(::SplashViewModel)
         viewModelOf(::ManagementViewModel)
         viewModelOf(::ScreenSelectorViewModel)
+        viewModelOf(::ChangePasswordDialogViewModel)
     }
 }
 

@@ -101,7 +101,7 @@ class AccountViewModelTest : CoroutineTest() {
             lastName = "Doe",
             email = "john.doe@example.com",
             phoneNumber = "1234567890",
-            isVerified = true,
+            authMetadata = null,
         )
         coEvery { authManager.getUser() } returns Result.success(user)
 

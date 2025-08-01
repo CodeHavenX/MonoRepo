@@ -20,6 +20,17 @@ data class UserNetworkResponse(
     val firstName: String,
     @SerialName("last_name")
     val lastName: String,
-    @SerialName("is_verified")
-    val isVerified: Boolean,
+    @SerialName("auth_metadata")
+    val authMetadata: AuthMetadataNetworkResponse?,
+)
+
+/**
+ * Metadata for user authentication.
+ * This is used to store additional information about the user's authentication capabilities.
+ */
+@NetworkModel
+@Serializable
+data class AuthMetadataNetworkResponse(
+    @SerialName("is_password_set")
+    val isPasswordSet: Boolean,
 )

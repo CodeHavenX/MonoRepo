@@ -11,5 +11,13 @@ data class UserModel(
     val phoneNumber: String,
     val firstName: String,
     val lastName: String,
-    val isVerified: Boolean,
-)
+    val authMetadata: AuthMetadataModel? = null,
+) {
+    /**
+     * Metadata for user authentication.
+     * This is used to store additional information about the user's authentication capabilities.
+     */
+    data class AuthMetadataModel(
+        val isPasswordSet: Boolean,
+    )
+}

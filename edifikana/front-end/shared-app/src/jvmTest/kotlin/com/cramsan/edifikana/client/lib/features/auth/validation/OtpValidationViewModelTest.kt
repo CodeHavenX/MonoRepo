@@ -52,17 +52,19 @@ class OtpValidationViewModelTest : CoroutineTest() {
                 applicationEventReceiver = applicationEventReceiver,
                 windowEventReceiver = windowEventBus,
             ),
-            authManager)
+            authManager,
+            mockk(),
+        )
     }
 
     /**
      * Test that the ViewModel initializes with the correct initial state.
      */
     @Test
-    fun `setEmailAddress should update email in UI state and call sendOtpCode`() = runCoroutineTest {
+    fun `setEmailAddress should update email in UI state`() = runCoroutineTest {
         // Arrange
         val email = "test@example.com"
-        coEvery { authManager.sendOtpCode(email) } returns Unit
+        coEvery { authManager.sendOtpCode(email) } returns Result.success(Unit)
 
         // Act
         viewModel.initializeOTPValidationScreen(email, accountCreationFlow = false)
@@ -70,8 +72,7 @@ class OtpValidationViewModelTest : CoroutineTest() {
 
         // Assert
         Assertions.assertEquals(email, viewModel.uiState.value.email)
-        coVerify { authManager.sendOtpCode(email) }
-
+        Assertions.assertFalse(viewModel.uiState.value.accountCreationFlow)
     }
 
     /**
@@ -82,14 +83,16 @@ class OtpValidationViewModelTest : CoroutineTest() {
         // Arrange
         val email = "user@domain.com"
         val otp = listOf("1","2","3","4","5","6")
+        val otpString = "123456"
         viewModel.initializeOTPValidationScreen(email, accountCreationFlow = false)
         this.testScheduler.advanceUntilIdle()
         otp.forEachIndexed { index, value ->
             viewModel.onEnterOtpValue(value, index)
         }
+        coEvery { authManager.sendOtpCode(email) } returns Result.success(Unit)
         coEvery { authManager.signInWithOtp(
             email,
-            otp.toString(),
+            otpString,
             createUser = false,
         ) } returns Result.success(mockk())
 
@@ -100,7 +103,7 @@ class OtpValidationViewModelTest : CoroutineTest() {
         // Assert
         coVerify { authManager.signInWithOtp(
             email,
-            otp.toString(),
+            otpString,
             createUser = false,
         ) }
     }

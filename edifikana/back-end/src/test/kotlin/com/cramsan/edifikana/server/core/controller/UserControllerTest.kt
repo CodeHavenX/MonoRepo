@@ -62,7 +62,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
                     phoneNumber = "5051352468",
                     firstName = "John",
                     lastName = "Doe",
-                    isVerified = false,
+                    authMetadata = null,
                 )
             )
         }
@@ -177,14 +177,15 @@ class UserControllerTest : CoroutineTest(), KoinTest {
         coEvery {
             userService.getUser(UserId("user123"))
         }.answers {
-            User(
-                id = UserId("user123"),
-                email = "john.doe@example.com",
-                phoneNumber = "5051352468",
-                firstName = "John",
-                lastName = "Doe",
-                isVerified = false,
-
+            Result.success(
+                User(
+                    id = UserId("user123"),
+                    email = "john.doe@example.com",
+                    phoneNumber = "5051352468",
+                    firstName = "John",
+                    lastName = "Doe",
+                    authMetadata = null,
+                )
             )
         }
         val contextRetriever = get<ContextRetriever>()
@@ -213,22 +214,24 @@ class UserControllerTest : CoroutineTest(), KoinTest {
         coEvery {
             userService.getUsers()
         }.answers {
-            listOf(
-                User(
-                    id = UserId("user123"),
-                    email = "john.doe@example.com",
-                    phoneNumber = "5051352468",
-                    firstName = "John",
-                    lastName = "Doe",
-                    isVerified = false,
-                ),
-                User(
-                    id = UserId("user456"),
-                    email = "jane.smith@example.com",
-                    phoneNumber = "5051352469",
-                    firstName = "Jane",
-                    lastName = "Smith",
-                    isVerified = false,
+            Result.success(
+                listOf(
+                    User(
+                        id = UserId("user123"),
+                        email = "john.doe@example.com",
+                        phoneNumber = "5051352468",
+                        firstName = "John",
+                        lastName = "Doe",
+                        authMetadata = null,
+                    ),
+                    User(
+                        id = UserId("user456"),
+                        email = "jane.smith@example.com",
+                        phoneNumber = "5051352469",
+                        firstName = "Jane",
+                        lastName = "Smith",
+                        authMetadata = null,
+                    )
                 )
             )
         }
@@ -262,13 +265,15 @@ class UserControllerTest : CoroutineTest(), KoinTest {
                 email = "updated.email@example.com"
             )
         }.answers {
-            User(
-                id = UserId("user123"),
-                email = "updated.email@example.com",
-                phoneNumber = "5051382468",
-                firstName = "Updated",
-                lastName = "Email",
-                isVerified = false,
+            Result.success(
+                User(
+                    id = UserId("user123"),
+                    email = "updated.email@example.com",
+                    phoneNumber = "5051382468",
+                    firstName = "Updated",
+                    lastName = "Email",
+                    authMetadata = null,
+                )
             )
         }
         val contextRetriever = get<ContextRetriever>()
@@ -299,7 +304,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
         coEvery {
             userService.deleteUser(UserId("user123"))
         }.answers {
-            true
+            Result.success(true)
         }
         val contextRetriever = get<ContextRetriever>()
         coEvery {

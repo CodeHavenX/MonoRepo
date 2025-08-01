@@ -34,7 +34,6 @@ import edifikana_lib.sign_in_screen_text_email
 import edifikana_lib.sign_in_screen_text_password
 import edifikana_lib.sign_in_screen_text_sign_in
 import edifikana_lib.sign_in_screen_text_sign_in_otp
-import edifikana_lib.sign_in_screen_text_sign_in_password
 import edifikana_lib.sign_in_screen_text_sign_up
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -138,33 +137,48 @@ internal fun SignInContent(
                     }
                 },
                 buttonContent = { modifier ->
-                    if (!uiState.showPassword) {
-                        Button(
-                            onClick = onContinueWithPWClicked,
-                            modifier = modifier,
-                        ) {
-                            Text(
-                                stringResource(Res.string.sign_in_screen_text_sign_in),
-                            )
-                        }
-                    } else {
-                        Button(
-                            onClick = onPWSignInClicked,
-                            modifier = modifier,
-                        ) {
-                            Text(
-                                stringResource(Res.string.sign_in_screen_text_sign_in_password),
-                            )
-                        }
-                    }
-                    OutlinedButton(
-                        onClick = onSignInOtpClicked,
+                    Button(
+                        onClick = if (uiState.showPassword) {
+                            onPWSignInClicked
+                        } else {
+                            onSignInOtpClicked
+                        },
                         modifier = modifier,
                     ) {
-                        Text(
-                            stringResource(Res.string.sign_in_screen_text_sign_in_otp)
-                        )
+                        AnimatedContent(uiState.showPassword) {
+                            if (it) {
+                                Text(
+                                    stringResource(Res.string.sign_in_screen_text_sign_in),
+                                )
+                            } else {
+                                Text(
+                                    stringResource(Res.string.sign_in_screen_text_sign_in_otp)
+                                )
+                            }
+                        }
                     }
+
+                    OutlinedButton(
+                        onClick = if (uiState.showPassword) {
+                            onSignInOtpClicked
+                        } else {
+                            onContinueWithPWClicked
+                        },
+                        modifier = modifier,
+                    ) {
+                        AnimatedContent(uiState.showPassword) {
+                            if (it) {
+                                Text(
+                                    stringResource(Res.string.sign_in_screen_text_sign_in_otp),
+                                )
+                            } else {
+                                Text(
+                                    stringResource(Res.string.sign_in_screen_text_sign_in)
+                                )
+                            }
+                        }
+                    }
+
                     TextButton(
                         onClick = onSignUpClicked,
                         modifier = modifier,

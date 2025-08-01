@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import com.cramsan.edifikana.client.lib.features.account.AccountRouteDestination
 import com.cramsan.edifikana.client.lib.features.auth.AuthRouteDestination
 import com.cramsan.edifikana.client.lib.features.window.Destination
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
@@ -101,6 +102,15 @@ internal fun ScreenSelectorContent(
                         },
                         content = {
                             Text("Auth Validation Screen")
+                        },
+                    )
+                    ListCell(
+                        modifier = sectionModifier,
+                        onSelection = {
+                            onScreenSelected(AccountRouteDestination.AccountDestination)
+                        },
+                        content = {
+                            Text("Account Screen")
                         },
                     )
                 },

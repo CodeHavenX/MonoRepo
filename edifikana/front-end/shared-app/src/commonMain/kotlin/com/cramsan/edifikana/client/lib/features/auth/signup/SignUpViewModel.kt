@@ -148,7 +148,8 @@ class SignUpViewModel(
             logD(TAG, "User signed up: $user")
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToScreen(
-                    AuthRouteDestination.ValidationDestination(email, accountCreationFlow = true)
+                    AuthRouteDestination.ValidationDestination(email, accountCreationFlow = true),
+                    clearTop = true,
                 )
             )
         }

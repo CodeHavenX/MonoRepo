@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.account.account
 
+import com.cramsan.edifikana.client.lib.features.account.AccountRouteDestination
 import com.cramsan.edifikana.client.lib.features.window.ActivityRouteDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
@@ -145,7 +146,20 @@ class AccountViewModel(
         }
     }
 
+    /**
+     * Navigate to the change password screen.
+     */
+    fun editPassword() {
+        viewModelScope.launch {
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateToScreen(
+                    AccountRouteDestination.ChangePasswordDestination
+                )
+            )
+        }
+    }
+
     companion object {
-        const val TAG = "AccountViewModel"
+        private const val TAG = "AccountViewModel"
     }
 }

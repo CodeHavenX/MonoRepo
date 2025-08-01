@@ -4,5 +4,5 @@
     "phone_number": "5051382468",
     "first_name": "Updated",
     "last_name": "Email",
-    "is_verified": false
+    "auth_metadata": null
 }

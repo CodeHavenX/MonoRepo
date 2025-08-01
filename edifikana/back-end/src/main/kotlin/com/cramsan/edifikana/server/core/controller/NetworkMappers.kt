@@ -3,6 +3,7 @@
 package com.cramsan.edifikana.server.core.controller
 
 import com.cramsan.edifikana.lib.annotations.NetworkModel
+import com.cramsan.edifikana.lib.model.network.AuthMetadataNetworkResponse
 import com.cramsan.edifikana.lib.model.network.EventLogEntryNetworkResponse
 import com.cramsan.edifikana.lib.model.network.PropertyNetworkResponse
 import com.cramsan.edifikana.lib.model.network.StaffNetworkResponse
@@ -26,7 +27,11 @@ fun User.toUserNetworkResponse(): UserNetworkResponse {
         phoneNumber = phoneNumber,
         firstName = firstName,
         lastName = lastName,
-        isVerified = isVerified,
+        authMetadata = authMetadata?.let {
+            AuthMetadataNetworkResponse(
+                isPasswordSet = it.isPasswordSet,
+            )
+        },
     )
 }
 

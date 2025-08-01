@@ -26,7 +26,7 @@ val USER_1 = User(
     phoneNumber = "1234567890",
     firstName = "John",
     lastName = "Doe",
-    isVerified = true,
+    authMetadata = User.AuthMetadata(isPasswordSet = false),
 )
 
 val USER_2 = User(
@@ -35,8 +35,7 @@ val USER_2 = User(
     phoneNumber = "0987654321",
     firstName = "Jane",
     lastName = "Smith",
-    isVerified = true,
-
+    authMetadata = User.AuthMetadata(isPasswordSet = false),
 )
 
 val USER_3 = User(
@@ -45,8 +44,7 @@ val USER_3 = User(
     phoneNumber = "1122334455",
     firstName = "Alice",
     lastName = "Johnson",
-    isVerified = false,
-
+    authMetadata = User.AuthMetadata(isPasswordSet = false),
 )
 
 val USER_4 = User(
@@ -55,8 +53,7 @@ val USER_4 = User(
     phoneNumber = "5566778899",
     firstName = "Bob",
     lastName = "Brown",
-    isVerified = false,
-
+    authMetadata = User.AuthMetadata(isPasswordSet = false),
 )
 
 val PROPERTY_1 = Property(

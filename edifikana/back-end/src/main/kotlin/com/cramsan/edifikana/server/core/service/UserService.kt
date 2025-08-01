@@ -9,6 +9,8 @@ import com.cramsan.edifikana.server.core.service.models.requests.DeleteUserReque
 import com.cramsan.edifikana.server.core.service.models.requests.GetUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdatePasswordRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdateUserRequest
+import com.cramsan.framework.core.SecureString
+import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.framework.logging.logD
 
 /**
@@ -63,24 +65,21 @@ class UserService(
      */
     suspend fun getUser(
         id: UserId,
-    ): User? {
+    ): Result<User?> {
         logD(TAG, "getUser")
-        val user = userDatastore.getUser(
+        return userDatastore.getUser(
             request = GetUserRequest(
                 id = id,
             ),
-        ).getOrNull()
-
-        return user
+        )
     }
 
     /**
      * Retrieves all users.
      */
-    suspend fun getUsers(): List<User> {
+    suspend fun getUsers(): Result<List<User>> {
         logD(TAG, "getUsers")
-        val users = userDatastore.getUsers().getOrThrow()
-        return users
+        return userDatastore.getUsers()
     }
 
     /**
@@ -89,14 +88,14 @@ class UserService(
     suspend fun updateUser(
         id: UserId,
         email: String?,
-    ): User {
+    ): Result<User> {
         logD(TAG, "updateUser")
         return userDatastore.updateUser(
             request = UpdateUserRequest(
                 id = id,
                 email = email,
             ),
-        ).getOrThrow()
+        )
     }
 
     /**
@@ -104,26 +103,32 @@ class UserService(
      */
     suspend fun deleteUser(
         id: UserId,
-    ): Boolean {
+    ): Result<Boolean> {
         logD(TAG, "deleteUser")
         return userDatastore.deleteUser(
             request = DeleteUserRequest(
                 id = id,
             )
-        ).getOrThrow()
+        )
     }
 
     /**
      * Updates the password for a user with the provided [userId].
      */
-    suspend fun updatePassword(userId: UserId, password: String): Boolean {
+    @OptIn(SecureStringAccess::class)
+    suspend fun updatePassword(
+        userId: UserId,
+        currentHashedPassword: SecureString,
+        newPassword: SecureString,
+    ): Result<Unit> {
         logD(TAG, "updatePassword")
         return userDatastore.updatePassword(
             request = UpdatePasswordRequest(
                 id = userId,
-                password = password,
+                currentHashedPassword = currentHashedPassword,
+                newPassword = newPassword,
             ),
-        ).getOrThrow()
+        )
     }
 
     companion object {

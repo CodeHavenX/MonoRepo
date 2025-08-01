@@ -11,5 +11,14 @@ data class User(
     val phoneNumber: String,
     val firstName: String,
     val lastName: String,
-    val isVerified: Boolean = false,
-)
+    val authMetadata: AuthMetadata?,
+) {
+
+    /**
+     * Metadata for user authentication.
+     * This is used to store additional information about the user's authentication capabilities.
+     */
+    data class AuthMetadata(
+        val isPasswordSet: Boolean,
+    )
+}

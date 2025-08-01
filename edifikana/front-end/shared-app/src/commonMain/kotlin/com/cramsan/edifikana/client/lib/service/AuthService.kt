@@ -2,6 +2,8 @@ package com.cramsan.edifikana.client.lib.service
 
 import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.framework.core.SecureString
+import com.cramsan.framework.core.SecureStringAccess
 import kotlinx.coroutines.flow.StateFlow
 
 /**
@@ -76,4 +78,11 @@ interface AuthService {
         email: String?,
         phoneNumber: String?,
     ): Result<UserModel>
+
+    /**
+     * Update the current user's password and set it to [newPassword]. If a password is already set, then
+     * [currentPassword] will need to be provided.
+     */
+    @OptIn(SecureStringAccess::class)
+    suspend fun changePassword(currentPassword: SecureString, newPassword: SecureString): Result<Unit>
 }

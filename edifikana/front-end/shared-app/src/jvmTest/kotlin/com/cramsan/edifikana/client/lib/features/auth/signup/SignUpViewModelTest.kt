@@ -218,7 +218,12 @@ class SignUpViewModelTest : CoroutineTest() {
             windowEventBus.events.test {
                 assertEquals(
                     EdifikanaWindowsEvent.NavigateToScreen(
-                        AuthRouteDestination.ValidationDestination(email, accountCreationFlow = true)
+                        destination= AuthRouteDestination.ValidationDestination(
+                            userEmail="totalReal@email.com",
+                            accountCreationFlow=true
+                        ),
+                        clearTop=true,
+                        clearStack=false,
                     ), awaitItem()
                 )
             }

@@ -1,9 +1,9 @@
 package com.cramsan.edifikana.client.lib.service.impl
 
-import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.lib.annotations.NetworkModel
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
+import com.cramsan.edifikana.lib.serialization.createJson
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
@@ -12,15 +12,19 @@ import io.github.jan.supabase.auth.providers.builtin.OTP
 import io.github.jan.supabase.auth.user.UserInfo
 import io.github.jan.supabase.exceptions.RestException
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpStatusCode
+import io.ktor.serialization.kotlinx.json.json
+import io.mockk.Runs
 import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
-import io.mockk.mockkStatic
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.json.Json
 import kotlin.test.BeforeTest
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -28,19 +32,30 @@ import kotlin.test.assertTrue
 
 /**
  * Test class for [AuthServiceImpl].
- * TODO: SKELETON FOR TESTING, NEEDS TO BE UPDATED AS CLASS IS NOT VERY TESTABLE ATM
  */
-@Ignore
 class AuthServiceImplTest {
-    private val auth = mockk<Auth>(relaxed = true)
-    private val http = mockk<HttpClient>()
-    private val service = AuthServiceImpl(auth, http)
+    private lateinit var auth: Auth
+    private lateinit var ktorTestEngine: KtorTestEngine
+    private lateinit var http: HttpClient
+    private lateinit var service: AuthServiceImpl
+    private lateinit var json: Json
 
     /**
      * Setup the test environment.
      */
     @BeforeTest
     fun setupTest() {
+        auth = mockk<Auth>()
+        ktorTestEngine = KtorTestEngine()
+        json = createJson()
+        http = HttpClient(ktorTestEngine.engine) {
+            install(ContentNegotiation) {
+                json(json)
+            }
+        }
+
+        service = AuthServiceImpl(auth, http)
+
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
     }
 
@@ -89,7 +104,7 @@ class AuthServiceImplTest {
         val userInfo = mockk<UserInfo> { coEvery { id } returns "user-2" }
         coEvery { auth.awaitInitialization() } returns Unit
         coEvery { auth.currentUserOrNull() } returns userInfo
-        val response = mockk<HttpResponse> {
+        val response = mockk<HttpResponse>(relaxed = true) {
             coEvery { status } returns HttpStatusCode.Unauthorized
         }
         coEvery { auth.refreshCurrentSession() } throws RestException("fail", "401 Error", response )
@@ -110,20 +125,20 @@ class AuthServiceImplTest {
     fun `getUser returns mapped user when signed in`() = runTest {
         // Arrange
         val userInfo = mockk<UserInfo> { coEvery { id } returns "user-3" }
-        val userNetworkResponse = mockk<UserNetworkResponse> {
-            coEvery { toUserModel() } returns UserModel(
-                UserId("user-3"),
-                "email",
-                "phone",
-                "first",
-                "last",
-                true,
-                )
-        }
+        val userNetworkResponse = UserNetworkResponse(
+            id = "user-3",
+            email = "email",
+            phoneNumber = "phone",
+            firstName = "first",
+            lastName = "last",
+            authMetadata = null,
+        )
         coEvery { auth.currentUserOrNull() } returns userInfo
-        mockkStatic("io.ktor.client.call.HttpClientCallKt")
-        coEvery { http.get(any<String>()) } returns mockk {
-//            coEvery { body<UserNetworkResponse>() } returns userNetworkResponse
+
+        ktorTestEngine.configure {
+            coEvery { produceResponse(any()) } returns MockResponseData.Success(
+                json.encodeToString(userNetworkResponse)
+            )
         }
 
         //Act
@@ -155,8 +170,9 @@ class AuthServiceImplTest {
     @Test
     fun `sendOtpEmail returns success when auth signInWith succeeds`() = runTest {
         // Arrange
-        val email = "garcia.alicia1990@gmail.com"
-        coEvery { auth.signInWith(OTP, any()) } returns Unit
+        val email = "test@gmail.com"
+        coEvery { auth.signInWith(any<OTP>(), anyNullable(), any<(OTP.Config.() -> Unit)>()) } just Runs
+        coEvery { auth.config } returns mockk { every { defaultRedirectUrl } returns "" }
 
         // Act
         val result = service.sendOtpEmail(email)

@@ -1,13 +1,16 @@
 package com.cramsan.edifikana.server.core.service.models.requests
 
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.framework.core.SecureString
+import com.cramsan.framework.core.SecureStringAccess
 
 /**
  * Request to update a user's password.
  *
- * TODO: Lets see if we want to keep this request or if we want to remove it in favor for a more comprehensive approach.
  */
+@OptIn(SecureStringAccess::class)
 data class UpdatePasswordRequest(
     val id: UserId,
-    val password: String,
+    val currentHashedPassword: SecureString?,
+    val newPassword: SecureString,
 )

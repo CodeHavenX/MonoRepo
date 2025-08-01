@@ -145,6 +145,10 @@ fun UserNetworkResponse.toUserModel(): UserModel {
         phoneNumber = phoneNumber,
         firstName = firstName,
         lastName = lastName,
-        isVerified = isVerified,
+        authMetadata = authMetadata?.let {
+            UserModel.AuthMetadataModel(
+                isPasswordSet = it.isPasswordSet,
+            )
+        },
     )
 }

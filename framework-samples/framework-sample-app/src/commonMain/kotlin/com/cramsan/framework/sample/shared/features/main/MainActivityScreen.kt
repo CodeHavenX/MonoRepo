@@ -3,7 +3,7 @@ package com.cramsan.framework.sample.shared.features.main
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.cramsan.framework.ammotations.RouteSafePath
+import com.cramsan.framework.annotations.RouteSafePath
 import com.cramsan.framework.sample.shared.features.main.halt.HaltUtilScreen
 import com.cramsan.framework.sample.shared.features.main.logging.LoggingScreen
 import com.cramsan.framework.sample.shared.features.main.menu.MainMenuScreen

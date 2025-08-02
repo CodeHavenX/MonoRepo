@@ -7,7 +7,7 @@ import com.cramsan.edifikana.server.core.service.models.requests.CreateEventLogE
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteEventLogEntryRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetEventLogEntryRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdateEventLogEntryRequest
-import com.cramsan.framework.ammotations.SupabaseModel
+import com.cramsan.framework.annotations.SupabaseModel
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.postgrest.Postgrest

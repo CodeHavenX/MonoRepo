@@ -1,4 +1,4 @@
-package com.cramsan.framework.ammotations
+package com.cramsan.framework.annotations
 
 /**
  * Safe path for a route.

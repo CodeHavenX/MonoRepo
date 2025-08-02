@@ -3,7 +3,6 @@
 
 package com.cramsan.edifikana.client.lib.features.window
 
-import com.cramsan.framework.annotations.RouteSafePath
 import kotlin.collections.get
 
 /**

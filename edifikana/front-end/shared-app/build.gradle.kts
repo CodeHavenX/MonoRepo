@@ -29,6 +29,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            implementation(project(":framework:annotations"))
             implementation(project(":framework:assert"))
             implementation(project(":framework:halt"))
             implementation(project(":framework:interfacelib"))

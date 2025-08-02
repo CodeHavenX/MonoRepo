@@ -9,6 +9,7 @@ import com.cramsan.edifikana.server.core.service.models.requests.DeletePropertyR
 import com.cramsan.edifikana.server.core.service.models.requests.GetPropertyListsRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetPropertyRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdatePropertyRequest
+import com.cramsan.framework.ammotations.SupabaseModel
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.postgrest.Postgrest

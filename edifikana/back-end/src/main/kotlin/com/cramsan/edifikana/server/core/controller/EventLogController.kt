@@ -2,7 +2,6 @@ package com.cramsan.edifikana.server.core.controller
 
 import com.cramsan.edifikana.lib.EVENT_LOG_ENTRY_ID
 import com.cramsan.edifikana.lib.Routes
-import com.cramsan.edifikana.lib.annotations.NetworkModel
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
@@ -10,6 +9,7 @@ import com.cramsan.edifikana.lib.model.network.CreateEventLogEntryNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdateEventLogEntryNetworkRequest
 import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
 import com.cramsan.edifikana.server.core.service.EventLogService
+import com.cramsan.framework.ammotations.NetworkModel
 import com.cramsan.framework.core.ktor.HttpResponse
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall

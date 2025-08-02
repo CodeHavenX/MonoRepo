@@ -24,6 +24,7 @@ import com.cramsan.edifikana.server.core.service.models.requests.CreatePropertyR
 import com.cramsan.edifikana.server.core.service.models.requests.CreateStaffRequest
 import com.cramsan.edifikana.server.core.service.models.requests.CreateTimeCardEventRequest
 import com.cramsan.edifikana.server.core.service.models.requests.CreateUserRequest
+import com.cramsan.framework.ammotations.SupabaseModel
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 

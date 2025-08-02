@@ -4,7 +4,7 @@ import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.client.lib.models.StaffModel
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
 import com.cramsan.edifikana.client.lib.models.UserModel
-import com.cramsan.edifikana.lib.annotations.NetworkModel
+import com.cramsan.framework.ammotations.NetworkModel
 import com.cramsan.edifikana.lib.model.*
 import com.cramsan.edifikana.lib.model.network.EventLogEntryNetworkResponse
 import com.cramsan.edifikana.lib.model.network.StaffNetworkResponse

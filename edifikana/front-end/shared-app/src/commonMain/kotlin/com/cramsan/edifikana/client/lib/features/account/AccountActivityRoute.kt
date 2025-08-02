@@ -4,7 +4,7 @@
 package com.cramsan.edifikana.client.lib.features.account
 
 import com.cramsan.edifikana.client.lib.features.window.Destination
-import com.cramsan.framework.core.compose.RouteSafePath
+import com.cramsan.framework.ammotations.RouteSafePath
 
 /**
  * Routes in the account activity.

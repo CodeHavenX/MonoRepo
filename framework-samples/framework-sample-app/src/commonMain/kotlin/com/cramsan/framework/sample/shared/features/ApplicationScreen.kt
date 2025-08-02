@@ -12,7 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import com.cramsan.framework.core.compose.RouteSafePath
+import com.cramsan.framework.ammotations.RouteSafePath
 import com.cramsan.framework.sample.shared.features.main.mainActivityNavigation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

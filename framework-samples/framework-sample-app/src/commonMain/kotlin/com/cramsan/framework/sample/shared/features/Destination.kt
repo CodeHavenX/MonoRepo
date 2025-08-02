@@ -1,6 +1,6 @@
 package com.cramsan.framework.sample.shared.features
 
-import com.cramsan.framework.core.compose.RouteSafePath
+import com.cramsan.framework.ammotations.RouteSafePath
 
 /**
  * Destination representing a single screen or composable within the navigation graph.

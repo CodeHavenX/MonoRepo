@@ -26,9 +26,11 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                implementation(project(":framework:annotations"))
+                implementation(project(":framework:interfacelib"))
+
                 implementation("org.jetbrains.kotlinx:kotlinx-datetime:_")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:_")
-                implementation(project(":framework:interfacelib"))
             }
         }
     }

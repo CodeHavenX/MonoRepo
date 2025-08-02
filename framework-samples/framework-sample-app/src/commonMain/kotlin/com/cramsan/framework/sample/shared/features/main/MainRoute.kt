@@ -3,7 +3,7 @@
 
 package com.cramsan.framework.sample.shared.features.main
 
-import com.cramsan.framework.core.compose.RouteSafePath
+import com.cramsan.framework.ammotations.RouteSafePath
 import com.cramsan.framework.sample.shared.features.Destination
 
 /**

@@ -7,7 +7,7 @@ import androidx.navigation.navigation
 import com.cramsan.edifikana.client.lib.features.account.account.AccountScreen
 import com.cramsan.edifikana.client.lib.features.account.changepassword.ChangePasswordDialog
 import com.cramsan.edifikana.client.lib.features.account.notifications.NotificationsScreen
-import com.cramsan.framework.core.compose.RouteSafePath
+import com.cramsan.framework.ammotations.RouteSafePath
 
 /**
  * Account Activity Route.

@@ -51,6 +51,7 @@ tasks.getByName("release") {
 
 dependencies {
     implementation(project(":framework:interfacelib"))
+    implementation(project(":framework:annotations"))
     implementation(project(":framework:logging"))
     implementation(project(":framework:assert"))
     implementation(project(":framework:core"))

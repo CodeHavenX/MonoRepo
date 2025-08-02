@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.server.core.datastore.supabase.models
 
 import com.cramsan.edifikana.lib.model.TimeCardEventType
-import com.cramsan.edifikana.server.core.datastore.supabase.SupabaseModel
+import com.cramsan.framework.ammotations.SupabaseModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

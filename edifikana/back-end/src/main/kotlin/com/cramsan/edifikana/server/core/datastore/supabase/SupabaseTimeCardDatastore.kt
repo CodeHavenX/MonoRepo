@@ -7,6 +7,7 @@ import com.cramsan.edifikana.server.core.service.models.requests.CreateTimeCardE
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteTimeCardEventRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetTimeCardEventListRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetTimeCardEventRequest
+import com.cramsan.framework.ammotations.SupabaseModel
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.postgrest.Postgrest

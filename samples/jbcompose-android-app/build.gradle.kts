@@ -8,10 +8,10 @@ plugins {
 apply(from = "$rootDir/gradle/kotlin-mpp-target-android-app.gradle")
 
 android {
-    namespace = "com.cramsan.minesweepers.android.app"
+    namespace = "com.cramsan.sample.compose.android"
 
     defaultConfig {
-        applicationId = "com.cramsan.minesweepers.android.app"
+        applicationId = "com.cramsan.sample.compose.android"
         versionCode = 1
         versionName = "1.0"
     }

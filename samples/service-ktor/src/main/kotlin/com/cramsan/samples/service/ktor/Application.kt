@@ -1,10 +1,6 @@
 package com.cramsan.samples.service.ktor
 
-import com.cramsan.framework.core.ktor.configureHealthEndpoint
-import com.cramsan.framework.logging.logI
 import com.cramsan.samples.service.ktor.di.ApplicationModule
-import com.cramsan.samples.service.ktor.di.FrameworkModule
-import com.cramsan.samples.service.ktor.di.createKtorModule
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
@@ -36,9 +32,7 @@ fun Application.module() = runBlocking {
  */
 fun Application.startServer() = runBlocking {
     configureKtorEngine()
-    configureHealthEndpoint()
     configureEntryPoints()
-    startApplication()
 }
 
 /**
@@ -59,8 +53,6 @@ fun Application.configureKtorEngine() {
 fun Application.initializeDependencies() {
     startKoin {
         modules(
-            createKtorModule(this@initializeDependencies),
-            FrameworkModule,
             ApplicationModule,
         )
     }
@@ -76,12 +68,3 @@ fun Application.configureEntryPoints() {
         }
     }
 }
-
-/**
- * Let's do it!
- */
-fun Application.startApplication() {
-    logI(TAG, "Application is ready.")
-}
-
-private const val TAG = "Application"

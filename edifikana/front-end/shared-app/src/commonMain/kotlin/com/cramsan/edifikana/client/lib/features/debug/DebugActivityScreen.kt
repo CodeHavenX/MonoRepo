@@ -5,7 +5,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.cramsan.edifikana.client.lib.features.debug.main.DebugScreen
 import com.cramsan.edifikana.client.lib.features.debug.screenselector.ScreenSelectorScreen
-import com.cramsan.framework.core.compose.RouteSafePath
+import com.cramsan.framework.annotations.RouteSafePath
 
 /**
  * Debug Activity Route.

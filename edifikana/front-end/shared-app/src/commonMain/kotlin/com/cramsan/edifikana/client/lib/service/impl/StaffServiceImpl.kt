@@ -4,9 +4,9 @@ import com.cramsan.edifikana.client.lib.models.StaffModel
 import com.cramsan.edifikana.client.lib.service.StaffService
 import com.cramsan.edifikana.client.lib.service.impl.PropertyServiceImpl.Companion.TAG
 import com.cramsan.edifikana.lib.Routes
-import com.cramsan.edifikana.lib.annotations.NetworkModel
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.network.StaffNetworkResponse
+import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.core.runSuspendCatching
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body

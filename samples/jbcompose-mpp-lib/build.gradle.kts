@@ -20,7 +20,7 @@ apply(from = "$rootDir/gradle/kotlin-mpp-target-jvm-compose.gradle")
 apply(from = "$rootDir/gradle/kotlin-mpp-target-wasm.gradle")
 
 android {
-    namespace = "com.cramsan.sample.mpp_lib.compose"
+    namespace = "com.cramsan.sample.mpplib.compose"
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     sourceSets["main"].res.srcDirs("src/androidMain/res")

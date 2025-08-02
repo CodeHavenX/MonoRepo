@@ -3,7 +3,7 @@
 
 package com.cramsan.framework.sample.shared.features
 
-import com.cramsan.framework.core.compose.RouteSafePath
+import com.cramsan.framework.annotations.RouteSafePath
 
 /**
  * Routes in the application.

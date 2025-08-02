@@ -10,6 +10,7 @@ import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
 import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
 import com.cramsan.framework.ammotations.NetworkModel
 import com.cramsan.edifikana.lib.utils.requireSuccess
+import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.assertlib.assertFalse
 import com.cramsan.framework.core.Hashing
 import com.cramsan.framework.core.SecureString

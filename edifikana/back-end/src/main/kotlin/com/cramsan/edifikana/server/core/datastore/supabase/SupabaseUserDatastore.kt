@@ -15,6 +15,7 @@ import com.cramsan.edifikana.server.core.service.models.requests.UpdateUserReque
 import com.cramsan.framework.core.Hashing
 import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.framework.ammotations.SupabaseModel
+import com.cramsan.framework.annotations.SupabaseModel
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logW

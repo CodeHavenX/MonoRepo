@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.service.impl
 
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
-import com.cramsan.framework.ammotations.NetworkModel
+import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.TimeCardEventId

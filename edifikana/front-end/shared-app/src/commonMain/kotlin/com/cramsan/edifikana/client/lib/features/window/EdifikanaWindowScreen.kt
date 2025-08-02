@@ -22,7 +22,7 @@ import com.cramsan.edifikana.client.lib.features.management.managementActivityNa
 import com.cramsan.edifikana.client.lib.features.splash.SplashScreen
 import com.cramsan.edifikana.client.lib.ui.di.Coil3Provider
 import com.cramsan.edifikana.client.ui.theme.AppTheme
-import com.cramsan.framework.ammotations.RouteSafePath
+import com.cramsan.framework.annotations.RouteSafePath
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject

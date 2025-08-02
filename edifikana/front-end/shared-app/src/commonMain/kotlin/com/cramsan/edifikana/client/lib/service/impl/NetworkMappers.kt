@@ -18,7 +18,7 @@ import com.cramsan.edifikana.lib.model.network.StaffNetworkResponse
 import com.cramsan.edifikana.lib.model.network.TimeCardEventNetworkResponse
 import com.cramsan.edifikana.lib.model.network.UpdateEventLogEntryNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
-import com.cramsan.framework.ammotations.NetworkModel
+import com.cramsan.framework.annotations.NetworkModel
 
 /**
  * Maps the [EventLogEntryNetworkResponse] models to [EventLogRecordModel] domain models.

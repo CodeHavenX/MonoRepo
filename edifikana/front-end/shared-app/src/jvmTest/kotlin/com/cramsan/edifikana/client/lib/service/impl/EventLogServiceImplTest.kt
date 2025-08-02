@@ -4,7 +4,7 @@ import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.network.EventLogEntryNetworkResponse
 import com.cramsan.edifikana.lib.Routes
-import com.cramsan.framework.ammotations.NetworkModel
+import com.cramsan.framework.annotations.NetworkModel
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get

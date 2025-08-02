@@ -6,7 +6,7 @@ package com.cramsan.edifikana.client.lib.features.auth
 import androidx.navigation.NavBackStackEntry
 import com.cramsan.edifikana.client.lib.features.window.ApplicationRoute
 import com.cramsan.edifikana.client.lib.features.window.Destination
-import com.cramsan.framework.ammotations.RouteSafePath
+import com.cramsan.framework.annotations.RouteSafePath
 
 /**
  * Routes in the auth activity.

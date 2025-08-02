@@ -1,4 +1,4 @@
-package com.cramsan.framework.ammotations
+package com.cramsan.framework.annotations
 
 /**
  * Marks a class as a Supabase model.

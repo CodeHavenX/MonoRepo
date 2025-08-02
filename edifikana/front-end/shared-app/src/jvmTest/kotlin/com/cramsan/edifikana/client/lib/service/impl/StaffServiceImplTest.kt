@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.service.impl
 
 import com.cramsan.edifikana.client.lib.models.StaffModel
-import com.cramsan.framework.ammotations.NetworkModel
+import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.StaffRole

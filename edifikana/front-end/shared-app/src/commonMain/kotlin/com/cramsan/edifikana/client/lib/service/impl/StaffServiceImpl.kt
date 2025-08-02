@@ -6,7 +6,7 @@ import com.cramsan.edifikana.client.lib.service.impl.PropertyServiceImpl.Compani
 import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.network.StaffNetworkResponse
-import com.cramsan.framework.ammotations.NetworkModel
+import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.core.runSuspendCatching
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body

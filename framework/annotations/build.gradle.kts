@@ -15,7 +15,7 @@ apply(from = "$rootDir/gradle/kotlin-mpp-target-jvm.gradle")
 apply(from = "$rootDir/gradle/kotlin-mpp-target-wasm.gradle")
 
 android {
-    namespace = "com.cramsan.framework.ammotations"
+    namespace = "com.cramsan.framework.annotations"
 }
 
 kotlin {

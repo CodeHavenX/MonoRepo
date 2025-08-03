@@ -2,7 +2,6 @@
 
 package com.cramsan.edifikana.server.core.controller
 
-import com.cramsan.edifikana.lib.annotations.NetworkModel
 import com.cramsan.edifikana.lib.model.network.AuthMetadataNetworkResponse
 import com.cramsan.edifikana.lib.model.network.EventLogEntryNetworkResponse
 import com.cramsan.edifikana.lib.model.network.PropertyNetworkResponse
@@ -14,6 +13,7 @@ import com.cramsan.edifikana.server.core.service.models.Property
 import com.cramsan.edifikana.server.core.service.models.Staff
 import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.core.service.models.User
+import com.cramsan.framework.annotations.NetworkModel
 import kotlin.time.ExperimentalTime
 
 /**

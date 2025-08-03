@@ -2,7 +2,6 @@ package com.cramsan.edifikana.server.core.controller
 
 import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.USER_ID
-import com.cramsan.edifikana.lib.annotations.NetworkModel
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.model.network.CreateUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdatePasswordNetworkRequest
@@ -12,6 +11,7 @@ import com.cramsan.edifikana.lib.utils.requireNotBlank
 import com.cramsan.edifikana.lib.utils.requireSuccess
 import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
 import com.cramsan.edifikana.server.core.service.UserService
+import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.framework.core.ktor.HttpResponse

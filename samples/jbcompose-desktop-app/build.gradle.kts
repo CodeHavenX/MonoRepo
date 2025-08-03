@@ -14,7 +14,7 @@ dependencies {
 
 compose.desktop {
     application {
-        mainClass = "com.cramsan.minesweepers.jvm.WindowKt"
+        mainClass = "com.cramsan.sample.compose.jvm.WindowKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)

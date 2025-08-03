@@ -3,13 +3,13 @@ package com.cramsan.edifikana.client.lib.service.impl
 import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.client.lib.service.AuthService
 import com.cramsan.edifikana.lib.Routes
-import com.cramsan.edifikana.lib.annotations.NetworkModel
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.model.network.CreateUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdatePasswordNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
 import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
 import com.cramsan.edifikana.lib.utils.requireSuccess
+import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.assertlib.assertFalse
 import com.cramsan.framework.core.Hashing
 import com.cramsan.framework.core.SecureString

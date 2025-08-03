@@ -12,10 +12,13 @@ import com.cramsan.edifikana.server.core.service.models.requests.DeleteUserReque
 import com.cramsan.edifikana.server.core.service.models.requests.GetUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdatePasswordRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdateUserRequest
+import com.cramsan.framework.annotations.SupabaseModel
 import com.cramsan.framework.core.Hashing
+import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
+import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logW
 import com.cramsan.framework.utils.loginvalidation.validatePassword
 import com.cramsan.framework.utils.uuid.UUID
@@ -36,6 +39,7 @@ class SupabaseUserDatastore(
     /**
      * Creates a new user for the given [request]. Returns the [Result] of the operation with the created [User].
      */
+    @OptIn(SecureStringAccess::class)
     override suspend fun createUser(
         request: CreateUserRequest,
     ): Result<User> = runSuspendCatching(TAG) {
@@ -74,6 +78,11 @@ class SupabaseUserDatastore(
             UserId(userId),
             pendingAssociation = createOtpAccount,
             canPasswordAuth = !createOtpAccount,
+            hashedPassword = if (createOtpAccount) {
+                null
+            } else {
+                SecureString(Hashing.insecureHash(request.password.encodeToByteArray()).toString())
+            }
         )
         val createdUser = createUserEntity(requestEntity)
 
@@ -236,6 +245,11 @@ class SupabaseUserDatastore(
 
         // If the user has a password set, we need to check for the hash of the current password
         if (user.authMetadata.canPasswordAuth) {
+            if (user.authMetadata.hashedPassword == null) {
+                logE(TAG, "User's canPasswordAuth is set to true but hashedPassword is null")
+                error("Illegal password state for ${request.id}")
+            }
+
             if (request.currentHashedPassword == null) {
                 throw ClientRequestExceptions.InvalidRequestException(
                     message = "Error: Current password is required for password update.",

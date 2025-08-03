@@ -42,9 +42,9 @@ that everything looks fine, press enter to in the terminal to close the app:
 
    ```shell
    ./gradlew samples:jbcompose-android-app:installPreprodDebug
-   adb shell am start -n com.cramsan.minesweepers.android.app.preprod.debug/com.cramsan.minesweepers.android.app.MainActivity
+   adb shell am start -n com.cramsan.sample.compose.android.preprod.debug/com.cramsan.sample.compose.android.MainActivity
    read result
-   adb shell am force-stop  com.cramsan.minesweepers.android.app.preprod.debug
+   adb shell am force-stop  com.cramsan.sample.compose.android.preprod.debug
    ```
 
 3. Now lets launch the Compose Desktop app. Run the following command and verify that the app is launching:
@@ -75,8 +75,8 @@ that everything looks fine, press enter to in the terminal to close the app:
 Ensure you have followed the steps in the [README.md](README.md) to ensure you have all the required plugins.
 
 Open each file and verify that you can see the Previews:
-- [Window.kt](samples/jbcompose-desktop-app/src/main/kotlin/com/cramsan/minesweepers/jvm/Window.kt)
-- [MainActivity.kt](samples/jbcompose-android-app/src/androidMain/kotlin/com/cramsan/minesweepers/android/app/MainActivity.kt)
+- [Window.kt](samples/jbcompose-desktop-app/src/main/kotlin/com/cramsan/sample/compose/jvm/Window.kt)
+- [MainActivity.kt](samples/jbcompose-android-app/src/androidMain/kotlin/com/cramsan/sample/compose/android/MainActivity.kt)
 
 ## Upgrade documentation
 

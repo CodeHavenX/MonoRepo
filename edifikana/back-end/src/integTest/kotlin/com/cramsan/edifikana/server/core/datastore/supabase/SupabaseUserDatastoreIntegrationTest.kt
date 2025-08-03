@@ -8,6 +8,7 @@ import com.cramsan.edifikana.server.core.service.models.requests.CreateUserReque
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdatePasswordRequest
+import com.cramsan.framework.core.Hashing
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.framework.utils.uuid.UUID
@@ -55,7 +56,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
                 phoneNumber = request.phoneNumber,
                 firstName = request.firstName,
                 lastName = request.lastName,
-                authMetadata = User.AuthMetadata(isPasswordSet=true),
+                authMetadata = User.AuthMetadata(isPasswordSet = true),
             ),
             result.getOrNull(),
         )
@@ -85,7 +86,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
                 phoneNumber = request.phoneNumber,
                 firstName = request.firstName,
                 lastName = request.lastName,
-                authMetadata = User.AuthMetadata(isPasswordSet=false),
+                authMetadata = User.AuthMetadata(isPasswordSet = false),
             ),
             user,
         )
@@ -248,7 +249,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
 
     @OptIn(SecureStringAccess::class)
     @Test
-    fun `update password should update the user's password`() = runCoroutineTest {
+    fun `update password should update the user's password when one is already set`() = runCoroutineTest {
         // Arrange: Create a user with a password
         val email = "${test_prefix}@test.com"
         val createRequest = CreateUserRequest(
@@ -259,10 +260,12 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
             lastName = "User",
         )
         val createResult = userDatastore.createUser(createRequest).registerUserForDeletion()
-        val user =  createResult.getOrThrow()
+        val user = createResult.getOrThrow()
+
+        val currentPasswordHashed = Hashing.insecureHash(createRequest.password!!.encodeToByteArray()).toString()
         val updatePasswordRequest = UpdatePasswordRequest(
             id = UserId(user.id.userId),
-            currentHashedPassword = null,
+            currentHashedPassword = SecureString(currentPasswordHashed),
             newPassword = SecureString("NewPassword1!"),
         )
 

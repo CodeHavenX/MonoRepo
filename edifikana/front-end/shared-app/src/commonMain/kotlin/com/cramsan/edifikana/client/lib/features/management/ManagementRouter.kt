@@ -16,7 +16,7 @@ import com.cramsan.edifikana.client.lib.features.management.viewrecord.ViewRecor
 import com.cramsan.edifikana.client.lib.features.management.viewstaff.ViewStaffScreen
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.StaffId
-import com.cramsan.framework.core.compose.RouteSafePath
+import com.cramsan.framework.annotations.RouteSafePath
 
 /**
  * Management Activity Route.

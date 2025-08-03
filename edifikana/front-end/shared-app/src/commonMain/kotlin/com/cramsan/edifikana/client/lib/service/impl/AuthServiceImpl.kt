@@ -8,7 +8,6 @@ import com.cramsan.edifikana.lib.model.network.CreateUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdatePasswordNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
 import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
-import com.cramsan.framework.ammotations.NetworkModel
 import com.cramsan.edifikana.lib.utils.requireSuccess
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.assertlib.assertFalse

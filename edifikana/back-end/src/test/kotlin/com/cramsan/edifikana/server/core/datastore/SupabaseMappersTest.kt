@@ -1,12 +1,12 @@
 package com.cramsan.edifikana.server.core.datastore
 
 import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.server.core.datastore.supabase.SupabaseModel
 import com.cramsan.edifikana.server.core.datastore.supabase.models.AuthMetadataEntity
 import com.cramsan.edifikana.server.core.datastore.supabase.models.UserEntity
 import com.cramsan.edifikana.server.core.datastore.supabase.toUser
 import com.cramsan.edifikana.server.core.datastore.supabase.toUserEntity
 import com.cramsan.edifikana.server.core.service.models.requests.CreateUserRequest
+import com.cramsan.framework.annotations.SupabaseModel
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

@@ -2,7 +2,6 @@
 
 package com.cramsan.edifikana.server.core.controller
 
-import com.cramsan.edifikana.lib.annotations.NetworkModel
 import com.cramsan.edifikana.lib.model.network.AuthMetadataNetworkResponse
 import com.cramsan.edifikana.lib.model.network.EventLogEntryNetworkResponse
 import com.cramsan.edifikana.lib.model.network.PropertyNetworkResponse

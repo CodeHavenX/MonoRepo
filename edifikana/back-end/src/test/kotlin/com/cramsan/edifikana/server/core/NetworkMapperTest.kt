@@ -1,11 +1,11 @@
 package com.cramsan.edifikana.server.core
 
-import com.cramsan.edifikana.lib.annotations.NetworkModel
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.model.network.AuthMetadataNetworkResponse
 import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
 import com.cramsan.edifikana.server.core.controller.toUserNetworkResponse
 import com.cramsan.edifikana.server.core.service.models.User
+import com.cramsan.framework.annotations.NetworkModel
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

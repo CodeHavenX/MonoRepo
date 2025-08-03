@@ -1,7 +1,5 @@
 package com.cramsan.edifikana.client.lib.service.impl
 
-import com.cramsan.edifikana.lib.annotations.NetworkModel
-import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.model.network.UserNetworkResponse

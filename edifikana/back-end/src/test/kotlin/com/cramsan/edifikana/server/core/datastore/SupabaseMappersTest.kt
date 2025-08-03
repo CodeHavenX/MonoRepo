@@ -7,6 +7,8 @@ import com.cramsan.edifikana.server.core.datastore.supabase.toUser
 import com.cramsan.edifikana.server.core.datastore.supabase.toUserEntity
 import com.cramsan.edifikana.server.core.service.models.requests.CreateUserRequest
 import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.core.SecureString
+import com.cramsan.framework.core.SecureStringAccess
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -37,6 +39,7 @@ class SupabaseMappersTest {
         assertEquals(true, user.authMetadata?.isPasswordSet)
     }
 
+    @OptIn(SecureStringAccess::class)
     @Test
     fun `CreateUserRequest toUserEntity maps all fields correctly`() {
         val request = CreateUserRequest(
@@ -49,8 +52,9 @@ class SupabaseMappersTest {
         val userId = UserId("user-456")
         val pendingAssociation = true
         val canPasswordAuth = false
+        val hashedPassword = SecureString("1323546")
 
-        val entity = request.toUserEntity(userId, pendingAssociation, canPasswordAuth)
+        val entity = request.toUserEntity(userId, pendingAssociation, canPasswordAuth, hashedPassword)
 
         assertEquals("user-456", entity.id)
         assertEquals("test@example.com", entity.email)
@@ -59,5 +63,6 @@ class SupabaseMappersTest {
         assertEquals("Smith", entity.lastName)
         assertEquals(pendingAssociation, entity.authMetadata.pendingAssociation)
         assertEquals(canPasswordAuth, entity.authMetadata.canPasswordAuth)
+        assertEquals(hashedPassword.reveal(), entity.authMetadata.hashedPassword)
     }
 }

@@ -25,6 +25,8 @@ import com.cramsan.edifikana.server.core.service.models.requests.CreateStaffRequ
 import com.cramsan.edifikana.server.core.service.models.requests.CreateTimeCardEventRequest
 import com.cramsan.edifikana.server.core.service.models.requests.CreateUserRequest
 import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.core.SecureString
+import com.cramsan.framework.core.SecureStringAccess
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -49,11 +51,12 @@ fun UserEntity.toUser(): User {
  * Maps a [CreateUserRequest] to the [UserEntity.CreateUserEntity] model.
  * This is used to create a new user in the database.
  */
-@OptIn(SupabaseModel::class)
+@OptIn(SupabaseModel::class, SecureStringAccess::class)
 fun CreateUserRequest.toUserEntity(
     userId: UserId,
     pendingAssociation: Boolean,
     canPasswordAuth: Boolean,
+    hashedPassword: SecureString?,
 ): UserEntity.CreateUserEntity {
     return UserEntity.CreateUserEntity(
         id = userId.userId,
@@ -64,6 +67,7 @@ fun CreateUserRequest.toUserEntity(
         authMetadata = AuthMetadataEntity(
             pendingAssociation = pendingAssociation,
             canPasswordAuth = canPasswordAuth,
+            hashedPassword = hashedPassword?.reveal(),
         ),
     )
 }

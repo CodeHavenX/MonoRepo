@@ -2,8 +2,10 @@ package com.cramsan.edifikana.client.lib.features.account
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.dialog
 import androidx.navigation.navigation
 import com.cramsan.edifikana.client.lib.features.account.account.AccountScreen
+import com.cramsan.edifikana.client.lib.features.account.changepassword.ChangePasswordDialog
 import com.cramsan.edifikana.client.lib.features.account.notifications.NotificationsScreen
 import com.cramsan.framework.core.compose.RouteSafePath
 
@@ -25,6 +27,9 @@ fun NavGraphBuilder.accountActivityNavigation(
                 }
                 AccountActivityRoute.Notifications -> composable(it.route) {
                     NotificationsScreen()
+                }
+                AccountActivityRoute.ChangePassword -> dialog(it.route) {
+                    ChangePasswordDialog()
                 }
             }
         }

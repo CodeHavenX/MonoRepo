@@ -21,9 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -160,7 +158,6 @@ internal fun SignUpContent(
                         label = { Text(stringResource(Res.string.sign_up_screen_text_phone_number)) },
                         maxLines = 1,
                     )
-                    var isChecked by remember { mutableStateOf(false) }
                     val interactionSource = remember { MutableInteractionSource() }
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -170,8 +167,7 @@ internal fun SignUpContent(
                                 interactionSource = interactionSource,
                                 indication = ripple(),
                             ) {
-                                isChecked = !isChecked
-                                onPolicyChecked(isChecked)
+                                onPolicyChecked(!uiState.policyChecked)
                             }
                             .padding(Padding.XX_SMALL)
                     ) {

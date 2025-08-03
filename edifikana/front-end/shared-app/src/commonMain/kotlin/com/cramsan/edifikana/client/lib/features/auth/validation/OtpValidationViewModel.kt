@@ -1,9 +1,17 @@
 package com.cramsan.edifikana.client.lib.features.auth.validation
 
+import com.cramsan.edifikana.client.lib.features.window.ActivityRouteDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
+import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
+import com.cramsan.edifikana.lib.utils.requireSuccess
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.resources.StringProvider
+import com.cramsan.framework.logging.logD
+import com.cramsan.framework.logging.logW
+import edifikana_lib.Res
+import edifikana_lib.error_message_unexpected_error
 import kotlinx.coroutines.launch
 
 /**
@@ -12,6 +20,7 @@ import kotlinx.coroutines.launch
 class OtpValidationViewModel(
     dependencies: ViewModelDependencies,
     private val auth: AuthManager,
+    private val stringProvider: StringProvider,
 ) : BaseViewModel<OtpValidationEvent, OtpValidationUIState>(
     dependencies,
     OtpValidationUIState.Initial,
@@ -28,7 +37,9 @@ class OtpValidationViewModel(
                     accountCreationFlow = accountCreationFlow,
                 )
             }
-            auth.sendOtpCode(userEmail)
+            if (!accountCreationFlow) {
+                auth.sendOtpCode(userEmail).requireSuccess()
+            }
         }
     }
 
@@ -36,10 +47,26 @@ class OtpValidationViewModel(
      * Sign the user in with an OTP token
      */
     fun signInWithOtp() {
+        logD(TAG, "signInWithOtp called")
         val otpToken = uiState.value.otpCode
         val email = uiState.value.email
         viewModelScope.launch {
-            auth.signInWithOtp(email, otpToken.toString(), uiState.value.accountCreationFlow)
+            auth.signInWithOtp(
+                email,
+                otpToken.joinToString(""),
+                uiState.value.accountCreationFlow,
+            ).onFailure {
+                logW(TAG, "signInWithOtp failed: ${it.message}")
+
+                emitWindowEvent(EdifikanaWindowsEvent.ShowSnackbar(getErrorMessage(it)))
+            }.onSuccess {
+                emitWindowEvent(
+                    EdifikanaWindowsEvent.NavigateToActivity(
+                        ActivityRouteDestination.ManagementRouteDestination,
+                        clearTop = true,
+                    )
+                )
+            }
         }
     }
 
@@ -47,6 +74,7 @@ class OtpValidationViewModel(
      * Called when the OTP field is focused.
      */
     fun onOtpFieldFocused(index: Int) {
+        logD(TAG, "onOtpFieldFocused called with index: $index")
         viewModelScope.launch {
             updateUiState {
                 it.copy(
@@ -95,17 +123,11 @@ class OtpValidationViewModel(
      * Called when the back button on the keyboard is pressed.
      */
     fun onKeyboardBack() {
+        logD(TAG, "onKeyboardBack called")
         val prevIndex = getPreviousFocusedIndex(uiState.value.focusedIndex)
         viewModelScope.launch {
             updateUiState {
                 it.copy(
-                    otpCode = it.otpCode.mapIndexed { index, value ->
-                        if (index == prevIndex) {
-                            null
-                        } else {
-                            value
-                        }
-                    },
                     focusedIndex = prevIndex
                 )
             }
@@ -116,6 +138,7 @@ class OtpValidationViewModel(
      * Navigate to the main screen.
      */
     fun navigateBack() {
+        logD(TAG, "navigateBack called")
         viewModelScope.launch {
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateBack
@@ -165,6 +188,18 @@ class OtpValidationViewModel(
             }
         }
         return currentFocusedIndex
+    }
+
+    /**
+     * Get the custom client error message based on the exception type.
+     */
+    private suspend fun getErrorMessage(exception: Throwable): String {
+        return when (exception) {
+            is ClientRequestExceptions.UnauthorizedException ->
+                "OTP code is not valid. Please try again."
+
+            else -> stringProvider.getString(Res.string.error_message_unexpected_error)
+        }
     }
 
     companion object {

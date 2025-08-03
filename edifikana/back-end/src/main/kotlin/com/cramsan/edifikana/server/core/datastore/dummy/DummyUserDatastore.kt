@@ -44,9 +44,9 @@ class DummyUserDatastore : UserDatastore {
         return Result.success(true)
     }
 
-    override suspend fun updatePassword(request: UpdatePasswordRequest): Result<Boolean> {
+    override suspend fun updatePassword(request: UpdatePasswordRequest): Result<Unit> {
         logD(TAG, "updatePassword")
-        return Result.success(true)
+        return Result.success(Unit)
     }
 
     companion object {

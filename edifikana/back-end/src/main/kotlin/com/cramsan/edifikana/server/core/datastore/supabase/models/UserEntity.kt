@@ -19,7 +19,7 @@ data class UserEntity(
     @SerialName("last_name")
     val lastName: String,
     @SerialName("auth_metadata")
-    val authMetadata: AuthMetadata,
+    val authMetadata: AuthMetadataEntity,
 ) {
     companion object {
         const val COLLECTION = "users"
@@ -40,7 +40,7 @@ data class UserEntity(
         @SerialName("last_name")
         val lastName: String,
         @SerialName("auth_metadata")
-        val authMetadata: AuthMetadata,
+        val authMetadata: AuthMetadataEntity,
     )
 }
 
@@ -50,9 +50,11 @@ data class UserEntity(
  */
 @Serializable
 @SupabaseModel
-data class AuthMetadata(
+data class AuthMetadataEntity(
     @SerialName("pending_association")
     val pendingAssociation: Boolean = false,
     @SerialName("can_password_auth")
     val canPasswordAuth: Boolean = false,
+    @SerialName("hashed_password")
+    val hashedPassword: String? = null,
 )

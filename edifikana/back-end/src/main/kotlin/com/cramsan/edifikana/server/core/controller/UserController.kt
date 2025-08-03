@@ -12,6 +12,8 @@ import com.cramsan.edifikana.lib.utils.requireNotBlank
 import com.cramsan.edifikana.lib.utils.requireSuccess
 import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
 import com.cramsan.edifikana.server.core.service.UserService
+import com.cramsan.framework.core.SecureString
+import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.framework.core.ktor.HttpResponse
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
@@ -69,7 +71,7 @@ class UserController(
 
         val user = userService.getUser(
             id = UserId(userId),
-        )?.toUserNetworkResponse()
+        ).getOrNull()?.toUserNetworkResponse()
 
         val statusCode = if (user == null) {
             HttpStatusCode.NotFound
@@ -86,27 +88,38 @@ class UserController(
     /**
      * Handles the updating of a user's password. The [call] parameter is the request context.
      */
-    @OptIn(NetworkModel::class)
-    suspend fun updatePassword(call: RoutingCall) = call.handleCall(TAG, "updatePassword", contextRetriever) {
-        val userId = requireNotNull(call.parameters[USER_ID])
+    @OptIn(NetworkModel::class, SecureStringAccess::class)
+    suspend fun updatePassword(call: RoutingCall) = call.handleCall(
+        TAG,
+        "updatePassword",
+        contextRetriever,
+    ) { context ->
+        val authenticatedContext = getAuthenticatedClientContext(context)
+        val userId = authenticatedContext.userId
 
-        // TODO: Verify permissions
         val updatePasswordRequest = call.receive<UpdatePasswordNetworkRequest>()
 
-        val success = userService.updatePassword(
-            userId = UserId(userId),
-            password = updatePasswordRequest.password,
+        val result = userService.updatePassword(
+            userId = userId,
+            currentHashedPassword = SecureString(updatePasswordRequest.currentPasswordHashed),
+            newPassword = SecureString(updatePasswordRequest.newPassword),
         )
 
-        val statusCode = if (success) {
+        val statusCode = if (result.isSuccess) {
             HttpStatusCode.OK
         } else {
-            HttpStatusCode.NotFound
+            HttpStatusCode.BadRequest
+        }
+
+        val responseBody = if (result.isSuccess) {
+            null
+        } else {
+            result.exceptionOrNull()?.message ?: "Failed to update password."
         }
 
         HttpResponse(
             status = statusCode,
-            body = null,
+            body = responseBody,
         )
     }
 
@@ -115,7 +128,7 @@ class UserController(
      */
     @OptIn(NetworkModel::class)
     suspend fun getUsers(call: ApplicationCall) = call.handleCall(TAG, "getUsers", contextRetriever) { _ ->
-        val users = userService.getUsers().map { it.toUserNetworkResponse() }
+        val users = userService.getUsers().getOrThrow().map { it.toUserNetworkResponse() }
 
         HttpResponse(
             status = HttpStatusCode.OK,
@@ -135,7 +148,7 @@ class UserController(
         val updatedUser = userService.updateUser(
             id = UserId(userId),
             email = updateUserRequest.email,
-        ).toUserNetworkResponse()
+        ).getOrThrow().toUserNetworkResponse()
 
         HttpResponse(
             status = HttpStatusCode.OK,
@@ -151,7 +164,7 @@ class UserController(
 
         val success = userService.deleteUser(
             UserId(userId),
-        )
+        ).isSuccess
 
         val statusCode = if (success) {
             HttpStatusCode.OK
@@ -205,7 +218,7 @@ class UserController(
                 get("{$USER_ID}") {
                     getUser(call)
                 }
-                put("{$USER_ID}/password") {
+                put("/password") {
                     updatePassword(call)
                 }
                 get {

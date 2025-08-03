@@ -7,7 +7,7 @@ import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.server.core.datastore.supabase.models.AuthMetadata
+import com.cramsan.edifikana.server.core.datastore.supabase.models.AuthMetadataEntity
 import com.cramsan.edifikana.server.core.datastore.supabase.models.EventLogEntryEntity
 import com.cramsan.edifikana.server.core.datastore.supabase.models.PropertyEntity
 import com.cramsan.edifikana.server.core.datastore.supabase.models.StaffEntity
@@ -30,7 +30,7 @@ import kotlin.time.Instant
 /**
  * Maps a [UserEntity] to the [User] model.
  */
-@SupabaseModel
+@OptIn(SupabaseModel::class)
 fun UserEntity.toUser(): User {
     return User(
         id = UserId(this.id),
@@ -38,6 +38,9 @@ fun UserEntity.toUser(): User {
         phoneNumber = this.phoneNumber,
         firstName = this.firstName,
         lastName = this.lastName,
+        authMetadata = User.AuthMetadata(
+            isPasswordSet = this.authMetadata.canPasswordAuth,
+        )
     )
 }
 
@@ -57,7 +60,7 @@ fun CreateUserRequest.toUserEntity(
         phoneNumber = phoneNumber,
         firstName = firstName,
         lastName = lastName,
-        authMetadata = AuthMetadata(
+        authMetadata = AuthMetadataEntity(
             pendingAssociation = pendingAssociation,
             canPasswordAuth = canPasswordAuth,
         ),

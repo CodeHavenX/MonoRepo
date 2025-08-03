@@ -3,6 +3,8 @@ package com.cramsan.edifikana.server.core.service
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.datastore.UserDatastore
 import com.cramsan.edifikana.server.core.service.models.User
+import com.cramsan.framework.core.SecureString
+import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
@@ -78,7 +80,7 @@ class UserServiceTest {
         val result = userService.getUser(userId)
 
         // Assert
-        assertEquals(user, result)
+        assertEquals(Result.success(user), result)
         coVerify { userDatastore.getUser(match { it.id == userId }) }
     }
 
@@ -95,7 +97,7 @@ class UserServiceTest {
         val result = userService.getUsers()
 
         // Assert
-        assertEquals(users, result)
+        assertEquals(Result.success(users), result)
         coVerify { userDatastore.getUsers() }
     }
 
@@ -114,7 +116,7 @@ class UserServiceTest {
         val result = userService.updateUser(userId, email)
 
         // Assert
-        assertEquals(user, result)
+        assertEquals(Result.success(user), result)
         coVerify { userDatastore.updateUser(match { it.id == userId && it.email == email }) }
     }
 
@@ -131,25 +133,39 @@ class UserServiceTest {
         val result = userService.deleteUser(userId)
 
         // Assert
-        assertTrue(result)
+        assertTrue(result.getOrThrow())
         coVerify { userDatastore.deleteUser(match { it.id == userId }) }
     }
 
     /**
      * Tests that updatePassword updates a user's password and returns the result.
      */
+    @OptIn(SecureStringAccess::class)
     @Test
     fun `updatePassword should update password and return result`() = runTest {
         // Arrange
         val userId = UserId("id")
-        val password = "newpass"
-        coEvery { userDatastore.updatePassword(any()) } returns Result.success(true)
+        val password = SecureString("newpass")
+        val hashedPassword = SecureString("12345678")
+        coEvery { userDatastore.updatePassword(any()) } returns Result.success(Unit)
 
         // Act
-        val result = userService.updatePassword(userId, password)
+        val result = userService.updatePassword(
+            userId,
+            hashedPassword,
+            password,
+        )
 
         // Assert
-        assertTrue(result)
-        coVerify { userDatastore.updatePassword(match { it.id == userId && it.password == password }) }
+        assertTrue(result.isSuccess)
+        coVerify {
+            userDatastore.updatePassword(
+                match {
+                    it.id == userId &&
+                        it.newPassword == password &&
+                        it.currentHashedPassword == hashedPassword
+                }
+            )
+        }
     }
 }

@@ -5,16 +5,24 @@ import com.cramsan.edifikana.client.lib.models.StaffModel
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
 import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.lib.annotations.NetworkModel
-import com.cramsan.edifikana.lib.model.*
+import com.cramsan.edifikana.lib.model.EventLogEntryId
+import com.cramsan.edifikana.lib.model.EventLogEventType
+import com.cramsan.edifikana.lib.model.IdType
+import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.edifikana.lib.model.StaffRole
+import com.cramsan.edifikana.lib.model.StaffStatus
+import com.cramsan.edifikana.lib.model.TimeCardEventId
+import com.cramsan.edifikana.lib.model.TimeCardEventType
+import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.network.AuthMetadataNetworkResponse
 import com.cramsan.edifikana.lib.model.network.EventLogEntryNetworkResponse
 import com.cramsan.edifikana.lib.model.network.StaffNetworkResponse
 import com.cramsan.edifikana.lib.model.network.TimeCardEventNetworkResponse
 import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
 import io.mockk.mockk
-import kotlin.collections.emptyList
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 
 /**
  * Unit tests for the NetworkMappers that convert network responses to domain models.
@@ -64,7 +72,9 @@ class NetworkMappersTest {
             phoneNumber = "555-1234",
             firstName = "John",
             lastName = "Doe",
-            isVerified = true
+            authMetadata = AuthMetadataNetworkResponse(
+                isPasswordSet = true,
+            ),
         )
 
         // Act
@@ -76,7 +86,7 @@ class NetworkMappersTest {
         assertEquals("555-1234", model.phoneNumber)
         assertEquals("John", model.firstName)
         assertEquals("Doe", model.lastName)
-        assertEquals(true, model.isVerified)
+        assertEquals(true, model.authMetadata?.isPasswordSet)
     }
 
     /**

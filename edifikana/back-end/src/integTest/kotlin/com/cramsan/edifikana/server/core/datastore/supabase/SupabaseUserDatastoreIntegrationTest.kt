@@ -7,6 +7,9 @@ import com.cramsan.edifikana.server.core.service.models.requests.AssociateUserRe
 import com.cramsan.edifikana.server.core.service.models.requests.CreateUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetUserRequest
+import com.cramsan.edifikana.server.core.service.models.requests.UpdatePasswordRequest
+import com.cramsan.framework.core.SecureString
+import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.framework.utils.uuid.UUID
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.exception.AuthRestException
@@ -52,7 +55,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
                 phoneNumber = request.phoneNumber,
                 firstName = request.firstName,
                 lastName = request.lastName,
-                isVerified = false,
+                authMetadata = User.AuthMetadata(isPasswordSet=true),
             ),
             result.getOrNull(),
         )
@@ -82,7 +85,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
                 phoneNumber = request.phoneNumber,
                 firstName = request.firstName,
                 lastName = request.lastName,
-                isVerified = false,
+                authMetadata = User.AuthMetadata(isPasswordSet=false),
             ),
             user,
         )
@@ -241,5 +244,32 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
         assertEquals(createdUser.phoneNumber, associatedUser.phoneNumber)
         assertEquals(createdUser.firstName, associatedUser.firstName)
         assertEquals(createdUser.lastName, associatedUser.lastName)
+    }
+
+    @OptIn(SecureStringAccess::class)
+    @Test
+    fun `update password should update the user's password`() = runCoroutineTest {
+        // Arrange: Create a user with a password
+        val email = "${test_prefix}@test.com"
+        val createRequest = CreateUserRequest(
+            email = email,
+            phoneNumber = "123-456-7890",
+            password = "oldPassword1!",
+            firstName = "Associate",
+            lastName = "User",
+        )
+        val createResult = userDatastore.createUser(createRequest).registerUserForDeletion()
+        val user =  createResult.getOrThrow()
+        val updatePasswordRequest = UpdatePasswordRequest(
+            id = UserId(user.id.userId),
+            currentHashedPassword = null,
+            newPassword = SecureString("NewPassword1!"),
+        )
+
+        // Act: Update the user's password
+        val updateResult = userDatastore.updatePassword(updatePasswordRequest)
+
+        // Assert: Check if the password was updated successfully
+        assertTrue(updateResult.isSuccess, "Password update should succeed")
     }
 }

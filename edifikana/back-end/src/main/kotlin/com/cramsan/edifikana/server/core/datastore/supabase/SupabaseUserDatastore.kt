@@ -3,6 +3,7 @@ package com.cramsan.edifikana.server.core.datastore.supabase
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
 import com.cramsan.edifikana.server.core.datastore.UserDatastore
+import com.cramsan.edifikana.server.core.datastore.supabase.models.AuthMetadataEntity
 import com.cramsan.edifikana.server.core.datastore.supabase.models.UserEntity
 import com.cramsan.edifikana.server.core.service.models.User
 import com.cramsan.edifikana.server.core.service.models.requests.AssociateUserRequest
@@ -11,9 +12,12 @@ import com.cramsan.edifikana.server.core.service.models.requests.DeleteUserReque
 import com.cramsan.edifikana.server.core.service.models.requests.GetUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdatePasswordRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdateUserRequest
+import com.cramsan.framework.core.Hashing
+import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logW
+import com.cramsan.framework.utils.loginvalidation.validatePassword
 import com.cramsan.framework.utils.uuid.UUID
 import io.github.jan.supabase.auth.admin.AdminApi
 import io.github.jan.supabase.auth.exception.AuthRestException
@@ -165,16 +169,34 @@ class SupabaseUserDatastore(
     ): Result<User> = runSuspendCatching(TAG) {
         logD(TAG, "Updating user: %s", request.id)
 
-        postgrest.from(UserEntity.COLLECTION).update(
+        updateUserImpl(
+            request.id,
+            email = request.email,
+        ).toUser()
+    }
+
+    private suspend fun updateUserImpl(
+        id: UserId,
+        email: String? = null,
+        firstName: String? = null,
+        lastName: String? = null,
+        phoneNumber: String? = null,
+        authMetadata: AuthMetadataEntity? = null,
+    ): UserEntity {
+        return postgrest.from(UserEntity.COLLECTION).update(
             {
-                request.email?.let { value -> User::email setTo value }
+                email?.let { UserEntity::email setTo it }
+                firstName?.let { UserEntity::firstName setTo it }
+                lastName?.let { UserEntity::lastName setTo it }
+                phoneNumber?.let { UserEntity::phoneNumber setTo it }
+                authMetadata?.let { UserEntity::authMetadata setTo it }
             }
         ) {
             select()
             filter {
-                UserEntity::id eq request.id.userId
+                UserEntity::id eq id.userId
             }
-        }.decodeSingle<UserEntity>().toUser()
+        }.decodeSingle<UserEntity>()
     }
 
     /**
@@ -204,14 +226,51 @@ class SupabaseUserDatastore(
         }.decodeSingleOrNull<UserEntity>() != null
     }
 
-    override suspend fun updatePassword(request: UpdatePasswordRequest): Result<Boolean> = runSuspendCatching(TAG) {
+    @OptIn(SecureStringAccess::class)
+    override suspend fun updatePassword(request: UpdatePasswordRequest): Result<Unit> = runSuspendCatching(TAG) {
         logD(TAG, "Updating password for user: %s", request.id)
 
-        adminApi.updateUserById(request.id.userId) {
-            password = request.password
+        val user = getUserImpl(request.id) ?: throw ClientRequestExceptions.NotFoundException(
+            message = "Error: User with ID ${request.id} not found in our database.",
+        )
+
+        // If the user has a password set, we need to check for the hash of the current password
+        if (user.authMetadata.canPasswordAuth) {
+            if (request.currentHashedPassword == null) {
+                throw ClientRequestExceptions.InvalidRequestException(
+                    message = "Error: Current password is required for password update.",
+                )
+            }
+
+            val requestCurrentHashedPassword = request.currentHashedPassword.reveal()
+
+            if (requestCurrentHashedPassword != user.authMetadata.hashedPassword) {
+                logW(TAG, "Current password does not match for user: ${request.id}")
+                throw ClientRequestExceptions.UnauthorizedException("Error: Current password is incorrect.")
+            }
         }
 
-        true
+        val passwordErrors = validatePassword(request.newPassword.reveal())
+        if (passwordErrors.isNotEmpty()) {
+            logW(TAG, "Password validation failed for user: ${request.id}, with ${passwordErrors.size} errors.")
+            throw ClientRequestExceptions.InvalidRequestException(
+                message = "Error: Password validation failed for user ${request.id}. "
+            )
+        }
+
+        val newHashedPassword = Hashing.insecureHash(request.newPassword.reveal().encodeToByteArray()).toString()
+
+        adminApi.updateUserById(user.id) {
+            password = request.newPassword.reveal()
+        }
+
+        updateUserImpl(
+            request.id,
+            authMetadata = user.authMetadata.copy(
+                hashedPassword = newHashedPassword,
+                canPasswordAuth = true,
+            )
+        )
     }
 
     private suspend fun createUserEntity(

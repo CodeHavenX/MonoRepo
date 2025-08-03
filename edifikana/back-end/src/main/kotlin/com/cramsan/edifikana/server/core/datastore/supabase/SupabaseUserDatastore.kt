@@ -73,7 +73,6 @@ class SupabaseUserDatastore(
             }
         }
 
-
         // Create the user entity in our database
         val requestEntity: UserEntity.CreateUserEntity = request.toUserEntity(
             UserId(userId),

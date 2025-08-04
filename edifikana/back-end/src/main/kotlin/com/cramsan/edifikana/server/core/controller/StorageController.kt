@@ -1,6 +1,8 @@
 package com.cramsan.edifikana.server.core.controller
 
 import com.cramsan.edifikana.lib.FILE_ID
+import com.cramsan.edifikana.lib.Routes
+import com.cramsan.edifikana.lib.STAFF_ID
 import com.cramsan.edifikana.lib.annotations.NetworkModel
 import com.cramsan.edifikana.lib.model.AssetId
 import com.cramsan.edifikana.lib.model.network.CreateAssetNetworkRequest
@@ -10,6 +12,10 @@ import com.cramsan.framework.core.ktor.HttpResponse
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.request.receive
+import io.ktor.server.routing.Routing
+import io.ktor.server.routing.get
+import io.ktor.server.routing.post
+import io.ktor.server.routing.route
 
 /**
  * Controller for storage related operations, specifically for file management.
@@ -22,8 +28,8 @@ class StorageController(
      * Handles the creation of a new file. The [call] parameter is the request context.
      */
     @OptIn(NetworkModel::class)
-    suspend fun createFile(call: ApplicationCall) = call.handleCall(
-        "TAG",
+    suspend fun createAsset(call: ApplicationCall) = call.handleCall(
+        TAG,
         "createAsset",
         contextRetriever,
     ) { _ ->
@@ -44,7 +50,7 @@ class StorageController(
      */
     @OptIn(NetworkModel::class)
     suspend fun getAsset(call: ApplicationCall) = call.handleCall(
-        "TAG",
+        TAG,
         "getAsset",
         contextRetriever,
     ) { _ ->
@@ -64,5 +70,27 @@ class StorageController(
             status = statusCode,
             body = asset,
         )
+    }
+
+    /**
+     * Companion object.
+     */
+    companion object {
+        private const val TAG = "StorageController"
+
+        /**
+         * Registers the routes for the storage controller. The [route] parameter is the root path for the controller.
+         */
+        fun StorageController.registerRoutes(route: Routing) {
+            route.route(Routes.Staff.PATH) {
+                post {
+                    createAsset(call)
+                }
+                get("{$FILE_ID}") {
+                    getAsset(call)
+                }
+
+            }
+        }
     }
 }

@@ -31,7 +31,7 @@ fun NavGraphBuilder.managementActivityNavigation() {
                 destination = backstackEntry.toRoute()
             )
         }
-        */
+         */
         composable(ManagementDestination.AddPropertyManagementDestination::class) {
             AddPropertyScreen()
         }
@@ -47,7 +47,7 @@ fun NavGraphBuilder.managementActivityNavigation() {
                 destination = backstackEntry.toRoute(),
             )
         }
-        */
+         */
         composable(ManagementDestination.TimeCardStaffListDestination::class) {
             TimeCardStaffListScreen()
         }
@@ -57,7 +57,7 @@ fun NavGraphBuilder.managementActivityNavigation() {
                 staffPK = backStackEntry.toRoute<ManagementDestination.StaffDestination>().staffId,
             )
         }
-        */
+         */
         composable(ManagementDestination.EventLogSingleItemDestination::class) { backStackEntry ->
             ViewRecordScreen(
                 eventLogRecordPK = backStackEntry

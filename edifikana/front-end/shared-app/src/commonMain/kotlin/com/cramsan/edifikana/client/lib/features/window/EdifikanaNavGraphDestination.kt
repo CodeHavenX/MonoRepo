@@ -14,35 +14,35 @@ import kotlinx.serialization.Serializable
  * the value of {id} would be 123.
  */
 @Serializable
-sealed class ActivityRouteDestination : NavigationGraphDestination {
+sealed class EdifikanaNavGraphDestination : NavigationGraphDestination {
 
     /**
      * A class representing navigating to the splash screen.
      */
     @Serializable
-    data object SplashRouteDestination : ActivityRouteDestination()
+    data object SplashNavGraphDestination : EdifikanaNavGraphDestination()
 
     /**
      * A class representing navigating to the auth screen.
      */
     @Serializable
-    data object AuthRouteDestination : ActivityRouteDestination()
+    data object AuthNavGraphDestination : EdifikanaNavGraphDestination()
 
     /**
      * A class representing navigating to the account page.
      */
     @Serializable
-    data object AccountRouteDestination : ActivityRouteDestination()
+    data object AccountNavGraphDestination : EdifikanaNavGraphDestination()
 
     /**
      * A class representing navigating to the Staff Screen.
      */
     @Serializable
-    data object ManagementRouteDestination : ActivityRouteDestination()
+    data object ManagementNavGraphDestination : EdifikanaNavGraphDestination()
 
     /**
      * A class representing navigating to the debug page.
      */
     @Serializable
-    data object DebugRouteDestination : ActivityRouteDestination()
+    data object DebugNavGraphDestination : EdifikanaNavGraphDestination()
 }

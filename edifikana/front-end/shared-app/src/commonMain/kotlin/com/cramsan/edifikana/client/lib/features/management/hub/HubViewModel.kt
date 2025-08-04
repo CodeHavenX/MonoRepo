@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.management.hub
 
-import com.cramsan.edifikana.client.lib.features.account.AccountRouteDestination
-import com.cramsan.edifikana.client.lib.features.window.ActivityRouteDestination
+import com.cramsan.edifikana.client.lib.features.account.AccountDestination
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
@@ -25,7 +25,7 @@ class HubViewModel(
         logI(TAG, "Navigating to account page.")
         viewModelScope.launch {
             emitWindowEvent(
-                EdifikanaWindowsEvent.NavigateToActivity(ActivityRouteDestination.AccountRouteDestination)
+                EdifikanaWindowsEvent.NavigateToNavGraph(EdifikanaNavGraphDestination.AccountNavGraphDestination)
             )
         }
     }
@@ -47,7 +47,7 @@ class HubViewModel(
         viewModelScope.launch {
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToScreen(
-                    AccountRouteDestination.NotificationsDestination,
+                    AccountDestination.NotificationsDestination,
                 )
             )
         }

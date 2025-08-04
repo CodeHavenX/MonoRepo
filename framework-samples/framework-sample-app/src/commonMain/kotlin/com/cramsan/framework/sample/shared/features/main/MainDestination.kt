@@ -6,25 +6,25 @@ import com.cramsan.framework.core.compose.navigation.Destination
 import kotlinx.serialization.Serializable
 
 /**
- * Destinations in the main activity.
+ * Destinations in the main nav graph.
  */
-sealed class MainRouteDestination : Destination {
+sealed class MainDestination : Destination {
 
     /**
      * A class representing a main menu.
      */
     @Serializable
-    data object MainMenuDestination : MainRouteDestination()
+    data object MainMenuDestination : MainDestination()
 
     /**
      * A class representing a halt util.
      */
     @Serializable
-    data object HaltUtilDestination : MainRouteDestination()
+    data object HaltUtilDestination : MainDestination()
 
     /**
      * A class representing a logging destination.
      */
     @Serializable
-    data object LoggingDestination : MainRouteDestination()
+    data object LoggingDestination : MainDestination()
 }

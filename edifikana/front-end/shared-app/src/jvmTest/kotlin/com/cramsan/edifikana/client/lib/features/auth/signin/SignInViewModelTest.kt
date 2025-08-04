@@ -1,8 +1,8 @@
 package com.cramsan.edifikana.client.lib.features.auth.signin
 
 import app.cash.turbine.test
-import com.cramsan.edifikana.client.lib.features.auth.AuthRouteDestination
-import com.cramsan.edifikana.client.lib.features.window.ActivityRouteDestination
+import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
@@ -130,8 +130,8 @@ class SignInViewModelTest : CoroutineTest() {
         val verificationJob = launch {
             windowEventBus.events.test {
                 assertEquals(
-                    EdifikanaWindowsEvent.NavigateToActivity(
-                        ActivityRouteDestination.ManagementRouteDestination,
+                    EdifikanaWindowsEvent.NavigateToNavGraph(
+                        EdifikanaNavGraphDestination.ManagementNavGraphDestination,
                         clearTop = true,
                     ),
                     awaitItem()
@@ -227,7 +227,7 @@ class SignInViewModelTest : CoroutineTest() {
         val verificationJob = launch {
             windowEventBus.events.test {
                 assertEquals(
-                    EdifikanaWindowsEvent.NavigateToScreen(AuthRouteDestination.SignUpDestination),
+                    EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.SignUpDestination),
                     awaitItem()
                 )
             }
@@ -250,7 +250,7 @@ class SignInViewModelTest : CoroutineTest() {
         val verificationJob = launch {
             windowEventBus.events.test {
                 assertEquals(
-                    EdifikanaWindowsEvent.NavigateToActivity(ActivityRouteDestination.DebugRouteDestination),
+                    EdifikanaWindowsEvent.NavigateToNavGraph(EdifikanaNavGraphDestination.DebugNavGraphDestination),
                     awaitItem()
                 )
             }
@@ -275,7 +275,7 @@ class SignInViewModelTest : CoroutineTest() {
             windowEventBus.events.test {
                 assertEquals(
                     EdifikanaWindowsEvent.NavigateToScreen(
-                        AuthRouteDestination.ValidationDestination(
+                        AuthDestination.ValidationDestination(
                             email.trim(),
                             accountCreationFlow = false,
                         )

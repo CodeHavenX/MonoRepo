@@ -7,29 +7,29 @@ import androidx.navigation.toRoute
 import com.cramsan.edifikana.client.lib.features.auth.signin.SignInScreen
 import com.cramsan.edifikana.client.lib.features.auth.signup.SignUpScreen
 import com.cramsan.edifikana.client.lib.features.auth.validation.OtpValidationScreen
-import com.cramsan.edifikana.client.lib.features.window.ActivityRouteDestination
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.framework.core.compose.navigation.navigationGraph
 import kotlin.jvm.JvmSuppressWildcards
 import kotlin.reflect.KType
 
 /**
- * Auth Activity Route.
+ * Auth Nav Graph Route.
  */
-fun NavGraphBuilder.authActivityNavigation(
+fun NavGraphBuilder.authNavGraphNavigation(
     typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> = emptyMap(),
 ) {
     navigationGraph(
-        graphDestination = ActivityRouteDestination.AuthRouteDestination::class,
-        startDestination = AuthRouteDestination.SignInDestination,
+        graphDestination = EdifikanaNavGraphDestination.AuthNavGraphDestination::class,
+        startDestination = AuthDestination.SignInDestination,
         typeMap = typeMap,
     ) {
-        composable(AuthRouteDestination.SignInDestination::class) {
+        composable(AuthDestination.SignInDestination::class) {
             SignInScreen()
         }
-        composable(AuthRouteDestination.SignUpDestination::class) {
+        composable(AuthDestination.SignUpDestination::class) {
             SignUpScreen()
         }
-        composable(AuthRouteDestination.ValidationDestination::class) { backStackEntry ->
+        composable(AuthDestination.ValidationDestination::class) { backStackEntry ->
             OtpValidationScreen(
                 destination = backStackEntry.toRoute()
             )

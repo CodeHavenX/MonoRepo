@@ -1,10 +1,10 @@
 package com.cramsan.edifikana.client.lib.features.admin.hub
 
 import app.cash.turbine.test
-import com.cramsan.edifikana.client.lib.features.account.AccountRouteDestination
+import com.cramsan.edifikana.client.lib.features.account.AccountDestination
 import com.cramsan.edifikana.client.lib.features.management.hub.HubViewModel
 import com.cramsan.edifikana.client.lib.features.management.hub.Tabs
-import com.cramsan.edifikana.client.lib.features.window.ActivityRouteDestination
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
@@ -46,11 +46,11 @@ class HubViewModelTest : CoroutineTest() {
     }
 
     @Test
-    fun `test navigateToAccount emits NavigateToActivity event`() = runCoroutineTest {
+    fun `test navigateToAccount emits NavigateToNavGraph event`() = runCoroutineTest {
         val verificationJob = launch {
             windowEventBus.events.test {
                 assertEquals(
-                    EdifikanaWindowsEvent.NavigateToActivity(ActivityRouteDestination.AccountRouteDestination),
+                    EdifikanaWindowsEvent.NavigateToNavGraph(EdifikanaNavGraphDestination.AccountNavGraphDestination),
                     awaitItem()
                 )
             }
@@ -71,7 +71,7 @@ class HubViewModelTest : CoroutineTest() {
         val verificationJob = launch {
             windowEventBus.events.test {
                 assertEquals(
-                    EdifikanaWindowsEvent.NavigateToScreen(AccountRouteDestination.NotificationsDestination),
+                    EdifikanaWindowsEvent.NavigateToScreen(AccountDestination.NotificationsDestination),
                     awaitItem()
                 )
             }

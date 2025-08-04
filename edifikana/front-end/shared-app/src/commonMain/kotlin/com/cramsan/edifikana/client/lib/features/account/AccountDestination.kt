@@ -6,25 +6,26 @@ import com.cramsan.framework.core.compose.navigation.Destination
 import kotlinx.serialization.Serializable
 
 /**
- * Destinations in the account activity.
+ * Destinations in the account nav grapg.
  */
 @Serializable
-sealed class AccountRouteDestination : Destination {
+sealed class AccountDestination : Destination {
 
     /**
-     * A class representing navigating to the account screen within the account activity.
+     * A class representing navigating to the account screen within the account nav graph.
      */
     @Serializable
-    data object AccountDestination : AccountRouteDestination()
+    data object MyAccountDestination : AccountDestination()
 
     /**
      * A class representing navigating to the Notification Screen.
      */
     @Serializable
-    data object NotificationsDestination : AccountRouteDestination()
+    data object NotificationsDestination : AccountDestination()
 
     /**
      * A class representing navigating to the Change Password Screen.
      */
-    data object ChangePasswordDestination : AccountRouteDestination()
+    @Serializable
+    data object ChangePasswordDestination : AccountDestination()
 }

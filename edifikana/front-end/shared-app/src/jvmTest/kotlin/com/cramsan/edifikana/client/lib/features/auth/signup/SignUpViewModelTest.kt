@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.auth.signup
 
 import app.cash.turbine.test
-import com.cramsan.edifikana.client.lib.features.auth.AuthRouteDestination
+import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.framework.core.UnifiedDispatcherProvider
@@ -218,7 +218,7 @@ class SignUpViewModelTest : CoroutineTest() {
             windowEventBus.events.test {
                 assertEquals(
                     EdifikanaWindowsEvent.NavigateToScreen(
-                        destination= AuthRouteDestination.ValidationDestination(
+                        destination= AuthDestination.ValidationDestination(
                             userEmail="totalReal@email.com",
                             accountCreationFlow=true
                         ),

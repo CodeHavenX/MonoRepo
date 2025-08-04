@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.account.account
 
-import com.cramsan.edifikana.client.lib.features.account.AccountRouteDestination
-import com.cramsan.edifikana.client.lib.features.window.ActivityRouteDestination
+import com.cramsan.edifikana.client.lib.features.account.AccountDestination
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.framework.core.compose.BaseViewModel
@@ -24,8 +24,8 @@ class AccountViewModel(
             updateUiState { it.copy(isLoading = true) }
             auth.signOut()
             emitWindowEvent(
-                EdifikanaWindowsEvent.NavigateToActivity(
-                    ActivityRouteDestination.AuthRouteDestination,
+                EdifikanaWindowsEvent.NavigateToNavGraph(
+                    EdifikanaNavGraphDestination.AuthNavGraphDestination,
                     clearStack = true,
                 )
             )
@@ -153,7 +153,7 @@ class AccountViewModel(
         viewModelScope.launch {
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToScreen(
-                    AccountRouteDestination.ChangePasswordDestination
+                    AccountDestination.ChangePasswordDestination
                 )
             )
         }

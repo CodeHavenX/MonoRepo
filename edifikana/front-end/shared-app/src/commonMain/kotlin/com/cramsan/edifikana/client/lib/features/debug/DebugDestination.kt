@@ -6,20 +6,20 @@ import com.cramsan.framework.core.compose.navigation.Destination
 import kotlinx.serialization.Serializable
 
 /**
- * Destinations in the Debug activity.
+ * Destinations in the Debug nav graph.
  */
 @Serializable
-sealed class DebugRouteDestination : Destination {
+sealed class DebugDestination : Destination {
 
     /**
-     * An example class representing navigating to a screen within the Debug activity.
+     * An example class representing navigating to a screen within the Debug nav graph.
      */
     @Serializable
-    data object MainDebugDestination : DebugRouteDestination()
+    data object MainDebugDestination : DebugDestination()
 
     /**
      * A class representing navigating to the ScreenSelector screen.
      */
     @Serializable
-    data object ScreenSelectorDestination : DebugRouteDestination()
+    data object ScreenSelectorDestination : DebugDestination()
 }

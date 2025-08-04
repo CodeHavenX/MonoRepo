@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.account.account
 
 import app.cash.turbine.test
-import com.cramsan.edifikana.client.lib.features.window.ActivityRouteDestination
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.models.UserModel
@@ -50,7 +50,7 @@ class AccountViewModelTest : CoroutineTest() {
     }
 
     @Test
-    fun `test signOut emits NavigateToActivity event`() = runCoroutineTest {
+    fun `test signOut emits NavigateToNavGraph event`() = runCoroutineTest {
         // Arrange
         coEvery { authManager.signOut() } returns Result.success(Unit)
 
@@ -58,8 +58,8 @@ class AccountViewModelTest : CoroutineTest() {
         val verificationJob = launch {
             windowEventBus.events.test {
                 assertEquals(
-                    EdifikanaWindowsEvent.NavigateToActivity(
-                        ActivityRouteDestination.AuthRouteDestination,
+                    EdifikanaWindowsEvent.NavigateToNavGraph(
+                        EdifikanaNavGraphDestination.AuthNavGraphDestination,
                         clearStack = true,
                     ),
                     awaitItem(),

@@ -15,10 +15,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.cramsan.edifikana.client.lib.features.account.accountActivityNavigation
-import com.cramsan.edifikana.client.lib.features.auth.authActivityNavigation
-import com.cramsan.edifikana.client.lib.features.debug.debugActivityNavigation
-import com.cramsan.edifikana.client.lib.features.management.managementActivityNavigation
+import com.cramsan.edifikana.client.lib.features.account.accountNavGraph
+import com.cramsan.edifikana.client.lib.features.auth.authNavGraphNavigation
+import com.cramsan.edifikana.client.lib.features.debug.debugNavGraphNavigation
+import com.cramsan.edifikana.client.lib.features.management.managementNavGraphNavigation
 import com.cramsan.edifikana.client.lib.features.splash.SplashScreen
 import com.cramsan.edifikana.client.lib.navigation.EventLogEntryIdNavType
 import com.cramsan.edifikana.client.lib.navigation.PropertyIdNavType
@@ -45,7 +45,7 @@ import kotlin.reflect.typeOf
 fun EdifikanaWindowScreen(
     eventHandler: EdifikanaMainScreenEventHandler,
     viewModel: EdifikanaWindowViewModel = koinViewModel(),
-    startDestination: ActivityRouteDestination = ActivityRouteDestination.SplashRouteDestination,
+    startDestination: EdifikanaNavGraphDestination = EdifikanaNavGraphDestination.SplashNavGraphDestination,
 ) {
     WindowsContent(
         eventHandler = eventHandler,
@@ -56,7 +56,7 @@ fun EdifikanaWindowScreen(
 
 @Composable
 private fun WindowsContent(
-    startDestination: ActivityRouteDestination,
+    startDestination: EdifikanaNavGraphDestination,
     viewModel: EdifikanaWindowViewModel,
     eventHandler: EdifikanaMainScreenEventHandler,
 ) {
@@ -118,7 +118,7 @@ private fun handleWindowEvent(
         is EdifikanaWindowsEvent.ShareContent -> {
             eventHandler.shareContent(event)
         }
-        is EdifikanaWindowsEvent.NavigateToActivity -> {
+        is EdifikanaWindowsEvent.NavigateToNavGraph -> {
             handleNavigationEvent(
                 navController = navController,
                 event = event,
@@ -135,15 +135,11 @@ private fun handleWindowEvent(
         is EdifikanaWindowsEvent.NavigateBack -> {
             navController.popBackStack()
         }
-        is EdifikanaWindowsEvent.CloseActivity -> {
-            val currentActivity = navController.currentBackStack.value.reversed().find {
-                false
-                /*
-                it.toRoute<>()
-                ApplicationRoute.Companion.fromRoute(it.destination.route) != null
-                 */
+        is EdifikanaWindowsEvent.CloseNavGraph -> {
+            val currentNavGraph = navController.currentBackStack.value.reversed().find {
+                it.destination.navigatorName == "navigation"
             }
-            currentActivity?.destination?.route?.let {
+            currentNavGraph?.destination?.route?.let {
                 navController.popBackStack(it, inclusive = true)
             }
         }
@@ -194,7 +190,7 @@ private suspend fun handleSnackbarEvent(
 @Composable
 private fun WindowNavigationHost(
     navHostController: NavHostController,
-    startDestination: ActivityRouteDestination,
+    startDestination: EdifikanaNavGraphDestination,
 ) {
     val typeMap = remember {
         mapOf(
@@ -212,13 +208,13 @@ private fun WindowNavigationHost(
         enterTransition = { fadeIn(animationSpec = tween(TRANSITION_ANIMATION_DURATION_MS)) },
         exitTransition = { fadeOut(animationSpec = tween(TRANSITION_ANIMATION_DURATION_MS)) },
     ) {
-        composable(ActivityRouteDestination.SplashRouteDestination::class) {
+        composable(EdifikanaNavGraphDestination.SplashNavGraphDestination::class) {
             SplashScreen()
         }
-        authActivityNavigation(typeMap)
-        accountActivityNavigation(typeMap)
-        debugActivityNavigation(typeMap)
-        managementActivityNavigation(typeMap)
+        authNavGraphNavigation(typeMap)
+        accountNavGraph(typeMap)
+        debugNavGraphNavigation(typeMap)
+        managementNavGraphNavigation(typeMap)
     }
 }
 

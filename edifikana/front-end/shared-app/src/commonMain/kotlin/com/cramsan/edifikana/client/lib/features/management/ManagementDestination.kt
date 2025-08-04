@@ -9,14 +9,14 @@ import com.cramsan.framework.core.compose.navigation.Destination
 import kotlinx.serialization.Serializable
 
 /**
- * Destinations in the Management activity.
+ * Destinations in the Management nav graph.
  */
 @Serializable
 sealed class ManagementDestination : Destination {
 
     /**
      * A class representing navigating to the property list screen within
-     * the Management activity.
+     * the Management nav graph.
      */
     @Serializable
     data object PropertiesManagementDestination : ManagementDestination()

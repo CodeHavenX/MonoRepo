@@ -15,19 +15,20 @@ import com.cramsan.edifikana.client.lib.features.management.staff.StaffScreen
 import com.cramsan.edifikana.client.lib.features.management.timecardstafflist.TimeCardStaffListScreen
 import com.cramsan.edifikana.client.lib.features.management.viewrecord.ViewRecordScreen
 import com.cramsan.edifikana.client.lib.features.management.viewstaff.ViewStaffScreen
-import com.cramsan.edifikana.client.lib.features.window.ActivityRouteDestination
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.framework.core.compose.navigation.navigationGraph
 import kotlin.jvm.JvmSuppressWildcards
 import kotlin.reflect.KType
 
 /**
- * Management Activity Route.
+ * Management nav graph Route.
  */
-fun NavGraphBuilder.managementActivityNavigation(
+@Suppress("LongMethod")
+fun NavGraphBuilder.managementNavGraphNavigation(
     typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> = emptyMap(),
 ) {
     navigationGraph(
-        graphDestination = ActivityRouteDestination.ManagementRouteDestination::class,
+        graphDestination = EdifikanaNavGraphDestination.ManagementNavGraphDestination::class,
         startDestination = ManagementDestination.ManagementHub,
         typeMap = typeMap,
     ) {

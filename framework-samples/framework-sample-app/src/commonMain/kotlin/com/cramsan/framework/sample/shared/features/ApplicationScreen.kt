@@ -12,7 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import com.cramsan.framework.sample.shared.features.main.mainActivityNavigation
+import com.cramsan.framework.sample.shared.features.main.mainNavGraphNavigation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
@@ -64,7 +64,7 @@ private fun handleApplicationEvent(
     applicationEvent: SampleWindowEvent,
 ) {
     when (val event = applicationEvent) {
-        is SampleWindowEvent.NavigateToActivity -> {
+        is SampleWindowEvent.NavigateToNavGraph -> {
             if (event.clearStack) {
                 while (navController.currentBackStack.value.isNotEmpty()) {
                     navController.popBackStack()
@@ -80,15 +80,13 @@ private fun handleApplicationEvent(
         is SampleWindowEvent.NavigateBack -> {
             navController.popBackStack()
         }
-        is SampleWindowEvent.CloseActivity -> {
-            /*
-            val currentActivity = navController.currentBackStack.value.reversed().find {
-                ApplicationRoute.fromRoute(it.destination.route) != null
+        is SampleWindowEvent.CloseNavGraph -> {
+            val currentNavGraph = navController.currentBackStack.value.reversed().find {
+                it.destination.navigatorName == "navigation"
             }
-            currentActivity?.destination?.route?.let {
+            currentNavGraph?.destination?.route?.let {
                 navController.popBackStack(it, inclusive = true)
             }
-             */
         }
         is SampleWindowEvent.ShowSnackbar -> {
             scope.launch {
@@ -125,9 +123,9 @@ private fun ApplicationNavigationHost(
 ) {
     NavHost(
         navController = navHostController,
-        startDestination = ActivityDestination.MainDestination,
+        startDestination = ApplicationNavGraphDestination.MainDestination,
     ) {
-        mainActivityNavigation()
+        mainNavGraphNavigation()
     }
 }
 

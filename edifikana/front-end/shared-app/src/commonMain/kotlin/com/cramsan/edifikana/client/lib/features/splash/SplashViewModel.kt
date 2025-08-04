@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.splash
 
-import com.cramsan.edifikana.client.lib.features.window.ActivityRouteDestination
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
@@ -54,15 +54,15 @@ class SplashViewModel(
         val propertyResult = propertyManager.getPropertyList()
         propertyManager.setActiveProperty(propertyResult.getOrNull()?.firstOrNull()?.id)
         emitWindowEvent(
-            EdifikanaWindowsEvent.NavigateToActivity(ActivityRouteDestination.ManagementRouteDestination)
+            EdifikanaWindowsEvent.NavigateToNavGraph(EdifikanaNavGraphDestination.ManagementNavGraphDestination)
         )
     }
 
     private suspend fun navigateToSignInScreen() {
         propertyManager.setActiveProperty(null)
         emitWindowEvent(
-            EdifikanaWindowsEvent.NavigateToActivity(
-                ActivityRouteDestination.AuthRouteDestination,
+            EdifikanaWindowsEvent.NavigateToNavGraph(
+                EdifikanaNavGraphDestination.AuthNavGraphDestination,
                 clearStack = true,
             )
         )

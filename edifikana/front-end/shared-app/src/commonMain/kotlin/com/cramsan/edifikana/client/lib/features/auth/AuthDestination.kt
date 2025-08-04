@@ -6,21 +6,21 @@ import com.cramsan.framework.core.compose.navigation.Destination
 import kotlinx.serialization.Serializable
 
 /**
- * Destinations in the auth activity.
+ * Destinations in the auth nav graph.
  */
-sealed class AuthRouteDestination : Destination {
+sealed class AuthDestination : Destination {
 
     /**
      * A class representing navigating to the sign in screen.
      */
     @Serializable
-    data object SignInDestination : AuthRouteDestination()
+    data object SignInDestination : AuthDestination()
 
     /**
      * A class representing navigating to the sign up screen.
      */
     @Serializable
-    data object SignUpDestination : AuthRouteDestination()
+    data object SignUpDestination : AuthDestination()
 
     /**
      * A class representing navigating to the validation screen.
@@ -29,5 +29,5 @@ sealed class AuthRouteDestination : Destination {
     data class ValidationDestination(
         val userEmail: String,
         val accountCreationFlow: Boolean,
-    ) : AuthRouteDestination()
+    ) : AuthDestination()
 }

@@ -14,7 +14,7 @@ import kotlin.reflect.KType
 fun <G : NavigationGraphDestination, D : Destination,> NavGraphBuilder.navigationGraph(
     graphDestination: KClass<G>,
     startDestination: D,
-    typeMap: Map<KType, @JvmSuppressWildcards NavType<*>>,
+    typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> = emptyMap(),
     builder: NavGraphBuilder.() -> Unit
 ) {
     navigation(

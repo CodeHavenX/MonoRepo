@@ -14,11 +14,11 @@ import kotlinx.serialization.Serializable
  * the value of {id} would be 123.
  */
 @Serializable
-sealed class ActivityDestination : NavigationGraphDestination {
+sealed class ApplicationNavGraphDestination : NavigationGraphDestination {
     /**
      * A class representing navigating to the Main Menu screen.
      */
 
     @Serializable
-    data object MainDestination : ActivityDestination()
+    data object MainDestination : ApplicationNavGraphDestination()
 }

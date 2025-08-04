@@ -1,9 +1,9 @@
 package com.cramsan.edifikana.client.lib.features.main.home
 
 import app.cash.turbine.test
-import com.cramsan.edifikana.client.lib.features.account.AccountRouteDestination
+import com.cramsan.edifikana.client.lib.features.account.AccountDestination
 import com.cramsan.edifikana.client.lib.features.management.home.HomeViewModel
-import com.cramsan.edifikana.client.lib.features.window.ActivityRouteDestination
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.models.PropertyModel
@@ -106,13 +106,13 @@ class HomeViewModelTest : CoroutineTest() {
     }
 
     @Test
-    fun `test navigateToAccount emits NavigateToActivity event`() = runCoroutineTest {
+    fun `test navigateToAccount emits NavigateToNavGraph event`() = runCoroutineTest {
         // Act
         val verificationJob = launch {
             windowEventBus.events.test {
                 assertEquals(
-                    EdifikanaWindowsEvent.NavigateToActivity(
-                        ActivityRouteDestination.AccountRouteDestination
+                    EdifikanaWindowsEvent.NavigateToNavGraph(
+                        EdifikanaNavGraphDestination.AccountNavGraphDestination
                     ),
                     awaitItem(),
                 )
@@ -131,7 +131,7 @@ class HomeViewModelTest : CoroutineTest() {
             windowEventBus.events.test {
                 assertEquals(
                     EdifikanaWindowsEvent.NavigateToScreen(
-                        AccountRouteDestination.NotificationsDestination
+                        AccountDestination.NotificationsDestination
                     ),
                     awaitItem(),
                 )

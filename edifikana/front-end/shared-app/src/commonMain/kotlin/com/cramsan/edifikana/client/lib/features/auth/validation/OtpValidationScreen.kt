@@ -45,7 +45,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
-import com.cramsan.edifikana.client.lib.features.auth.AuthRouteDestination
+import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
@@ -64,7 +64,7 @@ import org.koin.compose.viewmodel.koinViewModel
  */
 @Composable
 fun OtpValidationScreen(
-    destination: AuthRouteDestination.ValidationDestination,
+    destination: AuthDestination.ValidationDestination,
     viewModel: OtpValidationViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()

@@ -1,8 +1,9 @@
 package com.cramsan.edifikana.client.lib.features.management
 
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.navigation
+import androidx.navigation.toRoute
 import com.cramsan.edifikana.client.lib.features.management.addprimarystaff.AddPrimaryStaffScreen
 import com.cramsan.edifikana.client.lib.features.management.addproperty.AddPropertyScreen
 import com.cramsan.edifikana.client.lib.features.management.addrecord.AddRecordScreen
@@ -14,65 +15,77 @@ import com.cramsan.edifikana.client.lib.features.management.staff.StaffScreen
 import com.cramsan.edifikana.client.lib.features.management.timecardstafflist.TimeCardStaffListScreen
 import com.cramsan.edifikana.client.lib.features.management.viewrecord.ViewRecordScreen
 import com.cramsan.edifikana.client.lib.features.management.viewstaff.ViewStaffScreen
-import com.cramsan.edifikana.lib.model.EventLogEntryId
-import com.cramsan.edifikana.lib.model.StaffId
-import com.cramsan.framework.annotations.RouteSafePath
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
+import com.cramsan.framework.core.compose.navigation.navigationGraph
+import kotlin.jvm.JvmSuppressWildcards
+import kotlin.reflect.KType
 
 /**
- * Management Activity Route.
+ * Management nav graph Route.
  */
-@OptIn(RouteSafePath::class)
-fun NavGraphBuilder.managementActivityNavigation(
-    route: String,
+@Suppress("LongMethod")
+fun NavGraphBuilder.managementNavGraphNavigation(
+    typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> = emptyMap(),
 ) {
-    navigation(
-        route = route,
-        startDestination = ManagementRoute.ManagementHub.route,
+    navigationGraph(
+        graphDestination = EdifikanaNavGraphDestination.ManagementNavGraphDestination::class,
+        startDestination = ManagementDestination.ManagementHub,
+        typeMap = typeMap,
     ) {
-        ManagementRoute.entries.forEach {
-            when (it) {
-                ManagementRoute.Properties -> composable(it.route) {
-                    PropertyManagerScreen()
-                }
-                ManagementRoute.Property -> composable(it.route) { backstackEntry ->
-                    PropertyScreen(
-                        ManagementDestination.PropertyManagementDestination.unpack(backstackEntry)
-                    )
-                }
-                ManagementRoute.AddProperty -> composable(it.route) {
-                    AddPropertyScreen()
-                }
-                ManagementRoute.AddPrimaryStaff -> composable(it.route) {
-                    AddPrimaryStaffScreen()
-                }
-                ManagementRoute.AddSecondaryStaff -> composable(it.route) {
-                    AddSecondaryStaffScreen()
-                }
-                ManagementRoute.Staff -> composable(it.route) { backstackEntry ->
-                    StaffScreen(
-                        ManagementDestination.StaffDestination.unpack(backstackEntry)
-                    )
-                }
-                ManagementRoute.TimeCardStaffList -> composable(it.route) {
-                    TimeCardStaffListScreen()
-                }
-                ManagementRoute.TimeCardSingleStaff -> composable(it.route) { backStackEntry ->
-                    ViewStaffScreen(
-                        StaffId(backStackEntry.arguments?.getString("staffPk").orEmpty()),
-                    )
-                }
-                ManagementRoute.EventLogSingleItem -> composable(it.route) { backStackEntry ->
-                    ViewRecordScreen(
-                        EventLogEntryId(backStackEntry.arguments?.getString("eventLogRecordPk").orEmpty()),
-                    )
-                }
-                ManagementRoute.EventLogAddItem -> composable(it.route) {
-                    AddRecordScreen()
-                }
-                ManagementRoute.ManagementHub -> composable(it.route) {
-                    ManagementScreen()
-                }
-            }
+        composable(ManagementDestination.PropertiesManagementDestination::class) {
+            PropertyManagerScreen()
+        }
+        composable(
+            ManagementDestination.PropertyManagementDestination::class,
+            typeMap = typeMap,
+        ) { backstackEntry ->
+            PropertyScreen(
+                destination = backstackEntry.toRoute()
+            )
+        }
+        composable(ManagementDestination.AddPropertyManagementDestination::class) {
+            AddPropertyScreen()
+        }
+        composable(ManagementDestination.AddPrimaryStaffManagementDestination::class) {
+            AddPrimaryStaffScreen()
+        }
+        composable(ManagementDestination.AddSecondaryStaffManagementDestination::class) {
+            AddSecondaryStaffScreen()
+        }
+        composable(
+            ManagementDestination.StaffDestination::class,
+            typeMap = typeMap,
+        ) { backstackEntry ->
+            StaffScreen(
+                destination = backstackEntry.toRoute(),
+            )
+        }
+        composable(ManagementDestination.TimeCardStaffListDestination::class) {
+            TimeCardStaffListScreen()
+        }
+        composable(
+            ManagementDestination.TimeCardSingleStaffDestination::class,
+            typeMap = typeMap,
+        ) { backStackEntry ->
+            ViewStaffScreen(
+                staffPK = backStackEntry.toRoute<ManagementDestination.TimeCardSingleStaffDestination>().staffPk,
+            )
+        }
+        composable(
+            ManagementDestination.EventLogSingleItemDestination::class,
+            typeMap = typeMap,
+        ) { backStackEntry ->
+            ViewRecordScreen(
+                eventLogRecordPK = backStackEntry
+                    .toRoute<ManagementDestination.EventLogSingleItemDestination>()
+                    .eventLogRecordPk,
+            )
+        }
+        composable(ManagementDestination.EventLogAddItemDestination::class) {
+            AddRecordScreen()
+        }
+        composable(ManagementDestination.ManagementHub::class) {
+            ManagementScreen()
         }
     }
 }

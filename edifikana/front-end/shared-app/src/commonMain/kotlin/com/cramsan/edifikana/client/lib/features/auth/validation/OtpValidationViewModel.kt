@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.auth.validation
 
-import com.cramsan.edifikana.client.lib.features.window.ActivityRouteDestination
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
@@ -61,8 +61,8 @@ class OtpValidationViewModel(
                 emitWindowEvent(EdifikanaWindowsEvent.ShowSnackbar(getErrorMessage(it)))
             }.onSuccess {
                 emitWindowEvent(
-                    EdifikanaWindowsEvent.NavigateToActivity(
-                        ActivityRouteDestination.ManagementRouteDestination,
+                    EdifikanaWindowsEvent.NavigateToNavGraph(
+                        EdifikanaNavGraphDestination.ManagementNavGraphDestination,
                         clearTop = true,
                     )
                 )

@@ -3,7 +3,7 @@ package com.cramsan.framework.sample.shared.features.main.menu
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.sample.shared.features.SampleWindowEvent
-import com.cramsan.framework.sample.shared.features.main.MainRouteDestination
+import com.cramsan.framework.sample.shared.features.main.MainDestination
 import kotlinx.coroutines.launch
 
 /**
@@ -19,7 +19,7 @@ class MainMenuViewModel(
     fun navigateToHaltUtil() {
         viewModelScope.launch {
             emitWindowEvent(
-                SampleWindowEvent.NavigateToScreen(MainRouteDestination.HaltUtilDestination)
+                SampleWindowEvent.NavigateToScreen(MainDestination.HaltUtilDestination)
             )
         }
     }
@@ -30,7 +30,7 @@ class MainMenuViewModel(
     fun navigateToLogging() {
         viewModelScope.launch {
             emitWindowEvent(
-                SampleWindowEvent.NavigateToScreen(MainRouteDestination.LoggingDestination)
+                SampleWindowEvent.NavigateToScreen(MainDestination.LoggingDestination)
             )
         }
     }

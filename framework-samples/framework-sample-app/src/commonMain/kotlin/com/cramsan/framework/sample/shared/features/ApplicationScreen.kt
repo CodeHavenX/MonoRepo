@@ -12,8 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import com.cramsan.framework.annotations.RouteSafePath
-import com.cramsan.framework.sample.shared.features.main.mainActivityNavigation
+import com.cramsan.framework.sample.shared.features.main.mainNavGraphNavigation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
@@ -58,7 +57,6 @@ fun ApplicationScreen(
 }
 
 @Suppress("CyclomaticComplexMethod")
-@OptIn(RouteSafePath::class)
 private fun handleApplicationEvent(
     navController: NavHostController,
     scope: CoroutineScope,
@@ -66,7 +64,7 @@ private fun handleApplicationEvent(
     applicationEvent: SampleWindowEvent,
 ) {
     when (val event = applicationEvent) {
-        is SampleWindowEvent.NavigateToActivity -> {
+        is SampleWindowEvent.NavigateToNavGraph -> {
             if (event.clearStack) {
                 while (navController.currentBackStack.value.isNotEmpty()) {
                     navController.popBackStack()
@@ -74,19 +72,19 @@ private fun handleApplicationEvent(
             } else if (event.clearTop) {
                 navController.popBackStack()
             }
-            navController.navigate(event.destination.path)
+            navController.navigate(event.destination)
         }
         is SampleWindowEvent.NavigateToScreen -> {
-            navController.navigate(event.destination.path)
+            navController.navigate(event.destination)
         }
         is SampleWindowEvent.NavigateBack -> {
             navController.popBackStack()
         }
-        is SampleWindowEvent.CloseActivity -> {
-            val currentActivity = navController.currentBackStack.value.reversed().find {
-                ApplicationRoute.fromRoute(it.destination.route) != null
+        is SampleWindowEvent.CloseNavGraph -> {
+            val currentNavGraph = navController.currentBackStack.value.reversed().find {
+                it.destination.navigatorName == "navigation"
             }
-            currentActivity?.destination?.route?.let {
+            currentNavGraph?.destination?.route?.let {
                 navController.popBackStack(it, inclusive = true)
             }
         }
@@ -119,20 +117,15 @@ private suspend fun handleSnackbarEvent(
     onResult(result)
 }
 
-@OptIn(RouteSafePath::class)
 @Composable
 private fun ApplicationNavigationHost(
     navHostController: NavHostController,
 ) {
     NavHost(
         navController = navHostController,
-        startDestination = ApplicationRoute.MAIN.route,
+        startDestination = ApplicationNavGraphDestination.MainDestination,
     ) {
-        ApplicationRoute.entries.forEach { route ->
-            when (route) {
-                ApplicationRoute.MAIN -> mainActivityNavigation(route.route)
-            }
-        }
+        mainNavGraphNavigation()
     }
 }
 

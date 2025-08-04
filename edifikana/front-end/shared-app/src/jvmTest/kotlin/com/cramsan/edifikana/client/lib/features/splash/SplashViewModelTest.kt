@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.splash
 
-import com.cramsan.edifikana.client.lib.features.window.ActivityRouteDestination
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
@@ -78,8 +78,8 @@ class SplashViewModelTest : CoroutineTest() {
         assertTrue(exceptionHandler.exceptions.isEmpty())
         coVerify { propertyManager.setActiveProperty(null) }
         coVerify { windowEventBus.push(
-            EdifikanaWindowsEvent.NavigateToActivity(
-                ActivityRouteDestination.AuthRouteDestination,
+            EdifikanaWindowsEvent.NavigateToNavGraph(
+                EdifikanaNavGraphDestination.AuthNavGraphDestination,
                 clearStack = true,
                 )
             )
@@ -98,8 +98,8 @@ class SplashViewModelTest : CoroutineTest() {
         coVerify { propertyManager.setActiveProperty(null) }
         coVerify {
             windowEventBus.push(
-                EdifikanaWindowsEvent.NavigateToActivity(
-                    ActivityRouteDestination.ManagementRouteDestination
+                EdifikanaWindowsEvent.NavigateToNavGraph(
+                    EdifikanaNavGraphDestination.ManagementNavGraphDestination
                 )
             )
         }

@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.auth.signin
 
-import com.cramsan.edifikana.client.lib.features.auth.AuthRouteDestination
-import com.cramsan.edifikana.client.lib.features.window.ActivityRouteDestination
+import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
@@ -94,8 +94,8 @@ class SignInViewModel(
                 return@launch
             }
             emitWindowEvent(
-                EdifikanaWindowsEvent.NavigateToActivity(
-                    ActivityRouteDestination.ManagementRouteDestination,
+                EdifikanaWindowsEvent.NavigateToNavGraph(
+                    EdifikanaNavGraphDestination.ManagementNavGraphDestination,
                     clearTop = true,
                 )
             )
@@ -114,7 +114,7 @@ class SignInViewModel(
             }
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToScreen(
-                    AuthRouteDestination.ValidationDestination(email, accountCreationFlow = false)
+                    AuthDestination.ValidationDestination(email, accountCreationFlow = false)
                 )
             )
         }
@@ -126,7 +126,7 @@ class SignInViewModel(
     fun navigateToSignUpPage() {
         viewModelScope.launch {
             emitWindowEvent(
-                EdifikanaWindowsEvent.NavigateToScreen(AuthRouteDestination.SignUpDestination)
+                EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.SignUpDestination)
             )
         }
     }
@@ -137,7 +137,7 @@ class SignInViewModel(
     fun navigateToDebugPage() {
         viewModelScope.launch {
             emitWindowEvent(
-                EdifikanaWindowsEvent.NavigateToActivity(ActivityRouteDestination.DebugRouteDestination)
+                EdifikanaWindowsEvent.NavigateToNavGraph(EdifikanaNavGraphDestination.DebugNavGraphDestination)
             )
         }
     }

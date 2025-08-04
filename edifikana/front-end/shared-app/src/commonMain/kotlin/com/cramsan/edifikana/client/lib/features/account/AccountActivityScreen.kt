@@ -1,37 +1,36 @@
 package com.cramsan.edifikana.client.lib.features.account
 
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
-import androidx.navigation.navigation
 import com.cramsan.edifikana.client.lib.features.account.account.AccountScreen
 import com.cramsan.edifikana.client.lib.features.account.changepassword.ChangePasswordDialog
 import com.cramsan.edifikana.client.lib.features.account.notifications.NotificationsScreen
-import com.cramsan.framework.annotations.RouteSafePath
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
+import com.cramsan.framework.core.compose.navigation.navigationGraph
+import kotlin.jvm.JvmSuppressWildcards
+import kotlin.reflect.KType
 
 /**
- * Account Activity Route.
+ * Account Nav Graph Route.
  */
-@OptIn(RouteSafePath::class)
-fun NavGraphBuilder.accountActivityNavigation(
-    route: String,
+fun NavGraphBuilder.accountNavGraph(
+    typeMap: Map<KType, @JvmSuppressWildcards NavType<*>>,
 ) {
-    navigation(
-        route = route,
-        startDestination = AccountActivityRoute.Account.route,
+    navigationGraph(
+        graphDestination = EdifikanaNavGraphDestination.AccountNavGraphDestination::class,
+        startDestination = AccountDestination.MyAccountDestination,
+        typeMap = typeMap,
     ) {
-        AccountActivityRoute.entries.forEach {
-            when (it) {
-                AccountActivityRoute.Account -> composable(it.route) {
-                    AccountScreen()
-                }
-                AccountActivityRoute.Notifications -> composable(it.route) {
-                    NotificationsScreen()
-                }
-                AccountActivityRoute.ChangePassword -> dialog(it.route) {
-                    ChangePasswordDialog()
-                }
-            }
+        composable(AccountDestination.MyAccountDestination::class) {
+            AccountScreen()
+        }
+        composable(AccountDestination.NotificationsDestination::class) {
+            NotificationsScreen()
+        }
+        dialog(AccountDestination.ChangePasswordDestination::class) {
+            ChangePasswordDialog()
         }
     }
 }

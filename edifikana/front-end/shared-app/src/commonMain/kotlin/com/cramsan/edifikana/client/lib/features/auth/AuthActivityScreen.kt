@@ -1,38 +1,38 @@
 package com.cramsan.edifikana.client.lib.features.auth
 
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.navigation
+import androidx.navigation.toRoute
 import com.cramsan.edifikana.client.lib.features.auth.signin.SignInScreen
 import com.cramsan.edifikana.client.lib.features.auth.signup.SignUpScreen
 import com.cramsan.edifikana.client.lib.features.auth.validation.OtpValidationScreen
-import com.cramsan.framework.annotations.RouteSafePath
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
+import com.cramsan.framework.core.compose.navigation.navigationGraph
+import kotlin.jvm.JvmSuppressWildcards
+import kotlin.reflect.KType
 
 /**
- * Auth Activity Route.
+ * Auth Nav Graph Route.
  */
-@OptIn(RouteSafePath::class)
-fun NavGraphBuilder.authActivityNavigation(
-    route: String,
+fun NavGraphBuilder.authNavGraphNavigation(
+    typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> = emptyMap(),
 ) {
-    navigation(
-        route = route,
-        startDestination = AuthRoute.SignIn.route,
+    navigationGraph(
+        graphDestination = EdifikanaNavGraphDestination.AuthNavGraphDestination::class,
+        startDestination = AuthDestination.SignInDestination,
+        typeMap = typeMap,
     ) {
-        AuthRoute.entries.forEach {
-            when (it) {
-                AuthRoute.SignIn -> composable(it.route) {
-                    SignInScreen()
-                }
-                AuthRoute.SignUp -> composable(it.route) {
-                    SignUpScreen()
-                }
-                AuthRoute.Validation -> composable(it.route) { backStackEntry ->
-                    OtpValidationScreen(
-                        AuthRouteDestination.ValidationDestination.unpack(backStackEntry)
-                    )
-                }
-            }
+        composable(AuthDestination.SignInDestination::class) {
+            SignInScreen()
+        }
+        composable(AuthDestination.SignUpDestination::class) {
+            SignUpScreen()
+        }
+        composable(AuthDestination.ValidationDestination::class) { backStackEntry ->
+            OtpValidationScreen(
+                destination = backStackEntry.toRoute()
+            )
         }
     }
 }

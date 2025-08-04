@@ -15,18 +15,28 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.cramsan.edifikana.client.lib.features.account.accountActivityNavigation
-import com.cramsan.edifikana.client.lib.features.auth.authActivityNavigation
-import com.cramsan.edifikana.client.lib.features.debug.debugActivityNavigation
-import com.cramsan.edifikana.client.lib.features.management.managementActivityNavigation
+import com.cramsan.edifikana.client.lib.features.account.accountNavGraph
+import com.cramsan.edifikana.client.lib.features.auth.authNavGraphNavigation
+import com.cramsan.edifikana.client.lib.features.debug.debugNavGraphNavigation
+import com.cramsan.edifikana.client.lib.features.management.managementNavGraphNavigation
 import com.cramsan.edifikana.client.lib.features.splash.SplashScreen
+import com.cramsan.edifikana.client.lib.navigation.EventLogEntryIdNavType
+import com.cramsan.edifikana.client.lib.navigation.PropertyIdNavType
+import com.cramsan.edifikana.client.lib.navigation.StaffIdNavType
+import com.cramsan.edifikana.client.lib.navigation.TimeCardEventIdNavType
+import com.cramsan.edifikana.client.lib.navigation.UserIdNavType
 import com.cramsan.edifikana.client.lib.ui.di.Coil3Provider
 import com.cramsan.edifikana.client.ui.theme.AppTheme
-import com.cramsan.framework.annotations.RouteSafePath
+import com.cramsan.edifikana.lib.model.EventLogEntryId
+import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.edifikana.lib.model.TimeCardEventId
+import com.cramsan.edifikana.lib.model.UserId
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
+import kotlin.reflect.typeOf
 
 /**
  * Edifikana window screen.
@@ -35,7 +45,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun EdifikanaWindowScreen(
     eventHandler: EdifikanaMainScreenEventHandler,
     viewModel: EdifikanaWindowViewModel = koinViewModel(),
-    startDestination: ActivityRouteDestination = ActivityRouteDestination.SplashRouteDestination,
+    startDestination: EdifikanaNavGraphDestination = EdifikanaNavGraphDestination.SplashNavGraphDestination,
 ) {
     WindowsContent(
         eventHandler = eventHandler,
@@ -46,7 +56,7 @@ fun EdifikanaWindowScreen(
 
 @Composable
 private fun WindowsContent(
-    startDestination: ActivityRouteDestination,
+    startDestination: EdifikanaNavGraphDestination,
     viewModel: EdifikanaWindowViewModel,
     eventHandler: EdifikanaMainScreenEventHandler,
 ) {
@@ -87,8 +97,6 @@ private fun WindowsContent(
     }
 }
 
-@Suppress("CyclomaticComplexMethod")
-@OptIn(RouteSafePath::class)
 private fun handleWindowEvent(
     eventHandler: EdifikanaMainScreenEventHandler,
     navController: NavHostController,
@@ -110,28 +118,28 @@ private fun handleWindowEvent(
         is EdifikanaWindowsEvent.ShareContent -> {
             eventHandler.shareContent(event)
         }
-        is EdifikanaWindowsEvent.NavigateToActivity -> {
+        is EdifikanaWindowsEvent.NavigateToNavGraph -> {
             handleNavigationEvent(
                 navController = navController,
                 event = event,
             )
-            navController.navigate(event.destination.rawRoute)
+            navController.navigate(event.destination)
         }
         is EdifikanaWindowsEvent.NavigateToScreen -> {
             handleNavigationEvent(
                 navController = navController,
                 event = event,
             )
-            navController.navigate(event.destination.rawRoute)
+            navController.navigate(event.destination)
         }
         is EdifikanaWindowsEvent.NavigateBack -> {
             navController.popBackStack()
         }
-        is EdifikanaWindowsEvent.CloseActivity -> {
-            val currentActivity = navController.currentBackStack.value.reversed().find {
-                ApplicationRoute.Companion.fromRoute(it.destination.route) != null
+        is EdifikanaWindowsEvent.CloseNavGraph -> {
+            val currentNavGraph = navController.currentBackStack.value.reversed().find {
+                it.destination.navigatorName == "navigation"
             }
-            currentActivity?.destination?.route?.let {
+            currentNavGraph?.destination?.route?.let {
                 navController.popBackStack(it, inclusive = true)
             }
         }
@@ -179,36 +187,41 @@ private suspend fun handleSnackbarEvent(
     onResult(result)
 }
 
-@OptIn(RouteSafePath::class)
 @Composable
 private fun WindowNavigationHost(
     navHostController: NavHostController,
-    startDestination: ActivityRouteDestination,
+    startDestination: EdifikanaNavGraphDestination,
 ) {
+    val typeMap = remember {
+        mapOf(
+            typeOf<EventLogEntryId>() to EventLogEntryIdNavType(),
+            typeOf<PropertyId>() to PropertyIdNavType(),
+            typeOf<TimeCardEventId>() to TimeCardEventIdNavType(),
+            typeOf<UserId>() to UserIdNavType(),
+            typeOf<StaffId>() to StaffIdNavType(),
+        )
+    }
     NavHost(
         navController = navHostController,
-        startDestination = startDestination.rawRoute,
+        startDestination = startDestination,
+        typeMap = typeMap,
         enterTransition = { fadeIn(animationSpec = tween(TRANSITION_ANIMATION_DURATION_MS)) },
         exitTransition = { fadeOut(animationSpec = tween(TRANSITION_ANIMATION_DURATION_MS)) },
     ) {
-        ApplicationRoute.entries.forEach { route ->
-            when (route) {
-                ApplicationRoute.Splash -> composable(route.rawRoute) {
-                    SplashScreen()
-                }
-                ApplicationRoute.Auth -> authActivityNavigation(route.rawRoute)
-                ApplicationRoute.Account -> accountActivityNavigation(route.rawRoute)
-                ApplicationRoute.Debug -> debugActivityNavigation(route.rawRoute)
-                ApplicationRoute.Management -> managementActivityNavigation(route.rawRoute)
-            }
+        composable(EdifikanaNavGraphDestination.SplashNavGraphDestination::class) {
+            SplashScreen()
         }
+        authNavGraphNavigation(typeMap)
+        accountNavGraph(typeMap)
+        debugNavGraphNavigation(typeMap)
+        managementNavGraphNavigation(typeMap)
     }
 }
 
 private const val TRANSITION_ANIMATION_DURATION_MS = 400
 
 /**
- * Edifikana main screen event handler.
+ * Entry point for the application. This will configure the koin context.
  */
 @Composable
 expect fun ComposableKoinContext(content: @Composable () -> Unit)

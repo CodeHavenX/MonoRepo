@@ -4,7 +4,6 @@ import com.cramsan.edifikana.server.core.datastore.dummy.USER_1
 import com.cramsan.framework.logging.logI
 import io.github.jan.supabase.auth.user.UserInfo
 import io.ktor.server.application.ApplicationCall
-import kotlinx.datetime.toDeprecatedInstant
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
@@ -20,7 +19,7 @@ class DummyContextRetriever : ContextRetriever {
             userInfo = UserInfo(
                 aud = "aud",
                 id = "id",
-                createdAt = Clock.System.now().toDeprecatedInstant()
+                createdAt = Clock.System.now()
             ),
             userId = USER_1.id,
         )

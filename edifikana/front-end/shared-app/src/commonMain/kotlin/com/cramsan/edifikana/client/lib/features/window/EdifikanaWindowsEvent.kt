@@ -2,6 +2,7 @@ package com.cramsan.edifikana.client.lib.features.window
 
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.compose.WindowEvent
+import com.cramsan.framework.core.compose.navigation.Destination
 
 /**
  * Events that can be triggered in the whole Window. These events are intended to be
@@ -30,10 +31,10 @@ sealed class EdifikanaWindowsEvent : WindowEvent {
     ) : EdifikanaWindowsEvent()
 
     /**
-     * Navigate to activity.
+     * Navigate to nav graph.
      */
-    data class NavigateToActivity(
-        val destination: ActivityRouteDestination,
+    data class NavigateToNavGraph(
+        val destination: EdifikanaNavGraphDestination,
         override val clearTop: Boolean = false,
         override val clearStack: Boolean = false,
     ) : EdifikanaWindowsEvent(), NavigationEvent
@@ -48,9 +49,9 @@ sealed class EdifikanaWindowsEvent : WindowEvent {
     ) : EdifikanaWindowsEvent(), NavigationEvent
 
     /**
-     * Close the activity.
+     * Close the nav graph.
      */
-    data object CloseActivity : EdifikanaWindowsEvent()
+    data object CloseNavGraph : EdifikanaWindowsEvent()
 
     /**
      * Show a snackbar.

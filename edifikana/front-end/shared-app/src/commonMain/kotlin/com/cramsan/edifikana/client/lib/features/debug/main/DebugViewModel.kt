@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.debug.main
 
-import com.cramsan.edifikana.client.lib.features.debug.DebugRouteDestination
+import com.cramsan.edifikana.client.lib.features.debug.DebugDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.PreferencesManager
 import com.cramsan.edifikana.client.lib.settings.Overrides
@@ -169,7 +169,7 @@ class DebugViewModel(
                             action = {
                                 emitWindowEvent(
                                     EdifikanaWindowsEvent.NavigateToScreen(
-                                        DebugRouteDestination.ScreenSelectorDestination,
+                                        DebugDestination.ScreenSelectorDestination,
                                     )
                                 )
                             },

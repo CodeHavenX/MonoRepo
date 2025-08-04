@@ -1,32 +1,31 @@
 package com.cramsan.edifikana.client.lib.features.debug
 
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.navigation
 import com.cramsan.edifikana.client.lib.features.debug.main.DebugScreen
 import com.cramsan.edifikana.client.lib.features.debug.screenselector.ScreenSelectorScreen
-import com.cramsan.framework.annotations.RouteSafePath
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
+import com.cramsan.framework.core.compose.navigation.navigationGraph
+import kotlin.jvm.JvmSuppressWildcards
+import kotlin.reflect.KType
 
 /**
- * Debug Activity Route.
+ * Debug Nav Graph Route.
  */
-@OptIn(RouteSafePath::class)
-fun NavGraphBuilder.debugActivityNavigation(
-    route: String,
+fun NavGraphBuilder.debugNavGraphNavigation(
+    typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> = emptyMap(),
 ) {
-    navigation(
-        route = route,
-        startDestination = DebugActivityRoute.Debug.route,
+    navigationGraph(
+        graphDestination = EdifikanaNavGraphDestination.DebugNavGraphDestination::class,
+        startDestination = DebugDestination.MainDebugDestination,
+        typeMap = typeMap,
     ) {
-        DebugActivityRoute.entries.forEach {
-            when (it) {
-                DebugActivityRoute.Debug -> composable(it.route) {
-                    DebugScreen()
-                }
-                DebugActivityRoute.ScreenSelector -> composable(it.route) {
-                    ScreenSelectorScreen()
-                }
-            }
+        composable(DebugDestination.MainDebugDestination::class) {
+            DebugScreen()
+        }
+        composable(DebugDestination.ScreenSelectorDestination::class) {
+            ScreenSelectorScreen()
         }
     }
 }

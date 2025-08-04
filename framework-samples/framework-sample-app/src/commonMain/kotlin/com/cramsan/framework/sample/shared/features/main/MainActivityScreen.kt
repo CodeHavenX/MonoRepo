@@ -2,35 +2,29 @@ package com.cramsan.framework.sample.shared.features.main
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import androidx.navigation.navigation
-import com.cramsan.framework.annotations.RouteSafePath
+import com.cramsan.framework.core.compose.navigation.navigationGraph
+import com.cramsan.framework.sample.shared.features.ApplicationNavGraphDestination
 import com.cramsan.framework.sample.shared.features.main.halt.HaltUtilScreen
 import com.cramsan.framework.sample.shared.features.main.logging.LoggingScreen
 import com.cramsan.framework.sample.shared.features.main.menu.MainMenuScreen
 
 /**
- * Main Activity Route.
+ * Main Nav Graph Route.
  */
-@OptIn(RouteSafePath::class)
-fun NavGraphBuilder.mainActivityNavigation(
-    route: String,
-) {
-    navigation(
-        route = route,
-        startDestination = MainRoute.MainMenu.route,
+fun NavGraphBuilder.mainNavGraphNavigation() {
+    navigationGraph(
+        graphDestination = ApplicationNavGraphDestination.MainDestination::class,
+        startDestination = MainDestination.MainMenuDestination,
+        typeMap = emptyMap(),
     ) {
-        MainRoute.entries.forEach {
-            when (it) {
-                MainRoute.MainMenu -> composable(it.route) {
-                    MainMenuScreen()
-                }
-                MainRoute.HaltUtil -> composable(it.route) {
-                    HaltUtilScreen()
-                }
-                MainRoute.Logging -> composable(it.route) {
-                    LoggingScreen()
-                }
-            }
+        composable(MainDestination.MainMenuDestination::class) {
+            MainMenuScreen()
+        }
+        composable(MainDestination.HaltUtilDestination::class) {
+            HaltUtilScreen()
+        }
+        composable(MainDestination.LoggingDestination::class) {
+            LoggingScreen()
         }
     }
 }

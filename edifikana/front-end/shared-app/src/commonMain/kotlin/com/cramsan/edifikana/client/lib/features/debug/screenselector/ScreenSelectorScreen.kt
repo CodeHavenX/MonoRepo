@@ -13,10 +13,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
-import com.cramsan.edifikana.client.lib.features.account.AccountRouteDestination
-import com.cramsan.edifikana.client.lib.features.auth.AuthRouteDestination
-import com.cramsan.edifikana.client.lib.features.window.Destination
+import com.cramsan.edifikana.client.lib.features.account.AccountDestination
+import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
+import com.cramsan.framework.core.compose.navigation.Destination
 import com.cramsan.ui.components.ListCell
 import com.cramsan.ui.components.ScreenLayout
 import org.koin.compose.viewmodel.koinViewModel
@@ -94,7 +94,7 @@ internal fun ScreenSelectorContent(
                         modifier = sectionModifier,
                         onSelection = {
                             onScreenSelected(
-                                AuthRouteDestination.ValidationDestination(
+                                AuthDestination.ValidationDestination(
                                     "test@test.com",
                                     accountCreationFlow = true,
                                 )
@@ -107,7 +107,7 @@ internal fun ScreenSelectorContent(
                     ListCell(
                         modifier = sectionModifier,
                         onSelection = {
-                            onScreenSelected(AccountRouteDestination.AccountDestination)
+                            onScreenSelected(AccountDestination.MyAccountDestination)
                         },
                         content = {
                             Text("Account Screen")

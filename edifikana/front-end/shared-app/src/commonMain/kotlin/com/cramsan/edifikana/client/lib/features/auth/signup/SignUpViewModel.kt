@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.auth.signup
 
-import com.cramsan.edifikana.client.lib.features.auth.AuthRouteDestination
+import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
@@ -148,7 +148,7 @@ class SignUpViewModel(
             logD(TAG, "User signed up: $user")
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToScreen(
-                    AuthRouteDestination.ValidationDestination(email, accountCreationFlow = true),
+                    AuthDestination.ValidationDestination(email, accountCreationFlow = true),
                     clearTop = true,
                 )
             )

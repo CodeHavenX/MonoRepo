@@ -1,6 +1,7 @@
 package com.cramsan.framework.sample.shared.features
 
 import com.cramsan.framework.core.compose.WindowEvent
+import com.cramsan.framework.core.compose.navigation.Destination
 
 /**
  * Events that can be triggered in the whole application. These events are intended to be
@@ -9,10 +10,10 @@ import com.cramsan.framework.core.compose.WindowEvent
 sealed class SampleWindowEvent : WindowEvent {
 
     /**
-     * Navigate to activity.
+     * Navigate to nav graph.
      */
-    data class NavigateToActivity(
-        val destination: ActivityDestination,
+    data class NavigateToNavGraph(
+        val destination: ApplicationNavGraphDestination,
         val clearTop: Boolean = false,
         val clearStack: Boolean = false,
     ) : SampleWindowEvent()
@@ -25,9 +26,9 @@ sealed class SampleWindowEvent : WindowEvent {
     ) : SampleWindowEvent()
 
     /**
-     * Close the activity.
+     * Close the nav graph.
      */
-    data object CloseActivity : SampleWindowEvent()
+    data object CloseNavGraph : SampleWindowEvent()
 
     /**
      * Show a snackbar.

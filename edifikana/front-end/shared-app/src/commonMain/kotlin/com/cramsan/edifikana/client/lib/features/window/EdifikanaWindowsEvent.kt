@@ -2,6 +2,7 @@ package com.cramsan.edifikana.client.lib.features.window
 
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.compose.WindowEvent
+import com.cramsan.framework.core.compose.navigation.Destination
 
 /**
  * Events that can be triggered in the whole Window. These events are intended to be

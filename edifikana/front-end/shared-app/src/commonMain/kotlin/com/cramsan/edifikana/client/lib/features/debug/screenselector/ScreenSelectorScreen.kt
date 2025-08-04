@@ -15,8 +15,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.account.AccountRouteDestination
 import com.cramsan.edifikana.client.lib.features.auth.AuthRouteDestination
-import com.cramsan.edifikana.client.lib.features.window.Destination
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
+import com.cramsan.framework.core.compose.navigation.Destination
 import com.cramsan.ui.components.ListCell
 import com.cramsan.ui.components.ScreenLayout
 import org.koin.compose.viewmodel.koinViewModel

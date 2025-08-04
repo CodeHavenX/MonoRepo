@@ -12,7 +12,6 @@ import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import com.cramsan.framework.annotations.RouteSafePath
 import com.cramsan.framework.sample.shared.features.main.mainActivityNavigation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -58,7 +57,6 @@ fun ApplicationScreen(
 }
 
 @Suppress("CyclomaticComplexMethod")
-@OptIn(RouteSafePath::class)
 private fun handleApplicationEvent(
     navController: NavHostController,
     scope: CoroutineScope,
@@ -74,21 +72,23 @@ private fun handleApplicationEvent(
             } else if (event.clearTop) {
                 navController.popBackStack()
             }
-            navController.navigate(event.destination.path)
+            navController.navigate(event.destination)
         }
         is SampleWindowEvent.NavigateToScreen -> {
-            navController.navigate(event.destination.path)
+            navController.navigate(event.destination)
         }
         is SampleWindowEvent.NavigateBack -> {
             navController.popBackStack()
         }
         is SampleWindowEvent.CloseActivity -> {
+            /*
             val currentActivity = navController.currentBackStack.value.reversed().find {
                 ApplicationRoute.fromRoute(it.destination.route) != null
             }
             currentActivity?.destination?.route?.let {
                 navController.popBackStack(it, inclusive = true)
             }
+             */
         }
         is SampleWindowEvent.ShowSnackbar -> {
             scope.launch {
@@ -119,20 +119,15 @@ private suspend fun handleSnackbarEvent(
     onResult(result)
 }
 
-@OptIn(RouteSafePath::class)
 @Composable
 private fun ApplicationNavigationHost(
     navHostController: NavHostController,
 ) {
     NavHost(
         navController = navHostController,
-        startDestination = ApplicationRoute.MAIN.route,
+        startDestination = ActivityDestination.MainDestination,
     ) {
-        ApplicationRoute.entries.forEach { route ->
-            when (route) {
-                ApplicationRoute.MAIN -> mainActivityNavigation(route.route)
-            }
-        }
+        mainActivityNavigation()
     }
 }
 

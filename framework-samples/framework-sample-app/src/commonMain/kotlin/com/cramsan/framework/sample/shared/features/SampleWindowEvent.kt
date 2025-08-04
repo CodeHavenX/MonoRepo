@@ -1,6 +1,7 @@
 package com.cramsan.framework.sample.shared.features
 
 import com.cramsan.framework.core.compose.WindowEvent
+import com.cramsan.framework.core.compose.navigation.Destination
 
 /**
  * Events that can be triggered in the whole application. These events are intended to be

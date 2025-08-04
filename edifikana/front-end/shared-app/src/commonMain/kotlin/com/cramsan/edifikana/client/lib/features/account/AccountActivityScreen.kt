@@ -2,35 +2,28 @@ package com.cramsan.edifikana.client.lib.features.account
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.dialog
-import androidx.navigation.navigation
 import com.cramsan.edifikana.client.lib.features.account.account.AccountScreen
 import com.cramsan.edifikana.client.lib.features.account.changepassword.ChangePasswordDialog
 import com.cramsan.edifikana.client.lib.features.account.notifications.NotificationsScreen
+import com.cramsan.edifikana.client.lib.features.window.ActivityRouteDestination
+import com.cramsan.framework.core.compose.navigation.navigationGraph
 
 /**
  * Account Activity Route.
  */
-@OptIn(RouteSafePath::class)
-fun NavGraphBuilder.accountActivityNavigation(
-    route: String,
-) {
-    navigation(
-        route = route,
-        startDestination = AccountActivityRoute.Account.route,
+fun NavGraphBuilder.accountActivityNavigation() {
+    navigationGraph(
+        graphDestination = ActivityRouteDestination.AccountRouteDestination::class,
+        startDestination = AccountRouteDestination.AccountDestination,
     ) {
-        AccountActivityRoute.entries.forEach {
-            when (it) {
-                AccountActivityRoute.Account -> composable(it.route) {
-                    AccountScreen()
-                }
-                AccountActivityRoute.Notifications -> composable(it.route) {
-                    NotificationsScreen()
-                }
-                AccountActivityRoute.ChangePassword -> dialog(it.route) {
-                    ChangePasswordDialog()
-                }
-            }
+        composable(AccountRouteDestination.AccountDestination::class) {
+            AccountScreen()
+        }
+        composable(AccountRouteDestination.NotificationsDestination::class) {
+            NotificationsScreen()
+        }
+        dialog(AccountRouteDestination.ChangePasswordDestination) {
+            ChangePasswordDialog()
         }
     }
 }

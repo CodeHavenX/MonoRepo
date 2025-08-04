@@ -2,37 +2,31 @@ package com.cramsan.edifikana.client.lib.features.auth
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import androidx.navigation.navigation
+import androidx.navigation.toRoute
 import com.cramsan.edifikana.client.lib.features.auth.signin.SignInScreen
 import com.cramsan.edifikana.client.lib.features.auth.signup.SignUpScreen
 import com.cramsan.edifikana.client.lib.features.auth.validation.OtpValidationScreen
-import com.cramsan.framework.annotations.RouteSafePath
+import com.cramsan.edifikana.client.lib.features.window.ActivityRouteDestination
+import com.cramsan.framework.core.compose.navigation.navigationGraph
 
 /**
  * Auth Activity Route.
  */
-@OptIn(RouteSafePath::class)
-fun NavGraphBuilder.authActivityNavigation(
-    route: String,
-) {
-    navigation(
-        route = route,
-        startDestination = AuthRoute.SignIn.route,
+fun NavGraphBuilder.authActivityNavigation() {
+    navigationGraph(
+        graphDestination = ActivityRouteDestination.AuthRouteDestination::class,
+        startDestination = AuthRouteDestination.SignInDestination,
     ) {
-        AuthRoute.entries.forEach {
-            when (it) {
-                AuthRoute.SignIn -> composable(it.route) {
-                    SignInScreen()
-                }
-                AuthRoute.SignUp -> composable(it.route) {
-                    SignUpScreen()
-                }
-                AuthRoute.Validation -> composable(it.route) { backStackEntry ->
-                    OtpValidationScreen(
-                        AuthRouteDestination.ValidationDestination.unpack(backStackEntry)
-                    )
-                }
-            }
+        composable(AuthRouteDestination.SignInDestination::class) {
+            SignInScreen()
+        }
+        composable(AuthRouteDestination.SignUpDestination::class) {
+            SignUpScreen()
+        }
+        composable(AuthRouteDestination.ValidationDestination::class) { backStackEntry ->
+            OtpValidationScreen(
+                destination = backStackEntry.toRoute()
+            )
         }
     }
 }

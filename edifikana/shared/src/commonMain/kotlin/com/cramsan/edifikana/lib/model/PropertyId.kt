@@ -1,11 +1,11 @@
 package com.cramsan.edifikana.lib.model
 
-import kotlin.jvm.JvmInline
+import kotlinx.serialization.Serializable
 
 /**
  * Domain model representing a property ID.
  */
-@JvmInline
-value class PropertyId(val propertyId: String) {
+@Serializable
+data class PropertyId(val propertyId: String) {
     override fun toString(): String = propertyId
 }

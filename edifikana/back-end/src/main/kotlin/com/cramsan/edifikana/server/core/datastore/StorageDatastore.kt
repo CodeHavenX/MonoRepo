@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.server.core.datastore
 
-import com.cramsan.edifikana.server.core.service.models.File
-import com.cramsan.edifikana.server.core.service.models.requests.CreateFileRequest
+import com.cramsan.edifikana.server.core.service.models.Asset
+import com.cramsan.edifikana.server.core.service.models.requests.CreateAssetRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetFileRequest
 
 /**
@@ -9,16 +9,16 @@ import com.cramsan.edifikana.server.core.service.models.requests.GetFileRequest
  */
 interface StorageDatastore {
     /**
-     * Creates a new file for the given [request]. Returns the [Result] of the operation with the created [File].
+     * Creates a new file for the given [request]. Returns the [Result] of the operation with the created [Asset].
      */
-    suspend fun createFile(
-        request: CreateFileRequest,
-    ): Result<File>
+    suspend fun createAsset(
+        request: CreateAssetRequest,
+    ): Result<Asset>
 
     /**
-     * Retrieves a file for the given [request]. Returns the [Result] of the operation with the fetched [File] if found.
+     * Retrieves a file for the given [request]. Returns the [Result] of the operation with the fetched [Asset] if found.
      */
-    suspend fun getFile(
+    suspend fun getAsset(
         request: GetFileRequest,
-    ): Result<File?>
+    ): Result<Asset?>
 }

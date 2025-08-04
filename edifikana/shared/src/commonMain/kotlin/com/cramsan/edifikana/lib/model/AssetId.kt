@@ -6,6 +6,6 @@ import kotlin.jvm.JvmInline
  * Domain model representing a file ID.
  */
 @JvmInline
-value class FileId(val fileId: String) {
-    override fun toString(): String = fileId
+value class AssetId(val assetId: String) {
+    override fun toString(): String = assetId
 }

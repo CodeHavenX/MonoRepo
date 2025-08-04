@@ -64,11 +64,11 @@ fun NavGraphBuilder.managementNavGraphNavigation(
             TimeCardStaffListScreen()
         }
         composable(
-            ManagementDestination.StaffDestination::class,
+            ManagementDestination.TimeCardSingleStaffDestination::class,
             typeMap = typeMap,
         ) { backStackEntry ->
             ViewStaffScreen(
-                staffPK = backStackEntry.toRoute<ManagementDestination.StaffDestination>().staffId,
+                staffPK = backStackEntry.toRoute<ManagementDestination.TimeCardSingleStaffDestination>().staffPk,
             )
         }
         composable(

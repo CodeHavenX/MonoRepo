@@ -11,3 +11,5 @@ const val EVENT_LOG_ENTRY_ID = "event_log_entry_id"
 
 const val PROPERTY_ID = "property_id"
 const val TIMECARD_EVENT_ID = "timecard_event_id"
+
+const val FILE_ID = "file_id"

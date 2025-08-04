@@ -3,7 +3,7 @@ package com.cramsan.edifikana.server.core.service.models.requests
 /**
  * Domain model representing a request to create a file.
  */
-data class CreateFileRequest (
+data class CreateAssetRequest (
     val fileName: String,
     val content: ByteArray,
 ) {
@@ -14,7 +14,7 @@ data class CreateFileRequest (
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as CreateFileRequest
+        other as CreateAssetRequest
 
         return content.contentEquals(other.content)
     }

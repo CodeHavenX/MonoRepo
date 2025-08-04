@@ -1,11 +1,10 @@
 package com.cramsan.edifikana.server.core.service
 
-import com.cramsan.edifikana.lib.model.FileId
+import com.cramsan.edifikana.lib.model.AssetId
 import com.cramsan.edifikana.server.core.datastore.StorageDatastore
-import com.cramsan.edifikana.server.core.service.models.File
-import com.cramsan.edifikana.server.core.service.models.requests.CreateFileRequest
+import com.cramsan.edifikana.server.core.service.models.Asset
+import com.cramsan.edifikana.server.core.service.models.requests.CreateAssetRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetFileRequest
-import com.cramsan.framework.configuration.TAG
 import com.cramsan.framework.logging.logD
 
 class StorageService(
@@ -14,13 +13,13 @@ class StorageService(
     /**
      * Creates a file with the provided [fileName] and [content].
      */
-    suspend fun createFile(
+    suspend fun createAsset(
         fileName: String,
         content: ByteArray
-    ): File {
+    ): Asset {
         logD(TAG, "createFile")
-        return storageDatastore.createFile(
-            request = CreateFileRequest(
+        return storageDatastore.createAsset(
+            request = CreateAssetRequest(
                 fileName = fileName,
                 content = content,
             ),
@@ -30,11 +29,11 @@ class StorageService(
     /**
      * Retrieves a file with the provided [id] if it exists.
      */
-    suspend fun getFile(
-        id: FileId,
-    ): File? {
+    suspend fun getAsset(
+        id: AssetId,
+    ): Asset? {
         logD(TAG, "getFile")
-        val file = storageDatastore.getFile(
+        val file = storageDatastore.getAsset(
             request = GetFileRequest(
                 id = id,
             ),

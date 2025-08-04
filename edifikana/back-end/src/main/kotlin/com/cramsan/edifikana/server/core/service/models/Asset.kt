@@ -1,12 +1,12 @@
 package com.cramsan.edifikana.server.core.service.models
 
-import com.cramsan.edifikana.lib.model.FileId
+import com.cramsan.edifikana.lib.model.AssetId
 
 /**
- * Domain model representing a file.
+ * Domain model representing a file [Asset].
  */
-data class File (
-    val id: FileId,
+data class Asset (
+    val id: AssetId,
     val fileName: String,
     val content: ByteArray,
 ) {
@@ -17,7 +17,7 @@ data class File (
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as File
+        other as Asset
 
         if (id != other.id) return false
         if (!content.contentEquals(other.content)) return false

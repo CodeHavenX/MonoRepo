@@ -20,12 +20,23 @@ import com.cramsan.edifikana.client.lib.features.auth.authActivityNavigation
 import com.cramsan.edifikana.client.lib.features.debug.debugActivityNavigation
 import com.cramsan.edifikana.client.lib.features.management.managementActivityNavigation
 import com.cramsan.edifikana.client.lib.features.splash.SplashScreen
+import com.cramsan.edifikana.client.lib.navigation.EventLogEntryIdNavType
+import com.cramsan.edifikana.client.lib.navigation.PropertyIdNavType
+import com.cramsan.edifikana.client.lib.navigation.StaffIdNavType
+import com.cramsan.edifikana.client.lib.navigation.TimeCardEventIdNavType
+import com.cramsan.edifikana.client.lib.navigation.UserIdNavType
 import com.cramsan.edifikana.client.lib.ui.di.Coil3Provider
 import com.cramsan.edifikana.client.ui.theme.AppTheme
+import com.cramsan.edifikana.lib.model.EventLogEntryId
+import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.edifikana.lib.model.TimeCardEventId
+import com.cramsan.edifikana.lib.model.UserId
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
+import kotlin.reflect.typeOf
 
 /**
  * Edifikana window screen.
@@ -185,19 +196,29 @@ private fun WindowNavigationHost(
     navHostController: NavHostController,
     startDestination: ActivityRouteDestination,
 ) {
+    val typeMap = remember {
+        mapOf(
+            typeOf<EventLogEntryId>() to EventLogEntryIdNavType(),
+            typeOf<PropertyId>() to PropertyIdNavType(),
+            typeOf<TimeCardEventId>() to TimeCardEventIdNavType(),
+            typeOf<UserId>() to UserIdNavType(),
+            typeOf<StaffId>() to StaffIdNavType(),
+        )
+    }
     NavHost(
         navController = navHostController,
         startDestination = startDestination,
+        typeMap = typeMap,
         enterTransition = { fadeIn(animationSpec = tween(TRANSITION_ANIMATION_DURATION_MS)) },
         exitTransition = { fadeOut(animationSpec = tween(TRANSITION_ANIMATION_DURATION_MS)) },
     ) {
         composable(ActivityRouteDestination.SplashRouteDestination::class) {
             SplashScreen()
         }
-        authActivityNavigation()
-        accountActivityNavigation()
-        debugActivityNavigation()
-        managementActivityNavigation()
+        authActivityNavigation(typeMap)
+        accountActivityNavigation(typeMap)
+        debugActivityNavigation(typeMap)
+        managementActivityNavigation(typeMap)
     }
 }
 

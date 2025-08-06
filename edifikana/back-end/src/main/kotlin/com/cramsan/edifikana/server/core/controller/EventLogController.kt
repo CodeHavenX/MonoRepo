@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.server.core.controller
 
-import com.cramsan.edifikana.lib.EVENT_LOG_ENTRY_ID
 import com.cramsan.edifikana.lib.Routes
+import com.cramsan.edifikana.lib.Routes.EventLog.QueryParams.EVENT_LOG_ENTRY_ID
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId

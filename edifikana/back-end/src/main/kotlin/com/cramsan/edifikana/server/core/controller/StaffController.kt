@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.server.core.controller
 
 import com.cramsan.edifikana.lib.Routes
-import com.cramsan.edifikana.lib.STAFF_ID
+import com.cramsan.edifikana.lib.Routes.Staff.QueryParams.STAFF_ID
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.network.CreateStaffNetworkRequest

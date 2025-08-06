@@ -1,13 +1,12 @@
 package com.cramsan.edifikana.server.core.controller
 
-import com.cramsan.edifikana.lib.FILE_ID
 import com.cramsan.edifikana.lib.Routes
-import com.cramsan.edifikana.lib.STAFF_ID
-import com.cramsan.edifikana.lib.annotations.NetworkModel
+import com.cramsan.edifikana.lib.Routes.Storage.QueryParams.ASSET_ID
 import com.cramsan.edifikana.lib.model.AssetId
 import com.cramsan.edifikana.lib.model.network.CreateAssetNetworkRequest
 import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
 import com.cramsan.edifikana.server.core.service.StorageService
+import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.core.ktor.HttpResponse
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
@@ -54,7 +53,7 @@ class StorageController(
         "getAsset",
         contextRetriever,
     ) { _ ->
-        val assetId = requireNotNull(call.parameters[FILE_ID])
+        val assetId = requireNotNull(call.parameters[ASSET_ID])
 
         val asset = storageService.getAsset(
             AssetId(assetId),
@@ -82,11 +81,11 @@ class StorageController(
          * Registers the routes for the storage controller. The [route] parameter is the root path for the controller.
          */
         fun StorageController.registerRoutes(route: Routing) {
-            route.route(Routes.Staff.PATH) {
+            route.route(Routes.Storage.PATH) {
                 post {
                     createAsset(call)
                 }
-                get("{$FILE_ID}") {
+                get("{$ASSET_ID}") {
                     getAsset(call)
                 }
 

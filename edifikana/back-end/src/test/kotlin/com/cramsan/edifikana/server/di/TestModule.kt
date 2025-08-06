@@ -5,12 +5,14 @@ import com.cramsan.edifikana.server.core.controller.EventLogController
 import com.cramsan.edifikana.server.core.controller.HealthCheckController
 import com.cramsan.edifikana.server.core.controller.PropertyController
 import com.cramsan.edifikana.server.core.controller.StaffController
+import com.cramsan.edifikana.server.core.controller.StorageController
 import com.cramsan.edifikana.server.core.controller.TimeCardController
 import com.cramsan.edifikana.server.core.controller.UserController
 import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
 import com.cramsan.edifikana.server.core.service.EventLogService
 import com.cramsan.edifikana.server.core.service.PropertyService
 import com.cramsan.edifikana.server.core.service.StaffService
+import com.cramsan.edifikana.server.core.service.StorageService
 import com.cramsan.edifikana.server.core.service.TimeCardService
 import com.cramsan.edifikana.server.core.service.UserService
 import com.cramsan.edifikana.server.settings.Overrides
@@ -94,6 +96,8 @@ fun testKtorModule() = module {
     singleOf(::PropertyController)
     singleOf(::StaffController)
     singleOf(::TimeCardController)
+    singleOf(::StorageController)
+
 }
 
 /**
@@ -117,6 +121,7 @@ fun testApplicationModule() = module {
     single<PropertyService> { mockk() }
     single<StaffService> { mockk() }
     single<TimeCardService> { mockk() }
+    single<StorageService> { mockk() }
 }
 
 fun testSettingsModule() = module {

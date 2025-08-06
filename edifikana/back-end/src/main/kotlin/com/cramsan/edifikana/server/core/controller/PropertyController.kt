@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.server.core.controller
 
-import com.cramsan.edifikana.lib.PROPERTY_ID
 import com.cramsan.edifikana.lib.Routes
+import com.cramsan.edifikana.lib.Routes.Property.QueryParams.PROPERTY_ID
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.network.CreatePropertyNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdatePropertyNetworkRequest

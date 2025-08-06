@@ -10,6 +10,10 @@ object Routes {
      */
     object User {
         const val PATH = "user"
+
+        object QueryParams {
+            const val USER_ID = "user_id"
+        }
     }
 
     /**
@@ -18,6 +22,13 @@ object Routes {
     object Property {
         const val PATH = "property"
         const val ADMIN = "admin"
+
+        /**
+         * Query parameters for the property API.
+         */
+        object QueryParams {
+            const val PROPERTY_ID = "property_id"
+        }
     }
 
     /**
@@ -25,6 +36,13 @@ object Routes {
      */
     object Staff {
         const val PATH = "staff"
+
+        /**
+         * Query parameters for the staff API.
+         */
+        object QueryParams {
+            const val STAFF_ID = "staff_id"
+        }
     }
 
     /**
@@ -32,6 +50,13 @@ object Routes {
      */
     object EventLog {
         const val PATH = "event_log"
+
+        /**
+         * Query parameters for the event log API.
+         */
+        object QueryParams {
+            const val EVENT_LOG_ENTRY_ID = "event_log_entry_id"
+        }
     }
 
     /**
@@ -44,7 +69,8 @@ object Routes {
          * Query parameters for the time card API.
          */
         object QueryParams {
-            const val STAFF_ID = "staff_id"
+            const val TIMECARD_EVENT_ID = "timecard_event_id"
+
         }
     }
 
@@ -53,5 +79,19 @@ object Routes {
      */
     object Health {
         const val PATH = "health"
+    }
+
+    /**
+     * Routes for the storage API.
+     */
+    object Storage {
+        const val PATH = "storage"
+
+        /**
+         * Query parameters for the storage API.
+         */
+        object QueryParams {
+            const val ASSET_ID = "asset_id"
+        }
     }
 }

@@ -16,11 +16,13 @@ import com.cramsan.edifikana.server.di.ApplicationModule
 import com.cramsan.edifikana.server.di.DummyStorageModule
 import com.cramsan.edifikana.server.di.FrameworkModule
 import com.cramsan.edifikana.server.di.KtorModule
+import com.cramsan.edifikana.server.di.NAME_LOGGING
 import com.cramsan.edifikana.server.di.ServicesModule
 import com.cramsan.edifikana.server.di.SettingsModule
 import com.cramsan.edifikana.server.di.SupabaseModule
 import com.cramsan.edifikana.server.settings.Overrides
 import com.cramsan.framework.core.ktor.configureHealthEndpoint
+import com.cramsan.framework.logging.Severity
 import com.cramsan.framework.logging.logI
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
@@ -31,8 +33,10 @@ import io.ktor.server.plugins.cors.routing.CORS
 import io.ktor.server.routing.routing
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
+import org.koin.core.KoinApplication
 import org.koin.core.context.loadKoinModules
 import org.koin.core.context.startKoin
+import org.koin.core.logger.Level
 import org.koin.core.qualifier.named
 import org.koin.ktor.ext.get
 import org.koin.ktor.ext.inject
@@ -96,6 +100,7 @@ fun Application.configureKtorEngine() {
  */
 fun Application.initializeDependencies() {
     startKoin {
+        configureKoinLogging()
         modules(
             FrameworkModule,
             SettingsModule,
@@ -107,6 +112,17 @@ fun Application.initializeDependencies() {
         val disableSupabase: Boolean = get(named(Overrides.KEY_SUPABASE_DISABLE))
         if (disableSupabase) {
             loadKoinModules(DummyStorageModule)
+        }
+    }
+}
+
+private fun KoinApplication.configureKoinLogging() {
+    val severity = Severity.fromStringOrDefault(System.getenv(NAME_LOGGING), Severity.INFO)
+    when (severity) {
+        Severity.VERBOSE, Severity.DEBUG -> printLogger(Level.DEBUG)
+        Severity.INFO, Severity.WARNING,
+        Severity.ERROR, Severity.DISABLED -> {
+            // Use the default logger setting
         }
     }
 }

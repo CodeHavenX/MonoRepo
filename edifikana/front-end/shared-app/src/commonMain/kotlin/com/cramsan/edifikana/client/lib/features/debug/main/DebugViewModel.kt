@@ -162,7 +162,7 @@ class DebugViewModel(
                         Field.StringField(
                             title = "Edifikana Back End URL",
                             subtitle = "Provide an override URL",
-                            key = Overrides.KEY_SUPABASE_OVERRIDE_URL,
+                            key = Overrides.KEY_EDIFIKANA_BE_URL,
                             value = edifikanaBeUrl,
                         ),
                         Field.Divider,

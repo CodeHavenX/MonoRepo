@@ -30,6 +30,3 @@ tasks.register("releaseWasm") {
 }
 
 release.dependsOn('releaseWasm')
-
-// TODO: Follow the following task to see if source files are exported and visible during debugging.
-// https://youtrack.jetbrains.com/issue/CMP-7331/Cannot-view-sources-for-dependencies-of-wasm-target

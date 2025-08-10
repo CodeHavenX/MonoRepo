@@ -45,7 +45,15 @@ internal val KtorModule = module {
                 }
             }
             defaultRequest {
-                url("http://0.0.0.0:9292")
+                val defaultUrl = "http://0.0.0.0:9292"
+
+                val resolvedUrl = if (get<Boolean>(named(Overrides.KEY_EDIFIKANA_BE_OVERRIDE_ENABLED))) {
+                    get<String>(named(Overrides.KEY_EDIFIKANA_BE_URL)).ifEmpty { defaultUrl }
+                } else {
+                    defaultUrl
+                }
+
+                url(resolvedUrl)
             }
             install(ContentNegotiation) {
                 json(createJson())

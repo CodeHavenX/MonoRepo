@@ -50,7 +50,7 @@ class DebugViewModel(
             logI(TAG, "Debug key $key changed to $value")
             loadDataImpl()
             emitWindowEvent(
-                EdifikanaWindowsEvent.ShowSnackbar("Value saved")
+                EdifikanaWindowsEvent.ShowSnackbar("Value saved.Restart the app to apply changes.")
             )
         }
     }
@@ -103,13 +103,17 @@ class DebugViewModel(
                 .loadBooleanPreference(Overrides.KEY_HALT_ON_FAILURE).getOrThrow()
             val openDebugWindow = preferencesManager
                 .loadBooleanPreference(Overrides.KEY_OPEN_DEBUG_WINDOW).getOrThrow()
+            val edifikanaBeOverrideEnabled = preferencesManager
+                .loadBooleanPreference(Overrides.KEY_EDIFIKANA_BE_OVERRIDE_ENABLED).getOrThrow()
+            val edifikanaBeUrl = preferencesManager
+                .loadStringPreference(Overrides.KEY_EDIFIKANA_BE_URL).getOrThrow()
 
             updateUiState {
                 it.copy(
                     fields = listOf(
                         Field.Label("Application Settings"),
                         Field.BooleanField(
-                            title = "Disable Supabase(requires restart)",
+                            title = "Disable Supabase",
                             subtitle = "This will allow this client to use fake a Supabase dependency.",
                             key = Overrides.KEY_DISABLE_SUPABASE,
                             value = disableSupabase
@@ -123,11 +127,11 @@ class DebugViewModel(
                         Field.Divider,
                         Field.Label(
                             "Supabase Settings",
-                            "These settings are used to override the default Supabase settings. (Require restart)",
+                            "These settings are used to override the default Supabase settings.",
                         ),
                         Field.BooleanField(
                             title = "Enable the override settings",
-                            subtitle = "This will allow this client to use fake dependencies.",
+                            subtitle = "Toggle this to enable the override settings.",
                             key = Overrides.KEY_SUPABASE_OVERRIDE_ENABLED,
                             value = supabaseOverrideEnabled,
                         ),
@@ -143,6 +147,23 @@ class DebugViewModel(
                             key = Overrides.KEY_SUPABASE_OVERRIDE_KEY,
                             value = supabaseOverrideKey,
                             secure = true,
+                        ),
+                        Field.Divider,
+                        Field.Label(
+                            "Edifikana BackEnd Settings",
+                            "These settings are used to override the default Back End settings.",
+                        ),
+                        Field.BooleanField(
+                            title = "Enable the override settings",
+                            subtitle = "Enable this to override the default Back End settings.",
+                            key = Overrides.KEY_EDIFIKANA_BE_OVERRIDE_ENABLED,
+                            value = edifikanaBeOverrideEnabled,
+                        ),
+                        Field.StringField(
+                            title = "Edifikana Back End URL",
+                            subtitle = "Provide an override URL",
+                            key = Overrides.KEY_SUPABASE_OVERRIDE_URL,
+                            value = edifikanaBeUrl,
                         ),
                         Field.Divider,
                         Field.Label("Core Framework Settings"),

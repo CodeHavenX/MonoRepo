@@ -41,4 +41,14 @@ internal val SettingsModule = module {
         val preferences = get<Preferences>()
         preferences.loadBoolean(Overrides.KEY_DISABLE_BE) ?: false
     }
+
+    factory<String>(named(Overrides.KEY_EDIFIKANA_BE_URL)) {
+        val preferences = get<Preferences>()
+        preferences.loadString(Overrides.KEY_EDIFIKANA_BE_URL) ?: ""
+    }
+
+    factory<Boolean>(named(Overrides.KEY_EDIFIKANA_BE_OVERRIDE_ENABLED)) {
+        val preferences = get<Preferences>()
+        preferences.loadBoolean(Overrides.KEY_EDIFIKANA_BE_OVERRIDE_ENABLED) ?: false
+    }
 }

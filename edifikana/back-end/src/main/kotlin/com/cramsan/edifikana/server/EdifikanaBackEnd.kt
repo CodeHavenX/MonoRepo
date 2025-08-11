@@ -84,6 +84,7 @@ fun Application.startServer() = runBlocking {
  */
 fun Application.configureKtorEngine() {
     val json: Json by inject()
+    val allowedHost: String by inject(named(Overrides.KEY_ALLOWED_HOST))
 
     install(CallLogging)
     install(ContentNegotiation) {
@@ -91,7 +92,7 @@ fun Application.configureKtorEngine() {
     }
     install(CORS) {
         // Allow the localhost origin for development purposes.
-        allowHost("localhost:8080")
+        allowHost(allowedHost)
     }
 }
 

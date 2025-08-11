@@ -13,6 +13,7 @@ import com.cramsan.edifikana.server.core.service.PropertyService
 import com.cramsan.edifikana.server.core.service.StaffService
 import com.cramsan.edifikana.server.core.service.TimeCardService
 import com.cramsan.edifikana.server.core.service.UserService
+import com.cramsan.edifikana.server.settings.Overrides
 import com.cramsan.framework.annotations.TestOnly
 import com.cramsan.framework.assertlib.AssertUtil
 import com.cramsan.framework.assertlib.AssertUtilInterface
@@ -41,6 +42,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.serialization.json.Json
 import org.apache.logging.log4j.Logger
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
@@ -115,4 +117,8 @@ fun testApplicationModule() = module {
     single<PropertyService> { mockk() }
     single<StaffService> { mockk() }
     single<TimeCardService> { mockk() }
+}
+
+fun testSettingsModule() = module {
+    factory<String>(named(Overrides.KEY_ALLOWED_HOST)) { "" }
 }

@@ -27,6 +27,14 @@ val SettingsModule = module {
             System.getenv("EDIFIKANA_SUPABASE_URL").orEmpty()
         }
     }
+
+    factory<String>(named(Overrides.KEY_ALLOWED_HOST)) {
+        val configuration = get<Configuration>()
+        val configurationSetting = configuration.readString("edifikana${getStageSegment()}.allowed.host").orEmpty()
+        configurationSetting.ifBlank {
+            System.getenv("EDIFIKANA_ALLOWED_HOST").orEmpty()
+        }
+    }
 }
 
 internal fun Scope.getStageSegment(): String {

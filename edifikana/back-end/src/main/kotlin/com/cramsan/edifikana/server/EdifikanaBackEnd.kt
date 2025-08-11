@@ -24,6 +24,8 @@ import com.cramsan.edifikana.server.settings.Overrides
 import com.cramsan.framework.core.ktor.configureHealthEndpoint
 import com.cramsan.framework.logging.Severity
 import com.cramsan.framework.logging.logI
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
@@ -91,8 +93,12 @@ fun Application.configureKtorEngine() {
         json(json)
     }
     install(CORS) {
-        // Allow the localhost origin for development purposes.
         allowHost(allowedHost)
+        allowHeader(HttpHeaders.ContentType)
+        allowMethod(HttpMethod.Options)
+        allowMethod(HttpMethod.Put)
+        allowMethod(HttpMethod.Patch)
+        allowMethod(HttpMethod.Delete)
     }
 }
 

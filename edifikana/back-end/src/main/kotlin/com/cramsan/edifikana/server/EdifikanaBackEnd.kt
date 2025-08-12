@@ -93,8 +93,18 @@ fun Application.configureKtorEngine() {
         json(json)
     }
     install(CORS) {
+        // Configure the host
         allowHost(allowedHost)
+
+        // Configure the headers that are allowed.
+        // If a header is requested by the client that is not allowed, the entire
+        // request will be rejected.
         allowHeader(HttpHeaders.ContentType)
+        allowHeader(HttpHeaders.Authorization)
+        allowHeader("apikey")
+        allowHeader("x-client-info")
+
+        // Allow more methods. GET, POST, HEAD are allowed by default.
         allowMethod(HttpMethod.Options)
         allowMethod(HttpMethod.Put)
         allowMethod(HttpMethod.Patch)

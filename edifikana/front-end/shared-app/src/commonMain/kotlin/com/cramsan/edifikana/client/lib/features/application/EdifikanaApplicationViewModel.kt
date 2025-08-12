@@ -2,7 +2,6 @@ package com.cramsan.edifikana.client.lib.features.application
 
 import com.cramsan.edifikana.client.lib.init.Initializer
 import com.cramsan.edifikana.client.lib.managers.PreferencesManager
-import com.cramsan.edifikana.client.lib.settings.Overrides
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logI
@@ -52,7 +51,7 @@ class EdifikanaApplicationViewModel(
 
     private fun loadFromSettings() {
         viewModelScope.launch {
-            val showDebugWindow = preferences.loadBooleanPreference(Overrides.KEY_OPEN_DEBUG_WINDOW).getOrThrow()
+            val showDebugWindow = preferences.isOpenDebugWindow().getOrThrow()
             if (showDebugWindow) {
                 logI(TAG, "Debug window is enabled.")
             } else {

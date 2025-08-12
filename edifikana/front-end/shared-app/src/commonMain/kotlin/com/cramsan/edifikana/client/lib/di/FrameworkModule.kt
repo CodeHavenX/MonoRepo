@@ -9,6 +9,7 @@ import com.cramsan.framework.halt.implementation.HaltUtilImpl
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.EventLoggerErrorCallback
 import com.cramsan.framework.logging.EventLoggerInterface
+import com.cramsan.framework.logging.Severity
 import com.cramsan.framework.logging.implementation.EventLoggerErrorCallbackImpl
 import com.cramsan.framework.logging.implementation.EventLoggerImpl
 import com.cramsan.framework.preferences.Preferences
@@ -34,9 +35,16 @@ internal val FrameworkModule = module {
         EventLoggerErrorCallbackImpl(get(), get())
     }
 
+    single<Severity> {
+        Severity.fromStringOrDefault(
+            get(named(Overrides.KEY_LOGGING_SEVERITY_OVERRIDE)),
+            Severity.INFO,
+        )
+    }
+
     single<EventLoggerInterface> {
         EventLoggerImpl(
-            get(named(Overrides.KEY_LOGGING_SEVERITY)),
+            get(),
             get(),
             get(),
         ).also {

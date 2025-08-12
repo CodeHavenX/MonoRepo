@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.client.lib.managers
 
+import com.cramsan.edifikana.client.lib.mappers.PreferencesMapper
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.getOrCatch
 import com.cramsan.framework.preferences.Preferences
@@ -51,6 +52,83 @@ class PreferencesManager(
      */
     suspend fun loadBooleanPreference(key: String): Result<Boolean> = dependencies.getOrCatch(TAG) {
         preferences.loadBoolean(key) ?: false
+    }
+
+    /**
+     * Determine if we should disable Supabase.
+     */
+    suspend fun isSupabaseDisabled(): Result<Boolean> = dependencies.getOrCatch(TAG) {
+        PreferencesMapper.isSupabaseDisabled(preferences)
+    }
+
+    /**
+     * Determine if we should halt the current thread when an assert fails.
+     */
+    suspend fun haltOnFailure(): Result<Boolean> = dependencies.getOrCatch(TAG) {
+        PreferencesMapper.haltOnFailure(preferences)
+    }
+
+    /**
+     * Get the Supabase override URL.
+     * Returns a default URL if not set.
+     */
+    suspend fun getSupabaseOverrideUrl(): Result<String> = dependencies.getOrCatch(TAG) {
+        PreferencesMapper.getSupabaseOverrideUrl(preferences)
+    }
+
+    /**
+     * Get the Supabase override key.
+     * Returns an empty string if not set.
+     */
+    suspend fun getSupabaseOverrideKey(): Result<String> = dependencies.getOrCatch(TAG) {
+        PreferencesMapper.getSupabaseOverrideKey(preferences)
+    }
+
+    /**
+     * Determine if the Supabase override is enabled.
+     * Returns true by default if not set.
+     */
+    suspend fun isSupabaseOverrideEnabled(): Result<Boolean> = dependencies.getOrCatch(TAG) {
+        PreferencesMapper.isSupabaseOverrideEnabled(preferences)
+    }
+
+    /**
+     * Determine if we should disable the backend.
+     */
+    suspend fun isBackendDisabled(): Result<Boolean> = dependencies.getOrCatch(TAG) {
+        PreferencesMapper.isBackendDisabled(preferences)
+    }
+
+    /**
+     * Get the Edifikana backend URL.
+     * Returns a default URL if not set.
+     */
+    suspend fun getEdifikanaBackendUrl(): Result<String> = dependencies.getOrCatch(TAG) {
+        PreferencesMapper.getEdifikanaBackendUrl(preferences)
+    }
+
+    /**
+     * Determine if the Edifikana backend override is enabled.
+     * Returns true by default if not set.
+     */
+    suspend fun isEdifikanaBackendOverrideEnabled(): Result<Boolean> = dependencies.getOrCatch(TAG) {
+        PreferencesMapper.isEdifikanaBackendOverrideEnabled(preferences)
+    }
+
+    /**
+     * Determine if the debug window should be opened.
+     * Returns false by default if not set.
+     */
+    suspend fun isOpenDebugWindow(): Result<Boolean> = dependencies.getOrCatch(TAG) {
+        PreferencesMapper.isOpenDebugWindow(preferences)
+    }
+
+    /**
+     * Get the logging severity override.
+     * Returns "INFO" by default if not set.
+     */
+    suspend fun loggingSeverityOverride(): Result<String> = dependencies.getOrCatch(TAG) {
+        PreferencesMapper.getLoggingSeverityOverride(preferences)
     }
 
     companion object {

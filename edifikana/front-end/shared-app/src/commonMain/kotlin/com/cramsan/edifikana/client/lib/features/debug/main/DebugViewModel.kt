@@ -89,24 +89,16 @@ class DebugViewModel(
     @Suppress("MaxLineLength", "MaximumLineLength", "LongMethod")
     private fun loadDataImpl() {
         viewModelScope.launch {
-            val disableSupabase = preferencesManager
-                .loadBooleanPreference(Overrides.KEY_DISABLE_SUPABASE).getOrThrow()
-            val disableBE = preferencesManager
-                .loadBooleanPreference(Overrides.KEY_DISABLE_BE).getOrThrow()
-            val supabaseOverrideEnabled = preferencesManager
-                .loadBooleanPreference(Overrides.KEY_SUPABASE_OVERRIDE_ENABLED).getOrThrow()
-            val supabaseOverrideUrl = preferencesManager
-                .loadStringPreference(Overrides.KEY_SUPABASE_OVERRIDE_URL).getOrThrow()
-            val supabaseOverrideKey = preferencesManager
-                .loadStringPreference(Overrides.KEY_SUPABASE_OVERRIDE_KEY).getOrThrow()
-            val haltOnFailure = preferencesManager
-                .loadBooleanPreference(Overrides.KEY_HALT_ON_FAILURE).getOrThrow()
-            val openDebugWindow = preferencesManager
-                .loadBooleanPreference(Overrides.KEY_OPEN_DEBUG_WINDOW).getOrThrow()
-            val edifikanaBeOverrideEnabled = preferencesManager
-                .loadBooleanPreference(Overrides.KEY_EDIFIKANA_BE_OVERRIDE_ENABLED).getOrThrow()
-            val edifikanaBeUrl = preferencesManager
-                .loadStringPreference(Overrides.KEY_EDIFIKANA_BE_URL).getOrThrow()
+            val disableSupabase = preferencesManager.isSupabaseDisabled().getOrThrow()
+            val disableBE = preferencesManager.isBackendDisabled().getOrThrow()
+            val supabaseOverrideEnabled = preferencesManager.isSupabaseOverrideEnabled().getOrThrow()
+            val supabaseOverrideUrl = preferencesManager.getSupabaseOverrideUrl().getOrThrow()
+            val supabaseOverrideKey = preferencesManager.getSupabaseOverrideKey().getOrThrow()
+            val haltOnFailure = preferencesManager.haltOnFailure().getOrThrow()
+            val openDebugWindow = preferencesManager.isOpenDebugWindow().getOrThrow()
+            val edifikanaBeOverrideEnabled = preferencesManager.isEdifikanaBackendOverrideEnabled().getOrThrow()
+            val edifikanaBeUrl = preferencesManager.getEdifikanaBackendUrl().getOrThrow()
+            val loggingSeverity = preferencesManager.loggingSeverityOverride().getOrThrow()
 
             updateUiState {
                 it.copy(
@@ -115,13 +107,13 @@ class DebugViewModel(
                         Field.BooleanField(
                             title = "Disable Supabase",
                             subtitle = "This will allow this client to use fake a Supabase dependency.",
-                            key = Overrides.KEY_DISABLE_SUPABASE,
+                            key = Overrides.KEY_DISABLE_SUPABASE.name,
                             value = disableSupabase
                         ),
                         Field.BooleanField(
                             title = "Disable BackEnd(requires restart)",
                             subtitle = "This will allow this client not make calls to the BE.",
-                            key = Overrides.KEY_DISABLE_BE,
+                            key = Overrides.KEY_DISABLE_BE.name,
                             value = disableBE,
                         ),
                         Field.Divider,
@@ -132,19 +124,19 @@ class DebugViewModel(
                         Field.BooleanField(
                             title = "Enable the override settings",
                             subtitle = "Toggle this to enable the override settings.",
-                            key = Overrides.KEY_SUPABASE_OVERRIDE_ENABLED,
+                            key = Overrides.KEY_SUPABASE_OVERRIDE_ENABLED.name,
                             value = supabaseOverrideEnabled,
                         ),
                         Field.StringField(
                             title = "Supabase URL",
                             subtitle = "Provide an override URL",
-                            key = Overrides.KEY_SUPABASE_OVERRIDE_URL,
+                            key = Overrides.KEY_SUPABASE_OVERRIDE_URL.name,
                             value = supabaseOverrideUrl,
                         ),
                         Field.StringField(
                             title = "Supabase Anon Key",
                             subtitle = "Provide an override Api Anon Key",
-                            key = Overrides.KEY_SUPABASE_OVERRIDE_KEY,
+                            key = Overrides.KEY_SUPABASE_OVERRIDE_KEY.name,
                             value = supabaseOverrideKey,
                             secure = true,
                         ),
@@ -156,13 +148,13 @@ class DebugViewModel(
                         Field.BooleanField(
                             title = "Enable the override settings",
                             subtitle = "Enable this to override the default Back End settings.",
-                            key = Overrides.KEY_EDIFIKANA_BE_OVERRIDE_ENABLED,
+                            key = Overrides.KEY_EDIFIKANA_BE_OVERRIDE_ENABLED.name,
                             value = edifikanaBeOverrideEnabled,
                         ),
                         Field.StringField(
                             title = "Edifikana Back End URL",
                             subtitle = "Provide an override URL",
-                            key = Overrides.KEY_EDIFIKANA_BE_URL,
+                            key = Overrides.KEY_EDIFIKANA_BE_URL.name,
                             value = edifikanaBeUrl,
                         ),
                         Field.Divider,
@@ -172,14 +164,20 @@ class DebugViewModel(
                             subtitle = "Enable the halt-on-faiilure mechanism when in a supported platform. " +
                                 "This will cause the application to freeze when an error is found. Allowing " +
                                 "you the chance to connect the debugger and inspect tha application state.",
-                            key = Overrides.KEY_HALT_ON_FAILURE,
+                            key = Overrides.KEY_HALT_ON_FAILURE.name,
                             value = haltOnFailure,
                         ),
                         Field.Divider,
+                        Field.StringField(
+                            title = "Logging Severity",
+                            subtitle = null,
+                            key = Overrides.KEY_LOGGING_SEVERITY_OVERRIDE.name,
+                            value = loggingSeverity,
+                        ),
                         Field.BooleanField(
                             title = "Open Debug Window",
                             subtitle = "Currently only supported on desktop.",
-                            key = Overrides.KEY_OPEN_DEBUG_WINDOW,
+                            key = Overrides.KEY_OPEN_DEBUG_WINDOW.name,
                             value = openDebugWindow,
                             enabled = false, // Disabled while we set up the required infrastructure
                         ),

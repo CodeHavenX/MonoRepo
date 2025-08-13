@@ -30,4 +30,3 @@ class DummyStorageDatastore : StorageDatastore {
         private const val TAG = "DummyStorageDatastore"
     }
 }
-

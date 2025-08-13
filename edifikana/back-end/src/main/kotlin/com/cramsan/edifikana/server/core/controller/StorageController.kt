@@ -3,18 +3,18 @@ package com.cramsan.edifikana.server.core.controller
 import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.Routes.Storage.QueryParams.ASSET_ID
 import com.cramsan.edifikana.lib.model.AssetId
-import com.cramsan.edifikana.lib.model.network.CreateAssetNetworkRequest
 import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
 import com.cramsan.edifikana.server.core.service.StorageService
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.core.ktor.HttpResponse
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
-import io.ktor.server.request.receive
+import io.ktor.server.request.receiveChannel
 import io.ktor.server.routing.Routing
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
+import io.ktor.utils.io.toByteArray
 
 /**
  * Controller for storage related operations, specifically for file management.
@@ -32,11 +32,12 @@ class StorageController(
         "createAsset",
         contextRetriever,
     ) { _ ->
-        val createFileRequest = call.receive<CreateAssetNetworkRequest>()
+        val uploadFile = call.receiveChannel().toByteArray()
+        val fileName = call.request.headers["fileName"].toString()
 
         val newAsset = storageService.createAsset(
-            fileName = createFileRequest.fileName,
-            content = createFileRequest.content,
+            fileName = fileName,
+            content = uploadFile,
         )
         HttpResponse(
             status = HttpStatusCode.OK,
@@ -88,7 +89,6 @@ class StorageController(
                 get("{$ASSET_ID}") {
                     getAsset(call)
                 }
-
             }
         }
     }

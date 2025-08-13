@@ -6,11 +6,11 @@ import kotlinx.serialization.Serializable
 
 /**
  * Model representing a response for a storage event, which includes
- * the file ID, file name, and the content of the file.
+ * the file ID, file name.
  */
 @NetworkModel
 @Serializable
-data class AssetNetworkResponse (
+data class AssetNetworkResponse(
     @SerialName("id")
     val id: String,
     @SerialName("file_name")

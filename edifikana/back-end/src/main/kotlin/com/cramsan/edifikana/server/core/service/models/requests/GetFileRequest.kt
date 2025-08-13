@@ -5,6 +5,6 @@ import com.cramsan.edifikana.lib.model.AssetId
 /**
  * Domain model representing a request to get a file by its ID.
  */
-data class GetFileRequest (
+data class GetFileRequest(
     val id: AssetId,
 )

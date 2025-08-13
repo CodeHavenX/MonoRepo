@@ -7,6 +7,9 @@ import com.cramsan.edifikana.server.core.service.models.requests.CreateAssetRequ
 import com.cramsan.edifikana.server.core.service.models.requests.GetFileRequest
 import com.cramsan.framework.logging.logD
 
+/**
+ * Service for managing storage of files (assets).
+ */
 class StorageService(
     private val storageDatastore: StorageDatastore,
 ) {

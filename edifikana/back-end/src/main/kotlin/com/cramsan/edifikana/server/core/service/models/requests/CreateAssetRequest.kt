@@ -3,7 +3,7 @@ package com.cramsan.edifikana.server.core.service.models.requests
 /**
  * Domain model representing a request to create a file.
  */
-data class CreateAssetRequest (
+data class CreateAssetRequest(
     val fileName: String,
     val content: ByteArray,
 ) {

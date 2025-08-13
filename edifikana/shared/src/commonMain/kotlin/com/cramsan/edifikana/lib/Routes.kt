@@ -11,6 +11,9 @@ object Routes {
     object User {
         const val PATH = "user"
 
+        /**
+         * Query parameters for the user API.
+         */
         object QueryParams {
             const val USER_ID = "user_id"
         }
@@ -70,7 +73,6 @@ object Routes {
          */
         object QueryParams {
             const val TIMECARD_EVENT_ID = "timecard_event_id"
-
         }
     }
 

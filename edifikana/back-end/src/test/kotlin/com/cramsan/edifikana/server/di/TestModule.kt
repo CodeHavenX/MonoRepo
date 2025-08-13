@@ -95,7 +95,6 @@ fun testKtorModule() = module {
     singleOf(::StaffController)
     singleOf(::TimeCardController)
     singleOf(::StorageController)
-
 }
 
 /**

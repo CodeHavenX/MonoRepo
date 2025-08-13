@@ -1,30 +1,30 @@
-//package com.cramsan.edifikana.server.core.controller
+// package com.cramsan.edifikana.server.core.controller
 //
-//import com.cramsan.edifikana.lib.model.AssetId
-//import com.cramsan.edifikana.lib.model.network.CreateAssetNetworkRequest
-//import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
-//import com.cramsan.edifikana.server.core.service.StorageService
-//import com.cramsan.edifikana.server.core.service.models.Asset
-//import com.cramsan.framework.core.ktor.HttpResponse
-//import com.cramsan.framework.test.CoroutineTest
-//import io.ktor.http.HttpStatusCode
-//import io.ktor.server.application.ApplicationCall
-//import io.ktor.server.request.receive
-//import io.mockk.coEvery
-//import io.mockk.mockk
-//import org.koin.core.context.stopKoin
-//import org.koin.test.KoinTest
-//import kotlin.test.AfterTest
-//import kotlin.test.BeforeTest
-//import kotlin.test.Test
-//import kotlin.test.assertEquals
-//import kotlin.test.assertIs
-//import kotlin.time.ExperimentalTime
+// import com.cramsan.edifikana.lib.model.AssetId
+// import com.cramsan.edifikana.lib.model.network.CreateAssetNetworkRequest
+// import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
+// import com.cramsan.edifikana.server.core.service.StorageService
+// import com.cramsan.edifikana.server.core.service.models.Asset
+// import com.cramsan.framework.core.ktor.HttpResponse
+// import com.cramsan.framework.test.CoroutineTest
+// import io.ktor.http.HttpStatusCode
+// import io.ktor.server.application.ApplicationCall
+// import io.ktor.server.request.receive
+// import io.mockk.coEvery
+// import io.mockk.mockk
+// import org.koin.core.context.stopKoin
+// import org.koin.test.KoinTest
+// import kotlin.test.AfterTest
+// import kotlin.test.BeforeTest
+// import kotlin.test.Test
+// import kotlin.test.assertEquals
+// import kotlin.test.assertIs
+// import kotlin.time.ExperimentalTime
 //
-///**
+// /**
 // * Unit tests for StorageController.
 // */
-//class StorageControllerTest: CoroutineTest(), KoinTest {
+// class StorageControllerTest: CoroutineTest(), KoinTest {
 //    private val dummyAsset = Asset(AssetId("dummy_id"), "dummy.png", byteArrayOf(1, 2, 3))
 //
 //    @BeforeTest
@@ -70,4 +70,4 @@
 //        assertEquals(HttpStatusCode.OK, response.status)
 //        assertEquals(dummyAsset.fileName, (response.body as Asset).fileName)
 //    }
-//}
+// }

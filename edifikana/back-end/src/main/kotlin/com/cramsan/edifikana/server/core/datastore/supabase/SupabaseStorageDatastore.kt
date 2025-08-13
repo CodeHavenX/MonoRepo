@@ -22,7 +22,7 @@ class SupabaseStorageDatastore(
         request: CreateAssetRequest
     ): Result<Asset> = runSuspendCatching(TAG) {
         logD(TAG, "Creating a new asset: %s", request.fileName)
-        val bucket = storage.from("timecard-images")
+        val bucket = storage.from("images/timecard-images")
         bucket.upload(request.fileName, request.content) {
             upsert = false
         }
@@ -38,7 +38,7 @@ class SupabaseStorageDatastore(
         request: GetFileRequest
     ): Result<Asset?> = runSuspendCatching(TAG) {
         logD(TAG, "Getting assetId: %s", request.id)
-        val bucket = storage.from("timecard-images")
+        val bucket = storage.from("images/timecard-images")
         val bytes = bucket.downloadAuthenticated(request.id.toString())
 
         val fileName = extractFileNameFromAssetId(request.id)
@@ -50,7 +50,8 @@ class SupabaseStorageDatastore(
      * Generates a unique asset ID based on the bucket name and file name.
      */
     private fun generateAssetId(
-        bucketName: String, fileName: String
+        bucketName: String,
+        fileName: String
     ): AssetId {
         val assetId = "$bucketName-$fileName"
         return AssetId(assetId)

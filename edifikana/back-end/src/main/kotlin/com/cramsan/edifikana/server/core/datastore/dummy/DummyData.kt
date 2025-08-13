@@ -3,6 +3,7 @@
 
 package com.cramsan.edifikana.server.core.datastore.dummy
 
+import com.cramsan.edifikana.lib.model.AssetId
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.IdType
@@ -12,13 +13,12 @@ import com.cramsan.edifikana.lib.model.StaffRole
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.server.core.service.models.Asset
 import com.cramsan.edifikana.server.core.service.models.EventLogEntry
 import com.cramsan.edifikana.server.core.service.models.Property
 import com.cramsan.edifikana.server.core.service.models.Staff
 import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.core.service.models.User
-import com.cramsan.edifikana.server.core.service.models.Asset
-import com.cramsan.edifikana.lib.model.AssetId
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 

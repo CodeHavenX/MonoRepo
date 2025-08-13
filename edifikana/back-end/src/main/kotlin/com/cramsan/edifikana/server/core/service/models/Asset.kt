@@ -5,7 +5,7 @@ import com.cramsan.edifikana.lib.model.AssetId
 /**
  * Domain model representing a file [Asset].
  */
-data class Asset (
+data class Asset(
     val id: AssetId,
     val fileName: String,
     val content: ByteArray,

@@ -1,15 +1,16 @@
 package com.cramsan.discordbot.github
 
 import com.cramsan.discordbot.config.AppConfig
-import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.plugins.logging.*
-import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.request.get
+import io.ktor.client.request.header
+import io.ktor.client.request.parameter
+import io.ktor.client.request.url
+import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
 /**
@@ -31,26 +32,24 @@ class GitHubService(
     /**
      * Fetches open issues from the configured GitHub repository.
      */
-    suspend fun getOpenIssues(limit: Int = 10): Result<List<GitHubIssue>> = withContext(Dispatchers.IO) {
-        try {
-            val issues: List<GitHubIssue> = client.get {
-                url("https://api.github.com/repos/${config.githubOwner}/${config.githubRepo}/issues")
-                parameter("state", "open")
-                parameter("per_page", limit)
-                parameter("sort", "created")
-                parameter("direction", "desc")
-                
-                config.githubToken?.let { token ->
-                    header("Authorization", "Bearer $token")
-                }
-                header("Accept", "application/vnd.github.v3+json")
-                header("User-Agent", "Discord-Bot")
-            }.body()
-            
-            Result.success(issues)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
+    suspend fun getOpenIssues(limit: Int = 10): Result<List<GitHubIssue>> = try {
+        val issues: List<GitHubIssue> = client.get {
+            url("https://api.github.com/repos/${config.githubOwner}/${config.githubRepo}/issues")
+            parameter("state", "open")
+            parameter("per_page", limit)
+            parameter("sort", "created")
+            parameter("direction", "desc")
+
+            config.githubToken?.let { token ->
+                header("Authorization", "Bearer $token")
+            }
+            header("Accept", "application/vnd.github.v3+json")
+            header("User-Agent", "Discord-Bot")
+        }.body()
+
+        Result.success(issues)
+    } catch (e: Exception) {
+        Result.failure(e)
     }
 
     /**

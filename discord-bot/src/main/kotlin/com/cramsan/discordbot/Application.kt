@@ -66,23 +66,25 @@ fun Application.initializeDependencies() {
  */
 fun Application.configureEntryPoints() {
     val config: AppConfig by inject()
-    
+
     routing {
         get("/") {
             call.respondText("Discord Bot is running! 🤖")
         }
-        
+
         get("/health") {
             call.respondText("OK")
         }
-        
+
         get("/status") {
-            call.respondText("""
+            call.respondText(
+                """
                 Discord Bot Status:
                 - GitHub Owner: ${config.githubOwner}
                 - GitHub Repo: ${config.githubRepo}
                 - Server Port: ${config.serverPort}
-            """.trimIndent())
+                """.trimIndent()
+            )
         }
     }
 }
@@ -92,14 +94,16 @@ fun Application.configureEntryPoints() {
  */
 fun Application.startDiscordBot() = runBlocking {
     val discordBotService: DiscordBotService by inject()
-    
+
     // Start the Discord bot
     discordBotService.start()
-    
+
     // Add shutdown hook to properly close the bot
-    Runtime.getRuntime().addShutdownHook(Thread {
-        runBlocking {
-            discordBotService.stop()
+    Runtime.getRuntime().addShutdownHook(
+        Thread {
+            runBlocking {
+                discordBotService.stop()
+            }
         }
-    })
+    )
 }

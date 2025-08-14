@@ -24,7 +24,7 @@ dependencies {
     implementation("io.ktor:ktor-client-logging:_")
 
     // Kord for Discord bot
-    implementation("dev.kord:kord-core:0.14.0")
+    implementation("dev.kord:kord-core:_")
 
     // Dependency injection
     implementation("io.insert-koin:koin-core:_")
@@ -37,6 +37,11 @@ dependencies {
 
     // Kotlinx coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:_")
+
+    // Test dependencies
+    testImplementation("org.junit.jupiter:junit-jupiter:_")
+    testImplementation("io.ktor:ktor-server-test-host:_")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:_")
 }
 
 // Configures the distribution archives, excluding duplicate files
@@ -46,4 +51,9 @@ val distTar by tasks.getting(Tar::class) {
 
 val distZip by tasks.getting(Zip::class) {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+// Configure test task to use JUnit Platform
+tasks.test {
+    useJUnitPlatform()
 }

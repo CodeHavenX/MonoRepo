@@ -20,15 +20,21 @@ class DiscordBotService(
 ) {
     private var kord: Kord? = null
 
+    companion object {
+        private const val MAX_ISSUES_LIMIT = 25
+        private const val DEFAULT_ISSUES_LIMIT = 5
+        private const val MIN_ISSUES_LIMIT = 1
+    }
+
     /**
      * Starts the Discord bot.
      */
     suspend fun start() {
         kord = Kord(config.discordToken)
-        
+
         setupCommands()
         setupEventHandlers()
-        
+
         kord?.login()
     }
 
@@ -40,7 +46,7 @@ class DiscordBotService(
             name = "issues",
             description = "Get open issues from the GitHub repository"
         ) {
-            string("limit", "Number of issues to fetch (max 25)") {
+            string("limit", "Number of issues to fetch (max $MAX_ISSUES_LIMIT)") {
                 required = false
             }
         }
@@ -62,17 +68,18 @@ class DiscordBotService(
      */
     private suspend fun GuildChatInputCommandInteractionCreateEvent.handleIssuesCommand() {
         val limitParam = interaction.command.options["limit"]?.value?.toString()
-        val limit = limitParam?.toIntOrNull()?.coerceIn(1, 25) ?: 5
+        val limit = limitParam?.toIntOrNull()?.coerceIn(MIN_ISSUES_LIMIT, MAX_ISSUES_LIMIT)
+            ?: DEFAULT_ISSUES_LIMIT
 
         val response = interaction.deferPublicResponse()
 
         coroutineScope.launch {
             try {
                 val result = githubService.getOpenIssues(limit)
-                
+
                 if (result.isSuccess) {
-                    val issues = result.getOrNull() ?: emptyList()
-                    
+                    val issues = result.getOrNull().orEmpty()
+
                     if (issues.isEmpty()) {
                         response.respond {
                             content = "🎉 No open issues found in ${config.githubOwner}/${config.githubRepo}!"
@@ -81,14 +88,17 @@ class DiscordBotService(
                         val issuesList = issues.take(limit).joinToString("\n\n") { issue ->
                             val labels = if (issue.labels.isNotEmpty()) {
                                 " [${issue.labels.joinToString(", ") { it.name }}]"
-                            } else ""
-                            
+                            } else {
+                                ""
+                            }
+
                             "**#${issue.number}** ${issue.title}$labels\n" +
-                            "👤 ${issue.user.login} • 🔗 ${issue.html_url}"
+                                "👤 ${issue.user.login} • 🔗 ${issue.htmlUrl}"
                         }
-                        
+
+                        val repoName = "${config.githubOwner}/${config.githubRepo}"
                         response.respond {
-                            content = "📋 **Open Issues in ${config.githubOwner}/${config.githubRepo}** (${issues.size} found)\n\n$issuesList"
+                            content = "📋 **Open Issues in $repoName** (${issues.size} found)\n\n$issuesList"
                         }
                     }
                 } else {

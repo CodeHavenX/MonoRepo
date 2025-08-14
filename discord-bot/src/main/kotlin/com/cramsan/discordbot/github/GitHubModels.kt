@@ -1,5 +1,6 @@
 package com.cramsan.discordbot.github
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
@@ -14,9 +15,12 @@ data class GitHubIssue(
     val state: String,
     val user: GitHubUser,
     val labels: List<GitHubLabel>,
-    val html_url: String,
-    val created_at: String,
-    val updated_at: String
+    @SerialName("html_url")
+    val htmlUrl: String,
+    @SerialName("created_at")
+    val createdAt: String,
+    @SerialName("updated_at")
+    val updatedAt: String
 )
 
 /**
@@ -26,8 +30,10 @@ data class GitHubIssue(
 data class GitHubUser(
     val login: String,
     val id: Long,
-    val avatar_url: String?,
-    val html_url: String
+    @SerialName("avatar_url")
+    val avatarUrl: String?,
+    @SerialName("html_url")
+    val htmlUrl: String
 )
 
 /**

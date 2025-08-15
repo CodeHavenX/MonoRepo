@@ -15,7 +15,7 @@ compose.experimental {
 if (!hasProperty('wasmModuleName') || !wasmModuleName || wasmModuleName.toString().trim().isEmpty()) {
     throw new GradleException(
             "wasmModuleName must be set and not empty in your build script. " +
-                    "Ensure that you have a this line BEFORE you apply any wasm-compose plugins:\n" +
+                    "Ensure that you have this line BEFORE you apply any wasm-compose plugins:\n" +
                     "val wasmModuleName by extra(\"YOUR_MODULE_NAME\")\n"
     )
 }

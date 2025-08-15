@@ -1,15 +1,15 @@
-import de.fayard.refreshVersions.core.versionFor
+import static de.fayard.refreshVersions.core.Versions.versionFor
 /**
  * Plugin to provide compose support to an Android library target.
  */
 
-apply(plugin = "org.jetbrains.kotlin.multiplatform")
+apply plugin: "org.jetbrains.kotlin.multiplatform"
 
-apply(plugin = "com.android.library")
-apply(plugin = "org.jetbrains.compose")
-apply(plugin = "org.jetbrains.kotlin.plugin.compose")
-apply(plugin = "io.github.takahirom.roborazzi")
-apply(from = "$rootDir/gradle/kotlin-mpp-target-android-lib.gradle")
+apply plugin: "com.android.library"
+apply plugin: "org.jetbrains.compose"
+apply plugin: "org.jetbrains.kotlin.plugin.compose"
+apply plugin: "io.github.takahirom.roborazzi"
+apply from: "$rootDir/gradle/kotlin-mpp-target-android-lib.gradle"
 
 android {
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
@@ -31,7 +31,7 @@ android {
     // TODO: Verify if we can remove this
     // https://github.com/CodeHavenX/MonoRepo/issues/186
     lint {
-        disable += "NullSafeMutableLiveData"
+        disable("NullSafeMutableLiveData")
     }
 }
 
@@ -51,7 +51,7 @@ dependencies {
     testImplementation("io.github.takahirom.roborazzi:roborazzi-compose-preview-scanner-support:_")
 }
 
-configure<io.github.takahirom.roborazzi.RoborazziExtension> {
+roborazzi {
     outputDir = file("screenshots")
     generateComposePreviewRobolectricTests.enable.set(false)
     // Configuration is set programmatically in this class

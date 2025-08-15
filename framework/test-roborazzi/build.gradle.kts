@@ -3,8 +3,8 @@ plugins {
     id("com.android.library")
 }
 
-apply(from = "$rootDir/gradle/kotlin-mpp-target-common.gradle.kts")
-apply(from = "$rootDir/gradle/kotlin-mpp-target-android-lib-compose.gradle.kts")
+apply(from = "$rootDir/gradle/kotlin-mpp-target-common.gradle")
+apply(from = "$rootDir/gradle/kotlin-mpp-target-android-lib-compose.gradle")
 
 android {
     namespace = "com.cramsan.framework.test.roborazzi"

@@ -9,7 +9,7 @@ apply(plugin = "org.jetbrains.kotlin.multiplatform")
 apply(plugin = "org.jetbrains.compose")
 apply(plugin = "com.google.devtools.ksp")
 apply(plugin = "com.google.dagger.hilt.android")
-apply(from = "$rootDir/gradle/release-task.gradle.kts")
+apply(from = "$rootDir/gradle/release-task.gradle")
 
 kotlin {
     androidTarget()

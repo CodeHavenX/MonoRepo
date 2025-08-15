@@ -13,8 +13,8 @@ plugins {
 
 version = "1.0-SNAPSHOT"
 
-apply(from = "$rootDir/gradle/kotlin-mpp-target-common-compose.gradle.kts")
-apply(from = "$rootDir/gradle/kotlin-mpp-target-android-lib-compose.gradle.kts")
+apply(from = "$rootDir/gradle/kotlin-mpp-target-common-compose.gradle")
+apply(from = "$rootDir/gradle/kotlin-mpp-target-android-lib-compose.gradle")
 apply(from = "$rootDir/gradle/kotlin-mpp-target-ios.gradle.kts")
 apply(from = "$rootDir/gradle/kotlin-mpp-target-jvm-compose.gradle.kts")
 apply(from = "$rootDir/gradle/kotlin-mpp-target-wasm.gradle.kts")

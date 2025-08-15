@@ -3,9 +3,9 @@
  */
 
 apply(plugin = "kotlin")
-apply(from = "$rootDir/gradle/release-task.gradle.kts")
+apply(from = "$rootDir/gradle/release-task.gradle")
 
-kotlin {
+configure<org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension> {
     jvmToolchain(21)
 }
 

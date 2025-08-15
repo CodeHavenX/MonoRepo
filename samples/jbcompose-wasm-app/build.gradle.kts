@@ -9,6 +9,8 @@ plugins {
     id("org.jetbrains.compose")
 }
 
+val wasmModuleName by extra("SamplesWasmApp")
+
 apply(from = "$rootDir/gradle/kotlin-mpp-target-common-compose.gradle")
 apply(from = "$rootDir/gradle/kotlin-mpp-target-wasm-compose-application.gradle")
 
@@ -27,7 +29,7 @@ kotlin {
         // https://youtrack.jetbrains.com/issue/KT-68614/Wasm.-KotlinWebpack-cannot-serialize-Gradle-script-object-references
         val projectDirPath = project.projectDir.path
 
-        outputModuleName = "composeApp"
+        outputModuleName = wasmModuleName
         browser {
             commonWebpackConfig {
                 outputFileName = "composeApp.js"

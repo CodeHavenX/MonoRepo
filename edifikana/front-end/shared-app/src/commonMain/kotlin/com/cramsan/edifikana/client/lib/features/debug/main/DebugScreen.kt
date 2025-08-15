@@ -63,7 +63,12 @@ fun DebugScreen(
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
             when (event) {
-                DebugEvent.Noop -> Unit
+                DebugEvent.CloseApplication -> {
+                    viewModel.closeApplication()
+                }
+                DebugEvent.ClearPreferences -> {
+                    viewModel.clearPreferences()
+                }
             }
         }
     }
@@ -214,14 +219,18 @@ private fun StringRow(
     field: Field.StringField,
     modifier: Modifier,
     onValueChanged: (String, String) -> Unit,
-    onFocusLost: (String, String) -> Unit,
+    saveChanges: (String, String) -> Unit,
 ) {
     var stringValue by remember(field.value) { mutableStateOf(field.value) }
+    var hasValueChanged by remember { mutableStateOf(false) }
 
     val fieldModifier = Modifier
         .fillMaxWidth()
         .hasLostFocus {
-            onFocusLost(field.key, stringValue)
+            if (hasValueChanged) {
+                saveChanges(field.key, stringValue)
+                hasValueChanged = false
+            }
         }
 
     Column(
@@ -233,6 +242,7 @@ private fun StringRow(
                 value = stringValue,
                 modifier = fieldModifier,
                 onValueChange = {
+                    hasValueChanged = true
                     stringValue = it
                     onValueChanged(field.key, it)
                 },
@@ -244,6 +254,7 @@ private fun StringRow(
                 value = stringValue,
                 modifier = fieldModifier,
                 onValueChange = {
+                    hasValueChanged = true
                     stringValue = it
                     onValueChanged(field.key, it)
                 },

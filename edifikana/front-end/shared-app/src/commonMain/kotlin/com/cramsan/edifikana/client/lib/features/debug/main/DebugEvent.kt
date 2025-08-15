@@ -10,7 +10,18 @@ import com.cramsan.framework.core.compose.ViewModelEvent
  */
 sealed class DebugEvent : ViewModelEvent {
     /**
-     * No operation
+     * Close application event.
+     *
+     * This is used for debugging purposes to close the application.
+     * It is not intended for production use.
      */
-    data object Noop : DebugEvent()
+    data object CloseApplication : DebugEvent()
+
+    /**
+     * Clear preferences event.
+     *
+     * This is used for debugging purposes to clear the application's preferences.
+     * It is not intended for production use.
+     */
+    data object ClearPreferences : DebugEvent()
 }

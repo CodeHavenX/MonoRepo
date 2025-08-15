@@ -6,8 +6,11 @@ import com.cramsan.edifikana.client.lib.managers.PreferencesManager
 import com.cramsan.edifikana.client.lib.settings.Overrides
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.halt.HaltUtil
 import com.cramsan.framework.logging.logI
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * ViewModel for the Debug screen.
@@ -15,6 +18,7 @@ import kotlinx.coroutines.launch
 class DebugViewModel(
     dependencies: ViewModelDependencies,
     private val preferencesManager: PreferencesManager,
+    private val haltUtil: HaltUtil,
 ) : BaseViewModel<DebugEvent, DebugUIModelUI>(
     dependencies,
     DebugUIModelUI.Initial,
@@ -44,15 +48,19 @@ class DebugViewModel(
      */
     fun saveValue(key: String, value: Any) {
         viewModelScope.launch {
-            preferencesManager.setPreference(key, value)
-            bufferedKey = null
-            bufferedValue = null
-            logI(TAG, "Debug key $key changed to $value")
-            loadDataImpl()
-            emitWindowEvent(
-                EdifikanaWindowsEvent.ShowSnackbar("Value saved.Restart the app to apply changes.")
-            )
+            saveValueImpl(key, value)
         }
+    }
+
+    private suspend fun saveValueImpl(key: String, value: Any) {
+        preferencesManager.setPreference(key, value)
+        bufferedKey = null
+        bufferedValue = null
+        logI(TAG, "Debug key $key changed to $value")
+        loadDataImpl()
+        emitWindowEvent(
+            EdifikanaWindowsEvent.ShowSnackbar("Value saved.Restart the app to apply changes.")
+        )
     }
 
     /**
@@ -70,8 +78,34 @@ class DebugViewModel(
     fun saveBufferedChanges() {
         bufferedKey?.let { key ->
             bufferedValue?.let { value ->
-                saveValue(key, value)
+                this.dependencies.appScope.launch {
+                    // Dispatch this change to the app scope to avoid blocking the UI thread
+                    // and to prevent it from being cancelled if the ViewModel is cleared.
+                    saveValueImpl(key, value)
+                }
             }
+        }
+    }
+
+    /**
+     * Clear all the preferences.
+     */
+    fun clearPreferences() {
+        viewModelScope.launch {
+            preferencesManager.clearPreferences()
+            loadDataImpl()
+            emitWindowEvent(EdifikanaWindowsEvent.ShowSnackbar("Preferences cleared. Don't forget to restart the app."))
+        }
+    }
+
+    /**
+     * Force closing the application.
+     */
+    fun closeApplication() {
+        viewModelScope.launch {
+            emitWindowEvent(EdifikanaWindowsEvent.ShowSnackbar("Closing application..."))
+            delay(2.seconds)
+            haltUtil.crashApp()
         }
     }
 
@@ -174,6 +208,21 @@ class DebugViewModel(
                             key = Overrides.KEY_LOGGING_SEVERITY_OVERRIDE.name,
                             value = loggingSeverity,
                         ),
+                        Field.ActionField(
+                            title = "Clear all Preferences",
+                            subtitle = "Remember to start the app again to apply changes.",
+                            action = {
+                                emitEvent(DebugEvent.ClearPreferences)
+                            },
+                        ),
+                        Field.ActionField(
+                            title = "Close the Application",
+                            subtitle = null,
+                            action = {
+                                emitEvent(DebugEvent.CloseApplication)
+                            },
+                        ),
+                        Field.Divider,
                         Field.BooleanField(
                             title = "Open Debug Window",
                             subtitle = "Currently only supported on desktop.",

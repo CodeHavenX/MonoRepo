@@ -1,20 +1,29 @@
 package com.cramsan.framework.preferences.implementation
 
 import com.cramsan.framework.preferences.PreferencesDelegate
+import java.util.concurrent.locks.ReentrantLock
 import java.util.prefs.Preferences
 
 /**
- * This implementation of [PreferencesDelegate] uses the JVM
+ * This implementation of [PreferencesDelegate] uses the JVM.
+ *
+ * Provide a [fqdn] (Fully Qualified Domain Name) to create a unique preferences node. Ensure that the FQDN is unique
+ * across your application to avoid conflicts with other preferences.
  */
-class JVMPreferencesDelegate : PreferencesDelegate {
+class JVMPreferencesDelegate(
+    private val fqdn: String,
+) : PreferencesDelegate {
 
-    private val prefs: Preferences = Preferences.userNodeForPackage(JVMPreferencesDelegate::class.java)
+    private val prefs: Preferences = Preferences.userRoot().node(fqdn)
+    private val mutex = ReentrantLock()
 
     override fun saveString(key: String, value: String?) {
-        if (value == null) {
-            prefs.remove(key)
-        } else {
-            prefs.put(key, value)
+        writeAndFlush {
+            if (value == null) {
+                prefs.remove(key)
+            } else {
+                prefs.put(key, value)
+            }
         }
     }
 
@@ -25,7 +34,9 @@ class JVMPreferencesDelegate : PreferencesDelegate {
     }
 
     override fun saveInt(key: String, value: Int) {
-        prefs.putInt(key, value)
+        writeAndFlush {
+            prefs.putInt(key, value)
+        }
     }
 
     override fun loadInt(key: String): Int? {
@@ -35,7 +46,9 @@ class JVMPreferencesDelegate : PreferencesDelegate {
     }
 
     override fun saveLong(key: String, value: Long) {
-        prefs.putLong(key, value)
+        writeAndFlush {
+            prefs.putLong(key, value)
+        }
     }
 
     override fun loadLong(key: String): Long? {
@@ -45,7 +58,9 @@ class JVMPreferencesDelegate : PreferencesDelegate {
     }
 
     override fun saveBoolean(key: String, value: Boolean) {
-        prefs.putBoolean(key, value)
+        writeAndFlush {
+            prefs.putBoolean(key, value)
+        }
     }
 
     override fun loadBoolean(key: String): Boolean? {
@@ -67,6 +82,19 @@ class JVMPreferencesDelegate : PreferencesDelegate {
         }
     }
 
+    private fun writeAndFlush(
+        writeAction: () -> Unit,
+    ) {
+        try {
+            mutex.lock()
+            writeAction()
+            prefs.putLong(INTERNAL_LAST_UPDATE, System.currentTimeMillis())
+        } finally {
+            prefs.flush()
+            mutex.unlock()
+        }
+    }
+
     override fun remove(key: String) {
         prefs.remove(key)
     }
@@ -75,3 +103,5 @@ class JVMPreferencesDelegate : PreferencesDelegate {
         prefs.clear()
     }
 }
+
+private const val INTERNAL_LAST_UPDATE = "last_update"

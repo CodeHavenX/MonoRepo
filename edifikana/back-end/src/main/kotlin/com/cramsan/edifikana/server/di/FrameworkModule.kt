@@ -37,7 +37,7 @@ import org.koin.dsl.module
  * Class to initialize all the framework level components.
  */
 val FrameworkModule = module(createdAtStart = true) {
-    single<PreferencesDelegate> { JVMPreferencesDelegate() }
+    single<PreferencesDelegate> { JVMPreferencesDelegate("edifikana-backend") }
 
     single<Preferences> { PreferencesImpl(get()) }
 

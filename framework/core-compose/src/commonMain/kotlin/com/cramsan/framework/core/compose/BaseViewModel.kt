@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
  */
 @Suppress("UNCHECKED_CAST")
 open class BaseViewModel<E : ViewModelEvent, UI : ViewModelUIState> (
-    private val dependencies: ViewModelDependencies,
+    protected val dependencies: ViewModelDependencies,
     initialState: UI,
     private val tag: String,
 ) : ViewModel() {

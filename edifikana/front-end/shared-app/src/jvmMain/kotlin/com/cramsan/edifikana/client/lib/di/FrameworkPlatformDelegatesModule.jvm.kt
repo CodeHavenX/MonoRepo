@@ -44,5 +44,5 @@ actual val FrameworkPlatformDelegatesModule = module {
 
     single<DispatcherProvider> { UIDispatcherProvider() }
 
-    single<PreferencesDelegate> { JVMPreferencesDelegate() }
+    single<PreferencesDelegate> { JVMPreferencesDelegate("edifikana-client") }
 }

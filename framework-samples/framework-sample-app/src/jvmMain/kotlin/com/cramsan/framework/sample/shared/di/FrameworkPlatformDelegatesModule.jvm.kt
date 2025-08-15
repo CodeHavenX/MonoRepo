@@ -44,5 +44,5 @@ internal actual val FrameworkPlatformDelegatesModule: Module = module {
 
     single<DispatcherProvider> { UIDispatcherProvider() }
 
-    single<PreferencesDelegate> { JVMPreferencesDelegate() }
+    single<PreferencesDelegate> { JVMPreferencesDelegate("com.cramsan.framework.sample") }
 }

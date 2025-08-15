@@ -131,6 +131,13 @@ class PreferencesManager(
         PreferencesMapper.getLoggingSeverityOverride(preferences)
     }
 
+    /**
+     * Clear all preferences.
+     */
+    suspend fun clearPreferences() = dependencies.getOrCatch(TAG) {
+        preferences.clear()
+    }
+
     companion object {
         const val TAG = "PreferencesManager"
     }

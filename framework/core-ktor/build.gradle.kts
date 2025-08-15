@@ -2,7 +2,7 @@ plugins {
     kotlin("jvm")
 }
 
-apply(from = "$rootDir/gradle/kotlin-jvm-target-lib.gradle")
+apply(from = "$rootDir/gradle/kotlin-jvm-target-lib.gradle.kts")
 
 dependencies {
     implementation(project(":framework:interfacelib"))

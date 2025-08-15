@@ -1,0 +1,29 @@
+/**
+ * Plugin to create add compose support to a common source-set.
+ */
+apply(plugin = "org.jetbrains.kotlin.multiplatform")
+apply(plugin = "org.jetbrains.compose")
+apply(plugin = "org.jetbrains.kotlin.plugin.compose")
+
+apply(from = "$rootDir/gradle/kotlin-mpp-target-common.gradle.kts")
+
+kotlin {
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation(compose.runtime)
+                implementation(compose.foundation)
+                implementation(compose.material3)
+                implementation(compose.ui)
+                implementation(compose.components.resources)
+                implementation(compose.components.uiToolingPreview)
+                implementation(compose.animation)
+                implementation(compose.materialIconsExtended)
+            }
+        }
+        commonTest {
+            dependencies {
+            }
+        }
+    }
+}

@@ -11,8 +11,8 @@ plugins {
 
 val wasmModuleName by extra("EdifikanaWasmApp")
 
-apply(from = "$rootDir/gradle/kotlin-mpp-target-common-compose.gradle")
-apply(from = "$rootDir/gradle/kotlin-mpp-target-wasm-compose-application.gradle")
+apply(from = "$rootDir/gradle/kotlin-mpp-target-common-compose.gradle.kts")
+apply(from = "$rootDir/gradle/kotlin-mpp-target-wasm-compose-application.gradle.kts")
 
 // https://github.com/CodeHavenX/MonoRepo/issues/228
 // Remove this workaround once we upgrade packages.

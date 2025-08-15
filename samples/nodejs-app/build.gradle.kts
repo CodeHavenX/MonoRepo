@@ -3,8 +3,8 @@ plugins {
     kotlin("multiplatform")
 }
 
-apply(from = "$rootDir/gradle/kotlin-mpp-target-common.gradle")
-apply(from = "$rootDir/gradle/kotlin-mpp-target-js.gradle")
+apply(from = "$rootDir/gradle/kotlin-mpp-target-common.gradle.kts")
+apply(from = "$rootDir/gradle/kotlin-mpp-target-js.gradle.kts")
 
 kotlin {
     js(IR) {

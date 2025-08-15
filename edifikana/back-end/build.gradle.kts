@@ -7,7 +7,7 @@ plugins {
 val mainClassTarget by extra("io.ktor.server.netty.EngineMain")
 
 // Configures default settings for JVM project
-apply(from = "$rootDir/gradle/kotlin-jvm-target-application.gradle")
+apply(from = "$rootDir/gradle/kotlin-jvm-target-application.gradle.kts")
 
 sourceSets {
     val integTest by creating {

@@ -15,7 +15,7 @@ plugins {
 }
 
 subprojects {
-    apply(from = "$rootDir/gradle/detekt.gradle")
+    apply(from = "$rootDir/gradle/detekt.gradle.kts")
 }
 
 /**

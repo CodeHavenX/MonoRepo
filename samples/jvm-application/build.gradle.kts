@@ -4,7 +4,7 @@ plugins {
 
 val mainClassTarget by extra("com.cramsan.samples.jvm.application.ApplicationKt")
 
-apply(from = "$rootDir/gradle/kotlin-jvm-target-application.gradle")
+apply(from = "$rootDir/gradle/kotlin-jvm-target-application.gradle.kts")
 
 dependencies {
     implementation(project(":samples:jvm-lib"))

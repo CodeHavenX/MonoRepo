@@ -32,3 +32,56 @@ jobs:
       uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
       with:
         arguments: releaseAll
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts
+      - name: Find WASM zips and Ktor JARs
+        id: find_assets
+        run: |
+          WASM_ZIPS=$(find . -type f -path "*/build/dist/wasmJs/productionExecutable/*.zip" | tr '\n' ' ')
+          KTOR_JARS=$(find . -type f -path "*/build/libs/*.jar" | tr '\n' ' ')
+          echo "wasm_zips=$WASM_ZIPS" >> $GITHUB_OUTPUT
+          echo "ktor_jars=$KTOR_JARS" >> $GITHUB_OUTPUT
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.sha }}
+          release_name: Release ${{ github.sha }}
+          draft: false
+          prerelease: false
+      - name: Upload WASM zips
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ matrix.file }}
+          asset_name: ${{ matrix.file }}
+          asset_content_type: application/zip
+        if: ${{ steps.find_assets.outputs.wasm_zips != '' }}
+        continue-on-error: true
+        strategy:
+          matrix:
+            file: ${{ fromJson(steps.find_assets.outputs.wasm_zips) }}
+      - name: Upload Ktor JARs
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ matrix.file }}
+          asset_name: ${{ matrix.file }}
+          asset_content_type: application/java-archive
+        if: ${{ steps.find_assets.outputs.ktor_jars != '' }}
+        continue-on-error: true
+        strategy:
+          matrix:
+            file: ${{ fromJson(steps.find_assets.outputs.ktor_jars) }}

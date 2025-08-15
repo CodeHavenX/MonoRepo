@@ -28,3 +28,7 @@ val distTar by tasks.getting(Tar::class) {
 val distZip by tasks.getting(Zip::class) {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
+
+tasks.getByName("releaseJvm") {
+    dependsOn("buildFatJar")
+}

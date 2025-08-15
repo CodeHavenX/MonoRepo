@@ -1,1 +1,1 @@
-apply(from = "$rootDir/gradle/kotlin-jvm-target-lib.gradle.kts")
+apply(from = "$rootDir/gradle/kotlin-jvm-target-lib.gradle")

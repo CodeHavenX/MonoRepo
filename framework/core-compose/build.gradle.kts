@@ -12,9 +12,9 @@ plugins {
 
 apply(from = "$rootDir/gradle/kotlin-mpp-target-common-compose.gradle")
 apply(from = "$rootDir/gradle/kotlin-mpp-target-android-lib-compose.gradle")
-apply(from = "$rootDir/gradle/kotlin-mpp-target-jvm-compose.gradle.kts")
-apply(from = "$rootDir/gradle/kotlin-mpp-target-ios.gradle.kts")
-apply(from = "$rootDir/gradle/kotlin-mpp-target-wasm.gradle.kts")
+apply(from = "$rootDir/gradle/kotlin-mpp-target-jvm-compose.gradle")
+apply(from = "$rootDir/gradle/kotlin-mpp-target-ios.gradle")
+apply(from = "$rootDir/gradle/kotlin-mpp-target-wasm.gradle")
 
 android {
     namespace = "com.cramsan.framework.core.compose"

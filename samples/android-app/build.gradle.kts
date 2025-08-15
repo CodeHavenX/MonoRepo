@@ -5,7 +5,7 @@ plugins {
     id("com.android.application")
 }
 
-apply(from = "$rootDir/gradle/kotlin-mpp-target-android-app.gradle.kts")
+apply(from = "$rootDir/gradle/kotlin-mpp-target-android-app.gradle")
 
 android {
     namespace = "com.cramsan.samples.android.app"

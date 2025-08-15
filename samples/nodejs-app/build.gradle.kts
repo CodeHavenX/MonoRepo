@@ -4,7 +4,7 @@ plugins {
 }
 
 apply(from = "$rootDir/gradle/kotlin-mpp-target-common.gradle")
-apply(from = "$rootDir/gradle/kotlin-mpp-target-js.gradle.kts")
+apply(from = "$rootDir/gradle/kotlin-mpp-target-js.gradle")
 
 kotlin {
     js(IR) {

@@ -5,7 +5,7 @@ plugins {
     id("org.jetbrains.compose")
 }
 
-apply(from = "$rootDir/gradle/kotlin-mpp-target-android-app.gradle.kts")
+apply(from = "$rootDir/gradle/kotlin-mpp-target-android-app.gradle")
 
 android {
     namespace = "com.cramsan.framework.samples.android"

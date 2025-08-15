@@ -6,7 +6,7 @@ plugins {
     id("org.jetbrains.compose")
 }
 
-apply(from = "$rootDir/gradle/kotlin-jvm-target-lib-compose.gradle.kts")
+apply(from = "$rootDir/gradle/kotlin-jvm-target-lib-compose.gradle")
 
 dependencies {
     implementation(project(":framework-samples:framework-sample-app"))

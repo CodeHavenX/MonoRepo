@@ -9,9 +9,9 @@ plugins {
 
 apply(from = "$rootDir/gradle/kotlin-mpp-target-common.gradle")
 apply(from = "$rootDir/gradle/kotlin-mpp-target-android-lib.gradle")
-apply(from = "$rootDir/gradle/kotlin-mpp-target-ios.gradle.kts")
-apply(from = "$rootDir/gradle/kotlin-mpp-target-js.gradle.kts")
-apply(from = "$rootDir/gradle/kotlin-mpp-target-jvm.gradle.kts")
+apply(from = "$rootDir/gradle/kotlin-mpp-target-ios.gradle")
+apply(from = "$rootDir/gradle/kotlin-mpp-target-js.gradle")
+apply(from = "$rootDir/gradle/kotlin-mpp-target-jvm.gradle")
 
 
 android {

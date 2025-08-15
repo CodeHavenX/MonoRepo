@@ -5,7 +5,7 @@ plugins {
     id("org.jetbrains.compose")
 }
 
-apply(from = "$rootDir/gradle/kotlin-mpp-target-android-app.gradle.kts")
+apply(from = "$rootDir/gradle/kotlin-mpp-target-android-app.gradle")
 
 private val ENV_STORE_PASSWORD = "EDIFIKANA_STORE_PASSWORD"
 private val ENV_KEY_ALIAS = "EDIFIKANA_KEY_ALIAS"

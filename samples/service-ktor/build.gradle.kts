@@ -7,7 +7,7 @@ plugins {
 val mainClassTarget by extra("io.ktor.server.netty.EngineMain")
 
 // Configures default settings for JVM project
-apply(from = "$rootDir/gradle/kotlin-jvm-target-application.gradle.kts")
+apply(from = "$rootDir/gradle/kotlin-jvm-target-application.gradle")
 
 dependencies {
     implementation("io.ktor:ktor-server-core-jvm:_")

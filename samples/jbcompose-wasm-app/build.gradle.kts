@@ -12,7 +12,7 @@ plugins {
 val wasmModuleName by extra("SamplesWasmApp")
 
 apply(from = "$rootDir/gradle/kotlin-mpp-target-common-compose.gradle")
-apply(from = "$rootDir/gradle/kotlin-mpp-target-wasm-compose-application.gradle.kts")
+apply(from = "$rootDir/gradle/kotlin-mpp-target-wasm-compose-application.gradle")
 
 // https://github.com/CodeHavenX/MonoRepo/issues/228
 // Remove this workaround once we upgrade packages.

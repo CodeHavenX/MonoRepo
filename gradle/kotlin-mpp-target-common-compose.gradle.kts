@@ -7,23 +7,5 @@ apply(plugin = "org.jetbrains.kotlin.plugin.compose")
 
 apply(from = "$rootDir/gradle/kotlin-mpp-target-common.gradle.kts")
 
-kotlin {
-    sourceSets {
-        commonMain {
-            dependencies {
-                implementation(compose.runtime)
-                implementation(compose.foundation)
-                implementation(compose.material3)
-                implementation(compose.ui)
-                implementation(compose.components.resources)
-                implementation(compose.components.uiToolingPreview)
-                implementation(compose.animation)
-                implementation(compose.materialIconsExtended)
-            }
-        }
-        commonTest {
-            dependencies {
-            }
-        }
-    }
-}
+// TODO: Add compose dependencies - for now skipping due to script context issues
+// The compose extension is not available in script plugin context

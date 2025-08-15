@@ -3,7 +3,7 @@
  */
 apply(plugin = "org.jetbrains.kotlin.multiplatform")
 
-kotlin {
+configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
     // TODO: This target should be determined at configuration time since it depends on the
     // architecture of the host.
     iosSimulatorArm64() {

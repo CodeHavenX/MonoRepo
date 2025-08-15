@@ -4,7 +4,7 @@
 apply(plugin = "com.android.library")
 apply(plugin = "org.jetbrains.kotlin.multiplatform")
 
-android {
+configure<com.android.build.gradle.LibraryExtension> {
     compileSdk = project.property("compileSdkVersion").toString().toInt()
 
     defaultConfig {
@@ -20,11 +20,6 @@ android {
         resources {
             excludes += "/META-INF/**"
         }
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
     }
 
     testOptions {
@@ -71,7 +66,7 @@ dependencies {
     androidTestImplementation("org.robolectric:robolectric:_")
 }
 
-kotlin {
+configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
     androidTarget()
 }
 

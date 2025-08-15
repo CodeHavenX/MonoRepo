@@ -3,8 +3,8 @@
  */
 apply(plugin = "org.jetbrains.kotlin.multiplatform")
 
-kotlin {
-    js(IR) {
+configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
+    js(org.jetbrains.kotlin.gradle.plugin.KotlinJsCompilerType.IR) {
     }
 
     sourceSets {

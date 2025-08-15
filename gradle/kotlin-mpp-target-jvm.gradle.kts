@@ -3,7 +3,7 @@
  */
 apply(plugin = "org.jetbrains.kotlin.multiplatform")
 
-kotlin {
+configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
     jvm() {
         compilations.all {
             kotlinOptions {

@@ -4,9 +4,9 @@
 
 apply(plugin = "org.jetbrains.kotlin.multiplatform")
 
-kotlin {
+configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
     wasmJs {
-        browser{
+        browser {
 
         }
     }

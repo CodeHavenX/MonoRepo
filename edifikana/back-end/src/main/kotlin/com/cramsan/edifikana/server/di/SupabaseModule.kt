@@ -5,11 +5,13 @@ import com.cramsan.edifikana.server.core.controller.auth.SupabaseContextRetrieve
 import com.cramsan.edifikana.server.core.datastore.EventLogDatastore
 import com.cramsan.edifikana.server.core.datastore.PropertyDatastore
 import com.cramsan.edifikana.server.core.datastore.StaffDatastore
+import com.cramsan.edifikana.server.core.datastore.StorageDatastore
 import com.cramsan.edifikana.server.core.datastore.TimeCardDatastore
 import com.cramsan.edifikana.server.core.datastore.UserDatastore
 import com.cramsan.edifikana.server.core.datastore.supabase.SupabaseEventLogDatastore
 import com.cramsan.edifikana.server.core.datastore.supabase.SupabasePropertyDatastore
 import com.cramsan.edifikana.server.core.datastore.supabase.SupabaseStaffDatastore
+import com.cramsan.edifikana.server.core.datastore.supabase.SupabaseStorageDatastore
 import com.cramsan.edifikana.server.core.datastore.supabase.SupabaseTimeCardDatastore
 import com.cramsan.edifikana.server.core.datastore.supabase.SupabaseUserDatastore
 import com.cramsan.edifikana.server.settings.Overrides
@@ -99,6 +101,9 @@ val SupabaseModule = module {
     }
     singleOf(::SupabaseEventLogDatastore) {
         bind<EventLogDatastore>()
+    }
+    singleOf(::SupabaseStorageDatastore) {
+        bind<StorageDatastore>()
     }
 
     // Other Components

@@ -4,6 +4,7 @@ import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
 import com.cramsan.edifikana.client.lib.service.TimeCardService
 import com.cramsan.edifikana.client.lib.service.impl.PropertyServiceImpl.Companion.TAG
 import com.cramsan.edifikana.lib.Routes
+import com.cramsan.edifikana.lib.Routes.Staff.QueryParams.STAFF_ID
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.network.TimeCardEventNetworkResponse
@@ -44,7 +45,7 @@ class TimeCardServiceImpl(
         val response = http.get(Routes.TimeCard.PATH) {
             url {
                 staffPK?.let {
-                    parameters.append(Routes.TimeCard.QueryParams.STAFF_ID, it.staffId)
+                    parameters.append(STAFF_ID, it.staffId)
                 }
             }
         }.body<List<TimeCardEventNetworkResponse>>()

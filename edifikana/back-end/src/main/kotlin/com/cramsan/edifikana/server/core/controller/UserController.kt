@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.server.core.controller
 
 import com.cramsan.edifikana.lib.Routes
-import com.cramsan.edifikana.lib.USER_ID
+import com.cramsan.edifikana.lib.Routes.User.QueryParams.USER_ID
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.model.network.CreateUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdatePasswordNetworkRequest

@@ -1,7 +1,7 @@
 FROM eclipse-temurin:21-jre
 
 ARG JAR_URL
-RUN test -n "JAR_URL"
+RUN test -n "$JAR_URL"
 ENV JAR_URL=$JAR_URL
 
 WORKDIR /app

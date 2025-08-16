@@ -1,7 +1,7 @@
 FROM nginx:alpine
 
 ARG ASSET_URL
-RUN test -n "ASSET_URL"
+RUN test -n "$ASSET_URL"
 ENV ASSET_URL=$ASSET_URL
 ENV ASSET_NAME=WasmApp.zip
 

@@ -6,8 +6,8 @@ plugins {
 
 val mainClassTarget by extra("io.ktor.server.netty.EngineMain")
 
-// Configures default settings for JVM project
-apply(from = "$rootDir/gradle/kotlin-jvm-target-application.gradle")
+// Configures default settings for JVM/Ktor project
+apply(from = "$rootDir/gradle/kotlin-jvm-target-ktor.gradle")
 
 sourceSets {
     val integTest by creating {
@@ -87,12 +87,4 @@ dependencies {
     testImplementation("io.ktor:ktor-server-test-host:_")
     implementation("io.insert-koin:koin-test:_")
     testImplementation(project(":framework:test"))
-}
-
-val distTar by tasks.getting(Tar::class) {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-}
-
-val distZip by tasks.getting(Zip::class) {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }

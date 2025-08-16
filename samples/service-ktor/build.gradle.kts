@@ -6,8 +6,8 @@ plugins {
 
 val mainClassTarget by extra("io.ktor.server.netty.EngineMain")
 
-// Configures default settings for JVM project
-apply(from = "$rootDir/gradle/kotlin-jvm-target-application.gradle")
+// Configures default settings for the JVM/Ktor project
+apply(from = "$rootDir/gradle/kotlin-jvm-target-ktor.gradle")
 
 dependencies {
     implementation("io.ktor:ktor-server-core-jvm:_")
@@ -18,13 +18,4 @@ dependencies {
 
     implementation("io.insert-koin:koin-core:_")
     implementation("io.insert-koin:koin-ktor:_")
-}
-
-// Configures the distribution archives, excluding duplicate files
-val distTar by tasks.getting(Tar::class) {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-}
-
-val distZip by tasks.getting(Zip::class) {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }

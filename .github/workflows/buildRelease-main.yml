@@ -45,6 +45,7 @@ jobs:
   notify:
     runs-on: ubuntu-latest
     needs: build
+    environment: "Coolify"
     steps:
     - name: Invoke deployment hook
       uses: distributhor/workflow-webhook@v3

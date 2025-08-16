@@ -11,5 +11,7 @@ WORKDIR /app
 RUN curl -L $ASSET_URL -o $ASSET_NAME
 RUN unzip -o $ASSET_NAME -d /usr/share/nginx/html
 
+EXPOSE 80
+
 # Start serving traffic
 CMD ["nginx", "-g", "daemon off;"]

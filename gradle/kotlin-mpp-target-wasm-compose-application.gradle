@@ -20,6 +20,8 @@ if (!hasProperty('wasmModuleName') || !wasmModuleName || wasmModuleName.toString
     )
 }
 
+// To list the produced artifacts into the release page, add the path to your file
+// in the github actions workflow file at .github/workflows/buildRelease-main.yml
 task zipWasmProductionExecutable(type: Zip) {
     group = "distribution"
     description = "Zips the WASM production executable output."

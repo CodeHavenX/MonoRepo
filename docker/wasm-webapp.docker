@@ -1,0 +1,15 @@
+FROM nginx:alpine
+
+ARG ASSET_URL
+RUN test -n "ASSET_URL"
+ENV ASSET_URL=$ASSET_URL
+ENV ASSET_NAME=WasmApp.zip
+
+WORKDIR /app
+
+# Download the Wasm application assets
+RUN curl -L $ASSET_URL -o $ASSET_NAME
+RUN unzip -o $ASSET_NAME -d /usr/share/nginx/html
+
+# Start serving traffic
+CMD ["nginx", "-g", "daemon off;"]

@@ -42,6 +42,10 @@ jobs:
           edifikana/front-end/app-wasm/build/dist/wasmJs/EdifikanaWasmApp.zip
           samples/service-ktor/build/libs/service-ktor-all.jar
           samples/jbcompose-wasm-app/build/dist/wasmJs/SamplesWasmApp.zip
+  notify:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
     - name: Invoke deployment hook
       uses: distributhor/workflow-webhook@v3
       with:

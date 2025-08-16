@@ -13,7 +13,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 env:
   ANDROID_HOME: "/opt/Android/sdk"
@@ -32,3 +32,12 @@ jobs:
       uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
       with:
         arguments: releaseAll
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        # List of files to include in the release
+        files: |
+          edifikana/back-end/build/libs/back-end-all.jar
+          edifikana/front-end/app-wasm/build/dist/wasmJs/EdifikanaWasmApp.zip
+          samples/service-ktor/build/libs/service-ktor-all.jar
+          samples/jbcompose-wasm-app/build/dist/wasmJs/SamplesWasmApp.zip

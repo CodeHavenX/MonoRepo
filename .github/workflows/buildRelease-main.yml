@@ -10,7 +10,7 @@ name: Build All Targets Release Tag
 on:
   push:
     tags:
-      - "*"
+      - '*'
   workflow_dispatch:
 
 permissions:
@@ -50,5 +50,6 @@ jobs:
     - name: Invoke deployment hook
       uses: distributhor/workflow-webhook@v3
       with:
+        webhook_auth_type: "bearer"
         webhook_url: ${{ secrets.WEBHOOK_URL }}
         webhook_secret: ${{ secrets.WEBHOOK_SECRET }}

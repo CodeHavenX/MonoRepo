@@ -21,7 +21,7 @@ jobs:
         git fetch origin main
         git checkout main
         TAG=$(date -u +%Y%m%d_%H%M%S)
-        git tag $TAG
+        git tag -a $TAG -m "Release tag created on $(date -u +%Y-%m-%dT%H:%M:%SZ)"
         git push origin $TAG
       env:
         GITHUB_TOKEN: ${{ secrets.CUSTOM_PAT }}

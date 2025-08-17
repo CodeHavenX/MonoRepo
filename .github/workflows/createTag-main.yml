@@ -13,10 +13,10 @@ jobs:
     runs-on: ubuntu-latest
     environment: "CI"
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v5
+      with:
+        token: ${{ secrets.CUSTOM_PAT }}
     - name: Create and push tag
-      env:
-        GITHUB_TOKEN: ${{ secrets.CUSTOM_PAT }}
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"

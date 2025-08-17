@@ -8,6 +8,7 @@ import com.cramsan.edifikana.lib.model.AssetId
 data class Asset(
     val id: AssetId,
     val fileName: String,
+    val signedUrl: String?,
     val content: ByteArray,
 ) {
     /**

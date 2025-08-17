@@ -86,7 +86,7 @@ class StorageController(
                 post {
                     createAsset(call)
                 }
-                get("{$ASSET_ID}") {
+                get() {
                     getAsset(call)
                 }
             }

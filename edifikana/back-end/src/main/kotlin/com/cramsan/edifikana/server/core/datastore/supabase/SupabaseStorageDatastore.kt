@@ -7,7 +7,9 @@ import com.cramsan.edifikana.server.core.service.models.requests.CreateAssetRequ
 import com.cramsan.edifikana.server.core.service.models.requests.GetFileRequest
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
+import com.cramsan.framework.logging.logI
 import io.github.jan.supabase.storage.Storage
+import kotlin.time.Duration.Companion.minutes
 
 /**
  * Datastore for managing storage of assets using Supabase.
@@ -27,7 +29,7 @@ class SupabaseStorageDatastore(
             upsert = false
         }
         val assetId = generateAssetId(bucket.bucketId, request.fileName)
-        Asset(assetId, request.fileName, request.content)
+        Asset(assetId, request.fileName,null ,request.content)
     }
 
     /**
@@ -38,12 +40,19 @@ class SupabaseStorageDatastore(
         request: GetFileRequest
     ): Result<Asset?> = runSuspendCatching(TAG) {
         logD(TAG, "Getting assetId: %s", request.id)
-        val bucket = storage.from("images/timecard-images")
-        val bytes = bucket.downloadAuthenticated(request.id.toString())
+        // Extract the file's bucketId and file name from the assetId
+        val fileIdParts = extractFileIdPartsFromAssetId(request.id)
+        val bucketId = fileIdParts.dropLast(1).joinToString("/")
+        val fileName = fileIdParts.last()
+        print("BucketId = $bucketId, FileName = $fileName")
 
-        val fileName = extractFileNameFromAssetId(request.id)
+        // Download the file from the storage bucket
+        val bucket = storage.from(bucketId)
+        val signedUrl = bucket.createSignedUrl(fileName, expiresIn = 3.minutes)
+        val bytes = bucket.downloadAuthenticated(fileName)
 
-        Asset(request.id, fileName, bytes)
+        // Create and return the Asset object
+        Asset(request.id, fileName, signedUrl, bytes)
     }
 
     /**
@@ -53,18 +62,18 @@ class SupabaseStorageDatastore(
         bucketName: String,
         fileName: String
     ): AssetId {
-        val assetId = "$bucketName-$fileName"
+        val assetId = "$bucketName/$fileName"
         return AssetId(assetId)
     }
 
     /**
      * Extracts the file name from the asset ID.
      */
-    private fun extractFileNameFromAssetId(
+    private fun extractFileIdPartsFromAssetId(
         assetId: AssetId
-    ): String {
-        val parts = assetId.assetId.split("-", limit = 2)
-        return if (parts.size == 2) parts[1] else ""
+    ): List<String> {
+        val parts = assetId.assetId.split("/")
+        return parts
     }
 
     companion object {

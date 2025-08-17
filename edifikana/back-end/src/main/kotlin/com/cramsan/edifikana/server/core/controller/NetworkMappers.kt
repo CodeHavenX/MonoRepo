@@ -107,5 +107,6 @@ fun Asset.toAssetNetworkResponse(): AssetNetworkResponse {
     return AssetNetworkResponse(
         id = id.assetId,
         fileName = fileName,
+        signedUrl = signedUrl,
     )
 }

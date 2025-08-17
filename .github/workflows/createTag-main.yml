@@ -12,10 +12,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     environment: "CI"
-    env:
-      GITHUB_TOKEN: ${{ secrets.CUSTOM_PAT }}
     steps:
     - uses: actions/checkout@v3
+      env:
+        GITHUB_TOKEN: ${{ secrets.CUSTOM_PAT }}
     - name: Create and push tag
       run: |
         git config user.name "github-actions[bot]"

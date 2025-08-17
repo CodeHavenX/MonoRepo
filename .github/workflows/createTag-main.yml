@@ -12,6 +12,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     environment: "CI"
+    env:
+      GITHUB_TOKEN: ${{ secrets.CUSTOM_PAT }}
     steps:
     - uses: actions/checkout@v3
     - name: Create and push tag
@@ -23,5 +25,3 @@ jobs:
         TAG=$(date -u +%Y%m%d_%H%M%S)
         git tag -a $TAG -m "Release tag created on $(date -u +%Y-%m-%dT%H:%M:%SZ)"
         git push origin $TAG
-      env:
-        GITHUB_TOKEN: ${{ secrets.CUSTOM_PAT }}

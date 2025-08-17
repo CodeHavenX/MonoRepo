@@ -14,9 +14,9 @@ jobs:
     environment: "CI"
     steps:
     - uses: actions/checkout@v3
+    - name: Create and push tag
       env:
         GITHUB_TOKEN: ${{ secrets.CUSTOM_PAT }}
-    - name: Create and push tag
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"

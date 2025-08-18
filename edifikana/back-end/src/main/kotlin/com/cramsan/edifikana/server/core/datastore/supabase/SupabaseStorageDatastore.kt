@@ -7,7 +7,6 @@ import com.cramsan.edifikana.server.core.service.models.requests.CreateAssetRequ
 import com.cramsan.edifikana.server.core.service.models.requests.GetFileRequest
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
-import com.cramsan.framework.logging.logI
 import io.github.jan.supabase.storage.Storage
 import kotlin.time.Duration.Companion.minutes
 
@@ -29,7 +28,7 @@ class SupabaseStorageDatastore(
             upsert = false
         }
         val assetId = generateAssetId(bucket.bucketId, request.fileName)
-        Asset(assetId, request.fileName,null ,request.content)
+        Asset(assetId, request.fileName, null, request.content)
     }
 
     /**

@@ -15,6 +15,6 @@ data class AssetNetworkResponse(
     val id: String,
     @SerialName("file_name")
     val fileName: String,
-    @SerialName("signed-url")
+    @SerialName("signed_url")
     val signedUrl: String?,
 )

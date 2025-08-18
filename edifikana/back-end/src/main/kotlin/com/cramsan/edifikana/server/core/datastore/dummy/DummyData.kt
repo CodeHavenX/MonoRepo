@@ -222,7 +222,7 @@ val TIME_CARD_EVENT_5 = TimeCardEvent(
 )
 
 val ASSET_1 = Asset(
-    id = AssetId("time_card_event_id_5"),
+    id = AssetId("images/timecard-images/staff1.png"),
     fileName = "staff1.png",
     signedUrl = null,
     content = byteArrayOf(
@@ -241,9 +241,9 @@ val ASSET_1 = Asset(
 )
 
 val ASSET_2 = Asset(
-    id = AssetId("time_card_event_id_6"),
+    id = AssetId("images/timecard-images/staff2.png"),
     fileName = "staff2.png",
-    signedUrl = null,
+    signedUrl = "fakeSignedUrl.url.com",
     content = byteArrayOf(
         // PNG file header bytes
         0x89.toByte(), 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A,

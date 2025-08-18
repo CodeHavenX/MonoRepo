@@ -129,6 +129,7 @@ fun StaffEntity.toStaff(): Staff {
 fun CreatePropertyRequest.toPropertyEntity(): PropertyEntity.CreatePropertyEntity {
     return PropertyEntity.CreatePropertyEntity(
         name = name,
+        address = address,
     )
 }
 
@@ -140,6 +141,7 @@ fun PropertyEntity.toProperty(): Property {
     return Property(
         id = PropertyId(this.id),
         name = this.name,
+        address = this.address,
     )
 }
 

@@ -8,4 +8,5 @@ import com.cramsan.edifikana.lib.model.PropertyId
 data class Property(
     val id: PropertyId,
     val name: String,
+    val address: String?,
 )

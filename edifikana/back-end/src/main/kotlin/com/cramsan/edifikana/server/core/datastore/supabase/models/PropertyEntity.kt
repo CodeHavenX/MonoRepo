@@ -11,6 +11,7 @@ import kotlinx.serialization.Serializable
 data class PropertyEntity(
     val id: String,
     val name: String,
+    val address: String? = null,
 ) {
     companion object {
         const val COLLECTION = "properties"
@@ -23,5 +24,6 @@ data class PropertyEntity(
     @SupabaseModel
     data class CreatePropertyEntity(
         val name: String,
+        val address: String,
     )
 }

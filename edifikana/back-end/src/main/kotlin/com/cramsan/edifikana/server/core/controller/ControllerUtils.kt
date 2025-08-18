@@ -6,6 +6,7 @@ import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
 import com.cramsan.framework.core.ktor.HttpResponse
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logI
+import com.cramsan.framework.logging.logW
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.response.respond
@@ -20,11 +21,21 @@ suspend inline fun ApplicationCall.handleCall(
     tag: String,
     functionName: String,
     contextRetriever: ContextRetriever,
+    allowUnauthenticated: Boolean = false,
     function: ApplicationCall.(ClientContext) -> HttpResponse,
 ) {
     logI(tag, "$functionName called")
 
     val clientContext = contextRetriever.getContext(this)
+
+    if (allowUnauthenticated && clientContext !is ClientContext.AuthenticatedClientContext) {
+        logW(tag, "Unauthenticated client context received for $functionName")
+        respond(
+            HttpStatusCode.Unauthorized,
+            "Client is not authenticated",
+        )
+        return
+    }
 
     val result = runCatching {
         function(clientContext)
@@ -132,7 +143,7 @@ suspend inline fun ApplicationCall.validateClientError(
  * @return The authenticated client context.
  */
 @Suppress("UseCheckOrError")
-inline fun getAuthenticatedClientContext(clientContext: ClientContext): ClientContext.AuthenticatedClientContext {
+inline fun requireAuthenticatedClientContext(clientContext: ClientContext): ClientContext.AuthenticatedClientContext {
     when (clientContext) {
         is ClientContext.AuthenticatedClientContext -> {
             return clientContext

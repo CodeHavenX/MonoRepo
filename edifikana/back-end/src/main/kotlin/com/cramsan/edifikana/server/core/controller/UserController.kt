@@ -94,7 +94,7 @@ class UserController(
         "updatePassword",
         contextRetriever,
     ) { context ->
-        val authenticatedContext = getAuthenticatedClientContext(context)
+        val authenticatedContext = requireAuthenticatedClientContext(context)
         val userId = authenticatedContext.userId
 
         val updatePasswordRequest = call.receive<UpdatePasswordNetworkRequest>()
@@ -183,7 +183,7 @@ class UserController(
      */
     @OptIn(NetworkModel::class)
     suspend fun associate(call: RoutingCall) = call.handleCall(TAG, "associate", contextRetriever) { context ->
-        val authenticatedContext = getAuthenticatedClientContext(context)
+        val authenticatedContext = requireAuthenticatedClientContext(context)
         val userId = authenticatedContext.userId
         val email = authenticatedContext.userInfo.email
 

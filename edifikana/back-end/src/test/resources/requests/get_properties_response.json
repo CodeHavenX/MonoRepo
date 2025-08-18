@@ -1,10 +1,12 @@
 [
     {
         "id": "property123",
-        "name": "building 1"
+        "name": "building 1",
+        "address": "123 Main St"
     },
     {
         "id": "property456",
-        "name": "building 2"
+        "name": "building 2",
+        "address": "456 Elm St"
     }
 ]

@@ -31,9 +31,23 @@ class SupabasePropertyDatastore(
         logD(TAG, "Creating property: %s", request.name)
         val requestEntity: PropertyEntity.CreatePropertyEntity = request.toPropertyEntity()
 
+        // Insert the property into the database and select the created entity
         val createdProperty = postgrest.from(PropertyEntity.COLLECTION).insert(requestEntity) {
             select()
         }.decodeSingle<PropertyEntity>()
+
+        // Now associate this entry with the user that created it
+        postgrest.from(UserPropertyMappingEntity.COLLECTION).insert(
+            UserPropertyMappingEntity.CreateUserPropertyMappingEntity(
+                userId = request.creatorUserId.userId,
+                propertyId = createdProperty.id,
+            )
+        ) {
+            select()
+        }.decodeSingleOrNull<UserPropertyMappingEntity>() ?: run {
+            throw IllegalStateException("Failed to associate property with user")
+        }
+
         logD(TAG, "Property created propertyId: %s", createdProperty.id)
         createdProperty.toProperty()
     }
@@ -105,6 +119,15 @@ class SupabasePropertyDatastore(
     ): Result<Boolean> = runSuspendCatching(TAG) {
         logD(TAG, "Deleting property: %s", request.propertyId)
 
+        // Delete the property mappings first
+        postgrest.from(UserPropertyMappingEntity.COLLECTION).delete {
+            select()
+            filter {
+                UserPropertyMappingEntity::propertyId eq request.propertyId.propertyId
+            }
+        }
+
+        // Then delete the property itself
         postgrest.from(PropertyEntity.COLLECTION).delete {
             select()
             filter {

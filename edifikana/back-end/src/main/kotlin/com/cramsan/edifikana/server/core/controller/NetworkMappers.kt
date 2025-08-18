@@ -77,6 +77,7 @@ fun Property.toPropertyNetworkResponse(): PropertyNetworkResponse {
     return PropertyNetworkResponse(
         id = id.propertyId,
         name = name,
+        address = address,
     )
 }
 

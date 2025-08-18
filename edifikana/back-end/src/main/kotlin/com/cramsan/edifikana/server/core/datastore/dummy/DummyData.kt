@@ -59,11 +59,13 @@ val USER_4 = User(
 val PROPERTY_1 = Property(
     id = PropertyId("property_id_1"),
     name = "Cenit",
+    address = "123 Main St, Springfield, USA",
 )
 
 val PROPERTY_2 = Property(
     id = PropertyId("property_id_2"),
     name = "Vanguard2",
+    address = "456 Elm St, Springfield, USA",
 )
 
 val STAFF_1 = Staff(

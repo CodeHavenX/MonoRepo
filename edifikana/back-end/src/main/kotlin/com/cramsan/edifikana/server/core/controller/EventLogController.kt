@@ -38,7 +38,7 @@ class EventLogController(
     @OptIn(NetworkModel::class, ExperimentalTime::class)
     suspend fun createEventLogEntry(
         call: ApplicationCall,
-    ) = call.handleCall(TAG, "createEventLogEntry", contextRetriever) { _ ->
+    ) = call.handleCall(TAG, "createEventLogEntry", contextRetriever) { context ->
         val createEventLogRequest = call.receive<CreateEventLogEntryNetworkRequest>()
 
         val newEventLog = eventLogService.createEventLogEntry(

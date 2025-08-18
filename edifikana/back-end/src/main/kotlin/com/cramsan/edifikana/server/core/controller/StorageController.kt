@@ -33,7 +33,9 @@ class StorageController(
         contextRetriever,
     ) { _ ->
         val uploadFile = call.receiveChannel().toByteArray()
-        val fileName = call.request.headers["fileName"].toString()
+        val fileName = requireNotNull(call.request.headers["fileName"]) {
+            "Missing fileName header!"
+        }
 
         val newAsset = storageService.createAsset(
             fileName = fileName,

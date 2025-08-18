@@ -43,7 +43,6 @@ class SupabaseStorageDatastore(
         val fileIdParts = extractFileIdPartsFromAssetId(request.id)
         val bucketId = fileIdParts.dropLast(1).joinToString("/")
         val fileName = fileIdParts.last()
-        print("BucketId = $bucketId, FileName = $fileName")
 
         // Download the file from the storage bucket
         val bucket = storage.from(bucketId)

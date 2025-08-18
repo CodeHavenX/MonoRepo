@@ -16,13 +16,15 @@ data class CreateAssetRequest(
 
         other as CreateAssetRequest
 
-        return content.contentEquals(other.content)
+        return fileName == other.fileName && content.contentEquals(other.content)
     }
 
     /**
      * Returns a hash code value for this CreateFileRequest.
      */
     override fun hashCode(): Int {
-        return content.contentHashCode()
+        var result = fileName.hashCode()
+        result = 31 * result + content.contentHashCode()
+        return result
     }
 }

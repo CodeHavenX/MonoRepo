@@ -18,5 +18,5 @@ data class UpdateStaffNetworkRequest(
     val firstName: String?,
     @SerialName("last_name")
     val lastName: String?,
-    val role: StaffRole,
+    val role: StaffRole?,
 )

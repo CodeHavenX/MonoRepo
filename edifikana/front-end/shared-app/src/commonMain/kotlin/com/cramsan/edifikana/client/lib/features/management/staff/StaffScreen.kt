@@ -3,6 +3,10 @@ package com.cramsan.edifikana.client.lib.features.management.staff
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Save
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -17,6 +21,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.management.ManagementDestination
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
+import com.cramsan.edifikana.lib.model.StaffRole
+import com.cramsan.ui.components.Dropdown
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
 import org.koin.compose.viewmodel.koinViewModel
@@ -57,6 +63,10 @@ fun StaffScreen(
     StaffContent(
         content = uiState,
         onBackSelected = { viewModel.onBackSelected() },
+        onSaveClicked = { viewModel.onSaveClicked() },
+        onFirstNameChange = { viewModel.updateFirstName(it) },
+        onLastNameChange = { viewModel.updateLastName(it) },
+        onRoleSelected = { viewModel.updateRole(it) },
         modifier = modifier,
     )
 }
@@ -68,6 +78,10 @@ fun StaffScreen(
 internal fun StaffContent(
     content: StaffUIState,
     onBackSelected: () -> Unit,
+    onSaveClicked: () -> Unit,
+    onFirstNameChange: (String) -> Unit,
+    onLastNameChange: (String) -> Unit,
+    onRoleSelected: (StaffRole) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -76,7 +90,19 @@ internal fun StaffContent(
             EdifikanaTopBar(
                 title = content.title,
                 onNavigationIconSelected = onBackSelected,
-            )
+            ) {
+                if (content.canSave != null) {
+                    IconButton(
+                        onClick = onSaveClicked,
+                        enabled = content.canSave,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Save,
+                            contentDescription = null,
+                        )
+                    }
+                }
+            }
         },
     ) { innerPadding ->
         Box(
@@ -97,7 +123,9 @@ internal fun StaffContent(
 
                     OutlinedTextField(
                         value = content.firstName.orEmpty(),
-                        onValueChange = { },
+                        onValueChange = {
+                            onFirstNameChange(it)
+                        },
                         modifier = sectionModifier,
                         label = { Text("First name") },
                         singleLine = true,
@@ -106,22 +134,25 @@ internal fun StaffContent(
 
                     OutlinedTextField(
                         value = content.lastName.orEmpty(),
-                        onValueChange = { },
+                        onValueChange = {
+                            onLastNameChange(it)
+                        },
                         modifier = sectionModifier,
                         label = { Text("Last name") },
                         singleLine = true,
                         readOnly = content.isEditable != true,
                     )
 
-                    content.role?.let {
-                        OutlinedTextField(
-                            value = it.name,
-                            onValueChange = { },
+                    content.role?.let { role ->
+                        Dropdown(
+                            label = "Role",
+                            items = StaffRole.entries,
+                            itemLabels = StaffRole.entries.map { it.name },
                             modifier = sectionModifier,
-                            label = { Text("Role") },
-                            singleLine = true,
-                            readOnly = content.isEditable != true,
-                        )
+                            startValueMatcher = { role == it },
+                        ) {
+                            onRoleSelected(it)
+                        }
                     }
                 },
                 buttonContent = { buttonModifier ->

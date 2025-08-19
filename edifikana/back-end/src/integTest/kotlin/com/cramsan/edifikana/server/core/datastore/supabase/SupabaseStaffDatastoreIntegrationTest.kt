@@ -7,6 +7,7 @@ import com.cramsan.edifikana.lib.model.StaffRole
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.service.models.requests.CreateStaffRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteStaffRequest
+import com.cramsan.edifikana.server.core.service.models.requests.GetStaffListRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetStaffRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdateStaffRequest
 import com.cramsan.framework.utils.uuid.UUID
@@ -27,7 +28,7 @@ class SupabaseStaffDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun setup() {
         test_prefix = UUID.random()
         runBlocking {
-            testUserId = createTestUser("user-${test_prefix}test_prefix@test.com")
+            testUserId = createTestUser("user-${test_prefix}@test.com")
             propertyId = createTestProperty("${test_prefix}_Property", testUserId!!)
         }
     }
@@ -76,7 +77,7 @@ class SupabaseStaffDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getStaffs should return all staff`() = runCoroutineTest {
+    fun `getStaffs should return all staff for a given user`() = runCoroutineTest {
         // Arrange
         val request1 = CreateStaffRequest(
             firstName = "${test_prefix}_StaffA",
@@ -98,7 +99,7 @@ class SupabaseStaffDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val result2 = staffDatastore.createStaff(request2).registerStaffForDeletion()
         assertTrue(result1.isSuccess)
         assertTrue(result2.isSuccess)
-        val getAllResult = staffDatastore.getStaffs()
+        val getAllResult = staffDatastore.getStaffs(GetStaffListRequest(currentUser = testUserId!!))
 
         // Assert
         assertTrue(getAllResult.isSuccess)

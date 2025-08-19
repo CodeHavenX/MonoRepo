@@ -121,6 +121,7 @@ class ChangePasswordDialogViewModel(
                 newPassword = uiState.value.newPassword,
             ).onSuccess {
                 updateUiState { it.copy(isLoading = false) }
+                emitWindowEvent(EdifikanaWindowsEvent.ShowSnackbar("Password was updated!"))
                 emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
             }.onFailure { error ->
                 logE(TAG, "Failed to change password", error)

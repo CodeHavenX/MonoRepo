@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.account.changepassword
 
 import app.cash.turbine.test
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.lib.model.UserId
@@ -20,6 +21,7 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.launch
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.assertInstanceOf
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -110,7 +112,8 @@ class ChangePasswordDialogViewModelTest : CoroutineTest() {
                 viewModel.onNewPasswordChange("newPassword1!")
                 viewModel.onConfirmPasswordChange("newPassword1!")
                 viewModel.onSubmitSelected()
-                assertEquals(com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent.NavigateBack, awaitItem())
+                assertInstanceOf<EdifikanaWindowsEvent.ShowSnackbar>(awaitItem())
+                assertEquals(EdifikanaWindowsEvent.NavigateBack, awaitItem())
             }
         }
         verificationJob.join()

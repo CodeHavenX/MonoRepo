@@ -89,8 +89,9 @@ class StaffController(
         TAG,
         "getStaffs",
         contextRetriever,
-    ) { _ ->
-        val staffs = staffService.getStaffs().map { it.toStaffNetworkResponse() }
+    ) { context ->
+        val authenticatedClientContext = requireAuthenticatedClientContext(context)
+        val staffs = staffService.getStaffs(authenticatedClientContext).map { it.toStaffNetworkResponse() }
 
         HttpResponse(
             status = HttpStatusCode.OK,

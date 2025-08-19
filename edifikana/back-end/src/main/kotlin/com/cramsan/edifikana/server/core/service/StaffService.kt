@@ -4,10 +4,12 @@ import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.StaffRole
+import com.cramsan.edifikana.server.core.controller.auth.ClientContext
 import com.cramsan.edifikana.server.core.datastore.StaffDatastore
 import com.cramsan.edifikana.server.core.service.models.Staff
 import com.cramsan.edifikana.server.core.service.models.requests.CreateStaffRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteStaffRequest
+import com.cramsan.edifikana.server.core.service.models.requests.GetStaffListRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetStaffRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdateStaffRequest
 import com.cramsan.framework.logging.logD
@@ -60,9 +62,15 @@ class StaffService(
     /**
      * Retrieves all staff.
      */
-    suspend fun getStaffs(): List<Staff> {
+    suspend fun getStaffs(
+        clientContext: ClientContext.AuthenticatedClientContext,
+    ): List<Staff> {
         logD(TAG, "getStaffs")
-        val staffs = staffDatastore.getStaffs().getOrThrow()
+        val staffs = staffDatastore.getStaffs(
+            GetStaffListRequest(
+                currentUser = clientContext.userId,
+            )
+        ).getOrThrow()
         return staffs
     }
 

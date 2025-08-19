@@ -28,7 +28,7 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun setup() {
         test_prefix = UUID.random()
         runBlocking {
-            testUserId = createTestUser("user-${test_prefix}test_prefix@test.com")
+            testUserId = createTestUser("user-${test_prefix}@test.com")
             propertyId = createTestProperty("${test_prefix}_Property", testUserId!!)
         }
     }

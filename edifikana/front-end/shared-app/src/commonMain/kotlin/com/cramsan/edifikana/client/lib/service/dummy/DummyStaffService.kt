@@ -66,4 +66,19 @@ class DummyStaffService : StaffService {
         staffList.add(newStaff)
         return Result.success(Unit)
     }
+
+    override suspend fun updateStaff(staff: StaffModel.UpdateStaffRequest): Result<StaffModel> {
+        delay(1.seconds)
+        val existingStaff = staffList.firstOrNull { it.id == staff.staffId }
+            ?: return Result.failure(Exception("Staff not found"))
+
+        val updatedStaff = existingStaff.copy(
+            firstName = staff.firstName ?: existingStaff.firstName,
+            lastName = staff.lastName ?: existingStaff.lastName,
+            role = staff.role ?: existingStaff.role,
+        )
+
+        staffList[staffList.indexOf(existingStaff)] = updatedStaff
+        return Result.success(updatedStaff)
+    }
 }

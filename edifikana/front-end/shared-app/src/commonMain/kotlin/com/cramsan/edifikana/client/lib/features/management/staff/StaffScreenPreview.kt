@@ -20,11 +20,17 @@ private fun StaffScreenPreview_Primary_Staff() = AppTheme {
             idNNumber = null,
             firstName = "Cesar",
             lastName = "Vargas",
-            email = "admin@cenit.com",
+            email = null,
             role = null,
-            isEditable = false,
+            isEditable = true,
+            canSave = true,
+            staffId = null,
         ),
         onBackSelected = {},
+        onSaveClicked = {},
+        onFirstNameChange = {},
+        onLastNameChange = {},
+        onRoleSelected = {},
     )
 }
 
@@ -41,8 +47,14 @@ private fun StaffScreenPreview_Secondary_Staff() = AppTheme {
             lastName = "Vargas",
             email = "admin@cenit.com",
             role = StaffRole.SECURITY_COVER,
-            isEditable = true,
+            isEditable = false,
+            canSave = null,
+            staffId = null,
         ),
         onBackSelected = {},
+        onSaveClicked = {},
+        onFirstNameChange = {},
+        onLastNameChange = {},
+        onRoleSelected = {},
     )
 }

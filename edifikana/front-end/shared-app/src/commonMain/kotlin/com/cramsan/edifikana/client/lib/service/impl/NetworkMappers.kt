@@ -17,6 +17,7 @@ import com.cramsan.edifikana.lib.model.network.EventLogEntryNetworkResponse
 import com.cramsan.edifikana.lib.model.network.StaffNetworkResponse
 import com.cramsan.edifikana.lib.model.network.TimeCardEventNetworkResponse
 import com.cramsan.edifikana.lib.model.network.UpdateEventLogEntryNetworkRequest
+import com.cramsan.edifikana.lib.model.network.UpdateStaffNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
 import com.cramsan.framework.annotations.NetworkModel
 
@@ -88,6 +89,20 @@ fun StaffModel.CreateStaffRequest.toCreateStaffNetworkRequest(): CreateStaffNetw
 }
 
 /**
+ * Maps the [StaffModel.UpdateStaffRequest] models to [UpdateStaffNetworkRequest] models.
+ * Note: IdType is not updatable, so it is set to null.
+ */
+@NetworkModel
+fun StaffModel.UpdateStaffRequest.toUpdateStaffNetworkRequest(): UpdateStaffNetworkRequest {
+    return UpdateStaffNetworkRequest(
+        idType = null, // IdType is not updatable
+        firstName = firstName,
+        lastName = lastName,
+        role = role,
+    )
+}
+
+/**
  * Maps the [StaffNetworkResponse] models to [StaffModel] domain models.
  */
 @NetworkModel
@@ -98,8 +113,8 @@ fun StaffNetworkResponse.toStaffModel(): StaffModel {
         lastName = lastName,
         role = role,
         idType = idType,
-        email = "email",
-        status = StaffStatus.PENDING,
+        email = null,
+        status = StaffStatus.ACTIVE,
     )
 }
 

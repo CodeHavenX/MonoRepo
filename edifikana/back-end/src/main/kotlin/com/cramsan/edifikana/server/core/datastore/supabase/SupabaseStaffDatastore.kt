@@ -2,9 +2,11 @@ package com.cramsan.edifikana.server.core.datastore.supabase
 
 import com.cramsan.edifikana.server.core.datastore.StaffDatastore
 import com.cramsan.edifikana.server.core.datastore.supabase.models.StaffEntity
+import com.cramsan.edifikana.server.core.datastore.supabase.models.UserPropertyMappingEntity
 import com.cramsan.edifikana.server.core.service.models.Staff
 import com.cramsan.edifikana.server.core.service.models.requests.CreateStaffRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteStaffRequest
+import com.cramsan.edifikana.server.core.service.models.requests.GetStaffListRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetStaffRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdateStaffRequest
 import com.cramsan.framework.annotations.SupabaseModel
@@ -55,10 +57,17 @@ class SupabaseStaffDatastore(
     }
 
     @OptIn(SupabaseModel::class)
-    override suspend fun getStaffs(): Result<List<Staff>> = runSuspendCatching(TAG) {
+    override suspend fun getStaffs(request: GetStaffListRequest): Result<List<Staff>> = runSuspendCatching(TAG) {
         logD(TAG, "Getting all staff members")
 
+        val propertyIds =
+            postgrest.from(UserPropertyMappingEntity.COLLECTION).select {
+                filter { UserPropertyMappingEntity::userId eq request.currentUser }
+                select()
+            }.decodeList<UserPropertyMappingEntity>().map { it.propertyId }
+
         postgrest.from(StaffEntity.COLLECTION).select {
+            filter { StaffEntity::propertyId isIn propertyIds }
             select()
         }.decodeList<StaffEntity>().map { it.toStaff() }
     }

@@ -4,6 +4,7 @@ import com.cramsan.edifikana.server.core.datastore.StaffDatastore
 import com.cramsan.edifikana.server.core.service.models.Staff
 import com.cramsan.edifikana.server.core.service.models.requests.CreateStaffRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteStaffRequest
+import com.cramsan.edifikana.server.core.service.models.requests.GetStaffListRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetStaffRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdateStaffRequest
 import com.cramsan.framework.logging.logD
@@ -22,7 +23,7 @@ class DummyStaffDatastore : StaffDatastore {
         return Result.success(STAFF_1)
     }
 
-    override suspend fun getStaffs(): Result<List<Staff>> {
+    override suspend fun getStaffs(request: GetStaffListRequest): Result<List<Staff>> {
         logD(TAG, "getStaffs")
         return Result.success(listOf(STAFF_1, STAFF_2, STAFF_3, STAFF_4))
     }

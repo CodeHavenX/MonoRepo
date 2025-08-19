@@ -12,6 +12,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.post
+import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
@@ -46,6 +47,18 @@ class StaffServiceImpl(
         val response = http.post(Routes.Staff.PATH) {
             contentType(ContentType.Application.Json)
             setBody(staff.toCreateStaffNetworkRequest())
+        }.body<StaffNetworkResponse>()
+        val staffModel = response.toStaffModel()
+        staffModel
+    }
+
+    @OptIn(NetworkModel::class)
+    override suspend fun updateStaff(
+        staff: StaffModel.UpdateStaffRequest,
+    ): Result<StaffModel> = runSuspendCatching(TAG) {
+        val response = http.put("${Routes.Staff.PATH}/${staff.staffId.staffId}") {
+            contentType(ContentType.Application.Json)
+            setBody(staff.toUpdateStaffNetworkRequest())
         }.body<StaffNetworkResponse>()
         val staffModel = response.toStaffModel()
         staffModel

@@ -3,6 +3,7 @@ package com.cramsan.edifikana.server.core.datastore
 import com.cramsan.edifikana.server.core.service.models.Staff
 import com.cramsan.edifikana.server.core.service.models.requests.CreateStaffRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteStaffRequest
+import com.cramsan.edifikana.server.core.service.models.requests.GetStaffListRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetStaffRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdateStaffRequest
 
@@ -28,7 +29,7 @@ interface StaffDatastore {
     /**
      * Retrieves all staff members. Returns the [Result] of the operation with a list of [Staff].
      */
-    suspend fun getStaffs(): Result<List<Staff>>
+    suspend fun getStaffs(request: GetStaffListRequest): Result<List<Staff>>
 
     /**
      * Updates a staff member with the given [request]. Returns the [Result] of the operation with the updated [Staff].

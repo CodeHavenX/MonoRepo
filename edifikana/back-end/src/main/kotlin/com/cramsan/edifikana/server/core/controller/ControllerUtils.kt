@@ -21,15 +21,13 @@ suspend inline fun ApplicationCall.handleCall(
     tag: String,
     functionName: String,
     contextRetriever: ContextRetriever,
-    allowUnauthenticated: Boolean = false,
-    function: ApplicationCall.(ClientContext) -> HttpResponse,
+    function: ApplicationCall.(ClientContext.AuthenticatedClientContext) -> HttpResponse,
 ) {
     logI(tag, "$functionName called")
 
     val clientContext = contextRetriever.getContext(this)
-
-    if (allowUnauthenticated && clientContext !is ClientContext.AuthenticatedClientContext) {
-        logW(tag, "Unauthenticated client context received for $functionName")
+    if (clientContext !is ClientContext.AuthenticatedClientContext) {
+        logW(tag, "Client context is not authenticated, returning 401 Unauthorized")
         respond(
             HttpStatusCode.Unauthorized,
             "Client is not authenticated",

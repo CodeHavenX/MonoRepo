@@ -17,6 +17,7 @@ import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logE
+import com.cramsan.framework.logging.logW
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.OtpType
 import io.github.jan.supabase.auth.exception.AuthRestException
@@ -150,8 +151,12 @@ class AuthServiceImpl(
         }
 
         if (createUser) {
-            // After the OTP is verified, we create the user in our system.
-            http.post("${Routes.User.PATH}/associate").body<UserNetworkResponse>()
+            try {
+                // After the OTP is verified, we create the user in our system.
+                http.post("${Routes.User.PATH}/associate").body<UserNetworkResponse>()
+            } catch (e: ClientRequestExceptions.ConflictException) {
+                logW(TAG, "User already exists, not creating a new user.", e)
+            }
         }
 
         getUser().getOrThrow()

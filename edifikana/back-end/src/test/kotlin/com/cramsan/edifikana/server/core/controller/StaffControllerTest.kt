@@ -127,8 +127,19 @@ class StaffControllerTest : CoroutineTest(), KoinTest {
         // Configure
         val expectedResponse = readFileContent("requests/get_staffs_response.json")
         val staffService = get<StaffService>()
+        val contextRetriever = get<ContextRetriever>()
+        val clientContext = ClientContext.AuthenticatedClientContext(
+            userInfo = mockk(),
+            userId = UserId("user123"),
+        )
+
         coEvery {
-            staffService.getStaffs()
+            contextRetriever.getContext(any())
+        }.answers {
+            clientContext
+        }
+        coEvery {
+            staffService.getStaffs(clientContext)
         }.answers {
             listOf(
                 Staff(
@@ -147,15 +158,6 @@ class StaffControllerTest : CoroutineTest(), KoinTest {
                     role = StaffRole.CLEANING,
                     propertyId = PropertyId("property456"),
                 )
-            )
-        }
-        val contextRetriever = get<ContextRetriever>()
-        coEvery {
-            contextRetriever.getContext(any())
-        }.answers {
-            ClientContext.AuthenticatedClientContext(
-                userInfo = mockk(),
-                userId = UserId("user123"),
             )
         }
 

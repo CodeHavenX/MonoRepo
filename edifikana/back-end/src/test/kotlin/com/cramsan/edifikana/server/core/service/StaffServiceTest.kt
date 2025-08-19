@@ -4,9 +4,12 @@ import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.StaffRole
+import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.server.core.controller.auth.ClientContext
 import com.cramsan.edifikana.server.core.datastore.StaffDatastore
 import com.cramsan.edifikana.server.core.service.models.Staff
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteStaffRequest
+import com.cramsan.edifikana.server.core.service.models.requests.GetStaffListRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetStaffRequest
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
@@ -121,14 +124,19 @@ class StaffServiceTest {
     fun `getStaffs should call staffDatastore and return list`() = runTest {
         // Arrange
         val staffList = listOf(mockk<Staff>(), mockk<Staff>())
-        coEvery { staffDatastore.getStaffs() } returns Result.success(staffList)
+        val request = GetStaffListRequest(UserId("user-1"))
+        val clientContext = ClientContext.AuthenticatedClientContext(
+            userId = UserId("user-1"),
+            userInfo = mockk(),
+        )
+        coEvery { staffDatastore.getStaffs(request) } returns Result.success(staffList)
 
         // Act
-        val result = staffService.getStaffs()
+        val result = staffService.getStaffs(clientContext)
 
         // Assert
         assertEquals(staffList, result)
-        coVerify { staffDatastore.getStaffs() }
+        coVerify { staffDatastore.getStaffs(request) }
     }
 
     /**

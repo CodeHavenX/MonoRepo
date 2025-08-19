@@ -31,6 +31,16 @@ data class StaffModel(
         val role: StaffRole,
         val propertyId: PropertyId,
     )
+
+    /**
+     * Request to update a staff. Nullable fields are optional, if null they will not be updated.
+     */
+    data class UpdateStaffRequest(
+        val staffId: StaffId,
+        val firstName: String?,
+        val lastName: String?,
+        val role: StaffRole?,
+    )
 }
 
 /**

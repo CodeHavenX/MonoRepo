@@ -47,6 +47,15 @@ class StaffManager(
         staffService.inviteStaff(email).getOrThrow()
     }
 
+    /**
+     * Update a staff.
+     */
+    suspend fun updateStaff(staffModel: StaffModel.UpdateStaffRequest): Result<StaffModel> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "updateStaff")
+            staffService.updateStaff(staffModel).getOrThrow()
+        }
+
     companion object {
         private const val TAG = "StaffManager"
     }

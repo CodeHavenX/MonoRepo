@@ -15,11 +15,11 @@ import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.model.network.AuthMetadataNetworkResponse
-import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.edifikana.lib.model.network.EventLogEntryNetworkResponse
 import com.cramsan.edifikana.lib.model.network.StaffNetworkResponse
 import com.cramsan.edifikana.lib.model.network.TimeCardEventNetworkResponse
 import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
+import com.cramsan.framework.annotations.NetworkModel
 import io.mockk.mockk
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -246,8 +246,8 @@ class NetworkMappersTest {
         assertEquals("Smith", model.lastName)
         assertEquals(StaffRole.SECURITY, model.role)
         assertEquals(IdType.DNI, model.idType)
-        assertEquals("email", model.email)
-        assertEquals(StaffStatus.PENDING, model.status)
+        assertEquals(null, model.email)
+        assertEquals(StaffStatus.ACTIVE, model.status)
     }
 
     /**

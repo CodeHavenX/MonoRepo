@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.management.staff
 
 import com.cramsan.edifikana.lib.model.IdType
+import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.StaffRole
 import com.cramsan.framework.core.compose.ViewModelUIState
 
@@ -11,6 +12,7 @@ import com.cramsan.framework.core.compose.ViewModelUIState
  * For modeling more specific details of the page, see the respective UI model class.
  */
 data class StaffUIState(
+    val staffId: StaffId?,
     val title: String?,
     val isLoading: Boolean,
     val idType: IdType?,
@@ -20,9 +22,11 @@ data class StaffUIState(
     val email: String?,
     val role: StaffRole?,
     val isEditable: Boolean?,
+    val canSave: Boolean?,
 ) : ViewModelUIState {
     companion object {
         val Initial = StaffUIState(
+            staffId = null,
             title = null,
             isLoading = true,
             idType = null,
@@ -32,6 +36,7 @@ data class StaffUIState(
             email = null,
             role = null,
             isEditable = null,
+            canSave = null,
         )
     }
 }

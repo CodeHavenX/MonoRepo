@@ -4,6 +4,7 @@ import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.StaffRole
+import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.service.models.requests.CreateStaffRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteStaffRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetStaffRequest
@@ -20,12 +21,14 @@ class SupabaseStaffDatastoreIntegrationTest : SupabaseIntegrationTest() {
 
     private lateinit var test_prefix: String
     private var propertyId: PropertyId? = null
+    private var testUserId: UserId? = null
 
     @BeforeTest
     fun setup() {
         test_prefix = UUID.random()
         runBlocking {
-            propertyId = createTestProperty("${test_prefix}_Property")
+            testUserId = createTestUser("user-${test_prefix}test_prefix@test.com")
+            propertyId = createTestProperty("${test_prefix}_Property", testUserId!!)
         }
     }
 

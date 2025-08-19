@@ -34,9 +34,12 @@ class PropertyController(
     @OptIn(NetworkModel::class)
     suspend fun createProperty(call: ApplicationCall) = call.handleCall(TAG, "createProperty", contextRetriever) {
         val createPropertyRequest = call.receive<CreatePropertyNetworkRequest>()
+        val authenticatedContext = requireAuthenticatedClientContext(it)
 
         val newProperty = propertyService.createProperty(
             createPropertyRequest.name,
+            createPropertyRequest.address,
+            authenticatedContext,
         ).toPropertyNetworkResponse()
 
         HttpResponse(
@@ -77,7 +80,7 @@ class PropertyController(
         "getProperties",
         contextRetriever,
     ) { context ->
-        val userId = getAuthenticatedClientContext(context).userId
+        val userId = requireAuthenticatedClientContext(context).userId
 
         val properties = propertyService.getProperties(
             userId = userId,

@@ -14,6 +14,7 @@ import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.core.service.models.User
 import com.cramsan.edifikana.server.core.service.models.requests.CreatePropertyRequest
 import com.cramsan.edifikana.server.core.service.models.requests.CreateStaffRequest
+import com.cramsan.edifikana.server.core.service.models.requests.CreateUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteEventLogEntryRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeletePropertyRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteStaffRequest
@@ -24,6 +25,7 @@ import com.cramsan.edifikana.server.di.IntegTestApplicationModule
 import com.cramsan.edifikana.server.di.SettingsModule
 import com.cramsan.edifikana.server.di.SupabaseModule
 import com.cramsan.framework.test.CoroutineTest
+import com.cramsan.framework.utils.password.generateRandomPassword
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import kotlinx.coroutines.runBlocking
@@ -93,9 +95,27 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
         userResources.add(userId)
     }
 
-    protected fun createTestProperty(name: String): PropertyId {
+    protected fun createTestUser(email: String): UserId {
+        val userId = runBlocking {
+            userDatastore.createUser(
+                CreateUserRequest(
+                    email,
+                    "",
+                    generateRandomPassword(),
+                    "test",
+                    "user",
+                )
+            ).getOrThrow().id
+        }
+        registerUserForDeletion(userId)
+        return userId
+    }
+
+    protected fun createTestProperty(name: String, userId: UserId): PropertyId {
         val propertyId = runBlocking {
-            propertyDatastore.createProperty(CreatePropertyRequest(name)).getOrThrow().id
+            propertyDatastore.createProperty(
+                CreatePropertyRequest(name, "123 main St", userId),
+            ).getOrThrow().id
         }
         registerPropertyForDeletion(propertyId)
         return propertyId

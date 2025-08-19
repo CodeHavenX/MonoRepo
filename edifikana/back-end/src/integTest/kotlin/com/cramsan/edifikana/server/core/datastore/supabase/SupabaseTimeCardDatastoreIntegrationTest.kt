@@ -4,6 +4,7 @@ import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
+import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.service.models.requests.CreateTimeCardEventRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetTimeCardEventListRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetTimeCardEventRequest
@@ -23,12 +24,14 @@ class SupabaseTimeCardDatastoreIntegrationTest : SupabaseIntegrationTest() {
     private lateinit var test_prefix: String
     private var propertyId: PropertyId? = null
     private var staffId: StaffId? = null
+    private var testUserId: UserId? = null
 
     @BeforeTest
     fun setup() {
         test_prefix = UUID.random()
         runBlocking {
-            propertyId = createTestProperty("${test_prefix}_Property")
+            testUserId = createTestUser("user-${test_prefix}test_prefix@test.com")
+            propertyId = createTestProperty("${test_prefix}_Property", testUserId!!)
             staffId = createTestStaff(
                 propertyId = propertyId!!,
                 firstName = "${test_prefix}_FirstName",

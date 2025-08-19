@@ -16,6 +16,19 @@ data class UserPropertyMappingEntity(
     @SerialName("property_id")
     val propertyId: String,
 ) {
+
+    /**
+     * Creates a new instance of [UserPropertyMappingEntity].
+     */
+    @Serializable
+    @SupabaseModel
+    data class CreateUserPropertyMappingEntity(
+        @SerialName("user_id")
+        val userId: String,
+        @SerialName("property_id")
+        val propertyId: String,
+    )
+
     companion object {
         const val COLLECTION = "user_property_mapping"
     }

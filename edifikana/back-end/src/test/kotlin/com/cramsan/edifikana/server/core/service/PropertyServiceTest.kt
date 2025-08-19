@@ -2,6 +2,7 @@ package com.cramsan.edifikana.server.core.service
 
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.server.core.controller.auth.ClientContext
 import com.cramsan.edifikana.server.core.datastore.PropertyDatastore
 import com.cramsan.edifikana.server.core.service.models.Property
 import com.cramsan.edifikana.server.core.service.models.requests.CreatePropertyRequest
@@ -55,15 +56,19 @@ class PropertyServiceTest {
     fun `createProperty should call propertyDatastore and return property`() = runTest {
         // Arrange
         val name = "CENIT"
+        val address = "123 Main St"
         val property = mockk<Property>()
+        val clientContext = mockk<ClientContext.AuthenticatedClientContext>()
+        val userId = UserId("TestUser")
+        coEvery { clientContext.userId } returns userId
         coEvery { propertyDatastore.createProperty(any()) } returns Result.success(property)
 
         // Act
-        val result = propertyService.createProperty(name)
+        val result = propertyService.createProperty(name, address, clientContext)
 
         // Assert
         assertEquals(property, result)
-        coVerify { propertyDatastore.createProperty(CreatePropertyRequest(name)) }
+        coVerify { propertyDatastore.createProperty(CreatePropertyRequest(name, address, userId)) }
     }
 
     /**

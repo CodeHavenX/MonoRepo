@@ -52,11 +52,12 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
         val expectedResponse = readFileContent("requests/create_property_response.json")
         val propertyService = get<PropertyService>()
         coEvery {
-            propertyService.createProperty("building 1")
+            propertyService.createProperty("building 1", "1234, Nairobi", any())
         }.answers {
             Property(
                 id = PropertyId("property123"),
-                name = "building 1"
+                name = "building 1",
+                address = "1234, Nairobi"
             )
         }
         val contextRetriever = get<ContextRetriever>()
@@ -90,7 +91,8 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
         }.answers {
             Property(
                 id = PropertyId("property123"),
-                name = "building 1"
+                name = "building 1",
+                address = "123 Main St",
             )
         }
         val contextRetriever = get<ContextRetriever>()
@@ -122,11 +124,13 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
             listOf(
                 Property(
                     id = PropertyId("property123"),
-                    name = "building 1"
+                    name = "building 1",
+                    address = "123 Main St",
                 ),
                 Property(
                     id = PropertyId("property456"),
-                    name = "building 2"
+                    name = "building 2",
+                    address = "456 Elm St",
                 )
             )
         }
@@ -162,7 +166,8 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
         }.answers {
             Property(
                 id = PropertyId("property123"),
-                name = "Updated Property"
+                name = "Updated Property",
+                address = "123 Main St",
             )
         }
         val contextRetriever = get<ContextRetriever>()

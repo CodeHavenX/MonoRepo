@@ -2,6 +2,7 @@ package com.cramsan.edifikana.server.core.service
 
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.server.core.controller.auth.ClientContext
 import com.cramsan.edifikana.server.core.datastore.PropertyDatastore
 import com.cramsan.edifikana.server.core.service.models.Property
 import com.cramsan.edifikana.server.core.service.models.requests.CreatePropertyRequest
@@ -23,11 +24,15 @@ class PropertyService(
      */
     suspend fun createProperty(
         name: String,
+        address: String,
+        clientContext: ClientContext.AuthenticatedClientContext,
     ): Property {
         logD(TAG, "createProperty")
         return propertyDatastore.createProperty(
             request = CreatePropertyRequest(
                 name = name,
+                address = address,
+                creatorUserId = clientContext.userId,
             ),
         ).getOrThrow()
     }

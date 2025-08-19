@@ -117,6 +117,6 @@ private fun PropertyNetworkResponse.toPropertyModel(): PropertyModel {
     return PropertyModel(
         id = PropertyId(id),
         name = name,
-        address = "", // TODO: Address is not available in the network response.
+        address = address.orEmpty(),
     )
 }

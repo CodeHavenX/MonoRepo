@@ -73,12 +73,12 @@ file_size_limit = "50MiB"
 [storage.image_transformation]
 enabled = false
 
-# Uncomment to configure local storage buckets
-# [storage.buckets.images]
-# public = false
-# file_size_limit = "50MiB"
+# Configure local storage buckets
+ [storage.buckets.images]
+ public = false
+ file_size_limit = "10MB"
 # allowed_mime_types = ["image/png", "image/jpeg"]
-# objects_path = "./images"
+# objects_path = "./timecard-images"
 
 [auth]
 enabled = true

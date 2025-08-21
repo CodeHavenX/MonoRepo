@@ -3,6 +3,7 @@
 
 package com.cramsan.edifikana.server.core.datastore.dummy
 
+import com.cramsan.edifikana.lib.model.AssetId
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.IdType
@@ -12,6 +13,7 @@ import com.cramsan.edifikana.lib.model.StaffRole
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.server.core.service.models.Asset
 import com.cramsan.edifikana.server.core.service.models.EventLogEntry
 import com.cramsan.edifikana.server.core.service.models.Property
 import com.cramsan.edifikana.server.core.service.models.Staff
@@ -217,4 +219,42 @@ val TIME_CARD_EVENT_5 = TimeCardEvent(
     type = TimeCardEventType.CLOCK_OUT,
     imageUrl = "http://example.com/image2.jpg",
     timestamp = Instant.fromEpochSeconds(1727712654),
+)
+
+val ASSET_1 = Asset(
+    id = AssetId("images/timecard-images/staff1.png"),
+    fileName = "staff1.png",
+    signedUrl = null,
+    content = byteArrayOf(
+        // PNG file header bytes
+        0x89.toByte(), 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A,
+        // Minimal PNG IHDR chunk (not a valid image, but enough for dummy)
+        0x00, 0x00, 0x00, 0x0D, 0x49, 0x48, 0x44, 0x52,
+        0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01,
+        0x08, 0x06, 0x00, 0x00, 0x00, 0x1F, 0x15, 0xC4.toByte(), 0x89.toByte(),
+        // IDAT chunk header
+        0x00, 0x00, 0x00, 0x0A, 0x49, 0x44, 0x41, 0x54,
+        0x78, 0x9C.toByte(), 0x63, 0x60, 0x00, 0x00, 0x00, 0x02, 0x00, 0x01,
+        // IEND chunk
+        0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4E, 0x44, 0xAE.toByte(), 0x42, 0x60, 0x82.toByte()
+    )
+)
+
+val ASSET_2 = Asset(
+    id = AssetId("images/timecard-images/staff2.png"),
+    fileName = "staff2.png",
+    signedUrl = "fakeSignedUrl.url.com",
+    content = byteArrayOf(
+        // PNG file header bytes
+        0x89.toByte(), 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A,
+        // Minimal PNG IHDR chunk (not a valid image, but enough for dummy)
+        0x00, 0x00, 0x00, 0x0D, 0x49, 0x48, 0x44, 0x52,
+        0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x02,
+        0x08, 0x06, 0x00, 0x00, 0x00, 0xF4.toByte(), 0x78, 0xD4.toByte(), 0xFA.toByte(),
+        // IDAT chunk header
+        0x00, 0x00, 0x00, 0x0A, 0x49, 0x44, 0x41, 0x54,
+        0x78, 0x9C.toByte(), 0x63, 0x60, 0x00, 0x00, 0x00, 0x02, 0x00, 0x01,
+        // IEND chunk
+        0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4E, 0x44, 0xAE.toByte(), 0x42, 0x60, 0x82.toByte()
+    )
 )

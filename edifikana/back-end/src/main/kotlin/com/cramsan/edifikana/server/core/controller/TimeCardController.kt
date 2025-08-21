@@ -1,7 +1,8 @@
 package com.cramsan.edifikana.server.core.controller
 
 import com.cramsan.edifikana.lib.Routes
-import com.cramsan.edifikana.lib.TIMECARD_EVENT_ID
+import com.cramsan.edifikana.lib.Routes.Staff.QueryParams.STAFF_ID
+import com.cramsan.edifikana.lib.Routes.TimeCard.QueryParams.TIMECARD_EVENT_ID
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
@@ -91,7 +92,7 @@ class TimeCardController(
         "getTimeCardEvents",
         contextRetriever,
     ) { _ ->
-        val staffId = call.request.queryParameters[Routes.TimeCard.QueryParams.STAFF_ID]
+        val staffId = call.request.queryParameters[STAFF_ID]
 
         val timeCards = timeCardService.getTimeCardEvents(
             staffId = staffId?.let { StaffId(it) },

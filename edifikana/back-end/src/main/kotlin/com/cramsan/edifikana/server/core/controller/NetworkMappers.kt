@@ -2,12 +2,14 @@
 
 package com.cramsan.edifikana.server.core.controller
 
+import com.cramsan.edifikana.lib.model.network.AssetNetworkResponse
 import com.cramsan.edifikana.lib.model.network.AuthMetadataNetworkResponse
 import com.cramsan.edifikana.lib.model.network.EventLogEntryNetworkResponse
 import com.cramsan.edifikana.lib.model.network.PropertyNetworkResponse
 import com.cramsan.edifikana.lib.model.network.StaffNetworkResponse
 import com.cramsan.edifikana.lib.model.network.TimeCardEventNetworkResponse
 import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
+import com.cramsan.edifikana.server.core.service.models.Asset
 import com.cramsan.edifikana.server.core.service.models.EventLogEntry
 import com.cramsan.edifikana.server.core.service.models.Property
 import com.cramsan.edifikana.server.core.service.models.Staff
@@ -94,5 +96,17 @@ fun TimeCardEvent.toTimeCardEventNetworkResponse(): TimeCardEventNetworkResponse
         type = type,
         imageUrl = imageUrl,
         timestamp = timestamp.epochSeconds,
+    )
+}
+
+/**
+ * Converts an [Asset] domain model to a [AssetNetworkResponse] network model.
+ */
+@OptIn(NetworkModel::class)
+fun Asset.toAssetNetworkResponse(): AssetNetworkResponse {
+    return AssetNetworkResponse(
+        id = id.assetId,
+        fileName = fileName,
+        signedUrl = signedUrl,
     )
 }

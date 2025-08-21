@@ -4,6 +4,7 @@ import com.cramsan.edifikana.server.core.controller.EventLogController
 import com.cramsan.edifikana.server.core.controller.HealthCheckController
 import com.cramsan.edifikana.server.core.controller.PropertyController
 import com.cramsan.edifikana.server.core.controller.StaffController
+import com.cramsan.edifikana.server.core.controller.StorageController
 import com.cramsan.edifikana.server.core.controller.TimeCardController
 import com.cramsan.edifikana.server.core.controller.UserController
 import org.koin.core.module.dsl.singleOf
@@ -20,4 +21,5 @@ val KtorModule = module {
     singleOf(::PropertyController)
     singleOf(::StaffController)
     singleOf(::TimeCardController)
+    singleOf(::StorageController)
 }

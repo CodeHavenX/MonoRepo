@@ -8,6 +8,8 @@ import com.cramsan.edifikana.server.core.controller.PropertyController
 import com.cramsan.edifikana.server.core.controller.PropertyController.Companion.registerRoutes
 import com.cramsan.edifikana.server.core.controller.StaffController
 import com.cramsan.edifikana.server.core.controller.StaffController.Companion.registerRoutes
+import com.cramsan.edifikana.server.core.controller.StorageController
+import com.cramsan.edifikana.server.core.controller.StorageController.Companion.registerRoutes
 import com.cramsan.edifikana.server.core.controller.TimeCardController
 import com.cramsan.edifikana.server.core.controller.TimeCardController.Companion.registerRoutes
 import com.cramsan.edifikana.server.core.controller.UserController
@@ -68,6 +70,7 @@ fun Application.startServer() = runBlocking {
     val staffController: StaffController by inject()
     val timeCardController: TimeCardController by inject()
     val healthCheckController: HealthCheckController by inject()
+    val storageController: StorageController by inject()
 
     configureHealthEndpoint()
     configureEntryPoints(
@@ -77,6 +80,7 @@ fun Application.startServer() = runBlocking {
         staffController,
         timeCardController,
         healthCheckController,
+        storageController,
     )
     startApplication()
 }
@@ -154,6 +158,7 @@ fun Application.configureEntryPoints(
     staffController: StaffController,
     timeCardController: TimeCardController,
     healthCheckController: HealthCheckController,
+    storageController: StorageController,
 ) {
     routing {
         userController.registerRoutes(this@routing)
@@ -162,6 +167,7 @@ fun Application.configureEntryPoints(
         staffController.registerRoutes(this@routing)
         timeCardController.registerRoutes(this@routing)
         healthCheckController.registerRoutes(this@routing)
+        storageController.registerRoutes(this@routing)
     }
 }
 

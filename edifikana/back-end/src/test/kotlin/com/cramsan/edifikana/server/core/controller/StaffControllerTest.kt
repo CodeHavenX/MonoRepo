@@ -9,6 +9,7 @@ import com.cramsan.edifikana.server.core.controller.authentication.ClientContext
 import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
 import com.cramsan.edifikana.server.core.service.StaffService
 import com.cramsan.edifikana.server.core.service.models.Staff
+import com.cramsan.edifikana.server.core.service.models.UserRole
 import com.cramsan.edifikana.server.utils.readFileContent
 import com.cramsan.framework.test.CoroutineTest
 import io.ktor.client.request.delete
@@ -72,7 +73,8 @@ class StaffControllerTest : CoroutineTest(), KoinTest {
         }.answers {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
-                userId = UserId("user123"),,
+                userId = UserId("user123"),
+                userRole = UserRole.OWNER,
             )
         }
 
@@ -110,7 +112,8 @@ class StaffControllerTest : CoroutineTest(), KoinTest {
         }.answers {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
-                userId = UserId("user123"),,
+                userId = UserId("user123"),
+                userRole = UserRole.MANAGER,
             )
         }
 
@@ -130,7 +133,8 @@ class StaffControllerTest : CoroutineTest(), KoinTest {
         val contextRetriever = get<ContextRetriever>()
         val clientContext = ClientContext.AuthenticatedClientContext(
             userInfo = mockk(),
-            userId = UserId("user123"),,
+            userId = UserId("user123"),
+            userRole = UserRole.MANAGER,
         )
 
         coEvery {
@@ -199,7 +203,8 @@ class StaffControllerTest : CoroutineTest(), KoinTest {
         }.answers {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
-                userId = UserId("user123"),,
+                userId = UserId("user123"),
+                userRole = UserRole.MANAGER,
             )
         }
 
@@ -229,7 +234,8 @@ class StaffControllerTest : CoroutineTest(), KoinTest {
         }.answers {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
-                userId = UserId("user123"),,
+                userId = UserId("user123"),
+                userRole = UserRole.MANAGER,
             )
         }
 

@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.server.core.controller.authentication
 
 import com.cramsan.edifikana.server.core.datastore.dummy.USER_1
+import com.cramsan.edifikana.server.core.service.models.UserRole
 import com.cramsan.framework.logging.logI
 import io.github.jan.supabase.auth.user.UserInfo
 import io.ktor.server.application.ApplicationCall
@@ -21,7 +22,8 @@ class DummyContextRetriever : ContextRetriever {
                 id = "id",
                 createdAt = Clock.System.now()
             ),
-            userId = USER_1.id,,
+            userId = USER_1.id,
+            userRole = UserRole.USER
         )
     }
 

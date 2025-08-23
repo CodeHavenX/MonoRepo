@@ -3,6 +3,7 @@ package com.cramsan.edifikana.server.core.datastore.supabase
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
 import com.cramsan.edifikana.server.core.service.models.User
+import com.cramsan.edifikana.server.core.service.models.UserRole
 import com.cramsan.edifikana.server.core.service.models.requests.AssociateUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.CreateUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteUserRequest
@@ -57,6 +58,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
                 firstName = request.firstName,
                 lastName = request.lastName,
                 authMetadata = User.AuthMetadata(isPasswordSet = true),
+                role = UserRole.EMPLOYEE
             ),
             result.getOrNull(),
         )
@@ -87,6 +89,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
                 firstName = request.firstName,
                 lastName = request.lastName,
                 authMetadata = User.AuthMetadata(isPasswordSet = false),
+                role = UserRole.USER
             ),
             user,
         )

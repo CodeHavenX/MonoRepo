@@ -58,7 +58,7 @@ class DummyStaffService : StaffService {
             id = StaffId(staffList.size.toString()),
             firstName = "Dummy",
             lastName = "Staff",
-            role = StaffRole.ADMIN,
+            role = StaffRole.MANAGER,
             idType = IdType.DNI,
             email = email,
             status = StaffStatus.PENDING,

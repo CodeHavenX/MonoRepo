@@ -75,7 +75,7 @@ val STAFF_1 = Staff(
     idType = IdType.DNI,
     firstName = "Antonio",
     lastName = "Banderas",
-    role = StaffRole.ADMIN,
+    role = StaffRole.MANAGER,
     propertyId = PropertyId("property_id_1"),
 )
 

@@ -2,8 +2,8 @@ package com.cramsan.edifikana.server.core.controller
 
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
-import com.cramsan.edifikana.server.core.controller.auth.ClientContext
-import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
+import com.cramsan.edifikana.server.core.controller.authentication.ClientContext
+import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
 import com.cramsan.edifikana.server.core.service.UserService
 import com.cramsan.edifikana.server.core.service.models.User
 import com.cramsan.edifikana.server.utils.readFileContent
@@ -72,7 +72,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
         }.answers {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
-                userId = UserId("user123"),
+                userId = UserId("user123"),,
             )
         }
 
@@ -113,7 +113,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
         }.answers {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
-                userId = UserId("user123"),
+                userId = UserId("user123"),,
             )
         }
 
@@ -154,7 +154,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
         }.answers {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
-                userId = UserId("user123"),
+                userId = UserId("user123"),,
             )
         }
 
@@ -194,7 +194,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
         }.answers {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
-                userId = UserId("user123"),
+                userId = UserId("user123"),,
             )
         }
 
@@ -241,7 +241,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
         }.answers {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
-                userId = UserId("user123"),
+                userId = UserId("user123"),,
             )
         }
 
@@ -282,7 +282,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
         }.answers {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
-                userId = UserId("user123"),
+                userId = UserId("user123"),,
             )
         }
 
@@ -312,7 +312,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
         }.answers {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
-                userId = UserId("user123"),
+                userId = UserId("user123"),,
             )
         }
 

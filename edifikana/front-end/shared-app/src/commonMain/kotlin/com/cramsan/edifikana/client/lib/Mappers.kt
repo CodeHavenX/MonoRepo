@@ -39,7 +39,7 @@ suspend fun StaffRole?.toRoleFriendlyName(
     stringProvider: StringProvider,
 ): String {
     return when (this) {
-        StaffRole.ADMIN -> stringProvider.getString(Res.string.role_admin)
+        StaffRole.MANAGER -> stringProvider.getString(Res.string.role_admin)
         StaffRole.SECURITY -> stringProvider.getString(Res.string.role_security)
         StaffRole.SECURITY_COVER -> stringProvider.getString(Res.string.role_security_cover)
         StaffRole.CLEANING -> stringProvider.getString(Res.string.role_limpieza)
@@ -53,7 +53,7 @@ suspend fun StaffRole?.toRoleFriendlyName(
 @Composable
 fun StaffRole?.toRoleFriendlyNameCompose(): String {
     return when (this) {
-        StaffRole.ADMIN -> stringResource(Res.string.role_admin)
+        StaffRole.MANAGER -> stringResource(Res.string.role_admin)
         StaffRole.SECURITY -> stringResource(Res.string.role_security)
         StaffRole.SECURITY_COVER -> stringResource(Res.string.role_security_cover)
         StaffRole.CLEANING -> stringResource(Res.string.role_limpieza)

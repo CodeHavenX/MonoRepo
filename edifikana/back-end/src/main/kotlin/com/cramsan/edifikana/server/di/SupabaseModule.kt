@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.server.di
 
-import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
-import com.cramsan.edifikana.server.core.controller.auth.SupabaseContextRetriever
+import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
+import com.cramsan.edifikana.server.core.controller.authentication.SupabaseContextRetriever
 import com.cramsan.edifikana.server.core.datastore.EventLogDatastore
 import com.cramsan.edifikana.server.core.datastore.PropertyDatastore
 import com.cramsan.edifikana.server.core.datastore.StaffDatastore

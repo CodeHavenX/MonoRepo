@@ -5,8 +5,8 @@ import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.server.core.controller.auth.ClientContext
-import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
+import com.cramsan.edifikana.server.core.controller.authentication.ClientContext
+import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
 import com.cramsan.edifikana.server.core.service.TimeCardService
 import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.utils.readFileContent
@@ -80,7 +80,7 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
         }.answers {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
-                userId = UserId("user123"),
+                userId = UserId("user123"),,
             )
         }
 
@@ -119,7 +119,7 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
         }.answers {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
-                userId = UserId("user123"),
+                userId = UserId("user123"),,
             )
         }
 
@@ -166,7 +166,7 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
         }.answers {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
-                userId = UserId("user123"),
+                userId = UserId("user123"),,
             )
         }
 

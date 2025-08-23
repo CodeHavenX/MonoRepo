@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.server.core.controller.auth
+package com.cramsan.edifikana.server.core.controller.authentication
 
 import io.ktor.server.application.ApplicationCall
 

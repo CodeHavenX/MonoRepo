@@ -1,8 +1,8 @@
 package com.cramsan.edifikana.server.core.controller
 
 import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
-import com.cramsan.edifikana.server.core.controller.auth.ClientContext
-import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
+import com.cramsan.edifikana.server.core.controller.authentication.ClientContext
+import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
 import com.cramsan.framework.core.ktor.HttpResponse
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logI

@@ -75,7 +75,7 @@ class StaffListViewModelTest : CoroutineTest() {
                 status = StaffStatus.ACTIVE,
                 idType = IdType.DNI,
                 lastName = "Smith",
-                role = StaffRole.ADMIN,
+                role = StaffRole.MANAGER,
             )
         )
         coEvery { staffManager.getStaffList() } returns Result.success(staffList)

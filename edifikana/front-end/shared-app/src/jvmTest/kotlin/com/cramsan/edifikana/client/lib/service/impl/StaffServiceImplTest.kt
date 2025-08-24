@@ -42,7 +42,7 @@ class StaffServiceImplTest {
                     IdType.PASSPORT,
                     "John",
                     "Doe",
-                    StaffRole.ADMIN,
+                    StaffRole.MANAGER,
                     "johndoe@email.com",
                     StaffStatus.ACTIVE,
                     )
@@ -88,7 +88,7 @@ class StaffServiceImplTest {
                 IdType.CE,
                 "John",
                 "Doe",
-                StaffRole.ADMIN,
+                StaffRole.MANAGER,
                 "johnD@email.com",
                 StaffStatus.ACTIVE,
             )
@@ -122,7 +122,7 @@ class StaffServiceImplTest {
                 IdType.DNI,
                 "Alice",
                 "Brown",
-                StaffRole.ADMIN,
+                StaffRole.MANAGER,
                 "aliceBrn@email.com",
                 StaffStatus.ACTIVE,
                 )

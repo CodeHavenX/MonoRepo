@@ -8,7 +8,7 @@ import com.cramsan.edifikana.server.core.controller.StaffController
 import com.cramsan.edifikana.server.core.controller.StorageController
 import com.cramsan.edifikana.server.core.controller.TimeCardController
 import com.cramsan.edifikana.server.core.controller.UserController
-import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
+import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
 import com.cramsan.edifikana.server.core.service.EventLogService
 import com.cramsan.edifikana.server.core.service.PropertyService
 import com.cramsan.edifikana.server.core.service.StaffService

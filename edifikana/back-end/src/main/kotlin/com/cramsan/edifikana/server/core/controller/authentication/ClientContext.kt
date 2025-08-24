@@ -1,6 +1,7 @@
-package com.cramsan.edifikana.server.core.controller.auth
+package com.cramsan.edifikana.server.core.controller.authentication
 
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.server.core.service.models.UserRole
 import io.github.jan.supabase.auth.user.UserInfo
 
 /**
@@ -15,6 +16,7 @@ sealed class ClientContext {
     data class AuthenticatedClientContext(
         val userInfo: UserInfo,
         val userId: UserId,
+        val userRole: UserRole,
     ) : ClientContext()
 
     /**

@@ -5,9 +5,10 @@ import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.StaffRole
 import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.server.core.controller.auth.ClientContext
+import com.cramsan.edifikana.server.core.controller.authentication.ClientContext
 import com.cramsan.edifikana.server.core.datastore.StaffDatastore
 import com.cramsan.edifikana.server.core.service.models.Staff
+import com.cramsan.edifikana.server.core.service.models.UserRole
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteStaffRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetStaffListRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetStaffRequest
@@ -60,7 +61,7 @@ class StaffServiceTest {
         val idType = IdType.DNI
         val firstName = "John"
         val lastName = "Doe"
-        val role = StaffRole.ADMIN
+        val role = StaffRole.MANAGER
         val propertyId = PropertyId("property-1")
         coEvery { staffDatastore.createStaff(any()) } returns Result.success(staff)
 
@@ -126,8 +127,9 @@ class StaffServiceTest {
         val staffList = listOf(mockk<Staff>(), mockk<Staff>())
         val request = GetStaffListRequest(UserId("user-1"))
         val clientContext = ClientContext.AuthenticatedClientContext(
-            userId = UserId("user-1"),
             userInfo = mockk(),
+            userId = UserId("user-1"),
+            userRole = UserRole.SUPERUSER,
         )
         coEvery { staffDatastore.getStaffs(request) } returns Result.success(staffList)
 
@@ -150,7 +152,7 @@ class StaffServiceTest {
         val idType = IdType.DNI
         val firstName = "Jane"
         val lastName = "Smith"
-        val role = StaffRole.ADMIN
+        val role = StaffRole.MANAGER
         coEvery { staffDatastore.updateStaff(any()) } returns Result.success(staff)
 
         // Act

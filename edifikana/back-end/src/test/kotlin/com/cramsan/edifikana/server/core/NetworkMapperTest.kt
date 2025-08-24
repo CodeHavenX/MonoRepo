@@ -5,6 +5,7 @@ import com.cramsan.edifikana.lib.model.network.AuthMetadataNetworkResponse
 import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
 import com.cramsan.edifikana.server.core.controller.toUserNetworkResponse
 import com.cramsan.edifikana.server.core.service.models.User
+import com.cramsan.edifikana.server.core.service.models.UserRole
 import com.cramsan.framework.annotations.NetworkModel
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -21,7 +22,8 @@ class NetworkMapperTest {
             phoneNumber = "1234567890",
             firstName = "Test",
             lastName = "User",
-            authMetadata = User.AuthMetadata(isPasswordSet = true)
+            authMetadata = User.AuthMetadata(isPasswordSet = true),
+            role = UserRole.SUPERUSER
         )
         val expectedResponse = UserNetworkResponse(
             id = "123",

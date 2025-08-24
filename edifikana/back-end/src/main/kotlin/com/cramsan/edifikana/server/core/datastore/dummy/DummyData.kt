@@ -19,6 +19,7 @@ import com.cramsan.edifikana.server.core.service.models.Property
 import com.cramsan.edifikana.server.core.service.models.Staff
 import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.core.service.models.User
+import com.cramsan.edifikana.server.core.service.models.UserRole
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -29,6 +30,7 @@ val USER_1 = User(
     firstName = "John",
     lastName = "Doe",
     authMetadata = User.AuthMetadata(isPasswordSet = false),
+    role = UserRole.MANAGER,
 )
 
 val USER_2 = User(
@@ -38,6 +40,8 @@ val USER_2 = User(
     firstName = "Jane",
     lastName = "Smith",
     authMetadata = User.AuthMetadata(isPasswordSet = false),
+    role = UserRole.MANAGER,
+
 )
 
 val USER_3 = User(
@@ -47,6 +51,8 @@ val USER_3 = User(
     firstName = "Alice",
     lastName = "Johnson",
     authMetadata = User.AuthMetadata(isPasswordSet = false),
+    role = UserRole.MANAGER,
+
 )
 
 val USER_4 = User(
@@ -56,6 +62,8 @@ val USER_4 = User(
     firstName = "Bob",
     lastName = "Brown",
     authMetadata = User.AuthMetadata(isPasswordSet = false),
+    role = UserRole.MANAGER,
+
 )
 
 val PROPERTY_1 = Property(
@@ -75,7 +83,7 @@ val STAFF_1 = Staff(
     idType = IdType.DNI,
     firstName = "Antonio",
     lastName = "Banderas",
-    role = StaffRole.ADMIN,
+    role = StaffRole.MANAGER,
     propertyId = PropertyId("property_id_1"),
 )
 

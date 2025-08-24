@@ -5,10 +5,11 @@ import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.StaffRole
 import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.server.core.controller.auth.ClientContext
-import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
+import com.cramsan.edifikana.server.core.controller.authentication.ClientContext
+import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
 import com.cramsan.edifikana.server.core.service.StaffService
 import com.cramsan.edifikana.server.core.service.models.Staff
+import com.cramsan.edifikana.server.core.service.models.UserRole
 import com.cramsan.edifikana.server.utils.readFileContent
 import com.cramsan.framework.test.CoroutineTest
 import io.ktor.client.request.delete
@@ -73,6 +74,7 @@ class StaffControllerTest : CoroutineTest(), KoinTest {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
                 userId = UserId("user123"),
+                userRole = UserRole.OWNER,
             )
         }
 
@@ -111,6 +113,7 @@ class StaffControllerTest : CoroutineTest(), KoinTest {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
                 userId = UserId("user123"),
+                userRole = UserRole.MANAGER,
             )
         }
 
@@ -131,6 +134,7 @@ class StaffControllerTest : CoroutineTest(), KoinTest {
         val clientContext = ClientContext.AuthenticatedClientContext(
             userInfo = mockk(),
             userId = UserId("user123"),
+            userRole = UserRole.MANAGER,
         )
 
         coEvery {
@@ -200,6 +204,7 @@ class StaffControllerTest : CoroutineTest(), KoinTest {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
                 userId = UserId("user123"),
+                userRole = UserRole.MANAGER,
             )
         }
 
@@ -230,6 +235,7 @@ class StaffControllerTest : CoroutineTest(), KoinTest {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
                 userId = UserId("user123"),
+                userRole = UserRole.MANAGER,
             )
         }
 

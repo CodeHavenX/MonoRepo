@@ -33,7 +33,7 @@ val STAFF_1 = StaffModel(
     idType = IdType.DNI,
     firstName = "Antonio",
     lastName = "Banderas",
-    role = StaffRole.ADMIN,
+    role = StaffRole.MANAGER,
     email = "antonio.banderas@gmail.com",
     status = StaffStatus.ACTIVE,
 )

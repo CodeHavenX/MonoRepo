@@ -4,7 +4,7 @@ package com.cramsan.edifikana.lib.model
  * Enum representing the role of a staff member.
  */
 enum class StaffRole {
-    ADMIN,
+    MANAGER,
     SECURITY,
     SECURITY_COVER,
     CLEANING,
@@ -16,7 +16,7 @@ enum class StaffRole {
          */
         fun fromString(value: String?): StaffRole {
             return when (value) {
-                "ADMIN" -> ADMIN
+                "MANAGER" -> MANAGER
                 "SECURITY" -> SECURITY
                 "SECURITY_COVER" -> SECURITY_COVER
                 "CLEANING" -> CLEANING

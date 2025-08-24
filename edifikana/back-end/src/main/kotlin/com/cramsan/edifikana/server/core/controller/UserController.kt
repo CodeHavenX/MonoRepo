@@ -9,7 +9,7 @@ import com.cramsan.edifikana.lib.model.network.UpdateUserNetworkRequest
 import com.cramsan.edifikana.lib.utils.requireAll
 import com.cramsan.edifikana.lib.utils.requireNotBlank
 import com.cramsan.edifikana.lib.utils.requireSuccess
-import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
+import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
 import com.cramsan.edifikana.server.core.service.UserService
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.core.SecureString

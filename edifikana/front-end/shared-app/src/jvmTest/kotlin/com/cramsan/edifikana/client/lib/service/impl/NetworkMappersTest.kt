@@ -206,7 +206,7 @@ class NetworkMappersTest {
             idType = IdType.CE,
             firstName = "John",
             lastName = "Doe",
-            role = StaffRole.ADMIN,
+            role = StaffRole.MANAGER,
             propertyId = PropertyId("property-4")
         )
 
@@ -217,7 +217,7 @@ class NetworkMappersTest {
         assertEquals(IdType.CE, request.idType)
         assertEquals("John", request.firstName)
         assertEquals("Doe", request.lastName)
-        assertEquals(StaffRole.ADMIN, request.role)
+        assertEquals(StaffRole.MANAGER, request.role)
         assertEquals("property-4", request.propertyId)
     }
 

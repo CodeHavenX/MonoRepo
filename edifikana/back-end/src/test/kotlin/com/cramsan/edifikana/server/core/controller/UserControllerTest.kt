@@ -2,10 +2,11 @@ package com.cramsan.edifikana.server.core.controller
 
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
-import com.cramsan.edifikana.server.core.controller.auth.ClientContext
-import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
+import com.cramsan.edifikana.server.core.controller.authentication.ClientContext
+import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
 import com.cramsan.edifikana.server.core.service.UserService
 import com.cramsan.edifikana.server.core.service.models.User
+import com.cramsan.edifikana.server.core.service.models.UserRole
 import com.cramsan.edifikana.server.utils.readFileContent
 import com.cramsan.framework.test.CoroutineTest
 import io.ktor.client.request.delete
@@ -63,6 +64,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
                     firstName = "John",
                     lastName = "Doe",
                     authMetadata = null,
+                    role = UserRole.USER,
                 )
             )
         }
@@ -73,6 +75,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
                 userId = UserId("user123"),
+                userRole = UserRole.OWNER,
             )
         }
 
@@ -114,6 +117,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
                 userId = UserId("user123"),
+                userRole = UserRole.OWNER,
             )
         }
 
@@ -155,6 +159,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
                 userId = UserId("user123"),
+                userRole = UserRole.OWNER,
             )
         }
 
@@ -185,6 +190,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
                     firstName = "John",
                     lastName = "Doe",
                     authMetadata = null,
+                    role = UserRole.EMPLOYEE,
                 )
             )
         }
@@ -195,6 +201,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
                 userId = UserId("user123"),
+                userRole = UserRole.MANAGER,
             )
         }
 
@@ -223,6 +230,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
                         firstName = "John",
                         lastName = "Doe",
                         authMetadata = null,
+                        role = UserRole.EMPLOYEE,
                     ),
                     User(
                         id = UserId("user456"),
@@ -231,6 +239,8 @@ class UserControllerTest : CoroutineTest(), KoinTest {
                         firstName = "Jane",
                         lastName = "Smith",
                         authMetadata = null,
+                        role = UserRole.EMPLOYEE
+
                     )
                 )
             )
@@ -242,6 +252,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
                 userId = UserId("user123"),
+                userRole = UserRole.OWNER,
             )
         }
 
@@ -273,6 +284,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
                     firstName = "Updated",
                     lastName = "Email",
                     authMetadata = null,
+                    role = UserRole.USER
                 )
             )
         }
@@ -283,6 +295,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
                 userId = UserId("user123"),
+                userRole = UserRole.MANAGER,
             )
         }
 
@@ -313,6 +326,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
                 userId = UserId("user123"),
+                userRole = UserRole.OWNER,
             )
         }
 

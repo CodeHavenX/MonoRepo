@@ -5,7 +5,7 @@ import com.cramsan.edifikana.lib.Routes.Property.QueryParams.PROPERTY_ID
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.network.CreatePropertyNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdatePropertyNetworkRequest
-import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
+import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
 import com.cramsan.edifikana.server.core.service.PropertyService
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.core.ktor.HttpResponse

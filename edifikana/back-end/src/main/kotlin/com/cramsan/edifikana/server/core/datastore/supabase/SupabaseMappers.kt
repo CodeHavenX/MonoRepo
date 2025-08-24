@@ -18,6 +18,7 @@ import com.cramsan.edifikana.server.core.service.models.Property
 import com.cramsan.edifikana.server.core.service.models.Staff
 import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.core.service.models.User
+import com.cramsan.edifikana.server.core.service.models.UserRole
 import com.cramsan.edifikana.server.core.service.models.requests.AssociateUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.CreateEventLogEntryRequest
 import com.cramsan.edifikana.server.core.service.models.requests.CreatePropertyRequest
@@ -43,7 +44,9 @@ fun UserEntity.toUser(): User {
         lastName = this.lastName,
         authMetadata = User.AuthMetadata(
             isPasswordSet = this.authMetadata.canPasswordAuth,
-        )
+        ),
+        role = UserRole.USER,
+
     )
 }
 

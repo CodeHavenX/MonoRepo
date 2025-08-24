@@ -58,6 +58,8 @@ include("samples:jvm-application")
 include("samples:nodejs-app")
 include("samples:service-ktor")
 
+include("discord-bot")
+
 include("framework-samples:framework-sample-app")
 include("framework-samples:app-android")
 include("framework-samples:app-jvm")

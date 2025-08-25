@@ -37,7 +37,7 @@ class StaffController(
         TAG,
         "createStaff",
         contextRetriever,
-    ) { _ ->
+    ) { context ->
         val createStaffRequest = call.receive<CreateStaffNetworkRequest>()
 
         val newStaff = staffService.createStaff(
@@ -62,7 +62,7 @@ class StaffController(
         TAG,
         "getStaff",
         contextRetriever,
-    ) { _ ->
+    ) { context ->
         val staffId = requireNotNull(call.parameters[STAFF_ID])
 
         val staff = staffService.getStaff(
@@ -107,7 +107,7 @@ class StaffController(
         TAG,
         "updateStaff",
         contextRetriever,
-    ) { _ ->
+    ) { context ->
         val staffId = requireNotNull(call.parameters[STAFF_ID])
 
         val updateStaffRequest = call.receive<UpdateStaffNetworkRequest>()
@@ -129,7 +129,11 @@ class StaffController(
     /**
      * Handles the deletion of a staff. The [call] parameter is the request context.
      */
-    suspend fun deleteStaff(call: RoutingCall) = call.handleCall(TAG, "deleteStaff", contextRetriever) {
+    suspend fun deleteStaff(call: RoutingCall) = call.handleCall(
+        TAG,
+        "deleteStaff",
+        contextRetriever
+    ) { context ->
         val staffId = requireNotNull(call.parameters[STAFF_ID])
 
         val success = staffService.deleteStaff(

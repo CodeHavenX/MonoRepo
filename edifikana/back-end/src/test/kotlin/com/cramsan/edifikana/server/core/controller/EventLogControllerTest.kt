@@ -92,7 +92,6 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-                userRole = UserRole.EMPLOYEE,
             )
         }
 
@@ -137,7 +136,6 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-                userRole = UserRole.EMPLOYEE,
             )
         }
 
@@ -191,7 +189,6 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-                userRole = UserRole.EMPLOYEE,
             )
         }
 
@@ -239,7 +236,6 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-                userRole = UserRole.EMPLOYEE,
             )
         }
 
@@ -270,7 +266,6 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-                userRole = UserRole.EMPLOYEE,
             )
         }
 

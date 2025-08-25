@@ -38,7 +38,7 @@ class TimeCardController(
         TAG,
         "createTimeCardEvent",
         contextRetriever
-    ) { _ ->
+    ) { context ->
         val createTimeCardRequest = call.receive<CreateTimeCardEventNetworkRequest>()
 
         val newTimeCard = timeCardService.createTimeCardEvent(
@@ -64,7 +64,7 @@ class TimeCardController(
         TAG,
         "getTimeCardEvent",
         contextRetriever,
-    ) { _ ->
+    ) { context ->
         val timeCardId = requireNotNull(call.parameters[TIMECARD_EVENT_ID])
 
         val timeCard = timeCardService.getTimeCardEvent(
@@ -91,7 +91,7 @@ class TimeCardController(
         TAG,
         "getTimeCardEvents",
         contextRetriever,
-    ) { _ ->
+    ) { context ->
         val staffId = call.request.queryParameters[STAFF_ID]
 
         val timeCards = timeCardService.getTimeCardEvents(

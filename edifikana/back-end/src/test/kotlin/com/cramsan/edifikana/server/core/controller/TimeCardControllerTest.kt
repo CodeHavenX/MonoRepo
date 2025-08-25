@@ -82,7 +82,6 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-                userRole = UserRole.EMPLOYEE,
             )
         }
 
@@ -122,7 +121,6 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-                userRole = UserRole.EMPLOYEE,
             )
         }
 
@@ -170,7 +168,6 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-                userRole = UserRole.EMPLOYEE,
             )
         }
 

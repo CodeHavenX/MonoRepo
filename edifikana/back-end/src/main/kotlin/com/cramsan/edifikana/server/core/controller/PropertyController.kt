@@ -33,9 +33,13 @@ class PropertyController(
      * Handles the creation of a new property. The [call] parameter is the request context.
      */
     @OptIn(NetworkModel::class)
-    suspend fun createProperty(call: ApplicationCall) = call.handleCall(TAG, "createProperty", contextRetriever) {
-        val createPropertyRequest = call.receive<CreatePropertyNetworkRequest>()
-        val authenticatedContext = requireAuthenticatedClientContext(it)
+    suspend fun createProperty(call: ApplicationCall) =
+        call.handleCall(
+            TAG,
+            "createProperty",
+            contextRetriever
+        ) { context ->
+            val createPropertyRequest = call.receive<CreatePropertyNetworkRequest>()
 
         val newProperty = propertyService.createProperty(
             createPropertyRequest.name,
@@ -44,17 +48,21 @@ class PropertyController(
             authenticatedContext,
         ).toPropertyNetworkResponse()
 
-        HttpResponse(
-            status = HttpStatusCode.OK,
-            body = newProperty,
-        )
-    }
+            HttpResponse(
+                status = HttpStatusCode.OK,
+                body = newProperty,
+            )
+        }
 
     /**
      * Handles the retrieval of a property. The [call] parameter is the request context.
      */
     @OptIn(NetworkModel::class)
-    suspend fun getProperty(call: ApplicationCall) = call.handleCall(TAG, "getProperty", contextRetriever) {
+    suspend fun getProperty(call: ApplicationCall) = call.handleCall(
+        TAG,
+        "getProperty",
+        contextRetriever
+    ) { context ->
         val propertyId = requireNotNull(call.parameters[PROPERTY_ID])
 
         val property = propertyService.getProperty(
@@ -82,10 +90,8 @@ class PropertyController(
         "getProperties",
         contextRetriever,
     ) { context ->
-        val userId = requireAuthenticatedClientContext(context).userId
-
         val properties = propertyService.getProperties(
-            userId = userId,
+            userId = context.userId,
         ).map { it.toPropertyNetworkResponse() }
 
         HttpResponse(
@@ -98,7 +104,11 @@ class PropertyController(
      * Handles the update of a property. The [call] parameter is the request context.
      */
     @OptIn(NetworkModel::class)
-    suspend fun updateProperty(call: ApplicationCall) = call.handleCall(TAG, "updateProperty", contextRetriever) {
+    suspend fun updateProperty(call: ApplicationCall) = call.handleCall(
+        TAG,
+        "updateProperty",
+        contextRetriever
+    ) { context ->
         val propertyId = requireNotNull(call.parameters[PROPERTY_ID])
 
         val updatePropertyRequest = call.receive<UpdatePropertyNetworkRequest>()
@@ -117,7 +127,11 @@ class PropertyController(
     /**
      * Handles the deletion of a property. The [call] parameter is the request context.
      */
-    suspend fun deleteProperty(call: RoutingCall) = call.handleCall(TAG, "deleteProperty", contextRetriever) {
+    suspend fun deleteProperty(call: RoutingCall) = call.handleCall(
+        TAG,
+        "deleteProperty",
+        contextRetriever
+    ) { context ->
         val propertyId = requireNotNull(call.parameters[PROPERTY_ID])
 
         val success = propertyService.deleteProperty(

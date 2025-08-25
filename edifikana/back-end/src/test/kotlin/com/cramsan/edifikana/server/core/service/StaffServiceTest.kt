@@ -129,7 +129,6 @@ class StaffServiceTest {
         val clientContext = ClientContext.AuthenticatedClientContext(
             userInfo = mockk(),
             userId = UserId("user-1"),
-            userRole = UserRole.SUPERUSER,
         )
         coEvery { staffDatastore.getStaffs(request) } returns Result.success(staffList)
 

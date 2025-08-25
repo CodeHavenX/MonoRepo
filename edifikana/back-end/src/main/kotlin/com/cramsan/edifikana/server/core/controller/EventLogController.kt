@@ -65,7 +65,7 @@ class EventLogController(
     @OptIn(NetworkModel::class)
     suspend fun getEventLogEntry(
         call: ApplicationCall,
-    ) = call.handleCall(TAG, "getEventLogEntry", contextRetriever) { _ ->
+    ) = call.handleCall(TAG, "getEventLogEntry", contextRetriever) { context ->
         val eventLogId = requireNotNull(call.parameters[EVENT_LOG_ENTRY_ID])
 
         val eventLog = eventLogService.getEventLogEntry(
@@ -90,7 +90,7 @@ class EventLogController(
     @OptIn(NetworkModel::class)
     suspend fun getEventLogEntries(
         call: ApplicationCall,
-    ) = call.handleCall(TAG, "getEventLogEntries", contextRetriever) { _ ->
+    ) = call.handleCall(TAG, "getEventLogEntries", contextRetriever) { context ->
         val eventLogs = eventLogService.getEventLogEntries().map { it.toEventLogEntryNetworkResponse() }
 
         HttpResponse(
@@ -105,7 +105,7 @@ class EventLogController(
     @OptIn(NetworkModel::class)
     suspend fun updateEventLogEntry(
         call: ApplicationCall,
-    ) = call.handleCall(TAG, "updateEventLogEntry", contextRetriever) { _ ->
+    ) = call.handleCall(TAG, "updateEventLogEntry", contextRetriever) { context ->
         val eventLogId = requireNotNull(call.parameters[EVENT_LOG_ENTRY_ID])
 
         val updateEventLogRequest = call.receive<UpdateEventLogEntryNetworkRequest>()
@@ -130,7 +130,7 @@ class EventLogController(
      */
     suspend fun deleteEventLogEntry(
         call: RoutingCall,
-    ) = call.handleCall(TAG, "deleteEventLogEntry", contextRetriever) { _ ->
+    ) = call.handleCall(TAG, "deleteEventLogEntry", contextRetriever) { context ->
         val eventLogId = requireNotNull(call.parameters[EVENT_LOG_ENTRY_ID])
 
         val success = eventLogService.deleteEventLogEntry(

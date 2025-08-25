@@ -11,6 +11,7 @@ enum class UserRole {
     EMPLOYEE,
     USER,
     SUPERUSER,
+    UNAUTHORIZED,
     ;
     companion object {
 
@@ -24,6 +25,7 @@ enum class UserRole {
                 "EMPLOYEE" -> EMPLOYEE
                 "USER" -> USER
                 "SUPERUSER" -> SUPERUSER
+                "UNAUTHORIZED" -> UNAUTHORIZED
                 else -> throw IllegalArgumentException("Invalid UserRole value: $value")
             }
         }

@@ -23,7 +23,6 @@ class DummyContextRetriever : ContextRetriever {
                 createdAt = Clock.System.now()
             ),
             userId = USER_1.id,
-            userRole = UserRole.USER
         )
     }
 

@@ -74,7 +74,6 @@ class StaffControllerTest : CoroutineTest(), KoinTest {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-                userRole = UserRole.OWNER,
             )
         }
 
@@ -113,7 +112,6 @@ class StaffControllerTest : CoroutineTest(), KoinTest {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-                userRole = UserRole.MANAGER,
             )
         }
 
@@ -134,7 +132,6 @@ class StaffControllerTest : CoroutineTest(), KoinTest {
         val clientContext = ClientContext.AuthenticatedClientContext(
             userInfo = mockk(),
             userId = UserId("user123"),
-            userRole = UserRole.MANAGER,
         )
 
         coEvery {
@@ -204,7 +201,6 @@ class StaffControllerTest : CoroutineTest(), KoinTest {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-                userRole = UserRole.MANAGER,
             )
         }
 
@@ -235,7 +231,6 @@ class StaffControllerTest : CoroutineTest(), KoinTest {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-                userRole = UserRole.MANAGER,
             )
         }
 

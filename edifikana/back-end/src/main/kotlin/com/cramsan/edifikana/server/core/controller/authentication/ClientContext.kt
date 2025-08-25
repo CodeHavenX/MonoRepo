@@ -16,7 +16,6 @@ sealed class ClientContext {
     data class AuthenticatedClientContext(
         val userInfo: UserInfo,
         val userId: UserId,
-        val userRole: UserRole,
     ) : ClientContext()
 
     /**

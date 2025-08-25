@@ -75,7 +75,6 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-                userRole = UserRole.OWNER,
             )
         }
 
@@ -112,7 +111,6 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-                userRole = UserRole.OWNER,
             )
         }
 
@@ -154,7 +152,6 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-                userRole = UserRole.OWNER,
             )
         }
 
@@ -192,7 +189,6 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-                userRole = UserRole.OWNER,
             )
         }
 
@@ -223,7 +219,6 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-                userRole = UserRole.OWNER,
             )
         }
 

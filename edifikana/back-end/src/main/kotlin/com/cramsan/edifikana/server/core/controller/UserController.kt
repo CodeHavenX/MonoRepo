@@ -6,11 +6,15 @@ import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.model.network.CreateUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdatePasswordNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdateUserNetworkRequest
+import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
 import com.cramsan.edifikana.lib.utils.requireAll
 import com.cramsan.edifikana.lib.utils.requireNotBlank
 import com.cramsan.edifikana.lib.utils.requireSuccess
+import com.cramsan.edifikana.server.core.controller.authentication.ClientContext
 import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
 import com.cramsan.edifikana.server.core.service.UserService
+import com.cramsan.edifikana.server.core.service.authorization.RoleBasedAccessControlService
+import com.cramsan.edifikana.server.core.service.models.UserRole
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
@@ -31,6 +35,7 @@ import io.ktor.server.routing.route
  */
 class UserController(
     private val userService: UserService,
+    private val rbacService: RoleBasedAccessControlService,
     private val contextRetriever: ContextRetriever,
 ) : Controller {
 
@@ -70,8 +75,13 @@ class UserController(
      * Handles the retrieval of a user. The [call] parameter is the request context.
      */
     @OptIn(NetworkModel::class)
-    suspend fun getUser(call: ApplicationCall) = call.handleCall(TAG, "getUser", contextRetriever) {
+    suspend fun getUser(call: ApplicationCall) = call.handleCall(
+        TAG,
+        "getUser",
+        contextRetriever
+    ) { context ->
         val userId = requireNotNull(call.parameters[USER_ID])
+        checkAuthorization(context, UserId(userId), UserRole.USER)
 
         val user = userService.getUser(
             id = UserId(userId),
@@ -98,13 +108,13 @@ class UserController(
         "updatePassword",
         contextRetriever,
     ) { context ->
-        val authenticatedContext = requireAuthenticatedClientContext(context)
-        val userId = authenticatedContext.userId
+        val userId = requireNotNull(call.parameters[USER_ID])
+        checkAuthorization(context, UserId(userId), UserRole.USER)
 
         val updatePasswordRequest = call.receive<UpdatePasswordNetworkRequest>()
 
         val result = userService.updatePassword(
-            userId = userId,
+            userId = UserId(userId),
             currentHashedPassword = SecureString(updatePasswordRequest.currentPasswordHashed),
             newPassword = SecureString(updatePasswordRequest.newPassword),
         )
@@ -128,24 +138,16 @@ class UserController(
     }
 
     /**
-     * Handles the retrieval of all users. The [call] parameter is the request context.
-     */
-    @OptIn(NetworkModel::class)
-    suspend fun getUsers(call: ApplicationCall) = call.handleCall(TAG, "getUsers", contextRetriever) { _ ->
-        val users = userService.getUsers().getOrThrow().map { it.toUserNetworkResponse() }
-
-        HttpResponse(
-            status = HttpStatusCode.OK,
-            body = users,
-        )
-    }
-
-    /**
      * Handles the updating of a user. The [call] parameter is the request context.
      */
     @OptIn(NetworkModel::class)
-    suspend fun updateUser(call: ApplicationCall) = call.handleCall(TAG, "updateUser", contextRetriever) { _ ->
+    suspend fun updateUser(call: ApplicationCall) = call.handleCall(
+        TAG,
+        "updateUser",
+        contextRetriever
+    ) { context ->
         val userId = requireNotNull(call.parameters[USER_ID])
+        checkAuthorization(context, UserId(userId), UserRole.USER)
 
         val updateUserRequest = call.receive<UpdateUserNetworkRequest>()
 
@@ -163,8 +165,13 @@ class UserController(
     /**
      * Handles the deletion of a user. The [call] parameter is the request context.
      */
-    suspend fun deleteUser(call: RoutingCall) = call.handleCall(TAG, "deleteUser", contextRetriever) { _ ->
+    suspend fun deleteUser(call: RoutingCall) = call.handleCall(
+        TAG,
+        "deleteUser",
+        contextRetriever
+    ) { context ->
         val userId = requireNotNull(call.parameters[USER_ID])
+        checkAuthorization(context, UserId(userId), UserRole.USER)
 
         val success = userService.deleteUser(
             UserId(userId),
@@ -186,10 +193,15 @@ class UserController(
      * Handle a call to associate a user created in another system (e.g., Supabase) with our system.
      */
     @OptIn(NetworkModel::class)
-    suspend fun associate(call: RoutingCall) = call.handleCall(TAG, "associate", contextRetriever) { context ->
-        val authenticatedContext = requireAuthenticatedClientContext(context)
-        val userId = authenticatedContext.userId
-        val email = authenticatedContext.userInfo.email
+    suspend fun associate(call: RoutingCall) = call.handleCall(
+        TAG,
+        "associate",
+        contextRetriever
+    ) { context ->
+        val userId = context.userId
+        checkAuthorization(context, userId, UserRole.USER)
+
+        val email = context.userInfo.email
 
         requireNotBlank(email, "User does not have a configured email.")
 
@@ -206,6 +218,19 @@ class UserController(
     }
 
     /**
+     * Checks if the user in the [context] is authorized to perform user operations
+     */
+    private suspend fun checkAuthorization(
+        context: ClientContext.AuthenticatedClientContext,
+        targetUser: UserId,
+        requiredRole: UserRole
+    ) {
+        if (!rbacService.hasRole(context, targetUser, requiredRole)) {
+            throw ClientRequestExceptions.ForbiddenException("UNAUTHORIZED ACTION")
+        }
+    }
+
+    /**
      * Registers the routes for the user controller. The [route] parameter is the root path for the controller.
      */
     override fun registerRoutes(route: Routing) {
@@ -218,9 +243,6 @@ class UserController(
             }
             put("/password") {
                 updatePassword(call)
-            }
-            get {
-                getUsers(call)
             }
             put("{$USER_ID}") {
                 updateUser(call)

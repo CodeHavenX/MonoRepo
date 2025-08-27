@@ -9,6 +9,7 @@ import com.cramsan.edifikana.lib.model.network.CreateEventLogEntryNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdateEventLogEntryNetworkRequest
 import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
 import com.cramsan.edifikana.server.core.service.EventLogService
+import com.cramsan.edifikana.server.core.service.authorization.RoleBasedAccessControlService
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.core.ktor.HttpResponse
 import io.ktor.http.HttpStatusCode
@@ -29,6 +30,7 @@ import kotlin.time.Instant
  */
 class EventLogController(
     private val eventLogService: EventLogService,
+    private val rbacService: RoleBasedAccessControlService,
     private val contextRetriever: ContextRetriever,
 ) : Controller {
 

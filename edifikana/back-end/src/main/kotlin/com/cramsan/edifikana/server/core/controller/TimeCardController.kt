@@ -9,6 +9,7 @@ import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.network.CreateTimeCardEventNetworkRequest
 import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
 import com.cramsan.edifikana.server.core.service.TimeCardService
+import com.cramsan.edifikana.server.core.service.authorization.RoleBasedAccessControlService
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.core.ktor.HttpResponse
 import com.cramsan.framework.utils.time.Chronos
@@ -27,6 +28,7 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalTime::class)
 class TimeCardController(
     private val timeCardService: TimeCardService,
+    private val rbacService: RoleBasedAccessControlService,
     private val contextRetriever: ContextRetriever,
 ) : Controller {
 

@@ -59,7 +59,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
                 firstName = request.firstName,
                 lastName = request.lastName,
                 authMetadata = User.AuthMetadata(isPasswordSet = true),
-                role = UserRole.EMPLOYEE
+                role = UserRole.USER,
             ),
             result.getOrNull(),
         )

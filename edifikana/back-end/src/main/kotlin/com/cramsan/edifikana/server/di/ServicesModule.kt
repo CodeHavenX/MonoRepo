@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.server.di
 
 import com.cramsan.edifikana.server.core.service.EventLogService
+import com.cramsan.edifikana.server.core.service.OrganizationService
 import com.cramsan.edifikana.server.core.service.PropertyService
 import com.cramsan.edifikana.server.core.service.StaffService
 import com.cramsan.edifikana.server.core.service.StorageService
@@ -19,4 +20,5 @@ val ServicesModule = module {
     singleOf(::StaffService)
     singleOf(::TimeCardService)
     singleOf(::StorageService)
+    singleOf(::OrganizationService)
 }

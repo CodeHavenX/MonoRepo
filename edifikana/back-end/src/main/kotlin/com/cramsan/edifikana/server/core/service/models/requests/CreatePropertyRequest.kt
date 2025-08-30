@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.core.service.models.requests
 
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 
 /**
@@ -9,4 +10,5 @@ data class CreatePropertyRequest(
     val name: String,
     val address: String,
     val creatorUserId: UserId,
+    val organizationId: OrganizationId,
 )

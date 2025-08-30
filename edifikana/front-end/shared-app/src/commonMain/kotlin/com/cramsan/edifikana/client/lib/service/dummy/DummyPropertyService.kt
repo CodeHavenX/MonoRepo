@@ -2,8 +2,8 @@ package com.cramsan.edifikana.client.lib.service.dummy
 
 import com.cramsan.edifikana.client.lib.models.PropertyModel
 import com.cramsan.edifikana.client.lib.service.PropertyService
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
-import io.ktor.client.request.get
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -45,12 +45,17 @@ class DummyPropertyService : PropertyService {
         return Result.success(property)
     }
 
-    override suspend fun addProperty(propertyName: String, address: String): Result<PropertyModel> {
+    override suspend fun addProperty(
+        propertyName: String,
+        address: String,
+        organizationId: OrganizationId
+    ): Result<PropertyModel> {
         delay(500.milliseconds)
         val newProperty = PropertyModel(
             id = PropertyId("property-${properties.size + 1}"),
             name = propertyName,
             address = address,
+            organizationId = OrganizationId("org_id_1"),
         )
         properties.add(newProperty)
         return Result.success(newProperty)

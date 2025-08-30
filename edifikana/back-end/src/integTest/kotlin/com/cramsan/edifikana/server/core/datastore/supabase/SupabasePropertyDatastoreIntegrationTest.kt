@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.core.datastore.supabase
 
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.service.models.Property
@@ -21,11 +22,13 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
 
     private lateinit var test_prefix: String
     private var testUserId: UserId? = null
+    private var testOrg: OrganizationId? = null
 
     @BeforeTest
     fun setup() {
         test_prefix = UUID.random()
         testUserId = createTestUser("user-${test_prefix}@test.com")
+        testOrg = createTestOrganization( testUserId!!)
     }
 
     @Test
@@ -35,6 +38,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
             name = "${test_prefix}_Property",
             address = "123 Test St, Test City, TC 12345",
             creatorUserId = testUserId!!,
+            organizationId = testOrg!!,
         )
         // Act
         val result = propertyDatastore.createProperty(request).registerPropertyForDeletion()
@@ -45,6 +49,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
                 id = result.getOrNull()!!.id,
                 name = request.name,
                 address = request.address,
+                organizationId = testOrg!!,
             ),
             result.getOrNull(),
         )
@@ -60,6 +65,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
             name = "${test_prefix}_GetProperty",
             address = "456 Example Ave, Sample Town, ST 67890",
             creatorUserId = testUserId!!,
+            organizationId = testOrg!!,
         )
 
         // Act
@@ -85,11 +91,13 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
             name = "${test_prefix}_PropertyA",
             address = "789 Sample Rd, Example City, EC 10112",
             creatorUserId = testUserId!!,
+            organizationId = testOrg!!,
         )
         val request2 = CreatePropertyRequest(
             name = "${test_prefix}_PropertyB",
             address = "101 Sample Blvd, Testville, TV 13141",
             creatorUserId = testUserId!!,
+            organizationId = testOrg!!,
         )
 
         // Act
@@ -115,6 +123,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
             name = "${test_prefix}_ToUpdate",
             address = "123 Update St, Update City, UC 12345",
             creatorUserId = testUserId!!,
+            organizationId = testOrg!!,
         )
         val createResult = propertyDatastore.createProperty(createRequest)
         assertTrue(createResult.isSuccess)
@@ -141,6 +150,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
             name = "${test_prefix}_ToDelete",
             address = "789 Delete St, Delete City, DC 67890",
             creatorUserId = testUserId!!,
+            organizationId = testOrg!!,
         )
         val createResult = propertyDatastore.createProperty(createRequest)
         assertTrue(createResult.isSuccess)

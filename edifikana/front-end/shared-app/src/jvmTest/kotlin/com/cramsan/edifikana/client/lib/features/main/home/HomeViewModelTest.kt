@@ -7,6 +7,7 @@ import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestina
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.models.PropertyModel
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
@@ -55,9 +56,20 @@ class HomeViewModelTest : CoroutineTest() {
     @Test
     fun `test loadContent successfully loads properties`() = runCoroutineTest {
         // Arrange
+        val organizationId = OrganizationId("org_1")
         val properties = listOf(
-            PropertyModel(id = PropertyId("1"), name = "Property 1", address = "Address 1"),
-            PropertyModel(id = PropertyId("2"), name = "Property 2", address = "Address 2"),
+            PropertyModel(
+                id = PropertyId("1"),
+                name = "Property 1",
+                address = "Address 1",
+                organizationId = organizationId
+            ),
+            PropertyModel(
+                id = PropertyId("2"),
+                name = "Property 2",
+                address = "Address 2",
+                organizationId = organizationId
+            ),
         )
         val activeProperty = MutableStateFlow(PropertyId("1"))
         coEvery { propertyManager.getPropertyList() } returns Result.success(properties)

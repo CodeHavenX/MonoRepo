@@ -3,6 +3,7 @@ package com.cramsan.edifikana.client.lib.service.impl
 import com.cramsan.edifikana.client.lib.models.PropertyModel
 import com.cramsan.edifikana.client.lib.service.PropertyService
 import com.cramsan.edifikana.lib.Routes
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.network.CreatePropertyNetworkRequest
 import com.cramsan.edifikana.lib.model.network.PropertyNetworkResponse
@@ -67,7 +68,11 @@ class PropertyServiceImpl(
     }
 
     @OptIn(NetworkModel::class)
-    override suspend fun addProperty(propertyName: String, address: String): Result<PropertyModel> = runSuspendCatching(
+    override suspend fun addProperty(
+        propertyName: String,
+        address: String,
+        organizationId: OrganizationId,
+    ): Result<PropertyModel> = runSuspendCatching(
         TAG
     ) {
         val response = http.post(Routes.Property.PATH) {
@@ -75,6 +80,7 @@ class PropertyServiceImpl(
                 CreatePropertyNetworkRequest(
                     name = propertyName,
                     address = address,
+                    organizationId = organizationId.id,
                 )
             )
             contentType(ContentType.Application.Json)
@@ -118,5 +124,6 @@ private fun PropertyNetworkResponse.toPropertyModel(): PropertyModel {
         id = PropertyId(id),
         name = name,
         address = address.orEmpty(),
+        organizationId = OrganizationId(organizationId),
     )
 }

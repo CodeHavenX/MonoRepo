@@ -9,6 +9,7 @@ import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.IdType
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.StaffRole
@@ -20,12 +21,14 @@ val PROPERTY_1 = PropertyModel(
     id = PropertyId("property_id_1"),
     name = "Cenit",
     address = "123 Main St",
+    organizationId = OrganizationId("org_id_1"),
 )
 
 val PROPERTY_2 = PropertyModel(
     id = PropertyId("property_id_2"),
     name = "Vanguard2",
     address = "456 Elm St",
+    organizationId = OrganizationId("org_id_1"),
 )
 
 val STAFF_1 = StaffModel(

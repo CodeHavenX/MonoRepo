@@ -22,7 +22,7 @@ import io.ktor.utils.io.toByteArray
 class StorageController(
     private val storageService: StorageService,
     private val contextRetriever: ContextRetriever,
-) {
+) : Controller {
     /**
      * Handles the creation of a new file. The [call] parameter is the request context.
      */
@@ -75,23 +75,23 @@ class StorageController(
     }
 
     /**
+     * Registers the routes for the storage controller. The [route] parameter is the root path for the controller.
+     */
+    override fun registerRoutes(route: Routing) {
+        route.route(Routes.Storage.PATH) {
+            post {
+                createAsset(call)
+            }
+            get {
+                getAsset(call)
+            }
+        }
+    }
+
+    /**
      * Companion object.
      */
     companion object {
         private const val TAG = "StorageController"
-
-        /**
-         * Registers the routes for the storage controller. The [route] parameter is the root path for the controller.
-         */
-        fun StorageController.registerRoutes(route: Routing) {
-            route.route(Routes.Storage.PATH) {
-                post {
-                    createAsset(call)
-                }
-                get {
-                    getAsset(call)
-                }
-            }
-        }
     }
 }

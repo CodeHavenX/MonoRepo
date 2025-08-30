@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.core.service
 
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.controller.auth.ClientContext
@@ -25,6 +26,7 @@ class PropertyService(
     suspend fun createProperty(
         name: String,
         address: String,
+        organizationId: OrganizationId,
         clientContext: ClientContext.AuthenticatedClientContext,
     ): Property {
         logD(TAG, "createProperty")
@@ -33,6 +35,7 @@ class PropertyService(
                 name = name,
                 address = address,
                 creatorUserId = clientContext.userId,
+                organizationId = organizationId,
             ),
         ).getOrThrow()
     }

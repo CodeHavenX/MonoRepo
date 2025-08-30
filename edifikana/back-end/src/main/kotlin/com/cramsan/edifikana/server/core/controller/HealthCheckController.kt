@@ -14,7 +14,7 @@ import io.ktor.server.routing.route
  */
 class HealthCheckController(
     private val contextRetriever: ContextRetriever,
-) {
+) : Controller {
 
     /**
      * Handles a health check request.
@@ -25,18 +25,19 @@ class HealthCheckController(
             body = "OK",
         )
     }
-    companion object {
-        private const val TAG = "HealthCheckController"
 
-        /**
-         * Registers the routes for the user controller. The [route] parameter is the root path for the controller.
-         */
-        fun HealthCheckController.registerRoutes(route: Routing) {
-            route.route(Routes.Health.PATH) {
-                get {
-                    healthCheck(call)
-                }
+    /**
+     * Registers the routes for the user controller. The [route] parameter is the root path for the controller.
+     */
+    override fun registerRoutes(route: Routing) {
+        route.route(Routes.Health.PATH) {
+            get {
+                healthCheck(call)
             }
         }
+    }
+
+    companion object {
+        private const val TAG = "HealthCheckController"
     }
 }

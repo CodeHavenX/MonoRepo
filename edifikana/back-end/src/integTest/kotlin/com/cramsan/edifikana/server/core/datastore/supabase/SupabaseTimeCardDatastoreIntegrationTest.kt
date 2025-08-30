@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.core.datastore.supabase
 
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
@@ -25,13 +26,15 @@ class SupabaseTimeCardDatastoreIntegrationTest : SupabaseIntegrationTest() {
     private var propertyId: PropertyId? = null
     private var staffId: StaffId? = null
     private var testUserId: UserId? = null
+    private var orgId: OrganizationId? = null
 
     @BeforeTest
     fun setup() {
         test_prefix = UUID.random()
         runBlocking {
             testUserId = createTestUser("user-${test_prefix}@test.com")
-            propertyId = createTestProperty("${test_prefix}_Property", testUserId!!)
+            orgId = createTestOrganization(testUserId!!)
+            propertyId = createTestProperty("${test_prefix}_Property", testUserId!!, orgId!!)
             staffId = createTestStaff(
                 propertyId = propertyId!!,
                 firstName = "${test_prefix}_FirstName",

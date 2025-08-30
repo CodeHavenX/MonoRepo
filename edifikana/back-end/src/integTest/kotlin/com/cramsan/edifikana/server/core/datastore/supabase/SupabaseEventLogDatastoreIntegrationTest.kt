@@ -2,6 +2,7 @@ package com.cramsan.edifikana.server.core.datastore.supabase
 
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.service.models.requests.CreateEventLogEntryRequest
@@ -23,13 +24,15 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
     private lateinit var test_prefix: String
     private var propertyId: PropertyId? = null
     private var testUserId: UserId? = null
+    private var orgId: OrganizationId? = null
 
     @BeforeTest
     fun setup() {
         test_prefix = UUID.random()
         runBlocking {
             testUserId = createTestUser("user-${test_prefix}@test.com")
-            propertyId = createTestProperty("${test_prefix}_Property", testUserId!!)
+            orgId = createTestOrganization(testUserId!!)
+            propertyId = createTestProperty("${test_prefix}_Property", testUserId!!, orgId!!)
         }
     }
 

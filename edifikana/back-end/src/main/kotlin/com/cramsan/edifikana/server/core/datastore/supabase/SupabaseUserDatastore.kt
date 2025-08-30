@@ -2,6 +2,7 @@ package com.cramsan.edifikana.server.core.datastore.supabase
 
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
+import com.cramsan.edifikana.lib.utils.requireNotBlank
 import com.cramsan.edifikana.server.core.datastore.UserDatastore
 import com.cramsan.edifikana.server.core.datastore.supabase.models.AuthMetadataEntity
 import com.cramsan.edifikana.server.core.datastore.supabase.models.UserEntity
@@ -13,6 +14,7 @@ import com.cramsan.edifikana.server.core.service.models.requests.GetUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdatePasswordRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdateUserRequest
 import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.assertlib.assert
 import com.cramsan.framework.core.Hashing
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
@@ -45,14 +47,20 @@ class SupabaseUserDatastore(
     ): Result<User> = runSuspendCatching(TAG) {
         logD(TAG, "Creating user: %s", request.email)
 
-        val createOtpAccount = request.password.isNullOrBlank()
+        val createOtpAccount = request.isTransient
+
+        // Validate that if the account is not transient, a password is provided
+        when (request.isTransient) {
+            true -> assert(request.password.isNullOrBlank(), TAG, "Transient accounts must not have a password")
+            false -> assert(!request.password.isNullOrBlank(), TAG, "Non-transient accounts must have a password")
+        }
 
         val userId = if (!createOtpAccount) {
             // Create the user in Supabase Auth
             try {
                 val supabaseUserInfo = adminApi.createUserWithEmail {
                     email = request.email
-                    password = request.password
+                    password = request.password.orEmpty()
                     autoConfirm = true
                 }
                 supabaseUserInfo.id
@@ -81,7 +89,8 @@ class SupabaseUserDatastore(
             hashedPassword = if (createOtpAccount) {
                 null
             } else {
-                SecureString(Hashing.insecureHash(request.password.encodeToByteArray()).toString())
+                // We verified above that if the account is not transient, a password is provided
+                SecureString(Hashing.insecureHash(requireNotBlank(request.password).encodeToByteArray()).toString())
             }
         )
         val createdUser = createUserEntity(requestEntity)

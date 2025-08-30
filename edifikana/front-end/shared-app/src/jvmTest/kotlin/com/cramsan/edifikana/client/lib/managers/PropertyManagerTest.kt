@@ -2,6 +2,7 @@ package com.cramsan.edifikana.client.lib.managers
 
 import com.cramsan.edifikana.client.lib.models.PropertyModel
 import com.cramsan.edifikana.client.lib.service.PropertyService
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.UnifiedDispatcherProvider
@@ -13,11 +14,11 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
-import kotlinx.coroutines.flow.MutableStateFlow
 
 /**
  * Unit tests for the PropertyManager class.
@@ -113,12 +114,13 @@ class PropertyManagerTest : CoroutineTest() {
         // Arrange
         val propertyName = "Cenit"
         val address = "Jiron Juan de Arona 123"
-        coEvery { propertyService.addProperty(propertyName, address) } returns Result.success(mockk())
+        val organizationId = OrganizationId("org-1")
+        coEvery { propertyService.addProperty(propertyName, address, organizationId) } returns Result.success(mockk())
         // Act
-        val result = manager.addProperty(propertyName, address)
+        val result = manager.addProperty(propertyName, address , organizationId)
         // Assert
         assertTrue(result.isSuccess)
-        coVerify { propertyService.addProperty(propertyName, address) }
+        coVerify { propertyService.addProperty(propertyName, address, organizationId) }
     }
 
     /**

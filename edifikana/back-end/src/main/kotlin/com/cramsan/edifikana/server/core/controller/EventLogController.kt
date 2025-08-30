@@ -30,7 +30,7 @@ import kotlin.time.Instant
 class EventLogController(
     private val eventLogService: EventLogService,
     private val contextRetriever: ContextRetriever,
-) {
+) : Controller {
 
     /**
      * Handles the creation of a new event log entry. The [call] parameter is the request context.
@@ -149,30 +149,30 @@ class EventLogController(
         )
     }
 
-    companion object {
-        private const val TAG = "EventLogController"
-
-        /**
-         * Registers the routes for the event log controller.
-         */
-        fun EventLogController.registerRoutes(route: Routing) {
-            route.route(Routes.EventLog.PATH) {
-                post {
-                    createEventLogEntry(call)
-                }
-                get("{$EVENT_LOG_ENTRY_ID}") {
-                    getEventLogEntry(call)
-                }
-                get {
-                    getEventLogEntries(call)
-                }
-                put("{$EVENT_LOG_ENTRY_ID}") {
-                    updateEventLogEntry(call)
-                }
-                delete("{$EVENT_LOG_ENTRY_ID}") {
-                    deleteEventLogEntry(call)
-                }
+    /**
+     * Registers the routes for the event log controller.
+     */
+    override fun registerRoutes(route: Routing) {
+        route.route(Routes.EventLog.PATH) {
+            post {
+                createEventLogEntry(call)
+            }
+            get("{$EVENT_LOG_ENTRY_ID}") {
+                getEventLogEntry(call)
+            }
+            get {
+                getEventLogEntries(call)
+            }
+            put("{$EVENT_LOG_ENTRY_ID}") {
+                updateEventLogEntry(call)
+            }
+            delete("{$EVENT_LOG_ENTRY_ID}") {
+                deleteEventLogEntry(call)
             }
         }
+    }
+
+    companion object {
+        private const val TAG = "EventLogController"
     }
 }

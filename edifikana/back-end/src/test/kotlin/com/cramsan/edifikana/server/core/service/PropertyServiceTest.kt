@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.core.service
 
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.controller.auth.ClientContext
@@ -60,15 +61,25 @@ class PropertyServiceTest {
         val property = mockk<Property>()
         val clientContext = mockk<ClientContext.AuthenticatedClientContext>()
         val userId = UserId("TestUser")
+        val organizationId = OrganizationId("TestOrg")
         coEvery { clientContext.userId } returns userId
         coEvery { propertyDatastore.createProperty(any()) } returns Result.success(property)
 
         // Act
-        val result = propertyService.createProperty(name, address, clientContext)
+        val result = propertyService.createProperty(name, address, organizationId, clientContext)
 
         // Assert
         assertEquals(property, result)
-        coVerify { propertyDatastore.createProperty(CreatePropertyRequest(name, address, userId)) }
+        coVerify {
+            propertyDatastore.createProperty(
+                CreatePropertyRequest(
+                    name,
+                    address,
+                    userId,
+                    organizationId,
+                )
+            )
+        }
     }
 
     /**

@@ -178,10 +178,6 @@ class SignUpViewModel(
      */
     private suspend fun getErrorMessage(exception: Throwable): String {
         return when (exception) {
-            is ClientRequestExceptions.UnauthorizedException ->
-                "Invalid login credentials. Please check your " +
-                    "credentials and try again."
-
             is ClientRequestExceptions.ConflictException ->
                 "This email is already registered. You can reset your " +
                     "password or use another email."

@@ -3,6 +3,7 @@ package com.cramsan.edifikana.server.di
 import com.cramsan.edifikana.lib.serialization.createJson
 import com.cramsan.edifikana.server.core.controller.EventLogController
 import com.cramsan.edifikana.server.core.controller.HealthCheckController
+import com.cramsan.edifikana.server.core.controller.OrganizationController
 import com.cramsan.edifikana.server.core.controller.PropertyController
 import com.cramsan.edifikana.server.core.controller.StaffController
 import com.cramsan.edifikana.server.core.controller.StorageController
@@ -10,6 +11,7 @@ import com.cramsan.edifikana.server.core.controller.TimeCardController
 import com.cramsan.edifikana.server.core.controller.UserController
 import com.cramsan.edifikana.server.core.controller.auth.ContextRetriever
 import com.cramsan.edifikana.server.core.service.EventLogService
+import com.cramsan.edifikana.server.core.service.OrganizationService
 import com.cramsan.edifikana.server.core.service.PropertyService
 import com.cramsan.edifikana.server.core.service.StaffService
 import com.cramsan.edifikana.server.core.service.StorageService
@@ -97,6 +99,9 @@ fun testKtorModule() = module {
     singleOf(::StaffController)
     singleOf(::TimeCardController)
     singleOf(::StorageController)
+    singleOf(::OrganizationController)
+
+    registerControllers()
 }
 
 /**
@@ -121,6 +126,7 @@ fun testApplicationModule() = module {
     single<StaffService> { mockk() }
     single<TimeCardService> { mockk() }
     single<StorageService> { mockk() }
+    single<OrganizationService> { mockk() }
 }
 
 fun testSettingsModule() = module {

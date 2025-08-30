@@ -9,6 +9,7 @@ import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.client.lib.models.PropertyModel
 import com.cramsan.edifikana.client.lib.models.StaffModel
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.assertlib.AssertUtil
 import com.cramsan.framework.assertlib.implementation.NoopAssertUtil
@@ -85,11 +86,13 @@ class PropertyViewModelTest : CoroutineTest() {
         val propertyId = PropertyId("123")
         val name = "Updated Property"
         val address = "Updated Address"
+        val organizationId = OrganizationId("org_id_1")
         coEvery { propertyManager.getProperty(propertyId) } returns Result.success(
             PropertyModel(
                 id = propertyId,
                 name = "Test Property",
                 address = "Test Address",
+                organizationId = organizationId,
             )
         )
         coEvery { propertyManager.updateProperty(propertyId, name, address) } returns Result.success(mockk())
@@ -111,11 +114,13 @@ class PropertyViewModelTest : CoroutineTest() {
         val propertyId = PropertyId("123")
         val name = "Updated Property"
         val address = "Updated Address"
+        val organizationId = OrganizationId("org_id_1")
         coEvery { propertyManager.getProperty(propertyId) } returns Result.success(
             PropertyModel(
                 id = propertyId,
                 name = "Test Property",
                 address = "Test Address",
+                organizationId = organizationId,
             )
         )
         coEvery { propertyManager.updateProperty(propertyId, name, address) } returns Result.failure(Exception("Error"))
@@ -165,6 +170,7 @@ class PropertyViewModelTest : CoroutineTest() {
 
     @Test
     fun `test requestNewSuggestions with valid query updates suggestions`() = runCoroutineTest {
+        val organizationId = OrganizationId("org_id_1")
         val staffList = listOf<StaffModel>(
             mockk(),
             mockk(),
@@ -173,6 +179,7 @@ class PropertyViewModelTest : CoroutineTest() {
             id = PropertyId("123"),
             name = "Test Property",
             address = "Test Address",
+            organizationId = organizationId,
         )
         coEvery { staffManager.getStaffList() } returns Result.success(staffList)
         coEvery { propertyManager.getProperty(PropertyId("123")) } returns Result.success(property)

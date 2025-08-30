@@ -5,12 +5,14 @@ package com.cramsan.edifikana.server.core.controller
 import com.cramsan.edifikana.lib.model.network.AssetNetworkResponse
 import com.cramsan.edifikana.lib.model.network.AuthMetadataNetworkResponse
 import com.cramsan.edifikana.lib.model.network.EventLogEntryNetworkResponse
+import com.cramsan.edifikana.lib.model.network.OrganizationNetworkResponse
 import com.cramsan.edifikana.lib.model.network.PropertyNetworkResponse
 import com.cramsan.edifikana.lib.model.network.StaffNetworkResponse
 import com.cramsan.edifikana.lib.model.network.TimeCardEventNetworkResponse
 import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
 import com.cramsan.edifikana.server.core.service.models.Asset
 import com.cramsan.edifikana.server.core.service.models.EventLogEntry
+import com.cramsan.edifikana.server.core.service.models.Organization
 import com.cramsan.edifikana.server.core.service.models.Property
 import com.cramsan.edifikana.server.core.service.models.Staff
 import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
@@ -80,6 +82,7 @@ fun Property.toPropertyNetworkResponse(): PropertyNetworkResponse {
         id = id.propertyId,
         name = name,
         address = address,
+        organizationId = organizationId.id,
     )
 }
 
@@ -108,5 +111,15 @@ fun Asset.toAssetNetworkResponse(): AssetNetworkResponse {
         id = id.assetId,
         fileName = fileName,
         signedUrl = signedUrl,
+    )
+}
+
+/**
+ * Converts an [Organization] domain model to an [OrganizationNetworkResponse] network model.
+ */
+@OptIn(NetworkModel::class)
+fun Organization.toOrganizationNetworkResponse(): OrganizationNetworkResponse {
+    return OrganizationNetworkResponse(
+        id = id.id,
     )
 }

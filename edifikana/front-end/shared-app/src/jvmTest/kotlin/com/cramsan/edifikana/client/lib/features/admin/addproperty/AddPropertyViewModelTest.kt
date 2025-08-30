@@ -5,6 +5,7 @@ import com.cramsan.edifikana.client.lib.features.management.addproperty.AddPrope
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.models.PropertyModel
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
@@ -70,12 +71,16 @@ class AddPropertyViewModelTest : CoroutineTest() {
     fun `test addProperty with valid data adds property and navigates back`() = runCoroutineTest {
         val propertyName = "Test Property"
         val address = "123 Test Street"
+        val organizationId = OrganizationId("org_id_1")
         val newProperty = PropertyModel(
             id = PropertyId("test-id"),
             name = propertyName,
             address = address,
+            organizationId = organizationId,
         )
-        coEvery { propertyManager.addProperty(propertyName, address) } returns Result.success(newProperty)
+        coEvery { propertyManager.addProperty(propertyName, address, organizationId) } returns Result.success(
+            newProperty
+        )
 
         val verificationJob = launch {
             windowEventBus.events.test {
@@ -92,7 +97,7 @@ class AddPropertyViewModelTest : CoroutineTest() {
         viewModel.addProperty(propertyName, address)
         verificationJob.join()
 
-        coVerify { propertyManager.addProperty(propertyName, address) }
+        coVerify { propertyManager.addProperty(propertyName, address, organizationId) }
         assertTrue(exceptionHandler.exceptions.isEmpty())
     }
 
@@ -100,7 +105,10 @@ class AddPropertyViewModelTest : CoroutineTest() {
     fun `test addProperty with failure updates UI state with error`() = runCoroutineTest {
         val propertyName = "Test Property"
         val address = "123 Test Street"
-        coEvery { propertyManager.addProperty(propertyName, address) } returns Result.failure(Exception("Error"))
+        val organizationId = OrganizationId("org_id_1")
+        coEvery {
+            propertyManager.addProperty(propertyName, address, organizationId)
+        } returns Result.failure(Exception("Error"))
 
         viewModel.addProperty(propertyName, address)
 

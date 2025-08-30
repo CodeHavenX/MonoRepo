@@ -1,19 +1,6 @@
 package com.cramsan.edifikana.server
 
-import com.cramsan.edifikana.server.core.controller.EventLogController
-import com.cramsan.edifikana.server.core.controller.EventLogController.Companion.registerRoutes
-import com.cramsan.edifikana.server.core.controller.HealthCheckController
-import com.cramsan.edifikana.server.core.controller.HealthCheckController.Companion.registerRoutes
-import com.cramsan.edifikana.server.core.controller.PropertyController
-import com.cramsan.edifikana.server.core.controller.PropertyController.Companion.registerRoutes
-import com.cramsan.edifikana.server.core.controller.StaffController
-import com.cramsan.edifikana.server.core.controller.StaffController.Companion.registerRoutes
-import com.cramsan.edifikana.server.core.controller.StorageController
-import com.cramsan.edifikana.server.core.controller.StorageController.Companion.registerRoutes
-import com.cramsan.edifikana.server.core.controller.TimeCardController
-import com.cramsan.edifikana.server.core.controller.TimeCardController.Companion.registerRoutes
-import com.cramsan.edifikana.server.core.controller.UserController
-import com.cramsan.edifikana.server.core.controller.UserController.Companion.registerRoutes
+import com.cramsan.edifikana.server.core.controller.Controller
 import com.cramsan.edifikana.server.di.ApplicationModule
 import com.cramsan.edifikana.server.di.DummyStorageModule
 import com.cramsan.edifikana.server.di.FrameworkModule
@@ -64,24 +51,10 @@ fun Application.module() = runBlocking {
 fun Application.startServer() = runBlocking {
     configureKtorEngine()
 
-    val userController: UserController by inject()
-    val eventLogController: EventLogController by inject()
-    val propertyController: PropertyController by inject()
-    val staffController: StaffController by inject()
-    val timeCardController: TimeCardController by inject()
-    val healthCheckController: HealthCheckController by inject()
-    val storageController: StorageController by inject()
+    val controllerList: List<Controller> by inject()
 
     configureHealthEndpoint()
-    configureEntryPoints(
-        userController,
-        eventLogController,
-        propertyController,
-        staffController,
-        timeCardController,
-        healthCheckController,
-        storageController,
-    )
+    configureEntryPoints(controllerList)
     startApplication()
 }
 
@@ -152,22 +125,12 @@ private fun KoinApplication.configureKoinLogging() {
  * Configures the entry points of the application.
  */
 fun Application.configureEntryPoints(
-    userController: UserController,
-    eventLogController: EventLogController,
-    propertyController: PropertyController,
-    staffController: StaffController,
-    timeCardController: TimeCardController,
-    healthCheckController: HealthCheckController,
-    storageController: StorageController,
+    controllerList: List<Controller>,
 ) {
     routing {
-        userController.registerRoutes(this@routing)
-        eventLogController.registerRoutes(this@routing)
-        propertyController.registerRoutes(this@routing)
-        staffController.registerRoutes(this@routing)
-        timeCardController.registerRoutes(this@routing)
-        healthCheckController.registerRoutes(this@routing)
-        storageController.registerRoutes(this@routing)
+        controllerList.forEach { controller ->
+            controller.registerRoutes(this)
+        }
     }
 }
 

@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.server.core.service
 
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.server.core.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.core.datastore.UserDatastore
 import com.cramsan.edifikana.server.core.service.models.User
 import com.cramsan.framework.core.SecureString
@@ -25,6 +26,7 @@ import kotlin.test.AfterTest
 class UserServiceTest {
     private lateinit var userDatastore: UserDatastore
     private lateinit var userService: UserService
+    private lateinit var organizationDatastore: OrganizationDatastore
 
     /**
      * Sets up the test environment by initializing mocks for [UserDatastore] and [userService].
@@ -33,7 +35,8 @@ class UserServiceTest {
     fun setUp() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         userDatastore = mockk()
-        userService = UserService(userDatastore)
+        organizationDatastore = mockk()
+        userService = UserService(userDatastore, organizationDatastore)
     }
 
     /**

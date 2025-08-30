@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.core.controller
 
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.controller.auth.ClientContext
@@ -52,12 +53,18 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
         val expectedResponse = readFileContent("requests/create_property_response.json")
         val propertyService = get<PropertyService>()
         coEvery {
-            propertyService.createProperty("building 1", "1234, Nairobi", any())
+            propertyService.createProperty(
+                "building 1",
+                "1234, Nairobi",
+                OrganizationId("org123"),
+                any(),
+            )
         }.answers {
             Property(
                 id = PropertyId("property123"),
                 name = "building 1",
-                address = "1234, Nairobi"
+                address = "1234, Nairobi",
+                organizationId = OrganizationId("org123"),
             )
         }
         val contextRetriever = get<ContextRetriever>()
@@ -93,6 +100,7 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
                 id = PropertyId("property123"),
                 name = "building 1",
                 address = "123 Main St",
+                OrganizationId("org123"),
             )
         }
         val contextRetriever = get<ContextRetriever>()
@@ -126,11 +134,13 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
                     id = PropertyId("property123"),
                     name = "building 1",
                     address = "123 Main St",
+                    OrganizationId("org123"),
                 ),
                 Property(
                     id = PropertyId("property456"),
                     name = "building 2",
                     address = "456 Elm St",
+                    OrganizationId("org123"),
                 )
             )
         }
@@ -168,6 +178,7 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
                 id = PropertyId("property123"),
                 name = "Updated Property",
                 address = "123 Main St",
+                OrganizationId("org123"),
             )
         }
         val contextRetriever = get<ContextRetriever>()

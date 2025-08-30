@@ -58,7 +58,7 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
     private val timeCardResources = mutableSetOf<TimeCardEventId>()
     private val userResources = mutableSetOf<UserId>()
     private val supabaseUsers = mutableSetOf<String>()
-    private val orgationsationResources = mutableSetOf<OrganizationId>()
+    private val organizationResources = mutableSetOf<OrganizationId>()
 
     companion object {
         @BeforeAll
@@ -102,7 +102,7 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
     }
 
     private fun registerOrganizationForDeletion(organizationId: OrganizationId) {
-        orgationsationResources.add(organizationId)
+        organizationResources.add(organizationId)
     }
 
     protected fun createTestUser(email: String): UserId {
@@ -223,7 +223,7 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
             userResources.forEach {
                 userDatastore.deleteUser(DeleteUserRequest(it)).getOrThrow()
             }
-            orgationsationResources.forEach {
+            organizationResources.forEach {
                 organizationDatastore.deleteOrganization(DeleteOrganizationRequest(it)).getOrThrow()
             }
             supabaseUsers.forEach { userId ->
@@ -235,7 +235,7 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
         staffResources.clear()
         propertyResources.clear()
         userResources.clear()
-        orgationsationResources.clear()
+        organizationResources.clear()
         supabaseUsers.clear()
     }
 }

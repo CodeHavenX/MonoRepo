@@ -1,12 +1,16 @@
 package com.cramsan.edifikana.server.core.datastore.supabase
 
+import com.cramsan.edifikana.lib.model.OrganizationId
+import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.core.datastore.supabase.models.OrganizationEntity
 import com.cramsan.edifikana.server.core.datastore.supabase.models.UserOrganizationMappingEntity
 import com.cramsan.edifikana.server.core.service.models.Organization
+import com.cramsan.edifikana.server.core.service.models.UserRole
 import com.cramsan.edifikana.server.core.service.models.requests.CreateOrganizationRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteOrganizationRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetOrganizationRequest
+import com.cramsan.edifikana.server.core.service.models.requests.GetOrganizationUsersRequest
 import com.cramsan.edifikana.server.core.service.models.requests.UpdateOrganizationRequest
 import com.cramsan.framework.annotations.SupabaseModel
 import com.cramsan.framework.core.runSuspendCatching
@@ -35,6 +39,7 @@ class SupabaseOrganizationDatastore(
         val userOrgMapping = UserOrganizationMappingEntity.CreateUserOrganizationMappingEntity(
             userId = request.owner.userId,
             organizationId = createdOrg.id,
+            role = UserRole.OWNER,
         )
         postgrest.from(UserOrganizationMappingEntity.COLLECTION).insert(userOrgMapping) { select() }
             .decodeSingle<UserOrganizationMappingEntity>()
@@ -51,6 +56,35 @@ class SupabaseOrganizationDatastore(
         postgrest.from(OrganizationEntity.COLLECTION).select {
             filter { eq("id", request.id.id) }
         }.decodeSingleOrNull<OrganizationEntity>()?.toOrganization()
+    }
+
+    override suspend fun getOrganizationsUsers(
+        request: GetOrganizationUsersRequest
+    ): Result<List<UserId>> = runSuspendCatching(
+        TAG
+    ){
+        logD(TAG, "Getting list of user id's for organization: %s", request.id)
+        postgrest.from(UserOrganizationMappingEntity.COLLECTION).select {
+            filter { eq("organization_id", request.id.id) }
+        }.decodeList<UserOrganizationMappingEntity>().map {
+            UserId(it.userId)
+        }
+    }
+
+    override suspend fun getUserRole(
+        userId: UserId,
+        orgId: OrganizationId,
+    ): Result<UserRole?>  = runSuspendCatching(
+        TAG
+    ) {
+        logD(TAG, "Getting role for user in organization: %s", orgId)
+
+        postgrest.from(UserOrganizationMappingEntity.COLLECTION).select {
+            filter {
+                eq("organization_id", orgId.id)
+                eq("user_id", userId.userId)
+            }
+        }.decodeSingleOrNull<UserOrganizationMappingEntity>()?.role
     }
 
     override suspend fun updateOrganization(

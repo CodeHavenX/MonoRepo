@@ -7,6 +7,7 @@ import com.cramsan.edifikana.server.core.service.StaffService
 import com.cramsan.edifikana.server.core.service.StorageService
 import com.cramsan.edifikana.server.core.service.TimeCardService
 import com.cramsan.edifikana.server.core.service.UserService
+import com.cramsan.edifikana.server.core.service.authorization.RoleBasedAccessControlService
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
@@ -20,5 +21,6 @@ val ServicesModule = module {
     singleOf(::StaffService)
     singleOf(::TimeCardService)
     singleOf(::StorageService)
+    singleOf(::RoleBasedAccessControlService)
     singleOf(::OrganizationService)
 }

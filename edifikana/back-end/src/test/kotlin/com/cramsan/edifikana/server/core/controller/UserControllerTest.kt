@@ -75,7 +75,6 @@ class UserControllerTest : CoroutineTest(), KoinTest {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-                userRole = UserRole.OWNER,
             )
         }
 
@@ -117,7 +116,6 @@ class UserControllerTest : CoroutineTest(), KoinTest {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-                userRole = UserRole.OWNER,
             )
         }
 
@@ -159,7 +157,6 @@ class UserControllerTest : CoroutineTest(), KoinTest {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-                userRole = UserRole.OWNER,
             )
         }
 
@@ -201,7 +198,6 @@ class UserControllerTest : CoroutineTest(), KoinTest {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-                userRole = UserRole.MANAGER,
             )
         }
 
@@ -252,7 +248,6 @@ class UserControllerTest : CoroutineTest(), KoinTest {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-                userRole = UserRole.OWNER,
             )
         }
 
@@ -295,7 +290,6 @@ class UserControllerTest : CoroutineTest(), KoinTest {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-                userRole = UserRole.MANAGER,
             )
         }
 
@@ -326,7 +320,6 @@ class UserControllerTest : CoroutineTest(), KoinTest {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-                userRole = UserRole.OWNER,
             )
         }
 

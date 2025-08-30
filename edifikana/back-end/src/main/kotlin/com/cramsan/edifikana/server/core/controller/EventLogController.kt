@@ -9,6 +9,7 @@ import com.cramsan.edifikana.lib.model.network.CreateEventLogEntryNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdateEventLogEntryNetworkRequest
 import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
 import com.cramsan.edifikana.server.core.service.EventLogService
+import com.cramsan.edifikana.server.core.service.authorization.RoleBasedAccessControlService
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.core.ktor.HttpResponse
 import io.ktor.http.HttpStatusCode
@@ -29,6 +30,7 @@ import kotlin.time.Instant
  */
 class EventLogController(
     private val eventLogService: EventLogService,
+    private val rbacService: RoleBasedAccessControlService,
     private val contextRetriever: ContextRetriever,
 ) : Controller {
 
@@ -65,7 +67,7 @@ class EventLogController(
     @OptIn(NetworkModel::class)
     suspend fun getEventLogEntry(
         call: ApplicationCall,
-    ) = call.handleCall(TAG, "getEventLogEntry", contextRetriever) { _ ->
+    ) = call.handleCall(TAG, "getEventLogEntry", contextRetriever) { context ->
         val eventLogId = requireNotNull(call.parameters[EVENT_LOG_ENTRY_ID])
 
         val eventLog = eventLogService.getEventLogEntry(
@@ -90,7 +92,7 @@ class EventLogController(
     @OptIn(NetworkModel::class)
     suspend fun getEventLogEntries(
         call: ApplicationCall,
-    ) = call.handleCall(TAG, "getEventLogEntries", contextRetriever) { _ ->
+    ) = call.handleCall(TAG, "getEventLogEntries", contextRetriever) { context ->
         val eventLogs = eventLogService.getEventLogEntries().map { it.toEventLogEntryNetworkResponse() }
 
         HttpResponse(
@@ -105,7 +107,7 @@ class EventLogController(
     @OptIn(NetworkModel::class)
     suspend fun updateEventLogEntry(
         call: ApplicationCall,
-    ) = call.handleCall(TAG, "updateEventLogEntry", contextRetriever) { _ ->
+    ) = call.handleCall(TAG, "updateEventLogEntry", contextRetriever) { context ->
         val eventLogId = requireNotNull(call.parameters[EVENT_LOG_ENTRY_ID])
 
         val updateEventLogRequest = call.receive<UpdateEventLogEntryNetworkRequest>()
@@ -130,7 +132,7 @@ class EventLogController(
      */
     suspend fun deleteEventLogEntry(
         call: RoutingCall,
-    ) = call.handleCall(TAG, "deleteEventLogEntry", contextRetriever) { _ ->
+    ) = call.handleCall(TAG, "deleteEventLogEntry", contextRetriever) { context ->
         val eventLogId = requireNotNull(call.parameters[EVENT_LOG_ENTRY_ID])
 
         val success = eventLogService.deleteEventLogEntry(

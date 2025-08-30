@@ -48,8 +48,6 @@ fun UserEntity.toUser(): User {
         authMetadata = User.AuthMetadata(
             isPasswordSet = this.authMetadata.canPasswordAuth,
         ),
-        role = UserRole.USER,
-
     )
 }
 

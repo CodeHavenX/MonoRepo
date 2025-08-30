@@ -6,8 +6,12 @@ import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.network.CreateStaffNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdateStaffNetworkRequest
+import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
+import com.cramsan.edifikana.server.core.controller.authentication.ClientContext
 import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
 import com.cramsan.edifikana.server.core.service.StaffService
+import com.cramsan.edifikana.server.core.service.authorization.RoleBasedAccessControlService
+import com.cramsan.edifikana.server.core.service.models.UserRole
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.core.ktor.HttpResponse
 import io.ktor.http.HttpStatusCode
@@ -26,6 +30,7 @@ import io.ktor.server.routing.route
  */
 class StaffController(
     private val staffService: StaffService,
+    private val rbacService: RoleBasedAccessControlService,
     private val contextRetriever: ContextRetriever,
 ) : Controller {
 
@@ -37,8 +42,15 @@ class StaffController(
         TAG,
         "createStaff",
         contextRetriever,
-    ) { _ ->
+    ) { context ->
+        // Only OWNERS can create new staff
         val createStaffRequest = call.receive<CreateStaffNetworkRequest>()
+
+        if (!rbacService.hasRoleOrHigher(context, PropertyId(createStaffRequest.propertyId), UserRole.ADMIN)) {
+            throw ClientRequestExceptions.UnauthorizedException(
+                "You do not have permissions to create new employees."
+            )
+        }
 
         val newStaff = staffService.createStaff(
             idType = createStaffRequest.idType,
@@ -62,8 +74,9 @@ class StaffController(
         TAG,
         "getStaff",
         contextRetriever,
-    ) { _ ->
+    ) { context ->
         val staffId = requireNotNull(call.parameters[STAFF_ID])
+        checkAuthorization(context, StaffId(staffId), UserRole.MANAGER)
 
         val staff = staffService.getStaff(
             StaffId(staffId),
@@ -83,6 +96,7 @@ class StaffController(
 
     /**
      * Handles the retrieval of all staff. The [call] parameter is the request context.
+     * TODO: ADD A CHECK THAT THE REQUESTER IS REQUESTING ALL STAFF FROM THEIR ORG/PROPERTY
      */
     @OptIn(NetworkModel::class)
     suspend fun getStaffs(call: ApplicationCall) = call.handleCall(
@@ -90,8 +104,13 @@ class StaffController(
         "getStaffs",
         contextRetriever,
     ) { context ->
-        val authenticatedClientContext = requireAuthenticatedClientContext(context)
-        val staffs = staffService.getStaffs(authenticatedClientContext).map { it.toStaffNetworkResponse() }
+        if (!rbacService.hasRoleOrHigher(context, UserRole.MANAGER)) {
+            throw ClientRequestExceptions.UnauthorizedException(
+                "You do not have permission to see all Staff for your organization."
+            )
+        }
+
+        val staffs = staffService.getStaffs(context).map { it.toStaffNetworkResponse() }
 
         HttpResponse(
             status = HttpStatusCode.OK,
@@ -107,8 +126,9 @@ class StaffController(
         TAG,
         "updateStaff",
         contextRetriever,
-    ) { _ ->
+    ) { context ->
         val staffId = requireNotNull(call.parameters[STAFF_ID])
+        checkAuthorization(context, StaffId(staffId), UserRole.MANAGER)
 
         val updateStaffRequest = call.receive<UpdateStaffNetworkRequest>()
 
@@ -129,8 +149,13 @@ class StaffController(
     /**
      * Handles the deletion of a staff. The [call] parameter is the request context.
      */
-    suspend fun deleteStaff(call: RoutingCall) = call.handleCall(TAG, "deleteStaff", contextRetriever) {
+    suspend fun deleteStaff(call: RoutingCall) = call.handleCall(
+        TAG,
+        "deleteStaff",
+        contextRetriever
+    ) { context ->
         val staffId = requireNotNull(call.parameters[STAFF_ID])
+        checkAuthorization(context, StaffId(staffId), UserRole.MANAGER)
 
         val success = staffService.deleteStaff(
             StaffId(staffId),
@@ -146,6 +171,21 @@ class StaffController(
             status = statusCode,
             body = null,
         )
+    }
+
+    /**
+     * Checks if the authenticated user has the required role or higher to perform actions on the target staff.
+     */
+    private suspend fun checkAuthorization(
+        context: ClientContext.AuthenticatedClientContext,
+        targetStaff: StaffId,
+        requiredRole: UserRole
+    ) {
+        if (!rbacService.hasRoleOrHigher(context, targetStaff, requiredRole)) {
+            throw ClientRequestExceptions.UnauthorizedException(
+                "You do not have permissions to edit/delete staff."
+            )
+        }
     }
 
     /**

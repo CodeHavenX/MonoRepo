@@ -7,9 +7,11 @@ import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.network.CreateTimeCardEventNetworkRequest
+import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
 import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
 import com.cramsan.edifikana.server.core.service.TimeCardService
 import com.cramsan.edifikana.server.core.service.authorization.RoleBasedAccessControlService
+import com.cramsan.edifikana.server.core.service.models.UserRole
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.core.ktor.HttpResponse
 import com.cramsan.framework.utils.time.Chronos
@@ -34,6 +36,7 @@ class TimeCardController(
 
     /**
      * Handles the creation of a new time card event. The [call] parameter is the request context.
+     * TODO: NEW TIMECARD EVENTS SHOULD ONLY BE FOR USERS WITH PERMS AND IN THE BUILDING ASSIGNED IN THEIR ORG
      */
     @OptIn(NetworkModel::class)
     suspend fun createTimeCardEvent(call: ApplicationCall) = call.handleCall(
@@ -41,6 +44,13 @@ class TimeCardController(
         "createTimeCardEvent",
         contextRetriever
     ) { context ->
+        if (!rbacService.hasRole(context, UserRole.MANAGER) ||
+            !rbacService.hasRole(context, UserRole.EMPLOYEE)
+        ) {
+            throw ClientRequestExceptions.UnauthorizedException(
+                "You do not have permissions to create a new event for this building."
+            )
+        }
         val createTimeCardRequest = call.receive<CreateTimeCardEventNetworkRequest>()
 
         val newTimeCard = timeCardService.createTimeCardEvent(

@@ -4,17 +4,28 @@ import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.controller.authentication.ClientContext
-import com.cramsan.edifikana.server.core.service.UserService
+import com.cramsan.edifikana.server.core.datastore.OrganizationDatastore
+import com.cramsan.edifikana.server.core.datastore.StaffDatastore
+import com.cramsan.edifikana.server.core.datastore.UserDatastore
+import com.cramsan.edifikana.server.core.datastore.supabase.SupabasePropertyDatastore
 import com.cramsan.edifikana.server.core.service.models.UserRole
+import com.cramsan.edifikana.server.core.service.models.requests.GetPropertyRequest
+import com.cramsan.edifikana.server.core.service.models.requests.GetStaffRequest
 import com.cramsan.framework.logging.logI
 
 /**
  * Service for role-based access control (RBAC).
  */
 class RoleBasedAccessControlService(
-    private val userService: UserService,
-) {
-    val runTimeExceptionMsg = "ERROR: USER NOT FOUND!"
+    private val propertyDatastore: SupabasePropertyDatastore,
+    private val userDatastore: UserDatastore,
+    private val orgDatastore: OrganizationDatastore,
+    private val staffDatastore: StaffDatastore,
+
+    ) {
+    val userNotFound = "ERROR: USER NOT FOUND!"
+    val propertyNotFound = "ERROR: PROPERTY NOT FOUND!"
+    val employeeNotFound = "ERROR: EMPLOYEE NOT FOUND!"
 
     /**
      * Checks if the user making the request has the required role to perform User actions.
@@ -24,7 +35,7 @@ class RoleBasedAccessControlService(
         target: UserId,
         requiredRole: UserRole,
     ): Boolean {
-        val userRole = retrieveUserRole(context, target)
+        val userRole = retrieveUserRoleForUserAction(context, target)
         return userRole == requiredRole
     }
 
@@ -36,7 +47,7 @@ class RoleBasedAccessControlService(
         target: PropertyId,
         requiredRole: UserRole,
     ): Boolean {
-        val userRole = retrieveUserRole(context, target)
+        val userRole = retrieveUserRoleForPropertyAction(context, target)
         return userRole == requiredRole
     }
 
@@ -48,7 +59,7 @@ class RoleBasedAccessControlService(
         target: PropertyId,
         requiredRole: UserRole,
     ): Boolean {
-        val userRole = retrieveUserRole(context, target)
+        val userRole = retrieveUserRoleForPropertyAction(context, target)
         return userRole.ordinal >= requiredRole.ordinal
     }
 
@@ -60,7 +71,7 @@ class RoleBasedAccessControlService(
         target: StaffId,
         requiredRole: UserRole,
     ): Boolean {
-        val userRole = retrieveUserRole(context, target)
+        val userRole = retrieveUserRoleStaffAction(context, target)
         return userRole == requiredRole
     }
 
@@ -72,62 +83,23 @@ class RoleBasedAccessControlService(
         target: StaffId,
         requiredRole: UserRole,
     ): Boolean {
-        val userRole = retrieveUserRole(context, target)
+        val userRole = retrieveUserRoleStaffAction(context, target)
         return userRole.ordinal >= requiredRole.ordinal
-    }
-
-    /**
-     * Checks if the user making the request has the required role to perform general actions (not tied to a specific
-     * target).
-     */
-    suspend fun hasRole(
-        context: ClientContext.AuthenticatedClientContext,
-        requiredRole: UserRole,
-    ): Boolean {
-        val userRole = retrieveUserRole(context)
-        return userRole == requiredRole
-    }
-
-    /**
-     * Checks if the user making the request has the required role or higher to perform general actions (not tied to
-     * a specific target).
-     */
-    suspend fun hasRoleOrHigher(
-        context: ClientContext.AuthenticatedClientContext,
-        requiredRole: UserRole,
-    ): Boolean {
-        val userRole = retrieveUserRole(context)
-        return userRole.ordinal >= requiredRole.ordinal
-    }
-
-    /**
-     * Retrieves the role of the user making the request.
-     */
-    suspend fun retrieveUserRole(context: ClientContext.AuthenticatedClientContext): UserRole {
-        logI(TAG, "Retrieving user role(s) for ${context.userId}")
-        val requester = userService.getUser(context.userId)
-        val user = requester.getOrThrow() ?: throw java.lang.RuntimeException(runTimeExceptionMsg)
-
-        logI(TAG, "User ${user.id} has role(s) ${user.role}")
-        return user.role
-
     }
 
     /**
      * Retrieves the role of the user making the request. Verifies the target User being accessed is the same as the
      * requester
      */
-    private suspend fun retrieveUserRole(
+    private fun retrieveUserRoleForUserAction(
         context: ClientContext.AuthenticatedClientContext,
         target: UserId
     ): UserRole {
         logI(TAG, "Retrieving user role(s) for ${context.userId}")
-        val requester = userService.getUser(context.userId)
-        val user = requester.getOrThrow() ?: throw RuntimeException(runTimeExceptionMsg)
-
-        if (user.id == target) {
-            logI(TAG, "User ${user.id} matches target user, ${target.userId}")
-            return user.role
+        // only allow users to access their own account
+        if (context.userId == target) {
+            logI(TAG, "User ${context.userId} matches target user, ${target}")
+            return UserRole.USER
         }
         logI(TAG, "FORBIDDEN: ATTEMPT TO EDIT ANOTHER USER ACCOUNT!")
         return UserRole.UNAUTHORIZED
@@ -137,20 +109,21 @@ class RoleBasedAccessControlService(
      * Retrieves the role of the user making the request. Verifies the target Property being accessed is in the same
      * organization as the requesting user
      */
-    private suspend fun retrieveUserRole(
+    private suspend fun retrieveUserRoleForPropertyAction(
         context: ClientContext.AuthenticatedClientContext,
         target: PropertyId,
     ): UserRole {
         logI(TAG, "Retrieving user role(s) for ${context.userId}")
-        val requester = userService.getUser(context.userId)
-        val user = requester.getOrThrow() ?: throw RuntimeException(runTimeExceptionMsg)
+        val requestProperty = propertyDatastore.getProperty(GetPropertyRequest(target))
+        val property = requestProperty.getOrThrow() ?: throw RuntimeException(propertyNotFound)
+        val role = orgDatastore.getUserRole(context.userId, property.organizationId).getOrNull()
 
-        // TODO: UPDATE TO USE ORGANIZATION TO VERIFY THE USER IS WORKING IN THEIR ORG
-        if (user.firstName == target.propertyId) {
-            logI(TAG, "User ${user.id} has role(s) ${user.role} in organization: ${user.firstName}")
-            return user.role
+        if (role != null) {
+            logI(TAG, "User ${context.userId} has role(s) $role in organization: ${property.organizationId}")
+            return role
         }
-        logI(TAG, "User ${user.id} is NOT authorized to perform action due to non-matching organizations")
+
+        logI(TAG, "User ${context.userId} is NOT authorized to perform action due to non-matching organizations")
         return UserRole.UNAUTHORIZED
     }
 
@@ -158,20 +131,23 @@ class RoleBasedAccessControlService(
      * Retrieves the role of the user making the request. Verifies the target Staff being accessed is in the same
      * organization as the requesting user
      */
-    private suspend fun retrieveUserRole(
+    private suspend fun retrieveUserRoleStaffAction(
         context: ClientContext.AuthenticatedClientContext,
         target: StaffId,
     ): UserRole {
-        logI(TAG, "Retreiving user role(s) for ${context.userId}")
-        val requester = userService.getUser(context.userId)
-        val user = requester.getOrThrow() ?: throw RuntimeException(runTimeExceptionMsg)
+        logI(TAG, "Retrieving user role(s) for ${context.userId}")
+        val employee =
+            staffDatastore.getStaff(GetStaffRequest(target)).getOrThrow() ?: throw RuntimeException(employeeNotFound)
+        val property = propertyDatastore.getProperty(GetPropertyRequest(employee.propertyId)).getOrThrow()
+            ?: throw RuntimeException(propertyNotFound)
+        val role = orgDatastore.getUserRole(context.userId, property.organizationId).getOrNull()
 
-        // TODO: UPDATE TO USE ORGANIZATION TO VERIFY THE USER IS WORKING IN THEIR ORG
-        if (user.firstName == target.staffId) {
-            logI(TAG, "User ${user.id} has role(s) ${user.role} in organization")
-            return user.role
+        if (role != null) {
+            logI(TAG, "User ${context.userId} has role(s) $role in organization: ${property.organizationId}")
+            return role
         }
-        logI(TAG, "User ${user.id} is NOT authorized to perform action due to non-matching organizations")
+
+        logI(TAG, "User ${context.userId} is NOT authorized to perform action due to non-matching organizations")
         return UserRole.UNAUTHORIZED
     }
 

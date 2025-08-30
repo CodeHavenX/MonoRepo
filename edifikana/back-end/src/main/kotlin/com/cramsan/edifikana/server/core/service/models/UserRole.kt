@@ -8,6 +8,7 @@ import kotlin.IllegalArgumentException
 enum class UserRole {
     SUPERUSER,
     OWNER,
+    ADMIN,
     MANAGER,
     EMPLOYEE,
     USER,
@@ -22,6 +23,7 @@ enum class UserRole {
             return when (value) {
                 "SUPERUSER" -> SUPERUSER
                 "OWNER" -> OWNER
+                "ADMIN" -> ADMIN
                 "MANAGER" -> MANAGER
                 "EMPLOYEE" -> EMPLOYEE
                 "USER" -> USER

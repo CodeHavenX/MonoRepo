@@ -44,12 +44,13 @@ class StaffController(
         contextRetriever,
     ) { context ->
         // Only OWNERS can create new staff
-        if (!rbacService.hasRole(context, UserRole.OWNER)) {
+        val createStaffRequest = call.receive<CreateStaffNetworkRequest>()
+
+        if (!rbacService.hasRoleOrHigher(context, PropertyId(createStaffRequest.propertyId), UserRole.ADMIN)) {
             throw ClientRequestExceptions.UnauthorizedException(
-                "You do not have permissions to create new staff."
+                "You do not have permissions to create new employees."
             )
         }
-        val createStaffRequest = call.receive<CreateStaffNetworkRequest>()
 
         val newStaff = staffService.createStaff(
             idType = createStaffRequest.idType,
@@ -95,7 +96,7 @@ class StaffController(
 
     /**
      * Handles the retrieval of all staff. The [call] parameter is the request context.
-     * TODO: ADD A CHECK THAT THE REQUESTER IS REQUESTING ALL STAFF FROM THEIR ORG
+     * TODO: ADD A CHECK THAT THE REQUESTER IS REQUESTING ALL STAFF FROM THEIR ORG/PROPERTY
      */
     @OptIn(NetworkModel::class)
     suspend fun getStaffs(call: ApplicationCall) = call.handleCall(
@@ -110,7 +111,6 @@ class StaffController(
         }
 
         val staffs = staffService.getStaffs(context).map { it.toStaffNetworkResponse() }
-
 
         HttpResponse(
             status = HttpStatusCode.OK,
@@ -187,7 +187,6 @@ class StaffController(
             )
         }
     }
-
 
     /**
      * Registers the routes for the staff controller. The [route] parameter is the root path for the controller.

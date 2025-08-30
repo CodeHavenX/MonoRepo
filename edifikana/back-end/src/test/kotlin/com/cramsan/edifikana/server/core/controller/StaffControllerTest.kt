@@ -9,7 +9,6 @@ import com.cramsan.edifikana.server.core.controller.authentication.ClientContext
 import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
 import com.cramsan.edifikana.server.core.service.StaffService
 import com.cramsan.edifikana.server.core.service.models.Staff
-import com.cramsan.edifikana.server.core.service.models.UserRole
 import com.cramsan.edifikana.server.utils.readFileContent
 import com.cramsan.framework.test.CoroutineTest
 import io.ktor.client.request.delete

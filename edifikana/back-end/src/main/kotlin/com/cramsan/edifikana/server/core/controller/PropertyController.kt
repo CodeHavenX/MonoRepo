@@ -55,7 +55,7 @@ class PropertyController(
             createPropertyRequest.name,
             createPropertyRequest.address,
             OrganizationId(createPropertyRequest.organizationId),
-            authenticatedContext,
+            context,
         ).toPropertyNetworkResponse()
 
             HttpResponse(

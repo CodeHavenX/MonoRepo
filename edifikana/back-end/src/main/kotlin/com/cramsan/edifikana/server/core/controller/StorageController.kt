@@ -11,7 +11,6 @@ import com.cramsan.edifikana.server.core.service.authorization.RoleBasedAccessCo
 import com.cramsan.edifikana.server.core.service.models.UserRole
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.core.ktor.HttpResponse
-import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.request.receiveChannel

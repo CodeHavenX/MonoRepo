@@ -2,12 +2,12 @@ package com.cramsan.edifikana.server.core.service.authorization
 
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.server.core.controller.authentication.ClientContext
 import com.cramsan.edifikana.server.core.service.UserService
-import com.cramsan.edifikana.server.core.service.models.User
-import com.cramsan.edifikana.server.core.service.models.UserRole
 import com.cramsan.edifikana.server.core.service.models.Property
 import com.cramsan.edifikana.server.core.service.models.Staff
-import com.cramsan.edifikana.server.core.controller.authentication.ClientContext
+import com.cramsan.edifikana.server.core.service.models.User
+import com.cramsan.edifikana.server.core.service.models.UserRole
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
@@ -43,7 +43,7 @@ class RoleBasedAccessControlServiceTest {
     fun `retrieveUserRole returns user role for authorized user with same userId`() = runTest {
         // Arrange
         val userId = UserId("myUserId")
-        val email = "Directo@test.me" //TODO: PLACEHOLDER UNTIL ORGANIZATION CAN BE USED
+        val email = "Directo@test.me" // TODO: PLACEHOLDER UNTIL ORGANIZATION CAN BE USED
         val role = UserRole.MANAGER
         val user = mockk<User>()
         every { user.id } returns userId
@@ -55,6 +55,7 @@ class RoleBasedAccessControlServiceTest {
         val targetUser = mockk<User>()
         every { targetUser.id } returns targetUserId
         every { targetUser.email } returns targetUserEmail
+
         val context = ClientContext.AuthenticatedClientContext(mockk(), userId)
         coEvery { userService.getUser(userId) } returns Result.success(user)
 
@@ -62,7 +63,7 @@ class RoleBasedAccessControlServiceTest {
         val result = rbac.retrieveUserRole(context, targetUser)
 
         // Assert
-        assertEquals(role, result   )
+        assertEquals(role, result)
     }
 
     /**
@@ -72,7 +73,7 @@ class RoleBasedAccessControlServiceTest {
     fun `retrieveUserRole returns UNAUTHORIZED role for non-matching Organization`() = runTest {
         // Arrange
         val userId = UserId("myUserId")
-        val email = "Director@test.me" //TODO: PLACEHOLDER UNTIL ORGANIZATION CAN BE USED
+        val email = "Director@test.me" // TODO: PLACEHOLDER UNTIL ORGANIZATION CAN BE USED
         val role = UserRole.MANAGER
         val user = mockk<User>()
         every { user.id } returns userId
@@ -91,7 +92,7 @@ class RoleBasedAccessControlServiceTest {
         val result = rbac.retrieveUserRole(context, targetUser)
 
         // Assert
-        assertEquals(UserRole.UNAUTHORIZED, result   )
+        assertEquals(UserRole.UNAUTHORIZED, result)
     }
 
     /**
@@ -101,7 +102,7 @@ class RoleBasedAccessControlServiceTest {
     fun `retrieveUserRole returns user role for authorized Property in matching organization`() = runTest {
         // Arrange
         val userId = UserId("validId")
-        val firstName = "Metropoli" //TODO: PLACEHOLDER UNTIL ORGANIZATION CAN BE USED
+        val firstName = "Metropoli" // TODO: PLACEHOLDER UNTIL ORGANIZATION CAN BE USED
         val role = UserRole.OWNER
         val user = mockk<User>()
         every { user.id } returns userId
@@ -129,7 +130,7 @@ class RoleBasedAccessControlServiceTest {
     fun `retrieveUserRole returns UNAUTHORIZED for non-matching Property organization`() = runTest {
         // Arrange
         val userId = UserId("validId")
-        val firstName = "Cenit" //TODO: PLACEHOLDER UNTIL ORGANIZATION CAN BE USED
+        val firstName = "Cenit" // TODO: PLACEHOLDER UNTIL ORGANIZATION CAN BE USED
         val role = UserRole.OWNER
         val user = mockk<User>()
         every { user.id } returns userId
@@ -158,7 +159,7 @@ class RoleBasedAccessControlServiceTest {
     fun `retrieveUserRole returns user role for requester when the staff have matching organizations`() = runTest {
         // Arrange
         val userId = UserId("validId")
-        val firstName = "Metropoli" //TODO: PLACEHOLDER UNTIL ORGANIZATION CAN BE USED
+        val firstName = "Metropoli" // TODO: PLACEHOLDER UNTIL ORGANIZATION CAN BE USED
         val role = UserRole.OWNER
         val user = mockk<User>()
         every { user.id } returns userId
@@ -186,7 +187,7 @@ class RoleBasedAccessControlServiceTest {
     fun `retrieveUserRole returns UNAUTHORIZED for non-matching organization`() = runTest {
         // Arrange
         val userId = UserId("validId")
-        val firstName = "Cenit" //TODO: PLACEHOLDER UNTIL ORGANIZATION CAN BE USED
+        val firstName = "Cenit" // TODO: PLACEHOLDER UNTIL ORGANIZATION CAN BE USED
         val role = UserRole.OWNER
         val user = mockk<User>()
         every { user.id } returns userId
@@ -207,4 +208,3 @@ class RoleBasedAccessControlServiceTest {
         assertEquals(UserRole.UNAUTHORIZED, result)
     }
 }
-

@@ -220,11 +220,11 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
             propertyResources.forEach {
                 propertyDatastore.deleteProperty(DeletePropertyRequest(it)).getOrThrow()
             }
-            userResources.forEach {
-                userDatastore.deleteUser(DeleteUserRequest(it)).getOrThrow()
-            }
             organizationResources.forEach {
                 organizationDatastore.deleteOrganization(DeleteOrganizationRequest(it)).getOrThrow()
+            }
+            userResources.forEach {
+                userDatastore.deleteUser(DeleteUserRequest(it)).getOrThrow()
             }
             supabaseUsers.forEach { userId ->
                 supabase.auth.admin.deleteUser(userId)

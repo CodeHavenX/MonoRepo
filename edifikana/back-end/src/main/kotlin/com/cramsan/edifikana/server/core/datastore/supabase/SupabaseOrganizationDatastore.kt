@@ -75,11 +75,17 @@ class SupabaseOrganizationDatastore(
         TAG
     ) {
         logD(TAG, "Deleting organization: %s", request.id)
+
+        val mapping = postgrest.from(UserOrganizationMappingEntity.COLLECTION).delete {
+            select()
+            filter { eq("organization_id", request.id.id) }
+        }.decodeSingleOrNull<UserOrganizationMappingEntity>()
+
         val deleted = postgrest.from(OrganizationEntity.COLLECTION).delete {
             select()
             filter { eq("id", request.id.id) }
         }.decodeSingleOrNull<OrganizationEntity>()
-        deleted != null
+        deleted != null && mapping != null
     }
 
     companion object {

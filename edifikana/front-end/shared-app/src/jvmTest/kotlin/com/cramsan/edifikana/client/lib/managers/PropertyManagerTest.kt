@@ -117,7 +117,7 @@ class PropertyManagerTest : CoroutineTest() {
         val organizationId = OrganizationId("org-1")
         coEvery { propertyService.addProperty(propertyName, address, organizationId) } returns Result.success(mockk())
         // Act
-        val result = manager.addProperty(propertyName, address , organizationId)
+        val result = manager.addProperty(propertyName, address, organizationId)
         // Assert
         assertTrue(result.isSuccess)
         coVerify { propertyService.addProperty(propertyName, address, organizationId) }

@@ -2,6 +2,7 @@ package com.cramsan.edifikana.client.lib.managers
 
 import com.cramsan.edifikana.client.lib.models.PropertyModel
 import com.cramsan.edifikana.client.lib.service.PropertyService
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.getOrCatch
@@ -47,9 +48,13 @@ class PropertyManager(
     /**
      * Add a new property.
      */
-    suspend fun addProperty(propertyName: String, address: String) = dependencies.getOrCatch(TAG) {
+    suspend fun addProperty(
+        propertyName: String,
+        address: String,
+        organizationId: OrganizationId,
+    ) = dependencies.getOrCatch(TAG) {
         logI(TAG, "addProperty")
-        propertyService.addProperty(propertyName, address).getOrThrow()
+        propertyService.addProperty(propertyName, address, organizationId).getOrThrow()
     }
 
     /**

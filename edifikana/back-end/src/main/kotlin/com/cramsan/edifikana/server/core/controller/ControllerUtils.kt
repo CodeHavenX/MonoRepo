@@ -14,8 +14,27 @@ import io.ktor.server.response.respondBytes
 import io.ktor.server.response.respondNullable
 
 /**
- * Handle a call to a controller function. This function will log the call, execute the function, and respond to the
- * client with the result.
+ * Handle a call to a controller function that does not require authentication. This function will log the call,
+ * execute the function, and respond to the client with the result.
+ */
+suspend inline fun ApplicationCall.handleUnauthenticatedCall(
+    tag: String,
+    functionName: String,
+    contextRetriever: ContextRetriever,
+    function: ApplicationCall.(ClientContext) -> HttpResponse,
+) {
+    handleCall(
+        tag,
+        functionName,
+        contextRetriever,
+        verifyClientContext = { it },
+        function = { clientContext -> function(clientContext) },
+    )
+}
+
+/**
+ * Handle a call to a controller function that requires authentication. This function will log the call, execute the
+ * function, and respond to the client with the result.
  */
 suspend inline fun ApplicationCall.handleCall(
     tag: String,
@@ -23,20 +42,40 @@ suspend inline fun ApplicationCall.handleCall(
     contextRetriever: ContextRetriever,
     function: ApplicationCall.(ClientContext.AuthenticatedClientContext) -> HttpResponse,
 ) {
+    handleCall(
+        tag,
+        functionName,
+        contextRetriever,
+        verifyClientContext = { requireAuthenticatedClientContext(it) },
+        function = { clientContext -> function(clientContext) },
+    )
+}
+
+/**
+ * Handle a call to a controller function. This function will log the call, execute the function, and respond to the
+ * client with the result.
+ */
+suspend inline fun <T : ClientContext> ApplicationCall.handleCall(
+    tag: String,
+    functionName: String,
+    contextRetriever: ContextRetriever,
+    verifyClientContext: (ClientContext) -> T,
+    function: ApplicationCall.(T) -> HttpResponse,
+) {
     logI(tag, "$functionName called")
 
     val clientContext = contextRetriever.getContext(this)
-    if (clientContext !is ClientContext.AuthenticatedClientContext) {
+    val contextResult = runCatching { verifyClientContext(clientContext) }
+    if (contextResult.isFailure) {
         logW(tag, "Client context is not authenticated, returning 401 Unauthorized")
         respond(
             HttpStatusCode.Unauthorized,
             "Client is not authenticated",
         )
-        return
     }
 
     val result = runCatching {
-        function(clientContext)
+        function(contextResult.getOrThrow())
     }
 
     if (result.isSuccess) {

@@ -77,6 +77,20 @@ object Routes {
     }
 
     /**
+     * Routes for the organization API.
+     */
+    object Organization {
+        const val PATH = "organization"
+
+        /**
+         * Query parameters for the organization API.
+         */
+        object QueryParams {
+            const val ORGANIZATION_ID = "organization_id"
+        }
+    }
+
+    /**
      * Routes for the health check API.
      */
     object Health {

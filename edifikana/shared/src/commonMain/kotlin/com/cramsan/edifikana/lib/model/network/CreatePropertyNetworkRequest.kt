@@ -14,4 +14,6 @@ data class CreatePropertyNetworkRequest(
     val name: String,
     @SerialName("address")
     val address: String,
+    @SerialName("organization_id")
+    val organizationId: String,
 )

@@ -28,7 +28,7 @@ import kotlin.time.ExperimentalTime
 class TimeCardController(
     private val timeCardService: TimeCardService,
     private val contextRetriever: ContextRetriever,
-) {
+) : Controller {
 
     /**
      * Handles the creation of a new time card event. The [call] parameter is the request context.
@@ -104,24 +104,24 @@ class TimeCardController(
         )
     }
 
-    companion object {
-        private const val TAG = "TimeCardController"
-
-        /**
-         * Registers the routes for the time card controller.
-         */
-        fun TimeCardController.registerRoutes(route: Routing) {
-            route.route(Routes.TimeCard.PATH) {
-                post {
-                    createTimeCardEvent(call)
-                }
-                get("{$TIMECARD_EVENT_ID}") {
-                    getTimeCardEvent(call)
-                }
-                get {
-                    getTimeCardEvents(call)
-                }
+    /**
+     * Registers the routes for the time card controller.
+     */
+    override fun registerRoutes(route: Routing) {
+        route.route(Routes.TimeCard.PATH) {
+            post {
+                createTimeCardEvent(call)
+            }
+            get("{$TIMECARD_EVENT_ID}") {
+                getTimeCardEvent(call)
+            }
+            get {
+                getTimeCardEvents(call)
             }
         }
+    }
+
+    companion object {
+        private const val TAG = "TimeCardController"
     }
 }

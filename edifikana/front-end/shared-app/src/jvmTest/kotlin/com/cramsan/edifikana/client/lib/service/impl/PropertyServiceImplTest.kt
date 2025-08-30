@@ -1,13 +1,12 @@
 package com.cramsan.edifikana.client.lib.service.impl
 
 import com.cramsan.edifikana.client.lib.models.PropertyModel
-import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.network.PropertyNetworkResponse
+import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.preferences.Preferences
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.get
 import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -57,17 +56,21 @@ class PropertyServiceImplTest {
 
     // Additional tests for setActiveProperty, getActiveProperty, etc. can be added as needed
 
+    val organizationId = OrganizationId("org-1")
+
     // Test properties for testing purposes
     val testProperty1 = PropertyModel(
         PropertyId("property-1"),
         "Muralla",
         "253 Jiron Juan Fanning, Barranco, Lima, Peru",
+        organizationId,
     )
 
     val testProperty2 = PropertyModel(
         PropertyId("property-2"),
         "VicaVerde",
-        "632 Avenida Grau, Barranco, Lima, Peru"
+        "632 Avenida Grau, Barranco, Lima, Peru",
+        organizationId,
     )
 }
 

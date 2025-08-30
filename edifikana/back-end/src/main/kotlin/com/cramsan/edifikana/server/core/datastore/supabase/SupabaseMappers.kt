@@ -3,17 +3,20 @@
 package com.cramsan.edifikana.server.core.datastore.supabase
 
 import com.cramsan.edifikana.lib.model.EventLogEntryId
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.datastore.supabase.models.AuthMetadataEntity
 import com.cramsan.edifikana.server.core.datastore.supabase.models.EventLogEntryEntity
+import com.cramsan.edifikana.server.core.datastore.supabase.models.OrganizationEntity
 import com.cramsan.edifikana.server.core.datastore.supabase.models.PropertyEntity
 import com.cramsan.edifikana.server.core.datastore.supabase.models.StaffEntity
 import com.cramsan.edifikana.server.core.datastore.supabase.models.TimeCardEventEntity
 import com.cramsan.edifikana.server.core.datastore.supabase.models.UserEntity
 import com.cramsan.edifikana.server.core.service.models.EventLogEntry
+import com.cramsan.edifikana.server.core.service.models.Organization
 import com.cramsan.edifikana.server.core.service.models.Property
 import com.cramsan.edifikana.server.core.service.models.Staff
 import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
@@ -133,6 +136,7 @@ fun CreatePropertyRequest.toPropertyEntity(): PropertyEntity.CreatePropertyEntit
     return PropertyEntity.CreatePropertyEntity(
         name = name,
         address = address,
+        organizationId = organizationId.id,
     )
 }
 
@@ -145,6 +149,7 @@ fun PropertyEntity.toProperty(): Property {
         id = PropertyId(this.id),
         name = this.name,
         address = this.address,
+        organizationId = OrganizationId(this.organizationId),
     )
 }
 
@@ -215,3 +220,11 @@ fun EventLogEntryEntity.toEventLogEntry(): EventLogEntry {
         unit = this.unit,
     )
 }
+
+/**
+ * Maps an [OrganizationEntity] to the [Organization] model.
+ */
+@OptIn(SupabaseModel::class)
+fun OrganizationEntity.toOrganization() = Organization(
+    id = OrganizationId(this.id),
+)

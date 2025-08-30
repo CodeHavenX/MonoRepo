@@ -47,7 +47,8 @@ class SupabaseMappersTest {
             phoneNumber = "1234567890",
             firstName = "Jane",
             lastName = "Smith",
-            password = "password123"
+            password = "password123",
+            isTransient = false,
         )
         val userId = UserId("user-456")
         val pendingAssociation = true

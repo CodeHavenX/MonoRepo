@@ -44,6 +44,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
             password = "Password1!",
             firstName = "${test_prefix}_First",
             lastName = "${test_prefix}_Last",
+            isTransient = false,
         )
 
         // Act
@@ -73,6 +74,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
             password = null, // No password provided
             firstName = "${test_prefix}_First",
             lastName = "${test_prefix}_Last",
+            isTransient = true,
         )
 
         // Act
@@ -104,6 +106,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
             password = "password",
             firstName = "${test_prefix}_First",
             lastName = "${test_prefix}_Last",
+            isTransient = false,
         )
 
         // Act
@@ -125,6 +128,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
             password = "password",
             firstName = "Invalid",
             lastName = "User",
+            isTransient = false,
         )
 
         // Act
@@ -144,6 +148,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
             password = "password",
             firstName = "Get",
             lastName = "User",
+            isTransient = false,
         )
 
         // Act
@@ -167,6 +172,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
             password = "password",
             firstName = "Delete",
             lastName = "User",
+            isTransient = false,
         )
 
         // Act
@@ -223,6 +229,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
             password = null,
             firstName = "Associate",
             lastName = "User",
+            isTransient = true,
         )
         val createResult = userDatastore.createUser(createRequest).registerUserForDeletion()
         val createdUser = createResult.getOrNull()!!
@@ -261,6 +268,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
             password = "oldPassword1!",
             firstName = "Associate",
             lastName = "User",
+            isTransient = false,
         )
         val createResult = userDatastore.createUser(createRequest).registerUserForDeletion()
         val user = createResult.getOrThrow()

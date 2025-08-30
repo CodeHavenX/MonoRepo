@@ -32,13 +32,17 @@ import io.ktor.server.routing.route
 class UserController(
     private val userService: UserService,
     private val contextRetriever: ContextRetriever,
-) {
+) : Controller {
 
     /**
      * Handles the creation of a new user. The [call] parameter is the request context.
      */
     @OptIn(NetworkModel::class)
-    suspend fun createUser(call: ApplicationCall) = call.handleCall(TAG, "createUser", contextRetriever) {
+    suspend fun createUser(call: ApplicationCall) = call.handleUnauthenticatedCall(
+        TAG,
+        "createUser",
+        contextRetriever,
+    ) {
         val createUserRequest = call.receive<CreateUserNetworkRequest>()
 
         requireAll(
@@ -202,38 +206,38 @@ class UserController(
     }
 
     /**
+     * Registers the routes for the user controller. The [route] parameter is the root path for the controller.
+     */
+    override fun registerRoutes(route: Routing) {
+        route.route(Routes.User.PATH) {
+            post {
+                createUser(call)
+            }
+            get("{$USER_ID}") {
+                getUser(call)
+            }
+            put("/password") {
+                updatePassword(call)
+            }
+            get {
+                getUsers(call)
+            }
+            put("{$USER_ID}") {
+                updateUser(call)
+            }
+            delete("{$USER_ID}") {
+                deleteUser(call)
+            }
+            post("associate") {
+                associate(call)
+            }
+        }
+    }
+
+    /**
      * Companion object.
      */
     companion object {
         private const val TAG = "UserController"
-
-        /**
-         * Registers the routes for the user controller. The [route] parameter is the root path for the controller.
-         */
-        fun UserController.registerRoutes(route: Routing) {
-            route.route(Routes.User.PATH) {
-                post {
-                    createUser(call)
-                }
-                get("{$USER_ID}") {
-                    getUser(call)
-                }
-                put("/password") {
-                    updatePassword(call)
-                }
-                get {
-                    getUsers(call)
-                }
-                put("{$USER_ID}") {
-                    updateUser(call)
-                }
-                delete("{$USER_ID}") {
-                    deleteUser(call)
-                }
-                post("associate") {
-                    associate(call)
-                }
-            }
-        }
     }
 }

@@ -1,4 +1,5 @@
 {
     "name": "building 1",
-    "address": "1234, Nairobi"
+    "address": "1234, Nairobi",
+    "organization_id": "org123"
 }

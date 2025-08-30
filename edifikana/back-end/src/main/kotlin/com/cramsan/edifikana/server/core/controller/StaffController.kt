@@ -27,7 +27,7 @@ import io.ktor.server.routing.route
 class StaffController(
     private val staffService: StaffService,
     private val contextRetriever: ContextRetriever,
-) {
+) : Controller {
 
     /**
      * Handles the creation of a new staff. The [call] parameter is the request context.
@@ -149,32 +149,32 @@ class StaffController(
     }
 
     /**
+     * Registers the routes for the staff controller. The [route] parameter is the root path for the controller.
+     */
+    override fun registerRoutes(route: Routing) {
+        route.route(Routes.Staff.PATH) {
+            post {
+                createStaff(call)
+            }
+            get("{$STAFF_ID}") {
+                getStaff(call)
+            }
+            get {
+                getStaffs(call)
+            }
+            put("{$STAFF_ID}") {
+                updateStaff(call)
+            }
+            delete("{$STAFF_ID}") {
+                deleteStaff(call)
+            }
+        }
+    }
+
+    /**
      * Companion object.
      */
     companion object {
         private const val TAG = "StaffController"
-
-        /**
-         * Registers the routes for the staff controller. The [route] parameter is the root path for the controller.
-         */
-        fun StaffController.registerRoutes(route: Routing) {
-            route.route(Routes.Staff.PATH) {
-                post {
-                    createStaff(call)
-                }
-                get("{$STAFF_ID}") {
-                    getStaff(call)
-                }
-                get {
-                    getStaffs(call)
-                }
-                put("{$STAFF_ID}") {
-                    updateStaff(call)
-                }
-                delete("{$STAFF_ID}") {
-                    deleteStaff(call)
-                }
-            }
-        }
     }
 }

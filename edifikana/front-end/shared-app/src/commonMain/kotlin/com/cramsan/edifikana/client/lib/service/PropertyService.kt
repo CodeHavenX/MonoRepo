@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.service
 
 import com.cramsan.edifikana.client.lib.models.PropertyModel
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import kotlinx.coroutines.flow.StateFlow
 
@@ -33,7 +34,11 @@ interface PropertyService {
     /**
      * Add a new property.
      */
-    suspend fun addProperty(propertyName: String, address: String): Result<PropertyModel>
+    suspend fun addProperty(
+        propertyName: String,
+        address: String,
+        organizationId: OrganizationId
+    ): Result<PropertyModel>
 
     /**
      * Update the property with the given [propertyId].

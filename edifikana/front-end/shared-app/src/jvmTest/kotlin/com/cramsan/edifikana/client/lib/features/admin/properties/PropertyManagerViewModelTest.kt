@@ -9,6 +9,7 @@ import com.cramsan.edifikana.client.lib.features.management.properties.PropertyU
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.models.PropertyModel
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
@@ -56,9 +57,10 @@ class PropertyManagerViewModelTest : CoroutineTest() {
 
     @Test
     fun `test loadPage updates UI state with property list`() = runCoroutineTest {
+        val organizationId = OrganizationId("org_id_1")
         val properties = listOf(
-            PropertyModel(PropertyId("1"), "Property 1", "Address 1"),
-            PropertyModel(PropertyId("2"), "Property 2", "Address 2")
+            PropertyModel(PropertyId("1"), "Property 1", "Address 1", organizationId),
+            PropertyModel(PropertyId("2"), "Property 2", "Address 2", organizationId)
         )
         coEvery { propertyManager.getPropertyList() } returns Result.success(properties)
 

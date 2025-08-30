@@ -1,0 +1,49 @@
+package com.cramsan.edifikana.server.core.service
+
+import com.cramsan.edifikana.lib.model.OrganizationId
+import com.cramsan.edifikana.server.core.datastore.OrganizationDatastore
+import com.cramsan.edifikana.server.core.service.models.Organization
+import com.cramsan.edifikana.server.core.service.models.requests.GetOrganizationRequest
+import com.cramsan.framework.logging.EventLogger
+import com.cramsan.framework.logging.implementation.PassthroughEventLogger
+import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
+import io.mockk.coEvery
+import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+
+class OrganizationServiceTest {
+    private lateinit var organizationDatastore: OrganizationDatastore
+    private lateinit var organizationService: OrganizationService
+
+    @BeforeEach
+    fun setUp() {
+        EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
+        organizationDatastore = mockk()
+        organizationService = OrganizationService(organizationDatastore)
+    }
+
+    @Test
+    fun `getOrganization returns organization when found`() = runTest {
+        val orgId = OrganizationId("org-1")
+        val organization = mockk<Organization>()
+        coEvery {
+            organizationDatastore.getOrganization(GetOrganizationRequest(orgId))
+        } returns Result.success(organization)
+
+        val result = organizationService.getOrganization(orgId)
+        assertEquals(organization, result)
+    }
+
+    @Test
+    fun `getOrganization returns null when not found`() = runTest {
+        val orgId = OrganizationId("org-2")
+        coEvery { organizationDatastore.getOrganization(GetOrganizationRequest(orgId)) } returns Result.success(null)
+
+        val result = organizationService.getOrganization(orgId)
+        assertNull(result)
+    }
+}

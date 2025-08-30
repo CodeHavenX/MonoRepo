@@ -16,4 +16,6 @@ data class PropertyNetworkResponse(
     val name: String,
     @SerialName("address")
     val address: String? = null,
+    @SerialName("organization_id")
+    val organizationId: String,
 )

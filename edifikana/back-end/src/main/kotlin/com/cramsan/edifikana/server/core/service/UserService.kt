@@ -1,9 +1,11 @@
 package com.cramsan.edifikana.server.core.service
 
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.server.core.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.core.datastore.UserDatastore
 import com.cramsan.edifikana.server.core.service.models.User
 import com.cramsan.edifikana.server.core.service.models.requests.AssociateUserRequest
+import com.cramsan.edifikana.server.core.service.models.requests.CreateOrganizationRequest
 import com.cramsan.edifikana.server.core.service.models.requests.CreateUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.DeleteUserRequest
 import com.cramsan.edifikana.server.core.service.models.requests.GetUserRequest
@@ -18,6 +20,7 @@ import com.cramsan.framework.logging.logD
  */
 class UserService(
     private val userDatastore: UserDatastore,
+    private val organizationDatastore: OrganizationDatastore,
 ) {
 
     /**
@@ -31,6 +34,7 @@ class UserService(
         lastName: String,
     ): Result<User> {
         logD(TAG, "createUser")
+        val isTransient = password.isNullOrBlank()
         val result = userDatastore.createUser(
             request = CreateUserRequest(
                 email = email,
@@ -38,8 +42,17 @@ class UserService(
                 password = password,
                 firstName = firstName,
                 lastName = lastName,
+                isTransient = isTransient,
             ),
         )
+
+        if (!isTransient) {
+            organizationDatastore.createOrganization(
+                request = CreateOrganizationRequest(
+                    owner = result.getOrThrow().id,
+                ),
+            )
+        }
 
         return result
     }
@@ -52,12 +65,22 @@ class UserService(
         email: String,
     ): Result<User> {
         logD(TAG, "associateUser")
-        return userDatastore.associateUser(
+        val result = userDatastore.associateUser(
             request = AssociateUserRequest(
                 userId = id,
                 email = email,
             ),
         )
+
+        if (result.isSuccess) {
+            organizationDatastore.createOrganization(
+                request = CreateOrganizationRequest(
+                    owner = id,
+                ),
+            )
+        }
+
+        return result
     }
 
     /**

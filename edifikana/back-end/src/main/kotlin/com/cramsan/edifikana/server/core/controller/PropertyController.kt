@@ -2,6 +2,7 @@ package com.cramsan.edifikana.server.core.controller
 
 import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.Routes.Property.QueryParams.PROPERTY_ID
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.network.CreatePropertyNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdatePropertyNetworkRequest
@@ -26,7 +27,7 @@ import io.ktor.server.routing.route
 class PropertyController(
     private val propertyService: PropertyService,
     private val contextRetriever: ContextRetriever,
-) {
+) : Controller {
 
     /**
      * Handles the creation of a new property. The [call] parameter is the request context.
@@ -39,6 +40,7 @@ class PropertyController(
         val newProperty = propertyService.createProperty(
             createPropertyRequest.name,
             createPropertyRequest.address,
+            OrganizationId(createPropertyRequest.organizationId),
             authenticatedContext,
         ).toPropertyNetworkResponse()
 
@@ -134,30 +136,30 @@ class PropertyController(
         )
     }
 
-    companion object {
-        private const val TAG = "PropertyController"
-
-        /**
-         * Registers the routes for the property controller.
-         */
-        fun PropertyController.registerRoutes(route: Routing) {
-            route.route(Routes.Property.PATH) {
-                post {
-                    createProperty(call)
-                }
-                get("{$PROPERTY_ID}") {
-                    getProperty(call)
-                }
-                get {
-                    getProperties(call)
-                }
-                put("{$PROPERTY_ID}") {
-                    updateProperty(call)
-                }
-                delete("{$PROPERTY_ID}") {
-                    deleteProperty(call)
-                }
+    /**
+     * Registers the routes for the property controller.
+     */
+    override fun registerRoutes(route: Routing) {
+        route.route(Routes.Property.PATH) {
+            post {
+                createProperty(call)
+            }
+            get("{$PROPERTY_ID}") {
+                getProperty(call)
+            }
+            get {
+                getProperties(call)
+            }
+            put("{$PROPERTY_ID}") {
+                updateProperty(call)
+            }
+            delete("{$PROPERTY_ID}") {
+                deleteProperty(call)
             }
         }
+    }
+
+    companion object {
+        private const val TAG = "PropertyController"
     }
 }

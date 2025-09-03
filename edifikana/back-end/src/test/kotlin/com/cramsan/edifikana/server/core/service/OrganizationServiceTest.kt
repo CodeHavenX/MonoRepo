@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.server.core.service
 
 import com.cramsan.edifikana.lib.model.OrganizationId
+import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.core.service.models.Organization
 import com.cramsan.edifikana.server.core.service.models.requests.GetOrganizationRequest
@@ -45,5 +46,15 @@ class OrganizationServiceTest {
 
         val result = organizationService.getOrganization(orgId)
         assertNull(result)
+    }
+
+    @Test
+    fun `getOrganizations returns list of organizations`() = runTest {
+        val userId = UserId("user-1")
+        val organizations = listOf(mockk<Organization>(), mockk<Organization>())
+        coEvery { organizationDatastore.getOrganizationsForUser(userId) } returns Result.success(organizations)
+
+        val result = organizationService.getOrganizations(userId)
+        assertEquals(organizations, result)
     }
 }

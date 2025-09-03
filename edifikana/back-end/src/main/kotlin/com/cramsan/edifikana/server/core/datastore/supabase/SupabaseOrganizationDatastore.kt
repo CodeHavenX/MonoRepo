@@ -1,5 +1,7 @@
 package com.cramsan.edifikana.server.core.datastore.supabase
 
+import com.cramsan.edifikana.lib.model.OrganizationId
+import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.core.datastore.supabase.models.OrganizationEntity
 import com.cramsan.edifikana.server.core.datastore.supabase.models.UserOrganizationMappingEntity
@@ -12,6 +14,7 @@ import com.cramsan.framework.annotations.SupabaseModel
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.postgrest.Postgrest
+import io.github.jan.supabase.postgrest.query.Columns
 
 /**
  * Datastore for managing organizations in Supabase.
@@ -30,14 +33,6 @@ class SupabaseOrganizationDatastore(
         val entity = OrganizationEntity.CreateOrganizationEntity
         val createdOrg = postgrest.from(OrganizationEntity.COLLECTION).insert(entity) { select() }
             .decodeSingle<OrganizationEntity>()
-
-        logD(TAG, "Creating organization-user mapping")
-        val userOrgMapping = UserOrganizationMappingEntity.CreateUserOrganizationMappingEntity(
-            userId = request.owner.userId,
-            organizationId = createdOrg.id,
-        )
-        postgrest.from(UserOrganizationMappingEntity.COLLECTION).insert(userOrgMapping) { select() }
-            .decodeSingle<UserOrganizationMappingEntity>()
 
         createdOrg.toOrganization()
     }
@@ -79,7 +74,7 @@ class SupabaseOrganizationDatastore(
         val mapping = postgrest.from(UserOrganizationMappingEntity.COLLECTION).delete {
             select()
             filter { eq("organization_id", request.id.id) }
-        }.decodeSingleOrNull<UserOrganizationMappingEntity>()
+        }.decodeList<UserOrganizationMappingEntity>()
 
         val deleted = postgrest.from(OrganizationEntity.COLLECTION).delete {
             select()
@@ -88,6 +83,51 @@ class SupabaseOrganizationDatastore(
         deleted != null && mapping != null
     }
 
+    override suspend fun getOrganizationsForUser(userId: UserId): Result<List<Organization>> {
+        return runSuspendCatching(TAG) {
+            logD(TAG, "Getting organizations for user: %s", userId)
+            val organizations = postgrest.from(UserOrganizationMappingEntity.COLLECTION).select(
+                // HINT: Here we are using the POSTgREST feature to select related rows and spread them into the result.
+                // https://supabase.com/blog/postgrest-11-prerelease
+                Columns.list("...${OrganizationEntity.COLLECTION}(*)")
+            ) {
+                filter { eq("user_id", userId.userId) }
+            }
+            organizations.decodeList<OrganizationEntity>().map { it.toOrganization() }
+        }
+    }
+
+    override suspend fun addUserToOrganization(
+        userId: UserId,
+        organizationId: OrganizationId
+    ): Result<Unit> {
+        return runSuspendCatching(TAG) {
+            logD(TAG, "Adding user %s to organization %s", userId, organizationId)
+            val userOrgMapping = UserOrganizationMappingEntity.CreateUserOrganizationMappingEntity(
+                userId = userId.userId,
+                organizationId = organizationId.id,
+            )
+            postgrest.from(UserOrganizationMappingEntity.COLLECTION).insert(userOrgMapping) { select() }
+                .decodeSingle<UserOrganizationMappingEntity>()
+        }
+    }
+
+    override suspend fun removeUserFromOrganization(
+        userId: UserId,
+        organizationId: OrganizationId
+    ): Result<Unit> {
+        return runSuspendCatching(TAG) {
+            logD(TAG, "Removing user %s from organization %s", userId, organizationId)
+            postgrest.from(UserOrganizationMappingEntity.COLLECTION).delete {
+                filter {
+                    and {
+                        eq("user_id", userId.userId)
+                        eq("organization_id", organizationId.id)
+                    }
+                }
+            }.decodeList<UserOrganizationMappingEntity>()
+        }
+    }
     companion object {
         private const val TAG = "SupabaseOrganizationDatastore"
     }

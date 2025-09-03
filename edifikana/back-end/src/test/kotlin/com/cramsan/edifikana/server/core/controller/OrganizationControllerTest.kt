@@ -35,6 +35,7 @@ class OrganizationControllerTest : CoroutineTest(), KoinTest {
 
     @Test
     fun `test getOrganization`() = testEdifikanaApplication {
+        // Setup
         val expectedResponse = readFileContent("requests/get_organization_response.json")
         val organizationService = get<OrganizationService>()
         coEvery {
@@ -54,7 +55,43 @@ class OrganizationControllerTest : CoroutineTest(), KoinTest {
                 userRole = UserRole.EMPLOYEE,
             )
         }
+
+        // Execute
         val response = client.get("organization/org123")
+
+        // Verify
+        assertEquals(HttpStatusCode.OK, response.status)
+        assertEquals(expectedResponse, response.bodyAsText())
+    }
+
+    @Test
+    fun `test getOrganizationList`() = testEdifikanaApplication {
+        // Setup
+        val expectedResponse = readFileContent("requests/get_organization_list_response.json")
+        val organizationService = get<OrganizationService>()
+        coEvery {
+            organizationService.getOrganizations(UserId("user456"))
+        }.answers {
+            listOf(
+                Organization(id = OrganizationId("org123")),
+                Organization(id = OrganizationId("org456"))
+            )
+        }
+        val contextRetriever = get<ContextRetriever>()
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            ClientContext.AuthenticatedClientContext(
+                userInfo = mockk(),
+                userId = UserId("user456"),
+                userRole = UserRole.EMPLOYEE,
+            )
+        }
+
+        // Execute
+        val response = client.get("organization")
+
+        // Verify
         assertEquals(HttpStatusCode.OK, response.status)
         assertEquals(expectedResponse, response.bodyAsText())
     }

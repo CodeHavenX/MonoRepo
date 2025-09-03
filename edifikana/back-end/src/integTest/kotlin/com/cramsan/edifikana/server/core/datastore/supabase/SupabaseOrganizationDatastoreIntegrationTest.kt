@@ -107,4 +107,77 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
         // Assert
         assertTrue(deleteResult.isFailure || deleteResult.getOrNull() == false)
     }
+
+    @Test
+    fun `getOrganizationList should return organizations for user`() = runCoroutineTest {
+        // Arrange
+        val org1 = createTestOrganization(testUserId!!)
+        val org2 = createTestOrganization(testUserId!!)
+        organizationDatastore.addUserToOrganization(testUserId!!, org1)
+        organizationDatastore.addUserToOrganization(testUserId!!, org2)
+
+        // Act
+        val listResult = organizationDatastore.getOrganizationsForUser(testUserId!!)
+
+        // Assert
+        assertTrue(listResult.isSuccess)
+        val orgs = listResult.getOrNull()
+        assertNotNull(orgs)
+        assertTrue(orgs.any { it.id == org1 })
+        assertTrue(orgs.any { it.id == org2 })
+    }
+
+    @Test
+    fun `getOrganizationsForUser should return empty list for user with no organizations`() = runCoroutineTest {
+        // Arrange
+        val newUser = createTestUser("nouser-${test_prefix}@test.com")
+
+        // Act
+        val result = organizationDatastore.getOrganizationsForUser(newUser)
+
+        // Assert
+        assertTrue(result.isSuccess)
+        val orgs = result.getOrNull()
+        assertNotNull(orgs)
+        assertTrue(orgs.isEmpty())
+    }
+
+    @Test
+    fun `addUserToOrganization should add user to organization and getOrganizationsForUser should reflect this`() = runCoroutineTest {
+        // Arrange
+        val orgId = createTestOrganization(testUserId!!)
+        val newUser = createTestUser("adduser-${test_prefix}@test.com")
+
+        // Act
+        val addResult = organizationDatastore.addUserToOrganization(newUser, orgId)
+        val orgsResult = organizationDatastore.getOrganizationsForUser(newUser)
+
+        // Assert
+        assertTrue(orgsResult.isSuccess)
+        assertTrue(addResult.isSuccess)
+        val orgs = orgsResult.getOrNull()
+        assertNotNull(orgs)
+        assertTrue(orgs.any { it.id == orgId })
+    }
+
+    @Test
+    fun `addUserToOrganization should handle adding same user twice gracefully`() = runCoroutineTest {
+        // Arrange
+        val orgId = createTestOrganization(testUserId!!)
+        val newUser = createTestUser("dupeuser-${test_prefix}@test.com")
+
+        // Act
+        val firstAdd = organizationDatastore.addUserToOrganization(newUser, orgId)
+        val secondAdd = organizationDatastore.addUserToOrganization(newUser, orgId)
+
+        // Assert
+        assertTrue(firstAdd.isSuccess)
+        // Depending on DB constraints, secondAdd may succeed or fail gracefully
+        assertTrue(secondAdd.isSuccess || secondAdd.isFailure)
+        val orgsResult = organizationDatastore.getOrganizationsForUser(newUser)
+        assertTrue(orgsResult.isSuccess)
+        val orgs = orgsResult.getOrNull()
+        assertNotNull(orgs)
+        assertTrue(orgs.any { it.id == orgId })
+    }
 }

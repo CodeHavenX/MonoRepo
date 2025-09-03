@@ -1,10 +1,12 @@
 package com.cramsan.edifikana.client.lib.service.impl
 
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
+import com.cramsan.edifikana.client.lib.models.Organization
 import com.cramsan.edifikana.client.lib.models.StaffModel
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
 import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.lib.model.EventLogEntryId
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.StaffStatus
@@ -14,6 +16,7 @@ import com.cramsan.edifikana.lib.model.network.CreateEventLogEntryNetworkRequest
 import com.cramsan.edifikana.lib.model.network.CreateStaffNetworkRequest
 import com.cramsan.edifikana.lib.model.network.CreateTimeCardEventNetworkRequest
 import com.cramsan.edifikana.lib.model.network.EventLogEntryNetworkResponse
+import com.cramsan.edifikana.lib.model.network.OrganizationNetworkResponse
 import com.cramsan.edifikana.lib.model.network.StaffNetworkResponse
 import com.cramsan.edifikana.lib.model.network.TimeCardEventNetworkResponse
 import com.cramsan.edifikana.lib.model.network.UpdateEventLogEntryNetworkRequest
@@ -165,5 +168,15 @@ fun UserNetworkResponse.toUserModel(): UserModel {
                 isPasswordSet = it.isPasswordSet,
             )
         },
+    )
+}
+
+/**
+ * Maps the [OrganizationNetworkResponse] models to [Organization] domain models.
+ */
+@OptIn(NetworkModel::class)
+fun OrganizationNetworkResponse.toOrganizationModel(): Organization {
+    return Organization(
+        id = OrganizationId(id),
     )
 }

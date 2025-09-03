@@ -47,10 +47,14 @@ class UserService(
         )
 
         if (!isTransient) {
-            organizationDatastore.createOrganization(
+            val orgID = organizationDatastore.createOrganization(
                 request = CreateOrganizationRequest(
                     owner = result.getOrThrow().id,
                 ),
+            ).getOrThrow().id
+            organizationDatastore.addUserToOrganization(
+                userId = result.getOrThrow().id,
+                organizationId = orgID,
             )
         }
 
@@ -73,10 +77,14 @@ class UserService(
         )
 
         if (result.isSuccess) {
-            organizationDatastore.createOrganization(
+            val orgId = organizationDatastore.createOrganization(
                 request = CreateOrganizationRequest(
                     owner = id,
                 ),
+            ).getOrThrow().id
+            organizationDatastore.addUserToOrganization(
+                userId = result.getOrThrow().id,
+                organizationId = orgId,
             )
         }
 

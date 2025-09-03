@@ -44,8 +44,28 @@ class OrganizationController(
         )
     }
 
+    /**
+     * Handles the retrieval of the list of organizations that you belong to.
+     */
+    @OptIn(NetworkModel::class)
+    suspend fun getOrganizationList(call: ApplicationCall) = call.handleCall(
+        TAG,
+        "getOrganizationList",
+        contextRetriever,
+    ) { context ->
+        val orgs = organizationService.getOrganizations(context.userId).map { it.toOrganizationNetworkResponse() }
+
+        HttpResponse(
+            status = HttpStatusCode.OK,
+            body = orgs,
+        )
+    }
+
     override fun registerRoutes(route: Routing) {
         route.route(Routes.Organization.PATH) {
+            get {
+                getOrganizationList(call)
+            }
             get("{$ORGANIZATION_ID}") {
                 getOrganization(call)
             }

@@ -1,7 +1,7 @@
 @file:Suppress("MagicNumber")
 @file:OptIn(ExperimentalTime::class)
 
-package com.cramsan.edifikana.server.core.datastore.dummy
+package com.cramsan.edifikana.server.utils
 
 import com.cramsan.edifikana.lib.model.AssetId
 import com.cramsan.edifikana.lib.model.EventLogEntryId

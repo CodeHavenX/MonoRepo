@@ -4,7 +4,6 @@ import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.core.service.models.Organization
-import com.cramsan.edifikana.server.core.service.models.requests.GetOrganizationRequest
 import com.cramsan.framework.logging.logD
 
 /**
@@ -19,7 +18,7 @@ class OrganizationService(
      */
     suspend fun getOrganization(id: OrganizationId): Organization? {
         logD(TAG, "getOrganization")
-        return organizationDatastore.getOrganization(GetOrganizationRequest(id)).getOrNull()
+        return organizationDatastore.getOrganization(id).getOrNull()
     }
 
     /**

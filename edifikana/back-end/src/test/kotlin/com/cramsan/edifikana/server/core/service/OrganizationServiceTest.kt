@@ -4,7 +4,6 @@ import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.core.service.models.Organization
-import com.cramsan.edifikana.server.core.service.models.requests.GetOrganizationRequest
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
@@ -32,7 +31,7 @@ class OrganizationServiceTest {
         val orgId = OrganizationId("org-1")
         val organization = mockk<Organization>()
         coEvery {
-            organizationDatastore.getOrganization(GetOrganizationRequest(orgId))
+            organizationDatastore.getOrganization(orgId)
         } returns Result.success(organization)
 
         val result = organizationService.getOrganization(orgId)
@@ -42,7 +41,7 @@ class OrganizationServiceTest {
     @Test
     fun `getOrganization returns null when not found`() = runTest {
         val orgId = OrganizationId("org-2")
-        coEvery { organizationDatastore.getOrganization(GetOrganizationRequest(orgId)) } returns Result.success(null)
+        coEvery { organizationDatastore.getOrganization(orgId) } returns Result.success(null)
 
         val result = organizationService.getOrganization(orgId)
         assertNull(result)

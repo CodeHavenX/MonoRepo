@@ -1,14 +1,14 @@
 package com.cramsan.edifikana.server.core.datastore.supabase
 
+import com.cramsan.edifikana.lib.model.IdType
+import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.edifikana.lib.model.StaffRole
+import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.datastore.StaffDatastore
 import com.cramsan.edifikana.server.core.datastore.supabase.models.StaffEntity
 import com.cramsan.edifikana.server.core.datastore.supabase.models.UserPropertyMappingEntity
 import com.cramsan.edifikana.server.core.service.models.Staff
-import com.cramsan.edifikana.server.core.service.models.requests.CreateStaffRequest
-import com.cramsan.edifikana.server.core.service.models.requests.DeleteStaffRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetStaffListRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetStaffRequest
-import com.cramsan.edifikana.server.core.service.models.requests.UpdateStaffRequest
 import com.cramsan.framework.annotations.SupabaseModel
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
@@ -26,10 +26,20 @@ class SupabaseStaffDatastore(
      */
     @OptIn(SupabaseModel::class)
     override suspend fun createStaff(
-        request: CreateStaffRequest,
+        idType: IdType,
+        firstName: String,
+        lastName: String,
+        role: StaffRole,
+        propertyId: PropertyId,
     ): Result<Staff> = runSuspendCatching(TAG) {
-        logD(TAG, "Creating staff: %s", request.firstName)
-        val requestEntity: StaffEntity.CreateStaffEntity = request.toStaffEntity()
+        logD(TAG, "Creating staff: %s", firstName)
+        val requestEntity: StaffEntity.CreateStaffEntity = CreateStaffEntity(
+            idType = idType,
+            firstName = firstName,
+            lastName = lastName,
+            role = role,
+            propertyId = propertyId,
+        )
 
         val createdStaff = postgrest.from(StaffEntity.COLLECTION).insert(requestEntity) {
             select()
@@ -43,13 +53,13 @@ class SupabaseStaffDatastore(
      */
     @OptIn(SupabaseModel::class)
     override suspend fun getStaff(
-        request: GetStaffRequest,
+        id: StaffId,
     ): Result<Staff?> = runSuspendCatching(TAG) {
-        logD(TAG, "Getting staff: %s", request.id)
+        logD(TAG, "Getting staff: %s", id)
 
         val staffEntity = postgrest.from(StaffEntity.COLLECTION).select {
             filter {
-                StaffEntity::id eq request.id.staffId
+                StaffEntity::id eq id.staffId
             }
         }.decodeSingleOrNull<StaffEntity>()
 
@@ -57,12 +67,12 @@ class SupabaseStaffDatastore(
     }
 
     @OptIn(SupabaseModel::class)
-    override suspend fun getStaffs(request: GetStaffListRequest): Result<List<Staff>> = runSuspendCatching(TAG) {
+    override suspend fun getStaffs(currentUser: UserId): Result<List<Staff>> = runSuspendCatching(TAG) {
         logD(TAG, "Getting all staff members")
 
         val propertyIds =
             postgrest.from(UserPropertyMappingEntity.COLLECTION).select {
-                filter { UserPropertyMappingEntity::userId eq request.currentUser }
+                filter { UserPropertyMappingEntity::userId eq currentUser }
                 select()
             }.decodeList<UserPropertyMappingEntity>().map { it.propertyId }
 
@@ -77,21 +87,25 @@ class SupabaseStaffDatastore(
      */
     @OptIn(SupabaseModel::class)
     override suspend fun updateStaff(
-        request: UpdateStaffRequest,
+        staffId: StaffId,
+        idType: IdType?,
+        firstName: String?,
+        lastName: String?,
+        role: StaffRole?,
     ): Result<Staff> = runSuspendCatching(TAG) {
-        logD(TAG, "Updating staff: %s", request.id)
+        logD(TAG, "Updating staff: %s", staffId)
 
         postgrest.from(StaffEntity.COLLECTION).update(
             {
-                request.firstName?.let { value -> Staff::firstName setTo value }
-                request.lastName?.let { value -> Staff::lastName setTo value }
-                request.role?.let { value -> Staff::role setTo value }
-                request.idType?.let { value -> Staff::idType setTo value }
+                firstName?.let { value -> Staff::firstName setTo value }
+                lastName?.let { value -> Staff::lastName setTo value }
+                role?.let { value -> Staff::role setTo value }
+                idType?.let { value -> Staff::idType setTo value }
             }
         ) {
             select()
             filter {
-                StaffEntity::id eq request.id
+                StaffEntity::id eq staffId
             }
         }.decodeSingle<StaffEntity>().toStaff()
     }
@@ -101,14 +115,14 @@ class SupabaseStaffDatastore(
      */
     @OptIn(SupabaseModel::class)
     override suspend fun deleteStaff(
-        request: DeleteStaffRequest,
+        id: StaffId,
     ): Result<Boolean> = runSuspendCatching(TAG) {
-        logD(TAG, "Deleting staff: %s", request.id)
+        logD(TAG, "Deleting staff: %s", id)
 
         postgrest.from(StaffEntity.COLLECTION).delete {
             select()
             filter {
-                StaffEntity::id eq request.id
+                StaffEntity::id eq id
             }
         }.decodeSingleOrNull<StaffEntity>() != null
     }

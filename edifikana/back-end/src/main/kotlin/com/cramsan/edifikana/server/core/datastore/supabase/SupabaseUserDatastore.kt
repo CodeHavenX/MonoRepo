@@ -7,12 +7,6 @@ import com.cramsan.edifikana.server.core.datastore.UserDatastore
 import com.cramsan.edifikana.server.core.datastore.supabase.models.AuthMetadataEntity
 import com.cramsan.edifikana.server.core.datastore.supabase.models.UserEntity
 import com.cramsan.edifikana.server.core.service.models.User
-import com.cramsan.edifikana.server.core.service.models.requests.AssociateUserRequest
-import com.cramsan.edifikana.server.core.service.models.requests.CreateUserRequest
-import com.cramsan.edifikana.server.core.service.models.requests.DeleteUserRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetUserRequest
-import com.cramsan.edifikana.server.core.service.models.requests.UpdatePasswordRequest
-import com.cramsan.edifikana.server.core.service.models.requests.UpdateUserRequest
 import com.cramsan.framework.annotations.SupabaseModel
 import com.cramsan.framework.assertlib.assert
 import com.cramsan.framework.core.Hashing
@@ -43,24 +37,29 @@ class SupabaseUserDatastore(
      */
     @OptIn(SecureStringAccess::class)
     override suspend fun createUser(
-        request: CreateUserRequest,
+        email: String,
+        phoneNumber: String,
+        password: String?,
+        firstName: String,
+        lastName: String,
+        isTransient: Boolean,
     ): Result<User> = runSuspendCatching(TAG) {
-        logD(TAG, "Creating user: %s", request.email)
+        logD(TAG, "Creating user: %s", email)
 
-        val createOtpAccount = request.isTransient
+        val createOtpAccount = isTransient
 
         // Validate that if the account is not transient, a password is provided
-        when (request.isTransient) {
-            true -> assert(request.password.isNullOrBlank(), TAG, "Transient accounts must not have a password")
-            false -> assert(!request.password.isNullOrBlank(), TAG, "Non-transient accounts must have a password")
+        when (isTransient) {
+            true -> assert(password.isNullOrBlank(), TAG, "Transient accounts must not have a password")
+            false -> assert(!password.isNullOrBlank(), TAG, "Non-transient accounts must have a password")
         }
 
         val userId = if (!createOtpAccount) {
             // Create the user in Supabase Auth
             try {
                 val supabaseUserInfo = adminApi.createUserWithEmail {
-                    email = request.email
-                    password = request.password.orEmpty()
+                    this.email = email
+                    this.password = password.orEmpty()
                     autoConfirm = true
                 }
                 supabaseUserInfo.id
@@ -69,7 +68,7 @@ class SupabaseUserDatastore(
                 if (e.statusCode == HttpStatusCode.UnprocessableEntity.value) {
                     // Conflict error, user already exists
                     throw ClientRequestExceptions.ConflictException(
-                        message = "Error: User with email ${request.email} already exists.",
+                        message = "Error: User with email $email already exists.",
                     )
                 } else {
                     throw e
@@ -82,15 +81,19 @@ class SupabaseUserDatastore(
         }
 
         // Create the user entity in our database
-        val requestEntity: UserEntity.CreateUserEntity = request.toUserEntity(
-            UserId(userId),
+        val requestEntity: UserEntity.CreateUserEntity = CreateUserEntity(
+            userId = UserId(userId),
+            email = email,
+            phoneNumber = phoneNumber,
+            firstName = firstName,
+            lastName = lastName,
             pendingAssociation = createOtpAccount,
             canPasswordAuth = !createOtpAccount,
             hashedPassword = if (createOtpAccount) {
                 null
             } else {
                 // We verified above that if the account is not transient, a password is provided
-                SecureString(Hashing.insecureHash(requireNotBlank(request.password).encodeToByteArray()).toString())
+                SecureString(Hashing.insecureHash(requireNotBlank(password).encodeToByteArray()).toString())
             }
         )
         val createdUser = createUserEntity(requestEntity)
@@ -99,44 +102,48 @@ class SupabaseUserDatastore(
         createdUser.toUser()
     }
 
-    override suspend fun associateUser(request: AssociateUserRequest): Result<User> = runSuspendCatching(TAG) {
-        logD(TAG, "Associating user: %s", request.email)
+    override suspend fun associateUser(
+        userId: UserId,
+        email: String,
+    ): Result<User> = runSuspendCatching(TAG) {
+        logD(TAG, "Associating user: %s", email)
 
-        val supabaseUser = runCatching { adminApi.retrieveUserById(request.userId.userId) }.getOrNull()
+        val supabaseUser = runCatching { adminApi.retrieveUserById(userId.userId) }.getOrNull()
         // Check that the user exists in Supabase Auth
         if (supabaseUser == null) {
-            logD(TAG, "Supabase user not found with ID: %s", request.userId)
+            logD(TAG, "Supabase user not found with ID: %s", userId)
             throw ClientRequestExceptions.NotFoundException(
-                message = "Error: User with ID ${request.userId} does not exist in Supabase.",
+                message = "Error: User with ID $userId does not exist in Supabase.",
             )
         }
 
         // Check if the user already exists in our database by email. We need to that there is one entry for a temp
         // user pending association.
-        val temporaryUser = getUserByEmail(request.email)
+        val temporaryUser = getUserByEmail(email)
         if (temporaryUser != null) {
             if (!temporaryUser.authMetadata.pendingAssociation) {
-                logW(TAG, "User already exists in our database with email: ${request.email}")
+                logW(TAG, "User already exists in our database with email: $email")
                 throw ClientRequestExceptions.ConflictException(
-                    message = "Error: User with email ${request.email} already exists in our database.",
+                    message = "Error: User with email $email already exists in our database.",
                 )
             }
         } else {
-            logD(TAG, "No existing user found with email: %s", request.email)
+            logD(TAG, "No existing user found with email: %s", email)
             throw ClientRequestExceptions.NotFoundException(
-                message = "Error: User with email ${request.email} not found in our database.",
+                message = "Error: User with email $email not found in our database.",
             )
         }
 
         // Create the new user entity in our database
-        val requestEntity: UserEntity.CreateUserEntity = request.toUserEntity(
-            userId = request.userId,
+        val requestEntity: UserEntity.CreateUserEntity = CreateUserEntity(
+            userId = userId,
+            email = email,
             userEntity = temporaryUser,
         )
         val createdUser = createUserEntity(requestEntity)
 
-        if (deleteUser(DeleteUserRequest(UserId(temporaryUser.id))).isFailure) {
-            logW(TAG, "Failed to delete temporary user with email: ${request.email}")
+        if (deleteUser(UserId(temporaryUser.id)).isFailure) {
+            logW(TAG, "Failed to delete temporary user with email: $email")
             error("Failed to delete temporary user with.")
         }
 
@@ -148,11 +155,11 @@ class SupabaseUserDatastore(
      * Retrieves a user for the given [request]. Returns the [Result] of the operation with the fetched [User] if found.
      */
     override suspend fun getUser(
-        request: GetUserRequest,
+        id: UserId,
     ): Result<User?> = runSuspendCatching(TAG) {
-        logD(TAG, "Getting user: %s", request.id)
+        logD(TAG, "Getting user: %s", id)
 
-        val userEntity = getUserImpl(request.id)
+        val userEntity = getUserImpl(id)
 
         userEntity?.toUser()
     }
@@ -183,13 +190,14 @@ class SupabaseUserDatastore(
      * Updates a user with the given [request]. Returns the [Result] of the operation with the updated [User].
      */
     override suspend fun updateUser(
-        request: UpdateUserRequest,
+        id: UserId,
+        email: String?,
     ): Result<User> = runSuspendCatching(TAG) {
-        logD(TAG, "Updating user: %s", request.id)
+        logD(TAG, "Updating user: %s", id)
 
         updateUserImpl(
-            request.id,
-            email = request.email,
+            id,
+            email = email,
         ).toUser()
     }
 
@@ -222,73 +230,77 @@ class SupabaseUserDatastore(
      * Returns the [Result] of the operation with a [Boolean] indicating success.
      */
     override suspend fun deleteUser(
-        request: DeleteUserRequest,
+        id: UserId,
     ): Result<Boolean> = runSuspendCatching(TAG) {
-        logD(TAG, "Deleting user: %s", request.id)
+        logD(TAG, "Deleting user: %s", id)
 
-        val user = getUserImpl(request.id) ?: throw ClientRequestExceptions.NotFoundException(
-            message = "Error: User with ID ${request.id} not found in our database.",
+        val user = getUserImpl(id) ?: throw ClientRequestExceptions.NotFoundException(
+            message = "Error: User with ID $id not found in our database.",
         )
 
         // Check if the user is pending association with a supabase auth
         // if the user is pending association, then there is no user to delete in Supabase Auth
         if (!user.authMetadata.pendingAssociation) {
-            adminApi.deleteUser(request.id.userId)
+            adminApi.deleteUser(id.userId)
         }
 
         postgrest.from(UserEntity.COLLECTION).delete {
             select()
             filter {
-                UserEntity::id eq request.id.userId
+                UserEntity::id eq id.userId
             }
         }.decodeSingleOrNull<UserEntity>() != null
     }
 
     @OptIn(SecureStringAccess::class)
-    override suspend fun updatePassword(request: UpdatePasswordRequest): Result<Unit> = runSuspendCatching(TAG) {
-        logD(TAG, "Updating password for user: %s", request.id)
+    override suspend fun updatePassword(
+        id: UserId,
+        currentHashedPassword: SecureString?,
+        newPassword: SecureString,
+    ): Result<Unit> = runSuspendCatching(TAG) {
+        logD(TAG, "Updating password for user: %s", id)
 
-        val user = getUserImpl(request.id) ?: throw ClientRequestExceptions.NotFoundException(
-            message = "Error: User with ID ${request.id} not found in our database.",
+        val user = getUserImpl(id) ?: throw ClientRequestExceptions.NotFoundException(
+            message = "Error: User with ID $id not found in our database.",
         )
 
         // If the user has a password set, we need to check for the hash of the current password
         if (user.authMetadata.canPasswordAuth) {
             if (user.authMetadata.hashedPassword == null) {
                 logE(TAG, "User's canPasswordAuth is set to true but hashedPassword is null")
-                error("Illegal password state for ${request.id}")
+                error("Illegal password state for $id")
             }
 
-            if (request.currentHashedPassword == null) {
+            if (currentHashedPassword == null) {
                 throw ClientRequestExceptions.InvalidRequestException(
                     message = "Error: Current password is required for password update.",
                 )
             }
 
-            val requestCurrentHashedPassword = request.currentHashedPassword.reveal()
+            val requestCurrentHashedPassword = currentHashedPassword.reveal()
 
             if (requestCurrentHashedPassword != user.authMetadata.hashedPassword) {
-                logW(TAG, "Current password does not match for user: ${request.id}")
+                logW(TAG, "Current password does not match for user: $id")
                 throw ClientRequestExceptions.UnauthorizedException("Error: Current password is incorrect.")
             }
         }
 
-        val passwordErrors = validatePassword(request.newPassword.reveal())
+        val passwordErrors = validatePassword(newPassword.reveal())
         if (passwordErrors.isNotEmpty()) {
-            logW(TAG, "Password validation failed for user: ${request.id}, with ${passwordErrors.size} errors.")
+            logW(TAG, "Password validation failed for user: $id, with ${passwordErrors.size} errors.")
             throw ClientRequestExceptions.InvalidRequestException(
-                message = "Error: Password validation failed for user ${request.id}. "
+                message = "Error: Password validation failed for user $id. "
             )
         }
 
-        val newHashedPassword = Hashing.insecureHash(request.newPassword.reveal().encodeToByteArray()).toString()
+        val newHashedPassword = Hashing.insecureHash(newPassword.reveal().encodeToByteArray()).toString()
 
         adminApi.updateUserById(user.id) {
-            password = request.newPassword.reveal()
+            password = newPassword.reveal()
         }
 
         updateUserImpl(
-            request.id,
+            id,
             authMetadata = user.authMetadata.copy(
                 hashedPassword = newHashedPassword,
                 canPasswordAuth = true,

@@ -5,10 +5,6 @@ import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.server.core.service.models.requests.CreateEventLogEntryRequest
-import com.cramsan.edifikana.server.core.service.models.requests.DeleteEventLogEntryRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetEventLogEntryRequest
-import com.cramsan.edifikana.server.core.service.models.requests.UpdateEventLogEntryRequest
 import com.cramsan.framework.utils.uuid.UUID
 import kotlinx.coroutines.runBlocking
 import kotlin.test.BeforeTest
@@ -39,19 +35,27 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `createEventLogEntry should return entry on success`() = runCoroutineTest {
         // Arrange
-        val request = CreateEventLogEntryRequest(
-            title = "${test_prefix}_EventTitle",
-            description = "${test_prefix}_EventDescription",
-            staffId = null, // Set as needed
-            fallbackStaffName = null, // Set as needed
-            propertyId = propertyId!!,
-            type = EventLogEventType.DELIVERY, // Use a valid EventLogEventType
-            fallbackEventType = null, // Set as needed
-            timestamp = Clock.System.now(),
-            unit = "TestUnit", // Use a valid unit
-        )
+        val title = "${test_prefix}_EventTitle"
+        val description = "${test_prefix}_EventDescription"
+        val staffId = null // Set as needed
+        val fallbackStaffName = null // Set as needed
+        val propertyId = propertyId!!
+        val type = EventLogEventType.DELIVERY // Use a valid EventLogEventType
+        val fallbackEventType = null // Set as needed
+        val timestamp = Clock.System.now()
+        val unit = "TestUnit" // Use a valid unit
         // Act
-        val result = eventLogDatastore.createEventLogEntry(request).registerEventLogEntryForDeletion()
+        val result = eventLogDatastore.createEventLogEntry(
+            title = title,
+            description = description,
+            staffId = staffId,
+            fallbackStaffName = fallbackStaffName,
+            propertyId = propertyId,
+            type = type,
+            fallbackEventType = fallbackEventType,
+            timestamp = timestamp,
+            unit = unit,
+        ).registerEventLogEntryForDeletion()
 
         // Assert
         assertTrue(result.isSuccess)
@@ -61,27 +65,32 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `getEventLogEntry should return entry if exists`() = runCoroutineTest {
         // Arrange
-        val createRequest = CreateEventLogEntryRequest(
-            title = "${test_prefix}_EventTitle2",
-            description = "${test_prefix}_EventDescription2",
-            staffId = null, // Set as needed
-            fallbackStaffName = null, // Set as needed
-            propertyId = propertyId!!,
-            type = EventLogEventType.DELIVERY, // Use a valid EventLogEventType
-            fallbackEventType = null, // Set as needed
-            timestamp = Clock.System.now(),
-            unit = "TestUnit2", // Use a valid unit
-        )
+        val title = "${test_prefix}_EventTitle2"
+        val description = "${test_prefix}_EventDescription2"
+        val staffId = null // Set as needed
+        val fallbackStaffName = null // Set as needed
+        val propertyId = propertyId!!
+        val type = EventLogEventType.DELIVERY // Use a valid EventLogEventType
+        val fallbackEventType = null // Set as needed
+        val timestamp = Clock.System.now()
+        val unit = "TestUnit2" // Use a valid unit
 
         // Act
-        val createResult = eventLogDatastore.createEventLogEntry(createRequest).registerEventLogEntryForDeletion()
+        val createResult = eventLogDatastore.createEventLogEntry(
+            title = title,
+            description = description,
+            staffId = staffId,
+            fallbackStaffName = fallbackStaffName,
+            propertyId = propertyId,
+            type = type,
+            fallbackEventType = fallbackEventType,
+            timestamp = timestamp,
+            unit = unit,
+        ).registerEventLogEntryForDeletion()
         assertTrue(createResult.isSuccess)
         val createdEntry = createResult.getOrNull()
         assertNotNull(createdEntry)
-        val getRequest = GetEventLogEntryRequest(
-            id = EventLogEntryId(eventLogEntryId = createdEntry.id.eventLogEntryId)
-        )
-        val getResult = eventLogDatastore.getEventLogEntry(getRequest)
+        val getResult = eventLogDatastore.getEventLogEntry(EventLogEntryId(eventLogEntryId = createdEntry.id.eventLogEntryId))
 
         // Assert
         assertTrue(getResult.isSuccess)
@@ -91,8 +100,12 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `getEventLogEntries should return all entries`() = runCoroutineTest {
         // Arrange
-        val request1 = CreateEventLogEntryRequest(
-            title = "${test_prefix}_EventTitleA",
+        val title1 = "${test_prefix}_EventTitleA"
+        val title2 = "${test_prefix}_EventTitleB"
+
+        // Act
+        val result1 = eventLogDatastore.createEventLogEntry(
+            title = title1,
             description = "${test_prefix}_EventDescriptionA",
             staffId = null, // Set as needed
             fallbackStaffName = null, // Set as needed
@@ -101,9 +114,10 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
             fallbackEventType = null, // Set as needed
             timestamp = Clock.System.now(),
             unit = "TestUnitA", // Use a valid unit
-        )
-        val request2 = CreateEventLogEntryRequest(
-            title = "${test_prefix}_EventTitleB",
+
+        ).registerEventLogEntryForDeletion()
+        val result2 = eventLogDatastore.createEventLogEntry(
+            title = title2,
             description = "${test_prefix}_EventDescriptionB",
             staffId = null, // Set as needed
             fallbackStaffName = null, // Set as needed
@@ -112,11 +126,7 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
             fallbackEventType = null, // Set as needed
             timestamp = Clock.System.now(),
             unit = "TestUnitB", // Use a valid unit
-        )
-
-        // Act
-        val result1 = eventLogDatastore.createEventLogEntry(request1).registerEventLogEntryForDeletion()
-        val result2 = eventLogDatastore.createEventLogEntry(request2).registerEventLogEntryForDeletion()
+        ).registerEventLogEntryForDeletion()
         assertTrue(result1.isSuccess)
         assertTrue(result2.isSuccess)
 
@@ -128,14 +138,16 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
         assertNotNull(entries)
         // At least the two we just created should be present
         val titles = entries!!.map { it.title }
-        assertTrue(titles.contains(request1.title))
-        assertTrue(titles.contains(request2.title))
+        assertTrue(titles.contains(title1))
+        assertTrue(titles.contains(title2))
     }
 
     @Test
     fun `updateEventLogEntry should update entry fields`() = runCoroutineTest {
         // Arrange
-        val createRequest = CreateEventLogEntryRequest(
+
+        // Act
+        val createResult = eventLogDatastore.createEventLogEntry(
             title = "${test_prefix}_EventTitleToUpdate",
             description = "${test_prefix}_EventDescriptionToUpdate",
             staffId = null, // Set as needed
@@ -145,14 +157,12 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
             fallbackEventType = null, // Set as needed
             timestamp = Clock.System.now(),
             unit = "TestUnitToUpdate", // Use a valid unit
-        )
 
-        // Act
-        val createResult = eventLogDatastore.createEventLogEntry(createRequest).registerEventLogEntryForDeletion()
+        ).registerEventLogEntryForDeletion()
         assertTrue(createResult.isSuccess)
         val createdEntry = createResult.getOrNull()
         assertNotNull(createdEntry)
-        val updateRequest = UpdateEventLogEntryRequest(
+        val updateResult = eventLogDatastore.updateEventLogEntry(
             id = createdEntry!!.id,
             title = "${test_prefix}_UpdatedTitle",
             description = "${test_prefix}_UpdatedDescription",
@@ -160,21 +170,19 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
             fallbackEventType = "UpdatedFallbackType", // Set as needed
             unit = "UpdatedUnit", // Use a valid unit
         )
-        val updateResult = eventLogDatastore.updateEventLogEntry(updateRequest)
 
         // Assert
         assertTrue(updateResult.isSuccess)
         val updatedEntry = updateResult.getOrNull()
         assertNotNull(updatedEntry)
-        assertTrue(updatedEntry!!.title == updateRequest.title)
-        assertTrue(updatedEntry.description == updateRequest.description)
+        assertTrue(updatedEntry!!.title == "${test_prefix}_UpdatedTitle")
+        assertTrue(updatedEntry.description == "${test_prefix}_UpdatedDescription")
     }
 
     @Test
     fun `deleteEventLogEntry should remove entry`() = runCoroutineTest {
         // Arrange
-        val createRequest = CreateEventLogEntryRequest(
-            title = "${test_prefix}_EventTitleToDelete",
+        val createResult = eventLogDatastore.createEventLogEntry(title = "${test_prefix}_EventTitleToDelete",
             description = "${test_prefix}_EventDescriptionToDelete",
             staffId = null, // Set as needed
             fallbackStaffName = null, // Set as needed
@@ -184,25 +192,22 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
             timestamp = Clock.System.now(),
             unit = "TestUnitToDelete", // Use a valid unit
         )
-        val createResult = eventLogDatastore.createEventLogEntry(createRequest)
         assertTrue(createResult.isSuccess)
         val createdEntry = createResult.getOrNull()
         assertNotNull(createdEntry)
-        val deleteRequest = DeleteEventLogEntryRequest(
-            id = EventLogEntryId(eventLogEntryId = createdEntry!!.id.eventLogEntryId)
-        )
 
         // Act
-        val deleteResult = eventLogDatastore.deleteEventLogEntry(deleteRequest)
+        val deleteResult = eventLogDatastore.deleteEventLogEntry(
+            id = EventLogEntryId(eventLogEntryId = createdEntry!!.id.eventLogEntryId)
+        )
 
         // Assert
         assertTrue(deleteResult.isSuccess)
         assertTrue(deleteResult.getOrNull() == true)
         // Try to get the deleted entry
-        val getRequest = GetEventLogEntryRequest(
+        val getResult = eventLogDatastore.getEventLogEntry(
             id = EventLogEntryId(eventLogEntryId = createdEntry.id.eventLogEntryId)
         )
-        val getResult = eventLogDatastore.getEventLogEntry(getRequest)
         assertTrue(getResult.isSuccess)
         assertTrue(getResult.getOrNull() == null)
     }

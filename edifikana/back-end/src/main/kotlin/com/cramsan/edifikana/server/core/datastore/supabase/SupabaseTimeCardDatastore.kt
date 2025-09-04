@@ -1,16 +1,17 @@
 package com.cramsan.edifikana.server.core.datastore.supabase
 
+import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.edifikana.lib.model.TimeCardEventId
+import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.edifikana.server.core.datastore.TimeCardDatastore
 import com.cramsan.edifikana.server.core.datastore.supabase.models.TimeCardEventEntity
 import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
-import com.cramsan.edifikana.server.core.service.models.requests.CreateTimeCardEventRequest
-import com.cramsan.edifikana.server.core.service.models.requests.DeleteTimeCardEventRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetTimeCardEventListRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetTimeCardEventRequest
 import com.cramsan.framework.annotations.SupabaseModel
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.postgrest.Postgrest
+import kotlin.time.Instant
 
 /**
  * Datastore for managing time card events.
@@ -24,10 +25,22 @@ class SupabaseTimeCardDatastore(
      */
     @OptIn(SupabaseModel::class)
     override suspend fun createTimeCardEvent(
-        request: CreateTimeCardEventRequest,
+        staffId: StaffId,
+        fallbackStaffName: String?,
+        propertyId: PropertyId,
+        type: TimeCardEventType,
+        imageUrl: String?,
+        timestamp: Instant,
     ): Result<TimeCardEvent> = runSuspendCatching(TAG) {
-        logD(TAG, "Creating time card event: %s", request.type)
-        val requestEntity: TimeCardEventEntity.CreateTimeCardEventEntity = request.toTimeCardEventEntity()
+        logD(TAG, "Creating time card event: %s", type)
+        val requestEntity: TimeCardEventEntity.CreateTimeCardEventEntity = CreateTimeCardEventEntity(
+            staffId = staffId,
+            fallbackStaffName = fallbackStaffName,
+            propertyId = propertyId,
+            type = type,
+            imageUrl = imageUrl,
+            timestamp = timestamp
+        )
 
         val createdTimeCardEvent = postgrest.from(TimeCardEventEntity.COLLECTION).insert(requestEntity) {
             select()
@@ -41,13 +54,13 @@ class SupabaseTimeCardDatastore(
      */
     @OptIn(SupabaseModel::class)
     override suspend fun getTimeCardEvent(
-        request: GetTimeCardEventRequest,
+        id: TimeCardEventId,
     ): Result<TimeCardEvent?> = runSuspendCatching(TAG) {
-        logD(TAG, "Getting time card event: %s", request.id)
+        logD(TAG, "Getting time card event: %s", id)
 
         val timeCardEventEntity = postgrest.from(TimeCardEventEntity.COLLECTION).select {
             filter {
-                TimeCardEventEntity::id eq request.id.timeCardEventId
+                TimeCardEventEntity::id eq id.timeCardEventId
             }
         }.decodeSingleOrNull<TimeCardEventEntity>()
 
@@ -56,13 +69,13 @@ class SupabaseTimeCardDatastore(
 
     @OptIn(SupabaseModel::class)
     override suspend fun getTimeCardEvents(
-        request: GetTimeCardEventListRequest,
+        staffId: StaffId?,
     ): Result<List<TimeCardEvent>> = runSuspendCatching(TAG) {
         logD(TAG, "Getting all time card events")
 
         postgrest.from(TimeCardEventEntity.COLLECTION).select {
             filter {
-                request.staffId?.let {
+                staffId?.let {
                     TimeCardEventEntity::staffId eq it.staffId
                 }
             }
@@ -75,14 +88,14 @@ class SupabaseTimeCardDatastore(
      */
     @OptIn(SupabaseModel::class)
     override suspend fun deleteTimeCardEvent(
-        request: DeleteTimeCardEventRequest,
+        id: TimeCardEventId,
     ): Result<Boolean> = runSuspendCatching(TAG) {
-        logD(TAG, "Deleting time card event: %s", request.id)
+        logD(TAG, "Deleting time card event: %s", id)
 
         postgrest.from(TimeCardEventEntity.COLLECTION).delete {
             select()
             filter {
-                TimeCardEventEntity::id eq request.id.timeCardEventId
+                TimeCardEventEntity::id eq id.timeCardEventId
             }
         }.decodeSingleOrNull<TimeCardEventEntity>() != null
     }

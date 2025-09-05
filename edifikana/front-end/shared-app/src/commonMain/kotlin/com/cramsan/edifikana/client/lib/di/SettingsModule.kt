@@ -7,11 +7,6 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 internal val SettingsModule = module {
-    factory<Boolean>(named(Overrides.KEY_DISABLE_SUPABASE)) {
-        val preferences = get<Preferences>()
-        PreferencesMapper.isSupabaseDisabled(preferences)
-    }
-
     factory<Boolean>(named(Overrides.KEY_HALT_ON_FAILURE)) {
         val preferences = get<Preferences>()
         PreferencesMapper.haltOnFailure(preferences)
@@ -30,11 +25,6 @@ internal val SettingsModule = module {
     factory<Boolean>(named(Overrides.KEY_SUPABASE_OVERRIDE_ENABLED)) {
         val preferences = get<Preferences>()
         PreferencesMapper.isSupabaseOverrideEnabled(preferences)
-    }
-
-    factory<Boolean>(named(Overrides.KEY_DISABLE_BE)) {
-        val preferences = get<Preferences>()
-        PreferencesMapper.isBackendDisabled(preferences)
     }
 
     factory<String>(named(Overrides.KEY_EDIFIKANA_BE_URL)) {

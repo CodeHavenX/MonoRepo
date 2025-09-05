@@ -58,10 +58,7 @@ internal val KtorModule = module {
             install(ContentNegotiation) {
                 json(createJson())
             }
-            val disableSupabase = get<Boolean>(named(Overrides.KEY_DISABLE_SUPABASE))
-            if (!disableSupabase) {
-                install(AuthRequestPlugin(get()))
-            }
+            install(AuthRequestPlugin(get()))
         }
     }
 }

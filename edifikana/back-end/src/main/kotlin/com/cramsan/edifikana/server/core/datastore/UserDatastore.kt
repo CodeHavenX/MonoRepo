@@ -1,12 +1,9 @@
 package com.cramsan.edifikana.server.core.datastore
 
+import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.service.models.User
-import com.cramsan.edifikana.server.core.service.models.requests.AssociateUserRequest
-import com.cramsan.edifikana.server.core.service.models.requests.CreateUserRequest
-import com.cramsan.edifikana.server.core.service.models.requests.DeleteUserRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetUserRequest
-import com.cramsan.edifikana.server.core.service.models.requests.UpdatePasswordRequest
-import com.cramsan.edifikana.server.core.service.models.requests.UpdateUserRequest
+import com.cramsan.framework.core.SecureString
+import com.cramsan.framework.core.SecureStringAccess
 
 /**
  * Interface for interacting with the user database.
@@ -16,7 +13,12 @@ interface UserDatastore {
      * Creates a new user for the given [request]. Returns the [Result] of the operation with the created [User].
      */
     suspend fun createUser(
-        request: CreateUserRequest,
+        email: String,
+        phoneNumber: String,
+        password: String?,
+        firstName: String,
+        lastName: String,
+        isTransient: Boolean,
     ): Result<User>
 
     /**
@@ -24,14 +26,15 @@ interface UserDatastore {
      * the created [User].
      */
     suspend fun associateUser(
-        request: AssociateUserRequest,
+        userId: UserId,
+        email: String,
     ): Result<User>
 
     /**
      * Retrieves a user for the given [request]. Returns the [Result] of the operation with the fetched [User] if found.
      */
     suspend fun getUser(
-        request: GetUserRequest,
+        id: UserId,
     ): Result<User?>
 
     /**
@@ -43,18 +46,24 @@ interface UserDatastore {
      * Updates a user with the given [request]. Returns the [Result] of the operation with the updated [User].
      */
     suspend fun updateUser(
-        request: UpdateUserRequest,
+        id: UserId,
+        email: String?,
     ): Result<User>
 
     /**
      * Deletes a user with the given [request]. Returns the [Result] of the operation with a [Boolean] indicating success.
      */
     suspend fun deleteUser(
-        request: DeleteUserRequest,
+        id: UserId,
     ): Result<Boolean>
 
     /**
      * Updates the password for a user with the given [request]. Returns the [Result] of the operation.
      */
-    suspend fun updatePassword(request: UpdatePasswordRequest): Result<Unit>
+    @OptIn(SecureStringAccess::class)
+    suspend fun updatePassword(
+        id: UserId,
+        currentHashedPassword: SecureString?,
+        newPassword: SecureString,
+    ): Result<Unit>
 }

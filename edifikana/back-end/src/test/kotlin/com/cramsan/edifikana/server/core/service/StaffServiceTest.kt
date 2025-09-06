@@ -9,9 +9,6 @@ import com.cramsan.edifikana.server.core.controller.authentication.ClientContext
 import com.cramsan.edifikana.server.core.datastore.StaffDatastore
 import com.cramsan.edifikana.server.core.service.models.Staff
 import com.cramsan.edifikana.server.core.service.models.UserRole
-import com.cramsan.edifikana.server.core.service.models.requests.DeleteStaffRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetStaffListRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetStaffRequest
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
@@ -63,7 +60,15 @@ class StaffServiceTest {
         val lastName = "Doe"
         val role = StaffRole.MANAGER
         val propertyId = PropertyId("property-1")
-        coEvery { staffDatastore.createStaff(any()) } returns Result.success(staff)
+        coEvery {
+            staffDatastore.createStaff(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+            )
+        } returns Result.success(staff)
 
         // Act
         val result = staffService.createStaff(idType, firstName, lastName, role, propertyId)
@@ -72,13 +77,11 @@ class StaffServiceTest {
         assertEquals(staff, result)
         coVerify {
             staffDatastore.createStaff(
-                match {
-                    it.idType == idType &&
-                        it.firstName == firstName &&
-                        it.lastName == lastName &&
-                        it.role == role &&
-                        it.propertyId == propertyId
-                }
+                idType,
+                firstName,
+                lastName,
+                role,
+                propertyId,
             )
         }
     }
@@ -98,7 +101,7 @@ class StaffServiceTest {
 
         // Assert
         assertEquals(staff, result)
-        coVerify { staffDatastore.getStaff(GetStaffRequest(staffId)) }
+        coVerify { staffDatastore.getStaff(staffId) }
     }
 
     /**
@@ -115,7 +118,7 @@ class StaffServiceTest {
 
         // Assert
         assertNull(result)
-        coVerify { staffDatastore.getStaff(GetStaffRequest(staffId)) }
+        coVerify { staffDatastore.getStaff(staffId) }
     }
 
     /**
@@ -125,7 +128,7 @@ class StaffServiceTest {
     fun `getStaffs should call staffDatastore and return list`() = runTest {
         // Arrange
         val staffList = listOf(mockk<Staff>(), mockk<Staff>())
-        val request = GetStaffListRequest(UserId("user-1"))
+        val request = UserId("user-1")
         val clientContext = ClientContext.AuthenticatedClientContext(
             userInfo = mockk(),
             userId = UserId("user-1"),
@@ -153,7 +156,15 @@ class StaffServiceTest {
         val firstName = "Jane"
         val lastName = "Smith"
         val role = StaffRole.MANAGER
-        coEvery { staffDatastore.updateStaff(any()) } returns Result.success(staff)
+        coEvery {
+            staffDatastore.updateStaff(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+            )
+        } returns Result.success(staff)
 
         // Act
         val result = staffService.updateStaff(staffId, idType, firstName, lastName, role)
@@ -162,13 +173,11 @@ class StaffServiceTest {
         assertEquals(staff, result)
         coVerify {
             staffDatastore.updateStaff(
-                match {
-                    it.id == staffId &&
-                        it.idType == idType &&
-                        it.firstName == firstName &&
-                        it.lastName == lastName &&
-                        it.role == role
-                }
+                staffId,
+                idType,
+                firstName,
+                lastName,
+                role,
             )
         }
     }
@@ -187,6 +196,6 @@ class StaffServiceTest {
 
         // Assert
         assertEquals(true, result)
-        coVerify { staffDatastore.deleteStaff(DeleteStaffRequest(staffId)) }
+        coVerify { staffDatastore.deleteStaff(staffId) }
     }
 }

@@ -14,16 +14,6 @@ import com.cramsan.edifikana.server.core.service.models.Property
 import com.cramsan.edifikana.server.core.service.models.Staff
 import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.core.service.models.User
-import com.cramsan.edifikana.server.core.service.models.requests.CreateOrganizationRequest
-import com.cramsan.edifikana.server.core.service.models.requests.CreatePropertyRequest
-import com.cramsan.edifikana.server.core.service.models.requests.CreateStaffRequest
-import com.cramsan.edifikana.server.core.service.models.requests.CreateUserRequest
-import com.cramsan.edifikana.server.core.service.models.requests.DeleteEventLogEntryRequest
-import com.cramsan.edifikana.server.core.service.models.requests.DeleteOrganizationRequest
-import com.cramsan.edifikana.server.core.service.models.requests.DeletePropertyRequest
-import com.cramsan.edifikana.server.core.service.models.requests.DeleteStaffRequest
-import com.cramsan.edifikana.server.core.service.models.requests.DeleteTimeCardEventRequest
-import com.cramsan.edifikana.server.core.service.models.requests.DeleteUserRequest
 import com.cramsan.edifikana.server.di.FrameworkModule
 import com.cramsan.edifikana.server.di.IntegTestApplicationModule
 import com.cramsan.edifikana.server.di.SettingsModule
@@ -108,14 +98,12 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
     protected fun createTestUser(email: String): UserId {
         val userId = runBlocking {
             userDatastore.createUser(
-                CreateUserRequest(
-                    email,
-                    "",
-                    generateRandomPassword(),
-                    "test",
-                    "user",
-                    false,
-                )
+                email,
+                "",
+                generateRandomPassword(),
+                "test",
+                "user",
+                false,
             ).getOrThrow().id
         }
         registerUserForDeletion(userId)
@@ -124,7 +112,7 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
 
     protected fun createTestOrganization(owner: UserId): OrganizationId {
         val organizationId = runBlocking {
-            organizationDatastore.createOrganization(CreateOrganizationRequest(owner)).getOrThrow().id
+            organizationDatastore.createOrganization(owner).getOrThrow().id
         }
         registerOrganizationForDeletion(organizationId)
         return organizationId
@@ -133,7 +121,7 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
     protected fun createTestProperty(name: String, userId: UserId, organizationId: OrganizationId): PropertyId {
         val propertyId = runBlocking {
             propertyDatastore.createProperty(
-                CreatePropertyRequest(name, "123 main St", userId, organizationId),
+                name, "123 main St", userId, organizationId,
             ).getOrThrow().id
         }
         registerPropertyForDeletion(propertyId)
@@ -187,13 +175,11 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
     ): StaffId {
         val staffId = runBlocking {
             staffDatastore.createStaff(
-                CreateStaffRequest(
-                    propertyId = propertyId,
-                    firstName = firstName,
-                    lastName = lastName,
-                    role = StaffRole.SECURITY, // Use a valid role
-                    idType = IdType.PASSPORT // Use a valid ID type
-                )
+                propertyId = propertyId,
+                firstName = firstName,
+                lastName = lastName,
+                role = StaffRole.SECURITY, // Use a valid role
+                idType = IdType.PASSPORT // Use a valid ID type
             ).getOrThrow().id
         }
         registerStaffForDeletion(staffId)
@@ -209,22 +195,22 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
             supabase.auth.clearSession()
 
             eventLogResources.forEach {
-                eventLogDatastore.deleteEventLogEntry(DeleteEventLogEntryRequest(it)).getOrThrow()
+                eventLogDatastore.deleteEventLogEntry(it).getOrThrow()
             }
             timeCardResources.forEach {
-                timeCardDatastore.deleteTimeCardEvent(DeleteTimeCardEventRequest(it)).getOrThrow()
+                timeCardDatastore.deleteTimeCardEvent(it).getOrThrow()
             }
             staffResources.forEach {
-                staffDatastore.deleteStaff(DeleteStaffRequest(it)).getOrThrow()
+                staffDatastore.deleteStaff(it).getOrThrow()
             }
             propertyResources.forEach {
-                propertyDatastore.deleteProperty(DeletePropertyRequest(it)).getOrThrow()
+                propertyDatastore.deleteProperty(it).getOrThrow()
             }
             organizationResources.forEach {
-                organizationDatastore.deleteOrganization(DeleteOrganizationRequest(it)).getOrThrow()
+                organizationDatastore.deleteOrganization(it).getOrThrow()
             }
             userResources.forEach {
-                userDatastore.deleteUser(DeleteUserRequest(it)).getOrThrow()
+                userDatastore.deleteUser(it).getOrThrow()
             }
             supabaseUsers.forEach { userId ->
                 supabase.auth.admin.deleteUser(userId)

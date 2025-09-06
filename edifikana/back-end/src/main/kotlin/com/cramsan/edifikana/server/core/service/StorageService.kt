@@ -3,8 +3,6 @@ package com.cramsan.edifikana.server.core.service
 import com.cramsan.edifikana.lib.model.AssetId
 import com.cramsan.edifikana.server.core.datastore.StorageDatastore
 import com.cramsan.edifikana.server.core.service.models.Asset
-import com.cramsan.edifikana.server.core.service.models.requests.CreateAssetRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetFileRequest
 import com.cramsan.framework.logging.logD
 
 /**
@@ -22,10 +20,8 @@ class StorageService(
     ): Asset {
         logD(TAG, "createFile")
         return storageDatastore.createAsset(
-            request = CreateAssetRequest(
-                fileName = fileName,
-                content = content,
-            ),
+            fileName = fileName,
+            content = content,
         ).getOrThrow()
     }
 
@@ -37,9 +33,7 @@ class StorageService(
     ): Asset? {
         logD(TAG, "getFile")
         val file = storageDatastore.getAsset(
-            request = GetFileRequest(
-                id = id,
-            ),
+            id = id,
         ).getOrNull()
 
         return file

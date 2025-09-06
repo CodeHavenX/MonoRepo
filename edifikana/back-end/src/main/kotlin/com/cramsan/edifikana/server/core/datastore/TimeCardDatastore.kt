@@ -1,10 +1,11 @@
 package com.cramsan.edifikana.server.core.datastore
 
+import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.edifikana.lib.model.TimeCardEventId
+import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
-import com.cramsan.edifikana.server.core.service.models.requests.CreateTimeCardEventRequest
-import com.cramsan.edifikana.server.core.service.models.requests.DeleteTimeCardEventRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetTimeCardEventListRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetTimeCardEventRequest
+import kotlin.time.Instant
 
 /**
  * Interface for interacting with the time card database.
@@ -12,30 +13,35 @@ import com.cramsan.edifikana.server.core.service.models.requests.GetTimeCardEven
 interface TimeCardDatastore {
 
     /**
-     * Creates a new time card event for the given [request]. Returns the [Result] of the operation with the created [TimeCardEvent].
+     * Creates a new time card event. Returns the [Result] of the operation with the created [TimeCardEvent].
      */
     suspend fun createTimeCardEvent(
-        request: CreateTimeCardEventRequest,
+        staffId: StaffId,
+        fallbackStaffName: String?,
+        propertyId: PropertyId,
+        type: TimeCardEventType,
+        imageUrl: String?,
+        timestamp: Instant,
     ): Result<TimeCardEvent>
 
     /**
-     * Retrieves a time card event for the given [request]. Returns the [Result] of the operation with the fetched [TimeCardEvent] if found.
+     * Retrieves a time card event by its ID. Returns the [Result] of the operation with the fetched [TimeCardEvent] if found.
      */
     suspend fun getTimeCardEvent(
-        request: GetTimeCardEventRequest,
+        id: TimeCardEventId,
     ): Result<TimeCardEvent?>
 
     /**
-     * Retrieves all time card events for the given [request]. Returns the [Result] of the operation with a list of [TimeCardEvent].
+     * Retrieves all time card events for a staff member. Returns the [Result] of the operation with a list of [TimeCardEvent].
      */
     suspend fun getTimeCardEvents(
-        request: GetTimeCardEventListRequest,
+        staffId: StaffId?,
     ): Result<List<TimeCardEvent>>
 
     /**
-     * Deletes a time card event for the given [request]. Returns the [Result] of the operation.
+     * Deletes a time card event by its ID. Returns the [Result] of the operation.
      */
     suspend fun deleteTimeCardEvent(
-        request: DeleteTimeCardEventRequest,
+        id: TimeCardEventId,
     ): Result<Boolean>
 }

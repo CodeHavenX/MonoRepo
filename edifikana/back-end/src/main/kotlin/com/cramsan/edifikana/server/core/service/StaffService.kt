@@ -7,11 +7,6 @@ import com.cramsan.edifikana.lib.model.StaffRole
 import com.cramsan.edifikana.server.core.controller.authentication.ClientContext
 import com.cramsan.edifikana.server.core.datastore.StaffDatastore
 import com.cramsan.edifikana.server.core.service.models.Staff
-import com.cramsan.edifikana.server.core.service.models.requests.CreateStaffRequest
-import com.cramsan.edifikana.server.core.service.models.requests.DeleteStaffRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetStaffListRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetStaffRequest
-import com.cramsan.edifikana.server.core.service.models.requests.UpdateStaffRequest
 import com.cramsan.framework.logging.logD
 
 /**
@@ -33,13 +28,11 @@ class StaffService(
     ): Staff {
         logD(TAG, "createStaff")
         return staffDatastore.createStaff(
-            request = CreateStaffRequest(
-                idType = idType,
-                firstName = firstName,
-                lastName = lastName,
-                role = role,
-                propertyId = propertyId,
-            ),
+            idType = idType,
+            firstName = firstName,
+            lastName = lastName,
+            role = role,
+            propertyId = propertyId,
         ).getOrThrow()
     }
 
@@ -51,9 +44,7 @@ class StaffService(
     ): Staff? {
         logD(TAG, "getStaff")
         val staff = staffDatastore.getStaff(
-            request = GetStaffRequest(
-                id = id,
-            ),
+            id = id,
         ).getOrNull()
 
         return staff
@@ -67,9 +58,7 @@ class StaffService(
     ): List<Staff> {
         logD(TAG, "getStaffs")
         val staffs = staffDatastore.getStaffs(
-            GetStaffListRequest(
-                currentUser = clientContext.userId,
-            )
+            currentUser = clientContext.userId,
         ).getOrThrow()
         return staffs
     }
@@ -86,13 +75,11 @@ class StaffService(
     ): Staff {
         logD(TAG, "updateStaff")
         return staffDatastore.updateStaff(
-            request = UpdateStaffRequest(
-                id = id,
-                idType = idType,
-                firstName = firstName,
-                lastName = lastName,
-                role = role,
-            ),
+            staffId = id,
+            idType = idType,
+            firstName = firstName,
+            lastName = lastName,
+            role = role,
         ).getOrThrow()
     }
 
@@ -104,9 +91,7 @@ class StaffService(
     ): Boolean {
         logD(TAG, "deleteStaff")
         return staffDatastore.deleteStaff(
-            request = DeleteStaffRequest(
-                id = id,
-            )
+            id = id,
         ).getOrThrow()
     }
 

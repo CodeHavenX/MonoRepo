@@ -1,10 +1,11 @@
 package com.cramsan.edifikana.server.core.datastore
 
+import com.cramsan.edifikana.lib.model.EventLogEntryId
+import com.cramsan.edifikana.lib.model.EventLogEventType
+import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.server.core.service.models.EventLogEntry
-import com.cramsan.edifikana.server.core.service.models.requests.CreateEventLogEntryRequest
-import com.cramsan.edifikana.server.core.service.models.requests.DeleteEventLogEntryRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetEventLogEntryRequest
-import com.cramsan.edifikana.server.core.service.models.requests.UpdateEventLogEntryRequest
+import kotlin.time.Instant
 
 /**
  * Interface for interacting with the event log database.
@@ -15,14 +16,22 @@ interface EventLogDatastore {
      * Creates a new event log entry for the given [request]. Returns the [Result] of the operation with the created [EventLogEntry].
      */
     suspend fun createEventLogEntry(
-        request: CreateEventLogEntryRequest,
+        staffId: StaffId?,
+        fallbackStaffName: String?,
+        propertyId: PropertyId,
+        type: EventLogEventType,
+        fallbackEventType: String?,
+        timestamp: Instant,
+        title: String,
+        description: String?,
+        unit: String,
     ): Result<EventLogEntry>
 
     /**
      * Retrieves an event log entry for the given [request]. Returns the [Result] of the operation with the fetched [EventLogEntry] if found.
      */
     suspend fun getEventLogEntry(
-        request: GetEventLogEntryRequest,
+        id: EventLogEntryId,
     ): Result<EventLogEntry?>
 
     /**
@@ -34,13 +43,18 @@ interface EventLogDatastore {
      * Updates an event log entry with the given [request]. Returns the [Result] of the operation with the updated [EventLogEntry].
      */
     suspend fun updateEventLogEntry(
-        request: UpdateEventLogEntryRequest,
+        id: EventLogEntryId,
+        type: EventLogEventType?,
+        fallbackEventType: String?,
+        title: String?,
+        description: String?,
+        unit: String?,
     ): Result<EventLogEntry>
 
     /**
      * Deletes an event log entry with the given [request]. Returns the [Result] of the operation with a [Boolean] indicating success.
      */
     suspend fun deleteEventLogEntry(
-        request: DeleteEventLogEntryRequest,
+        id: EventLogEntryId,
     ): Result<Boolean>
 }

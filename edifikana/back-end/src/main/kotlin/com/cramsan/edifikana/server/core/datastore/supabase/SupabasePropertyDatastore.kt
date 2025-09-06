@@ -1,14 +1,12 @@
 package com.cramsan.edifikana.server.core.datastore.supabase
 
+import com.cramsan.edifikana.lib.model.OrganizationId
+import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.datastore.PropertyDatastore
 import com.cramsan.edifikana.server.core.datastore.supabase.models.PropertyEntity
 import com.cramsan.edifikana.server.core.datastore.supabase.models.UserPropertyMappingEntity
 import com.cramsan.edifikana.server.core.service.models.Property
-import com.cramsan.edifikana.server.core.service.models.requests.CreatePropertyRequest
-import com.cramsan.edifikana.server.core.service.models.requests.DeletePropertyRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetPropertyListsRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetPropertyRequest
-import com.cramsan.edifikana.server.core.service.models.requests.UpdatePropertyRequest
 import com.cramsan.framework.annotations.SupabaseModel
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
@@ -26,10 +24,17 @@ class SupabasePropertyDatastore(
      */
     @OptIn(SupabaseModel::class)
     override suspend fun createProperty(
-        request: CreatePropertyRequest,
+        name: String,
+        address: String,
+        creatorUserId: UserId,
+        organizationId: OrganizationId,
     ): Result<Property> = runSuspendCatching(TAG) {
-        logD(TAG, "Creating property: %s", request.name)
-        val requestEntity: PropertyEntity.CreatePropertyEntity = request.toPropertyEntity()
+        logD(TAG, "Creating property: %s", name)
+        val requestEntity: PropertyEntity.CreatePropertyEntity = CreatePropertyEntity(
+            name = name,
+            address = address,
+            organizationId = organizationId,
+        )
 
         // Insert the property into the database and select the created entity
         val createdProperty = postgrest.from(PropertyEntity.COLLECTION).insert(requestEntity) {
@@ -39,7 +44,7 @@ class SupabasePropertyDatastore(
         // Now associate this entry with the user that created it
         postgrest.from(UserPropertyMappingEntity.COLLECTION).insert(
             UserPropertyMappingEntity.CreateUserPropertyMappingEntity(
-                userId = request.creatorUserId.userId,
+                userId = creatorUserId.userId,
                 propertyId = createdProperty.id,
             )
         ) {
@@ -57,13 +62,13 @@ class SupabasePropertyDatastore(
      */
     @OptIn(SupabaseModel::class)
     override suspend fun getProperty(
-        request: GetPropertyRequest,
+        propertyId: PropertyId,
     ): Result<Property?> = runSuspendCatching(TAG) {
-        logD(TAG, "Getting property: %s", request.propertyId)
+        logD(TAG, "Getting property: %s", propertyId)
 
         val propertyEntity = postgrest.from(PropertyEntity.COLLECTION).select {
             filter {
-                PropertyEntity::id eq request.propertyId.propertyId
+                PropertyEntity::id eq propertyId.propertyId
             }
         }.decodeSingleOrNull<PropertyEntity>()
 
@@ -72,10 +77,9 @@ class SupabasePropertyDatastore(
 
     @OptIn(SupabaseModel::class)
     override suspend fun getProperties(
-        request: GetPropertyListsRequest,
+        userId: UserId
     ): Result<List<Property>> = runSuspendCatching(TAG) {
         logD(TAG, "Getting all properties")
-        val userId = request.userId
 
         val propertyIds =
             postgrest.from(UserPropertyMappingEntity.COLLECTION).select {
@@ -94,18 +98,19 @@ class SupabasePropertyDatastore(
      */
     @OptIn(SupabaseModel::class)
     override suspend fun updateProperty(
-        request: UpdatePropertyRequest,
+        propertyId: PropertyId,
+        name: String?,
     ): Result<Property> = runSuspendCatching(TAG) {
-        logD(TAG, "Updating property: %s", request.propertyId)
+        logD(TAG, "Updating property: %s", propertyId)
 
         postgrest.from(PropertyEntity.COLLECTION).update(
             {
-                request.name?.let { value -> Property::name setTo value }
+                name?.let { value -> Property::name setTo value }
             }
         ) {
             select()
             filter {
-                PropertyEntity::id eq request.propertyId.propertyId
+                PropertyEntity::id eq propertyId.propertyId
             }
         }.decodeSingle<PropertyEntity>().toProperty()
     }
@@ -115,15 +120,15 @@ class SupabasePropertyDatastore(
      */
     @OptIn(SupabaseModel::class)
     override suspend fun deleteProperty(
-        request: DeletePropertyRequest,
+        propertyId: PropertyId,
     ): Result<Boolean> = runSuspendCatching(TAG) {
-        logD(TAG, "Deleting property: %s", request.propertyId)
+        logD(TAG, "Deleting property: %s", propertyId)
 
         // Delete the property mappings first
         postgrest.from(UserPropertyMappingEntity.COLLECTION).delete {
             select()
             filter {
-                UserPropertyMappingEntity::propertyId eq request.propertyId.propertyId
+                UserPropertyMappingEntity::propertyId eq propertyId.propertyId
             }
         }
 
@@ -131,7 +136,7 @@ class SupabasePropertyDatastore(
         postgrest.from(PropertyEntity.COLLECTION).delete {
             select()
             filter {
-                PropertyEntity::id eq request.propertyId.propertyId
+                PropertyEntity::id eq propertyId.propertyId
             }
         }.decodeSingleOrNull<PropertyEntity>() != null
     }

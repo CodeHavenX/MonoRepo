@@ -3,10 +3,6 @@ package com.cramsan.edifikana.server.core.datastore
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.service.models.Organization
-import com.cramsan.edifikana.server.core.service.models.requests.CreateOrganizationRequest
-import com.cramsan.edifikana.server.core.service.models.requests.DeleteOrganizationRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetOrganizationRequest
-import com.cramsan.edifikana.server.core.service.models.requests.UpdateOrganizationRequest
 
 /**
  * Interface for interacting with the organization database.
@@ -16,34 +12,35 @@ interface OrganizationDatastore {
     /**
      * Create a new organization.
      *
-     * @param request The request containing organization details.
+     * @param owner The ID of the user who will own the organization.
      * @return The created organization or an error.
      */
-    suspend fun createOrganization(request: CreateOrganizationRequest): Result<Organization>
+    suspend fun createOrganization(owner: UserId): Result<Organization>
 
     /**
      * Retrieve an organization by its ID.
      *
-     * @param request The request containing the organization ID.
+     * @param id The ID of the organization.
      * @return The organization if found, or null if not found, or an error.
      */
-    suspend fun getOrganization(request: GetOrganizationRequest): Result<Organization?>
+    suspend fun getOrganization(id: OrganizationId): Result<Organization?>
 
     /**
      * Update an existing organization.
      *
-     * @param request The request containing updated organization details.
+     * @param id The ID of the organization to update.
+     * @param owner The new owner ID for the organization.
      * @return The updated organization or an error.
      */
-    suspend fun updateOrganization(request: UpdateOrganizationRequest): Result<Organization>
+    suspend fun updateOrganization(id: OrganizationId, owner: UserId): Result<Organization>
 
     /**
      * Delete an organization by its ID.
      *
-     * @param request The request containing the organization ID to delete.
+     * @param id The ID of the organization to delete.
      * @return True if deletion was successful, false otherwise, or an error.
      */
-    suspend fun deleteOrganization(request: DeleteOrganizationRequest): Result<Boolean>
+    suspend fun deleteOrganization(id: OrganizationId): Result<Boolean>
 
     /**
      * Retrieve all organizations that a user belongs to.

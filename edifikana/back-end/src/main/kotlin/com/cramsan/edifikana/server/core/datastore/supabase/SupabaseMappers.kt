@@ -3,10 +3,14 @@
 package com.cramsan.edifikana.server.core.datastore.supabase
 
 import com.cramsan.edifikana.lib.model.EventLogEntryId
+import com.cramsan.edifikana.lib.model.EventLogEventType
+import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.edifikana.lib.model.StaffRole
 import com.cramsan.edifikana.lib.model.TimeCardEventId
+import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.datastore.supabase.models.AuthMetadataEntity
 import com.cramsan.edifikana.server.core.datastore.supabase.models.EventLogEntryEntity
@@ -22,12 +26,6 @@ import com.cramsan.edifikana.server.core.service.models.Staff
 import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.core.service.models.User
 import com.cramsan.edifikana.server.core.service.models.UserRole
-import com.cramsan.edifikana.server.core.service.models.requests.AssociateUserRequest
-import com.cramsan.edifikana.server.core.service.models.requests.CreateEventLogEntryRequest
-import com.cramsan.edifikana.server.core.service.models.requests.CreatePropertyRequest
-import com.cramsan.edifikana.server.core.service.models.requests.CreateStaffRequest
-import com.cramsan.edifikana.server.core.service.models.requests.CreateTimeCardEventRequest
-import com.cramsan.edifikana.server.core.service.models.requests.CreateUserRequest
 import com.cramsan.framework.annotations.SupabaseModel
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
@@ -54,12 +52,16 @@ fun UserEntity.toUser(): User {
 }
 
 /**
- * Maps a [CreateUserRequest] to the [UserEntity.CreateUserEntity] model.
- * This is used to create a new user in the database.
+ * Create a [UserEntity.CreateUserEntity] from the provided parameters.
+ * This function is used to create a new user entity in the database.
  */
 @OptIn(SupabaseModel::class, SecureStringAccess::class)
-fun CreateUserRequest.toUserEntity(
+fun CreateUserEntity(
     userId: UserId,
+    email: String,
+    phoneNumber: String,
+    firstName: String,
+    lastName: String,
     pendingAssociation: Boolean,
     canPasswordAuth: Boolean,
     hashedPassword: SecureString?,
@@ -79,12 +81,14 @@ fun CreateUserRequest.toUserEntity(
 }
 
 /**
- * Maps an [AssociateUserRequest] to the [UserEntity.CreateUserEntity] model.
- * This is used to associate a user from another service with a new user in our system.
+ * Create a [UserEntity.CreateUserEntity] from the provided [UserId] and [UserEntity].
+ * This function is used to create a new user entity in the database with the existing user entity.
+ * This is useful in cases of migrating from a transient user to a permanent user.
  */
 @OptIn(SupabaseModel::class)
-fun AssociateUserRequest.toUserEntity(
+fun CreateUserEntity(
     userId: UserId,
+    email: String,
     userEntity: UserEntity,
 ): UserEntity.CreateUserEntity {
     return UserEntity.CreateUserEntity(
@@ -100,10 +104,16 @@ fun AssociateUserRequest.toUserEntity(
 }
 
 /**
- * Maps a [CreateStaffRequest] to the [Staff] model.
+ * Create a [UserEntity.CreateUserEntity] from the provided parameters.
  */
 @OptIn(SupabaseModel::class)
-fun CreateStaffRequest.toStaffEntity(): StaffEntity.CreateStaffEntity {
+fun CreateStaffEntity(
+    idType: IdType,
+    firstName: String,
+    lastName: String,
+    role: StaffRole,
+    propertyId: PropertyId,
+): StaffEntity.CreateStaffEntity {
     return StaffEntity.CreateStaffEntity(
         idType = idType,
         firstName = firstName,
@@ -132,7 +142,11 @@ fun StaffEntity.toStaff(): Staff {
  * Maps a [CreatePropertyRequest] to the [PropertyEntity.CreatePropertyEntity] model.
  */
 @OptIn(SupabaseModel::class)
-fun CreatePropertyRequest.toPropertyEntity(): PropertyEntity.CreatePropertyEntity {
+fun CreatePropertyEntity(
+    name: String,
+    address: String,
+    organizationId: OrganizationId,
+): PropertyEntity.CreatePropertyEntity {
     return PropertyEntity.CreatePropertyEntity(
         name = name,
         address = address,
@@ -154,10 +168,17 @@ fun PropertyEntity.toProperty(): Property {
 }
 
 /**
- * Maps a [CreateTimeCardEventRequest] to the [TimeCardEventEntity.CreateTimeCardEventEntity] model.
+ * Creates a [TimeCardEventEntity.CreateTimeCardEventEntity] from the provided parameters.
  */
 @OptIn(SupabaseModel::class)
-fun CreateTimeCardEventRequest.toTimeCardEventEntity(): TimeCardEventEntity.CreateTimeCardEventEntity {
+fun CreateTimeCardEventEntity(
+    staffId: StaffId,
+    fallbackStaffName: String?,
+    propertyId: PropertyId,
+    type: TimeCardEventType,
+    imageUrl: String?,
+    timestamp: Instant,
+): TimeCardEventEntity.CreateTimeCardEventEntity {
     return TimeCardEventEntity.CreateTimeCardEventEntity(
         staffId = staffId.staffId,
         fallbackStaffName = fallbackStaffName,
@@ -185,10 +206,20 @@ fun TimeCardEventEntity.toTimeCardEvent(): TimeCardEvent {
 }
 
 /**
- * Maps a [CreateEventLogEntryRequest] to the [EventLogEntryEntity.CreateEventLogEntryEntity] model.
+ * Create a [EventLogEntryEntity.CreateEventLogEntryEntity] from the provided parameters.
  */
 @OptIn(SupabaseModel::class)
-fun CreateEventLogEntryRequest.toEventLogEntryEntity(): EventLogEntryEntity.CreateEventLogEntryEntity {
+fun CreateEventLogEntryEntity(
+    staffId: StaffId?,
+    fallbackStaffName: String?,
+    propertyId: PropertyId,
+    type: EventLogEventType,
+    fallbackEventType: String?,
+    timestamp: Instant,
+    title: String,
+    description: String?,
+    unit: String,
+): EventLogEntryEntity.CreateEventLogEntryEntity {
     return EventLogEntryEntity.CreateEventLogEntryEntity(
         staffId = staffId?.staffId,
         fallbackStaffName = fallbackStaffName,

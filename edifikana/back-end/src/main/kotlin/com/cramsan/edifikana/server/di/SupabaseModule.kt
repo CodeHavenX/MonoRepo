@@ -38,13 +38,6 @@ import org.koin.dsl.module
 val SupabaseModule = module {
 
     single {
-        val disableSupabase: Boolean = get(named(Overrides.KEY_SUPABASE_DISABLE))
-        assertFalse(
-            disableSupabase,
-            TAG,
-            "SupabaseClient was loaded while in debug mode. This may be due to incorrectly configured DI.",
-        )
-
         val supabaseUrl: String = get(named(Overrides.KEY_SUPABASE_URL))
         val supabaseKey: String = get(named(Overrides.KEY_SUPABASE_KEY))
 

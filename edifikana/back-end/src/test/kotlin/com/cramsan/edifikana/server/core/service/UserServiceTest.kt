@@ -6,7 +6,6 @@ import com.cramsan.edifikana.server.core.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.core.datastore.UserDatastore
 import com.cramsan.edifikana.server.core.service.models.Organization
 import com.cramsan.edifikana.server.core.service.models.User
-import com.cramsan.edifikana.server.core.service.models.requests.CreateOrganizationRequest
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.framework.logging.EventLogger
@@ -65,10 +64,19 @@ class UserServiceTest {
         val firstName = "John"
         val lastName = "Doe"
         val user = mockk<User>()
-        coEvery { userDatastore.createUser(any()) } returns Result.success(user)
+        coEvery {
+            userDatastore.createUser(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+            )
+        } returns Result.success(user)
         every { user.id } returns UserId("id")
         coEvery {
-            organizationDatastore.createOrganization(CreateOrganizationRequest(UserId("id")))
+            organizationDatastore.createOrganization(UserId("id"))
         } returns Result.success(mockk())
 
         // Act
@@ -76,7 +84,16 @@ class UserServiceTest {
 
         // Assert
         assertTrue(result.isSuccess)
-        coVerify { userDatastore.createUser(match { it.email == email }) }
+        coVerify {
+            userDatastore.createUser(
+                email,
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+            )
+        }
         verify { organizationDatastore wasNot Called }
     }
 
@@ -95,11 +112,20 @@ class UserServiceTest {
         val organization = mockk<Organization>()
         val userId = UserId("id")
         val orgId = OrganizationId("orgId")
-        coEvery { userDatastore.createUser(any()) } returns Result.success(user)
+        coEvery {
+            userDatastore.createUser(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+            )
+        } returns Result.success(user)
         every { user.id } returns userId
         every { organization.id } returns orgId
         coEvery {
-            organizationDatastore.createOrganization(CreateOrganizationRequest(userId))
+            organizationDatastore.createOrganization(userId)
         } returns Result.success(organization)
         coEvery { organizationDatastore.addUserToOrganization(userId, orgId) } returns Result.success(Unit)
 
@@ -108,8 +134,17 @@ class UserServiceTest {
 
         // Assert
         assertTrue(result.isSuccess)
-        coVerify { userDatastore.createUser(match { it.email == email }) }
-        coVerify { organizationDatastore.createOrganization(CreateOrganizationRequest(userId)) }
+        coVerify {
+            userDatastore.createUser(
+                email,
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+            )
+        }
+        coVerify { organizationDatastore.createOrganization(userId) }
         coVerify { organizationDatastore.addUserToOrganization(userId, orgId) }
     }
 
@@ -128,7 +163,7 @@ class UserServiceTest {
 
         // Assert
         assertEquals(Result.success(user), result)
-        coVerify { userDatastore.getUser(match { it.id == userId }) }
+        coVerify { userDatastore.getUser(userId) }
     }
 
     /**
@@ -157,14 +192,24 @@ class UserServiceTest {
         val userId = UserId("id")
         val email = "new@email.com"
         val user = mockk<User>()
-        coEvery { userDatastore.updateUser(any()) } returns Result.success(user)
+        coEvery {
+            userDatastore.updateUser(
+                any(),
+                any(),
+            )
+        } returns Result.success(user)
 
         // Act
         val result = userService.updateUser(userId, email)
 
         // Assert
         assertEquals(Result.success(user), result)
-        coVerify { userDatastore.updateUser(match { it.id == userId && it.email == email }) }
+        coVerify {
+            userDatastore.updateUser(
+                userId,
+                email,
+            )
+        }
     }
 
     /**
@@ -181,7 +226,7 @@ class UserServiceTest {
 
         // Assert
         assertTrue(result.getOrThrow())
-        coVerify { userDatastore.deleteUser(match { it.id == userId }) }
+        coVerify { userDatastore.deleteUser(userId) }
     }
 
     /**
@@ -194,7 +239,7 @@ class UserServiceTest {
         val userId = UserId("id")
         val password = SecureString("newpass")
         val hashedPassword = SecureString("12345678")
-        coEvery { userDatastore.updatePassword(any()) } returns Result.success(Unit)
+        coEvery { userDatastore.updatePassword(any(), any(), any()) } returns Result.success(Unit)
 
         // Act
         val result = userService.updatePassword(
@@ -207,11 +252,9 @@ class UserServiceTest {
         assertTrue(result.isSuccess)
         coVerify {
             userDatastore.updatePassword(
-                match {
-                    it.id == userId &&
-                        it.newPassword == password &&
-                        it.currentHashedPassword == hashedPassword
-                }
+                userId,
+                hashedPassword,
+                password,
             )
         }
     }

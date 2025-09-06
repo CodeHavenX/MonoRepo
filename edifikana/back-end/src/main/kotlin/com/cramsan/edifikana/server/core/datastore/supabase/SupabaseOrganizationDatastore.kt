@@ -6,10 +6,6 @@ import com.cramsan.edifikana.server.core.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.core.datastore.supabase.models.OrganizationEntity
 import com.cramsan.edifikana.server.core.datastore.supabase.models.UserOrganizationMappingEntity
 import com.cramsan.edifikana.server.core.service.models.Organization
-import com.cramsan.edifikana.server.core.service.models.requests.CreateOrganizationRequest
-import com.cramsan.edifikana.server.core.service.models.requests.DeleteOrganizationRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetOrganizationRequest
-import com.cramsan.edifikana.server.core.service.models.requests.UpdateOrganizationRequest
 import com.cramsan.framework.annotations.SupabaseModel
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
@@ -25,11 +21,11 @@ class SupabaseOrganizationDatastore(
 ) : OrganizationDatastore {
 
     override suspend fun createOrganization(
-        request: CreateOrganizationRequest,
+        owner: UserId
     ): Result<Organization> = runSuspendCatching(
         TAG
     ) {
-        logD(TAG, "Creating organization: %s", request.owner)
+        logD(TAG, "Creating organization: %s", owner)
         val entity = OrganizationEntity.CreateOrganizationEntity
         val createdOrg = postgrest.from(OrganizationEntity.COLLECTION).insert(entity) { select() }
             .decodeSingle<OrganizationEntity>()
@@ -38,47 +34,48 @@ class SupabaseOrganizationDatastore(
     }
 
     override suspend fun getOrganization(
-        request: GetOrganizationRequest,
+        id: OrganizationId
     ): Result<Organization?> = runSuspendCatching(
         TAG
     ) {
-        logD(TAG, "Getting organization: %s", request.id)
+        logD(TAG, "Getting organization: %s", id)
         postgrest.from(OrganizationEntity.COLLECTION).select {
-            filter { eq("id", request.id.id) }
+            filter { eq("id", id.id) }
         }.decodeSingleOrNull<OrganizationEntity>()?.toOrganization()
     }
 
     override suspend fun updateOrganization(
-        request: UpdateOrganizationRequest,
+        id: OrganizationId,
+        owner: UserId
     ): Result<Organization> = runSuspendCatching(
         TAG
     ) {
-        logD(TAG, "Updating organization: %s", request.id)
+        logD(TAG, "Updating organization: %s", id)
         val updatedOrganization = OrganizationEntity(
-            id = request.id.id,
+            id = id.id,
         )
         val updated = postgrest.from(OrganizationEntity.COLLECTION).update(updatedOrganization) {
             select()
-            filter { eq("id", request.id.id) }
+            filter { eq("id", id.id) }
         }.decodeSingle<OrganizationEntity>()
         updated.toOrganization()
     }
 
     override suspend fun deleteOrganization(
-        request: DeleteOrganizationRequest,
+        id: OrganizationId
     ): Result<Boolean> = runSuspendCatching(
         TAG
     ) {
-        logD(TAG, "Deleting organization: %s", request.id)
+        logD(TAG, "Deleting organization: %s", id)
 
         val mapping = postgrest.from(UserOrganizationMappingEntity.COLLECTION).delete {
             select()
-            filter { eq("organization_id", request.id.id) }
+            filter { eq("organization_id", id.id) }
         }.decodeList<UserOrganizationMappingEntity>()
 
         val deleted = postgrest.from(OrganizationEntity.COLLECTION).delete {
             select()
-            filter { eq("id", request.id.id) }
+            filter { eq("id", id.id) }
         }.decodeSingleOrNull<OrganizationEntity>()
         deleted != null && mapping != null
     }

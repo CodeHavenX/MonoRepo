@@ -1,16 +1,17 @@
 package com.cramsan.edifikana.server.core.datastore.supabase
 
+import com.cramsan.edifikana.lib.model.EventLogEntryId
+import com.cramsan.edifikana.lib.model.EventLogEventType
+import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.server.core.datastore.EventLogDatastore
 import com.cramsan.edifikana.server.core.datastore.supabase.models.EventLogEntryEntity
 import com.cramsan.edifikana.server.core.service.models.EventLogEntry
-import com.cramsan.edifikana.server.core.service.models.requests.CreateEventLogEntryRequest
-import com.cramsan.edifikana.server.core.service.models.requests.DeleteEventLogEntryRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetEventLogEntryRequest
-import com.cramsan.edifikana.server.core.service.models.requests.UpdateEventLogEntryRequest
 import com.cramsan.framework.annotations.SupabaseModel
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.postgrest.Postgrest
+import kotlin.time.Instant
 
 /**
  * Datastore for managing event log entries.
@@ -24,10 +25,28 @@ class SupabaseEventLogDatastore(
      */
     @OptIn(SupabaseModel::class)
     override suspend fun createEventLogEntry(
-        request: CreateEventLogEntryRequest,
+        staffId: StaffId?,
+        fallbackStaffName: String?,
+        propertyId: PropertyId,
+        type: EventLogEventType,
+        fallbackEventType: String?,
+        timestamp: Instant,
+        title: String,
+        description: String?,
+        unit: String,
     ): Result<EventLogEntry> = runSuspendCatching(TAG) {
-        logD(TAG, "Creating event log entry: %s", request.title)
-        val requestEntity: EventLogEntryEntity.CreateEventLogEntryEntity = request.toEventLogEntryEntity()
+        logD(TAG, "Creating event log entry: %s", title)
+        val requestEntity: EventLogEntryEntity.CreateEventLogEntryEntity = CreateEventLogEntryEntity(
+            staffId = staffId,
+            fallbackStaffName = fallbackStaffName,
+            propertyId = propertyId,
+            type = type,
+            fallbackEventType = fallbackEventType,
+            timestamp = timestamp,
+            title = title,
+            description = description,
+            unit = unit
+        )
 
         val createdEventLogEntry = postgrest.from(EventLogEntryEntity.COLLECTION).insert(requestEntity) {
             select()
@@ -41,13 +60,13 @@ class SupabaseEventLogDatastore(
      */
     @OptIn(SupabaseModel::class)
     override suspend fun getEventLogEntry(
-        request: GetEventLogEntryRequest,
+        id: EventLogEntryId,
     ): Result<EventLogEntry?> = runSuspendCatching(TAG) {
-        logD(TAG, "Getting event log entry: %s", request.id)
+        logD(TAG, "Getting event log entry: %s", id)
 
         val eventLogEntryEntity = postgrest.from(EventLogEntryEntity.COLLECTION).select {
             filter {
-                EventLogEntryEntity::id eq request.id.eventLogEntryId
+                EventLogEntryEntity::id eq id.eventLogEntryId
             }
         }.decodeSingleOrNull<EventLogEntryEntity>()
 
@@ -68,22 +87,27 @@ class SupabaseEventLogDatastore(
      */
     @OptIn(SupabaseModel::class)
     override suspend fun updateEventLogEntry(
-        request: UpdateEventLogEntryRequest,
+        id: EventLogEntryId,
+        type: EventLogEventType?,
+        fallbackEventType: String?,
+        title: String?,
+        description: String?,
+        unit: String?,
     ): Result<EventLogEntry> = runSuspendCatching(TAG) {
-        logD(TAG, "Updating event log entry: %s", request.id)
+        logD(TAG, "Updating event log entry: %s", id)
 
         postgrest.from(EventLogEntryEntity.COLLECTION).update(
             {
-                request.type?.let { value -> EventLogEntryEntity::type setTo value }
-                request.fallbackEventType?.let { value -> EventLogEntryEntity::fallbackEventType setTo value }
-                request.title?.let { value -> EventLogEntryEntity::title setTo value }
-                request.description?.let { value -> EventLogEntryEntity::description setTo value }
-                request.unit?.let { value -> EventLogEntryEntity::unit setTo value }
+                type?.let { value -> EventLogEntryEntity::type setTo value }
+                fallbackEventType?.let { value -> EventLogEntryEntity::fallbackEventType setTo value }
+                title?.let { value -> EventLogEntryEntity::title setTo value }
+                description?.let { value -> EventLogEntryEntity::description setTo value }
+                unit?.let { value -> EventLogEntryEntity::unit setTo value }
             }
         ) {
             select()
             filter {
-                EventLogEntryEntity::id eq request.id
+                EventLogEntryEntity::id eq id.eventLogEntryId
             }
         }.decodeSingle<EventLogEntryEntity>().toEventLogEntry()
     }
@@ -93,14 +117,14 @@ class SupabaseEventLogDatastore(
      */
     @OptIn(SupabaseModel::class)
     override suspend fun deleteEventLogEntry(
-        request: DeleteEventLogEntryRequest,
+        id: EventLogEntryId,
     ): Result<Boolean> = runSuspendCatching(TAG) {
-        logD(TAG, "Deleting event log entry: %s", request.id)
+        logD(TAG, "Deleting event log entry: %s", id)
 
         postgrest.from(EventLogEntryEntity.COLLECTION).delete {
             select()
             filter {
-                EventLogEntryEntity::id eq request.id.eventLogEntryId
+                EventLogEntryEntity::id eq id.eventLogEntryId
             }
         }.decodeSingleOrNull<EventLogEntryEntity>() != null
     }

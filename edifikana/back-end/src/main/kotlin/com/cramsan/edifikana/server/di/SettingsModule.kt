@@ -7,11 +7,6 @@ import org.koin.core.scope.Scope
 import org.koin.dsl.module
 
 val SettingsModule = module {
-    factory<Boolean>(named(Overrides.KEY_SUPABASE_DISABLE)) {
-        val configuration = get<Configuration>()
-        configuration.readBoolean("edifikana.supabase.disable") ?: false
-    }
-
     factory<String>(named(Overrides.KEY_SUPABASE_KEY)) {
         val configuration = get<Configuration>()
         val configSetting = configuration.readString("edifikana${getStageSegment()}.supabase.key").orEmpty()

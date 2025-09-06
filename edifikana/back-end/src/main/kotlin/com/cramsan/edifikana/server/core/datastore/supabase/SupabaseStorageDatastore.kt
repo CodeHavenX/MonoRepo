@@ -3,8 +3,6 @@ package com.cramsan.edifikana.server.core.datastore.supabase
 import com.cramsan.edifikana.lib.model.AssetId
 import com.cramsan.edifikana.server.core.datastore.StorageDatastore
 import com.cramsan.edifikana.server.core.service.models.Asset
-import com.cramsan.edifikana.server.core.service.models.requests.CreateAssetRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetFileRequest
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.storage.Storage
@@ -20,15 +18,16 @@ class SupabaseStorageDatastore(
      * Creates a new asset for the given [request]. Returns the [Result] of the operation with the created [Asset].
      */
     override suspend fun createAsset(
-        request: CreateAssetRequest
+        fileName: String,
+        content: ByteArray,
     ): Result<Asset> = runSuspendCatching(TAG) {
-        logD(TAG, "Creating a new asset: %s", request.fileName)
+        logD(TAG, "Creating a new asset: %s", fileName)
         val bucket = storage.from("images/timecard-images")
-        bucket.upload(request.fileName, request.content) {
+        bucket.upload(fileName, content) {
             upsert = false
         }
-        val assetId = generateAssetId(bucket.bucketId, request.fileName)
-        Asset(assetId, request.fileName, null, request.content)
+        val assetId = generateAssetId(bucket.bucketId, fileName)
+        Asset(assetId, fileName, null, content)
     }
 
     /**
@@ -36,11 +35,11 @@ class SupabaseStorageDatastore(
      * if found.
      */
     override suspend fun getAsset(
-        request: GetFileRequest
+        id: AssetId,
     ): Result<Asset?> = runSuspendCatching(TAG) {
-        logD(TAG, "Getting assetId: %s", request.id)
+        logD(TAG, "Getting assetId: %s", id)
         // Extract the file's bucketId and file name from the assetId
-        val fileIdParts = extractFileIdPartsFromAssetId(request.id)
+        val fileIdParts = extractFileIdPartsFromAssetId(id)
         val bucketId = fileIdParts.dropLast(1).joinToString("/")
         val fileName = fileIdParts.last()
 
@@ -50,7 +49,7 @@ class SupabaseStorageDatastore(
         val bytes = bucket.downloadAuthenticated(fileName)
 
         // Create and return the Asset object
-        Asset(request.id, fileName, signedUrl, bytes)
+        Asset(id, fileName, signedUrl, bytes)
     }
 
     /**

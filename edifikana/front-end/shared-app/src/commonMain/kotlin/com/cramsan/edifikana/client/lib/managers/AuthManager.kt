@@ -2,6 +2,7 @@ package com.cramsan.edifikana.client.lib.managers
 
 import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.client.lib.service.AuthService
+import com.cramsan.edifikana.client.lib.service.OrganizationService
 import com.cramsan.edifikana.client.lib.service.PropertyService
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.framework.core.ManagerDependencies
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 class AuthManager(
     private val dependencies: ManagerDependencies,
     private val propertyService: PropertyService,
+    private val organizationService: OrganizationService,
     private val authService: AuthService,
 ) {
     /**
@@ -138,6 +140,19 @@ class AuthManager(
     ): Result<Unit> = dependencies.getOrCatch(TAG) {
         logI(TAG, "changePassword")
         authService.changePassword(currentPassword, newPassword).getOrThrow()
+    }
+
+    /**
+     * Invite a staff.
+     */
+    suspend fun inviteStaff(email: String) = dependencies.getOrCatch(TAG) {
+        logI(TAG, "inviteStaff")
+        val activeOrganization = organizationService.observableActiveOrganization.value?.id
+            ?: error("No active organization set")
+        authService.inviteStaff(
+            email = email,
+            organizationId = activeOrganization
+        ).getOrThrow()
     }
 
     companion object {

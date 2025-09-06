@@ -3,6 +3,7 @@ package com.cramsan.edifikana.client.lib.features.admin.addprimarystaff
 import app.cash.turbine.test
 import com.cramsan.edifikana.client.lib.features.management.addprimarystaff.AddPrimaryStaffViewModel
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
+import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
@@ -30,6 +31,7 @@ class AddPrimaryStaffViewModelTest : CoroutineTest() {
 
     private lateinit var viewModel: AddPrimaryStaffViewModel
     private lateinit var staffManager: StaffManager
+    private lateinit var authManager: AuthManager
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
     private lateinit var applicationEventReceiver: EventBus<ApplicationEvent>
     private lateinit var stringProvider: StringProvider
@@ -42,6 +44,7 @@ class AddPrimaryStaffViewModelTest : CoroutineTest() {
         windowEventBus = EventBus()
         exceptionHandler = CollectorCoroutineExceptionHandler()
         staffManager = mockk(relaxed = true)
+        authManager = mockk(relaxed = true)
         stringProvider = mockk()
         viewModel = AddPrimaryStaffViewModel(
             dependencies = ViewModelDependencies(
@@ -51,8 +54,8 @@ class AddPrimaryStaffViewModelTest : CoroutineTest() {
                 applicationEventReceiver = applicationEventReceiver,
                 windowEventReceiver = windowEventBus,
             ),
-            staffManager = staffManager,
             stringProvider = stringProvider,
+            authManager = authManager,
         )
     }
 
@@ -86,7 +89,7 @@ class AddPrimaryStaffViewModelTest : CoroutineTest() {
     @Test
     fun `test invite with valid email sends invite and navigates back`() = runCoroutineTest {
         val validEmail = "test@example.com"
-        coEvery { staffManager.inviteStaff(validEmail) } returns Result.success(Unit)
+        coEvery { authManager.inviteStaff(validEmail) } returns Result.success(Unit)
 
         val verificationJob = launch {
             windowEventBus.events.test {
@@ -103,14 +106,14 @@ class AddPrimaryStaffViewModelTest : CoroutineTest() {
         viewModel.invite(validEmail)
         verificationJob.join()
 
-        coVerify { staffManager.inviteStaff(validEmail) }
+        coVerify { authManager.inviteStaff(validEmail) }
         assertTrue(exceptionHandler.exceptions.isEmpty())
     }
 
     @Test
     fun `test invite with valid email but failure response updates UI state with error`() = runCoroutineTest {
         val validEmail = "test@example.com"
-        coEvery { staffManager.inviteStaff(validEmail) } returns Result.failure(Exception("Error"))
+        coEvery { authManager.inviteStaff(validEmail) } returns Result.failure(Exception("Error"))
         coEvery { stringProvider.getString(Res.string.text_there_was_an_error_processing_request) } returns "There was an error processing the request."
 
         viewModel.invite(validEmail)

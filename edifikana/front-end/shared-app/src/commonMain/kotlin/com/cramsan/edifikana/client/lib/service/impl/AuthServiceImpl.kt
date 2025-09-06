@@ -3,8 +3,10 @@ package com.cramsan.edifikana.client.lib.service.impl
 import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.client.lib.service.AuthService
 import com.cramsan.edifikana.lib.Routes
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.model.network.CreateUserNetworkRequest
+import com.cramsan.edifikana.lib.model.network.InviteUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdatePasswordNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
 import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
@@ -216,6 +218,21 @@ class AuthServiceImpl(
         } catch (e: AuthRestException) {
             logE(TAG, "Error signing in after changing password", e)
             throw ClientRequestExceptions.UnauthorizedException("ERROR: Invalid credentials after changing password.")
+        }
+    }
+
+    @OptIn(NetworkModel::class)
+    override suspend fun inviteStaff(email: String, organizationId: OrganizationId): Result<Unit> = runSuspendCatching(
+        TAG
+    ) {
+        http.post(Routes.User.PATH + "/invite") {
+            contentType(ContentType.Application.Json)
+            setBody(
+                InviteUserNetworkRequest(
+                    email = email,
+                    organizationId = organizationId.id
+                )
+            )
         }
     }
 

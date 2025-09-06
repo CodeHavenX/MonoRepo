@@ -1,10 +1,12 @@
 package com.cramsan.edifikana.server.core.datastore.supabase
 
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
 import com.cramsan.edifikana.lib.utils.requireNotBlank
 import com.cramsan.edifikana.server.core.datastore.UserDatastore
 import com.cramsan.edifikana.server.core.datastore.supabase.models.AuthMetadataEntity
+import com.cramsan.edifikana.server.core.datastore.supabase.models.InviteEntity
 import com.cramsan.edifikana.server.core.datastore.supabase.models.UserEntity
 import com.cramsan.edifikana.server.core.service.models.User
 import com.cramsan.framework.annotations.SupabaseModel
@@ -306,6 +308,22 @@ class SupabaseUserDatastore(
                 canPasswordAuth = true,
             )
         )
+    }
+
+    override suspend fun recordInvite(
+        email: String,
+        organizationId: OrganizationId,
+    ): Result<Unit> = runSuspendCatching(TAG) {
+        logD(TAG, "Recording invite for email: %s", email)
+
+        val inviteEntity = InviteEntity(
+            email = email,
+            organizationId = organizationId.id,
+        )
+
+        postgrest.from(InviteEntity.COLLECTION).insert(inviteEntity) {
+            select()
+        }.decodeSingle<InviteEntity>()
     }
 
     private suspend fun createUserEntity(

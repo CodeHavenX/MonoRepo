@@ -2,8 +2,10 @@ package com.cramsan.edifikana.server.core.controller
 
 import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.Routes.User.QueryParams.USER_ID
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.model.network.CreateUserNetworkRequest
+import com.cramsan.edifikana.lib.model.network.InviteUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdatePasswordNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdateUserNetworkRequest
 import com.cramsan.edifikana.lib.utils.requireAll
@@ -206,6 +208,26 @@ class UserController(
     }
 
     /**
+     * Handle a call to invite a user to the system via email.
+     */
+    @OptIn(NetworkModel::class)
+    suspend fun inviteUser(call: RoutingCall) = call.handleCall(TAG, "inviteUser", contextRetriever) { _ ->
+        val inviteRequest = call.receive<InviteUserNetworkRequest>()
+        val email = inviteRequest.email
+        val organizationId = OrganizationId(inviteRequest.organizationId)
+
+        userService.inviteUser(
+            email,
+            organizationId,
+        ).requireSuccess()
+
+        HttpResponse(
+            status = HttpStatusCode.OK,
+            body = "Invitation sent to $email",
+        )
+    }
+
+    /**
      * Registers the routes for the user controller. The [route] parameter is the root path for the controller.
      */
     override fun registerRoutes(route: Routing) {
@@ -230,6 +252,9 @@ class UserController(
             }
             post("associate") {
                 associate(call)
+            }
+            post("invite") {
+                inviteUser(call)
             }
         }
     }

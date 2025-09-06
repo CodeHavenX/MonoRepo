@@ -87,20 +87,5 @@ class StaffManagerTest : CoroutineTest() {
         assertTrue(result.isSuccess)
         coVerify { staffService.createStaff(request) }
     }
-
-    /**
-     * Tests that inviteStaff calls the service and returns success.
-     */
-    @Test
-    fun `inviteStaff calls service`() = runCoroutineTest {
-        // Arrange
-        val email = "test@example.com"
-        coEvery { staffService.inviteStaff(email) } returns Result.success(Unit)
-        // Act
-        val result = manager.inviteStaff(email)
-        // Assert
-        assertTrue(result.isSuccess)
-        coVerify { staffService.inviteStaff(email) }
-    }
 }
 

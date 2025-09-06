@@ -10,6 +10,9 @@ import com.cramsan.framework.core.runSuspendCatching
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 /**
  * Implementation of [OrganizationService] that interacts with the backend to fetch organization data.
@@ -17,6 +20,16 @@ import io.ktor.client.request.get
 class OrganizationServiceImpl(
     private val http: HttpClient,
 ) : OrganizationService {
+
+    private val _activeOrganization: MutableStateFlow<Organization?> = MutableStateFlow(null)
+
+    override val observableActiveOrganization: StateFlow<Organization?>
+        get() = _activeOrganization.asStateFlow()
+
+    override suspend fun setActiveOrganization(organizationId: OrganizationId): Result<Unit> = runSuspendCatching(TAG) {
+        val organizationResult = getOrganization(organizationId).getOrThrow()
+        _activeOrganization.value = organizationResult
+    }
 
     @OptIn(NetworkModel::class)
     override suspend fun getOrganization(

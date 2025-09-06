@@ -6,6 +6,7 @@ import com.cramsan.edifikana.client.lib.features.management.hub.HubViewModel
 import com.cramsan.edifikana.client.lib.features.management.hub.Tabs
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
+import com.cramsan.edifikana.client.lib.managers.OrganizationManager
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
 import com.cramsan.framework.core.compose.EventBus
@@ -16,6 +17,7 @@ import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.test.CoroutineTest
+import io.mockk.mockk
 import kotlinx.coroutines.launch
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
@@ -27,6 +29,7 @@ class HubViewModelTest : CoroutineTest() {
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
     private lateinit var windowEventBus: EventBus<WindowEvent>
     private lateinit var applicationEventReceiver: EventBus<ApplicationEvent>
+    private lateinit var organizationManager: OrganizationManager
 
     @BeforeEach
     fun setupTest() {
@@ -34,6 +37,7 @@ class HubViewModelTest : CoroutineTest() {
         applicationEventReceiver = EventBus()
         windowEventBus = EventBus()
         exceptionHandler = CollectorCoroutineExceptionHandler()
+        organizationManager = mockk()
         viewModel = HubViewModel(
             dependencies = ViewModelDependencies(
                 appScope = testCoroutineScope,
@@ -41,7 +45,8 @@ class HubViewModelTest : CoroutineTest() {
                 coroutineExceptionHandler = exceptionHandler,
                 windowEventReceiver = windowEventBus,
                 applicationEventReceiver = applicationEventReceiver,
-            )
+            ),
+            organizationManager = organizationManager
         )
     }
 

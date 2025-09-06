@@ -78,7 +78,7 @@ class AddPropertyViewModelTest : CoroutineTest() {
             address = address,
             organizationId = organizationId,
         )
-        coEvery { propertyManager.addProperty(propertyName, address, organizationId) } returns Result.success(
+        coEvery { propertyManager.addProperty(propertyName, address) } returns Result.success(
             newProperty
         )
 
@@ -97,7 +97,7 @@ class AddPropertyViewModelTest : CoroutineTest() {
         viewModel.addProperty(propertyName, address)
         verificationJob.join()
 
-        coVerify { propertyManager.addProperty(propertyName, address, organizationId) }
+        coVerify { propertyManager.addProperty(propertyName, address) }
         assertTrue(exceptionHandler.exceptions.isEmpty())
     }
 
@@ -105,9 +105,8 @@ class AddPropertyViewModelTest : CoroutineTest() {
     fun `test addProperty with failure updates UI state with error`() = runCoroutineTest {
         val propertyName = "Test Property"
         val address = "123 Test Street"
-        val organizationId = OrganizationId("org_id_1")
         coEvery {
-            propertyManager.addProperty(propertyName, address, organizationId)
+            propertyManager.addProperty(propertyName, address)
         } returns Result.failure(Exception("Error"))
 
         viewModel.addProperty(propertyName, address)

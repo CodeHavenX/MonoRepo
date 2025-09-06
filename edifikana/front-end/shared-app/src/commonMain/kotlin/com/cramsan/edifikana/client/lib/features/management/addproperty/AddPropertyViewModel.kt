@@ -2,7 +2,6 @@ package com.cramsan.edifikana.client.lib.features.management.addproperty
 
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
-import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import kotlinx.coroutines.launch
@@ -30,13 +29,11 @@ class AddPropertyViewModel(
     /**
      * Add a new property.
      */
-    // TODO: ADD UI CODE TO SET THE ORG ID.
-    fun addProperty(propertyName: String, address: String, orgId: OrganizationId = OrganizationId("org_id_1")) {
+    fun addProperty(propertyName: String, address: String) {
         viewModelScope.launch {
             updateUiState { it.copy(isLoading = true) }
-            val newProperty = propertyManager.addProperty(propertyName, address, orgId).onFailure {
+            val newProperty = propertyManager.addProperty(propertyName, address).onFailure {
                 updateUiState { it.copy(isLoading = false) }
-                TODO("Handle error when adding property")
             }.getOrThrow()
 
             emitWindowEvent(

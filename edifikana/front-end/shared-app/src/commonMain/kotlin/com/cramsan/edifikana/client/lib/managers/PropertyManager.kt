@@ -1,8 +1,8 @@
 package com.cramsan.edifikana.client.lib.managers
 
 import com.cramsan.edifikana.client.lib.models.PropertyModel
+import com.cramsan.edifikana.client.lib.service.OrganizationService
 import com.cramsan.edifikana.client.lib.service.PropertyService
-import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.getOrCatch
@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
  */
 class PropertyManager(
     private val propertyService: PropertyService,
+    private val organizationService: OrganizationService,
     private val dependencies: ManagerDependencies,
 ) {
     /**
@@ -51,9 +52,11 @@ class PropertyManager(
     suspend fun addProperty(
         propertyName: String,
         address: String,
-        organizationId: OrganizationId,
     ) = dependencies.getOrCatch(TAG) {
         logI(TAG, "addProperty")
+        val organizationId = organizationService.observableActiveOrganization.value?.id
+            ?: error("No active organization set")
+
         propertyService.addProperty(propertyName, address, organizationId).getOrThrow()
     }
 

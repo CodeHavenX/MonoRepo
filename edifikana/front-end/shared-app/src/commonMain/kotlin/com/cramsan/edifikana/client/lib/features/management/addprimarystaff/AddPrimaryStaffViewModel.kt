@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.management.addprimarystaff
 
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
-import com.cramsan.edifikana.client.lib.managers.StaffManager
+import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.core.compose.resources.StringProvider
@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
  **/
 class AddPrimaryStaffViewModel(
     dependencies: ViewModelDependencies,
-    private val staffManager: StaffManager,
+    private val authManager: AuthManager,
     private val stringProvider: StringProvider,
 ) : BaseViewModel<AddPrimaryStaffEvent, AddPrimaryStaffUIState>(
     dependencies,
@@ -49,7 +49,7 @@ class AddPrimaryStaffViewModel(
             }
             updateUiState { it.copy(isLoading = true, errorMessage = null) }
 
-            val result = staffManager.inviteStaff(email)
+            val result = authManager.inviteStaff(email)
 
             if (result.isFailure) {
                 val errorMessage = stringProvider.getString(Res.string.text_there_was_an_error_processing_request)

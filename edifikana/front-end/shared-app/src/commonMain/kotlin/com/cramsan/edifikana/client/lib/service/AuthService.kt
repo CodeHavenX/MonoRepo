@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.service
 
 import com.cramsan.edifikana.client.lib.models.UserModel
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
@@ -85,4 +86,9 @@ interface AuthService {
      */
     @OptIn(SecureStringAccess::class)
     suspend fun changePassword(currentPassword: SecureString, newPassword: SecureString): Result<Unit>
+
+    /**
+     * Invite a staff member to the organization with the provided [organizationId] using the given [email].
+     */
+    suspend fun inviteStaff(email: String, organizationId: OrganizationId): Result<Unit>
 }

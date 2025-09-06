@@ -1,6 +1,8 @@
 package com.cramsan.edifikana.client.lib.managers
 
+import com.cramsan.edifikana.client.lib.models.Organization
 import com.cramsan.edifikana.client.lib.models.PropertyModel
+import com.cramsan.edifikana.client.lib.service.OrganizationService
 import com.cramsan.edifikana.client.lib.service.PropertyService
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
@@ -27,6 +29,7 @@ class PropertyManagerTest : CoroutineTest() {
     private lateinit var propertyService: PropertyService
     private lateinit var dependencies: ManagerDependencies
     private lateinit var manager: PropertyManager
+    private lateinit var organizationService: OrganizationService
 
     /**
      * Sets up the test environment before each test.
@@ -35,12 +38,13 @@ class PropertyManagerTest : CoroutineTest() {
     fun setup() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         propertyService = mockk()
+        organizationService = mockk()
 
         dependencies = mockk(relaxed = true)
         every { dependencies.appScope } returns testCoroutineScope
         every { dependencies.dispatcherProvider } returns UnifiedDispatcherProvider(testCoroutineDispatcher)
 
-        manager = PropertyManager(propertyService, dependencies)
+        manager = PropertyManager(propertyService, organizationService, dependencies)
     }
 
     /**
@@ -115,9 +119,10 @@ class PropertyManagerTest : CoroutineTest() {
         val propertyName = "Cenit"
         val address = "Jiron Juan de Arona 123"
         val organizationId = OrganizationId("org-1")
+        every { organizationService.observableActiveOrganization } returns MutableStateFlow(Organization(organizationId))
         coEvery { propertyService.addProperty(propertyName, address, organizationId) } returns Result.success(mockk())
         // Act
-        val result = manager.addProperty(propertyName, address, organizationId)
+        val result = manager.addProperty(propertyName, address)
         // Assert
         assertTrue(result.isSuccess)
         coVerify { propertyService.addProperty(propertyName, address, organizationId) }

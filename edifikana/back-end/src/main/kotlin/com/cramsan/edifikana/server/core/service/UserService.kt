@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.core.service
 
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.core.datastore.UserDatastore
@@ -137,6 +138,17 @@ class UserService(
             currentHashedPassword = currentHashedPassword,
             newPassword = newPassword,
         )
+    }
+
+    /**
+     * Records an invite for a user with the provided [email] and [organizationId].
+     */
+    suspend fun inviteUser(
+        email: String,
+        organizationId: OrganizationId,
+    ): Result<Unit> {
+        logD(TAG, "inviteUser")
+        return userDatastore.recordInvite(email, organizationId)
     }
 
     companion object {

@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.management.hub
 
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.framework.core.compose.ViewModelUIState
 import org.jetbrains.compose.resources.StringResource
 
@@ -11,14 +12,25 @@ import org.jetbrains.compose.resources.StringResource
 data class HubUIModel(
     val label: String,
     val selectedTab: Tabs,
+    val availableOrganizations: List<OrganizationUIModel>,
 ) : ViewModelUIState {
     companion object {
         val Empty = HubUIModel(
             label = "",
             selectedTab = Tabs.Properties,
+            availableOrganizations = listOf(),
         )
     }
 }
+
+/**
+ * UI model for an organization in the list of available organizations.
+ */
+data class OrganizationUIModel(
+    val id: OrganizationId,
+    val name: String,
+    val selected: Boolean = false,
+)
 
 /**
  * UI model for the bottom bar.

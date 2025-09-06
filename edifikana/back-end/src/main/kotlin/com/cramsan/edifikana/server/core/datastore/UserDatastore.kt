@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.server.core.datastore
 
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.server.core.service.models.User
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
@@ -65,5 +66,13 @@ interface UserDatastore {
         id: UserId,
         currentHashedPassword: SecureString?,
         newPassword: SecureString,
+    ): Result<Unit>
+
+    /**
+     * Records an invite for a user with the given [email] and [organizationId]. Returns the [Result] of the operation.
+     */
+    suspend fun recordInvite(
+        email: String,
+        organizationId: OrganizationId,
     ): Result<Unit>
 }

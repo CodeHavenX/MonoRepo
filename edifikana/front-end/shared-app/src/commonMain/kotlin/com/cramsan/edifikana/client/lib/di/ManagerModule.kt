@@ -2,6 +2,7 @@ package com.cramsan.edifikana.client.lib.di
 
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.EventLogManager
+import com.cramsan.edifikana.client.lib.managers.OrganizationManager
 import com.cramsan.edifikana.client.lib.managers.PreferencesManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.managers.StaffManager
@@ -13,12 +14,14 @@ import com.cramsan.edifikana.client.lib.managers.remoteconfig.ImageConfig
 import com.cramsan.edifikana.client.lib.managers.remoteconfig.RemoteConfig
 import com.cramsan.edifikana.client.lib.service.AuthService
 import com.cramsan.edifikana.client.lib.service.EventLogService
+import com.cramsan.edifikana.client.lib.service.OrganizationService
 import com.cramsan.edifikana.client.lib.service.PropertyService
 import com.cramsan.edifikana.client.lib.service.StaffService
 import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.edifikana.client.lib.service.TimeCardService
 import com.cramsan.edifikana.client.lib.service.impl.AuthServiceImpl
 import com.cramsan.edifikana.client.lib.service.impl.EventLogServiceImpl
+import com.cramsan.edifikana.client.lib.service.impl.OrganizationServiceImpl
 import com.cramsan.edifikana.client.lib.service.impl.PropertyServiceImpl
 import com.cramsan.edifikana.client.lib.service.impl.StaffServiceImpl
 import com.cramsan.edifikana.client.lib.service.impl.StorageServiceImpl
@@ -37,6 +40,7 @@ internal val ManagerModule = module {
     singleOf(::AuthManager)
     singleOf(::PropertyManager)
     singleOf(::PreferencesManager)
+    singleOf(::OrganizationManager)
 
     single {
         RemoteConfig(
@@ -64,27 +68,24 @@ internal val ManagerModule = module {
     // Services
     singleOf(::AuthServiceImpl) {
         bind<AuthService>()
-        bind<AuthServiceImpl>()
     }
     singleOf(::EventLogServiceImpl) {
-        bind<EventLogServiceImpl>()
         bind<EventLogService>()
     }
     singleOf(::PropertyServiceImpl) {
-        bind<PropertyServiceImpl>()
         bind<PropertyService>()
     }
     singleOf(::StorageServiceImpl) {
         bind<StorageService>()
-        bind<StorageServiceImpl>()
     }
     singleOf(::TimeCardServiceImpl) {
-        bind<TimeCardServiceImpl>()
         bind<TimeCardService>()
     }
     singleOf(::StaffServiceImpl) {
-        bind<StaffServiceImpl>()
         bind<StaffService>()
+    }
+    singleOf(::OrganizationServiceImpl) {
+        bind<OrganizationService>()
     }
 }
 

@@ -1,6 +1,6 @@
 @file:Suppress("MagicNumber")
 
-package com.cramsan.edifikana.client.lib.service.dummy
+package com.cramsan.edifikana.client.lib.data
 
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.client.lib.models.PropertyModel

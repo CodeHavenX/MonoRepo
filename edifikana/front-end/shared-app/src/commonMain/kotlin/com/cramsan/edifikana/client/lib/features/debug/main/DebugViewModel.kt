@@ -123,8 +123,6 @@ class DebugViewModel(
     @Suppress("MaxLineLength", "MaximumLineLength", "LongMethod")
     private fun loadDataImpl() {
         viewModelScope.launch {
-            val disableSupabase = preferencesManager.isSupabaseDisabled().getOrThrow()
-            val disableBE = preferencesManager.isBackendDisabled().getOrThrow()
             val supabaseOverrideEnabled = preferencesManager.isSupabaseOverrideEnabled().getOrThrow()
             val supabaseOverrideUrl = preferencesManager.getSupabaseOverrideUrl().getOrThrow()
             val supabaseOverrideKey = preferencesManager.getSupabaseOverrideKey().getOrThrow()
@@ -137,19 +135,6 @@ class DebugViewModel(
             updateUiState {
                 it.copy(
                     fields = listOf(
-                        Field.Label("Application Settings"),
-                        Field.BooleanField(
-                            title = "Disable Supabase",
-                            subtitle = "This will allow this client to use fake a Supabase dependency.",
-                            key = Overrides.KEY_DISABLE_SUPABASE.name,
-                            value = disableSupabase
-                        ),
-                        Field.BooleanField(
-                            title = "Disable BackEnd(requires restart)",
-                            subtitle = "This will allow this client not make calls to the BE.",
-                            key = Overrides.KEY_DISABLE_BE.name,
-                            value = disableBE,
-                        ),
                         Field.Divider,
                         Field.Label(
                             "Supabase Settings",

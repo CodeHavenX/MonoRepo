@@ -55,13 +55,6 @@ class PreferencesManager(
     }
 
     /**
-     * Determine if we should disable Supabase.
-     */
-    suspend fun isSupabaseDisabled(): Result<Boolean> = dependencies.getOrCatch(TAG) {
-        PreferencesMapper.isSupabaseDisabled(preferences)
-    }
-
-    /**
      * Determine if we should halt the current thread when an assert fails.
      */
     suspend fun haltOnFailure(): Result<Boolean> = dependencies.getOrCatch(TAG) {
@@ -90,13 +83,6 @@ class PreferencesManager(
      */
     suspend fun isSupabaseOverrideEnabled(): Result<Boolean> = dependencies.getOrCatch(TAG) {
         PreferencesMapper.isSupabaseOverrideEnabled(preferences)
-    }
-
-    /**
-     * Determine if we should disable the backend.
-     */
-    suspend fun isBackendDisabled(): Result<Boolean> = dependencies.getOrCatch(TAG) {
-        PreferencesMapper.isBackendDisabled(preferences)
     }
 
     /**

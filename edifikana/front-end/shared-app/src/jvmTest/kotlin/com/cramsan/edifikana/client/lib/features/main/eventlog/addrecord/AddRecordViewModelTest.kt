@@ -1,13 +1,13 @@
 package com.cramsan.edifikana.client.lib.features.main.eventlog.addrecord
 
 import app.cash.turbine.test
+import com.cramsan.edifikana.client.lib.data.STAFF_1
 import com.cramsan.edifikana.client.lib.features.management.addrecord.AddRecordViewModel
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.EventLogManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
-import com.cramsan.edifikana.client.lib.service.dummy.STAFF_1
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId

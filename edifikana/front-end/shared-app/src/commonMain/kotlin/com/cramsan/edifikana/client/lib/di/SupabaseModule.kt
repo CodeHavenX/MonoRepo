@@ -1,7 +1,6 @@
 package com.cramsan.edifikana.client.lib.di
 
-import com.cramsan.edifikana.client.lib.settings.Overrides
-import com.cramsan.framework.assertlib.assertFalse
+import com.cramsan.edifikana.client.lib.ui.di.Coil3Provider
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.annotations.SupabaseExperimental
 import io.github.jan.supabase.auth.Auth
@@ -22,13 +21,6 @@ import org.koin.dsl.module
 @OptIn(SupabaseExperimental::class)
 internal val SupabaseModule = module {
     single {
-        val disableSupabase = get<Boolean>(named(Overrides.KEY_DISABLE_SUPABASE))
-        assertFalse(
-            disableSupabase,
-            TAG,
-            "SupabaseClient was loaded while in debug mode. This may be due to incorrectly configured DI.",
-        )
-
         val supabaseUrl = get<String>(named(EDIFIKANA_SUPABASE_URL))
         val supabaseKey = get<String>(named(EDIFIKANA_SUPABASE_KEY))
 
@@ -50,21 +42,23 @@ internal val SupabaseModule = module {
         }
     }
 
-    single {
+    single<Coil3Provider> {
+        Coil3Provider(get<Coil3Integration>())
+    }
+
+    single<Auth> {
         get<SupabaseClient>().auth
     }
 
-    single {
+    single<ComposeAuth> {
         get<SupabaseClient>().composeAuth
     }
 
-    single {
+    single<Storage> {
         get<SupabaseClient>().storage
     }
 
-    single {
+    single<Coil3Integration> {
         get<SupabaseClient>().coil3
     }
 }
-
-private const val TAG = "SupabaseModule"

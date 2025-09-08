@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
+
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
@@ -40,6 +42,10 @@ tasks.register<Test>("integTest") {
     classpath = sourceSets["integTest"].runtimeClasspath
     shouldRunAfter("test")
     useJUnitPlatform()
+}
+
+tasks.named<KotlinCompilationTask<*>>("compileKotlin").configure {
+    compilerOptions.optIn.add("kotlin.time.ExperimentalTime")
 }
 
 // When the `release` task is run, it will compile both the main and integTest sources

@@ -6,11 +6,6 @@ import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.controller.authentication.ClientContext
 import com.cramsan.edifikana.server.core.datastore.PropertyDatastore
 import com.cramsan.edifikana.server.core.service.models.Property
-import com.cramsan.edifikana.server.core.service.models.requests.CreatePropertyRequest
-import com.cramsan.edifikana.server.core.service.models.requests.DeletePropertyRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetPropertyListsRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetPropertyRequest
-import com.cramsan.edifikana.server.core.service.models.requests.UpdatePropertyRequest
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
@@ -63,7 +58,14 @@ class PropertyServiceTest {
         val userId = UserId("TestUser")
         val organizationId = OrganizationId("TestOrg")
         coEvery { clientContext.userId } returns userId
-        coEvery { propertyDatastore.createProperty(any()) } returns Result.success(property)
+        coEvery {
+            propertyDatastore.createProperty(
+                any(),
+                any(),
+                any(),
+                any(),
+            )
+        } returns Result.success(property)
 
         // Act
         val result = propertyService.createProperty(name, address, organizationId, clientContext)
@@ -72,12 +74,10 @@ class PropertyServiceTest {
         assertEquals(property, result)
         coVerify {
             propertyDatastore.createProperty(
-                CreatePropertyRequest(
-                    name,
-                    address,
-                    userId,
-                    organizationId,
-                )
+                name,
+                address,
+                userId,
+                organizationId,
             )
         }
     }
@@ -97,7 +97,7 @@ class PropertyServiceTest {
 
         // Assert
         assertEquals(property, result)
-        coVerify { propertyDatastore.getProperty(GetPropertyRequest(propertyId)) }
+        coVerify { propertyDatastore.getProperty(propertyId) }
     }
 
     /**
@@ -114,7 +114,7 @@ class PropertyServiceTest {
 
         // Assert
         assertNull(result)
-        coVerify { propertyDatastore.getProperty(GetPropertyRequest(propertyId)) }
+        coVerify { propertyDatastore.getProperty(propertyId) }
     }
 
     /**
@@ -124,7 +124,7 @@ class PropertyServiceTest {
     fun `getProperties should call propertyDatastore and return list`() = runTest {
         // Arrange
         val propertyList = listOf(mockk<Property>(), mockk<Property>())
-        coEvery { propertyDatastore.getProperties(GetPropertyListsRequest(UserId("TestId1"))) } returns Result.success(
+        coEvery { propertyDatastore.getProperties(UserId("TestId1")) } returns Result.success(
             propertyList
         )
 
@@ -133,7 +133,7 @@ class PropertyServiceTest {
 
         // Assert
         assertEquals(propertyList, result)
-        coVerify { propertyDatastore.getProperties(GetPropertyListsRequest(UserId("TestId1"))) }
+        coVerify { propertyDatastore.getProperties(UserId("TestId1")) }
     }
 
     /**
@@ -145,14 +145,14 @@ class PropertyServiceTest {
         val propertyId = PropertyId("Edificio")
         val name = "Updated Name"
         val property = mockk<Property>()
-        coEvery { propertyDatastore.updateProperty(any()) } returns Result.success(property)
+        coEvery { propertyDatastore.updateProperty(any(), any()) } returns Result.success(property)
 
         // Act
         val result = propertyService.updateProperty(propertyId, name)
 
         // Assert
         assertEquals(property, result)
-        coVerify { propertyDatastore.updateProperty(UpdatePropertyRequest(propertyId, name)) }
+        coVerify { propertyDatastore.updateProperty(propertyId, name) }
     }
 
     /**
@@ -169,6 +169,6 @@ class PropertyServiceTest {
 
         // Assert
         assertEquals(true, result)
-        coVerify { propertyDatastore.deleteProperty(DeletePropertyRequest(propertyId)) }
+        coVerify { propertyDatastore.deleteProperty(propertyId) }
     }
 }

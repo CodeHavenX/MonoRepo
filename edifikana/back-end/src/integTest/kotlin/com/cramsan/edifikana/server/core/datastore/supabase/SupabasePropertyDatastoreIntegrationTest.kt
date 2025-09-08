@@ -4,11 +4,6 @@ import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.service.models.Property
-import com.cramsan.edifikana.server.core.service.models.requests.CreatePropertyRequest
-import com.cramsan.edifikana.server.core.service.models.requests.DeletePropertyRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetPropertyListsRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetPropertyRequest
-import com.cramsan.edifikana.server.core.service.models.requests.UpdatePropertyRequest
 import com.cramsan.framework.utils.uuid.UUID
 import kotlin.test.BeforeTest
 import kotlin.test.Ignore
@@ -34,51 +29,50 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `createProperty should return property on success`() = runCoroutineTest {
         // Arrange
-        val request = CreatePropertyRequest(
+
+        // Act
+        val result = propertyDatastore.createProperty(
             name = "${test_prefix}_Property",
             address = "123 Test St, Test City, TC 12345",
             creatorUserId = testUserId!!,
             organizationId = testOrg!!,
-        )
-        // Act
-        val result = propertyDatastore.createProperty(request).registerPropertyForDeletion()
+        ).registerPropertyForDeletion()
         // Assert
         assertTrue(result.isSuccess)
         assertEquals(
             Property(
                 id = result.getOrNull()!!.id,
-                name = request.name,
-                address = request.address,
+                name = "${test_prefix}_Property",
+                address = "123 Test St, Test City, TC 12345",
                 organizationId = testOrg!!,
             ),
             result.getOrNull(),
         )
 
         // Clean up
-        propertyDatastore.deleteProperty(DeletePropertyRequest(result.getOrNull()!!.id)).getOrThrow()
+        propertyDatastore.deleteProperty(result.getOrNull()!!.id).getOrThrow()
     }
 
     @Test
     fun `getProperty should return created property`() = runCoroutineTest {
         // Arrange
-        val createRequest = CreatePropertyRequest(
+
+        // Act
+        val createResult = propertyDatastore.createProperty(
             name = "${test_prefix}_GetProperty",
             address = "456 Example Ave, Sample Town, ST 67890",
             creatorUserId = testUserId!!,
             organizationId = testOrg!!,
-        )
-
-        // Act
-        val createResult = propertyDatastore.createProperty(createRequest).registerPropertyForDeletion()
+        ).registerPropertyForDeletion()
         assertTrue(createResult.isSuccess)
         val property = createResult.getOrNull()!!
-        val getResult = propertyDatastore.getProperty(GetPropertyRequest(property.id))
+        val getResult = propertyDatastore.getProperty(property.id)
 
         // Assert
         assertTrue(getResult.isSuccess)
         val fetched = getResult.getOrNull()
         assertNotNull(fetched)
-        assertTrue(fetched.name == createRequest.name)
+        assertTrue(fetched.name == "${test_prefix}_GetProperty")
 
         // Clean up
     }
@@ -87,82 +81,77 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `getProperties should return all properties for user`() = runCoroutineTest {
         // Arrange
-        val request1 = CreatePropertyRequest(
+
+        // Act
+        val result1 = propertyDatastore.createProperty(
             name = "${test_prefix}_PropertyA",
             address = "789 Sample Rd, Example City, EC 10112",
             creatorUserId = testUserId!!,
             organizationId = testOrg!!,
-        )
-        val request2 = CreatePropertyRequest(
+        ).registerPropertyForDeletion()
+        val result2 = propertyDatastore.createProperty(
             name = "${test_prefix}_PropertyB",
             address = "101 Sample Blvd, Testville, TV 13141",
             creatorUserId = testUserId!!,
             organizationId = testOrg!!,
-        )
-
-        // Act
-        val result1 = propertyDatastore.createProperty(request1).registerPropertyForDeletion()
-        val result2 = propertyDatastore.createProperty(request2).registerPropertyForDeletion()
+        ).registerPropertyForDeletion()
         assertTrue(result1.isSuccess)
         assertTrue(result2.isSuccess)
-        val getAllResult = propertyDatastore.getProperties(GetPropertyListsRequest(userId = testUserId!!))
+        val getAllResult = propertyDatastore.getProperties(userId = testUserId!!)
 
         // Assert
         assertTrue(getAllResult.isSuccess)
         val properties = getAllResult.getOrNull()
         assertNotNull(properties)
         val names = properties!!.map { it.name }
-        assertTrue(names.contains(request1.name))
-        assertTrue(names.contains(request2.name))
+        assertTrue(names.contains( "${test_prefix}_PropertyA"))
+        assertTrue(names.contains( "${test_prefix}_PropertyB"))
     }
 
     @Test
     fun `updateProperty should update property fields`() = runCoroutineTest {
         // Arrange
-        val createRequest = CreatePropertyRequest(
+        val createResult = propertyDatastore.createProperty(
             name = "${test_prefix}_ToUpdate",
             address = "123 Update St, Update City, UC 12345",
             creatorUserId = testUserId!!,
             organizationId = testOrg!!,
         )
-        val createResult = propertyDatastore.createProperty(createRequest)
         assertTrue(createResult.isSuccess)
         val property = createResult.getOrNull()!!
-        val updateRequest = UpdatePropertyRequest(
-            propertyId = property.id,
-            name = "${test_prefix}_UpdatedName",
-        )
 
         // Act
-        val updateResult = propertyDatastore.updateProperty(updateRequest).registerPropertyForDeletion()
+        val updateResult = propertyDatastore.updateProperty(
+            propertyId = property.id,
+            name = "${test_prefix}_UpdatedName",
+        ).registerPropertyForDeletion()
 
         // Assert
         assertTrue(updateResult.isSuccess)
         val updated = updateResult.getOrNull()
         assertNotNull(updated)
-        assertTrue(updated.name == updateRequest.name)
+        assertTrue(updated.name == "${test_prefix}_UpdatedName")
     }
 
     @Test
     fun `deleteProperty should remove property`() = runCoroutineTest {
         // Arrange
-        val createRequest = CreatePropertyRequest(
+        val createResult = propertyDatastore.createProperty(
             name = "${test_prefix}_ToDelete",
             address = "789 Delete St, Delete City, DC 67890",
             creatorUserId = testUserId!!,
             organizationId = testOrg!!,
         )
-        val createResult = propertyDatastore.createProperty(createRequest)
         assertTrue(createResult.isSuccess)
         val property = createResult.getOrNull()!!
 
         // Act
-        val deleteResult = propertyDatastore.deleteProperty(DeletePropertyRequest(property.id))
+        val deleteResult = propertyDatastore.deleteProperty(property.id)
 
         // Assert
         assertTrue(deleteResult.isSuccess)
         assertTrue(deleteResult.getOrNull() == true)
-        val getResult = propertyDatastore.getProperty(GetPropertyRequest(property.id))
+        val getResult = propertyDatastore.getProperty(property.id)
         assertTrue(getResult.isSuccess)
         assertNull(getResult.getOrNull())
     }
@@ -173,7 +162,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val fakeId = PropertyId("fake-${test_prefix}")
 
         // Act
-        val deleteResult = propertyDatastore.deleteProperty(DeletePropertyRequest(fakeId))
+        val deleteResult = propertyDatastore.deleteProperty(fakeId)
 
         // Assert
         assertTrue(deleteResult.isFailure || deleteResult.getOrNull() == false)

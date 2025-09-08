@@ -1,11 +1,9 @@
 package com.cramsan.edifikana.server.core.datastore
 
+import com.cramsan.edifikana.lib.model.OrganizationId
+import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.service.models.Property
-import com.cramsan.edifikana.server.core.service.models.requests.CreatePropertyRequest
-import com.cramsan.edifikana.server.core.service.models.requests.DeletePropertyRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetPropertyListsRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetPropertyRequest
-import com.cramsan.edifikana.server.core.service.models.requests.UpdatePropertyRequest
 
 /**
  * Interface for interacting with the property database.
@@ -13,37 +11,41 @@ import com.cramsan.edifikana.server.core.service.models.requests.UpdatePropertyR
 interface PropertyDatastore {
 
     /**
-     * Creates a new property for the given [request]. Returns the [Result] of the operation with the created [Property].
+     * Creates a new property. Returns the [Result] of the operation with the created [Property].
      */
     suspend fun createProperty(
-        request: CreatePropertyRequest,
+        name: String,
+        address: String,
+        creatorUserId: UserId,
+        organizationId: OrganizationId,
     ): Result<Property>
 
     /**
-     * Retrieves a property for the given [request]. Returns the [Result] of the operation with the fetched [Property] if found.
+     * Retrieves a property by its ID. Returns the [Result] of the operation with the fetched [Property] if found.
      */
     suspend fun getProperty(
-        request: GetPropertyRequest,
+        propertyId: PropertyId,
     ): Result<Property?>
 
     /**
-     * Retrieves all properties. Returns the [Result] of the operation with a list of [Property].
+     * Retrieves all properties for a user. Returns the [Result] of the operation with a list of [Property].
      */
     suspend fun getProperties(
-        request: GetPropertyListsRequest,
+        userId: UserId,
     ): Result<List<Property>>
 
     /**
-     * Updates a property with the given [request]. Returns the [Result] of the operation with the updated [Property].
+     * Updates a property with the given ID. Returns the [Result] of the operation with the updated [Property].
      */
     suspend fun updateProperty(
-        request: UpdatePropertyRequest,
+        propertyId: PropertyId,
+        name: String?,
     ): Result<Property>
 
     /**
-     * Deletes a property with the given [request]. Returns the [Result] of the operation with a [Boolean] indicating success.
+     * Deletes a property with the given ID. Returns the [Result] of the operation with a [Boolean] indicating success.
      */
     suspend fun deleteProperty(
-        request: DeletePropertyRequest,
+        propertyId: PropertyId,
     ): Result<Boolean>
 }

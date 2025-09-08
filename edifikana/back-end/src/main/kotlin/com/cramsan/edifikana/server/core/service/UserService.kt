@@ -4,13 +4,6 @@ import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.core.datastore.UserDatastore
 import com.cramsan.edifikana.server.core.service.models.User
-import com.cramsan.edifikana.server.core.service.models.requests.AssociateUserRequest
-import com.cramsan.edifikana.server.core.service.models.requests.CreateOrganizationRequest
-import com.cramsan.edifikana.server.core.service.models.requests.CreateUserRequest
-import com.cramsan.edifikana.server.core.service.models.requests.DeleteUserRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetUserRequest
-import com.cramsan.edifikana.server.core.service.models.requests.UpdatePasswordRequest
-import com.cramsan.edifikana.server.core.service.models.requests.UpdateUserRequest
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.framework.logging.logD
@@ -36,21 +29,17 @@ class UserService(
         logD(TAG, "createUser")
         val isTransient = password.isNullOrBlank()
         val result = userDatastore.createUser(
-            request = CreateUserRequest(
-                email = email,
-                phoneNumber = phoneNumber,
-                password = password,
-                firstName = firstName,
-                lastName = lastName,
-                isTransient = isTransient,
-            ),
+            email,
+            phoneNumber,
+            password,
+            firstName,
+            lastName,
+            isTransient
         )
 
         if (!isTransient) {
             val orgID = organizationDatastore.createOrganization(
-                request = CreateOrganizationRequest(
-                    owner = result.getOrThrow().id,
-                ),
+                owner = result.getOrThrow().id,
             ).getOrThrow().id
             organizationDatastore.addUserToOrganization(
                 userId = result.getOrThrow().id,
@@ -70,17 +59,13 @@ class UserService(
     ): Result<User> {
         logD(TAG, "associateUser")
         val result = userDatastore.associateUser(
-            request = AssociateUserRequest(
-                userId = id,
-                email = email,
-            ),
+            userId = id,
+            email = email
         )
 
         if (result.isSuccess) {
             val orgId = organizationDatastore.createOrganization(
-                request = CreateOrganizationRequest(
-                    owner = id,
-                ),
+                owner = id,
             ).getOrThrow().id
             organizationDatastore.addUserToOrganization(
                 userId = result.getOrThrow().id,
@@ -99,9 +84,7 @@ class UserService(
     ): Result<User?> {
         logD(TAG, "getUser")
         return userDatastore.getUser(
-            request = GetUserRequest(
-                id = id,
-            ),
+            id = id,
         )
     }
 
@@ -122,10 +105,8 @@ class UserService(
     ): Result<User> {
         logD(TAG, "updateUser")
         return userDatastore.updateUser(
-            request = UpdateUserRequest(
-                id = id,
-                email = email,
-            ),
+            id = id,
+            email = email,
         )
     }
 
@@ -137,9 +118,7 @@ class UserService(
     ): Result<Boolean> {
         logD(TAG, "deleteUser")
         return userDatastore.deleteUser(
-            request = DeleteUserRequest(
-                id = id,
-            )
+            id = id,
         )
     }
 
@@ -154,11 +133,9 @@ class UserService(
     ): Result<Unit> {
         logD(TAG, "updatePassword")
         return userDatastore.updatePassword(
-            request = UpdatePasswordRequest(
-                id = userId,
-                currentHashedPassword = currentHashedPassword,
-                newPassword = newPassword,
-            ),
+            id = userId,
+            currentHashedPassword = currentHashedPassword,
+            newPassword = newPassword,
         )
     }
 

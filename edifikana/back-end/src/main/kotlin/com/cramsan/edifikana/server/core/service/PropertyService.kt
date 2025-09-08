@@ -6,11 +6,6 @@ import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.controller.authentication.ClientContext
 import com.cramsan.edifikana.server.core.datastore.PropertyDatastore
 import com.cramsan.edifikana.server.core.service.models.Property
-import com.cramsan.edifikana.server.core.service.models.requests.CreatePropertyRequest
-import com.cramsan.edifikana.server.core.service.models.requests.DeletePropertyRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetPropertyListsRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetPropertyRequest
-import com.cramsan.edifikana.server.core.service.models.requests.UpdatePropertyRequest
 import com.cramsan.framework.logging.logD
 
 /**
@@ -31,12 +26,10 @@ class PropertyService(
     ): Property {
         logD(TAG, "createProperty")
         return propertyDatastore.createProperty(
-            request = CreatePropertyRequest(
-                name = name,
-                address = address,
-                creatorUserId = clientContext.userId,
-                organizationId = organizationId,
-            ),
+            name = name,
+            address = address,
+            creatorUserId = clientContext.userId,
+            organizationId = organizationId,
         ).getOrThrow()
     }
 
@@ -48,9 +41,7 @@ class PropertyService(
     ): Property? {
         logD(TAG, "getProperty")
         val property = propertyDatastore.getProperty(
-            request = GetPropertyRequest(
-                propertyId = id,
-            ),
+            propertyId = id,
         ).getOrNull()
 
         return property
@@ -64,9 +55,7 @@ class PropertyService(
     ): List<Property> {
         logD(TAG, "getProperties")
         val properties = propertyDatastore.getProperties(
-            GetPropertyListsRequest(
-                userId,
-            )
+            userId,
         ).getOrThrow()
         return properties
     }
@@ -80,10 +69,8 @@ class PropertyService(
     ): Property {
         logD(TAG, "updateProperty")
         return propertyDatastore.updateProperty(
-            request = UpdatePropertyRequest(
-                propertyId = id,
-                name = name,
-            ),
+            propertyId = id,
+            name = name,
         ).getOrThrow()
     }
 
@@ -95,9 +82,7 @@ class PropertyService(
     ): Boolean {
         logD(TAG, "deleteProperty")
         return propertyDatastore.deleteProperty(
-            request = DeletePropertyRequest(
-                propertyId = id,
-            )
+            propertyId = id,
         ).getOrThrow()
     }
 

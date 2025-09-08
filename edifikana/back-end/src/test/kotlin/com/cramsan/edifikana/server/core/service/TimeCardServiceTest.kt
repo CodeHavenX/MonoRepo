@@ -6,8 +6,6 @@ import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.edifikana.server.core.datastore.TimeCardDatastore
 import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
-import com.cramsan.edifikana.server.core.service.models.requests.GetTimeCardEventListRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetTimeCardEventRequest
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
@@ -63,7 +61,16 @@ class TimeCardServiceTest {
         val imageUrl = "http://image.url"
         val timestamp = Instant.parse("2024-06-18T12:00:00Z")
         val event = mockk<TimeCardEvent>()
-        coEvery { timeCardDatastore.createTimeCardEvent(any()) } returns Result.success(event)
+        coEvery {
+            timeCardDatastore.createTimeCardEvent(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+            )
+        } returns Result.success(event)
 
         // Act
         val result = timeCardService.createTimeCardEvent(
@@ -79,14 +86,12 @@ class TimeCardServiceTest {
         assertEquals(event, result)
         coVerify {
             timeCardDatastore.createTimeCardEvent(
-                match {
-                    it.staffId == staffId &&
-                        it.fallbackStaffName == fallbackStaffName &&
-                        it.propertyId == propertyId &&
-                        it.type == type &&
-                        it.imageUrl == imageUrl &&
-                        it.timestamp == timestamp
-                }
+                staffId,
+                fallbackStaffName,
+                propertyId,
+                type,
+                imageUrl,
+                timestamp,
             )
         }
     }
@@ -106,7 +111,7 @@ class TimeCardServiceTest {
 
         // Assert
         assertEquals(event, result)
-        coVerify { timeCardDatastore.getTimeCardEvent(GetTimeCardEventRequest(eventId)) }
+        coVerify { timeCardDatastore.getTimeCardEvent(eventId) }
     }
 
     /**
@@ -123,7 +128,7 @@ class TimeCardServiceTest {
 
         // Assert
         assertNull(result)
-        coVerify { timeCardDatastore.getTimeCardEvent(GetTimeCardEventRequest(eventId)) }
+        coVerify { timeCardDatastore.getTimeCardEvent(eventId) }
     }
 
     /**
@@ -141,6 +146,6 @@ class TimeCardServiceTest {
 
         // Assert
         assertEquals(eventList, result)
-        coVerify { timeCardDatastore.getTimeCardEvents(GetTimeCardEventListRequest(staffId)) }
+        coVerify { timeCardDatastore.getTimeCardEvents(staffId) }
     }
 }

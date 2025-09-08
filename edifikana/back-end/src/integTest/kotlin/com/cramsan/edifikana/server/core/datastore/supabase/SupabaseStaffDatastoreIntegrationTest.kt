@@ -6,11 +6,6 @@ import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.StaffRole
 import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.server.core.service.models.requests.CreateStaffRequest
-import com.cramsan.edifikana.server.core.service.models.requests.DeleteStaffRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetStaffListRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetStaffRequest
-import com.cramsan.edifikana.server.core.service.models.requests.UpdateStaffRequest
 import com.cramsan.framework.utils.uuid.UUID
 import kotlinx.coroutines.runBlocking
 import kotlin.test.BeforeTest
@@ -39,16 +34,15 @@ class SupabaseStaffDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `createStaff should return staff on success`() = runCoroutineTest {
         // Arrange
-        val request = CreateStaffRequest(
+
+        // Act
+        val result = staffDatastore.createStaff(
             idType = IdType.PASSPORT,
             firstName = "${test_prefix}_First",
             lastName = "${test_prefix}_Last",
             role = StaffRole.CLEANING,
             propertyId = propertyId!!,
-        )
-
-        // Act
-        val result = staffDatastore.createStaff(request).registerStaffForDeletion()
+        ).registerStaffForDeletion()
 
         // Assert
         assertTrue(result.isSuccess)
@@ -58,116 +52,110 @@ class SupabaseStaffDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `getStaff should return created staff`() = runCoroutineTest {
         // Arrange
-        val createRequest = CreateStaffRequest(
+
+        // Act
+        val createResult = staffDatastore.createStaff(
             firstName = "${test_prefix}_GetFirst",
             lastName = "${test_prefix}_GetLast",
             role = StaffRole.SECURITY_COVER,
             idType = IdType.DNI,
             propertyId = propertyId!!,
-        )
-
-        // Act
-        val createResult = staffDatastore.createStaff(createRequest).registerStaffForDeletion()
+        ).registerStaffForDeletion()
         assertTrue(createResult.isSuccess)
         val staff = createResult.getOrNull()!!
-        val getResult = staffDatastore.getStaff(GetStaffRequest(staff.id))
+        val getResult = staffDatastore.getStaff(staff.id)
 
         // Assert
         assertTrue(getResult.isSuccess)
         val fetched = getResult.getOrNull()
         assertNotNull(fetched)
-        assertTrue(fetched.firstName == createRequest.firstName)
+        assertTrue(fetched.firstName == "${test_prefix}_GetFirst")
     }
 
     @Test
     fun `getStaffs should return all staff for a given user`() = runCoroutineTest {
         // Arrange
-        val request1 = CreateStaffRequest(
+
+        // Act
+        val result1 = staffDatastore.createStaff(
             firstName = "${test_prefix}_StaffA",
             lastName = "${test_prefix}_LastA",
             role = StaffRole.SECURITY_COVER,
             idType = IdType.DNI,
             propertyId = propertyId!!,
-        )
-        val request2 = CreateStaffRequest(
+        ).registerStaffForDeletion()
+        val result2 = staffDatastore.createStaff(
             firstName = "${test_prefix}_StaffB",
             lastName = "${test_prefix}_LastB",
             role = StaffRole.CLEANING,
             idType = IdType.PASSPORT,
             propertyId = propertyId!!,
-        )
-
-        // Act
-        val result1 = staffDatastore.createStaff(request1).registerStaffForDeletion()
-        val result2 = staffDatastore.createStaff(request2).registerStaffForDeletion()
+        ).registerStaffForDeletion()
         assertTrue(result1.isSuccess)
         assertTrue(result2.isSuccess)
-        val getAllResult = staffDatastore.getStaffs(GetStaffListRequest(currentUser = testUserId!!))
+        val getAllResult = staffDatastore.getStaffs(currentUser = testUserId!!)
 
         // Assert
         assertTrue(getAllResult.isSuccess)
         val staffs = getAllResult.getOrNull()
         assertNotNull(staffs)
         val firstNames = staffs!!.map { it.firstName }
-        assertTrue(firstNames.contains(request1.firstName))
-        assertTrue(firstNames.contains(request2.firstName))
+        assertTrue(firstNames.contains("${test_prefix}_StaffA"))
+        assertTrue(firstNames.contains("${test_prefix}_StaffB"))
     }
 
     @Test
     fun `updateStaff should update staff fields`() = runCoroutineTest {
         // Arrange
-        val createRequest = CreateStaffRequest(
+
+        // Act
+        val createResult = staffDatastore.createStaff(
             firstName = "${test_prefix}_ToUpdate",
             lastName = "${test_prefix}_LastToUpdate",
             role = StaffRole.SECURITY,
             idType = IdType.DNI,
             propertyId = propertyId!!,
-        )
-
-        // Act
-        val createResult = staffDatastore.createStaff(createRequest).registerStaffForDeletion()
+        ).registerStaffForDeletion()
         assertTrue(createResult.isSuccess)
         val staff = createResult.getOrNull()!!
-        val updateRequest = UpdateStaffRequest(
-            id = staff.id,
+        val updateResult = staffDatastore.updateStaff(
+            staffId = staff.id,
             firstName = "${test_prefix}_UpdatedFirst",
             lastName = "${test_prefix}_UpdatedLast",
             role = StaffRole.CLEANING,
             idType = IdType.PASSPORT
         )
-        val updateResult = staffDatastore.updateStaff(updateRequest)
 
         // Assert
         assertTrue(updateResult.isSuccess)
         val updated = updateResult.getOrNull()
         assertNotNull(updated)
-        assertTrue(updated.firstName == updateRequest.firstName)
-        assertTrue(updated.lastName == updateRequest.lastName)
-        assertTrue(updated.role == updateRequest.role)
-        assertTrue(updated.idType == updateRequest.idType)
+        assertTrue(updated.firstName == "${test_prefix}_UpdatedFirst")
+        assertTrue(updated.lastName == "${test_prefix}_UpdatedLast")
+        assertTrue(updated.role == StaffRole.CLEANING)
+        assertTrue(updated.idType == IdType.PASSPORT)
     }
 
     @Test
     fun `deleteStaff should remove staff`() = runCoroutineTest {
         // Arrange
-        val createRequest = CreateStaffRequest(
+        val createResult = staffDatastore.createStaff(
             firstName = "${test_prefix}_ToDelete",
             lastName = "${test_prefix}_LastToDelete",
             role = StaffRole.SECURITY,
             idType = IdType.DNI,
             propertyId = propertyId!!,
         )
-        val createResult = staffDatastore.createStaff(createRequest)
         assertTrue(createResult.isSuccess)
         val staff = createResult.getOrNull()!!
 
         // Act
-        val deleteResult = staffDatastore.deleteStaff(DeleteStaffRequest(staff.id))
+        val deleteResult = staffDatastore.deleteStaff(staff.id)
 
         // Assert
         assertTrue(deleteResult.isSuccess)
         assertTrue(deleteResult.getOrNull() == true)
-        val getResult = staffDatastore.getStaff(GetStaffRequest(staff.id))
+        val getResult = staffDatastore.getStaff(staff.id)
         assertTrue(getResult.isSuccess)
         assertNull(getResult.getOrNull())
     }
@@ -178,7 +166,7 @@ class SupabaseStaffDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val fakeId = StaffId("fake-$test_prefix")
 
         // Act
-        val deleteResult = staffDatastore.deleteStaff(DeleteStaffRequest(fakeId))
+        val deleteResult = staffDatastore.deleteStaff(fakeId)
 
         // Assert
         assertTrue(deleteResult.isFailure || deleteResult.getOrNull() == false)

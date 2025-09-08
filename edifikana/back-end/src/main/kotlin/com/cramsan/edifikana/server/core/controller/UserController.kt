@@ -52,11 +52,11 @@ class UserController(
         )
 
         val newUserResult = userService.createUser(
-            createUserRequest.email,
-            createUserRequest.phoneNumber,
-            createUserRequest.password,
-            createUserRequest.firstName,
-            createUserRequest.lastName,
+            email = createUserRequest.email,
+            phoneNumber = createUserRequest.phoneNumber,
+            password = createUserRequest.password,
+            firstName = createUserRequest.firstName,
+            lastName = createUserRequest.lastName,
         )
 
         val newUser = newUserResult.requireSuccess().toUserNetworkResponse()

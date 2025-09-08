@@ -2,9 +2,9 @@ package com.cramsan.edifikana.server.core.controller
 
 import com.cramsan.edifikana.lib.model.network.CreateAssetNetworkRequest
 import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
-import com.cramsan.edifikana.server.core.datastore.dummy.ASSET_1
-import com.cramsan.edifikana.server.core.datastore.dummy.ASSET_2
 import com.cramsan.edifikana.server.core.service.StorageService
+import com.cramsan.edifikana.server.utils.ASSET_1
+import com.cramsan.edifikana.server.utils.ASSET_2
 import com.cramsan.edifikana.server.utils.readFileContent
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.test.CoroutineTest

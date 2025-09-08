@@ -4,11 +4,6 @@ import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
 import com.cramsan.edifikana.server.core.service.models.User
 import com.cramsan.edifikana.server.core.service.models.UserRole
-import com.cramsan.edifikana.server.core.service.models.requests.AssociateUserRequest
-import com.cramsan.edifikana.server.core.service.models.requests.CreateUserRequest
-import com.cramsan.edifikana.server.core.service.models.requests.DeleteUserRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetUserRequest
-import com.cramsan.edifikana.server.core.service.models.requests.UpdatePasswordRequest
 import com.cramsan.framework.core.Hashing
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
@@ -38,26 +33,25 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `createUser with provided password should return user on success`() = runCoroutineTest {
         // Arrange
-        val request = CreateUserRequest(
+
+        // Act
+        val result = userDatastore.createUser(
             email = "${test_prefix}_user@test.com",
             phoneNumber = "123-456-7890",
             password = "Password1!",
             firstName = "${test_prefix}_First",
             lastName = "${test_prefix}_Last",
             isTransient = false,
-        )
-
-        // Act
-        val result = userDatastore.createUser(request).registerUserForDeletion()
+        ).registerUserForDeletion()
 
         // Assert
         assertEquals(
             User(
                 id = result.getOrThrow().id,
-                email = request.email,
-                phoneNumber = request.phoneNumber,
-                firstName = request.firstName,
-                lastName = request.lastName,
+                email = "${test_prefix}_user@test.com",
+                phoneNumber = "123-456-7890",
+                firstName = "${test_prefix}_First",
+                lastName = "${test_prefix}_Last",
                 authMetadata = User.AuthMetadata(isPasswordSet = true),
                 role = UserRole.USER,
             ),
@@ -68,17 +62,16 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `createUser with null password should succeed with a temp user pending association`() = runCoroutineTest {
         // Arrange
-        val request = CreateUserRequest(
+
+        // Act
+        val result = userDatastore.createUser(
             email = "${test_prefix}_user@test.com",
             phoneNumber = "123-456-7890",
             password = null, // No password provided
             firstName = "${test_prefix}_First",
             lastName = "${test_prefix}_Last",
             isTransient = true,
-        )
-
-        // Act
-        val result = userDatastore.createUser(request).registerUserForDeletion()
+        ).registerUserForDeletion()
 
         // Assert
         assertTrue(result.isSuccess)
@@ -86,10 +79,10 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
         assertEquals(
             User(
                 id = user.id,
-                email = request.email,
-                phoneNumber = request.phoneNumber,
-                firstName = request.firstName,
-                lastName = request.lastName,
+                email = "${test_prefix}_user@test.com",
+                phoneNumber = "123-456-7890",
+                firstName = "${test_prefix}_First",
+                lastName = "${test_prefix}_Last",
                 authMetadata = User.AuthMetadata(isPasswordSet = false),
                 role = UserRole.USER
             ),
@@ -100,7 +93,18 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `createUser should fail with existing email`() = runCoroutineTest {
         // Arrange
-        val request = CreateUserRequest(
+
+        // Act
+        val first = userDatastore.createUser(
+            email = "${test_prefix}_dupe@test.com",
+            phoneNumber = "123-456-7890",
+            password = "password",
+            firstName = "${test_prefix}_First",
+            lastName = "${test_prefix}_Last",
+            isTransient = false,
+        ).registerUserForDeletion()
+        assertTrue(first.isSuccess)
+        val second = userDatastore.createUser(
             email = "${test_prefix}_dupe@test.com",
             phoneNumber = "123-456-7890",
             password = "password",
@@ -108,11 +112,6 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
             lastName = "${test_prefix}_Last",
             isTransient = false,
         )
-
-        // Act
-        val first = userDatastore.createUser(request).registerUserForDeletion()
-        assertTrue(first.isSuccess)
-        val second = userDatastore.createUser(request)
 
         // Assert
         assertTrue(second.isFailure)
@@ -122,7 +121,9 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `createUser should fail with invalid email`() = runCoroutineTest {
         // Arrange
-        val request = CreateUserRequest(
+
+        // Act
+        val result = userDatastore.createUser(
             email = "not-an-email",
             phoneNumber = "123-456-7890",
             password = "password",
@@ -130,9 +131,6 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
             lastName = "User",
             isTransient = false,
         )
-
-        // Act
-        val result = userDatastore.createUser(request)
 
         // Assert
         assertTrue(result.isFailure)
@@ -142,31 +140,32 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `getUser should return created user`() = runCoroutineTest {
         // Arrange
-        val request = CreateUserRequest(
+
+        // Act
+        val createResult = userDatastore.createUser(
             email = "${test_prefix}_getuser@test.com",
             phoneNumber = "123-456-7890",
             password = "password",
             firstName = "Get",
             lastName = "User",
             isTransient = false,
-        )
-
-        // Act
-        val createResult = userDatastore.createUser(request).registerUserForDeletion()
+        ).registerUserForDeletion()
         assertTrue(createResult.isSuccess)
         val user = createResult.getOrNull()!!
-        val getResult = userDatastore.getUser(GetUserRequest(user.id))
+        val getResult = userDatastore.getUser(user.id)
 
         // Assert
         assertTrue(getResult.isSuccess)
         val fetched = getResult.getOrNull()
-        assertTrue(fetched != null && fetched.email == request.email)
+        assertTrue(fetched != null && fetched.email == "${test_prefix}_getuser@test.com")
     }
 
     @Test
     fun `deleteUser should remove user`() = runCoroutineTest {
         // Arrange
-        val request = CreateUserRequest(
+
+        // Act
+        val createResult = userDatastore.createUser(
             email = "${test_prefix}_delete@test.com",
             phoneNumber = "123-456-7890",
             password = "password",
@@ -174,16 +173,13 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
             lastName = "User",
             isTransient = false,
         )
-
-        // Act
-        val createResult = userDatastore.createUser(request)
         assertTrue(createResult.isSuccess)
         val user = createResult.getOrNull()!!
-        val deleteResult = userDatastore.deleteUser(DeleteUserRequest(user.id))
+        val deleteResult = userDatastore.deleteUser(user.id)
 
         // Assert
         assertTrue(deleteResult.isSuccess && deleteResult.getOrNull() == true)
-        val getResult = userDatastore.getUser(GetUserRequest(user.id))
+        val getResult = userDatastore.getUser(user.id)
         assertTrue(getResult.isSuccess && getResult.getOrNull() == null)
     }
 
@@ -193,7 +189,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val fakeId = UserId(test_prefix)
 
         // Act
-        val deleteResult = userDatastore.deleteUser(DeleteUserRequest(fakeId))
+        val deleteResult = userDatastore.deleteUser(fakeId)
 
         // Assert
         assertTrue(deleteResult.isFailure || deleteResult.getOrNull() == false)
@@ -203,13 +199,12 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `associateUser should fail for non-existent Supabase user`() = runCoroutineTest {
         // Arrange: Use an email that does not exist
-        val associateRequest = AssociateUserRequest(
+
+        // Act
+        val associateResult = userDatastore.associateUser(
             userId = UserId(test_prefix),
             email = "${test_prefix}_notfound@test.com",
         )
-
-        // Act
-        val associateResult = userDatastore.associateUser(associateRequest)
 
         // Assert
         assertTrue(associateResult.isFailure)
@@ -223,15 +218,14 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `associateUser should associate a pending user with a Supabase user`() = runCoroutineTest {
         // Arrange: Create a user with a password (Supabase user)
         val email = "${test_prefix}@test.com"
-        val createRequest = CreateUserRequest(
+        val createResult = userDatastore.createUser(
             email = email,
             phoneNumber = "123-456-7890",
             password = null,
             firstName = "Associate",
             lastName = "User",
             isTransient = true,
-        )
-        val createResult = userDatastore.createUser(createRequest).registerUserForDeletion()
+        ).registerUserForDeletion()
         val createdUser = createResult.getOrNull()!!
         auth.signInWith(OTP) {
             this.email = email
@@ -241,11 +235,10 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
         registerSupabaseUserForDeletion(supabaseUserId)
 
         // Act: Try to associate the created Supabase user with the pending user's email
-        val associateRequest = AssociateUserRequest(
+        val associateResult = userDatastore.associateUser(
             userId = UserId(supabaseUserId),
             email = email,
         )
-        val associateResult = userDatastore.associateUser(associateRequest)
 
         // Assert
         assertTrue(associateResult.isSuccess)
@@ -262,26 +255,25 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `update password should update the user's password when one is already set`() = runCoroutineTest {
         // Arrange: Create a user with a password
         val email = "${test_prefix}@test.com"
-        val createRequest = CreateUserRequest(
+        val oldPassword = "oldPassword1!"
+        val createResult = userDatastore.createUser(
             email = email,
             phoneNumber = "123-456-7890",
-            password = "oldPassword1!",
+            password = oldPassword,
             firstName = "Associate",
             lastName = "User",
             isTransient = false,
-        )
-        val createResult = userDatastore.createUser(createRequest).registerUserForDeletion()
+        ).registerUserForDeletion()
         val user = createResult.getOrThrow()
 
-        val currentPasswordHashed = Hashing.insecureHash(createRequest.password!!.encodeToByteArray()).toString()
-        val updatePasswordRequest = UpdatePasswordRequest(
+        val currentPasswordHashed = Hashing.insecureHash(oldPassword.encodeToByteArray()).toString()
+
+        // Act: Update the user's password
+        val updateResult = userDatastore.updatePassword(
             id = UserId(user.id.userId),
             currentHashedPassword = SecureString(currentPasswordHashed),
             newPassword = SecureString("NewPassword1!"),
         )
-
-        // Act: Update the user's password
-        val updateResult = userDatastore.updatePassword(updatePasswordRequest)
 
         // Assert: Check if the password was updated successfully
         assertTrue(updateResult.isSuccess, "Password update should succeed")

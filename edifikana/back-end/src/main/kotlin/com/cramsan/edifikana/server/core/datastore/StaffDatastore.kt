@@ -1,11 +1,11 @@
 package com.cramsan.edifikana.server.core.datastore
 
+import com.cramsan.edifikana.lib.model.IdType
+import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.edifikana.lib.model.StaffRole
+import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.service.models.Staff
-import com.cramsan.edifikana.server.core.service.models.requests.CreateStaffRequest
-import com.cramsan.edifikana.server.core.service.models.requests.DeleteStaffRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetStaffListRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetStaffRequest
-import com.cramsan.edifikana.server.core.service.models.requests.UpdateStaffRequest
 
 /**
  * Interface for interacting with the staff database.
@@ -13,35 +13,45 @@ import com.cramsan.edifikana.server.core.service.models.requests.UpdateStaffRequ
 interface StaffDatastore {
 
     /**
-     * Creates a new staff member for the given [request]. Returns the [Result] of the operation with the created [Staff].
+     * Creates a new staff member with the given details. Returns the [Result] of the operation with the created [Staff].
      */
     suspend fun createStaff(
-        request: CreateStaffRequest,
+        idType: IdType,
+        firstName: String,
+        lastName: String,
+        role: StaffRole,
+        propertyId: PropertyId,
     ): Result<Staff>
 
     /**
-     * Retrieves a staff member for the given [request]. Returns the [Result] of the operation with the fetched [Staff] if found.
+     * Retrieves a staff member by their ID. Returns the [Result] of the operation with the fetched [Staff] if found.
      */
     suspend fun getStaff(
-        request: GetStaffRequest,
+        id: StaffId,
     ): Result<Staff?>
 
     /**
-     * Retrieves all staff members. Returns the [Result] of the operation with a list of [Staff].
+     * Retrieves all staff members for the current user. Returns the [Result] of the operation with a list of [Staff].
      */
-    suspend fun getStaffs(request: GetStaffListRequest): Result<List<Staff>>
+    suspend fun getStaffs(
+        currentUser: UserId,
+    ): Result<List<Staff>>
 
     /**
-     * Updates a staff member with the given [request]. Returns the [Result] of the operation with the updated [Staff].
+     * Updates a staff member with the given details. Returns the [Result] of the operation with the updated [Staff].
      */
     suspend fun updateStaff(
-        request: UpdateStaffRequest,
+        staffId: StaffId,
+        idType: IdType?,
+        firstName: String?,
+        lastName: String?,
+        role: StaffRole?,
     ): Result<Staff>
 
     /**
-     * Deletes a staff member with the given [request]. Returns the [Result] of the operation with a [Boolean] indicating success.
+     * Deletes a staff member by their ID. Returns the [Result] of the operation with a [Boolean] indicating success.
      */
     suspend fun deleteStaff(
-        request: DeleteStaffRequest,
+        id: StaffId,
     ): Result<Boolean>
 }

@@ -6,8 +6,6 @@ import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.server.core.datastore.EventLogDatastore
 import com.cramsan.edifikana.server.core.service.models.EventLogEntry
-import com.cramsan.edifikana.server.core.service.models.requests.DeleteEventLogEntryRequest
-import com.cramsan.edifikana.server.core.service.models.requests.GetEventLogEntryRequest
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
@@ -66,7 +64,19 @@ class EventLogServiceTest {
         val description = "Pipe burst in apartment 1608 resulting in a minor flooding that has affected..."
         val unit = "1608"
         val entry = mockk<EventLogEntry>()
-        coEvery { eventLogDatastore.createEventLogEntry(any()) } returns Result.success(entry)
+        coEvery {
+            eventLogDatastore.createEventLogEntry(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+            )
+        } returns Result.success(entry)
 
         // Act
         val result = eventLogService.createEventLogEntry(
@@ -85,17 +95,15 @@ class EventLogServiceTest {
         assertEquals(entry, result)
         coVerify {
             eventLogDatastore.createEventLogEntry(
-                match {
-                    it.staffId == staffId &&
-                        it.fallbackStaffName == fallbackStaffName &&
-                        it.propertyId == propertyId &&
-                        it.type == type &&
-                        it.fallbackEventType == fallbackEventType &&
-                        it.timestamp == timestamp &&
-                        it.title == title &&
-                        it.description == description &&
-                        it.unit == unit
-                }
+                staffId,
+                fallbackStaffName,
+                propertyId,
+                type,
+                fallbackEventType,
+                timestamp,
+                title,
+                description,
+                unit,
             )
         }
     }
@@ -115,7 +123,7 @@ class EventLogServiceTest {
 
         // Assert
         assertEquals(entry, result)
-        coVerify { eventLogDatastore.getEventLogEntry(GetEventLogEntryRequest(entryId)) }
+        coVerify { eventLogDatastore.getEventLogEntry(entryId) }
     }
 
     /**
@@ -132,7 +140,7 @@ class EventLogServiceTest {
 
         // Assert
         assertNull(result)
-        coVerify { eventLogDatastore.getEventLogEntry(GetEventLogEntryRequest(entryId)) }
+        coVerify { eventLogDatastore.getEventLogEntry(entryId) }
     }
 
     /**
@@ -165,7 +173,16 @@ class EventLogServiceTest {
         val description = "Jenny Hall visiting"
         val unit = "1801"
         val entry = mockk<EventLogEntry>()
-        coEvery { eventLogDatastore.updateEventLogEntry(any()) } returns Result.success(entry)
+        coEvery {
+            eventLogDatastore.updateEventLogEntry(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+            )
+        } returns Result.success(entry)
 
         // Act
         val result = eventLogService.updateEventLogEntry(entryId, type, fallbackEventType, title, description, unit)
@@ -174,14 +191,12 @@ class EventLogServiceTest {
         assertEquals(entry, result)
         coVerify {
             eventLogDatastore.updateEventLogEntry(
-                match {
-                    it.id == entryId &&
-                        it.type == type &&
-                        it.fallbackEventType == fallbackEventType &&
-                        it.title == title &&
-                        it.description == description &&
-                        it.unit == unit
-                }
+                entryId,
+                type,
+                fallbackEventType,
+                title,
+                description,
+                unit,
             )
         }
     }
@@ -200,6 +215,6 @@ class EventLogServiceTest {
 
         // Assert
         assertEquals(true, result)
-        coVerify { eventLogDatastore.deleteEventLogEntry(DeleteEventLogEntryRequest(entryId)) }
+        coVerify { eventLogDatastore.deleteEventLogEntry(entryId) }
     }
 }

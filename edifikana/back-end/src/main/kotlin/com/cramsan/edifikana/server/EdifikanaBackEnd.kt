@@ -2,7 +2,6 @@ package com.cramsan.edifikana.server
 
 import com.cramsan.edifikana.server.core.controller.Controller
 import com.cramsan.edifikana.server.di.ApplicationModule
-import com.cramsan.edifikana.server.di.DummyStorageModule
 import com.cramsan.edifikana.server.di.FrameworkModule
 import com.cramsan.edifikana.server.di.KtorModule
 import com.cramsan.edifikana.server.di.NAME_LOGGING
@@ -25,11 +24,9 @@ import io.ktor.server.routing.routing
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import org.koin.core.KoinApplication
-import org.koin.core.context.loadKoinModules
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 import org.koin.core.qualifier.named
-import org.koin.ktor.ext.get
 import org.koin.ktor.ext.inject
 
 /**
@@ -103,10 +100,6 @@ fun Application.initializeDependencies() {
             ServicesModule,
             KtorModule,
         )
-        val disableSupabase: Boolean = get(named(Overrides.KEY_SUPABASE_DISABLE))
-        if (disableSupabase) {
-            loadKoinModules(DummyStorageModule)
-        }
     }
 }
 

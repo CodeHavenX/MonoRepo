@@ -13,7 +13,7 @@ import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.StaffRole
-import com.cramsan.edifikana.lib.model.StaffStatus
+
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 
@@ -38,7 +38,6 @@ val STAFF_1 = StaffModel(
     lastName = "Banderas",
     role = StaffRole.MANAGER,
     email = "antonio.banderas@gmail.com",
-    status = StaffStatus.ACTIVE,
 )
 
 val STAFF_2 = StaffModel(
@@ -48,7 +47,6 @@ val STAFF_2 = StaffModel(
     lastName = "Cruz",
     role = StaffRole.SECURITY,
     email = "p.cruz@yahoo.com",
-    status = StaffStatus.ACTIVE,
 )
 
 val STAFF_3 = StaffModel(
@@ -58,7 +56,6 @@ val STAFF_3 = StaffModel(
     lastName = "Bardem",
     role = StaffRole.SECURITY,
     email = null,
-    status = StaffStatus.ACTIVE,
 )
 
 val STAFF_4 = StaffModel(
@@ -68,7 +65,6 @@ val STAFF_4 = StaffModel(
     lastName = "Hayek",
     role = StaffRole.SECURITY_COVER,
     email = "sal_ha@hotmail.com",
-    status = StaffStatus.ACTIVE,
 )
 
 val EVENT_LOG_ENTRY_STAFF_1_1 = EventLogRecordModel(

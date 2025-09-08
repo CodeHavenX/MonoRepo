@@ -4,6 +4,7 @@ import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.core.datastore.UserDatastore
+import com.cramsan.edifikana.server.core.service.models.Invite
 import com.cramsan.edifikana.server.core.service.models.User
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
@@ -92,9 +93,13 @@ class UserService(
     /**
      * Retrieves all users.
      */
-    suspend fun getUsers(): Result<List<User>> {
+    suspend fun getUsers(
+        organizationId: OrganizationId,
+    ): Result<List<User>> {
         logD(TAG, "getUsers")
-        return userDatastore.getUsers()
+        return userDatastore.getUsers(
+            organizationId = organizationId,
+        )
     }
 
     /**
@@ -149,6 +154,13 @@ class UserService(
     ): Result<Unit> {
         logD(TAG, "inviteUser")
         return userDatastore.recordInvite(email, organizationId)
+    }
+
+    suspend fun getInvites(
+        organizationId: OrganizationId,
+    ): Result<List<Invite>> {
+        logD(TAG, "getInvites")
+        return userDatastore.getInvites(organizationId)
     }
 
     companion object {

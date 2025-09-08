@@ -10,7 +10,7 @@ import com.cramsan.edifikana.client.lib.models.StaffModel
 import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.StaffRole
-import com.cramsan.edifikana.lib.model.StaffStatus
+
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
 import com.cramsan.framework.core.compose.EventBus
@@ -63,7 +63,6 @@ class StaffListViewModelTest : CoroutineTest() {
                 id = StaffId("1"),
                 firstName = "John",
                 email = "john@example.com",
-                status = StaffStatus.PENDING,
                 idType = IdType.PASSPORT,
                 lastName = "Doe",
                 role = StaffRole.SECURITY_COVER,
@@ -72,7 +71,6 @@ class StaffListViewModelTest : CoroutineTest() {
                 id = StaffId("2"),
                 firstName = "Jane",
                 email = "jane@example.com",
-                status = StaffStatus.ACTIVE,
                 idType = IdType.DNI,
                 lastName = "Smith",
                 role = StaffRole.MANAGER,
@@ -88,13 +86,11 @@ class StaffListViewModelTest : CoroutineTest() {
                     id = StaffId("1"),
                     name = "John",
                     email = "john@example.com",
-                    status = StaffStatus.PENDING,
                 ),
                 StaffUIModel(
                     id = StaffId("2"),
                     name = "Jane",
                     email = "jane@example.com",
-                    status = StaffStatus.ACTIVE,
                 )
             ),
             viewModel.uiState.value.staffList

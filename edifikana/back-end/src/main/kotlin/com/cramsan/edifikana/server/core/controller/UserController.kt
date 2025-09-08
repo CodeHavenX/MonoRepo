@@ -134,7 +134,11 @@ class UserController(
      */
     @OptIn(NetworkModel::class)
     suspend fun getUsers(call: ApplicationCall) = call.handleCall(TAG, "getUsers", contextRetriever) { _ ->
-        val users = userService.getUsers().getOrThrow().map { it.toUserNetworkResponse() }
+        val orgId = requireNotBlank(call.request.queryParameters[Routes.User.QueryParams.ORG_ID])
+
+        val users = userService.getUsers(
+            organizationId = OrganizationId(orgId)
+        ).getOrThrow().map { it.toUserNetworkResponse() }
 
         HttpResponse(
             status = HttpStatusCode.OK,
@@ -227,6 +231,21 @@ class UserController(
         )
     }
 
+    @OptIn(NetworkModel::class)
+    suspend fun getInvites(call: RoutingCall) = call.handleCall(TAG, "getInvites", contextRetriever) { _ ->
+        val orgId = requireNotBlank(call.request.queryParameters[Routes.User.QueryParams.ORG_ID])
+
+        val invites = userService.getInvites(
+            organizationId = OrganizationId(orgId)
+        ).getOrThrow().map { it.toInviteNetworkResponse() }
+
+        HttpResponse(
+            status = HttpStatusCode.OK,
+            body = invites,
+        )
+
+    }
+
     /**
      * Registers the routes for the user controller. The [route] parameter is the root path for the controller.
      */
@@ -253,8 +272,13 @@ class UserController(
             post("associate") {
                 associate(call)
             }
-            post("invite") {
-                inviteUser(call)
+            route("invite") {
+                post {
+                    inviteUser(call)
+                }
+                get {
+                    getInvites(call)
+                }
             }
         }
     }

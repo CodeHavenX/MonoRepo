@@ -10,11 +10,21 @@ import kotlinx.serialization.Serializable
 @Serializable
 @SupabaseModel
 data class InviteEntity(
+    @SerialName("id")
+    val id: String,
     @SerialName("email")
     val email: String,
     @SerialName("organization_id")
     val organizationId: String,
 ) {
+
+    data class Create(
+        @SerialName("email")
+        val email: String,
+        @SerialName("organization_id")
+        val organizationId: String,
+    )
+
 
     companion object {
         const val COLLECTION = "invites"

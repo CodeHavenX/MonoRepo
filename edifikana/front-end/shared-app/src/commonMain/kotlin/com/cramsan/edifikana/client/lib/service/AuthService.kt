@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.client.lib.service
 
+import com.cramsan.edifikana.client.lib.models.Invite
 import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
@@ -21,6 +22,8 @@ interface AuthService {
      * Get the current user.
      */
     suspend fun getUser(): Result<UserModel>
+
+    suspend fun getUsersByOrganization(organizationId: OrganizationId): Result<List<UserModel>>
 
     /**
      * Sign in the user with the given email and password.
@@ -91,4 +94,6 @@ interface AuthService {
      * Invite a staff member to the organization with the provided [organizationId] using the given [email].
      */
     suspend fun inviteStaff(email: String, organizationId: OrganizationId): Result<Unit>
+
+    suspend fun getInvites(organizationId: OrganizationId): Result<List<Invite>>
 }

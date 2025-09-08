@@ -17,8 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.edifikana.lib.model.StaffId
-import com.cramsan.edifikana.lib.model.StaffStatus
+import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.ui.components.ListCell
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
@@ -72,6 +73,10 @@ fun StaffListScreen(
         onAddSecondaryStaffSelected = {
             viewModel.navigateToAddSecondaryStaff()
         },
+        onUserSelected = { userId ->
+        },
+        onInviteSelected = { inviteId ->
+        },
     )
 }
 
@@ -85,6 +90,8 @@ internal fun StaffListContent(
     onStaffSelected: (StaffId) -> Unit,
     onAddPrimaryStaffSelected: () -> Unit,
     onAddSecondaryStaffSelected: () -> Unit,
+    onUserSelected: (UserId) -> Unit,
+    onInviteSelected: (InviteId) -> Unit,
 ) {
     Box(
         modifier = modifier
@@ -96,42 +103,22 @@ internal fun StaffListContent(
             maxWith = Dp.Unspecified,
             sectionContent = { sectionModifier ->
                 content.staffList.forEach { staff ->
-                    val isStaffPending = staff.status == StaffStatus.PENDING
-                    val textColor = if (isStaffPending) {
-                        MaterialTheme.colorScheme.secondary
-                    } else {
-                        MaterialTheme.colorScheme.onSurface
-                    }
-                    ListCell(
-                        modifier = sectionModifier,
-                        onSelection = {
-                            onStaffSelected(staff.id)
-                        },
-                        endSlot = {
-                            if (isStaffPending) {
-                                Text(
-                                    text = "Invitation sent",
-                                    color = textColor,
-                                )
-                            }
-                        }
-                    ) {
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(Padding.SMALL),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = staff.name,
-                                color = textColor,
-                            )
-                            staff.email?.let {
-                                Text(
-                                    it,
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = textColor,
-                                )
-                            }
-                        }
+                    when (staff) {
+                        is StaffMemberUIModel -> StaffListItem(
+                            staff = staff,
+                            modifier = sectionModifier,
+                            onStaffSelected = onStaffSelected,
+                        )
+                        is UserUIModel -> UserListItem(
+                            user = staff,
+                            modifier = sectionModifier,
+                            onUserSelected = onUserSelected,
+                        )
+                        is InviteUIModel -> InviteListItem(
+                            invite = staff,
+                            modifier = sectionModifier,
+                            onInviteSelected = onInviteSelected,
+                        )
                     }
                 }
             },
@@ -155,5 +142,92 @@ internal fun StaffListContent(
             }
         )
         LoadingAnimationOverlay(content.isLoading)
+    }
+}
+
+@Composable
+private fun InviteListItem(
+    invite: InviteUIModel,
+    modifier: Modifier,
+    onInviteSelected: (InviteId) -> Unit,
+) {
+    ListCell(
+        modifier = modifier,
+        onSelection = {
+            onInviteSelected(invite.inviteId)
+        },
+        endSlot = {
+            Text(
+                text = "Invitation sent",
+                color = MaterialTheme.colorScheme.secondary,
+            )
+        }
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(Padding.SMALL),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = invite.email,
+                color = MaterialTheme.colorScheme.secondary,
+            )
+        }
+    }
+}
+
+@Composable
+private fun UserListItem(user: UserUIModel, modifier: Modifier, onUserSelected: (UserId) -> Unit) {
+    ListCell(
+        modifier = modifier,
+        onSelection = {
+            onUserSelected(user.userId)
+        },
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(Padding.SMALL),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = user.name,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            user.email?.let {
+                Text(
+                    it,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun StaffListItem(staff: StaffMemberUIModel, modifier: Modifier, onStaffSelected: (StaffId) -> Unit) {
+    val textColor = MaterialTheme.colorScheme.onSurface
+    ListCell(
+        modifier = modifier,
+        onSelection = {
+            onStaffSelected(staff.staffId)
+        },
+        endSlot = {
+        }
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(Padding.SMALL),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = staff.name,
+                color = textColor,
+            )
+            staff.email?.let {
+                Text(
+                    it,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = textColor,
+                )
+            }
+        }
     }
 }

@@ -16,6 +16,7 @@ object Routes {
          */
         object QueryParams {
             const val USER_ID = "user_id"
+            const val ORG_ID = "org_id"
         }
     }
 

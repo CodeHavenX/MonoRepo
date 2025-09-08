@@ -33,7 +33,7 @@ class SupabaseContextRetriever(
         return ClientContext.AuthenticatedClientContext(
             userInfo = user,
             userId = UserId(user.id),
-            userRole = UserRole.fromString(user.role),
+            userRole = UserRole.USER, // Assuming default role as USER, modify as needed based on your logic
         )
     }
 

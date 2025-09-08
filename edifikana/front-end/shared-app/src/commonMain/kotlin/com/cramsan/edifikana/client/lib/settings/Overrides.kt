@@ -6,8 +6,6 @@ package com.cramsan.edifikana.client.lib.settings
  * These strings are keys to be used for the preferences.
  */
 enum class Overrides {
-    KEY_DISABLE_SUPABASE,
-    KEY_DISABLE_BE,
     KEY_HALT_ON_FAILURE,
     KEY_SUPABASE_OVERRIDE_URL,
     KEY_SUPABASE_OVERRIDE_KEY,

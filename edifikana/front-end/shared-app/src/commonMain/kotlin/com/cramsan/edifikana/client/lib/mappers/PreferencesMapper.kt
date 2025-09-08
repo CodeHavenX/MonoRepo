@@ -15,13 +15,6 @@ import com.cramsan.framework.preferences.Preferences
 object PreferencesMapper {
 
     /**
-     * Utility methods to retrieve if we should connect to supabase.
-     */
-    fun isSupabaseDisabled(preferences: Preferences): Boolean {
-        return preferences.loadBoolean(Overrides.KEY_DISABLE_SUPABASE.name) ?: false
-    }
-
-    /**
      * Utility methods to retrieve if we should halt on assert failure.
      */
     fun haltOnFailure(preferences: Preferences): Boolean {
@@ -49,13 +42,6 @@ object PreferencesMapper {
      */
     fun isSupabaseOverrideEnabled(preferences: Preferences): Boolean {
         return preferences.loadBoolean(Overrides.KEY_SUPABASE_OVERRIDE_ENABLED.name) ?: true
-    }
-
-    /**
-     * Utility methods to check if the backend should be disabled.
-     */
-    fun isBackendDisabled(preferences: Preferences): Boolean {
-        return preferences.loadBoolean(Overrides.KEY_DISABLE_BE.name) ?: false
     }
 
     /**

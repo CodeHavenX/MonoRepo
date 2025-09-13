@@ -8,8 +8,10 @@ import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.OrganizationManager
 import com.cramsan.edifikana.client.lib.managers.StaffManager
+import com.cramsan.edifikana.client.lib.models.Organization
 import com.cramsan.edifikana.client.lib.models.StaffModel
 import com.cramsan.edifikana.lib.model.IdType
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.StaffRole
 import com.cramsan.framework.core.UnifiedDispatcherProvider
@@ -24,7 +26,10 @@ import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.test.CoroutineTest
 import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.advanceUntilIdle
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -39,6 +44,7 @@ class StaffListViewModelTest : CoroutineTest() {
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
     private lateinit var applicationEventReceiver: EventBus<ApplicationEvent>
     private lateinit var windowEventBus: EventBus<WindowEvent>
+    private lateinit var activeOrganization: MutableStateFlow<Organization?>
 
     @BeforeEach
     fun setupTest() {
@@ -49,6 +55,8 @@ class StaffListViewModelTest : CoroutineTest() {
         windowEventBus = EventBus()
         authManager = mockk(relaxed = true)
         organizationManager = mockk(relaxed = true)
+        activeOrganization = MutableStateFlow(null)
+        coEvery { organizationManager.observeActiveOrganization() } returns activeOrganization
         viewModel = StaffListViewModel(
             dependencies = ViewModelDependencies(
                 appScope = testCoroutineScope,
@@ -63,6 +71,7 @@ class StaffListViewModelTest : CoroutineTest() {
         )
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `test loadStaffList updates UI state with staff list`() = runCoroutineTest {
         val staffList = listOf(
@@ -83,22 +92,30 @@ class StaffListViewModelTest : CoroutineTest() {
                 role = StaffRole.MANAGER,
             )
         )
+        val orgId = OrganizationId("org1")
+        val organization = Organization(
+            id = orgId,
+        )
         coEvery { staffManager.getStaffList() } returns Result.success(staffList)
+        coEvery { authManager.getUsers(orgId) } returns Result.success(emptyList())
+        coEvery { authManager.getInvites(orgId) } returns Result.success(emptyList())
+        activeOrganization.value = organization
+        advanceUntilIdle()
 
         viewModel.loadStaffList()
 
         assertEquals(
             listOf(
                 StaffMemberUIModel(
+                    staffId = StaffId("2"),
+                    name = "Jane",
+                    email = "jane@example.com",
+                ),
+                StaffMemberUIModel(
                     staffId = StaffId("1"),
                     name = "John",
                     email = "john@example.com",
                 ),
-                StaffMemberUIModel(
-                    staffId = StaffId("2"),
-                    name = "Jane",
-                    email = "jane@example.com",
-                )
             ),
             viewModel.uiState.value.staffList
         )

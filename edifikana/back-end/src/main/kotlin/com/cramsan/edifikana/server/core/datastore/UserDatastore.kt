@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.server.core.datastore
 
-import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.model.OrganizationId
+import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.service.models.Invite
 import com.cramsan.edifikana.server.core.service.models.User
 import com.cramsan.framework.core.SecureString

@@ -231,6 +231,9 @@ class UserController(
         )
     }
 
+    /**
+     * Handle a call to get all pending invites for an organization.
+     */
     @OptIn(NetworkModel::class)
     suspend fun getInvites(call: RoutingCall) = call.handleCall(TAG, "getInvites", contextRetriever) { _ ->
         val orgId = requireNotBlank(call.request.queryParameters[Routes.User.QueryParams.ORG_ID])
@@ -243,7 +246,6 @@ class UserController(
             status = HttpStatusCode.OK,
             body = invites,
         )
-
     }
 
     /**

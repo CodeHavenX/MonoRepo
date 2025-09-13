@@ -55,7 +55,8 @@ interface UserDatastore {
     ): Result<User>
 
     /**
-     * Deletes a user with the given [request]. Returns the [Result] of the operation with a [Boolean] indicating success.
+     * Deletes a user with the given [request].
+     * Returns the [Result] of the operation with a [Boolean] indicating success.
      */
     suspend fun deleteUser(
         id: UserId,
@@ -79,6 +80,10 @@ interface UserDatastore {
         organizationId: OrganizationId,
     ): Result<Unit>
 
+    /**
+     * Retrieves all pending invites for the given [organizationId].
+     * Returns the [Result] of the operation with a list of [Invite].
+     */
     suspend fun getInvites(
         organizationId: OrganizationId,
     ): Result<List<Invite>>

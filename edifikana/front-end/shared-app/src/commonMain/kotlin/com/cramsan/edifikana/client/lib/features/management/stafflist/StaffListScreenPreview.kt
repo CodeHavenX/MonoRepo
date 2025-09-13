@@ -7,7 +7,6 @@ import androidx.compose.ui.Modifier
 import com.cramsan.edifikana.client.ui.theme.AppTheme
 import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.edifikana.lib.model.StaffId
-
 import com.cramsan.edifikana.lib.model.UserId
 import org.jetbrains.compose.ui.tooling.preview.Preview
 

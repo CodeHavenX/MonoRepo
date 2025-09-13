@@ -1,16 +1,17 @@
 package com.cramsan.edifikana.client.lib.features.admin.timecardstafflist
 
 import app.cash.turbine.test
-import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.features.management.ManagementDestination
 import com.cramsan.edifikana.client.lib.features.management.stafflist.StaffListViewModel
-import com.cramsan.edifikana.client.lib.features.management.stafflist.StaffUIModel
+import com.cramsan.edifikana.client.lib.features.management.stafflist.StaffMemberUIModel
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
+import com.cramsan.edifikana.client.lib.managers.AuthManager
+import com.cramsan.edifikana.client.lib.managers.OrganizationManager
 import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.client.lib.models.StaffModel
 import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.StaffRole
-
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
 import com.cramsan.framework.core.compose.EventBus
@@ -33,6 +34,8 @@ class StaffListViewModelTest : CoroutineTest() {
 
     private lateinit var viewModel: StaffListViewModel
     private lateinit var staffManager: StaffManager
+    private lateinit var authManager: AuthManager
+    private lateinit var organizationManager: OrganizationManager
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
     private lateinit var applicationEventReceiver: EventBus<ApplicationEvent>
     private lateinit var windowEventBus: EventBus<WindowEvent>
@@ -44,6 +47,8 @@ class StaffListViewModelTest : CoroutineTest() {
         exceptionHandler = CollectorCoroutineExceptionHandler()
         staffManager = mockk(relaxed = true)
         windowEventBus = EventBus()
+        authManager = mockk(relaxed = true)
+        organizationManager = mockk(relaxed = true)
         viewModel = StaffListViewModel(
             dependencies = ViewModelDependencies(
                 appScope = testCoroutineScope,
@@ -52,7 +57,9 @@ class StaffListViewModelTest : CoroutineTest() {
                 applicationEventReceiver = applicationEventReceiver,
                 windowEventReceiver = windowEventBus,
             ),
-            staffManager = staffManager
+            staffManager = staffManager,
+            authManager = authManager,
+            organizationManager = organizationManager,
         )
     }
 
@@ -82,13 +89,13 @@ class StaffListViewModelTest : CoroutineTest() {
 
         assertEquals(
             listOf(
-                StaffUIModel(
-                    id = StaffId("1"),
+                StaffMemberUIModel(
+                    staffId = StaffId("1"),
                     name = "John",
                     email = "john@example.com",
                 ),
-                StaffUIModel(
-                    id = StaffId("2"),
+                StaffMemberUIModel(
+                    staffId = StaffId("2"),
                     name = "Jane",
                     email = "jane@example.com",
                 )

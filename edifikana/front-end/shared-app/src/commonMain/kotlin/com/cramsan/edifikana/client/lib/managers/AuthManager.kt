@@ -99,6 +99,9 @@ class AuthManager(
         authService.getUser().getOrThrow()
     }
 
+    /**
+     * Gets the users for the given organization.
+     */
     suspend fun getUsers(organizationId: OrganizationId): Result<List<UserModel>> = dependencies.getOrCatch(TAG) {
         logI(TAG, "getUsers for organizationId: $organizationId")
         authService.getUsersByOrganization(organizationId).getOrThrow()
@@ -162,6 +165,9 @@ class AuthManager(
         ).getOrThrow()
     }
 
+    /**
+     * Get the invites for the given organization.
+     */
     suspend fun getInvites(organizationId: OrganizationId): Result<List<Invite>> = dependencies.getOrCatch(TAG) {
         logI(TAG, "getInvitedStaffs for organizationId: $organizationId")
         authService.getInvites(organizationId).getOrThrow()

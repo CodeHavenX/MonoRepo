@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.core.controller
 
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
 import com.cramsan.edifikana.server.core.controller.authentication.ClientContext
@@ -218,8 +219,9 @@ class UserControllerTest : CoroutineTest(), KoinTest {
         // Configure
         val expectedResponse = readFileContent("requests/get_users_response.json")
         val userService = get<UserService>()
+        val orgId = OrganizationId("org123")
         coEvery {
-            userService.getUsers()
+            userService.getUsers(orgId)
         }.answers {
             Result.success(
                 listOf(
@@ -257,7 +259,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
         }
 
         // Act
-        val response = client.get("user")
+        val response = client.get("user?org_id=org123")
 
         // Assert
         assertEquals(HttpStatusCode.OK, response.status)

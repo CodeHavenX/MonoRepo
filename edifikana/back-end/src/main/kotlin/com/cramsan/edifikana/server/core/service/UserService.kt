@@ -156,6 +156,9 @@ class UserService(
         return userDatastore.recordInvite(email, organizationId)
     }
 
+    /**
+     * Retrieves all pending invites for the provided [organizationId].
+     */
     suspend fun getInvites(
         organizationId: OrganizationId,
     ): Result<List<Invite>> {

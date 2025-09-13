@@ -130,7 +130,7 @@ class UserController(
     }
 
     /**
-     * Handles the retrieval of all users. The [call] parameter is the request context.
+     * Handles the retrieval of all users of a given organization. The [call] parameter is the request context.
      */
     @OptIn(NetworkModel::class)
     suspend fun getUsers(call: ApplicationCall) = call.handleCall(TAG, "getUsers", contextRetriever) { _ ->
@@ -231,6 +231,9 @@ class UserController(
         )
     }
 
+    /**
+     * Handle a call to get all pending invites for an organization.
+     */
     @OptIn(NetworkModel::class)
     suspend fun getInvites(call: RoutingCall) = call.handleCall(TAG, "getInvites", contextRetriever) { _ ->
         val orgId = requireNotBlank(call.request.queryParameters[Routes.User.QueryParams.ORG_ID])
@@ -243,7 +246,6 @@ class UserController(
             status = HttpStatusCode.OK,
             body = invites,
         )
-
     }
 
     /**

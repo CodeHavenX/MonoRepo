@@ -173,14 +173,15 @@ class UserServiceTest {
     fun `getUsers should return all users`() = runTest {
         // Arrange
         val users = listOf(mockk<User>(), mockk())
-        coEvery { userDatastore.getUsers() } returns Result.success(users)
+        val orgId = OrganizationId("orgId")
+        coEvery { userDatastore.getUsers(orgId) } returns Result.success(users)
 
         // Act
-        val result = userService.getUsers()
+        val result = userService.getUsers(orgId)
 
         // Assert
         assertEquals(Result.success(users), result)
-        coVerify { userDatastore.getUsers() }
+        coVerify { userDatastore.getUsers(orgId) }
     }
 
     /**

@@ -18,13 +18,17 @@ data class InviteEntity(
     val organizationId: String,
 ) {
 
+    /**
+     * Supabase entity representing a create invite request.
+     */
+    @Serializable
+    @SupabaseModel
     data class Create(
         @SerialName("email")
         val email: String,
         @SerialName("organization_id")
         val organizationId: String,
     )
-
 
     companion object {
         const val COLLECTION = "invites"

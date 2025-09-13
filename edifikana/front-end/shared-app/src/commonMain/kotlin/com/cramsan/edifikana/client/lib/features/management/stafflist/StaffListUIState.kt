@@ -3,7 +3,6 @@ package com.cramsan.edifikana.client.lib.features.management.stafflist
 import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.StaffId
-
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.framework.core.compose.ViewModelUIState
 
@@ -23,6 +22,11 @@ data class StaffListUIState(
     }
 }
 
+/**
+ * Sealed interface representing a staff member in the UI.
+ *
+ * This can be either a user, an invite, or a staff member.
+ */
 sealed interface StaffUIModel
 
 /**
@@ -36,11 +40,21 @@ data class UserUIModel(
     val email: String?,
 ) : StaffUIModel
 
+/**
+ * UI model for an invite.
+ *
+ * This class models the data that is displayed in the staff list for an invite.
+ */
 data class InviteUIModel(
     val inviteId: InviteId,
     val email: String,
 ) : StaffUIModel
 
+/**
+ * UI model for a staff member.
+ *
+ * This class models the data that is displayed in the staff list for a staff member.
+ */
 data class StaffMemberUIModel(
     val staffId: StaffId,
     val name: String,

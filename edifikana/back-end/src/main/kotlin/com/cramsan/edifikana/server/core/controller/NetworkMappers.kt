@@ -126,6 +126,9 @@ fun Organization.toOrganizationNetworkResponse(): OrganizationNetworkResponse {
     )
 }
 
+/**
+ * Converts an [Invite] domain model to an [InviteNetworkResponse] network model.
+ */
 @OptIn(NetworkModel::class)
 fun Invite.toInviteNetworkResponse(): InviteNetworkResponse {
     return InviteNetworkResponse(

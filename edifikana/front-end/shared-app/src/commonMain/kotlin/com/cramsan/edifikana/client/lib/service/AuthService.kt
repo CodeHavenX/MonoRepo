@@ -23,6 +23,9 @@ interface AuthService {
      */
     suspend fun getUser(): Result<UserModel>
 
+    /**
+     * Get all users associated with the given organization.
+     */
     suspend fun getUsersByOrganization(organizationId: OrganizationId): Result<List<UserModel>>
 
     /**
@@ -95,5 +98,8 @@ interface AuthService {
      */
     suspend fun inviteStaff(email: String, organizationId: OrganizationId): Result<Unit>
 
+    /**
+     * Retrieves all pending invites for the given [organizationId].
+     */
     suspend fun getInvites(organizationId: OrganizationId): Result<List<Invite>>
 }

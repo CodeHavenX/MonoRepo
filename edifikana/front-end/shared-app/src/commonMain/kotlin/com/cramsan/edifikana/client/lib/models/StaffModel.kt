@@ -5,7 +5,6 @@ import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.StaffRole
 
-
 /**
  * Model for a staff.
  * TODO: Add the property ID.

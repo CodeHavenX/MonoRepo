@@ -4,12 +4,12 @@ import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
-import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logI
+import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import com.cramsan.framework.utils.loginvalidation.validateEmail
 import edifikana_lib.Res
 import edifikana_lib.error_message_unexpected_error

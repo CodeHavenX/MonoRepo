@@ -3,13 +3,13 @@ package com.cramsan.edifikana.client.lib.features.auth.validation
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
-import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
 import com.cramsan.edifikana.lib.utils.requireSuccess
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logW
+import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import edifikana_lib.Res
 import edifikana_lib.error_message_unexpected_error
 import kotlinx.coroutines.launch

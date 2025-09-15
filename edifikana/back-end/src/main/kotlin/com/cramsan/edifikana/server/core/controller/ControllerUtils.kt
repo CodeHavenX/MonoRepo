@@ -1,17 +1,130 @@
 package com.cramsan.edifikana.server.core.controller
 
-import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
 import com.cramsan.edifikana.server.core.controller.authentication.ClientContext
 import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
 import com.cramsan.framework.core.ktor.HttpResponse
+import com.cramsan.framework.core.ktor.OperationHandler
+import com.cramsan.framework.core.ktor.OperationHandler.handle
+import com.cramsan.framework.core.ktor.validateClientError
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logI
 import com.cramsan.framework.logging.logW
+import com.cramsan.framework.networkapi.Api
+import com.cramsan.framework.networkapi.OperationNoArg
+import com.cramsan.framework.networkapi.OperationWithArg
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondBytes
 import io.ktor.server.response.respondNullable
+
+/**
+ * Register a handler for an operation that requires authentication. This function will retrieve the authenticated
+ * client context and pass it to the handler. This function takes a [operation] of type [OperationWithArg], which means
+ * the handler will receive an additional argument extracted from the URL.
+ */
+inline fun <Request : Any, QueryParam : Any, Response : Any, T : Api> OperationHandler.RegistrationBuilder<T>.handler(
+    operation: OperationWithArg<Request, QueryParam, Response>,
+    contextRetriever: ContextRetriever,
+    crossinline handler: suspend (ClientContext.AuthenticatedClientContext, Request, QueryParam, String) -> Response?,
+) {
+    operation.handle(
+        route,
+        { requireAuthenticatedClientContext(contextRetriever.getContext(it)) },
+    ) { context, body, queryParam, param ->
+        val response = handler(context, body, queryParam, param)
+
+        HttpResponse(
+            status = if (response == null) {
+                HttpStatusCode.NotFound
+            } else {
+                HttpStatusCode.OK
+            },
+            body = response,
+        )
+    }
+}
+
+/**
+ * Register a handler for an operation that requires authentication. This function will retrieve the authenticated
+ * client context and pass it to the handler. This function takes a [operation] of type [OperationNoArg].
+ */
+inline fun <Request : Any, QueryParam : Any, Response : Any, T : Api> OperationHandler.RegistrationBuilder<T>.handler(
+    operation: OperationNoArg<Request, QueryParam, Response>,
+    contextRetriever: ContextRetriever,
+    crossinline handler: suspend (ClientContext.AuthenticatedClientContext, Request, QueryParam) -> Response?,
+) {
+    operation.handle(
+        route,
+        { requireAuthenticatedClientContext(contextRetriever.getContext(it)) },
+    ) { context, body, queryParam ->
+        val response = handler(context, body, queryParam)
+
+        HttpResponse(
+            status = if (response == null) {
+                HttpStatusCode.NotFound
+            } else {
+                HttpStatusCode.OK
+            },
+            body = response,
+        )
+    }
+}
+
+/**
+ * Register a handler for an operation that does not require authentication. This function will retrieve the client
+ * context and pass it to the handler. This function takes a [operation] of type [OperationWithArg], which means
+ * the handler will receive an additional argument extracted from the URL.
+ */
+inline fun <Request : Any, QueryParam : Any, Response : Any, T : Api>
+    OperationHandler.RegistrationBuilder<T>.unauthenticatedHandler(
+        operation: OperationWithArg<Request, QueryParam, Response>,
+        contextRetriever: ContextRetriever,
+        crossinline handler: suspend (ClientContext, Request, QueryParam, String) -> Response?,
+    ) {
+    operation.handle(
+        route,
+        { contextRetriever.getContext(it) },
+    ) { context, body, queryParam, param ->
+        val response = handler(context, body, queryParam, param)
+
+        HttpResponse(
+            status = if (response == null) {
+                HttpStatusCode.NotFound
+            } else {
+                HttpStatusCode.OK
+            },
+            body = response,
+        )
+    }
+}
+
+/**
+ * Register a handler for an operation that does not require authentication. This function will retrieve the client
+ * context and pass it to the handler. This function takes a [operation] of type [OperationNoArg].
+ */
+inline fun <Request : Any, QueryParam : Any, Response : Any, T : Api>
+    OperationHandler.RegistrationBuilder<T>.unauthenticatedHandler(
+        operation: OperationNoArg<Request, QueryParam, Response>,
+        contextRetriever: ContextRetriever,
+        crossinline handler: suspend (ClientContext, Request, QueryParam) -> Response?,
+    ) {
+    operation.handle(
+        route,
+        { contextRetriever.getContext(it) },
+    ) { context, body, queryParam ->
+        val response = handler(context, body, queryParam)
+
+        HttpResponse(
+            status = if (response == null) {
+                HttpStatusCode.NotFound
+            } else {
+                HttpStatusCode.OK
+            },
+            body = response,
+        )
+    }
+}
 
 /**
  * Handle a call to a controller function that does not require authentication. This function will log the call,
@@ -21,7 +134,7 @@ suspend inline fun ApplicationCall.handleUnauthenticatedCall(
     tag: String,
     functionName: String,
     contextRetriever: ContextRetriever,
-    function: ApplicationCall.(ClientContext) -> HttpResponse,
+    function: ApplicationCall.(ClientContext) -> HttpResponse<*>,
 ) {
     handleCall(
         tag,
@@ -40,7 +153,7 @@ suspend inline fun ApplicationCall.handleCall(
     tag: String,
     functionName: String,
     contextRetriever: ContextRetriever,
-    function: ApplicationCall.(ClientContext.AuthenticatedClientContext) -> HttpResponse,
+    function: ApplicationCall.(ClientContext.AuthenticatedClientContext) -> HttpResponse<*>,
 ) {
     handleCall(
         tag,
@@ -60,7 +173,7 @@ suspend inline fun <T : ClientContext> ApplicationCall.handleCall(
     functionName: String,
     contextRetriever: ContextRetriever,
     verifyClientContext: (ClientContext) -> T,
-    function: ApplicationCall.(T) -> HttpResponse,
+    function: ApplicationCall.(T) -> HttpResponse<*>,
 ) {
     logI(tag, "$functionName called")
 
@@ -100,73 +213,6 @@ suspend inline fun <T : ClientContext> ApplicationCall.handleCall(
         }
     } else {
         validateClientError(tag, result)
-    }
-}
-
-/**
- * Validate the client error. This function will log the error and respond to the client with the result.
- * TODO: We need to have this function be an inline function due to a weird java.lang.NoSuchMethodError when being
- * invoked. I dont know the source of this issue, but making this function inline fixes it for now.
- * @param result The result of the function call.
- */
-suspend inline fun ApplicationCall.validateClientError(
-    tag: String,
-    result: Result<HttpResponse>,
-) {
-    // Handle the error based on our created exceptions.
-    val originalException = result.exceptionOrNull()
-    val exception = originalException as? ClientRequestExceptions
-    if (exception == null) {
-        // If the exception is not a ClientRequestException, we need to log it and return a 500 error.
-        logE(tag, "Unexpected failure when handing request", originalException)
-        respond(
-            HttpStatusCode.InternalServerError,
-            originalException?.localizedMessage.orEmpty(),
-        )
-        return
-    }
-    // Log the error
-    logE(tag, "Client Request Exception:", exception)
-    when (exception) {
-        is ClientRequestExceptions.ConflictException -> {
-            respond(
-                HttpStatusCode.Conflict,
-                exception.localizedMessage.orEmpty(),
-            )
-            return
-        }
-
-        is ClientRequestExceptions.ForbiddenException -> {
-            respond(
-                HttpStatusCode.Forbidden,
-                exception.localizedMessage.orEmpty(),
-            )
-            return
-        }
-
-        is ClientRequestExceptions.InvalidRequestException -> {
-            respond(
-                HttpStatusCode.BadRequest,
-                exception.localizedMessage.orEmpty(),
-            )
-            return
-        }
-
-        is ClientRequestExceptions.NotFoundException -> {
-            respond(
-                HttpStatusCode.NotFound,
-                exception.localizedMessage.orEmpty(),
-            )
-            return
-        }
-
-        is ClientRequestExceptions.UnauthorizedException -> {
-            respond(
-                HttpStatusCode.Unauthorized,
-                exception.localizedMessage.orEmpty(),
-            )
-            return
-        }
     }
 }
 

@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.server.core.datastore.supabase
 
 import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
+import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import com.cramsan.edifikana.server.core.service.models.User
 import com.cramsan.edifikana.server.core.service.models.UserRole
 import com.cramsan.framework.core.Hashing

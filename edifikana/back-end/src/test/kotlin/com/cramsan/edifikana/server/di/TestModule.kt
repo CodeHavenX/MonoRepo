@@ -60,7 +60,7 @@ fun testFrameworkModule() = module(createdAtStart = true) {
     }
 
     single {
-        Severity.DEBUG
+        Severity.VERBOSE
     }
 
     single<EventLoggerInterface> {

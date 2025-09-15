@@ -21,3 +21,14 @@ fun requireNotBlank(value: String?, message: String? = null): String {
 
     return value
 }
+
+/**
+ * Checks that the result was successful and returns the value if it was. Otherwise, throws the exception.
+ */
+fun <T> Result<T>.requireSuccess(): T {
+    if (isFailure) {
+        val rootException = exceptionOrNull()!!
+        throw rootException
+    }
+    return getOrThrow()
+}

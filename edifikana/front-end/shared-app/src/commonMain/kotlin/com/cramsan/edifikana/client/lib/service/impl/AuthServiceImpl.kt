@@ -1,18 +1,17 @@
 package com.cramsan.edifikana.client.lib.service.impl
 
+import com.cramsan.edifikana.api.UserApi
 import com.cramsan.edifikana.client.lib.models.Invite
 import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.client.lib.service.AuthService
-import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.model.network.CreateUserNetworkRequest
+import com.cramsan.edifikana.lib.model.network.GetAllUsersQueryParams
 import com.cramsan.edifikana.lib.model.network.InviteNetworkResponse
 import com.cramsan.edifikana.lib.model.network.InviteUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdatePasswordNetworkRequest
-import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
-import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
 import com.cramsan.edifikana.lib.utils.requireSuccess
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.assertlib.assertFalse
@@ -23,6 +22,8 @@ import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logW
+import com.cramsan.framework.networkapi.buildRequest
+import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.OtpType
 import io.github.jan.supabase.auth.exception.AuthRestException
@@ -30,13 +31,6 @@ import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.providers.builtin.OTP
 import io.github.jan.supabase.exceptions.RestException
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.get
-import io.ktor.client.request.post
-import io.ktor.client.request.put
-import io.ktor.client.request.setBody
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -72,8 +66,9 @@ class AuthServiceImpl(
     @OptIn(NetworkModel::class)
     override suspend fun getUser(): Result<UserModel> = runSuspendCatching(TAG) {
         val userId = auth.currentUserOrNull()?.id ?: error("User not signed in")
-        val response = http.get("${Routes.User.PATH}/$userId") {
-        }.body<UserNetworkResponse>()
+        val response = UserApi.getUser.buildRequest(
+            argument = userId,
+        ).execute(http)
         val userModel = response.toUserModel()
         _activeUser.value = userModel.id
         userModel
@@ -82,16 +77,12 @@ class AuthServiceImpl(
     @OptIn(NetworkModel::class)
     override suspend fun getUsersByOrganization(
         organizationId: OrganizationId,
-    ): Result<List<UserModel>> {
-        return runSuspendCatching(TAG) {
-            val response = http.get(Routes.User.PATH) {
-                url {
-                    parameters.append(Routes.User.QueryParams.ORG_ID, organizationId.id)
-                }
-            }.body<List<UserNetworkResponse>>()
-            val userModels = response.map { it.toUserModel() }
-            userModels
-        }
+    ): Result<List<UserModel>> = runSuspendCatching(TAG) {
+        val response = UserApi.getAllUsers
+            .buildRequest(GetAllUsersQueryParams(organizationId.id))
+            .execute(http)
+        val userModels = response.map { it.toUserModel() }
+        userModels
     }
 
     override suspend fun signInWithPassword(email: String, password: String): Result<UserModel> =
@@ -132,18 +123,15 @@ class AuthServiceImpl(
         }
 
         // Now we need to create the user in our system.
-        val response = http.post(Routes.User.PATH) {
-            setBody(
-                CreateUserNetworkRequest(
-                    email = email,
-                    phoneNumber = phoneNumber,
-                    firstName = firstName,
-                    lastName = lastName,
-                    password = null, // Password is not required for sign-up, but can be set later.
-                )
-            )
-            contentType(ContentType.Application.Json)
-        }.body<UserNetworkResponse>()
+        val response = UserApi.createUser.buildRequest(
+            CreateUserNetworkRequest(
+                email = email,
+                phoneNumber = phoneNumber,
+                firstName = firstName,
+                lastName = lastName,
+                password = null, // Password is not required for sign-up, but can be set later.
+            ),
+        ).execute(http)
         val userModel = response.toUserModel()
         userModel
     }
@@ -172,8 +160,7 @@ class AuthServiceImpl(
 
         if (createUser) {
             try {
-                // After the OTP is verified, we create the user in our system.
-                http.post("${Routes.User.PATH}/associate").body<UserNetworkResponse>()
+                UserApi.associateUser.buildRequest().execute(http)
             } catch (e: ClientRequestExceptions.ConflictException) {
                 logW(TAG, "User already exists, not creating a new user.", e)
             }
@@ -218,15 +205,12 @@ class AuthServiceImpl(
 
         val hashedCurrentPassword = Hashing.insecureHash(currentPassword.reveal().encodeToByteArray()).toString()
 
-        http.put("${Routes.User.PATH}/password") {
-            setBody(
-                UpdatePasswordNetworkRequest(
-                    currentPasswordHashed = hashedCurrentPassword,
-                    newPassword = newPassword.reveal()
-                )
-            )
-            contentType(ContentType.Application.Json)
-        }
+        UserApi.updatePassword.buildRequest(
+            UpdatePasswordNetworkRequest(
+                currentPasswordHashed = hashedCurrentPassword,
+                newPassword = newPassword.reveal()
+            ),
+        ).execute(http)
 
         try {
             auth.signInWith(Email) {
@@ -243,24 +227,19 @@ class AuthServiceImpl(
     override suspend fun inviteStaff(email: String, organizationId: OrganizationId): Result<Unit> = runSuspendCatching(
         TAG
     ) {
-        http.post(Routes.User.PATH + "/invite") {
-            contentType(ContentType.Application.Json)
-            setBody(
-                InviteUserNetworkRequest(
-                    email = email,
-                    organizationId = organizationId.id
-                )
-            )
-        }
+        UserApi.inviteUser.buildRequest(
+            InviteUserNetworkRequest(
+                email = email,
+                organizationId = organizationId.id
+            ),
+        ).execute(http)
     }
 
     @OptIn(NetworkModel::class)
     override suspend fun getInvites(organizationId: OrganizationId): Result<List<Invite>> = runSuspendCatching(TAG) {
-        val response = http.get("${Routes.User.PATH}/invite") {
-            url {
-                parameters.append(Routes.User.QueryParams.ORG_ID, organizationId.id)
-            }
-        }.body<List<InviteNetworkResponse>>()
+        val response = UserApi.getInvites.buildRequest(
+            argument = organizationId.id,
+        ).execute(http)
         val invites = response.map { it.toInvite() }
         invites
     }

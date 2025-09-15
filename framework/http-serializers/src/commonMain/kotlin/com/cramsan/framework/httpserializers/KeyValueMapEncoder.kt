@@ -95,8 +95,8 @@ class KeyValueMapEncoder : AbstractEncoder() {
         val kind = serializer.descriptor.kind
         if (
             // First level must be a class or object
-            kind == StructureKind.CLASS && depth != DEPTH_UNITILIZED ||
-            kind == StructureKind.OBJECT && depth != DEPTH_UNITILIZED
+            kind == StructureKind.CLASS && depth != DEPTH_UNINITIALIZED  ||
+            kind == StructureKind.OBJECT && depth != DEPTH_UNINITIALIZED
         ) {
             error("Top level value must be a class or object. Found $kind")
         }
@@ -175,6 +175,6 @@ fun <T> encodeToKeyValueMap(serializer: SerializationStrategy<T>, value: T): Map
 inline fun <reified T> encodeToKeyValueMap(value: T): Map<String, List<String>> =
     encodeToKeyValueMap(serializer(), value)
 
-private const val DEPTH_UNITILIZED = -1
+private const val DEPTH_UNINITIALIZED  = -1
 private const val DEPTH_OBJECT = 0
 private const val DEPTH_LIST = 1

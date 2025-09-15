@@ -46,7 +46,7 @@ open class Api(
     /**
      * Function to create and register an [OperationWithArg] with the controller.
      */
-    inline fun <reified Request : Any, reified QueryParam : Any, reified Response : Any>operationWithArg(
+    inline fun <reified Request : Any, reified QueryParam : Any, reified Response : Any> operationWithArg(
         method: HttpMethod,
         path: String? = null,
         requestBodyType: KClass<Request> = Request::class,

@@ -7,24 +7,31 @@ import kotlinx.serialization.descriptors.StructureKind
 import kotlinx.serialization.encoding.AbstractDecoder
 import kotlinx.serialization.encoding.CompositeDecoder
 import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.serializer
 
 /**
- * A decoder that can decode query parameters into a Kotlin object using kotlinx.serialization.
+ * A decoder that can decode a map of key to list of values into a Kotlin object using kotlinx.serialization.
  *
- * The query parameters should be in the format: key1=value1&key2=value2
- * Lists are supported as comma-separated values: key=listValue1,listValue2
+ * The map should represent query parameters where each key can have multiple values.
+ * Lists are supported as multiple values for the same key.
  *
  * Example usage:
  * ```
- * val query = "orgId=123&userId=42&active=true&items=1,2,3"
- * val obj = decodeFromQueryParams<YourDataClass>(query)
+ * val params = mapOf(
+ *     "orgId" to listOf("123"),
+ *     "userId" to listOf("42"),
+ *     "active" to listOf("true"),
+ *     "items" to listOf("1", "2", "3")
+ * )
+ * val obj = decodeFromKeyValueMap<YourDataClass>(params)
  * ```
  *
  * Note: This decoder does not support nested objects or complex types.
  */
 @ExperimentalSerializationApi
-abstract class BaseQueryParamDecoder : AbstractDecoder() {
-    protected abstract val params: Map<String, String>
+open class KeyValueMapDecoder(
+    private val params: Map<String, List<String>>
+) : AbstractDecoder() {
     private var currentIndex = -1
     private lateinit var currentDescriptor: SerialDescriptor
     override val serializersModule: SerializersModule = SerializersModule {}
@@ -38,12 +45,17 @@ abstract class BaseQueryParamDecoder : AbstractDecoder() {
         return decodeSerializableValue(deserializer)
     }
 
+    override fun decodeEnum(enumDescriptor: SerialDescriptor): Int {
+        val enumValue = decodeString()
+        return enumDescriptor.getElementIndex(enumValue)
+    }
+
     override fun beginStructure(descriptor: SerialDescriptor): CompositeDecoder {
         if (descriptor.kind == StructureKind.LIST) {
             // Find the key for the list (from the parent object)
             val name = currentDescriptor.getElementName(currentIndex)
-            val value = params[name] ?: ""
-            currentList = if (value.isEmpty()) emptyList() else value.split(",")
+            val value = params[name] ?: emptyList()
+            currentList = value
             currentListIndex = -1
         } else {
             currentDescriptor = descriptor
@@ -76,10 +88,17 @@ abstract class BaseQueryParamDecoder : AbstractDecoder() {
 
     override fun decodeString(): String {
         return if (currentList != null) {
-            currentList!![currentListIndex]
+            currentList?.get(currentListIndex) ?: error("No value for list at index $currentListIndex")
         } else {
             val name = currentDescriptor.getElementName(currentIndex)
-            params[name] ?: error("Missing query param: $name")
+            val value = params[name]
+            if (value.isNullOrEmpty()) {
+                error("Missing value for key: $name")
+            }
+            if (value.size > 1) {
+                error("Multiple values for key: $name. Found: $value")
+            }
+            value[0]
         }
     }
 
@@ -94,3 +113,51 @@ abstract class BaseQueryParamDecoder : AbstractDecoder() {
 
     override fun decodeNull(): Nothing? = null
 }
+
+/**
+ * Decodes a Kotlin object of type [T] from a map of key to list of values using the provided [deserializer].
+ *
+ * The map should represent query parameters where each key can have multiple values.
+ * Lists are supported as multiple values for the same key.
+ *
+ * Example usage:
+ * ```
+ * val params = mapOf(
+ *     "orgId" to listOf("123"),
+ *     "userId" to listOf("42"),
+ *     "active" to listOf("true"),
+ *     "items" to listOf("1", "2", "3")
+ * )
+ * val obj = decodeFromKeyValueMap(YourDataClass.serializer(), params)
+ * ```
+ *
+ * Note: This decoder does not support nested objects or complex types.
+ */
+@OptIn(ExperimentalSerializationApi::class)
+fun <T> decodeFromKeyValueMap(deserializer: DeserializationStrategy<T>, map: Map<String, List<String>>): T {
+    val decoder = KeyValueMapDecoder(map)
+    return decoder.decodeSerializableValue(deserializer)
+}
+
+/**
+ * Decodes a Kotlin object of type [T] from a map of key to list of values.
+ *
+ * This is an inline reified version of [decodeFromKeyValueMap] that automatically
+ * provides the serializer for type [T].
+ *
+ * The map should represent query parameters where each key can have multiple values.
+ * Lists are supported as multiple values for the same key.
+ *
+ * Example usage:
+ * ```
+ * val params = mapOf(
+ *     "orgId" to listOf("123"),
+ *     "userId" to listOf("42"),
+ *     "active" to listOf("true"),
+ *     "items" to listOf("1", "2", "3")
+ * )
+ * val obj = decodeFromKeyValueMap<YourDataClass>(params)
+ */
+@OptIn(ExperimentalSerializationApi::class)
+inline fun <reified T> decodeFromKeyValueMap(map: Map<String, List<String>>): T =
+    decodeFromKeyValueMap(serializer(), map)

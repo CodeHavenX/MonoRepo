@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.client.lib.service.impl
 
-import com.cramsan.framework.httpserializers.encodeToQueryParams
+import com.cramsan.framework.httpserializers.encodeToKeyValueMap
 import com.cramsan.framework.networkapi.OperationRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -11,6 +11,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HeadersBuilder
 import io.ktor.http.appendPathSegments
 import io.ktor.http.contentType
+import io.ktor.http.parameters
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.InternalSerializationApi
 
@@ -37,12 +38,16 @@ suspend inline fun <reified Request : Any, reified QueryParams : Any, reified Re
             headers(it)
         }
         url {
-            val queryParams = if (QueryParams::class != Unit::class) {
-                "?" + encodeToQueryParams(request.queryParam)
-            } else {
-                ""
+            appendPathSegments(request.fullPath)
+            if (QueryParams::class != Unit::class) {
+                val paramsMap = encodeToKeyValueMap(request.queryParam)
+
+                parameters {
+                    paramsMap.forEach { (key, value) ->
+                        appendAll(key, value)
+                    }
+                }
             }
-            appendPathSegments(request.fullPath + queryParams)
         }
         if (request.body != Unit) {
             setBody(request.body)

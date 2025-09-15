@@ -12,22 +12,22 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.serializer
 
 /**
- * An encoder that can encode a Kotlin object into query parameters using kotlinx.serialization.
+ * An encoder that can encode a Kotlin object into a map of key to list of values using kotlinx.serialization.
  *
- * The resulting query parameters will be in the format: key1=value1&key2=value2
- * Lists are supported as comma-separated values: key=listValue1,listValue2
+ * The resulting map can represent query parameters where each key can have multiple values.
+ * Lists are supported as multiple values for the same key.
  *
  * Example usage:
  * ```
- * val obj = YourDataClass(...)
- * val query = encodeToQueryParams(obj)
+ * val obj = YourDataClass(orgId = "123", userId = 42, active = true, items = listOf(1, 2, 3))
+ * val map = encodeToKeyValueMap(obj)
  * ```
  *
  * Note: This encoder does not support nested objects or complex types.
  */
 @ExperimentalSerializationApi
-class QueryParamEncoder : AbstractEncoder() {
-    private val map = mutableMapOf<String, String>()
+class KeyValueMapEncoder : AbstractEncoder() {
+    private val map = mutableMapOf<String, List<String>>()
     private val array = mutableListOf<String>()
     private var currentTag: String = ""
     override val serializersModule: SerializersModule = SerializersModule {}
@@ -35,7 +35,7 @@ class QueryParamEncoder : AbstractEncoder() {
 
     override fun encodeValue(value: Any) {
         when (depth) {
-            DEPTH_OBJECT -> map[currentTag] = value.toString()
+            DEPTH_OBJECT -> map[currentTag] = listOf(value.toString())
             DEPTH_LIST -> {
                 array.add(value.toString())
             }
@@ -43,9 +43,7 @@ class QueryParamEncoder : AbstractEncoder() {
         }
     }
 
-    override fun encodeNull() {
-        map[currentTag] = ""
-    }
+    override fun encodeNull() = Unit // Ignore nulls
 
     private val allowedKinds = setOf(
         PrimitiveKind.BOOLEAN,
@@ -80,8 +78,16 @@ class QueryParamEncoder : AbstractEncoder() {
             }
         }
 
-        currentTag = descriptor.getElementName(index)
+        if (depth == DEPTH_OBJECT) {
+            // First level must be a class or object
+            // We only can add field names at the object level
+            currentTag = descriptor.getElementName(index)
+        }
         return true
+    }
+
+    override fun encodeEnum(enumDescriptor: SerialDescriptor, index: Int) {
+        encodeString(enumDescriptor.getElementName(index))
     }
 
     @Suppress("ComplexCondition")
@@ -94,7 +100,7 @@ class QueryParamEncoder : AbstractEncoder() {
         ) {
             error("Top level value must be a class or object. Found $kind")
         }
-        if (kind == StructureKind.LIST && depth != DEPTH_LIST) {
+        if (kind == StructureKind.LIST && depth != DEPTH_OBJECT) {
             error("Nested lists are not supported")
         }
         if (
@@ -116,49 +122,58 @@ class QueryParamEncoder : AbstractEncoder() {
 
     override fun endStructure(descriptor: SerialDescriptor) {
         if (depth == DEPTH_LIST) {
-            map[currentTag] = array.joinToString(",")
+            map[currentTag] = array.toList()
             array.clear()
         }
         depth--
     }
 
     /**
-     * Encodes the collected key-value pairs into a query parameter string.
-     *
-     * @return A string representing the encoded query parameters.
+     * Returns the encoded map of key to list of values.
      */
-    fun encode(): String {
-        if (map.isEmpty()) return ""
-        return map.entries.joinToString(separator = "&") { (k, v) ->
-            "$k=$v"
-        }
+    fun encode(): Map<String, List<String>> {
+        return map.toMap()
     }
 }
 
 /**
- * Encodes a Kotlin object into a query parameter string using the provided serializer.
+ * Encodes a Kotlin object into a map of key to list of values using the provided serializer.
  *
- * @param T The type of the object to encode.
- * @param serializer The serializer for the type T.
- * @param value The object to encode.
- * @return A string representing the encoded query parameters.
+ * The resulting map can represent query parameters where each key can have multiple values.
+ * Lists are supported as multiple values for the same key.
+ *
+ * Example usage:
+ * ```
+ * val obj = YourDataClass(orgId = "123", userId = 42, active = true, items = listOf(1, 2, 3))
+ * val map = encodeToKeyValueMap(YourDataClass.serializer(), obj)
+ * ```
+ *
+ * Note: This encoder does not support nested objects or complex types.
  */
-@ExperimentalSerializationApi
-fun <T> encodeToQueryParams(serializer: SerializationStrategy<T>, value: T): String {
-    val encoder = QueryParamEncoder()
+@OptIn(ExperimentalSerializationApi::class)
+fun <T> encodeToKeyValueMap(serializer: SerializationStrategy<T>, value: T): Map<String, List<String>> {
+    val encoder = KeyValueMapEncoder()
     encoder.encodeSerializableValue(serializer, value)
     return encoder.encode()
 }
 
 /**
- * Encodes a Kotlin object into a query parameter string using its reified serializer.
+ * Encodes a Kotlin object into a map of key to list of values.
  *
- * @param T The type of the object to encode.
- * @param value The object to encode.
- * @return A string representing the encoded query parameters.
+ * This is an inline reified version of [encodeToKeyValueMap] that automatically
+ * provides the serializer for type [T].
+ *
+ * Example usage:
+ * ```
+ * val obj = YourDataClass(orgId = "123", userId = 42, active = true, items = listOf(1, 2, 3))
+ * val map = encodeToKeyValueMap(obj)
+ * ```
+ *
+ * Note: This encoder does not support nested objects or complex types.
  */
-@ExperimentalSerializationApi
-inline fun <reified T> encodeToQueryParams(value: T) = encodeToQueryParams(serializer(), value)
+@OptIn(ExperimentalSerializationApi::class)
+inline fun <reified T> encodeToKeyValueMap(value: T): Map<String, List<String>> =
+    encodeToKeyValueMap(serializer(), value)
 
 private const val DEPTH_UNITILIZED = -1
 private const val DEPTH_OBJECT = 0

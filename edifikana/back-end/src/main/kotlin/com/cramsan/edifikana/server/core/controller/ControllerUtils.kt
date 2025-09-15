@@ -30,7 +30,7 @@ inline fun <Request : Any, QueryParam : Any, Response : Any, T : Api> OperationH
 ) {
     operation.handle(
         route,
-        { requireAuthenticatedClientContext(contextRetriever.getContext(it)) },
+        { requireAuthenticatedClientContext(contextRetriever.getContext(this)) },
     ) { context, body, queryParam, param ->
         val response = handler(context, body, queryParam, param)
 
@@ -84,7 +84,7 @@ inline fun <Request : Any, QueryParam : Any, Response : Any, T : Api>
     ) {
     operation.handle(
         route,
-        { contextRetriever.getContext(it) },
+        { contextRetriever.getContext(this) },
     ) { context, body, queryParam, param ->
         val response = handler(context, body, queryParam, param)
 

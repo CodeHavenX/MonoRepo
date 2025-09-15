@@ -1,7 +1,8 @@
 package com.cramsan.framework.core.ktor
 
-import com.cramsan.framework.httpserializers.BaseQueryParamDecoder
+import com.cramsan.framework.httpserializers.KeyValueMapDecoder
 import io.ktor.http.Parameters
+import io.ktor.util.toMap
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.serializer
@@ -23,9 +24,7 @@ import kotlinx.serialization.serializer
 @ExperimentalSerializationApi
 class KtorParamDecoder(
     queryParams: Parameters,
-) : BaseQueryParamDecoder() {
-    override val params: Map<String, String> = queryParams.entries().associate { it.key to it.value.joinToString(",") }
-}
+) : KeyValueMapDecoder(queryParams.toMap())
 
 /**
  * Decodes a query parameter string into an object of type [T] using the provided [deserializer].

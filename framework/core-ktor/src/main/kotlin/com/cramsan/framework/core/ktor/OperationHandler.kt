@@ -53,8 +53,8 @@ object OperationHandler {
     fun <Request : Any, QueryParam : Any, Response : Any, Context>
         OperationWithArg<Request, QueryParam, Response>.handle(
             route: Route,
-            contextRetriever: suspend (ApplicationCall) -> Context,
-            handler: suspend (Context, Request, QueryParam, String) -> HttpResponse<Response>,
+            contextRetriever: suspend ApplicationCall.() -> Context,
+            handler: suspend ApplicationCall.(Context, Request, QueryParam, String) -> HttpResponse<Response>,
         ) {
         this.handleImpl(route, contextRetriever) { context, body, queryParam, param ->
             if (param.isNullOrBlank()) {
@@ -93,7 +93,7 @@ object OperationHandler {
         Operation<Request, QueryParam, Response>.handleImpl(
             route: Route,
             contextRetriever: suspend (ApplicationCall) -> Context,
-            block: suspend (Context, Request, QueryParam, String?) -> HttpResponse<Response>,
+            block: suspend ApplicationCall.(Context, Request, QueryParam, String?) -> HttpResponse<Response>,
         ) {
         val handler = this.toOperationHandler()
         route.route(handler.fullPath, handler.method) {
@@ -144,7 +144,9 @@ object OperationHandler {
                 }
 
                 val responseResult = runCatching {
-                    block(context, body, queryParams, param)
+                    call.run {
+                        block(context, body, queryParams, param)
+                    }
                 }
 
                 if (responseResult.isFailure) {

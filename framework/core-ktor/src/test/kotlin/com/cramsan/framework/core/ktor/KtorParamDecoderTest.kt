@@ -96,7 +96,9 @@ class KtorParamDecoderTest {
 
     @Test
     fun `decodes list field`() {
-        val params = Parameters.build { append("items", "1,2,3") }
+        val params = Parameters.build {
+            appendAll("items", listOf("1", "2", "3"))
+        }
         val obj = decodeFromQueryParams<ListField>(params)
         assertEquals(ListField(listOf(1, 2, 3)), obj)
     }

@@ -5,7 +5,7 @@ import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.StaffRole
-import com.cramsan.edifikana.lib.model.StaffStatus
+
 import com.cramsan.edifikana.lib.model.network.StaffNetworkResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -44,7 +44,6 @@ class StaffServiceImplTest {
                     "Doe",
                     StaffRole.MANAGER,
                     "johndoe@email.com",
-                    StaffStatus.ACTIVE,
                     )
             },
             mockk<StaffNetworkResponse> {
@@ -55,7 +54,6 @@ class StaffServiceImplTest {
                     "Smith",
                     StaffRole.SECURITY,
                     "janesmith@email.com",
-                    StaffStatus.PENDING,
                     )
             }
         )
@@ -90,7 +88,6 @@ class StaffServiceImplTest {
                 "Doe",
                 StaffRole.MANAGER,
                 "johnD@email.com",
-                StaffStatus.ACTIVE,
             )
         }
         mockkStatic("io.ktor.client.call.HttpClientCallKt")
@@ -124,7 +121,6 @@ class StaffServiceImplTest {
                 "Brown",
                 StaffRole.MANAGER,
                 "aliceBrn@email.com",
-                StaffStatus.ACTIVE,
                 )
         }
         mockkStatic("io.ktor.client.call.HttpClientCallKt")

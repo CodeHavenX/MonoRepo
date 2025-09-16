@@ -1,6 +1,8 @@
 package com.cramsan.edifikana.client.lib.service
 
+import com.cramsan.edifikana.client.lib.models.Invite
 import com.cramsan.edifikana.client.lib.models.UserModel
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
@@ -20,6 +22,11 @@ interface AuthService {
      * Get the current user.
      */
     suspend fun getUser(): Result<UserModel>
+
+    /**
+     * Get all users associated with the given organization.
+     */
+    suspend fun getUsersByOrganization(organizationId: OrganizationId): Result<List<UserModel>>
 
     /**
      * Sign in the user with the given email and password.
@@ -85,4 +92,14 @@ interface AuthService {
      */
     @OptIn(SecureStringAccess::class)
     suspend fun changePassword(currentPassword: SecureString, newPassword: SecureString): Result<Unit>
+
+    /**
+     * Invite a staff member to the organization with the provided [organizationId] using the given [email].
+     */
+    suspend fun inviteStaff(email: String, organizationId: OrganizationId): Result<Unit>
+
+    /**
+     * Retrieves all pending invites for the given [organizationId].
+     */
+    suspend fun getInvites(organizationId: OrganizationId): Result<List<Invite>>
 }

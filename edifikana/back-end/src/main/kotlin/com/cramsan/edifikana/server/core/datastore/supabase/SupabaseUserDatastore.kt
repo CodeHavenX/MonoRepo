@@ -1,11 +1,16 @@
 package com.cramsan.edifikana.server.core.datastore.supabase
 
+import com.cramsan.edifikana.lib.model.InviteId
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
 import com.cramsan.edifikana.lib.utils.requireNotBlank
 import com.cramsan.edifikana.server.core.datastore.UserDatastore
 import com.cramsan.edifikana.server.core.datastore.supabase.models.AuthMetadataEntity
+import com.cramsan.edifikana.server.core.datastore.supabase.models.InviteEntity
 import com.cramsan.edifikana.server.core.datastore.supabase.models.UserEntity
+import com.cramsan.edifikana.server.core.datastore.supabase.models.UserOrganizationMappingEntity
+import com.cramsan.edifikana.server.core.service.models.Invite
 import com.cramsan.edifikana.server.core.service.models.User
 import com.cramsan.framework.annotations.SupabaseModel
 import com.cramsan.framework.assertlib.assert
@@ -21,6 +26,7 @@ import com.cramsan.framework.utils.uuid.UUID
 import io.github.jan.supabase.auth.admin.AdminApi
 import io.github.jan.supabase.auth.exception.AuthRestException
 import io.github.jan.supabase.postgrest.Postgrest
+import io.github.jan.supabase.postgrest.query.Columns
 import io.ktor.http.HttpStatusCode
 
 /**
@@ -180,10 +186,21 @@ class SupabaseUserDatastore(
         }.decodeSingleOrNull<UserEntity>()
     }
 
-    override suspend fun getUsers(): Result<List<User>> = runSuspendCatching(TAG) {
+    override suspend fun getUsers(
+        organizationId: OrganizationId,
+    ): Result<List<User>> = runSuspendCatching(TAG) {
         logD(TAG, "Getting all users")
 
-        postgrest.from(UserEntity.COLLECTION).select().decodeList<UserEntity>().map { it.toUser() }
+        val organizations = postgrest.from(UserOrganizationMappingEntity.COLLECTION).select(
+            // HINT: Here we are using the POSTgREST feature to select related rows and spread them into the result.
+            // https://supabase.com/blog/postgrest-11-prerelease
+            Columns.list("...${UserEntity.COLLECTION}(*)")
+        ) {
+            filter {
+                eq("organization_id", organizationId.id)
+            }
+        }
+        organizations.decodeList<UserEntity>().map { it.toUser() }
     }
 
     /**
@@ -308,6 +325,33 @@ class SupabaseUserDatastore(
         )
     }
 
+    override suspend fun recordInvite(
+        email: String,
+        organizationId: OrganizationId,
+    ): Result<Unit> = runSuspendCatching(TAG) {
+        logD(TAG, "Recording invite for email: %s", email)
+
+        val inviteEntity = InviteEntity.Create(
+            email = email,
+            organizationId = organizationId.id,
+        )
+
+        postgrest.from(InviteEntity.COLLECTION).insert(inviteEntity) {
+            select()
+        }.decodeSingle<InviteEntity>()
+    }
+
+    override suspend fun getInvites(organizationId: OrganizationId): Result<List<Invite>> {
+        return runSuspendCatching(TAG) {
+            val organizations = postgrest.from(InviteEntity.COLLECTION).select {
+                filter {
+                    eq("organization_id", organizationId.id)
+                }
+            }
+            organizations.decodeList<InviteEntity>().map { it.toInvite() }
+        }
+    }
+
     private suspend fun createUserEntity(
         userEntity: UserEntity.CreateUserEntity,
     ): UserEntity {
@@ -322,4 +366,13 @@ class SupabaseUserDatastore(
     companion object {
         const val TAG = "SupabaseUserDatastore"
     }
+}
+
+@OptIn(SupabaseModel::class)
+private fun InviteEntity.toInvite(): Invite {
+    return Invite(
+        inviteId = InviteId(this.id),
+        email = this.email,
+        organizationId = OrganizationId(this.organizationId),
+    )
 }

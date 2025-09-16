@@ -1,16 +1,19 @@
 package com.cramsan.edifikana.client.lib.features.admin.timecardstafflist
 
 import app.cash.turbine.test
-import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.features.management.ManagementDestination
 import com.cramsan.edifikana.client.lib.features.management.stafflist.StaffListViewModel
-import com.cramsan.edifikana.client.lib.features.management.stafflist.StaffUIModel
+import com.cramsan.edifikana.client.lib.features.management.stafflist.StaffMemberUIModel
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
+import com.cramsan.edifikana.client.lib.managers.AuthManager
+import com.cramsan.edifikana.client.lib.managers.OrganizationManager
 import com.cramsan.edifikana.client.lib.managers.StaffManager
+import com.cramsan.edifikana.client.lib.models.Organization
 import com.cramsan.edifikana.client.lib.models.StaffModel
 import com.cramsan.edifikana.lib.model.IdType
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.StaffRole
-import com.cramsan.edifikana.lib.model.StaffStatus
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
 import com.cramsan.framework.core.compose.EventBus
@@ -23,7 +26,10 @@ import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.test.CoroutineTest
 import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.advanceUntilIdle
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -33,9 +39,12 @@ class StaffListViewModelTest : CoroutineTest() {
 
     private lateinit var viewModel: StaffListViewModel
     private lateinit var staffManager: StaffManager
+    private lateinit var authManager: AuthManager
+    private lateinit var organizationManager: OrganizationManager
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
     private lateinit var applicationEventReceiver: EventBus<ApplicationEvent>
     private lateinit var windowEventBus: EventBus<WindowEvent>
+    private lateinit var activeOrganization: MutableStateFlow<Organization?>
 
     @BeforeEach
     fun setupTest() {
@@ -44,6 +53,10 @@ class StaffListViewModelTest : CoroutineTest() {
         exceptionHandler = CollectorCoroutineExceptionHandler()
         staffManager = mockk(relaxed = true)
         windowEventBus = EventBus()
+        authManager = mockk(relaxed = true)
+        organizationManager = mockk(relaxed = true)
+        activeOrganization = MutableStateFlow(null)
+        coEvery { organizationManager.observeActiveOrganization() } returns activeOrganization
         viewModel = StaffListViewModel(
             dependencies = ViewModelDependencies(
                 appScope = testCoroutineScope,
@@ -52,10 +65,13 @@ class StaffListViewModelTest : CoroutineTest() {
                 applicationEventReceiver = applicationEventReceiver,
                 windowEventReceiver = windowEventBus,
             ),
-            staffManager = staffManager
+            staffManager = staffManager,
+            authManager = authManager,
+            organizationManager = organizationManager,
         )
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `test loadStaffList updates UI state with staff list`() = runCoroutineTest {
         val staffList = listOf(
@@ -63,7 +79,6 @@ class StaffListViewModelTest : CoroutineTest() {
                 id = StaffId("1"),
                 firstName = "John",
                 email = "john@example.com",
-                status = StaffStatus.PENDING,
                 idType = IdType.PASSPORT,
                 lastName = "Doe",
                 role = StaffRole.SECURITY_COVER,
@@ -72,30 +87,35 @@ class StaffListViewModelTest : CoroutineTest() {
                 id = StaffId("2"),
                 firstName = "Jane",
                 email = "jane@example.com",
-                status = StaffStatus.ACTIVE,
                 idType = IdType.DNI,
                 lastName = "Smith",
                 role = StaffRole.MANAGER,
             )
         )
+        val orgId = OrganizationId("org1")
+        val organization = Organization(
+            id = orgId,
+        )
         coEvery { staffManager.getStaffList() } returns Result.success(staffList)
+        coEvery { authManager.getUsers(orgId) } returns Result.success(emptyList())
+        coEvery { authManager.getInvites(orgId) } returns Result.success(emptyList())
+        activeOrganization.value = organization
+        advanceUntilIdle()
 
         viewModel.loadStaffList()
 
         assertEquals(
             listOf(
-                StaffUIModel(
-                    id = StaffId("1"),
-                    name = "John",
-                    email = "john@example.com",
-                    status = StaffStatus.PENDING,
-                ),
-                StaffUIModel(
-                    id = StaffId("2"),
+                StaffMemberUIModel(
+                    staffId = StaffId("2"),
                     name = "Jane",
                     email = "jane@example.com",
-                    status = StaffStatus.ACTIVE,
-                )
+                ),
+                StaffMemberUIModel(
+                    staffId = StaffId("1"),
+                    name = "John",
+                    email = "john@example.com",
+                ),
             ),
             viewModel.uiState.value.staffList
         )

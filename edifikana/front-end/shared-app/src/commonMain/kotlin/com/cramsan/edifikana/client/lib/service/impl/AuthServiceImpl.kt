@@ -1,10 +1,15 @@
 package com.cramsan.edifikana.client.lib.service.impl
 
+import com.cramsan.edifikana.client.lib.models.Invite
 import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.client.lib.service.AuthService
 import com.cramsan.edifikana.lib.Routes
+import com.cramsan.edifikana.lib.model.InviteId
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.model.network.CreateUserNetworkRequest
+import com.cramsan.edifikana.lib.model.network.InviteNetworkResponse
+import com.cramsan.edifikana.lib.model.network.InviteUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdatePasswordNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
 import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
@@ -72,6 +77,21 @@ class AuthServiceImpl(
         val userModel = response.toUserModel()
         _activeUser.value = userModel.id
         userModel
+    }
+
+    @OptIn(NetworkModel::class)
+    override suspend fun getUsersByOrganization(
+        organizationId: OrganizationId,
+    ): Result<List<UserModel>> {
+        return runSuspendCatching(TAG) {
+            val response = http.get(Routes.User.PATH) {
+                url {
+                    parameters.append(Routes.User.QueryParams.ORG_ID, organizationId.id)
+                }
+            }.body<List<UserNetworkResponse>>()
+            val userModels = response.map { it.toUserModel() }
+            userModels
+        }
     }
 
     override suspend fun signInWithPassword(email: String, password: String): Result<UserModel> =
@@ -219,7 +239,41 @@ class AuthServiceImpl(
         }
     }
 
+    @OptIn(NetworkModel::class)
+    override suspend fun inviteStaff(email: String, organizationId: OrganizationId): Result<Unit> = runSuspendCatching(
+        TAG
+    ) {
+        http.post(Routes.User.PATH + "/invite") {
+            contentType(ContentType.Application.Json)
+            setBody(
+                InviteUserNetworkRequest(
+                    email = email,
+                    organizationId = organizationId.id
+                )
+            )
+        }
+    }
+
+    @OptIn(NetworkModel::class)
+    override suspend fun getInvites(organizationId: OrganizationId): Result<List<Invite>> = runSuspendCatching(TAG) {
+        val response = http.get("${Routes.User.PATH}/invite") {
+            url {
+                parameters.append(Routes.User.QueryParams.ORG_ID, organizationId.id)
+            }
+        }.body<List<InviteNetworkResponse>>()
+        val invites = response.map { it.toInvite() }
+        invites
+    }
+
     companion object {
         private const val TAG = "AuthServiceImpl"
     }
+}
+
+@OptIn(NetworkModel::class)
+private fun InviteNetworkResponse.toInvite(): Invite {
+    return Invite(
+        id = InviteId(this.inviteId),
+        email = this.email,
+    )
 }

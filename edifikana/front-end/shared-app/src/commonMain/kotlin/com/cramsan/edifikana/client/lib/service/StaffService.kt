@@ -24,11 +24,6 @@ interface StaffService {
     suspend fun createStaff(staff: StaffModel.CreateStaffRequest): Result<StaffModel>
 
     /**
-     * Invite a staff member.
-     */
-    suspend fun inviteStaff(email: String): Result<Unit>
-
-    /**
      * Update an existing staff member.
      */
     suspend fun updateStaff(staff: StaffModel.UpdateStaffRequest): Result<StaffModel>

@@ -113,7 +113,7 @@ class PropertyServiceImpl(
     }
 
     companion object {
-        const val TAG = "PropertyServiceImpl"
+        private const val TAG = "PropertyServiceImpl"
         const val PREF_ACTIVE_PROPERTY = "activeProperty"
     }
 }

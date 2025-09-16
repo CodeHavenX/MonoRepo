@@ -2,8 +2,10 @@ package com.cramsan.edifikana.server.core.controller
 
 import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.Routes.User.QueryParams.USER_ID
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.model.network.CreateUserNetworkRequest
+import com.cramsan.edifikana.lib.model.network.InviteUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdatePasswordNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdateUserNetworkRequest
 import com.cramsan.edifikana.lib.utils.requireAll
@@ -128,11 +130,15 @@ class UserController(
     }
 
     /**
-     * Handles the retrieval of all users. The [call] parameter is the request context.
+     * Handles the retrieval of all users of a given organization. The [call] parameter is the request context.
      */
     @OptIn(NetworkModel::class)
     suspend fun getUsers(call: ApplicationCall) = call.handleCall(TAG, "getUsers", contextRetriever) { _ ->
-        val users = userService.getUsers().getOrThrow().map { it.toUserNetworkResponse() }
+        val orgId = requireNotBlank(call.request.queryParameters[Routes.User.QueryParams.ORG_ID])
+
+        val users = userService.getUsers(
+            organizationId = OrganizationId(orgId)
+        ).getOrThrow().map { it.toUserNetworkResponse() }
 
         HttpResponse(
             status = HttpStatusCode.OK,
@@ -206,6 +212,43 @@ class UserController(
     }
 
     /**
+     * Handle a call to invite a user to the system via email.
+     */
+    @OptIn(NetworkModel::class)
+    suspend fun inviteUser(call: RoutingCall) = call.handleCall(TAG, "inviteUser", contextRetriever) { _ ->
+        val inviteRequest = call.receive<InviteUserNetworkRequest>()
+        val email = inviteRequest.email
+        val organizationId = OrganizationId(inviteRequest.organizationId)
+
+        userService.inviteUser(
+            email,
+            organizationId,
+        ).requireSuccess()
+
+        HttpResponse(
+            status = HttpStatusCode.OK,
+            body = "Invitation sent to $email",
+        )
+    }
+
+    /**
+     * Handle a call to get all pending invites for an organization.
+     */
+    @OptIn(NetworkModel::class)
+    suspend fun getInvites(call: RoutingCall) = call.handleCall(TAG, "getInvites", contextRetriever) { _ ->
+        val orgId = requireNotBlank(call.request.queryParameters[Routes.User.QueryParams.ORG_ID])
+
+        val invites = userService.getInvites(
+            organizationId = OrganizationId(orgId)
+        ).getOrThrow().map { it.toInviteNetworkResponse() }
+
+        HttpResponse(
+            status = HttpStatusCode.OK,
+            body = invites,
+        )
+    }
+
+    /**
      * Registers the routes for the user controller. The [route] parameter is the root path for the controller.
      */
     override fun registerRoutes(route: Routing) {
@@ -230,6 +273,14 @@ class UserController(
             }
             post("associate") {
                 associate(call)
+            }
+            route("invite") {
+                post {
+                    inviteUser(call)
+                }
+                get {
+                    getInvites(call)
+                }
             }
         }
     }

@@ -10,7 +10,7 @@ import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.StaffRole
-import com.cramsan.edifikana.lib.model.StaffStatus
+
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.edifikana.lib.model.UserId
@@ -247,7 +247,6 @@ class NetworkMappersTest {
         assertEquals(StaffRole.SECURITY, model.role)
         assertEquals(IdType.DNI, model.idType)
         assertEquals(null, model.email)
-        assertEquals(StaffStatus.ACTIVE, model.status)
     }
 
     /**

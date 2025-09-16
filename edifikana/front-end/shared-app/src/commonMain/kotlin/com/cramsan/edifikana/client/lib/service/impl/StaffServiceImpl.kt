@@ -2,7 +2,6 @@ package com.cramsan.edifikana.client.lib.service.impl
 
 import com.cramsan.edifikana.client.lib.models.StaffModel
 import com.cramsan.edifikana.client.lib.service.StaffService
-import com.cramsan.edifikana.client.lib.service.impl.PropertyServiceImpl.Companion.TAG
 import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.network.StaffNetworkResponse
@@ -64,7 +63,7 @@ class StaffServiceImpl(
         staffModel
     }
 
-    override suspend fun inviteStaff(email: String): Result<Unit> {
-        TODO("Not yet implemented")
+    companion object {
+        private const val TAG = "StaffServiceImpl"
     }
 }

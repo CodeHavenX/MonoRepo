@@ -2,7 +2,6 @@ package com.cramsan.edifikana.client.lib.service.impl
 
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
 import com.cramsan.edifikana.client.lib.service.TimeCardService
-import com.cramsan.edifikana.client.lib.service.impl.PropertyServiceImpl.Companion.TAG
 import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.Routes.Staff.QueryParams.STAFF_ID
 import com.cramsan.edifikana.lib.model.StaffId
@@ -76,5 +75,9 @@ class TimeCardServiceImpl(
 
         val record = response.toTimeCardRecordModel()
         record
+    }
+
+    companion object {
+        private const val TAG = "TimeCardServiceImpl"
     }
 }

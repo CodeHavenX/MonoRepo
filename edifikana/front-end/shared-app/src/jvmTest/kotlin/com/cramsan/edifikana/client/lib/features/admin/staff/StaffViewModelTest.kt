@@ -8,7 +8,7 @@ import com.cramsan.edifikana.client.lib.models.StaffModel
 import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.StaffRole
-import com.cramsan.edifikana.lib.model.StaffStatus
+
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
 import com.cramsan.framework.core.compose.EventBus
@@ -64,7 +64,6 @@ class StaffViewModelTest : CoroutineTest() {
             lastName = "Doe",
             role = StaffRole.SECURITY_COVER,
             email = "test@test.com",
-            status = StaffStatus.PENDING,
         )
         coEvery { staffManager.getStaff(staffId) } returns Result.success(staff)
 

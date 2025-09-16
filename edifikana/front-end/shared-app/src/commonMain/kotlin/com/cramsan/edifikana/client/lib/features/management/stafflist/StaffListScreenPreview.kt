@@ -5,8 +5,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.cramsan.edifikana.client.ui.theme.AppTheme
+import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.edifikana.lib.model.StaffId
-import com.cramsan.edifikana.lib.model.StaffStatus
+import com.cramsan.edifikana.lib.model.UserId
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
@@ -19,29 +20,28 @@ private fun StaffListScreenPreview() = AppTheme {
         modifier = Modifier.background(MaterialTheme.colorScheme.background),
         content = StaffListUIState(
             true,
-            listOf(
-                StaffUIModel(
-                    id = StaffId("1"),
+            staffList = listOf(
+                UserUIModel(
+                    userId = UserId("1"),
                     name = "John Doe",
                     email = "john@google.com",
-                    status = StaffStatus.ACTIVE,
                 ),
-                StaffUIModel(
-                    id = StaffId("2"),
-                    name = "Jane Doe",
+                InviteUIModel(
+                    inviteId = InviteId("2"),
                     email = "jane@apple.com",
-                    status = StaffStatus.PENDING,
                 ),
-                StaffUIModel(
-                    id = StaffId("3"),
+                StaffMemberUIModel(
+                    staffId = StaffId("3"),
                     name = "Jack Doe",
                     email = "test@demo.com",
-                    status = StaffStatus.PENDING,
                 ),
             ),
+            activeOrgId = null,
         ),
         onAddPrimaryStaffSelected = {},
         onStaffSelected = {},
         onAddSecondaryStaffSelected = {},
+        onUserSelected = {},
+        onInviteSelected = {},
     )
 }

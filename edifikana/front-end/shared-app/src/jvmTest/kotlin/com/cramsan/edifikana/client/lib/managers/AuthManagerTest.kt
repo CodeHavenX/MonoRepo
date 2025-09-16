@@ -1,8 +1,11 @@
 package com.cramsan.edifikana.client.lib.managers
 
+import com.cramsan.edifikana.client.lib.models.Organization
 import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.client.lib.service.AuthService
+import com.cramsan.edifikana.client.lib.service.OrganizationService
 import com.cramsan.edifikana.client.lib.service.PropertyService
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.framework.core.ManagerDependencies
@@ -30,6 +33,7 @@ class AuthManagerTest : CoroutineTest() {
     private lateinit var propertyService: PropertyService
     private lateinit var authService: AuthService
     private lateinit var manager: AuthManager
+    private lateinit var organizationService: OrganizationService
 
     /**
      * Sets up the test environment, initializing mocks and the AuthManager instance.
@@ -39,12 +43,13 @@ class AuthManagerTest : CoroutineTest() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         propertyService = mockk(relaxed = true)
         authService = mockk(relaxed = true)
+        organizationService = mockk(relaxed = true)
 
         dependencies = mockk(relaxed = true)
         every { dependencies.appScope } returns testCoroutineScope
         every { dependencies.dispatcherProvider } returns UnifiedDispatcherProvider(testCoroutineDispatcher)
 
-        manager = AuthManager(dependencies, propertyService, authService)
+        manager = AuthManager(dependencies, propertyService, organizationService, authService)
     }
 
     /**
@@ -175,5 +180,23 @@ class AuthManagerTest : CoroutineTest() {
         assertTrue(result.isSuccess)
         coVerify { authService.verifyPermissions() }
     }
+
+    /**
+     * Tests that inviteStaff calls the service and returns success.
+     */
+    @Test
+    fun `inviteStaff calls service`() = runCoroutineTest {
+        // Arrange
+        val email = "test@example.com"
+        val organizationId = OrganizationId("org-1")
+        every { organizationService.observableActiveOrganization } returns MutableStateFlow(Organization(organizationId))
+        coEvery { authService.inviteStaff(email, organizationId) } returns Result.success(Unit)
+        // Act
+        val result = manager.inviteStaff(email)
+        // Assert
+        assertTrue(result.isSuccess)
+        coVerify { authService.inviteStaff(email, organizationId) }
+    }
 }
+
 

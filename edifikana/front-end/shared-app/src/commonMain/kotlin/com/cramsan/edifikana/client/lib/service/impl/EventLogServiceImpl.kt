@@ -2,7 +2,6 @@ package com.cramsan.edifikana.client.lib.service.impl
 
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.client.lib.service.EventLogService
-import com.cramsan.edifikana.client.lib.service.impl.PropertyServiceImpl.Companion.TAG
 import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.network.EventLogEntryNetworkResponse
@@ -68,5 +67,9 @@ class EventLogServiceImpl(
         }.body<EventLogEntryNetworkResponse>()
         val record = response.toEventLogRecordModel()
         record
+    }
+
+    companion object {
+        private const val TAG = "EventLogServiceImpl"
     }
 }

@@ -5,6 +5,7 @@ package com.cramsan.edifikana.server.core.controller
 import com.cramsan.edifikana.lib.model.network.AssetNetworkResponse
 import com.cramsan.edifikana.lib.model.network.AuthMetadataNetworkResponse
 import com.cramsan.edifikana.lib.model.network.EventLogEntryNetworkResponse
+import com.cramsan.edifikana.lib.model.network.InviteNetworkResponse
 import com.cramsan.edifikana.lib.model.network.OrganizationNetworkResponse
 import com.cramsan.edifikana.lib.model.network.PropertyNetworkResponse
 import com.cramsan.edifikana.lib.model.network.StaffNetworkResponse
@@ -12,6 +13,7 @@ import com.cramsan.edifikana.lib.model.network.TimeCardEventNetworkResponse
 import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
 import com.cramsan.edifikana.server.core.service.models.Asset
 import com.cramsan.edifikana.server.core.service.models.EventLogEntry
+import com.cramsan.edifikana.server.core.service.models.Invite
 import com.cramsan.edifikana.server.core.service.models.Organization
 import com.cramsan.edifikana.server.core.service.models.Property
 import com.cramsan.edifikana.server.core.service.models.Staff
@@ -121,5 +123,16 @@ fun Asset.toAssetNetworkResponse(): AssetNetworkResponse {
 fun Organization.toOrganizationNetworkResponse(): OrganizationNetworkResponse {
     return OrganizationNetworkResponse(
         id = id.id,
+    )
+}
+
+/**
+ * Converts an [Invite] domain model to an [InviteNetworkResponse] network model.
+ */
+@OptIn(NetworkModel::class)
+fun Invite.toInviteNetworkResponse(): InviteNetworkResponse {
+    return InviteNetworkResponse(
+        inviteId = inviteId.id,
+        email = email,
     )
 }

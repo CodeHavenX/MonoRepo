@@ -1,8 +1,11 @@
 package com.cramsan.edifikana.client.lib.managers
 
+import com.cramsan.edifikana.client.lib.models.Invite
 import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.client.lib.service.AuthService
+import com.cramsan.edifikana.client.lib.service.OrganizationService
 import com.cramsan.edifikana.client.lib.service.PropertyService
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.SecureString
@@ -17,6 +20,7 @@ import kotlinx.coroutines.flow.StateFlow
 class AuthManager(
     private val dependencies: ManagerDependencies,
     private val propertyService: PropertyService,
+    private val organizationService: OrganizationService,
     private val authService: AuthService,
 ) {
     /**
@@ -96,6 +100,14 @@ class AuthManager(
     }
 
     /**
+     * Gets the users for the given organization.
+     */
+    suspend fun getUsers(organizationId: OrganizationId): Result<List<UserModel>> = dependencies.getOrCatch(TAG) {
+        logI(TAG, "getUsers for organizationId: $organizationId")
+        authService.getUsersByOrganization(organizationId).getOrThrow()
+    }
+
+    /**
      * Gets the active user as an observable flow.
      */
     fun activeUser(): StateFlow<UserId?> = authService.activeUser()
@@ -138,6 +150,27 @@ class AuthManager(
     ): Result<Unit> = dependencies.getOrCatch(TAG) {
         logI(TAG, "changePassword")
         authService.changePassword(currentPassword, newPassword).getOrThrow()
+    }
+
+    /**
+     * Invite a staff.
+     */
+    suspend fun inviteStaff(email: String) = dependencies.getOrCatch(TAG) {
+        logI(TAG, "inviteStaff")
+        val activeOrganization = organizationService.observableActiveOrganization.value?.id
+            ?: error("No active organization set")
+        authService.inviteStaff(
+            email = email,
+            organizationId = activeOrganization
+        ).getOrThrow()
+    }
+
+    /**
+     * Get the invites for the given organization.
+     */
+    suspend fun getInvites(organizationId: OrganizationId): Result<List<Invite>> = dependencies.getOrCatch(TAG) {
+        logI(TAG, "getInvitedStaffs for organizationId: $organizationId")
+        authService.getInvites(organizationId).getOrThrow()
     }
 
     companion object {

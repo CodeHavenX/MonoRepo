@@ -40,14 +40,6 @@ class StaffManager(
     }
 
     /**
-     * Invite a staff.
-     */
-    suspend fun inviteStaff(email: String) = dependencies.getOrCatch(TAG) {
-        logI(TAG, "inviteStaff")
-        staffService.inviteStaff(email).getOrThrow()
-    }
-
-    /**
      * Update a staff.
      */
     suspend fun updateStaff(staffModel: StaffModel.UpdateStaffRequest): Result<StaffModel> =

@@ -12,7 +12,7 @@ import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.StaffRole
-import com.cramsan.edifikana.lib.model.StaffStatus
+
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.framework.core.UnifiedDispatcherProvider
@@ -105,7 +105,6 @@ class TimeCartViewModelTest : CoroutineTest() {
                 lastName = "Doe",
                 role = StaffRole.SECURITY,
                 email = "johndoe@test.com",
-                status = StaffStatus.ACTIVE,
             ),
             StaffModel(
                 id = StaffId("2"),
@@ -114,7 +113,6 @@ class TimeCartViewModelTest : CoroutineTest() {
                 lastName = "Doe",
                 role = StaffRole.SECURITY,
                 email = "jane.doe@test.com",
-                status = StaffStatus.ACTIVE,
             )
         )
         coEvery { timeCardManager.getAllRecords() } returns Result.success(events)

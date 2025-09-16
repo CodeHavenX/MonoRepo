@@ -13,7 +13,7 @@ import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.StaffRole
-import com.cramsan.edifikana.lib.model.StaffStatus
+
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.framework.annotations.TestOnly
@@ -105,7 +105,6 @@ class ViewStaffViewModelTest : CoroutineTest() {
             lastName = "Doe",
             role = StaffRole.SECURITY,
             email = "john.doe@test.com",
-            status = StaffStatus.ACTIVE,
         )
         val records = listOf(
             TimeCardRecordModel(
@@ -188,7 +187,6 @@ class ViewStaffViewModelTest : CoroutineTest() {
             lastName = "Doe",
             role = StaffRole.SECURITY,
             email = "john.doe@test.com",
-            status = StaffStatus.ACTIVE,
         )
         coEvery { storageService.downloadFile(any()) } returns Result.success(CoreUri.createUri("http://example.com/image.jpg"))
         coEvery { staffManager.getStaff(any()) } returns Result.success(staff)

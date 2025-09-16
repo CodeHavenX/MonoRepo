@@ -1,6 +1,8 @@
 package com.cramsan.edifikana.server.core.datastore
 
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.server.core.service.models.Invite
 import com.cramsan.edifikana.server.core.service.models.User
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
@@ -40,7 +42,9 @@ interface UserDatastore {
     /**
      * Retrieves all users. Returns the [Result] of the operation with a list of [User].
      */
-    suspend fun getUsers(): Result<List<User>>
+    suspend fun getUsers(
+        organizationId: OrganizationId,
+    ): Result<List<User>>
 
     /**
      * Updates a user with the given [request]. Returns the [Result] of the operation with the updated [User].
@@ -51,7 +55,8 @@ interface UserDatastore {
     ): Result<User>
 
     /**
-     * Deletes a user with the given [request]. Returns the [Result] of the operation with a [Boolean] indicating success.
+     * Deletes a user with the given [request].
+     * Returns the [Result] of the operation with a [Boolean] indicating success.
      */
     suspend fun deleteUser(
         id: UserId,
@@ -66,4 +71,20 @@ interface UserDatastore {
         currentHashedPassword: SecureString?,
         newPassword: SecureString,
     ): Result<Unit>
+
+    /**
+     * Records an invite for a user with the given [email] and [organizationId]. Returns the [Result] of the operation.
+     */
+    suspend fun recordInvite(
+        email: String,
+        organizationId: OrganizationId,
+    ): Result<Unit>
+
+    /**
+     * Retrieves all pending invites for the given [organizationId].
+     * Returns the [Result] of the operation with a list of [Invite].
+     */
+    suspend fun getInvites(
+        organizationId: OrganizationId,
+    ): Result<List<Invite>>
 }

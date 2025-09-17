@@ -1,32 +1,26 @@
 package com.cramsan.edifikana.server.core.controller
 
-import com.cramsan.edifikana.lib.Routes
-import com.cramsan.edifikana.lib.Routes.User.QueryParams.USER_ID
+import com.cramsan.edifikana.api.UserApi
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.model.network.CreateUserNetworkRequest
+import com.cramsan.edifikana.lib.model.network.GetAllUsersQueryParams
+import com.cramsan.edifikana.lib.model.network.InviteNetworkResponse
 import com.cramsan.edifikana.lib.model.network.InviteUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdatePasswordNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdateUserNetworkRequest
-import com.cramsan.edifikana.lib.utils.requireAll
+import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
 import com.cramsan.edifikana.lib.utils.requireNotBlank
 import com.cramsan.edifikana.lib.utils.requireSuccess
+import com.cramsan.edifikana.server.core.controller.authentication.ClientContext
 import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
 import com.cramsan.edifikana.server.core.service.UserService
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
-import com.cramsan.framework.core.ktor.HttpResponse
-import io.ktor.http.HttpStatusCode
-import io.ktor.server.application.ApplicationCall
-import io.ktor.server.request.receive
+import com.cramsan.framework.core.ktor.OperationHandler.register
+import com.cramsan.framework.utils.exceptions.requireAll
 import io.ktor.server.routing.Routing
-import io.ktor.server.routing.RoutingCall
-import io.ktor.server.routing.delete
-import io.ktor.server.routing.get
-import io.ktor.server.routing.post
-import io.ktor.server.routing.put
-import io.ktor.server.routing.route
 
 /**
  * Controller for user related operations. CRUD operations for users.
@@ -37,16 +31,10 @@ class UserController(
 ) : Controller {
 
     /**
-     * Handles the creation of a new user. The [call] parameter is the request context.
+     * Handles the creation of a new user.
      */
     @OptIn(NetworkModel::class)
-    suspend fun createUser(call: ApplicationCall) = call.handleUnauthenticatedCall(
-        TAG,
-        "createUser",
-        contextRetriever,
-    ) {
-        val createUserRequest = call.receive<CreateUserNetworkRequest>()
-
+    suspend fun createUser(createUserRequest: CreateUserNetworkRequest): UserNetworkResponse {
         requireAll(
             "An email and phone number must be provided.",
             createUserRequest.email,
@@ -61,49 +49,28 @@ class UserController(
             lastName = createUserRequest.lastName,
         )
 
-        val newUser = newUserResult.requireSuccess().toUserNetworkResponse()
-        HttpResponse(
-            status = HttpStatusCode.OK,
-            body = newUser,
-        )
+        return newUserResult.requireSuccess().toUserNetworkResponse()
     }
 
     /**
-     * Handles the retrieval of a user. The [call] parameter is the request context.
+     * Handles the retrieval of a user.
      */
     @OptIn(NetworkModel::class)
-    suspend fun getUser(call: ApplicationCall) = call.handleCall(TAG, "getUser", contextRetriever) {
-        val userId = requireNotNull(call.parameters[USER_ID])
-
-        val user = userService.getUser(
+    suspend fun getUser(userId: String): UserNetworkResponse? {
+        return userService.getUser(
             id = UserId(userId),
         ).getOrNull()?.toUserNetworkResponse()
-
-        val statusCode = if (user == null) {
-            HttpStatusCode.NotFound
-        } else {
-            HttpStatusCode.OK
-        }
-
-        HttpResponse(
-            status = statusCode,
-            body = user,
-        )
     }
 
     /**
-     * Handles the updating of a user's password. The [call] parameter is the request context.
+     * Handles the updating of a user's password.
      */
     @OptIn(NetworkModel::class, SecureStringAccess::class)
-    suspend fun updatePassword(call: RoutingCall) = call.handleCall(
-        TAG,
-        "updatePassword",
-        contextRetriever,
-    ) { context ->
-        val authenticatedContext = requireAuthenticatedClientContext(context)
+    suspend fun updatePassword(
+        authenticatedContext: ClientContext.AuthenticatedClientContext,
+        updatePasswordRequest: UpdatePasswordNetworkRequest,
+    ) {
         val userId = authenticatedContext.userId
-
-        val updatePasswordRequest = call.receive<UpdatePasswordNetworkRequest>()
 
         val result = userService.updatePassword(
             userId = userId,
@@ -111,89 +78,56 @@ class UserController(
             newPassword = SecureString(updatePasswordRequest.newPassword),
         )
 
-        val statusCode = if (result.isSuccess) {
-            HttpStatusCode.OK
-        } else {
-            HttpStatusCode.BadRequest
-        }
-
-        val responseBody = if (result.isSuccess) {
-            null
-        } else {
-            result.exceptionOrNull()?.message ?: "Failed to update password."
-        }
-
-        HttpResponse(
-            status = statusCode,
-            body = responseBody,
-        )
+        result.requireSuccess()
     }
 
     /**
-     * Handles the retrieval of all users of a given organization. The [call] parameter is the request context.
+     * Handles the retrieval of all users.
      */
     @OptIn(NetworkModel::class)
-    suspend fun getUsers(call: ApplicationCall) = call.handleCall(TAG, "getUsers", contextRetriever) { _ ->
-        val orgId = requireNotBlank(call.request.queryParameters[Routes.User.QueryParams.ORG_ID])
+    suspend fun getUsers(
+        queryParams: GetAllUsersQueryParams,
+    ): List<UserNetworkResponse> {
+        val orgId = requireNotBlank(queryParams.orgId, "An organization ID must be provided.")
 
         val users = userService.getUsers(
             organizationId = OrganizationId(orgId)
         ).getOrThrow().map { it.toUserNetworkResponse() }
 
-        HttpResponse(
-            status = HttpStatusCode.OK,
-            body = users,
-        )
+        return users
     }
 
     /**
-     * Handles the updating of a user. The [call] parameter is the request context.
+     * Handles the updating of a user.
      */
     @OptIn(NetworkModel::class)
-    suspend fun updateUser(call: ApplicationCall) = call.handleCall(TAG, "updateUser", contextRetriever) { _ ->
-        val userId = requireNotNull(call.parameters[USER_ID])
-
-        val updateUserRequest = call.receive<UpdateUserNetworkRequest>()
+    suspend fun updateUser(updateUserRequest: UpdateUserNetworkRequest, param: String): UserNetworkResponse {
+        val userId = requireNotBlank(param)
 
         val updatedUser = userService.updateUser(
             id = UserId(userId),
             email = updateUserRequest.email,
         ).getOrThrow().toUserNetworkResponse()
 
-        HttpResponse(
-            status = HttpStatusCode.OK,
-            body = updatedUser,
-        )
+        return updatedUser
     }
 
     /**
-     * Handles the deletion of a user. The [call] parameter is the request context.
+     * Handles the deletion of a user.
      */
-    suspend fun deleteUser(call: RoutingCall) = call.handleCall(TAG, "deleteUser", contextRetriever) { _ ->
-        val userId = requireNotNull(call.parameters[USER_ID])
-
-        val success = userService.deleteUser(
-            UserId(userId),
-        ).isSuccess
-
-        val statusCode = if (success) {
-            HttpStatusCode.OK
-        } else {
-            HttpStatusCode.NotFound
-        }
-
-        HttpResponse(
-            status = statusCode,
-            body = null,
+    suspend fun deleteUser(param: String) {
+        val result = userService.deleteUser(
+            UserId(param),
         )
+
+        result.requireSuccess()
     }
 
     /**
      * Handle a call to associate a user created in another system (e.g., Supabase) with our system.
      */
     @OptIn(NetworkModel::class)
-    suspend fun associate(call: RoutingCall) = call.handleCall(TAG, "associate", contextRetriever) { context ->
-        val authenticatedContext = requireAuthenticatedClientContext(context)
+    suspend fun associate(authenticatedContext: ClientContext.AuthenticatedClientContext): UserNetworkResponse {
         val userId = authenticatedContext.userId
         val email = authenticatedContext.userInfo.email
 
@@ -204,19 +138,14 @@ class UserController(
             email,
         )
 
-        val newUser = newUserResult.requireSuccess().toUserNetworkResponse()
-        HttpResponse(
-            status = HttpStatusCode.OK,
-            body = newUser,
-        )
+        return newUserResult.requireSuccess().toUserNetworkResponse()
     }
 
     /**
      * Handle a call to invite a user to the system via email.
      */
     @OptIn(NetworkModel::class)
-    suspend fun inviteUser(call: RoutingCall) = call.handleCall(TAG, "inviteUser", contextRetriever) { _ ->
-        val inviteRequest = call.receive<InviteUserNetworkRequest>()
+    suspend fun inviteUser(inviteRequest: InviteUserNetworkRequest) {
         val email = inviteRequest.email
         val organizationId = OrganizationId(inviteRequest.organizationId)
 
@@ -224,71 +153,55 @@ class UserController(
             email,
             organizationId,
         ).requireSuccess()
-
-        HttpResponse(
-            status = HttpStatusCode.OK,
-            body = "Invitation sent to $email",
-        )
     }
 
     /**
      * Handle a call to get all pending invites for an organization.
      */
     @OptIn(NetworkModel::class)
-    suspend fun getInvites(call: RoutingCall) = call.handleCall(TAG, "getInvites", contextRetriever) { _ ->
-        val orgId = requireNotBlank(call.request.queryParameters[Routes.User.QueryParams.ORG_ID])
+    suspend fun getInvites(param: String): List<InviteNetworkResponse> {
+        val orgId = requireNotBlank(param)
 
         val invites = userService.getInvites(
             organizationId = OrganizationId(orgId)
         ).getOrThrow().map { it.toInviteNetworkResponse() }
 
-        HttpResponse(
-            status = HttpStatusCode.OK,
-            body = invites,
-        )
+        return invites
     }
 
     /**
      * Registers the routes for the user controller. The [route] parameter is the root path for the controller.
      */
+    @OptIn(NetworkModel::class)
     override fun registerRoutes(route: Routing) {
-        route.route(Routes.User.PATH) {
-            post {
-                createUser(call)
+        UserApi.register(route) {
+            handler(api.getUser, contextRetriever) { _, _, _, param ->
+                getUser(param)
             }
-            get("{$USER_ID}") {
-                getUser(call)
+            unauthenticatedHandler(api.createUser, contextRetriever) { _, body, _ ->
+                createUser(body)
             }
-            put("/password") {
-                updatePassword(call)
+            handler(api.updatePassword, contextRetriever) { context, body, _ ->
+                updatePassword(context, body)
             }
-            get {
-                getUsers(call)
+            handler(api.getAllUsers, contextRetriever) { _, _, queryParam ->
+                getUsers(queryParam)
             }
-            put("{$USER_ID}") {
-                updateUser(call)
+            handler(api.updateUser, contextRetriever) { _, body, _, param ->
+                updateUser(body, param)
             }
-            delete("{$USER_ID}") {
-                deleteUser(call)
+            handler(api.deleteUser, contextRetriever) { _, _, _, param ->
+                deleteUser(param)
             }
-            post("associate") {
-                associate(call)
+            handler(api.associateUser, contextRetriever) { context, _, _ ->
+                associate(context)
             }
-            route("invite") {
-                post {
-                    inviteUser(call)
-                }
-                get {
-                    getInvites(call)
-                }
+            handler(api.inviteUser, contextRetriever) { _, body, _ ->
+                inviteUser(body)
+            }
+            handler(api.getInvites, contextRetriever) { _, _, _, param ->
+                getInvites(param)
             }
         }
-    }
-
-    /**
-     * Companion object.
-     */
-    companion object {
-        private const val TAG = "UserController"
     }
 }

@@ -1,9 +1,9 @@
 package com.cramsan.edifikana.client.lib.service.impl
 
-import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
 import com.cramsan.edifikana.lib.serialization.createJson
+import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate

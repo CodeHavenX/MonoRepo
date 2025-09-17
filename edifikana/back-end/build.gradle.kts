@@ -67,8 +67,10 @@ dependencies {
     implementation(project(":framework:thread"))
     implementation(project(":framework:utils"))
     implementation(project(":framework:configuration"))
+    implementation(project(":framework:network-api"))
 
     implementation(project(":edifikana:shared"))
+    implementation(project(":edifikana:api"))
 
     implementation("io.insert-koin:koin-core:_")
     implementation("io.insert-koin:koin-ktor:_")

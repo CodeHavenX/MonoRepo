@@ -44,6 +44,8 @@ tasks.register("releaseAll") {
     dependsOn("framework:test:release")
     dependsOn("framework:test-roborazzi:release")
     dependsOn("framework:utils:release")
+    dependsOn("framework:network-api:release")
+    dependsOn("framework:http-serializers:release")
 
     dependsOn("samples:android-app:release")
     dependsOn("samples:android-lib:release")
@@ -65,6 +67,7 @@ tasks.register("releaseAll") {
 
     dependsOn("edifikana:back-end:release")
     dependsOn("edifikana:shared:release")
+    dependsOn("edifikana:api:release")
     dependsOn("edifikana:front-end:shared-ui:release")
     dependsOn("edifikana:front-end:shared-app:release")
     dependsOn("edifikana:front-end:app-wasm:release")

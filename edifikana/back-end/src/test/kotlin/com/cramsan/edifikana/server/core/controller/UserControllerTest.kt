@@ -2,7 +2,6 @@ package com.cramsan.edifikana.server.core.controller
 
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
 import com.cramsan.edifikana.server.core.controller.authentication.ClientContext
 import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
 import com.cramsan.edifikana.server.core.service.UserService
@@ -10,6 +9,7 @@ import com.cramsan.edifikana.server.core.service.models.User
 import com.cramsan.edifikana.server.core.service.models.UserRole
 import com.cramsan.edifikana.server.utils.readFileContent
 import com.cramsan.framework.test.CoroutineTest
+import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.post
@@ -259,7 +259,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
         }
 
         // Act
-        val response = client.get("user?org_id=org123")
+        val response = client.get("user?orgId=org123")
 
         // Assert
         assertEquals(HttpStatusCode.OK, response.status)

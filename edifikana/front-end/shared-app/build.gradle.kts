@@ -41,8 +41,13 @@ kotlin {
             implementation(project(":framework:preferences"))
             implementation(project(":framework:test"))
             implementation(project(":framework:utils"))
+            implementation(project(":framework:network-api"))
+            implementation(project(":framework:http-serializers"))
+
             implementation(project(":ui-catalog"))
+
             implementation(project(":edifikana:shared"))
+            implementation(project(":edifikana:api"))
             implementation(project(":edifikana:front-end:shared-ui"))
 
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:_")

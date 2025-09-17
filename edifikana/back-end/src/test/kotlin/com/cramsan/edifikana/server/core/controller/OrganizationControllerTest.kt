@@ -48,7 +48,7 @@ class OrganizationControllerTest : CoroutineTest(), KoinTest {
         val contextRetriever = get<ContextRetriever>()
         coEvery {
             contextRetriever.getContext(any())
-        }.answers {
+        } answers {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
                 userId = UserId("user456"),

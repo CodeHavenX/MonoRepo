@@ -1,0 +1,15 @@
+package com.cramsan.edifikana.lib.model.network
+
+import com.cramsan.framework.annotations.NetworkModel
+import kotlinx.serialization.Serializable
+
+/**
+ * Data class representing the query parameters for fetching all users.
+ *
+ * @property orgId Optional organization ID to filter users by organization.
+ */
+@NetworkModel
+@Serializable
+data class GetAllUsersQueryParams(
+    val orgId: String? = null,
+)

@@ -1,11 +1,11 @@
-package com.cramsan.edifikana.lib.utils
+package com.cramsan.framework.utils.exceptions
 
 /**
  * Custom exceptions for server errors. This class is used to validate calls to the api contain what we
  * expect and return custom error messaging with corresponding 400 status codes.
  */
 @Suppress("MagicNumber")
-abstract class ClientRequestExceptions(
+sealed class ClientRequestExceptions(
     val statusCode: Int,
     override val message: String
 ) : Throwable() {
@@ -95,15 +95,4 @@ fun requireAll(
     vararg values: String?,
 ) {
     requireAll(message, { !it.isNullOrBlank() }, *values)
-}
-
-/**
- * Checks that the result was successful and returns the value if it was. Otherwise, throws the exception.
- */
-fun <T> Result<T>.requireSuccess(): T {
-    if (isFailure) {
-        val rootException = exceptionOrNull()!!
-        throw rootException
-    }
-    return getOrThrow()
 }

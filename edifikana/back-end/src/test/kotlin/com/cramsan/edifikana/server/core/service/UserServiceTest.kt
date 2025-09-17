@@ -167,7 +167,7 @@ class UserServiceTest {
     }
 
     /**
-     * Tests that getUsers retrieves all users from the database.
+     * Tests that getUsers retrieves all users from a given organization.
      */
     @Test
     fun `getUsers should return all users`() = runTest {

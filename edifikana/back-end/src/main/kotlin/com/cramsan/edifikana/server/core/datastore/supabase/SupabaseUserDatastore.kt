@@ -3,7 +3,6 @@ package com.cramsan.edifikana.server.core.datastore.supabase
 import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
 import com.cramsan.edifikana.lib.utils.requireNotBlank
 import com.cramsan.edifikana.server.core.datastore.UserDatastore
 import com.cramsan.edifikana.server.core.datastore.supabase.models.AuthMetadataEntity
@@ -21,6 +20,7 @@ import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logW
+import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import com.cramsan.framework.utils.loginvalidation.validatePassword
 import com.cramsan.framework.utils.uuid.UUID
 import io.github.jan.supabase.auth.admin.AdminApi

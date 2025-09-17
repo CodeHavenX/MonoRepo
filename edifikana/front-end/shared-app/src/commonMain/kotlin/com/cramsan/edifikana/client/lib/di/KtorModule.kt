@@ -3,7 +3,7 @@ package com.cramsan.edifikana.client.lib.di
 import com.cramsan.edifikana.client.lib.service.impl.AuthRequestPlugin
 import com.cramsan.edifikana.client.lib.settings.Overrides
 import com.cramsan.edifikana.lib.serialization.createJson
-import com.cramsan.edifikana.lib.utils.ClientRequestExceptions
+import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.HttpResponseValidator

@@ -31,7 +31,7 @@ class KeyValueMapEncoder : AbstractEncoder() {
     private val array = mutableListOf<String>()
     private var currentTag: String = ""
     override val serializersModule: SerializersModule = SerializersModule {}
-    private var depth = DEPTH_UNITILIZED
+    private var depth = DEPTH_UNINITIALIZED
 
     override fun encodeValue(value: Any) {
         when (depth) {
@@ -95,7 +95,7 @@ class KeyValueMapEncoder : AbstractEncoder() {
         val kind = serializer.descriptor.kind
         if (
             // First level must be a class or object
-            kind == StructureKind.CLASS && depth != DEPTH_UNINITIALIZED  ||
+            kind == StructureKind.CLASS && depth != DEPTH_UNINITIALIZED ||
             kind == StructureKind.OBJECT && depth != DEPTH_UNINITIALIZED
         ) {
             error("Top level value must be a class or object. Found $kind")
@@ -175,6 +175,6 @@ fun <T> encodeToKeyValueMap(serializer: SerializationStrategy<T>, value: T): Map
 inline fun <reified T> encodeToKeyValueMap(value: T): Map<String, List<String>> =
     encodeToKeyValueMap(serializer(), value)
 
-private const val DEPTH_UNINITIALIZED  = -1
+private const val DEPTH_UNINITIALIZED = -1
 private const val DEPTH_OBJECT = 0
 private const val DEPTH_LIST = 1

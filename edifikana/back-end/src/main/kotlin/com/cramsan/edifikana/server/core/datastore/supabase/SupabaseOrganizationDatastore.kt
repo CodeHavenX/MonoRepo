@@ -6,6 +6,7 @@ import com.cramsan.edifikana.server.core.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.core.datastore.supabase.models.OrganizationEntity
 import com.cramsan.edifikana.server.core.datastore.supabase.models.UserOrganizationMappingEntity
 import com.cramsan.edifikana.server.core.service.models.Organization
+import com.cramsan.edifikana.server.core.service.models.UserRole
 import com.cramsan.framework.annotations.SupabaseModel
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
@@ -96,13 +97,15 @@ class SupabaseOrganizationDatastore(
 
     override suspend fun addUserToOrganization(
         userId: UserId,
-        organizationId: OrganizationId
+        organizationId: OrganizationId,
+        role: UserRole?
     ): Result<Unit> {
         return runSuspendCatching(TAG) {
             logD(TAG, "Adding user %s to organization %s", userId, organizationId)
             val userOrgMapping = UserOrganizationMappingEntity.CreateUserOrganizationMappingEntity(
                 userId = userId.userId,
                 organizationId = organizationId.id,
+                role = role,
             )
             postgrest.from(UserOrganizationMappingEntity.COLLECTION).insert(userOrgMapping) { select() }
                 .decodeSingle<UserOrganizationMappingEntity>()
@@ -125,6 +128,19 @@ class SupabaseOrganizationDatastore(
             }.decodeList<UserOrganizationMappingEntity>()
         }
     }
+
+    override suspend fun getUserRole(userId: UserId, orgId: OrganizationId): Result<UserRole?> = runSuspendCatching(
+        TAG
+    ){
+        logD(TAG, "Getting role for user in organization: $orgId")
+        postgrest.from(UserOrganizationMappingEntity.COLLECTION).select {
+            filter {
+                eq("organization_id", orgId.id)
+                eq("user_id", userId.userId)
+            }
+        }.decodeSingleOrNull<UserOrganizationMappingEntity>()?.role
+    }
+
     companion object {
         private const val TAG = "SupabaseOrganizationDatastore"
     }

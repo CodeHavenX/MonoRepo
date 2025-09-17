@@ -6,12 +6,13 @@ import kotlin.IllegalArgumentException
  * Domain model representing a user role.
  */
 enum class UserRole {
+    SUPERUSER,
     OWNER,
+    ADMIN,
     MANAGER,
     EMPLOYEE,
     USER,
-    SUPERUSER,
-    ;
+    UNAUTHORIZED;
     companion object {
 
         /**
@@ -19,11 +20,13 @@ enum class UserRole {
          */
         fun fromString(value: String?): UserRole {
             return when (value) {
+                "SUPERUSER" -> SUPERUSER
                 "OWNER" -> OWNER
+                "ADMIN" -> ADMIN
                 "MANAGER" -> MANAGER
                 "EMPLOYEE" -> EMPLOYEE
                 "USER" -> USER
-                "SUPERUSER" -> SUPERUSER
+                "UNAUTHORIZED" -> UNAUTHORIZED
                 else -> throw IllegalArgumentException("Invalid UserRole value: $value")
             }
         }

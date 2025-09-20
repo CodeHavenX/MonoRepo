@@ -12,6 +12,9 @@ import com.cramsan.edifikana.server.core.service.models.UserRole
 import com.cramsan.framework.logging.logI
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 
+/**
+ * Service responsible for Role-Based Access Control (RBAC) checks.
+ */
 class RBACService(
     private val propertyDatastore: PropertyDatastore,
     private val orgDataStore: OrganizationDatastore,

@@ -37,7 +37,6 @@ class RBACService(
     fun hasRole(
         context: ClientContext.AuthenticatedClientContext,
         targetUser: UserId,
-        requiredRole: UserRole,
     ): Boolean {
         if (context.userId == targetUser) {
             logI(TAG, "User ${context.userId} matches target user $targetUser")
@@ -225,5 +224,4 @@ class RBACService(
     companion object {
         private const val TAG = "RBAC"
     }
-
 }

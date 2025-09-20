@@ -6,6 +6,7 @@ import com.cramsan.edifikana.server.core.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.core.datastore.UserDatastore
 import com.cramsan.edifikana.server.core.service.models.Invite
 import com.cramsan.edifikana.server.core.service.models.User
+import com.cramsan.edifikana.server.core.service.models.UserRole
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.framework.logging.logD
@@ -46,6 +47,7 @@ class UserService(
             organizationDatastore.addUserToOrganization(
                 userId = result.getOrThrow().id,
                 organizationId = orgID,
+                role = UserRole.OWNER,
             )
         }
 
@@ -72,6 +74,7 @@ class UserService(
             organizationDatastore.addUserToOrganization(
                 userId = result.getOrThrow().id,
                 organizationId = orgId,
+                role = UserRole.OWNER
             )
         }
 

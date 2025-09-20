@@ -131,7 +131,7 @@ class SupabaseOrganizationDatastore(
 
     override suspend fun getUserRole(userId: UserId, orgId: OrganizationId): Result<UserRole?> = runSuspendCatching(
         TAG
-    ){
+    ) {
         logD(TAG, "Getting role for user in organization: $orgId")
         postgrest.from(UserOrganizationMappingEntity.COLLECTION).select {
             filter {

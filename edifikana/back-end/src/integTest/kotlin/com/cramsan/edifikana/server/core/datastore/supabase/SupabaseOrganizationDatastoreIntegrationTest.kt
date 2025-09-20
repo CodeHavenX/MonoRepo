@@ -2,6 +2,7 @@ package com.cramsan.edifikana.server.core.datastore.supabase
 
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.server.core.service.models.UserRole
 import com.cramsan.framework.utils.uuid.UUID
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -107,9 +108,11 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `getOrganizationList should return organizations for user`() = runCoroutineTest {
         // Arrange
         val org1 = createTestOrganization(testUserId!!)
+        val role1 = UserRole.ADMIN
         val org2 = createTestOrganization(testUserId!!)
-        organizationDatastore.addUserToOrganization(testUserId!!, org1)
-        organizationDatastore.addUserToOrganization(testUserId!!, org2)
+        val role2 = UserRole.EMPLOYEE
+        organizationDatastore.addUserToOrganization(testUserId!!, org1, role1)
+        organizationDatastore.addUserToOrganization(testUserId!!, org2, role2)
 
         // Act
         val listResult = organizationDatastore.getOrganizationsForUser(testUserId!!)
@@ -142,9 +145,10 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
         // Arrange
         val orgId = createTestOrganization(testUserId!!)
         val newUser = createTestUser("adduser-${test_prefix}@test.com")
+        val role = UserRole.MANAGER
 
         // Act
-        val addResult = organizationDatastore.addUserToOrganization(newUser, orgId)
+        val addResult = organizationDatastore.addUserToOrganization(newUser, orgId, role)
         val orgsResult = organizationDatastore.getOrganizationsForUser(newUser)
 
         // Assert
@@ -160,10 +164,11 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
         // Arrange
         val orgId = createTestOrganization(testUserId!!)
         val newUser = createTestUser("dupeuser-${test_prefix}@test.com")
+        val newRole = UserRole.EMPLOYEE
 
         // Act
-        val firstAdd = organizationDatastore.addUserToOrganization(newUser, orgId)
-        val secondAdd = organizationDatastore.addUserToOrganization(newUser, orgId)
+        val firstAdd = organizationDatastore.addUserToOrganization(newUser, orgId, newRole)
+        val secondAdd = organizationDatastore.addUserToOrganization(newUser, orgId, newRole)
 
         // Assert
         assertTrue(firstAdd.isSuccess)

@@ -10,11 +10,12 @@ import com.cramsan.edifikana.server.core.datastore.PropertyDatastore
 import com.cramsan.edifikana.server.core.datastore.StaffDatastore
 import com.cramsan.edifikana.server.core.service.models.UserRole
 import com.cramsan.framework.logging.logI
+import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 
 class RBACService(
     private val propertyDatastore: PropertyDatastore,
     private val orgDataStore: OrganizationDatastore,
-    private val staffDatastore: StaffDatastore,
+    private val employeeDatastore: StaffDatastore,
 ) {
 
     val propertyNotFoundException = "ERROR: PROPERTY NOT FOUND!"
@@ -29,13 +30,15 @@ class RBACService(
      * @param requiredRole The role required to perform the action.
      * @return True if the user has the required role, false otherwise.
      */
-    suspend fun hasRole(
+    fun hasRole(
         context: ClientContext.AuthenticatedClientContext,
         targetUser: UserId,
-        requiredRole: UserRole,
     ): Boolean {
-        val userRole = getUserRoleForUserAction(context, targetUser)
-        return userRole == requiredRole
+        if (context.userId == targetUser) {
+            logI(TAG, "User ${context.userId} matches target user $targetUser")
+            return true
+        }
+        throw ClientRequestExceptions.ForbiddenException("FORBIDDEN ATTEMPT MADE TO EDIT ANOTHER USER'S ACCOUNT!")
     }
 
     /**
@@ -141,27 +144,6 @@ class RBACService(
     }
 
     /**
-     * Retrieves the user role for the action being performed on the target user.
-     *
-     * @param context The authenticated client context containing user information.
-     * @param targetUser The ID of the target user on whom the action is to be performed.
-     * @return The user role if the action is allowed, or UNAUTHORIZED if not
-     */
-    private fun getUserRoleForUserAction(
-        context: ClientContext.AuthenticatedClientContext,
-        targetUser: UserId
-    ): UserRole {
-        logI(TAG, "Retrieving user role(s) for ${context.userId}")
-        // only allow actions on own user account, not another users account
-        if (context.userId == targetUser) {
-            logI(TAG, "User ${context.userId} matches target user $targetUser")
-            return context.userRole
-        }
-        logI(TAG, "FORBIDDEN: ATTEMPT MADE TO EDIT ANOTHER USER'S ACCOUNT!")
-        return unauthorized
-    }
-
-    /**
      * Retrieves the user role for the action being performed on the target organization.
      *
      * @param context The authenticated client context containing user information.
@@ -219,7 +201,7 @@ class RBACService(
     ): UserRole {
         logI(TAG, "Retrieving user role(s) for ${context.userId}")
         val employee =
-            staffDatastore.getStaff(targetEmployee).getOrThrow() ?: throw RuntimeException(employeeNotFoundException)
+            employeeDatastore.getStaff(targetEmployee).getOrThrow() ?: throw RuntimeException(employeeNotFoundException)
         val property = propertyDatastore.getProperty(employee.propertyId).getOrThrow() ?: throw RuntimeException(
             propertyNotFoundException
         )
@@ -236,5 +218,4 @@ class RBACService(
     companion object {
         private const val TAG = "RBAC"
     }
-
 }

@@ -32,7 +32,7 @@ data class UserOrganizationMappingEntity(
         val organizationId: String,
         @SerialName("role")
         val role: UserRole?,
-        )
+    )
 
     companion object {
         const val COLLECTION = "user_organization_mapping"

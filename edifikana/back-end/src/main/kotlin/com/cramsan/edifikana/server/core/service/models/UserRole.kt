@@ -3,16 +3,16 @@ package com.cramsan.edifikana.server.core.service.models
 import kotlin.IllegalArgumentException
 
 /**
- * Domain model representing a user role.
+ * Domain model representing a user role. Ordered by increasing privileges.
  */
 enum class UserRole {
-    SUPERUSER,
-    OWNER,
-    ADMIN,
-    MANAGER,
-    EMPLOYEE,
+    UNAUTHORIZED,
     USER,
-    UNAUTHORIZED;
+    EMPLOYEE,
+    MANAGER,
+    ADMIN,
+    OWNER,
+    SUPERUSER;
     companion object {
 
         /**
@@ -20,13 +20,13 @@ enum class UserRole {
          */
         fun fromString(value: String?): UserRole {
             return when (value) {
-                "SUPERUSER" -> SUPERUSER
-                "OWNER" -> OWNER
-                "ADMIN" -> ADMIN
-                "MANAGER" -> MANAGER
-                "EMPLOYEE" -> EMPLOYEE
-                "USER" -> USER
                 "UNAUTHORIZED" -> UNAUTHORIZED
+                "USER" -> USER
+                "EMPLOYEE" -> EMPLOYEE
+                "MANAGER" -> MANAGER
+                "ADMIN" -> ADMIN
+                "OWNER" -> OWNER
+                "SUPERUSER" -> SUPERUSER
                 else -> throw IllegalArgumentException("Invalid UserRole value: $value")
             }
         }

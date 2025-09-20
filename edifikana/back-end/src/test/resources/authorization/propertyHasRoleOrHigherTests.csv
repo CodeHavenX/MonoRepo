@@ -1,0 +1,4 @@
+userId, userRole, propertyId, requiredRole, expected
+"testUser", "MANAGER", "property1", "ADMIN", false
+"testUser", "OWNER", "property2", "ADMIN", true
+"testUser", "ADMIN", "property3", "ADMIN", true

@@ -107,15 +107,23 @@ object OperationHandler {
                     contextRetriever(call)
                 }
                 if (contextResult.isFailure) {
-                    throw ClientRequestExceptions.UnauthorizedException(
-                        "Unauthorized: ${contextResult.exceptionOrNull()?.message ?: "Unknown error"}"
+                    call.validateClientError(
+                        tag = TAG,
+                        exception = ClientRequestExceptions.UnauthorizedException(
+                            "Unauthorized: ${contextResult.exceptionOrNull()?.message ?: "Unknown error"}"
+                        ),
                     )
+                    return@handle
                 }
 
                 val param = handler.param?.let {
                     val resolvedParam = call.parameters[it]
                     if (resolvedParam.isNullOrBlank()) {
-                        throw ClientRequestExceptions.InvalidRequestException("Missing path parameter.")
+                        call.validateClientError(
+                            tag = TAG,
+                            exception = ClientRequestExceptions.InvalidRequestException("Missing path parameter."),
+                        )
+                        return@handle
                     }
                     resolvedParam
                 }
@@ -124,13 +132,17 @@ object OperationHandler {
                     Unit
                 } else {
                     val queryParamResult = runCatching {
-                        decodeFromQueryParams(handler.queryParamType.serializer(), call.queryParameters)
+                        decodeFromQueryParams(handler.queryParamType.serializer(), call.request.queryParameters)
                     }
                     if (queryParamResult.isFailure) {
-                        throw ClientRequestExceptions.InvalidRequestException(
-                            "Invalid query parameters: " +
-                                "${queryParamResult.exceptionOrNull()?.message ?: "Unknown error"}"
+                        call.validateClientError(
+                            tag = TAG,
+                            exception = ClientRequestExceptions.InvalidRequestException(
+                                "Invalid query parameters: " +
+                                    (queryParamResult.exceptionOrNull()?.message ?: "Unknown error")
+                            ),
                         )
+                        return@handle
                     } else {
                         queryParamResult.getOrThrow()
                     }
@@ -151,7 +163,7 @@ object OperationHandler {
 
                 if (responseResult.isFailure) {
                     call.validateClientError(
-                        tag = "OperationHandler",
+                        tag = TAG,
                         result = responseResult,
                     )
                     return@handle
@@ -164,3 +176,5 @@ object OperationHandler {
         }
     }
 }
+
+private const val TAG = "OperationHandler"

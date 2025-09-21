@@ -10,11 +10,16 @@ import io.ktor.server.response.respond
  * Validate the client error. This function will log the error and respond to the client with the result.
  * TODO: We need to have this function be an inline function due to a weird java.lang.NoSuchMethodError when being
  * invoked. I dont know the source of this issue, but making this function inline fixes it for now.
+ *
+ * After calling this function, the caller should return from the request handler, as this function
+ * sends a response to the client.
+ *
+ * @param tag The tag to use for logging.
  * @param result The result of the function call.
  */
 suspend inline fun ApplicationCall.validateClientError(
     tag: String,
-    result: Result<HttpResponse<*>>,
+    result: Result<*>,
 ) {
     // Handle the error based on our created exceptions.
     val originalException = result.exceptionOrNull()
@@ -28,6 +33,25 @@ suspend inline fun ApplicationCall.validateClientError(
         )
         return
     }
+    validateClientError(tag, exception)
+}
+
+/**
+ * Validate the client error. This function will log the error and respond to the client with the result.
+ * TODO: We need to have this function be an inline function due to a weird java.lang.NoSuchMethodError when being
+ * invoked. I dont know the source of this issue, but making this function inline fixes it
+ * for now.
+ *
+ * After calling this function, the caller should return from the request handler, as this function
+ * sends a response to the client.
+ *
+ * @param exception The exception to validate.
+ * @param tag The tag to use for logging.
+ */
+suspend inline fun ApplicationCall.validateClientError(
+    tag: String,
+    exception: ClientRequestExceptions,
+) {
     // Log the error
     logE(tag, "Client Request Exception:", exception)
     when (exception) {

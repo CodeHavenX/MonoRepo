@@ -11,7 +11,6 @@ import io.ktor.http.ContentType
 import io.ktor.http.HeadersBuilder
 import io.ktor.http.appendPathSegments
 import io.ktor.http.contentType
-import io.ktor.http.parameters
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.InternalSerializationApi
 
@@ -42,10 +41,8 @@ suspend inline fun <reified Request : Any, reified QueryParams : Any, reified Re
             if (QueryParams::class != Unit::class) {
                 val paramsMap = encodeToKeyValueMap(request.queryParam)
 
-                parameters {
-                    paramsMap.forEach { (key, value) ->
-                        appendAll(key, value)
-                    }
+                paramsMap.forEach { (key, value) ->
+                    parameters.appendAll(key, value)
                 }
             }
         }

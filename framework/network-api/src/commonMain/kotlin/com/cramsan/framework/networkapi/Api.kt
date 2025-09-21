@@ -35,6 +35,7 @@ open class Api(
         responseBodyType: KClass<Response> = Response::class,
     ): OperationNoArg<Request, QueryParam, Response> = OperationNoArg(
         method,
+        this.path,
         path,
         requestBodyType,
         queryParamType,
@@ -54,6 +55,7 @@ open class Api(
         responseBodyType: KClass<Response> = Response::class,
     ): OperationWithArg<Request, QueryParam, Response> = OperationWithArg(
         method,
+        this.path,
         path,
         requestBodyType,
         queryParamType,

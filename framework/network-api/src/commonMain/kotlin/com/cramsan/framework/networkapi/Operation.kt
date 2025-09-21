@@ -17,6 +17,7 @@ import kotlin.reflect.KClass
  */
 sealed class Operation<Request : Any, QueryParam : Any, Response : Any>(
     val method: HttpMethod,
+    val apiPath: String,
     val path: String?,
     val hasPathParam: Boolean,
     val requestBodyType: KClass<Request>,
@@ -36,6 +37,7 @@ sealed class Operation<Request : Any, QueryParam : Any, Response : Any>(
         queryParam: QueryParam,
     ): OperationRequest<Request, QueryParam, Response> = OperationRequest(
         method = method,
+        apiPath = apiPath,
         path = path,
         param = argument,
         body = body,
@@ -81,12 +83,14 @@ sealed class Operation<Request : Any, QueryParam : Any, Response : Any>(
  */
 class OperationNoArg<Request : Any, QueryParam : Any, Response : Any>(
     method: HttpMethod,
+    apiPath: String,
     path: String?,
     requestBodyType: KClass<Request>,
     queryParam: KClass<QueryParam>,
     responseBodyType: KClass<Response>,
 ) : Operation<Request, QueryParam, Response>(
     method,
+    apiPath,
     path,
     false,
     requestBodyType,
@@ -176,12 +180,14 @@ fun OperationNoArg<Unit, Unit, Unit>.buildRequest(): OperationRequest<Unit, Unit
  */
 class OperationWithArg<Request : Any, QueryParam : Any, Response : Any>(
     method: HttpMethod,
+    apiPath: String,
     path: String?,
     requestBodyType: KClass<Request>,
     queryParam: KClass<QueryParam>,
     responseBodyType: KClass<Response>,
 ) : Operation<Request, QueryParam, Response>(
     method,
+    apiPath,
     path = path,
     hasPathParam = true,
     requestBodyType,
@@ -281,17 +287,28 @@ fun OperationWithArg<Unit, Unit, Unit>.buildRequest(
  */
 data class OperationRequest<Request : Any, QueryParam : Any, Response : Any> (
     val method: HttpMethod,
+    val apiPath: String,
     val path: String?,
     val param: String?,
     val body: Request,
     val queryParam: QueryParam,
     val responseBodyType: KClass<Response>,
 ) {
-    val fullPath: String = if (param != null) {
-        "${path ?: ""}/$param"
-    } else {
-        path ?: ""
-    }.replace("//", "/")
+    val fullPath: String
+
+    init {
+        val operationPath = if (param != null) {
+            "${path ?: ""}/$param"
+        } else {
+            path ?: ""
+        }.replace("//", "/")
+
+        fullPath = if (operationPath.isBlank()) {
+            apiPath
+        } else {
+            "$apiPath/$operationPath"
+        }
+    }
 }
 
 /**

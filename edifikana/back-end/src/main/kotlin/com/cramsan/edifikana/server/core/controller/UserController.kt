@@ -88,10 +88,8 @@ class UserController(
     suspend fun getUsers(
         queryParams: GetAllUsersQueryParams,
     ): List<UserNetworkResponse> {
-        val orgId = requireNotBlank(queryParams.orgId, "An organization ID must be provided.")
-
         val users = userService.getUsers(
-            organizationId = OrganizationId(orgId)
+            organizationId = queryParams.orgId,
         ).getOrThrow().map { it.toUserNetworkResponse() }
 
         return users
@@ -147,11 +145,10 @@ class UserController(
     @OptIn(NetworkModel::class)
     suspend fun inviteUser(inviteRequest: InviteUserNetworkRequest) {
         val email = inviteRequest.email
-        val organizationId = OrganizationId(inviteRequest.organizationId)
 
         userService.inviteUser(
             email,
-            organizationId,
+            inviteRequest.organizationId,
         ).requireSuccess()
     }
 

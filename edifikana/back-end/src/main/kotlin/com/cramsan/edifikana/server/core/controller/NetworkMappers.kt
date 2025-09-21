@@ -47,12 +47,12 @@ fun User.toUserNetworkResponse(): UserNetworkResponse {
 @OptIn(NetworkModel::class)
 fun Staff.toStaffNetworkResponse(): StaffNetworkResponse {
     return StaffNetworkResponse(
-        id = id.staffId,
+        id = id,
         idType = idType,
         firstName = firstName,
         lastName = lastName,
         role = role,
-        propertyId = propertyId.propertyId,
+        propertyId = propertyId,
     )
 }
 
@@ -62,11 +62,11 @@ fun Staff.toStaffNetworkResponse(): StaffNetworkResponse {
 @OptIn(NetworkModel::class)
 fun EventLogEntry.toEventLogEntryNetworkResponse(): EventLogEntryNetworkResponse {
     return EventLogEntryNetworkResponse(
-        id = id.eventLogEntryId,
+        id = id,
         title = title,
-        staffId = staffId?.staffId,
+        staffId = staffId,
         fallbackStaffName = fallbackStaffName,
-        propertyId = propertyId.propertyId,
+        propertyId = propertyId,
         type = type,
         fallbackEventType = fallbackEventType,
         timestamp = timestamp.epochSeconds,
@@ -81,10 +81,10 @@ fun EventLogEntry.toEventLogEntryNetworkResponse(): EventLogEntryNetworkResponse
 @OptIn(NetworkModel::class)
 fun Property.toPropertyNetworkResponse(): PropertyNetworkResponse {
     return PropertyNetworkResponse(
-        id = id.propertyId,
+        id = id,
         name = name,
         address = address,
-        organizationId = organizationId.id,
+        organizationId = organizationId,
     )
 }
 
@@ -94,10 +94,10 @@ fun Property.toPropertyNetworkResponse(): PropertyNetworkResponse {
 @OptIn(NetworkModel::class)
 fun TimeCardEvent.toTimeCardEventNetworkResponse(): TimeCardEventNetworkResponse {
     return TimeCardEventNetworkResponse(
-        id = id.timeCardEventId,
-        staffId = staffId?.staffId,
+        id = id,
+        staffId = staffId,
         fallbackStaffName = fallbackStaffName,
-        propertyId = propertyId.propertyId,
+        propertyId = propertyId,
         type = type,
         imageUrl = imageUrl,
         timestamp = timestamp.epochSeconds,
@@ -110,7 +110,7 @@ fun TimeCardEvent.toTimeCardEventNetworkResponse(): TimeCardEventNetworkResponse
 @OptIn(NetworkModel::class)
 fun Asset.toAssetNetworkResponse(): AssetNetworkResponse {
     return AssetNetworkResponse(
-        id = id.assetId,
+        id = id,
         fileName = fileName,
         signedUrl = signedUrl,
     )
@@ -122,7 +122,7 @@ fun Asset.toAssetNetworkResponse(): AssetNetworkResponse {
 @OptIn(NetworkModel::class)
 fun Organization.toOrganizationNetworkResponse(): OrganizationNetworkResponse {
     return OrganizationNetworkResponse(
-        id = id.id,
+        id = id,
     )
 }
 
@@ -132,7 +132,7 @@ fun Organization.toOrganizationNetworkResponse(): OrganizationNetworkResponse {
 @OptIn(NetworkModel::class)
 fun Invite.toInviteNetworkResponse(): InviteNetworkResponse {
     return InviteNetworkResponse(
-        inviteId = inviteId.id,
+        inviteId = inviteId,
         email = email,
     )
 }

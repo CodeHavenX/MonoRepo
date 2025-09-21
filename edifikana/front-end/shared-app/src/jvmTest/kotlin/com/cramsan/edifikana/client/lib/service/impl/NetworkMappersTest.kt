@@ -36,9 +36,9 @@ class NetworkMappersTest {
     fun `toTimeCardRecordModel maps all fields correctly`() {
         // Arrange
         val networkResponse = TimeCardEventNetworkResponse(
-            id = "event-123",
-            staffId = "staff-456",
-            propertyId = "property-789",
+            id = TimeCardEventId("event-123"),
+            staffId = StaffId("staff-456"),
+            propertyId = PropertyId("property-789"),
             type = TimeCardEventType.CLOCK_IN,
             timestamp = 1720000000L,
             imageUrl = "http://image.url",
@@ -97,9 +97,9 @@ class NetworkMappersTest {
     fun `toEventLogRecordModel maps all fields correctly`() {
         // Arrange
         val networkResponse = EventLogEntryNetworkResponse(
-            id = "eventlog-1",
-            staffId = "staff-1",
-            propertyId = "property-1",
+            id = EventLogEntryId("eventlog-1"),
+            staffId = StaffId("staff-1"),
+            propertyId = PropertyId("property-1"),
             timestamp = 123456789L,
             unit = "unit-1",
             type = EventLogEventType.INCIDENT,
@@ -151,9 +151,9 @@ class NetworkMappersTest {
         val request = model.toCreateEventLogEntryNetworkRequest()
 
         // Assert
-        assertEquals("staff-2", request.staffId)
+        assertEquals("staff-2", request.staffId?.staffId)
         assertEquals("fallbackName2", request.fallbackStaffName)
-        assertEquals("property-2", request.propertyId)
+        assertEquals("property-2", request.propertyId.propertyId)
         assertEquals(EventLogEventType.MAINTENANCE_SERVICE, request.type)
         assertEquals("fallbackType2", request.fallbackEventType)
         assertEquals(987654321L, request.timestamp)
@@ -218,7 +218,7 @@ class NetworkMappersTest {
         assertEquals("John", request.firstName)
         assertEquals("Doe", request.lastName)
         assertEquals(StaffRole.MANAGER, request.role)
-        assertEquals("property-4", request.propertyId)
+        assertEquals("property-4", request.propertyId.propertyId)
     }
 
     /**
@@ -229,12 +229,12 @@ class NetworkMappersTest {
     fun `toStaffModel maps all fields correctly`() {
         // Arrange
         val staffNetworkResponse = StaffNetworkResponse(
-            id = "staff-5",
+            id = StaffId("staff-5"),
             firstName = "Jane",
             lastName = "Smith",
             role = StaffRole.SECURITY,
             idType = IdType.DNI,
-            propertyId = "Cenit",
+            propertyId = PropertyId("Cenit"),
         )
 
         // Act
@@ -271,10 +271,10 @@ class NetworkMappersTest {
         val request = model.toCreateTimeCardEventNetworkRequest()
 
         // Assert
-        assertEquals("staff-6", request.staffId)
+        assertEquals("staff-6", request.staffId.staffId)
         assertEquals("", request.fallbackStaffName)
         assertEquals(TimeCardEventType.CLOCK_OUT, request.type)
-        assertEquals("property-6", request.propertyId)
+        assertEquals("property-6", request.propertyId.propertyId)
         assertEquals("http://image.url/6", request.imageUrl)
     }
 }

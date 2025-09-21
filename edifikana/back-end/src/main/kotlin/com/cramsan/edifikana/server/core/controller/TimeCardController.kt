@@ -3,7 +3,6 @@ package com.cramsan.edifikana.server.core.controller
 import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.Routes.Staff.QueryParams.STAFF_ID
 import com.cramsan.edifikana.lib.Routes.TimeCard.QueryParams.TIMECARD_EVENT_ID
-import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.network.CreateTimeCardEventNetworkRequest
@@ -42,9 +41,9 @@ class TimeCardController(
         val createTimeCardRequest = call.receive<CreateTimeCardEventNetworkRequest>()
 
         val newTimeCard = timeCardService.createTimeCardEvent(
-            staffId = StaffId(createTimeCardRequest.staffId),
+            staffId = createTimeCardRequest.staffId,
             fallbackStaffName = createTimeCardRequest.fallbackStaffName,
-            propertyId = PropertyId(createTimeCardRequest.propertyId),
+            propertyId = createTimeCardRequest.propertyId,
             type = createTimeCardRequest.type,
             imageUrl = createTimeCardRequest.imageUrl,
             timestamp = Chronos.currentInstant(),

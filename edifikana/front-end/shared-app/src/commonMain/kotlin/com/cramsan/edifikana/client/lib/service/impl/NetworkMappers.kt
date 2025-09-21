@@ -5,11 +5,6 @@ import com.cramsan.edifikana.client.lib.models.Organization
 import com.cramsan.edifikana.client.lib.models.StaffModel
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
 import com.cramsan.edifikana.client.lib.models.UserModel
-import com.cramsan.edifikana.lib.model.EventLogEntryId
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.StaffId
-import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.model.network.CreateEventLogEntryNetworkRequest
 import com.cramsan.edifikana.lib.model.network.CreateStaffNetworkRequest
@@ -29,10 +24,10 @@ import com.cramsan.framework.annotations.NetworkModel
 @OptIn(NetworkModel::class)
 fun EventLogEntryNetworkResponse.toEventLogRecordModel(): EventLogRecordModel {
     return EventLogRecordModel(
-        id = EventLogEntryId(id),
+        id = id,
         entityId = null,
-        staffPk = staffId?.let { it1 -> StaffId(it1) },
-        propertyId = PropertyId(propertyId),
+        staffPk = staffId,
+        propertyId = propertyId,
         timeRecorded = timestamp,
         unit = unit,
         eventType = type,
@@ -50,9 +45,9 @@ fun EventLogEntryNetworkResponse.toEventLogRecordModel(): EventLogRecordModel {
 @OptIn(NetworkModel::class)
 fun EventLogRecordModel.toCreateEventLogEntryNetworkRequest(): CreateEventLogEntryNetworkRequest {
     return CreateEventLogEntryNetworkRequest(
-        staffId = staffPk?.staffId,
+        staffId = staffPk,
         fallbackStaffName = fallbackStaffName,
-        propertyId = propertyId.propertyId,
+        propertyId = propertyId,
         type = eventType,
         fallbackEventType = fallbackEventType,
         timestamp = timeRecorded,
@@ -86,7 +81,7 @@ fun StaffModel.CreateStaffRequest.toCreateStaffNetworkRequest(): CreateStaffNetw
         firstName = firstName,
         lastName = lastName,
         role = role,
-        propertyId = propertyId.propertyId,
+        propertyId = propertyId,
     )
 }
 
@@ -110,7 +105,7 @@ fun StaffModel.UpdateStaffRequest.toUpdateStaffNetworkRequest(): UpdateStaffNetw
 @NetworkModel
 fun StaffNetworkResponse.toStaffModel(): StaffModel {
     return StaffModel(
-        id = StaffId(id),
+        id = id,
         firstName = firstName,
         lastName = lastName,
         role = role,
@@ -125,10 +120,10 @@ fun StaffNetworkResponse.toStaffModel(): StaffModel {
 @NetworkModel
 fun TimeCardRecordModel.toCreateTimeCardEventNetworkRequest(): CreateTimeCardEventNetworkRequest {
     return CreateTimeCardEventNetworkRequest(
-        staffId = staffPk.staffId,
+        staffId = staffPk,
         fallbackStaffName = "",
         type = eventType,
-        propertyId = propertyId.propertyId,
+        propertyId = propertyId,
         imageUrl = imageUrl,
     )
 }
@@ -139,10 +134,10 @@ fun TimeCardRecordModel.toCreateTimeCardEventNetworkRequest(): CreateTimeCardEve
 @NetworkModel
 fun TimeCardEventNetworkResponse.toTimeCardRecordModel(): TimeCardRecordModel {
     return TimeCardRecordModel(
-        id = TimeCardEventId(id),
+        id = id,
         entityId = null,
-        staffPk = StaffId(staffId ?: ""), // TODO: Fix this
-        propertyId = PropertyId(propertyId),
+        staffPk = staffId!!, // TODO: Fix this
+        propertyId = propertyId,
         eventType = type,
         eventTime = timestamp,
         imageUrl = imageUrl,
@@ -175,6 +170,6 @@ fun UserNetworkResponse.toUserModel(): UserModel {
 @OptIn(NetworkModel::class)
 fun OrganizationNetworkResponse.toOrganizationModel(): Organization {
     return Organization(
-        id = OrganizationId(id),
+        id = id,
     )
 }

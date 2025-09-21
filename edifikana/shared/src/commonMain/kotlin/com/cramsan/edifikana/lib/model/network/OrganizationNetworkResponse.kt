@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.lib.model.network
 
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.framework.annotations.NetworkModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -11,5 +12,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class OrganizationNetworkResponse(
     @SerialName("id")
-    val id: String,
+    val id: OrganizationId,
 )

@@ -3,8 +3,6 @@ package com.cramsan.edifikana.server.core.controller
 import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.Routes.EventLog.QueryParams.EVENT_LOG_ENTRY_ID
 import com.cramsan.edifikana.lib.model.EventLogEntryId
-import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.network.CreateEventLogEntryNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdateEventLogEntryNetworkRequest
 import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
@@ -42,9 +40,9 @@ class EventLogController(
         val createEventLogRequest = call.receive<CreateEventLogEntryNetworkRequest>()
 
         val newEventLog = eventLogService.createEventLogEntry(
-            staffId = createEventLogRequest.staffId?.let { StaffId(it) },
+            staffId = createEventLogRequest.staffId,
             fallbackStaffName = createEventLogRequest.fallbackStaffName,
-            propertyId = PropertyId(createEventLogRequest.propertyId),
+            propertyId = createEventLogRequest.propertyId,
             type = createEventLogRequest.type,
             fallbackEventType = createEventLogRequest.fallbackEventType,
             timestamp = Instant.fromEpochSeconds(createEventLogRequest.timestamp),

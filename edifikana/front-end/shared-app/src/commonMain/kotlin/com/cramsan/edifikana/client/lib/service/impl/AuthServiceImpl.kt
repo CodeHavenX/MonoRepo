@@ -4,7 +4,6 @@ import com.cramsan.edifikana.api.UserApi
 import com.cramsan.edifikana.client.lib.models.Invite
 import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.client.lib.service.AuthService
-import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.model.network.CreateUserNetworkRequest
@@ -79,7 +78,7 @@ class AuthServiceImpl(
         organizationId: OrganizationId,
     ): Result<List<UserModel>> = runSuspendCatching(TAG) {
         val response = UserApi.getAllUsers
-            .buildRequest(GetAllUsersQueryParams(organizationId.id))
+            .buildRequest(GetAllUsersQueryParams(organizationId))
             .execute(http)
         val userModels = response.map { it.toUserModel() }
         userModels
@@ -230,7 +229,7 @@ class AuthServiceImpl(
         UserApi.inviteUser.buildRequest(
             InviteUserNetworkRequest(
                 email = email,
-                organizationId = organizationId.id
+                organizationId = organizationId
             ),
         ).execute(http)
     }
@@ -252,7 +251,7 @@ class AuthServiceImpl(
 @OptIn(NetworkModel::class)
 private fun InviteNetworkResponse.toInvite(): Invite {
     return Invite(
-        id = InviteId(this.inviteId),
+        id = this.inviteId,
         email = this.email,
     )
 }

@@ -2,7 +2,6 @@ package com.cramsan.edifikana.server.core.controller
 
 import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.Routes.Property.QueryParams.PROPERTY_ID
-import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.network.CreatePropertyNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdatePropertyNetworkRequest
@@ -40,7 +39,7 @@ class PropertyController(
         val newProperty = propertyService.createProperty(
             createPropertyRequest.name,
             createPropertyRequest.address,
-            OrganizationId(createPropertyRequest.organizationId),
+            createPropertyRequest.organizationId,
             authenticatedContext,
         ).toPropertyNetworkResponse()
 

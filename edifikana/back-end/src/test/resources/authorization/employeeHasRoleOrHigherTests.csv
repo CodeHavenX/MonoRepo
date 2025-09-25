@@ -1,0 +1,4 @@
+userId, userRole, employeeId, requiredRole, expected
+"testUser", "MANAGER", "employee1", "ADMIN", false
+"testUser", "MANAGER", "employee2", "EMPLOYEE", true
+"testUser", "EMPLOYEE", "employee3", "EMPLOYEE", true

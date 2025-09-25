@@ -96,3 +96,10 @@ fun requireAll(
 ) {
     requireAll(message, { !it.isNullOrBlank() }, *values)
 }
+
+// Type aliases for easier access to exceptions
+typealias InvalidRequestException = ClientRequestExceptions.InvalidRequestException
+typealias UnauthorizedException = ClientRequestExceptions.UnauthorizedException
+typealias ForbiddenException = ClientRequestExceptions.ForbiddenException
+typealias NotFoundException = ClientRequestExceptions.NotFoundException
+typealias ConflictException = ClientRequestExceptions.ConflictException

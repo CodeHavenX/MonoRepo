@@ -10,7 +10,8 @@ import com.cramsan.edifikana.server.core.datastore.PropertyDatastore
 import com.cramsan.edifikana.server.core.datastore.StaffDatastore
 import com.cramsan.edifikana.server.core.service.models.UserRole
 import com.cramsan.framework.logging.logI
-import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
+import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.ForbiddenException
+import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.InvalidRequestException
 
 /**
  * Service responsible for Role-Based Access Control (RBAC) checks.
@@ -41,7 +42,7 @@ class RBACService(
             logI(TAG, "User ${context.userId} matches target user $targetUser")
             return true
         }
-        throw ClientRequestExceptions.ForbiddenException("FORBIDDEN ATTEMPT MADE TO EDIT ANOTHER USER'S ACCOUNT!")
+        throw ForbiddenException("FORBIDDEN ATTEMPT MADE TO EDIT ANOTHER USER'S ACCOUNT!")
     }
 
     /**
@@ -50,7 +51,7 @@ class RBACService(
      * @param context The authenticated client context containing user information.
      * @param org The ID of the target organization on which the action is to be performed.
      * @param requiredRole The role required to perform the action.
-     * @return True if the user has the required role or higher, false otherwise.
+     * @return True if the user has the required role, false otherwise.
      */
     suspend fun hasRole(
         context: ClientContext.AuthenticatedClientContext,
@@ -75,7 +76,7 @@ class RBACService(
         requiredRole: UserRole,
     ): Boolean {
         val userRole = getUserRoleForOrganizationAction(context, org)
-        return userRole.ordinal >= requiredRole.ordinal
+        return userRole.level <= requiredRole.level
     }
 
     /**
@@ -109,7 +110,7 @@ class RBACService(
         requiredRole: UserRole,
     ): Boolean {
         val userRole = getUserRoleForPropertyAction(context, targetProperty)
-        return userRole.ordinal >= requiredRole.ordinal
+        return userRole.level <= requiredRole.level
     }
 
     /**
@@ -143,7 +144,7 @@ class RBACService(
         requiredRole: UserRole,
     ): Boolean {
         val userRole = getUserRoleForEmployeeAction(context, targetEmployee)
-        return userRole.ordinal >= requiredRole.ordinal
+        return userRole.level <= requiredRole.level
     }
 
     /**
@@ -204,8 +205,10 @@ class RBACService(
     ): UserRole {
         logI(TAG, "Retrieving user role(s) for ${context.userId}")
         val employee =
-            employeeDatastore.getStaff(targetEmployee).getOrThrow() ?: throw RuntimeException(employeeNotFoundException)
-        val property = propertyDatastore.getProperty(employee.propertyId).getOrThrow() ?: throw RuntimeException(
+            employeeDatastore.getStaff(targetEmployee).getOrThrow() ?: throw InvalidRequestException(
+                employeeNotFoundException
+            )
+        val property = propertyDatastore.getProperty(employee.propertyId).getOrThrow() ?: throw InvalidRequestException(
             propertyNotFoundException
         )
         val role = orgDataStore.getUserRole(context.userId, property.organizationId).getOrNull()

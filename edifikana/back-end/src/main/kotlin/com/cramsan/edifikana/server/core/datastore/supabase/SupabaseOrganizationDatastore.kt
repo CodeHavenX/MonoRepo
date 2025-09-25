@@ -78,7 +78,7 @@ class SupabaseOrganizationDatastore(
             select()
             filter { eq("id", id.id) }
         }.decodeSingleOrNull<OrganizationEntity>()
-        deleted != null && mapping != null
+        deleted != null && !mapping.isEmpty()
     }
 
     override suspend fun getOrganizationsForUser(userId: UserId): Result<List<Organization>> {
@@ -98,7 +98,7 @@ class SupabaseOrganizationDatastore(
     override suspend fun addUserToOrganization(
         userId: UserId,
         organizationId: OrganizationId,
-        role: UserRole?
+        role: UserRole
     ): Result<Unit> {
         return runSuspendCatching(TAG) {
             logD(TAG, "Adding user %s to organization %s", userId, organizationId)

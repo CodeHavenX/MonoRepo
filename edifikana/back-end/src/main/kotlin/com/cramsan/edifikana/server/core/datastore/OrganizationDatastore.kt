@@ -58,7 +58,7 @@ interface OrganizationDatastore {
      * @param organizationId The ID of the organization to which the user will be added.
      * @return Unit if successful, or an error.
      */
-    suspend fun addUserToOrganization(userId: UserId, organizationId: OrganizationId, role: UserRole?): Result<Unit>
+    suspend fun addUserToOrganization(userId: UserId, organizationId: OrganizationId, role: UserRole): Result<Unit>
 
     /**
      * Remove a user from an organization.

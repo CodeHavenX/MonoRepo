@@ -2,4 +2,3 @@ userId, userRole, orgId, requiredRole, expected
 "testUser", "MANAGER", "testOrg", "MANAGER", true
 "testUser", "OWNER", "testOrg", "MANAGER", true
 "testUser", "EMPLOYEE", "testOrg", "MANAGER", false
-

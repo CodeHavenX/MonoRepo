@@ -62,9 +62,6 @@ class RBACServiceTest {
     fun `hasRole for a user action returns role for user when action is on own account`() {
         // Arrange
         val userId = UserId("myUserId")
-        val requestingUser = mockk<User>()
-        every { requestingUser.id } returns userId
-
         val targetUserId = UserId("myUserId")
         val targetUser = mockk<User>()
         every { targetUser.id } returns targetUserId
@@ -85,9 +82,6 @@ class RBACServiceTest {
     fun `hasRole for user action throws exception when action is for diff user from requester`() {
         // Arrange
         val userId = UserId("myUserId")
-        val requestingUser = mockk<User>()
-        every { requestingUser.id } returns userId
-
         val targetUserId = UserId("anotherUserId")
         val targetUser = mockk<User>()
         every { targetUser.id } returns targetUserId

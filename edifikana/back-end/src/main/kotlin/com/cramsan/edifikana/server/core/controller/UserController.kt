@@ -15,10 +15,13 @@ import com.cramsan.edifikana.lib.utils.requireSuccess
 import com.cramsan.edifikana.server.core.controller.authentication.ClientContext
 import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
 import com.cramsan.edifikana.server.core.service.UserService
+import com.cramsan.edifikana.server.core.service.authorization.RBACService
+import com.cramsan.edifikana.server.core.service.models.UserRole
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.framework.core.ktor.OperationHandler.register
+import com.cramsan.framework.utils.exceptions.UnauthorizedException
 import com.cramsan.framework.utils.exceptions.requireAll
 import io.ktor.server.routing.Routing
 
@@ -28,7 +31,10 @@ import io.ktor.server.routing.Routing
 class UserController(
     private val userService: UserService,
     private val contextRetriever: ContextRetriever,
+    private val rbacService: RBACService,
 ) : Controller {
+
+    private val unauthorizedMsg = "You are not authorized to perform this action."
 
     /**
      * Handles the creation of a new user.
@@ -56,7 +62,10 @@ class UserController(
      * Handles the retrieval of a user.
      */
     @OptIn(NetworkModel::class)
-    suspend fun getUser(userId: String): UserNetworkResponse? {
+    suspend fun getUser(context: ClientContext.AuthenticatedClientContext, userId: String): UserNetworkResponse? {
+        if (!rbacService.hasRole(context, UserId(userId))) {
+            throw UnauthorizedException(unauthorizedMsg)
+        }
         return userService.getUser(
             id = UserId(userId),
         ).getOrNull()?.toUserNetworkResponse()
@@ -71,6 +80,9 @@ class UserController(
         updatePasswordRequest: UpdatePasswordNetworkRequest,
     ) {
         val userId = authenticatedContext.userId
+        if (!rbacService.hasRole(authenticatedContext, userId)) {
+            throw UnauthorizedException(unauthorizedMsg)
+        }
 
         val result = userService.updatePassword(
             userId = userId,
@@ -82,12 +94,18 @@ class UserController(
     }
 
     /**
-     * Handles the retrieval of all users.
+     * Handles the retrieval of all users within an organization.
      */
     @OptIn(NetworkModel::class)
     suspend fun getUsers(
+        context: ClientContext.AuthenticatedClientContext,
         queryParams: GetAllUsersQueryParams,
     ): List<UserNetworkResponse> {
+        val orgId = requireNotBlank(queryParams.orgId, "An organization ID must be provided.")
+        if (!rbacService.hasRoleOrHigher(context, OrganizationId(orgId), UserRole.MANAGER)) {
+            throw UnauthorizedException(unauthorizedMsg)
+        }
+
         val users = userService.getUsers(
             organizationId = queryParams.orgId,
         ).getOrThrow().map { it.toUserNetworkResponse() }
@@ -99,9 +117,15 @@ class UserController(
      * Handles the updating of a user.
      */
     @OptIn(NetworkModel::class)
-    suspend fun updateUser(updateUserRequest: UpdateUserNetworkRequest, param: String): UserNetworkResponse {
+    suspend fun updateUser(
+        context: ClientContext.AuthenticatedClientContext,
+        updateUserRequest: UpdateUserNetworkRequest,
+        param: String
+    ): UserNetworkResponse {
         val userId = requireNotBlank(param)
-
+        if (!rbacService.hasRole(context, UserId(userId))) {
+            throw UnauthorizedException(unauthorizedMsg)
+        }
         val updatedUser = userService.updateUser(
             id = UserId(userId),
             email = updateUserRequest.email,
@@ -113,9 +137,13 @@ class UserController(
     /**
      * Handles the deletion of a user.
      */
-    suspend fun deleteUser(param: String) {
+    suspend fun deleteUser(context: ClientContext.AuthenticatedClientContext, param: String) {
+        val userId = UserId(param)
+        if (!rbacService.hasRole(context, userId)) {
+            throw UnauthorizedException(unauthorizedMsg)
+        }
         val result = userService.deleteUser(
-            UserId(param),
+            userId,
         )
 
         result.requireSuccess()
@@ -143,8 +171,12 @@ class UserController(
      * Handle a call to invite a user to the system via email.
      */
     @OptIn(NetworkModel::class)
-    suspend fun inviteUser(inviteRequest: InviteUserNetworkRequest) {
+    suspend fun inviteUser(context: ClientContext.AuthenticatedClientContext, inviteRequest: InviteUserNetworkRequest) {
         val email = inviteRequest.email
+        val organizationId = OrganizationId(inviteRequest.organizationId)
+        if (!rbacService.hasRoleOrHigher(context, organizationId, UserRole.MANAGER)) {
+            throw UnauthorizedException(unauthorizedMsg)
+        }
 
         userService.inviteUser(
             email,
@@ -156,9 +188,14 @@ class UserController(
      * Handle a call to get all pending invites for an organization.
      */
     @OptIn(NetworkModel::class)
-    suspend fun getInvites(param: String): List<InviteNetworkResponse> {
+    suspend fun getInvites(
+        context: ClientContext.AuthenticatedClientContext,
+        param: String
+    ): List<InviteNetworkResponse> {
         val orgId = requireNotBlank(param)
-
+        if (!rbacService.hasRoleOrHigher(context, OrganizationId(orgId), UserRole.MANAGER)) {
+            throw UnauthorizedException(unauthorizedMsg)
+        }
         val invites = userService.getInvites(
             organizationId = OrganizationId(orgId)
         ).getOrThrow().map { it.toInviteNetworkResponse() }
@@ -172,8 +209,8 @@ class UserController(
     @OptIn(NetworkModel::class)
     override fun registerRoutes(route: Routing) {
         UserApi.register(route) {
-            handler(api.getUser, contextRetriever) { _, _, _, param ->
-                getUser(param)
+            handler(api.getUser, contextRetriever) { context, _, _, param ->
+                getUser(context, param)
             }
             unauthenticatedHandler(api.createUser, contextRetriever) { _, body, _ ->
                 createUser(body)
@@ -181,23 +218,23 @@ class UserController(
             handler(api.updatePassword, contextRetriever) { context, body, _ ->
                 updatePassword(context, body)
             }
-            handler(api.getAllUsers, contextRetriever) { _, _, queryParam ->
-                getUsers(queryParam)
+            handler(api.getAllUsers, contextRetriever) { context, _, queryParam ->
+                getUsers(context, queryParam)
             }
-            handler(api.updateUser, contextRetriever) { _, body, _, param ->
-                updateUser(body, param)
+            handler(api.updateUser, contextRetriever) { context, body, _, param ->
+                updateUser(context, body, param)
             }
-            handler(api.deleteUser, contextRetriever) { _, _, _, param ->
-                deleteUser(param)
+            handler(api.deleteUser, contextRetriever) { context, _, _, param ->
+                deleteUser(context, param)
             }
             handler(api.associateUser, contextRetriever) { context, _, _ ->
                 associate(context)
             }
-            handler(api.inviteUser, contextRetriever) { _, body, _ ->
-                inviteUser(body)
+            handler(api.inviteUser, contextRetriever) { context, body, _ ->
+                inviteUser(context, body)
             }
-            handler(api.getInvites, contextRetriever) { _, _, _, param ->
-                getInvites(param)
+            handler(api.getInvites, contextRetriever) { context, _, _, param ->
+                getInvites(context, param)
             }
         }
     }

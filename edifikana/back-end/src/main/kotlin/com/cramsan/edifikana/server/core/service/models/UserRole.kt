@@ -3,7 +3,7 @@ package com.cramsan.edifikana.server.core.service.models
 import kotlin.IllegalArgumentException
 
 /**
- * Domain model representing a user role. Ordered by increasing privileges.
+ * Domain model representing a user role. Ordered by decreasing privileges.
  */
 @Suppress("MagicNumber")
 enum class UserRole(val level: Int) {

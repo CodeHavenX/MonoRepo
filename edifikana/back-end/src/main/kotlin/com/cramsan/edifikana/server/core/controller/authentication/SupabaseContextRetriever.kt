@@ -2,7 +2,6 @@ package com.cramsan.edifikana.server.core.controller.authentication
 
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.serialization.HEADER_TOKEN_AUTH
-import com.cramsan.edifikana.server.core.service.models.UserRole
 import com.cramsan.framework.assertlib.assertNull
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.auth.Auth
@@ -33,7 +32,6 @@ class SupabaseContextRetriever(
         return ClientContext.AuthenticatedClientContext(
             userInfo = user,
             userId = UserId(user.id),
-            userRole = UserRole.USER, // Assuming default role as USER, modify as needed based on your logic
         )
     }
 

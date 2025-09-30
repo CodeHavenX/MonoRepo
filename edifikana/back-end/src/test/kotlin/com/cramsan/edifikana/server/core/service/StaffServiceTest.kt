@@ -8,7 +8,6 @@ import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.controller.authentication.ClientContext
 import com.cramsan.edifikana.server.core.datastore.StaffDatastore
 import com.cramsan.edifikana.server.core.service.models.Staff
-import com.cramsan.edifikana.server.core.service.models.UserRole
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
@@ -132,7 +131,6 @@ class StaffServiceTest {
         val clientContext = ClientContext.AuthenticatedClientContext(
             userInfo = mockk(),
             userId = UserId("user-1"),
-            userRole = UserRole.SUPERUSER,
         )
         coEvery { staffDatastore.getStaffs(request) } returns Result.success(staffList)
 

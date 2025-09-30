@@ -6,6 +6,7 @@ import com.cramsan.edifikana.server.core.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.core.datastore.UserDatastore
 import com.cramsan.edifikana.server.core.service.models.Organization
 import com.cramsan.edifikana.server.core.service.models.User
+import com.cramsan.edifikana.server.core.service.models.UserRole
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.framework.logging.EventLogger
@@ -112,6 +113,7 @@ class UserServiceTest {
         val organization = mockk<Organization>()
         val userId = UserId("id")
         val orgId = OrganizationId("orgId")
+        val role = UserRole.OWNER
         coEvery {
             userDatastore.createUser(
                 any(),
@@ -127,7 +129,7 @@ class UserServiceTest {
         coEvery {
             organizationDatastore.createOrganization(userId)
         } returns Result.success(organization)
-        coEvery { organizationDatastore.addUserToOrganization(userId, orgId) } returns Result.success(Unit)
+        coEvery { organizationDatastore.addUserToOrganization(userId, orgId, role) } returns Result.success(Unit)
 
         // Act
         val result = userService.createUser(email, phone, password, firstName, lastName)
@@ -145,7 +147,7 @@ class UserServiceTest {
             )
         }
         coVerify { organizationDatastore.createOrganization(userId) }
-        coVerify { organizationDatastore.addUserToOrganization(userId, orgId) }
+        coVerify { organizationDatastore.addUserToOrganization(userId, orgId, role) }
     }
 
     /**

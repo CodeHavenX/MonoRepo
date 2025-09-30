@@ -7,10 +7,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.runtime.LaunchedEffect
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import com.cramsan.edifikana.client.lib.features.application.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.lib.features.main.camera.CameraContract
 import com.cramsan.edifikana.client.lib.features.window.ComposableKoinContext
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaMainScreenEventHandler
@@ -21,7 +19,6 @@ import com.cramsan.edifikana.client.lib.utils.shareContent
 import com.cramsan.framework.core.CoreUri
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
-import org.koin.compose.koinInject
 import org.koin.compose.scope.KoinScope
 import org.koin.core.annotation.KoinExperimentalAPI
 
@@ -48,14 +45,8 @@ class MainActivity : ComponentActivity(), EdifikanaMainScreenEventHandler {
     @Suppress("LongMethod")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // TODO: #199 to address temp fix implemented here
         setContent {
             ComposableKoinContext {
-                val processViewModel: EdifikanaApplicationViewModel = koinInject()
-                LaunchedEffect(Unit) {
-                    processViewModel.initialize()
-                }
-
                 KoinScope<String>("root-window") {
                     EdifikanaWindowScreen(
                         eventHandler = this,

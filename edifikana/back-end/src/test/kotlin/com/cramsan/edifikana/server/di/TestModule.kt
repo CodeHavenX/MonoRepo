@@ -129,7 +129,6 @@ fun testApplicationModule() = module {
     single<StorageService> { mockk() }
     single<OrganizationService> { mockk() }
     single<RBACService> { mockk() }
-
 }
 
 fun testSettingsModule() = module {

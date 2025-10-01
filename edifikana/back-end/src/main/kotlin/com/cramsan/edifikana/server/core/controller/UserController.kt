@@ -101,7 +101,7 @@ class UserController(
         context: ClientContext.AuthenticatedClientContext,
         queryParams: GetAllUsersQueryParams,
     ): List<UserNetworkResponse> {
-        val orgId = requireNotBlank(queryParams.orgId, "An organization ID must be provided.")
+        val orgId = requireNotBlank(queryParams.orgId.id, "An organization ID must be provided.")
         if (!rbacService.hasRoleOrHigher(context, OrganizationId(orgId), UserRole.MANAGER)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
@@ -173,14 +173,14 @@ class UserController(
     @OptIn(NetworkModel::class)
     suspend fun inviteUser(context: ClientContext.AuthenticatedClientContext, inviteRequest: InviteUserNetworkRequest) {
         val email = inviteRequest.email
-        val organizationId = OrganizationId(inviteRequest.organizationId)
-        if (!rbacService.hasRoleOrHigher(context, organizationId, UserRole.MANAGER)) {
+        val orgId = inviteRequest.organizationId
+        if (!rbacService.hasRoleOrHigher(context, orgId, UserRole.MANAGER)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
 
         userService.inviteUser(
             email,
-            inviteRequest.organizationId,
+            orgId,
         ).requireSuccess()
     }
 

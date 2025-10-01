@@ -5,6 +5,7 @@ import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.controller.authentication.ClientContext
 import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
 import com.cramsan.edifikana.server.core.service.UserService
+import com.cramsan.edifikana.server.core.service.authorization.RBACService
 import com.cramsan.edifikana.server.core.service.models.User
 import com.cramsan.edifikana.server.core.service.models.UserRole
 import com.cramsan.edifikana.server.utils.readFileContent
@@ -19,7 +20,9 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
+import io.mockk.Called
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
@@ -44,7 +47,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
 
     @Test
     fun `test createUser`() = testEdifikanaApplication {
-        // Configure
+        // Arrange
         val requestBody = readFileContent("requests/create_user_request.json")
         val expectedResponse = readFileContent("requests/create_user_response.json")
         val userService = get<UserService>()
@@ -96,7 +99,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
      */
     @Test
     fun `test createUser throws exception when unknown error occurs`() = testEdifikanaApplication {
-        // Configure
+        // Arrange
         val requestBody = readFileContent("requests/create_user_request.json")
         val userService = get<UserService>()
         coEvery {
@@ -137,7 +140,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
      */
     @Test
     fun `test createUser throws exception when user already exists`() = testEdifikanaApplication {
-        // Configure
+        // Arrange
         val requestBody = readFileContent("requests/create_user_request.json")
         val userService = get<UserService>()
         coEvery {
@@ -173,12 +176,14 @@ class UserControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test getUser`() = testEdifikanaApplication {
-        // Configure
+    fun `test getUser passes when user is requesting info on self`() = testEdifikanaApplication {
+        // Arrange
         val expectedResponse = readFileContent("requests/get_user_response.json")
         val userService = get<UserService>()
+        val rbacService = get<RBACService>()
+        val userId = UserId("user123")
         coEvery {
-            userService.getUser(UserId("user123"))
+            userService.getUser(userId)
         }.answers {
             Result.success(
                 User(
@@ -193,13 +198,19 @@ class UserControllerTest : CoroutineTest(), KoinTest {
             )
         }
         val contextRetriever = get<ContextRetriever>()
+        val context = ClientContext.AuthenticatedClientContext(
+            userInfo = mockk(),
+            userId = UserId("user123"),
+        )
         coEvery {
             contextRetriever.getContext(any())
         }.answers {
-            ClientContext.AuthenticatedClientContext(
-                userInfo = mockk(),
-                userId = UserId("user123"),
-            )
+            context
+        }
+        coEvery {
+            rbacService.hasRole(context, userId)
+        }.answers {
+            true
         }
 
         // Act
@@ -211,11 +222,47 @@ class UserControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test getUsers`() = testEdifikanaApplication {
-        // Configure
+    fun `test getUser fails when user requests user data for another user`() = testEdifikanaApplication {
+        // Arrange
+        val expectedResponse = "You are not authorized to perform this action."
+        val userService = get<UserService>()
+        val rbacService = get<RBACService>()
+        val userID = UserId("user654")
+        val targetUserId = UserId("user123")
+        val contextRetriever = get<ContextRetriever>()
+
+        val context = ClientContext.AuthenticatedClientContext(
+            userInfo = mockk(),
+            userId = userID
+        )
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            context
+        }
+        coEvery {
+            rbacService.hasRole(context, targetUserId)
+        }.answers {
+            false
+        }
+
+        // Act
+        val response = client.get("user/user123")
+
+        // Assert
+        coVerify { userService wasNot Called }
+        assertEquals(HttpStatusCode.Unauthorized, response.status)
+        assertEquals(expectedResponse, response.bodyAsText())
+    }
+
+    @Test
+    fun `test getUsers passes when user has required role`() = testEdifikanaApplication {
+        // Arrange
         val expectedResponse = readFileContent("requests/get_users_response.json")
         val userService = get<UserService>()
+        val rbacService = get<RBACService>()
         val orgId = OrganizationId("org123")
+
         coEvery {
             userService.getUsers(orgId)
         }.answers {
@@ -244,13 +291,19 @@ class UserControllerTest : CoroutineTest(), KoinTest {
             )
         }
         val contextRetriever = get<ContextRetriever>()
+        val context = ClientContext.AuthenticatedClientContext(
+            userInfo = mockk(),
+            userId = UserId("user123"),
+        )
         coEvery {
             contextRetriever.getContext(any())
         }.answers {
-            ClientContext.AuthenticatedClientContext(
-                userInfo = mockk(),
-                userId = UserId("user123"),
-            )
+            context
+        }
+        coEvery {
+            rbacService.hasRoleOrHigher(context, orgId, UserRole.MANAGER)
+        }.answers {
+            true
         }
 
         // Act
@@ -262,14 +315,48 @@ class UserControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test updateUser`() = testEdifikanaApplication {
-        // Configure
+    fun `test getUsers fails when the user does NOT have the required role`() = testEdifikanaApplication {
+        // Arrange
+        val expectedResponse = "You are not authorized to perform this action."
+        val userService = get<UserService>()
+        val rbacService = get<RBACService>()
+        val orgId = OrganizationId("org123")
+        val contextRetriever = get<ContextRetriever>()
+        val context = ClientContext.AuthenticatedClientContext(
+            userInfo = mockk(),
+            userId = UserId("user123"),
+        )
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            context
+        }
+        coEvery {
+            rbacService.hasRoleOrHigher(context, orgId, UserRole.MANAGER)
+        }.answers {
+            false
+        }
+
+        // Act
+        val response = client.get("user?orgId=org123")
+
+        // Assert
+        coVerify { userService wasNot Called }
+        assertEquals(HttpStatusCode.Unauthorized, response.status)
+        assertEquals(expectedResponse, response.bodyAsText())
+    }
+
+    @Test
+    fun `test updateUser succeeds when user is updating self`() = testEdifikanaApplication {
+        // Arrange
         val requestBody = readFileContent("requests/update_user_request.json")
         val expectedResponse = readFileContent("requests/update_user_response.json")
         val userService = get<UserService>()
+        val rbacService = get<RBACService>()
+        val userId = UserId("user123")
         coEvery {
             userService.updateUser(
-                id = UserId("user123"),
+                id = userId,
                 email = "updated.email@example.com"
             )
         }.answers {
@@ -286,13 +373,19 @@ class UserControllerTest : CoroutineTest(), KoinTest {
             )
         }
         val contextRetriever = get<ContextRetriever>()
+        val context = ClientContext.AuthenticatedClientContext(
+            userInfo = mockk(),
+            userId = UserId("user123"),
+        )
         coEvery {
             contextRetriever.getContext(any())
         }.answers {
-            ClientContext.AuthenticatedClientContext(
-                userInfo = mockk(),
-                userId = UserId("user123"),
-            )
+            context
+        }
+        coEvery {
+            rbacService.hasRole(context, userId)
+        }.answers {
+            true
         }
 
         // Act
@@ -307,28 +400,105 @@ class UserControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test deleteUser`() = testEdifikanaApplication {
-        // Configure
+    fun `test updateUser fails when the user is trying to update another user`() = testEdifikanaApplication {
+        // Arrange
+        val requestBody = readFileContent("requests/update_user_request.json")
+        val expectedResponse = "You are not authorized to perform this action."
         val userService = get<UserService>()
+        val rbacService = get<RBACService>()
+        val userId = UserId("user654")
+        val targetUserId = UserId("user123")
+        val contextRetriever = get<ContextRetriever>()
+        val context = ClientContext.AuthenticatedClientContext(
+            userInfo = mockk(),
+            userId = userId,
+        )
         coEvery {
-            userService.deleteUser(UserId("user123"))
+            contextRetriever.getContext(any())
+        }.answers {
+            context
+        }
+        coEvery {
+            rbacService.hasRole(context, targetUserId)
+        }.answers {
+            false
+        }
+
+        // Act
+        val response = client.put("user/user123") {
+            setBody(requestBody)
+            contentType(ContentType.Application.Json)
+        }
+
+        // Assert
+        coVerify { userService wasNot Called }
+        assertEquals(HttpStatusCode.Unauthorized, response.status)
+        assertEquals(expectedResponse, response.bodyAsText())
+    }
+
+    @Test
+    fun `test deleteUser succeeds when user is self`() = testEdifikanaApplication {
+        // Arrange
+        val userService = get<UserService>()
+        val rbacService = get<RBACService>()
+        val userId = UserId("user123")
+        coEvery {
+            userService.deleteUser(userId)
         }.answers {
             Result.success(true)
         }
         val contextRetriever = get<ContextRetriever>()
+        val context = ClientContext.AuthenticatedClientContext(
+            userInfo = mockk(),
+            userId = userId,
+        )
         coEvery {
             contextRetriever.getContext(any())
         }.answers {
-            ClientContext.AuthenticatedClientContext(
-                userInfo = mockk(),
-                userId = UserId("user123"),
-            )
+            context
+        }
+        coEvery {
+            rbacService.hasRole(context, userId)
+        }.answers {
+            true
+        }
+        // Act
+        val response = client.delete("user/user123")
+
+        // Assert
+        assertEquals(HttpStatusCode.OK, response.status)
+    }
+
+    @Test
+    fun `test deleteUser fails when user is trying to delete another user`() = testEdifikanaApplication {
+        // Arrange
+        val expectedResponse = "You are not authorized to perform this action."
+        val userService = get<UserService>()
+        val rbacService = get<RBACService>()
+        val userId = UserId("user654")
+        val targetUserId = UserId("user123")
+        val contextRetriever = get<ContextRetriever>()
+        val context = ClientContext.AuthenticatedClientContext(
+            userInfo = mockk(),
+            userId = userId,
+        )
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            context
+        }
+        coEvery {
+            rbacService.hasRole(context, targetUserId)
+        }.answers {
+            false
         }
 
         // Act
         val response = client.delete("user/user123")
 
         // Assert
-        assertEquals(HttpStatusCode.OK, response.status)
+        coVerify { userService wasNot Called }
+        assertEquals(HttpStatusCode.Unauthorized, response.status)
+        assertEquals(expectedResponse, response.bodyAsText())
     }
 }

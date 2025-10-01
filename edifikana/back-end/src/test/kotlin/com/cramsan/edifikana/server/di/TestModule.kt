@@ -17,6 +17,7 @@ import com.cramsan.edifikana.server.core.service.StaffService
 import com.cramsan.edifikana.server.core.service.StorageService
 import com.cramsan.edifikana.server.core.service.TimeCardService
 import com.cramsan.edifikana.server.core.service.UserService
+import com.cramsan.edifikana.server.core.service.authorization.RBACService
 import com.cramsan.edifikana.server.settings.Overrides
 import com.cramsan.framework.annotations.TestOnly
 import com.cramsan.framework.assertlib.AssertUtil
@@ -127,6 +128,8 @@ fun testApplicationModule() = module {
     single<TimeCardService> { mockk() }
     single<StorageService> { mockk() }
     single<OrganizationService> { mockk() }
+    single<RBACService> { mockk() }
+
 }
 
 fun testSettingsModule() = module {

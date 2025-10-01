@@ -21,8 +21,7 @@ class SupabaseOrganizationDatastore(
     private val postgrest: Postgrest,
 ) : OrganizationDatastore {
 
-    override suspend fun createOrganization(
-    ): Result<Organization> = runSuspendCatching(
+    override suspend fun createOrganization(): Result<Organization> = runSuspendCatching(
         TAG
     ) {
         logD(TAG, "Creating new organization")

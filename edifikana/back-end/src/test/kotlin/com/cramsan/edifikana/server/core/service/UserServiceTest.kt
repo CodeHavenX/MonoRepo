@@ -77,7 +77,7 @@ class UserServiceTest {
         } returns Result.success(user)
         every { user.id } returns UserId("id")
         coEvery {
-            organizationDatastore.createOrganization(UserId("id"))
+            organizationDatastore.createOrganization()
         } returns Result.success(mockk())
 
         // Act
@@ -127,7 +127,7 @@ class UserServiceTest {
         every { user.id } returns userId
         every { organization.id } returns orgId
         coEvery {
-            organizationDatastore.createOrganization(userId)
+            organizationDatastore.createOrganization()
         } returns Result.success(organization)
         coEvery { organizationDatastore.addUserToOrganization(userId, orgId, role) } returns Result.success(Unit)
 
@@ -146,7 +146,7 @@ class UserServiceTest {
                 any(),
             )
         }
-        coVerify { organizationDatastore.createOrganization(userId) }
+        coVerify { organizationDatastore.createOrganization() }
         coVerify { organizationDatastore.addUserToOrganization(userId, orgId, role) }
     }
 

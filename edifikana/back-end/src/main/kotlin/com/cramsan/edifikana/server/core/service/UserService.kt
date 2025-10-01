@@ -41,9 +41,7 @@ class UserService(
         )
 
         if (!isTransient) {
-            val orgID = organizationDatastore.createOrganization(
-                owner = result.getOrThrow().id,
-            ).getOrThrow().id
+            val orgID = organizationDatastore.createOrganization().getOrThrow().id
             organizationDatastore.addUserToOrganization(
                 userId = result.getOrThrow().id,
                 organizationId = orgID,
@@ -68,9 +66,7 @@ class UserService(
         )
 
         if (result.isSuccess) {
-            val orgId = organizationDatastore.createOrganization(
-                owner = id,
-            ).getOrThrow().id
+            val orgId = organizationDatastore.createOrganization().getOrThrow().id
             organizationDatastore.addUserToOrganization(
                 userId = result.getOrThrow().id,
                 organizationId = orgId,

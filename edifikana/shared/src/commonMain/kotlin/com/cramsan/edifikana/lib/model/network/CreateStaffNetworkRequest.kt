@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.lib.model.network
 
 import com.cramsan.edifikana.lib.model.IdType
+import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffRole
 import com.cramsan.framework.annotations.NetworkModel
 import kotlinx.serialization.SerialName
@@ -20,5 +21,5 @@ data class CreateStaffNetworkRequest(
     val lastName: String,
     val role: StaffRole,
     @SerialName("property_id")
-    val propertyId: String,
+    val propertyId: PropertyId,
 )

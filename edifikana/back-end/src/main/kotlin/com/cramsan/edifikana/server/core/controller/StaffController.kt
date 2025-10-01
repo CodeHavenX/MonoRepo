@@ -2,7 +2,6 @@ package com.cramsan.edifikana.server.core.controller
 
 import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.Routes.Staff.QueryParams.STAFF_ID
-import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.network.CreateStaffNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdateStaffNetworkRequest
@@ -45,7 +44,7 @@ class StaffController(
             firstName = createStaffRequest.firstName,
             lastName = createStaffRequest.lastName,
             role = createStaffRequest.role,
-            propertyId = PropertyId(createStaffRequest.propertyId),
+            propertyId = createStaffRequest.propertyId,
         ).toStaffNetworkResponse()
 
         HttpResponse(

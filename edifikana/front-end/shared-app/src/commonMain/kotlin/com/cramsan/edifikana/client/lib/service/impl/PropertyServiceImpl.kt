@@ -80,7 +80,7 @@ class PropertyServiceImpl(
                 CreatePropertyNetworkRequest(
                     name = propertyName,
                     address = address,
-                    organizationId = organizationId.id,
+                    organizationId = organizationId,
                 )
             )
             contentType(ContentType.Application.Json)
@@ -121,9 +121,9 @@ class PropertyServiceImpl(
 @NetworkModel
 private fun PropertyNetworkResponse.toPropertyModel(): PropertyModel {
     return PropertyModel(
-        id = PropertyId(id),
+        id = id,
         name = name,
         address = address.orEmpty(),
-        organizationId = OrganizationId(organizationId),
+        organizationId = organizationId,
     )
 }

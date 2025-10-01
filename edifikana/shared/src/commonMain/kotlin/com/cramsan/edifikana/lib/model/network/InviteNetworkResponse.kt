@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.lib.model.network
 
+import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.framework.annotations.NetworkModel
 import kotlinx.serialization.Serializable
 
@@ -9,6 +10,6 @@ import kotlinx.serialization.Serializable
 @NetworkModel
 @Serializable
 data class InviteNetworkResponse(
-    val inviteId: String,
+    val inviteId: InviteId,
     val email: String,
 )

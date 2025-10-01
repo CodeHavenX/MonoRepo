@@ -1,6 +1,8 @@
 package com.cramsan.edifikana.lib.model.network
 
 import com.cramsan.edifikana.lib.model.IdType
+import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.StaffRole
 import com.cramsan.framework.annotations.NetworkModel
 import kotlinx.serialization.SerialName
@@ -12,7 +14,7 @@ import kotlinx.serialization.Serializable
 @NetworkModel
 @Serializable
 data class StaffNetworkResponse(
-    val id: String,
+    val id: StaffId,
     @SerialName("id_type")
     val idType: IdType,
     @SerialName("first_name")
@@ -21,5 +23,5 @@ data class StaffNetworkResponse(
     val lastName: String,
     val role: StaffRole,
     @SerialName("property_id")
-    val propertyId: String,
+    val propertyId: PropertyId,
 )

@@ -26,7 +26,7 @@ class SupabaseStaffDatastoreIntegrationTest : SupabaseIntegrationTest() {
         test_prefix = UUID.random()
         runBlocking {
             testUserId = createTestUser("user-${test_prefix}@test.com")
-            orgId = createTestOrganization(testUserId!!)
+            orgId = createTestOrganization()
             propertyId = createTestProperty("${test_prefix}_Property", testUserId!!, orgId!!)
         }
     }

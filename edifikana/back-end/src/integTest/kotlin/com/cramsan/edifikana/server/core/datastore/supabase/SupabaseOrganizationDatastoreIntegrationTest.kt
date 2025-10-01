@@ -24,11 +24,8 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
 
     @Test
     fun `createOrganization should return organization on success`() = runCoroutineTest {
-        // Arrange
-        val request = testUserId!!
-
         // Act
-        val result = organizationDatastore.createOrganization(request).registerOrganizationForDeletion()
+        val result = organizationDatastore.createOrganization().registerOrganizationForDeletion()
 
         // Assert
         assertTrue(result.isSuccess)
@@ -39,8 +36,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `getOrganization should return created organization`() = runCoroutineTest {
         // Arrange
-        val createRequest = testUserId!!
-        val createResult = organizationDatastore.createOrganization(createRequest).registerOrganizationForDeletion()
+        val createResult = organizationDatastore.createOrganization().registerOrganizationForDeletion()
         assertTrue(createResult.isSuccess)
         val org = createResult.getOrNull()!!
 
@@ -57,8 +53,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `updateOrganization should update organization fields`() = runCoroutineTest {
         // Arrange
-        val createRequest = testUserId!!
-        val createResult = organizationDatastore.createOrganization(createRequest).registerOrganizationForDeletion()
+        val createResult = organizationDatastore.createOrganization().registerOrganizationForDeletion()
         assertTrue(createResult.isSuccess)
         val org = createResult.getOrNull()!!
         val newOwner = createTestUser("user2-${test_prefix}@test.com")
@@ -76,8 +71,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `deleteOrganization should remove organization`() = runCoroutineTest {
         // Arrange
-        val createRequest = testUserId!!
-        val createResult = organizationDatastore.createOrganization(createRequest)
+        val createResult = organizationDatastore.createOrganization()
         assertTrue(createResult.isSuccess)
         val org = createResult.getOrNull()!!
 
@@ -107,9 +101,9 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `getOrganizationList should return organizations for user`() = runCoroutineTest {
         // Arrange
-        val org1 = createTestOrganization(testUserId!!)
+        val org1 = createTestOrganization()
         val role1 = UserRole.ADMIN
-        val org2 = createTestOrganization(testUserId!!)
+        val org2 = createTestOrganization()
         val role2 = UserRole.EMPLOYEE
         organizationDatastore.addUserToOrganization(testUserId!!, org1, role1)
         organizationDatastore.addUserToOrganization(testUserId!!, org2, role2)
@@ -143,7 +137,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `addUserToOrganization should add user to organization and getOrganizationsForUser should reflect this`() = runCoroutineTest {
         // Arrange
-        val orgId = createTestOrganization(testUserId!!)
+        val orgId = createTestOrganization()
         val newUser = createTestUser("adduser-${test_prefix}@test.com")
         val role = UserRole.MANAGER
 
@@ -162,7 +156,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `addUserToOrganization should handle adding same user twice gracefully`() = runCoroutineTest {
         // Arrange
-        val orgId = createTestOrganization(testUserId!!)
+        val orgId = createTestOrganization()
         val newUser = createTestUser("dupeuser-${test_prefix}@test.com")
         val newRole = UserRole.EMPLOYEE
 

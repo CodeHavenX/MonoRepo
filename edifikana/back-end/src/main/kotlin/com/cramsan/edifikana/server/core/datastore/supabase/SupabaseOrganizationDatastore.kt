@@ -22,11 +22,10 @@ class SupabaseOrganizationDatastore(
 ) : OrganizationDatastore {
 
     override suspend fun createOrganization(
-        owner: UserId
     ): Result<Organization> = runSuspendCatching(
         TAG
     ) {
-        logD(TAG, "Creating organization: %s", owner)
+        logD(TAG, "Creating new organization")
         val entity = OrganizationEntity.CreateOrganizationEntity
         val createdOrg = postgrest.from(OrganizationEntity.COLLECTION).insert(entity) { select() }
             .decodeSingle<OrganizationEntity>()
@@ -69,7 +68,7 @@ class SupabaseOrganizationDatastore(
     ) {
         logD(TAG, "Deleting organization: %s", id)
 
-        val mapping = postgrest.from(UserOrganizationMappingEntity.COLLECTION).delete {
+        postgrest.from(UserOrganizationMappingEntity.COLLECTION).delete {
             select()
             filter { eq("organization_id", id.id) }
         }.decodeList<UserOrganizationMappingEntity>()
@@ -78,7 +77,7 @@ class SupabaseOrganizationDatastore(
             select()
             filter { eq("id", id.id) }
         }.decodeSingleOrNull<OrganizationEntity>()
-        deleted != null && !mapping.isEmpty()
+        deleted != null
     }
 
     override suspend fun getOrganizationsForUser(userId: UserId): Result<List<Organization>> {

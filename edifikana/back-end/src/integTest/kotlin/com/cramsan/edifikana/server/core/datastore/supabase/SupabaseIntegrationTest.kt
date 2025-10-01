@@ -110,9 +110,9 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
         return userId
     }
 
-    protected fun createTestOrganization(owner: UserId): OrganizationId {
+    protected fun createTestOrganization(): OrganizationId {
         val organizationId = runBlocking {
-            organizationDatastore.createOrganization(owner).getOrThrow().id
+            organizationDatastore.createOrganization().getOrThrow().id
         }
         registerOrganizationForDeletion(organizationId)
         return organizationId

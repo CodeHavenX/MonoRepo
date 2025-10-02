@@ -5,13 +5,17 @@ import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.controller.authentication.ClientContext
 import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
 import com.cramsan.edifikana.server.core.service.OrganizationService
+import com.cramsan.edifikana.server.core.service.authorization.RBACService
 import com.cramsan.edifikana.server.core.service.models.Organization
+import com.cramsan.edifikana.server.core.service.models.UserRole
 import com.cramsan.edifikana.server.utils.readFileContent
 import com.cramsan.framework.test.CoroutineTest
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
+import io.mockk.Called
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
@@ -33,25 +37,33 @@ class OrganizationControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test getOrganization`() = testEdifikanaApplication {
+    fun `test getOrganization succeeds when user has required role`() = testEdifikanaApplication {
         // Setup
         val expectedResponse = readFileContent("requests/get_organization_response.json")
         val organizationService = get<OrganizationService>()
+        val rbacService = get<RBACService>()
+        val orgId = OrganizationId("org123")
         coEvery {
-            organizationService.getOrganization(OrganizationId("org123"))
+            organizationService.getOrganization(orgId)
         }.answers {
             Organization(
                 id = OrganizationId("org123"),
             )
         }
         val contextRetriever = get<ContextRetriever>()
+        val context = ClientContext.AuthenticatedClientContext(
+            userInfo = mockk(),
+            userId = UserId("user456"),
+        )
         coEvery {
             contextRetriever.getContext(any())
         } answers {
-            ClientContext.AuthenticatedClientContext(
-                userInfo = mockk(),
-                userId = UserId("user456"),
-            )
+            context
+        }
+        coEvery {
+            rbacService.hasRoleOrHigher(context, orgId, UserRole.ADMIN)
+        }.answers {
+            true
         }
 
         // Execute
@@ -59,6 +71,38 @@ class OrganizationControllerTest : CoroutineTest(), KoinTest {
 
         // Verify
         assertEquals(HttpStatusCode.OK, response.status)
+        assertEquals(expectedResponse, response.bodyAsText())
+    }
+
+    @Test
+    fun `test getOrganization fails when the user doesn't have the required perms`() = testEdifikanaApplication {
+        // Setup
+        val expectedResponse = "You are not authorized to perform this action."
+        val organizationService = get<OrganizationService>()
+        val rbacService = get<RBACService>()
+        val orgId = OrganizationId("org123")
+        val contextRetriever = get<ContextRetriever>()
+        val context = ClientContext.AuthenticatedClientContext(
+            userInfo = mockk(),
+            userId = UserId("user456"),
+        )
+        coEvery {
+            contextRetriever.getContext(any())
+        } answers {
+            context
+        }
+        coEvery {
+            rbacService.hasRoleOrHigher(context, orgId, UserRole.ADMIN)
+        }.answers {
+            false
+        }
+
+        // Execute
+        val response = client.get("organization/org123")
+
+        // Verify
+        coVerify { organizationService wasNot Called }
+        assertEquals(HttpStatusCode.Unauthorized, response.status)
         assertEquals(expectedResponse, response.bodyAsText())
     }
 

@@ -30,7 +30,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class StaffControllerTest : CoroutineTest(), KoinTest {
+class EmployeeControllerTest : CoroutineTest(), KoinTest {
 
     @BeforeTest
     fun setupTest() {

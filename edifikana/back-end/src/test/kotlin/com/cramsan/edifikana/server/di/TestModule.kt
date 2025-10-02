@@ -5,7 +5,7 @@ import com.cramsan.edifikana.server.core.controller.EventLogController
 import com.cramsan.edifikana.server.core.controller.HealthCheckController
 import com.cramsan.edifikana.server.core.controller.OrganizationController
 import com.cramsan.edifikana.server.core.controller.PropertyController
-import com.cramsan.edifikana.server.core.controller.StaffController
+import com.cramsan.edifikana.server.core.controller.EmployeeController
 import com.cramsan.edifikana.server.core.controller.StorageController
 import com.cramsan.edifikana.server.core.controller.TimeCardController
 import com.cramsan.edifikana.server.core.controller.UserController
@@ -97,7 +97,7 @@ fun testKtorModule() = module {
     singleOf(::EventLogController)
     singleOf(::HealthCheckController)
     singleOf(::PropertyController)
-    singleOf(::StaffController)
+    singleOf(::EmployeeController)
     singleOf(::TimeCardController)
     singleOf(::StorageController)
     singleOf(::OrganizationController)

@@ -23,7 +23,7 @@ import io.ktor.server.routing.route
 /**
  * Controller for staff related operations. CRUD operations for staff.
  */
-class StaffController(
+class EmployeeController(
     private val staffService: StaffService,
     private val contextRetriever: ContextRetriever,
 ) : Controller {

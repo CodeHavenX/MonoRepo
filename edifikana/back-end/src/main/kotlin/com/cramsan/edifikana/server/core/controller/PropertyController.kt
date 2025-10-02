@@ -33,7 +33,6 @@ class PropertyController(
     private val rbacService: RBACService,
 ) : Controller {
 
-
     val unauthorizedMsg = "You are not authorized to perform this action in your organization."
 
     /**
@@ -41,7 +40,8 @@ class PropertyController(
      */
     @OptIn(NetworkModel::class)
     suspend fun createProperty(call: ApplicationCall) = call.handleCall(
-        TAG, "createProperty",
+        TAG,
+        "createProperty",
         contextRetriever
     ) { context ->
         val createPropertyRequest = call.receive<CreatePropertyNetworkRequest>()

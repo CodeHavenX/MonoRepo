@@ -6,7 +6,9 @@ import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.controller.authentication.ClientContext
 import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
 import com.cramsan.edifikana.server.core.service.PropertyService
+import com.cramsan.edifikana.server.core.service.authorization.RBACService
 import com.cramsan.edifikana.server.core.service.models.Property
+import com.cramsan.edifikana.server.core.service.models.UserRole
 import com.cramsan.edifikana.server.utils.readFileContent
 import com.cramsan.framework.test.CoroutineTest
 import io.ktor.client.request.delete
@@ -18,7 +20,9 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
+import io.mockk.Called
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
@@ -47,11 +51,12 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test createProperty`() = testEdifikanaApplication {
-        // Configure
+    fun `test createProperty succeeds when user has required role in organization`() = testEdifikanaApplication {
+        // Arrange
         val requestBody = readFileContent("requests/create_property_request.json")
         val expectedResponse = readFileContent("requests/create_property_response.json")
         val propertyService = get<PropertyService>()
+        val rbacService = get<RBACService>()
         coEvery {
             propertyService.createProperty(
                 "building 1",
@@ -68,13 +73,19 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
             )
         }
         val contextRetriever = get<ContextRetriever>()
+        val context = ClientContext.AuthenticatedClientContext(
+            userInfo = mockk(),
+            userId = UserId("user123"),
+        )
         coEvery {
             contextRetriever.getContext(any())
         }.answers {
-            ClientContext.AuthenticatedClientContext(
-                userInfo = mockk(),
-                userId = UserId("user123"),
-            )
+            context
+        }
+        coEvery {
+            rbacService.hasRole(context, OrganizationId("org123"), UserRole.ADMIN)
+        }.answers {
+            true
         }
 
         // Act
@@ -89,12 +100,50 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test getProperty`() = testEdifikanaApplication {
-        // Configure
+    fun `test createProperty fails when the user doesn't have the required role in their org`() =
+        testEdifikanaApplication {
+            // Arrange
+            val requestBody = readFileContent("requests/create_property_request.json")
+            val propertyService = get<PropertyService>()
+            val rbacService = get<RBACService>()
+            val contextRetriever = get<ContextRetriever>()
+            val expectedResponse = "You are not authorized to perform this action in your organization."
+            val context = ClientContext.AuthenticatedClientContext(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                context
+            }
+            coEvery {
+                rbacService.hasRole(context, OrganizationId("org123"), UserRole.ADMIN)
+            }.answers {
+                false
+            }
+
+            // Act
+            val response = client.post("property") {
+                setBody(requestBody)
+                contentType(ContentType.Application.Json)
+            }
+
+            // Assert
+            coVerify { propertyService wasNot Called }
+            assertEquals(HttpStatusCode.Unauthorized, response.status)
+            assertEquals(expectedResponse, response.bodyAsText())
+        }
+
+    @Test
+    fun `test getProperty succeeds when use has required role or higher`() = testEdifikanaApplication {
+        // Arrange
         val expectedResponse = readFileContent("requests/get_property_response.json")
         val propertyService = get<PropertyService>()
+        val rbacService = get<RBACService>()
+        val propId = PropertyId("property123")
         coEvery {
-            propertyService.getProperty(PropertyId("property123"))
+            propertyService.getProperty(propId)
         }.answers {
             Property(
                 id = PropertyId("property123"),
@@ -104,13 +153,19 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
             )
         }
         val contextRetriever = get<ContextRetriever>()
+        val context = ClientContext.AuthenticatedClientContext(
+            userInfo = mockk(),
+            userId = UserId("user123"),
+        )
         coEvery {
             contextRetriever.getContext(any())
         }.answers {
-            ClientContext.AuthenticatedClientContext(
-                userInfo = mockk(),
-                userId = UserId("user123"),
-            )
+            context
+        }
+        coEvery {
+            rbacService.hasRoleOrHigher(context, propId, UserRole.MANAGER)
+        }.answers {
+            true
         }
 
         // Act
@@ -122,8 +177,41 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
+    fun `test getProperty fails when user doesn't have required role or higher`() = testEdifikanaApplication {
+        // Arrange
+        val expectedResponse = "You are not authorized to perform this action in your organization."
+        val propertyService = get<PropertyService>()
+        val rbacService = get<RBACService>()
+        val propId = PropertyId("property123")
+        val contextRetriever = get<ContextRetriever>()
+        val context = ClientContext.AuthenticatedClientContext(
+            userInfo = mockk(),
+            userId = UserId("user123"),
+        )
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            context
+        }
+        coEvery {
+            rbacService.hasRoleOrHigher(context, propId, UserRole.MANAGER)
+        }.answers {
+            false
+        }
+
+        // Act
+        val response = client.get("property/property123")
+
+        // Assert
+        coVerify { propertyService wasNot Called }
+        assertEquals(HttpStatusCode.Unauthorized, response.status)
+        assertEquals(expectedResponse, response.bodyAsText())
+    }
+
+    // TODO: Update this test and add a negative check test for ensuring user get only list of properties they're assigned
+    @Test
     fun `test getProperties`() = testEdifikanaApplication {
-        // Configure
+        // Arrange
         val expectedResponse = readFileContent("requests/get_properties_response.json")
         val propertyService = get<PropertyService>()
         coEvery {
@@ -163,14 +251,16 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test updateProperty`() = testEdifikanaApplication {
-        // Configure
+    fun `test updateProperty succeeds when the user has required role`() = testEdifikanaApplication {
+        // Arrange
         val requestBody = readFileContent("requests/update_property_request.json")
         val expectedResponse = readFileContent("requests/update_property_response.json")
         val propertyService = get<PropertyService>()
+        val rbacService = get<RBACService>()
+        val propId = PropertyId("property123")
         coEvery {
             propertyService.updateProperty(
-                id = PropertyId("property123"),
+                id = propId,
                 name = "Updated Property"
             )
         }.answers {
@@ -182,13 +272,19 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
             )
         }
         val contextRetriever = get<ContextRetriever>()
+        val context = ClientContext.AuthenticatedClientContext(
+            userInfo = mockk(),
+            userId = UserId("user123"),
+        )
         coEvery {
             contextRetriever.getContext(any())
         }.answers {
-            ClientContext.AuthenticatedClientContext(
-                userInfo = mockk(),
-                userId = UserId("user123"),
-            )
+            context
+        }
+        coEvery {
+            rbacService.hasRole(context, propId, UserRole.ADMIN)
+        }.answers {
+            true
         }
 
         // Act
@@ -203,22 +299,66 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test deleteProperty`() = testEdifikanaApplication {
-        // Configure
+    fun `test updateProperty fails when the user doesn't have required role`() = testEdifikanaApplication {
+        // Arrange
+        val requestBody = readFileContent("requests/update_property_request.json")
+        val expectedResponse = "You are not authorized to perform this action in your organization."
         val propertyService = get<PropertyService>()
+        val rbacService = get<RBACService>()
+        val propId = PropertyId("property123")
+        val contextRetriever = get<ContextRetriever>()
+        val context = ClientContext.AuthenticatedClientContext(
+            userInfo = mockk(),
+            userId = UserId("user123"),
+        )
         coEvery {
-            propertyService.deleteProperty(PropertyId("property123"))
+            contextRetriever.getContext(any())
+        }.answers {
+            context
+        }
+        coEvery {
+            rbacService.hasRole(context, propId, UserRole.ADMIN)
+        }.answers {
+            false
+        }
+
+        // Act
+        val response = client.put("property/property123") {
+            setBody(requestBody)
+            contentType(ContentType.Application.Json)
+        }
+
+        // Assert
+        coVerify { propertyService wasNot Called }
+        assertEquals(HttpStatusCode.Unauthorized, response.status)
+        assertEquals(expectedResponse, response.bodyAsText())
+    }
+
+    @Test
+    fun `test deleteProperty succeeds when user has require role`() = testEdifikanaApplication {
+        // Arrange
+        val propertyService = get<PropertyService>()
+        val rbacService = get<RBACService>()
+        val propId = PropertyId("property123")
+        coEvery {
+            propertyService.deleteProperty(propId)
         }.answers {
             true
         }
         val contextRetriever = get<ContextRetriever>()
+        val context = ClientContext.AuthenticatedClientContext(
+            userInfo = mockk(),
+            userId = UserId("user123"),
+        )
         coEvery {
             contextRetriever.getContext(any())
         }.answers {
-            ClientContext.AuthenticatedClientContext(
-                userInfo = mockk(),
-                userId = UserId("user123"),
-            )
+            context
+        }
+        coEvery {
+            rbacService.hasRole(context, propId, UserRole.ADMIN)
+        }.answers {
+            true
         }
 
         // Act
@@ -226,5 +366,37 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
 
         // Assert
         assertEquals(HttpStatusCode.OK, response.status)
+    }
+
+    @Test
+    fun `test deleteProperty fails when user doesn't have required role`() = testEdifikanaApplication {
+        // Arrange
+        val expectedResponse = "You are not authorized to perform this action in your organization."
+        val propertyService = get<PropertyService>()
+        val rbacService = get<RBACService>()
+        val propId = PropertyId("property123")
+        val contextRetriever = get<ContextRetriever>()
+        val context = ClientContext.AuthenticatedClientContext(
+            userInfo = mockk(),
+            userId = UserId("user123"),
+        )
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            context
+        }
+        coEvery {
+            rbacService.hasRole(context, propId, UserRole.ADMIN)
+        }.answers {
+            false
+        }
+
+        // Act
+        val response = client.delete("property/property123")
+
+        // Assert
+        coVerify { propertyService wasNot Called }
+        assertEquals(HttpStatusCode.Unauthorized, response.status)
+        assertEquals(expectedResponse, response.bodyAsText())
     }
 }

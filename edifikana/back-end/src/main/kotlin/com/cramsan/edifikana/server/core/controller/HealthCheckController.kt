@@ -19,7 +19,11 @@ class HealthCheckController(
     /**
      * Handles a health check request.
      */
-    suspend fun healthCheck(call: ApplicationCall) = call.handleCall(TAG, "healthCheck", contextRetriever) {
+    suspend fun healthCheck(call: ApplicationCall) = call.handleUnauthenticatedCall(
+        TAG,
+        "healthCheck",
+        contextRetriever,
+    ) {
         HttpResponse(
             status = HttpStatusCode.OK,
             body = "OK",

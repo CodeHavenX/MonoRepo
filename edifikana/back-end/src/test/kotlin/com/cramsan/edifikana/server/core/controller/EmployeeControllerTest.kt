@@ -45,8 +45,8 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
     @Test
     fun `test createEmployee`() = testEdifikanaApplication {
         // Configure
-        val requestBody = readFileContent("requests/create_staff_request.json")
-        val expectedResponse = readFileContent("requests/create_staff_response.json")
+        val requestBody = readFileContent("requests/create_employee_request.json")
+        val expectedResponse = readFileContent("requests/create_employee_response.json")
         val employeeService = get<EmployeeService>()
         coEvery {
             employeeService.createEmployee(
@@ -90,7 +90,7 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
     @Test
     fun `test getEmployee`() = testEdifikanaApplication {
         // Configure
-        val expectedResponse = readFileContent("requests/get_staff_response.json")
+        val expectedResponse = readFileContent("requests/get_employee_response.json")
         val employeeService = get<EmployeeService>()
         coEvery {
             employeeService.getEmployee(EmployeeId("emp123"))
@@ -125,7 +125,7 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
     @Test
     fun `test getEmployees`() = testEdifikanaApplication {
         // Configure
-        val expectedResponse = readFileContent("requests/get_staffs_response.json")
+        val expectedResponse = readFileContent("requests/get_employees_response.json")
         val employeeService = get<EmployeeService>()
         val contextRetriever = get<ContextRetriever>()
         val clientContext = ClientContext.AuthenticatedClientContext(
@@ -172,8 +172,8 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
     @Test
     fun `test updateEmployee`() = testEdifikanaApplication {
         // Configure
-        val requestBody = readFileContent("requests/update_staff_request.json")
-        val expectedResponse = readFileContent("requests/update_staff_response.json")
+        val requestBody = readFileContent("requests/update_employee_request.json")
+        val expectedResponse = readFileContent("requests/update_employee_response.json")
         val employeeService = get<EmployeeService>()
         coEvery {
             employeeService.updateEmployee(

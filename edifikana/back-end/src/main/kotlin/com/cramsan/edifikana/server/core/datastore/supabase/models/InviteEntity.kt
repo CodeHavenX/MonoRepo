@@ -3,6 +3,7 @@ package com.cramsan.edifikana.server.core.datastore.supabase.models
 import com.cramsan.framework.annotations.SupabaseModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlin.time.Instant
 
 /**
  * Supabase entity representing an invite to join an organization.
@@ -16,6 +17,10 @@ data class InviteEntity(
     val email: String,
     @SerialName("organization_id")
     val organizationId: String,
+    @SerialName("created_at")
+    val createdAt: Instant,
+    @SerialName("expiration")
+    val expiration: Instant,
 ) {
 
     /**
@@ -28,6 +33,10 @@ data class InviteEntity(
         val email: String,
         @SerialName("organization_id")
         val organizationId: String,
+        @SerialName("created_at")
+        val createdAt: Instant,
+        @SerialName("expiration")
+        val expiration: Instant,
     )
 
     companion object {

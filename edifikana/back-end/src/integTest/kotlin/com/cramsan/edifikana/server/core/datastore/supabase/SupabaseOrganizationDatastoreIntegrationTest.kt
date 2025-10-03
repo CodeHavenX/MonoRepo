@@ -80,7 +80,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
 
         // Assert
         assertTrue(deleteResult.isSuccess)
-        assertTrue(deleteResult.getOrNull() == true)
+        assertTrue(deleteResult.getOrThrow())
         val getResult = organizationDatastore.getOrganization(org.id)
         assertTrue(getResult.isSuccess)
         assertNull(getResult.getOrNull())

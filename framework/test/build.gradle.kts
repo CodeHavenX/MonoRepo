@@ -58,6 +58,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(project(":framework:interfacelib"))
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:_")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:_")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:_")
                 implementation("org.jetbrains.kotlin:kotlin-test-common:_")

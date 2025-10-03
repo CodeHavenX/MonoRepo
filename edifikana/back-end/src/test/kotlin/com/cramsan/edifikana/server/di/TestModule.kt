@@ -1,19 +1,19 @@
 package com.cramsan.edifikana.server.di
 
 import com.cramsan.edifikana.lib.serialization.createJson
+import com.cramsan.edifikana.server.core.controller.EmployeeController
 import com.cramsan.edifikana.server.core.controller.EventLogController
 import com.cramsan.edifikana.server.core.controller.HealthCheckController
 import com.cramsan.edifikana.server.core.controller.OrganizationController
 import com.cramsan.edifikana.server.core.controller.PropertyController
-import com.cramsan.edifikana.server.core.controller.StaffController
 import com.cramsan.edifikana.server.core.controller.StorageController
 import com.cramsan.edifikana.server.core.controller.TimeCardController
 import com.cramsan.edifikana.server.core.controller.UserController
 import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
+import com.cramsan.edifikana.server.core.service.EmployeeService
 import com.cramsan.edifikana.server.core.service.EventLogService
 import com.cramsan.edifikana.server.core.service.OrganizationService
 import com.cramsan.edifikana.server.core.service.PropertyService
-import com.cramsan.edifikana.server.core.service.StaffService
 import com.cramsan.edifikana.server.core.service.StorageService
 import com.cramsan.edifikana.server.core.service.TimeCardService
 import com.cramsan.edifikana.server.core.service.UserService
@@ -97,7 +97,7 @@ fun testKtorModule() = module {
     singleOf(::EventLogController)
     singleOf(::HealthCheckController)
     singleOf(::PropertyController)
-    singleOf(::StaffController)
+    singleOf(::EmployeeController)
     singleOf(::TimeCardController)
     singleOf(::StorageController)
     singleOf(::OrganizationController)
@@ -124,7 +124,7 @@ fun testApplicationModule() = module {
     single<UserService> { mockk() }
     single<EventLogService> { mockk() }
     single<PropertyService> { mockk() }
-    single<StaffService> { mockk() }
+    single<EmployeeService> { mockk() }
     single<TimeCardService> { mockk() }
     single<StorageService> { mockk() }
     single<OrganizationService> { mockk() }

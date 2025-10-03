@@ -1,7 +1,7 @@
 {
     "id": "event123",
-    "staff_id": "staff456",
-    "fallback_staff_name": "John Doe",
+    "employee_id": "emp456",
+    "fallback_employee_name": "John Doe",
     "property_id": "property789",
     "type": "MAINTENANCE_SERVICE",
     "fallback_type": "General Maintenance",

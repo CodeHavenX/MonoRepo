@@ -4,17 +4,17 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.cramsan.edifikana.client.lib.features.management.addprimarystaff.AddPrimaryStaffScreen
+import com.cramsan.edifikana.client.lib.features.management.addprimaryemployee.AddPrimaryEmployeeScreen
 import com.cramsan.edifikana.client.lib.features.management.addproperty.AddPropertyScreen
 import com.cramsan.edifikana.client.lib.features.management.addrecord.AddRecordScreen
-import com.cramsan.edifikana.client.lib.features.management.addsecondarystaff.AddSecondaryStaffScreen
+import com.cramsan.edifikana.client.lib.features.management.addsecondaryemployee.AddSecondaryEmployeeScreen
 import com.cramsan.edifikana.client.lib.features.management.drawer.ManagementScreen
+import com.cramsan.edifikana.client.lib.features.management.employee.EmployeeScreen
 import com.cramsan.edifikana.client.lib.features.management.properties.PropertyManagerScreen
 import com.cramsan.edifikana.client.lib.features.management.property.PropertyScreen
-import com.cramsan.edifikana.client.lib.features.management.staff.StaffScreen
-import com.cramsan.edifikana.client.lib.features.management.timecardstafflist.TimeCardStaffListScreen
+import com.cramsan.edifikana.client.lib.features.management.timecardemployeelist.TimeCardEmployeeListScreen
+import com.cramsan.edifikana.client.lib.features.management.viewemployee.ViewEmployeeScreen
 import com.cramsan.edifikana.client.lib.features.management.viewrecord.ViewRecordScreen
-import com.cramsan.edifikana.client.lib.features.management.viewstaff.ViewStaffScreen
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.framework.core.compose.navigation.navigationGraph
 import kotlin.jvm.JvmSuppressWildcards
@@ -46,29 +46,30 @@ fun NavGraphBuilder.managementNavGraphNavigation(
         composable(ManagementDestination.AddPropertyManagementDestination::class) {
             AddPropertyScreen()
         }
-        composable(ManagementDestination.AddPrimaryStaffManagementDestination::class) {
-            AddPrimaryStaffScreen()
+        composable(ManagementDestination.AddPrimaryEmployeeManagementDestination::class) {
+            AddPrimaryEmployeeScreen()
         }
-        composable(ManagementDestination.AddSecondaryStaffManagementDestination::class) {
-            AddSecondaryStaffScreen()
+        composable(ManagementDestination.AddSecondaryEmployeeManagementDestination::class) {
+            AddSecondaryEmployeeScreen()
         }
         composable(
-            ManagementDestination.StaffDestination::class,
+            ManagementDestination.EmployeeDestination::class,
             typeMap = typeMap,
         ) { backstackEntry ->
-            StaffScreen(
+            EmployeeScreen(
                 destination = backstackEntry.toRoute(),
             )
         }
-        composable(ManagementDestination.TimeCardStaffListDestination::class) {
-            TimeCardStaffListScreen()
+        composable(ManagementDestination.TimeCardEmployeeListDestination::class) {
+            TimeCardEmployeeListScreen()
         }
         composable(
-            ManagementDestination.TimeCardSingleStaffDestination::class,
+            ManagementDestination.TimeCardSingleEmployeeDestination::class,
             typeMap = typeMap,
         ) { backStackEntry ->
-            ViewStaffScreen(
-                staffPK = backStackEntry.toRoute<ManagementDestination.TimeCardSingleStaffDestination>().staffPk,
+            ViewEmployeeScreen(
+                employeePK = backStackEntry
+                    .toRoute<ManagementDestination.TimeCardSingleEmployeeDestination>().employeePk,
             )
         }
         composable(

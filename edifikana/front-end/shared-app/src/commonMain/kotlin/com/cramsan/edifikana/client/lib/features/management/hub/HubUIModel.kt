@@ -48,5 +48,5 @@ data class BottomBarDestinationUiModel(
 enum class Tabs {
     None,
     Properties,
-    Staff,
+    Employee,
 }

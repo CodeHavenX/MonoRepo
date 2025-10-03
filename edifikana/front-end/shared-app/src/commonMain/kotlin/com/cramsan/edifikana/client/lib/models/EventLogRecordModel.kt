@@ -1,9 +1,9 @@
 package com.cramsan.edifikana.client.lib.models
 
+import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.StaffId
 
 /**
  * Model for an event log record.
@@ -11,12 +11,12 @@ import com.cramsan.edifikana.lib.model.StaffId
 data class EventLogRecordModel(
     val id: EventLogEntryId?,
     val entityId: String?,
-    val staffPk: StaffId?,
+    val employeePk: EmployeeId?,
     val propertyId: PropertyId,
     val timeRecorded: Long,
     val unit: String,
     val eventType: EventLogEventType,
-    val fallbackStaffName: String?,
+    val fallbackEmployeeName: String?,
     val fallbackEventType: String?,
     val title: String,
     val description: String,
@@ -29,12 +29,12 @@ data class EventLogRecordModel(
          * yet.
          */
         fun createTemporary(
-            staffPk: StaffId?,
+            employeePk: EmployeeId?,
             timeRecorded: Long,
             propertyId: PropertyId,
             unit: String,
             eventType: EventLogEventType?,
-            fallbackStaffName: String?,
+            fallbackEmployeeName: String?,
             fallbackEventType: String?,
             title: String,
             description: String,
@@ -42,12 +42,12 @@ data class EventLogRecordModel(
             // TODO: Use a better entity Id
             return EventLogRecordModel(
                 id = null,
-                entityId = "${staffPk?.staffId}_$timeRecorded",
-                staffPk = staffPk,
+                entityId = "${employeePk?.empId}_$timeRecorded",
+                employeePk = employeePk,
                 timeRecorded = timeRecorded,
                 unit = unit.trim(),
                 eventType = eventType ?: EventLogEventType.INCIDENT,
-                fallbackStaffName = fallbackStaffName?.trim(),
+                fallbackEmployeeName = fallbackEmployeeName?.trim(),
                 fallbackEventType = fallbackEventType?.trim(),
                 title = title.trim(),
                 description = description.trim(),

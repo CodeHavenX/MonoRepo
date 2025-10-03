@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.server.core.service
 
+import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.edifikana.server.core.datastore.TimeCardDatastore
@@ -22,8 +22,8 @@ class TimeCardService(
      * Creates a time card event with the provided parameters.
      */
     suspend fun createTimeCardEvent(
-        staffId: StaffId,
-        fallbackStaffName: String?,
+        employeeId: EmployeeId,
+        fallbackEmployeeName: String?,
         propertyId: PropertyId,
         type: TimeCardEventType,
         imageUrl: String?,
@@ -31,8 +31,8 @@ class TimeCardService(
     ): TimeCardEvent {
         logD(TAG, "createTimeCardEvent")
         return timeCardDatastore.createTimeCardEvent(
-            staffId = staffId,
-            fallbackStaffName = fallbackStaffName,
+            employeeId = employeeId,
+            fallbackEmployeeName = fallbackEmployeeName,
             propertyId = propertyId,
             type = type,
             imageUrl = imageUrl,
@@ -58,11 +58,11 @@ class TimeCardService(
      * Retrieves all time cards.
      */
     suspend fun getTimeCardEvents(
-        staffId: StaffId?,
+        employeeId: EmployeeId?,
     ): List<TimeCardEvent> {
         logD(TAG, "getTimeCardEvents")
         val timeCards = timeCardDatastore.getTimeCardEvents(
-            staffId = staffId,
+            employeeId = employeeId,
         ).getOrThrow()
         return timeCards
     }

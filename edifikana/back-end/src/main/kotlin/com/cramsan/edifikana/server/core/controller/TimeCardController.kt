@@ -1,9 +1,9 @@
 package com.cramsan.edifikana.server.core.controller
 
 import com.cramsan.edifikana.lib.Routes
-import com.cramsan.edifikana.lib.Routes.Staff.QueryParams.STAFF_ID
+import com.cramsan.edifikana.lib.Routes.Employee.QueryParams.EMPLOYEE_ID
 import com.cramsan.edifikana.lib.Routes.TimeCard.QueryParams.TIMECARD_EVENT_ID
-import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.network.CreateTimeCardEventNetworkRequest
 import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
@@ -41,8 +41,8 @@ class TimeCardController(
         val createTimeCardRequest = call.receive<CreateTimeCardEventNetworkRequest>()
 
         val newTimeCard = timeCardService.createTimeCardEvent(
-            staffId = createTimeCardRequest.staffId,
-            fallbackStaffName = createTimeCardRequest.fallbackStaffName,
+            employeeId = createTimeCardRequest.employeeId,
+            fallbackEmployeeName = createTimeCardRequest.fallbackEmployeeName,
             propertyId = createTimeCardRequest.propertyId,
             type = createTimeCardRequest.type,
             imageUrl = createTimeCardRequest.imageUrl,
@@ -91,10 +91,10 @@ class TimeCardController(
         "getTimeCardEvents",
         contextRetriever,
     ) { _ ->
-        val staffId = call.request.queryParameters[STAFF_ID]
+        val empId = call.request.queryParameters[EMPLOYEE_ID]
 
         val timeCards = timeCardService.getTimeCardEvents(
-            staffId = staffId?.let { StaffId(it) },
+            employeeId = empId?.let { EmployeeId(it) },
         ).map { it.toTimeCardEventNetworkResponse() }
 
         HttpResponse(

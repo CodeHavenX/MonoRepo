@@ -88,7 +88,7 @@ class StorageControllerTest : CoroutineTest(), KoinTest {
         }.answers { mockk() }
 
         // Act
-        val response = client.get("storage?asset_id=images/timecard-images/staff2.png")
+        val response = client.get("storage?asset_id=images/timecard-images/employee2.png")
 
         // Assert
         assertEquals(HttpStatusCode.OK, response.status)

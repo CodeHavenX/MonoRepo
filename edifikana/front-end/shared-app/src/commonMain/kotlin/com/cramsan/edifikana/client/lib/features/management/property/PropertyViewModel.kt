@@ -1,9 +1,9 @@
 package com.cramsan.edifikana.client.lib.features.management.property
 
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
+import com.cramsan.edifikana.client.lib.managers.EmployeeManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
-import com.cramsan.edifikana.client.lib.managers.StaffManager
-import com.cramsan.edifikana.client.lib.models.StaffModel
+import com.cramsan.edifikana.client.lib.models.EmployeeModel
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
@@ -19,13 +19,13 @@ import kotlinx.coroutines.launch
  **/
 class PropertyViewModel(
     private val propertyManager: PropertyManager,
-    private val staffManager: StaffManager,
+    private val employeeManager: EmployeeManager,
     private val stringProvider: StringProvider,
     dependencies: ViewModelDependencies,
 ) : BaseViewModel<PropertyEvent, PropertyUIState>(dependencies, PropertyUIState.Empty, TAG) {
 
     private var propertyId: PropertyId? = null
-    private var cachedStaff: List<StaffModel> = emptyList()
+    private var cachedEmployee: List<EmployeeModel> = emptyList()
     private var suggestionQueryJob: Job? = null
 
     private var initialState: PropertyUIState? = null
@@ -82,32 +82,32 @@ class PropertyViewModel(
                     title = property.name,
                     propertyName = property.name,
                     address = property.address,
-                    staff = listOf(),
+                    employee = listOf(),
                 ).also { initialState = it }
             }
-            cachedStaff = staffManager.getStaffList().getOrThrow()
+            cachedEmployee = employeeManager.getEmployeeList().getOrThrow()
         }
     }
 
     /**
-     * Add a new staff to the property.
+     * Add a new employee to the property.
      */
-    fun addStaff(email: String) {
+    fun addEmployee(email: String) {
         viewModelScope.launch {
             val isEmailValid = validateEmail(email).isEmpty()
             if (isEmailValid) {
                 updateUiState {
                     it.copy(
-                        staff = it.staff + StaffUIModel(null, email, false),
-                        addStaffError = false,
-                        addStaffEmail = "",
+                        employee = it.employee + EmployeeUIModel(null, email, false),
+                        addEmployeeError = false,
+                        addEmployeeEmail = "",
                     )
                 }
             } else {
                 updateUiState {
                     it.copy(
-                        addStaffError = true,
-                        addStaffEmail = email,
+                        addEmployeeError = true,
+                        addEmployeeEmail = email,
                     )
                 }
             }
@@ -115,17 +115,17 @@ class PropertyViewModel(
     }
 
     /**
-     * Remove a staff from the property.
+     * Remove a employee from the property.
      */
-    fun toggleStaffState(staffUIModel: StaffUIModel) {
+    fun toggleEmployeeState(employeeUIModel: EmployeeUIModel) {
         viewModelScope.launch {
             updateUiState {
                 it.copy(
-                    staff = it.staff.map { staff ->
-                        if (staff.email == staffUIModel.email) {
-                            staff.copy(isRemoving = staff.isRemoving.not())
+                    employee = it.employee.map { employee ->
+                        if (employee.email == employeeUIModel.email) {
+                            employee.copy(isRemoving = employee.isRemoving.not())
                         } else {
-                            staff
+                            employee
                         }
                     },
                 )
@@ -150,13 +150,13 @@ class PropertyViewModel(
             suggestionQueryJob?.cancel()
             suggestionQueryJob = null
             suggestionQueryJob = viewModelScope.launch {
-                val suggestions = cachedStaff
+                val suggestions = cachedEmployee
                     .filter { it.email?.contains(query) == true }
                     .mapNotNull { it.email }
                 updateUiState {
                     it.copy(
                         suggestions = suggestions,
-                        addStaffEmail = query,
+                        addEmployeeEmail = query,
                     )
                 }
             }

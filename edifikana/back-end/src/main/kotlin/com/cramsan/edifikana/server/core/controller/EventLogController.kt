@@ -40,8 +40,8 @@ class EventLogController(
         val createEventLogRequest = call.receive<CreateEventLogEntryNetworkRequest>()
 
         val newEventLog = eventLogService.createEventLogEntry(
-            staffId = createEventLogRequest.staffId,
-            fallbackStaffName = createEventLogRequest.fallbackStaffName,
+            employeeId = createEventLogRequest.employeeId,
+            fallbackEmployeeName = createEventLogRequest.fallbackEmployeeName,
             propertyId = createEventLogRequest.propertyId,
             type = createEventLogRequest.type,
             fallbackEventType = createEventLogRequest.fallbackEventType,

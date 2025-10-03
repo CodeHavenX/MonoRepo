@@ -8,7 +8,7 @@ import com.cramsan.edifikana.client.lib.utils.IODependencies
 import com.cramsan.edifikana.client.lib.utils.getFilename
 import com.cramsan.edifikana.client.lib.utils.processImageData
 import com.cramsan.edifikana.client.lib.utils.readBytes
-import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.ManagerDependencies
@@ -35,13 +35,13 @@ class TimeCardManager(
     private var uploadJob: Job? = null
 
     /**
-     * Get all time card records for a staff member.
+     * Get all time card records for a employee member.
      */
-    suspend fun getRecords(staffPK: StaffId): Result<List<TimeCardRecordModel>> = dependencies.getOrCatch(TAG) {
+    suspend fun getRecords(employeePK: EmployeeId): Result<List<TimeCardRecordModel>> = dependencies.getOrCatch(TAG) {
         logI(TAG, "getRecords")
-        val cachedData = timeCardCache.getRecords(staffPK)
+        val cachedData = timeCardCache.getRecords(employeePK)
 
-        val onlineData = timeCardService.getRecords(staffPK).getOrThrow()
+        val onlineData = timeCardService.getRecords(employeePK).getOrThrow()
         (cachedData + onlineData).sortedByDescending { it.eventTime }
     }
 

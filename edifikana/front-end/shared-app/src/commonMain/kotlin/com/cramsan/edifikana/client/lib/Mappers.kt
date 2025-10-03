@@ -3,9 +3,9 @@
 package com.cramsan.edifikana.client.lib
 
 import androidx.compose.runtime.Composable
+import com.cramsan.edifikana.lib.model.EmployeeRole
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.IdType
-import com.cramsan.edifikana.lib.model.StaffRole
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.utils.time.Chronos
@@ -33,30 +33,30 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 /**
- * Converts the [StaffRole] to a friendly string.
+ * Converts the [EmployeeRole] to a friendly string.
  */
-suspend fun StaffRole?.toRoleFriendlyName(
+suspend fun EmployeeRole?.toRoleFriendlyName(
     stringProvider: StringProvider,
 ): String {
     return when (this) {
-        StaffRole.MANAGER -> stringProvider.getString(Res.string.role_admin)
-        StaffRole.SECURITY -> stringProvider.getString(Res.string.role_security)
-        StaffRole.SECURITY_COVER -> stringProvider.getString(Res.string.role_security_cover)
-        StaffRole.CLEANING -> stringProvider.getString(Res.string.role_limpieza)
+        EmployeeRole.MANAGER -> stringProvider.getString(Res.string.role_admin)
+        EmployeeRole.SECURITY -> stringProvider.getString(Res.string.role_security)
+        EmployeeRole.SECURITY_COVER -> stringProvider.getString(Res.string.role_security_cover)
+        EmployeeRole.CLEANING -> stringProvider.getString(Res.string.role_limpieza)
         null -> stringProvider.getString(Res.string.role_unknown)
     }
 }
 
 /**
- * Converts the [StaffRole] to a friendly string.
+ * Converts the [EmployeeRole] to a friendly string.
  */
 @Composable
-fun StaffRole?.toRoleFriendlyNameCompose(): String {
+fun EmployeeRole?.toRoleFriendlyNameCompose(): String {
     return when (this) {
-        StaffRole.MANAGER -> stringResource(Res.string.role_admin)
-        StaffRole.SECURITY -> stringResource(Res.string.role_security)
-        StaffRole.SECURITY_COVER -> stringResource(Res.string.role_security_cover)
-        StaffRole.CLEANING -> stringResource(Res.string.role_limpieza)
+        EmployeeRole.MANAGER -> stringResource(Res.string.role_admin)
+        EmployeeRole.SECURITY -> stringResource(Res.string.role_security)
+        EmployeeRole.SECURITY_COVER -> stringResource(Res.string.role_security_cover)
+        EmployeeRole.CLEANING -> stringResource(Res.string.role_limpieza)
         null -> stringResource(Res.string.role_unknown)
     }
 }

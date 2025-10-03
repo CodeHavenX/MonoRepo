@@ -96,11 +96,11 @@ fun PropertyScreen(
     PropertyContent(
         uiState,
         onBackSelected = { viewModel.navigateBack() },
-        onNewStaffSelected = { staff ->
-            viewModel.addStaff(staff)
+        onNewEmployeeSelected = { employee ->
+            viewModel.addEmployee(employee)
         },
-        onStaffActionSelected = { staff ->
-            viewModel.toggleStaffState(staff)
+        onEmployeeActionSelected = { employee ->
+            viewModel.toggleEmployeeState(employee)
         },
         onSaveChangesSelected = {
             viewModel.saveChanges(false)
@@ -130,15 +130,15 @@ internal fun PropertyContent(
     content: PropertyUIState,
     modifier: Modifier = Modifier,
     onBackSelected: () -> Unit,
-    onNewStaffSelected: (email: String) -> Unit,
-    onStaffActionSelected: (staff: StaffUIModel) -> Unit,
+    onNewEmployeeSelected: (email: String) -> Unit,
+    onEmployeeActionSelected: (employee: EmployeeUIModel) -> Unit,
     onSaveChangesSelected: () -> Unit,
     onPropertyNameChanged: (String) -> Unit,
     onAddressChanged: (String) -> Unit,
     onNewSuggestionsRequested: (String) -> Unit,
     onShowRemoveDialogSelected: () -> Unit,
 ) {
-    var newStaff by remember(content) { mutableStateOf(content.addStaffEmail) }
+    var newEmployee by remember(content) { mutableStateOf(content.addEmployeeEmail) }
 
     Scaffold(
         modifier = modifier,
@@ -186,26 +186,26 @@ internal fun PropertyContent(
 
                     HorizontalDivider(sectionModifier)
 
-                    content.staff.forEach { staff ->
-                        StaffItem(
-                            staff.email,
-                            staff.isRemoving,
+                    content.employee.forEach { employee ->
+                        EmployeeItem(
+                            employee.email,
+                            employee.isRemoving,
                             sectionModifier,
                         ) {
-                            onStaffActionSelected(staff)
+                            onEmployeeActionSelected(employee)
                         }
                     }
 
                     OutlinedTextField(
-                        value = newStaff,
+                        value = newEmployee,
                         onValueChange = {
-                            newStaff = it
+                            newEmployee = it
                             onNewSuggestionsRequested(it)
                         },
-                        label = { Text("New Staff's email") },
+                        label = { Text("New Employee's email") },
                         modifier = sectionModifier,
                         singleLine = true,
-                        isError = content.addStaffError,
+                        isError = content.addEmployeeError,
                         trailingIcon = {
                             Icon(
                                 Icons.Filled.Add,
@@ -213,7 +213,7 @@ internal fun PropertyContent(
                                 modifier = Modifier
                                     .clip(CircleShape)
                                     .clickable {
-                                        onNewStaffSelected(newStaff)
+                                        onNewEmployeeSelected(newEmployee)
                                     }
                             )
                         },
@@ -222,7 +222,7 @@ internal fun PropertyContent(
                         ),
                         keyboardActions = KeyboardActions(
                             onDone = {
-                                onNewStaffSelected(newStaff)
+                                onNewEmployeeSelected(newEmployee)
                             }
                         )
                     )
@@ -244,11 +244,11 @@ internal fun PropertyContent(
 }
 
 @Composable
-private fun StaffItem(
+private fun EmployeeItem(
     email: String,
     isRemoving: Boolean,
     modifier: Modifier = Modifier,
-    onStaffActionSelected: () -> Unit,
+    onEmployeeActionSelected: () -> Unit,
 ) {
     Row(
         modifier = modifier,
@@ -277,7 +277,7 @@ private fun StaffItem(
             contentDescription = "Remove",
             modifier = Modifier
                 .clip(CircleShape)
-                .clickable { onStaffActionSelected() }
+                .clickable { onEmployeeActionSelected() }
         )
     }
 }

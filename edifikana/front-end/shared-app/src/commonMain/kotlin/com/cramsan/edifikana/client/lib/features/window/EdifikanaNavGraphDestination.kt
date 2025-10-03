@@ -35,7 +35,7 @@ sealed class EdifikanaNavGraphDestination : NavigationGraphDestination {
     data object AccountNavGraphDestination : EdifikanaNavGraphDestination()
 
     /**
-     * A class representing navigating to the Staff Screen.
+     * A class representing navigating to the Employee Screen.
      */
     @Serializable
     data object ManagementNavGraphDestination : EdifikanaNavGraphDestination()

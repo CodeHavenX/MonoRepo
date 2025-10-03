@@ -1,13 +1,13 @@
 package com.cramsan.edifikana.client.lib.features.management.addrecord
 
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
+import com.cramsan.edifikana.client.lib.managers.EmployeeManager
 import com.cramsan.edifikana.client.lib.managers.EventLogManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
-import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
+import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.core.compose.resources.StringProvider
@@ -23,7 +23,7 @@ import kotlin.time.ExperimentalTime
  */
 @OptIn(ExperimentalTime::class)
 class AddRecordViewModel(
-    private val staffManager: StaffManager,
+    private val employeeManager: EmployeeManager,
     private val eventLogManager: EventLogManager,
     private val propertyManager: PropertyManager,
     private val stringProvider: StringProvider,
@@ -35,11 +35,11 @@ class AddRecordViewModel(
 ) {
 
     /**
-     * Load staff members.
+     * Load employee members.
      */
-    fun loadStaffs() = viewModelScope.launch {
+    fun loadEmployees() = viewModelScope.launch {
         updateUiState { it.copy(isLoading = true) }
-        val result = staffManager.getStaffList()
+        val result = employeeManager.getEmployeeList()
 
         if (result.isFailure) {
             val state =
@@ -50,14 +50,14 @@ class AddRecordViewModel(
                 )
             updateUiState { state }
         } else {
-            val staffs = result.getOrThrow()
-            val staffList = staffs.map {
+            val employees = result.getOrThrow()
+            val employeeList = employees.map {
                 it.toUIModel()
             }
             val state =
                 AddRecordUIState(
                     // TODO: Move this resources
-                    staffList + AddRecordUIModel(
+                    employeeList + AddRecordUIModel(
                         stringProvider.getString(Res.string.string_other),
                         null
                     ),
@@ -73,10 +73,10 @@ class AddRecordViewModel(
      */
     @Suppress("ComplexCondition")
     fun addRecord(
-        staffDocumentId: StaffId?,
+        employeeDocumentId: EmployeeId?,
         unit: String?,
         eventType: EventLogEventType?,
-        fallbackStaffName: String?,
+        fallbackEmployeeName: String?,
         fallbackEventType: String?,
         title: String?,
         description: String?,
@@ -84,7 +84,7 @@ class AddRecordViewModel(
         updateUiState { it.copy(isLoading = true) }
 
         if (
-            (staffDocumentId == null && fallbackStaffName.isNullOrBlank()) ||
+            (employeeDocumentId == null && fallbackEmployeeName.isNullOrBlank()) ||
             (eventType == null && fallbackEventType.isNullOrBlank()) ||
             unit.isNullOrBlank() ||
             title.isNullOrBlank() ||
@@ -96,11 +96,11 @@ class AddRecordViewModel(
 
         val property: PropertyId = propertyManager.activeProperty().value ?: error("No active property")
         val eventLogRecord = EventLogRecordModel.createTemporary(
-            staffPk = staffDocumentId,
+            employeePk = employeeDocumentId,
             timeRecorded = Chronos.currentInstant().epochSeconds,
             unit = unit.trim(),
             eventType = eventType ?: EventLogEventType.INCIDENT,
-            fallbackStaffName = fallbackStaffName?.trim(),
+            fallbackEmployeeName = fallbackEmployeeName?.trim(),
             fallbackEventType = fallbackEventType?.trim(),
             title = title.trim(),
             description = description.trim(),

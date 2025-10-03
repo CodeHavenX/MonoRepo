@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.server.core.datastore
 
+import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
@@ -16,8 +16,8 @@ interface TimeCardDatastore {
      * Creates a new time card event. Returns the [Result] of the operation with the created [TimeCardEvent].
      */
     suspend fun createTimeCardEvent(
-        staffId: StaffId,
-        fallbackStaffName: String?,
+        employeeId: EmployeeId,
+        fallbackEmployeeName: String?,
         propertyId: PropertyId,
         type: TimeCardEventType,
         imageUrl: String?,
@@ -32,10 +32,10 @@ interface TimeCardDatastore {
     ): Result<TimeCardEvent?>
 
     /**
-     * Retrieves all time card events for a staff member. Returns the [Result] of the operation with a list of [TimeCardEvent].
+     * Retrieves all time card events for an employee member. Returns the [Result] of the operation with a list of [TimeCardEvent].
      */
     suspend fun getTimeCardEvents(
-        staffId: StaffId?,
+        employeeId: EmployeeId?,
     ): Result<List<TimeCardEvent>>
 
     /**

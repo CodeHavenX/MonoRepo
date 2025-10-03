@@ -1,9 +1,9 @@
 package com.cramsan.edifikana.lib.model.network
 
+import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.framework.annotations.NetworkModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -15,10 +15,10 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class EventLogEntryNetworkResponse(
     val id: EventLogEntryId,
-    @SerialName("staff_id")
-    val staffId: StaffId?,
-    @SerialName("fallback_staff_name")
-    val fallbackStaffName: String?,
+    @SerialName("employee_id")
+    val employeeId: EmployeeId?,
+    @SerialName("fallback_employee_name")
+    val fallbackEmployeeName: String?,
     @SerialName("property_id")
     val propertyId: PropertyId,
     val type: EventLogEventType,

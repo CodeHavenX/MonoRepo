@@ -1,10 +1,10 @@
 package com.cramsan.edifikana.server.di
 
+import com.cramsan.edifikana.server.core.controller.EmployeeController
 import com.cramsan.edifikana.server.core.controller.EventLogController
 import com.cramsan.edifikana.server.core.controller.HealthCheckController
 import com.cramsan.edifikana.server.core.controller.OrganizationController
 import com.cramsan.edifikana.server.core.controller.PropertyController
-import com.cramsan.edifikana.server.core.controller.StaffController
 import com.cramsan.edifikana.server.core.controller.StorageController
 import com.cramsan.edifikana.server.core.controller.TimeCardController
 import com.cramsan.edifikana.server.core.controller.UserController
@@ -21,7 +21,7 @@ val KtorModule = module {
     singleOf(::EventLogController)
     singleOf(::HealthCheckController)
     singleOf(::PropertyController)
-    singleOf(::StaffController)
+    singleOf(::EmployeeController)
     singleOf(::TimeCardController)
     singleOf(::StorageController)
     singleOf(::OrganizationController)
@@ -38,7 +38,7 @@ fun Module.registerControllers() {
         val userController: UserController by inject()
         val eventLogController: EventLogController by inject()
         val propertyController: PropertyController by inject()
-        val staffController: StaffController by inject()
+        val employeeController: EmployeeController by inject()
         val timeCardController: TimeCardController by inject()
         val healthCheckController: HealthCheckController by inject()
         val storageController: StorageController by inject()
@@ -48,7 +48,7 @@ fun Module.registerControllers() {
             userController,
             eventLogController,
             propertyController,
-            staffController,
+            employeeController,
             timeCardController,
             healthCheckController,
             storageController,

@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.server.core.controller
 
+import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.edifikana.lib.model.UserId
@@ -55,8 +55,8 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
 
         coEvery {
             timeCardService.createTimeCardEvent(
-                staffId = StaffId("staff123"),
-                fallbackStaffName = "John Doe",
+                employeeId = EmployeeId("emp123"),
+                fallbackEmployeeName = "John Doe",
                 propertyId = PropertyId("property123"),
                 type = TimeCardEventType.CLOCK_OUT,
                 imageUrl = "http://example.com/image.jpg",
@@ -65,8 +65,8 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
         }.answers {
             TimeCardEvent(
                 id = TimeCardEventId("timecard123"),
-                staffId = StaffId("staff123"),
-                fallbackStaffName = "John Doe",
+                employeeId = EmployeeId("emp123"),
+                fallbackEmployeeName = "John Doe",
                 propertyId = PropertyId("property123"),
                 type = TimeCardEventType.CLOCK_OUT,
                 imageUrl = "http://example.com/image.jpg",
@@ -105,8 +105,8 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
         }.answers {
             TimeCardEvent(
                 id = TimeCardEventId("timecard123"),
-                staffId = StaffId("staff123"),
-                fallbackStaffName = "John Doe",
+                employeeId = EmployeeId("emp123"),
+                fallbackEmployeeName = "John Doe",
                 propertyId = PropertyId("property123"),
                 type = TimeCardEventType.CLOCK_IN,
                 imageUrl = "http://example.com/image.jpg",
@@ -142,8 +142,8 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
             listOf(
                 TimeCardEvent(
                     id = TimeCardEventId("timecard123"),
-                    staffId = StaffId("staff123"),
-                    fallbackStaffName = "John Doe",
+                    employeeId = EmployeeId("emp123"),
+                    fallbackEmployeeName = "John Doe",
                     propertyId = PropertyId("property123"),
                     type = TimeCardEventType.CLOCK_IN,
                     imageUrl = "http://example.com/image.jpg",
@@ -151,8 +151,8 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
                 ),
                 TimeCardEvent(
                     id = TimeCardEventId("timecard456"),
-                    staffId = StaffId("staff456"),
-                    fallbackStaffName = "Jane Smith",
+                    employeeId = EmployeeId("emp456"),
+                    fallbackEmployeeName = "Jane Smith",
                     propertyId = PropertyId("property456"),
                     type = TimeCardEventType.CLOCK_IN,
                     imageUrl = "http://example.com/image2.jpg",

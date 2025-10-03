@@ -6,7 +6,7 @@ import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.edifikana.client.lib.service.TimeCardService
 import com.cramsan.edifikana.client.lib.utils.IODependencies
 import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.framework.core.CoreUri
@@ -69,11 +69,11 @@ class TimeCardManagerTest : CoroutineTest() {
         val online = listOf(
             timeCardRecordTest3
         )
-        coEvery { timeCardCache.getRecords(staffIdTest) } returns cached
-        coEvery { timeCardService.getRecords(staffIdTest) } returns Result.success(online)
+        coEvery { timeCardCache.getRecords(employeeIdTest) } returns cached
+        coEvery { timeCardService.getRecords(employeeIdTest) } returns Result.success(online)
 
         // Act
-        val result = manager.getRecords(staffIdTest)
+        val result = manager.getRecords(employeeIdTest)
 
         // Assert
         assertTrue(result.isSuccess)
@@ -144,7 +144,7 @@ class TimeCardManagerTest : CoroutineTest() {
     }
 
     // Test data for time card records
-    val staffIdTest = StaffId("staff-X")
+    val employeeIdTest = EmployeeId("employee-X")
     val eventIdCachedTest1 = TimeCardEventId("event-X")
     val eventIdCachedTest2 = TimeCardEventId("event-Y")
     val eventIdOnlineTest3 = TimeCardEventId("event-Z")
@@ -152,7 +152,7 @@ class TimeCardManagerTest : CoroutineTest() {
     val timeCardRecordTest1: TimeCardRecordModel = TimeCardRecordModel(
         eventIdCachedTest1,
         "testId",
-        staffIdTest,
+        employeeIdTest,
         PropertyId("Muralla"),
         TimeCardEventType.CLOCK_IN,
         100,
@@ -162,7 +162,7 @@ class TimeCardManagerTest : CoroutineTest() {
     val timeCardRecordTest2 = TimeCardRecordModel(
         eventIdCachedTest2,
         "testId2",
-        staffIdTest,
+        employeeIdTest,
         PropertyId("Muralla"),
         TimeCardEventType.CLOCK_OUT,
         400,
@@ -172,7 +172,7 @@ class TimeCardManagerTest : CoroutineTest() {
     val timeCardRecordTest3 = TimeCardRecordModel(
         eventIdOnlineTest3,
         "testId3",
-        staffIdTest,
+        employeeIdTest,
         PropertyId("Muralla"),
         TimeCardEventType.CLOCK_IN,
         500,
@@ -182,7 +182,7 @@ class TimeCardManagerTest : CoroutineTest() {
     val timeCardRecordTest4 = TimeCardRecordModel(
         eventIdOnlineTest3,
         "testId4",
-        staffIdTest,
+        employeeIdTest,
         PropertyId("Muralla"),
         TimeCardEventType.CLOCK_OUT,
         800,

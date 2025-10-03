@@ -4,19 +4,19 @@ package com.cramsan.edifikana.server.core.controller
 
 import com.cramsan.edifikana.lib.model.network.AssetNetworkResponse
 import com.cramsan.edifikana.lib.model.network.AuthMetadataNetworkResponse
+import com.cramsan.edifikana.lib.model.network.EmployeeNetworkResponse
 import com.cramsan.edifikana.lib.model.network.EventLogEntryNetworkResponse
 import com.cramsan.edifikana.lib.model.network.InviteNetworkResponse
 import com.cramsan.edifikana.lib.model.network.OrganizationNetworkResponse
 import com.cramsan.edifikana.lib.model.network.PropertyNetworkResponse
-import com.cramsan.edifikana.lib.model.network.StaffNetworkResponse
 import com.cramsan.edifikana.lib.model.network.TimeCardEventNetworkResponse
 import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
 import com.cramsan.edifikana.server.core.service.models.Asset
+import com.cramsan.edifikana.server.core.service.models.Employee
 import com.cramsan.edifikana.server.core.service.models.EventLogEntry
 import com.cramsan.edifikana.server.core.service.models.Invite
 import com.cramsan.edifikana.server.core.service.models.Organization
 import com.cramsan.edifikana.server.core.service.models.Property
-import com.cramsan.edifikana.server.core.service.models.Staff
 import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.core.service.models.User
 import com.cramsan.framework.annotations.NetworkModel
@@ -42,11 +42,11 @@ fun User.toUserNetworkResponse(): UserNetworkResponse {
 }
 
 /**
- * Converts a [Staff] domain model to a [StaffNetworkResponse] network model.
+ * Converts a [Employee] domain model to a [EmployeeNetworkResponse] network model.
  */
 @OptIn(NetworkModel::class)
-fun Staff.toStaffNetworkResponse(): StaffNetworkResponse {
-    return StaffNetworkResponse(
+fun Employee.toEmployeeNetworkResponse(): EmployeeNetworkResponse {
+    return EmployeeNetworkResponse(
         id = id,
         idType = idType,
         firstName = firstName,
@@ -64,8 +64,8 @@ fun EventLogEntry.toEventLogEntryNetworkResponse(): EventLogEntryNetworkResponse
     return EventLogEntryNetworkResponse(
         id = id,
         title = title,
-        staffId = staffId,
-        fallbackStaffName = fallbackStaffName,
+        employeeId = employeeId,
+        fallbackEmployeeName = fallbackEmployeeName,
         propertyId = propertyId,
         type = type,
         fallbackEventType = fallbackEventType,
@@ -95,8 +95,8 @@ fun Property.toPropertyNetworkResponse(): PropertyNetworkResponse {
 fun TimeCardEvent.toTimeCardEventNetworkResponse(): TimeCardEventNetworkResponse {
     return TimeCardEventNetworkResponse(
         id = id,
-        staffId = staffId,
-        fallbackStaffName = fallbackStaffName,
+        employeeId = employeeId,
+        fallbackEmployeeName = fallbackEmployeeName,
         propertyId = propertyId,
         type = type,
         imageUrl = imageUrl,

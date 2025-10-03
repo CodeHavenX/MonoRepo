@@ -1,13 +1,13 @@
 package com.cramsan.edifikana.server.core.service.authorization
 
+import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.controller.authentication.ClientContext
+import com.cramsan.edifikana.server.core.datastore.EmployeeDatastore
 import com.cramsan.edifikana.server.core.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.core.datastore.PropertyDatastore
-import com.cramsan.edifikana.server.core.datastore.StaffDatastore
 import com.cramsan.edifikana.server.core.service.models.UserRole
 import com.cramsan.framework.logging.logI
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.ForbiddenException
@@ -19,7 +19,7 @@ import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.InvalidReq
 class RBACService(
     private val propertyDatastore: PropertyDatastore,
     private val orgDataStore: OrganizationDatastore,
-    private val employeeDatastore: StaffDatastore,
+    private val employeeDatastore: EmployeeDatastore,
 ) {
 
     val propertyNotFoundException = "ERROR: PROPERTY NOT FOUND!"
@@ -123,7 +123,7 @@ class RBACService(
      */
     suspend fun hasRole(
         context: ClientContext.AuthenticatedClientContext,
-        targetEmployee: StaffId,
+        targetEmployee: EmployeeId,
         requiredRole: UserRole,
     ): Boolean {
         val userRole = getUserRoleForEmployeeAction(context, targetEmployee)
@@ -140,7 +140,7 @@ class RBACService(
      */
     suspend fun hasRoleOrHigher(
         context: ClientContext.AuthenticatedClientContext,
-        targetEmployee: StaffId,
+        targetEmployee: EmployeeId,
         requiredRole: UserRole,
     ): Boolean {
         val userRole = getUserRoleForEmployeeAction(context, targetEmployee)
@@ -201,11 +201,11 @@ class RBACService(
      */
     private suspend fun getUserRoleForEmployeeAction(
         context: ClientContext.AuthenticatedClientContext,
-        targetEmployee: StaffId
+        targetEmployee: EmployeeId
     ): UserRole {
         logI(TAG, "Retrieving user role(s) for ${context.userId}")
         val employee =
-            employeeDatastore.getStaff(targetEmployee).getOrThrow() ?: throw InvalidRequestException(
+            employeeDatastore.getEmployee(targetEmployee).getOrThrow() ?: throw InvalidRequestException(
                 employeeNotFoundException
             )
         val property = propertyDatastore.getProperty(employee.propertyId).getOrThrow() ?: throw InvalidRequestException(

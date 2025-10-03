@@ -18,10 +18,10 @@ interface TimeCardRecordDao {
     suspend fun getAll(): List<TimeCardRecordEntity>
 
     /**
-     * Get all time card records for a specific staff document.
+     * Get all time card records for a specific employee document.
      */
-    @Query("SELECT * FROM TimeCardRecordEntity WHERE staffDocumentId = :staffDocumentId")
-    suspend fun getAll(staffDocumentId: String): List<TimeCardRecordEntity>
+    @Query("SELECT * FROM TimeCardRecordEntity WHERE employeeDocumentId = :employeeDocumentId")
+    suspend fun getAll(employeeDocumentId: String): List<TimeCardRecordEntity>
 
     /**
      * Get a specific time card record.

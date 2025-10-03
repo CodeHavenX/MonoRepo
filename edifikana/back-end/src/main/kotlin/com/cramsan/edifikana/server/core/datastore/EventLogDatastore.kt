@@ -1,9 +1,9 @@
 package com.cramsan.edifikana.server.core.datastore
 
+import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.server.core.service.models.EventLogEntry
 import kotlin.time.Instant
 
@@ -16,8 +16,8 @@ interface EventLogDatastore {
      * Creates a new event log entry for the given [request]. Returns the [Result] of the operation with the created [EventLogEntry].
      */
     suspend fun createEventLogEntry(
-        staffId: StaffId?,
-        fallbackStaffName: String?,
+        employeeId: EmployeeId?,
+        fallbackEmployeeName: String?,
         propertyId: PropertyId,
         type: EventLogEventType,
         fallbackEventType: String?,

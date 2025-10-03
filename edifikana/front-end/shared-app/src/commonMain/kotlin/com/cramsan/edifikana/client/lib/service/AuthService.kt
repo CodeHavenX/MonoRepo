@@ -94,9 +94,9 @@ interface AuthService {
     suspend fun changePassword(currentPassword: SecureString, newPassword: SecureString): Result<Unit>
 
     /**
-     * Invite a staff member to the organization with the provided [organizationId] using the given [email].
+     * Invite an employee member to the organization with the provided [organizationId] using the given [email].
      */
-    suspend fun inviteStaff(email: String, organizationId: OrganizationId): Result<Unit>
+    suspend fun inviteEmployee(email: String, organizationId: OrganizationId): Result<Unit>
 
     /**
      * Retrieves all pending invites for the given [organizationId].

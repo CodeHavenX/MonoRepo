@@ -9,7 +9,7 @@ import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
 import com.cramsan.framework.core.compose.EventBus
@@ -76,9 +76,9 @@ class EventLogViewModelTest : CoroutineTest() {
                 timeRecorded = 23524543,
                 unit = "Unit 1",
                 entityId = "Entity 1",
-                staffPk = StaffId("Staff 1"),
+                employeePk = EmployeeId("Employee 1"),
                 propertyId = PropertyId("Property 1"),
-                fallbackStaffName = null,
+                fallbackEmployeeName = null,
                 fallbackEventType = null,
                 attachments = emptyList()
             ),
@@ -90,9 +90,9 @@ class EventLogViewModelTest : CoroutineTest() {
                 timeRecorded = 32523532126,
                 unit = "Unit 2",
                 entityId = "Entity 2",
-                staffPk = StaffId("Staff 2"),
+                employeePk = EmployeeId("Employee 2"),
                 propertyId = PropertyId("Property 2"),
-                fallbackStaffName = null,
+                fallbackEmployeeName = null,
                 fallbackEventType = null,
                 attachments = emptyList(),
             )

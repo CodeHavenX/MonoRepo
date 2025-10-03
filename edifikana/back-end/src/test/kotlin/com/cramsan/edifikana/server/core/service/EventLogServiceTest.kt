@@ -1,9 +1,9 @@
 package com.cramsan.edifikana.server.core.service
 
+import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.server.core.datastore.EventLogDatastore
 import com.cramsan.edifikana.server.core.service.models.EventLogEntry
 import com.cramsan.framework.logging.EventLogger
@@ -54,8 +54,8 @@ class EventLogServiceTest {
     @Test
     fun `createEventLogEntry should call database and return entry`() = runTest {
         // Arrange
-        val staffId = StaffId("staff-1")
-        val fallbackStaffName = "John Doe"
+        val employeeId = EmployeeId("employee-1")
+        val fallbackEmployeeName = "John Doe"
         val propertyId = PropertyId("property-1")
         val type = EventLogEventType.INCIDENT
         val fallbackEventType = "incident"
@@ -80,8 +80,8 @@ class EventLogServiceTest {
 
         // Act
         val result = eventLogService.createEventLogEntry(
-            staffId,
-            fallbackStaffName,
+            employeeId,
+            fallbackEmployeeName,
             propertyId,
             type,
             fallbackEventType,
@@ -95,8 +95,8 @@ class EventLogServiceTest {
         assertEquals(entry, result)
         coVerify {
             eventLogDatastore.createEventLogEntry(
-                staffId,
-                fallbackStaffName,
+                employeeId,
+                fallbackEmployeeName,
                 propertyId,
                 type,
                 fallbackEventType,

@@ -1,9 +1,9 @@
 package com.cramsan.edifikana.server.core.service
 
+import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.server.core.datastore.EventLogDatastore
 import com.cramsan.edifikana.server.core.service.models.EventLogEntry
 import com.cramsan.framework.logging.logD
@@ -22,8 +22,8 @@ class EventLogService(
      * Creates an event log entry with the provided parameters.
      */
     suspend fun createEventLogEntry(
-        staffId: StaffId?,
-        fallbackStaffName: String?,
+        employeeId: EmployeeId?,
+        fallbackEmployeeName: String?,
         propertyId: PropertyId,
         type: EventLogEventType,
         fallbackEventType: String?,
@@ -34,8 +34,8 @@ class EventLogService(
     ): EventLogEntry {
         logD(TAG, "createEventLogEntry")
         return eventLogDatastore.createEventLogEntry(
-            staffId = staffId,
-            fallbackStaffName = fallbackStaffName,
+            employeeId = employeeId,
+            fallbackEmployeeName = fallbackEmployeeName,
             propertyId = propertyId,
             type = type,
             fallbackEventType = fallbackEventType,

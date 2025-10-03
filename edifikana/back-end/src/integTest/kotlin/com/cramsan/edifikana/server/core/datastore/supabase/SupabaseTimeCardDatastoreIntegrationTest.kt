@@ -2,7 +2,7 @@ package com.cramsan.edifikana.server.core.datastore.supabase
 
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.edifikana.lib.model.UserId
@@ -21,7 +21,7 @@ class SupabaseTimeCardDatastoreIntegrationTest : SupabaseIntegrationTest() {
 
     private lateinit var test_prefix: String
     private var propertyId: PropertyId? = null
-    private var staffId: StaffId? = null
+    private var employeeId: EmployeeId? = null
     private var testUserId: UserId? = null
     private var orgId: OrganizationId? = null
 
@@ -32,7 +32,7 @@ class SupabaseTimeCardDatastoreIntegrationTest : SupabaseIntegrationTest() {
             testUserId = createTestUser("user-${test_prefix}@test.com")
             orgId = createTestOrganization()
             propertyId = createTestProperty("${test_prefix}_Property", testUserId!!, orgId!!)
-            staffId = createTestStaff(
+            employeeId = createTestEmployee(
                 propertyId = propertyId!!,
                 firstName = "${test_prefix}_FirstName",
                 lastName = "${test_prefix}_LastName",
@@ -46,8 +46,8 @@ class SupabaseTimeCardDatastoreIntegrationTest : SupabaseIntegrationTest() {
 
         // Act
         val result = timeCardDatastore.createTimeCardEvent(
-            fallbackStaffName = "${test_prefix}_FallbackStaffName",
-            staffId = staffId!!,
+            fallbackEmployeeName = "${test_prefix}_FallbackEmployeeName",
+            employeeId = employeeId!!,
             propertyId = propertyId!!,
             type = TimeCardEventType.CLOCK_OUT,
             imageUrl = null,
@@ -65,8 +65,8 @@ class SupabaseTimeCardDatastoreIntegrationTest : SupabaseIntegrationTest() {
 
         // Act
         val createResult = timeCardDatastore.createTimeCardEvent(
-            fallbackStaffName = "${test_prefix}_FallbackStaffName",
-            staffId = staffId!!,
+            fallbackEmployeeName = "${test_prefix}_FallbackEmployeeName",
+            employeeId = employeeId!!,
             propertyId = propertyId!!,
             type = TimeCardEventType.CLOCK_IN,
             imageUrl = null,
@@ -88,16 +88,16 @@ class SupabaseTimeCardDatastoreIntegrationTest : SupabaseIntegrationTest() {
 
         // Act
         val result1 = timeCardDatastore.createTimeCardEvent(
-            fallbackStaffName = "${test_prefix}_FallbackStaffName1",
-            staffId = staffId!!,
+            fallbackEmployeeName = "${test_prefix}_FallbackEmployeeName1",
+            employeeId = employeeId!!,
             propertyId = propertyId!!,
             type = TimeCardEventType.CLOCK_IN,
             timestamp = Clock.System.now(),
             imageUrl = null,
         ).registerTimeCardEventForDeletion()
         val result2 = timeCardDatastore.createTimeCardEvent(
-            staffId = staffId!!,
-            fallbackStaffName = "${test_prefix}_FallbackStaffName2",
+            employeeId = employeeId!!,
+            fallbackEmployeeName = "${test_prefix}_FallbackEmployeeName2",
             propertyId = propertyId!!,
             type = TimeCardEventType.CLOCK_OUT,
             timestamp = Clock.System.now(),
@@ -106,7 +106,7 @@ class SupabaseTimeCardDatastoreIntegrationTest : SupabaseIntegrationTest() {
         assertTrue(result1.isSuccess)
         assertTrue(result2.isSuccess)
 
-        val getAllResult = timeCardDatastore.getTimeCardEvents(staffId!!)
+        val getAllResult = timeCardDatastore.getTimeCardEvents(employeeId!!)
 
         // Assert
         assertTrue(getAllResult.isSuccess)

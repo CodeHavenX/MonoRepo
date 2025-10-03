@@ -2,27 +2,27 @@
 
 package com.cramsan.edifikana.server.core.datastore.supabase
 
+import com.cramsan.edifikana.lib.model.EmployeeId
+import com.cramsan.edifikana.lib.model.EmployeeRole
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.StaffId
-import com.cramsan.edifikana.lib.model.StaffRole
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.datastore.supabase.models.AuthMetadataEntity
+import com.cramsan.edifikana.server.core.datastore.supabase.models.EmployeeEntity
 import com.cramsan.edifikana.server.core.datastore.supabase.models.EventLogEntryEntity
 import com.cramsan.edifikana.server.core.datastore.supabase.models.OrganizationEntity
 import com.cramsan.edifikana.server.core.datastore.supabase.models.PropertyEntity
-import com.cramsan.edifikana.server.core.datastore.supabase.models.StaffEntity
 import com.cramsan.edifikana.server.core.datastore.supabase.models.TimeCardEventEntity
 import com.cramsan.edifikana.server.core.datastore.supabase.models.UserEntity
+import com.cramsan.edifikana.server.core.service.models.Employee
 import com.cramsan.edifikana.server.core.service.models.EventLogEntry
 import com.cramsan.edifikana.server.core.service.models.Organization
 import com.cramsan.edifikana.server.core.service.models.Property
-import com.cramsan.edifikana.server.core.service.models.Staff
 import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.core.service.models.User
 import com.cramsan.edifikana.server.core.service.models.UserRole
@@ -107,14 +107,14 @@ fun CreateUserEntity(
  * Create a [UserEntity.CreateUserEntity] from the provided parameters.
  */
 @OptIn(SupabaseModel::class)
-fun CreateStaffEntity(
+fun CreateEmployeeEntity(
     idType: IdType,
     firstName: String,
     lastName: String,
-    role: StaffRole,
+    role: EmployeeRole,
     propertyId: PropertyId,
-): StaffEntity.CreateStaffEntity {
-    return StaffEntity.CreateStaffEntity(
+): EmployeeEntity.CreateEmployeeEntity {
+    return EmployeeEntity.CreateEmployeeEntity(
         idType = idType,
         firstName = firstName,
         lastName = lastName,
@@ -124,12 +124,12 @@ fun CreateStaffEntity(
 }
 
 /**
- * Maps a [StaffEntity] to the [Staff] model.
+ * Maps a [EmployeeEntity] to the [Employee] model.
  */
 @OptIn(SupabaseModel::class)
-fun StaffEntity.toStaff(): Staff {
-    return Staff(
-        id = StaffId(this.id),
+fun EmployeeEntity.toEmployee(): Employee {
+    return Employee(
+        id = EmployeeId(this.id),
         idType = this.idType,
         firstName = this.firstName,
         lastName = this.lastName,
@@ -172,16 +172,16 @@ fun PropertyEntity.toProperty(): Property {
  */
 @OptIn(SupabaseModel::class)
 fun CreateTimeCardEventEntity(
-    staffId: StaffId,
-    fallbackStaffName: String?,
+    employeeId: EmployeeId,
+    fallbackEmpName: String?,
     propertyId: PropertyId,
     type: TimeCardEventType,
     imageUrl: String?,
     timestamp: Instant,
 ): TimeCardEventEntity.CreateTimeCardEventEntity {
     return TimeCardEventEntity.CreateTimeCardEventEntity(
-        staffId = staffId.staffId,
-        fallbackStaffName = fallbackStaffName,
+        employeeId = employeeId.empId,
+        fallbackEmployeeName = fallbackEmpName,
         propertyId = propertyId.propertyId,
         type = type,
         imageUrl = imageUrl,
@@ -196,8 +196,8 @@ fun CreateTimeCardEventEntity(
 fun TimeCardEventEntity.toTimeCardEvent(): TimeCardEvent {
     return TimeCardEvent(
         id = TimeCardEventId(this.id),
-        staffId = this.staffId?.let { StaffId(it) },
-        fallbackStaffName = this.fallbackStaffName,
+        employeeId = this.employeeId?.let { EmployeeId(it) },
+        fallbackEmployeeName = this.fallbackEmployeeName,
         propertyId = PropertyId(this.propertyId),
         type = this.type,
         imageUrl = this.imageUrl,
@@ -210,8 +210,8 @@ fun TimeCardEventEntity.toTimeCardEvent(): TimeCardEvent {
  */
 @OptIn(SupabaseModel::class)
 fun CreateEventLogEntryEntity(
-    staffId: StaffId?,
-    fallbackStaffName: String?,
+    employeeId: EmployeeId?,
+    fallbackEmployeeName: String?,
     propertyId: PropertyId,
     type: EventLogEventType,
     fallbackEventType: String?,
@@ -221,8 +221,8 @@ fun CreateEventLogEntryEntity(
     unit: String,
 ): EventLogEntryEntity.CreateEventLogEntryEntity {
     return EventLogEntryEntity.CreateEventLogEntryEntity(
-        staffId = staffId?.staffId,
-        fallbackStaffName = fallbackStaffName,
+        employeeId = employeeId?.empId,
+        fallbackEmployeeName = fallbackEmployeeName,
         propertyId = propertyId.propertyId,
         type = type,
         fallbackEventType = fallbackEventType,
@@ -240,8 +240,8 @@ fun CreateEventLogEntryEntity(
 fun EventLogEntryEntity.toEventLogEntry(): EventLogEntry {
     return EventLogEntry(
         id = EventLogEntryId(this.id),
-        staffId = this.staffId?.let { StaffId(it) },
-        fallbackStaffName = this.fallbackStaffName,
+        employeeId = this.employeeId?.let { EmployeeId(it) },
+        fallbackEmployeeName = this.fallbackEmployeeName,
         propertyId = PropertyId(this.propertyId),
         type = this.type,
         fallbackEventType = this.fallbackEventType,

@@ -2,9 +2,9 @@ package com.cramsan.edifikana.client.lib.features.management.timecard
 
 import com.cramsan.edifikana.client.lib.features.management.ManagementDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
-import com.cramsan.edifikana.client.lib.managers.StaffManager
+import com.cramsan.edifikana.client.lib.managers.EmployeeManager
 import com.cramsan.edifikana.client.lib.managers.TimeCardManager
-import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.core.compose.resources.StringProvider
@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
  */
 class TimeCartViewModel(
     private val timeCardManager: TimeCardManager,
-    private val staffManager: StaffManager,
+    private val employeeManager: EmployeeManager,
     private val stringProvider: StringProvider,
     dependencies: ViewModelDependencies,
 ) : BaseViewModel<TimeCardEvent, TimeCardUIState>(
@@ -32,10 +32,10 @@ class TimeCartViewModel(
      */
     fun loadEvents() = viewModelScope.launch {
         updateUiState { it.copy(isLoading = true) }
-        val staffsJob = async { staffManager.getStaffList() }
+        val employeesJob = async { employeeManager.getEmployeeList() }
         val result = timeCardManager.getAllRecords()
-        val staffsResult = staffsJob.await()
-        if (result.isFailure || staffsResult.isFailure) {
+        val employeesResult = employeesJob.await()
+        if (result.isFailure || employeesResult.isFailure) {
             val updatedState =
                 TimeCardUIState(
                     emptyList(),
@@ -45,10 +45,10 @@ class TimeCartViewModel(
             updateUiState { updatedState }
         } else {
             val events = result.getOrThrow()
-            val staffs = staffsResult.getOrThrow()
+            val employees = employeesResult.getOrThrow()
             val updatedState =
                 TimeCardUIState(
-                    events.toUIModel(staffs, stringProvider),
+                    events.toUIModel(employees, stringProvider),
                     false,
                     stringProvider.getString(Res.string.title_timecard)
                 )
@@ -57,20 +57,20 @@ class TimeCartViewModel(
     }
 
     /**
-     * Navigate to staff.
+     * Navigate to employee.
      */
-    fun navigateToStaff(staffPK: StaffId) = viewModelScope.launch {
+    fun navigateToEmployee(employeePK: EmployeeId) = viewModelScope.launch {
         emitWindowEvent(
-            EdifikanaWindowsEvent.NavigateToScreen(ManagementDestination.TimeCardSingleStaffDestination(staffPK))
+            EdifikanaWindowsEvent.NavigateToScreen(ManagementDestination.TimeCardSingleEmployeeDestination(employeePK))
         )
     }
 
     /**
-     * Navigate to staff list.
+     * Navigate to employee list.
      */
-    fun navigateToStaffList() = viewModelScope.launch {
+    fun navigateToEmployeeList() = viewModelScope.launch {
         emitWindowEvent(
-            EdifikanaWindowsEvent.NavigateToScreen(ManagementDestination.TimeCardStaffListDestination)
+            EdifikanaWindowsEvent.NavigateToScreen(ManagementDestination.TimeCardEmployeeListDestination)
         )
     }
 

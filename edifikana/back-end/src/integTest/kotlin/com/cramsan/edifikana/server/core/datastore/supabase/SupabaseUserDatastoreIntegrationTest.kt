@@ -311,7 +311,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val orgOwner = createTestUser("${test_prefix}_a@s.com")
         val organizationId = createTestOrganization()
         val email = "${test_prefix}_invite2@test.com"
-        val expiration = clock.now() + 2.minutes // 1 minute in the future
+        val expiration = clock.now() + 2.minutes // 2 minute in the future
         userDatastore.recordInvite(
             email = email,
             organizationId = organizationId,
@@ -334,7 +334,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val orgOwner = createTestUser("${test_prefix}_a@s.com")
         val organizationId = createTestOrganization()
         val email = "${test_prefix}_invite2@test.com"
-        val expiration = clock.now() + 2.minutes // 1 minute in the future
+        val expiration = clock.now() + 2.minutes // 2 minute in the future
         userDatastore.recordInvite(
             email = email,
             organizationId = organizationId,

@@ -21,7 +21,7 @@ val IntegTestApplicationModule = module {
     }
 
     single<Clock> {
-        var testTimeSource: TestTimeSource = get()
+        val testTimeSource: TestTimeSource = get()
         testTimeSource.asClock(2024, 1, 1, 0, 0)
     }
 }

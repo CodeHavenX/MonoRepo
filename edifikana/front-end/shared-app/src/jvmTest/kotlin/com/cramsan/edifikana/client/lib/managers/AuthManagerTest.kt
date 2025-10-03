@@ -182,20 +182,20 @@ class AuthManagerTest : CoroutineTest() {
     }
 
     /**
-     * Tests that inviteStaff calls the service and returns success.
+     * Tests that inviteEmployee calls the service and returns success.
      */
     @Test
-    fun `inviteStaff calls service`() = runCoroutineTest {
+    fun `inviteEmployee calls service`() = runCoroutineTest {
         // Arrange
         val email = "test@example.com"
         val organizationId = OrganizationId("org-1")
         every { organizationService.observableActiveOrganization } returns MutableStateFlow(Organization(organizationId))
-        coEvery { authService.inviteStaff(email, organizationId) } returns Result.success(Unit)
+        coEvery { authService.inviteEmployee(email, organizationId) } returns Result.success(Unit)
         // Act
-        val result = manager.inviteStaff(email)
+        val result = manager.inviteEmployee(email)
         // Assert
         assertTrue(result.isSuccess)
-        coVerify { authService.inviteStaff(email, organizationId) }
+        coVerify { authService.inviteEmployee(email, organizationId) }
     }
 }
 

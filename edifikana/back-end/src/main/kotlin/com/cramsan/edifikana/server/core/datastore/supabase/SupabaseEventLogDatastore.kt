@@ -1,9 +1,9 @@
 package com.cramsan.edifikana.server.core.datastore.supabase
 
+import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.server.core.datastore.EventLogDatastore
 import com.cramsan.edifikana.server.core.datastore.supabase.models.EventLogEntryEntity
 import com.cramsan.edifikana.server.core.service.models.EventLogEntry
@@ -25,8 +25,8 @@ class SupabaseEventLogDatastore(
      */
     @OptIn(SupabaseModel::class)
     override suspend fun createEventLogEntry(
-        staffId: StaffId?,
-        fallbackStaffName: String?,
+        employeeId: EmployeeId?,
+        fallbackEmployeeName: String?,
         propertyId: PropertyId,
         type: EventLogEventType,
         fallbackEventType: String?,
@@ -37,8 +37,8 @@ class SupabaseEventLogDatastore(
     ): Result<EventLogEntry> = runSuspendCatching(TAG) {
         logD(TAG, "Creating event log entry: %s", title)
         val requestEntity: EventLogEntryEntity.CreateEventLogEntryEntity = CreateEventLogEntryEntity(
-            staffId = staffId,
-            fallbackStaffName = fallbackStaffName,
+            employeeId = employeeId,
+            fallbackEmployeeName = fallbackEmployeeName,
             propertyId = propertyId,
             type = type,
             fallbackEventType = fallbackEventType,

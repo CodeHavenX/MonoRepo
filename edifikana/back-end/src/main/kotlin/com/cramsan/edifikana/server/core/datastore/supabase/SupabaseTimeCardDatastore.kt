@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.server.core.datastore.supabase
 
+import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.edifikana.server.core.datastore.TimeCardDatastore
@@ -25,8 +25,8 @@ class SupabaseTimeCardDatastore(
      */
     @OptIn(SupabaseModel::class)
     override suspend fun createTimeCardEvent(
-        staffId: StaffId,
-        fallbackStaffName: String?,
+        employeeId: EmployeeId,
+        fallbackEmployeeName: String?,
         propertyId: PropertyId,
         type: TimeCardEventType,
         imageUrl: String?,
@@ -34,8 +34,8 @@ class SupabaseTimeCardDatastore(
     ): Result<TimeCardEvent> = runSuspendCatching(TAG) {
         logD(TAG, "Creating time card event: %s", type)
         val requestEntity: TimeCardEventEntity.CreateTimeCardEventEntity = CreateTimeCardEventEntity(
-            staffId = staffId,
-            fallbackStaffName = fallbackStaffName,
+            employeeId = employeeId,
+            fallbackEmpName = fallbackEmployeeName,
             propertyId = propertyId,
             type = type,
             imageUrl = imageUrl,
@@ -69,14 +69,14 @@ class SupabaseTimeCardDatastore(
 
     @OptIn(SupabaseModel::class)
     override suspend fun getTimeCardEvents(
-        staffId: StaffId?,
+        employeeId: EmployeeId?,
     ): Result<List<TimeCardEvent>> = runSuspendCatching(TAG) {
         logD(TAG, "Getting all time card events")
 
         postgrest.from(TimeCardEventEntity.COLLECTION).select {
             filter {
-                staffId?.let {
-                    TimeCardEventEntity::staffId eq it.staffId
+                employeeId?.let {
+                    TimeCardEventEntity::employeeId eq it.empId
                 }
             }
             select()

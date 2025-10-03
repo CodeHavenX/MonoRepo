@@ -1,15 +1,15 @@
 package com.cramsan.edifikana.server.core.service.authorization
 
+import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.controller.authentication.ClientContext
+import com.cramsan.edifikana.server.core.datastore.EmployeeDatastore
 import com.cramsan.edifikana.server.core.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.core.datastore.PropertyDatastore
-import com.cramsan.edifikana.server.core.datastore.StaffDatastore
+import com.cramsan.edifikana.server.core.service.models.Employee
 import com.cramsan.edifikana.server.core.service.models.Property
-import com.cramsan.edifikana.server.core.service.models.Staff
 import com.cramsan.edifikana.server.core.service.models.User
 import com.cramsan.edifikana.server.core.service.models.UserRole
 import com.cramsan.framework.logging.EventLogger
@@ -35,7 +35,7 @@ import kotlin.test.assertEquals
 class RBACServiceTest {
     private lateinit var propertyDatastore: PropertyDatastore
     private lateinit var orgDatastore: OrganizationDatastore
-    private lateinit var employeeDatastore: StaffDatastore
+    private lateinit var employeeDatastore: EmployeeDatastore
     private lateinit var rbac: RBACService
 
     @BeforeEach
@@ -260,14 +260,14 @@ class RBACServiceTest {
     fun `hasRole for employee actions returns expected results for requester`(
         userId: UserId,
         userRole: UserRole,
-        empId: StaffId,
+        empId: EmployeeId,
         requiredRole: UserRole,
         expected: Boolean,
     ) = runTest {
         // Arrange
         val propId = PropertyId("mockPropId")
         val orgId = OrganizationId("mockOrgId")
-        val employee = mockk<Staff>()
+        val employee = mockk<Employee>()
         every { employee.id } returns empId
         every { employee.propertyId } returns propId
 
@@ -279,7 +279,7 @@ class RBACServiceTest {
         every { property.organizationId } returns orgId
 
         val context = ClientContext.AuthenticatedClientContext(mockk(), userId)
-        coEvery { employeeDatastore.getStaff(empId) } returns Result.success(employee)
+        coEvery { employeeDatastore.getEmployee(empId) } returns Result.success(employee)
         coEvery { propertyDatastore.getProperty(propId) } returns Result.success(property)
         coEvery { orgDatastore.getUserRole(userId, orgId) } returns Result.success(userRole)
 
@@ -293,14 +293,14 @@ class RBACServiceTest {
     fun `hasRoleOrHigher for employee actions returns expected result for user`(
         userId: UserId,
         userRole: UserRole,
-        empId: StaffId,
+        empId: EmployeeId,
         requiredRole: UserRole,
         expected: Boolean,
     ) = runTest {
         // Arrange
         val propId = PropertyId("mockPropId")
         val orgId = OrganizationId("mockOrgId")
-        val employee = mockk<Staff>()
+        val employee = mockk<Employee>()
         every { employee.id } returns empId
         every { employee.propertyId } returns propId
 
@@ -312,7 +312,7 @@ class RBACServiceTest {
         every { property.organizationId } returns orgId
 
         val context = ClientContext.AuthenticatedClientContext(mockk(), userId)
-        coEvery { employeeDatastore.getStaff(empId) } returns Result.success(employee)
+        coEvery { employeeDatastore.getEmployee(empId) } returns Result.success(employee)
         coEvery { propertyDatastore.getProperty(propId) } returns Result.success(property)
         coEvery { orgDatastore.getUserRole(userId, orgId) } returns Result.success(userRole)
 

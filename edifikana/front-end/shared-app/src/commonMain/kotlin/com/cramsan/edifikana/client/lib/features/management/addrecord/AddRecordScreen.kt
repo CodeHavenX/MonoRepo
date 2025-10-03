@@ -21,20 +21,20 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.toFriendlyStringCompose
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
+import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EventLogEventType
-import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.ui.components.Dropdown
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
 import edifikana_lib.add_record_screen_title
 import edifikana_lib.text_add
-import edifikana_lib.text_appartment
+import edifikana_lib.text_apartment
+import edifikana_lib.text_employee
+import edifikana_lib.text_employee_name
 import edifikana_lib.text_event_type
 import edifikana_lib.text_full_desc
 import edifikana_lib.text_simple_desc
-import edifikana_lib.text_staff
-import edifikana_lib.text_staff_name
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -48,7 +48,7 @@ fun AddRecordScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
-        viewModel.loadStaffs()
+        viewModel.loadEmployees()
     }
 
     LaunchedEffect(Unit) {
@@ -62,18 +62,18 @@ fun AddRecordScreen(
     AddRecord(
         uiState,
         onBackSelected = { viewModel.navigateBack() },
-    ) { staffDocumentId,
+    ) { employeeDocumentId,
         unit,
         eventType,
-        fallbackStaffName,
+        fallbackEmployeeName,
         fallbackEventType,
         title,
         description ->
         viewModel.addRecord(
-            staffDocumentId,
+            employeeDocumentId,
             unit,
             eventType,
-            fallbackStaffName,
+            fallbackEmployeeName,
             fallbackEventType,
             title,
             description,
@@ -87,17 +87,17 @@ internal fun AddRecord(
     modifier: Modifier = Modifier,
     onBackSelected: () -> Unit,
     onAddRecordClicked: (
-        staffDocumentId: StaffId?,
+        employeeDocumentId: EmployeeId?,
         unit: String?,
         eventType: EventLogEventType?,
-        fallbackStaffName: String?,
+        fallbackEmployeeName: String?,
         fallbackEventType: String?,
         title: String?,
         description: String?,
     ) -> Unit,
 ) {
-    val staffs = uiState.records
-    var staffPK by remember { mutableStateOf(staffs.firstOrNull()?.staffPK) }
+    val employees = uiState.records
+    var employeePK by remember { mutableStateOf(employees.firstOrNull()?.employeePK) }
     var eventType by remember { mutableStateOf(EventLogEventType.OTHER) }
     var unit by remember { mutableStateOf("") }
     var fallbackName by remember { mutableStateOf("") }
@@ -123,20 +123,20 @@ internal fun AddRecord(
             ScreenLayout(
                 sectionContent = { sectionModifier ->
                     Dropdown(
-                        label = stringResource(Res.string.text_staff),
-                        items = staffs,
-                        itemLabels = staffs.map { it.fullName },
+                        label = stringResource(Res.string.text_employee),
+                        items = employees,
+                        itemLabels = employees.map { it.fullName },
                         modifier = sectionModifier,
-                        startValueMatcher = { it.staffPK == staffPK },
+                        startValueMatcher = { it.employeePK == employeePK },
                     ) {
-                        staffPK = it.staffPK
+                        employeePK = it.employeePK
                     }
 
-                    if (staffPK == null) {
+                    if (employeePK == null) {
                         OutlinedTextField(
                             value = fallbackName,
                             onValueChange = { fallbackName = it },
-                            label = { Text(stringResource(Res.string.text_staff_name)) },
+                            label = { Text(stringResource(Res.string.text_employee_name)) },
                             modifier = sectionModifier,
                             isError = fallbackName.isBlank(),
                         )
@@ -169,7 +169,7 @@ internal fun AddRecord(
                     OutlinedTextField(
                         value = unit,
                         onValueChange = { unit = it },
-                        label = { Text(stringResource(Res.string.text_appartment)) },
+                        label = { Text(stringResource(Res.string.text_apartment)) },
                         modifier = sectionModifier,
                         isError = unit.isBlank(),
                     )
@@ -196,7 +196,7 @@ internal fun AddRecord(
                         modifier = buttonModifier,
                         onClick = {
                             onAddRecordClicked(
-                                staffPK,
+                                employeePK,
                                 unit,
                                 eventType,
                                 fallbackName,

@@ -2,7 +2,7 @@ package com.cramsan.edifikana.client.lib.features.management.timecard
 
 import androidx.compose.runtime.Composable
 import com.cramsan.edifikana.client.ui.theme.AppTheme
-import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.edifikana.lib.model.EmployeeId
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Preview
@@ -15,16 +15,16 @@ private fun TimeCardScreenPreview() = AppTheme {
                 "Cesar Andres Ramirez Sanchez",
                 "Marco salida",
                 "2024 02 12 - 03:24:01",
-                StaffId("John"),
+                EmployeeId("John"),
             ),
             TimeCardUIModel(
                 "Antonio",
                 "Marco entrada",
                 "2024 02 12 - 03:24:01",
-                StaffId("Jane"),
+                EmployeeId("Jane"),
             ),
         ),
-        onStaffClick = {},
+        onEmployeeClick = {},
         onAddEventClick = {},
     )
 }

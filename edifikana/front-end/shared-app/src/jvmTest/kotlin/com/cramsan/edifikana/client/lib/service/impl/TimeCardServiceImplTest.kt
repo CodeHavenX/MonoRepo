@@ -3,7 +3,7 @@ package com.cramsan.edifikana.client.lib.service.impl
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.edifikana.lib.model.network.TimeCardEventNetworkResponse
@@ -12,7 +12,6 @@ import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import kotlinx.coroutines.test.runTest
@@ -31,19 +30,19 @@ class TimeCardServiceImplTest {
     private val service = TimeCardServiceImpl(httpClient)
 
     /**
-     * Tests that getRecords returns mapped records for a specific staff member.
+     * Tests that getRecords returns mapped records for a specific employee member.
      */
     @OptIn(NetworkModel::class)
     @Test
-    fun `getRecords should return mapped records for staff`() = runTest {
+    fun `getRecords should return mapped records for employee`() = runTest {
         // Arrange
-        val staffId = StaffId("staff-1")
+        val employeeId = EmployeeId("employee-1")
         val networkResponse = listOf(
             mockk<TimeCardEventNetworkResponse> {
                 coEvery { toTimeCardRecordModel() } returns TimeCardRecordModel(
                     TimeCardEventId("1"),
                     "clock-in",
-                    staffId,
+                    employeeId,
                     PropertyId("Cenit"),
                     TimeCardEventType.CLOCK_IN,
                     System.currentTimeMillis(),
@@ -55,7 +54,7 @@ class TimeCardServiceImplTest {
                 coEvery { toTimeCardRecordModel() } returns TimeCardRecordModel(
                     TimeCardEventId("2"),
                     "clock-out",
-                    staffId,
+                    employeeId,
                     PropertyId("Cenit"),
                     TimeCardEventType.CLOCK_OUT,
                     System.currentTimeMillis(),
@@ -70,7 +69,7 @@ class TimeCardServiceImplTest {
         }
 
         // Act
-        val result = service.getRecords(staffId)
+        val result = service.getRecords(employeeId)
 
         // Assert
         assertTrue(result.isSuccess)
@@ -80,7 +79,7 @@ class TimeCardServiceImplTest {
     }
 
     /**
-     * Tests that getAllRecords returns mapped records for all staff members.
+     * Tests that getAllRecords returns mapped records for all employee members.
      */
     @OptIn(NetworkModel::class)
     @Test

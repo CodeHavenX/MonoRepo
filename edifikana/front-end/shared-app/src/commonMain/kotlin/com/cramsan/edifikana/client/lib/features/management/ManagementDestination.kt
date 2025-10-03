@@ -2,9 +2,9 @@
 
 package com.cramsan.edifikana.client.lib.features.management
 
+import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.framework.core.compose.navigation.Destination
 import kotlinx.serialization.Serializable
 
@@ -36,36 +36,36 @@ sealed class ManagementDestination : Destination {
     data object AddPropertyManagementDestination : ManagementDestination()
 
     /**
-     * A class representing navigating to the add primary staff screen.
+     * A class representing navigating to the add primary employee screen.
      */
     @Serializable
-    data object AddPrimaryStaffManagementDestination : ManagementDestination()
+    data object AddPrimaryEmployeeManagementDestination : ManagementDestination()
 
     /**
-     * A class representing navigating to the add secondary staff screen.
+     * A class representing navigating to the add secondary employee screen.
      */
     @Serializable
-    data object AddSecondaryStaffManagementDestination : ManagementDestination()
+    data object AddSecondaryEmployeeManagementDestination : ManagementDestination()
 
     /**
-     * A class representing navigating to the Staff Screen.
+     * A class representing navigating to the employee Screen.
      */
     @Serializable
-    data class StaffDestination(
-        val staffId: StaffId,
+    data class EmployeeDestination(
+        val employeeId: EmployeeId,
     ) : ManagementDestination()
 
     /**
-     * A class representing navigating to the time card staff list screen.
+     * A class representing navigating to the time card employee list screen.
      */
     @Serializable
-    data object TimeCardStaffListDestination : ManagementDestination()
+    data object TimeCardEmployeeListDestination : ManagementDestination()
 
     /**
-     * A class representing navigating to the time card single staff screen.
+     * A class representing navigating to the time card single employee screen.
      */
     @Serializable
-    data class TimeCardSingleStaffDestination(val staffPk: StaffId) : ManagementDestination()
+    data class TimeCardSingleEmployeeDestination(val employeePk: EmployeeId) : ManagementDestination()
 
     /**
      * A class representing navigating to the event log single item screen.

@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.lib.model.network
 
+import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.framework.annotations.NetworkModel
 import kotlinx.serialization.SerialName
@@ -13,10 +13,10 @@ import kotlinx.serialization.Serializable
 @NetworkModel
 @Serializable
 data class CreateTimeCardEventNetworkRequest(
-    @SerialName("staff_id")
-    val staffId: StaffId,
-    @SerialName("fallback_staff_name")
-    val fallbackStaffName: String?,
+    @SerialName("employee_id")
+    val employeeId: EmployeeId,
+    @SerialName("fallback_employee_name")
+    val fallbackEmployeeName: String?,
     @SerialName("property_id")
     val propertyId: PropertyId,
     val type: TimeCardEventType,

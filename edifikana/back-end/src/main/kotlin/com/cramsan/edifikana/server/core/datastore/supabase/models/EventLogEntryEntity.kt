@@ -12,10 +12,10 @@ import kotlinx.serialization.Serializable
 @SupabaseModel
 data class EventLogEntryEntity(
     val id: String,
-    @SerialName("staff_id")
-    val staffId: String?,
-    @SerialName("fallback_staff_name")
-    val fallbackStaffName: String?,
+    @SerialName("employee_id")
+    val employeeId: String?,
+    @SerialName("fallback_employee_name")
+    val fallbackEmployeeName: String?,
     @SerialName("property_id")
     val propertyId: String,
     val type: EventLogEventType,
@@ -36,10 +36,10 @@ data class EventLogEntryEntity(
     @Serializable
     @SupabaseModel
     data class CreateEventLogEntryEntity(
-        @SerialName("staff_id")
-        val staffId: String?,
-        @SerialName("fallback_staff_name")
-        val fallbackStaffName: String?,
+        @SerialName("employee_id")
+        val employeeId: String?,
+        @SerialName("fallback_employee_name")
+        val fallbackEmployeeName: String?,
         @SerialName("property_id")
         val propertyId: String,
         val type: EventLogEventType,

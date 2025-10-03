@@ -26,14 +26,14 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.management.drawer.ManagementViewModel
+import com.cramsan.edifikana.client.lib.features.management.employeelist.EmployeeListScreen
 import com.cramsan.edifikana.client.lib.features.management.home.AccountDropDown
 import com.cramsan.edifikana.client.lib.features.management.properties.PropertyManagerScreen
-import com.cramsan.edifikana.client.lib.features.management.stafflist.StaffListScreen
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import edifikana_lib.Res
 import edifikana_lib.app_name
+import edifikana_lib.hub_screen_employee_button_title
 import edifikana_lib.hub_screen_properties_button_title
-import edifikana_lib.hub_screen_staff_button_title
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -96,9 +96,9 @@ val BottomBarDestinationUiModels
                 isStartDestination = true,
             ),
             BottomBarDestinationUiModel(
-                Tabs.Staff,
+                Tabs.Employee,
                 Icons.Default.Person,
-                Res.string.hub_screen_staff_button_title,
+                Res.string.hub_screen_employee_button_title,
             ),
         )
 
@@ -175,7 +175,7 @@ private fun HubContent(
     Crossfade(selectedTab) {
         when (it) {
             Tabs.Properties -> PropertyManagerScreen(modifier)
-            Tabs.Staff -> StaffListScreen(modifier)
+            Tabs.Employee -> EmployeeListScreen(modifier)
             Tabs.None -> {
                 // No content
             }

@@ -84,9 +84,9 @@ class ViewRecordViewModelTest : CoroutineTest() {
             timeRecorded = 1234567890L,
             unit = "Unit",
             entityId = "Entity ID",
-            staffPk = null,
+            employeePk = null,
             propertyId = PropertyId("Property ID"),
-            fallbackStaffName = null,
+            fallbackEmployeeName = null,
             fallbackEventType = null,
             attachments = emptyList(),
         )

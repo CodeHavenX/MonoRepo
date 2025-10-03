@@ -1,9 +1,9 @@
 package com.cramsan.edifikana.server.core.service.models
 
+import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.StaffId
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -13,8 +13,8 @@ import kotlin.time.Instant
 @OptIn(ExperimentalTime::class)
 data class EventLogEntry(
     val id: EventLogEntryId,
-    val staffId: StaffId?,
-    val fallbackStaffName: String?,
+    val employeeId: EmployeeId?,
+    val fallbackEmployeeName: String?,
     val propertyId: PropertyId,
     val type: EventLogEventType,
     val fallbackEventType: String?,

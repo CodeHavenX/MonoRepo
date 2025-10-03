@@ -1,7 +1,7 @@
 {
     "id": "timecard123",
-    "staff_id": "staff123",
-    "fallback_staff_name": "John Doe",
+    "employee_id": "emp123",
+    "fallback_employee_name": "John Doe",
     "property_id": "property123",
     "type": "CLOCK_OUT",
     "image_url": "http://example.com/image.jpg",

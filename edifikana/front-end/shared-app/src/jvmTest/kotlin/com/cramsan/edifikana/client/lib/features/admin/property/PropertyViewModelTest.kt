@@ -3,12 +3,12 @@ package com.cramsan.edifikana.client.lib.features.admin.property
 import app.cash.turbine.test
 import com.cramsan.edifikana.client.lib.features.management.property.PropertyEvent
 import com.cramsan.edifikana.client.lib.features.management.property.PropertyViewModel
-import com.cramsan.edifikana.client.lib.features.management.property.StaffUIModel
+import com.cramsan.edifikana.client.lib.features.management.property.EmployeeUIModel
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
-import com.cramsan.edifikana.client.lib.managers.StaffManager
+import com.cramsan.edifikana.client.lib.managers.EmployeeManager
 import com.cramsan.edifikana.client.lib.models.PropertyModel
-import com.cramsan.edifikana.client.lib.models.StaffModel
+import com.cramsan.edifikana.client.lib.models.EmployeeModel
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.assertlib.AssertUtil
@@ -40,7 +40,7 @@ class PropertyViewModelTest : CoroutineTest() {
 
     private lateinit var viewModel: PropertyViewModel
     private lateinit var propertyManager: PropertyManager
-    private lateinit var staffManager: StaffManager
+    private lateinit var employeeManager: EmployeeManager
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
     private lateinit var applicationEventReceiver: EventBus<ApplicationEvent>
     private lateinit var windowEventBus: EventBus<WindowEvent>
@@ -54,11 +54,11 @@ class PropertyViewModelTest : CoroutineTest() {
         windowEventBus = EventBus()
         exceptionHandler = CollectorCoroutineExceptionHandler()
         propertyManager = mockk(relaxed = true)
-        staffManager = mockk(relaxed = true)
+        employeeManager = mockk(relaxed = true)
         stringProvider = mockk()
         viewModel = PropertyViewModel(
             propertyManager = propertyManager,
-            staffManager = staffManager,
+            employeeManager = employeeManager,
             dependencies = ViewModelDependencies(
                 appScope = testCoroutineScope,
                 dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),
@@ -96,7 +96,7 @@ class PropertyViewModelTest : CoroutineTest() {
             )
         )
         coEvery { propertyManager.updateProperty(propertyId, name, address) } returns Result.success(mockk())
-        coEvery { staffManager.getStaffList() } returns Result.success(emptyList())
+        coEvery { employeeManager.getEmployeeList() } returns Result.success(emptyList())
 
         viewModel.loadContent(propertyId)
         viewModel.updatePropertyAddress(address)
@@ -124,7 +124,7 @@ class PropertyViewModelTest : CoroutineTest() {
             )
         )
         coEvery { propertyManager.updateProperty(propertyId, name, address) } returns Result.failure(Exception("Error"))
-        coEvery { staffManager.getStaffList() } returns Result.success(emptyList())
+        coEvery { employeeManager.getEmployeeList() } returns Result.success(emptyList())
         coEvery { stringProvider.getString(Res.string.error_message_unexpected_error) } returns "There was an unexpected error."
 
         val verificationJob = launch {
@@ -147,31 +147,31 @@ class PropertyViewModelTest : CoroutineTest() {
     @Test
     fun `test addManager with valid email updates UI state`() = runCoroutineTest {
         val email = "test@example.com"
-        viewModel.addStaff(email)
-        assertEquals(listOf(StaffUIModel(null, "test@example.com", false)), viewModel.uiState.value.staff)
-        assertTrue(!viewModel.uiState.value.addStaffError)
+        viewModel.addEmployee(email)
+        assertEquals(listOf(EmployeeUIModel(null, "test@example.com", false)), viewModel.uiState.value.employee)
+        assertTrue(!viewModel.uiState.value.addEmployeeError)
     }
 
     @Test
     fun `test addManager with invalid email shows error`() = runCoroutineTest {
         val email = "invalid-email"
-        viewModel.addStaff(email)
-        assertTrue(viewModel.uiState.value.addStaffError)
-        assertEquals(email, viewModel.uiState.value.addStaffEmail)
+        viewModel.addEmployee(email)
+        assertTrue(viewModel.uiState.value.addEmployeeError)
+        assertEquals(email, viewModel.uiState.value.addEmployeeEmail)
     }
 
     @Test
     fun `test removeManager updates UI state`() = runCoroutineTest {
         val email = "test@example.com"
-        viewModel.addStaff(email)
-        viewModel.toggleStaffState(StaffUIModel(null, email, false))
-        assertTrue(viewModel.uiState.value.staff.first().isRemoving)
+        viewModel.addEmployee(email)
+        viewModel.toggleEmployeeState(EmployeeUIModel(null, email, false))
+        assertTrue(viewModel.uiState.value.employee.first().isRemoving)
     }
 
     @Test
     fun `test requestNewSuggestions with valid query updates suggestions`() = runCoroutineTest {
         val organizationId = OrganizationId("org_id_1")
-        val staffList = listOf<StaffModel>(
+        val employeeList = listOf<EmployeeModel>(
             mockk(),
             mockk(),
         )
@@ -181,7 +181,7 @@ class PropertyViewModelTest : CoroutineTest() {
             address = "Test Address",
             organizationId = organizationId,
         )
-        coEvery { staffManager.getStaffList() } returns Result.success(staffList)
+        coEvery { employeeManager.getEmployeeList() } returns Result.success(employeeList)
         coEvery { propertyManager.getProperty(PropertyId("123")) } returns Result.success(property)
 
         viewModel.loadContent(PropertyId("123"))

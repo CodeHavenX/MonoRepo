@@ -223,7 +223,10 @@ class AuthServiceImpl(
     }
 
     @OptIn(NetworkModel::class)
-    override suspend fun inviteStaff(email: String, organizationId: OrganizationId): Result<Unit> = runSuspendCatching(
+    override suspend fun inviteEmployee(
+        email: String,
+        organizationId: OrganizationId
+    ): Result<Unit> = runSuspendCatching(
         TAG
     ) {
         UserApi.inviteUser.buildRequest(

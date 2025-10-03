@@ -1,9 +1,9 @@
 package com.cramsan.edifikana.server.core.controller
 
+import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.controller.authentication.ClientContext
 import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
@@ -60,8 +60,8 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
         val userService = get<EventLogService>()
         coEvery {
             userService.createEventLogEntry(
-                staffId = StaffId("staff456"),
-                fallbackStaffName = "John Doe",
+                employeeId = EmployeeId("emp456"),
+                fallbackEmployeeName = "John Doe",
                 propertyId = PropertyId("property789"),
                 type = EventLogEventType.MAINTENANCE_SERVICE,
                 fallbackEventType = "General Maintenance",
@@ -73,8 +73,8 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
         }.answers {
             EventLogEntry(
                 id = EventLogEntryId("event123"),
-                staffId = StaffId("staff456"),
-                fallbackStaffName = "John Doe",
+                employeeId = EmployeeId("emp456"),
+                fallbackEmployeeName = "John Doe",
                 propertyId = PropertyId("property789"),
                 type = EventLogEventType.MAINTENANCE_SERVICE,
                 fallbackEventType = "General Maintenance",
@@ -117,8 +117,8 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
         }.answers {
             EventLogEntry(
                 id = EventLogEntryId("event123"),
-                staffId = StaffId("staff456"),
-                fallbackStaffName = "John Doe",
+                employeeId = EmployeeId("emp456"),
+                fallbackEmployeeName = "John Doe",
                 propertyId = PropertyId("property789"),
                 type = EventLogEventType.MAINTENANCE_SERVICE,
                 fallbackEventType = "General Maintenance",
@@ -157,8 +157,8 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
             listOf(
                 EventLogEntry(
                     id = EventLogEntryId("event123"),
-                    staffId = StaffId("staff456"),
-                    fallbackStaffName = "John Doe",
+                    employeeId = EmployeeId("emp456"),
+                    fallbackEmployeeName = "John Doe",
                     propertyId = PropertyId("property789"),
                     type = EventLogEventType.MAINTENANCE_SERVICE,
                     fallbackEventType = "General Maintenance",
@@ -169,8 +169,8 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
                 ),
                 EventLogEntry(
                     id = EventLogEntryId("event456"),
-                    staffId = StaffId("staff789"),
-                    fallbackStaffName = "Jane Doe",
+                    employeeId = EmployeeId("emp789"),
+                    fallbackEmployeeName = "Jane Doe",
                     propertyId = PropertyId("property101"),
                     type = EventLogEventType.MAINTENANCE_SERVICE,
                     fallbackEventType = "General Maintenance",
@@ -217,8 +217,8 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
         }.answers {
             EventLogEntry(
                 id = EventLogEntryId("event123"),
-                staffId = StaffId("staff456"),
-                fallbackStaffName = "John Doe",
+                employeeId = EmployeeId("emp456"),
+                fallbackEmployeeName = "John Doe",
                 propertyId = PropertyId("property789"),
                 type = EventLogEventType.INCIDENT,
                 fallbackEventType = "Inspection",

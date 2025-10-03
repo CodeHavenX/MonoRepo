@@ -8,22 +8,22 @@ import com.cramsan.edifikana.client.lib.features.auth.signup.SignUpViewModel
 import com.cramsan.edifikana.client.lib.features.auth.validation.OtpValidationViewModel
 import com.cramsan.edifikana.client.lib.features.debug.main.DebugViewModel
 import com.cramsan.edifikana.client.lib.features.debug.screenselector.ScreenSelectorViewModel
-import com.cramsan.edifikana.client.lib.features.management.addprimarystaff.AddPrimaryStaffViewModel
+import com.cramsan.edifikana.client.lib.features.management.addprimaryemployee.AddPrimaryEmployeeViewModel
 import com.cramsan.edifikana.client.lib.features.management.addproperty.AddPropertyViewModel
 import com.cramsan.edifikana.client.lib.features.management.addrecord.AddRecordViewModel
-import com.cramsan.edifikana.client.lib.features.management.addsecondarystaff.AddSecondaryStaffViewModel
+import com.cramsan.edifikana.client.lib.features.management.addsecondaryemployee.AddSecondaryEmployeeViewModel
 import com.cramsan.edifikana.client.lib.features.management.drawer.ManagementViewModel
+import com.cramsan.edifikana.client.lib.features.management.employee.EmployeeViewModel
+import com.cramsan.edifikana.client.lib.features.management.employeelist.EmployeeListViewModel
 import com.cramsan.edifikana.client.lib.features.management.eventlog.EventLogViewModel
 import com.cramsan.edifikana.client.lib.features.management.home.HomeViewModel
 import com.cramsan.edifikana.client.lib.features.management.hub.HubViewModel
 import com.cramsan.edifikana.client.lib.features.management.properties.PropertyManagerViewModel
 import com.cramsan.edifikana.client.lib.features.management.property.PropertyViewModel
-import com.cramsan.edifikana.client.lib.features.management.staff.StaffViewModel
-import com.cramsan.edifikana.client.lib.features.management.stafflist.StaffListViewModel
 import com.cramsan.edifikana.client.lib.features.management.timecard.TimeCartViewModel
-import com.cramsan.edifikana.client.lib.features.management.timecardstafflist.TimeCardStaffListViewModel
+import com.cramsan.edifikana.client.lib.features.management.timecardemployeelist.TimeCardEmployeeListViewModel
+import com.cramsan.edifikana.client.lib.features.management.viewemployee.ViewEmployeeViewModel
 import com.cramsan.edifikana.client.lib.features.management.viewrecord.ViewRecordViewModel
-import com.cramsan.edifikana.client.lib.features.management.viewstaff.ViewStaffViewModel
 import com.cramsan.edifikana.client.lib.features.splash.SplashViewModel
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowDelegatedEvent
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowViewModel
@@ -77,10 +77,10 @@ internal val ViewModelModule = module {
         // These objects are scoped to the screen in which they are used.
         viewModelOf(::EventLogViewModel)
         viewModelOf(::TimeCartViewModel)
-        viewModelOf(::StaffListViewModel)
+        viewModelOf(::EmployeeListViewModel)
         viewModelOf(::ViewRecordViewModel)
         viewModelOf(::AddRecordViewModel)
-        viewModelOf(::ViewStaffViewModel)
+        viewModelOf(::ViewEmployeeViewModel)
         viewModelOf(::SignInViewModel)
         viewModelOf(::SignUpViewModel)
         viewModelOf(::AccountViewModel)
@@ -91,10 +91,10 @@ internal val ViewModelModule = module {
         viewModelOf(::OtpValidationViewModel)
         viewModelOf(::AddPropertyViewModel)
         viewModelOf(::HubViewModel)
-        viewModelOf(::AddPrimaryStaffViewModel)
-        viewModelOf(::AddSecondaryStaffViewModel)
-        viewModelOf(::StaffViewModel)
-        viewModelOf(::TimeCardStaffListViewModel)
+        viewModelOf(::AddPrimaryEmployeeViewModel)
+        viewModelOf(::AddSecondaryEmployeeViewModel)
+        viewModelOf(::EmployeeViewModel)
+        viewModelOf(::TimeCardEmployeeListViewModel)
         viewModelOf(::NotificationsViewModel)
         viewModelOf(::SplashViewModel)
         viewModelOf(::ManagementViewModel)

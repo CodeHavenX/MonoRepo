@@ -37,8 +37,8 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
         // Arrange
         val title = "${test_prefix}_EventTitle"
         val description = "${test_prefix}_EventDescription"
-        val staffId = null // Set as needed
-        val fallbackStaffName = null // Set as needed
+        val empId = null // Set as needed
+        val fallbackEmployeeName = null // Set as needed
         val propertyId = propertyId!!
         val type = EventLogEventType.DELIVERY // Use a valid EventLogEventType
         val fallbackEventType = null // Set as needed
@@ -48,8 +48,8 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val result = eventLogDatastore.createEventLogEntry(
             title = title,
             description = description,
-            staffId = staffId,
-            fallbackStaffName = fallbackStaffName,
+            employeeId = empId,
+            fallbackEmployeeName = fallbackEmployeeName,
             propertyId = propertyId,
             type = type,
             fallbackEventType = fallbackEventType,
@@ -67,8 +67,8 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
         // Arrange
         val title = "${test_prefix}_EventTitle2"
         val description = "${test_prefix}_EventDescription2"
-        val staffId = null // Set as needed
-        val fallbackStaffName = null // Set as needed
+        val empId = null // Set as needed
+        val fallbackEmployeeName = null // Set as needed
         val propertyId = propertyId!!
         val type = EventLogEventType.DELIVERY // Use a valid EventLogEventType
         val fallbackEventType = null // Set as needed
@@ -79,8 +79,8 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val createResult = eventLogDatastore.createEventLogEntry(
             title = title,
             description = description,
-            staffId = staffId,
-            fallbackStaffName = fallbackStaffName,
+            employeeId = empId,
+            fallbackEmployeeName = fallbackEmployeeName,
             propertyId = propertyId,
             type = type,
             fallbackEventType = fallbackEventType,
@@ -107,8 +107,8 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val result1 = eventLogDatastore.createEventLogEntry(
             title = title1,
             description = "${test_prefix}_EventDescriptionA",
-            staffId = null, // Set as needed
-            fallbackStaffName = null, // Set as needed
+            employeeId = null, // Set as needed
+            fallbackEmployeeName = null, // Set as needed
             propertyId = propertyId!!,
             type = EventLogEventType.DELIVERY, // Use a valid EventLogEventType
             fallbackEventType = null, // Set as needed
@@ -119,8 +119,8 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val result2 = eventLogDatastore.createEventLogEntry(
             title = title2,
             description = "${test_prefix}_EventDescriptionB",
-            staffId = null, // Set as needed
-            fallbackStaffName = null, // Set as needed
+            employeeId = null, // Set as needed
+            fallbackEmployeeName = null, // Set as needed
             propertyId = propertyId!!,
             type = EventLogEventType.DELIVERY, // Use a valid EventLogEventType
             fallbackEventType = null, // Set as needed
@@ -150,8 +150,8 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val createResult = eventLogDatastore.createEventLogEntry(
             title = "${test_prefix}_EventTitleToUpdate",
             description = "${test_prefix}_EventDescriptionToUpdate",
-            staffId = null, // Set as needed
-            fallbackStaffName = null, // Set as needed
+            employeeId = null, // Set as needed
+            fallbackEmployeeName = null, // Set as needed
             propertyId = propertyId!!,
             type = EventLogEventType.DELIVERY, // Use a valid EventLogEventType
             fallbackEventType = null, // Set as needed
@@ -184,8 +184,8 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
         // Arrange
         val createResult = eventLogDatastore.createEventLogEntry(title = "${test_prefix}_EventTitleToDelete",
             description = "${test_prefix}_EventDescriptionToDelete",
-            staffId = null, // Set as needed
-            fallbackStaffName = null, // Set as needed
+            employeeId = null, // Set as needed
+            fallbackEmployeeName = null, // Set as needed
             type = EventLogEventType.DELIVERY, // Use a valid EventLogEventType
             propertyId = propertyId!!,
             fallbackEventType = null, // Set as needed

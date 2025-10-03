@@ -36,16 +36,16 @@ object Routes {
     }
 
     /**
-     * Routes for the staff API.
+     * Routes for the employee API.
      */
-    object Staff {
-        const val PATH = "staff"
+    object Employee {
+        const val PATH = "employee"
 
         /**
-         * Query parameters for the staff API.
+         * Query parameters for the employee API.
          */
         object QueryParams {
-            const val STAFF_ID = "staff_id"
+            const val EMPLOYEE_ID = "employee_id"
         }
     }
 

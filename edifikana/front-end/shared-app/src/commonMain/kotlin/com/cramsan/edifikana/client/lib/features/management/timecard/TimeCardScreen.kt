@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
-import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
@@ -55,11 +55,11 @@ fun TimeCardScreen(
         isLoading = uiState.isLoading,
         uiState.timeCardEvents,
         modifier = modifier,
-        onStaffClick = { staffPK ->
-            viewModel.navigateToStaff(staffPK)
+        onEmployeeClick = { empPK ->
+            viewModel.navigateToEmployee(empPK)
         },
         onAddEventClick = {
-            viewModel.navigateToStaffList()
+            viewModel.navigateToEmployeeList()
         },
     )
 }
@@ -69,7 +69,7 @@ internal fun EventList(
     isLoading: Boolean,
     events: List<com.cramsan.edifikana.client.lib.features.management.timecard.TimeCardUIModel>,
     modifier: Modifier = Modifier,
-    onStaffClick: (StaffId) -> Unit,
+    onEmployeeClick: (EmployeeId) -> Unit,
     onAddEventClick: () -> Unit,
 ) {
     Box(
@@ -80,11 +80,11 @@ internal fun EventList(
             fixedFooter = true,
             maxWith = Dp.Unspecified,
             sectionContent = { sectionModifier ->
-                events.forEach { staff ->
-                    StaffItem(
-                        staff,
+                events.forEach { employee ->
+                    EmployeeItem(
+                        employee,
                         Modifier.fillMaxWidth(),
-                        onStaffClick,
+                        onEmployeeClick,
                     )
                 }
             },
@@ -102,23 +102,23 @@ internal fun EventList(
 }
 
 @Composable
-private fun StaffItem(
-    staff: TimeCardUIModel,
+private fun EmployeeItem(
+    employee: TimeCardUIModel,
     modifier: Modifier = Modifier,
-    onStaffSelected: (StaffId) -> Unit,
+    onEmployeeSelected: (EmployeeId) -> Unit,
 ) {
     Column(
         modifier = modifier
-            .clickable { onStaffSelected(staff.staffPK) }
+            .clickable { onEmployeeSelected(employee.employeePK) }
             .padding(16.dp),
         horizontalAlignment = Alignment.End,
     ) {
         Row {
-            Text(staff.fullName)
+            Text(employee.fullName)
             Spacer(modifier = Modifier.weight(1f))
-            Text(staff.eventDescription)
+            Text(employee.eventDescription)
         }
-        Text(staff.eventTime)
+        Text(employee.eventTime)
     }
     HorizontalDivider()
 }

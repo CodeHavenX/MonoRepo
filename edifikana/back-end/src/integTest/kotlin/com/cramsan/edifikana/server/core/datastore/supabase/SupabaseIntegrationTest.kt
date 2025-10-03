@@ -4,14 +4,14 @@ import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.StaffId
-import com.cramsan.edifikana.lib.model.StaffRole
+import com.cramsan.edifikana.lib.model.EmployeeId
+import com.cramsan.edifikana.lib.model.EmployeeRole
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.service.models.EventLogEntry
 import com.cramsan.edifikana.server.core.service.models.Organization
 import com.cramsan.edifikana.server.core.service.models.Property
-import com.cramsan.edifikana.server.core.service.models.Staff
+import com.cramsan.edifikana.server.core.service.models.Employee
 import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.core.service.models.User
 import com.cramsan.edifikana.server.di.FrameworkModule
@@ -37,14 +37,14 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
 
     protected val eventLogDatastore: SupabaseEventLogDatastore by inject()
     protected val propertyDatastore: SupabasePropertyDatastore by inject()
-    protected val staffDatastore: SupabaseStaffDatastore by inject()
+    protected val employeeDatastore: SupabaseEmployeeDatastore by inject()
     protected val timeCardDatastore: SupabaseTimeCardDatastore by inject()
     protected val userDatastore: SupabaseUserDatastore by inject()
     protected val organizationDatastore: SupabaseOrganizationDatastore by inject()
 
     private val eventLogResources = mutableSetOf<EventLogEntryId>()
     private val propertyResources = mutableSetOf<PropertyId>()
-    private val staffResources = mutableSetOf<StaffId>()
+    private val employeeResources = mutableSetOf<EmployeeId>()
     private val timeCardResources = mutableSetOf<TimeCardEventId>()
     private val userResources = mutableSetOf<UserId>()
     private val supabaseUsers = mutableSetOf<String>()
@@ -79,8 +79,8 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
         propertyResources.add(propertyId)
     }
 
-    private fun registerStaffForDeletion(staffId: StaffId) {
-        staffResources.add(staffId)
+    private fun registerEmployeeForDeletion(employeeId: EmployeeId) {
+        employeeResources.add(employeeId)
     }
 
     private fun registerTimeCardEventForDeletion(timeCardId: TimeCardEventId) {
@@ -134,9 +134,9 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
         }
     }
 
-    fun Result<Staff>.registerStaffForDeletion(): Result<Staff> {
-        return this.onSuccess { staff ->
-            registerStaffForDeletion(staff.id)
+    fun Result<Employee>.registerEmployeeForDeletion(): Result<Employee> {
+        return this.onSuccess { employee ->
+            registerEmployeeForDeletion(employee.id)
         }
     }
 
@@ -168,22 +168,22 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
         supabaseUsers.add(userId)
     }
 
-    protected fun createTestStaff(
+    protected fun createTestEmployee(
         propertyId: PropertyId,
         firstName: String,
         lastName: String,
-    ): StaffId {
-        val staffId = runBlocking {
-            staffDatastore.createStaff(
+    ): EmployeeId {
+        val empId = runBlocking {
+            employeeDatastore.createEmployee(
                 propertyId = propertyId,
                 firstName = firstName,
                 lastName = lastName,
-                role = StaffRole.SECURITY, // Use a valid role
+                role = EmployeeRole.SECURITY, // Use a valid role
                 idType = IdType.PASSPORT // Use a valid ID type
             ).getOrThrow().id
         }
-        registerStaffForDeletion(staffId)
-        return staffId
+        registerEmployeeForDeletion(empId)
+        return empId
     }
 
     @AfterTest
@@ -200,8 +200,8 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
             timeCardResources.forEach {
                 timeCardDatastore.deleteTimeCardEvent(it).getOrThrow()
             }
-            staffResources.forEach {
-                staffDatastore.deleteStaff(it).getOrThrow()
+            employeeResources.forEach {
+                employeeDatastore.deleteEmployee(it).getOrThrow()
             }
             propertyResources.forEach {
                 propertyDatastore.deleteProperty(it).getOrThrow()
@@ -218,7 +218,7 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
         }
         eventLogResources.clear()
         timeCardResources.clear()
-        staffResources.clear()
+        employeeResources.clear()
         propertyResources.clear()
         userResources.clear()
         organizationResources.clear()

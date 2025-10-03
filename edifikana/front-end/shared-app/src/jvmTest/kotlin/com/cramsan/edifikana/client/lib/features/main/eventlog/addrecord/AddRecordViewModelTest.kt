@@ -1,16 +1,16 @@
 package com.cramsan.edifikana.client.lib.features.main.eventlog.addrecord
 
 import app.cash.turbine.test
-import com.cramsan.edifikana.client.lib.data.STAFF_1
+import com.cramsan.edifikana.client.lib.data.EMPLOYEE_1
 import com.cramsan.edifikana.client.lib.features.management.addrecord.AddRecordViewModel
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.EventLogManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
-import com.cramsan.edifikana.client.lib.managers.StaffManager
+import com.cramsan.edifikana.client.lib.managers.EmployeeManager
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.framework.annotations.TestOnly
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
@@ -42,7 +42,7 @@ import kotlin.time.Instant
 class AddRecordViewModelTest : CoroutineTest() {
 
     private lateinit var eventLogManager: EventLogManager
-    private lateinit var staffManager: StaffManager
+    private lateinit var employeeManager: EmployeeManager
     private lateinit var viewModel: AddRecordViewModel
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
     private lateinit var applicationEventReceiver: EventBus<ApplicationEvent>
@@ -55,7 +55,7 @@ class AddRecordViewModelTest : CoroutineTest() {
     fun setUp() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         clock = mockk()
-        staffManager = mockk()
+        employeeManager = mockk()
         eventLogManager = mockk()
         propertyManager = mockk()
         exceptionHandler = CollectorCoroutineExceptionHandler()
@@ -70,7 +70,7 @@ class AddRecordViewModelTest : CoroutineTest() {
             windowEventReceiver = windowEventBus,
         )
         viewModel = AddRecordViewModel(
-            staffManager,
+            employeeManager,
             eventLogManager,
             propertyManager,
             stringProvider = stringProvider,
@@ -89,8 +89,8 @@ class AddRecordViewModelTest : CoroutineTest() {
         // Arrange
         val record = EventLogRecordModel(
             id = null,
-            staffPk = StaffId("staff_id_1"),
-            fallbackStaffName = null,
+            employeePk = EmployeeId("employee_id_1"),
+            fallbackEmployeeName = null,
             propertyId = PropertyId("property_id_1"),
             eventType = EventLogEventType.MAINTENANCE_SERVICE,
             fallbackEventType = null,
@@ -98,7 +98,7 @@ class AddRecordViewModelTest : CoroutineTest() {
             title = "Routine Check",
             description = "Performed routine maintenance check.",
             unit = "Unit 101",
-            entityId = "staff_id_1_1727702654",
+            entityId = "employee_id_1_1727702654",
             attachments = emptyList(),
         )
         every { clock.now() } returns Instant.fromEpochSeconds(1727702654)
@@ -115,10 +115,10 @@ class AddRecordViewModelTest : CoroutineTest() {
             }
         }
         viewModel.addRecord(
-            staffDocumentId = STAFF_1.id,
+            employeeDocumentId = EMPLOYEE_1.id,
             unit = "Unit 101",
             eventType = EventLogEventType.MAINTENANCE_SERVICE,
-            fallbackStaffName = null,
+            fallbackEmployeeName = null,
             fallbackEventType = null,
             title = "Routine Check",
             description = "Performed routine maintenance check.",
@@ -136,8 +136,8 @@ class AddRecordViewModelTest : CoroutineTest() {
         // Arrange
         val record = EventLogRecordModel(
             id = null,
-            staffPk = StaffId("staff_id_1"),
-            fallbackStaffName = null,
+            employeePk = EmployeeId("employee_id_1"),
+            fallbackEmployeeName = null,
             propertyId = PropertyId("property_id_1"),
             eventType = EventLogEventType.MAINTENANCE_SERVICE,
             fallbackEventType = null,
@@ -145,7 +145,7 @@ class AddRecordViewModelTest : CoroutineTest() {
             title = "Routine Check",
             description = "Performed routine maintenance check.",
             unit = "Unit 101",
-            entityId = "staff_id_1_1727702654",
+            entityId = "employee_id_1_1727702654",
             attachments = emptyList(),
         )
         every { clock.now() } returns Instant.fromEpochSeconds(1727702654)
@@ -154,10 +154,10 @@ class AddRecordViewModelTest : CoroutineTest() {
 
         // Act
         viewModel.addRecord(
-            staffDocumentId = STAFF_1.id,
+            employeeDocumentId = EMPLOYEE_1.id,
             unit = "Unit 101",
             eventType = EventLogEventType.MAINTENANCE_SERVICE,
-            fallbackStaffName = null,
+            fallbackEmployeeName = null,
             fallbackEventType = null,
             title = "Routine Check",
             description = "Performed routine maintenance check.",

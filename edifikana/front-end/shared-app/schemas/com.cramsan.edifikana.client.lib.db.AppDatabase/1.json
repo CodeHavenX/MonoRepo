@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "7a25061482a50b963550bb87022ad84e",
+    "identityHash": "4432b76244ce6059f1ea689008b52a90",
     "entities": [
       {
         "tableName": "TimeCardRecordEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `staffDocumentId` TEXT, `propertyId` TEXT, `eventType` TEXT, `eventTime` INTEGER, `cachedImageUrl` TEXT, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `employeeDocumentId` TEXT, `propertyId` TEXT, `eventType` TEXT, `eventTime` INTEGER, `cachedImageUrl` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -15,8 +15,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "staffDocumentId",
-            "columnName": "staffDocumentId",
+            "fieldPath": "employeeDocumentId",
+            "columnName": "employeeDocumentId",
             "affinity": "TEXT"
           },
           {
@@ -49,7 +49,7 @@
       },
       {
         "tableName": "EventLogRecordEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `staffDocumentId` TEXT, `timeRecorded` INTEGER, `unit` TEXT, `eventType` TEXT, `fallbackStaffName` TEXT, `fallbackEventType` TEXT, `title` TEXT, `description` TEXT, `propertyId` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `employeeDocumentId` TEXT, `timeRecorded` INTEGER, `unit` TEXT, `eventType` TEXT, `fallbackEmployeeName` TEXT, `fallbackEventType` TEXT, `title` TEXT, `description` TEXT, `propertyId` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -58,8 +58,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "staffDocumentId",
-            "columnName": "staffDocumentId",
+            "fieldPath": "employeeDocumentId",
+            "columnName": "employeeDocumentId",
             "affinity": "TEXT"
           },
           {
@@ -78,8 +78,8 @@
             "affinity": "TEXT"
           },
           {
-            "fieldPath": "fallbackStaffName",
-            "columnName": "fallbackStaffName",
+            "fieldPath": "fallbackEmployeeName",
+            "columnName": "fallbackEmployeeName",
             "affinity": "TEXT"
           },
           {
@@ -142,7 +142,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7a25061482a50b963550bb87022ad84e')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4432b76244ce6059f1ea689008b52a90')"
     ]
   }
 }

@@ -4,15 +4,15 @@ package com.cramsan.edifikana.client.lib.data
 
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.client.lib.models.PropertyModel
-import com.cramsan.edifikana.client.lib.models.StaffModel
+import com.cramsan.edifikana.client.lib.models.EmployeeModel
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.StaffId
-import com.cramsan.edifikana.lib.model.StaffRole
+import com.cramsan.edifikana.lib.model.EmployeeId
+import com.cramsan.edifikana.lib.model.EmployeeRole
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 
@@ -30,46 +30,46 @@ val PROPERTY_2 = PropertyModel(
     organizationId = OrganizationId("org_id_1"),
 )
 
-val STAFF_1 = StaffModel(
-    id = StaffId("staff_id_1"),
+val EMPLOYEE_1 = EmployeeModel(
+    id = EmployeeId("employee_id_1"),
     idType = IdType.DNI,
     firstName = "Antonio",
     lastName = "Banderas",
-    role = StaffRole.MANAGER,
+    role = EmployeeRole.MANAGER,
     email = "antonio.banderas@gmail.com",
 )
 
-val STAFF_2 = StaffModel(
-    id = StaffId("staff_id_2"),
+val EMPLOYEE_2 = EmployeeModel(
+    id = EmployeeId("employee_id_2"),
     idType = IdType.PASSPORT,
     firstName = "Penelope",
     lastName = "Cruz",
-    role = StaffRole.SECURITY,
+    role = EmployeeRole.SECURITY,
     email = "p.cruz@yahoo.com",
 )
 
-val STAFF_3 = StaffModel(
-    id = StaffId("staff_id_3"),
+val EMPLOYEE_3 = EmployeeModel(
+    id = EmployeeId("employee_id_3"),
     idType = IdType.CE,
     firstName = "Javier",
     lastName = "Bardem",
-    role = StaffRole.SECURITY,
+    role = EmployeeRole.SECURITY,
     email = null,
 )
 
-val STAFF_4 = StaffModel(
-    id = StaffId("staff_id_4"),
+val EMPLOYEE_4 = EmployeeModel(
+    id = EmployeeId("employee_id_4"),
     idType = IdType.DNI,
     firstName = "Salma",
     lastName = "Hayek",
-    role = StaffRole.SECURITY_COVER,
+    role = EmployeeRole.SECURITY_COVER,
     email = "sal_ha@hotmail.com",
 )
 
-val EVENT_LOG_ENTRY_STAFF_1_1 = EventLogRecordModel(
+val EVENT_LOG_ENTRY_EMPLOYEE_1_1 = EventLogRecordModel(
     id = EventLogEntryId("event_log_entry_id_1"),
-    staffPk = STAFF_1.id,
-    fallbackStaffName = null,
+    employeePk = EMPLOYEE_1.id,
+    fallbackEmployeeName = null,
     propertyId = PROPERTY_1.id,
     eventType = EventLogEventType.MAINTENANCE_SERVICE,
     fallbackEventType = null,
@@ -81,10 +81,10 @@ val EVENT_LOG_ENTRY_STAFF_1_1 = EventLogRecordModel(
     attachments = emptyList(),
 )
 
-val EVENT_LOG_ENTRY_STAFF_1_2 = EventLogRecordModel(
+val EVENT_LOG_ENTRY_EMPLOYEE_1_2 = EventLogRecordModel(
     id = EventLogEntryId("event_log_entry_id_2"),
-    staffPk = STAFF_1.id,
-    fallbackStaffName = null,
+    employeePk = EMPLOYEE_1.id,
+    fallbackEmployeeName = null,
     propertyId = PROPERTY_1.id,
     eventType = EventLogEventType.INCIDENT,
     fallbackEventType = "Inspection",
@@ -96,10 +96,10 @@ val EVENT_LOG_ENTRY_STAFF_1_2 = EventLogRecordModel(
     attachments = emptyList(),
 )
 
-val EVENT_LOG_ENTRY_STAFF_2_1 = EventLogRecordModel(
+val EVENT_LOG_ENTRY_EMPLOYEE_2_1 = EventLogRecordModel(
     id = EventLogEntryId("event_log_entry_id_3"),
-    staffPk = STAFF_2.id,
-    fallbackStaffName = null,
+    employeePk = EMPLOYEE_2.id,
+    fallbackEmployeeName = null,
     propertyId = PROPERTY_1.id,
     eventType = EventLogEventType.MAINTENANCE_SERVICE,
     fallbackEventType = "General Maintenance",
@@ -111,10 +111,10 @@ val EVENT_LOG_ENTRY_STAFF_2_1 = EventLogRecordModel(
     attachments = emptyList(),
 )
 
-val EVENT_LOG_ENTRY_STAFF_3_1 = EventLogRecordModel(
+val EVENT_LOG_ENTRY_EMPLOYEE_3_1 = EventLogRecordModel(
     id = EventLogEntryId("event_log_entry_id_4"),
-    staffPk = STAFF_3.id,
-    fallbackStaffName = null,
+    employeePk = EMPLOYEE_3.id,
+    fallbackEmployeeName = null,
     propertyId = PROPERTY_1.id,
     eventType = EventLogEventType.INCIDENT,
     fallbackEventType = "Inspection",
@@ -126,10 +126,10 @@ val EVENT_LOG_ENTRY_STAFF_3_1 = EventLogRecordModel(
     attachments = emptyList(),
 )
 
-val EVENT_LOG_ENTRY_STAFF_4_1 = EventLogRecordModel(
+val EVENT_LOG_ENTRY_EMPLOYEE_4_1 = EventLogRecordModel(
     id = EventLogEntryId("event_log_entry_id_5"),
-    staffPk = STAFF_4.id,
-    fallbackStaffName = null,
+    employeePk = EMPLOYEE_4.id,
+    fallbackEmployeeName = null,
     propertyId = PROPERTY_1.id,
     eventType = EventLogEventType.MAINTENANCE_SERVICE,
     fallbackEventType = "General Maintenance",
@@ -143,7 +143,7 @@ val EVENT_LOG_ENTRY_STAFF_4_1 = EventLogRecordModel(
 
 val TIME_CARD_EVENT_1 = TimeCardRecordModel(
     id = TimeCardEventId("time_card_event_id_1"),
-    staffPk = STAFF_1.id,
+    employeePk = EMPLOYEE_1.id,
     propertyId = PROPERTY_1.id,
     eventType = TimeCardEventType.CLOCK_IN,
     imageUrl = "http://example.com/image1.jpg",
@@ -154,7 +154,7 @@ val TIME_CARD_EVENT_1 = TimeCardRecordModel(
 
 val TIME_CARD_EVENT_2 = TimeCardRecordModel(
     id = TimeCardEventId("time_card_event_id_2"),
-    staffPk = STAFF_2.id,
+    employeePk = EMPLOYEE_2.id,
     propertyId = PROPERTY_1.id,
     eventType = TimeCardEventType.CLOCK_OUT,
     imageUrl = "http://example.com/image2.jpg",
@@ -165,7 +165,7 @@ val TIME_CARD_EVENT_2 = TimeCardRecordModel(
 
 val TIME_CARD_EVENT_3 = TimeCardRecordModel(
     id = TimeCardEventId("time_card_event_id_3"),
-    staffPk = STAFF_3.id,
+    employeePk = EMPLOYEE_3.id,
     propertyId = PROPERTY_1.id,
     eventType = TimeCardEventType.CLOCK_IN,
     imageUrl = "http://example.com/image3.jpg",
@@ -176,7 +176,7 @@ val TIME_CARD_EVENT_3 = TimeCardRecordModel(
 
 val TIME_CARD_EVENT_4 = TimeCardRecordModel(
     id = TimeCardEventId("time_card_event_id_4"),
-    staffPk = STAFF_4.id,
+    employeePk = EMPLOYEE_4.id,
     propertyId = PROPERTY_1.id,
     eventType = TimeCardEventType.CLOCK_OUT,
     imageUrl = "http://example.com/image4.jpg",
@@ -187,7 +187,7 @@ val TIME_CARD_EVENT_4 = TimeCardRecordModel(
 
 val TIME_CARD_EVENT_5 = TimeCardRecordModel(
     id = TimeCardEventId("time_card_event_id_5"),
-    staffPk = STAFF_1.id,
+    employeePk = EMPLOYEE_1.id,
     propertyId = PROPERTY_1.id,
     eventType = TimeCardEventType.CLOCK_OUT,
     imageUrl = "http://example.com/image2.jpg",

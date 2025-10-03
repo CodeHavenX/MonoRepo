@@ -1,20 +1,20 @@
 package com.cramsan.edifikana.client.lib.service.impl
 
+import com.cramsan.edifikana.client.lib.models.EmployeeModel
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.client.lib.models.Organization
-import com.cramsan.edifikana.client.lib.models.StaffModel
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
 import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.network.CreateEmployeeNetworkRequest
 import com.cramsan.edifikana.lib.model.network.CreateEventLogEntryNetworkRequest
-import com.cramsan.edifikana.lib.model.network.CreateStaffNetworkRequest
 import com.cramsan.edifikana.lib.model.network.CreateTimeCardEventNetworkRequest
+import com.cramsan.edifikana.lib.model.network.EmployeeNetworkResponse
 import com.cramsan.edifikana.lib.model.network.EventLogEntryNetworkResponse
 import com.cramsan.edifikana.lib.model.network.OrganizationNetworkResponse
-import com.cramsan.edifikana.lib.model.network.StaffNetworkResponse
 import com.cramsan.edifikana.lib.model.network.TimeCardEventNetworkResponse
+import com.cramsan.edifikana.lib.model.network.UpdateEmployeeNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdateEventLogEntryNetworkRequest
-import com.cramsan.edifikana.lib.model.network.UpdateStaffNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
 import com.cramsan.framework.annotations.NetworkModel
 
@@ -26,13 +26,13 @@ fun EventLogEntryNetworkResponse.toEventLogRecordModel(): EventLogRecordModel {
     return EventLogRecordModel(
         id = id,
         entityId = null,
-        staffPk = staffId,
+        employeePk = employeeId,
         propertyId = propertyId,
         timeRecorded = timestamp,
         unit = unit,
         eventType = type,
-        fallbackStaffName = fallbackEventType,
-        fallbackEventType = fallbackStaffName,
+        fallbackEmployeeName = fallbackEventType,
+        fallbackEventType = fallbackEmployeeName,
         title = title,
         description = description.orEmpty(),
         emptyList(),
@@ -45,8 +45,8 @@ fun EventLogEntryNetworkResponse.toEventLogRecordModel(): EventLogRecordModel {
 @OptIn(NetworkModel::class)
 fun EventLogRecordModel.toCreateEventLogEntryNetworkRequest(): CreateEventLogEntryNetworkRequest {
     return CreateEventLogEntryNetworkRequest(
-        staffId = staffPk,
-        fallbackStaffName = fallbackStaffName,
+        employeeId = employeePk,
+        fallbackEmployeeName = fallbackEmployeeName,
         propertyId = propertyId,
         type = eventType,
         fallbackEventType = fallbackEventType,
@@ -72,11 +72,11 @@ fun EventLogRecordModel.toUpdateEventLogEntryNetworkRequest(): UpdateEventLogEnt
 }
 
 /**
- * Maps the [StaffModel.CreateStaffRequest] models to [CreateStaffNetworkRequest] models.
+ * Maps the [EmployeeModel.CreateEmployeeRequest] models to [CreateEmployeeNetworkRequest] models.
  */
 @NetworkModel
-fun StaffModel.CreateStaffRequest.toCreateStaffNetworkRequest(): CreateStaffNetworkRequest {
-    return CreateStaffNetworkRequest(
+fun EmployeeModel.CreateEmployeeRequest.toCreateEmployeeNetworkRequest(): CreateEmployeeNetworkRequest {
+    return CreateEmployeeNetworkRequest(
         idType = idType,
         firstName = firstName,
         lastName = lastName,
@@ -86,12 +86,12 @@ fun StaffModel.CreateStaffRequest.toCreateStaffNetworkRequest(): CreateStaffNetw
 }
 
 /**
- * Maps the [StaffModel.UpdateStaffRequest] models to [UpdateStaffNetworkRequest] models.
+ * Maps the [EmployeeModel.UpdateEmployeeRequest] models to [UpdateEmployeeNetworkRequest] models.
  * Note: IdType is not updatable, so it is set to null.
  */
 @NetworkModel
-fun StaffModel.UpdateStaffRequest.toUpdateStaffNetworkRequest(): UpdateStaffNetworkRequest {
-    return UpdateStaffNetworkRequest(
+fun EmployeeModel.UpdateEmployeeRequest.toUpdateEmployeeNetworkRequest(): UpdateEmployeeNetworkRequest {
+    return UpdateEmployeeNetworkRequest(
         idType = null, // IdType is not updatable
         firstName = firstName,
         lastName = lastName,
@@ -100,11 +100,11 @@ fun StaffModel.UpdateStaffRequest.toUpdateStaffNetworkRequest(): UpdateStaffNetw
 }
 
 /**
- * Maps the [StaffNetworkResponse] models to [StaffModel] domain models.
+ * Maps the [EmployeeNetworkResponse] models to [EmployeeModel] domain models.
  */
 @NetworkModel
-fun StaffNetworkResponse.toStaffModel(): StaffModel {
-    return StaffModel(
+fun EmployeeNetworkResponse.toEmployeeModel(): EmployeeModel {
+    return EmployeeModel(
         id = id,
         firstName = firstName,
         lastName = lastName,
@@ -120,8 +120,8 @@ fun StaffNetworkResponse.toStaffModel(): StaffModel {
 @NetworkModel
 fun TimeCardRecordModel.toCreateTimeCardEventNetworkRequest(): CreateTimeCardEventNetworkRequest {
     return CreateTimeCardEventNetworkRequest(
-        staffId = staffPk,
-        fallbackStaffName = "",
+        employeeId = employeePk,
+        fallbackEmployeeName = "",
         type = eventType,
         propertyId = propertyId,
         imageUrl = imageUrl,
@@ -136,7 +136,7 @@ fun TimeCardEventNetworkResponse.toTimeCardRecordModel(): TimeCardRecordModel {
     return TimeCardRecordModel(
         id = id,
         entityId = null,
-        staffPk = staffId!!, // TODO: Fix this
+        employeePk = employeeId!!, // TODO: Fix this
         propertyId = propertyId,
         eventType = type,
         eventTime = timestamp,

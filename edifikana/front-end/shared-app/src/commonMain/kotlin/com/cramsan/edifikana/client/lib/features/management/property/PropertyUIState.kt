@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.management.property
 
-import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.framework.core.compose.ViewModelUIState
 
 /**
@@ -14,9 +14,9 @@ data class PropertyUIState(
     val propertyName: String?,
     val address: String?,
     val isLoading: Boolean,
-    val staff: List<StaffUIModel>,
-    val addStaffError: Boolean,
-    val addStaffEmail: String,
+    val employee: List<EmployeeUIModel>,
+    val addEmployeeError: Boolean,
+    val addEmployeeEmail: String,
     val suggestions: List<String>,
 ) : ViewModelUIState {
     companion object {
@@ -25,21 +25,21 @@ data class PropertyUIState(
             propertyName = null,
             address = null,
             isLoading = false,
-            staff = emptyList(),
-            addStaffError = false,
-            addStaffEmail = "",
+            employee = emptyList(),
+            addEmployeeError = false,
+            addEmployeeEmail = "",
             suggestions = emptyList(),
         )
     }
 }
 
 /**
- * UI model for a staff member.
+ * UI model for an employee member.
  *
- * This class models the data that is displayed in the staff list.
+ * This class models the data that is displayed in the employee list.
  */
-data class StaffUIModel(
-    val staffId: StaffId?,
+data class EmployeeUIModel(
+    val employeeId: EmployeeId?,
     val email: String,
     val isRemoving: Boolean,
 )

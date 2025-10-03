@@ -4,7 +4,7 @@ import com.cramsan.edifikana.client.lib.db.models.TimeCardRecordDao
 import com.cramsan.edifikana.client.lib.managers.mappers.toDomainModel
 import com.cramsan.edifikana.client.lib.managers.mappers.toEntity
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
-import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.logging.logI
 
@@ -15,11 +15,11 @@ class TimeCardRoomCache(
     private val timeCardRecordDao: TimeCardRecordDao,
 ) : TimeCardCache {
     /**
-     * Get all time card records for a staff member.
+     * Get all time card records for a employee member.
      */
-    override suspend fun getRecords(staffPK: StaffId): List<TimeCardRecordModel> {
+    override suspend fun getRecords(employeePK: EmployeeId): List<TimeCardRecordModel> {
         logI(TAG, "getRecords")
-        return timeCardRecordDao.getAll(staffPK.staffId).map { it.toDomainModel() }
+        return timeCardRecordDao.getAll(employeePK.empId).map { it.toDomainModel() }
     }
 
     /**

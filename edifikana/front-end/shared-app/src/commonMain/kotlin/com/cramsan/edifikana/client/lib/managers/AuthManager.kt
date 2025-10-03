@@ -153,13 +153,13 @@ class AuthManager(
     }
 
     /**
-     * Invite a staff.
+     * Invite a employee.
      */
-    suspend fun inviteStaff(email: String) = dependencies.getOrCatch(TAG) {
-        logI(TAG, "inviteStaff")
+    suspend fun inviteEmployee(email: String) = dependencies.getOrCatch(TAG) {
+        logI(TAG, "inviteEmployee")
         val activeOrganization = organizationService.observableActiveOrganization.value?.id
             ?: error("No active organization set")
-        authService.inviteStaff(
+        authService.inviteEmployee(
             email = email,
             organizationId = activeOrganization
         ).getOrThrow()
@@ -169,7 +169,7 @@ class AuthManager(
      * Get the invites for the given organization.
      */
     suspend fun getInvites(organizationId: OrganizationId): Result<List<Invite>> = dependencies.getOrCatch(TAG) {
-        logI(TAG, "getInvitedStaffs for organizationId: $organizationId")
+        logI(TAG, "getInvitedEmployees for organizationId: $organizationId")
         authService.getInvites(organizationId).getOrThrow()
     }
 

@@ -1,10 +1,10 @@
 package com.cramsan.edifikana.server.di
 
+import com.cramsan.edifikana.server.core.controller.EmployeeController
 import com.cramsan.edifikana.server.core.controller.EventLogController
 import com.cramsan.edifikana.server.core.controller.HealthCheckController
 import com.cramsan.edifikana.server.core.controller.OrganizationController
 import com.cramsan.edifikana.server.core.controller.PropertyController
-import com.cramsan.edifikana.server.core.controller.EmployeeController
 import com.cramsan.edifikana.server.core.controller.StorageController
 import com.cramsan.edifikana.server.core.controller.TimeCardController
 import com.cramsan.edifikana.server.core.controller.UserController

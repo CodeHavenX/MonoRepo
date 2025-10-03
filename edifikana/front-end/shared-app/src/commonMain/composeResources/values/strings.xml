@@ -51,14 +51,14 @@
     <string name="text_there_was_an_error_processing_request">There was an error processing the request.</string>
     <string name="text_clock_in">Clock In</string>
     <string name="text_clock_out">Clock Out</string>
-    <string name="text_staff">Staff</string>
+    <string name="text_employee">employee</string>
     <string name="text_event_type">Event Type</string>
-    <string name="text_appartment">Apartment</string>
+    <string name="text_apartment">Apartment</string>
     <string name="text_simple_desc">Simple Description</string>
     <string name="text_full_desc">Full Description</string>
     <string name="text_add">Add</string>
     <string name="text_flip_camera">Flip Camera</string>
-    <string name="text_staff_name">Staff Name</string>
+    <string name="text_employee_name">employee Name</string>
     <string name="text_forms">Forms</string>
     <string name="text_view_records">View Records</string>
     <string name="text_upload">Uploading</string>
@@ -76,9 +76,9 @@
     <string name="title_form_record">Form Record</string>
     <string name="title_form_record_view">View Form Record</string>
     <string name="title_timecard">Attendance Control</string>
-    <string name="title_timecard_add_staff">Add Staff</string>
-    <string name="title_timecard_view_staff">Staff</string>
-    <string name="title_timecard_staff_list">Staff List</string>
+    <string name="title_timecard_add_employee">Add employee</string>
+    <string name="title_timecard_view_employee">employee</string>
+    <string name="title_timecard_employee_list">employee List</string>
 
     <string name="sign_in_screen_text_sign_in">Continue with password</string>
     <string name="sign_in_screen_text_sign_in_password">Sign in</string>
@@ -124,10 +124,10 @@
     <string name="employee_list_screen_title">Employee List</string>
     <string name="employee_list_screen_add_button_description">Add Employee</string>
 
-    <string name="add_staff_screen_title">Add Staff</string>
+    <string name="add_employee_screen_title">Add employee</string>
 
     <string name="time_card_screen_add_event">Add Event</string>
 
     <string name="hub_screen_properties_button_title">Properties</string>
-    <string name="hub_screen_staff_button_title">Staff</string>
+    <string name="hub_screen_employee_button_title">employee</string>
 </resources>

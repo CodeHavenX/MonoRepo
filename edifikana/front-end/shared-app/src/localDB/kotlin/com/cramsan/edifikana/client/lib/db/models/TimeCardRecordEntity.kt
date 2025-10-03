@@ -10,7 +10,7 @@ import androidx.room.PrimaryKey
 data class TimeCardRecordEntity(
     @PrimaryKey
     val id: String,
-    val staffDocumentId: String?,
+    val employeeDocumentId: String?,
     val propertyId: String?,
     val eventType: String? = null,
     val eventTime: Long? = null,

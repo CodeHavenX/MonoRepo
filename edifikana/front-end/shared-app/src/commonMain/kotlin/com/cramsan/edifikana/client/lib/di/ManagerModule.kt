@@ -1,11 +1,11 @@
 package com.cramsan.edifikana.client.lib.di
 
 import com.cramsan.edifikana.client.lib.managers.AuthManager
+import com.cramsan.edifikana.client.lib.managers.EmployeeManager
 import com.cramsan.edifikana.client.lib.managers.EventLogManager
 import com.cramsan.edifikana.client.lib.managers.OrganizationManager
 import com.cramsan.edifikana.client.lib.managers.PreferencesManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
-import com.cramsan.edifikana.client.lib.managers.StaffManager
 import com.cramsan.edifikana.client.lib.managers.TimeCardManager
 import com.cramsan.edifikana.client.lib.managers.remoteconfig.BehaviorConfig
 import com.cramsan.edifikana.client.lib.managers.remoteconfig.CachingConfig
@@ -13,17 +13,17 @@ import com.cramsan.edifikana.client.lib.managers.remoteconfig.FeatureConfig
 import com.cramsan.edifikana.client.lib.managers.remoteconfig.ImageConfig
 import com.cramsan.edifikana.client.lib.managers.remoteconfig.RemoteConfig
 import com.cramsan.edifikana.client.lib.service.AuthService
+import com.cramsan.edifikana.client.lib.service.EmployeeService
 import com.cramsan.edifikana.client.lib.service.EventLogService
 import com.cramsan.edifikana.client.lib.service.OrganizationService
 import com.cramsan.edifikana.client.lib.service.PropertyService
-import com.cramsan.edifikana.client.lib.service.StaffService
 import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.edifikana.client.lib.service.TimeCardService
 import com.cramsan.edifikana.client.lib.service.impl.AuthServiceImpl
+import com.cramsan.edifikana.client.lib.service.impl.EmployeeServiceImpl
 import com.cramsan.edifikana.client.lib.service.impl.EventLogServiceImpl
 import com.cramsan.edifikana.client.lib.service.impl.OrganizationServiceImpl
 import com.cramsan.edifikana.client.lib.service.impl.PropertyServiceImpl
-import com.cramsan.edifikana.client.lib.service.impl.StaffServiceImpl
 import com.cramsan.edifikana.client.lib.service.impl.StorageServiceImpl
 import com.cramsan.edifikana.client.lib.service.impl.TimeCardServiceImpl
 import com.cramsan.framework.core.ManagerDependencies
@@ -36,7 +36,7 @@ internal val ManagerModule = module {
 
     singleOf(::EventLogManager)
     singleOf(::TimeCardManager)
-    singleOf(::StaffManager)
+    singleOf(::EmployeeManager)
     singleOf(::AuthManager)
     singleOf(::PropertyManager)
     singleOf(::PreferencesManager)
@@ -81,8 +81,8 @@ internal val ManagerModule = module {
     singleOf(::TimeCardServiceImpl) {
         bind<TimeCardService>()
     }
-    singleOf(::StaffServiceImpl) {
-        bind<StaffService>()
+    singleOf(::EmployeeServiceImpl) {
+        bind<EmployeeService>()
     }
     singleOf(::OrganizationServiceImpl) {
         bind<OrganizationService>()

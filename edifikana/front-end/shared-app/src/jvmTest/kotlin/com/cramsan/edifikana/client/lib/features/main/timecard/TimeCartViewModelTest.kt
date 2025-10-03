@@ -4,14 +4,14 @@ import app.cash.turbine.test
 import com.cramsan.edifikana.client.lib.features.management.ManagementDestination
 import com.cramsan.edifikana.client.lib.features.management.timecard.TimeCartViewModel
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
-import com.cramsan.edifikana.client.lib.managers.StaffManager
+import com.cramsan.edifikana.client.lib.managers.EmployeeManager
 import com.cramsan.edifikana.client.lib.managers.TimeCardManager
-import com.cramsan.edifikana.client.lib.models.StaffModel
+import com.cramsan.edifikana.client.lib.models.EmployeeModel
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
 import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.StaffId
-import com.cramsan.edifikana.lib.model.StaffRole
+import com.cramsan.edifikana.lib.model.EmployeeId
+import com.cramsan.edifikana.lib.model.EmployeeRole
 
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
@@ -41,7 +41,7 @@ import kotlin.test.assertEquals
 class TimeCartViewModelTest : CoroutineTest() {
 
     private lateinit var timeCardManager: TimeCardManager
-    private lateinit var staffManager: StaffManager
+    private lateinit var employeeManager: EmployeeManager
     private lateinit var viewModel: TimeCartViewModel
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
     private lateinit var applicationEventReceiver: EventBus<ApplicationEvent>
@@ -52,7 +52,7 @@ class TimeCartViewModelTest : CoroutineTest() {
     fun setUp() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         timeCardManager = mockk()
-        staffManager = mockk()
+        employeeManager = mockk()
         exceptionHandler = CollectorCoroutineExceptionHandler()
         applicationEventReceiver = EventBus()
         windowEventBus = EventBus()
@@ -66,7 +66,7 @@ class TimeCartViewModelTest : CoroutineTest() {
         )
         viewModel = TimeCartViewModel(
             timeCardManager,
-            staffManager,
+            employeeManager,
             stringProvider = stringProvider,
             dependencies,
         )
@@ -78,7 +78,7 @@ class TimeCartViewModelTest : CoroutineTest() {
         val events = listOf(
             TimeCardRecordModel(
                 id = TimeCardEventId("1"),
-                staffPk = StaffId("1"),
+                employeePk = EmployeeId("1"),
                 eventType = TimeCardEventType.CLOCK_IN,
                 entityId = "entityId",
                 propertyId = PropertyId("propertyId"),
@@ -88,7 +88,7 @@ class TimeCartViewModelTest : CoroutineTest() {
             ),
             TimeCardRecordModel(
                 id = TimeCardEventId("2"),
-                staffPk = StaffId("2"),
+                employeePk = EmployeeId("2"),
                 eventType = TimeCardEventType.CLOCK_OUT,
                 entityId = "entityId",
                 propertyId = PropertyId("propertyId"),
@@ -97,26 +97,26 @@ class TimeCartViewModelTest : CoroutineTest() {
                 imageRef = "imageRef",
             )
         )
-        val staffs = listOf(
-            StaffModel(
-                id = StaffId("1"),
+        val employees = listOf(
+            EmployeeModel(
+                id = EmployeeId("1"),
                 idType = IdType.PASSPORT,
                 firstName = "John",
                 lastName = "Doe",
-                role = StaffRole.SECURITY,
+                role = EmployeeRole.SECURITY,
                 email = "johndoe@test.com",
             ),
-            StaffModel(
-                id = StaffId("2"),
+            EmployeeModel(
+                id = EmployeeId("2"),
                 idType = IdType.PASSPORT,
                 firstName = "Jane",
                 lastName = "Doe",
-                role = StaffRole.SECURITY,
+                role = EmployeeRole.SECURITY,
                 email = "jane.doe@test.com",
             )
         )
         coEvery { timeCardManager.getAllRecords() } returns Result.success(events)
-        coEvery { staffManager.getStaffList() } returns Result.success(staffs)
+        coEvery { employeeManager.getEmployeeList() } returns Result.success(employees)
         coEvery { stringProvider.getString(Res.string.title_timecard) } returns "Time Card"
         coEvery { stringProvider.getString(Res.string.time_card_event_clock_out) } returns "Clock Out"
         coEvery { stringProvider.getString(Res.string.time_card_event_clock_in) } returns "Clock In"
@@ -126,7 +126,7 @@ class TimeCartViewModelTest : CoroutineTest() {
 
         // Assert
         coVerify { timeCardManager.getAllRecords() }
-        coVerify { staffManager.getStaffList() }
+        coVerify { employeeManager.getEmployeeList() }
         val uiState = viewModel.uiState.value
         assertEquals(false, uiState.isLoading)
     }
@@ -135,7 +135,7 @@ class TimeCartViewModelTest : CoroutineTest() {
     fun `test loadEvents handles failure`() = runCoroutineTest {
         // Arrange
         coEvery { timeCardManager.getAllRecords() } returns Result.failure(Exception("Error"))
-        coEvery { staffManager.getStaffList() } returns Result.failure(Exception("Error"))
+        coEvery { employeeManager.getEmployeeList() } returns Result.failure(Exception("Error"))
         coEvery { stringProvider.getString(Res.string.title_timecard) } returns "Time Card"
 
         // Act
@@ -143,47 +143,47 @@ class TimeCartViewModelTest : CoroutineTest() {
 
         // Assert
         coVerify { timeCardManager.getAllRecords() }
-        coVerify { staffManager.getStaffList() }
+        coVerify { employeeManager.getEmployeeList() }
         val uiState = viewModel.uiState.value
         assertEquals(false, uiState.isLoading)
     }
 
     @Test
-    fun `test navigateToStaff emits NavigateToScreen event`() = runCoroutineTest {
+    fun `test navigateToEmployee emits NavigateToScreen event`() = runCoroutineTest {
         // Arrange
-        val staffId = StaffId("123")
+        val employeeId = EmployeeId("123")
 
         // Act
         val verificationJob = launch {
             windowEventBus.events.test {
                 assertEquals(
                     EdifikanaWindowsEvent.NavigateToScreen(
-                        ManagementDestination.TimeCardSingleStaffDestination(staffId)
+                        ManagementDestination.TimeCardSingleEmployeeDestination(employeeId)
                     ),
                     awaitItem(),
                 )
             }
         }
-        viewModel.navigateToStaff(staffId)
+        viewModel.navigateToEmployee(employeeId)
 
         // Assert
         verificationJob.join()
     }
 
     @Test
-    fun `test navigateToStaffList emits NavigateToScreen event`() = runCoroutineTest {
+    fun `test navigateToEmployeeList emits NavigateToScreen event`() = runCoroutineTest {
         // Act
         val verificationJob = launch {
             windowEventBus.events.test {
                 assertEquals(
                     EdifikanaWindowsEvent.NavigateToScreen(
-                        ManagementDestination.TimeCardStaffListDestination
+                        ManagementDestination.TimeCardEmployeeListDestination
                     ),
                     awaitItem(),
                 )
             }
         }
-        viewModel.navigateToStaffList()
+        viewModel.navigateToEmployeeList()
 
         // Assert
         verificationJob.join()

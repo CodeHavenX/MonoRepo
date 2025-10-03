@@ -1,14 +1,14 @@
 package com.cramsan.edifikana.server.core.controller
 
+import com.cramsan.edifikana.lib.model.EmployeeId
+import com.cramsan.edifikana.lib.model.EmployeeRole
 import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.StaffId
-import com.cramsan.edifikana.lib.model.StaffRole
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.controller.authentication.ClientContext
 import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
-import com.cramsan.edifikana.server.core.service.StaffService
-import com.cramsan.edifikana.server.core.service.models.Staff
+import com.cramsan.edifikana.server.core.service.EmployeeService
+import com.cramsan.edifikana.server.core.service.models.Employee
 import com.cramsan.edifikana.server.utils.readFileContent
 import com.cramsan.framework.test.CoroutineTest
 import io.ktor.client.request.delete
@@ -43,26 +43,26 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test createStaff`() = testEdifikanaApplication {
+    fun `test createEmployee`() = testEdifikanaApplication {
         // Configure
         val requestBody = readFileContent("requests/create_staff_request.json")
         val expectedResponse = readFileContent("requests/create_staff_response.json")
-        val staffService = get<StaffService>()
+        val employeeService = get<EmployeeService>()
         coEvery {
-            staffService.createStaff(
+            employeeService.createEmployee(
                 IdType.DNI,
                 "John",
                 "Doe",
-                StaffRole.SECURITY,
+                EmployeeRole.SECURITY,
                 PropertyId("property123"),
             )
         }.answers {
-            Staff(
-                id = StaffId("staff123"),
+            Employee(
+                id = EmployeeId("emp123"),
                 firstName = "John",
                 lastName = "Doe",
                 idType = IdType.DNI,
-                role = StaffRole.SECURITY,
+                role = EmployeeRole.SECURITY,
                 propertyId = PropertyId("property123"),
             )
         }
@@ -77,7 +77,7 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
         }
 
         // Act
-        val response = client.post("staff") {
+        val response = client.post("employee") {
             setBody(requestBody)
             contentType(ContentType.Application.Json)
         }
@@ -88,19 +88,19 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test getStaff`() = testEdifikanaApplication {
+    fun `test getEmployee`() = testEdifikanaApplication {
         // Configure
         val expectedResponse = readFileContent("requests/get_staff_response.json")
-        val staffService = get<StaffService>()
+        val employeeService = get<EmployeeService>()
         coEvery {
-            staffService.getStaff(StaffId("staff123"))
+            employeeService.getEmployee(EmployeeId("emp123"))
         }.answers {
-            Staff(
-                id = StaffId("staff123"),
+            Employee(
+                id = EmployeeId("emp123"),
                 firstName = "John",
                 lastName = "Doe",
                 idType = IdType.DNI,
-                role = StaffRole.SECURITY,
+                role = EmployeeRole.SECURITY,
                 propertyId = PropertyId("property123"),
             )
         }
@@ -115,7 +115,7 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
         }
 
         // Act
-        val response = client.get("staff/staff123")
+        val response = client.get("employee/emp123")
 
         // Assert
         assertEquals(HttpStatusCode.OK, response.status)
@@ -123,10 +123,10 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test getStaffs`() = testEdifikanaApplication {
+    fun `test getEmployees`() = testEdifikanaApplication {
         // Configure
         val expectedResponse = readFileContent("requests/get_staffs_response.json")
-        val staffService = get<StaffService>()
+        val employeeService = get<EmployeeService>()
         val contextRetriever = get<ContextRetriever>()
         val clientContext = ClientContext.AuthenticatedClientContext(
             userInfo = mockk(),
@@ -139,30 +139,30 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
             clientContext
         }
         coEvery {
-            staffService.getStaffs(clientContext)
+            employeeService.getEmployees(clientContext)
         }.answers {
             listOf(
-                Staff(
-                    id = StaffId("staff123"),
+                Employee(
+                    id = EmployeeId("emp123"),
                     firstName = "John",
                     lastName = "Doe",
                     idType = IdType.DNI,
-                    role = StaffRole.SECURITY,
+                    role = EmployeeRole.SECURITY,
                     propertyId = PropertyId("property123"),
                 ),
-                Staff(
-                    id = StaffId("staff456"),
+                Employee(
+                    id = EmployeeId("emp456"),
                     firstName = "Jane",
                     lastName = "Smith",
                     idType = IdType.PASSPORT,
-                    role = StaffRole.CLEANING,
+                    role = EmployeeRole.CLEANING,
                     propertyId = PropertyId("property456"),
                 )
             )
         }
 
         // Act
-        val response = client.get("staff")
+        val response = client.get("employee")
 
         // Assert
         assertEquals(HttpStatusCode.OK, response.status)
@@ -170,26 +170,26 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test updateStaff`() = testEdifikanaApplication {
+    fun `test updateEmployee`() = testEdifikanaApplication {
         // Configure
         val requestBody = readFileContent("requests/update_staff_request.json")
         val expectedResponse = readFileContent("requests/update_staff_response.json")
-        val staffService = get<StaffService>()
+        val employeeService = get<EmployeeService>()
         coEvery {
-            staffService.updateStaff(
-                id = StaffId("staff123"),
+            employeeService.updateEmployee(
+                id = EmployeeId("emp123"),
                 idType = IdType.CE,
                 firstName = "Cesar",
                 lastName = "Ramirez",
-                role = StaffRole.SECURITY_COVER,
+                role = EmployeeRole.SECURITY_COVER,
             )
         }.answers {
-            Staff(
-                id = StaffId("staff123"),
+            Employee(
+                id = EmployeeId("emp123"),
                 firstName = "Cesar",
                 lastName = "Ramirez",
                 idType = IdType.CE,
-                role = StaffRole.SECURITY_COVER,
+                role = EmployeeRole.SECURITY_COVER,
                 propertyId = PropertyId("property456"),
             )
         }
@@ -204,7 +204,7 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
         }
 
         // Act
-        val response = client.put("staff/staff123") {
+        val response = client.put("employee/emp123") {
             setBody(requestBody)
             contentType(ContentType.Application.Json)
         }
@@ -215,11 +215,11 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test deleteStaff`() = testEdifikanaApplication {
+    fun `test deleteEmployee`() = testEdifikanaApplication {
         // Configure
-        val staffService = get<StaffService>()
+        val employeeService = get<EmployeeService>()
         coEvery {
-            staffService.deleteStaff(StaffId("staff123"))
+            employeeService.deleteEmployee(EmployeeId("emp123"))
         }.answers {
             true
         }
@@ -234,7 +234,7 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
         }
 
         // Act
-        val response = client.delete("staff/staff123")
+        val response = client.delete("employee/emp123")
 
         // Assert
         assertEquals(HttpStatusCode.OK, response.status)

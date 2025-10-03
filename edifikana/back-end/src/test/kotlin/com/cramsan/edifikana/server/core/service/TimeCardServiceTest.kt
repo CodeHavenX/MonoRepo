@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.server.core.service
 
+import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.StaffId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.edifikana.server.core.datastore.TimeCardDatastore
@@ -54,8 +54,8 @@ class TimeCardServiceTest {
     @Test
     fun `createTimeCardEvent should call database and return event`() = runTest {
         // Arrange
-        val staffId = StaffId("staff-1")
-        val fallbackStaffName = "John Doe"
+        val employeeId = EmployeeId("emp-1")
+        val fallbackEmployeeName = "John Doe"
         val propertyId = PropertyId("CENIT")
         val type = TimeCardEventType.CLOCK_IN
         val imageUrl = "http://image.url"
@@ -74,8 +74,8 @@ class TimeCardServiceTest {
 
         // Act
         val result = timeCardService.createTimeCardEvent(
-            staffId,
-            fallbackStaffName,
+            employeeId,
+            fallbackEmployeeName,
             propertyId,
             type,
             imageUrl,
@@ -86,8 +86,8 @@ class TimeCardServiceTest {
         assertEquals(event, result)
         coVerify {
             timeCardDatastore.createTimeCardEvent(
-                staffId,
-                fallbackStaffName,
+                employeeId,
+                fallbackEmployeeName,
                 propertyId,
                 type,
                 imageUrl,
@@ -132,20 +132,20 @@ class TimeCardServiceTest {
     }
 
     /**
-     * Tests that getTimeCardEvents retrieves a list of time card events for a staff member.
+     * Tests that getTimeCardEvents retrieves a list of time card events for an employee member.
      */
     @Test
     fun `getTimeCardEvents should call database and return list`() = runTest {
         // Arrange
-        val staffId = StaffId("staff-3")
+        val employeeId = EmployeeId("emp-3")
         val eventList = listOf(mockk<TimeCardEvent>(), mockk<TimeCardEvent>())
         coEvery { timeCardDatastore.getTimeCardEvents(any()) } returns Result.success(eventList)
 
         // Act
-        val result = timeCardService.getTimeCardEvents(staffId)
+        val result = timeCardService.getTimeCardEvents(employeeId)
 
         // Assert
         assertEquals(eventList, result)
-        coVerify { timeCardDatastore.getTimeCardEvents(staffId) }
+        coVerify { timeCardDatastore.getTimeCardEvents(employeeId) }
     }
 }

@@ -3,8 +3,8 @@ package com.cramsan.edifikana.client.lib.service.impl
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
 import com.cramsan.edifikana.client.lib.service.TimeCardService
 import com.cramsan.edifikana.lib.Routes
-import com.cramsan.edifikana.lib.Routes.Staff.QueryParams.STAFF_ID
-import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.edifikana.lib.Routes.Employee.QueryParams.EMPLOYEE_ID
+import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.network.TimeCardEventNetworkResponse
 import com.cramsan.framework.annotations.NetworkModel
@@ -26,9 +26,9 @@ class TimeCardServiceImpl(
 
     @OptIn(NetworkModel::class)
     override suspend fun getRecords(
-        staffPK: StaffId,
+        employeePK: EmployeeId,
     ): Result<List<TimeCardRecordModel>> = runSuspendCatching(TAG) {
-        getRecordsImpl(staffPK).getOrThrow()
+        getRecordsImpl(employeePK).getOrThrow()
     }
 
     @OptIn(NetworkModel::class)
@@ -39,12 +39,12 @@ class TimeCardServiceImpl(
     // TODO: THIS CURRENTLY PULLS RECORDS FOR ALL PROPERTIES. WE WANT TO UPDATE SO WE ONLY PULL RECORDS FOR SPECIFIED PROPERTIES
     @NetworkModel
     private suspend fun getRecordsImpl(
-        staffPK: StaffId?,
+        employeePK: EmployeeId?,
     ): Result<List<TimeCardRecordModel>> = runSuspendCatching(TAG) {
         val response = http.get(Routes.TimeCard.PATH) {
             url {
-                staffPK?.let {
-                    parameters.append(STAFF_ID, it.staffId)
+                employeePK?.let {
+                    parameters.append(EMPLOYEE_ID, it.empId)
                 }
             }
         }.body<List<TimeCardEventNetworkResponse>>()

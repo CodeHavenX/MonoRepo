@@ -2,17 +2,17 @@ package com.cramsan.edifikana.server.di
 
 import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
 import com.cramsan.edifikana.server.core.controller.authentication.SupabaseContextRetriever
+import com.cramsan.edifikana.server.core.datastore.EmployeeDatastore
 import com.cramsan.edifikana.server.core.datastore.EventLogDatastore
 import com.cramsan.edifikana.server.core.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.core.datastore.PropertyDatastore
-import com.cramsan.edifikana.server.core.datastore.StaffDatastore
 import com.cramsan.edifikana.server.core.datastore.StorageDatastore
 import com.cramsan.edifikana.server.core.datastore.TimeCardDatastore
 import com.cramsan.edifikana.server.core.datastore.UserDatastore
+import com.cramsan.edifikana.server.core.datastore.supabase.SupabaseEmployeeDatastore
 import com.cramsan.edifikana.server.core.datastore.supabase.SupabaseEventLogDatastore
 import com.cramsan.edifikana.server.core.datastore.supabase.SupabaseOrganizationDatastore
 import com.cramsan.edifikana.server.core.datastore.supabase.SupabasePropertyDatastore
-import com.cramsan.edifikana.server.core.datastore.supabase.SupabaseStaffDatastore
 import com.cramsan.edifikana.server.core.datastore.supabase.SupabaseStorageDatastore
 import com.cramsan.edifikana.server.core.datastore.supabase.SupabaseTimeCardDatastore
 import com.cramsan.edifikana.server.core.datastore.supabase.SupabaseUserDatastore
@@ -85,8 +85,8 @@ val SupabaseModule = module {
     singleOf(::SupabaseUserDatastore) {
         bind<UserDatastore>()
     }
-    singleOf(::SupabaseStaffDatastore) {
-        bind<StaffDatastore>()
+    singleOf(::SupabaseEmployeeDatastore) {
+        bind<EmployeeDatastore>()
     }
     singleOf(::SupabasePropertyDatastore) {
         bind<PropertyDatastore>()

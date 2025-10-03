@@ -4,20 +4,20 @@
 package com.cramsan.edifikana.server.utils
 
 import com.cramsan.edifikana.lib.model.AssetId
+import com.cramsan.edifikana.lib.model.EmployeeId
+import com.cramsan.edifikana.lib.model.EmployeeRole
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.StaffId
-import com.cramsan.edifikana.lib.model.StaffRole
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.service.models.Asset
+import com.cramsan.edifikana.server.core.service.models.Employee
 import com.cramsan.edifikana.server.core.service.models.EventLogEntry
 import com.cramsan.edifikana.server.core.service.models.Property
-import com.cramsan.edifikana.server.core.service.models.Staff
 import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.core.service.models.User
 import com.cramsan.edifikana.server.core.service.models.UserRole
@@ -81,46 +81,46 @@ val PROPERTY_2 = Property(
     organizationId = OrganizationId("org_id_1"),
 )
 
-val STAFF_1 = Staff(
-    id = StaffId("staff_id_1"),
+val Employee_1 = Employee(
+    id = EmployeeId("employee_id_1"),
     idType = IdType.DNI,
     firstName = "Antonio",
     lastName = "Banderas",
-    role = StaffRole.MANAGER,
+    role = EmployeeRole.MANAGER,
     propertyId = PropertyId("property_id_1"),
 )
 
-val STAFF_2 = Staff(
-    id = StaffId("staff_id_2"),
+val Employee_2 = Employee(
+    id = EmployeeId("employee_id_2"),
     idType = IdType.PASSPORT,
     firstName = "Penelope",
     lastName = "Cruz",
-    role = StaffRole.SECURITY,
+    role = EmployeeRole.SECURITY,
     propertyId = PropertyId("property_id_1"),
 )
 
-val STAFF_3 = Staff(
-    id = StaffId("staff_id_3"),
+val Employee_3 = Employee(
+    id = EmployeeId("employee_id_3"),
     idType = IdType.CE,
     firstName = "Javier",
     lastName = "Bardem",
-    role = StaffRole.SECURITY,
+    role = EmployeeRole.SECURITY,
     propertyId = PropertyId("property_id_1"),
 )
 
-val STAFF_4 = Staff(
-    id = StaffId("staff_id_4"),
+val Employee_4 = Employee(
+    id = EmployeeId("employee_id_4"),
     idType = IdType.DNI,
     firstName = "Salma",
     lastName = "Hayek",
-    role = StaffRole.SECURITY_COVER,
+    role = EmployeeRole.SECURITY_COVER,
     propertyId = PropertyId("property_id_1"),
 )
 
-val EVENT_LOG_ENTRY_STAFF_1_1 = EventLogEntry(
+val EVENT_LOG_ENTRY_EMPLOYEE_1_1 = EventLogEntry(
     id = EventLogEntryId("event_log_entry_id_1"),
-    staffId = STAFF_1.id,
-    fallbackStaffName = null,
+    employeeId = Employee_1.id,
+    fallbackEmployeeName = null,
     propertyId = PROPERTY_1.id,
     type = EventLogEventType.MAINTENANCE_SERVICE,
     fallbackEventType = null,
@@ -130,10 +130,10 @@ val EVENT_LOG_ENTRY_STAFF_1_1 = EventLogEntry(
     unit = "Unit 101",
 )
 
-val EVENT_LOG_ENTRY_STAFF_1_2 = EventLogEntry(
+val EVENT_LOG_ENTRY_EMPLOYEE_1_2 = EventLogEntry(
     id = EventLogEntryId("event_log_entry_id_2"),
-    staffId = STAFF_1.id,
-    fallbackStaffName = null,
+    employeeId = Employee_1.id,
+    fallbackEmployeeName = null,
     propertyId = PROPERTY_1.id,
     type = EventLogEventType.INCIDENT,
     fallbackEventType = "Inspection",
@@ -143,10 +143,10 @@ val EVENT_LOG_ENTRY_STAFF_1_2 = EventLogEntry(
     unit = "Unit 202",
 )
 
-val EVENT_LOG_ENTRY_STAFF_2_1 = EventLogEntry(
+val EVENT_LOG_ENTRY_EMPLOYEE_2_1 = EventLogEntry(
     id = EventLogEntryId("event_log_entry_id_3"),
-    staffId = STAFF_2.id,
-    fallbackStaffName = null,
+    employeeId = Employee_2.id,
+    fallbackEmployeeName = null,
     propertyId = PROPERTY_1.id,
     type = EventLogEventType.MAINTENANCE_SERVICE,
     fallbackEventType = "General Maintenance",
@@ -156,10 +156,10 @@ val EVENT_LOG_ENTRY_STAFF_2_1 = EventLogEntry(
     unit = "Unit 101",
 )
 
-val EVENT_LOG_ENTRY_STAFF_3_1 = EventLogEntry(
+val EVENT_LOG_ENTRY_EMPLOYEE_3_1 = EventLogEntry(
     id = EventLogEntryId("event_log_entry_id_4"),
-    staffId = STAFF_3.id,
-    fallbackStaffName = null,
+    employeeId = Employee_3.id,
+    fallbackEmployeeName = null,
     propertyId = PROPERTY_1.id,
     type = EventLogEventType.INCIDENT,
     fallbackEventType = "Inspection",
@@ -169,10 +169,10 @@ val EVENT_LOG_ENTRY_STAFF_3_1 = EventLogEntry(
     unit = "Unit 202",
 )
 
-val EVENT_LOG_ENTRY_STAFF_4_1 = EventLogEntry(
+val EVENT_LOG_ENTRY_EMPLOYEE_4_1 = EventLogEntry(
     id = EventLogEntryId("event_log_entry_id_5"),
-    staffId = STAFF_4.id,
-    fallbackStaffName = null,
+    employeeId = Employee_4.id,
+    fallbackEmployeeName = null,
     propertyId = PROPERTY_1.id,
     type = EventLogEventType.MAINTENANCE_SERVICE,
     fallbackEventType = "General Maintenance",
@@ -184,8 +184,8 @@ val EVENT_LOG_ENTRY_STAFF_4_1 = EventLogEntry(
 
 val TIME_CARD_EVENT_1 = TimeCardEvent(
     id = TimeCardEventId("time_card_event_id_1"),
-    staffId = STAFF_1.id,
-    fallbackStaffName = null,
+    employeeId = Employee_1.id,
+    fallbackEmployeeName = null,
     propertyId = PROPERTY_1.id,
     type = TimeCardEventType.CLOCK_IN,
     imageUrl = "http://example.com/image1.jpg",
@@ -194,8 +194,8 @@ val TIME_CARD_EVENT_1 = TimeCardEvent(
 
 val TIME_CARD_EVENT_2 = TimeCardEvent(
     id = TimeCardEventId("time_card_event_id_2"),
-    staffId = STAFF_2.id,
-    fallbackStaffName = null,
+    employeeId = Employee_2.id,
+    fallbackEmployeeName = null,
     propertyId = PROPERTY_1.id,
     type = TimeCardEventType.CLOCK_OUT,
     imageUrl = "http://example.com/image2.jpg",
@@ -204,8 +204,8 @@ val TIME_CARD_EVENT_2 = TimeCardEvent(
 
 val TIME_CARD_EVENT_3 = TimeCardEvent(
     id = TimeCardEventId("time_card_event_id_3"),
-    staffId = STAFF_3.id,
-    fallbackStaffName = null,
+    employeeId = Employee_3.id,
+    fallbackEmployeeName = null,
     propertyId = PROPERTY_1.id,
     type = TimeCardEventType.CLOCK_IN,
     imageUrl = "http://example.com/image3.jpg",
@@ -214,8 +214,8 @@ val TIME_CARD_EVENT_3 = TimeCardEvent(
 
 val TIME_CARD_EVENT_4 = TimeCardEvent(
     id = TimeCardEventId("time_card_event_id_4"),
-    staffId = STAFF_4.id,
-    fallbackStaffName = null,
+    employeeId = Employee_4.id,
+    fallbackEmployeeName = null,
     propertyId = PROPERTY_1.id,
     type = TimeCardEventType.CLOCK_OUT,
     imageUrl = "http://example.com/image4.jpg",
@@ -224,8 +224,8 @@ val TIME_CARD_EVENT_4 = TimeCardEvent(
 
 val TIME_CARD_EVENT_5 = TimeCardEvent(
     id = TimeCardEventId("time_card_event_id_5"),
-    staffId = STAFF_1.id,
-    fallbackStaffName = null,
+    employeeId = Employee_1.id,
+    fallbackEmployeeName = null,
     propertyId = PROPERTY_1.id,
     type = TimeCardEventType.CLOCK_OUT,
     imageUrl = "http://example.com/image2.jpg",
@@ -233,8 +233,8 @@ val TIME_CARD_EVENT_5 = TimeCardEvent(
 )
 
 val ASSET_1 = Asset(
-    id = AssetId("images/timecard-images/staff1.png"),
-    fileName = "staff1.png",
+    id = AssetId("images/timecard-images/employee1.png"),
+    fileName = "employee1.png",
     signedUrl = null,
     content = byteArrayOf(
         // PNG file header bytes
@@ -252,8 +252,8 @@ val ASSET_1 = Asset(
 )
 
 val ASSET_2 = Asset(
-    id = AssetId("images/timecard-images/staff2.png"),
-    fileName = "staff2.png",
+    id = AssetId("images/timecard-images/employee2.png"),
+    fileName = "employee2.png",
     signedUrl = "fakeSignedUrl.url.com",
     content = byteArrayOf(
         // PNG file header bytes

@@ -2,7 +2,7 @@ package com.cramsan.edifikana.client.lib.features.management.addrecord
 
 import androidx.compose.runtime.Composable
 import com.cramsan.edifikana.client.ui.theme.AppTheme
-import com.cramsan.edifikana.lib.model.StaffId
+import com.cramsan.edifikana.lib.model.EmployeeId
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
@@ -16,7 +16,7 @@ private fun AddRecordScreen() = AppTheme(debugLayoutInspection = true) {
             listOf(
                 AddRecordUIModel(
                     "Juan Perez",
-                    StaffId("1"),
+                    EmployeeId("1"),
                 ),
                 AddRecordUIModel(
                     "Maria Rodriguez",

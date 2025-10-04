@@ -10,6 +10,8 @@ import com.cramsan.edifikana.server.core.service.models.UserRole
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.framework.logging.logD
+import kotlin.time.Clock
+import kotlin.time.Duration.Companion.days
 
 /**
  * Service for user operations.
@@ -17,6 +19,7 @@ import com.cramsan.framework.logging.logD
 class UserService(
     private val userDatastore: UserDatastore,
     private val organizationDatastore: OrganizationDatastore,
+    private val clock: Clock,
 ) {
 
     /**
@@ -150,9 +153,14 @@ class UserService(
     suspend fun inviteUser(
         email: String,
         organizationId: OrganizationId,
-    ): Result<Unit> {
+    ): Result<Unit> = runCatching {
         logD(TAG, "inviteUser")
-        return userDatastore.recordInvite(email, organizationId)
+        userDatastore.recordInvite(
+            email,
+            organizationId,
+            expiration = clock.now() + 14.days,
+        ).getOrThrow()
+        Unit
     }
 
     /**

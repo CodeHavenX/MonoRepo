@@ -12,6 +12,7 @@ import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
+import com.cramsan.framework.test.asClock
 import io.mockk.Called
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -25,14 +26,21 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.koin.core.context.stopKoin
 import kotlin.test.AfterTest
+import kotlin.time.Clock
+import kotlin.time.Duration.Companion.days
+import kotlin.time.ExperimentalTime
+import kotlin.time.TestTimeSource
 
 /**
  * Test class for [UserService].
  */
+@OptIn(ExperimentalTime::class)
 class UserServiceTest {
     private lateinit var userDatastore: UserDatastore
     private lateinit var userService: UserService
     private lateinit var organizationDatastore: OrganizationDatastore
+    private lateinit var testTimeSource: TestTimeSource
+    private lateinit var clock: Clock
 
     /**
      * Sets up the test environment by initializing mocks for [UserDatastore] and [userService].
@@ -42,7 +50,9 @@ class UserServiceTest {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         userDatastore = mockk()
         organizationDatastore = mockk()
-        userService = UserService(userDatastore, organizationDatastore)
+        testTimeSource = TestTimeSource()
+        clock = testTimeSource.asClock(2024, 1, 1, 0, 0)
+        userService = UserService(userDatastore, organizationDatastore, clock)
     }
 
     /**
@@ -260,5 +270,46 @@ class UserServiceTest {
                 password,
             )
         }
+    }
+
+    /**
+     * Tests that inviteUser records an invite and returns success.
+     */
+    @Test
+    fun `inviteUser should record invite and return success`() = runTest {
+        // Arrange
+        val email = "invite@example.com"
+        val orgId = OrganizationId("orgId")
+        val expirationTime = clock.now() + 14.days
+
+        coEvery { userDatastore.recordInvite(email, orgId, expirationTime) } returns Result.success(mockk())
+
+        // Act
+        val result = userService.inviteUser(email, orgId)
+
+        // Assert
+        assertTrue(result.isSuccess)
+        coVerify { userDatastore.recordInvite(email, orgId, any()) }
+    }
+
+    /**
+     * Tests that inviteUser returns failure when recordInvite fails.
+     */
+    @Test
+    fun `inviteUser should return failure when recordInvite fails`() = runTest {
+        // Arrange
+        val email = "invite@example.com"
+        val orgId = OrganizationId("orgId")
+        val expirationTime = clock.now() + 14.days
+
+        val error = Exception("Failed to record invite")
+        coEvery { userDatastore.recordInvite(email, orgId, expirationTime) } returns Result.failure(error)
+
+        // Act
+        val result = userService.inviteUser(email, orgId)
+
+        // Assert
+        assertTrue(result.isFailure)
+        coVerify { userDatastore.recordInvite(email, orgId, any()) }
     }
 }

@@ -2,6 +2,7 @@ package com.cramsan.edifikana.server.core.datastore.supabase
 
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.IdType
+import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.EmployeeId
@@ -9,6 +10,7 @@ import com.cramsan.edifikana.lib.model.EmployeeRole
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.service.models.EventLogEntry
+import com.cramsan.edifikana.server.core.service.models.Invite
 import com.cramsan.edifikana.server.core.service.models.Organization
 import com.cramsan.edifikana.server.core.service.models.Property
 import com.cramsan.edifikana.server.core.service.models.Employee
@@ -30,7 +32,10 @@ import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
 import org.koin.test.inject
 import kotlin.test.AfterTest
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
+@OptIn(ExperimentalTime::class)
 abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
 
     protected val supabase: SupabaseClient by inject()
@@ -49,6 +54,7 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
     private val userResources = mutableSetOf<UserId>()
     private val supabaseUsers = mutableSetOf<String>()
     private val organizationResources = mutableSetOf<OrganizationId>()
+    private val invitationResources = mutableSetOf<InviteId>()
 
     companion object {
         @BeforeAll
@@ -95,6 +101,10 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
         organizationResources.add(organizationId)
     }
 
+    private fun registerInviteForDeletion(inviteId: InviteId) {
+        invitationResources.add(inviteId)
+    }
+
     protected fun createTestUser(email: String): UserId {
         val userId = runBlocking {
             userDatastore.createUser(
@@ -126,6 +136,22 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
         }
         registerPropertyForDeletion(propertyId)
         return propertyId
+    }
+
+    protected fun createTestInvite(
+        email: String,
+        organizationId: OrganizationId,
+        expiration: Instant,
+    ): InviteId {
+        val inviteId = runBlocking {
+            userDatastore.recordInvite(
+                email = email,
+                organizationId = organizationId,
+                expiration = expiration,
+            ).getOrThrow().inviteId
+        }
+        registerInviteForDeletion(inviteId)
+        return inviteId
     }
 
     fun Result<Property>.registerPropertyForDeletion(): Result<Property> {
@@ -164,6 +190,12 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
         }
     }
 
+    fun Result<Invite>.registerInviteForDeletion(): Result<Invite> {
+        return this.onSuccess { invite ->
+            registerInviteForDeletion(invite.inviteId)
+        }
+    }
+
     fun registerSupabaseUserForDeletion(userId: String) {
         supabaseUsers.add(userId)
     }
@@ -194,6 +226,9 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
             supabase.auth.signOut()
             supabase.auth.clearSession()
 
+            invitationResources.forEach {
+                userDatastore.removeInvite(it).getOrThrow()
+            }
             eventLogResources.forEach {
                 eventLogDatastore.deleteEventLogEntry(it).getOrThrow()
             }

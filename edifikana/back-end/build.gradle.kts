@@ -93,6 +93,6 @@ dependencies {
     implementation("io.github.jan-tennert.supabase:auth-kt:_")
 
     testImplementation("io.ktor:ktor-server-test-host:_")
-    implementation("io.insert-koin:koin-test:_")
+    testImplementation("io.insert-koin:koin-test:_")
     testImplementation(project(":framework:test"))
 }

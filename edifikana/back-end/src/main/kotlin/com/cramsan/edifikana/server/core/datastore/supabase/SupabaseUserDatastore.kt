@@ -28,6 +28,8 @@ import io.github.jan.supabase.auth.exception.AuthRestException
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.query.Columns
 import io.ktor.http.HttpStatusCode
+import kotlin.time.Clock
+import kotlin.time.Instant
 
 /**
  * Datastore for managing users.
@@ -36,6 +38,7 @@ import io.ktor.http.HttpStatusCode
 class SupabaseUserDatastore(
     private val adminApi: AdminApi,
     private val postgrest: Postgrest,
+    private val clock: Clock,
 ) : UserDatastore {
 
     /**
@@ -328,17 +331,21 @@ class SupabaseUserDatastore(
     override suspend fun recordInvite(
         email: String,
         organizationId: OrganizationId,
-    ): Result<Unit> = runSuspendCatching(TAG) {
+        expiration: Instant,
+    ): Result<Invite> = runSuspendCatching(TAG) {
         logD(TAG, "Recording invite for email: %s", email)
 
         val inviteEntity = InviteEntity.Create(
             email = email,
             organizationId = organizationId.id,
+            createdAt = clock.now(),
+            expiration = expiration,
         )
 
-        postgrest.from(InviteEntity.COLLECTION).insert(inviteEntity) {
+        val data = postgrest.from(InviteEntity.COLLECTION).insert(inviteEntity) {
             select()
-        }.decodeSingle<InviteEntity>()
+        }
+        data.decodeSingle<InviteEntity>().toInvite()
     }
 
     override suspend fun getInvites(organizationId: OrganizationId): Result<List<Invite>> {
@@ -346,9 +353,29 @@ class SupabaseUserDatastore(
             val organizations = postgrest.from(InviteEntity.COLLECTION).select {
                 filter {
                     eq("organization_id", organizationId.id)
+                    gt("expiration", clock.now()) // Only non-expired invites
                 }
             }
             organizations.decodeList<InviteEntity>().map { it.toInvite() }
+        }
+    }
+
+    override suspend fun removeInvite(
+        inviteId: InviteId,
+    ): Result<Unit> = runSuspendCatching(TAG) {
+        logD(TAG, "Removing invite: %s", inviteId)
+
+        val deleted = postgrest.from(InviteEntity.COLLECTION).delete {
+            select()
+            filter {
+                eq("id", inviteId.id)
+            }
+        }.decodeSingleOrNull<InviteEntity>() != null
+
+        if (!deleted) {
+            throw ClientRequestExceptions.NotFoundException(
+                message = "Error: Invite with ID $inviteId not found.",
+            )
         }
     }
 

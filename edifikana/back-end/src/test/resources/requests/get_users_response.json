@@ -1,18 +1,20 @@
-[
-    {
-        "id": "user123",
-        "email": "john.doe@example.com",
-        "phone_number": "5051352468",
-        "first_name": "John",
-        "last_name": "Doe",
-        "auth_metadata": null
-    },
-    {
-        "id": "user456",
-        "email": "jane.smith@example.com",
-        "phone_number": "5051352469",
-        "first_name": "Jane",
-        "last_name": "Smith",
-        "auth_metadata": null
-    }
-]
+{
+    "content": [
+        {
+            "id": "user123",
+            "email": "john.doe@example.com",
+            "phone_number": "5051352468",
+            "first_name": "John",
+            "last_name": "Doe",
+            "auth_metadata": null
+        },
+        {
+            "id": "user456",
+            "email": "jane.smith@example.com",
+            "phone_number": "5051352469",
+            "first_name": "Jane",
+            "last_name": "Smith",
+            "auth_metadata": null
+        }
+    ]
+}

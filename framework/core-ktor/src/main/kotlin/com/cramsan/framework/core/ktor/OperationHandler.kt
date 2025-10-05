@@ -1,15 +1,25 @@
 package com.cramsan.framework.core.ktor
 
+import com.cramsan.framework.annotations.api.NoPathParam
+import com.cramsan.framework.annotations.api.NoQueryParam
+import com.cramsan.framework.annotations.api.NoRequestBody
+import com.cramsan.framework.annotations.api.NoResponseBody
+import com.cramsan.framework.annotations.api.PathParam
+import com.cramsan.framework.annotations.api.QueryParam
+import com.cramsan.framework.annotations.api.RequestBody
+import com.cramsan.framework.annotations.api.ResponseBody
+import com.cramsan.framework.httpserializers.decodeFromValue
 import com.cramsan.framework.logging.logV
 import com.cramsan.framework.networkapi.Api
 import com.cramsan.framework.networkapi.Operation
-import com.cramsan.framework.networkapi.OperationNoArg
-import com.cramsan.framework.networkapi.OperationWithArg
+import com.cramsan.framework.networkapi.OperationHandler
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.request.receive
+import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.Routing
+import io.ktor.server.routing.RoutingCall
 import io.ktor.server.routing.route
 import io.ktor.util.reflect.TypeInfo
 import kotlinx.serialization.InternalSerializationApi
@@ -22,6 +32,9 @@ object OperationHandler {
 
     /**
      * Builder class to hold the API and the corresponding route for registration.
+     *
+     * @param api The API instance being registered.
+     * @param route The Ktor route associated with the API.
      */
     data class RegistrationBuilder<T : Api>(
         val api: T,
@@ -30,6 +43,8 @@ object OperationHandler {
 
     /**
      * Registers the routes for the given API within the provided Ktor routing context.
+     *
+     * This sets up a sub-route for the API's path and allows further configuration using the [RegistrationBuilder].
      *
      * @param route The Ktor routing context where the API routes will be registered.
      * @param build A lambda with receiver to configure the registration using [RegistrationBuilder].
@@ -44,44 +59,42 @@ object OperationHandler {
         }
     }
 
-    /** Handles an operation with an argument extracted from the URL path.
+    /**
+     * Handles an operation with an argument extracted from the URL path.
+     *
+     * Sets up a route for the operation, retrieves context, and invokes the handler with a
+     * constructed [OperationRequest].
+     * Handles errors for unauthorized access, invalid path/query parameters, and request/response serialization.
      *
      * @param route The Ktor route where the operation will be handled.
      * @param contextRetriever A suspend function to retrieve the context from the [ApplicationCall].
      * @param handler A suspend function that processes the request and returns an [HttpResponse].
      */
-    fun <Request : Any, QueryParam : Any, Response : Any, Context>
-        OperationWithArg<Request, QueryParam, Response>.handle(
+    fun <
+        RequestType : RequestBody,
+        QueryParamType : QueryParam,
+        PathParamType : PathParam,
+        ResponseType : ResponseBody,
+        Context
+        >
+        Operation<RequestType, QueryParamType, PathParamType, ResponseType>.handle(
             route: Route,
             contextRetriever: suspend ApplicationCall.() -> Context,
-            handler: suspend ApplicationCall.(Context, Request, QueryParam, String) -> HttpResponse<Response>,
+            handler: suspend ApplicationCall.(
+                OperationRequest<RequestType, QueryParamType, PathParamType, Context>
+            ) -> HttpResponse<ResponseType>,
         ) {
-        this.handleImpl(route, contextRetriever) { context, body, queryParam, param ->
-            if (param.isNullOrBlank()) {
-                throw ClientRequestExceptions.InvalidRequestException("Missing path parameter")
-            }
-            handler(context, body, queryParam, param)
-        }
-    }
-
-    /** Handles an operation without any argument extracted from the URL path.
-     *
-     * @param route The Ktor route where the operation will be handled.
-     * @param contextRetriever A suspend function to retrieve the context from the [ApplicationCall].
-     * @param handler A suspend function that processes the request and returns an [HttpResponse].
-     */
-    fun <Request : Any, QueryParam : Any, Response : Any, Context> OperationNoArg<Request, QueryParam, Response>.handle(
-        route: Route,
-        contextRetriever: suspend (ApplicationCall) -> Context,
-        handler: suspend (Context, Request, QueryParam) -> HttpResponse<Response>,
-    ) {
-        this.handleImpl(route, contextRetriever) { context, body, queryParam, _ ->
-            handler(context, body, queryParam)
+        this.handleImpl(route, contextRetriever) { request ->
+            handler(request)
         }
     }
 
     /**
      * Internal implementation to handle the operation. This function sets up the Ktor route and processes the request.
+     *
+     * Handles context retrieval, path/query parameter extraction, request body deserialization,
+     * and response serialization.
+     * Responds with appropriate error codes for unauthorized access, invalid parameters, or handler exceptions.
      *
      * @param route The Ktor route where the operation will be handled.
      * @param contextRetriever A suspend function to retrieve the context from the [ApplicationCall].
@@ -89,11 +102,19 @@ object OperationHandler {
      */
     @OptIn(InternalSerializationApi::class)
     @Suppress("LongMethod", "ThrowsCount")
-    private fun <Request : Any, QueryParam : Any, Response : Any, Context>
-        Operation<Request, QueryParam, Response>.handleImpl(
+    private fun <
+        RequestType : RequestBody,
+        QueryParamType : QueryParam,
+        PathParamType : PathParam,
+        ResponseType : ResponseBody,
+        Context
+        >
+        Operation<RequestType, QueryParamType, PathParamType, ResponseType>.handleImpl(
             route: Route,
             contextRetriever: suspend (ApplicationCall) -> Context,
-            block: suspend ApplicationCall.(Context, Request, QueryParam, String?) -> HttpResponse<Response>,
+            block: suspend ApplicationCall.(
+                OperationRequest<RequestType, QueryParamType, PathParamType, Context>,
+            ) -> HttpResponse<ResponseType>,
         ) {
         val handler = this.toOperationHandler()
         route.route(handler.fullPath, handler.method) {
@@ -115,49 +136,43 @@ object OperationHandler {
                     )
                     return@handle
                 }
-
-                val param = handler.param?.let {
-                    val resolvedParam = call.parameters[it]
-                    if (resolvedParam.isNullOrBlank()) {
-                        call.validateClientError(
-                            tag = TAG,
-                            exception = ClientRequestExceptions.InvalidRequestException("Missing path parameter."),
-                        )
-                        return@handle
-                    }
-                    resolvedParam
+                val paramResult = getPathParam(handler, call)
+                if (paramResult.isFailure) {
+                    call.validateClientError(
+                        tag = TAG,
+                        exception = ClientRequestExceptions.InvalidRequestException("Invalid path parameter"),
+                    )
+                    return@handle
                 }
+                val param = paramResult.getOrThrow()
 
-                val queryParams = if (handler.queryParamType == Unit::class) {
-                    Unit
-                } else {
-                    val queryParamResult = runCatching {
-                        decodeFromQueryParams(handler.queryParamType.serializer(), call.request.queryParameters)
-                    }
-                    if (queryParamResult.isFailure) {
-                        call.validateClientError(
-                            tag = TAG,
-                            exception = ClientRequestExceptions.InvalidRequestException(
-                                "Invalid query parameters: " +
-                                    (queryParamResult.exceptionOrNull()?.message ?: "Unknown error")
-                            ),
-                        )
-                        return@handle
-                    } else {
-                        queryParamResult.getOrThrow()
-                    }
-                } as QueryParam
+                val queryParamResult = getQueryParam(handler, call)
+                if (queryParamResult.isFailure) {
+                    call.validateClientError(
+                        tag = TAG,
+                        exception = ClientRequestExceptions.InvalidRequestException("Invalid query parameters"),
+                    )
+                    return@handle
+                }
+                val queryParams = queryParamResult.getOrThrow()
 
                 val context = contextResult.getOrThrow()
-                val body = if (handler.requestBodyType == Unit::class) {
-                    Unit as Request
+                val body = if (handler.requestBodyType == NoRequestBody::class) {
+                    NoRequestBody as RequestType
                 } else {
                     call.receive(handler.requestBodyType)
                 }
 
                 val responseResult = runCatching {
                     call.run {
-                        block(context, body, queryParams, param)
+                        val operationRequest: OperationRequest<RequestType, QueryParamType, PathParamType, Context> =
+                            OperationRequest(
+                                requestBody = body,
+                                queryParam = queryParams,
+                                pathParam = param,
+                                context = context,
+                            )
+                        block(operationRequest)
                     }
                 }
 
@@ -171,10 +186,62 @@ object OperationHandler {
 
                 val response = responseResult.getOrThrow()
                 call.response.status(response.status)
-                call.respond(response.body, TypeInfo(handler.responseBodyType))
+                if (handler.responseBodyType != NoResponseBody::class) {
+                    call.respond(response.body, TypeInfo(handler.responseBodyType))
+                } else {
+                    call.respond(Unit)
+                }
             }
         }
     }
+}
+
+@OptIn(InternalSerializationApi::class)
+private fun <
+    RequestType : RequestBody,
+    QueryParamType : QueryParam,
+    PathParamType : PathParam,
+    ResponseType : ResponseBody,
+    > getPathParam(
+    handler: OperationHandler<RequestType, QueryParamType, PathParamType, ResponseType>,
+    call: RoutingCall,
+): Result<PathParamType> = runCatching {
+    val paramString = handler.param
+    if (paramString == null && handler.pathParamType.isInstance(NoPathParam)) {
+        NoPathParam as PathParamType
+    } else if (paramString != null && !handler.pathParamType.isInstance(NoPathParam)) {
+        val resolvedParam = call.parameters[paramString]
+        if (resolvedParam.isNullOrBlank()) {
+            throw ClientRequestExceptions.InvalidRequestException("Missing path parameter.")
+        }
+        decodeFromValue(handler.pathParamType.serializer(), resolvedParam) as PathParamType
+    } else {
+        TODO()
+    }
+}
+
+@OptIn(InternalSerializationApi::class)
+private fun <
+    RequestType : RequestBody,
+    QueryParamType : QueryParam,
+    PathParamType : PathParam,
+    ResponseType : ResponseBody,
+    > getQueryParam(
+    handler: OperationHandler<RequestType, QueryParamType, PathParamType, ResponseType>,
+    call: RoutingCall,
+): Result<QueryParamType> = runCatching {
+    if (handler.queryParamType == NoQueryParam::class) {
+        NoQueryParam
+    } else {
+        val queryParamResult = runCatching {
+            decodeFromQueryParams(handler.queryParamType.serializer(), call.request.queryParameters)
+        }
+        if (queryParamResult.isFailure) {
+            throw ClientRequestExceptions.InvalidRequestException("Invalid query parameters")
+        } else {
+            queryParamResult.getOrThrow()
+        }
+    } as QueryParamType
 }
 
 private const val TAG = "OperationHandler"

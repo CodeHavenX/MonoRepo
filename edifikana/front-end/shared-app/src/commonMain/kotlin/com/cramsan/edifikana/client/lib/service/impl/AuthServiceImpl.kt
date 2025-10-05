@@ -64,7 +64,9 @@ class AuthServiceImpl(
 
     @OptIn(NetworkModel::class)
     override suspend fun getUser(): Result<UserModel> = runSuspendCatching(TAG) {
-        val userId = auth.currentUserOrNull()?.id ?: error("User not signed in")
+        val userId = auth.currentUserOrNull()?.id?.let {
+            UserId(it)
+        } ?: error("User not signed in")
         val response = UserApi.getUser.buildRequest(
             argument = userId,
         ).execute(http)
@@ -80,7 +82,7 @@ class AuthServiceImpl(
         val response = UserApi.getAllUsers
             .buildRequest(GetAllUsersQueryParams(organizationId))
             .execute(http)
-        val userModels = response.map { it.toUserModel() }
+        val userModels = response.content.map { it.toUserModel() }
         userModels
     }
 
@@ -240,9 +242,9 @@ class AuthServiceImpl(
     @OptIn(NetworkModel::class)
     override suspend fun getInvites(organizationId: OrganizationId): Result<List<Invite>> = runSuspendCatching(TAG) {
         val response = UserApi.getInvites.buildRequest(
-            argument = organizationId.id,
+            argument = organizationId,
         ).execute(http)
-        val invites = response.map { it.toInvite() }
+        val invites = response.content.map { it.toInvite() }
         invites
     }
 

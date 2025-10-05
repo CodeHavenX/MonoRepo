@@ -1,37 +1,98 @@
 package com.cramsan.edifikana.api
 
+import com.cramsan.edifikana.lib.model.OrganizationId
+import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.model.network.CreateUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.GetAllUsersQueryParams
-import com.cramsan.edifikana.lib.model.network.InviteNetworkResponse
+import com.cramsan.edifikana.lib.model.network.InviteListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.InviteUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdatePasswordNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdateUserNetworkRequest
+import com.cramsan.edifikana.lib.model.network.UserListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
+import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.annotations.api.NoPathParam
+import com.cramsan.framework.annotations.api.NoQueryParam
+import com.cramsan.framework.annotations.api.NoRequestBody
+import com.cramsan.framework.annotations.api.NoResponseBody
 import com.cramsan.framework.networkapi.Api
 import io.ktor.http.HttpMethod
 
 /**
  * Singleton object representing the User API with its operations.
  */
+@OptIn(NetworkModel::class)
 object UserApi : Api("user") {
 
-    val createUser = operationNoArg<CreateUserNetworkRequest, Unit, UserNetworkResponse>(HttpMethod.Post)
+    val createUser =
+        operation<
+            CreateUserNetworkRequest,
+            NoQueryParam,
+            NoPathParam,
+            UserNetworkResponse
+            >(HttpMethod.Post)
 
-    val getUser = operationWithArg<Unit, Unit, UserNetworkResponse>(HttpMethod.Get)
+    val getUser = operation<
+        NoRequestBody,
+        NoQueryParam,
+        UserId,
+        UserNetworkResponse
+        >(HttpMethod.Get)
 
-    val updatePassword = operationNoArg<UpdatePasswordNetworkRequest, Unit, Unit>(HttpMethod.Put, "password")
+    val updatePassword = operation<
+        UpdatePasswordNetworkRequest,
+        NoQueryParam,
+        NoPathParam,
+        NoResponseBody
+        >(
+        HttpMethod.Put,
+        "password",
+    )
 
-    val getAllUsers = operationNoArg<Unit, GetAllUsersQueryParams, List<UserNetworkResponse>>(
+    val getAllUsers = operation<
+        NoRequestBody,
+        GetAllUsersQueryParams,
+        NoPathParam,
+        UserListNetworkResponse
+        >(
         HttpMethod.Get
     )
 
-    val updateUser = operationWithArg<UpdateUserNetworkRequest, Unit, UserNetworkResponse>(HttpMethod.Put)
+    val updateUser = operation<
+        UpdateUserNetworkRequest,
+        NoQueryParam,
+        UserId,
+        UserNetworkResponse
+        >(HttpMethod.Put)
 
-    val deleteUser = operationWithArg<Unit, Unit, Unit>(HttpMethod.Delete)
+    val deleteUser = operation<
+        NoRequestBody,
+        NoQueryParam,
+        UserId,
+        NoResponseBody
+        >(HttpMethod.Delete)
 
-    val associateUser = operationNoArg<Unit, Unit, UserNetworkResponse>(HttpMethod.Post, "associate")
+    val associateUser = operation<
+        NoRequestBody,
+        NoQueryParam,
+        NoPathParam,
+        UserNetworkResponse
+        >(HttpMethod.Post, "associate")
 
-    val inviteUser = operationNoArg<InviteUserNetworkRequest, Unit, Unit>(HttpMethod.Post, "invite")
+    val inviteUser = operation<
+        InviteUserNetworkRequest,
+        NoQueryParam,
+        NoPathParam,
+        NoResponseBody
+        >(HttpMethod.Post, "invite")
 
-    val getInvites = operationWithArg<Unit, Unit, List<InviteNetworkResponse>>(HttpMethod.Get, "invites")
+    val getInvites = operation<
+        NoRequestBody,
+        NoQueryParam,
+        OrganizationId,
+        InviteListNetworkResponse
+        >(
+        HttpMethod.Get,
+        "invites"
+    )
 }

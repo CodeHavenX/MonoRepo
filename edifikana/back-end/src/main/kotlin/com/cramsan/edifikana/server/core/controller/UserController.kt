@@ -5,10 +5,11 @@ import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.model.network.CreateUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.GetAllUsersQueryParams
-import com.cramsan.edifikana.lib.model.network.InviteNetworkResponse
+import com.cramsan.edifikana.lib.model.network.InviteListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.InviteUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdatePasswordNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdateUserNetworkRequest
+import com.cramsan.edifikana.lib.model.network.UserListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
 import com.cramsan.edifikana.lib.utils.requireNotBlank
 import com.cramsan.edifikana.lib.utils.requireSuccess
@@ -18,6 +19,7 @@ import com.cramsan.edifikana.server.core.service.UserService
 import com.cramsan.edifikana.server.core.service.authorization.RBACService
 import com.cramsan.edifikana.server.core.service.models.UserRole
 import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.annotations.api.NoResponseBody
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.framework.core.ktor.OperationHandler.register
@@ -38,6 +40,8 @@ class UserController(
 
     /**
      * Handles the creation of a new user.
+     * Creates a user with the provided request data and returns the created user as a network response.
+     * Throws [IllegalArgumentException] if required fields are missing.
      */
     @OptIn(NetworkModel::class)
     suspend fun createUser(createUserRequest: CreateUserNetworkRequest): UserNetworkResponse {
@@ -59,26 +63,31 @@ class UserController(
     }
 
     /**
-     * Handles the retrieval of a user.
+     * Handles the retrieval of a user by ID.
+     * Returns the user as a network response if the authenticated context has the required role, or null if not found.
+     * Throws [UnauthorizedException] if the user does not have permission.
      */
     @OptIn(NetworkModel::class)
-    suspend fun getUser(context: ClientContext.AuthenticatedClientContext, userId: String): UserNetworkResponse? {
-        if (!rbacService.hasRole(context, UserId(userId))) {
+    suspend fun getUser(context: ClientContext.AuthenticatedClientContext, userId: UserId): UserNetworkResponse? {
+        if (!rbacService.hasRole(context, userId)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
         return userService.getUser(
-            id = UserId(userId),
+            id = userId,
         ).getOrNull()?.toUserNetworkResponse()
     }
 
     /**
      * Handles the updating of a user's password.
+     * Updates the password for the authenticated user if they have the required role.
+     * Returns [NoResponseBody] to indicate successful update.
+     * Throws [UnauthorizedException] if the user does not have permission.
      */
     @OptIn(NetworkModel::class, SecureStringAccess::class)
     suspend fun updatePassword(
         authenticatedContext: ClientContext.AuthenticatedClientContext,
         updatePasswordRequest: UpdatePasswordNetworkRequest,
-    ) {
+    ): NoResponseBody {
         val userId = authenticatedContext.userId
         if (!rbacService.hasRole(authenticatedContext, userId)) {
             throw UnauthorizedException(unauthorizedMsg)
@@ -91,16 +100,20 @@ class UserController(
         )
 
         result.requireSuccess()
+        return NoResponseBody
     }
 
     /**
      * Handles the retrieval of all users within an organization.
+     * Returns a list of users for the organization identified by [queryParams.orgId] if
+     * the authenticated context has the required role.
+     * Throws [UnauthorizedException] if the user does not have permission.
      */
     @OptIn(NetworkModel::class)
     suspend fun getUsers(
         context: ClientContext.AuthenticatedClientContext,
         queryParams: GetAllUsersQueryParams,
-    ): List<UserNetworkResponse> {
+    ): UserListNetworkResponse {
         val orgId = requireNotBlank(queryParams.orgId.id, "An organization ID must be provided.")
         if (!rbacService.hasRoleOrHigher(context, OrganizationId(orgId), UserRole.MANAGER)) {
             throw UnauthorizedException(unauthorizedMsg)
@@ -110,24 +123,27 @@ class UserController(
             organizationId = queryParams.orgId,
         ).getOrThrow().map { it.toUserNetworkResponse() }
 
-        return users
+        return UserListNetworkResponse(users)
     }
 
     /**
      * Handles the updating of a user.
+     * Updates the user identified by [userId] with the provided [updateUserRequest] if the
+     * authenticated context has the required role.
+     * Returns the updated user as a network response.
+     * Throws [UnauthorizedException] if the user does not have permission.
      */
     @OptIn(NetworkModel::class)
     suspend fun updateUser(
         context: ClientContext.AuthenticatedClientContext,
         updateUserRequest: UpdateUserNetworkRequest,
-        param: String
+        userId: UserId
     ): UserNetworkResponse {
-        val userId = requireNotBlank(param)
-        if (!rbacService.hasRole(context, UserId(userId))) {
+        if (!rbacService.hasRole(context, userId)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
         val updatedUser = userService.updateUser(
-            id = UserId(userId),
+            id = userId,
             email = updateUserRequest.email,
         ).getOrThrow().toUserNetworkResponse()
 
@@ -136,9 +152,11 @@ class UserController(
 
     /**
      * Handles the deletion of a user.
+     * Deletes the user identified by [userId] if the authenticated context has the required role.
+     * Returns [NoResponseBody] to indicate successful deletion.
+     * Throws [UnauthorizedException] if the user does not have permission.
      */
-    suspend fun deleteUser(context: ClientContext.AuthenticatedClientContext, param: String) {
-        val userId = UserId(param)
+    suspend fun deleteUser(context: ClientContext.AuthenticatedClientContext, userId: UserId): NoResponseBody {
         if (!rbacService.hasRole(context, userId)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
@@ -147,10 +165,14 @@ class UserController(
         )
 
         result.requireSuccess()
+        return NoResponseBody
     }
 
     /**
      * Handle a call to associate a user created in another system (e.g., Supabase) with our system.
+     * Associates the authenticated user with the system using their email and userId.
+     * Returns the associated user as a network response.
+     * Throws [IllegalArgumentException] if the user does not have a configured email.
      */
     @OptIn(NetworkModel::class)
     suspend fun associate(authenticatedContext: ClientContext.AuthenticatedClientContext): UserNetworkResponse {
@@ -169,9 +191,15 @@ class UserController(
 
     /**
      * Handle a call to invite a user to the system via email.
+     * Invites a user with the given [inviteRequest] if the authenticated context has the required role.
+     * Returns [NoResponseBody] to indicate successful invitation.
+     * Throws [UnauthorizedException] if the user does not have permission.
      */
     @OptIn(NetworkModel::class)
-    suspend fun inviteUser(context: ClientContext.AuthenticatedClientContext, inviteRequest: InviteUserNetworkRequest) {
+    suspend fun inviteUser(
+        context: ClientContext.AuthenticatedClientContext,
+        inviteRequest: InviteUserNetworkRequest
+    ): NoResponseBody {
         val email = inviteRequest.email
         val orgId = inviteRequest.organizationId
         if (!rbacService.hasRoleOrHigher(context, orgId, UserRole.MANAGER)) {
@@ -182,25 +210,28 @@ class UserController(
             email,
             orgId,
         ).requireSuccess()
+        return NoResponseBody
     }
 
     /**
      * Handle a call to get all pending invites for an organization.
+     * Returns a list of pending invites for the organization identified by [orgId] if the
+     * authenticated context has the required role.
+     * Throws [UnauthorizedException] if the user does not have permission.
      */
     @OptIn(NetworkModel::class)
     suspend fun getInvites(
         context: ClientContext.AuthenticatedClientContext,
-        param: String
-    ): List<InviteNetworkResponse> {
-        val orgId = requireNotBlank(param)
-        if (!rbacService.hasRoleOrHigher(context, OrganizationId(orgId), UserRole.MANAGER)) {
+        orgId: OrganizationId,
+    ): InviteListNetworkResponse {
+        if (!rbacService.hasRoleOrHigher(context, orgId, UserRole.MANAGER)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
         val invites = userService.getInvites(
-            organizationId = OrganizationId(orgId)
+            organizationId = orgId,
         ).getOrThrow().map { it.toInviteNetworkResponse() }
 
-        return invites
+        return InviteListNetworkResponse(invites)
     }
 
     /**
@@ -209,32 +240,32 @@ class UserController(
     @OptIn(NetworkModel::class)
     override fun registerRoutes(route: Routing) {
         UserApi.register(route) {
-            handler(api.getUser, contextRetriever) { context, _, _, param ->
-                getUser(context, param)
+            handler(api.getUser, contextRetriever) { request ->
+                getUser(request.context, request.pathParam)
             }
-            unauthenticatedHandler(api.createUser, contextRetriever) { _, body, _ ->
-                createUser(body)
+            unauthenticatedHandler(api.createUser, contextRetriever) { request ->
+                createUser(request.requestBody)
             }
-            handler(api.updatePassword, contextRetriever) { context, body, _ ->
-                updatePassword(context, body)
+            handler(api.updatePassword, contextRetriever) { request ->
+                updatePassword(request.context, request.requestBody)
             }
-            handler(api.getAllUsers, contextRetriever) { context, _, queryParam ->
-                getUsers(context, queryParam)
+            handler(api.getAllUsers, contextRetriever) { request ->
+                getUsers(request.context, request.queryParam)
             }
-            handler(api.updateUser, contextRetriever) { context, body, _, param ->
-                updateUser(context, body, param)
+            handler(api.updateUser, contextRetriever) { request ->
+                updateUser(request.context, request.requestBody, request.pathParam)
             }
-            handler(api.deleteUser, contextRetriever) { context, _, _, param ->
-                deleteUser(context, param)
+            handler(api.deleteUser, contextRetriever) { request ->
+                deleteUser(request.context, request.pathParam)
             }
-            handler(api.associateUser, contextRetriever) { context, _, _ ->
-                associate(context)
+            handler(api.associateUser, contextRetriever) { request ->
+                associate(request.context)
             }
-            handler(api.inviteUser, contextRetriever) { context, body, _ ->
-                inviteUser(context, body)
+            handler(api.inviteUser, contextRetriever) { request ->
+                inviteUser(request.context, request.requestBody)
             }
-            handler(api.getInvites, contextRetriever) { context, _, _, param ->
-                getInvites(context, param)
+            handler(api.getInvites, contextRetriever) { request ->
+                getInvites(request.context, request.pathParam)
             }
         }
     }

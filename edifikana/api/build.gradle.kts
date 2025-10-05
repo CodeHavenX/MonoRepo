@@ -1,7 +1,5 @@
 @file:OptIn(ExperimentalWasmDsl::class)
 
-import org.gradle.kotlin.dsl.implementation
-import org.gradle.kotlin.dsl.project
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
@@ -30,6 +28,7 @@ kotlin {
             dependencies {
                 implementation(project(":framework:interfacelib"))
                 implementation(project(":framework:network-api"))
+                implementation(project(":framework:annotations"))
 
                 implementation(project(":edifikana:shared"))
 

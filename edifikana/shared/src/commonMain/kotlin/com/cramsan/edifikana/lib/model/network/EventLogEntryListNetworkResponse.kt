@@ -1,16 +1,14 @@
 package com.cramsan.edifikana.lib.model.network
 
-import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.ResponseBody
 import kotlinx.serialization.Serializable
 
 /**
- * Response model for an invite.
+ * Model representing an event log entry.
  */
 @NetworkModel
 @Serializable
-data class InviteNetworkResponse(
-    val inviteId: InviteId,
-    val email: String,
+data class EventLogEntryListNetworkResponse(
+    val content: List<EventLogEntryNetworkResponse>,
 ) : ResponseBody

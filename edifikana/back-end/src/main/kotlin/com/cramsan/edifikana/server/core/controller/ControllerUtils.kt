@@ -2,16 +2,20 @@ package com.cramsan.edifikana.server.core.controller
 
 import com.cramsan.edifikana.server.core.controller.authentication.ClientContext
 import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
+import com.cramsan.framework.annotations.api.PathParam
+import com.cramsan.framework.annotations.api.QueryParam
+import com.cramsan.framework.annotations.api.RequestBody
+import com.cramsan.framework.annotations.api.ResponseBody
 import com.cramsan.framework.core.ktor.HttpResponse
 import com.cramsan.framework.core.ktor.OperationHandler
 import com.cramsan.framework.core.ktor.OperationHandler.handle
+import com.cramsan.framework.core.ktor.OperationRequest
 import com.cramsan.framework.core.ktor.validateClientError
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logI
 import com.cramsan.framework.logging.logW
 import com.cramsan.framework.networkapi.Api
-import com.cramsan.framework.networkapi.OperationNoArg
-import com.cramsan.framework.networkapi.OperationWithArg
+import com.cramsan.framework.networkapi.Operation
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.response.respond
@@ -19,20 +23,31 @@ import io.ktor.server.response.respondBytes
 import io.ktor.server.response.respondNullable
 
 /**
- * Register a handler for an operation that requires authentication. This function will retrieve the authenticated
- * client context and pass it to the handler. This function takes a [operation] of type [OperationWithArg], which means
- * the handler will receive an additional argument extracted from the URL.
+ * Registers a handler for an operation that requires authentication. Retrieves the authenticated client context
+ * and passes it to the handler. The handler receives an [OperationRequest] with the authenticated context.
+ *
+ * @param operation The operation to register the handler for.
+ * @param contextRetriever Used to get the client context from the call.
+ * @param handler The suspend function to handle the request, receives the authenticated context.
  */
-inline fun <Request : Any, QueryParam : Any, Response : Any, T : Api> OperationHandler.RegistrationBuilder<T>.handler(
-    operation: OperationWithArg<Request, QueryParam, Response>,
+inline fun <
+    RequestType : RequestBody,
+    QueryParamType : QueryParam,
+    PathParamType : PathParam,
+    ResponseType : ResponseBody,
+    T : Api,
+    > OperationHandler.RegistrationBuilder<T>.handler(
+    operation: Operation<RequestType, QueryParamType, PathParamType, ResponseType>,
     contextRetriever: ContextRetriever,
-    crossinline handler: suspend (ClientContext.AuthenticatedClientContext, Request, QueryParam, String) -> Response?,
+    crossinline handler: suspend (
+        OperationRequest<RequestType, QueryParamType, PathParamType, ClientContext.AuthenticatedClientContext>,
+    ) -> ResponseType?,
 ) {
     operation.handle(
         route,
         { requireAuthenticatedClientContext(contextRetriever.getContext(this)) },
-    ) { context, body, queryParam, param ->
-        val response = handler(context, body, queryParam, param)
+    ) { request ->
+        val response = handler(request)
 
         HttpResponse(
             status = if (response == null) {
@@ -46,47 +61,32 @@ inline fun <Request : Any, QueryParam : Any, Response : Any, T : Api> OperationH
 }
 
 /**
- * Register a handler for an operation that requires authentication. This function will retrieve the authenticated
- * client context and pass it to the handler. This function takes a [operation] of type [OperationNoArg].
+ * Registers a handler for an operation that does not require authentication. Retrieves the client context
+ * and passes it to the handler. The handler receives an [OperationRequest] with the context.
+ *
+ * @param operation The operation to register the handler for.
+ * @param contextRetriever Used to get the client context from the call.
+ * @param handler The suspend function to handle the request, receives the context.
  */
-inline fun <Request : Any, QueryParam : Any, Response : Any, T : Api> OperationHandler.RegistrationBuilder<T>.handler(
-    operation: OperationNoArg<Request, QueryParam, Response>,
-    contextRetriever: ContextRetriever,
-    crossinline handler: suspend (ClientContext.AuthenticatedClientContext, Request, QueryParam) -> Response?,
-) {
-    operation.handle(
-        route,
-        { requireAuthenticatedClientContext(contextRetriever.getContext(it)) },
-    ) { context, body, queryParam ->
-        val response = handler(context, body, queryParam)
-
-        HttpResponse(
-            status = if (response == null) {
-                HttpStatusCode.NotFound
-            } else {
-                HttpStatusCode.OK
-            },
-            body = response,
-        )
-    }
-}
-
-/**
- * Register a handler for an operation that does not require authentication. This function will retrieve the client
- * context and pass it to the handler. This function takes a [operation] of type [OperationWithArg], which means
- * the handler will receive an additional argument extracted from the URL.
- */
-inline fun <Request : Any, QueryParam : Any, Response : Any, T : Api>
+inline fun <
+    RequestType : RequestBody,
+    QueryParamType : QueryParam,
+    PathParamType : PathParam,
+    ResponseType : ResponseBody,
+    T : Api,
+    >
     OperationHandler.RegistrationBuilder<T>.unauthenticatedHandler(
-        operation: OperationWithArg<Request, QueryParam, Response>,
+        operation: Operation<RequestType, QueryParamType, PathParamType, ResponseType>,
         contextRetriever: ContextRetriever,
-        crossinline handler: suspend (ClientContext, Request, QueryParam, String) -> Response?,
+        crossinline handler: suspend (
+            OperationRequest<RequestType, QueryParamType, PathParamType, ClientContext>,
+        ) -> ResponseType?,
     ) {
     operation.handle(
         route,
         { contextRetriever.getContext(this) },
-    ) { context, body, queryParam, param ->
-        val response = handler(context, body, queryParam, param)
+    ) { request ->
+        val response = handler(request)
 
         HttpResponse(
             status = if (response == null) {
@@ -100,35 +100,13 @@ inline fun <Request : Any, QueryParam : Any, Response : Any, T : Api>
 }
 
 /**
- * Register a handler for an operation that does not require authentication. This function will retrieve the client
- * context and pass it to the handler. This function takes a [operation] of type [OperationNoArg].
- */
-inline fun <Request : Any, QueryParam : Any, Response : Any, T : Api>
-    OperationHandler.RegistrationBuilder<T>.unauthenticatedHandler(
-        operation: OperationNoArg<Request, QueryParam, Response>,
-        contextRetriever: ContextRetriever,
-        crossinline handler: suspend (ClientContext, Request, QueryParam) -> Response?,
-    ) {
-    operation.handle(
-        route,
-        { contextRetriever.getContext(it) },
-    ) { context, body, queryParam ->
-        val response = handler(context, body, queryParam)
-
-        HttpResponse(
-            status = if (response == null) {
-                HttpStatusCode.NotFound
-            } else {
-                HttpStatusCode.OK
-            },
-            body = response,
-        )
-    }
-}
-
-/**
- * Handle a call to a controller function that does not require authentication. This function will log the call,
- * execute the function, and respond to the client with the result.
+ * Handles a call to a controller function that does not require authentication. Logs the call,
+ * executes the function, and responds to the client with the result.
+ *
+ * @param tag Logger tag for this call.
+ * @param functionName Name of the function being called.
+ * @param contextRetriever Used to get the client context from the call.
+ * @param function The function to execute, receives the client context.
  */
 suspend inline fun ApplicationCall.handleUnauthenticatedCall(
     tag: String,
@@ -146,8 +124,13 @@ suspend inline fun ApplicationCall.handleUnauthenticatedCall(
 }
 
 /**
- * Handle a call to a controller function that requires authentication. This function will log the call, execute the
- * function, and respond to the client with the result.
+ * Handles a call to a controller function that requires authentication. Logs the call,
+ * executes the function, and responds to the client with the result.
+ *
+ * @param tag Logger tag for this call.
+ * @param functionName Name of the function being called.
+ * @param contextRetriever Used to get the client context from the call.
+ * @param function The function to execute, receives the authenticated client context.
  */
 suspend inline fun ApplicationCall.handleCall(
     tag: String,
@@ -165,8 +148,14 @@ suspend inline fun ApplicationCall.handleCall(
 }
 
 /**
- * Handle a call to a controller function. This function will log the call, execute the function, and respond to the
- * client with the result.
+ * Handles a call to a controller function. Logs the call, executes the function, and responds to the client
+ * with the result. Handles both authenticated and unauthenticated contexts depending on [verifyClientContext].
+ *
+ * @param tag Logger tag for this call.
+ * @param functionName Name of the function being called.
+ * @param contextRetriever Used to get the client context from the call.
+ * @param verifyClientContext Function to verify and cast the client context.
+ * @param function The function to execute, receives the verified client context.
  */
 suspend inline fun <T : ClientContext> ApplicationCall.handleCall(
     tag: String,
@@ -217,13 +206,14 @@ suspend inline fun <T : ClientContext> ApplicationCall.handleCall(
 }
 
 /**
- * Get the authenticated client context from a client context. If the client context is not authenticated, an exception
- * will be thrown.
+ * Returns the authenticated client context from a [ClientContext]. Throws an exception if the context is
+ * not authenticated.
  *
- * TODO: We need to have this function be an inline function due to a weird java.lang.NoSuchMethodError when being
- * invoked. I dont know the source of this issue, but making this function inline fixes it for now.
- * @param clientContext The client context to get the authenticated client context from.
+ * This function is inline due to a NoSuchMethodError when invoked otherwise.
+ *
+ * @param clientContext The client context to check.
  * @return The authenticated client context.
+ * @throws IllegalStateException if the client context is not authenticated.
  */
 @Suppress("UseCheckOrError")
 inline fun requireAuthenticatedClientContext(clientContext: ClientContext): ClientContext.AuthenticatedClientContext {

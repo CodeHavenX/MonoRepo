@@ -1,5 +1,12 @@
 package com.cramsan.edifikana.client.lib.service.impl
 
+import com.cramsan.framework.annotations.api.NoQueryParam
+import com.cramsan.framework.annotations.api.NoRequestBody
+import com.cramsan.framework.annotations.api.NoResponseBody
+import com.cramsan.framework.annotations.api.PathParam
+import com.cramsan.framework.annotations.api.QueryParam
+import com.cramsan.framework.annotations.api.RequestBody
+import com.cramsan.framework.annotations.api.ResponseBody
 import com.cramsan.framework.httpserializers.encodeToKeyValueMap
 import com.cramsan.framework.networkapi.OperationRequest
 import io.ktor.client.HttpClient
@@ -19,17 +26,24 @@ import kotlinx.serialization.InternalSerializationApi
  *
  * This function constructs and sends an HTTP request based on the details provided in the
  * [OperationRequest] instance. It handles query parameters, request body, and response deserialization.
+ * If [NoRequestBody] is used, no body is sent. If [NoResponseBody] is expected, the function returns [NoResponseBody].
  *
  * @param http The [HttpClient] to use for making the request.
- * @return The response deserialized into the expected type [Response].
+ * @param headersBlock Optional block to add custom headers to the request.
+ * @return The response deserialized into the expected type [ResponseType], or [NoResponseBody] if specified.
  * @throws Exception if the request fails or if deserialization fails.
  */
 @OptIn(InternalSerializationApi::class, ExperimentalSerializationApi::class)
-suspend inline fun <reified Request : Any, reified QueryParams : Any, reified Response : Any>
-    OperationRequest<Request, QueryParams, Response>.execute(
+suspend inline fun <
+    reified RequestType : RequestBody,
+    reified QueryParamsType : QueryParam,
+    reified PathParamsType : PathParam,
+    reified ResponseType : ResponseBody
+    >
+    OperationRequest<RequestType, QueryParamsType, PathParamsType, ResponseType>.execute(
         http: HttpClient,
         noinline headersBlock: (HeadersBuilder.() -> Unit)? = null,
-    ): Response {
+    ): ResponseType {
     val request = this
     val httpRequest = http.request {
         method = request.method
@@ -38,7 +52,7 @@ suspend inline fun <reified Request : Any, reified QueryParams : Any, reified Re
         }
         url {
             appendPathSegments(request.fullPath)
-            if (QueryParams::class != Unit::class) {
+            if (QueryParamsType::class != NoQueryParam::class) {
                 val paramsMap = encodeToKeyValueMap(request.queryParam)
 
                 paramsMap.forEach { (key, value) ->
@@ -46,14 +60,14 @@ suspend inline fun <reified Request : Any, reified QueryParams : Any, reified Re
                 }
             }
         }
-        if (request.body != Unit) {
+        if (request.body != NoRequestBody) {
             setBody(request.body)
             contentType(ContentType.Application.Json)
         }
     }
 
-    return if (Response::class == Unit::class) {
-        Unit as Response
+    return if (ResponseType::class == NoResponseBody::class) {
+        NoResponseBody as ResponseType
     } else {
         httpRequest.body()
     }

@@ -13,7 +13,6 @@ interface OrganizationDatastore {
     /**
      * Create a new organization.
      *
-     * @param owner The ID of the user who will own the organization.
      * @return The created organization or an error.
      */
     suspend fun createOrganization(): Result<Organization>

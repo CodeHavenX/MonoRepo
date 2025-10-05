@@ -2,6 +2,7 @@ package com.cramsan.edifikana.lib.model.network
 
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.annotations.api.QueryParam
 import kotlinx.serialization.Serializable
 
 /**
@@ -13,4 +14,4 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class GetAllUsersQueryParams(
     val orgId: OrganizationId,
-)
+) : QueryParam

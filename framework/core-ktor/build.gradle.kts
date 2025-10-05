@@ -7,6 +7,7 @@ apply(from = "$rootDir/gradle/kotlin-jvm-target-lib.gradle")
 
 dependencies {
     implementation(project(":framework:interfacelib"))
+    implementation(project(":framework:annotations"))
     implementation(project(":framework:network-api"))
     implementation(project(":framework:utils"))
     implementation(project(":framework:http-serializers"))

@@ -4,6 +4,7 @@ import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.annotations.api.RequestBody
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -26,4 +27,4 @@ data class CreateEventLogEntryNetworkRequest(
     val title: String,
     val description: String?,
     val unit: String,
-)
+) : RequestBody

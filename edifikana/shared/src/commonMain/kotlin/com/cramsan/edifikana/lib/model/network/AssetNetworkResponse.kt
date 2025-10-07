@@ -2,6 +2,7 @@ package com.cramsan.edifikana.lib.model.network
 
 import com.cramsan.edifikana.lib.model.AssetId
 import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.annotations.api.ResponseBody
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -18,4 +19,4 @@ data class AssetNetworkResponse(
     val fileName: String,
     @SerialName("signed_url")
     val signedUrl: String?,
-)
+) : ResponseBody

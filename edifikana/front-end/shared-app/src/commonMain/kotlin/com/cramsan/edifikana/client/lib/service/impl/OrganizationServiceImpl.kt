@@ -1,15 +1,13 @@
 package com.cramsan.edifikana.client.lib.service.impl
 
+import com.cramsan.edifikana.api.OrganizationApi
 import com.cramsan.edifikana.client.lib.models.Organization
 import com.cramsan.edifikana.client.lib.service.OrganizationService
-import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.network.OrganizationNetworkResponse
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.core.runSuspendCatching
+import com.cramsan.framework.networkapi.buildRequest
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.get
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -35,14 +33,20 @@ class OrganizationServiceImpl(
     override suspend fun getOrganization(
         organizationId: OrganizationId,
     ): Result<Organization> = runSuspendCatching(TAG) {
-        val response = http.get("${Routes.Organization.PATH}/$organizationId").body<OrganizationNetworkResponse>()
+        val response = OrganizationApi
+            .getOrganization
+            .buildRequest(organizationId)
+            .execute(http)
         response.toOrganizationModel()
     }
 
     @OptIn(NetworkModel::class)
     override suspend fun getOrganizations(): Result<List<Organization>> = runSuspendCatching(TAG) {
-        val response = http.get(Routes.Organization.PATH).body<List<OrganizationNetworkResponse>>()
-        response.map { it.toOrganizationModel() }
+        val response = OrganizationApi
+            .getOrganizationList
+            .buildRequest()
+            .execute(http)
+        response.organizations.map { it.toOrganizationModel() }
     }
 
     companion object {

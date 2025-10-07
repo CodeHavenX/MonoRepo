@@ -1,8 +1,8 @@
 package com.cramsan.edifikana.client.lib.service.impl
 
+import com.cramsan.edifikana.api.PropertyApi
 import com.cramsan.edifikana.client.lib.models.PropertyModel
 import com.cramsan.edifikana.client.lib.service.PropertyService
-import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.network.CreatePropertyNetworkRequest
@@ -10,15 +10,9 @@ import com.cramsan.edifikana.lib.model.network.PropertyNetworkResponse
 import com.cramsan.edifikana.lib.model.network.UpdatePropertyNetworkRequest
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.core.runSuspendCatching
+import com.cramsan.framework.networkapi.buildRequest
 import com.cramsan.framework.preferences.Preferences
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.get
-import io.ktor.client.request.post
-import io.ktor.client.request.put
-import io.ktor.client.request.setBody
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -35,8 +29,11 @@ class PropertyServiceImpl(
     @OptIn(NetworkModel::class)
     override suspend fun getPropertyList(): Result<List<PropertyModel>> = runSuspendCatching(TAG) {
         val activePropertyId = preferences.loadString(PREF_ACTIVE_PROPERTY)
-        val response = http.get(Routes.Property.PATH) {}.body<List<PropertyNetworkResponse>>()
-        val propertyList = response.map {
+        val response = PropertyApi
+            .getAssignedProperties
+            .buildRequest()
+            .execute(http)
+        val propertyList = response.properties.map {
             it.toPropertyModel()
         }
         // Find the first property that matches the active property id.
@@ -63,7 +60,10 @@ class PropertyServiceImpl(
 
     @OptIn(NetworkModel::class)
     override suspend fun getProperty(propertyId: PropertyId): Result<PropertyModel> = runSuspendCatching(TAG) {
-        val response = http.get("${Routes.Property.PATH}/$propertyId").body<PropertyNetworkResponse>()
+        val response = PropertyApi
+            .getProperty
+            .buildRequest(propertyId)
+            .execute(http)
         response.toPropertyModel()
     }
 
@@ -72,19 +72,17 @@ class PropertyServiceImpl(
         propertyName: String,
         address: String,
         organizationId: OrganizationId,
-    ): Result<PropertyModel> = runSuspendCatching(
-        TAG
-    ) {
-        val response = http.post(Routes.Property.PATH) {
-            setBody(
+    ): Result<PropertyModel> = runSuspendCatching(TAG) {
+        val response = PropertyApi
+            .createProperty
+            .buildRequest(
                 CreatePropertyNetworkRequest(
                     name = propertyName,
                     address = address,
                     organizationId = organizationId,
                 )
             )
-            contentType(ContentType.Application.Json)
-        }.body<PropertyNetworkResponse>()
+            .execute(http)
 
         response.toPropertyModel()
     }
@@ -95,15 +93,14 @@ class PropertyServiceImpl(
         name: String,
         address: String,
     ): Result<PropertyModel> = runSuspendCatching(TAG) {
-        val response = http.put("${Routes.Property.PATH}/$propertyId") {
-            setBody(
+        val response = PropertyApi
+            .updateProperty.buildRequest(
+                propertyId,
                 UpdatePropertyNetworkRequest(
                     name = name,
                     address = address,
                 )
-            )
-            contentType(ContentType.Application.Json)
-        }.body<PropertyNetworkResponse>()
+            ).execute(http)
 
         response.toPropertyModel()
     }

@@ -1,9 +1,10 @@
 package com.cramsan.edifikana.server.core.controller
 
-import com.cramsan.edifikana.lib.Routes
-import com.cramsan.edifikana.lib.Routes.Property.QueryParams.PROPERTY_ID
+import com.cramsan.edifikana.api.PropertyApi
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.network.CreatePropertyNetworkRequest
+import com.cramsan.edifikana.lib.model.network.PropertyListNetworkResponse
+import com.cramsan.edifikana.lib.model.network.PropertyNetworkResponse
 import com.cramsan.edifikana.lib.model.network.UpdatePropertyNetworkRequest
 import com.cramsan.edifikana.server.core.controller.authentication.ClientContext
 import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
@@ -11,22 +12,19 @@ import com.cramsan.edifikana.server.core.service.PropertyService
 import com.cramsan.edifikana.server.core.service.authorization.RBACService
 import com.cramsan.edifikana.server.core.service.models.UserRole
 import com.cramsan.framework.annotations.NetworkModel
-import com.cramsan.framework.core.ktor.HttpResponse
+import com.cramsan.framework.annotations.api.NoPathParam
+import com.cramsan.framework.annotations.api.NoQueryParam
+import com.cramsan.framework.annotations.api.NoRequestBody
+import com.cramsan.framework.annotations.api.NoResponseBody
+import com.cramsan.framework.core.ktor.OperationHandler.register
+import com.cramsan.framework.core.ktor.OperationRequest
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.UnauthorizedException
-import io.ktor.http.HttpStatusCode
-import io.ktor.server.application.ApplicationCall
-import io.ktor.server.request.receive
 import io.ktor.server.routing.Routing
-import io.ktor.server.routing.RoutingCall
-import io.ktor.server.routing.delete
-import io.ktor.server.routing.get
-import io.ktor.server.routing.post
-import io.ktor.server.routing.put
-import io.ktor.server.routing.route
 
 /**
  * Controller for property related operations.
  */
+@OptIn(NetworkModel::class)
 class PropertyController(
     private val propertyService: PropertyService,
     private val contextRetriever: ContextRetriever,
@@ -36,140 +34,98 @@ class PropertyController(
     val unauthorizedMsg = "You are not authorized to perform this action in your organization."
 
     /**
-     * Handles the creation of a new property. The [call] parameter is the request context.
+     * Creates a new property using the provided request data.
+     * Returns the created property as a network response.
+     * Throws [UnauthorizedException] if the user does not have ADMIN role in the organization.
      */
-    @OptIn(NetworkModel::class)
-    suspend fun createProperty(call: ApplicationCall) = call.handleCall(
-        TAG,
-        "createProperty",
-        contextRetriever
-    ) { context ->
-        val createPropertyRequest = call.receive<CreatePropertyNetworkRequest>()
-        val authenticatedContext = requireAuthenticatedClientContext(context)
-        // check user has perms in their org to create new properties
-        if (!rbacService.hasRole(context, createPropertyRequest.organizationId, UserRole.ADMIN)) {
+    suspend fun createProperty(
+        request:
+        OperationRequest<
+            CreatePropertyNetworkRequest,
+            NoQueryParam,
+            NoPathParam,
+            ClientContext.AuthenticatedClientContext
+            >
+    ): PropertyNetworkResponse {
+        if (!rbacService.hasRole(request.context, request.requestBody.organizationId, UserRole.ADMIN)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
         val newProperty = propertyService.createProperty(
-            createPropertyRequest.name,
-            createPropertyRequest.address,
-            createPropertyRequest.organizationId,
-            authenticatedContext,
+            request.requestBody.name,
+            request.requestBody.address,
+            request.requestBody.organizationId,
+            request.context,
         ).toPropertyNetworkResponse()
-
-        HttpResponse(
-            status = HttpStatusCode.OK,
-            body = newProperty,
-        )
+        return newProperty
     }
 
     /**
-     * Handles the retrieval of a property. The [call] parameter is the request context.
+     * Retrieves a property by its [PropertyId].
+     * Returns the property as a network response if the user has MANAGER role or higher.
+     * Throws [UnauthorizedException] if the user does not have permission.
      */
     @OptIn(NetworkModel::class)
-    suspend fun getProperty(call: ApplicationCall) = call.handleCall(
-        TAG,
-        "getProperty",
-        contextRetriever
-    ) { context ->
-        val propertyId = requireNotNull(call.parameters[PROPERTY_ID])
-        if (!rbacService.hasRoleOrHigher(context, PropertyId(propertyId), UserRole.MANAGER)) {
+    suspend fun getProperty(
+        request: OperationRequest<NoRequestBody, NoQueryParam, PropertyId, ClientContext.AuthenticatedClientContext>
+    ): PropertyNetworkResponse? {
+        if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.MANAGER)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
-        val property = propertyService.getProperty(
-            PropertyId(propertyId),
-        )?.toPropertyNetworkResponse()
-
-        val statusCode = if (property == null) {
-            HttpStatusCode.NotFound
-        } else {
-            HttpStatusCode.OK
-        }
-
-        HttpResponse(
-            status = statusCode,
-            body = property,
-        )
+        return propertyService.getProperty(request.pathParam)?.toPropertyNetworkResponse()
     }
 
     /**
-     * Handles the retrieval of a list of properties. The [call] parameter is the request context.
+     * Retrieves the list of properties assigned to the authenticated user.
+     * Returns a list of properties as a network response.
      */
     @OptIn(NetworkModel::class)
-    suspend fun getAssignedProperties(call: ApplicationCall) = call.handleCall(
-        TAG,
-        "getAssignedProperties",
-        contextRetriever,
-    ) { context ->
-        val userId = requireAuthenticatedClientContext(context).userId
-        // TODO: UPDATE THIS METHOD TO PASS THE ORG ID TO ENSURE USERS ONLY GET PROPERTIES THEY ARE ASSIGNED TO
-        val properties = propertyService.getProperties(
-            userId = userId,
-        ).map { it.toPropertyNetworkResponse() }
-
-        HttpResponse(
-            status = HttpStatusCode.OK,
-            body = properties,
-        )
+    suspend fun getAssignedProperties(
+        request: OperationRequest<NoRequestBody, NoQueryParam, NoPathParam, ClientContext.AuthenticatedClientContext>
+    ): PropertyListNetworkResponse {
+        val userId = request.context.userId
+        val properties = propertyService.getProperties(userId = userId).map { it.toPropertyNetworkResponse() }
+        return PropertyListNetworkResponse(properties)
     }
 
     /**
-     * Handles the update of a property. The [call] parameter is the request context.
+     * Updates a property identified by [PropertyId] with the provided request data.
+     * Returns the updated property as a network response.
+     * Throws [UnauthorizedException] if the user does not have ADMIN role for the property.
      */
     @OptIn(NetworkModel::class)
-    suspend fun updateProperty(call: ApplicationCall) = call.handleCall(
-        TAG,
-        "updateProperty",
-        contextRetriever
-    ) { context ->
-        val propertyId = requireNotNull(call.parameters[PROPERTY_ID])
-        checkUserHasRole(context, PropertyId(propertyId), UserRole.ADMIN)
-        val updatePropertyRequest = call.receive<UpdatePropertyNetworkRequest>()
-
+    suspend fun updateProperty(
+        request:
+        OperationRequest<
+            UpdatePropertyNetworkRequest,
+            NoQueryParam,
+            PropertyId,
+            ClientContext.AuthenticatedClientContext
+            >
+    ): PropertyNetworkResponse {
+        checkUserHasRole(request.context, request.pathParam, UserRole.ADMIN)
         val updatedProperty = propertyService.updateProperty(
-            id = PropertyId(propertyId),
-            name = updatePropertyRequest.name,
+            id = request.pathParam,
+            name = request.requestBody.name,
         ).toPropertyNetworkResponse()
-
-        HttpResponse(
-            status = HttpStatusCode.OK,
-            body = updatedProperty,
-        )
+        return updatedProperty
     }
 
     /**
-     * Handles the deletion of a property. The [call] parameter is the request context.
+     * Deletes a property identified by [PropertyId].
+     * Returns [NoResponseBody] to indicate successful deletion.
+     * Throws [UnauthorizedException] if the user does not have ADMIN role for the property.
      */
-    suspend fun deleteProperty(call: RoutingCall) = call.handleCall(
-        TAG,
-        "deleteProperty",
-        contextRetriever
-    ) { context ->
-        val propertyId = requireNotNull(call.parameters[PROPERTY_ID])
-        checkUserHasRole(context, PropertyId(propertyId), UserRole.ADMIN)
-        val success = propertyService.deleteProperty(
-            PropertyId(propertyId),
-        )
-
-        val statusCode = if (success) {
-            HttpStatusCode.OK
-        } else {
-            HttpStatusCode.NotFound
-        }
-
-        HttpResponse(
-            status = statusCode,
-            body = null,
-        )
+    suspend fun deleteProperty(
+        request: OperationRequest<NoRequestBody, NoQueryParam, PropertyId, ClientContext.AuthenticatedClientContext>
+    ): NoResponseBody {
+        checkUserHasRole(request.context, request.pathParam, UserRole.ADMIN)
+        propertyService.deleteProperty(request.pathParam)
+        return NoResponseBody
     }
 
     /**
-     * Checks if the user has the required authorization permission based on role in their org for the given property.
-     *
-     * @param context The authenticated client context.
-     * @param propId The ID of the property to check against.
-     * @param role The required user role for authorization.
-     * @throws UnauthorizedException if the user does not have the required role.
+     * Checks if the user has the required role for the property.
+     * Throws [UnauthorizedException] if the user does not have the required role.
      */
     private suspend fun checkUserHasRole(
         context: ClientContext.AuthenticatedClientContext,
@@ -183,28 +139,25 @@ class PropertyController(
 
     /**
      * Registers the routes for the property controller.
+     * Sets up the API endpoints and handlers for property operations.
      */
     override fun registerRoutes(route: Routing) {
-        route.route(Routes.Property.PATH) {
-            post {
-                createProperty(call)
+        PropertyApi.register(route) {
+            handler(api.createProperty, contextRetriever) { request ->
+                createProperty(request)
             }
-            get("{$PROPERTY_ID}") {
-                getProperty(call)
+            handler(api.getProperty, contextRetriever) { request ->
+                getProperty(request)
             }
-            get {
-                getAssignedProperties(call)
+            handler(api.getAssignedProperties, contextRetriever) { request ->
+                getAssignedProperties(request)
             }
-            put("{$PROPERTY_ID}") {
-                updateProperty(call)
+            handler(api.updateProperty, contextRetriever) { request ->
+                updateProperty(request)
             }
-            delete("{$PROPERTY_ID}") {
-                deleteProperty(call)
+            handler(api.deleteProperty, contextRetriever) { request ->
+                deleteProperty(request)
             }
         }
-    }
-
-    companion object {
-        private const val TAG = "PropertyController"
     }
 }

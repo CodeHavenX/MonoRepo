@@ -1,17 +1,16 @@
 package com.cramsan.edifikana.server.core.controller
 
-import com.cramsan.edifikana.lib.Routes
+import com.cramsan.edifikana.api.HealthApi
+import com.cramsan.edifikana.lib.model.network.HealthCheckNetworkResponse
 import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
-import com.cramsan.framework.core.ktor.HttpResponse
-import io.ktor.http.HttpStatusCode
-import io.ktor.server.application.ApplicationCall
+import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.core.ktor.OperationHandler.register
 import io.ktor.server.routing.Routing
-import io.ktor.server.routing.get
-import io.ktor.server.routing.route
 
 /**
  * Controller for handling health check requests.
  */
+@OptIn(NetworkModel::class)
 class HealthCheckController(
     private val contextRetriever: ContextRetriever,
 ) : Controller {
@@ -19,29 +18,18 @@ class HealthCheckController(
     /**
      * Handles a health check request.
      */
-    suspend fun healthCheck(call: ApplicationCall) = call.handleUnauthenticatedCall(
-        TAG,
-        "healthCheck",
-        contextRetriever,
-    ) {
-        HttpResponse(
-            status = HttpStatusCode.OK,
-            body = "OK",
-        )
+    fun healthCheck(): HealthCheckNetworkResponse {
+        return HealthCheckNetworkResponse("OK")
     }
 
     /**
-     * Registers the routes for the user controller. The [route] parameter is the root path for the controller.
+     * Registers the routes for the health check controller.
      */
     override fun registerRoutes(route: Routing) {
-        route.route(Routes.Health.PATH) {
-            get {
-                healthCheck(call)
+        HealthApi.register(route) {
+            unauthenticatedHandler(api.healthCheck, contextRetriever) { _ ->
+                healthCheck()
             }
         }
-    }
-
-    companion object {
-        private const val TAG = "HealthCheckController"
     }
 }

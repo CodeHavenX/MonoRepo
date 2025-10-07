@@ -2,6 +2,7 @@ package com.cramsan.edifikana.lib.model.network
 
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.annotations.api.RequestBody
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -17,4 +18,4 @@ data class CreatePropertyNetworkRequest(
     val address: String,
     @SerialName("organization_id")
     val organizationId: OrganizationId,
-)
+) : RequestBody

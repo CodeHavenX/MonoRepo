@@ -39,3 +39,10 @@ interface PathParam
  * Marker object for operations with no path parameters.
  */
 object NoPathParam : PathParam
+
+/**
+ * Request body implementation for byte array data.
+ *
+ * @property bytes The byte array representing the request body.
+ */
+class BytesRequestBody(val bytes: ByteArray) : RequestBody

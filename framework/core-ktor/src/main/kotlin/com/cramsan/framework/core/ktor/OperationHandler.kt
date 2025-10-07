@@ -1,5 +1,6 @@
 package com.cramsan.framework.core.ktor
 
+import com.cramsan.framework.annotations.api.BytesRequestBody
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
@@ -159,6 +160,8 @@ object OperationHandler {
                 val context = contextResult.getOrThrow()
                 val body = if (handler.requestBodyType == NoRequestBody::class) {
                     NoRequestBody as RequestType
+                } else if (handler.requestBodyType == BytesRequestBody::class) {
+                    BytesRequestBody(call.receive<ByteArray>()) as RequestType
                 } else {
                     call.receive(handler.requestBodyType)
                 }

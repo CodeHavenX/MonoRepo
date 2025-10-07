@@ -1,20 +1,22 @@
-[
-    {
-        "id": "timecard123",
-        "employee_id": "emp123",
-        "fallback_employee_name": "John Doe",
-        "property_id": "property123",
-        "type": "CLOCK_IN",
-        "image_url": "http://example.com/image.jpg",
-        "timestamp": 1727702654
-    },
-    {
-        "id": "timecard456",
-        "employee_id": "emp456",
-        "fallback_employee_name": "Jane Smith",
-        "property_id": "property456",
-        "type": "CLOCK_IN",
-        "image_url": "http://example.com/image2.jpg",
-        "timestamp": 1727702654
-    }
-]
+{
+    "events": [
+        {
+            "id": "timecard123",
+            "employee_id": "emp123",
+            "fallback_employee_name": "John Doe",
+            "property_id": "property123",
+            "type": "CLOCK_IN",
+            "image_url": "http://example.com/image.jpg",
+            "timestamp": 1727702654
+        },
+        {
+            "id": "timecard456",
+            "employee_id": "emp456",
+            "fallback_employee_name": "Jane Smith",
+            "property_id": "property456",
+            "type": "CLOCK_IN",
+            "image_url": "http://example.com/image2.jpg",
+            "timestamp": 1727702654
+        }
+    ]
+}

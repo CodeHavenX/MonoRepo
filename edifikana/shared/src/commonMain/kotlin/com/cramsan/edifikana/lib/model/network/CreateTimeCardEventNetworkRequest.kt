@@ -4,6 +4,7 @@ import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.annotations.api.RequestBody
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -22,4 +23,4 @@ data class CreateTimeCardEventNetworkRequest(
     val type: TimeCardEventType,
     @SerialName("image_url")
     val imageUrl: String?,
-)
+) : RequestBody

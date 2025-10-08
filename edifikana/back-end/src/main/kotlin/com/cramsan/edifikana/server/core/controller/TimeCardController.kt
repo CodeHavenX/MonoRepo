@@ -1,126 +1,86 @@
 package com.cramsan.edifikana.server.core.controller
 
-import com.cramsan.edifikana.lib.Routes
-import com.cramsan.edifikana.lib.Routes.Employee.QueryParams.EMPLOYEE_ID
-import com.cramsan.edifikana.lib.Routes.TimeCard.QueryParams.TIMECARD_EVENT_ID
+import com.cramsan.edifikana.api.TimeCardApi
 import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.network.CreateTimeCardEventNetworkRequest
+import com.cramsan.edifikana.lib.model.network.TimeCardEventListNetworkResponse
+import com.cramsan.edifikana.lib.model.network.TimeCardEventNetworkResponse
 import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
 import com.cramsan.edifikana.server.core.service.TimeCardService
 import com.cramsan.framework.annotations.NetworkModel
-import com.cramsan.framework.core.ktor.HttpResponse
+import com.cramsan.framework.core.ktor.OperationHandler.register
 import com.cramsan.framework.utils.time.Chronos
-import io.ktor.http.HttpStatusCode
-import io.ktor.server.application.ApplicationCall
-import io.ktor.server.request.receive
 import io.ktor.server.routing.Routing
-import io.ktor.server.routing.get
-import io.ktor.server.routing.post
-import io.ktor.server.routing.route
 import kotlin.time.ExperimentalTime
 
 /**
  * Controller for time card related operations.
  */
-@OptIn(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class, NetworkModel::class)
 class TimeCardController(
     private val timeCardService: TimeCardService,
     private val contextRetriever: ContextRetriever,
 ) : Controller {
 
     /**
-     * Handles the creation of a new time card event. The [call] parameter is the request context.
+     * Creates a new time card event using the provided request data.
+     * Returns the created time card event as a network response.
      */
-    @OptIn(NetworkModel::class)
-    suspend fun createTimeCardEvent(call: ApplicationCall) = call.handleCall(
-        TAG,
-        "createTimeCardEvent",
-        contextRetriever
-    ) { _ ->
-        val createTimeCardRequest = call.receive<CreateTimeCardEventNetworkRequest>()
-
+    suspend fun createTimeCardEvent(
+        request: CreateTimeCardEventNetworkRequest,
+    ): TimeCardEventNetworkResponse {
         val newTimeCard = timeCardService.createTimeCardEvent(
-            employeeId = createTimeCardRequest.employeeId,
-            fallbackEmployeeName = createTimeCardRequest.fallbackEmployeeName,
-            propertyId = createTimeCardRequest.propertyId,
-            type = createTimeCardRequest.type,
-            imageUrl = createTimeCardRequest.imageUrl,
+            employeeId = request.employeeId,
+            fallbackEmployeeName = request.fallbackEmployeeName,
+            propertyId = request.propertyId,
+            type = request.type,
+            imageUrl = request.imageUrl,
             timestamp = Chronos.currentInstant(),
         ).toTimeCardEventNetworkResponse()
-
-        HttpResponse(
-            status = HttpStatusCode.OK,
-            body = newTimeCard,
-        )
+        return newTimeCard
     }
 
     /**
-     * Handles the retrieval of a time card event. The [call] parameter is the request context.
+     * Retrieves a time card event by its [timeCardId].
+     * Returns the time card event as a network response, or null if not found.
      */
-    @OptIn(NetworkModel::class)
-    suspend fun getTimeCardEvent(call: ApplicationCall) = call.handleCall(
-        TAG,
-        "getTimeCardEvent",
-        contextRetriever,
-    ) { _ ->
-        val timeCardId = requireNotNull(call.parameters[TIMECARD_EVENT_ID])
-
-        val timeCard = timeCardService.getTimeCardEvent(
-            TimeCardEventId(timeCardId),
+    suspend fun getTimeCardEvent(
+        timeCardId: TimeCardEventId,
+    ): TimeCardEventNetworkResponse? {
+        return timeCardService.getTimeCardEvent(
+            timeCardId,
         )?.toTimeCardEventNetworkResponse()
-
-        val statusCode = if (timeCard == null) {
-            HttpStatusCode.NotFound
-        } else {
-            HttpStatusCode.OK
-        }
-
-        HttpResponse(
-            status = statusCode,
-            body = timeCard,
-        )
     }
 
     /**
-     * Handles the retrieval of all time cards. The [call] parameter is the request context.
+     * Retrieves all time card events for the given [employeeId].
+     * Returns a list of time card events as a network response.
      */
-    @OptIn(NetworkModel::class)
-    suspend fun getTimeCardEvents(call: ApplicationCall) = call.handleCall(
-        TAG,
-        "getTimeCardEvents",
-        contextRetriever,
-    ) { _ ->
-        val empId = call.request.queryParameters[EMPLOYEE_ID]
-
+    suspend fun getTimeCardEvents(
+        employeeId: EmployeeId?,
+    ): TimeCardEventListNetworkResponse {
         val timeCards = timeCardService.getTimeCardEvents(
-            employeeId = empId?.let { EmployeeId(it) },
+            employeeId = employeeId,
         ).map { it.toTimeCardEventNetworkResponse() }
-
-        HttpResponse(
-            status = HttpStatusCode.OK,
-            body = timeCards,
-        )
+        return TimeCardEventListNetworkResponse(timeCards)
     }
 
     /**
      * Registers the routes for the time card controller.
+     * Sets up the API endpoints and handlers for time card operations.
      */
     override fun registerRoutes(route: Routing) {
-        route.route(Routes.TimeCard.PATH) {
-            post {
-                createTimeCardEvent(call)
+        TimeCardApi.register(route) {
+            handler(api.createTimeCardEvent, contextRetriever) { request ->
+                createTimeCardEvent(request.requestBody)
             }
-            get("{$TIMECARD_EVENT_ID}") {
-                getTimeCardEvent(call)
+            handler(api.getTimeCardEvent, contextRetriever) { request ->
+                getTimeCardEvent(request.pathParam)
             }
-            get {
-                getTimeCardEvents(call)
+            handler(api.getTimeCardEvents, contextRetriever) { request ->
+                getTimeCardEvents(request.queryParam.employeeId)
             }
         }
-    }
-
-    companion object {
-        private const val TAG = "TimeCardController"
     }
 }

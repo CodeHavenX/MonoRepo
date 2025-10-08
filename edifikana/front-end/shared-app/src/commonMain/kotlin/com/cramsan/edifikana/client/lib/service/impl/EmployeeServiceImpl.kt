@@ -1,20 +1,13 @@
 package com.cramsan.edifikana.client.lib.service.impl
 
+import com.cramsan.edifikana.api.EmployeeApi
 import com.cramsan.edifikana.client.lib.models.EmployeeModel
 import com.cramsan.edifikana.client.lib.service.EmployeeService
-import com.cramsan.edifikana.lib.Routes
 import com.cramsan.edifikana.lib.model.EmployeeId
-import com.cramsan.edifikana.lib.model.network.EmployeeNetworkResponse
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.core.runSuspendCatching
+import com.cramsan.framework.networkapi.buildRequest
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.get
-import io.ktor.client.request.post
-import io.ktor.client.request.put
-import io.ktor.client.request.setBody
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
 
 /**
  * Default implementation for the [EmployeeService].
@@ -25,8 +18,8 @@ class EmployeeServiceImpl(
 
     @OptIn(NetworkModel::class)
     override suspend fun getEmployeeList(): Result<List<EmployeeModel>> = runSuspendCatching(TAG) {
-        val response = http.get(Routes.Employee.PATH).body<List<EmployeeNetworkResponse>>()
-        val employeeList = response.map {
+        val response = EmployeeApi.getEmployees.buildRequest().execute(http)
+        val employeeList = response.content.map {
             it.toEmployeeModel()
         }
         employeeList
@@ -34,7 +27,7 @@ class EmployeeServiceImpl(
 
     @OptIn(NetworkModel::class)
     override suspend fun getEmployee(employeePK: EmployeeId): Result<EmployeeModel> = runSuspendCatching(TAG) {
-        val response = http.get("${Routes.Employee.PATH}/${employeePK.empId}").body<EmployeeNetworkResponse>()
+        val response = EmployeeApi.getEmployee.buildRequest(employeePK).execute(http)
         val employee = response.toEmployeeModel()
         employee
     }
@@ -43,10 +36,10 @@ class EmployeeServiceImpl(
     override suspend fun createEmployee(
         employee: EmployeeModel.CreateEmployeeRequest,
     ): Result<EmployeeModel> = runSuspendCatching(TAG) {
-        val response = http.post(Routes.Employee.PATH) {
-            contentType(ContentType.Application.Json)
-            setBody(employee.toCreateEmployeeNetworkRequest())
-        }.body<EmployeeNetworkResponse>()
+        val response = EmployeeApi
+            .createEmployee
+            .buildRequest(employee.toCreateEmployeeNetworkRequest())
+            .execute(http)
         val employeeModel = response.toEmployeeModel()
         employeeModel
     }
@@ -55,10 +48,10 @@ class EmployeeServiceImpl(
     override suspend fun updateEmployee(
         employee: EmployeeModel.UpdateEmployeeRequest,
     ): Result<EmployeeModel> = runSuspendCatching(TAG) {
-        val response = http.put("${Routes.Employee.PATH}/${employee.employeeId.empId}") {
-            contentType(ContentType.Application.Json)
-            setBody(employee.toUpdateEmployeeNetworkRequest())
-        }.body<EmployeeNetworkResponse>()
+        val response = EmployeeApi
+            .updateEmployee
+            .buildRequest(employee.employeeId, employee.toUpdateEmployeeNetworkRequest())
+            .execute(http)
 
         val employeeModel = response.toEmployeeModel()
         employeeModel

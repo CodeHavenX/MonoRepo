@@ -3,16 +3,11 @@ package com.cramsan.edifikana.client.lib.service.impl
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.network.EventLogEntryNetworkResponse
-import com.cramsan.edifikana.lib.Routes
 import com.cramsan.framework.annotations.NetworkModel
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.put
-import io.ktor.client.request.setBody
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
 import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -47,7 +42,7 @@ class EventLogServiceImplTest {
             }
         )
         mockkStatic("io.ktor.client.call.HttpClientCallKt")
-        coEvery { httpClient.get(Routes.EventLog.PATH) } returns mockk {
+        coEvery { httpClient.get("event_log") } returns mockk {
 //            coEvery { body<List<EventLogEntryNetworkResponse>>() } returns networkResponse
         }
 
@@ -71,7 +66,7 @@ class EventLogServiceImplTest {
             coEvery { toEventLogRecordModel() } returns mockk<EventLogRecordModel>()
         }
         mockkStatic("io.ktor.client.call.HttpClientCallKt")
-        coEvery { httpClient.get("${Routes.EventLog.PATH}/${eventLogEntryId.eventLogEntryId}") } returns mockk {
+        coEvery { httpClient.get("${"event_log"}/${eventLogEntryId.eventLogEntryId}") } returns mockk {
 //            coEvery { body<EventLogEntryNetworkResponse>() } returns networkResponse
         }
 
@@ -96,7 +91,7 @@ class EventLogServiceImplTest {
             coEvery { toEventLogRecordModel() } returns mockk<EventLogRecordModel>()
         }
         mockkStatic("io.ktor.client.call.HttpClientCallKt")
-        coEvery { httpClient.post(Routes.EventLog.PATH, any()) } returns mockk {
+        coEvery { httpClient.post("event_log", any()) } returns mockk {
             coEvery { body<EventLogEntryNetworkResponse>() } returns networkResponse
         }
 
@@ -123,7 +118,7 @@ class EventLogServiceImplTest {
             coEvery { toEventLogRecordModel() } returns mockk<EventLogRecordModel>()
         }
         mockkStatic("io.ktor.client.call.HttpClientCallKt")
-        coEvery { httpClient.put("${Routes.EventLog.PATH}/${eventLogEntryId.eventLogEntryId}", any()) } returns mockk {
+        coEvery { httpClient.put("${"event_log"}/${eventLogEntryId.eventLogEntryId}", any()) } returns mockk {
             coEvery { body<EventLogEntryNetworkResponse>() } returns networkResponse
         }
 

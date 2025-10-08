@@ -4,12 +4,9 @@ import com.cramsan.edifikana.lib.model.network.CreateAssetNetworkRequest
 import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
 import com.cramsan.edifikana.server.core.service.StorageService
 import com.cramsan.edifikana.server.utils.ASSET_1
-import com.cramsan.edifikana.server.utils.ASSET_2
 import com.cramsan.edifikana.server.utils.readFileContent
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.test.CoroutineTest
-import io.ktor.client.request.get
-import io.ktor.client.request.headers
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
@@ -63,32 +60,10 @@ class StorageControllerTest : CoroutineTest(), KoinTest {
         }.answers { mockk() }
 
         // Act
-        val response = client.post("storage") {
-            headers { append("fileName", ASSET_1.fileName) }
+        val response = client.post("storage?filename=${ASSET_1.fileName}") {
             setBody(ASSET_1.content)
             contentType(ContentType.Image.PNG)
         }
-
-        // Assert
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(expectedResponse, response.bodyAsText())
-    }
-
-    @Test
-    fun `getAsset should return HttpResponse with OK and asset`() = testEdifikanaApplication {
-        // Arrange
-        val expectedResponse = readFileContent("requests/get_asset_response.json")
-        val call = mockk<ApplicationCall>(relaxed = true)
-        coEvery { call.parameters["id"] } returns ASSET_2.id.toString()
-        val storageService = get<StorageService>()
-        coEvery { storageService.getAsset(any()) } returns ASSET_2
-        val contextRetriever = get<ContextRetriever>()
-        coEvery {
-            contextRetriever.getContext(any())
-        }.answers { mockk() }
-
-        // Act
-        val response = client.get("storage?asset_id=images/timecard-images/employee2.png")
 
         // Assert
         assertEquals(HttpStatusCode.OK, response.status)

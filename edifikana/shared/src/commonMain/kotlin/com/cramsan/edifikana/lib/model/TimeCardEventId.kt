@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.lib.model
 
+import com.cramsan.framework.annotations.api.PathParam
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
 
@@ -8,6 +9,6 @@ import kotlin.jvm.JvmInline
  */
 @JvmInline
 @Serializable
-value class TimeCardEventId(val timeCardEventId: String) {
+value class TimeCardEventId(val timeCardEventId: String) : PathParam {
     override fun toString(): String = timeCardEventId
 }

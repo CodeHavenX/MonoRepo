@@ -5,6 +5,7 @@ import com.cramsan.edifikana.lib.model.EmployeeRole
 import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.annotations.api.ResponseBody
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -24,4 +25,4 @@ data class EmployeeNetworkResponse(
     val role: EmployeeRole,
     @SerialName("property_id")
     val propertyId: PropertyId,
-)
+) : ResponseBody

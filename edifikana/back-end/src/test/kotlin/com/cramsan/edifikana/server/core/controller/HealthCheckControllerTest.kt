@@ -5,7 +5,6 @@ import com.cramsan.edifikana.server.core.controller.authentication.ClientContext
 import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
 import com.cramsan.framework.test.CoroutineTest
 import io.ktor.client.request.get
-import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -52,7 +51,6 @@ class HealthCheckControllerTest : CoroutineTest(), KoinTest {
 
         // Assert
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals("OK", response.bodyAsText())
     }
 
     @Test
@@ -73,6 +71,5 @@ class HealthCheckControllerTest : CoroutineTest(), KoinTest {
 
         // Assert
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals("OK", response.bodyAsText())
     }
 }

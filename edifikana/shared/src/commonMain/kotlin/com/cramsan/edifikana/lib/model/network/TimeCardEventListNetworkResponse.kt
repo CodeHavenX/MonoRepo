@@ -1,17 +1,14 @@
 package com.cramsan.edifikana.lib.model.network
 
-import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.ResponseBody
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
- * Network model representing an organization.
+ * Response body containing a list of time card events.
  */
 @NetworkModel
 @Serializable
-data class OrganizationNetworkResponse(
-    @SerialName("id")
-    val id: OrganizationId,
+data class TimeCardEventListNetworkResponse(
+    val events: List<TimeCardEventNetworkResponse>,
 ) : ResponseBody

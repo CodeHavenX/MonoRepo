@@ -1,27 +1,25 @@
 package com.cramsan.edifikana.server.core.controller
 
-import com.cramsan.edifikana.lib.Routes
-import com.cramsan.edifikana.lib.Routes.Employee.QueryParams.EMPLOYEE_ID
+import com.cramsan.edifikana.api.EmployeeApi
 import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.network.CreateEmployeeNetworkRequest
+import com.cramsan.edifikana.lib.model.network.EmployeeListNetworkResponse
+import com.cramsan.edifikana.lib.model.network.EmployeeNetworkResponse
 import com.cramsan.edifikana.lib.model.network.UpdateEmployeeNetworkRequest
+import com.cramsan.edifikana.server.core.controller.authentication.ClientContext
 import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
 import com.cramsan.edifikana.server.core.service.EmployeeService
 import com.cramsan.framework.annotations.NetworkModel
-import com.cramsan.framework.core.ktor.HttpResponse
-import io.ktor.http.HttpStatusCode
-import io.ktor.server.application.ApplicationCall
-import io.ktor.server.request.receive
+import com.cramsan.framework.annotations.api.NoPathParam
+import com.cramsan.framework.annotations.api.NoQueryParam
+import com.cramsan.framework.annotations.api.NoRequestBody
+import com.cramsan.framework.annotations.api.NoResponseBody
+import com.cramsan.framework.core.ktor.OperationHandler.register
+import com.cramsan.framework.core.ktor.OperationRequest
 import io.ktor.server.routing.Routing
-import io.ktor.server.routing.RoutingCall
-import io.ktor.server.routing.delete
-import io.ktor.server.routing.get
-import io.ktor.server.routing.post
-import io.ktor.server.routing.put
-import io.ktor.server.routing.route
 
 /**
- * Controller for mployee related operations. CRUD operations for employee.
+ * Controller for employee related operations. CRUD operations for employee.
  */
 class EmployeeController(
     private val employeeService: EmployeeService,
@@ -29,16 +27,13 @@ class EmployeeController(
 ) : Controller {
 
     /**
-     * Handles the creation of a new mployee. The [call] parameter is the request context.
+     * Creates a new employee using the provided request data.
+     * Returns the created employee as a network response.
      */
     @OptIn(NetworkModel::class)
-    suspend fun createEmployee(call: ApplicationCall) = call.handleCall(
-        TAG,
-        "createEmployee",
-        contextRetriever,
-    ) { _ ->
-        val createEmpRequest = call.receive<CreateEmployeeNetworkRequest>()
-
+    suspend fun createEmployee(
+        createEmpRequest: CreateEmployeeNetworkRequest,
+    ): EmployeeNetworkResponse {
         val newEmployee = employeeService.createEmployee(
             idType = createEmpRequest.idType,
             firstName = createEmpRequest.firstName,
@@ -46,135 +41,86 @@ class EmployeeController(
             role = createEmpRequest.role,
             propertyId = createEmpRequest.propertyId,
         ).toEmployeeNetworkResponse()
-
-        HttpResponse(
-            status = HttpStatusCode.OK,
-            body = newEmployee,
-        )
+        return newEmployee
     }
 
     /**
-     * Handles the retrieval of a employee. The [call] parameter is the request context.
+     * Retrieves an employee by their [employeeId].
+     * Returns the employee as a network response, or null if not found.
      */
     @OptIn(NetworkModel::class)
-    suspend fun getEmployee(call: ApplicationCall) = call.handleCall(
-        TAG,
-        "getEmployee" +
-            "",
-        contextRetriever,
-    ) { _ ->
-        val employeeId = requireNotNull(call.parameters[EMPLOYEE_ID])
-
-        val employee = employeeService.getEmployee(
-            EmployeeId(employeeId),
+    suspend fun getEmployee(
+        employeeId: EmployeeId,
+    ): EmployeeNetworkResponse? {
+        return employeeService.getEmployee(
+            employeeId,
         )?.toEmployeeNetworkResponse()
-
-        val statusCode = if (employee == null) {
-            HttpStatusCode.NotFound
-        } else {
-            HttpStatusCode.OK
-        }
-
-        HttpResponse(
-            status = statusCode,
-            body = employee,
-        )
     }
 
     /**
-     * Handles the retrieval of all employee. The [call] parameter is the request context.
+     * Retrieves all employees for the authenticated context.
+     * Returns a list of employees as a network response.
      */
     @OptIn(NetworkModel::class)
-    suspend fun getEmployees(call: ApplicationCall) = call.handleCall(
-        TAG,
-        "getEmployees",
-        contextRetriever,
-    ) { context ->
-        val authenticatedClientContext = requireAuthenticatedClientContext(context)
-        val employees = employeeService.getEmployees(authenticatedClientContext).map { it.toEmployeeNetworkResponse() }
-
-        HttpResponse(
-            status = HttpStatusCode.OK,
-            body = employees,
-        )
+    suspend fun getEmployees(
+        request: OperationRequest<NoRequestBody, NoQueryParam, NoPathParam, ClientContext.AuthenticatedClientContext>
+    ): EmployeeListNetworkResponse {
+        val employees = employeeService.getEmployees(request.context).map { it.toEmployeeNetworkResponse() }
+        return EmployeeListNetworkResponse(employees)
     }
 
     /**
-     * Handles the updating of a employee. The [call] parameter is the request context.
+     * Updates an employee identified by [employeeId] with the provided request data.
+     * Returns the updated employee as a network response.
      */
     @OptIn(NetworkModel::class)
-    suspend fun updateEmployee(call: ApplicationCall) = call.handleCall(
-        TAG,
-        "updateEmployee",
-        contextRetriever,
-    ) { _ ->
-        val empId = requireNotNull(call.parameters[EMPLOYEE_ID])
-
-        val updateEmpRequest = call.receive<UpdateEmployeeNetworkRequest>()
-
+    suspend fun updateEmployee(
+        updateEmpRequest: UpdateEmployeeNetworkRequest,
+        employeeId: EmployeeId,
+    ): EmployeeNetworkResponse {
         val updatedEmployee = employeeService.updateEmployee(
-            id = EmployeeId(empId),
+            id = employeeId,
             idType = updateEmpRequest.idType,
             firstName = updateEmpRequest.firstName,
             lastName = updateEmpRequest.lastName,
             role = updateEmpRequest.role,
         ).toEmployeeNetworkResponse()
-
-        HttpResponse(
-            status = HttpStatusCode.OK,
-            body = updatedEmployee,
-        )
+        return updatedEmployee
     }
 
     /**
-     * Handles the deletion of a employee. The [call] parameter is the request context.
+     * Deletes an employee identified by [employeeId].
+     * Returns [NoResponseBody] to indicate successful deletion.
      */
-    suspend fun deleteEmployee(call: RoutingCall) = call.handleCall(TAG, "deleteEmployee", contextRetriever) {
-        val empId = requireNotNull(call.parameters[EMPLOYEE_ID])
-
-        val success = employeeService.deleteEmployee(
-            EmployeeId(empId),
-        )
-
-        val statusCode = if (success) {
-            HttpStatusCode.OK
-        } else {
-            HttpStatusCode.NotFound
-        }
-
-        HttpResponse(
-            status = statusCode,
-            body = null,
-        )
+    suspend fun deleteEmployee(
+        employeeId: EmployeeId,
+    ): NoResponseBody {
+        employeeService.deleteEmployee(employeeId)
+        return NoResponseBody
     }
 
     /**
-     * Registers the routes for the employee controller. The [route] parameter is the root path for the controller.
+     * Registers the routes for the employee controller.
+     * Sets up the API endpoints and handlers for employee operations.
      */
+    @OptIn(NetworkModel::class)
     override fun registerRoutes(route: Routing) {
-        route.route(Routes.Employee.PATH) {
-            post {
-                createEmployee(call)
+        EmployeeApi.register(route) {
+            handler(api.createEmployee, contextRetriever) { request ->
+                createEmployee(request.requestBody)
             }
-            get("{$EMPLOYEE_ID}") {
-                getEmployee(call)
+            handler(api.getEmployee, contextRetriever) { request ->
+                getEmployee(request.pathParam)
             }
-            get {
-                getEmployees(call)
+            handler(api.getEmployees, contextRetriever) { request ->
+                getEmployees(request)
             }
-            put("{$EMPLOYEE_ID}") {
-                updateEmployee(call)
+            handler(api.updateEmployee, contextRetriever) { request ->
+                updateEmployee(request.requestBody, request.pathParam)
             }
-            delete("{$EMPLOYEE_ID}") {
-                deleteEmployee(call)
+            handler(api.deleteEmployee, contextRetriever) { request ->
+                deleteEmployee(request.pathParam)
             }
         }
-    }
-
-    /**
-     * Companion object.
-     */
-    companion object {
-        private const val TAG = "EmployeeController"
     }
 }

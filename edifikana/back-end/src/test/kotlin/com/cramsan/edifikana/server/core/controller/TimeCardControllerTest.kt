@@ -137,7 +137,7 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
         val expectedResponse = readFileContent("requests/get_timecard_events_response.json")
         val timeCardService = get<TimeCardService>()
         coEvery {
-            timeCardService.getTimeCardEvents(null)
+            timeCardService.getTimeCardEvents(EmployeeId("emp123"))
         }.answers {
             listOf(
                 TimeCardEvent(
@@ -166,12 +166,12 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
         }.answers {
             ClientContext.AuthenticatedClientContext(
                 userInfo = mockk(),
-                userId = UserId("user123"),
+                userId = UserId("emp123"),
             )
         }
 
         // Act
-        val response = client.get("time_card")
+        val response = client.get("time_card?employeeId=emp123")
 
         // Assert
         assertEquals(HttpStatusCode.OK, response.status)

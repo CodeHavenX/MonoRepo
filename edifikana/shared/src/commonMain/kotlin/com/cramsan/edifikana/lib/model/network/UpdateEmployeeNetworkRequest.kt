@@ -3,6 +3,7 @@ package com.cramsan.edifikana.lib.model.network
 import com.cramsan.edifikana.lib.model.EmployeeRole
 import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.annotations.api.RequestBody
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -19,4 +20,4 @@ data class UpdateEmployeeNetworkRequest(
     @SerialName("last_name")
     val lastName: String?,
     val role: EmployeeRole?,
-)
+) : RequestBody

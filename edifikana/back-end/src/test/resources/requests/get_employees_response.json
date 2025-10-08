@@ -1,18 +1,20 @@
-[
-    {
-        "id": "emp123",
-        "id_type": "DNI",
-        "first_name": "John",
-        "last_name": "Doe",
-        "role": "SECURITY",
-        "property_id": "property123"
-    },
-    {
-        "id": "emp456",
-        "id_type": "PASSPORT",
-        "first_name": "Jane",
-        "last_name": "Smith",
-        "role": "CLEANING",
-        "property_id": "property456"
-    }
-]
+{
+    "content": [
+        {
+            "id": "emp123",
+            "id_type": "DNI",
+            "first_name": "John",
+            "last_name": "Doe",
+            "role": "SECURITY",
+            "property_id": "property123"
+        },
+        {
+            "id": "emp456",
+            "id_type": "PASSPORT",
+            "first_name": "Jane",
+            "last_name": "Smith",
+            "role": "CLEANING",
+            "property_id": "property456"
+        }
+    ]
+}

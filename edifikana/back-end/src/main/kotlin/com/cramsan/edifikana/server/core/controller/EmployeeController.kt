@@ -43,8 +43,7 @@ class EmployeeController(
             CreateEmployeeNetworkRequest,
             NoQueryParam,
             NoPathParam,
-            ClientContext
-                .AuthenticatedClientContext
+            ClientContext.AuthenticatedClientContext
             >,
     ): EmployeeNetworkResponse {
         if (!rbacService.hasRoleOrHigher(request.context, request.requestBody.propertyId, UserRole.ADMIN)) {

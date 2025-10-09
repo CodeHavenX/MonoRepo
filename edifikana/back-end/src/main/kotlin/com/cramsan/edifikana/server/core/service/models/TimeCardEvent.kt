@@ -13,7 +13,7 @@ import kotlin.time.Instant
 @OptIn(ExperimentalTime::class)
 data class TimeCardEvent(
     val id: TimeCardEventId,
-    val employeeId: EmployeeId?,
+    val employeeId: EmployeeId,
     val fallbackEmployeeName: String?,
     val propertyId: PropertyId,
     val type: TimeCardEventType,

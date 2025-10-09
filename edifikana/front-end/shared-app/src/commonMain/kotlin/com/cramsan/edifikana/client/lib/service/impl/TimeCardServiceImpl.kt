@@ -4,6 +4,7 @@ import com.cramsan.edifikana.api.TimeCardApi
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
 import com.cramsan.edifikana.client.lib.service.TimeCardService
 import com.cramsan.edifikana.lib.model.EmployeeId
+import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.network.GetTimeCardEventsQueryParams
 import com.cramsan.framework.annotations.NetworkModel
@@ -21,23 +22,27 @@ class TimeCardServiceImpl(
     @OptIn(NetworkModel::class)
     override suspend fun getRecords(
         employeePK: EmployeeId,
+        propertyId: PropertyId,
     ): Result<List<TimeCardRecordModel>> = runSuspendCatching(TAG) {
-        getRecordsImpl(employeePK).getOrThrow()
+        getRecordsImpl(employeePK, propertyId).getOrThrow()
     }
 
     @OptIn(NetworkModel::class)
-    override suspend fun getAllRecords(): Result<List<TimeCardRecordModel>> = runSuspendCatching(TAG) {
-        getRecordsImpl(null).getOrThrow()
+    override suspend fun getAllRecords(
+        propertyId: PropertyId,
+    ): Result<List<TimeCardRecordModel>> = runSuspendCatching(TAG) {
+        getRecordsImpl(null, propertyId).getOrThrow()
     }
 
     // TODO: THIS CURRENTLY PULLS RECORDS FOR ALL PROPERTIES. WE WANT TO UPDATE SO WE ONLY PULL RECORDS FOR SPECIFIED PROPERTIES
     @NetworkModel
     private suspend fun getRecordsImpl(
         employeePK: EmployeeId?,
+        propertyId: PropertyId,
     ): Result<List<TimeCardRecordModel>> = runSuspendCatching(TAG) {
         val response = TimeCardApi
             .getTimeCardEvents
-            .buildRequest(GetTimeCardEventsQueryParams(employeePK))
+            .buildRequest(GetTimeCardEventsQueryParams(employeePK, propertyId))
             .execute(http)
         val records = response.events.map {
             it.toTimeCardRecordModel()

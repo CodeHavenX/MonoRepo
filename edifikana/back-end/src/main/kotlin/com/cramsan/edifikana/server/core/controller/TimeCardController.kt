@@ -32,7 +32,6 @@ class TimeCardController(
     private val contextRetriever: ContextRetriever,
 ) : Controller {
 
-
     /**
      * Handles the creation of a new time card event. Validates the request and user permissions,
      * then creates the time card event using the [timeCardService].

@@ -193,10 +193,11 @@ fun CreateTimeCardEventEntity(
  * Maps a [TimeCardEventEntity] to the [TimeCardEvent] model.
  */
 @OptIn(SupabaseModel::class)
-fun TimeCardEventEntity.toTimeCardEvent(): TimeCardEvent {
+fun TimeCardEventEntity.toTimeCardEvent(): TimeCardEvent? {
+    val employeeId = this.employeeId?.let { EmployeeId(it) } ?: return null
     return TimeCardEvent(
         id = TimeCardEventId(this.id),
-        employeeId = this.employeeId?.let { EmployeeId(it) },
+        employeeId = employeeId,
         fallbackEmployeeName = this.fallbackEmployeeName,
         propertyId = PropertyId(this.propertyId),
         type = this.type,

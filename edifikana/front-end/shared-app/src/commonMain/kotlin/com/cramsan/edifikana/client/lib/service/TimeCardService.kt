@@ -2,6 +2,7 @@ package com.cramsan.edifikana.client.lib.service
 
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
 import com.cramsan.edifikana.lib.model.EmployeeId
+import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 
 /**
@@ -10,14 +11,14 @@ import com.cramsan.edifikana.lib.model.TimeCardEventId
 interface TimeCardService {
 
     /**
-     * Get all time card records for a specific employee.
+     * Get all time card records for a specific employee and [propertyId].
      */
-    suspend fun getRecords(employeePK: EmployeeId): Result<List<TimeCardRecordModel>>
+    suspend fun getRecords(employeePK: EmployeeId, propertyId: PropertyId): Result<List<TimeCardRecordModel>>
 
     /**
-     * Get all time card records.
+     * Get all time card records for the [propertyId].
      */
-    suspend fun getAllRecords(): Result<List<TimeCardRecordModel>>
+    suspend fun getAllRecords(propertyId: PropertyId): Result<List<TimeCardRecordModel>>
 
     /**
      * Get a specific time card record.

@@ -76,3 +76,5 @@ include("edifikana:front-end:shared-app")
 include("edifikana:front-end:app-android")
 include("edifikana:front-end:app-jvm")
 include("edifikana:front-end:app-wasm")
+
+include("runasimi:service")

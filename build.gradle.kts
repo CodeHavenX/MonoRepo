@@ -73,4 +73,6 @@ tasks.register("releaseAll") {
     dependsOn("edifikana:front-end:app-wasm:release")
     dependsOn("edifikana:front-end:app-android:release")
     dependsOn("edifikana:front-end:app-jvm:release")
+
+    dependsOn("runasimi:service:release")
 }

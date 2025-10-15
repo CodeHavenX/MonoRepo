@@ -25,9 +25,9 @@ import io.ktor.server.routing.Routing
  * Controller for employee related operations. CRUD operations for employee.
  */
 class EmployeeController(
-    private val employeeService: EmployeeService,
+    private val employeeService: com.cramsan.edifikana.server.service.EmployeeService,
     private val contextRetriever: ContextRetriever,
-    private val rbacService: RBACService,
+    private val rbacService: com.cramsan.edifikana.server.service.authorization.RBACService,
 ) : Controller {
 
     val unauthorizedMsg = "You are not authorized to perform this action in your organization."
@@ -173,7 +173,7 @@ class EmployeeController(
     private suspend fun checkHasRole(
         context: ClientContext.AuthenticatedClientContext,
         empId: EmployeeId,
-        requireRole: UserRole,
+        requireRole: com.cramsan.edifikana.server.service.models.UserRole,
     ) {
         if (!rbacService.hasRoleOrHigher(context, empId, requireRole)) {
             throw UnauthorizedException(unauthorizedMsg)

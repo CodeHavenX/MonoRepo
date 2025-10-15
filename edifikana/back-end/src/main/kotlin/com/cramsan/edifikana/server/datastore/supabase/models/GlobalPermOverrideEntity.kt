@@ -1,0 +1,17 @@
+package com.cramsan.edifikana.server.datastore.supabase.models
+
+import com.cramsan.framework.annotations.SupabaseModel
+import kotlinx.serialization.Serializable
+
+/**
+ * Entity for global permission overrides.
+ */
+@Serializable
+@SupabaseModel
+data class GlobalPermOverrideEntity(
+    val id: String,
+) {
+    companion object {
+        const val COLLECTION = "global_perm_override"
+    }
+}

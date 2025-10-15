@@ -1,14 +1,14 @@
 package com.cramsan.edifikana.client.lib.features.admin.property
 
 import app.cash.turbine.test
+import com.cramsan.edifikana.client.lib.features.management.property.EmployeeUIModel
 import com.cramsan.edifikana.client.lib.features.management.property.PropertyEvent
 import com.cramsan.edifikana.client.lib.features.management.property.PropertyViewModel
-import com.cramsan.edifikana.client.lib.features.management.property.EmployeeUIModel
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
-import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.managers.EmployeeManager
-import com.cramsan.edifikana.client.lib.models.PropertyModel
+import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.models.EmployeeModel
+import com.cramsan.edifikana.client.lib.models.PropertyModel
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.assertlib.AssertUtil
@@ -29,13 +29,15 @@ import edifikana_lib.error_message_unexpected_error
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.advanceUntilIdle
-import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.advanceUntilIdle
+import org.junit.jupiter.api.BeforeEach
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class PropertyViewModelTest : CoroutineTest() {
 
     private lateinit var viewModel: PropertyViewModel

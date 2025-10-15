@@ -14,13 +14,13 @@ import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.server.core.service.models.Asset
-import com.cramsan.edifikana.server.core.service.models.Employee
-import com.cramsan.edifikana.server.core.service.models.EventLogEntry
-import com.cramsan.edifikana.server.core.service.models.Property
-import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
-import com.cramsan.edifikana.server.core.service.models.User
-import com.cramsan.edifikana.server.core.service.models.UserRole
+import com.cramsan.edifikana.server.service.models.Asset
+import com.cramsan.edifikana.server.service.models.Employee
+import com.cramsan.edifikana.server.service.models.EventLogEntry
+import com.cramsan.edifikana.server.service.models.Property
+import com.cramsan.edifikana.server.service.models.TimeCardEvent
+import com.cramsan.edifikana.server.service.models.User
+import com.cramsan.edifikana.server.service.models.UserRole
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 

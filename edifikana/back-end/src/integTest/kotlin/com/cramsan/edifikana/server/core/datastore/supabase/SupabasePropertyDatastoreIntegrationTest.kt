@@ -1,9 +1,9 @@
-package com.cramsan.edifikana.server.core.datastore.supabase
+package com.cramsan.edifikana.server.datastore.supabase
 
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.server.core.service.models.Property
+import com.cramsan.edifikana.server.service.models.Property
 import com.cramsan.framework.utils.uuid.UUID
 import kotlin.test.BeforeTest
 import kotlin.test.Ignore

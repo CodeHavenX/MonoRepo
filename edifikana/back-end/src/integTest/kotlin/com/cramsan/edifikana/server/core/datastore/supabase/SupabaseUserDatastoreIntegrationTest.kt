@@ -1,8 +1,8 @@
-package com.cramsan.edifikana.server.core.datastore.supabase
+package com.cramsan.edifikana.server.datastore.supabase
 
 import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.server.core.service.models.User
-import com.cramsan.edifikana.server.core.service.models.UserRole
+import com.cramsan.edifikana.server.service.models.User
+import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.core.Hashing
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess

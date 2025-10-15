@@ -1,14 +1,14 @@
 package com.cramsan.edifikana.server
 
-import com.cramsan.edifikana.server.core.controller.Controller
-import com.cramsan.edifikana.server.di.ApplicationModule
-import com.cramsan.edifikana.server.di.FrameworkModule
-import com.cramsan.edifikana.server.di.KtorModule
-import com.cramsan.edifikana.server.di.NAME_LOGGING
-import com.cramsan.edifikana.server.di.ServicesModule
-import com.cramsan.edifikana.server.di.SettingsModule
-import com.cramsan.edifikana.server.di.SupabaseModule
-import com.cramsan.edifikana.server.settings.Overrides
+import com.cramsan.edifikana.server.controller.Controller
+import com.cramsan.edifikana.server.dependencyinjection.ApplicationModule
+import com.cramsan.edifikana.server.dependencyinjection.FrameworkModule
+import com.cramsan.edifikana.server.dependencyinjection.KtorModule
+import com.cramsan.edifikana.server.dependencyinjection.NAME_LOGGING
+import com.cramsan.edifikana.server.dependencyinjection.ServicesModule
+import com.cramsan.edifikana.server.dependencyinjection.SettingsModule
+import com.cramsan.edifikana.server.dependencyinjection.SupabaseModule
+import com.cramsan.edifikana.server.dependencyinjection.settings.Overrides
 import com.cramsan.framework.core.ktor.configureHealthEndpoint
 import com.cramsan.framework.logging.Severity
 import com.cramsan.framework.logging.logI

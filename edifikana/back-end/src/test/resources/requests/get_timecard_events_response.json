@@ -13,7 +13,7 @@
             "id": "timecard456",
             "employee_id": "emp456",
             "fallback_employee_name": "Jane Smith",
-            "property_id": "property456",
+            "property_id": "property123",
             "type": "CLOCK_IN",
             "image_url": "http://example.com/image2.jpg",
             "timestamp": 1727702654

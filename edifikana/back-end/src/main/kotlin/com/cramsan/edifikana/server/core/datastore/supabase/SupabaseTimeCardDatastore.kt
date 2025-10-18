@@ -46,7 +46,7 @@ class SupabaseTimeCardDatastore(
             select()
         }.decodeSingle<TimeCardEventEntity>()
         logD(TAG, "Time card event created eventId: %s", createdTimeCardEvent.id)
-        createdTimeCardEvent.toTimeCardEvent()
+        requireNotNull(createdTimeCardEvent.toTimeCardEvent())
     }
 
     /**
@@ -80,7 +80,7 @@ class SupabaseTimeCardDatastore(
                 }
             }
             select()
-        }.decodeList<TimeCardEventEntity>().map { it.toTimeCardEvent() }
+        }.decodeList<TimeCardEventEntity>().mapNotNull { it.toTimeCardEvent() }
     }
 
     /**

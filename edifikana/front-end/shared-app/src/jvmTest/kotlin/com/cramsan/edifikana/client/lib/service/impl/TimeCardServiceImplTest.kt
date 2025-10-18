@@ -1,12 +1,12 @@
 package com.cramsan.edifikana.client.lib.service.impl
 
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
-import com.cramsan.framework.annotations.NetworkModel
-import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.EmployeeId
+import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.edifikana.lib.model.network.TimeCardEventNetworkResponse
+import com.cramsan.framework.annotations.NetworkModel
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -37,6 +37,7 @@ class TimeCardServiceImplTest {
     fun `getRecords should return mapped records for employee`() = runTest {
         // Arrange
         val employeeId = EmployeeId("employee-1")
+        val propertyId = PropertyId("Cenit")
         val networkResponse = listOf(
             mockk<TimeCardEventNetworkResponse> {
                 coEvery { toTimeCardRecordModel() } returns TimeCardRecordModel(
@@ -69,7 +70,7 @@ class TimeCardServiceImplTest {
         }
 
         // Act
-        val result = service.getRecords(employeeId)
+        val result = service.getRecords(employeeId, propertyId)
 
         // Assert
         assertTrue(result.isSuccess)
@@ -85,6 +86,7 @@ class TimeCardServiceImplTest {
     @Test
     fun `getAllRecords should return mapped records`() = runTest {
         // Arrange
+        val propertyId = PropertyId("Cenit")
         val networkResponse = listOf(
             mockk<TimeCardEventNetworkResponse> {
                 coEvery { toTimeCardRecordModel() } returns TimeCardRecordModel(
@@ -104,7 +106,7 @@ class TimeCardServiceImplTest {
         }
 
         // Act
-        val result = service.getAllRecords()
+        val result = service.getAllRecords(propertyId)
 
         // Assert
         assertTrue(result.isSuccess)

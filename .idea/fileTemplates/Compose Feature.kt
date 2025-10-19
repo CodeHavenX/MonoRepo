@@ -1,4 +1,4 @@
-package ${PACKAGE_NAME}
+package ${PACKAGE_NAME}.${Package_Name}
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,41 +14,42 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
+import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
- * A class representing navigating to the ${NAME} screen.
+ * A class representing navigating to the ${Feature_Name} screen.
  * TODO: Move this destination to the respective Route.
  * TODO: If the Destination has arguments, make this class into a `data class` add them arguments.
  */
-data object ${NAME}Destination : RouteDestination( // TODO: Update the Destination to match the respective Route.
-    Route.${NAME}.route, // TODO: Update to the respective route Enum
+data object ${Feature_Name}Destination : RouteDestination( // TODO: Update the Destination to match the respective Route.
+    Route.${Feature_Name}.route, // TODO: Update to the respective route Enum
 ) {
     // TODO: If the this class is an `object class` remove the `companion object` block.
     companion object {
         /**
-         * Create a [${NAME}Destination] from a NavBackStackEntry.
+         * Create a [${Feature_Name}Destination] from a NavBackStackEntry.
          */
-        fun unpack(backstackEntry: NavBackStackEntry): ${NAME}Destination {
-            return ${NAME}Destination
+        fun unpack(backstackEntry: NavBackStackEntry): ${Feature_Name}Destination {
+            return ${Feature_Name}Destination
         }
     }
 }
 
 
 /**
- * ${NAME} screen.
+ * ${Feature_Name} screen.
  *
  * This function provides the boilerplate needed to wire up the screen within the rest of the
  * application. This includes observing the view model's state and event flows and rendering the screen.
  */
  // TODO: Register this screen as a new route within the appropriate router.
 @Composable
-fun ${NAME}Screen(
-    destination: ${NAME}Destination, // TODO: If the destination is a data object, it can be removed as an argument.
+fun ${Feature_Name}Screen(
+    destination: ${Feature_Name}Destination, // TODO: If the destination is a data object, it can be removed as an argument.
     modifier: Modifier = Modifier,
-    viewModel: ${NAME}ViewModel = koinViewModel(),
+    viewModel: ${Feature_Name}ViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -66,14 +67,14 @@ fun ${NAME}Screen(
         launch {
             viewModel.events.collect { event ->
                 when (event) {
-                    ${NAME}Event.Noop -> Unit
+                    ${Feature_Name}Event.Noop -> Unit
                 }
             }
         }
     }
 
     // Render the screen
-    ${NAME}Content(
+    ${Feature_Name}Content(
         content = uiState,
         onBackSelected = { viewModel.onBackSelected() },
         modifier = modifier,
@@ -84,8 +85,8 @@ fun ${NAME}Screen(
  * Content of the AccountEdit screen.
  */
 @Composable
-internal fun ${NAME}Content(
-    content: ${NAME}UIState,
+internal fun ${Feature_Name}Content(
+    content: ${Feature_Name}UIState,
     onBackSelected: () -> Unit,
     modifier: Modifier = Modifier,
 ) {

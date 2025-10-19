@@ -8,7 +8,9 @@ import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.core.controller.authentication.ClientContext
 import com.cramsan.edifikana.server.core.controller.authentication.ContextRetriever
 import com.cramsan.edifikana.server.core.service.TimeCardService
+import com.cramsan.edifikana.server.core.service.authorization.RBACService
 import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
+import com.cramsan.edifikana.server.core.service.models.UserRole
 import com.cramsan.edifikana.server.utils.readFileContent
 import com.cramsan.framework.test.CoroutineTest
 import io.ktor.client.request.get
@@ -51,6 +53,7 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
         val requestBody = readFileContent("requests/create_timecard_event_request.json")
         val expectedResponse = readFileContent("requests/create_timecard_event_response.json")
         val timeCardService = get<TimeCardService>()
+        val rbacService = get<RBACService>()
         val clock = get<Clock>()
 
         coEvery {
@@ -75,13 +78,19 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
         }
         every { clock.now() } returns Instant.fromEpochSeconds(1727702654)
         val contextRetriever = get<ContextRetriever>()
+        val context = ClientContext.AuthenticatedClientContext(
+            userInfo = mockk(),
+            userId = UserId("user123"),
+        )
         coEvery {
             contextRetriever.getContext(any())
         }.answers {
-            ClientContext.AuthenticatedClientContext(
-                userInfo = mockk(),
-                userId = UserId("user123"),
-            )
+            context
+        }
+        coEvery {
+            rbacService.hasRoleOrHigher(context, PropertyId("property123"), UserRole.EMPLOYEE)
+        }.answers {
+            true
         }
 
         // Act
@@ -100,6 +109,7 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
         // Configure
         val expectedResponse = readFileContent("requests/get_timecard_event_response.json")
         val timeCardService = get<TimeCardService>()
+        val rbacService = get<RBACService>()
         coEvery {
             timeCardService.getTimeCardEvent(TimeCardEventId("timecard123"))
         }.answers {
@@ -114,13 +124,19 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
             )
         }
         val contextRetriever = get<ContextRetriever>()
+        val context = ClientContext.AuthenticatedClientContext(
+            userInfo = mockk(),
+            userId = UserId("user123"),
+        )
         coEvery {
             contextRetriever.getContext(any())
         }.answers {
-            ClientContext.AuthenticatedClientContext(
-                userInfo = mockk(),
-                userId = UserId("user123"),
-            )
+            context
+        }
+        coEvery {
+            rbacService.hasRoleOrHigher(context, TimeCardEventId("timecard123"), UserRole.EMPLOYEE)
+        }.answers {
+            true
         }
 
         // Act
@@ -136,6 +152,7 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
         // Configure
         val expectedResponse = readFileContent("requests/get_timecard_events_response.json")
         val timeCardService = get<TimeCardService>()
+        val rbacService = get<RBACService>()
         coEvery {
             timeCardService.getTimeCardEvents(EmployeeId("emp123"))
         }.answers {
@@ -153,7 +170,7 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
                     id = TimeCardEventId("timecard456"),
                     employeeId = EmployeeId("emp456"),
                     fallbackEmployeeName = "Jane Smith",
-                    propertyId = PropertyId("property456"),
+                    propertyId = PropertyId("property123"),
                     type = TimeCardEventType.CLOCK_IN,
                     imageUrl = "http://example.com/image2.jpg",
                     timestamp = Instant.fromEpochSeconds(1727702654),
@@ -161,17 +178,28 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
             )
         }
         val contextRetriever = get<ContextRetriever>()
+        val context = ClientContext.AuthenticatedClientContext(
+            userInfo = mockk(),
+            userId = UserId("emp123"),
+        )
         coEvery {
             contextRetriever.getContext(any())
         }.answers {
-            ClientContext.AuthenticatedClientContext(
-                userInfo = mockk(),
-                userId = UserId("emp123"),
-            )
+            context
+        }
+        coEvery {
+            rbacService.hasRoleOrHigher(context, EmployeeId("emp123"), UserRole.EMPLOYEE)
+        }.answers {
+            true
+        }
+        coEvery {
+            rbacService.hasRoleOrHigher(context, PropertyId("property123"), UserRole.EMPLOYEE)
+        }.answers {
+            true
         }
 
         // Act
-        val response = client.get("time_card?employeeId=emp123")
+        val response = client.get("time_card?propertyId=property123&employeeId=emp123")
 
         // Assert
         assertEquals(HttpStatusCode.OK, response.status)

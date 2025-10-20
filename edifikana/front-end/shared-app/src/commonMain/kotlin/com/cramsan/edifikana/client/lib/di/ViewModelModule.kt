@@ -16,6 +16,7 @@ import com.cramsan.edifikana.client.lib.features.management.drawer.ManagementVie
 import com.cramsan.edifikana.client.lib.features.management.employee.EmployeeViewModel
 import com.cramsan.edifikana.client.lib.features.management.employeelist.EmployeeListViewModel
 import com.cramsan.edifikana.client.lib.features.management.eventlog.EventLogViewModel
+import com.cramsan.edifikana.client.lib.features.management.gotoorganization.GoToOrganizationViewModel
 import com.cramsan.edifikana.client.lib.features.management.home.HomeViewModel
 import com.cramsan.edifikana.client.lib.features.management.hub.HubViewModel
 import com.cramsan.edifikana.client.lib.features.management.properties.PropertyManagerViewModel
@@ -100,6 +101,7 @@ internal val ViewModelModule = module {
         viewModelOf(::ManagementViewModel)
         viewModelOf(::ScreenSelectorViewModel)
         viewModelOf(::ChangePasswordDialogViewModel)
+        viewModelOf(::GoToOrganizationViewModel)
     }
 }
 

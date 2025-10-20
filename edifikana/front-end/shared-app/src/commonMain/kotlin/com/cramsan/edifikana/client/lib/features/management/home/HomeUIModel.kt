@@ -18,7 +18,7 @@ data class HomeUIModel(
     companion object {
         val Empty = HomeUIModel(
             label = "",
-            selectedTab = Tabs.EventLog,
+            selectedTab = Tabs.None,
             availableProperties = emptyList(),
         )
     }
@@ -41,6 +41,7 @@ enum class Tabs {
     None,
     TimeCard,
     EventLog,
+    GoToOrganization,
 }
 
 /**

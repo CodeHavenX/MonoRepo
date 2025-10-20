@@ -7,6 +7,7 @@ import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logI
 import kotlinx.coroutines.launch
 
@@ -59,6 +60,14 @@ class HomeViewModel(
                 label = name,
                 availableProperties = propertyUiModels,
             )
+        }
+        // Check if there is a list of properties. If the list is empty, show the fallback tab.
+        if (properties.isEmpty()) {
+            logI(TAG, "No properties found. Show the fallback tab.")
+            selectTab(Tabs.GoToOrganization)
+        } else {
+            logD(TAG, "Properties found. Show the properties tab.")
+            selectTab(Tabs.EventLog)
         }
     }
 

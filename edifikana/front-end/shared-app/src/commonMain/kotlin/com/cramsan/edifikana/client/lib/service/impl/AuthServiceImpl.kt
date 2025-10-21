@@ -11,6 +11,7 @@ import com.cramsan.edifikana.lib.model.network.GetAllUsersQueryParams
 import com.cramsan.edifikana.lib.model.network.InviteNetworkResponse
 import com.cramsan.edifikana.lib.model.network.InviteUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdatePasswordNetworkRequest
+import com.cramsan.edifikana.lib.model.network.UserEmailQueryParam
 import com.cramsan.edifikana.lib.utils.requireSuccess
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.assertlib.assertFalse
@@ -188,9 +189,13 @@ class AuthServiceImpl(
         return Result.success(!hasServicePermissions)
     }
 
-    override suspend fun checkUserExists(email: String): Result<Boolean> {
-        TODO()
+    @OptIn(NetworkModel::class)
+    override suspend fun checkUserExists(email: String): Result<Boolean> = runSuspendCatching(TAG){
+        UserApi.checkUserExists.buildRequest(
+            UserEmailQueryParam(email)
+        ).execute(http).isUserRegistered
     }
+
     override suspend fun updateUser(
         firstName: String?,
         lastName: String?,

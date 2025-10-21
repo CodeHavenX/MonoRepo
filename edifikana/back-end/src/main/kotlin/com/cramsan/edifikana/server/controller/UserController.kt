@@ -281,6 +281,9 @@ class UserController(
             handler(api.getInvites, contextRetriever) { request ->
                 getInvites(request.context, request.pathParam)
             }
+            unauthenticatedHandler(api.checkUserExists, contextRetriever) { request ->
+                checkUserIsRegistered(request.queryParam.email)
+            }
         }
     }
 }

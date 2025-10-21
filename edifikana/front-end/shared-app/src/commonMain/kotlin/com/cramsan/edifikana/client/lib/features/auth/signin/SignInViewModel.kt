@@ -112,11 +112,23 @@ class SignInViewModel(
             if (!checkEmailValid(email)) {
                 return@launch
             }
-            emitWindowEvent(
-                EdifikanaWindowsEvent.NavigateToScreen(
-                    AuthDestination.ValidationDestination(email, accountCreationFlow = false)
+            val result = auth.checkUserExists(email)
+            result.onFailure { err ->
+                updateUiState { it.copy(errorMessages = listOf("Oops, something went wrong.")) }
+                return@launch
+            }
+            val registeredUser = result.getOrNull() ?: false
+            if (registeredUser) {
+                emitWindowEvent(
+                    EdifikanaWindowsEvent.NavigateToScreen(
+                        AuthDestination.ValidationDestination(email, accountCreationFlow = false)
+                    )
                 )
-            )
+            } else {
+                emitWindowEvent(
+                    EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.SignUpDestination)
+                )
+            }
         }
     }
 

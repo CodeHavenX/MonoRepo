@@ -2,12 +2,14 @@ package com.cramsan.edifikana.api
 
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.network.CheckUserNetworkResponse
 import com.cramsan.edifikana.lib.model.network.CreateUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.GetAllUsersQueryParams
 import com.cramsan.edifikana.lib.model.network.InviteListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.InviteUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdatePasswordNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdateUserNetworkRequest
+import com.cramsan.edifikana.lib.model.network.UserEmailQueryParam
 import com.cramsan.edifikana.lib.model.network.UserListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
 import com.cramsan.framework.annotations.NetworkModel
@@ -26,73 +28,83 @@ object UserApi : Api("user") {
 
     val createUser =
         operation<
-            CreateUserNetworkRequest,
-            NoQueryParam,
-            NoPathParam,
-            UserNetworkResponse
-            >(HttpMethod.Post)
+                CreateUserNetworkRequest,
+                NoQueryParam,
+                NoPathParam,
+                UserNetworkResponse
+                >(HttpMethod.Post)
 
     val getUser = operation<
-        NoRequestBody,
-        NoQueryParam,
-        UserId,
-        UserNetworkResponse
-        >(HttpMethod.Get)
+            NoRequestBody,
+            NoQueryParam,
+            UserId,
+            UserNetworkResponse
+            >(HttpMethod.Get)
 
     val updatePassword = operation<
-        UpdatePasswordNetworkRequest,
-        NoQueryParam,
-        NoPathParam,
-        NoResponseBody
-        >(
+            UpdatePasswordNetworkRequest,
+            NoQueryParam,
+            NoPathParam,
+            NoResponseBody
+            >(
         HttpMethod.Put,
         "password",
     )
 
     val getAllUsers = operation<
-        NoRequestBody,
-        GetAllUsersQueryParams,
-        NoPathParam,
-        UserListNetworkResponse
-        >(
+            NoRequestBody,
+            GetAllUsersQueryParams,
+            NoPathParam,
+            UserListNetworkResponse
+            >(
         HttpMethod.Get
     )
 
     val updateUser = operation<
-        UpdateUserNetworkRequest,
-        NoQueryParam,
-        UserId,
-        UserNetworkResponse
-        >(HttpMethod.Put)
+            UpdateUserNetworkRequest,
+            NoQueryParam,
+            UserId,
+            UserNetworkResponse
+            >(HttpMethod.Put)
 
     val deleteUser = operation<
-        NoRequestBody,
-        NoQueryParam,
-        UserId,
-        NoResponseBody
-        >(HttpMethod.Delete)
+            NoRequestBody,
+            NoQueryParam,
+            UserId,
+            NoResponseBody
+            >(HttpMethod.Delete)
 
     val associateUser = operation<
-        NoRequestBody,
-        NoQueryParam,
-        NoPathParam,
-        UserNetworkResponse
-        >(HttpMethod.Post, "associate")
+            NoRequestBody,
+            NoQueryParam,
+            NoPathParam,
+            UserNetworkResponse
+            >(HttpMethod.Post, "associate")
 
     val inviteUser = operation<
-        InviteUserNetworkRequest,
-        NoQueryParam,
-        NoPathParam,
-        NoResponseBody
-        >(HttpMethod.Post, "invite")
+            InviteUserNetworkRequest,
+            NoQueryParam,
+            NoPathParam,
+            NoResponseBody
+            >(HttpMethod.Post, "invite")
 
     val getInvites = operation<
-        NoRequestBody,
-        NoQueryParam,
-        OrganizationId,
-        InviteListNetworkResponse
-        >(
+            NoRequestBody,
+            NoQueryParam,
+            OrganizationId,
+            InviteListNetworkResponse
+            >(
         HttpMethod.Get,
         "invites"
+    )
+
+    val checkUserExists = operation<
+            NoRequestBody,
+            UserEmailQueryParam,
+            NoPathParam,
+            CheckUserNetworkResponse
+            >(
+        HttpMethod.Get,
+        "checkUser"
     )
 }

@@ -92,15 +92,23 @@ class AuthManagerTest : CoroutineTest() {
     }
 
     /**
-     * Tests signInWithOtp returns user.
+     * Tests signInWithOtp returns user and sets active property.
      */
     @Test
-    fun `signInWithOtp returns user`() = runTest {
+    fun `signInWithOtp returns user and sets active property`() = runTest {
         // Arrange
         val user = mockk<UserModel>()
+        val propertyId = PropertyId("property-1")
+        val propertyList = listOf(mockk<com.cramsan.edifikana.client.lib.models.PropertyModel> {
+            every { id } returns propertyId
+        })
         coEvery { authService.signInWithOtp("email", "token", createUser = false) } returns Result.success(user)
+        coEvery { propertyService.getPropertyList() } returns Result.success(propertyList)
+        coEvery { propertyService.setActiveProperty(propertyId) } returns Result.success(Unit)
+
         // Act
         val result = manager.signInWithOtp("email", "token", createUser = false)
+
         // Assert
         assertTrue(result.isSuccess)
         assertEquals(user, result.getOrNull())

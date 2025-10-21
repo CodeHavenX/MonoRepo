@@ -65,7 +65,14 @@ class AuthManager(
         createUser: Boolean,
     ): Result<UserModel> = dependencies.getOrCatch(TAG) {
         logI(TAG, "signing in with OTP code")
-        authService.signInWithOtp(email, hashToken, createUser).getOrThrow()
+        val userModel = authService.signInWithOtp(email, hashToken, createUser).getOrThrow()
+
+        val properties = propertyService.getPropertyList().getOrThrow()
+        if (properties.isNotEmpty()) {
+            propertyService.setActiveProperty(properties.firstOrNull()?.id)
+        }
+
+        userModel
     }
 
     /**

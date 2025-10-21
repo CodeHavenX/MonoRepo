@@ -9,11 +9,13 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Preview
 @Composable
 private fun ${Feature_Name}ScreenPreview() {
-    ${Feature_Name}Content(
-        content = ${Feature_Name}UIState(
-            title = "${Feature_Name}ScreenPreview",
-            isLoading = true,
-        ),
-        onBackSelected = {},
-    )
+    AppTheme {
+        ${Feature_Name}Content(
+            content = ${Feature_Name}UIState(
+                title = "${Feature_Name}ScreenPreview",
+                isLoading = true,
+            ),
+            onBackSelected = {},
+        )
+    }
 }

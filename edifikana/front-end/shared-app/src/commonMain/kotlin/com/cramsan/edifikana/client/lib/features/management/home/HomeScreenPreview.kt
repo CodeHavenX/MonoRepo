@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.cramsan.edifikana.client.ui.theme.AppTheme
+import com.cramsan.edifikana.lib.model.PropertyId
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
@@ -18,7 +19,13 @@ private fun HomeScreenPreview() {
         HomeScreenContent(
             uiState = HomeUIModel(
                 label = "Cenit, Barranco",
-                availableProperties = emptyList(),
+                availableProperties = listOf(
+                    PropertyUiModel(
+                        propertyId = PropertyId("property-1"),
+                        name = "Cenit",
+                        selected = true,
+                    ),
+                ),
                 selectedTab = Tabs.None,
             ),
             onAccountButtonClicked = {},

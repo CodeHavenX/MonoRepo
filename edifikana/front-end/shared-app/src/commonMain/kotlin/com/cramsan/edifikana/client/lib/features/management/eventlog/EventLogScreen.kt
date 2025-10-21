@@ -68,7 +68,7 @@ fun EventLogScreen(
 
 @Composable
 internal fun RecordList(
-    records: List<com.cramsan.edifikana.client.lib.features.management.eventlog.EventLogRecordUIModel>,
+    records: List<EventLogRecordUIModel>,
     isLoading: Boolean,
     modifier: Modifier = Modifier,
     onRecordSelected: (EventLogEntryId?) -> Unit,

@@ -37,6 +37,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.management.drawer.ManagementViewModel
 import com.cramsan.edifikana.client.lib.features.management.eventlog.EventLogScreen
+import com.cramsan.edifikana.client.lib.features.management.gotoorganization.GoToOrganizationScreen
 import com.cramsan.edifikana.client.lib.features.management.timecard.TimeCardScreen
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.edifikana.lib.model.PropertyId
@@ -144,21 +145,23 @@ internal fun HomeScreenContent(
             }
         },
         bottomBar = {
-            NavigationBar {
-                BottomBarDestinationUiModels.forEach { dest ->
-                    val selected = dest.destination == uiState.selectedTab
-                    val label = stringResource(dest.text)
+            if (uiState.availableProperties.isNotEmpty()) {
+                NavigationBar {
+                    BottomBarDestinationUiModels.forEach { dest ->
+                        val selected = dest.destination == uiState.selectedTab
+                        val label = stringResource(dest.text)
 
-                    NavigationBarItem(
-                        onClick = {
-                            onTabSelected(dest.destination)
-                        },
-                        icon = {
-                            Icon(painterResource(dest.icon), contentDescription = label)
-                        },
-                        label = { Text(label) },
-                        selected = selected,
-                    )
+                        NavigationBarItem(
+                            onClick = {
+                                onTabSelected(dest.destination)
+                            },
+                            icon = {
+                                Icon(painterResource(dest.icon), contentDescription = label)
+                            },
+                            label = { Text(label) },
+                            selected = selected,
+                        )
+                    }
                 }
             }
         },
@@ -279,7 +282,7 @@ fun AccountDropDown(
 @Composable
 private fun HomeContent(
     modifier: Modifier,
-    selectedTab: com.cramsan.edifikana.client.lib.features.management.home.Tabs,
+    selectedTab: Tabs,
 ) {
     Crossfade(selectedTab) {
         when (it) {
@@ -296,6 +299,11 @@ private fun HomeContent(
             }
             Tabs.None -> {
                 // No content
+            }
+            Tabs.GoToOrganization -> {
+                GoToOrganizationScreen(
+                    modifier
+                )
             }
         }
     }

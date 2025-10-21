@@ -14,7 +14,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
-import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -64,11 +63,9 @@ fun ${Feature_Name}Screen(
     }
 
     LaunchedEffect(Unit) {
-        launch {
-            viewModel.events.collect { event ->
-                when (event) {
-                    ${Feature_Name}Event.Noop -> Unit
-                }
+        viewModel.events.collect { event ->
+            when (event) {
+                ${Feature_Name}Event.Noop -> Unit
             }
         }
     }
@@ -82,7 +79,7 @@ fun ${Feature_Name}Screen(
 }
 
 /**
- * Content of the AccountEdit screen.
+ * Content of the ${Feature_Name} screen.
  */
 @Composable
 internal fun ${Feature_Name}Content(

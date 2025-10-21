@@ -347,5 +347,4 @@ class UserServiceTest {
         assertEquals(Result.success(false), result)
         coVerify { userDatastore.getUser(email) }
     }
-
 }

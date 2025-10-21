@@ -190,7 +190,7 @@ class AuthServiceImpl(
     }
 
     @OptIn(NetworkModel::class)
-    override suspend fun checkUserExists(email: String): Result<Boolean> = runSuspendCatching(TAG){
+    override suspend fun checkUserExists(email: String): Result<Boolean> = runSuspendCatching(TAG) {
         UserApi.checkUserExists.buildRequest(
             UserEmailQueryParam(email)
         ).execute(http).isUserRegistered

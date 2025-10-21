@@ -86,7 +86,7 @@ class OtpValidationViewModel(
             updateUiState {
                 it.copy(
                     otpCode = sanitizedText,
-                    enabledContinueButton = sanitizedText.length == OTP_LENGTH
+                    enabledContinueButton = sanitizedText.length == uiState.value.otpLength
                 )
             }
         }
@@ -118,6 +118,5 @@ class OtpValidationViewModel(
 
     companion object {
         private const val TAG = "ValidationViewModel"
-        private const val OTP_LENGTH = 6
     }
 }

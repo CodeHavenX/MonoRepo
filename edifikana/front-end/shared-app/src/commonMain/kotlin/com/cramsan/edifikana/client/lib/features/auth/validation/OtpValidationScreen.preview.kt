@@ -18,6 +18,7 @@ private fun ValidationScreenPreview() = AppTheme {
             otpCode = "123456",
             accountCreationFlow = true,
             enabledContinueButton = true,
+            otpLength = 6,
         ),
         modifier = Modifier,
         onBackClicked = {},

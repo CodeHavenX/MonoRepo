@@ -82,7 +82,6 @@ class OtpValidationViewModelTest : CoroutineTest() {
     fun `signInWithOtp does not call signInWithOtp due to incorrect params`() = runCoroutineTest {
         // Arrange
         val email = "user@domain.com"
-        val otpString = "123456"
         viewModel.initializeOTPValidationScreen(email, accountCreationFlow = false)
         this.testScheduler.advanceUntilIdle()
         viewModel.updateOtpCode("123")
@@ -107,7 +106,6 @@ class OtpValidationViewModelTest : CoroutineTest() {
         this.testScheduler.advanceUntilIdle()
         viewModel.updateOtpCode(otpString)
 
-        coEvery { authManager.sendOtpCode(email) } returns Result.success(Unit)
         coEvery { authManager.signInWithOtp(
             email,
             otpString,

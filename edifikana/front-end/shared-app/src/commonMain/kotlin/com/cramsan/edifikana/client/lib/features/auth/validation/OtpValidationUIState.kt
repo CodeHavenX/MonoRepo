@@ -15,6 +15,7 @@ data class OtpValidationUIState(
     val enabledContinueButton: Boolean,
     val errorMessage: String?,
     val accountCreationFlow: Boolean,
+    val otpLength: Int,
 ) : ViewModelUIState {
     companion object {
         val Initial = OtpValidationUIState(
@@ -24,6 +25,7 @@ data class OtpValidationUIState(
             errorMessage = null,
             accountCreationFlow = true,
             enabledContinueButton = false,
+            otpLength = 6,
         )
     }
 }

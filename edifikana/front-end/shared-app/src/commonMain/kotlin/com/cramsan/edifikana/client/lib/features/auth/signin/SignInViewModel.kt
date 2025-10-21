@@ -113,7 +113,7 @@ class SignInViewModel(
                 return@launch
             }
             val result = auth.checkUserExists(email)
-            result.onFailure { err ->
+            result.onFailure {
                 updateUiState { it.copy(errorMessages = listOf("Oops, something went wrong.")) }
                 return@launch
             }

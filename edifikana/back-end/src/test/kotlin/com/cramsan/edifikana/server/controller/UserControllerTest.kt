@@ -501,4 +501,63 @@ class UserControllerTest : CoroutineTest(), KoinTest {
         assertEquals(HttpStatusCode.Unauthorized, response.status)
         assertEquals(expectedResponse, response.bodyAsText())
     }
+
+    /**
+     * Test that the checkUser endpoint returns isUserRegistered=true when the user exists.
+     */
+    @Test
+    fun `test checkUserIsRegistered returns true when user exists`() = testEdifikanaApplication {
+        // Arrange
+        val email = "exists@example.com"
+        val userService = get<UserService>()
+        val contextRetriever = get<ContextRetriever>()
+        coEvery {
+            userService.checkUserIsRegistered(email)
+        }.answers {
+            Result.success(true)
+        }
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            ClientContext.UnauthenticatedClientContext
+        }
+
+        // Act
+        val response = client.get("user/checkUser?email=$email")
+
+        // Assert
+        assertEquals(HttpStatusCode.OK, response.status)
+        val body = response.bodyAsText()
+        assertTrue(body.contains("isUserRegistered"))
+        assertTrue(body.contains("true"))
+    }
+
+    /**
+     * Test that the checkUser endpoint returns isUserRegistered=false when the user does not exist.
+     */
+    @Test
+    fun `test checkUserIsRegistered returns false when user does not exist`() = testEdifikanaApplication {
+        // Arrange
+        val email = "notfound@example.com"
+        val userService = get<UserService>()
+        val contextRetriever = get<ContextRetriever>()
+        coEvery {
+            userService.checkUserIsRegistered(email)
+        }.answers {
+            Result.success(false)
+        }
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            ClientContext.UnauthenticatedClientContext
+        }
+        // Act
+        val response = client.get("user/checkUser?email=$email")
+
+        // Assert
+        assertEquals(HttpStatusCode.OK, response.status)
+        val body = response.bodyAsText()
+        assertTrue(body.contains("isUserRegistered"))
+        assertTrue(body.contains("false"))
+    }
 }

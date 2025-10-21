@@ -205,6 +205,41 @@ class AuthManagerTest : CoroutineTest() {
         assertTrue(result.isSuccess)
         coVerify { authService.inviteEmployee(email, organizationId) }
     }
+
+    /**
+     * Tests checkUserExists returns true when authService reports existence.
+     */
+    @Test
+    fun `checkUserExists returns true when user exists`() = runTest {
+        // Arrange
+        val email = "exists@example.com"
+        coEvery { authService.checkUserExists(email) } returns Result.success(true)
+
+        // Act
+        val result = manager.checkUserExists(email)
+
+        // Assert
+        assertTrue(result.isSuccess)
+        assertEquals(true, result.getOrNull())
+        coVerify { authService.checkUserExists(email) }
+    }
+
+    /**
+     * Tests checkUserExists returns failure when authService fails.
+     */
+    @Test
+    fun `checkUserExists returns failure when service errors`() = runTest {
+        // Arrange
+        val email = "error@example.com"
+        val exception = Exception("service error")
+        coEvery { authService.checkUserExists(email) } returns Result.failure(exception)
+
+        // Act
+        val result = manager.checkUserExists(email)
+
+        // Assert
+        assertTrue(result.isFailure)
+        coVerify { authService.checkUserExists(email) }
+    }
+
 }
-
-

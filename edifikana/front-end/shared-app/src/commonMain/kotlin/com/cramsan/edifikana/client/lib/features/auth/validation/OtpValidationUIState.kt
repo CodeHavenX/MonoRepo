@@ -11,19 +11,21 @@ import com.cramsan.framework.core.compose.ViewModelUIState
 data class OtpValidationUIState(
     val isLoading: Boolean,
     val email: String,
-    val otpCode: List<String?>,
-    val focusedIndex: Int?,
+    val otpCode: String,
+    val enabledContinueButton: Boolean,
     val errorMessage: String?,
     val accountCreationFlow: Boolean,
+    val otpLength: Int,
 ) : ViewModelUIState {
     companion object {
         val Initial = OtpValidationUIState(
             isLoading = true,
             email = "",
-            otpCode = List(6) { null },
-            focusedIndex = null,
+            otpCode = "",
             errorMessage = null,
             accountCreationFlow = true,
+            enabledContinueButton = false,
+            otpLength = 6,
         )
     }
 }

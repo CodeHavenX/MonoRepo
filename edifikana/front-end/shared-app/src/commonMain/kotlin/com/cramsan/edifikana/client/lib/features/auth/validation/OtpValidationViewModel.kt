@@ -50,10 +50,16 @@ class OtpValidationViewModel(
         logD(TAG, "signInWithOtp called")
         val otpToken = uiState.value.otpCode
         val email = uiState.value.email
+
+        if (!uiState.value.enabledContinueButton) {
+            logW(TAG, "signInWithOtp called but continue button is disabled")
+            return
+        }
+
         viewModelScope.launch {
             auth.signInWithOtp(
                 email,
-                otpToken.joinToString(""),
+                otpToken,
                 uiState.value.accountCreationFlow,
             ).onFailure {
                 logW(TAG, "signInWithOtp failed: ${it.message}")
@@ -71,64 +77,16 @@ class OtpValidationViewModel(
     }
 
     /**
-     * Called when the OTP field is focused.
+     * Update the OTP code entered by the user.
      */
-    fun onOtpFieldFocused(index: Int) {
-        logD(TAG, "onOtpFieldFocused called with index: $index")
-        viewModelScope.launch {
-            updateUiState {
-                it.copy(
-                    focusedIndex = index
-                )
-            }
-        }
-    }
+    fun updateOtpCode(newText: String) {
+        val sanitizedText = newText.filter { it.isDigit() }
 
-    /**
-     * Called when the OTP value is entered or changed.
-     */
-    fun onEnterOtpValue(otpValue: String?, index: Int) {
-        // Check value entered is a digit, if not, do nothing
-        // NOTE: May need to add a check for an empty field in case this return false and doesn't allow new entry
-        val isValid = otpValue == null || (otpValue.length == 1 && otpValue[0].isDigit())
-        if (!isValid) {
-            return
-        }
-        // Update the OTP code at the specified index with the new value
-        val newCode = uiState.value.otpCode.mapIndexed { currIndex, currVal ->
-            if (currIndex == index) {
-                otpValue
-            } else {
-                currVal
-            }
-        }
-        // If the value is null, it means the user has removed the value from the field.
-        val wasValRemoved = otpValue == null
-        // Update the UI state with the new OTP code and focused index
         viewModelScope.launch {
             updateUiState {
                 it.copy(
-                    otpCode = newCode,
-                    focusedIndex = if (wasValRemoved || it.otpCode.getOrNull(index) != null) {
-                        it.focusedIndex
-                    } else {
-                        getNextFocusedOtpFieldIndex(it.otpCode, it.focusedIndex)
-                    }
-                )
-            }
-        }
-    }
-
-    /**
-     * Called when the back button on the keyboard is pressed.
-     */
-    fun onKeyboardBack() {
-        logD(TAG, "onKeyboardBack called")
-        val prevIndex = getPreviousFocusedIndex(uiState.value.focusedIndex)
-        viewModelScope.launch {
-            updateUiState {
-                it.copy(
-                    focusedIndex = prevIndex
+                    otpCode = sanitizedText,
+                    enabledContinueButton = sanitizedText.length == uiState.value.otpLength
                 )
             }
         }
@@ -144,50 +102,6 @@ class OtpValidationViewModel(
                 EdifikanaWindowsEvent.NavigateBack
             )
         }
-    }
-
-    /**
-     * Returns the previous focused index for the OTP field.
-     */
-    private fun getPreviousFocusedIndex(currentIndex: Int?): Int? {
-        return currentIndex?.minus(1)?.coerceAtLeast(0)
-    }
-
-    /**
-     * Returns the next focused index for the OTP field.
-     */
-    private fun getNextFocusedOtpFieldIndex(
-        currentCode: List<String?>,
-        currentFocusedIndex: Int?
-    ): Int? {
-        // If the current focused index is null, return null
-        if (currentFocusedIndex == null) {
-            return null
-        }
-        // If the current focused index is the last one, return it
-        if (currentFocusedIndex == currentCode.lastIndex) {
-            return currentFocusedIndex
-        }
-
-        return getFirstEmptyFieldIndexAfterFocusedIndex(currentCode, currentFocusedIndex)
-    }
-
-    /**
-     * Returns the next focused index for the OTP field.
-     */
-    private fun getFirstEmptyFieldIndexAfterFocusedIndex(
-        code: List<String?>,
-        currentFocusedIndex: Int
-    ): Int {
-        code.forEachIndexed { index, number ->
-            if (index <= currentFocusedIndex) {
-                return@forEachIndexed
-            }
-            if (number == null) {
-                return index
-            }
-        }
-        return currentFocusedIndex
     }
 
     /**

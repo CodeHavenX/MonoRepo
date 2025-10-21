@@ -76,20 +76,36 @@ class OtpValidationViewModelTest : CoroutineTest() {
     }
 
     /**
+     * Test that signInWithOtp does not calls authManager when incorrect parameters.
+     */
+    @Test
+    fun `signInWithOtp does not call signInWithOtp due to incorrect params`() = runCoroutineTest {
+        // Arrange
+        val email = "user@domain.com"
+        viewModel.initializeOTPValidationScreen(email, accountCreationFlow = false)
+        this.testScheduler.advanceUntilIdle()
+        viewModel.updateOtpCode("123")
+
+        // Act
+        viewModel.signInWithOtp()
+        this.testScheduler.advanceUntilIdle()
+
+        // Assert
+        coVerify(exactly = 0) { authManager.signInWithOtp(any(), any(), any()) }
+    }
+
+    /**
      * Test that signInWithOtp calls authManager with the correct parameters.
      */
     @Test
     fun `signInWithOtp should call signInWithOtp on authManager with correct params`() = runCoroutineTest {
         // Arrange
         val email = "user@domain.com"
-        val otp = listOf("1","2","3","4","5","6")
         val otpString = "123456"
         viewModel.initializeOTPValidationScreen(email, accountCreationFlow = false)
         this.testScheduler.advanceUntilIdle()
-        otp.forEachIndexed { index, value ->
-            viewModel.onEnterOtpValue(value, index)
-        }
-        coEvery { authManager.sendOtpCode(email) } returns Result.success(Unit)
+        viewModel.updateOtpCode(otpString)
+
         coEvery { authManager.signInWithOtp(
             email,
             otpString,
@@ -106,71 +122,6 @@ class OtpValidationViewModelTest : CoroutineTest() {
             otpString,
             createUser = false,
         ) }
-    }
-
-    /**
-     * Test that onOtpFieldFocused updates the focusedIndex in the UI state.
-     */
-    @Test
-    fun `onOtpFieldFocused should update focusedIndex`() = runCoroutineTest {
-        // Act
-        viewModel.onOtpFieldFocused(3)
-        this.testScheduler.advanceUntilIdle()
-
-        // Assert
-        Assertions.assertEquals(3, viewModel.uiState.value.focusedIndex)
-    }
-
-    /**
-     * Test that onEnterOtpValue updates the otpCode and focusedIndex in the UI state.
-     */
-    @Test
-    fun `onEnterOtpValue should update otpCode and focusedIndex`() = runCoroutineTest {
-        // Act
-        viewModel.onOtpFieldFocused(0)
-        this.testScheduler.advanceUntilIdle()
-        viewModel.onEnterOtpValue("5", 0)
-        this.testScheduler.advanceUntilIdle()
-
-        // Assert
-        Assertions.assertEquals("5", viewModel.uiState.value.otpCode[0])
-        Assertions.assertEquals(1, viewModel.uiState.value.focusedIndex)
-    }
-
-    /**
-     * Test that non-digit values are not entered/updated in the otp field.
-     */
-    @Test
-    fun `onEnterOtpValue should ignore non-digit values`() = runCoroutineTest {
-        // Arrange
-        viewModel.onOtpFieldFocused(1)
-        this.testScheduler.advanceUntilIdle()
-        val initialOtp = viewModel.uiState.value.otpCode[1]
-
-        // Act
-        viewModel.onEnterOtpValue("a", 1) // non-digit character
-        this.testScheduler.advanceUntilIdle()
-
-        // Assert
-        Assertions.assertEquals(initialOtp, viewModel.uiState.value.otpCode[1])
-    }
-
-    /**
-     * Test that onKeyboardBack clears the previous otpCode and updates focusedIndex.
-     */
-    @Test
-    fun `onKeyboardBack should clear previous otpCode and update focusedIndex`() = runCoroutineTest {
-        // Act
-        viewModel.onOtpFieldFocused(2)
-        this.testScheduler.advanceUntilIdle()
-        viewModel.onEnterOtpValue("7", 2)
-        this.testScheduler.advanceUntilIdle()
-        viewModel.onKeyboardBack()
-        this.testScheduler.advanceUntilIdle()
-
-        // Assert
-        Assertions.assertEquals(null, viewModel.uiState.value.otpCode[3])
-        Assertions.assertEquals(2, viewModel.uiState.value.focusedIndex)
     }
 
     /**

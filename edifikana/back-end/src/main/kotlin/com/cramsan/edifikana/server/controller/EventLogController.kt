@@ -6,7 +6,11 @@ import com.cramsan.edifikana.lib.model.network.CreateEventLogEntryNetworkRequest
 import com.cramsan.edifikana.lib.model.network.EventLogEntryListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.EventLogEntryNetworkResponse
 import com.cramsan.edifikana.lib.model.network.UpdateEventLogEntryNetworkRequest
+import com.cramsan.edifikana.server.controller.authentication.ClientContext
 import com.cramsan.edifikana.server.controller.authentication.ContextRetriever
+import com.cramsan.edifikana.server.service.EventLogService
+import com.cramsan.edifikana.server.service.authorization.RBACService
+import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam

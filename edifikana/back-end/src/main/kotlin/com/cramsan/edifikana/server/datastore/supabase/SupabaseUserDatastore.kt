@@ -173,6 +173,12 @@ class SupabaseUserDatastore(
         userEntity?.toUser()
     }
 
+    override suspend fun getUser(email: String): Result<User?> = runSuspendCatching(TAG) {
+        logD(TAG, "Getting user by email: %s", email)
+        val userEntity = getUserByEmail(email)
+        userEntity?.toUser()
+    }
+
     private suspend fun getUserImpl(id: UserId): UserEntity? {
         return postgrest.from(UserEntity.COLLECTION).select {
             filter {

@@ -129,6 +129,14 @@ class AuthManager(
     }
 
     /**
+     * Check if a user exists with the provided [email].
+     */
+    suspend fun checkUserExists(email: String): Result<Boolean> = dependencies.getOrCatch(TAG) {
+        logI(TAG, "checkUserExists")
+        authService.checkUserExists(email).getOrThrow()
+    }
+
+    /**
      * Update the user information with the provided [firstName], [lastName], [email], and [phoneNumber].
      */
     suspend fun updateUser(

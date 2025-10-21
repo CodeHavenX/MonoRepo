@@ -76,6 +76,11 @@ interface AuthService {
     suspend fun verifyPermissions(): Result<Boolean>
 
     /**
+     * Check if the user email is registered in our system.
+     */
+    suspend fun checkUserExists(email: String): Result<Boolean>
+
+    /**
      * Update the user information with the provided [firstName], [lastName], [email], and [phoneNumber].
      * Returns the updated user model if successful.
      */

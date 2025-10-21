@@ -188,6 +188,9 @@ class AuthServiceImpl(
         return Result.success(!hasServicePermissions)
     }
 
+    override suspend fun checkUserExists(email: String): Result<Boolean> {
+        TODO()
+    }
     override suspend fun updateUser(
         firstName: String?,
         lastName: String?,

@@ -13,7 +13,6 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.management.drawer.ManagementViewModel
 import com.cramsan.edifikana.client.lib.features.management.drawer.SelectableDrawerItem
 import com.cramsan.ui.components.ScreenLayout
-import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -39,11 +38,9 @@ fun GoToOrganizationScreen(
     }
 
     LaunchedEffect(Unit) {
-        launch {
-            viewModel.events.collect { event ->
-                when (event) {
-                    GoToOrganizationEvent.Noop -> Unit
-                }
+        viewModel.events.collect { event ->
+            when (event) {
+                GoToOrganizationEvent.Noop -> Unit
             }
         }
     }
@@ -57,7 +54,7 @@ fun GoToOrganizationScreen(
 }
 
 /**
- * Content of the AccountEdit screen.
+ * Content of the GoToOrganization.
  */
 @Composable
 internal fun GoToOrganizationContent(

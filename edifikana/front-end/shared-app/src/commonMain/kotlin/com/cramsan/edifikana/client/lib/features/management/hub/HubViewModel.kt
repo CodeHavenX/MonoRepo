@@ -4,6 +4,7 @@ import com.cramsan.edifikana.client.lib.features.account.AccountDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.OrganizationManager
+import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.models.Organization
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.utils.requireSuccess
@@ -18,6 +19,7 @@ import kotlinx.coroutines.launch
 class HubViewModel(
     dependencies: ViewModelDependencies,
     private val organizationManager: OrganizationManager,
+    private val propertyManager: PropertyManager,
 ) : BaseViewModel<HubEvent, HubUIModel>(
     dependencies,
     HubUIModel.Empty,
@@ -53,9 +55,12 @@ class HubViewModel(
             val organizations = organizationManager.getOrganizations().requireSuccess()
             val organizationsUIModels = organizations.map { it.toUIModel() }
 
+            val properties = propertyManager.getPropertyList().requireSuccess()
+
             updateUiState {
                 it.copy(
                     availableOrganizations = organizationsUIModels,
+                    isEmployeeTabEnabled = properties.isNotEmpty(),
                 )
             }
 

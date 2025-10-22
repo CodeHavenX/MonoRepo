@@ -7,6 +7,7 @@ import com.cramsan.edifikana.client.lib.features.management.hub.Tabs
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.OrganizationManager
+import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
 import com.cramsan.framework.core.compose.EventBus
@@ -30,6 +31,7 @@ class HubViewModelTest : CoroutineTest() {
     private lateinit var windowEventBus: EventBus<WindowEvent>
     private lateinit var applicationEventReceiver: EventBus<ApplicationEvent>
     private lateinit var organizationManager: OrganizationManager
+    private lateinit var propertyManager: PropertyManager
 
     @BeforeEach
     fun setupTest() {
@@ -38,6 +40,7 @@ class HubViewModelTest : CoroutineTest() {
         windowEventBus = EventBus()
         exceptionHandler = CollectorCoroutineExceptionHandler()
         organizationManager = mockk()
+        propertyManager = mockk()
         viewModel = HubViewModel(
             dependencies = ViewModelDependencies(
                 appScope = testCoroutineScope,
@@ -46,7 +49,8 @@ class HubViewModelTest : CoroutineTest() {
                 windowEventReceiver = windowEventBus,
                 applicationEventReceiver = applicationEventReceiver,
             ),
-            organizationManager = organizationManager
+            organizationManager = organizationManager,
+            propertyManager = propertyManager,
         )
     }
 

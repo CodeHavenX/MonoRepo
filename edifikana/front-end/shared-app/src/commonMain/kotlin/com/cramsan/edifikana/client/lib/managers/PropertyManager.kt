@@ -74,6 +74,7 @@ class PropertyManager(
     suspend fun removeProperty(propertyId: PropertyId): Result<Unit> = dependencies.getOrCatch(TAG) {
         logI(TAG, "removeProperty")
         propertyService.removeProperty(propertyId)
+        propertyService.getPropertyList()
     }
 
     companion object {

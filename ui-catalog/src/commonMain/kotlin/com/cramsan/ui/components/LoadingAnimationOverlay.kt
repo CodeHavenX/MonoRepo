@@ -58,4 +58,5 @@ fun LoadingAnimationOverlay(
     }
 }
 
+@Suppress("MagicNumber")
 private val TransparentGray = Color(0x33888888)

@@ -8,6 +8,9 @@ import com.cramsan.edifikana.lib.model.network.EmployeeNetworkResponse
 import com.cramsan.edifikana.lib.model.network.UpdateEmployeeNetworkRequest
 import com.cramsan.edifikana.server.controller.authentication.ClientContext
 import com.cramsan.edifikana.server.controller.authentication.ContextRetriever
+import com.cramsan.edifikana.server.service.EmployeeService
+import com.cramsan.edifikana.server.service.authorization.RBACService
+import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
@@ -22,9 +25,9 @@ import io.ktor.server.routing.Routing
  * Controller for employee related operations. CRUD operations for employee.
  */
 class EmployeeController(
-    private val employeeService: com.cramsan.edifikana.server.service.EmployeeService,
+    private val employeeService: EmployeeService,
     private val contextRetriever: ContextRetriever,
-    private val rbacService: com.cramsan.edifikana.server.service.authorization.RBACService,
+    private val rbacService: RBACService,
 ) : Controller {
 
     val unauthorizedMsg = "You are not authorized to perform this action in your organization."
@@ -46,7 +49,7 @@ class EmployeeController(
         if (!rbacService.hasRoleOrHigher(
                 request.context,
                 request.requestBody.propertyId,
-                _root_ide_package_.com.cramsan.edifikana.server.service.models.UserRole.ADMIN
+                UserRole.ADMIN
             )
         ) {
             throw UnauthorizedException(unauthorizedMsg)
@@ -69,12 +72,18 @@ class EmployeeController(
      */
     @OptIn(NetworkModel::class)
     suspend fun getEmployee(
-        request: OperationRequest<NoRequestBody, NoQueryParam, EmployeeId, ClientContext.AuthenticatedClientContext>,
+        request:
+        OperationRequest<
+            NoRequestBody,
+            NoQueryParam,
+            EmployeeId,
+            ClientContext.AuthenticatedClientContext
+            >,
     ): EmployeeNetworkResponse? {
         checkHasRole(
             request.context,
             request.pathParam,
-            _root_ide_package_.com.cramsan.edifikana.server.service.models.UserRole.MANAGER
+            UserRole.MANAGER
         )
         return employeeService.getEmployee(
             request.pathParam,
@@ -88,7 +97,13 @@ class EmployeeController(
      */
     @OptIn(NetworkModel::class)
     suspend fun getEmployees(
-        request: OperationRequest<NoRequestBody, NoQueryParam, NoPathParam, ClientContext.AuthenticatedClientContext>
+        request:
+        OperationRequest<
+            NoRequestBody,
+            NoQueryParam,
+            NoPathParam,
+            ClientContext.AuthenticatedClientContext
+            >
     ): EmployeeListNetworkResponse {
         val employees = employeeService.getEmployees(request.context).map { it.toEmployeeNetworkResponse() }
         return EmployeeListNetworkResponse(employees)
@@ -111,7 +126,7 @@ class EmployeeController(
         checkHasRole(
             request.context,
             request.pathParam,
-            _root_ide_package_.com.cramsan.edifikana.server.service.models.UserRole.ADMIN
+            UserRole.ADMIN
         )
         val updateEmpRequest = request.requestBody
         val updatedEmployee = employeeService.updateEmployee(
@@ -129,12 +144,18 @@ class EmployeeController(
      * Returns [NoResponseBody] to indicate successful deletion.
      */
     suspend fun deleteEmployee(
-        request: OperationRequest<NoRequestBody, NoQueryParam, EmployeeId, ClientContext.AuthenticatedClientContext>,
+        request:
+        OperationRequest<
+            NoRequestBody,
+            NoQueryParam,
+            EmployeeId,
+            ClientContext.AuthenticatedClientContext
+            >,
     ): NoResponseBody {
         checkHasRole(
             request.context,
             request.pathParam,
-            _root_ide_package_.com.cramsan.edifikana.server.service.models.UserRole.ADMIN
+            UserRole.ADMIN
         )
         employeeService.deleteEmployee(request.pathParam)
         return NoResponseBody
@@ -152,7 +173,7 @@ class EmployeeController(
     private suspend fun checkHasRole(
         context: ClientContext.AuthenticatedClientContext,
         empId: EmployeeId,
-        requireRole: com.cramsan.edifikana.server.service.models.UserRole,
+        requireRole: UserRole,
     ) {
         if (!rbacService.hasRoleOrHigher(context, empId, requireRole)) {
             throw UnauthorizedException(unauthorizedMsg)

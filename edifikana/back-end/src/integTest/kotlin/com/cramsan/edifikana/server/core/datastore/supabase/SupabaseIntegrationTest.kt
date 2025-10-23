@@ -1,29 +1,32 @@
-package com.cramsan.edifikana.server.core.datastore.supabase
+package com.cramsan.edifikana.server.datastore.supabase
 
+import com.cramsan.edifikana.lib.model.EmployeeId
+import com.cramsan.edifikana.lib.model.EmployeeRole
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.EmployeeId
-import com.cramsan.edifikana.lib.model.EmployeeRole
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.server.core.service.models.EventLogEntry
-import com.cramsan.edifikana.server.core.service.models.Invite
-import com.cramsan.edifikana.server.core.service.models.Organization
-import com.cramsan.edifikana.server.core.service.models.Property
-import com.cramsan.edifikana.server.core.service.models.Employee
-import com.cramsan.edifikana.server.core.service.models.TimeCardEvent
-import com.cramsan.edifikana.server.core.service.models.User
-import com.cramsan.edifikana.server.di.FrameworkModule
-import com.cramsan.edifikana.server.di.IntegTestApplicationModule
-import com.cramsan.edifikana.server.di.SettingsModule
-import com.cramsan.edifikana.server.di.SupabaseModule
+import com.cramsan.edifikana.server.dependencyinjection.FrameworkModule
+import com.cramsan.edifikana.server.dependencyinjection.IntegTestApplicationModule
+import com.cramsan.edifikana.server.dependencyinjection.SettingsModule
+import com.cramsan.edifikana.server.dependencyinjection.SupabaseModule
+import com.cramsan.edifikana.server.service.models.Employee
+import com.cramsan.edifikana.server.service.models.EventLogEntry
+import com.cramsan.edifikana.server.service.models.Invite
+import com.cramsan.edifikana.server.service.models.Organization
+import com.cramsan.edifikana.server.service.models.Property
+import com.cramsan.edifikana.server.service.models.TimeCardEvent
+import com.cramsan.edifikana.server.service.models.User
 import com.cramsan.framework.test.CoroutineTest
 import com.cramsan.framework.utils.password.generateRandomPassword
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
+import kotlin.test.AfterTest
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
@@ -31,9 +34,6 @@ import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
 import org.koin.test.inject
-import kotlin.test.AfterTest
-import kotlin.time.ExperimentalTime
-import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
 abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {

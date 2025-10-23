@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.server.core.datastore.supabase
+package com.cramsan.edifikana.server.datastore.supabase
 
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType

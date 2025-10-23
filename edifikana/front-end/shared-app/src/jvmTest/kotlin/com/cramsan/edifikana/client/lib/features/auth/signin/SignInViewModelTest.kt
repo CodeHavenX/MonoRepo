@@ -5,7 +5,6 @@ import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
-import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
 import com.cramsan.framework.core.compose.EventBus
@@ -18,18 +17,19 @@ import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.test.CoroutineTest
 import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
+import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import edifikana_lib.Res
 import edifikana_lib.error_message_invalid_credentials
 import edifikana_lib.error_message_unexpected_error
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlinx.coroutines.launch
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
-import kotlin.test.Test
-import kotlin.test.assertEquals
 
 /**
  * Test the [SignInViewModel] class.
@@ -186,7 +186,7 @@ class SignInViewModelTest : CoroutineTest() {
      *
      */
     @Test
-    fun `test SignIn fails for unexpected reason`() = runBlockingTest {
+    fun `test SignIn fails for unexpected reason`() = runCoroutineTest {
         // Arrange
         val username = "wrongUser@email.com"
         val password = "ValidPassword123"
@@ -265,7 +265,7 @@ class SignInViewModelTest : CoroutineTest() {
      * Test the [SignInViewModel.signInWithOtp] method emits navigation event with trimmed email
      */
     @Test
-    fun `test signInWithOtp emits navigation event with trimmed email`() = runBlockingTest {
+    fun `test signInWithOtp emits navigation event with trimmed email`() = runCoroutineTest {
         // Arrange
         val email = " test@email.com "
         viewModel.changeUsernameValue(email)

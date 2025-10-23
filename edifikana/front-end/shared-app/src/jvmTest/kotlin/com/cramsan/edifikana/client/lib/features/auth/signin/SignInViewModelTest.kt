@@ -269,6 +269,7 @@ class SignInViewModelTest : CoroutineTest() {
         // Arrange
         val email = " test@email.com "
         viewModel.changeUsernameValue(email)
+        coEvery { authManager.checkUserExists(email.trim()) } returns Result.success(true)
 
         // Act
         val verificationJob = launch {
@@ -287,6 +288,29 @@ class SignInViewModelTest : CoroutineTest() {
         viewModel.signInWithOtp()
 
         // Assert
+        verificationJob.join()
+    }
+
+    @Test
+    fun `test signInWithOtp redirects to SignUp page when email is not registered`() = runCoroutineTest {
+        // Arrange
+        val email = "unregistered@email.com"
+        viewModel.changeUsernameValue(email)
+        coEvery { authManager.checkUserExists(email.trim()) } returns Result.success(false)
+
+        // Act
+        val verificationJob = launch {
+            windowEventBus.events.test {
+                assertEquals(
+                    EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.SignUpDestination),
+                    awaitItem()
+                )
+            }
+        }
+        viewModel.signInWithOtp()
+
+        // Assert & Verify
+        coVerify { authManager.checkUserExists(email.trim()) }
         verificationJob.join()
     }
 }

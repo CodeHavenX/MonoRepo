@@ -3,6 +3,7 @@ package com.cramsan.edifikana.server.controller
 import com.cramsan.edifikana.api.UserApi
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.network.CheckUserNetworkResponse
 import com.cramsan.edifikana.lib.model.network.CreateUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.GetAllUsersQueryParams
 import com.cramsan.edifikana.lib.model.network.InviteListNetworkResponse
@@ -235,6 +236,19 @@ class UserController(
     }
 
     /**
+     * Handle a call to check if a user exists in the system.
+     * Returns a [CheckUserNetworkResponse] indicating whether the user exists.
+     * Throws [IllegalArgumentException] if required fields are missing.
+     */
+    @OptIn(NetworkModel::class)
+    suspend fun checkUserIsRegistered(
+        email: String
+    ): CheckUserNetworkResponse {
+        val registeredUser = userService.checkUserIsRegistered(email).getOrThrow()
+        return CheckUserNetworkResponse(registeredUser)
+    }
+
+    /**
      * Registers the routes for the user controller. The [route] parameter is the root path for the controller.
      */
     @OptIn(NetworkModel::class)
@@ -266,6 +280,9 @@ class UserController(
             }
             handler(api.getInvites, contextRetriever) { request ->
                 getInvites(request.context, request.pathParam)
+            }
+            unauthenticatedHandler(api.checkUserExists, contextRetriever) { request ->
+                checkUserIsRegistered(request.queryParam.email)
             }
         }
     }

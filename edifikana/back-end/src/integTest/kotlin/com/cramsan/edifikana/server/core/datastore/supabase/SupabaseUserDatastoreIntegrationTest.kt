@@ -167,6 +167,55 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
         assertTrue(fetched != null && fetched.email == "${test_prefix}_getuser@test.com")
     }
 
+    /**
+     * Tests that getUser(email) returns the created user when the email exists.
+     */
+    @Test
+    fun `getUser by email should return created user`() = runCoroutineTest {
+        // Arrange
+        val email = "${test_prefix}_byemail@test.com"
+
+        // Act
+        val createResult = userDatastore.createUser(
+            email = email,
+            phoneNumber = "123-456-7890",
+            password = "password",
+            firstName = "By",
+            lastName = "Email",
+            isTransient = false,
+        ).registerUserForDeletion()
+
+        // Assert create succeeded
+        assertTrue(createResult.isSuccess)
+        val created = createResult.getOrThrow()
+
+        // Act: fetch by email
+        val fetchResult = userDatastore.getUser(email)
+
+        // Assert
+        assertTrue(fetchResult.isSuccess)
+        val fetched = fetchResult.getOrNull()
+        assertTrue(fetched != null)
+        assertEquals(created.id, fetched!!.id)
+        assertEquals(email, fetched.email)
+    }
+
+    /**
+     * Tests that getUser(email) returns null when the email is not present in the database.
+     */
+    @Test
+    fun `getUser by email should return null when not found`() = runCoroutineTest {
+        // Arrange
+        val email = "${test_prefix}_noexist@test.com"
+
+        // Act
+        val fetchResult = userDatastore.getUser(email)
+
+        // Assert
+        assertTrue(fetchResult.isSuccess)
+        assertTrue(fetchResult.getOrNull() == null)
+    }
+
     @Test
     fun `deleteUser should remove user`() = runCoroutineTest {
         // Arrange

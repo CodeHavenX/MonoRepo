@@ -2,12 +2,14 @@ package com.cramsan.edifikana.api
 
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.network.CheckUserNetworkResponse
 import com.cramsan.edifikana.lib.model.network.CreateUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.GetAllUsersQueryParams
 import com.cramsan.edifikana.lib.model.network.InviteListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.InviteUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdatePasswordNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdateUserNetworkRequest
+import com.cramsan.edifikana.lib.model.network.UserEmailQueryParam
 import com.cramsan.edifikana.lib.model.network.UserListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
 import com.cramsan.framework.annotations.NetworkModel
@@ -94,5 +96,15 @@ object UserApi : Api("user") {
         >(
         HttpMethod.Get,
         "invites"
+    )
+
+    val checkUserExists = operation<
+        NoRequestBody,
+        UserEmailQueryParam,
+        NoPathParam,
+        CheckUserNetworkResponse
+        >(
+        HttpMethod.Get,
+        "checkUser"
     )
 }

@@ -168,7 +168,7 @@ class UserServiceTest {
         // Arrange
         val userId = UserId("id")
         val user = mockk<User>()
-        coEvery { userDatastore.getUser(any()) } returns Result.success(user)
+        coEvery { userDatastore.getUser(any<UserId>()) } returns Result.success(user)
 
         // Act
         val result = userService.getUser(userId)
@@ -311,5 +311,40 @@ class UserServiceTest {
         // Assert
         assertTrue(result.isFailure)
         coVerify { userDatastore.recordInvite(email, orgId, any()) }
+    }
+
+    /**
+     * Tests that checkUserIsRegistered returns true when a user is present for the email.
+     */
+    @Test
+    fun `checkUserIsRegistered returns true when user exists`() = runTest {
+        // Arrange
+        val email = "exists@example.com"
+        val user = mockk<User>()
+        coEvery { userDatastore.getUser(email) } returns Result.success<User?>(user)
+
+        // Act
+        val result = userService.checkUserIsRegistered(email)
+
+        // Assert
+        assertEquals(Result.success(true), result)
+        coVerify { userDatastore.getUser(email) }
+    }
+
+    /**
+     * Tests that checkUserIsRegistered returns false when no user is present for the email.
+     */
+    @Test
+    fun `checkUserIsRegistered returns false when user does not exist`() = runTest {
+        // Arrange
+        val email = "notfound@example.com"
+        coEvery { userDatastore.getUser(email) } returns Result.success<User?>(null)
+
+        // Act
+        val result = userService.checkUserIsRegistered(email)
+
+        // Assert
+        assertEquals(Result.success(false), result)
+        coVerify { userDatastore.getUser(email) }
     }
 }

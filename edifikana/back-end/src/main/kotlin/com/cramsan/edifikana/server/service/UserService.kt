@@ -173,6 +173,15 @@ class UserService(
         return userDatastore.getInvites(organizationId)
     }
 
+    /**
+     * Checks if an email is registered to an existing user in our system
+     */
+    suspend fun checkUserIsRegistered(email: String): Result<Boolean> {
+        logD(TAG, "checkUserIsRegistered")
+        val registeredUser = userDatastore.getUser(email).getOrThrow()
+        return Result.success(registeredUser != null)
+    }
+
     companion object {
         private const val TAG = "UserService"
     }

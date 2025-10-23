@@ -49,6 +49,13 @@ interface UserDatastore {
     ): Result<List<User>>
 
     /**
+     * Retrieves a user by email. Returns the [Result] of the operation with the fetched [User].
+     */
+    suspend fun getUser(
+        email: String,
+    ): Result<User?>
+
+    /**
      * Updates a user with the given [request]. Returns the [Result] of the operation with the updated [User].
      */
     suspend fun updateUser(

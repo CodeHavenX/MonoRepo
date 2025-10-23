@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.service.impl
 
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.network.CheckUserNetworkResponse
 import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
 import com.cramsan.edifikana.lib.serialization.createJson
 import com.cramsan.framework.annotations.NetworkModel
@@ -195,5 +196,49 @@ class AuthServiceImplTest {
 
         // Assert
         assertTrue(result.isFailure)
+    }
+
+    /**
+     * Tests that checkUserExists returns true when the backend reports the user is registered.
+     */
+    @OptIn(NetworkModel::class)
+    @Test
+    fun `checkUserExists returns true when backend reports registered`() = runTest {
+        // Arrange
+        val email = "exists@example.com"
+        ktorTestEngine.configure {
+            coEvery { produceResponse(any()) } returns MockResponseData.Success(
+                json.encodeToString(CheckUserNetworkResponse(isUserRegistered = true))
+            )
+        }
+
+        // Act
+        val result = service.checkUserExists(email)
+
+        // Assert
+        assertTrue(result.isSuccess)
+        assertTrue(result.getOrThrow())
+    }
+
+    /**
+     * Tests that checkUserExists returns false when the backend reports the user is not registered.
+     */
+    @OptIn(NetworkModel::class)
+    @Test
+    fun `checkUserExists returns false when backend reports not registered`() = runTest {
+        // Arrange
+        val email = "notfound@example.com"
+        ktorTestEngine.configure {
+            coEvery { produceResponse(any()) } returns MockResponseData.Success(
+                json.encodeToString(CheckUserNetworkResponse(isUserRegistered = false))
+            )
+        }
+
+        // Act
+        val result = service.checkUserExists(email)
+
+        // Assert
+        assertTrue(result.isSuccess)
+        assertFalse(result.getOrThrow())
     }
 }

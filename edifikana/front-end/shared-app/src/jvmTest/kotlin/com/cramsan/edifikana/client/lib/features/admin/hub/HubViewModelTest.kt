@@ -31,7 +31,6 @@ class HubViewModelTest : CoroutineTest() {
     private lateinit var windowEventBus: EventBus<WindowEvent>
     private lateinit var applicationEventReceiver: EventBus<ApplicationEvent>
     private lateinit var organizationManager: OrganizationManager
-    private lateinit var propertyManager: PropertyManager
 
     @BeforeEach
     fun setupTest() {
@@ -40,7 +39,6 @@ class HubViewModelTest : CoroutineTest() {
         windowEventBus = EventBus()
         exceptionHandler = CollectorCoroutineExceptionHandler()
         organizationManager = mockk()
-        propertyManager = mockk()
         viewModel = HubViewModel(
             dependencies = ViewModelDependencies(
                 appScope = testCoroutineScope,
@@ -50,7 +48,6 @@ class HubViewModelTest : CoroutineTest() {
                 applicationEventReceiver = applicationEventReceiver,
             ),
             organizationManager = organizationManager,
-            propertyManager = propertyManager,
         )
     }
 

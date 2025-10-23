@@ -144,12 +144,6 @@ internal fun HubScreenContent(
                     val selected = dest.destination == uiState.selectedTab
                     val label = stringResource(dest.text)
 
-                    val enabled = when (dest.destination) {
-                        Tabs.Properties -> true
-                        Tabs.Employee -> uiState.isEmployeeTabEnabled
-                        Tabs.None -> false
-                    }
-
                     NavigationBarItem(
                         onClick = {
                             onTabSelected(dest.destination)
@@ -159,7 +153,6 @@ internal fun HubScreenContent(
                         },
                         label = { Text(label) },
                         selected = selected,
-                        enabled = enabled,
                     )
                 }
             }

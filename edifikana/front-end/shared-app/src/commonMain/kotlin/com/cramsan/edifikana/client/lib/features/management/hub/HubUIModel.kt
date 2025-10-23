@@ -13,7 +13,6 @@ data class HubUIModel(
     val label: String,
     val selectedTab: Tabs,
     val availableOrganizations: List<OrganizationUIModel>,
-    val isEmployeeTabEnabled: Boolean,
 ) : ViewModelUIState {
     companion object {
         val Empty = HubUIModel(

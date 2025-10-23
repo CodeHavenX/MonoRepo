@@ -4,6 +4,7 @@ import com.cramsan.edifikana.client.lib.models.PropertyModel
 import com.cramsan.edifikana.client.lib.service.OrganizationService
 import com.cramsan.edifikana.client.lib.service.PropertyService
 import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.utils.requireSuccess
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.getOrCatch
 import com.cramsan.framework.logging.logI
@@ -73,8 +74,8 @@ class PropertyManager(
      */
     suspend fun removeProperty(propertyId: PropertyId): Result<Unit> = dependencies.getOrCatch(TAG) {
         logI(TAG, "removeProperty")
-        propertyService.removeProperty(propertyId)
-        propertyService.getPropertyList()
+        propertyService.removeProperty(propertyId).requireSuccess()
+        propertyService.getPropertyList().requireSuccess()
     }
 
     companion object {

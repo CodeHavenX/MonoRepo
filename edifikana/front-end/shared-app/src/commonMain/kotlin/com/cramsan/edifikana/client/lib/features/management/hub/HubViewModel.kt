@@ -19,7 +19,6 @@ import kotlinx.coroutines.launch
 class HubViewModel(
     dependencies: ViewModelDependencies,
     private val organizationManager: OrganizationManager,
-    private val propertyManager: PropertyManager,
 ) : BaseViewModel<HubEvent, HubUIModel>(
     dependencies,
     HubUIModel.Empty,
@@ -55,12 +54,9 @@ class HubViewModel(
             val organizations = organizationManager.getOrganizations().requireSuccess()
             val organizationsUIModels = organizations.map { it.toUIModel() }
 
-            val properties = propertyManager.getPropertyList().requireSuccess()
-
             updateUiState {
                 it.copy(
                     availableOrganizations = organizationsUIModels,
-                    isEmployeeTabEnabled = properties.isNotEmpty(),
                 )
             }
 

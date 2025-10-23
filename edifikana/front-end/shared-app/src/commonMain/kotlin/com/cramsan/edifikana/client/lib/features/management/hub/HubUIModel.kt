@@ -20,7 +20,6 @@ data class HubUIModel(
             label = "",
             selectedTab = Tabs.Properties,
             availableOrganizations = listOf(),
-            isEmployeeTabEnabled = false,
         )
     }
 }

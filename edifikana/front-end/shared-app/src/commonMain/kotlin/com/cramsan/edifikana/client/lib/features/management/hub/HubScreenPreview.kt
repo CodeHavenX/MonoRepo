@@ -24,7 +24,6 @@ private fun HubScreenPreview() = AppTheme {
                     selected = false,
                 ),
             ),
-            isEmployeeTabEnabled = false,
         ),
         onTabSelected = {},
         onAccountButtonClicked = {},

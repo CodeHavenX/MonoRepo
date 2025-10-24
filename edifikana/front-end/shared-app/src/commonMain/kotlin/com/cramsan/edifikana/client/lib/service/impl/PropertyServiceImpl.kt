@@ -106,7 +106,9 @@ class PropertyServiceImpl(
     }
 
     override suspend fun removeProperty(propertyId: PropertyId): Result<Unit> = runSuspendCatching(TAG) {
-        TODO("Not yet implemented")
+        PropertyApi.deleteProperty.buildRequest(
+            propertyId,
+        ).execute(http)
     }
 
     companion object {

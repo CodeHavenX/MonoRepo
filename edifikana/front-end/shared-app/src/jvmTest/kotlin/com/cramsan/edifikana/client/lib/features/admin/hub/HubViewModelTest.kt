@@ -7,6 +7,7 @@ import com.cramsan.edifikana.client.lib.features.management.hub.Tabs
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.OrganizationManager
+import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
 import com.cramsan.framework.core.compose.EventBus
@@ -46,7 +47,7 @@ class HubViewModelTest : CoroutineTest() {
                 windowEventReceiver = windowEventBus,
                 applicationEventReceiver = applicationEventReceiver,
             ),
-            organizationManager = organizationManager
+            organizationManager = organizationManager,
         )
     }
 

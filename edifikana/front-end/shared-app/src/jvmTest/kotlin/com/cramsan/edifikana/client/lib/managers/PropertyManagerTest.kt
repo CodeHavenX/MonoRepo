@@ -153,8 +153,11 @@ class PropertyManagerTest : CoroutineTest() {
         // Arrange
         val propertyId = PropertyId("property-1")
         coEvery { propertyService.removeProperty(propertyId) } returns Result.success(Unit)
+        coEvery { propertyService.getPropertyList() } returns Result.success(emptyList())
+
         // Act
         val result = manager.removeProperty(propertyId)
+
         // Assert
         assertTrue(result.isSuccess)
         coVerify { propertyService.removeProperty(propertyId) }

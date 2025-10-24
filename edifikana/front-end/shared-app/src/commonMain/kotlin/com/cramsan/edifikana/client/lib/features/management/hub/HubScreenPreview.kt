@@ -23,7 +23,7 @@ private fun HubScreenPreview() = AppTheme {
                     name = "Organization 2",
                     selected = false,
                 ),
-            )
+            ),
         ),
         onTabSelected = {},
         onAccountButtonClicked = {},

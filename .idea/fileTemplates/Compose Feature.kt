@@ -19,23 +19,10 @@ import org.koin.compose.viewmodel.koinViewModel
 
 /**
  * A class representing navigating to the ${Feature_Name} screen.
- * TODO: Move this destination to the respective Route.
- * TODO: If the Destination has arguments, make this class into a `data class` add them arguments.
+ * TODO: Move this class to the respective destination class.
  */
-data object ${Feature_Name}Destination : RouteDestination( // TODO: Update the Destination to match the respective Route.
-    Route.${Feature_Name}.route, // TODO: Update to the respective route Enum
-) {
-    // TODO: If the this class is an `object class` remove the `companion object` block.
-    companion object {
-        /**
-         * Create a [${Feature_Name}Destination] from a NavBackStackEntry.
-         */
-        fun unpack(backstackEntry: NavBackStackEntry): ${Feature_Name}Destination {
-            return ${Feature_Name}Destination
-        }
-    }
-}
-
+@Serializable
+data object ${Feature_Name}Destination : Destination()
 
 /**
  * ${Feature_Name} screen.
@@ -93,7 +80,7 @@ internal fun ${Feature_Name}Content(
             // TODO: Update this function to the respective invocation.
             TopBar(
                 title = content.title,
-                onCloseClicked = onBackSelected,
+                onNavigationIconSelected = onBackSelected,
             )
         },
     ) { innerPadding ->

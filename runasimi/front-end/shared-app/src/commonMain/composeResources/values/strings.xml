@@ -1,0 +1,133 @@
+<resources>
+    <string name="app_name">Runasimi</string>
+
+    <string name="sign_out">Sign Out</string>
+    <string name="role_admin">Office Manager</string>
+    <string name="role_security">Security</string>
+    <string name="role_security_cover">Security-Cover</string>
+    <string name="role_limpieza">Cleaning</string>
+    <string name="role_unknown">Unknown</string>
+
+    <string name="time_card_event_clock_in">Clock-In</string>
+    <string name="time_card_event_clock_out">Clock-Out</string>
+
+    <string name="id_type_dni">DNI</string>
+    <string name="id_type_ce">CE</string>
+    <string name="id_type_passport">Passport</string>
+    <string name="id_type_other">Other</string>
+
+    <string name="event_type_guest">Guest</string>
+    <string name="event_type_delivery">Delivery</string>
+    <string name="event_type_incident">Incident/Security</string>
+    <string name="event_type_maintenance_service">Maintenance/Servicing</string>
+    <string name="event_type_other">Other</string>
+
+    <!-- Strings -->
+    <string name="string_id_number">Document Number</string>
+    <string name="string_id_type">Document Type</string>
+    <string name="string_names">First Name</string>
+    <string name="string_last_names">Last Name</string>
+    <string name="string_role">Role</string>
+    <string name="string_save">Save</string>
+    <string name="string_confirm">Confirm</string>
+    <string name="string_cancel">Cancel</string>
+    <string name="error_message_unexpected_error">There was an unexpected error.</string>
+    <string name="error_message_invalid_credentials">Username and/or password didn't match our records.</string>
+    <string name="string_field_event">Event:</string>
+    <string name="string_field_date_time">Date and Time:</string>
+    <string name="string_field_unit">Unit #:</string>
+    <string name="string_share">Share</string>
+    <string name="string_add">Add</string>
+    <string name="string_camera">Camera</string>
+    <string name="string_gallery">Gallery</string>
+    <string name="string_event_log_title">Event Log</string>
+    <string name="string_assistance">Attendance</string>
+    <string name="string_back_navigation">Back</string>
+    <string name="text_accept">Accept</string>
+    <string name="text_take_photo">Take Photo</string>
+    <string name="text_error_take_photo">There was an error loading the photo</string>
+    <string name="string_other">Other</string>
+    <string name="text_please_complete_fields">Please complete all fields.</string>
+    <string name="text_there_was_an_error_processing_request">There was an error processing the request.</string>
+    <string name="text_clock_in">Clock In</string>
+    <string name="text_clock_out">Clock Out</string>
+    <string name="text_employee">employee</string>
+    <string name="text_event_type">Event Type</string>
+    <string name="text_apartment">Apartment</string>
+    <string name="text_simple_desc">Simple Description</string>
+    <string name="text_full_desc">Full Description</string>
+    <string name="text_add">Add</string>
+    <string name="text_flip_camera">Flip Camera</string>
+    <string name="text_employee_name">employee Name</string>
+    <string name="text_forms">Forms</string>
+    <string name="text_view_records">View Records</string>
+    <string name="text_upload">Uploading</string>
+    <string name="error_message_currently_uploading">Processing… Please wait a few seconds…</string>
+
+
+    <string name="text_permissions_camera">To take photos, you need to give permission to use the camera.</string>
+    <string name="text_permissions_open_setting">Open Settings</string>
+
+    <string name="title_event_log">Event Log</string>
+    <string name="title_event_log_add">Add Event</string>
+    <string name="title_event_log_view">View Event</string>
+    <string name="title_form_list">Form List</string>
+    <string name="title_form_entry">Form Entry</string>
+    <string name="title_form_record">Form Record</string>
+    <string name="title_form_record_view">View Form Record</string>
+    <string name="title_timecard">Attendance Control</string>
+    <string name="title_timecard_add_employee">Add employee</string>
+    <string name="title_timecard_view_employee">employee</string>
+    <string name="title_timecard_employee_list">employee List</string>
+
+    <string name="sign_in_screen_text_sign_in">Continue with password</string>
+    <string name="sign_in_screen_text_sign_in_password">Sign in</string>
+    <string name="sign_in_screen_text_sign_in_otp">Sign in with OTP</string>
+    <string name="sign_in_screen_text_email">Email</string>
+    <string name="sign_in_screen_text_password">Password</string>
+    <string name="sign_in_screen_text_sign_up">Sign Up</string>
+
+    <string name="sign_up_screen_text_first_name">First Name</string>
+    <string name="sign_up_screen_text_last_name">Last Name</string>
+    <string name="sign_up_screen_text_email">Email</string>
+    <string name="sign_up_screen_text_phone_number">Phone Number</string>
+    <string name="sign_up_screen_text_password">Password</string>
+    <string name="sign_up_screen_text_sign_up">Sign Up</string>
+    <string name="sign_up_screen_text_policy">By creating an account, I accept Edifikans's Terms of Service and Privacy Policy.</string>
+
+    <string name="otp_validation_screen_text">We've sent an OTP code to your email. Please enter your code below.</string>
+
+    <string name="account_screen_title">My Account</string>
+    <string name="account_screen_edit_button">Edit</string>
+    <string name="account_screen_first_name">First Name</string>
+    <string name="account_screen_last_name">Last Name</string>
+    <string name="account_screen_email">Email</string>
+    <string name="account_screen_phone_number">Phone Number</string>
+    <string name="account_screen_sign_out">Sign Out</string>
+
+    <string name="properties_screen_title">Properties</string>
+    <string name="properties_screen_add_button">Add Property</string>
+
+    <string name="signup_screen_title">Sign Up</string>
+
+    <string name="home_screen_settings_description">Settings</string>
+    <string name="home_screen_account_description">My Account</string>
+    <string name="home_screen_property_dropdown_description">Properties</string>
+    <string name="home_screen_property_dropdown_selected_description">Selected Property</string>
+
+    <string name="event_log_screen_add_record">Add Event</string>
+
+    <string name="view_record_screen_title">View Record</string>
+
+    <string name="add_record_screen_title">Add Record</string>
+
+    <string name="employee_list_screen_title">Employee List</string>
+    <string name="employee_list_screen_add_button_description">Add Employee</string>
+
+    <string name="add_employee_screen_title">Add employee</string>
+
+    <string name="time_card_screen_add_event">Add Event</string>
+
+    <string name="hub_screen_properties_button_title">Properties</string>
+    <string name="hub_screen_employee_button_title">employee</string>
+</resources>

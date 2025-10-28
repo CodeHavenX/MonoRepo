@@ -83,7 +83,7 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
             context
         }
         coEvery {
-            rbacService.hasRole(context, OrganizationId("org123"), UserRole.ADMIN)
+            rbacService.hasRoleOrHigher(context, OrganizationId("org123"), UserRole.ADMIN)
         }.answers {
             true
         }
@@ -118,7 +118,7 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
                 context
             }
             coEvery {
-                rbacService.hasRole(context, OrganizationId("org123"), UserRole.ADMIN)
+                rbacService.hasRoleOrHigher(context, OrganizationId("org123"), UserRole.ADMIN)
             }.answers {
                 false
             }
@@ -282,7 +282,7 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
             context
         }
         coEvery {
-            rbacService.hasRole(context, propId, UserRole.ADMIN)
+            rbacService.hasRoleOrHigher(context, propId, UserRole.ADMIN)
         }.answers {
             true
         }
@@ -317,7 +317,7 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
             context
         }
         coEvery {
-            rbacService.hasRole(context, propId, UserRole.ADMIN)
+            rbacService.hasRoleOrHigher(context, propId, UserRole.ADMIN)
         }.answers {
             false
         }
@@ -356,7 +356,7 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
             context
         }
         coEvery {
-            rbacService.hasRole(context, propId, UserRole.ADMIN)
+            rbacService.hasRoleOrHigher(context, propId, UserRole.ADMIN)
         }.answers {
             true
         }
@@ -386,7 +386,7 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
             context
         }
         coEvery {
-            rbacService.hasRole(context, propId, UserRole.ADMIN)
+            rbacService.hasRoleOrHigher(context, propId, UserRole.ADMIN)
         }.answers {
             false
         }

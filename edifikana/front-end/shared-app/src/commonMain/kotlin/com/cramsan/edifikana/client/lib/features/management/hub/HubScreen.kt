@@ -121,13 +121,15 @@ internal fun HubScreenContent(
                 onNavigationIconSelected = onNavigationIconSelected,
             ) {
                 // Organization selection
-                OrganizationsDropDown(
-                    organizations = uiState.availableOrganizations,
-                    onOrganizationSelected = {
-                        // Handle organization selection here if needed
-                        onOrganizationSelected(it)
-                    }
-                )
+                if (uiState.availableOrganizations.size > 1) {
+                    OrganizationsDropDown(
+                        organizations = uiState.availableOrganizations,
+                        onOrganizationSelected = {
+                            // Handle organization selection here if needed
+                            onOrganizationSelected(it)
+                        }
+                    )
+                }
 
                 // Account button
                 AccountDropDown(

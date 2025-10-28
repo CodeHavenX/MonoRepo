@@ -47,7 +47,7 @@ class PropertyController(
             ClientContext.AuthenticatedClientContext
             >
     ): PropertyNetworkResponse {
-        if (!rbacService.hasRole(request.context, request.requestBody.organizationId, UserRole.ADMIN)) {
+        if (!rbacService.hasRoleOrHigher(request.context, request.requestBody.organizationId, UserRole.ADMIN)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
         val newProperty = propertyService.createProperty(
@@ -132,7 +132,7 @@ class PropertyController(
         propId: PropertyId,
         role: UserRole
     ) {
-        if (!rbacService.hasRole(context, propId, role)) {
+        if (!rbacService.hasRoleOrHigher(context, propId, role)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
     }

@@ -1,32 +1,56 @@
 package com.cramsan.edifikana.client.lib.service.impl
 
 import com.cramsan.edifikana.client.lib.models.EmployeeModel
-import com.cramsan.framework.annotations.NetworkModel
-import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EmployeeRole
-
+import com.cramsan.edifikana.lib.model.IdType
+import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.network.EmployeeListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.EmployeeNetworkResponse
+import com.cramsan.edifikana.lib.serialization.createJson
+import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.assertlib.AssertUtil
+import com.cramsan.framework.assertlib.implementation.NoopAssertUtil
+import com.cramsan.framework.logging.EventLogger
+import com.cramsan.framework.logging.implementation.PassthroughEventLogger
+import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.post
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.serialization.kotlinx.json.json
 import io.mockk.coEvery
-import io.mockk.mockk
-import io.mockk.mockkStatic
 import kotlinx.coroutines.test.runTest
-import kotlin.test.Ignore
+import kotlinx.serialization.json.Json
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 /**
  * Test class for [EmployeeServiceImpl].
- * TODO: SKELETON FOR TESTING, NEEDS TO BE UPDATED AS CLASS IS NOT VERY TESTABLE ATM
  */
-@Ignore
 class EmployeeServiceImplTest {
-    private val httpClient = mockk<HttpClient>()
-    private val service = EmployeeServiceImpl(httpClient)
+    private lateinit var ktorTestEngine: KtorTestEngine
+    private lateinit var httpClient: HttpClient
+    private lateinit var service: EmployeeServiceImpl
+    private lateinit var json: Json
+
+    /**
+     * Setup the test environment.
+     */
+    @BeforeTest
+    fun setupTest() {
+        ktorTestEngine = KtorTestEngine()
+        json = createJson()
+        httpClient = HttpClient(ktorTestEngine.engine) {
+            install(ContentNegotiation) {
+                json(json)
+            }
+        }
+        service = EmployeeServiceImpl(httpClient)
+
+        AssertUtil.setInstance(NoopAssertUtil())
+        EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
+    }
 
     /**
      * Tests that getEmployeeList returns a mapped list of employee models.
@@ -35,31 +59,28 @@ class EmployeeServiceImplTest {
     @Test
     fun `getEmployeeList should return mapped employee list`() = runTest {
         // Arrange
-        val networkResponse = listOf(
-            mockk<EmployeeNetworkResponse> {
-                coEvery { toEmployeeModel() } returns EmployeeModel(
-                    EmployeeId("employee-1"),
-                    IdType.PASSPORT,
-                    "John",
-                    "Doe",
-                    EmployeeRole.MANAGER,
-                    "johndoe@email.com",
-                    )
-            },
-            mockk<EmployeeNetworkResponse> {
-                coEvery { toEmployeeModel() } returns EmployeeModel(
-                    EmployeeId("employee-2"),
-                    IdType.DNI,
-                    "Jane",
-                    "Smith",
-                    EmployeeRole.SECURITY,
-                    "janesmith@email.com",
-                    )
-            }
-        )
-        mockkStatic("io.ktor.client.call.HttpClientCallKt")
-        coEvery { httpClient.get(any<String>()) } returns mockk {
-//            coEvery { body<List<EmployeeNetworkResponse>>() } returns networkResponse
+        val networkResponse = EmployeeListNetworkResponse(listOf(
+            EmployeeNetworkResponse(
+                EmployeeId("admin-1"),
+                IdType.CE,
+                "John",
+                "Doe",
+                EmployeeRole.MANAGER,
+                propertyId = PropertyId("property-1"),
+            ),
+            EmployeeNetworkResponse(
+                EmployeeId("admin-2"),
+                IdType.DNI,
+                "Jane",
+                "Smith",
+                EmployeeRole.SECURITY,
+                propertyId = PropertyId("property-1"),
+            ),
+        ))
+        ktorTestEngine.configure {
+            coEvery { produceResponse(any()) } returns MockResponseData.Success(
+                json.encodeToString(networkResponse)
+            )
         }
 
         // Act
@@ -80,19 +101,18 @@ class EmployeeServiceImplTest {
     fun `getEmployee should return mapped employee for employeePK`() = runTest {
         // Arrange
         val employeeId = EmployeeId("1")
-        val networkResponse = mockk<EmployeeNetworkResponse> {
-            coEvery { toEmployeeModel() } returns EmployeeModel(
-                EmployeeId("admin-1"),
-                IdType.CE,
-                "John",
-                "Doe",
-                EmployeeRole.MANAGER,
-                "johnD@email.com",
+        val networkResponse = EmployeeNetworkResponse(
+            EmployeeId("admin-1"),
+            IdType.CE,
+            "John",
+            "Doe",
+            EmployeeRole.MANAGER,
+            propertyId = PropertyId("property-1"),
+        )
+        ktorTestEngine.configure {
+            coEvery { produceResponse(any()) } returns MockResponseData.Success(
+                json.encodeToString(networkResponse)
             )
-        }
-        mockkStatic("io.ktor.client.call.HttpClientCallKt")
-        coEvery { httpClient.get(any<String>()) } returns mockk {
-//            coEvery { body<EmployeeNetworkResponse>() } returns networkResponse
         }
 
         // Act
@@ -110,22 +130,26 @@ class EmployeeServiceImplTest {
     @Test
     fun `createEmployee should return mapped employee after creation`() = runTest {
         // Arrange
-        val createRequest = mockk<EmployeeModel.CreateEmployeeRequest> {
-            coEvery { toCreateEmployeeNetworkRequest() } returns mockk()
-        }
-        val networkResponse = mockk<EmployeeNetworkResponse> {
-            coEvery { toEmployeeModel() } returns EmployeeModel(
-                EmployeeId("Admin-3"),
-                IdType.DNI,
-                "Alice",
-                "Brown",
-                EmployeeRole.MANAGER,
-                "aliceBrn@email.com",
-                )
-        }
-        mockkStatic("io.ktor.client.call.HttpClientCallKt")
-        coEvery { httpClient.post(any<String>(), any()) } returns mockk {
-            coEvery { body<EmployeeNetworkResponse>() } returns networkResponse
+        val createRequest = EmployeeModel.CreateEmployeeRequest(
+            IdType.DNI,
+            "Alice",
+            "Brown",
+            EmployeeRole.MANAGER,
+            PropertyId("property-2")
+        )
+        val networkResponse = EmployeeNetworkResponse(
+            EmployeeId("admin-3"),
+            IdType.DNI,
+            "Alice",
+            "Brown",
+            EmployeeRole.MANAGER,
+            propertyId = PropertyId("property-2"),
+        )
+
+        ktorTestEngine.configure {
+            coEvery { produceResponse(any()) } returns MockResponseData.Success(
+                json.encodeToString(networkResponse)
+            )
         }
 
         // Act
@@ -134,6 +158,41 @@ class EmployeeServiceImplTest {
         // Assert
         assertTrue(result.isSuccess)
         assertEquals("Alice", result.getOrNull()?.firstName)
+    }
+
+    /**
+     * Tests that updateEmployee returns a mapped employee model after update.
+     */
+    @OptIn(NetworkModel::class)
+    @Test
+    fun `updateEmployee should return mapped employee after update`() = runTest {
+        // Arrange
+        val updateRequest = EmployeeModel.UpdateEmployeeRequest(
+            EmployeeId("admin-1"),
+            "John",
+            "DoeUpdated",
+            EmployeeRole.MANAGER,
+        )
+        val networkResponse = EmployeeNetworkResponse(
+            EmployeeId("admin-1"),
+            IdType.CE,
+            "John",
+            "DoeUpdated",
+            EmployeeRole.MANAGER,
+            propertyId = PropertyId("property-1"),
+        )
+        ktorTestEngine.configure {
+            coEvery { produceResponse(any()) } returns MockResponseData.Success(
+                json.encodeToString(networkResponse)
+            )
+        }
+
+        // Act
+        val result = service.updateEmployee(updateRequest)
+
+        // Assert
+        assertTrue(result.isSuccess)
+        assertEquals("DoeUpdated", result.getOrNull()?.lastName)
     }
 }
 

@@ -164,7 +164,12 @@ class AuthManager(
         newPassword: SecureString,
     ): Result<Unit> = dependencies.getOrCatch(TAG) {
         logI(TAG, "changePassword")
-        authService.changePassword(currentPassword, newPassword).getOrThrow()
+        val email = authService.getUser().getOrThrow().email
+        authService.changePassword(
+            email,
+            currentPassword,
+            newPassword,
+        ).getOrThrow()
     }
 
     /**

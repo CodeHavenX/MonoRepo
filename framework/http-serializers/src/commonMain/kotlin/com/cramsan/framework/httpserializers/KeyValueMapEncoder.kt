@@ -69,6 +69,14 @@ class KeyValueMapEncoder : AbstractEncoder() {
                                 "Found nested list for ${descriptor.getElementName(index)}"
                         )
                     }
+                } else if (it.kind == StructureKind.CLASS || it.kind == StructureKind.OBJECT) {
+                    // Allow value classes
+                    if (!it.isInline) {
+                        error(
+                            "Only value classes are supported as nested classes. " +
+                                "Found ${it.kind} for ${descriptor.getElementName(index)}"
+                        )
+                    }
                 } else {
                     error(
                         "Only primitives, enums and lists are supported as query params. " +
@@ -94,11 +102,14 @@ class KeyValueMapEncoder : AbstractEncoder() {
     override fun <T> encodeSerializableValue(serializer: SerializationStrategy<T>, value: T) {
         val kind = serializer.descriptor.kind
         if (
-            // First level must be a class or object
+            // First level must be a class or object. Value classes are not allowed at top level.
+            // Value classes can be used as values in the map.
             kind == StructureKind.CLASS && depth != DEPTH_UNINITIALIZED ||
             kind == StructureKind.OBJECT && depth != DEPTH_UNINITIALIZED
         ) {
-            error("Top level value must be a class or object. Found $kind")
+            if (!serializer.descriptor.isInline) {
+                error("Class or object only allowed on top level or as value class. Found $kind")
+            }
         }
         if (kind == StructureKind.LIST && depth != DEPTH_OBJECT) {
             error("Nested lists are not supported")

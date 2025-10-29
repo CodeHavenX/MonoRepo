@@ -1,6 +1,8 @@
 # A string used to distinguish different Supabase projects on the same host. Defaults to the
 # working directory name when running `supabase init`.
-project_id = "edifikana-back-end"
+# Only use alphaumeric characters in project names.
+# https://github.com/supabase/cli/issues/2538
+project_id = "edifikana"
 
 [api]
 enabled = true

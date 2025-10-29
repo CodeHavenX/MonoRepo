@@ -42,12 +42,11 @@ jobs:
           new_branch: dependency-update
           push: --force --set-upstream origin dependency-update
       - id: step-5
-        name: Pull Request
-        uses: repo-sync/pull-request@v2
+        name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
         with:
-          source_branch: dependency-update
-          destination_branch: main
-          pr_title: Upgrade gradle dependencies
-          pr_body: '[refreshVersions](https://github.com/jmfayard/refreshVersions) has found those library updates!'
-          pr_draft: true
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: dependency-update
+          base: main
+          title: Upgrade gradle dependencies
+          body: '[refreshVersions](https://github.com/jmfayard/refreshVersions) has found those library updates!'
+          token: ${{ secrets.GITHUB_TOKEN }}

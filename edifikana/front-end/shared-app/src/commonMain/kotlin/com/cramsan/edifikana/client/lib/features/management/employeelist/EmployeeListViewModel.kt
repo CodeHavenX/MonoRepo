@@ -45,7 +45,6 @@ class EmployeeListViewModel(
         viewModelScope.launch {
             val orgId = uiState.value.activeOrgId
             if (orgId == null) {
-                val inviteList = authManager.getInvites(OrganizationId("123")).requireSuccess()
 
                 updateUiState {
                     it.copy(isLoading = false, employeeList = emptyList())

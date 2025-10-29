@@ -9,7 +9,6 @@ import com.cramsan.edifikana.client.lib.models.EmployeeModel
 import com.cramsan.edifikana.client.lib.models.Invite
 import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.lib.model.EmployeeId
-import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.utils.requireSuccess
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
@@ -45,7 +44,6 @@ class EmployeeListViewModel(
         viewModelScope.launch {
             val orgId = uiState.value.activeOrgId
             if (orgId == null) {
-
                 updateUiState {
                     it.copy(isLoading = false, employeeList = emptyList())
                 }

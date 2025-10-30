@@ -1,6 +1,6 @@
 
 import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.window.CanvasBasedWindow
+import androidx.compose.ui.window.ComposeViewport
 import com.cramsan.sample.mpplib.compose.common.MainView
 
 /**
@@ -8,7 +8,7 @@ import com.cramsan.sample.mpplib.compose.common.MainView
  */
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
-    CanvasBasedWindow(canvasElementId = "ComposeTarget") {
+    ComposeViewport("ComposeTarget") {
         MainView()
     }
 }

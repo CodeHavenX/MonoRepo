@@ -19,7 +19,7 @@ apply(from = "$rootDir/gradle/kotlin-mpp-target-wasm-compose-application.gradle"
 // When upgrading kotlin, also update this line manually.
 configurations.all {
     resolutionStrategy {
-        force("org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.2.0")
+        force("org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.2.20")
     }
 }
 

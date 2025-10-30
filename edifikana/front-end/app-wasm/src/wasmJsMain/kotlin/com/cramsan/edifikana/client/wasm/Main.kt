@@ -3,7 +3,7 @@ package com.cramsan.edifikana.client.wasm
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.window.CanvasBasedWindow
+import androidx.compose.ui.window.ComposeViewport
 import com.cramsan.edifikana.client.lib.features.application.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.lib.features.application.EdifikanaWasmMainScreenEventHandler
 import com.cramsan.edifikana.client.lib.features.window.ComposableKoinContext
@@ -16,7 +16,7 @@ import org.koin.compose.scope.KoinScope
  */
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
-    CanvasBasedWindow(canvasElementId = "ComposeTarget") {
+    ComposeViewport("ComposeTarget") {
         ComposableKoinContext {
             val processViewModel: EdifikanaApplicationViewModel = koinInject()
             val eventHandler = remember { EdifikanaWasmMainScreenEventHandler() }

@@ -1,7 +1,7 @@
 package com.cramsan.framework.samples.wasm
 
 import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.window.CanvasBasedWindow
+import androidx.compose.ui.window.ComposeViewport
 import com.cramsan.framework.sample.shared.features.ApplicationScreen
 
 /**
@@ -9,7 +9,7 @@ import com.cramsan.framework.sample.shared.features.ApplicationScreen
  */
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
-    CanvasBasedWindow(canvasElementId = "ComposeTarget") {
+    ComposeViewport("ComposeTarget") {
         ApplicationScreen()
     }
 }

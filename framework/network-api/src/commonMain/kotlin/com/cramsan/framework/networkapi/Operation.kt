@@ -89,7 +89,7 @@ data class Operation<
 
         return OperationHandler(
             method = method,
-            fullPath = fullPath,
+            fullPath = fullPath.trimStart('/'),
             param = if (hasPathParam) "param" else null,
             requestBodyType = requestBodyType,
             queryParamType = queryParamType,
@@ -392,13 +392,15 @@ data class OperationRequest<
             "${path ?: ""}/$param"
         } else {
             path ?: ""
-        }.replace("//", "/")
+        }.trimStart('/')
 
         fullPath = if (operationPath.isBlank()) {
             apiPath
+        } else if (apiPath.endsWith('/')) {
+            "$apiPath$operationPath"
         } else {
             "$apiPath/$operationPath"
-        }
+        }.trimStart('/')
     }
 }
 

@@ -40,6 +40,15 @@ class KeyValueMapEncoderTest {
     @Serializable
     data class NestedList(val a: Int, val nested: List<List<Int>>)
 
+    @Serializable
+    data class NestedClassWithValueClass(
+        val nested: ValueClass,
+    )
+
+    @Serializable
+    @JvmInline
+    value class ValueClass(val id: String)
+
     @Test
     fun `encodes simple primitives`() {
         val obj = SimplePrimitives(1, "test", true)
@@ -102,6 +111,24 @@ class KeyValueMapEncoderTest {
             ),
             map
         )
+    }
+
+    @Test
+    fun `encodes nested class with value class`() {
+        val obj = NestedClassWithValueClass(ValueClass("vc123"))
+        val map = encodeToKeyValueMap(obj)
+        assertEquals(
+            mapOf("nested" to listOf("vc123")),
+            map
+        )
+    }
+
+    @Test
+    fun `encoding value class throws exception`() {
+        val obj = ValueClass("vc123")
+        assertFailsWith<IllegalStateException> {
+            encodeToKeyValueMap(obj)
+        }
     }
 
     @Test

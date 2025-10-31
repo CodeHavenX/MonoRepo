@@ -12,7 +12,6 @@ import com.cramsan.edifikana.lib.model.network.InviteNetworkResponse
 import com.cramsan.edifikana.lib.model.network.InviteUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdatePasswordNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UserEmailQueryParam
-import com.cramsan.edifikana.lib.utils.requireSuccess
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.assertlib.assertFalse
 import com.cramsan.framework.core.Hashing
@@ -207,11 +206,10 @@ class AuthServiceImpl(
 
     @OptIn(NetworkModel::class, SecureStringAccess::class)
     override suspend fun changePassword(
+        email: String,
         currentPassword: SecureString,
         newPassword: SecureString
     ): Result<Unit> = runSuspendCatching(TAG) {
-        val email = getUser().requireSuccess().email
-
         val hashedCurrentPassword = Hashing.insecureHash(currentPassword.reveal().encodeToByteArray()).toString()
 
         UserApi.updatePassword.buildRequest(
@@ -220,16 +218,6 @@ class AuthServiceImpl(
                 newPassword = newPassword.reveal()
             ),
         ).execute(http)
-
-        try {
-            auth.signInWith(Email) {
-                this.email = email
-                this.password = newPassword.reveal()
-            }
-        } catch (e: AuthRestException) {
-            logE(TAG, "Error signing in after changing password", e)
-            throw ClientRequestExceptions.UnauthorizedException("ERROR: Invalid credentials after changing password.")
-        }
     }
 
     @OptIn(NetworkModel::class)

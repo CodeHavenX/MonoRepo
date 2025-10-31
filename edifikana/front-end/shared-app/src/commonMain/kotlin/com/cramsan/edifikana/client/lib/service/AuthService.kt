@@ -96,7 +96,11 @@ interface AuthService {
      * [currentPassword] will need to be provided.
      */
     @OptIn(SecureStringAccess::class)
-    suspend fun changePassword(currentPassword: SecureString, newPassword: SecureString): Result<Unit>
+    suspend fun changePassword(
+        email: String,
+        currentPassword: SecureString,
+        newPassword: SecureString,
+    ): Result<Unit>
 
     /**
      * Invite an employee member to the organization with the provided [organizationId] using the given [email].

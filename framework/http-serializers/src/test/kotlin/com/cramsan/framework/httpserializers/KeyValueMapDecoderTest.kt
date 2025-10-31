@@ -40,6 +40,15 @@ class KeyValueMapDecoderTest {
     @Serializable
     data class NestedList(val a: Int, val nested: List<List<Int>>)
 
+    @Serializable
+    data class NestedClassWithValueClass(
+        val nested: ValueClass,
+    )
+
+    @Serializable
+    @JvmInline
+    value class ValueClass(val id: String)
+
     @Test
     fun `decodes simple primitives`() {
         val map = mapOf("a" to listOf("1"), "b" to listOf("test"), "c" to listOf("true"))
@@ -80,6 +89,21 @@ class KeyValueMapDecoderTest {
             AllSupportedTypes(true, 1, 'x', 2.0, 3.0f, 4, 5L, 6, "str", Color.BLUE),
             obj
         )
+    }
+
+    @Test
+    fun `decodes nested class with value class`() {
+        val map = mapOf("nested" to listOf("value-id"))
+        val obj: NestedClassWithValueClass = decodeFromKeyValueMap(map)
+        assertEquals(NestedClassWithValueClass(ValueClass("value-id")), obj)
+    }
+
+    @Test
+    fun `decode value class throws exception`() {
+        val map = mapOf("id" to listOf("value-id"))
+        assertFailsWith<Exception> {
+            decodeFromKeyValueMap(ValueClass.serializer(), map)
+        }
     }
 
     @Test

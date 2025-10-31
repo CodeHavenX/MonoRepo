@@ -1,73 +1,81 @@
 package com.cramsan.edifikana.client.lib.service.impl
 
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
+import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EventLogEntryId
+import com.cramsan.edifikana.lib.model.EventLogEventType
+import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.network.EventLogEntryListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.EventLogEntryNetworkResponse
+import com.cramsan.edifikana.lib.serialization.createJson
 import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.assertlib.AssertUtil
+import com.cramsan.framework.assertlib.implementation.NoopAssertUtil
+import com.cramsan.framework.logging.EventLogger
+import com.cramsan.framework.logging.implementation.PassthroughEventLogger
+import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.post
-import io.ktor.client.request.put
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.serialization.kotlinx.json.json
 import io.mockk.coEvery
-import io.mockk.mockk
-import io.mockk.mockkStatic
 import kotlinx.coroutines.test.runTest
-import kotlin.test.Ignore
+import kotlinx.serialization.json.Json
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 /**
  * Test class for [EventLogServiceImpl].
- * TODO: SKELETON FOR TESTING, NEEDS TO BE UPDATED AS CLASS IS NOT VERY TESTABLE ATM
  */
-@Ignore
 class EventLogServiceImplTest {
-    private val httpClient = mockk<HttpClient>()
-    private val service = EventLogServiceImpl(httpClient)
+    private lateinit var ktorTestEngine: KtorTestEngine
+    private lateinit var httpClient: HttpClient
+    private lateinit var service: EventLogServiceImpl
+    private lateinit var json: Json
 
     /**
-     * Tests that getRecords returns a mapped list of event log records.
+     * Setup the test environment.
      */
-    @OptIn(NetworkModel::class)
-    @Test
-    fun `getRecords should return mapped records`() = runTest {
-        // Arrange
-        val networkResponse = listOf(
-            mockk<EventLogEntryNetworkResponse> {
-                coEvery { toEventLogRecordModel() } returns mockk<EventLogRecordModel>()
-            },
-            mockk<EventLogEntryNetworkResponse> {
-                coEvery { toEventLogRecordModel() } returns mockk<EventLogRecordModel>()
+    @BeforeTest
+    fun setupTest() {
+        ktorTestEngine = KtorTestEngine()
+        json = createJson()
+        httpClient = HttpClient(ktorTestEngine.engine) {
+            install(ContentNegotiation) {
+                json(json)
             }
-        )
-        mockkStatic("io.ktor.client.call.HttpClientCallKt")
-        coEvery { httpClient.get("event_log") } returns mockk {
-//            coEvery { body<List<EventLogEntryNetworkResponse>>() } returns networkResponse
         }
+        service = EventLogServiceImpl(httpClient)
 
-        // Act
-        val result = service.getRecords()
-
-        // Assert
-        assertTrue(result.isSuccess)
-        assertEquals(2, result.getOrNull()?.size)
+        AssertUtil.setInstance(NoopAssertUtil())
+        EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
     }
 
     /**
      * Tests that getRecord returns a mapped record for the given eventLogRecordPK.
      */
-    @OptIn(NetworkModel::class)
     @Test
+    @OptIn(NetworkModel::class)
     fun `getRecord should return mapped record for eventLogRecordPK`() = runTest {
         // Arrange
         val eventLogEntryId = EventLogEntryId("event-1")
-        val networkResponse = mockk<EventLogEntryNetworkResponse> {
-            coEvery { toEventLogRecordModel() } returns mockk<EventLogRecordModel>()
-        }
-        mockkStatic("io.ktor.client.call.HttpClientCallKt")
-        coEvery { httpClient.get("${"event_log"}/${eventLogEntryId.eventLogEntryId}") } returns mockk {
-//            coEvery { body<EventLogEntryNetworkResponse>() } returns networkResponse
+        val networkResponse = EventLogEntryNetworkResponse(
+            id = eventLogEntryId,
+            employeeId = EmployeeId("employee-1"),
+            fallbackEmployeeName = "John Doe",
+            propertyId = PropertyId("property-1"),
+            type = EventLogEventType.MAINTENANCE_SERVICE,
+            description = "Event 1 description",
+            fallbackEventType = "Maintenance Service",
+            timestamp = 2342341234L,
+            title = "Event 1",
+            unit = "Unit 1",
+        )
+        ktorTestEngine.configure {
+            coEvery { produceResponse(any()) } returns MockResponseData.Success(
+                json.encodeToString(networkResponse)
+            )
         }
 
         // Act
@@ -78,21 +86,77 @@ class EventLogServiceImplTest {
     }
 
     /**
+     * Tests that getRecords returns a mapped list of event log records.
+     */
+    @Test
+    @OptIn(NetworkModel::class)
+    fun `getRecords should return mapped records`() = runTest {
+        // Arrange
+        val networkResponse = EventLogEntryListNetworkResponse(listOf(
+            EventLogEntryNetworkResponse(
+                id = EventLogEntryId("event-1"),
+                employeeId = EmployeeId("employee-1"),
+                fallbackEmployeeName = "John Doe",
+                propertyId = PropertyId("property-1"),
+                type = EventLogEventType.MAINTENANCE_SERVICE,
+                description = "Event 1 description",
+                fallbackEventType = "Maintenance Service",
+                timestamp = 2342341234L,
+                title = "Event 1",
+                unit = "Unit 1",
+            ),
+        ))
+        ktorTestEngine.configure {
+            coEvery { produceResponse(any()) } returns MockResponseData.Success(
+                json.encodeToString(networkResponse)
+            )
+        }
+
+        // Act
+        val result = service.getRecords()
+
+        // Assert
+        assertTrue(result.isSuccess)
+        assertEquals(1, result.getOrNull()?.size)
+    }
+
+    /**
      * Tests that addRecord returns a mapped record after creation.
      */
     @OptIn(NetworkModel::class)
     @Test
     fun `addRecord should return mapped record after creation`() = runTest {
         // Arrange
-        val eventLogRecord = mockk<EventLogRecordModel> {
-            coEvery { toCreateEventLogEntryNetworkRequest() } returns mockk()
-        }
-        val networkResponse = mockk<EventLogEntryNetworkResponse> {
-            coEvery { toEventLogRecordModel() } returns mockk<EventLogRecordModel>()
-        }
-        mockkStatic("io.ktor.client.call.HttpClientCallKt")
-        coEvery { httpClient.post("event_log", any()) } returns mockk {
-            coEvery { body<EventLogEntryNetworkResponse>() } returns networkResponse
+        val eventLogRecord = EventLogRecordModel(
+            id = null,
+            employeePk = EmployeeId("employee-1"),
+            propertyId = PropertyId("property-1"),
+            eventType = EventLogEventType.MAINTENANCE_SERVICE,
+            description = "Event 1 description",
+            timeRecorded = 2342341234L,
+            title = "Event 1",
+            fallbackEmployeeName = "John Doe",
+            fallbackEventType = "Maintenance Service",
+            attachments = emptyList(),
+            entityId = null,
+            unit = "Unit 1",
+        )
+        val networkResponse = EventLogEntryNetworkResponse(
+            id = EventLogEntryId("event-1"),
+            employeeId = EmployeeId("employee-1"),
+            fallbackEmployeeName = "John Doe",
+            propertyId = PropertyId("property-1"),
+            type = EventLogEventType.MAINTENANCE_SERVICE,
+            description = "Event 1 description",
+            fallbackEventType = "Maintenance Service",
+            timestamp = 2342341234L,
+            title = "Event 1",
+            unit = "Unit 1",
+        )
+        ktorTestEngine.configure {
+            coEvery { produceResponse(any()) } returns MockResponseData.Success(
+                json.encodeToString(networkResponse)
+            )
         }
 
         // Act
@@ -109,17 +173,36 @@ class EventLogServiceImplTest {
     @Test
     fun `updateRecord should return mapped record after update`() = runTest {
         // Arrange
-        val eventLogEntryId = EventLogEntryId("event-2")
-        val eventLogRecord = mockk<EventLogRecordModel> {
-            coEvery { id } returns eventLogEntryId
-            coEvery { toUpdateEventLogEntryNetworkRequest() } returns mockk()
-        }
-        val networkResponse = mockk<EventLogEntryNetworkResponse> {
-            coEvery { toEventLogRecordModel() } returns mockk<EventLogRecordModel>()
-        }
-        mockkStatic("io.ktor.client.call.HttpClientCallKt")
-        coEvery { httpClient.put("${"event_log"}/${eventLogEntryId.eventLogEntryId}", any()) } returns mockk {
-            coEvery { body<EventLogEntryNetworkResponse>() } returns networkResponse
+        val eventLogRecord = EventLogRecordModel(
+            id = EventLogEntryId("event-1"),
+            employeePk = EmployeeId("employee-1"),
+            propertyId = PropertyId("property-1"),
+            eventType = EventLogEventType.MAINTENANCE_SERVICE,
+            description = "Updated Event 1 description",
+            timeRecorded = 2342341234L,
+            title = "Updated Event 1",
+            fallbackEmployeeName = "John Doe",
+            fallbackEventType = "Maintenance Service",
+            attachments = emptyList(),
+            entityId = null,
+            unit = "Unit 1",
+        )
+        val networkResponse = EventLogEntryNetworkResponse(
+            id = EventLogEntryId("event-1"),
+            employeeId = EmployeeId("employee-1"),
+            fallbackEmployeeName = "John Doe",
+            propertyId = PropertyId("property-1"),
+            type = EventLogEventType.MAINTENANCE_SERVICE,
+            description = "Updated Event 1 description",
+            fallbackEventType = "Maintenance Service",
+            timestamp = 2342341234L,
+            title = "Updated Event 1",
+            unit = "Unit 1",
+        )
+        ktorTestEngine.configure {
+            coEvery { produceResponse(any()) } returns MockResponseData.Success(
+                json.encodeToString(networkResponse)
+            )
         }
 
         // Act

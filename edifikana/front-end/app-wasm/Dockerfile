@@ -1,6 +1,6 @@
 FROM nginx:alpine
 
-COPY <project>/build/dist/wasmJs/ /usr/share/nginx/html
+COPY build/dist/wasmJs/productionExecutable /usr/share/nginx/html
 
 EXPOSE 80
 

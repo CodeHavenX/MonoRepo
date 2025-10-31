@@ -24,12 +24,6 @@ jobs:
     runs-on: self-hosted
     environment: "CI"
     steps:
-    - name: 'Login to GitHub Container Registry'
-      uses: docker/login-action@v1
-      with:
-        registry: ghcr.io
-        username: cramsan
-        password: ${{ secrets.GR_PAT }}
     - uses: actions/checkout@v3
     - name: Set up JDK 21
       uses: actions/setup-java@v3

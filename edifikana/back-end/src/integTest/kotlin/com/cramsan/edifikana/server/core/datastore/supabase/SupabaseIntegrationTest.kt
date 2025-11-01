@@ -11,7 +11,6 @@ import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.dependencyinjection.FrameworkModule
 import com.cramsan.edifikana.server.dependencyinjection.IntegTestApplicationModule
-import com.cramsan.edifikana.server.dependencyinjection.SettingsModule
 import com.cramsan.edifikana.server.dependencyinjection.SupabaseModule
 import com.cramsan.edifikana.server.service.models.Employee
 import com.cramsan.edifikana.server.service.models.EventLogEntry
@@ -63,7 +62,6 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
             startKoin {
                 modules(
                     FrameworkModule,
-                    SettingsModule,
                     IntegTestApplicationModule,
                     SupabaseModule,
                 )

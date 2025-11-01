@@ -1,5 +1,7 @@
 package com.cramsan.edifikana.server.dependencyinjection
 
+import com.cramsan.edifikana.server.PropertyKey
+import com.cramsan.edifikana.server.SettingsHolder
 import com.cramsan.edifikana.server.controller.authentication.ContextRetriever
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextRetriever
 import com.cramsan.edifikana.server.datastore.EmployeeDatastore
@@ -16,8 +18,6 @@ import com.cramsan.edifikana.server.datastore.supabase.SupabasePropertyDatastore
 import com.cramsan.edifikana.server.datastore.supabase.SupabaseStorageDatastore
 import com.cramsan.edifikana.server.datastore.supabase.SupabaseTimeCardDatastore
 import com.cramsan.edifikana.server.datastore.supabase.SupabaseUserDatastore
-import com.cramsan.edifikana.server.dependencyinjection.settings.Overrides
-import com.cramsan.framework.assertlib.assertFalse
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.SettingsSessionManager
@@ -38,19 +38,21 @@ import org.koin.dsl.module
 val SupabaseModule = module {
 
     single {
-        val supabaseUrl: String = get(named(Overrides.KEY_SUPABASE_URL))
-        val supabaseKey: String = get(named(Overrides.KEY_SUPABASE_KEY))
+        val settingsHolder: SettingsHolder = get()
+        val supabaseUrl: String = settingsHolder.getString(PropertyKey.SUPABASE_URL).orEmpty()
+        val supabaseKey: String = settingsHolder.getString(PropertyKey.SUPABASE_KEY).orEmpty()
 
-        assertFalse(
-            supabaseUrl.isBlank(),
-            TAG,
-            "EDIFIKANA_SUPABASE_URL or edifikana.supabase.url cannot be blank"
-        )
-        assertFalse(
-            supabaseKey.isBlank(),
-            TAG,
-            "EDIFIKANA_SUPABASE_KEY or edifikana.supabase.key cannot be blank"
-        )
+        if (supabaseUrl.isBlank()) {
+            val supabaseUrlKeyNames = settingsHolder.getKeyNames(PropertyKey.SUPABASE_URL).joinToString()
+            error("Value needs to be provided in one of the following settings: $supabaseUrlKeyNames")
+        }
+
+        if (supabaseKey.isBlank()) {
+            val supabaseKeySettingKeyName = settingsHolder.getKeyNames(PropertyKey.SUPABASE_KEY).joinToString()
+            error("Value needs to be provided in one of the following settings: $supabaseKeySettingKeyName")
+        }
+
+        val stageSegment: String = get(named(NamedDependency.STAGE_KEY))
 
         createSupabaseClient(
             supabaseUrl = supabaseUrl,
@@ -59,7 +61,7 @@ val SupabaseModule = module {
             install(Postgrest)
             install(Storage)
             install(Auth) {
-                sessionManager = SettingsSessionManager(key = "$supabaseUrl-server-${getStageSegment()}")
+                sessionManager = SettingsSessionManager(key = "$supabaseUrl-server-$stageSegment")
             }
         }
     }
@@ -109,5 +111,3 @@ val SupabaseModule = module {
         bind<ContextRetriever>()
     }
 }
-
-private const val TAG = "SupabaseModule"

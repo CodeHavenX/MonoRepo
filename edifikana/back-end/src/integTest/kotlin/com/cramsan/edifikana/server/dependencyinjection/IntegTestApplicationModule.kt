@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.dependencyinjection
 
+import com.cramsan.edifikana.server.SettingsHolder
 import com.cramsan.framework.test.asClock
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -12,7 +13,8 @@ import kotlin.time.TestTimeSource
  */
 @OptIn(ExperimentalTime::class)
 val IntegTestApplicationModule = module {
-    single<String>(named(STAGE_KEY)) {
+
+    single<String>(named(NamedDependency.STAGE_KEY)) {
         "integ"
     }
 
@@ -23,6 +25,10 @@ val IntegTestApplicationModule = module {
     single<Clock> {
         val testTimeSource: TestTimeSource = get()
         testTimeSource.asClock(2024, 1, 1, 0, 0)
+    }
+
+    single {
+        SettingsHolder(get())
     }
 }
 

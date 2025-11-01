@@ -57,6 +57,15 @@ class SimpleConfiguration(private val configFile: String) : Configuration {
     ): String? {
         return properties.getProperty(key)
     }
-}
 
-const val TAG = "SimpleConfiguration"
+    override fun transformKey(key: String): String {
+        // Transform keys to only contain lowercase letters, numbers, periods and underscores.
+        return key.map { char ->
+            when {
+                char.isLetterOrDigit() -> char.lowercaseChar()
+                char == '.' || char == '_' -> char
+                else -> '_'
+            }
+        }.joinToString("")
+    }
+}

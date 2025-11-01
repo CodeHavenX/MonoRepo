@@ -24,4 +24,11 @@ interface Configuration {
      * Read [key] as a nullable [Boolean]
      */
     fun readBoolean(key: String): Boolean?
+
+    /**
+     * Transforms the key to a different format if needed.
+     */
+    fun transformKey(key: String): String {
+        return key
+    }
 }

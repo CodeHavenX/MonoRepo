@@ -11,7 +11,7 @@ node_modules/
 .kotlin/
 
 # Application runtime configuations
-config.properties
+config.properties*
 
 ### Fastlane ###
 **/fastlane/report.xml

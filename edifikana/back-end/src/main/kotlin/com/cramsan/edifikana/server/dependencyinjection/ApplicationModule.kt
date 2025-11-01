@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.server.dependencyinjection
 
 import com.cramsan.edifikana.lib.serialization.createJson
+import com.cramsan.edifikana.server.SettingsHolder
 import com.cramsan.edifikana.server.service.password.PasswordGenerator
 import com.cramsan.edifikana.server.service.password.SimplePasswordGenerator
 import com.cramsan.framework.utils.time.Chronos
@@ -38,9 +39,11 @@ val ApplicationModule = module {
         bind<PasswordGenerator>()
     }
 
-    single<String>(named(STAGE_KEY)) {
-        System.getenv("EDIFIKANA_STAGE_KEY").orEmpty()
+    // Default to empty stage key. This key will be used for use-cases when we need to have separation based on
+    // stages defined at compiled time. The main use of this is to separate integration test configurations.
+    single<String>(named(NamedDependency.STAGE_KEY)) { "" }
+
+    single {
+        SettingsHolder(get())
     }
 }
-
-const val STAGE_KEY = "edifikana.stage"

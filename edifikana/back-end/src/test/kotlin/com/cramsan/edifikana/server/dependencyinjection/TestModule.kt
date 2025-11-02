@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.server.dependencyinjection
 
 import com.cramsan.edifikana.lib.serialization.createJson
+import com.cramsan.edifikana.server.SettingsHolder
 import com.cramsan.edifikana.server.controller.EmployeeController
 import com.cramsan.edifikana.server.controller.EventLogController
 import com.cramsan.edifikana.server.controller.HealthCheckController
@@ -10,7 +11,6 @@ import com.cramsan.edifikana.server.controller.StorageController
 import com.cramsan.edifikana.server.controller.TimeCardController
 import com.cramsan.edifikana.server.controller.UserController
 import com.cramsan.edifikana.server.controller.authentication.ContextRetriever
-import com.cramsan.edifikana.server.dependencyinjection.settings.Overrides
 import com.cramsan.edifikana.server.service.EmployeeService
 import com.cramsan.edifikana.server.service.EventLogService
 import com.cramsan.edifikana.server.service.OrganizationService
@@ -24,6 +24,7 @@ import com.cramsan.framework.assertlib.AssertUtil
 import com.cramsan.framework.assertlib.AssertUtilInterface
 import com.cramsan.framework.assertlib.implementation.AssertUtilImpl
 import com.cramsan.framework.configuration.Configuration
+import com.cramsan.framework.configuration.ConfigurationMultiplexer
 import com.cramsan.framework.configuration.NoopConfiguration
 import com.cramsan.framework.halt.HaltUtil
 import com.cramsan.framework.halt.HaltUtilDelegate
@@ -47,7 +48,6 @@ import kotlinx.datetime.TimeZone
 import kotlinx.serialization.json.Json
 import org.apache.logging.log4j.Logger
 import org.koin.core.module.dsl.singleOf
-import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
@@ -86,6 +86,9 @@ fun testFrameworkModule() = module(createdAtStart = true) {
     }
     single<Configuration> {
         NoopConfiguration()
+    }
+    single {
+        ConfigurationMultiplexer()
     }
 }
 
@@ -129,8 +132,6 @@ fun testApplicationModule() = module {
     single<StorageService> { mockk() }
     single<OrganizationService> { mockk() }
     single<RBACService> { mockk() }
-}
 
-fun testSettingsModule() = module {
-    factory<String>(named(Overrides.KEY_ALLOWED_HOST)) { "" }
+    single { SettingsHolder(get()) }
 }

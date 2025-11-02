@@ -3,7 +3,6 @@ package com.cramsan.edifikana.server.controller
 import com.cramsan.edifikana.server.dependencyinjection.testApplicationModule
 import com.cramsan.edifikana.server.dependencyinjection.testFrameworkModule
 import com.cramsan.edifikana.server.dependencyinjection.testKtorModule
-import com.cramsan.edifikana.server.dependencyinjection.testSettingsModule
 import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.testApplication
@@ -35,7 +34,6 @@ fun startTestKoin(
     startKoin {
         modules(
             testFrameworkModule(),
-            testSettingsModule(),
             testKtorModule(),
             testApplicationModule(),
             module(moduleDeclaration = moduleDeclaration),

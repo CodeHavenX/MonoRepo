@@ -1,9 +1,12 @@
 package com.cramsan.edifikana.server.dependencyinjection
 
+import com.cramsan.edifikana.server.PropertyKey
+import com.cramsan.edifikana.server.SettingsHolder
 import com.cramsan.framework.assertlib.AssertUtil
 import com.cramsan.framework.assertlib.AssertUtilInterface
 import com.cramsan.framework.assertlib.implementation.AssertUtilImpl
-import com.cramsan.framework.configuration.Configuration
+import com.cramsan.framework.configuration.ConfigurationMultiplexer
+import com.cramsan.framework.configuration.EnvironmentConfiguration
 import com.cramsan.framework.configuration.SimpleConfiguration
 import com.cramsan.framework.core.BEDispatcherProvider
 import com.cramsan.framework.core.DispatcherProvider
@@ -42,15 +45,16 @@ val FrameworkModule = module(createdAtStart = true) {
     single<Preferences> { PreferencesImpl(get()) }
 
     single {
-        Severity.fromStringOrDefault(System.getenv(NAME_LOGGING), Severity.DEBUG)
-    }
-
-    single(named(NAME_LOG_TO_FILE)) {
-        System.getenv(NAME_LOG_TO_FILE).toBoolean()
+        val settingsHolder: SettingsHolder = get()
+        val settingRawString = settingsHolder.getString(PropertyKey.LOGGING_LEVEL)
+        Severity.fromStringOrDefault(settingRawString, Severity.DEBUG)
     }
 
     single<Logger> {
-        Log4J2Helpers.getRootLogger(get(named(NAME_LOG_TO_FILE)), get())
+        val settingsHolder: SettingsHolder = get()
+        val enableFileLogging = settingsHolder.getBoolean(PropertyKey.ENABLE_FILE_LOGGING)
+
+        Log4J2Helpers.getRootLogger(enableFileLogging ?: false, get())
     }
 
     single<EventLoggerDelegate> { LoggerJVM(get(), get()) }
@@ -74,8 +78,11 @@ val FrameworkModule = module(createdAtStart = true) {
     single<HaltUtil> { HaltUtilImpl(get()) }
 
     single<AssertUtilInterface> {
+        val settingsHolder: SettingsHolder = get()
+        val haltOnFailure = settingsHolder.getBoolean(PropertyKey.HALT_ON_FAILURE)
+
         val impl = AssertUtilImpl(
-            get(named(NAME_LOG_TO_FILE)),
+            haltOnFailure ?: false,
             get(),
             get(),
         )
@@ -91,11 +98,28 @@ val FrameworkModule = module(createdAtStart = true) {
 
     single<DispatcherProvider> { BEDispatcherProvider() }
 
-    single<Configuration> {
-        SimpleConfiguration("config.properties")
+    single<SimpleConfiguration> {
+        val stageSegment: String = get(named(NamedDependency.STAGE_KEY))
+        val fileName = if (stageSegment.isBlank()) {
+            "config.properties"
+        } else {
+            "config.properties.$stageSegment"
+        }
+        SimpleConfiguration(fileName)
+    }
+
+    single<EnvironmentConfiguration> { EnvironmentConfiguration("EDIFIKANA") }
+
+    single {
+        val configurationMultiplexer = ConfigurationMultiplexer()
+        val simpleConfiguration: SimpleConfiguration = get()
+        val environmentConfiguration: EnvironmentConfiguration = get()
+        configurationMultiplexer.setConfigurations(
+            listOf(
+                simpleConfiguration,
+                environmentConfiguration,
+            )
+        )
+        configurationMultiplexer
     }
 }
-
-// Environment variables
-const val NAME_LOGGING = "EDIFIKANA_LOGGING"
-const val NAME_LOG_TO_FILE = "EDIFIKANA_LOG_TO_FILE"

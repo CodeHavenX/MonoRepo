@@ -4,13 +4,9 @@ import com.cramsan.edifikana.server.controller.Controller
 import com.cramsan.edifikana.server.dependencyinjection.ApplicationModule
 import com.cramsan.edifikana.server.dependencyinjection.FrameworkModule
 import com.cramsan.edifikana.server.dependencyinjection.KtorModule
-import com.cramsan.edifikana.server.dependencyinjection.NAME_LOGGING
 import com.cramsan.edifikana.server.dependencyinjection.ServicesModule
-import com.cramsan.edifikana.server.dependencyinjection.SettingsModule
 import com.cramsan.edifikana.server.dependencyinjection.SupabaseModule
-import com.cramsan.edifikana.server.dependencyinjection.settings.Overrides
 import com.cramsan.framework.core.ktor.configureHealthEndpoint
-import com.cramsan.framework.logging.Severity
 import com.cramsan.framework.logging.logI
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
@@ -26,7 +22,6 @@ import kotlinx.serialization.json.Json
 import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
-import org.koin.core.qualifier.named
 import org.koin.ktor.ext.inject
 
 /**
@@ -60,7 +55,8 @@ fun Application.startServer() = runBlocking {
  */
 fun Application.configureKtorEngine() {
     val json: Json by inject()
-    val allowedHost: String by inject(named(Overrides.KEY_ALLOWED_HOST))
+    val settingsHolder: SettingsHolder by inject()
+    val allowedHost: String = settingsHolder.getString(PropertyKey.ALLOWED_HOST).orEmpty()
 
     install(CallLogging)
     install(ContentNegotiation) {
@@ -94,7 +90,6 @@ fun Application.initializeDependencies() {
         configureKoinLogging()
         modules(
             FrameworkModule,
-            SettingsModule,
             SupabaseModule,
             ApplicationModule,
             ServicesModule,
@@ -104,14 +99,7 @@ fun Application.initializeDependencies() {
 }
 
 private fun KoinApplication.configureKoinLogging() {
-    val severity = Severity.fromStringOrDefault(System.getenv(NAME_LOGGING), Severity.INFO)
-    when (severity) {
-        Severity.VERBOSE, Severity.DEBUG -> printLogger(Level.DEBUG)
-        Severity.INFO, Severity.WARNING,
-        Severity.ERROR, Severity.DISABLED -> {
-            // Use the default logger setting
-        }
-    }
+    printLogger(Level.DEBUG)
 }
 
 /**

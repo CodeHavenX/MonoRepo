@@ -67,7 +67,7 @@ class EnvironmentConfiguration(
      * Transforms the key to match environment variable naming conventions.
      */
     override fun transformKey(key: String): String {
-        return key.map {
+        val keyName = key.map {
             // Check if character is alphanumeric
             if (it.isLetterOrDigit()) {
                 it.uppercase()
@@ -75,5 +75,6 @@ class EnvironmentConfiguration(
                 '_'
             }
         }.joinToString("")
+        return "${domainPrefix}_$keyName"
     }
 }

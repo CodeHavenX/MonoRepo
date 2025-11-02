@@ -116,8 +116,8 @@ val FrameworkModule = module(createdAtStart = true) {
         val environmentConfiguration: EnvironmentConfiguration = get()
         configurationMultiplexer.setConfigurations(
             listOf(
-                simpleConfiguration,
-                environmentConfiguration,
+                environmentConfiguration, // Look for overrides in environment variables first
+                simpleConfiguration, // Then in the config file
             )
         )
         configurationMultiplexer

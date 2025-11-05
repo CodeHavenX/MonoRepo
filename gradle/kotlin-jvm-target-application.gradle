@@ -17,7 +17,7 @@ jar {
 
 // Setting the main class to run when executing as an application.
 application {
-    mainClassName = mainClassTarget
+    mainClass.set(mainClassTarget)
 }
 
 java {

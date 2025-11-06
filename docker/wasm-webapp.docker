@@ -1,8 +1,0 @@
-FROM nginx:alpine
-
-COPY <project>/build/dist/wasmJs/ /usr/share/nginx/html
-
-EXPOSE 80
-
-# Start serving traffic
-CMD ["nginx", "-g", "daemon off;"]

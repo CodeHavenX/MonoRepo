@@ -9,6 +9,7 @@ class QuechuaManagerTest {
     fun testGeneratingNumbers() {
         // Test base numbers
         assertEquals("chusaq", 0.toYupay())
+        assertEquals("huk", 1.toYupay())
         assertEquals("iskay", 2.toYupay())
         assertEquals("kimsa", 3.toYupay())
         assertEquals("tawa", 4.toYupay())

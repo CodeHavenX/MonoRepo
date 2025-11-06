@@ -8,7 +8,7 @@ import kotlin.math.pow
 @Suppress("MagicNumber")
 enum class Yupay(val number: Int) {
     CHUSAQ(0),
-    HUQ(1),
+    HUK(1),
     ISKAY(2),
     KIMSA(3),
     TAWA(4),

@@ -131,7 +131,7 @@ class SignInViewModelTest : CoroutineTest() {
             windowEventBus.events.test {
                 assertEquals(
                     EdifikanaWindowsEvent.NavigateToNavGraph(
-                        EdifikanaNavGraphDestination.ManagementNavGraphDestination,
+                        EdifikanaNavGraphDestination.HomeNavGraphDestination,
                         clearTop = true,
                     ),
                     awaitItem()

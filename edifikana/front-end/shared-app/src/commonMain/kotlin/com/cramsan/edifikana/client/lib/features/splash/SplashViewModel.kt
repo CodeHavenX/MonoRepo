@@ -54,7 +54,7 @@ class SplashViewModel(
         val propertyResult = propertyManager.getPropertyList()
         propertyManager.setActiveProperty(propertyResult.getOrNull()?.firstOrNull()?.id)
         emitWindowEvent(
-            EdifikanaWindowsEvent.NavigateToNavGraph(EdifikanaNavGraphDestination.ManagementNavGraphDestination)
+            EdifikanaWindowsEvent.NavigateToNavGraph(EdifikanaNavGraphDestination.HomeNavGraphDestination)
         )
     }
 

@@ -226,6 +226,9 @@ class PropertyServiceImplTest {
 
     @Test
     fun `removeProperty should return failure as not implemented`() = runTest {
+        // Arrange
+        ktorTestEngine.configure {  }
+
         // Act
         val result = service.removeProperty(PropertyId("any"))
 

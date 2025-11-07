@@ -38,7 +38,7 @@ sealed class EdifikanaNavGraphDestination : NavigationGraphDestination {
      * A class representing navigating to the Employee Screen.
      */
     @Serializable
-    data object ManagementNavGraphDestination : EdifikanaNavGraphDestination()
+    data object HomeNavGraphDestination : EdifikanaNavGraphDestination()
 
     /**
      * A class representing navigating to the debug page.

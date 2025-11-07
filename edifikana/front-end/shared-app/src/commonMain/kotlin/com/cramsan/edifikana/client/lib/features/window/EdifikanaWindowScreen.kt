@@ -18,7 +18,7 @@ import androidx.navigation.compose.rememberNavController
 import com.cramsan.edifikana.client.lib.features.account.accountNavGraph
 import com.cramsan.edifikana.client.lib.features.auth.authNavGraphNavigation
 import com.cramsan.edifikana.client.lib.features.debug.debugNavGraphNavigation
-import com.cramsan.edifikana.client.lib.features.management.managementNavGraphNavigation
+import com.cramsan.edifikana.client.lib.features.home.homeNavGraphNavigation
 import com.cramsan.edifikana.client.lib.features.splash.SplashScreen
 import com.cramsan.edifikana.client.lib.navigation.EmployeeIdNavType
 import com.cramsan.edifikana.client.lib.navigation.EventLogEntryIdNavType
@@ -214,7 +214,7 @@ private fun WindowNavigationHost(
         authNavGraphNavigation(typeMap)
         accountNavGraph(typeMap)
         debugNavGraphNavigation(typeMap)
-        managementNavGraphNavigation(typeMap)
+        homeNavGraphNavigation(typeMap)
     }
 }
 

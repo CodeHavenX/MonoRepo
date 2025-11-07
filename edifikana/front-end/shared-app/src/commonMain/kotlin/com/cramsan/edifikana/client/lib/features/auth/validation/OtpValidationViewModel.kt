@@ -68,7 +68,7 @@ class OtpValidationViewModel(
             }.onSuccess {
                 emitWindowEvent(
                     EdifikanaWindowsEvent.NavigateToNavGraph(
-                        EdifikanaNavGraphDestination.ManagementNavGraphDestination,
+                        EdifikanaNavGraphDestination.HomeNavGraphDestination,
                         clearTop = true,
                     )
                 )

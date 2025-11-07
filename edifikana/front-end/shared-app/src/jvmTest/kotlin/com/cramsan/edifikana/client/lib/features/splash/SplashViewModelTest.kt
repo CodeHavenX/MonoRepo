@@ -99,7 +99,7 @@ class SplashViewModelTest : CoroutineTest() {
         coVerify {
             windowEventBus.push(
                 EdifikanaWindowsEvent.NavigateToNavGraph(
-                    EdifikanaNavGraphDestination.ManagementNavGraphDestination
+                    EdifikanaNavGraphDestination.HomeNavGraphDestination
                 )
             )
         }

@@ -4,6 +4,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import com.cramsan.framework.core.compose.navigation.navigationGraph
+import com.cramsan.runasimi.client.lib.features.main.menu.MenuScreen
 import com.cramsan.runasimi.client.lib.features.main.verbs.VerbsScreen
 import com.cramsan.runasimi.client.lib.features.window.RunasimiNavGraphDestination
 import kotlin.jvm.JvmSuppressWildcards
@@ -22,6 +23,9 @@ fun NavGraphBuilder.mainNavGraphNavigation(
     ) {
         composable(MainDestination.NavDestination::class) {
             VerbsScreen()
+        }
+        composable(MainDestination.MenuDestination::class) {
+            MenuScreen()
         }
     }
 }

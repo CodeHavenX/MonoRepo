@@ -17,12 +17,6 @@ import kotlinx.serialization.Serializable
 sealed class RunasimiNavGraphDestination : NavigationGraphDestination {
 
     /**
-     * A class representing navigating to the splash screen.
-     */
-    @Serializable
-    data object SplashNavGraphDestination : RunasimiNavGraphDestination()
-
-    /**
      * A class representing navigating to the main screen.
      */
     @Serializable

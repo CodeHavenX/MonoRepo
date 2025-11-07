@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -82,6 +83,9 @@ private fun CardSide(
                 text = it.orEmpty(),
                 style = MaterialTheme.typography.headlineLarge,
                 textAlign = TextAlign.Center,
+                autoSize = TextAutoSize.StepBased(
+                    maxFontSize = MaterialTheme.typography.headlineLarge.fontSize,
+                ),
             )
         }
     }

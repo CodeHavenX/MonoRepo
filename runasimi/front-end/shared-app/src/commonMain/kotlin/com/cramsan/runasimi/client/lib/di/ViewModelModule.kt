@@ -5,6 +5,7 @@ import com.cramsan.framework.core.compose.EventEmitter
 import com.cramsan.framework.core.compose.EventReceiver
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.core.compose.WindowEvent
+import com.cramsan.runasimi.client.lib.features.main.menu.MenuViewModel
 import com.cramsan.runasimi.client.lib.features.main.verbs.VerbsViewModel
 import com.cramsan.runasimi.client.lib.features.window.RunasimiWindowDelegatedEvent
 import com.cramsan.runasimi.client.lib.features.window.RunasimiWindowViewModel
@@ -52,6 +53,7 @@ internal val ViewModelModule = module {
 
         // These objects are scoped to the screen in which they are used.
         viewModelOf(::VerbsViewModel)
+        viewModelOf(::MenuViewModel)
     }
 }
 

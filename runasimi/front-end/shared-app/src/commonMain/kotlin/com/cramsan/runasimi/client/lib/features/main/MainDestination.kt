@@ -12,4 +12,10 @@ sealed class MainDestination : Destination {
      */
     @Serializable
     data object NavDestination : MainDestination()
+
+    /**
+     * A class representing navigating to the Menu screen.
+     */
+    @Serializable
+    data object MenuDestination : MainDestination()
 }

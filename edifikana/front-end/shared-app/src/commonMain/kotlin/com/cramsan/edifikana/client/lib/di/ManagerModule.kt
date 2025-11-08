@@ -7,33 +7,10 @@ import com.cramsan.edifikana.client.lib.managers.OrganizationManager
 import com.cramsan.edifikana.client.lib.managers.PreferencesManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.managers.TimeCardManager
-import com.cramsan.edifikana.client.lib.managers.remoteconfig.BehaviorConfig
-import com.cramsan.edifikana.client.lib.managers.remoteconfig.CachingConfig
-import com.cramsan.edifikana.client.lib.managers.remoteconfig.FeatureConfig
-import com.cramsan.edifikana.client.lib.managers.remoteconfig.ImageConfig
-import com.cramsan.edifikana.client.lib.managers.remoteconfig.RemoteConfig
-import com.cramsan.edifikana.client.lib.service.AuthService
-import com.cramsan.edifikana.client.lib.service.EmployeeService
-import com.cramsan.edifikana.client.lib.service.EventLogService
-import com.cramsan.edifikana.client.lib.service.OrganizationService
-import com.cramsan.edifikana.client.lib.service.PropertyService
-import com.cramsan.edifikana.client.lib.service.StorageService
-import com.cramsan.edifikana.client.lib.service.TimeCardService
-import com.cramsan.edifikana.client.lib.service.impl.AuthServiceImpl
-import com.cramsan.edifikana.client.lib.service.impl.EmployeeServiceImpl
-import com.cramsan.edifikana.client.lib.service.impl.EventLogServiceImpl
-import com.cramsan.edifikana.client.lib.service.impl.OrganizationServiceImpl
-import com.cramsan.edifikana.client.lib.service.impl.PropertyServiceImpl
-import com.cramsan.edifikana.client.lib.service.impl.StorageServiceImpl
-import com.cramsan.edifikana.client.lib.service.impl.TimeCardServiceImpl
-import com.cramsan.framework.core.ManagerDependencies
-import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-internal val ManagerModule = module {
-    single { ManagerDependencies(get(), get()) }
-
+val ManagerModule = module {
     singleOf(::EventLogManager)
     singleOf(::TimeCardManager)
     singleOf(::EmployeeManager)
@@ -41,53 +18,4 @@ internal val ManagerModule = module {
     singleOf(::PropertyManager)
     singleOf(::PreferencesManager)
     singleOf(::OrganizationManager)
-
-    single {
-        RemoteConfig(
-            image = ImageConfig(
-                captureWidth = 800,
-                captureHeight = 600,
-            ),
-            caching = CachingConfig(
-                imageQualityHint = 80,
-            ),
-            behavior = BehaviorConfig(
-                fetchPeriod = 1,
-                allowListedCodes = emptyList(),
-            ),
-            features = FeatureConfig(
-                flags = emptyMap()
-            ),
-        )
-    }
-    single { get<RemoteConfig>().caching }
-    single { get<RemoteConfig>().image }
-    single { get<RemoteConfig>().behavior }
-    single { get<RemoteConfig>().features }
-
-    // Services
-    singleOf(::AuthServiceImpl) {
-        bind<AuthService>()
-    }
-    singleOf(::EventLogServiceImpl) {
-        bind<EventLogService>()
-    }
-    singleOf(::PropertyServiceImpl) {
-        bind<PropertyService>()
-    }
-    singleOf(::StorageServiceImpl) {
-        bind<StorageService>()
-    }
-    singleOf(::TimeCardServiceImpl) {
-        bind<TimeCardService>()
-    }
-    singleOf(::EmployeeServiceImpl) {
-        bind<EmployeeService>()
-    }
-    singleOf(::OrganizationServiceImpl) {
-        bind<OrganizationService>()
-    }
 }
-
-internal const val EDIFIKANA_SUPABASE_URL = "EDIFIKANA_SUPABASE_URL"
-internal const val EDIFIKANA_SUPABASE_KEY = "EDIFIKANA_SUPABASE_KEY"

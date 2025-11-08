@@ -38,11 +38,14 @@ kotlin {
             implementation(project(":framework:crashhandler"))
             implementation(project(":framework:core"))
             implementation(project(":framework:core-compose"))
+            implementation(project(":framework:configuration"))
             implementation(project(":framework:preferences"))
             implementation(project(":framework:test"))
             implementation(project(":framework:utils"))
             implementation(project(":framework:network-api"))
             implementation(project(":framework:http-serializers"))
+
+            implementation(project(":architecture:front-end-architecture"))
 
             implementation(project(":ui-catalog"))
 

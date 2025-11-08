@@ -1,9 +1,13 @@
 package com.cramsan.edifikana.client.lib.features.debug.main
 
+import com.cramsan.architecture.client.settings.FrontEndApplicationSettingKey
+import com.cramsan.architecture.client.settings.SettingKey
 import com.cramsan.edifikana.client.lib.features.debug.DebugDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.PreferencesManager
-import com.cramsan.edifikana.client.lib.settings.Overrides
+import com.cramsan.edifikana.client.lib.settings.EdifikanaSettingKey
+import com.cramsan.framework.configuration.PropertyValue
+import com.cramsan.framework.configuration.PropertyValueType
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.halt.HaltUtil
@@ -26,8 +30,8 @@ class DebugViewModel(
 ) {
 
     // Buffered changes
-    private var bufferedKey: String? = null
-    private var bufferedValue: Any? = null
+    private var bufferedKey: SettingKey<*>? = null
+    private var bufferedValue: PropertyValue? = null
 
     /**
      * Load the initial state of the screen.
@@ -46,14 +50,15 @@ class DebugViewModel(
     /**
      * Save the value of the field.
      */
-    fun saveValue(key: String, value: Any) {
+    fun saveValue(key: SettingKey<*>, value: Any) {
         viewModelScope.launch {
             saveValueImpl(key, value)
         }
     }
 
-    private suspend fun saveValueImpl(key: String, value: Any) {
-        preferencesManager.setPreference(key, value)
+    private suspend fun saveValueImpl(key: SettingKey<*>, value: Any) {
+        val propertyValue = getPropertyValue(key, value)
+        preferencesManager.updatePreference(key, propertyValue)
         bufferedKey = null
         bufferedValue = null
         logI(TAG, "Debug key $key changed to $value")
@@ -63,13 +68,29 @@ class DebugViewModel(
         )
     }
 
+    private fun getPropertyValue(key: SettingKey<*>, value: Any): PropertyValue {
+        return when (key.type) {
+            is PropertyValueType.StringType -> {
+                PropertyValue.StringValue(value as String)
+            }
+
+            is PropertyValueType.BooleanType -> {
+                PropertyValue.BooleanType(value as Boolean)
+            }
+
+            else -> {
+                error("Unsupported key type: ${key.type} for key: $key")
+            }
+        }
+    }
+
     /**
      * Buffer changes to be saved later. This is useful for data that changes frequently and we
      * dont want to save on each change. A common example is a text field or a dial.
      */
-    fun bufferChanges(key: String, value: Any) {
+    fun bufferChanges(key: SettingKey<*>, value: Any) {
         this.bufferedKey = key
-        this.bufferedValue = value
+        this.bufferedValue = getPropertyValue(key, value)
     }
 
     /**
@@ -123,12 +144,10 @@ class DebugViewModel(
     @Suppress("MaxLineLength", "MaximumLineLength", "LongMethod")
     private fun loadDataImpl() {
         viewModelScope.launch {
-            val supabaseOverrideEnabled = preferencesManager.isSupabaseOverrideEnabled().getOrThrow()
             val supabaseOverrideUrl = preferencesManager.getSupabaseOverrideUrl().getOrThrow()
             val supabaseOverrideKey = preferencesManager.getSupabaseOverrideKey().getOrThrow()
             val haltOnFailure = preferencesManager.haltOnFailure().getOrThrow()
             val openDebugWindow = preferencesManager.isOpenDebugWindow().getOrThrow()
-            val edifikanaBeOverrideEnabled = preferencesManager.isEdifikanaBackendOverrideEnabled().getOrThrow()
             val edifikanaBeUrl = preferencesManager.getEdifikanaBackendUrl().getOrThrow()
             val loggingSeverity = preferencesManager.loggingSeverityOverride().getOrThrow()
 
@@ -140,22 +159,16 @@ class DebugViewModel(
                             "Supabase Settings",
                             "These settings are used to override the default Supabase settings.",
                         ),
-                        Field.BooleanField(
-                            title = "Enable the override settings",
-                            subtitle = "Toggle this to enable the override settings.",
-                            key = Overrides.KEY_SUPABASE_OVERRIDE_ENABLED.name,
-                            value = supabaseOverrideEnabled,
-                        ),
                         Field.StringField(
                             title = "Supabase URL",
                             subtitle = "Provide an override URL",
-                            key = Overrides.KEY_SUPABASE_OVERRIDE_URL.name,
+                            key = EdifikanaSettingKey.SupabaseOverrideUrl,
                             value = supabaseOverrideUrl,
                         ),
                         Field.StringField(
                             title = "Supabase Anon Key",
                             subtitle = "Provide an override Api Anon Key",
-                            key = Overrides.KEY_SUPABASE_OVERRIDE_KEY.name,
+                            key = EdifikanaSettingKey.SupabaseOverrideKey,
                             value = supabaseOverrideKey,
                             secure = true,
                         ),
@@ -164,16 +177,10 @@ class DebugViewModel(
                             "Edifikana BackEnd Settings",
                             "These settings are used to override the default Back End settings.",
                         ),
-                        Field.BooleanField(
-                            title = "Enable the override settings",
-                            subtitle = "Enable this to override the default Back End settings.",
-                            key = Overrides.KEY_EDIFIKANA_BE_OVERRIDE_ENABLED.name,
-                            value = edifikanaBeOverrideEnabled,
-                        ),
                         Field.StringField(
                             title = "Edifikana Back End URL",
                             subtitle = "Provide an override URL",
-                            key = Overrides.KEY_EDIFIKANA_BE_URL.name,
+                            key = EdifikanaSettingKey.EdifikanaBeUrl,
                             value = edifikanaBeUrl,
                         ),
                         Field.Divider,
@@ -183,14 +190,14 @@ class DebugViewModel(
                             subtitle = "Enable the halt-on-faiilure mechanism when in a supported platform. " +
                                 "This will cause the application to freeze when an error is found. Allowing " +
                                 "you the chance to connect the debugger and inspect tha application state.",
-                            key = Overrides.KEY_HALT_ON_FAILURE.name,
+                            key = FrontEndApplicationSettingKey.HaltOnFailure,
                             value = haltOnFailure,
                         ),
                         Field.Divider,
                         Field.StringField(
                             title = "Logging Severity",
                             subtitle = null,
-                            key = Overrides.KEY_LOGGING_SEVERITY_OVERRIDE.name,
+                            key = FrontEndApplicationSettingKey.LoggingLevel,
                             value = loggingSeverity,
                         ),
                         Field.ActionField(
@@ -211,7 +218,7 @@ class DebugViewModel(
                         Field.BooleanField(
                             title = "Open Debug Window",
                             subtitle = "Currently only supported on desktop.",
-                            key = Overrides.KEY_OPEN_DEBUG_WINDOW.name,
+                            key = EdifikanaSettingKey.OpenDebugWindow,
                             value = openDebugWindow,
                             enabled = false, // Disabled while we set up the required infrastructure
                         ),

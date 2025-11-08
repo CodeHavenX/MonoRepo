@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import com.cramsan.architecture.client.settings.SettingKey
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.ui.components.PasswordOutlinedTextField
 import com.cramsan.ui.components.ScreenLayout
@@ -75,10 +76,10 @@ fun DebugScreen(
 
     DebugContent(
         uiState,
-        bufferChanges = { key: String, value: Any ->
+        bufferChanges = { key: SettingKey<*>, value: Any ->
             viewModel.bufferChanges(key, value)
         },
-        saveChanges = { key: String, value: Any ->
+        saveChanges = { key: SettingKey<*>, value: Any ->
             viewModel.saveValue(key, value)
         },
         onCloseSelected = { viewModel.navigateBack() },
@@ -93,8 +94,8 @@ fun DebugScreen(
 internal fun DebugContent(
     content: DebugUIModelUI,
     modifier: Modifier = Modifier,
-    bufferChanges: (String, Any) -> Unit,
-    saveChanges: (key: String, value: Any) -> Unit,
+    bufferChanges: (SettingKey<*>, Any) -> Unit,
+    saveChanges: (key: SettingKey<*>, value: Any) -> Unit,
     onAction: (Field.ActionField) -> Unit,
     onCloseSelected: () -> Unit,
 ) {
@@ -167,7 +168,7 @@ private fun LabelRow(label: Field.Label, modifier: Modifier) {
 private fun BooleanRow(
     field: Field.BooleanField,
     modifier: Modifier,
-    onValueChanged: (String, Boolean) -> Unit,
+    onValueChanged: (SettingKey<*>, Boolean) -> Unit,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     Row(
@@ -218,8 +219,8 @@ private fun BooleanRow(
 private fun StringRow(
     field: Field.StringField,
     modifier: Modifier,
-    onValueChanged: (String, String) -> Unit,
-    saveChanges: (String, String) -> Unit,
+    onValueChanged: (SettingKey<*>, String) -> Unit,
+    saveChanges: (SettingKey<*>, String) -> Unit,
 ) {
     var stringValue by remember(field.value) { mutableStateOf(field.value) }
     var hasValueChanged by remember { mutableStateOf(false) }

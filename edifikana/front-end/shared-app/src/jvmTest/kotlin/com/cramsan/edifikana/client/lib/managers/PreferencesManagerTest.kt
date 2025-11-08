@@ -1,126 +1,159 @@
 package com.cramsan.edifikana.client.lib.managers
 
+import app.cash.turbine.test
+import com.cramsan.architecture.client.settings.FrontEndApplicationSettingKey
+import com.cramsan.architecture.client.settings.SettingsHolder
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
+import com.cramsan.edifikana.client.lib.settings.EdifikanaSettingKey
+import com.cramsan.framework.configuration.PropertyValue
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
-import com.cramsan.framework.preferences.Preferences
 import com.cramsan.framework.test.CoroutineTest
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
-import kotlinx.coroutines.flow.first
 
 /**
  * Unit tests for the PreferencesManager class.
- * TODO: SKELETON FOR TESTING, NEEDS TO BE UPDATED AS THE TEST GETS CAUGHT ON WAITING FOR EMIT
- *
  */
-@Ignore
 class PreferencesManagerTest : CoroutineTest() {
-    private lateinit var preferences: Preferences
+    private lateinit var settingsHolder: SettingsHolder
     private lateinit var dependencies: ManagerDependencies
     private lateinit var manager: PreferencesManager
 
-    /**
-     * Sets up the test environment, initializing mocks and the PreferencesManager instance.
-     */
     @BeforeTest
     fun setup() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
-        preferences = mockk(relaxed = true)
+        settingsHolder = mockk(relaxed = true)
 
         dependencies = mockk(relaxed = true)
         every { dependencies.appScope } returns testCoroutineScope
         every { dependencies.dispatcherProvider } returns UnifiedDispatcherProvider(testCoroutineDispatcher)
 
-        manager = PreferencesManager(preferences, dependencies)
+        manager = PreferencesManager(settingsHolder, dependencies)
     }
 
-    /**
-     * Tests that setPreference saves a String and emits the key.
-     */
     @Test
-    fun `setPreference saves String and emits key`() = runCoroutineTest {
-        // Arrange
-        val key = "testKey"
-        val value = "testValue"
-        coEvery { preferences.saveString(key, value) } returns Unit
-        // Act
-        manager.setPreference(key, value)
-        // Assert
-        coVerify { preferences.saveString(key, value) }
-        assertEquals(key, manager.modifiedKey.first())
-    }
+    fun `haltOnFailure returns value from settingsHolder when present`() = runCoroutineTest {
+        coEvery { settingsHolder.getBoolean(FrontEndApplicationSettingKey.HaltOnFailure) } returns true
 
-    /**
-     * Tests that setPreference saves a Boolean and emits the key.
-     */
-    @Test
-    fun `setPreference saves Boolean and emits key`() = runCoroutineTest {
-        // Arrange
-        val key = "boolKey"
-        val value = true
-        coEvery { preferences.saveBoolean(key, value) } returns Unit
-        // Act
-        manager.setPreference(key, value)
-        // Assert
-        coVerify { preferences.saveBoolean(key, value) }
-        assertEquals(key, manager.modifiedKey.first())
-    }
+        val result = manager.haltOnFailure()
 
-    /**
-     * Tests that setPreference throws for unsupported type.
-     */
-    @Test
-    fun `setPreference throws for unsupported type`() = runCoroutineTest {
-        // Arrange
-        val key = "unsupportedKey"
-        val value = 123
-        // Act & Assert
-        val exception = assertFailsWith<IllegalArgumentException> {
-            manager.setPreference(key, value)
-        }
-        assertTrue(exception.message!!.contains("Unsupported value type"))
-    }
-
-    /**
-     * Tests that loadStringPreference returns the value from preferences.
-     */
-    @Test
-    fun `loadStringPreference returns value`() = runCoroutineTest {
-        // Arrange
-        val key = "stringKey"
-        val value = "storedValue"
-        coEvery { preferences.loadString(key) } returns value
-        // Act
-        val result = manager.loadStringPreference(key)
-        // Assert
         assertTrue(result.isSuccess)
-        assertEquals(value, result.getOrNull())
+        assertEquals(true, result.getOrNull())
+        coVerify { settingsHolder.getBoolean(FrontEndApplicationSettingKey.HaltOnFailure) }
     }
 
-    /**
-     * Tests that loadStringPreference returns empty string if not set.
-     */
     @Test
-    fun `loadStringPreference returns empty string if not set`() = runCoroutineTest {
-        // Arrange
-        val key = "unsetKey"
-        coEvery { preferences.loadString(key) } returns null
-        // Act
-        val result = manager.loadStringPreference(key)
-        // Assert
+    fun `haltOnFailure defaults to false when not set`() = runCoroutineTest {
+        coEvery { settingsHolder.getBoolean(FrontEndApplicationSettingKey.HaltOnFailure) } returns null
+
+        val result = manager.haltOnFailure()
+
         assertTrue(result.isSuccess)
-        assertEquals("", result.getOrNull())
+        assertEquals(false, result.getOrNull())
+    }
+
+    @Test
+    fun `updatePreference saves value and emits modified key`() = runCoroutineTest {
+        val key = EdifikanaSettingKey.SupabaseOverrideUrl
+        val value = PropertyValue.StringValue("https://example.com")
+
+        coEvery { settingsHolder.saveValue(key, value) } returns Unit
+
+        // collect the first emitted key from the flow using a CompletableDeferred and launch
+        val verificationJob = launch { manager.modifiedKey.test {
+            assertEquals(EdifikanaSettingKey.SupabaseOverrideUrl, awaitItem())
+        } }
+
+        manager.updatePreference(key, value)
+
+        coVerify { settingsHolder.saveValue(key, value) }
+        verificationJob.join()
+    }
+
+    @Test
+    fun `getSupabaseOverrideUrl and key and enabled return stored values or defaults`() = runCoroutineTest {
+        coEvery { settingsHolder.getString(EdifikanaSettingKey.SupabaseOverrideUrl) } returns "https://supa"
+        coEvery { settingsHolder.getString(EdifikanaSettingKey.SupabaseOverrideKey) } returns "key123"
+
+        val url = manager.getSupabaseOverrideUrl()
+        val key = manager.getSupabaseOverrideKey()
+
+        assertTrue(url.isSuccess)
+        assertEquals("https://supa", url.getOrNull())
+        assertTrue(key.isSuccess)
+        assertEquals("key123", key.getOrNull())
+    }
+
+    @Test
+    fun `edifikana backend urls and flags return stored values or defaults`() = runCoroutineTest {
+        coEvery { settingsHolder.getString(EdifikanaSettingKey.EdifikanaBeUrl) } returns "https://be"
+        coEvery { settingsHolder.getBoolean(EdifikanaSettingKey.OpenDebugWindow) } returns true
+        coEvery { settingsHolder.getString(FrontEndApplicationSettingKey.LoggingLevel) } returns "DEBUG"
+
+        val be = manager.getEdifikanaBackendUrl()
+        val debug = manager.isOpenDebugWindow()
+        val logging = manager.loggingSeverityOverride()
+
+        assertTrue(be.isSuccess)
+        assertEquals("https://be", be.getOrNull())
+        assertTrue(debug.isSuccess)
+        assertEquals(true, debug.getOrNull())
+        assertTrue(logging.isSuccess)
+        assertEquals("DEBUG", logging.getOrNull())
+    }
+
+    @Test
+    fun `getSupabaseOverrideUrl default values when not set`() = runCoroutineTest {
+        coEvery { settingsHolder.getString(EdifikanaSettingKey.SupabaseOverrideUrl) } returns null
+        coEvery { settingsHolder.getString(EdifikanaSettingKey.SupabaseOverrideKey) } returns null
+
+        val url = manager.getSupabaseOverrideUrl()
+        val key = manager.getSupabaseOverrideKey()
+
+        assertTrue(url.isSuccess)
+        assertEquals("", url.getOrNull())
+        assertTrue(key.isSuccess)
+        assertEquals("", key.getOrNull())
+    }
+
+    @Test
+    fun `edifikana backend and logging defaults when not set`() = runCoroutineTest {
+        coEvery { settingsHolder.getString(EdifikanaSettingKey.EdifikanaBeUrl) } returns null
+        coEvery { settingsHolder.getBoolean(EdifikanaSettingKey.OpenDebugWindow) } returns null
+        coEvery { settingsHolder.getString(FrontEndApplicationSettingKey.LoggingLevel) } returns null
+
+        val be = manager.getEdifikanaBackendUrl()
+        val debug = manager.isOpenDebugWindow()
+        val logging = manager.loggingSeverityOverride()
+
+        assertTrue(be.isSuccess)
+        assertEquals("", be.getOrNull())
+        assertTrue(debug.isSuccess)
+        assertEquals(false, debug.getOrNull())
+        assertTrue(logging.isSuccess)
+        assertEquals("INFO", logging.getOrNull())
+    }
+
+    @Test
+    fun `clearPreferences calls settingsHolder clearAllPreferences`() = runCoroutineTest {
+        coEvery { settingsHolder.clearAllPreferences() } returns Unit
+
+        val res = manager.clearPreferences()
+
+        assertTrue(res.isSuccess)
+        coVerify { settingsHolder.clearAllPreferences() }
     }
 }
-

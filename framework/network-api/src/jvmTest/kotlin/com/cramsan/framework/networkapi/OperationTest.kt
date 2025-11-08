@@ -89,7 +89,7 @@ class OperationTest {
 
         val handler = operation.toOperationHandler()
 
-        assertEquals("resource/{param}", handler.fullPath)
+        assertEquals("resource/{param}", handler.path)
         assertEquals("param", handler.param)
     }
 

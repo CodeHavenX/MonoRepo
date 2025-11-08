@@ -79,7 +79,7 @@ data class Operation<
      */
     fun toOperationHandler(): OperationHandler<RequestType, QueryParamType, PathParamType, ResponseType> {
         val hasPathParam = !pathParamType.isInstance(NoPathParam)
-        val fullPath = if (hasPathParam && !path.isNullOrBlank()) {
+        val handlerPath = if (hasPathParam && !path.isNullOrBlank()) {
             "$path/{param}"
         } else if (hasPathParam) {
             "{param}"
@@ -89,7 +89,7 @@ data class Operation<
 
         return OperationHandler(
             method = method,
-            fullPath = fullPath.trimStart('/'),
+            path = handlerPath.trimStart('/'),
             param = if (hasPathParam) "param" else null,
             requestBodyType = requestBodyType,
             queryParamType = queryParamType,
@@ -411,7 +411,7 @@ data class OperationRequest<
  * @param RequestType The type of the request body.
  * @param ResponseType The type of the response body.
  * @property method The HTTP method for the operation.
- * @property fullPath The full path for the operation, including any path parameters.
+ * @property path The path for the operation, including any path parameters. This does not include the API base path.
  * @property param The path parameter for the operation, can be null if not applicable.
  * @property requestBodyType The KClass of the request body type.
  * @property queryParamType The KClass of the query parameter type.
@@ -424,7 +424,7 @@ data class OperationHandler<
     ResponseType : ResponseBody
     > (
     val method: HttpMethod,
-    val fullPath: String,
+    val path: String,
     val param: String?,
     val requestBodyType: KClass<RequestType>,
     val queryParamType: KClass<QueryParamType>,

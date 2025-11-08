@@ -25,7 +25,6 @@ import kotlin.time.TestTimeSource
 
 @OptIn(ExperimentalTime::class)
 class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
-
     private val auth: Auth by inject()
     private val testTimeSource: TestTimeSource by inject()
     private val clock: Clock by inject()

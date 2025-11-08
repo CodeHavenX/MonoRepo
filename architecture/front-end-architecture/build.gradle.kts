@@ -55,6 +55,7 @@ kotlin {
             implementation("io.insert-koin:koin-compose-viewmodel:_")
 
             implementation("io.ktor:ktor-client-content-negotiation:_")
+            implementation("io.ktor:ktor-client-logging:_")
             implementation("io.ktor:ktor-serialization-kotlinx-json:_")
 
             implementation("io.coil-kt.coil3:coil:")

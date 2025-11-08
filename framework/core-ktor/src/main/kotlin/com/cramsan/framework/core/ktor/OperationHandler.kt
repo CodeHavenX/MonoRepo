@@ -18,6 +18,7 @@ import com.cramsan.framework.networkapi.OperationHandler
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.request.receive
+import io.ktor.server.request.uri
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.Routing
@@ -110,7 +111,8 @@ object OperationHandler {
         QueryParamType : QueryParam,
         PathParamType : PathParam,
         ResponseType : ResponseBody,
-        Context
+        P,
+        Context : ClientContext<P>,
         >
         Operation<RequestType, QueryParamType, PathParamType, ResponseType>.handleImpl(
             route: Route,
@@ -120,12 +122,12 @@ object OperationHandler {
             ) -> HttpResponse<ResponseType>,
         ) {
         val handler = this.toOperationHandler()
-        route.route(handler.fullPath, handler.method) {
+        route.route(handler.path, handler.method) {
             handle {
                 logV(
                     tag = "OperationHandler",
                     message = "Handling operation %s",
-                    handler
+                    this.call.request.uri,
                 )
                 val contextResult = runCatching {
                     contextRetriever(call)

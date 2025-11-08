@@ -12,7 +12,6 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
-
     private lateinit var test_prefix: String
     private var testUserId: UserId? = null
 

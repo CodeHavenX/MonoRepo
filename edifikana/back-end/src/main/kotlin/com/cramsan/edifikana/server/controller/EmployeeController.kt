@@ -176,7 +176,7 @@ class EmployeeController(
     private suspend fun checkHasRole(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         empId: EmployeeId,
-        requireRole: com.cramsan.edifikana.server.service.models.UserRole,
+        requireRole: UserRole,
     ) {
         if (!rbacService.hasRoleOrHigher(context, empId, requireRole)) {
             throw UnauthorizedException(unauthorizedMsg)

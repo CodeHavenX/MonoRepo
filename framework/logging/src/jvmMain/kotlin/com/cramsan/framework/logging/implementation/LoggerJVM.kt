@@ -38,7 +38,6 @@ class LoggerJVM(
         }
         val logMessage = "[$tag]$formattedMessage"
         logger.log(level, logMessage, throwable)
-        throwable?.printStackTrace()
     }
 
     companion object {

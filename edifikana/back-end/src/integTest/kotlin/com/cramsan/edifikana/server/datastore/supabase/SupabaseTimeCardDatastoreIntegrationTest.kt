@@ -18,7 +18,6 @@ import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 class SupabaseTimeCardDatastoreIntegrationTest : SupabaseIntegrationTest() {
-
     private lateinit var test_prefix: String
     private var propertyId: PropertyId? = null
     private var employeeId: EmployeeId? = null

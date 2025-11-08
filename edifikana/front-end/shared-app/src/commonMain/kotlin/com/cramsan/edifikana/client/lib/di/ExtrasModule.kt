@@ -18,7 +18,7 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalTime::class)
 internal val ExtrasModule = module {
 
-    single<Clock> {
+    single<Clock>(createdAtStart = true) {
         Chronos.initializeClock(clock = Clock.System)
         Chronos.clock()
     }

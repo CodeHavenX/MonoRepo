@@ -1,21 +1,17 @@
-package com.cramsan.templatereplaceme.server.controller
+package com.cramsan.framework.core.ktor
 
 import com.cramsan.framework.annotations.api.PathParam
 import com.cramsan.framework.annotations.api.QueryParam
 import com.cramsan.framework.annotations.api.RequestBody
 import com.cramsan.framework.annotations.api.ResponseBody
-import com.cramsan.framework.core.ktor.HttpResponse
-import com.cramsan.framework.core.ktor.OperationHandler
 import com.cramsan.framework.core.ktor.OperationHandler.handle
-import com.cramsan.framework.core.ktor.OperationRequest
-import com.cramsan.framework.core.ktor.validateClientError
+import com.cramsan.framework.core.ktor.auth.ClientContext
+import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logI
 import com.cramsan.framework.logging.logW
 import com.cramsan.framework.networkapi.Api
 import com.cramsan.framework.networkapi.Operation
-import com.cramsan.templatereplaceme.server.controller.authentication.ClientContext
-import com.cramsan.templatereplaceme.server.controller.authentication.ContextRetriever
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.response.respond
@@ -36,11 +32,12 @@ inline fun <
     PathParamType : PathParam,
     ResponseType : ResponseBody,
     T : Api,
+    P,
     > OperationHandler.RegistrationBuilder<T>.handler(
     operation: Operation<RequestType, QueryParamType, PathParamType, ResponseType>,
-    contextRetriever: ContextRetriever,
+    contextRetriever: ContextRetriever<P>,
     crossinline handler: suspend (
-        OperationRequest<RequestType, QueryParamType, PathParamType, ClientContext.AuthenticatedClientContext>,
+        OperationRequest<RequestType, QueryParamType, PathParamType, ClientContext<P>>,
     ) -> ResponseType?,
 ) {
     operation.handle(
@@ -74,12 +71,13 @@ inline fun <
     PathParamType : PathParam,
     ResponseType : ResponseBody,
     T : Api,
+    P,
     >
     OperationHandler.RegistrationBuilder<T>.unauthenticatedHandler(
         operation: Operation<RequestType, QueryParamType, PathParamType, ResponseType>,
-        contextRetriever: ContextRetriever,
+        contextRetriever: ContextRetriever<P>,
         crossinline handler: suspend (
-            OperationRequest<RequestType, QueryParamType, PathParamType, ClientContext>,
+            OperationRequest<RequestType, QueryParamType, PathParamType, ClientContext<P>>,
         ) -> ResponseType?,
     ) {
     operation.handle(
@@ -108,11 +106,11 @@ inline fun <
  * @param contextRetriever Used to get the client context from the call.
  * @param function The function to execute, receives the client context.
  */
-suspend inline fun ApplicationCall.handleUnauthenticatedCall(
+suspend inline fun <P> ApplicationCall.handleUnauthenticatedCall(
     tag: String,
     functionName: String,
-    contextRetriever: ContextRetriever,
-    function: ApplicationCall.(ClientContext) -> HttpResponse<*>,
+    contextRetriever: ContextRetriever<P>,
+    function: ApplicationCall.(ClientContext<P>) -> HttpResponse<*>,
 ) {
     handleCall(
         tag,
@@ -132,11 +130,11 @@ suspend inline fun ApplicationCall.handleUnauthenticatedCall(
  * @param contextRetriever Used to get the client context from the call.
  * @param function The function to execute, receives the authenticated client context.
  */
-suspend inline fun ApplicationCall.handleCall(
+suspend inline fun <P> ApplicationCall.handleCall(
     tag: String,
     functionName: String,
-    contextRetriever: ContextRetriever,
-    function: ApplicationCall.(ClientContext.AuthenticatedClientContext) -> HttpResponse<*>,
+    contextRetriever: ContextRetriever<P>,
+    function: ApplicationCall.(ClientContext.AuthenticatedClientContext<P>) -> HttpResponse<*>,
 ) {
     handleCall(
         tag,
@@ -157,11 +155,11 @@ suspend inline fun ApplicationCall.handleCall(
  * @param verifyClientContext Function to verify and cast the client context.
  * @param function The function to execute, receives the verified client context.
  */
-suspend inline fun <T : ClientContext> ApplicationCall.handleCall(
+suspend inline fun <P, T : ClientContext<P>> ApplicationCall.handleCall(
     tag: String,
     functionName: String,
-    contextRetriever: ContextRetriever,
-    verifyClientContext: (ClientContext) -> T,
+    contextRetriever: ContextRetriever<P>,
+    verifyClientContext: (ClientContext<P>) -> T,
     function: ApplicationCall.(T) -> HttpResponse<*>,
 ) {
     logI(tag, "$functionName called")
@@ -216,7 +214,9 @@ suspend inline fun <T : ClientContext> ApplicationCall.handleCall(
  * @throws IllegalStateException if the client context is not authenticated.
  */
 @Suppress("UseCheckOrError")
-inline fun requireAuthenticatedClientContext(clientContext: ClientContext): ClientContext.AuthenticatedClientContext {
+inline fun <P> requireAuthenticatedClientContext(
+    clientContext: ClientContext<P>
+): ClientContext.AuthenticatedClientContext<P> {
     when (clientContext) {
         is ClientContext.AuthenticatedClientContext -> {
             return clientContext

@@ -1,8 +1,6 @@
 package com.cramsan.templatereplaceme.server.controller
 
 import com.cramsan.framework.test.CoroutineTest
-import com.cramsan.templatereplaceme.server.controller.authentication.ClientContext
-import com.cramsan.templatereplaceme.server.controller.authentication.ContextRetriever
 import io.ktor.client.request.get
 import io.ktor.http.HttpStatusCode
 import io.mockk.coEvery

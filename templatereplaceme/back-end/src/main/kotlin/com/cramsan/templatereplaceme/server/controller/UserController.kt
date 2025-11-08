@@ -1,11 +1,13 @@
 package com.cramsan.templatereplaceme.server.controller
 
 import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
+import com.cramsan.framework.core.ktor.auth.ContextRetriever
+import com.cramsan.framework.core.ktor.unauthenticatedHandler
 import com.cramsan.templatereplaceme.api.UserApi
 import com.cramsan.templatereplaceme.lib.model.network.CreateUserNetworkRequest
 import com.cramsan.templatereplaceme.lib.model.network.UserNetworkResponse
-import com.cramsan.templatereplaceme.server.controller.authentication.ContextRetriever
 import com.cramsan.templatereplaceme.server.service.UserService
 import io.ktor.server.routing.Routing
 
@@ -14,7 +16,7 @@ import io.ktor.server.routing.Routing
  */
 class UserController(
     private val userService: UserService,
-    private val contextRetriever: ContextRetriever,
+    private val contextRetriever: ContextRetriever<Unit>,
 ) : Controller {
 
     /**

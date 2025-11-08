@@ -1,4 +1,4 @@
-package com.cramsan.templatereplaceme.server.controller
+package com.cramsan.framework.core.ktor
 
 import io.ktor.server.routing.Routing
 

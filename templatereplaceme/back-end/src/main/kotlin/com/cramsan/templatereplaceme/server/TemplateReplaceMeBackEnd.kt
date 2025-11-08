@@ -1,8 +1,8 @@
 package com.cramsan.templatereplaceme.server
 
+import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.configureHealthEndpoint
 import com.cramsan.framework.logging.logI
-import com.cramsan.templatereplaceme.server.controller.Controller
 import com.cramsan.templatereplaceme.server.dependencyinjection.ApplicationModule
 import com.cramsan.templatereplaceme.server.dependencyinjection.DatastoreModule
 import com.cramsan.templatereplaceme.server.dependencyinjection.FrameworkModule

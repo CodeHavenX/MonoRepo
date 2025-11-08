@@ -28,7 +28,6 @@ import com.cramsan.templatereplaceme.lib.serialization.createJson
 import com.cramsan.templatereplaceme.server.SettingsHolder
 import com.cramsan.templatereplaceme.server.controller.HealthCheckController
 import com.cramsan.templatereplaceme.server.controller.UserController
-import com.cramsan.templatereplaceme.server.controller.authentication.ContextRetriever
 import com.cramsan.templatereplaceme.server.service.UserService
 import io.mockk.mockk
 import kotlinx.datetime.TimeZone

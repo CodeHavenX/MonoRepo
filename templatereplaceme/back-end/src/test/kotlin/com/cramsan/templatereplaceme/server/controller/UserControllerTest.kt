@@ -2,8 +2,6 @@ package com.cramsan.templatereplaceme.server.controller
 
 import com.cramsan.framework.test.CoroutineTest
 import com.cramsan.templatereplaceme.lib.model.UserId
-import com.cramsan.templatereplaceme.server.controller.authentication.ClientContext
-import com.cramsan.templatereplaceme.server.controller.authentication.ContextRetriever
 import com.cramsan.templatereplaceme.server.readFileContent
 import com.cramsan.templatereplaceme.server.service.UserService
 import com.cramsan.templatereplaceme.server.service.models.User

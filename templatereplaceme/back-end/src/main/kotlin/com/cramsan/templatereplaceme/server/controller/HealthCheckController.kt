@@ -1,10 +1,12 @@
 package com.cramsan.templatereplaceme.server.controller
 
 import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
+import com.cramsan.framework.core.ktor.auth.ContextRetriever
+import com.cramsan.framework.core.ktor.unauthenticatedHandler
 import com.cramsan.templatereplaceme.api.HealthApi
 import com.cramsan.templatereplaceme.lib.model.network.HealthCheckNetworkResponse
-import com.cramsan.templatereplaceme.server.controller.authentication.ContextRetriever
 import io.ktor.server.routing.Routing
 
 /**
@@ -12,7 +14,7 @@ import io.ktor.server.routing.Routing
  */
 @OptIn(NetworkModel::class)
 class HealthCheckController(
-    private val contextRetriever: ContextRetriever
+    private val contextRetriever: ContextRetriever<Unit>
 ) : Controller {
 
     /**

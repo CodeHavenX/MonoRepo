@@ -1,4 +1,4 @@
-package com.cramsan.templatereplaceme.server.dependencyinjection
+package com.cramsan.architecture.server.dependencyinjection
 
 /**
  * Enum class to represent named dependencies for dependency injection.

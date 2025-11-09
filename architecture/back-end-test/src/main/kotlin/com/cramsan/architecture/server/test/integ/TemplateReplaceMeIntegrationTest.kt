@@ -1,17 +1,19 @@
-package com.cramsan.templatereplaceme.server
+package com.cramsan.architecture.server.test.integ
 
+import com.cramsan.architecture.server.test.dependencyinjection.TestFrameworkModule
+import com.cramsan.architecture.server.test.dependencyinjection.testApplicationModule
 import com.cramsan.framework.test.CoroutineTest
-import com.cramsan.templatereplaceme.server.dependencyinjection.FrameworkModule
-import com.cramsan.templatereplaceme.server.dependencyinjection.IntegTestApplicationModule
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
 import kotlin.time.ExperimentalTime
+import kotlinx.serialization.json.Json
+import org.koin.core.module.Module
 
 @OptIn(ExperimentalTime::class)
-abstract class TemplateReplaceMeIntegrationTest : CoroutineTest(), KoinTest {
+abstract class BackEndApplicationBaseIntegrationTest : CoroutineTest(), KoinTest {
 
     companion object {
         @BeforeAll
@@ -19,8 +21,8 @@ abstract class TemplateReplaceMeIntegrationTest : CoroutineTest(), KoinTest {
         fun classSetup() {
             startKoin {
                 modules(
-                    FrameworkModule,
-                    IntegTestApplicationModule,
+                    TestFrameworkModule,
+                    testApplicationModule(Json, stageKey = "integ"),
                 )
             }
         }
@@ -30,5 +32,6 @@ abstract class TemplateReplaceMeIntegrationTest : CoroutineTest(), KoinTest {
         fun classTearDown() {
             stopKoin()
         }
+
     }
 }

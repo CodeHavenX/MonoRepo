@@ -83,6 +83,9 @@ include("runasimi:front-end:app-wasm")
 include("runasimi:front-end:app-android")
 include("runasimi:front-end:app-jvm")
 
+include("architecture:back-end")
+include("architecture:back-end-test")
+
 include("templatereplaceme:back-end")
 include("templatereplaceme:shared")
 include("templatereplaceme:api")

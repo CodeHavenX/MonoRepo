@@ -1,5 +1,7 @@
-package com.cramsan.templatereplaceme.server.dependencyinjection
+package com.cramsan.architecture.server.dependencyinjection
 
+import com.cramsan.architecture.server.settings.BackEndApplicationSettingKey
+import com.cramsan.architecture.server.settings.SettingsHolder
 import com.cramsan.framework.assertlib.AssertUtil
 import com.cramsan.framework.assertlib.AssertUtilInterface
 import com.cramsan.framework.assertlib.implementation.AssertUtilImpl
@@ -12,16 +14,8 @@ import com.cramsan.framework.halt.HaltUtil
 import com.cramsan.framework.halt.HaltUtilDelegate
 import com.cramsan.framework.halt.implementation.HaltUtilImpl
 import com.cramsan.framework.halt.implementation.HaltUtilJVM
-import com.cramsan.framework.logging.EventLogger
-import com.cramsan.framework.logging.EventLoggerDelegate
-import com.cramsan.framework.logging.EventLoggerErrorCallback
-import com.cramsan.framework.logging.EventLoggerInterface
-import com.cramsan.framework.logging.Severity
-import com.cramsan.framework.logging.implementation.EventLoggerErrorCallbackImpl
-import com.cramsan.framework.logging.implementation.EventLoggerImpl
-import com.cramsan.framework.logging.implementation.Log4J2Helpers
-import com.cramsan.framework.logging.implementation.LoggerJVM
-import com.cramsan.framework.logging.implementation.NoopEventLoggerErrorCallbackDelegate
+import com.cramsan.framework.logging.*
+import com.cramsan.framework.logging.implementation.*
 import com.cramsan.framework.preferences.Preferences
 import com.cramsan.framework.preferences.PreferencesDelegate
 import com.cramsan.framework.preferences.implementation.JVMPreferencesDelegate
@@ -30,8 +24,6 @@ import com.cramsan.framework.thread.ThreadUtilDelegate
 import com.cramsan.framework.thread.ThreadUtilInterface
 import com.cramsan.framework.thread.implementation.ThreadUtilImpl
 import com.cramsan.framework.thread.implementation.ThreadUtilJVM
-import com.cramsan.templatereplaceme.server.PropertyKey
-import com.cramsan.templatereplaceme.server.SettingsHolder
 import org.apache.logging.log4j.Logger
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -46,13 +38,13 @@ val FrameworkModule = module(createdAtStart = true) {
 
     single {
         val settingsHolder: SettingsHolder = get()
-        val settingRawString = settingsHolder.getString(PropertyKey.LOGGING_LEVEL)
+        val settingRawString = settingsHolder.getString(BackEndApplicationSettingKey.LoggingLevel)
         Severity.fromStringOrDefault(settingRawString, Severity.DEBUG)
     }
 
     single<Logger> {
         val settingsHolder: SettingsHolder = get()
-        val enableFileLogging = settingsHolder.getBoolean(PropertyKey.ENABLE_FILE_LOGGING)
+        val enableFileLogging = settingsHolder.getBoolean(BackEndApplicationSettingKey.LoggingEnableFileLogging)
 
         Log4J2Helpers.getRootLogger(enableFileLogging ?: false, get())
     }
@@ -79,7 +71,7 @@ val FrameworkModule = module(createdAtStart = true) {
 
     single<AssertUtilInterface> {
         val settingsHolder: SettingsHolder = get()
-        val haltOnFailure = settingsHolder.getBoolean(PropertyKey.HALT_ON_FAILURE)
+        val haltOnFailure = settingsHolder.getBoolean(BackEndApplicationSettingKey.HaltOnFailure)
 
         val impl = AssertUtilImpl(
             haltOnFailure ?: false,

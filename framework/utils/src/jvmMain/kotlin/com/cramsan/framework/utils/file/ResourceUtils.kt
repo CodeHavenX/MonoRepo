@@ -1,4 +1,4 @@
-package com.cramsan.templatereplaceme.server
+package com.cramsan.framework.utils.file
 
 import com.cramsan.framework.utils.format.replaceWindowLEWithUnixLE
 

@@ -1,4 +1,4 @@
-package com.cramsan.templatereplaceme.server
+package com.cramsan.architecture.server.settings
 
 import com.cramsan.framework.configuration.ConfigurationMultiplexer
 import com.cramsan.framework.configuration.PropertyValue
@@ -17,7 +17,7 @@ class SettingsHolder(
      * @param propertyKey The key of the property to read.
      * @return The property value, or null if not found.
      */
-    fun getValue(propertyKey: PropertyKey): PropertyValue? {
+    fun getValue(propertyKey: SettingKey<*>): PropertyValue? {
         return configuration.readProperty(
             propertyKey.key,
             propertyKey.type,
@@ -30,12 +30,12 @@ class SettingsHolder(
      * @param propertyKey The key of the property to read.
      * @return The string value, or null if not found or not a string.
      */
-    fun getString(propertyKey: PropertyKey): String? {
-        val value = getValue(propertyKey)
+    fun getString(propertyKey: SettingKey<PropertyValueType.StringType>): String? {
+        val value = getValue(propertyKey) ?: return null
         return if (value is PropertyValue.StringValue) {
             value.string
         } else {
-            null
+            error("Expected String value for key ${propertyKey.key}, found: $value")
         }
     }
 
@@ -45,12 +45,12 @@ class SettingsHolder(
      * @param propertyKey The key of the property to read.
      * @return The boolean value, or null if not found or not a boolean.
      */
-    fun getBoolean(propertyKey: PropertyKey): Boolean? {
-        val value = getValue(propertyKey)
+    fun getBoolean(propertyKey: SettingKey<PropertyValueType.BooleanType>): Boolean? {
+        val value = getValue(propertyKey) ?: return null
         return if (value is PropertyValue.BooleanType) {
             value.boolean
         } else {
-            null
+            error("Expected Boolean value for key ${propertyKey.key}, found: $value")
         }
     }
 
@@ -60,12 +60,12 @@ class SettingsHolder(
      * @param propertyKey The key of the property to read.
      * @return The integer value, or null if not found or not an integer.
      */
-    fun getInt(propertyKey: PropertyKey): Int? {
-        val value = getValue(propertyKey)
+    fun getInt(propertyKey: SettingKey<PropertyValueType.IntType>): Int? {
+        val value = getValue(propertyKey) ?: return null
         return if (value is PropertyValue.IntValue) {
             value.integer
         } else {
-            null
+            error("Expected Int value for key ${propertyKey.key}, found: $value")
         }
     }
 
@@ -75,12 +75,12 @@ class SettingsHolder(
      * @param propertyKey The key of the property to read.
      * @return The long value, or null if not found or not a long.
      */
-    fun getLong(propertyKey: PropertyKey): Long? {
-        val value = getValue(propertyKey)
+    fun getLong(propertyKey: SettingKey<PropertyValueType.LongType>): Long? {
+        val value = getValue(propertyKey) ?: return null
         return if (value is PropertyValue.LongValue) {
             value.long
         } else {
-            null
+            error("Expected Long value for key ${propertyKey.key}, found: $value")
         }
     }
 
@@ -90,17 +90,19 @@ class SettingsHolder(
      * @param propertyKey The key of the property.
      * @return A list of keys.
      */
-    fun getKeyNames(propertyKey: PropertyKey): List<String> {
+    fun getKeyNames(propertyKey: SettingKey<*>): List<String> {
         return configuration.getSearchLocations(propertyKey.key)
     }
 }
 
-/**
- * Enum class representing the keys for various properties.
- */
-enum class PropertyKey(val key: String, val type: PropertyValueType) {
-    LOGGING_LEVEL("logging.level", PropertyValueType.StringType),
-    ENABLE_FILE_LOGGING("logging.enable_file_logging", PropertyValueType.BooleanType),
-    HALT_ON_FAILURE("halt_on_failure", PropertyValueType.BooleanType),
-    ALLOWED_HOST("allowed.host", PropertyValueType.StringType),
+data class SettingKey <T : PropertyValueType> (
+    val key: String,
+    val type: T,
+) {
+    companion object {
+        fun string(key: String) = SettingKey(key, PropertyValueType.StringType)
+        fun int(key: String) = SettingKey(key, PropertyValueType.IntType)
+        fun long(key: String) = SettingKey(key, PropertyValueType.LongType)
+        fun boolean(key: String) = SettingKey(key, PropertyValueType.BooleanType)
+    }
 }

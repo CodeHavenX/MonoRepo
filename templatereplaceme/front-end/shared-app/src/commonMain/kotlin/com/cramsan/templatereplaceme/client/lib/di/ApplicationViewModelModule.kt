@@ -8,34 +8,40 @@ import com.cramsan.framework.core.compose.InvalidEventBus
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.core.compose.WindowEvent
 import com.cramsan.templatereplaceme.client.lib.features.application.TemplateReplaceMeApplicationViewModel
+import com.cramsan.templatereplaceme.client.lib.features.window.TemplateReplaceMeWindowDelegatedEvent
+import com.cramsan.templatereplaceme.client.lib.features.window.TemplateReplaceMeWindowViewModel
+import com.cramsan.templatereplaceme.client.lib.init.Initializer
+import com.cramsan.templatereplaceme.lib.serialization.createJson
 import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.withOptions
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 internal val ApplicationViewModelModule = module {
 
-    single(named(ApplicationIdentifier.EVENT_BUS)) {
-        EventBus<ApplicationEvent>()
-    } withOptions {
-        bind<EventReceiver<ApplicationEvent>>()
-        bind<EventEmitter<ApplicationEvent>>()
+    single {
+        Initializer()
     }
 
-    single(named(ApplicationIdentifier.WINDOW_EVENT_BUS)) {
-        InvalidEventBus<WindowEvent>()
-    } withOptions {
-        bind<EventReceiver<WindowEvent>>()
-        bind<EventEmitter<WindowEvent>>()
+    single {
+        createJson()
     }
 
-    single(named(ApplicationIdentifier.VIEW_MODEL_DEPENDENCIES)) {
-        ViewModelDependencies(
+    scope<String> {
+        scoped(named(WindowIdentifier.DELEGATED_EVENT_BUS)) {
+            EventBus<TemplateReplaceMeWindowDelegatedEvent>()
+        } withOptions {
+            bind<EventEmitter<TemplateReplaceMeWindowDelegatedEvent>>()
+            bind<EventReceiver<TemplateReplaceMeWindowDelegatedEvent>>()
+        }
+    }
+
+    viewModel {
+        TemplateReplaceMeWindowViewModel(
             get(),
-            get(),
-            get(),
-            get(named(ApplicationIdentifier.WINDOW_EVENT_BUS)),
-            get(named(ApplicationIdentifier.EVENT_BUS)),
+            get(named(WindowIdentifier.EVENT_BUS)),
+            get(named(WindowIdentifier.DELEGATED_EVENT_BUS)),
         )
     }
 
@@ -45,13 +51,4 @@ internal val ApplicationViewModelModule = module {
             get(named(ApplicationIdentifier.VIEW_MODEL_DEPENDENCIES)),
         )
     }
-}
-
-/**
- * Identifiers for various application-level components.
- */
-enum class ApplicationIdentifier {
-    EVENT_BUS,
-    WINDOW_EVENT_BUS,
-    VIEW_MODEL_DEPENDENCIES,
 }

@@ -20,11 +20,7 @@ class TemplateReplaceMeApplicationViewModel(
      * Initialize the view model and all required state for the entire application.
      */
     fun initialize() {
-        viewModelScope.launch {
-            viewModelScope.launch {
-                initHandler.startStep()
-            }
-        }
+        initHandler.startStep()
     }
 
     /**

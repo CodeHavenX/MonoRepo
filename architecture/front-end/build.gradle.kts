@@ -11,7 +11,6 @@ plugins {
     id("com.android.library")
     id("androidx.room")
     id("com.google.devtools.ksp")
-    id("io.github.takahirom.roborazzi")
 }
 
 apply(from = "$rootDir/gradle/kotlin-mpp-target-common-compose.gradle")
@@ -38,20 +37,12 @@ kotlin {
             implementation(project(":framework:crashhandler"))
             implementation(project(":framework:core"))
             implementation(project(":framework:core-compose"))
-            implementation(project(":framework:configuration"))
             implementation(project(":framework:preferences"))
+            implementation(project(":framework:configuration"))
             implementation(project(":framework:test"))
             implementation(project(":framework:utils"))
             implementation(project(":framework:network-api"))
             implementation(project(":framework:http-serializers"))
-
-            implementation(project(":architecture:front-end"))
-
-            implementation(project(":ui-catalog"))
-
-            implementation(project(":templatereplaceme:shared"))
-            implementation(project(":templatereplaceme:api"))
-            implementation(project(":templatereplaceme:front-end:shared-ui"))
 
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:_")
             implementation("org.jetbrains.androidx.navigation:navigation-compose:_")
@@ -112,7 +103,6 @@ kotlin {
         }
         androidUnitTest {
             dependencies {
-                implementation(project(":framework:test-roborazzi"))
             }
         }
 
@@ -126,12 +116,8 @@ kotlin {
     }
 }
 
-private val ENV_TEMPLATE_REPLACE_ME_BUILD_VARIABLE = "ENV_TEMPLATE_REPLACE_ME_VARIABLE"
-
-val templatereplacemeBuildVariable = "hello!"
-
 android {
-    namespace = "com.cramsan.templatereplaceme.client.lib"
+    namespace = "com.cramsan.architecture.client"
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     sourceSets["main"].res.srcDirs("src/androidMain/res")
@@ -140,16 +126,10 @@ android {
     buildFeatures {
         buildConfig = true
     }
-
-    buildTypes {
-        all {
-            buildConfigField("String", ENV_TEMPLATE_REPLACE_ME_BUILD_VARIABLE, "\"${templatereplacemeBuildVariable}\"")
-        }
-    }
 }
 
 compose.resources {
-    packageOfResClass = "templatereplaceme_lib"
+    packageOfResClass = "architecture_lib"
 }
 
 dependencies {
@@ -160,7 +140,6 @@ dependencies {
 
     implementation("androidx.appcompat:appcompat:_")
     implementation("androidx.core:core-ktx:_")
-    implementation("androidx.compose.material:material-icons-extended:_")
 
     implementation("io.coil-kt.coil3:coil:")
     implementation("io.coil-kt.coil3:coil-compose:_")
@@ -208,11 +187,4 @@ tasks.register<Detekt>("detektMetadataNoDB") {
 tasks.getByName("release") {
     dependsOn("detektMetadataLocalDB")
     dependsOn("detektMetadataNoDB")
-}
-
-roborazzi {
-    generateComposePreviewRobolectricTests {
-        enable = true
-        packages = listOf("com.cramsan.templatereplaceme.client.lib")
-    }
 }

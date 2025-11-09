@@ -6,6 +6,7 @@ import com.cramsan.framework.networkapi.buildRequest
 import com.cramsan.templatereplaceme.api.UserApi
 import com.cramsan.templatereplaceme.client.lib.models.UserModel
 import com.cramsan.templatereplaceme.client.lib.service.UserService
+import com.cramsan.templatereplaceme.client.lib.service.execute
 import com.cramsan.templatereplaceme.lib.model.network.CreateUserNetworkRequest
 import io.ktor.client.HttpClient
 

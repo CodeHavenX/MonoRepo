@@ -95,14 +95,36 @@ class SettingsHolder(
     }
 }
 
-data class SettingKey <T : PropertyValueType> (
+/**
+ * Represents a key for a setting, along with its expected value type.
+ *
+ * @param T The type of the property value.
+ * @property key The key of the setting.
+ * @property type The type of the property value.
+ */
+data class SettingKey<T : PropertyValueType> (
     val key: String,
     val type: T,
 ) {
     companion object {
+        /**
+         * Creates a [SettingKey] for a string property.
+         */
         fun string(key: String) = SettingKey(key, PropertyValueType.StringType)
+
+        /**
+         * Creates a [SettingKey] for an integer property.
+         */
         fun int(key: String) = SettingKey(key, PropertyValueType.IntType)
+
+        /**
+         * Creates a [SettingKey] for a long property.
+         */
         fun long(key: String) = SettingKey(key, PropertyValueType.LongType)
+
+        /**
+         * Creates a [SettingKey] for a boolean property.
+         */
         fun boolean(key: String) = SettingKey(key, PropertyValueType.BooleanType)
     }
 }

@@ -19,12 +19,11 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.withOptions
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
-import org.koin.core.module.dsl.viewModel
-import org.koin.core.module.dsl.withOptions
-import org.koin.core.qualifier.named
 
 @OptIn(ExperimentalTime::class)
 internal val ExtrasModule = module {
@@ -104,6 +103,7 @@ enum class WindowIdentifier {
     EVENT_BUS,
     DELEGATED_EVENT_BUS,
 }
+
 /**
  * Identifiers for various application-level components.
  */

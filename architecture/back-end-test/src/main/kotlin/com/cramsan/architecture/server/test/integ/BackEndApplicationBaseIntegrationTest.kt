@@ -1,17 +1,17 @@
 package com.cramsan.architecture.server.test.integ
 
-import com.cramsan.architecture.server.test.dependencyinjection.TestFrameworkModule
+import com.cramsan.architecture.server.test.dependencyinjection.IntegTestFrameworkModule
 import com.cramsan.architecture.server.test.dependencyinjection.testApplicationModule
 import com.cramsan.framework.test.CoroutineTest
+import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
 import kotlin.time.ExperimentalTime
-import kotlinx.serialization.json.Json
-import org.koin.core.module.Module
 
+@Suppress("UnnecessaryAbstractClass")
 @OptIn(ExperimentalTime::class)
 abstract class BackEndApplicationBaseIntegrationTest : CoroutineTest(), KoinTest {
 
@@ -21,7 +21,7 @@ abstract class BackEndApplicationBaseIntegrationTest : CoroutineTest(), KoinTest
         fun classSetup() {
             startKoin {
                 modules(
-                    TestFrameworkModule,
+                    IntegTestFrameworkModule,
                     testApplicationModule(Json, stageKey = "integ"),
                 )
             }
@@ -32,6 +32,5 @@ abstract class BackEndApplicationBaseIntegrationTest : CoroutineTest(), KoinTest
         fun classTearDown() {
             stopKoin()
         }
-
     }
 }

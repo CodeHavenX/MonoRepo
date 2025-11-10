@@ -3,9 +3,10 @@ package com.cramsan.edifikana.server.service
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.server.controller.authentication.ClientContext
+import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.datastore.PropertyDatastore
 import com.cramsan.edifikana.server.service.models.Property
+import com.cramsan.framework.core.ktor.auth.ClientContext
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
@@ -54,10 +55,10 @@ class PropertyServiceTest {
         val name = "CENIT"
         val address = "123 Main St"
         val property = mockk<Property>()
-        val clientContext = mockk<ClientContext.AuthenticatedClientContext>()
+        val clientContext = mockk<ClientContext.AuthenticatedClientContext<SupabaseContextPayload>>()
         val userId = UserId("TestUser")
         val organizationId = OrganizationId("TestOrg")
-        coEvery { clientContext.userId } returns userId
+        coEvery { clientContext.payload.userId } returns userId
         coEvery {
             propertyDatastore.createProperty(
                 any(),

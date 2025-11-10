@@ -1,11 +1,13 @@
 package com.cramsan.templatereplaceme.server.datastore.impl
 
 import com.cramsan.framework.test.CoroutineTest
-import kotlin.test.BeforeTest
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import kotlin.test.BeforeTest
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
-class UserDatastoreImplTest : CoroutineTest(){
+class UserDatastoreImplTest : CoroutineTest() {
 
     lateinit var userDatastore: UserDatastoreImpl
 
@@ -32,5 +34,4 @@ class UserDatastoreImplTest : CoroutineTest(){
         assertEquals("Doe", createdUser?.lastName)
         assertNotNull(createdUser?.id)
     }
-
 }

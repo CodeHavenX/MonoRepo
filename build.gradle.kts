@@ -80,11 +80,11 @@ tasks.register("releaseAll") {
     dependsOn("runasimi:front-end:app-android:release")
     dependsOn("runasimi:front-end:app-jvm:release")
 
-    dependsOn("templatereplaceme:back-end:release")
-    dependsOn("templatereplaceme:back-end-test:release")
-    dependsOn("templatereplaceme:front-end-test:release")
-
     dependsOn("architecture:back-end:release")
+    dependsOn("architecture:back-end-test:release")
+    dependsOn("architecture:front-end:release")
+
+    dependsOn("templatereplaceme:back-end:release")
     dependsOn("templatereplaceme:shared:release")
     dependsOn("templatereplaceme:api:release")
     dependsOn("templatereplaceme:front-end:shared-ui:release")

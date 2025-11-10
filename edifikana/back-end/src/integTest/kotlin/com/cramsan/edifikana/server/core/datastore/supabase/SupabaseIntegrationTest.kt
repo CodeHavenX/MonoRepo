@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.datastore.supabase
 
+import com.cramsan.architecture.server.test.integ.BackEndApplicationBaseIntegrationTest
 import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EmployeeRole
 import com.cramsan.edifikana.lib.model.EventLogEntryId
@@ -9,9 +10,7 @@ import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.server.dependencyinjection.FrameworkModule
-import com.cramsan.edifikana.server.dependencyinjection.IntegTestApplicationModule
-import com.cramsan.edifikana.server.dependencyinjection.SupabaseModule
+import com.cramsan.edifikana.server.dependencyinjection.DatastoreModule
 import com.cramsan.edifikana.server.service.models.Employee
 import com.cramsan.edifikana.server.service.models.EventLogEntry
 import com.cramsan.edifikana.server.service.models.Invite
@@ -19,7 +18,6 @@ import com.cramsan.edifikana.server.service.models.Organization
 import com.cramsan.edifikana.server.service.models.Property
 import com.cramsan.edifikana.server.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.service.models.User
-import com.cramsan.framework.test.CoroutineTest
 import com.cramsan.framework.utils.password.generateRandomPassword
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
@@ -27,15 +25,13 @@ import kotlin.test.AfterTest
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeAll
-import org.koin.core.context.startKoin
-import org.koin.core.context.stopKoin
-import org.koin.test.KoinTest
+import org.junit.jupiter.api.BeforeEach
+import org.koin.core.context.loadKoinModules
+import org.koin.core.context.unloadKoinModules
 import org.koin.test.inject
 
 @OptIn(ExperimentalTime::class)
-abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
+abstract class SupabaseIntegrationTest : BackEndApplicationBaseIntegrationTest() {
 
     protected val supabase: SupabaseClient by inject()
 
@@ -55,24 +51,9 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
     private val organizationResources = mutableSetOf<OrganizationId>()
     private val invitationResources = mutableSetOf<InviteId>()
 
-    companion object {
-        @BeforeAll
-        @JvmStatic
-        fun classSetup() {
-            startKoin {
-                modules(
-                    FrameworkModule,
-                    IntegTestApplicationModule,
-                    SupabaseModule,
-                )
-            }
-        }
-
-        @AfterAll
-        @JvmStatic
-        fun classTearDown() {
-            stopKoin()
-        }
+    @BeforeEach
+    fun supabaseSetup() {
+        loadKoinModules(DatastoreModule)
     }
 
     private fun registerEventLogEntryForDeletion(eventLogId: EventLogEntryId) {
@@ -256,5 +237,6 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
         userResources.clear()
         organizationResources.clear()
         supabaseUsers.clear()
+        unloadKoinModules(DatastoreModule)
     }
 }

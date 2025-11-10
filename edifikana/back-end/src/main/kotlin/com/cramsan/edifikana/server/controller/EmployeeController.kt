@@ -6,8 +6,7 @@ import com.cramsan.edifikana.lib.model.network.CreateEmployeeNetworkRequest
 import com.cramsan.edifikana.lib.model.network.EmployeeListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.EmployeeNetworkResponse
 import com.cramsan.edifikana.lib.model.network.UpdateEmployeeNetworkRequest
-import com.cramsan.edifikana.server.controller.authentication.ClientContext
-import com.cramsan.edifikana.server.controller.authentication.ContextRetriever
+import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.service.EmployeeService
 import com.cramsan.edifikana.server.service.authorization.RBACService
 import com.cramsan.edifikana.server.service.models.UserRole
@@ -16,8 +15,12 @@ import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
 import com.cramsan.framework.annotations.api.NoResponseBody
+import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
 import com.cramsan.framework.core.ktor.OperationRequest
+import com.cramsan.framework.core.ktor.auth.ClientContext
+import com.cramsan.framework.core.ktor.auth.ContextRetriever
+import com.cramsan.framework.core.ktor.handler
 import com.cramsan.framework.utils.exceptions.UnauthorizedException
 import io.ktor.server.routing.Routing
 
@@ -25,9 +28,9 @@ import io.ktor.server.routing.Routing
  * Controller for employee related operations. CRUD operations for employee.
  */
 class EmployeeController(
-    private val employeeService: com.cramsan.edifikana.server.service.EmployeeService,
-    private val contextRetriever: ContextRetriever,
-    private val rbacService: com.cramsan.edifikana.server.service.authorization.RBACService,
+    private val employeeService: EmployeeService,
+    private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
+    private val rbacService: RBACService,
 ) : Controller {
 
     val unauthorizedMsg = "You are not authorized to perform this action in your organization."
@@ -43,7 +46,7 @@ class EmployeeController(
             CreateEmployeeNetworkRequest,
             NoQueryParam,
             NoPathParam,
-            ClientContext.AuthenticatedClientContext
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
             >,
     ): EmployeeNetworkResponse {
         if (!rbacService.hasRoleOrHigher(
@@ -77,7 +80,7 @@ class EmployeeController(
             NoRequestBody,
             NoQueryParam,
             EmployeeId,
-            ClientContext.AuthenticatedClientContext
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
             >,
     ): EmployeeNetworkResponse? {
         checkHasRole(
@@ -102,7 +105,7 @@ class EmployeeController(
             NoRequestBody,
             NoQueryParam,
             NoPathParam,
-            ClientContext.AuthenticatedClientContext
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
             >
     ): EmployeeListNetworkResponse {
         val employees = employeeService.getEmployees(request.context).map { it.toEmployeeNetworkResponse() }
@@ -120,7 +123,7 @@ class EmployeeController(
             UpdateEmployeeNetworkRequest,
             NoQueryParam,
             EmployeeId,
-            ClientContext.AuthenticatedClientContext
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
             >,
     ): EmployeeNetworkResponse {
         checkHasRole(
@@ -149,7 +152,7 @@ class EmployeeController(
             NoRequestBody,
             NoQueryParam,
             EmployeeId,
-            ClientContext.AuthenticatedClientContext
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
             >,
     ): NoResponseBody {
         checkHasRole(
@@ -171,7 +174,7 @@ class EmployeeController(
      * @throws UnauthorizedException if the user lacks the required role.
      */
     private suspend fun checkHasRole(
-        context: ClientContext.AuthenticatedClientContext,
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         empId: EmployeeId,
         requireRole: com.cramsan.edifikana.server.service.models.UserRole,
     ) {

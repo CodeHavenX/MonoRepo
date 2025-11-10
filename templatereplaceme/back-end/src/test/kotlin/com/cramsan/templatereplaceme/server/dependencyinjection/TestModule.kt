@@ -8,7 +8,6 @@ import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-
 /**
  * Produce a Ktor module for testing.
  */

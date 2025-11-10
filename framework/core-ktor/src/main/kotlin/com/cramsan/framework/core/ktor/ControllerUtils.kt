@@ -37,7 +37,7 @@ inline fun <
     operation: Operation<RequestType, QueryParamType, PathParamType, ResponseType>,
     contextRetriever: ContextRetriever<P>,
     crossinline handler: suspend (
-        OperationRequest<RequestType, QueryParamType, PathParamType, ClientContext<P>>,
+        OperationRequest<RequestType, QueryParamType, PathParamType, ClientContext.AuthenticatedClientContext<P>>,
     ) -> ResponseType?,
 ) {
     operation.handle(

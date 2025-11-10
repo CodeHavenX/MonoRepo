@@ -3,9 +3,10 @@ package com.cramsan.edifikana.server.service
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.server.controller.authentication.ClientContext
+import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.datastore.PropertyDatastore
 import com.cramsan.edifikana.server.service.models.Property
+import com.cramsan.framework.core.ktor.auth.ClientContext
 import com.cramsan.framework.logging.logD
 
 /**
@@ -22,13 +23,13 @@ class PropertyService(
         name: String,
         address: String,
         organizationId: OrganizationId,
-        clientContext: ClientContext.AuthenticatedClientContext,
+        clientContext: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
     ): Property {
         logD(TAG, "createProperty")
         return propertyDatastore.createProperty(
             name = name,
             address = address,
-            creatorUserId = clientContext.userId,
+            creatorUserId = clientContext.payload.userId,
             organizationId = organizationId,
         ).getOrThrow()
     }

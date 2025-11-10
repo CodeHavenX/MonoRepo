@@ -12,6 +12,7 @@ import org.koin.core.module.Module
 /**
  * Generate the list of Koin modules that are loaded at the application level.
  */
+@Suppress("LongParameterList")
 fun moduleList(
     frameworkModule: Module = FrameworkModule,
     frameworkPlatformDelegatesModule: Module = FrameworkPlatformDelegatesModule,

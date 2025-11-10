@@ -3,6 +3,8 @@ package com.cramsan.edifikana.server.controller.authentication
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.serialization.HEADER_TOKEN_AUTH
 import com.cramsan.framework.assertlib.assertNull
+import com.cramsan.framework.core.ktor.auth.ClientContext
+import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.auth.Auth
 import io.ktor.server.application.ApplicationCall
@@ -12,9 +14,9 @@ import io.ktor.server.application.ApplicationCall
  */
 class SupabaseContextRetriever(
     private val auth: Auth,
-) : ContextRetriever {
+) : ContextRetriever<SupabaseContextPayload> {
 
-    override suspend fun getContext(applicationCall: ApplicationCall): ClientContext {
+    override suspend fun getContext(applicationCall: ApplicationCall): ClientContext<SupabaseContextPayload> {
         val headerMap = applicationCall.request.headers.entries().associate {
             it.key to it.value
         }
@@ -23,15 +25,17 @@ class SupabaseContextRetriever(
 
         if (token.isNullOrBlank()) {
             logD(TAG, "Missing token in request")
-            return ClientContext.UnauthenticatedClientContext
+            return ClientContext.UnauthenticatedClientContext()
         }
 
         val user = auth.retrieveUser(token)
         assertNull(auth.currentUserOrNull(), TAG, "Library cannot sign in user")
 
         return ClientContext.AuthenticatedClientContext(
-            userInfo = user,
-            userId = UserId(user.id),
+            SupabaseContextPayload(
+                userInfo = user,
+                userId = UserId(user.id),
+            )
         )
     }
 

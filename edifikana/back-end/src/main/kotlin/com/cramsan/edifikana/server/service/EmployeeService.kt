@@ -4,9 +4,10 @@ import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EmployeeRole
 import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.server.controller.authentication.ClientContext
+import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.datastore.EmployeeDatastore
 import com.cramsan.edifikana.server.service.models.Employee
+import com.cramsan.framework.core.ktor.auth.ClientContext
 import com.cramsan.framework.logging.logD
 
 /**
@@ -54,11 +55,11 @@ class EmployeeService(
      * Retrieves all employee.
      */
     suspend fun getEmployees(
-        clientContext: ClientContext.AuthenticatedClientContext,
+        clientContext: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
     ): List<Employee> {
         logD(TAG, "getEmployees")
         val employees = employeeDatastore.getEmployees(
-            currentUser = clientContext.userId,
+            currentUser = clientContext.payload.userId,
         ).getOrThrow()
         return employees
     }

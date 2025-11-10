@@ -1,9 +1,7 @@
 package com.cramsan.edifikana.server.dependencyinjection
 
-import com.cramsan.edifikana.server.PropertyKey
-import com.cramsan.edifikana.server.SettingsHolder
-import com.cramsan.edifikana.server.controller.authentication.ContextRetriever
-import com.cramsan.edifikana.server.controller.authentication.SupabaseContextRetriever
+import com.cramsan.architecture.server.dependencyinjection.NamedDependency
+import com.cramsan.architecture.server.settings.SettingsHolder
 import com.cramsan.edifikana.server.datastore.EmployeeDatastore
 import com.cramsan.edifikana.server.datastore.EventLogDatastore
 import com.cramsan.edifikana.server.datastore.OrganizationDatastore
@@ -18,6 +16,7 @@ import com.cramsan.edifikana.server.datastore.supabase.SupabasePropertyDatastore
 import com.cramsan.edifikana.server.datastore.supabase.SupabaseStorageDatastore
 import com.cramsan.edifikana.server.datastore.supabase.SupabaseTimeCardDatastore
 import com.cramsan.edifikana.server.datastore.supabase.SupabaseUserDatastore
+import com.cramsan.edifikana.server.settings.EdifikanaSettingKey
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.SettingsSessionManager
@@ -32,23 +31,20 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-/**
- * Class to initialize all the supabase module.
- */
-val SupabaseModule = module {
+val DatastoreModule = module {
 
     single {
         val settingsHolder: SettingsHolder = get()
-        val supabaseUrl: String = settingsHolder.getString(PropertyKey.SUPABASE_URL).orEmpty()
-        val supabaseKey: String = settingsHolder.getString(PropertyKey.SUPABASE_KEY).orEmpty()
+        val supabaseUrl: String = settingsHolder.getString(EdifikanaSettingKey.SupabaseUrl).orEmpty()
+        val supabaseKey: String = settingsHolder.getString(EdifikanaSettingKey.SupabaseKey).orEmpty()
 
         if (supabaseUrl.isBlank()) {
-            val supabaseUrlKeyNames = settingsHolder.getKeyNames(PropertyKey.SUPABASE_URL).joinToString()
+            val supabaseUrlKeyNames = settingsHolder.getKeyNames(EdifikanaSettingKey.SupabaseUrl).joinToString()
             error("Value needs to be provided in one of the following settings: $supabaseUrlKeyNames")
         }
 
         if (supabaseKey.isBlank()) {
-            val supabaseKeySettingKeyName = settingsHolder.getKeyNames(PropertyKey.SUPABASE_KEY).joinToString()
+            val supabaseKeySettingKeyName = settingsHolder.getKeyNames(EdifikanaSettingKey.SupabaseKey).joinToString()
             error("Value needs to be provided in one of the following settings: $supabaseKeySettingKeyName")
         }
 
@@ -104,10 +100,5 @@ val SupabaseModule = module {
     }
     singleOf(::SupabaseOrganizationDatastore) {
         bind<OrganizationDatastore>()
-    }
-
-    // Other Components
-    singleOf(::SupabaseContextRetriever) {
-        bind<ContextRetriever>()
     }
 }

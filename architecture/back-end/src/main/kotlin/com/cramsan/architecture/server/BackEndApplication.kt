@@ -20,8 +20,8 @@ import io.ktor.server.routing.routing
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import org.koin.core.context.startKoin
-import org.koin.ktor.ext.inject
 import org.koin.core.module.Module
+import org.koin.ktor.ext.inject
 
 /**
  * Entry point of the application.
@@ -117,7 +117,6 @@ private fun initializeDependencies(
         )
     }
 }
-
 
 /**
  * Configures the entry points of the application.

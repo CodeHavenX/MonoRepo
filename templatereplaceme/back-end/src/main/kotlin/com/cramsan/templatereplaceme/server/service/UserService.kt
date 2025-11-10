@@ -1,14 +1,17 @@
 package com.cramsan.templatereplaceme.server.service
 
+import com.cramsan.architecture.server.settings.SettingsHolder
 import com.cramsan.framework.logging.logD
 import com.cramsan.templatereplaceme.server.datastore.UserDatastore
 import com.cramsan.templatereplaceme.server.service.models.User
+import com.cramsan.templatereplaceme.server.settings.TemplateReplaceMeSettingKey
 
 /**
  * Example of service to manage users.
  */
 class UserService(
     private val userDatastore: UserDatastore,
+    private val settingsHolder: SettingsHolder,
 ) {
 
     /**
@@ -23,10 +26,14 @@ class UserService(
         lastName: String,
     ): Result<User> {
         logD(TAG, "createUser")
-        return userDatastore.createUser(
+        val result = userDatastore.createUser(
             firstName,
             lastName,
         )
+        if (result.isSuccess && settingsHolder.getBoolean(TemplateReplaceMeSettingKey.LogAccountCreated) == true) {
+            logD(TAG, "User created successfully: ${result.getOrThrow().id.userId}")
+        }
+        return result
     }
 
     companion object {

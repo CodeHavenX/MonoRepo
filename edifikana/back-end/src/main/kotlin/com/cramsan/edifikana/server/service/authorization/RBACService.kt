@@ -6,13 +6,14 @@ import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.server.controller.authentication.ClientContext
+import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.datastore.EmployeeDatastore
 import com.cramsan.edifikana.server.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.datastore.PropertyDatastore
 import com.cramsan.edifikana.server.service.EventLogService
 import com.cramsan.edifikana.server.service.TimeCardService
 import com.cramsan.edifikana.server.service.models.UserRole
+import com.cramsan.framework.core.ktor.auth.ClientContext
 import com.cramsan.framework.logging.logI
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.ForbiddenException
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.InvalidRequestException
@@ -43,11 +44,11 @@ class RBACService(
      * @return True if the user has the required role, false otherwise.
      */
     fun hasRole(
-        context: ClientContext.AuthenticatedClientContext,
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         targetUser: UserId,
     ): Boolean {
-        if (context.userId == targetUser) {
-            logI(TAG, "User ${context.userId} matches target user $targetUser")
+        if (context.payload.userId == targetUser) {
+            logI(TAG, "User ${context.payload.userId} matches target user $targetUser")
             return true
         }
         throw ForbiddenException("FORBIDDEN ATTEMPT MADE TO EDIT ANOTHER USER'S ACCOUNT!")
@@ -62,7 +63,7 @@ class RBACService(
      * @return True if the user has the required role, false otherwise.
      */
     suspend fun hasRole(
-        context: ClientContext.AuthenticatedClientContext,
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         org: OrganizationId,
         requiredRole: UserRole,
     ): Boolean {
@@ -79,7 +80,7 @@ class RBACService(
      * @return True if the user has the required role or higher, false otherwise.
      */
     suspend fun hasRoleOrHigher(
-        context: ClientContext.AuthenticatedClientContext,
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         org: OrganizationId,
         requiredRole: UserRole,
     ): Boolean {
@@ -96,7 +97,7 @@ class RBACService(
      * @return True if the user has the required role, false otherwise.
      */
     suspend fun hasRole(
-        context: ClientContext.AuthenticatedClientContext,
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         targetProperty: PropertyId,
         requiredRole: UserRole,
     ): Boolean {
@@ -113,7 +114,7 @@ class RBACService(
      * @return True if the user has the required role or higher, false otherwise.
      */
     suspend fun hasRoleOrHigher(
-        context: ClientContext.AuthenticatedClientContext,
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         targetProperty: PropertyId,
         requiredRole: UserRole,
     ): Boolean {
@@ -130,7 +131,7 @@ class RBACService(
      * @return True if the user has the required role or higher, false otherwise.
      */
     suspend fun hasRole(
-        context: ClientContext.AuthenticatedClientContext,
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         targetTimecardId: TimeCardEventId,
         requiredRole: UserRole,
     ): Boolean {
@@ -147,7 +148,7 @@ class RBACService(
      * @return True if the user has the required role or higher, false otherwise.
      */
     suspend fun hasRoleOrHigher(
-        context: ClientContext.AuthenticatedClientContext,
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         targetTimecardId: TimeCardEventId,
         requiredRole: UserRole,
     ): Boolean {
@@ -164,7 +165,7 @@ class RBACService(
      * @return True if the user has the required role, false otherwise.
      */
     suspend fun hasRole(
-        context: ClientContext.AuthenticatedClientContext,
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         targetEventLogId: EventLogEntryId,
         requiredRole: UserRole,
     ): Boolean {
@@ -181,7 +182,7 @@ class RBACService(
      * @return True if the user has the required role or higher, false otherwise.
      */
     suspend fun hasRoleOrHigher(
-        context: ClientContext.AuthenticatedClientContext,
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         targetEventLogId: EventLogEntryId,
         requiredRole: UserRole,
     ): Boolean {
@@ -197,7 +198,7 @@ class RBACService(
      * @return The user role if the action is allowed, or UNAUTHORIZED if not
      */
     private suspend fun getUserRoleForEventLogEntryAction(
-        context: ClientContext.AuthenticatedClientContext,
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         targetEventLogId: EventLogEntryId
     ): UserRole {
         val eventLog = eventLogService.getEventLogEntry(targetEventLogId)
@@ -214,7 +215,7 @@ class RBACService(
      * @return True if the user has the required role, false otherwise.
      */
     suspend fun hasRole(
-        context: ClientContext.AuthenticatedClientContext,
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         targetEmployee: EmployeeId,
         requiredRole: UserRole,
     ): Boolean {
@@ -231,7 +232,7 @@ class RBACService(
      * @return True if the user has the required role or higher, false otherwise.
      */
     suspend fun hasRoleOrHigher(
-        context: ClientContext.AuthenticatedClientContext,
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         targetEmployee: EmployeeId,
         requiredRole: UserRole,
     ): Boolean {
@@ -247,16 +248,16 @@ class RBACService(
      * @return The user role if the action is allowed, or UNAUTHORIZED if not
      */
     private suspend fun getUserRoleForOrganizationAction(
-        context: ClientContext.AuthenticatedClientContext,
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         org: OrganizationId
     ): UserRole {
-        logI(TAG, "Retrieving user role(s) for ${context.userId}")
-        val role = orgDataStore.getUserRole(context.userId, org).getOrNull()
+        logI(TAG, "Retrieving user role(s) for ${context.payload.userId}")
+        val role = orgDataStore.getUserRole(context.payload.userId, org).getOrNull()
         if (role != null) {
-            logI(TAG, "User ${context.userId} has role(s) $role in organization $org")
+            logI(TAG, "User ${context.payload.userId} has role(s) $role in organization $org")
             return role
         }
-        logI(TAG, "User ${context.userId} is NOT authorized to perform action in this organization, $org")
+        logI(TAG, "User ${context.payload.userId} is NOT authorized to perform action in this organization, $org")
         return unauthorized
     }
 
@@ -268,19 +269,19 @@ class RBACService(
      * @return The user role if the action is allowed, or UNAUTHORIZED if not
      */
     private suspend fun getUserRoleForPropertyAction(
-        context: ClientContext.AuthenticatedClientContext,
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         targetProperty: PropertyId
     ): UserRole {
-        logI(TAG, "Retrieving user role(s) for ${context.userId}")
+        logI(TAG, "Retrieving user role(s) for ${context.payload.userId}")
         val requestedProperty = propertyDatastore.getProperty(targetProperty)
         val property = requestedProperty.getOrThrow() ?: throw RuntimeException(propertyNotFoundException)
-        val role = orgDataStore.getUserRole(context.userId, property.organizationId).getOrNull()
+        val role = orgDataStore.getUserRole(context.payload.userId, property.organizationId).getOrNull()
 
         if (role != null) {
-            logI(TAG, "User ${context.userId} has role(s) $role in organization ${property.organizationId}")
+            logI(TAG, "User ${context.payload.userId} has role(s) $role in organization ${property.organizationId}")
             return role
         }
-        logI(TAG, "User ${context.userId} is NOT authorized to perform action for this property.")
+        logI(TAG, "User ${context.payload.userId} is NOT authorized to perform action for this property.")
         return unauthorized
     }
 
@@ -292,10 +293,10 @@ class RBACService(
      * @return The user role if the action is allowed, or UNAUTHORIZED if not
      */
     private suspend fun getUserRoleForEmployeeAction(
-        context: ClientContext.AuthenticatedClientContext,
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         targetEmployee: EmployeeId
     ): UserRole {
-        logI(TAG, "Retrieving user role(s) for ${context.userId}")
+        logI(TAG, "Retrieving user role(s) for ${context.payload.userId}")
         val employee =
             employeeDatastore.getEmployee(targetEmployee).getOrThrow() ?: throw InvalidRequestException(
                 employeeNotFoundException
@@ -303,13 +304,13 @@ class RBACService(
         val property = propertyDatastore.getProperty(employee.propertyId).getOrThrow() ?: throw InvalidRequestException(
             propertyNotFoundException
         )
-        val role = orgDataStore.getUserRole(context.userId, property.organizationId).getOrNull()
+        val role = orgDataStore.getUserRole(context.payload.userId, property.organizationId).getOrNull()
 
         if (role != null) {
-            logI(TAG, "User ${context.userId} has role(s) $role in organization ${property.organizationId}")
+            logI(TAG, "User ${context.payload.userId} has role(s) $role in organization ${property.organizationId}")
             return role
         }
-        logI(TAG, "User ${context.userId} is NOT authorized to perform action for this employee.")
+        logI(TAG, "User ${context.payload.userId} is NOT authorized to perform action for this employee.")
         return unauthorized
     }
 
@@ -321,10 +322,10 @@ class RBACService(
      * @return The user role if the action is allowed, or UNAUTHORIZED if not
      */
     private suspend fun getUserRoleForTimeCardEventAction(
-        context: ClientContext.AuthenticatedClientContext,
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         targetTimecardId: TimeCardEventId
     ): UserRole {
-        logI(TAG, "Retrieving user role(s) for ${context.userId}")
+        logI(TAG, "Retrieving user role(s) for ${context.payload.userId}")
         val timeCardEvent = timeCardService.getTimeCardEvent(targetTimecardId)
             ?: throw InvalidRequestException(timecardEventNotFoundException)
         return getUserRoleForPropertyAction(context, timeCardEvent.propertyId)

@@ -1,14 +1,20 @@
 package com.cramsan.edifikana.server.controller
 
+import com.cramsan.architecture.server.test.startTestKoin
+import com.cramsan.architecture.server.test.testBackEndApplication
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.server.controller.authentication.ClientContext
-import com.cramsan.edifikana.server.controller.authentication.ContextRetriever
+import com.cramsan.edifikana.lib.serialization.createJson
+import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
+import com.cramsan.edifikana.server.dependencyinjection.TestControllerModule
+import com.cramsan.edifikana.server.dependencyinjection.TestServiceModule
 import com.cramsan.edifikana.server.service.OrganizationService
 import com.cramsan.edifikana.server.service.authorization.RBACService
 import com.cramsan.edifikana.server.service.models.Organization
 import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.edifikana.server.utils.readFileContent
+import com.cramsan.framework.core.ktor.auth.ClientContext
+import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.test.CoroutineTest
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
@@ -28,7 +34,11 @@ import kotlin.test.assertEquals
 class OrganizationControllerTest : CoroutineTest(), KoinTest {
     @BeforeTest
     fun setupTest() {
-        startTestKoin()
+        startTestKoin(
+            createJson(),
+            TestControllerModule,
+            TestServiceModule,
+        )
     }
 
     @AfterTest
@@ -37,7 +47,7 @@ class OrganizationControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test getOrganization succeeds when user has required role`() = testEdifikanaApplication {
+    fun `test getOrganization succeeds when user has required role`() = testBackEndApplication {
         // Setup
         val expectedResponse = readFileContent("requests/get_organization_response.json")
         val organizationService = get<OrganizationService>()
@@ -50,10 +60,12 @@ class OrganizationControllerTest : CoroutineTest(), KoinTest {
                 id = OrganizationId("org123"),
             )
         }
-        val contextRetriever = get<ContextRetriever>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
         val context = ClientContext.AuthenticatedClientContext(
-            userInfo = mockk(),
-            userId = UserId("user456"),
+            SupabaseContextPayload(
+                userInfo = mockk(),
+                userId = UserId("user456"),
+            )
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -75,16 +87,18 @@ class OrganizationControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test getOrganization fails when the user doesn't have the required perms`() = testEdifikanaApplication {
+    fun `test getOrganization fails when the user doesn't have the required perms`() = testBackEndApplication {
         // Setup
         val expectedResponse = "You are not authorized to perform this action."
         val organizationService = get<OrganizationService>()
         val rbacService = get<RBACService>()
         val orgId = OrganizationId("org123")
-        val contextRetriever = get<ContextRetriever>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
         val context = ClientContext.AuthenticatedClientContext(
-            userInfo = mockk(),
-            userId = UserId("user456"),
+            SupabaseContextPayload(
+                userInfo = mockk(),
+                userId = UserId("user456"),
+            )
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -107,7 +121,7 @@ class OrganizationControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test getOrganizationList`() = testEdifikanaApplication {
+    fun `test getOrganizationList`() = testBackEndApplication {
         // Setup
         val expectedResponse = readFileContent("requests/get_organization_list_response.json")
         val organizationService = get<OrganizationService>()
@@ -119,13 +133,15 @@ class OrganizationControllerTest : CoroutineTest(), KoinTest {
                 Organization(id = OrganizationId("org456"))
             )
         }
-        val contextRetriever = get<ContextRetriever>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
         coEvery {
             contextRetriever.getContext(any())
         }.answers {
             ClientContext.AuthenticatedClientContext(
-                userInfo = mockk(),
-                userId = UserId("user456"),
+                SupabaseContextPayload(
+                    userInfo = mockk(),
+                    userId = UserId("user456"),
+                )
             )
         }
 

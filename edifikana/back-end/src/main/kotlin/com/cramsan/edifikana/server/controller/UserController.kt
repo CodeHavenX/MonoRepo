@@ -14,8 +14,7 @@ import com.cramsan.edifikana.lib.model.network.UserListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
 import com.cramsan.edifikana.lib.utils.requireNotBlank
 import com.cramsan.edifikana.lib.utils.requireSuccess
-import com.cramsan.edifikana.server.controller.authentication.ClientContext
-import com.cramsan.edifikana.server.controller.authentication.ContextRetriever
+import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.service.UserService
 import com.cramsan.edifikana.server.service.authorization.RBACService
 import com.cramsan.edifikana.server.service.models.UserRole
@@ -23,7 +22,12 @@ import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.NoResponseBody
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
+import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
+import com.cramsan.framework.core.ktor.auth.ClientContext
+import com.cramsan.framework.core.ktor.auth.ContextRetriever
+import com.cramsan.framework.core.ktor.handler
+import com.cramsan.framework.core.ktor.unauthenticatedHandler
 import com.cramsan.framework.utils.exceptions.UnauthorizedException
 import com.cramsan.framework.utils.exceptions.requireAll
 import io.ktor.server.routing.Routing
@@ -33,7 +37,7 @@ import io.ktor.server.routing.Routing
  */
 class UserController(
     private val userService: UserService,
-    private val contextRetriever: ContextRetriever,
+    private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
     private val rbacService: RBACService,
 ) : Controller {
 
@@ -69,7 +73,10 @@ class UserController(
      * Throws [UnauthorizedException] if the user does not have permission.
      */
     @OptIn(NetworkModel::class)
-    suspend fun getUser(context: ClientContext.AuthenticatedClientContext, userId: UserId): UserNetworkResponse? {
+    suspend fun getUser(
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+        userId: UserId
+    ): UserNetworkResponse? {
         if (!rbacService.hasRole(context, userId)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
@@ -86,10 +93,10 @@ class UserController(
      */
     @OptIn(NetworkModel::class, SecureStringAccess::class)
     suspend fun updatePassword(
-        authenticatedContext: ClientContext.AuthenticatedClientContext,
+        authenticatedContext: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         updatePasswordRequest: UpdatePasswordNetworkRequest,
     ): NoResponseBody {
-        val userId = authenticatedContext.userId
+        val userId = authenticatedContext.payload.userId
         if (!rbacService.hasRole(authenticatedContext, userId)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
@@ -112,7 +119,7 @@ class UserController(
      */
     @OptIn(NetworkModel::class)
     suspend fun getUsers(
-        context: ClientContext.AuthenticatedClientContext,
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         queryParams: GetAllUsersQueryParams,
     ): UserListNetworkResponse {
         val orgId = requireNotBlank(queryParams.orgId.id, "An organization ID must be provided.")
@@ -136,7 +143,7 @@ class UserController(
      */
     @OptIn(NetworkModel::class)
     suspend fun updateUser(
-        context: ClientContext.AuthenticatedClientContext,
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         updateUserRequest: UpdateUserNetworkRequest,
         userId: UserId
     ): UserNetworkResponse {
@@ -157,7 +164,10 @@ class UserController(
      * Returns [NoResponseBody] to indicate successful deletion.
      * Throws [UnauthorizedException] if the user does not have permission.
      */
-    suspend fun deleteUser(context: ClientContext.AuthenticatedClientContext, userId: UserId): NoResponseBody {
+    suspend fun deleteUser(
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+        userId: UserId
+    ): NoResponseBody {
         if (!rbacService.hasRole(context, userId)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
@@ -176,9 +186,11 @@ class UserController(
      * Throws [IllegalArgumentException] if the user does not have a configured email.
      */
     @OptIn(NetworkModel::class)
-    suspend fun associate(authenticatedContext: ClientContext.AuthenticatedClientContext): UserNetworkResponse {
-        val userId = authenticatedContext.userId
-        val email = authenticatedContext.userInfo.email
+    suspend fun associate(
+        authenticatedContext: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
+    ): UserNetworkResponse {
+        val userId = authenticatedContext.payload.userId
+        val email = authenticatedContext.payload.userInfo.email
 
         requireNotBlank(email, "User does not have a configured email.")
 
@@ -198,7 +210,7 @@ class UserController(
      */
     @OptIn(NetworkModel::class)
     suspend fun inviteUser(
-        context: ClientContext.AuthenticatedClientContext,
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         inviteRequest: InviteUserNetworkRequest
     ): NoResponseBody {
         val email = inviteRequest.email
@@ -222,7 +234,7 @@ class UserController(
      */
     @OptIn(NetworkModel::class)
     suspend fun getInvites(
-        context: ClientContext.AuthenticatedClientContext,
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         orgId: OrganizationId,
     ): InviteListNetworkResponse {
         if (!rbacService.hasRoleOrHigher(context, orgId, UserRole.MANAGER)) {

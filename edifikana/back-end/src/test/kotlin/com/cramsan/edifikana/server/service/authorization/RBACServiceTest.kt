@@ -4,7 +4,7 @@ import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.server.controller.authentication.ClientContext
+import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.datastore.EmployeeDatastore
 import com.cramsan.edifikana.server.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.datastore.PropertyDatastore
@@ -14,6 +14,7 @@ import com.cramsan.edifikana.server.service.models.Employee
 import com.cramsan.edifikana.server.service.models.Property
 import com.cramsan.edifikana.server.service.models.User
 import com.cramsan.edifikana.server.service.models.UserRole
+import com.cramsan.framework.core.ktor.auth.ClientContext
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
@@ -72,7 +73,7 @@ class RBACServiceTest {
         val targetUser = mockk<User>()
         every { targetUser.id } returns targetUserId
 
-        val context = ClientContext.AuthenticatedClientContext(mockk(), userId)
+        val context = ClientContext.AuthenticatedClientContext(SupabaseContextPayload(mockk(), userId))
 
         // Act
         val result = rbac.hasRole(context, targetUser.id)
@@ -92,7 +93,7 @@ class RBACServiceTest {
         val targetUser = mockk<User>()
         every { targetUser.id } returns targetUserId
 
-        val context = ClientContext.AuthenticatedClientContext(mockk(), userId)
+        val context = ClientContext.AuthenticatedClientContext(SupabaseContextPayload(mockk(), userId))
 
         // Act & Assert
         assertThrows(ClientRequestExceptions.ForbiddenException::class.java) {
@@ -110,7 +111,7 @@ class RBACServiceTest {
         val orgId = OrganizationId("testOrg")
         val requiredRole = UserRole.ADMIN
 
-        val context = ClientContext.AuthenticatedClientContext(mockk(), userId)
+        val context = ClientContext.AuthenticatedClientContext(SupabaseContextPayload(mockk(), userId))
 
         coEvery {
             orgDatastore.getUserRole(userId, orgId)
@@ -138,7 +139,7 @@ class RBACServiceTest {
         every { user.id } returns userId
         every { user.role } returns UserRole.EMPLOYEE
 
-        val context = ClientContext.AuthenticatedClientContext(mockk(), userId)
+        val context = ClientContext.AuthenticatedClientContext(SupabaseContextPayload(mockk(), userId))
 
         coEvery {
             orgDatastore.getUserRole(userId, orgId)
@@ -174,7 +175,7 @@ class RBACServiceTest {
         every { user.id } returns userId
         every { user.role } returns userRole
 
-        val context = ClientContext.AuthenticatedClientContext(mockk(), userId)
+        val context = ClientContext.AuthenticatedClientContext(SupabaseContextPayload(mockk(), userId))
         coEvery {
             orgDatastore.getUserRole(userId, orgId)
         } returns Result.success(userRole)
@@ -213,7 +214,7 @@ class RBACServiceTest {
         val property = mockk<Property>()
         every { property.organizationId } returns orgId
 
-        val context = ClientContext.AuthenticatedClientContext(mockk(), userId)
+        val context = ClientContext.AuthenticatedClientContext(SupabaseContextPayload(mockk(), userId))
         coEvery { propertyDatastore.getProperty(propId) } returns Result.success(property)
         coEvery { orgDatastore.getUserRole(userId, orgId) } returns Result.success(userRole)
 
@@ -249,7 +250,7 @@ class RBACServiceTest {
         val property = mockk<Property>()
         every { property.organizationId } returns orgId
 
-        val context = ClientContext.AuthenticatedClientContext(mockk(), userId)
+        val context = ClientContext.AuthenticatedClientContext(SupabaseContextPayload(mockk(), userId))
         coEvery { propertyDatastore.getProperty(propId) } returns Result.success(property)
         coEvery { orgDatastore.getUserRole(userId, orgId) } returns Result.success(userRole)
 
@@ -284,7 +285,7 @@ class RBACServiceTest {
         val property = mockk<Property>()
         every { property.organizationId } returns orgId
 
-        val context = ClientContext.AuthenticatedClientContext(mockk(), userId)
+        val context = ClientContext.AuthenticatedClientContext(SupabaseContextPayload(mockk(), userId))
         coEvery { employeeDatastore.getEmployee(empId) } returns Result.success(employee)
         coEvery { propertyDatastore.getProperty(propId) } returns Result.success(property)
         coEvery { orgDatastore.getUserRole(userId, orgId) } returns Result.success(userRole)
@@ -317,7 +318,7 @@ class RBACServiceTest {
         val property = mockk<Property>()
         every { property.organizationId } returns orgId
 
-        val context = ClientContext.AuthenticatedClientContext(mockk(), userId)
+        val context = ClientContext.AuthenticatedClientContext(SupabaseContextPayload(mockk(), userId))
         coEvery { employeeDatastore.getEmployee(empId) } returns Result.success(employee)
         coEvery { propertyDatastore.getProperty(propId) } returns Result.success(property)
         coEvery { orgDatastore.getUserRole(userId, orgId) } returns Result.success(userRole)

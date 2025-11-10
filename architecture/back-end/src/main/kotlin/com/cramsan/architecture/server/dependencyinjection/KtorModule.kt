@@ -11,6 +11,4 @@ val KtorModule = module {
     single<List<Controller>> {
         getAll<Controller>()
     }
-
 }
-

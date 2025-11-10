@@ -1,17 +1,23 @@
 package com.cramsan.edifikana.server.controller
 
+import com.cramsan.architecture.server.test.startTestKoin
+import com.cramsan.architecture.server.test.testBackEndApplication
 import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EmployeeRole
 import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.server.controller.authentication.ClientContext
-import com.cramsan.edifikana.server.controller.authentication.ContextRetriever
+import com.cramsan.edifikana.lib.serialization.createJson
+import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
+import com.cramsan.edifikana.server.dependencyinjection.TestControllerModule
+import com.cramsan.edifikana.server.dependencyinjection.TestServiceModule
 import com.cramsan.edifikana.server.service.EmployeeService
 import com.cramsan.edifikana.server.service.authorization.RBACService
 import com.cramsan.edifikana.server.service.models.Employee
 import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.edifikana.server.utils.readFileContent
+import com.cramsan.framework.core.ktor.auth.ClientContext
+import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.test.CoroutineTest
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
@@ -38,7 +44,11 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
 
     @BeforeTest
     fun setupTest() {
-        startTestKoin()
+        startTestKoin(
+            createJson(),
+            TestControllerModule,
+            TestServiceModule,
+        )
     }
 
     @AfterTest
@@ -47,7 +57,7 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test createEmployee succeeds when user has required role`() = testEdifikanaApplication {
+    fun `test createEmployee succeeds when user has required role`() = testBackEndApplication {
         // Arrange
         val requestBody = readFileContent("requests/create_employee_request.json")
         val expectedResponse = readFileContent("requests/create_employee_response.json")
@@ -71,10 +81,12 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
                 propertyId = PropertyId("property123"),
             )
         }
-        val contextRetriever = get<ContextRetriever>()
-        val context = ClientContext.AuthenticatedClientContext(
-            userInfo = mockk(),
-            userId = UserId("user123"),
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+        val context = ClientContext.AuthenticatedClientContext<SupabaseContextPayload>(
+            SupabaseContextPayload(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
         )
         coEvery { contextRetriever.getContext(any()) } returns context
         coEvery { rbacService.hasRoleOrHigher(context, PropertyId("property123"), UserRole.ADMIN) } returns true
@@ -91,16 +103,18 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test createEmployee fails when user doesn't have required role`() = testEdifikanaApplication {
+    fun `test createEmployee fails when user doesn't have required role`() = testBackEndApplication {
         // Arrange
         val requestBody = readFileContent("requests/create_employee_request.json")
         val employeeService = get<EmployeeService>()
         val rbacService = get<RBACService>()
-        val contextRetriever = get<ContextRetriever>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
         val expectedResponse = "You are not authorized to perform this action in your organization."
         val context = ClientContext.AuthenticatedClientContext(
-            userInfo = mockk(),
-            userId = UserId("user123"),
+            SupabaseContextPayload(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
         )
         coEvery { contextRetriever.getContext(any()) } returns context
         coEvery { rbacService.hasRoleOrHigher(context, PropertyId("property123"), UserRole.ADMIN) } returns false
@@ -118,7 +132,7 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test getEmployee succeeds when user has required role or higher`() = testEdifikanaApplication {
+    fun `test getEmployee succeeds when user has required role or higher`() = testBackEndApplication {
         // Arrange
         val expectedResponse = readFileContent("requests/get_employee_response.json")
         val employeeService = get<EmployeeService>()
@@ -134,10 +148,12 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
             role = EmployeeRole.SECURITY,
             propertyId = PropertyId("property123"),
         )
-        val contextRetriever = get<ContextRetriever>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
         val context = ClientContext.AuthenticatedClientContext(
-            userInfo = mockk(),
-            userId = UserId("user123"),
+            SupabaseContextPayload(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
         )
         coEvery { contextRetriever.getContext(any()) } returns context
         coEvery { rbacService.hasRoleOrHigher(context, empId, UserRole.MANAGER) } returns true
@@ -151,16 +167,18 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test getEmployee fails when user doesn't have required role or higher`() = testEdifikanaApplication {
+    fun `test getEmployee fails when user doesn't have required role or higher`() = testBackEndApplication {
         // Arrange
         val expectedResponse = "You are not authorized to perform this action in your organization."
         val employeeService = get<EmployeeService>()
         val rbacService = get<RBACService>()
         val empId = EmployeeId("emp123")
-        val contextRetriever = get<ContextRetriever>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
         val context = ClientContext.AuthenticatedClientContext(
-            userInfo = mockk(),
-            userId = UserId("user123"),
+            SupabaseContextPayload(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
         )
         coEvery { contextRetriever.getContext(any()) } returns context
         coEvery { rbacService.hasRoleOrHigher(context, empId, UserRole.MANAGER) } returns false
@@ -175,15 +193,17 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test getEmployees succeeds when user has required role or higher`() = testEdifikanaApplication {
+    fun `test getEmployees succeeds when user has required role or higher`() = testBackEndApplication {
         // Arrange
         val expectedResponse = readFileContent("requests/get_employees_response.json")
         val employeeService = get<EmployeeService>()
         val rbacService = get<RBACService>()
-        val contextRetriever = get<ContextRetriever>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
         val clientContext = ClientContext.AuthenticatedClientContext(
-            userInfo = mockk(),
-            userId = UserId("user123"),
+            SupabaseContextPayload(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
         )
 
         coEvery {
@@ -223,7 +243,7 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test updateEmployee succeeds when user has required role`() = testEdifikanaApplication {
+    fun `test updateEmployee succeeds when user has required role`() = testBackEndApplication {
         // Arrange
         val requestBody = readFileContent("requests/update_employee_request.json")
         val expectedResponse = readFileContent("requests/update_employee_response.json")
@@ -246,10 +266,12 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
             role = EmployeeRole.SECURITY_COVER,
             propertyId = PropertyId("property456"),
         )
-        val contextRetriever = get<ContextRetriever>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
         val context = ClientContext.AuthenticatedClientContext(
-            userInfo = mockk(),
-            userId = UserId("user123"),
+            SupabaseContextPayload(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
         )
         coEvery { contextRetriever.getContext(any()) } returns context
         coEvery { rbacService.hasRoleOrHigher(context, empId, UserRole.ADMIN) } returns true
@@ -266,17 +288,19 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test updateEmployee fails when user doesn't have required role`() = testEdifikanaApplication {
+    fun `test updateEmployee fails when user doesn't have required role`() = testBackEndApplication {
         // Arrange
         val requestBody = readFileContent("requests/update_employee_request.json")
         val expectedResponse = "You are not authorized to perform this action in your organization."
         val employeeService = get<EmployeeService>()
         val rbacService = get<RBACService>()
         val empId = EmployeeId("emp123")
-        val contextRetriever = get<ContextRetriever>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
         val context = ClientContext.AuthenticatedClientContext(
-            userInfo = mockk(),
-            userId = UserId("user123"),
+            SupabaseContextPayload(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
         )
         coEvery { contextRetriever.getContext(any()) } returns context
         coEvery { rbacService.hasRoleOrHigher(context, empId, UserRole.ADMIN) } returns false
@@ -294,16 +318,18 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test deleteEmployee succeeds when user has required role`() = testEdifikanaApplication {
+    fun `test deleteEmployee succeeds when user has required role`() = testBackEndApplication {
         // Arrange
         val employeeService = get<EmployeeService>()
         val rbacService = get<RBACService>()
         val empId = EmployeeId("emp123")
         coEvery { employeeService.deleteEmployee(empId) } returns true
-        val contextRetriever = get<ContextRetriever>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
         val context = ClientContext.AuthenticatedClientContext(
-            userInfo = mockk(),
-            userId = UserId("user123"),
+            SupabaseContextPayload(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
         )
         coEvery { contextRetriever.getContext(any()) } returns context
         coEvery { rbacService.hasRoleOrHigher(context, empId, UserRole.ADMIN) } returns true
@@ -316,16 +342,18 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test deleteEmployee fails when user doesn't have required role`() = testEdifikanaApplication {
+    fun `test deleteEmployee fails when user doesn't have required role`() = testBackEndApplication {
         // Arrange
         val expectedResponse = "You are not authorized to perform this action in your organization."
         val employeeService = get<EmployeeService>()
         val rbacService = get<RBACService>()
         val empId = EmployeeId("emp123")
-        val contextRetriever = get<ContextRetriever>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
         val context = ClientContext.AuthenticatedClientContext(
-            userInfo = mockk(),
-            userId = UserId("user123"),
+            SupabaseContextPayload(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
         )
         coEvery { contextRetriever.getContext(any()) } returns context
         coEvery { rbacService.hasRoleOrHigher(context, empId, UserRole.ADMIN) } returns false

@@ -78,12 +78,13 @@ object OperationHandler {
         PathParamType : PathParam,
         ResponseType : ResponseBody,
         P,
+        C : ClientContext<P>
         >
         Operation<RequestType, QueryParamType, PathParamType, ResponseType>.handle(
             route: Route,
-            contextRetriever: suspend ApplicationCall.() -> ClientContext<P>,
+            contextRetriever: suspend ApplicationCall.() -> C,
             handler: suspend ApplicationCall.(
-                OperationRequest<RequestType, QueryParamType, PathParamType, ClientContext<P>>
+                OperationRequest<RequestType, QueryParamType, PathParamType, C>
             ) -> HttpResponse<ResponseType>,
         ) {
         this.handleImpl(route, contextRetriever) { request ->

@@ -70,4 +70,3 @@ class PreferencesManager(
         const val TAG = "PreferencesManager"
     }
 }
-

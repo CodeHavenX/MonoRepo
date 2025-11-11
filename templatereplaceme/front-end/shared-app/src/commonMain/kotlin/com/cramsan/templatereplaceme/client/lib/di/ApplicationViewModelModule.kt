@@ -1,12 +1,8 @@
 package com.cramsan.templatereplaceme.client.lib.di
 
-import com.cramsan.framework.core.compose.ApplicationEvent
 import com.cramsan.framework.core.compose.EventBus
 import com.cramsan.framework.core.compose.EventEmitter
 import com.cramsan.framework.core.compose.EventReceiver
-import com.cramsan.framework.core.compose.InvalidEventBus
-import com.cramsan.framework.core.compose.ViewModelDependencies
-import com.cramsan.framework.core.compose.WindowEvent
 import com.cramsan.templatereplaceme.client.lib.features.application.TemplateReplaceMeApplicationViewModel
 import com.cramsan.templatereplaceme.client.lib.features.window.TemplateReplaceMeWindowDelegatedEvent
 import com.cramsan.templatereplaceme.client.lib.features.window.TemplateReplaceMeWindowViewModel

@@ -69,7 +69,7 @@ dependencies {
     implementation(project(":framework:configuration"))
     implementation(project(":framework:network-api"))
 
-    implementation(project(":architecture:back-end"))
+    implementation(project(":architecture:back-end-architecture"))
 
     implementation(project(":templatereplaceme:shared"))
     implementation(project(":templatereplaceme:api"))
@@ -93,5 +93,5 @@ dependencies {
     testImplementation("io.ktor:ktor-server-test-host:_")
     testImplementation("io.insert-koin:koin-test:_")
     testImplementation(project(":framework:test"))
-    testImplementation(project(":architecture:back-end-test"))
+    testImplementation(project(":architecture:back-end-architecture-test"))
 }

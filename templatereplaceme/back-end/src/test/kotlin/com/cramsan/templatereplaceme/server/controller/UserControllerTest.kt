@@ -10,6 +10,7 @@ import com.cramsan.templatereplaceme.lib.model.UserId
 import com.cramsan.templatereplaceme.lib.serialization.createJson
 import com.cramsan.templatereplaceme.server.dependencyinjection.TestControllerModule
 import com.cramsan.templatereplaceme.server.dependencyinjection.TestServiceModule
+import com.cramsan.templatereplaceme.server.dependencyinjection.testApplicationModule
 import com.cramsan.templatereplaceme.server.service.UserService
 import com.cramsan.templatereplaceme.server.service.models.User
 import io.ktor.client.request.post
@@ -32,7 +33,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
     @BeforeTest
     fun setupTest() {
         startTestKoin(
-            createJson(),
+            testApplicationModule(createJson()),
             TestControllerModule,
             TestServiceModule,
         )

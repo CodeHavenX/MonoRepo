@@ -22,15 +22,17 @@ actual fun ComposableKoinContext(content: @Composable () -> Unit) {
             // Log Koin to stdout
             logger(PrintLogger())
             // Load modules
-            modules(moduleList(
-                applicationViewModelModule = ApplicationViewModelModule,
-                serviceModule = ServiceModule,
-                servicePlatformModule = ServicePlatformModule,
-                managerModule = ManagerModule,
-                managerPlatformModule = ManagerPlatformModule,
-                viewModelModule = ViewModelModule,
-                viewModelPlatformModule = ViewModelPlatformModule,
-            ))
+            modules(
+                moduleList(
+                    applicationViewModelModule = ApplicationViewModelModule,
+                    serviceModule = ServiceModule,
+                    servicePlatformModule = ServicePlatformModule,
+                    managerModule = ManagerModule,
+                    managerPlatformModule = ManagerPlatformModule,
+                    viewModelModule = ViewModelModule,
+                    viewModelPlatformModule = ViewModelPlatformModule,
+                )
+            )
         }
     ) {
         content()

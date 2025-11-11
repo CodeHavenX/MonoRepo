@@ -3,13 +3,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
-    id("io.ktor.plugin")
 }
 
-val mainClassTarget by extra("io.ktor.server.netty.EngineMain")
-
-// Configures default settings for JVM/Ktor project
-apply(from = "$rootDir/gradle/kotlin-jvm-target-ktor.gradle")
+apply(from = "$rootDir/gradle/kotlin-jvm-target-lib.gradle")
 
 tasks.named<KotlinCompilationTask<*>>("compileKotlin").configure {
     compilerOptions.optIn.add("kotlin.time.ExperimentalTime")

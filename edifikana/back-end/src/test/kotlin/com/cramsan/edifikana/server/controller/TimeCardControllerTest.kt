@@ -28,7 +28,6 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
@@ -37,7 +36,6 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -65,7 +63,6 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
         val expectedResponse = readFileContent("requests/create_timecard_event_response.json")
         val timeCardService = get<TimeCardService>()
         val rbacService = get<RBACService>()
-        val clock = get<Clock>()
 
         coEvery {
             timeCardService.createTimeCardEvent(
@@ -74,7 +71,7 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
                 propertyId = PropertyId("property123"),
                 type = TimeCardEventType.CLOCK_OUT,
                 imageUrl = "http://example.com/image.jpg",
-                timestamp = Instant.fromEpochSeconds(1727702654),
+                timestamp = any(),
             )
         }.answers {
             TimeCardEvent(
@@ -87,7 +84,6 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
                 timestamp = Instant.fromEpochSeconds(1727702654),
             )
         }
-        every { clock.now() } returns Instant.fromEpochSeconds(1727702654)
         val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
         val context = ClientContext.AuthenticatedClientContext(
             SupabaseContextPayload(

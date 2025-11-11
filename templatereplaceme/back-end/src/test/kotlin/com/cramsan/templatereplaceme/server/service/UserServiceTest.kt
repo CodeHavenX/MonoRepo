@@ -1,5 +1,6 @@
 package com.cramsan.templatereplaceme.server.service
 
+import com.cramsan.architecture.server.settings.SettingsHolder
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
@@ -25,6 +26,8 @@ class UserServiceTest {
     private lateinit var userDatastore: UserDatastore
     private lateinit var userService: UserService
 
+    private lateinit var settingsHolder: SettingsHolder
+
     /**
      * Sets up the test environment by initializing mocks for [UserDatastore] and [userService].
      */
@@ -32,7 +35,8 @@ class UserServiceTest {
     fun setUp() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         userDatastore = mockk()
-        userService = UserService(userDatastore)
+        settingsHolder = mockk()
+        userService = UserService(userDatastore, settingsHolder)
     }
 
     /**
@@ -62,6 +66,9 @@ class UserServiceTest {
                 any(),
             )
         } returns Result.success(user)
+        coEvery {
+            settingsHolder.getBoolean(any())
+        } returns true
 
         // Act
         val result = userService.createUser(firstName, lastName)

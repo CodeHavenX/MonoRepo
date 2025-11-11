@@ -10,7 +10,9 @@ import io.ktor.server.application.ApplicationStopped
 import io.ktor.server.application.ApplicationStopping
 import io.ktor.server.application.ServerReady
 import io.ktor.server.response.respond
+import io.ktor.server.routing.get
 import io.ktor.server.routing.head
+import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 
 /**
@@ -45,8 +47,13 @@ fun Application.initializeMonitoring(
  */
 fun Application.configureHealthEndpoint() {
     routing {
-        head("/health") {
-            call.respond(HttpStatusCode.OK, "OK")
+        route("/health") {
+            get {
+                call.respond(HttpStatusCode.OK, "OK")
+            }
+            head {
+                call.respond(HttpStatusCode.OK, "OK")
+            }
         }
     }
 }

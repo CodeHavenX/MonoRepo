@@ -4,8 +4,7 @@ import com.cramsan.edifikana.api.OrganizationApi
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.network.OrganizationNetworkListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.OrganizationNetworkResponse
-import com.cramsan.edifikana.server.controller.authentication.ClientContext
-import com.cramsan.edifikana.server.controller.authentication.ContextRetriever
+import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.service.OrganizationService
 import com.cramsan.edifikana.server.service.authorization.RBACService
 import com.cramsan.edifikana.server.service.models.UserRole
@@ -13,8 +12,12 @@ import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
+import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
 import com.cramsan.framework.core.ktor.OperationRequest
+import com.cramsan.framework.core.ktor.auth.ClientContext
+import com.cramsan.framework.core.ktor.auth.ContextRetriever
+import com.cramsan.framework.core.ktor.handler
 import com.cramsan.framework.utils.exceptions.UnauthorizedException
 import io.ktor.server.routing.Routing
 
@@ -24,7 +27,7 @@ import io.ktor.server.routing.Routing
 @OptIn(NetworkModel::class)
 class OrganizationController(
     private val organizationService: OrganizationService,
-    private val contextRetriever: ContextRetriever,
+    private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
     private val rbacService: RBACService,
 ) : Controller {
 
@@ -36,7 +39,13 @@ class OrganizationController(
      * Throws [UnauthorizedException] if the user does not have permission.
      */
     suspend fun getOrganization(
-        request: OperationRequest<NoRequestBody, NoQueryParam, OrganizationId, ClientContext.AuthenticatedClientContext>
+        request:
+        OperationRequest<
+            NoRequestBody,
+            NoQueryParam,
+            OrganizationId,
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
+            >
     ): OrganizationNetworkResponse? {
         if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.ADMIN)) {
             throw UnauthorizedException(unauthorizedMsg)
@@ -50,9 +59,15 @@ class OrganizationController(
      * Returns a list of organizations as a network response.
      */
     suspend fun getOrganizationList(
-        request: OperationRequest<NoRequestBody, NoQueryParam, NoPathParam, ClientContext.AuthenticatedClientContext>
+        request:
+        OperationRequest<
+            NoRequestBody,
+            NoQueryParam,
+            NoPathParam,
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
+            >
     ): OrganizationNetworkListNetworkResponse {
-        val orgs = organizationService.getOrganizations(request.context.userId).map {
+        val orgs = organizationService.getOrganizations(request.context.payload.userId).map {
             it.toOrganizationNetworkResponse()
         }
         return OrganizationNetworkListNetworkResponse(orgs)

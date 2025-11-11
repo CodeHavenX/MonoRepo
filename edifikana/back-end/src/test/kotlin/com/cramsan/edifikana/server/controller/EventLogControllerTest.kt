@@ -1,17 +1,24 @@
 package com.cramsan.edifikana.server.controller
 
+import com.cramsan.architecture.server.test.startTestKoin
+import com.cramsan.architecture.server.test.testBackEndApplication
 import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.server.controller.authentication.ClientContext
-import com.cramsan.edifikana.server.controller.authentication.ContextRetriever
+import com.cramsan.edifikana.lib.serialization.createJson
+import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
+import com.cramsan.edifikana.server.dependencyinjection.TestControllerModule
+import com.cramsan.edifikana.server.dependencyinjection.TestServiceModule
+import com.cramsan.edifikana.server.dependencyinjection.testApplicationModule
 import com.cramsan.edifikana.server.service.EventLogService
 import com.cramsan.edifikana.server.service.authorization.RBACService
 import com.cramsan.edifikana.server.service.models.EventLogEntry
 import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.edifikana.server.utils.readFileContent
+import com.cramsan.framework.core.ktor.auth.ClientContext
+import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.test.CoroutineTest
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
@@ -43,7 +50,11 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
      */
     @BeforeTest
     fun setupTest() {
-        startTestKoin()
+        startTestKoin(
+            testApplicationModule(createJson()),
+            TestControllerModule,
+            TestServiceModule,
+        )
     }
 
     /**
@@ -56,7 +67,7 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
 
     // Something about public/private and the file name under the function was located.
     @Test
-    fun `test createEventLog`() = testEdifikanaApplication {
+    fun `test createEventLog`() = testBackEndApplication {
         // Configure
         val requestBody = readFileContent("requests/create_event_log_entry_request.json")
         val expectedResponse = readFileContent("requests/create_event_log_entry_response.json")
@@ -88,10 +99,12 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
                 unit = "Unit 101",
             )
         }
-        val contextRetriever = get<ContextRetriever>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
         val context = ClientContext.AuthenticatedClientContext(
-            userInfo = mockk(),
-            userId = UserId("user123"),
+            SupabaseContextPayload(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -116,7 +129,7 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test getEventLogEntry`() = testEdifikanaApplication {
+    fun `test getEventLogEntry`() = testBackEndApplication {
         // Configure
         val expectedResponse = readFileContent("requests/get_event_log_entry_response.json")
         val userService = get<EventLogService>()
@@ -139,10 +152,12 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
                 unit = "Unit 101",
             )
         }
-        val contextRetriever = get<ContextRetriever>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
         val context = ClientContext.AuthenticatedClientContext(
-            userInfo = mockk(),
-            userId = UserId("user123"),
+            SupabaseContextPayload(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -165,7 +180,7 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
 
     @Ignore
     @Test
-    fun `test getEventLogEntries`() = testEdifikanaApplication {
+    fun `test getEventLogEntries`() = testBackEndApplication {
         // Configure
         val expectedResponse = readFileContent("requests/get_event_log_entries_response.json")
         val userService = get<EventLogService>()
@@ -200,10 +215,12 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
                 ),
             )
         }
-        val contextRetriever = get<ContextRetriever>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
         val context = ClientContext.AuthenticatedClientContext(
-            userInfo = mockk(),
-            userId = UserId("user123"),
+            SupabaseContextPayload(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -220,7 +237,7 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test updateEventLogEntry`() = testEdifikanaApplication {
+    fun `test updateEventLogEntry`() = testBackEndApplication {
         // Configure
         val requestBody = readFileContent("requests/update_event_log_entry_request.json")
         val expectedResponse = readFileContent("requests/update_event_log_entry_response.json")
@@ -249,10 +266,12 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
                 unit = "Unit 202",
             )
         }
-        val contextRetriever = get<ContextRetriever>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
         val context = ClientContext.AuthenticatedClientContext(
-            userInfo = mockk(),
-            userId = UserId("user123"),
+            SupabaseContextPayload(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -277,7 +296,7 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test deleteEventLogEntry`() = testEdifikanaApplication {
+    fun `test deleteEventLogEntry`() = testBackEndApplication {
         // Configure
         val userService = get<EventLogService>()
         val rbacService = get<RBACService>()
@@ -286,10 +305,12 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
         }.answers {
             true
         }
-        val contextRetriever = get<ContextRetriever>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
         val context = ClientContext.AuthenticatedClientContext(
-            userInfo = mockk(),
-            userId = UserId("user123"),
+            SupabaseContextPayload(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
         )
         coEvery {
             contextRetriever.getContext(any())

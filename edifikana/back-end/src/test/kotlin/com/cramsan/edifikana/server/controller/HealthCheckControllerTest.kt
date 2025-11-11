@@ -1,8 +1,15 @@
 package com.cramsan.edifikana.server.controller
 
+import com.cramsan.architecture.server.test.startTestKoin
+import com.cramsan.architecture.server.test.testBackEndApplication
 import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.server.controller.authentication.ClientContext
-import com.cramsan.edifikana.server.controller.authentication.ContextRetriever
+import com.cramsan.edifikana.lib.serialization.createJson
+import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
+import com.cramsan.edifikana.server.dependencyinjection.TestControllerModule
+import com.cramsan.edifikana.server.dependencyinjection.TestServiceModule
+import com.cramsan.edifikana.server.dependencyinjection.testApplicationModule
+import com.cramsan.framework.core.ktor.auth.ClientContext
+import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.test.CoroutineTest
 import io.ktor.client.request.get
 import io.ktor.http.HttpStatusCode
@@ -25,7 +32,11 @@ class HealthCheckControllerTest : CoroutineTest(), KoinTest {
      */
     @BeforeTest
     fun setupTest() {
-        startTestKoin()
+        startTestKoin(
+            testApplicationModule(createJson()),
+            TestControllerModule,
+            TestServiceModule,
+        )
     }
 
     /**
@@ -37,13 +48,13 @@ class HealthCheckControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test health check for an unauthenticated user`() = testEdifikanaApplication {
+    fun `test health check for an unauthenticated user`() = testBackEndApplication {
         // Configure
-        val contextRetriever = get<ContextRetriever>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
         coEvery {
             contextRetriever.getContext(any())
         }.answers {
-            ClientContext.UnauthenticatedClientContext
+            ClientContext.UnauthenticatedClientContext()
         }
 
         // Act
@@ -54,15 +65,17 @@ class HealthCheckControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test health check for an authenticated user`() = testEdifikanaApplication {
+    fun `test health check for an authenticated user`() = testBackEndApplication {
         // Configure
-        val contextRetriever = get<ContextRetriever>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
         coEvery {
             contextRetriever.getContext(any())
         }.answers {
             ClientContext.AuthenticatedClientContext(
-                userId = UserId("test-user-id"),
-                userInfo = mockk()
+                SupabaseContextPayload(
+                    userId = UserId("test-user-id"),
+                    userInfo = mockk()
+                )
             )
         }
 

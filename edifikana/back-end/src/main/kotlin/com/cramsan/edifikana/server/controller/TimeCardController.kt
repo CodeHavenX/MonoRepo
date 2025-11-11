@@ -6,8 +6,7 @@ import com.cramsan.edifikana.lib.model.network.CreateTimeCardEventNetworkRequest
 import com.cramsan.edifikana.lib.model.network.GetTimeCardEventsQueryParams
 import com.cramsan.edifikana.lib.model.network.TimeCardEventListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.TimeCardEventNetworkResponse
-import com.cramsan.edifikana.server.controller.authentication.ClientContext
-import com.cramsan.edifikana.server.controller.authentication.ContextRetriever
+import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.service.TimeCardService
 import com.cramsan.edifikana.server.service.authorization.RBACService
 import com.cramsan.edifikana.server.service.models.UserRole
@@ -15,8 +14,12 @@ import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
+import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
 import com.cramsan.framework.core.ktor.OperationRequest
+import com.cramsan.framework.core.ktor.auth.ClientContext
+import com.cramsan.framework.core.ktor.auth.ContextRetriever
+import com.cramsan.framework.core.ktor.handler
 import com.cramsan.framework.utils.exceptions.UnauthorizedException
 import com.cramsan.framework.utils.time.Chronos
 import io.ktor.server.routing.Routing
@@ -29,7 +32,7 @@ import kotlin.time.ExperimentalTime
 class TimeCardController(
     private val timeCardService: TimeCardService,
     private val rbacService: RBACService,
-    private val contextRetriever: ContextRetriever,
+    private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
 ) : Controller {
 
     /**
@@ -42,7 +45,7 @@ class TimeCardController(
             CreateTimeCardEventNetworkRequest,
             NoQueryParam,
             NoPathParam,
-            ClientContext.AuthenticatedClientContext
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
             >,
     ): TimeCardEventNetworkResponse {
         if (!rbacService.hasRoleOrHigher(request.context, request.requestBody.propertyId, UserRole.EMPLOYEE)) {
@@ -72,7 +75,7 @@ class TimeCardController(
             NoRequestBody,
             NoQueryParam,
             TimeCardEventId,
-            ClientContext.AuthenticatedClientContext
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
             >,
     ): TimeCardEventNetworkResponse? {
         if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.EMPLOYEE)) {
@@ -95,7 +98,7 @@ class TimeCardController(
             NoRequestBody,
             GetTimeCardEventsQueryParams,
             NoPathParam,
-            ClientContext.AuthenticatedClientContext
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
             >,
     ): TimeCardEventListNetworkResponse {
         val targetEmployeeId = request.queryParam.employeeId

@@ -5,9 +5,10 @@ import com.cramsan.edifikana.lib.model.EmployeeRole
 import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.server.controller.authentication.ClientContext
+import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.datastore.EmployeeDatastore
 import com.cramsan.edifikana.server.service.models.Employee
+import com.cramsan.framework.core.ktor.auth.ClientContext
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
@@ -128,9 +129,11 @@ class EmployeeServiceTest {
         // Arrange
         val employeeLists = listOf(mockk<Employee>(), mockk<Employee>())
         val request = UserId("user-1")
-        val clientContext = ClientContext.AuthenticatedClientContext(
-            userInfo = mockk(),
-            userId = UserId("user-1"),
+        val clientContext = ClientContext.AuthenticatedClientContext<SupabaseContextPayload>(
+            SupabaseContextPayload(
+                userInfo = mockk(),
+                userId = UserId("user-1"),
+            )
         )
         coEvery { employeeDatastore.getEmployees(request) } returns Result.success(employeeLists)
 

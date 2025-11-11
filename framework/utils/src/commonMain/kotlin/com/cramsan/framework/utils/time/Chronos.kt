@@ -41,6 +41,18 @@ object Chronos {
     }
 
     /**
+     * Forces the initialization of the [Clock] instance for testing purposes.
+     *
+     * @param clock The clock to be used for time operations. Default is [Clock.System].
+     */
+    @TestOnly
+    fun forceInitializeClock(
+        clock: Clock = Clock.System,
+    ) {
+        this.clock = clock
+    }
+
+    /**
      * Sets the [Clock] instance to be used for time operations.
      */
     fun setClock(

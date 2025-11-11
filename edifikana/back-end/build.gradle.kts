@@ -69,6 +69,8 @@ dependencies {
     implementation(project(":framework:configuration"))
     implementation(project(":framework:network-api"))
 
+    implementation(project(":architecture:back-end-architecture"))
+
     implementation(project(":edifikana:shared"))
     implementation(project(":edifikana:api"))
 
@@ -95,4 +97,5 @@ dependencies {
     testImplementation("io.ktor:ktor-server-test-host:_")
     testImplementation("io.insert-koin:koin-test:_")
     testImplementation(project(":framework:test"))
+    testImplementation(project(":architecture:back-end-architecture-test"))
 }

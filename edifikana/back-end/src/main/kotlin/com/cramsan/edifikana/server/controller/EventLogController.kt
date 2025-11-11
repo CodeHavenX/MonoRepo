@@ -6,8 +6,7 @@ import com.cramsan.edifikana.lib.model.network.CreateEventLogEntryNetworkRequest
 import com.cramsan.edifikana.lib.model.network.EventLogEntryListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.EventLogEntryNetworkResponse
 import com.cramsan.edifikana.lib.model.network.UpdateEventLogEntryNetworkRequest
-import com.cramsan.edifikana.server.controller.authentication.ClientContext
-import com.cramsan.edifikana.server.controller.authentication.ContextRetriever
+import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.service.EventLogService
 import com.cramsan.edifikana.server.service.authorization.RBACService
 import com.cramsan.edifikana.server.service.models.UserRole
@@ -16,8 +15,12 @@ import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
 import com.cramsan.framework.annotations.api.NoResponseBody
+import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
 import com.cramsan.framework.core.ktor.OperationRequest
+import com.cramsan.framework.core.ktor.auth.ClientContext
+import com.cramsan.framework.core.ktor.auth.ContextRetriever
+import com.cramsan.framework.core.ktor.handler
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.UnauthorizedException
 import io.ktor.server.routing.Routing
 import kotlin.time.ExperimentalTime
@@ -29,7 +32,7 @@ import kotlin.time.Instant
 class EventLogController(
     private val eventLogService: EventLogService,
     private val rbacService: RBACService,
-    private val contextRetriever: ContextRetriever,
+    private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
 ) : Controller {
 
     /**
@@ -43,7 +46,7 @@ class EventLogController(
             CreateEventLogEntryNetworkRequest,
             NoQueryParam,
             NoPathParam,
-            ClientContext.AuthenticatedClientContext
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
             >,
     ): EventLogEntryNetworkResponse {
         if (!rbacService.hasRoleOrHigher(request.context, request.requestBody.propertyId, UserRole.EMPLOYEE)) {
@@ -80,7 +83,7 @@ class EventLogController(
             NoRequestBody,
             NoQueryParam,
             EventLogEntryId,
-            ClientContext.AuthenticatedClientContext
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
             >,
     ): EventLogEntryNetworkResponse? {
         if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.EMPLOYEE)) {
@@ -106,7 +109,7 @@ class EventLogController(
             NoRequestBody,
             NoQueryParam,
             NoPathParam,
-            ClientContext.AuthenticatedClientContext
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
             >
     ): EventLogEntryListNetworkResponse {
         TODO("This function is not yet implemented")
@@ -123,7 +126,7 @@ class EventLogController(
             UpdateEventLogEntryNetworkRequest,
             NoQueryParam,
             EventLogEntryId,
-            ClientContext.AuthenticatedClientContext
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
             >,
     ): EventLogEntryNetworkResponse {
         if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.EMPLOYEE)) {
@@ -151,7 +154,7 @@ class EventLogController(
             NoRequestBody,
             NoQueryParam,
             EventLogEntryId,
-            ClientContext.AuthenticatedClientContext
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
             >,
     ): NoResponseBody {
         if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.EMPLOYEE)) {

@@ -6,8 +6,7 @@ import com.cramsan.edifikana.lib.model.network.CreatePropertyNetworkRequest
 import com.cramsan.edifikana.lib.model.network.PropertyListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.PropertyNetworkResponse
 import com.cramsan.edifikana.lib.model.network.UpdatePropertyNetworkRequest
-import com.cramsan.edifikana.server.controller.authentication.ClientContext
-import com.cramsan.edifikana.server.controller.authentication.ContextRetriever
+import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.service.PropertyService
 import com.cramsan.edifikana.server.service.authorization.RBACService
 import com.cramsan.edifikana.server.service.models.UserRole
@@ -16,8 +15,12 @@ import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
 import com.cramsan.framework.annotations.api.NoResponseBody
+import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
 import com.cramsan.framework.core.ktor.OperationRequest
+import com.cramsan.framework.core.ktor.auth.ClientContext
+import com.cramsan.framework.core.ktor.auth.ContextRetriever
+import com.cramsan.framework.core.ktor.handler
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.UnauthorizedException
 import io.ktor.server.routing.Routing
 
@@ -27,7 +30,7 @@ import io.ktor.server.routing.Routing
 @OptIn(NetworkModel::class)
 class PropertyController(
     private val propertyService: PropertyService,
-    private val contextRetriever: ContextRetriever,
+    private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
     private val rbacService: RBACService,
 ) : Controller {
 
@@ -44,7 +47,7 @@ class PropertyController(
             CreatePropertyNetworkRequest,
             NoQueryParam,
             NoPathParam,
-            ClientContext.AuthenticatedClientContext
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
             >
     ): PropertyNetworkResponse {
         if (!rbacService.hasRoleOrHigher(request.context, request.requestBody.organizationId, UserRole.ADMIN)) {
@@ -66,7 +69,13 @@ class PropertyController(
      */
     @OptIn(NetworkModel::class)
     suspend fun getProperty(
-        request: OperationRequest<NoRequestBody, NoQueryParam, PropertyId, ClientContext.AuthenticatedClientContext>
+        request:
+        OperationRequest<
+            NoRequestBody,
+            NoQueryParam,
+            PropertyId,
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
+            >
     ): PropertyNetworkResponse? {
         if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.MANAGER)) {
             throw UnauthorizedException(unauthorizedMsg)
@@ -80,9 +89,15 @@ class PropertyController(
      */
     @OptIn(NetworkModel::class)
     suspend fun getAssignedProperties(
-        request: OperationRequest<NoRequestBody, NoQueryParam, NoPathParam, ClientContext.AuthenticatedClientContext>
+        request:
+        OperationRequest<
+            NoRequestBody,
+            NoQueryParam,
+            NoPathParam,
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
+            >
     ): PropertyListNetworkResponse {
-        val userId = request.context.userId
+        val userId = request.context.payload.userId
         val properties = propertyService.getProperties(userId = userId).map { it.toPropertyNetworkResponse() }
         return PropertyListNetworkResponse(properties)
     }
@@ -99,7 +114,7 @@ class PropertyController(
             UpdatePropertyNetworkRequest,
             NoQueryParam,
             PropertyId,
-            ClientContext.AuthenticatedClientContext
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
             >
     ): PropertyNetworkResponse {
         checkUserHasRole(request.context, request.pathParam, UserRole.ADMIN)
@@ -116,7 +131,13 @@ class PropertyController(
      * Throws [UnauthorizedException] if the user does not have ADMIN role for the property.
      */
     suspend fun deleteProperty(
-        request: OperationRequest<NoRequestBody, NoQueryParam, PropertyId, ClientContext.AuthenticatedClientContext>
+        request:
+        OperationRequest<
+            NoRequestBody,
+            NoQueryParam,
+            PropertyId,
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
+            >
     ): NoResponseBody {
         checkUserHasRole(request.context, request.pathParam, UserRole.ADMIN)
         propertyService.deleteProperty(request.pathParam)
@@ -128,7 +149,7 @@ class PropertyController(
      * Throws [UnauthorizedException] if the user does not have the required role.
      */
     private suspend fun checkUserHasRole(
-        context: ClientContext.AuthenticatedClientContext,
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         propId: PropertyId,
         role: UserRole
     ) {

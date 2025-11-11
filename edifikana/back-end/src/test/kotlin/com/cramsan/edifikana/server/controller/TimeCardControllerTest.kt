@@ -1,17 +1,24 @@
 package com.cramsan.edifikana.server.controller
 
+import com.cramsan.architecture.server.test.startTestKoin
+import com.cramsan.architecture.server.test.testBackEndApplication
 import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.server.controller.authentication.ClientContext
-import com.cramsan.edifikana.server.controller.authentication.ContextRetriever
+import com.cramsan.edifikana.lib.serialization.createJson
+import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
+import com.cramsan.edifikana.server.dependencyinjection.TestControllerModule
+import com.cramsan.edifikana.server.dependencyinjection.TestServiceModule
+import com.cramsan.edifikana.server.dependencyinjection.testApplicationModule
 import com.cramsan.edifikana.server.service.TimeCardService
 import com.cramsan.edifikana.server.service.authorization.RBACService
 import com.cramsan.edifikana.server.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.edifikana.server.utils.readFileContent
+import com.cramsan.framework.core.ktor.auth.ClientContext
+import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.test.CoroutineTest
 import io.ktor.client.request.get
 import io.ktor.client.request.post
@@ -21,7 +28,6 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
@@ -30,7 +36,6 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -39,7 +44,11 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
 
     @BeforeTest
     fun setupTest() {
-        startTestKoin()
+        startTestKoin(
+            testApplicationModule(createJson()),
+            TestControllerModule,
+            TestServiceModule,
+        )
     }
 
     @AfterTest
@@ -48,13 +57,12 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test createTimeCardEvent`() = testEdifikanaApplication {
+    fun `test createTimeCardEvent`() = testBackEndApplication {
         // Configure
         val requestBody = readFileContent("requests/create_timecard_event_request.json")
         val expectedResponse = readFileContent("requests/create_timecard_event_response.json")
         val timeCardService = get<TimeCardService>()
         val rbacService = get<RBACService>()
-        val clock = get<Clock>()
 
         coEvery {
             timeCardService.createTimeCardEvent(
@@ -63,7 +71,7 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
                 propertyId = PropertyId("property123"),
                 type = TimeCardEventType.CLOCK_OUT,
                 imageUrl = "http://example.com/image.jpg",
-                timestamp = Instant.fromEpochSeconds(1727702654),
+                timestamp = any(),
             )
         }.answers {
             TimeCardEvent(
@@ -76,11 +84,12 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
                 timestamp = Instant.fromEpochSeconds(1727702654),
             )
         }
-        every { clock.now() } returns Instant.fromEpochSeconds(1727702654)
-        val contextRetriever = get<ContextRetriever>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
         val context = ClientContext.AuthenticatedClientContext(
-            userInfo = mockk(),
-            userId = UserId("user123"),
+            SupabaseContextPayload(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -105,7 +114,7 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test getTimeCardEvent`() = testEdifikanaApplication {
+    fun `test getTimeCardEvent`() = testBackEndApplication {
         // Configure
         val expectedResponse = readFileContent("requests/get_timecard_event_response.json")
         val timeCardService = get<TimeCardService>()
@@ -123,10 +132,12 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
                 timestamp = Instant.fromEpochSeconds(1727702654),
             )
         }
-        val contextRetriever = get<ContextRetriever>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
         val context = ClientContext.AuthenticatedClientContext(
-            userInfo = mockk(),
-            userId = UserId("user123"),
+            SupabaseContextPayload(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -148,7 +159,7 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test getTimeCardEvents`() = testEdifikanaApplication {
+    fun `test getTimeCardEvents`() = testBackEndApplication {
         // Configure
         val expectedResponse = readFileContent("requests/get_timecard_events_response.json")
         val timeCardService = get<TimeCardService>()
@@ -177,10 +188,12 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
                 )
             )
         }
-        val contextRetriever = get<ContextRetriever>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
         val context = ClientContext.AuthenticatedClientContext(
-            userInfo = mockk(),
-            userId = UserId("emp123"),
+            SupabaseContextPayload(
+                userInfo = mockk(),
+                userId = UserId("emp123"),
+            )
         )
         coEvery {
             contextRetriever.getContext(any())

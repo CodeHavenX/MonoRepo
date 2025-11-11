@@ -4,14 +4,17 @@ import com.cramsan.edifikana.api.StorageApi
 import com.cramsan.edifikana.lib.model.network.AssetNetworkResponse
 import com.cramsan.edifikana.lib.model.network.CreateAssetQueryParams
 import com.cramsan.edifikana.lib.utils.requireNotBlank
-import com.cramsan.edifikana.server.controller.authentication.ClientContext
-import com.cramsan.edifikana.server.controller.authentication.ContextRetriever
+import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.service.StorageService
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.BytesRequestBody
 import com.cramsan.framework.annotations.api.NoPathParam
+import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
 import com.cramsan.framework.core.ktor.OperationRequest
+import com.cramsan.framework.core.ktor.auth.ClientContext
+import com.cramsan.framework.core.ktor.auth.ContextRetriever
+import com.cramsan.framework.core.ktor.handler
 import io.ktor.server.routing.Routing
 
 /**
@@ -20,7 +23,7 @@ import io.ktor.server.routing.Routing
 @OptIn(NetworkModel::class)
 class StorageController(
     private val storageService: StorageService,
-    private val contextRetriever: ContextRetriever,
+    private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
 ) : Controller {
 
     /**
@@ -33,7 +36,7 @@ class StorageController(
             BytesRequestBody,
             CreateAssetQueryParams,
             NoPathParam,
-            ClientContext.AuthenticatedClientContext
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
             >
     ): AssetNetworkResponse {
         val uploadFile = request.requestBody.bytes

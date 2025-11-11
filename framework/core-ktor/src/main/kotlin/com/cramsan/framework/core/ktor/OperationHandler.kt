@@ -9,6 +9,7 @@ import com.cramsan.framework.annotations.api.PathParam
 import com.cramsan.framework.annotations.api.QueryParam
 import com.cramsan.framework.annotations.api.RequestBody
 import com.cramsan.framework.annotations.api.ResponseBody
+import com.cramsan.framework.core.ktor.auth.ClientContext
 import com.cramsan.framework.httpserializers.decodeFromValue
 import com.cramsan.framework.logging.logV
 import com.cramsan.framework.networkapi.Api
@@ -76,13 +77,14 @@ object OperationHandler {
         QueryParamType : QueryParam,
         PathParamType : PathParam,
         ResponseType : ResponseBody,
-        Context
+        P,
+        C : ClientContext<P>
         >
         Operation<RequestType, QueryParamType, PathParamType, ResponseType>.handle(
             route: Route,
-            contextRetriever: suspend ApplicationCall.() -> Context,
+            contextRetriever: suspend ApplicationCall.() -> C,
             handler: suspend ApplicationCall.(
-                OperationRequest<RequestType, QueryParamType, PathParamType, Context>
+                OperationRequest<RequestType, QueryParamType, PathParamType, C>
             ) -> HttpResponse<ResponseType>,
         ) {
         this.handleImpl(route, contextRetriever) { request ->

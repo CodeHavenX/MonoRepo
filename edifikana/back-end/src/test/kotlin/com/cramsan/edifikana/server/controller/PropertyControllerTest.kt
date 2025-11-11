@@ -1,15 +1,22 @@
 package com.cramsan.edifikana.server.controller
 
+import com.cramsan.architecture.server.test.startTestKoin
+import com.cramsan.architecture.server.test.testBackEndApplication
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.server.controller.authentication.ClientContext
-import com.cramsan.edifikana.server.controller.authentication.ContextRetriever
+import com.cramsan.edifikana.lib.serialization.createJson
+import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
+import com.cramsan.edifikana.server.dependencyinjection.TestControllerModule
+import com.cramsan.edifikana.server.dependencyinjection.TestServiceModule
+import com.cramsan.edifikana.server.dependencyinjection.testApplicationModule
 import com.cramsan.edifikana.server.service.PropertyService
 import com.cramsan.edifikana.server.service.authorization.RBACService
 import com.cramsan.edifikana.server.service.models.Property
 import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.edifikana.server.utils.readFileContent
+import com.cramsan.framework.core.ktor.auth.ClientContext
+import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.test.CoroutineTest
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
@@ -39,7 +46,11 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
      */
     @BeforeTest
     fun setupTest() {
-        startTestKoin()
+        startTestKoin(
+            testApplicationModule(createJson()),
+            TestControllerModule,
+            TestServiceModule,
+        )
     }
 
     /**
@@ -51,7 +62,7 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test createProperty succeeds when user has required role in organization`() = testEdifikanaApplication {
+    fun `test createProperty succeeds when user has required role in organization`() = testBackEndApplication {
         // Arrange
         val requestBody = readFileContent("requests/create_property_request.json")
         val expectedResponse = readFileContent("requests/create_property_response.json")
@@ -72,10 +83,12 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
                 organizationId = OrganizationId("org123"),
             )
         }
-        val contextRetriever = get<ContextRetriever>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
         val context = ClientContext.AuthenticatedClientContext(
-            userInfo = mockk(),
-            userId = UserId("user123"),
+            SupabaseContextPayload(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -101,16 +114,18 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
 
     @Test
     fun `test createProperty fails when the user doesn't have the required role in their org`() =
-        testEdifikanaApplication {
+        testBackEndApplication {
             // Arrange
             val requestBody = readFileContent("requests/create_property_request.json")
             val propertyService = get<PropertyService>()
             val rbacService = get<RBACService>()
-            val contextRetriever = get<ContextRetriever>()
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
             val expectedResponse = "You are not authorized to perform this action in your organization."
             val context = ClientContext.AuthenticatedClientContext(
-                userInfo = mockk(),
-                userId = UserId("user123"),
+                SupabaseContextPayload(
+                    userInfo = mockk(),
+                    userId = UserId("user123"),
+                )
             )
             coEvery {
                 contextRetriever.getContext(any())
@@ -136,7 +151,7 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
         }
 
     @Test
-    fun `test getProperty succeeds when use has required role or higher`() = testEdifikanaApplication {
+    fun `test getProperty succeeds when use has required role or higher`() = testBackEndApplication {
         // Arrange
         val expectedResponse = readFileContent("requests/get_property_response.json")
         val propertyService = get<PropertyService>()
@@ -152,10 +167,12 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
                 OrganizationId("org123"),
             )
         }
-        val contextRetriever = get<ContextRetriever>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
         val context = ClientContext.AuthenticatedClientContext(
-            userInfo = mockk(),
-            userId = UserId("user123"),
+            SupabaseContextPayload(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -177,16 +194,18 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test getProperty fails when user doesn't have required role or higher`() = testEdifikanaApplication {
+    fun `test getProperty fails when user doesn't have required role or higher`() = testBackEndApplication {
         // Arrange
         val expectedResponse = "You are not authorized to perform this action in your organization."
         val propertyService = get<PropertyService>()
         val rbacService = get<RBACService>()
         val propId = PropertyId("property123")
-        val contextRetriever = get<ContextRetriever>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
         val context = ClientContext.AuthenticatedClientContext(
-            userInfo = mockk(),
-            userId = UserId("user123"),
+            SupabaseContextPayload(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -210,7 +229,7 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
 
     // TODO: Update this test and add a negative check test for ensuring user get only list of properties they're assigned
     @Test
-    fun `test getProperties`() = testEdifikanaApplication {
+    fun `test getProperties`() = testBackEndApplication {
         // Arrange
         val expectedResponse = readFileContent("requests/get_properties_response.json")
         val propertyService = get<PropertyService>()
@@ -232,13 +251,15 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
                 )
             )
         }
-        val contextRetriever = get<ContextRetriever>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
         coEvery {
             contextRetriever.getContext(any())
         }.answers {
             ClientContext.AuthenticatedClientContext(
-                userInfo = mockk(),
-                userId = UserId("user123"),
+                SupabaseContextPayload(
+                    userInfo = mockk(),
+                    userId = UserId("user123"),
+                )
             )
         }
 
@@ -251,7 +272,7 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test updateProperty succeeds when the user has required role`() = testEdifikanaApplication {
+    fun `test updateProperty succeeds when the user has required role`() = testBackEndApplication {
         // Arrange
         val requestBody = readFileContent("requests/update_property_request.json")
         val expectedResponse = readFileContent("requests/update_property_response.json")
@@ -271,10 +292,12 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
                 OrganizationId("org123"),
             )
         }
-        val contextRetriever = get<ContextRetriever>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
         val context = ClientContext.AuthenticatedClientContext(
-            userInfo = mockk(),
-            userId = UserId("user123"),
+            SupabaseContextPayload(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -299,17 +322,19 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test updateProperty fails when the user doesn't have required role`() = testEdifikanaApplication {
+    fun `test updateProperty fails when the user doesn't have required role`() = testBackEndApplication {
         // Arrange
         val requestBody = readFileContent("requests/update_property_request.json")
         val expectedResponse = "You are not authorized to perform this action in your organization."
         val propertyService = get<PropertyService>()
         val rbacService = get<RBACService>()
         val propId = PropertyId("property123")
-        val contextRetriever = get<ContextRetriever>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
         val context = ClientContext.AuthenticatedClientContext(
-            userInfo = mockk(),
-            userId = UserId("user123"),
+            SupabaseContextPayload(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -335,7 +360,7 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test deleteProperty succeeds when user has require role`() = testEdifikanaApplication {
+    fun `test deleteProperty succeeds when user has require role`() = testBackEndApplication {
         // Arrange
         val propertyService = get<PropertyService>()
         val rbacService = get<RBACService>()
@@ -345,10 +370,12 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
         }.answers {
             true
         }
-        val contextRetriever = get<ContextRetriever>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
         val context = ClientContext.AuthenticatedClientContext(
-            userInfo = mockk(),
-            userId = UserId("user123"),
+            SupabaseContextPayload(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -369,16 +396,18 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test deleteProperty fails when user doesn't have required role`() = testEdifikanaApplication {
+    fun `test deleteProperty fails when user doesn't have required role`() = testBackEndApplication {
         // Arrange
         val expectedResponse = "You are not authorized to perform this action in your organization."
         val propertyService = get<PropertyService>()
         val rbacService = get<RBACService>()
         val propId = PropertyId("property123")
-        val contextRetriever = get<ContextRetriever>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
         val context = ClientContext.AuthenticatedClientContext(
-            userInfo = mockk(),
-            userId = UserId("user123"),
+            SupabaseContextPayload(
+                userInfo = mockk(),
+                userId = UserId("user123"),
+            )
         )
         coEvery {
             contextRetriever.getContext(any())

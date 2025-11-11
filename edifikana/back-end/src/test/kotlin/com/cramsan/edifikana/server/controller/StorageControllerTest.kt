@@ -1,11 +1,18 @@
 package com.cramsan.edifikana.server.controller
 
+import com.cramsan.architecture.server.test.startTestKoin
+import com.cramsan.architecture.server.test.testBackEndApplication
 import com.cramsan.edifikana.lib.model.network.CreateAssetNetworkRequest
-import com.cramsan.edifikana.server.controller.authentication.ContextRetriever
+import com.cramsan.edifikana.lib.serialization.createJson
+import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
+import com.cramsan.edifikana.server.dependencyinjection.TestControllerModule
+import com.cramsan.edifikana.server.dependencyinjection.TestServiceModule
+import com.cramsan.edifikana.server.dependencyinjection.testApplicationModule
 import com.cramsan.edifikana.server.service.StorageService
 import com.cramsan.edifikana.server.utils.ASSET_1
 import com.cramsan.edifikana.server.utils.readFileContent
 import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.test.CoroutineTest
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -32,7 +39,11 @@ import kotlin.test.assertEquals
 class StorageControllerTest : CoroutineTest(), KoinTest {
     @BeforeTest
     fun setupTest() {
-        startTestKoin()
+        startTestKoin(
+            testApplicationModule(createJson()),
+            TestControllerModule,
+            TestServiceModule,
+        )
     }
 
     @AfterTest
@@ -41,7 +52,7 @@ class StorageControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `createAsset should return HttpResponse with OK and asset`() = testEdifikanaApplication {
+    fun `createAsset should return HttpResponse with OK and asset`() = testBackEndApplication {
         // Arrange
         val expectedResponse = readFileContent("requests/create_asset_response.json")
         val call = mockk<ApplicationCall>(relaxed = true)
@@ -54,7 +65,7 @@ class StorageControllerTest : CoroutineTest(), KoinTest {
                 content = any()
             )
         } returns ASSET_1
-        val contextRetriever = get<ContextRetriever>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
         coEvery {
             contextRetriever.getContext(any())
         }.answers { mockk() }

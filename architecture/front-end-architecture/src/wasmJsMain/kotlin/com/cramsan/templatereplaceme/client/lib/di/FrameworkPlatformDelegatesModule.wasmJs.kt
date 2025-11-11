@@ -14,6 +14,11 @@ import com.cramsan.framework.thread.ThreadUtilDelegate
 import com.cramsan.framework.thread.implemantation.ThreadUtilDelegateNoop
 import org.koin.dsl.module
 
+/**
+ * WasmJS-specific implementation of the FrameworkPlatformDelegatesModule.
+ * Provides web browser-specific implementations for threading, logging, halt utilities,
+ * dispatcher providers, and preferences storage using browser APIs (localStorage).
+ */
 actual val FrameworkPlatformDelegatesModule = module {
 
     single<ThreadUtilDelegate> {

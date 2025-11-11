@@ -10,6 +10,11 @@ import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
 import kotlin.time.ExperimentalTime
 
+/**
+ * Base class for back-end application integration tests.
+ * Provides common setup and teardown for integration tests including Koin dependency injection
+ * initialization with test-specific modules.
+ */
 @Suppress("UnnecessaryAbstractClass")
 @OptIn(ExperimentalTime::class)
 abstract class BackEndApplicationBaseIntegrationTest : CoroutineTest(), KoinTest {

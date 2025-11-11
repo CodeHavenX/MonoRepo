@@ -25,6 +25,11 @@ import org.koin.dsl.module
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
+/**
+ * Koin module for initializing additional application-level dependencies for front-end applications.
+ * This module provides components like clock implementations, exception handlers, coroutine scopes,
+ * string providers, settings holders, event buses, and view model dependencies.
+ */
 @OptIn(ExperimentalTime::class)
 internal val ExtrasModule = module {
 

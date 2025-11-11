@@ -10,7 +10,7 @@ import io.github.jan.supabase.auth.Auth
 import io.ktor.server.application.ApplicationCall
 
 /**
- * A [ContextRetriever] that retrieves the client context from a supabse auth token.
+ * A [ContextRetriever] that retrieves the client context from a Supabase auth token.
  */
 class SupabaseContextRetriever(
     private val auth: Auth,

@@ -17,7 +17,9 @@ import com.cramsan.edifikana.server.service.TimeCardService
 import com.cramsan.edifikana.server.service.UserService
 import com.cramsan.edifikana.server.service.authorization.RBACService
 import com.cramsan.framework.core.ktor.Controller
+import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import io.mockk.mockk
+import kotlinx.serialization.json.Json
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
@@ -48,4 +50,10 @@ val TestServiceModule = module {
     single<StorageService> { mockk() }
     single<OrganizationService> { mockk() }
     single<RBACService> { mockk() }
+}
+
+fun testApplicationModule(json: Json) = module {
+    single<Json> { json }
+
+    single<ContextRetriever<*>> { mockk() }
 }

@@ -1,12 +1,11 @@
 package com.cramsan.architecture.server.test
 
+import com.cramsan.architecture.server.test.dependencyinjection.TestArchitectureModule
 import com.cramsan.architecture.server.test.dependencyinjection.TestFrameworkModule
 import com.cramsan.architecture.server.test.dependencyinjection.TestKtorModule
-import com.cramsan.architecture.server.test.dependencyinjection.testApplicationModule
 import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.testApplication
-import kotlinx.serialization.json.Json
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -29,9 +28,10 @@ fun testBackEndApplication(
  * Start the koin framework with the test configuration.
  */
 fun startTestKoin(
-    json: Json,
+    testApplicationModule: Module,
     testControllerModule: Module,
     testServiceModule: Module,
+    testArchitectureModule: Module = TestArchitectureModule,
     testKtorModule: Module = TestKtorModule,
     testFrameworkModule: Module = TestFrameworkModule,
     moduleDeclaration: Module.() -> Unit = {},
@@ -41,9 +41,10 @@ fun startTestKoin(
         modules(
             testFrameworkModule,
             testKtorModule,
+            testArchitectureModule,
             testServiceModule,
             testControllerModule,
-            testApplicationModule(json),
+            testApplicationModule,
             module(moduleDeclaration = moduleDeclaration),
         )
     }

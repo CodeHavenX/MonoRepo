@@ -1,6 +1,5 @@
 package com.cramsan.edifikana.server.dependencyinjection
 
-import com.cramsan.architecture.server.dependencyinjection.NamedDependency
 import com.cramsan.architecture.server.settings.SettingsHolder
 import com.cramsan.edifikana.server.datastore.EmployeeDatastore
 import com.cramsan.edifikana.server.datastore.EventLogDatastore
@@ -28,7 +27,6 @@ import io.github.jan.supabase.storage.Storage
 import io.github.jan.supabase.storage.storage
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
-import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val DatastoreModule = module {
@@ -48,8 +46,6 @@ val DatastoreModule = module {
             error("Value needs to be provided in one of the following settings: $supabaseKeySettingKeyName")
         }
 
-        val stageSegment: String = get(named(NamedDependency.STAGE_KEY))
-
         createSupabaseClient(
             supabaseUrl = supabaseUrl,
             supabaseKey = supabaseKey,
@@ -57,7 +53,7 @@ val DatastoreModule = module {
             install(Postgrest)
             install(Storage)
             install(Auth) {
-                sessionManager = SettingsSessionManager(key = "$supabaseUrl-server-$stageSegment")
+                sessionManager = SettingsSessionManager(key = "$supabaseUrl-server")
             }
         }
     }

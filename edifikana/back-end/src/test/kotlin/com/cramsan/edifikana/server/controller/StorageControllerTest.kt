@@ -7,6 +7,7 @@ import com.cramsan.edifikana.lib.serialization.createJson
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.dependencyinjection.TestControllerModule
 import com.cramsan.edifikana.server.dependencyinjection.TestServiceModule
+import com.cramsan.edifikana.server.dependencyinjection.testApplicationModule
 import com.cramsan.edifikana.server.service.StorageService
 import com.cramsan.edifikana.server.utils.ASSET_1
 import com.cramsan.edifikana.server.utils.readFileContent
@@ -39,7 +40,7 @@ class StorageControllerTest : CoroutineTest(), KoinTest {
     @BeforeTest
     fun setupTest() {
         startTestKoin(
-            createJson(),
+            testApplicationModule(createJson()),
             TestControllerModule,
             TestServiceModule,
         )

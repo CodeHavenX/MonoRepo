@@ -99,13 +99,7 @@ val FrameworkModule = module(createdAtStart = true) {
     single<DispatcherProvider> { BEDispatcherProvider() }
 
     single<SimpleConfiguration> {
-        val stageSegment: String = get(named(NamedDependency.STAGE_KEY))
-        val fileName = if (stageSegment.isBlank()) {
-            "config.properties"
-        } else {
-            "config.properties.$stageSegment"
-        }
-        SimpleConfiguration(fileName)
+        SimpleConfiguration("config.properties")
     }
 
     single<EnvironmentConfiguration> { EnvironmentConfiguration(get(named(NamedDependency.DOMAIN_KEY))) }

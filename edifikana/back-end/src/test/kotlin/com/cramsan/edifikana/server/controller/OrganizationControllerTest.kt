@@ -8,6 +8,7 @@ import com.cramsan.edifikana.lib.serialization.createJson
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.dependencyinjection.TestControllerModule
 import com.cramsan.edifikana.server.dependencyinjection.TestServiceModule
+import com.cramsan.edifikana.server.dependencyinjection.testApplicationModule
 import com.cramsan.edifikana.server.service.OrganizationService
 import com.cramsan.edifikana.server.service.authorization.RBACService
 import com.cramsan.edifikana.server.service.models.Organization
@@ -35,7 +36,7 @@ class OrganizationControllerTest : CoroutineTest(), KoinTest {
     @BeforeTest
     fun setupTest() {
         startTestKoin(
-            createJson(),
+            testApplicationModule(createJson()),
             TestControllerModule,
             TestServiceModule,
         )

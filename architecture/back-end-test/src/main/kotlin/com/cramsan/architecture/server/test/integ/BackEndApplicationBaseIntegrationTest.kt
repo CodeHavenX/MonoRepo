@@ -1,9 +1,8 @@
 package com.cramsan.architecture.server.test.integ
 
 import com.cramsan.architecture.server.test.dependencyinjection.IntegTestFrameworkModule
-import com.cramsan.architecture.server.test.dependencyinjection.testApplicationModule
+import com.cramsan.architecture.server.test.dependencyinjection.TestArchitectureModule
 import com.cramsan.framework.test.CoroutineTest
-import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.koin.core.context.startKoin
@@ -22,7 +21,7 @@ abstract class BackEndApplicationBaseIntegrationTest : CoroutineTest(), KoinTest
             startKoin {
                 modules(
                     IntegTestFrameworkModule,
-                    testApplicationModule(Json, stageKey = "integ"),
+                    TestArchitectureModule,
                 )
             }
         }

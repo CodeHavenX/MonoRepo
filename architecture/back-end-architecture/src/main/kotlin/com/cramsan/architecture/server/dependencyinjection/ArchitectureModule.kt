@@ -9,6 +9,11 @@ import org.koin.dsl.module
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
+/**
+ * Koin module for initializing core architecture-level dependencies.
+ * This module provides essential components like coroutine scopes, clock implementations,
+ * and settings holders that are used across the application.
+ */
 @OptIn(ExperimentalTime::class)
 val ArchitectureModule = module(createdAtStart = true) {
 

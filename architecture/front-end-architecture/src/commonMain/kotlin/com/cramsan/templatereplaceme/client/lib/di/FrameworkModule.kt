@@ -19,6 +19,11 @@ import com.cramsan.templatereplaceme.client.lib.settings.FrontEndApplicationSett
 import com.cramsan.templatereplaceme.client.lib.settings.SettingsHolder
 import org.koin.dsl.module
 
+/**
+ * Koin module for initializing core framework-level dependencies for front-end applications.
+ * This module provides essential components like assertion utilities, event loggers,
+ * halt utilities, thread utilities, and preferences.
+ */
 internal val FrameworkModule = module(createdAtStart = true) {
 
     single<AssertUtilInterface> {

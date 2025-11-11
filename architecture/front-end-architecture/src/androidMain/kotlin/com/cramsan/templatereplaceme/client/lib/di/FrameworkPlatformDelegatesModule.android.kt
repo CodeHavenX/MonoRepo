@@ -15,6 +15,11 @@ import com.cramsan.framework.thread.implementation.ThreadUtilAndroid
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 
+/**
+ * Android-specific implementation of the FrameworkPlatformDelegatesModule.
+ * Provides Android-specific implementations for threading, logging, halt utilities,
+ * dispatcher providers, and preferences storage using Android APIs.
+ */
 actual val FrameworkPlatformDelegatesModule = module {
 
     single<ThreadUtilDelegate> {

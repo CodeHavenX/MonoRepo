@@ -18,6 +18,11 @@ import com.cramsan.templatereplaceme.client.lib.settings.SettingsHolder
 import org.apache.logging.log4j.Logger
 import org.koin.dsl.module
 
+/**
+ * JVM-specific implementation of the FrameworkPlatformDelegatesModule.
+ * Provides JVM-specific implementations for threading, logging, halt utilities,
+ * dispatcher providers, and preferences storage.
+ */
 actual val FrameworkPlatformDelegatesModule = module {
 
     single<ThreadUtilDelegate> {

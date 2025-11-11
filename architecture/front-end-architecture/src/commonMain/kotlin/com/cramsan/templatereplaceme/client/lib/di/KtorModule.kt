@@ -13,6 +13,11 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
 import org.koin.dsl.module
 
+/**
+ * Koin module for initializing Ktor HTTP client for front-end applications.
+ * This module configures the HTTP client with content negotiation, exception handling,
+ * and default request settings including the back-end URL.
+ */
 internal val KtorModule = module {
 
     single<HttpClient> {

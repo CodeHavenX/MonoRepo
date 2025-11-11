@@ -125,6 +125,10 @@ val IntegTestFrameworkModule = module(createdAtStart = true) {
     }
 }
 
+/**
+ * Koin module for initializing Ktor-specific components for testing.
+ * Provides a list of all registered controllers for test environments.
+ */
 val TestKtorModule = module {
 
     single<List<Controller>> {
@@ -132,6 +136,11 @@ val TestKtorModule = module {
     }
 }
 
+/**
+ * Koin module for initializing architecture-level test dependencies.
+ * Provides test-specific implementations of time sources and clocks with fixed timestamps
+ * for deterministic testing behavior.
+ */
 @OptIn(TestOnly::class)
 val TestArchitectureModule = module(createdAtStart = true) {
 

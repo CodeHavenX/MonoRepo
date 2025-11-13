@@ -15,7 +15,7 @@ import com.cramsan.framework.thread.implementation.ThreadUtilAndroid
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 
-actual val FrameworkPlatformDelegatesModule = module {
+internal actual val FrameworkPlatformDelegatesModule = module {
 
     single<ThreadUtilDelegate> {
         ThreadUtilAndroid(get())

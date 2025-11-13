@@ -27,7 +27,7 @@ import org.koin.dsl.module
 /**
  * A test module for the controllers.
  */
-val TestControllerModule = module {
+internal val TestControllerModule = module {
     singleOf(::UserController) { bind<Controller>() }
     singleOf(::EventLogController) { bind<Controller>() }
     singleOf(::HealthCheckController) { bind<Controller>() }
@@ -41,7 +41,7 @@ val TestControllerModule = module {
 /**
  * A test module for the services.
  */
-val TestServiceModule = module {
+internal val TestServiceModule = module {
     single<UserService> { mockk() }
     single<EventLogService> { mockk() }
     single<PropertyService> { mockk() }
@@ -52,7 +52,7 @@ val TestServiceModule = module {
     single<RBACService> { mockk() }
 }
 
-fun testApplicationModule(json: Json) = module {
+internal fun testApplicationModule(json: Json) = module {
     single<Json> { json }
 
     single<ContextRetriever<*>> { mockk() }

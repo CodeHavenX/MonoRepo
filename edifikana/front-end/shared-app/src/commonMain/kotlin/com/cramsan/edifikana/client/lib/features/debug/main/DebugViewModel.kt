@@ -75,7 +75,7 @@ class DebugViewModel(
             }
 
             is PropertyValueType.BooleanType -> {
-                PropertyValue.BooleanType(value as Boolean)
+                PropertyValue.BooleanValue(value as Boolean)
             }
 
             else -> {

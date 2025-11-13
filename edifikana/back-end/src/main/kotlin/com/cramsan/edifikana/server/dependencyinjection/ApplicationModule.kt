@@ -18,7 +18,7 @@ import kotlin.time.ExperimentalTime
  * Class to initialize all the application level components.
  */
 @OptIn(ExperimentalTime::class)
-val ApplicationModule = module {
+internal val ApplicationModule = module {
 
     single<String>(named(NamedDependency.DOMAIN_KEY)) { "EDIFIKANA" }
 

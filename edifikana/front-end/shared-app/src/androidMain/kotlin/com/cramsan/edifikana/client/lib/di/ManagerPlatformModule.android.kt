@@ -6,7 +6,7 @@ import com.cramsan.edifikana.client.lib.utils.IODependencies
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-actual val ManagerPlatformModule = module {
+internal actual val ManagerPlatformModule = module {
 
     singleOf(::IODependencies)
 

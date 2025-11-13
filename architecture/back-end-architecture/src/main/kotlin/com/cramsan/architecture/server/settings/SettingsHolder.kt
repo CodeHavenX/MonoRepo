@@ -47,7 +47,7 @@ class SettingsHolder(
      */
     fun getBoolean(propertyKey: SettingKey<PropertyValueType.BooleanType>): Boolean? {
         val value = getValue(propertyKey) ?: return null
-        return if (value is PropertyValue.BooleanType) {
+        return if (value is PropertyValue.BooleanValue) {
             value.boolean
         } else {
             error("Expected Boolean value for key ${propertyKey.key}, found: $value")

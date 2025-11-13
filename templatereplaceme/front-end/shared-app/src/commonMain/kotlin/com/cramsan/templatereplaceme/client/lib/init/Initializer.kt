@@ -5,7 +5,6 @@ import com.cramsan.framework.logging.logI
 /**
  * Initializer class for the application.
  */
-@Suppress("UnusedPrivateProperty")
 class Initializer {
 
     /**

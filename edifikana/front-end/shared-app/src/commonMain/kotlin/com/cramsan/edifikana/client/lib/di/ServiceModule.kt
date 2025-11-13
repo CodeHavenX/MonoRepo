@@ -36,7 +36,7 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 @OptIn(SupabaseExperimental::class)
-val ServiceModule = module {
+internal val ServiceModule = module {
 
     single {
         val settingsHolder: SettingsHolder = get()

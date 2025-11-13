@@ -57,7 +57,7 @@ class ConfigurationMultiplexer {
                 }
                 is PropertyValueType.BooleanType -> {
                     val booleanValue = configuration.readBoolean(normalizedKey)
-                    booleanValue?.let { PropertyValue.BooleanType(it) }
+                    booleanValue?.let { PropertyValue.BooleanValue(it) }
                 }
             }
             if (propertyValueTypePredicate(value)) {
@@ -95,7 +95,7 @@ class ConfigurationMultiplexer {
                 is PropertyValue.StringValue -> value.string.isNotBlank()
                 is PropertyValue.IntValue -> true
                 is PropertyValue.LongValue -> true
-                is PropertyValue.BooleanType -> true
+                is PropertyValue.BooleanValue -> true
             }
         }
     }

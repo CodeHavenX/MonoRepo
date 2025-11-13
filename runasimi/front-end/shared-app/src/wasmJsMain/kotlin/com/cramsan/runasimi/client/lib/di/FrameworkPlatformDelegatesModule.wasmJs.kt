@@ -14,7 +14,7 @@ import com.cramsan.framework.thread.ThreadUtilDelegate
 import com.cramsan.framework.thread.implemantation.ThreadUtilDelegateNoop
 import org.koin.dsl.module
 
-actual val FrameworkPlatformDelegatesModule = module {
+internal actual val FrameworkPlatformDelegatesModule = module {
 
     single<ThreadUtilDelegate> {
         ThreadUtilDelegateNoop()

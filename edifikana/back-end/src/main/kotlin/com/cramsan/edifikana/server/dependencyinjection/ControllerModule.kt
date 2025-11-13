@@ -17,7 +17,7 @@ import org.koin.dsl.module
  * Koin module for initializing all controller components in the Edifikana application.
  * Controllers are responsible for handling HTTP requests and routing them to appropriate services.
  */
-val ControllerModule = module {
+internal val ControllerModule = module {
     singleOf(::UserController) { bind<Controller>() }
     singleOf(::EventLogController) { bind<Controller>() }
     singleOf(::HealthCheckController) { bind<Controller>() }

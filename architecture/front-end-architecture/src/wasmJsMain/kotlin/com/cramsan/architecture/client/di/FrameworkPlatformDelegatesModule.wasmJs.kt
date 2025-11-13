@@ -19,7 +19,7 @@ import org.koin.dsl.module
  * Provides web browser-specific implementations for threading, logging, halt utilities,
  * dispatcher providers, and preferences storage using browser APIs (localStorage).
  */
-actual val FrameworkPlatformDelegatesModule = module {
+internal actual val FrameworkPlatformDelegatesModule = module {
 
     single<ThreadUtilDelegate> {
         ThreadUtilDelegateNoop()

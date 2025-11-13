@@ -29,7 +29,7 @@ import com.cramsan.edifikana.client.lib.features.splash.SplashViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
-val ViewModelModule = module {
+internal val ViewModelModule = module {
     viewModelOf(::EventLogViewModel)
     viewModelOf(::TimeCartViewModel)
     viewModelOf(::EmployeeListViewModel)

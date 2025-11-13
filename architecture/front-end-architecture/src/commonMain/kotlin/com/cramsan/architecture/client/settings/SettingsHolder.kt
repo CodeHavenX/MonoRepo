@@ -36,7 +36,7 @@ class SettingsHolder(
 
             is PropertyValueType.BooleanType -> {
                 val value = preferences.loadBoolean(propertyKey.key) ?: return null
-                PropertyValue.BooleanType(value)
+                PropertyValue.BooleanValue(value)
             }
         }
     }
@@ -75,7 +75,7 @@ class SettingsHolder(
             }
 
             is PropertyValueType.BooleanType -> {
-                if (value is PropertyValue.BooleanType) {
+                if (value is PropertyValue.BooleanValue) {
                     saveBoolean(propertyKey as SettingKey<PropertyValueType.BooleanType>, value.boolean)
                 } else {
                     error("Expected Boolean value for key ${propertyKey.key}, found: $value")
@@ -117,7 +117,7 @@ class SettingsHolder(
      */
     fun getBoolean(propertyKey: SettingKey<PropertyValueType.BooleanType>): Boolean? {
         val value = getValue(propertyKey) ?: return null
-        return if (value is PropertyValue.BooleanType) {
+        return if (value is PropertyValue.BooleanValue) {
             value.boolean
         } else {
             error("Expected Boolean value for key ${propertyKey.key}, found: $value")

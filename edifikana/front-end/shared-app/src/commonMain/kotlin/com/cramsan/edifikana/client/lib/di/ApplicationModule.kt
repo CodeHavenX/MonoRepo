@@ -18,7 +18,7 @@ import org.koin.core.module.dsl.withOptions
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-val ApplicationModule = module {
+internal val ApplicationModule = module {
 
     single<String>(named(NamedDependency.DOMAIN_KEY)) { "EDIFIKANA" }
 

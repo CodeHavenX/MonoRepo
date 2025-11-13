@@ -129,7 +129,7 @@ val IntegTestFrameworkModule = module(createdAtStart = true) {
  * Koin module for initializing Ktor-specific components for testing.
  * Provides a list of all registered controllers for test environments.
  */
-val TestKtorModule = module {
+internal val TestKtorModule = module {
 
     single<List<Controller>> {
         getAll<Controller>()

@@ -24,7 +24,7 @@ import org.koin.dsl.module
  * Provides JVM-specific implementations for threading, logging, halt utilities,
  * dispatcher providers, and preferences storage.
  */
-actual val FrameworkPlatformDelegatesModule = module {
+internal actual val FrameworkPlatformDelegatesModule = module {
 
     single<ThreadUtilDelegate> {
         ThreadUtilJVM(

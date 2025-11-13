@@ -11,7 +11,6 @@ import org.koin.core.component.KoinComponent
 /**
  * Initializer class for the application.
  */
-@Suppress("UnusedPrivateProperty")
 class Initializer(
     private val eventLogger: EventLoggerInterface,
     private val authManager: AuthManager,

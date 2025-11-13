@@ -14,7 +14,7 @@ import org.koin.dsl.module
 /**
  * Class to initialize all the services level components.
  */
-val ServicesModule = module {
+internal val ServicesModule = module {
     singleOf(::UserService)
     singleOf(::EventLogService)
     singleOf(::PropertyService)

@@ -36,6 +36,16 @@ class Initializer(
     }
 
     private suspend fun loadOrganization() {
+        val user = authManager.getUser().getOrNull()
+        if (user == null) {
+            eventLogger.log(
+                Severity.WARNING,
+                TAG,
+                "No authenticated user found. Skipping organization load.",
+            )
+            return
+        }
+
         eventLogger.log(
             Severity.INFO,
             TAG,

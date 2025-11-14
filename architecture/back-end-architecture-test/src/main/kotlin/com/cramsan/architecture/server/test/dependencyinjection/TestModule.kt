@@ -1,5 +1,6 @@
 package com.cramsan.architecture.server.test.dependencyinjection
 
+import com.cramsan.architecture.server.dependencyinjection.NamedDependency
 import com.cramsan.architecture.server.settings.SettingsHolder
 import com.cramsan.framework.annotations.TestOnly
 import com.cramsan.framework.assertlib.AssertUtil
@@ -7,6 +8,7 @@ import com.cramsan.framework.assertlib.AssertUtilInterface
 import com.cramsan.framework.assertlib.implementation.AssertUtilImpl
 import com.cramsan.framework.configuration.Configuration
 import com.cramsan.framework.configuration.ConfigurationMultiplexer
+import com.cramsan.framework.configuration.EnvironmentConfiguration
 import com.cramsan.framework.configuration.NoopConfiguration
 import com.cramsan.framework.configuration.SimpleConfiguration
 import com.cramsan.framework.core.ktor.Controller
@@ -31,6 +33,7 @@ import com.cramsan.framework.utils.time.Chronos
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.asClock
 import org.apache.logging.log4j.Logger
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import kotlin.collections.List
 import kotlin.time.Clock
@@ -79,7 +82,9 @@ val TestFrameworkModule = module(createdAtStart = true) {
 /**
  * Produce a framework module for integration tests.
  */
-val IntegTestFrameworkModule = module(createdAtStart = true) {
+fun integTestFrameworkModule(
+    domain: String,
+) = module(createdAtStart = true) {
     single<Logger> {
         Log4J2Helpers.getRootLogger(false, get())
     }
@@ -113,12 +118,20 @@ val IntegTestFrameworkModule = module(createdAtStart = true) {
         SimpleConfiguration("config.properties.integ")
     }
 
+    single<String>(named(NamedDependency.DOMAIN_KEY)) { domain }
+
+    single<EnvironmentConfiguration> {
+        EnvironmentConfiguration(get(named(NamedDependency.DOMAIN_KEY)))
+    }
+
     single {
         val configurationMultiplexer = ConfigurationMultiplexer()
         val simpleConfiguration: SimpleConfiguration = get()
+        val environmentConfiguration: EnvironmentConfiguration = get()
         configurationMultiplexer.setConfigurations(
             listOf(
-                simpleConfiguration, // For integ tests, only use the simple configuration
+                environmentConfiguration, // Look for overrides in environment variables first
+                simpleConfiguration, // Then in the config file
             )
         )
         configurationMultiplexer

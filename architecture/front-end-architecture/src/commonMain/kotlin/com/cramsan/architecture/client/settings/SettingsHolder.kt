@@ -37,7 +37,6 @@ class SettingsHolder(
             is PropertyValueType.BooleanType -> {
                 val value = preferences.loadBoolean(propertyKey.key) ?: return null
                 PropertyValue.BooleanValue(value)
-                PropertyValue.BooleanValue(value)
             }
         }
     }

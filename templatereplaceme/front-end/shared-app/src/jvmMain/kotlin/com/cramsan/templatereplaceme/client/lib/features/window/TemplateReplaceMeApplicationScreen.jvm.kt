@@ -1,14 +1,15 @@
 package com.cramsan.templatereplaceme.client.lib.features.window
 
 import androidx.compose.runtime.Composable
-import com.cramsan.templatereplaceme.client.lib.di.ApplicationViewModelModule
+import com.cramsan.architecture.client.di.moduleList
+import com.cramsan.templatereplaceme.client.lib.di.ApplicationModule
+import com.cramsan.templatereplaceme.client.lib.di.CacheModule
 import com.cramsan.templatereplaceme.client.lib.di.ManagerModule
 import com.cramsan.templatereplaceme.client.lib.di.ManagerPlatformModule
 import com.cramsan.templatereplaceme.client.lib.di.ServiceModule
 import com.cramsan.templatereplaceme.client.lib.di.ServicePlatformModule
 import com.cramsan.templatereplaceme.client.lib.di.ViewModelModule
 import com.cramsan.templatereplaceme.client.lib.di.ViewModelPlatformModule
-import com.cramsan.templatereplaceme.client.lib.di.moduleList
 import org.koin.compose.KoinApplication
 import org.koin.core.logger.PrintLogger
 
@@ -24,7 +25,8 @@ actual fun ComposableKoinContext(content: @Composable () -> Unit) {
             // Load modules
             modules(
                 moduleList(
-                    applicationViewModelModule = ApplicationViewModelModule,
+                    cacheModule = CacheModule,
+                    applicationModule = ApplicationModule,
                     serviceModule = ServiceModule,
                     servicePlatformModule = ServicePlatformModule,
                     managerModule = ManagerModule,

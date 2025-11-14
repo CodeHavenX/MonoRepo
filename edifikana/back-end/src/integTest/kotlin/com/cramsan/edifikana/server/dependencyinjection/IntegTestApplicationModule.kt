@@ -12,7 +12,7 @@ import kotlin.time.TestTimeSource
  * Class to initialize the integ test pplication level components.
  */
 @OptIn(ExperimentalTime::class)
-val IntegTestApplicationModule = module {
+internal val IntegTestApplicationModule = module {
 
     single {
         TestTimeSource()

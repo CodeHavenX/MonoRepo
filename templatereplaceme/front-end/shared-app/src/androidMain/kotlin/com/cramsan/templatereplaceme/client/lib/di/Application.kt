@@ -1,6 +1,7 @@
 package com.cramsan.templatereplaceme.client.lib.di
 
 import android.content.Context
+import com.cramsan.architecture.client.di.moduleList
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -19,7 +20,8 @@ fun startAndroidApplication(
         // Load modules
         modules(
             moduleList(
-                applicationViewModelModule = ApplicationViewModelModule,
+                cacheModule = CacheModule,
+                applicationModule = ApplicationModule,
                 serviceModule = ServiceModule,
                 servicePlatformModule = ServicePlatformModule,
                 managerModule = ManagerModule,

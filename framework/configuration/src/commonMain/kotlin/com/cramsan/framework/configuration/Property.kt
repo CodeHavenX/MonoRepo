@@ -47,5 +47,5 @@ sealed class PropertyValue {
     /**
      * Represents a Boolean property value.
      */
-    data class BooleanType(val boolean: Boolean) : PropertyValue()
+    data class BooleanValue(val boolean: Boolean) : PropertyValue()
 }

@@ -6,7 +6,7 @@ import org.koin.dsl.module
 /**
  * Class to initialize and bind the ktor components.
  */
-val KtorModule = module {
+internal val KtorModule = module {
 
     single<List<Controller>> {
         getAll<Controller>()

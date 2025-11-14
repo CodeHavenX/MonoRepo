@@ -1,11 +1,11 @@
 package com.cramsan.templatereplaceme.client.lib.managers
 
+import com.cramsan.architecture.client.settings.FrontEndApplicationSettingKey
+import com.cramsan.architecture.client.settings.SettingKey
+import com.cramsan.architecture.client.settings.SettingsHolder
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.getOrCatch
 import com.cramsan.framework.preferences.Preferences
-import com.cramsan.templatereplaceme.client.lib.settings.FrontEndApplicationSettingKey
-import com.cramsan.templatereplaceme.client.lib.settings.SettingKey
-import com.cramsan.templatereplaceme.client.lib.settings.SettingsHolder
 import com.cramsan.templatereplaceme.client.lib.settings.TemplateReplaceMeSettingKey
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow

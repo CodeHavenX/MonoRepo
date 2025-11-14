@@ -9,7 +9,7 @@ import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-actual val CacheModule = module {
+internal actual val CacheModule = module {
     single { get<AppDatabase>().eventLogRecordDao() }
 
     single { get<AppDatabase>().timeCardRecordDao() }

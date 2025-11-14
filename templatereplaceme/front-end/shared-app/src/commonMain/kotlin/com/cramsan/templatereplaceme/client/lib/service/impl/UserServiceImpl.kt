@@ -1,12 +1,12 @@
 package com.cramsan.templatereplaceme.client.lib.service.impl
 
+import com.cramsan.architecture.client.service.execute
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.networkapi.buildRequest
 import com.cramsan.templatereplaceme.api.UserApi
 import com.cramsan.templatereplaceme.client.lib.models.UserModel
 import com.cramsan.templatereplaceme.client.lib.service.UserService
-import com.cramsan.templatereplaceme.client.lib.service.execute
 import com.cramsan.templatereplaceme.lib.model.network.CreateUserNetworkRequest
 import io.ktor.client.HttpClient
 

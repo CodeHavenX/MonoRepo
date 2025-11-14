@@ -17,7 +17,7 @@ import com.cramsan.framework.thread.implementation.ThreadUtilJVM
 import org.apache.logging.log4j.Logger
 import org.koin.dsl.module
 
-actual val FrameworkPlatformDelegatesModule = module {
+internal actual val FrameworkPlatformDelegatesModule = module {
 
     single<ThreadUtilDelegate> {
         ThreadUtilJVM(

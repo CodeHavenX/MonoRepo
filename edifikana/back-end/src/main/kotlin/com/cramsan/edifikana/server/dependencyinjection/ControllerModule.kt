@@ -8,6 +8,8 @@ import com.cramsan.edifikana.server.controller.PropertyController
 import com.cramsan.edifikana.server.controller.StorageController
 import com.cramsan.edifikana.server.controller.TimeCardController
 import com.cramsan.edifikana.server.controller.UserController
+import com.cramsan.framework.core.ktor.Controller
+import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
@@ -15,13 +17,13 @@ import org.koin.dsl.module
  * Koin module for initializing all controller components in the Edifikana application.
  * Controllers are responsible for handling HTTP requests and routing them to appropriate services.
  */
-val ControllerModule = module {
-    singleOf(::UserController)
-    singleOf(::EventLogController)
-    singleOf(::HealthCheckController)
-    singleOf(::PropertyController)
-    singleOf(::EmployeeController)
-    singleOf(::TimeCardController)
-    singleOf(::StorageController)
-    singleOf(::OrganizationController)
+internal val ControllerModule = module {
+    singleOf(::UserController) { bind<Controller>() }
+    singleOf(::EventLogController) { bind<Controller>() }
+    singleOf(::HealthCheckController) { bind<Controller>() }
+    singleOf(::PropertyController) { bind<Controller>() }
+    singleOf(::EmployeeController) { bind<Controller>() }
+    singleOf(::TimeCardController) { bind<Controller>() }
+    singleOf(::StorageController) { bind<Controller>() }
+    singleOf(::OrganizationController) { bind<Controller>() }
 }

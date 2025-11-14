@@ -2,6 +2,8 @@
 
 package com.cramsan.edifikana.client.lib.features.debug.main
 
+import com.cramsan.architecture.client.settings.SettingKey
+import com.cramsan.framework.configuration.PropertyValueType
 import com.cramsan.framework.core.compose.ViewModelUIState
 
 /**
@@ -42,7 +44,7 @@ sealed class Field {
     data class StringField(
         val title: String,
         val subtitle: String?,
-        val key: String,
+        val key: SettingKey<PropertyValueType.StringType>,
         val value: String,
         val secure: Boolean = false,
     ) : Field()
@@ -53,7 +55,7 @@ sealed class Field {
     data class BooleanField(
         val title: String,
         val subtitle: String?,
-        val key: String,
+        val key: SettingKey<PropertyValueType.BooleanType>,
         val value: Boolean,
         val enabled: Boolean = true,
     ) : Field()

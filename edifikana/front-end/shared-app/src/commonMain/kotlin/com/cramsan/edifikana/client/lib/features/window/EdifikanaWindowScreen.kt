@@ -3,6 +3,7 @@ package com.cramsan.edifikana.client.lib.features.window
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -10,12 +11,17 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.cramsan.edifikana.client.lib.features.account.accountNavGraph
+import com.cramsan.edifikana.client.lib.features.application.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.lib.features.auth.authNavGraphNavigation
 import com.cramsan.edifikana.client.lib.features.debug.debugNavGraphNavigation
 import com.cramsan.edifikana.client.lib.features.home.homeNavGraphNavigation
@@ -32,6 +38,7 @@ import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.ui.components.themetoggle.SelectedTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
@@ -45,11 +52,13 @@ import kotlin.reflect.typeOf
 fun EdifikanaWindowScreen(
     eventHandler: EdifikanaMainScreenEventHandler,
     viewModel: EdifikanaWindowViewModel = koinViewModel(),
+    applicationViewModel: EdifikanaApplicationViewModel = koinInject(),
     startDestination: EdifikanaNavGraphDestination = EdifikanaNavGraphDestination.SplashNavGraphDestination,
 ) {
     WindowsContent(
         eventHandler = eventHandler,
         viewModel = viewModel,
+        applicationViewModel = applicationViewModel,
         startDestination = startDestination,
     )
 }
@@ -58,11 +67,18 @@ fun EdifikanaWindowScreen(
 private fun WindowsContent(
     startDestination: EdifikanaNavGraphDestination,
     viewModel: EdifikanaWindowViewModel,
+    applicationViewModel: EdifikanaApplicationViewModel,
     eventHandler: EdifikanaMainScreenEventHandler,
 ) {
     val navController = rememberNavController()
 
     val snackbarHostState = remember { SnackbarHostState() }
+
+    val applicationUIState by applicationViewModel.uiState.collectAsState()
+
+    LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
+        viewModel.initialize()
+    }
 
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
@@ -81,8 +97,14 @@ private fun WindowsContent(
         }
     }
 
+    val darkTheme = when (applicationUIState.theme) {
+        SelectedTheme.LIGHT -> false
+        SelectedTheme.DARK -> true
+        SelectedTheme.SYSTEM_DEFAULT -> isSystemInDarkTheme()
+    }
     AppTheme(
         coil3 = koinInject<Coil3Provider>().coil3Integration,
+        darkTheme = darkTheme
     ) {
         Scaffold(
             snackbarHost = {

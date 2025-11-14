@@ -23,15 +23,17 @@ class EdifikanaWindowViewModel(
     TAG
 ) {
 
-    init {
+    fun initialize() {
         viewModelScope.launch {
-            windowEventEmitter.events.collect { event ->
-                logI(TAG, "Window event received: $event")
-                emitEvent(
-                    EdifikanaWindowViewModelEvent.EdifikanaWindowEventWrapper(
-                        event as EdifikanaWindowsEvent
+            viewModelScope.launch {
+                windowEventEmitter.events.collect { event ->
+                    logI(TAG, "Window event received: $event")
+                    emitEvent(
+                        EdifikanaWindowViewModelEvent.EdifikanaWindowEventWrapper(
+                            event as EdifikanaWindowsEvent
+                        )
                     )
-                )
+                }
             }
         }
     }

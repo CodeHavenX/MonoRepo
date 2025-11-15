@@ -1,9 +1,9 @@
 package com.cramsan.edifikana.client.lib.managers
 
-import com.cramsan.edifikana.client.lib.models.Theme
 import com.cramsan.architecture.client.settings.FrontEndApplicationSettingKey
 import com.cramsan.architecture.client.settings.SettingKey
 import com.cramsan.architecture.client.settings.SettingsHolder
+import com.cramsan.edifikana.client.lib.models.Theme
 import com.cramsan.edifikana.client.lib.settings.EdifikanaSettingKey
 import com.cramsan.framework.configuration.PropertyValue
 import com.cramsan.framework.core.ManagerDependencies
@@ -88,6 +88,10 @@ class PreferencesManager(
         settingsHolder.getString(FrontEndApplicationSettingKey.LoggingLevel) ?: "INFO"
     }
 
+    /**
+     * Get the selected theme preference.
+     * Returns [Theme.SYSTEM_DEFAULT] by default if not set.
+     */
     suspend fun selectedTheme(): Result<Theme> = dependencies.getOrCatch(TAG) {
         Theme.fromString(settingsHolder.getString(EdifikanaSettingKey.SelectedTheme))
     }

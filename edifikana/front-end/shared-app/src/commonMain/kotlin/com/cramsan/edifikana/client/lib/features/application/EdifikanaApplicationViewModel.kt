@@ -1,6 +1,5 @@
 package com.cramsan.edifikana.client.lib.features.application
 
-import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowViewModel
 import com.cramsan.edifikana.client.lib.init.Initializer
 import com.cramsan.edifikana.client.lib.managers.PreferencesManager
 import com.cramsan.edifikana.client.lib.settings.EdifikanaSettingKey

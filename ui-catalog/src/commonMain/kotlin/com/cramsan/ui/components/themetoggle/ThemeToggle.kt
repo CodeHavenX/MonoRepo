@@ -5,7 +5,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.DarkMode
 import androidx.compose.material.icons.sharp.LightMode
 import androidx.compose.material.icons.sharp.Settings
-import androidx.compose.material.icons.sharp.SettingsApplications
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -22,14 +21,15 @@ fun ThemeToggle(
     onThemeSelected: (SelectedTheme) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    IconButton(onClick = {
-        val nextTheme = when (selectedTheme) {
-            SelectedTheme.LIGHT -> SelectedTheme.DARK
-            SelectedTheme.DARK -> SelectedTheme.SYSTEM_DEFAULT
-            SelectedTheme.SYSTEM_DEFAULT -> SelectedTheme.LIGHT
-        }
-        onThemeSelected(nextTheme)
-    },
+    IconButton(
+        onClick = {
+            val nextTheme = when (selectedTheme) {
+                SelectedTheme.LIGHT -> SelectedTheme.DARK
+                SelectedTheme.DARK -> SelectedTheme.SYSTEM_DEFAULT
+                SelectedTheme.SYSTEM_DEFAULT -> SelectedTheme.LIGHT
+            }
+            onThemeSelected(nextTheme)
+        },
         modifier = modifier,
     ) {
         AnimatedContent(targetState = selectedTheme) { theme ->
@@ -51,6 +51,9 @@ fun ThemeToggle(
     }
 }
 
+/**
+ * The selected theme enum.
+ */
 enum class SelectedTheme {
     LIGHT,
     DARK,

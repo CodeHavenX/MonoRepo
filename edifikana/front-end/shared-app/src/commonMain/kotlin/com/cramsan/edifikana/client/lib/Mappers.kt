@@ -131,6 +131,9 @@ fun EventLogEventType?.toFriendlyStringCompose(): String {
     }
 }
 
+/**
+ * Converts the [Theme] to a [SelectedTheme].
+ */
 fun Theme.toSelectedTheme(): SelectedTheme {
     return when (this) {
         Theme.LIGHT -> SelectedTheme.LIGHT

@@ -7,7 +7,6 @@ import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.PreferencesManager
 import com.cramsan.edifikana.client.lib.models.Theme
 import com.cramsan.edifikana.client.lib.settings.EdifikanaSettingKey
-import com.cramsan.edifikana.client.lib.toSelectedTheme
 import com.cramsan.framework.configuration.PropertyValue
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
@@ -200,6 +199,9 @@ class SignInViewModel(
         }
     }
 
+    /**
+     * Change the selected theme preference.
+     */
     fun changeSelectedTheme(theme: SelectedTheme) {
         viewModelScope.launch {
             val themeToSave = when (theme) {

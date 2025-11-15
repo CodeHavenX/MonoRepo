@@ -1,7 +1,6 @@
 package com.cramsan.edifikana.client.lib.settings
 
 import com.cramsan.architecture.client.settings.SettingKey
-import com.cramsan.ui.components.themetoggle.SelectedTheme
 
 /**
  * Typed constants for the overrides that can be set in the application.

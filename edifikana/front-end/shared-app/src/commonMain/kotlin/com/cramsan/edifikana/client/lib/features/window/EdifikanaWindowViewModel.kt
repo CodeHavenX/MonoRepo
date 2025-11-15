@@ -23,7 +23,10 @@ class EdifikanaWindowViewModel(
     TAG
 ) {
 
-    init {
+    /**
+     * Initialize the view model and all required state for the entire application.
+     */
+    fun initialize() {
         viewModelScope.launch {
             windowEventEmitter.events.collect { event ->
                 logI(TAG, "Window event received: $event")

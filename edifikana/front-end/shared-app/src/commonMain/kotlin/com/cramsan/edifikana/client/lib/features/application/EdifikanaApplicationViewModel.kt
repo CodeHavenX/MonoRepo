@@ -2,6 +2,8 @@ package com.cramsan.edifikana.client.lib.features.application
 
 import com.cramsan.edifikana.client.lib.init.Initializer
 import com.cramsan.edifikana.client.lib.managers.PreferencesManager
+import com.cramsan.edifikana.client.lib.settings.EdifikanaSettingKey
+import com.cramsan.edifikana.client.lib.toSelectedTheme
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logI
@@ -16,52 +18,64 @@ class EdifikanaApplicationViewModel(
     private val preferences: PreferencesManager,
 ) : BaseViewModel<EdifikanaApplicationViewModelEvent, EdifikanaApplicationUIState>(
     dependencies,
-    EdifikanaApplicationUIState(),
+    EdifikanaApplicationUIState.Initial,
     TAG
 ) {
-
-    init {
-        viewModelScope.launch {
-            preferences.modifiedKey.collect {
-                logI(TAG, "Preference key modified: $it")
-                loadFromSettings()
-            }
-        }
-    }
 
     /**
      * Initialize the view model and all required state for the entire application.
      */
     fun initialize() {
         viewModelScope.launch {
-            viewModelScope.launch {
-                initHandler.startStep()
-            }
+            initHandler.startStep()
 
             viewModelScope.launch {
-                preferences.modifiedKey.collect {
-                    logI(TAG, "Preference key modified: $it")
-                    loadFromSettings()
+                preferences.modifiedKey.collect { changedKey ->
+                    when (changedKey) {
+                        EdifikanaSettingKey.SelectedTheme -> {
+                            logI(TAG, "Theme mode preference changed, emitting event.")
+                            loadSelectedThemeSetting()
+                        }
+
+                        EdifikanaSettingKey.OpenDebugWindow -> {
+                            logI(TAG, "Debug window preference changed, emitting event.")
+                            loadDebugWindowSettings()
+                        }
+                    }
                 }
             }
-
-            loadFromSettings()
+            loadAllSettings()
+            updateUiState {
+                it.copy(applicationLoaded = true)
+            }
         }
     }
 
-    private fun loadFromSettings() {
-        viewModelScope.launch {
-            val showDebugWindow = preferences.isOpenDebugWindow().getOrThrow()
-            if (showDebugWindow) {
-                logI(TAG, "Debug window is enabled.")
-            } else {
-                logI(TAG, "Debug window is disabled.")
-            }
-            updateUiState {
-                it.copy(
-                    showDebugWindow = showDebugWindow
-                )
-            }
+    private suspend fun loadAllSettings() {
+        loadSelectedThemeSetting()
+        loadDebugWindowSettings()
+    }
+
+    private suspend fun loadSelectedThemeSetting() {
+        val themeMode = preferences.selectedTheme().getOrThrow()
+        updateUiState {
+            it.copy(
+                theme = themeMode.toSelectedTheme(),
+            )
+        }
+    }
+
+    private suspend fun loadDebugWindowSettings() {
+        val showDebugWindow = preferences.isOpenDebugWindow().getOrThrow()
+        if (showDebugWindow) {
+            logI(TAG, "Debug window is enabled.")
+        } else {
+            logI(TAG, "Debug window is disabled.")
+        }
+        updateUiState {
+            it.copy(
+                showDebugWindow = showDebugWindow
+            )
         }
     }
 

@@ -220,7 +220,6 @@ class DebugViewModel(
                             subtitle = "Currently only supported on desktop.",
                             key = EdifikanaSettingKey.OpenDebugWindow,
                             value = openDebugWindow,
-                            enabled = false, // Disabled while we set up the required infrastructure
                         ),
                         Field.Divider,
                         Field.ActionField(

@@ -5,6 +5,7 @@ import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
+import com.cramsan.edifikana.client.lib.managers.PreferencesManager
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
 import com.cramsan.framework.core.compose.EventBus
@@ -43,6 +44,9 @@ class SignInViewModelTest : CoroutineTest() {
     private lateinit var applicationEventReceiver: EventBus<ApplicationEvent>
     private lateinit var stringProvider: StringProvider
 
+    private lateinit var preferencesManager: PreferencesManager
+
+
     /**
      * Setup the test.
      */
@@ -54,6 +58,7 @@ class SignInViewModelTest : CoroutineTest() {
         windowEventBus = EventBus()
         exceptionHandler = CollectorCoroutineExceptionHandler()
         stringProvider = mockk()
+        preferencesManager = mockk()
         viewModel = SignInViewModel(
             dependencies = ViewModelDependencies(
                 appScope = testCoroutineScope,
@@ -64,6 +69,7 @@ class SignInViewModelTest : CoroutineTest() {
             ),
             auth = authManager,
             stringProvider = stringProvider,
+            preferencesManager = preferencesManager,
         )
     }
 

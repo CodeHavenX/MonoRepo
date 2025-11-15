@@ -1,7 +1,9 @@
 package com.cramsan.edifikana.client.lib.features.auth.signin
 
 import androidx.compose.runtime.Composable
+import com.cramsan.edifikana.client.lib.features.application.EdifikanaApplicationUIState
 import com.cramsan.edifikana.client.ui.theme.AppTheme
+import com.cramsan.ui.components.themetoggle.SelectedTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
@@ -18,13 +20,20 @@ private fun SignInScreenPreview() = AppTheme {
             showPassword = false,
             errorMessages = null,
         ),
+        applicationUIState = EdifikanaApplicationUIState(
+            theme = SelectedTheme.SYSTEM_DEFAULT,
+            applicationLoaded = true,
+            showDebugWindow = false,
+        ),
         onUsernameValueChange = { },
         onPasswordValueChange = { },
         onContinueWithPWClicked = { },
         onPWSignInClicked = {},
         onSignInOtpClicked = { },
         onSignUpClicked = { },
-    ) { }
+        onThemeSelected = { _ -> },
+        onInfoClicked = { },
+    )
 }
 
 /**
@@ -42,11 +51,18 @@ private fun SignInContentPreview() = AppTheme {
             showPassword = true,
             errorMessages = null,
         ),
+        applicationUIState = EdifikanaApplicationUIState(
+            theme = SelectedTheme.LIGHT,
+            applicationLoaded = true,
+            showDebugWindow = false,
+        ),
         onUsernameValueChange = {},
         onPasswordValueChange = {},
         onContinueWithPWClicked = { },
         onPWSignInClicked = {},
         onSignInOtpClicked = { },
         onSignUpClicked = {},
-    ) {}
+        onThemeSelected = { _ -> },
+        onInfoClicked = {},
+    )
 }

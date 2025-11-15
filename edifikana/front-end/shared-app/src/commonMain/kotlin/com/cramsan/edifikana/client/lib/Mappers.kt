@@ -3,12 +3,14 @@
 package com.cramsan.edifikana.client.lib
 
 import androidx.compose.runtime.Composable
+import com.cramsan.edifikana.client.lib.models.Theme
 import com.cramsan.edifikana.lib.model.EmployeeRole
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.utils.time.Chronos
+import com.cramsan.ui.components.themetoggle.SelectedTheme
 import edifikana_lib.Res
 import edifikana_lib.event_type_delivery
 import edifikana_lib.event_type_guest
@@ -126,5 +128,16 @@ fun EventLogEventType?.toFriendlyStringCompose(): String {
         EventLogEventType.INCIDENT -> stringResource(Res.string.event_type_incident)
         EventLogEventType.MAINTENANCE_SERVICE -> stringResource(Res.string.event_type_maintenance_service)
         else -> stringResource(Res.string.event_type_other)
+    }
+}
+
+/**
+ * Converts the [Theme] to a [SelectedTheme].
+ */
+fun Theme.toSelectedTheme(): SelectedTheme {
+    return when (this) {
+        Theme.LIGHT -> SelectedTheme.LIGHT
+        Theme.DARK -> SelectedTheme.DARK
+        Theme.SYSTEM_DEFAULT -> SelectedTheme.SYSTEM_DEFAULT
     }
 }

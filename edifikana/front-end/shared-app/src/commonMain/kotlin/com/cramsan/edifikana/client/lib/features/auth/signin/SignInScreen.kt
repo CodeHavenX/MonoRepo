@@ -26,9 +26,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import com.cramsan.edifikana.client.lib.features.application.EdifikanaApplicationUIState
+import com.cramsan.edifikana.client.lib.features.application.EdifikanaApplicationViewModel
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.PasswordOutlinedTextField
 import com.cramsan.ui.components.ScreenLayout
+import com.cramsan.ui.components.themetoggle.SelectedTheme
+import com.cramsan.ui.components.themetoggle.ThemeToggle
 import edifikana_lib.Res
 import edifikana_lib.sign_in_screen_text_email
 import edifikana_lib.sign_in_screen_text_password
@@ -36,6 +40,7 @@ import edifikana_lib.sign_in_screen_text_sign_in
 import edifikana_lib.sign_in_screen_text_sign_in_otp
 import edifikana_lib.sign_in_screen_text_sign_up
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -44,8 +49,11 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun SignInScreen(
     viewModel: SignInViewModel = koinViewModel(),
+    applicationViewModel: EdifikanaApplicationViewModel = koinInject(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    val applicationUIState by applicationViewModel.uiState.collectAsState()
 
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
         viewModel.initializePage()
@@ -64,6 +72,7 @@ fun SignInScreen(
 
     SignInContent(
         uiState = uiState,
+        applicationUIState = applicationUIState,
         modifier = Modifier,
         onUsernameValueChange = { viewModel.changeUsernameValue(it) },
         onPasswordValueChange = { viewModel.changePasswordValue(it) },
@@ -72,12 +81,14 @@ fun SignInScreen(
         onSignInOtpClicked = { viewModel.signInWithOtp() },
         onSignUpClicked = { viewModel.navigateToSignUpPage() },
         onInfoClicked = { viewModel.navigateToDebugPage() },
+        onThemeSelected = { viewModel.changeSelectedTheme(it) },
     )
 }
 
 @Composable
 internal fun SignInContent(
     uiState: SignInUIState,
+    applicationUIState: EdifikanaApplicationUIState,
     modifier: Modifier = Modifier,
     onUsernameValueChange: (String) -> Unit,
     onPasswordValueChange: (String) -> Unit,
@@ -86,6 +97,7 @@ internal fun SignInContent(
     onSignInOtpClicked: () -> Unit,
     onSignUpClicked: () -> Unit,
     onInfoClicked: () -> Unit,
+    onThemeSelected: (SelectedTheme) -> Unit,
 ) {
     Scaffold(
         modifier = modifier,
@@ -199,6 +211,12 @@ internal fun SignInContent(
                     contentDescription = null,
                 )
             }
+
+            ThemeToggle(
+                selectedTheme = applicationUIState.theme,
+                onThemeSelected = { onThemeSelected(it) },
+                modifier = Modifier.align(Alignment.TopEnd),
+            )
         }
     }
     LoadingAnimationOverlay(uiState.isLoading)

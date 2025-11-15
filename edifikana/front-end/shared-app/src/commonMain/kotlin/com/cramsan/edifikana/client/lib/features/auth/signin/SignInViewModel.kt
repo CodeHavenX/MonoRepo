@@ -4,6 +4,10 @@ import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
+import com.cramsan.edifikana.client.lib.managers.PreferencesManager
+import com.cramsan.edifikana.client.lib.models.Theme
+import com.cramsan.edifikana.client.lib.settings.EdifikanaSettingKey
+import com.cramsan.framework.configuration.PropertyValue
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.core.compose.resources.StringProvider
@@ -11,6 +15,7 @@ import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logI
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import com.cramsan.framework.utils.loginvalidation.validateEmail
+import com.cramsan.ui.components.themetoggle.SelectedTheme
 import edifikana_lib.Res
 import edifikana_lib.error_message_unexpected_error
 import kotlinx.coroutines.launch
@@ -22,6 +27,7 @@ class SignInViewModel(
     dependencies: ViewModelDependencies,
     private val auth: AuthManager,
     private val stringProvider: StringProvider,
+    private val preferencesManager: PreferencesManager,
 ) : BaseViewModel<SignInEvent, SignInUIState>(dependencies, SignInUIState.Initial, TAG) {
 
     /**
@@ -174,7 +180,7 @@ class SignInViewModel(
         }
         updateUiState {
             it.copy(
-                errorMessages = emptyList<String>()
+                errorMessages = emptyList()
             )
         }
         return true
@@ -190,6 +196,23 @@ class SignInViewModel(
                     "username and password and try again."
 
             else -> stringProvider.getString(Res.string.error_message_unexpected_error)
+        }
+    }
+
+    /**
+     * Change the selected theme preference.
+     */
+    fun changeSelectedTheme(theme: SelectedTheme) {
+        viewModelScope.launch {
+            val themeToSave = when (theme) {
+                SelectedTheme.LIGHT -> Theme.LIGHT
+                SelectedTheme.DARK -> Theme.DARK
+                SelectedTheme.SYSTEM_DEFAULT -> Theme.SYSTEM_DEFAULT
+            }
+            preferencesManager.updatePreference(
+                EdifikanaSettingKey.SelectedTheme,
+                PropertyValue.StringValue(themeToSave.name),
+            ).getOrThrow()
         }
     }
 }

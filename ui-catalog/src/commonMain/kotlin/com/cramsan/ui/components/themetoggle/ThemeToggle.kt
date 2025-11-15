@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 /**
  * A [ThemeToggle] which lets you toggle between light theme, dark theme and automatic selection.
  *
- * @author Your Name
+ * @author Cramsan
  */
 @Composable
 fun ThemeToggle(

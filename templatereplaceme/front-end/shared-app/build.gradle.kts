@@ -62,6 +62,7 @@ kotlin {
             implementation("io.insert-koin:koin-core:_")
             implementation("io.insert-koin:koin-compose:_")
             implementation("io.insert-koin:koin-compose-viewmodel:_")
+            implementation("io.insert-koin:koin-compose-viewmodel-navigation:_")
 
             implementation("io.ktor:ktor-client-content-negotiation:_")
             implementation("io.ktor:ktor-serialization-kotlinx-json:_")

@@ -3,6 +3,7 @@ package com.cramsan.architecture.client.di
 import com.cramsan.architecture.client.settings.SettingsHolder
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.compose.ApplicationEvent
+import com.cramsan.framework.core.compose.DelegatedWindowEvent
 import com.cramsan.framework.core.compose.EventBus
 import com.cramsan.framework.core.compose.EventEmitter
 import com.cramsan.framework.core.compose.EventReceiver
@@ -87,6 +88,13 @@ internal val ExtrasModule = module {
         } withOptions {
             bind<EventEmitter<WindowEvent>>()
             bind<EventReceiver<WindowEvent>>()
+        }
+
+        scoped(named(WindowIdentifier.DELEGATED_EVENT_BUS)) {
+            EventBus<DelegatedWindowEvent>()
+        } withOptions {
+            bind<EventEmitter<DelegatedWindowEvent>>()
+            bind<EventReceiver<DelegatedWindowEvent>>()
         }
 
         scoped {

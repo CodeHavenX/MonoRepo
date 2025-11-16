@@ -52,6 +52,6 @@ class DrawerViewModel(
     }
 
     companion object {
-        private const val TAG = "ManagementViewModel"
+        private const val TAG = "DrawerViewModel"
     }
 }

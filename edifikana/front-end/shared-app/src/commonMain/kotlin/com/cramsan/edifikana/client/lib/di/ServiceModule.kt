@@ -8,6 +8,7 @@ import com.cramsan.edifikana.client.lib.service.OrganizationService
 import com.cramsan.edifikana.client.lib.service.PropertyService
 import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.edifikana.client.lib.service.TimeCardService
+import com.cramsan.edifikana.client.lib.service.impl.AuthRequestPlugin
 import com.cramsan.edifikana.client.lib.service.impl.AuthServiceImpl
 import com.cramsan.edifikana.client.lib.service.impl.EmployeeServiceImpl
 import com.cramsan.edifikana.client.lib.service.impl.EventLogServiceImpl
@@ -101,5 +102,9 @@ internal val ServiceModule = module {
     }
     singleOf(::OrganizationServiceImpl) {
         bind<OrganizationService>()
+    }
+
+    single {
+        AuthRequestPlugin(get())
     }
 }

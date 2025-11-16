@@ -118,6 +118,6 @@ class OrganizationHomeViewModel(
     }
 
     companion object {
-        private const val TAG = "HubViewModel"
+        private const val TAG = "OrganizationHomeViewModel"
     }
 }

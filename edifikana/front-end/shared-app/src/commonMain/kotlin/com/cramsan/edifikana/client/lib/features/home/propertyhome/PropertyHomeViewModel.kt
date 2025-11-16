@@ -119,6 +119,6 @@ class PropertyHomeViewModel(
     }
 
     companion object {
-        private const val TAG = "HomeViewModel"
+        private const val TAG = "PropertyHomeViewModel"
     }
 }

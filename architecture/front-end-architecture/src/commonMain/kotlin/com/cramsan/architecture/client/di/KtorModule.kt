@@ -6,6 +6,7 @@ import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.HttpResponseValidator
+import io.ktor.client.plugins.api.ClientPlugin
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.Logging
@@ -60,6 +61,11 @@ internal val KtorModule = module {
                 json(get())
             }
             install(Logging)
+
+            val pluginList: List<ClientPlugin<*>> = getAll()
+            pluginList.forEach { plugin ->
+                install(plugin)
+            }
         }
     }
 }

@@ -11,6 +11,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.ui.components.ScreenLayout
 import org.koin.compose.viewmodel.koinViewModel
+import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 
 /**
  * Main Menu screen
@@ -25,13 +26,12 @@ fun MainMenuScreen(
     LifecycleEventEffect(Lifecycle.Event.ON_STOP) {
     }
 
-    LaunchedEffect(Unit) {
-        viewModel.events.collect { event ->
+    ObserveViewModelEvents(viewModel) { event ->
             when (event) {
                 MainMenuEvent.Noop -> Unit
             }
         }
-    }
+
 
     MainMenuContent(
         modifier = Modifier,

@@ -7,6 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
@@ -37,12 +38,11 @@ fun LoggingScreen(
         // Call this feature's viewModel
     }
 
-    LaunchedEffect(Unit) {
-        viewModel.events.collect { event ->
+    ObserveViewModelEvents(viewModel) { event ->
             when (event) {
                 LoggingEvent.Noop -> Unit
             }
-        }
+
     }
 
     // Render the screen

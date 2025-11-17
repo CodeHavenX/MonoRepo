@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
@@ -37,12 +38,11 @@ fun HaltUtilScreen(
         // Call this feature's viewModel
     }
 
-    LaunchedEffect(Unit) {
-        viewModel.events.collect { event ->
+    ObserveViewModelEvents(viewModel) { event ->
             when (event) {
                 HaltUtilEvent.Noop -> Unit
             }
-        }
+
     }
 
     // Render the screen

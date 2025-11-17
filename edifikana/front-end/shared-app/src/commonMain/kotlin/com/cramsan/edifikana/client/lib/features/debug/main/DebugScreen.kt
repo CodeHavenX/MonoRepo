@@ -31,6 +31,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.architecture.client.settings.SettingKey
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
+import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.PasswordOutlinedTextField
 import com.cramsan.ui.components.ScreenLayout
 import com.cramsan.ui.theme.Padding
@@ -61,15 +62,13 @@ fun DebugScreen(
         viewModel.saveBufferedChanges()
     }
 
-    LaunchedEffect(Unit) {
-        viewModel.events.collect { event ->
-            when (event) {
-                DebugEvent.CloseApplication -> {
-                    viewModel.closeApplication()
-                }
-                DebugEvent.ClearPreferences -> {
-                    viewModel.clearPreferences()
-                }
+    ObserveViewModelEvents(viewModel) { event ->
+        when (event) {
+            DebugEvent.CloseApplication -> {
+                viewModel.closeApplication()
+            }
+            DebugEvent.ClearPreferences -> {
+                viewModel.clearPreferences()
             }
         }
     }

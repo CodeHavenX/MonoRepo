@@ -1,21 +1,34 @@
 package ${PACKAGE_NAME}.${Package_Name}
 
-import com.cramsan.framework.core.compose.ViewModelUIState
+import com.cramsan.framework.core.compose.BaseViewModel
+import com.cramsan.framework.core.compose.ViewModelDependencies
+import kotlinx.coroutines.launch
 
 /**
- * UI state of the ${Feature_Name} feature.
- *
- * This class models the top level state of the page.
- * For modeling more specific details of the page, see the respective UI model class.
- */
-data class ${Feature_Name}UIState(
-    val title: String?,
-    val isLoading: Boolean,
-) : ViewModelUIState {
+ * ViewModel for the ${Feature_Name} screen.
+ **/
+ // TODO: Register this ViewModel for dependency injection
+ // Look for where the ViewModel is configured and add this line
+ // viewModelOf(::${Feature_Name}ViewModel)
+class ${Feature_Name}ViewModel(
+    dependencies: ViewModelDependencies,
+) : BaseViewModel<${Feature_Name}Event, ${Feature_Name}UIState>(
+    dependencies,
+    ${Feature_Name}UIState.Initial,
+    TAG,
+) {
+
+    /**
+     * Trigger the back event.
+     */
+    fun onBackSelected() {
+        viewModelScope.launch {
+            // TODO: Update this with the respective Window Event type.
+            emitWindowEvent(WindowEvent.NavigateBack)
+        }
+    }
+
     companion object {
-        val Initial = ${Feature_Name}UIState(
-            title = null,
-            isLoading = true,
-        )
+        private const val TAG = "${Feature_Name}ViewModel"
     }
 }

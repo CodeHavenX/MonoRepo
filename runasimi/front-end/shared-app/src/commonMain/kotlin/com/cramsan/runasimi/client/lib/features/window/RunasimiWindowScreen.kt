@@ -9,12 +9,12 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.runasimi.client.lib.features.main.mainNavGraphNavigation
 import com.cramsan.runasimi.client.ui.theme.AppTheme
 import kotlinx.coroutines.CoroutineScope
@@ -49,19 +49,17 @@ private fun WindowsContent(
 
     val snackbarHostState = remember { SnackbarHostState() }
 
-    LaunchedEffect(Unit) {
-        viewModel.events.collect { event ->
-            when (event) {
-                is RunasimiWindowViewModelEvent.RunasimiWindowEventWrapper -> {
-                    handleWindowEvent(
-                        eventHandler = eventHandler,
-                        navController = navController,
-                        scope = this,
-                        snackbarHostState = snackbarHostState,
-                        viewModel = viewModel,
-                        windowEvent = event.event,
-                    )
-                }
+    ObserveViewModelEvents(viewModel) { event ->
+        when (event) {
+            is RunasimiWindowViewModelEvent.RunasimiWindowEventWrapper -> {
+                handleWindowEvent(
+                    eventHandler = eventHandler,
+                    navController = navController,
+                    scope = this,
+                    snackbarHostState = snackbarHostState,
+                    viewModel = viewModel,
+                    windowEvent = event.event,
+                )
             }
         }
     }

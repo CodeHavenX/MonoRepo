@@ -8,12 +8,6 @@ import kotlinx.serialization.Serializable
  */
 sealed class MainDestination : Destination {
     /**
-     * A class representing navigating to the ${Feature_Name} screen.
-     */
-    @Serializable
-    data object NavDestination : MainDestination()
-
-    /**
      * A class representing navigating to the Menu screen.
      */
     @Serializable

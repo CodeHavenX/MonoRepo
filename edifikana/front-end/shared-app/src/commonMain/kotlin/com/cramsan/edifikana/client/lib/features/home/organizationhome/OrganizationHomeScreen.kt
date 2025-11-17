@@ -16,7 +16,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,6 +29,7 @@ import com.cramsan.edifikana.client.lib.features.home.employeelist.EmployeeListS
 import com.cramsan.edifikana.client.lib.features.home.properties.PropertyManagerScreen
 import com.cramsan.edifikana.client.lib.features.home.propertyhome.AccountDropDown
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
+import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import edifikana_lib.Res
 import edifikana_lib.app_name
 import edifikana_lib.hub_screen_employee_button_title
@@ -57,11 +57,9 @@ fun OrganizationHomeScreen(
         viewModel.loadInitialData()
     }
 
-    LaunchedEffect(Unit) {
-        viewModel.events.collect { event ->
-            when (event) {
-                OrganizationHomeEvent.Noop -> Unit
-            }
+    ObserveViewModelEvents(viewModel) { event ->
+        when (event) {
+            OrganizationHomeEvent.Noop -> Unit
         }
     }
 

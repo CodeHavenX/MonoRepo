@@ -9,13 +9,36 @@ import com.cramsan.framework.core.compose.ViewModelUIState
  * For modeling more specific details of the page, see the respective UI model class.
  */
 data class MenuUIState(
-    val title: String?,
-    val isLoading: Boolean,
+    val selectedItem: SelectableDrawerItem? = SelectableDrawerItem.Numbers,
+    val drawerItems: List<DrawerItem> = emptyList(),
 ) : ViewModelUIState {
     companion object {
         val Initial = MenuUIState(
-            title = null,
-            isLoading = true,
+            drawerItems = listOf(
+                DrawerItem.Selectable(SelectableDrawerItem.Numbers),
+                DrawerItem.Selectable(SelectableDrawerItem.Verbs),
+            ),
         )
     }
+}
+
+/**
+ * Represents an item in the navigation drawer.
+ */
+sealed class DrawerItem {
+
+    /**
+     * A selectable item in the navigation drawer.
+     */
+    data class Selectable(
+        val item: SelectableDrawerItem,
+    ) : DrawerItem()
+}
+
+/**
+ * Represents the selectable items in the navigation drawer.
+ */
+enum class SelectableDrawerItem {
+    Numbers,
+    Verbs,
 }

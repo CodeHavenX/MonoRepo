@@ -31,22 +31,6 @@ class VerbsViewModel(
         }
     }
 
-    /**
-     * Update the UI with a new number.
-     */
-    @Suppress("MagicNumber")
-    fun generateNewNumber() {
-        viewModelScope.launch {
-            val numberOfDigits = (1..4).random()
-            val content = quechuaManager.generateNumberTranslation(numberOfDigits)
-            updateUiState {
-                it.copy(
-                    content = content,
-                )
-            }
-        }
-    }
-
     companion object {
         private const val TAG = "VerbsViewModel"
     }

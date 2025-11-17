@@ -23,7 +23,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,6 +39,7 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.home.HomeDestination
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.framework.core.compose.rememberDialogController
+import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
@@ -68,27 +68,25 @@ fun PropertyScreen(
         viewModel.loadContent(destination.propertyId)
     }
 
-    LaunchedEffect(Unit) {
-        viewModel.events.collect { event ->
-            when (event) {
-                PropertyEvent.ShowRemoveDialog -> {
-                    dialogController.showDialog(
-                        ConfirmRemoveDialog(
-                            onConfirmed = {
-                                viewModel.removeProperty()
-                            }
-                        )
+    ObserveViewModelEvents(viewModel) { event ->
+        when (event) {
+            PropertyEvent.ShowRemoveDialog -> {
+                dialogController.showDialog(
+                    ConfirmRemoveDialog(
+                        onConfirmed = {
+                            viewModel.removeProperty()
+                        }
                     )
-                }
-                PropertyEvent.ShowSaveBeforeExitingDialog -> {
-                    dialogController.showDialog(
-                        ConfirmExitingDialog(
-                            onSaveSelected = {
-                                viewModel.saveChanges(true)
-                            },
-                        )
+                )
+            }
+            PropertyEvent.ShowSaveBeforeExitingDialog -> {
+                dialogController.showDialog(
+                    ConfirmExitingDialog(
+                        onSaveSelected = {
+                            viewModel.saveChanges(true)
+                        },
                     )
-                }
+                )
             }
         }
     }

@@ -5,13 +5,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,6 +23,8 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
+import com.cramsan.runasimi.client.lib.features.main.menu.MenuViewModel
 import com.cramsan.runasimi.client.ui.components.RunasimiTopBar
 import com.cramsan.runasimi.client.ui.components.card.Card
 import com.cramsan.ui.components.ScreenLayout
@@ -39,24 +41,23 @@ import org.koin.compose.viewmodel.koinViewModel
 fun VerbsScreen(
     modifier: Modifier = Modifier,
     viewModel: VerbsViewModel = koinViewModel(),
+    mainMenuViewModel: MenuViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
     /**
      * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
      */
-    LifecycleEventEffect(Lifecycle.Event.ON_START) {
+    LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
         viewModel.generateNewConjugation()
     }
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         // Call this feature's viewModel
     }
 
-    LaunchedEffect(Unit) {
-        viewModel.events.collect { event ->
-            when (event) {
-                VerbsEvent.Noop -> Unit
-            }
+    ObserveViewModelEvents(viewModel) { event ->
+        when (event) {
+            VerbsEvent.Noop -> Unit
         }
     }
 
@@ -64,8 +65,10 @@ fun VerbsScreen(
     VerbsContent(
         content = uiState,
         onNewConjugationRequested = { viewModel.generateNewConjugation() },
-        onNewNumberRequested = { viewModel.generateNewNumber() },
         modifier = modifier,
+        toggleDrawer = {
+            mainMenuViewModel.toggleDrawer()
+        },
     )
 }
 
@@ -77,12 +80,15 @@ internal fun VerbsContent(
     content: VerbsUIState,
     modifier: Modifier = Modifier,
     onNewConjugationRequested: () -> Unit = { },
-    onNewNumberRequested: () -> Unit = { },
+    toggleDrawer: () -> Unit = { },
 ) {
     Scaffold(
         modifier = modifier,
         topBar = {
-            RunasimiTopBar()
+            RunasimiTopBar(
+                navigationIcon = Icons.Default.Menu,
+                onNavigationIconSelected = toggleDrawer,
+            )
         },
     ) { innerPadding ->
         Box(
@@ -128,12 +134,6 @@ internal fun VerbsContent(
                             modifier = Modifier.weight(1f),
                         ) {
                             Text("Verbs")
-                        }
-                        FilledTonalButton(
-                            onNewNumberRequested,
-                            modifier = Modifier.weight(1f),
-                        ) {
-                            Text("Numbers")
                         }
                     }
                 }

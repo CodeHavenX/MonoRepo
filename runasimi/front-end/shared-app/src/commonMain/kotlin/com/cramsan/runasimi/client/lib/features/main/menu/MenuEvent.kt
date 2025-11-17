@@ -12,5 +12,10 @@ sealed class MenuEvent : ViewModelEvent {
     /**
      * No operation.
      */
-    data object Noop : MenuEvent()
+    data object ToggleDrawer : MenuEvent()
+
+    /**
+     * Close the drawer.
+     */
+    data object CloseDrawer : MenuEvent()
 }

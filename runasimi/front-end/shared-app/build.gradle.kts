@@ -42,6 +42,8 @@ kotlin {
             implementation(project(":framework:network-api"))
             implementation(project(":framework:http-serializers"))
 
+            implementation(project(":architecture:front-end-architecture"))
+
             implementation(project(":ui-catalog"))
 
             implementation(project(":runasimi:front-end:shared-ui"))

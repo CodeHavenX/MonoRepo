@@ -7,17 +7,17 @@
       </template>
       <template name="Compose Activity.kt.child.0.kt" file-name="${Package_Name}/${Feature_Name}Destination" reformat="true" live-template-enabled="false" />
       <template name="Compose Feature.kt" file-name="${Package_Name}/${Feature_Name}Screen" reformat="true" live-template-enabled="false">
-        <template name="Compose Feature.kt.child.3.kt" file-name="${Package_Name}/${Feature_Name}UIState" reformat="true" live-template-enabled="false" />
-        <template name="Compose Feature.kt.child.1.kt" file-name="${Package_Name}/${Feature_Name}ViewModel" reformat="true" live-template-enabled="false" />
-        <template name="Compose Feature.kt.child.0.kt" file-name="${Package_Name}/${Feature_Name}Screen.preview" reformat="true" live-template-enabled="false" />
-        <template name="Compose Feature.kt.child.4.kt" file-name="${Package_Name}/${Feature_Name}ViewModelTest" reformat="true" live-template-enabled="false" />
-        <template name="Compose Feature.kt.child.2.kt" file-name="${Package_Name}/${Feature_Name}Event" reformat="true" live-template-enabled="false" />
+        <template name="Compose Feature.kt.child.0.kt" file-name="${Package_Name}/${Feature_Name}Event" reformat="true" live-template-enabled="false" />
+        <template name="Compose Feature.kt.child.1.kt" file-name="${Package_Name}/${Feature_Name}ViewModelTest" reformat="true" live-template-enabled="false" />
+        <template name="Compose Feature.kt.child.2.kt" file-name="${Package_Name}/${Feature_Name}Screen.preview" reformat="true" live-template-enabled="false" />
+        <template name="Compose Feature.kt.child.3.kt" file-name="${Package_Name}/${Feature_Name}ViewModel" reformat="true" live-template-enabled="false" />
+        <template name="Compose Feature.kt.child.4.kt" file-name="${Package_Name}/${Feature_Name}UIState" reformat="true" live-template-enabled="false" />
       </template>
-      <template name="Compose Feature.kt.child.0.kt" file-name="${Package_Name}/${Feature_Name}Screen.preview" reformat="true" live-template-enabled="false" />
-      <template name="Compose Feature.kt.child.1.kt" file-name="${Package_Name}/${Feature_Name}ViewModel" reformat="true" live-template-enabled="false" />
-      <template name="Compose Feature.kt.child.2.kt" file-name="${Package_Name}/${Feature_Name}Event" reformat="true" live-template-enabled="false" />
-      <template name="Compose Feature.kt.child.3.kt" file-name="${Package_Name}/${Feature_Name}UIState" reformat="true" live-template-enabled="false" />
-      <template name="Compose Feature.kt.child.4.kt" file-name="${Package_Name}/${Feature_Name}ViewModelTest" reformat="true" live-template-enabled="false" />
+      <template name="Compose Feature.kt.child.0.kt" file-name="${Package_Name}/${Feature_Name}Event" reformat="true" live-template-enabled="false" />
+      <template name="Compose Feature.kt.child.1.kt" file-name="${Package_Name}/${Feature_Name}ViewModelTest" reformat="true" live-template-enabled="false" />
+      <template name="Compose Feature.kt.child.2.kt" file-name="${Package_Name}/${Feature_Name}Screen.preview" reformat="true" live-template-enabled="false" />
+      <template name="Compose Feature.kt.child.3.kt" file-name="${Package_Name}/${Feature_Name}ViewModel" reformat="true" live-template-enabled="false" />
+      <template name="Compose Feature.kt.child.4.kt" file-name="${Package_Name}/${Feature_Name}UIState" reformat="true" live-template-enabled="false" />
     </default_templates>
   </component>
 </project>

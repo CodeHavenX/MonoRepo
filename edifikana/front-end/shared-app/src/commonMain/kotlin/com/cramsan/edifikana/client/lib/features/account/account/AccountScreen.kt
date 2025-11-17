@@ -29,6 +29,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.framework.core.compose.rememberDialogController
+import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
 import com.cramsan.ui.theme.Padding
@@ -57,11 +58,9 @@ fun AccountScreen(
         viewModel.loadUserData()
     }
 
-    LaunchedEffect(Unit) {
-        viewModel.events.collect { event ->
-            when (event) {
-                AccountEvent.Noop -> Unit
-            }
+    ObserveViewModelEvents(viewModel) { event ->
+        when (event) {
+            AccountEvent.Noop -> Unit
         }
     }
 

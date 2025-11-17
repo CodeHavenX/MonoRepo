@@ -3,6 +3,7 @@ package com.cramsan.framework.sample.shared.features
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
+import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
@@ -28,8 +29,7 @@ fun ApplicationScreen(
 
     val snackbarHostState = remember { SnackbarHostState() }
 
-    LaunchedEffect(Unit) {
-        viewModel.events.collect { event ->
+    ObserveViewModelEvents(viewModel) { event ->
             when (event) {
                 is SampleApplicationViewModelEvent.SampleApplicationEventWrapper -> {
                     handleApplicationEvent(
@@ -39,7 +39,7 @@ fun ApplicationScreen(
                         applicationEvent = event.event,
                     )
                 }
-            }
+
         }
     }
 

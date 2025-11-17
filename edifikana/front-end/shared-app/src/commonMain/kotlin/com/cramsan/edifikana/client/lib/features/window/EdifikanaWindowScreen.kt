@@ -10,7 +10,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -38,6 +37,7 @@ import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.themetoggle.SelectedTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -80,19 +80,17 @@ private fun WindowsContent(
         viewModel.initialize()
     }
 
-    LaunchedEffect(Unit) {
-        viewModel.events.collect { event ->
-            when (event) {
-                is EdifikanaWindowViewModelEvent.EdifikanaWindowEventWrapper -> {
-                    handleWindowEvent(
-                        eventHandler = eventHandler,
-                        navController = navController,
-                        scope = this,
-                        snackbarHostState = snackbarHostState,
-                        viewModel = viewModel,
-                        windowEvent = event.event,
-                    )
-                }
+    ObserveViewModelEvents(viewModel) { event ->
+        when (event) {
+            is EdifikanaWindowViewModelEvent.EdifikanaWindowEventWrapper -> {
+                handleWindowEvent(
+                    eventHandler = eventHandler,
+                    navController = navController,
+                    scope = this,
+                    snackbarHostState = snackbarHostState,
+                    viewModel = viewModel,
+                    windowEvent = event.event,
+                )
             }
         }
     }

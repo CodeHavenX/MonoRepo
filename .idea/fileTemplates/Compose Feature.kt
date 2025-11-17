@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
 import org.koin.compose.koinInject
@@ -49,11 +50,9 @@ fun ${Feature_Name}Screen(
         // Call this feature's viewModel
     }
 
-    LaunchedEffect(Unit) {
-        viewModel.events.collect { event ->
-            when (event) {
-                ${Feature_Name}Event.Noop -> Unit
-            }
+    ObserveViewModelEvents(viewModel) { event ->
+        when (event) {
+            ${Feature_Name}Event.Noop -> Unit
         }
     }
 

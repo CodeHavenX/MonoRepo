@@ -25,6 +25,29 @@ class MenuViewModel(
         }
     }
 
+    /**
+     * Handle drawer item selection.
+     */
+    fun onDrawerItemSelected(item: SelectableDrawerItem) {
+        viewModelScope.launch {
+            updateUiState {
+                it.copy(
+                    selectedItem = item,
+                )
+            }
+            emitEvent(MenuEvent.CloseDrawer)
+        }
+    }
+
+    /**
+     * Toggle the drawer state.
+     */
+    fun toggleDrawer() {
+        viewModelScope.launch {
+            emitEvent(MenuEvent.ToggleDrawer)
+        }
+    }
+
     companion object {
         private const val TAG = "MenuViewModel"
     }

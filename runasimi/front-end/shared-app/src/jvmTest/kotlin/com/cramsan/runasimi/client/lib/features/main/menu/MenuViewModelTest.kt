@@ -62,8 +62,8 @@ class MenuViewModelTest : CoroutineTest() {
     }
 
     @Test
-    fun `test ui state`() = runCoroutineTest {
-        assertNull(viewModel.uiState.value.title)
+    fun `test initial ui state`() = runCoroutineTest {
+        assertEquals(SelectableDrawerItem.Numbers, viewModel.uiState.value.selectedItem)
     }
 
     @Test

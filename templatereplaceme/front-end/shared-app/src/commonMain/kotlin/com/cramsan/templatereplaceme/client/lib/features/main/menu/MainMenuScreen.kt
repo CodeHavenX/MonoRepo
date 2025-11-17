@@ -12,7 +12,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -20,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.templatereplaceme.client.lib.features.application.TemplateReplaceMeApplicationViewModel
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
@@ -47,11 +47,9 @@ fun MainMenuScreen(
         //
     }
 
-    LaunchedEffect(Unit) {
-        viewModel.events.collect { event ->
-            when (event) {
-                MainMenuEvent.Noop -> Unit
-            }
+    ObserveViewModelEvents(viewModel) { event ->
+        when (event) {
+            MainMenuEvent.Noop -> Unit
         }
     }
 

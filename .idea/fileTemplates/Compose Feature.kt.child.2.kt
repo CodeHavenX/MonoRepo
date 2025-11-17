@@ -1,17 +1,21 @@
 package ${PACKAGE_NAME}.${Package_Name}
 
-import com.cramsan.framework.core.compose.ViewModelEvent
-import kotlin.random.Random
+import androidx.compose.runtime.Composable
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
- * Events that can be triggered within the domain of the ${Feature_Name} feature.
- *
- * Events are triggered from a ViewModel and are consumed by the UI.
- *
+ * Preview for the ${Feature_Name} feature screen.
  */
-sealed class ${Feature_Name}Event : ViewModelEvent {
-    /**
-     * No operation.
-     */
-    data object Noop : ${Feature_Name}Event()
+@Preview
+@Composable
+private fun ${Feature_Name}ScreenPreview() {
+    AppTheme {
+        ${Feature_Name}Content(
+            content = ${Feature_Name}UIState(
+                title = "${Feature_Name}ScreenPreview",
+                isLoading = true,
+            ),
+            onBackSelected = {},
+        )
+    }
 }

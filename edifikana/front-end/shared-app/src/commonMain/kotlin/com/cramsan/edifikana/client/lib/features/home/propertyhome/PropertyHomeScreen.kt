@@ -25,7 +25,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,6 +40,7 @@ import com.cramsan.edifikana.client.lib.features.home.gotoorganization.GoToOrgan
 import com.cramsan.edifikana.client.lib.features.home.timecard.TimeCardScreen
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.theme.Padding
 import edifikana_lib.Res
 import edifikana_lib.app_name
@@ -78,11 +78,9 @@ fun PropertyHomeScreen(
         // Call this feature's viewModel
     }
 
-    LaunchedEffect(Unit) {
-        viewModel.events.collect { event ->
-            when (event) {
-                PropertyHomeEvent.Noop -> Unit
-            }
+    ObserveViewModelEvents(viewModel) { event ->
+        when (event) {
+            PropertyHomeEvent.Noop -> Unit
         }
     }
 

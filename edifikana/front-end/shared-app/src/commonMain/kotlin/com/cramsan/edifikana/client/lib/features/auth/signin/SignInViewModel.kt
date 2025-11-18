@@ -1,13 +1,12 @@
 package com.cramsan.edifikana.client.lib.features.auth.signin
 
+import com.cramsan.architecture.client.manager.PreferencesManager
 import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
-import com.cramsan.edifikana.client.lib.managers.PreferencesManager
 import com.cramsan.edifikana.client.lib.models.Theme
 import com.cramsan.edifikana.client.lib.settings.EdifikanaSettingKey
-import com.cramsan.framework.configuration.PropertyValue
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.core.compose.resources.StringProvider
@@ -211,7 +210,7 @@ class SignInViewModel(
             }
             preferencesManager.updatePreference(
                 EdifikanaSettingKey.SelectedTheme,
-                PropertyValue.StringValue(themeToSave.name),
+                themeToSave.name,
             ).getOrThrow()
         }
     }

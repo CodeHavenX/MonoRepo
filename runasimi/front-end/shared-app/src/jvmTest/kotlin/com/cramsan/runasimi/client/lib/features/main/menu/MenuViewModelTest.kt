@@ -1,6 +1,7 @@
 package com.cramsan.runasimi.client.lib.features.main.menu
 
 import app.cash.turbine.test
+import com.cramsan.architecture.client.manager.PreferencesManager
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
 import com.cramsan.framework.core.compose.EventBus
@@ -40,6 +41,7 @@ class MenuViewModelTest : CoroutineTest() {
     private lateinit var applicationEventReceiver: EventBus<ApplicationEvent>
 
     private lateinit var stringProvider: StringProvider
+    private lateinit var preferencesManager: PreferencesManager
 
     @BeforeTest
     fun setupTest() {
@@ -48,6 +50,7 @@ class MenuViewModelTest : CoroutineTest() {
         applicationEventReceiver = EventBus()
         windowEventBus = EventBus()
         stringProvider = mockk()
+        preferencesManager = mockk()
         val dependencies = ViewModelDependencies(
             appScope = testCoroutineScope,
             dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),
@@ -58,6 +61,7 @@ class MenuViewModelTest : CoroutineTest() {
 
         viewModel = MenuViewModel(
             dependencies = dependencies,
+            preferencesManager = preferencesManager,
         )
     }
 

@@ -133,7 +133,7 @@ internal fun YupayContent(
                             onNewNumberRequested,
                             modifier = Modifier.weight(1f),
                         ) {
-                            Text("Numbers")
+                            Text("Next")
                         }
                     }
                 }

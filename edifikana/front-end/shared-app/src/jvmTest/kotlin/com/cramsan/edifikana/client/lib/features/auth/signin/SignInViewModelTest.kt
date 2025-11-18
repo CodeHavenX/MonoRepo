@@ -1,11 +1,11 @@
 package com.cramsan.edifikana.client.lib.features.auth.signin
 
 import app.cash.turbine.test
+import com.cramsan.architecture.client.manager.PreferencesManager
 import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
-import com.cramsan.edifikana.client.lib.managers.PreferencesManager
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
 import com.cramsan.framework.core.compose.EventBus

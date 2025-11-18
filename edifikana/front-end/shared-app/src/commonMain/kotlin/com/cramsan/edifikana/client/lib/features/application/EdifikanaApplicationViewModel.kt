@@ -1,12 +1,14 @@
 package com.cramsan.edifikana.client.lib.features.application
 
+import com.cramsan.architecture.client.manager.PreferencesManager
 import com.cramsan.edifikana.client.lib.init.Initializer
-import com.cramsan.edifikana.client.lib.managers.PreferencesManager
+import com.cramsan.edifikana.client.lib.models.Theme
 import com.cramsan.edifikana.client.lib.settings.EdifikanaSettingKey
 import com.cramsan.edifikana.client.lib.toSelectedTheme
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logI
+import com.cramsan.ui.components.themetoggle.SelectedTheme
 import kotlinx.coroutines.launch
 
 /**
@@ -57,7 +59,10 @@ class EdifikanaApplicationViewModel(
     }
 
     private suspend fun loadSelectedThemeSetting() {
-        val themeMode = preferences.selectedTheme().getOrThrow()
+        val themeModeString = preferences.getStringPreference(
+            EdifikanaSettingKey.SelectedTheme,
+        ).getOrNull()
+        val themeMode = Theme.fromString(themeModeString)
         updateUiState {
             it.copy(
                 theme = themeMode.toSelectedTheme(),
@@ -66,7 +71,9 @@ class EdifikanaApplicationViewModel(
     }
 
     private suspend fun loadDebugWindowSettings() {
-        val showDebugWindow = preferences.isOpenDebugWindow().getOrThrow()
+        val showDebugWindow = preferences.getBooleanPreference(
+            EdifikanaSettingKey.OpenDebugWindow,
+        ).getOrNull() ?: false
         if (showDebugWindow) {
             logI(TAG, "Debug window is enabled.")
         } else {

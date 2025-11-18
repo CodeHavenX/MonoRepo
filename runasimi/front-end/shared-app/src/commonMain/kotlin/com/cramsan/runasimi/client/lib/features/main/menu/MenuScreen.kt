@@ -43,6 +43,9 @@ fun MenuScreen(
     /**
      * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
      */
+    LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
+        viewModel.initialize()
+    }
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
         // Call this feature's viewModel
     }

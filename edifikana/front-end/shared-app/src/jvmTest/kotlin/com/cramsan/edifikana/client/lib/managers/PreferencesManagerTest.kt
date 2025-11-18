@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.managers
 
 import app.cash.turbine.test
+import com.cramsan.architecture.client.manager.PreferencesManager
 import com.cramsan.architecture.client.settings.FrontEndApplicationSettingKey
 import com.cramsan.architecture.client.settings.SettingsHolder
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
@@ -22,6 +23,7 @@ import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 /**
@@ -48,7 +50,7 @@ class PreferencesManagerTest : CoroutineTest() {
     fun `haltOnFailure returns value from settingsHolder when present`() = runCoroutineTest {
         coEvery { settingsHolder.getBoolean(FrontEndApplicationSettingKey.HaltOnFailure) } returns true
 
-        val result = manager.haltOnFailure()
+        val result = manager.getBooleanPreference(FrontEndApplicationSettingKey.HaltOnFailure)
 
         assertTrue(result.isSuccess)
         assertEquals(true, result.getOrNull())
@@ -59,10 +61,10 @@ class PreferencesManagerTest : CoroutineTest() {
     fun `haltOnFailure defaults to false when not set`() = runCoroutineTest {
         coEvery { settingsHolder.getBoolean(FrontEndApplicationSettingKey.HaltOnFailure) } returns null
 
-        val result = manager.haltOnFailure()
+        val result = manager.getBooleanPreference(FrontEndApplicationSettingKey.HaltOnFailure)
 
         assertTrue(result.isSuccess)
-        assertEquals(false, result.getOrNull())
+        assertNull(result.getOrNull())
     }
 
     @Test
@@ -88,8 +90,8 @@ class PreferencesManagerTest : CoroutineTest() {
         coEvery { settingsHolder.getString(EdifikanaSettingKey.SupabaseOverrideUrl) } returns "https://supa"
         coEvery { settingsHolder.getString(EdifikanaSettingKey.SupabaseOverrideKey) } returns "key123"
 
-        val url = manager.getSupabaseOverrideUrl()
-        val key = manager.getSupabaseOverrideKey()
+        val url = manager.getStringPreference(EdifikanaSettingKey.SupabaseOverrideUrl)
+        val key = manager.getStringPreference(EdifikanaSettingKey.SupabaseOverrideKey)
 
         assertTrue(url.isSuccess)
         assertEquals("https://supa", url.getOrNull())
@@ -103,9 +105,9 @@ class PreferencesManagerTest : CoroutineTest() {
         coEvery { settingsHolder.getBoolean(EdifikanaSettingKey.OpenDebugWindow) } returns true
         coEvery { settingsHolder.getString(FrontEndApplicationSettingKey.LoggingLevel) } returns "DEBUG"
 
-        val be = manager.getEdifikanaBackendUrl()
-        val debug = manager.isOpenDebugWindow()
-        val logging = manager.loggingSeverityOverride()
+        val be = manager.getStringPreference(EdifikanaSettingKey.EdifikanaBeUrl)
+        val debug = manager.getBooleanPreference(EdifikanaSettingKey.OpenDebugWindow)
+        val logging = manager.getStringPreference(FrontEndApplicationSettingKey.LoggingLevel)
 
         assertTrue(be.isSuccess)
         assertEquals("https://be", be.getOrNull())
@@ -120,13 +122,13 @@ class PreferencesManagerTest : CoroutineTest() {
         coEvery { settingsHolder.getString(EdifikanaSettingKey.SupabaseOverrideUrl) } returns null
         coEvery { settingsHolder.getString(EdifikanaSettingKey.SupabaseOverrideKey) } returns null
 
-        val url = manager.getSupabaseOverrideUrl()
-        val key = manager.getSupabaseOverrideKey()
+        val url = manager.getStringPreference(EdifikanaSettingKey.SupabaseOverrideUrl)
+        val key = manager.getStringPreference(EdifikanaSettingKey.SupabaseOverrideKey)
 
         assertTrue(url.isSuccess)
-        assertEquals("", url.getOrNull())
+        assertNull(url.getOrNull())
         assertTrue(key.isSuccess)
-        assertEquals("", key.getOrNull())
+        assertNull(key.getOrNull())
     }
 
     @Test
@@ -135,16 +137,16 @@ class PreferencesManagerTest : CoroutineTest() {
         coEvery { settingsHolder.getBoolean(EdifikanaSettingKey.OpenDebugWindow) } returns null
         coEvery { settingsHolder.getString(FrontEndApplicationSettingKey.LoggingLevel) } returns null
 
-        val be = manager.getEdifikanaBackendUrl()
-        val debug = manager.isOpenDebugWindow()
-        val logging = manager.loggingSeverityOverride()
+        val be = manager.getStringPreference(EdifikanaSettingKey.EdifikanaBeUrl)
+        val debug = manager.getBooleanPreference(EdifikanaSettingKey.OpenDebugWindow)
+        val logging = manager.getStringPreference(FrontEndApplicationSettingKey.LoggingLevel)
 
         assertTrue(be.isSuccess)
-        assertEquals("", be.getOrNull())
+        assertNull(be.getOrNull())
         assertTrue(debug.isSuccess)
-        assertEquals(false, debug.getOrNull())
+        assertNull(debug.getOrNull())
         assertTrue(logging.isSuccess)
-        assertEquals("INFO", logging.getOrNull())
+        assertNull(logging.getOrNull())
     }
 
     @Test

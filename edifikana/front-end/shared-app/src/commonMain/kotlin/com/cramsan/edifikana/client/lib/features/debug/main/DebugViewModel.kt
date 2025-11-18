@@ -1,10 +1,10 @@
 package com.cramsan.edifikana.client.lib.features.debug.main
 
+import com.cramsan.architecture.client.manager.PreferencesManager
 import com.cramsan.architecture.client.settings.FrontEndApplicationSettingKey
 import com.cramsan.architecture.client.settings.SettingKey
 import com.cramsan.edifikana.client.lib.features.debug.DebugDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
-import com.cramsan.edifikana.client.lib.managers.PreferencesManager
 import com.cramsan.edifikana.client.lib.settings.EdifikanaSettingKey
 import com.cramsan.framework.configuration.PropertyValue
 import com.cramsan.framework.configuration.PropertyValueType
@@ -144,12 +144,24 @@ class DebugViewModel(
     @Suppress("MaxLineLength", "MaximumLineLength", "LongMethod")
     private fun loadDataImpl() {
         viewModelScope.launch {
-            val supabaseOverrideUrl = preferencesManager.getSupabaseOverrideUrl().getOrThrow()
-            val supabaseOverrideKey = preferencesManager.getSupabaseOverrideKey().getOrThrow()
-            val haltOnFailure = preferencesManager.haltOnFailure().getOrThrow()
-            val openDebugWindow = preferencesManager.isOpenDebugWindow().getOrThrow()
-            val edifikanaBeUrl = preferencesManager.getEdifikanaBackendUrl().getOrThrow()
-            val loggingSeverity = preferencesManager.loggingSeverityOverride().getOrThrow()
+            val supabaseOverrideUrl = preferencesManager.getStringPreference(
+                EdifikanaSettingKey.SupabaseOverrideUrl,
+            ).getOrNull()
+            val supabaseOverrideKey = preferencesManager.getStringPreference(
+                EdifikanaSettingKey.SupabaseOverrideKey,
+            ).getOrNull()
+            val haltOnFailure = preferencesManager.getBooleanPreference(
+                FrontEndApplicationSettingKey.HaltOnFailure,
+            ).getOrNull()
+            val openDebugWindow = preferencesManager.getBooleanPreference(
+                EdifikanaSettingKey.OpenDebugWindow,
+            ).getOrNull()
+            val edifikanaBeUrl = preferencesManager.getStringPreference(
+                EdifikanaSettingKey.EdifikanaBeUrl,
+            ).getOrNull()
+            val loggingSeverity = preferencesManager.getStringPreference(
+                FrontEndApplicationSettingKey.LoggingLevel,
+            ).getOrNull()
 
             updateUiState {
                 it.copy(
@@ -163,13 +175,13 @@ class DebugViewModel(
                             title = "Supabase URL",
                             subtitle = "Provide an override URL",
                             key = EdifikanaSettingKey.SupabaseOverrideUrl,
-                            value = supabaseOverrideUrl,
+                            value = supabaseOverrideUrl.orEmpty(),
                         ),
                         Field.StringField(
                             title = "Supabase Anon Key",
                             subtitle = "Provide an override Api Anon Key",
                             key = EdifikanaSettingKey.SupabaseOverrideKey,
-                            value = supabaseOverrideKey,
+                            value = supabaseOverrideKey.orEmpty(),
                             secure = true,
                         ),
                         Field.Divider,
@@ -181,7 +193,7 @@ class DebugViewModel(
                             title = "Edifikana Back End URL",
                             subtitle = "Provide an override URL",
                             key = EdifikanaSettingKey.EdifikanaBeUrl,
-                            value = edifikanaBeUrl,
+                            value = edifikanaBeUrl.orEmpty(),
                         ),
                         Field.Divider,
                         Field.Label("Core Framework Settings"),
@@ -191,14 +203,14 @@ class DebugViewModel(
                                 "This will cause the application to freeze when an error is found. Allowing " +
                                 "you the chance to connect the debugger and inspect tha application state.",
                             key = FrontEndApplicationSettingKey.HaltOnFailure,
-                            value = haltOnFailure,
+                            value = haltOnFailure ?: false,
                         ),
                         Field.Divider,
                         Field.StringField(
                             title = "Logging Severity",
                             subtitle = null,
                             key = FrontEndApplicationSettingKey.LoggingLevel,
-                            value = loggingSeverity,
+                            value = loggingSeverity.orEmpty(),
                         ),
                         Field.ActionField(
                             title = "Clear all Preferences",
@@ -219,7 +231,7 @@ class DebugViewModel(
                             title = "Open Debug Window",
                             subtitle = "Currently only supported on desktop.",
                             key = EdifikanaSettingKey.OpenDebugWindow,
-                            value = openDebugWindow,
+                            value = openDebugWindow ?: false,
                         ),
                         Field.Divider,
                         Field.ActionField(

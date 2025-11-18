@@ -133,7 +133,7 @@ internal fun VerbsContent(
                             onNewConjugationRequested,
                             modifier = Modifier.weight(1f),
                         ) {
-                            Text("Verbs")
+                            Text("Next")
                         }
                     }
                 }

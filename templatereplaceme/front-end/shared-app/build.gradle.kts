@@ -39,7 +39,6 @@ kotlin {
             implementation(project(":framework:core"))
             implementation(project(":framework:configuration"))
             implementation(project(":framework:core-compose"))
-            implementation(project(":framework:configuration"))
             implementation(project(":framework:preferences"))
             implementation(project(":framework:test"))
             implementation(project(":framework:utils"))

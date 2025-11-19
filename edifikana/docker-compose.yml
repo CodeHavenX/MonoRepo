@@ -3,6 +3,7 @@ services:
   backend:
     image: 'ghcr.io/codehavenx/edifikana-backend:latest'
     restart: unless-stopped
+    pull_policy: always
     environment:
       - EDIFIKANA_SUPABASE_KEY=${EDIFIKANA_SUPABASE_KEY}
       - EDIFIKANA_SUPABASE_URL=${EDIFIKANA_SUPABASE_URL}

@@ -9,3 +9,4 @@ services:
   frontend:
     image: 'ghcr.io/codehavenx/template-replace-me-frontend:latest'
     restart: unless-stopped
+    pull_policy: always

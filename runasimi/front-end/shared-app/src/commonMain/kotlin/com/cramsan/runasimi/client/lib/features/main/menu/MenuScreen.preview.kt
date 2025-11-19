@@ -19,6 +19,7 @@ private fun MenuScreenPreview() {
                 drawerItems = listOf(
                     DrawerItem.Selectable(SelectableDrawerItem.Numbers),
                     DrawerItem.Selectable(SelectableDrawerItem.Verbs),
+                    DrawerItem.Selectable(SelectableDrawerItem.Questions),
                 ),
             ),
             drawerState = rememberDrawerState(DrawerValue.Open),

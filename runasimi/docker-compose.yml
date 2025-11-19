@@ -2,4 +2,5 @@ version: '3.8'
 services:
   app:
     image: 'ghcr.io/codehavenx/runasimi-frontend:latest'
+    pull_policy: always
     restart: unless-stopped

@@ -2,6 +2,7 @@ version: '3.8'
 services:
   backend:
     image: 'ghcr.io/codehavenx/edifikana-backend:latest'
+    pull_policy: always
     restart: unless-stopped
     environment:
       - EDIFIKANA_SUPABASE_KEY=${EDIFIKANA_SUPABASE_KEY}
@@ -9,4 +10,5 @@ services:
       - EDIFIKANA_ALLOWED_HOST=${EDIFIKANA_ALLOWED_HOST}
   frontend:
     image: 'ghcr.io/codehavenx/edifikana-frontend:latest'
+    pull_policy: always
     restart: unless-stopped

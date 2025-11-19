@@ -2,9 +2,11 @@ version: '3.8'
 services:
   backend:
     image: 'ghcr.io/codehavenx/template-replace-me-backend:latest'
+    pull_policy: always
     restart: unless-stopped
     environment:
       - A_ALLOWED_HOST=${TEMPLATE_REPLACE_ME_ALLOWED_HOST}
   frontend:
     image: 'ghcr.io/codehavenx/template-replace-me-frontend:latest'
+    pull_policy: always
     restart: unless-stopped

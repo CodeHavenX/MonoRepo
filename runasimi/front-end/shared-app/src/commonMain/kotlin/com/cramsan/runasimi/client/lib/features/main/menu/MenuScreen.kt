@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
+import com.cramsan.runasimi.client.lib.features.main.questions.QuestionsScreen
 import com.cramsan.runasimi.client.lib.features.main.verbs.VerbsScreen
 import com.cramsan.runasimi.client.lib.features.main.yupay.YupayScreen
 import com.cramsan.ui.theme.Padding
@@ -124,6 +125,9 @@ internal fun MenuContent(
                 SelectableDrawerItem.Verbs -> {
                     VerbsScreen()
                 }
+                SelectableDrawerItem.Questions -> {
+                    QuestionsScreen()
+                }
                 null -> {
                     // No-op
                 }
@@ -161,6 +165,7 @@ private fun SelectableDrawerItem(
     val text = when (item) {
         SelectableDrawerItem.Numbers -> "Yupaykuna"
         SelectableDrawerItem.Verbs -> "Ruwaykuna"
+        SelectableDrawerItem.Questions -> "Tapuykuna"
     }
     NavigationDrawerItem(
         label = { Text(text = text, style = MaterialTheme.typography.labelLarge) },

@@ -17,6 +17,7 @@ data class MenuUIState(
             drawerItems = listOf(
                 DrawerItem.Selectable(SelectableDrawerItem.Numbers),
                 DrawerItem.Selectable(SelectableDrawerItem.Verbs),
+                DrawerItem.Selectable(SelectableDrawerItem.Questions),
             ),
         )
     }
@@ -41,4 +42,5 @@ sealed class DrawerItem {
 enum class SelectableDrawerItem {
     Numbers,
     Verbs,
+    Questions,
 }

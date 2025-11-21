@@ -16,7 +16,7 @@ class QuestionsManager {
         "Imaynallam kachkanki?" to "How are you?",
         "Maypitaq tiyanki?" to "Where do you live?",
         "Piwanmi kanki?" to "With whom are you?",
-        "Hayka qullqitaq kayqa" to "How much does this cost?",
+        "Hayka qullqitaq kayqa?" to "How much does this cost?",
         "Haykapitaq purichkanki?" to "When are you traveling?",
         "Imaynataq kayta ruwanki?" to "How do you do this?",
         "Imanasqataq chayta ruwarqanki?" to "Why did you do that?",

@@ -1,5 +1,6 @@
 package com.cramsan.runasimi.client.lib.di
 
-import org.koin.core.module.Module
+import org.koin.dsl.module
 
-internal expect val ManagerPlatformModule: Module
+internal val ManagerPlatformModule = module {
+}

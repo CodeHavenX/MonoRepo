@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.client.lib.di
 
-import org.koin.core.module.Module
+import org.koin.dsl.module
 
-internal expect val ServicePlatformModule: Module
+internal val ServicePlatformModule = module {
+}

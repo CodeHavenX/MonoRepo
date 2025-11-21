@@ -29,8 +29,8 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(project(":framework:halt"))
                 implementation(project(":framework:interfacelib"))
+                implementation(project(":framework:halt"))
                 implementation(project(":framework:logging"))
             }
         }

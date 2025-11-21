@@ -49,7 +49,7 @@ tasks.named<KotlinCompilationTask<*>>("compileKotlin").configure {
 }
 
 // When the `release` task is run, it will compile both the main and integTest sources
-// We do not want to run the integTest task directly as part of the release process,
+// We do not want to run the integTest task directly as part of the release process, because integration tests may require external services or environments that are not always available or suitable during a release build.
 tasks.getByName("release") {
     dependsOn("compileIntegTestJava")
     dependsOn("compileIntegTestKotlin")

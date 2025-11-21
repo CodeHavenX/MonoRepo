@@ -131,4 +131,6 @@ private fun ApplicationNavigationHost(
  * Application content with DI context.
  */
 @Composable
-expect fun ComposableKoinContext(content: @Composable () -> Unit)
+fun ComposableKoinContext(content: @Composable () -> Unit) {
+    TODO("Implement DI context. Look at edifikana for reference.")
+}

@@ -165,7 +165,7 @@ private fun SelectableDrawerItem(
     val text = when (item) {
         SelectableDrawerItem.Numbers -> "Yupaykuna"
         SelectableDrawerItem.Verbs -> "Ruwaykuna"
-        SelectableDrawerItem.Questions -> "Questions"
+        SelectableDrawerItem.Questions -> "Tapuykuna"
     }
     NavigationDrawerItem(
         label = { Text(text = text, style = MaterialTheme.typography.labelLarge) },

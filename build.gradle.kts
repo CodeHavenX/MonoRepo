@@ -55,10 +55,12 @@ tasks.register("releaseAll") {
     dependsOn("samples:jbcompose-wasm-app:release")
     dependsOn("samples:mpp-lib:release")
     dependsOn("samples:jvm-lib:release")
+    dependsOn("samples:jvm-application:release")
     dependsOn("samples:nodejs-app:release")
     dependsOn("samples:service-ktor:release")
 
     dependsOn("framework-samples:app-android:release")
+    dependsOn("framework-samples:framework-sample-app:release")
     dependsOn("framework-samples:app-jvm:release")
     dependsOn("framework-samples:app-wasm:release")
 
@@ -78,6 +80,8 @@ tasks.register("releaseAll") {
     dependsOn("runasimi:front-end:app-wasm:release")
     dependsOn("runasimi:front-end:app-android:release")
     dependsOn("runasimi:front-end:app-jvm:release")
+    dependsOn("runasimi:back-end:release")
+    dependsOn("runasimi:api:release")
 
     dependsOn("architecture:back-end-architecture:release")
     dependsOn("architecture:back-end-architecture-test:release")

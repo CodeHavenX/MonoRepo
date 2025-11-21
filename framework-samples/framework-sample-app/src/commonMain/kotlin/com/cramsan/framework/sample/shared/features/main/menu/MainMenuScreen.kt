@@ -5,13 +5,12 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.ScreenLayout
 import org.koin.compose.viewmodel.koinViewModel
-import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 
 /**
  * Main Menu screen
@@ -27,11 +26,10 @@ fun MainMenuScreen(
     }
 
     ObserveViewModelEvents(viewModel) { event ->
-            when (event) {
-                MainMenuEvent.Noop -> Unit
-            }
+        when (event) {
+            MainMenuEvent.Noop -> Unit
         }
-
+    }
 
     MainMenuContent(
         modifier = Modifier,

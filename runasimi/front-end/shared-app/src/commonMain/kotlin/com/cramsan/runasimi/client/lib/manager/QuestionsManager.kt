@@ -8,16 +8,18 @@ package com.cramsan.runasimi.client.lib.manager
 class QuestionsManager {
 
     private val questions: List<Pair<String, String>> = listOf(
-        "How are you?" to "TRANSLATION_PLACEHOLDER",
-        "What's your name?" to "TRANSLATION_PLACEHOLDER",
-        "Where are you from?" to "TRANSLATION_PLACEHOLDER",
-        "What time is it?" to "TRANSLATION_PLACEHOLDER",
-        "Can you help me?" to "TRANSLATION_PLACEHOLDER",
-        "Where is the bathroom?" to "TRANSLATION_PLACEHOLDER",
-        "How much does this cost?" to "TRANSLATION_PLACEHOLDER",
-        "I don't understand." to "TRANSLATION_PLACEHOLDER",
-        "Please speak slower." to "TRANSLATION_PLACEHOLDER",
-        "Thank you." to "TRANSLATION_PLACEHOLDER"
+        "Mayqintaq situnyki?" to "What is your name?",
+        "Maymamtaq kanki?" to "Where are you from?",
+        "Pitaq kanki?" to "Who are you?",
+        "Imataq ruwachkanki?" to "What are you doing?",
+        "Maymantaq richkanki?" to "Where are you going?",
+        "Imaynallam kachkanki?" to "How are you?",
+        "Maypitaq tiyanki?" to "Where do you live?",
+        "Piwanmi kanki?" to "With whom are you?",
+        "Hayka qullqitaq kayqa" to "How much does this cost?",
+        "Haykapitaq purichkanki?" to "When are you traveling?",
+        "Imaynataq kayta ruwanki?" to "How do you do this?",
+        "Imanasqataq chayta ruwarqanki?" to "Why did you do that?",
     )
 
     /**

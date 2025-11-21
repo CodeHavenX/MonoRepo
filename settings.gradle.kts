@@ -28,6 +28,9 @@ refreshVersions {
     }
 }
 
+// In the root's build.gradle.kts file, we have a task called `releaseAll` that depends on
+// the `release` task of each module. This is used to build and test all modules at once.
+// When adding a new module, make sure to also add it to that task as well.
 include("framework:assert")
 include("framework:configuration")
 include("framework:crashhandler")
@@ -82,6 +85,8 @@ include("runasimi:front-end:shared-app")
 include("runasimi:front-end:app-wasm")
 include("runasimi:front-end:app-android")
 include("runasimi:front-end:app-jvm")
+include("runasimi:api")
+include("runasimi:back-end")
 
 include("architecture:back-end-architecture")
 include("architecture:back-end-architecture-test")

@@ -15,8 +15,8 @@ private fun QuestionsScreenPreview() {
         QuestionsContent(
             content = QuestionsUIState(
                 Content(
-                    translated = "Chaymi rikhurqa",
-                    original = "Sample",
+                    translated = "Sample",
+                    original = "Chaymi rikhurqa",
                 )
             ),
         )

@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import com.cramsan.architecture.client.di.moduleList
 import com.cramsan.templatereplaceme.client.lib.di.ApplicationModule
 import com.cramsan.templatereplaceme.client.lib.di.CacheModule
+import com.cramsan.templatereplaceme.client.lib.di.DatabaseModule
 import com.cramsan.templatereplaceme.client.lib.di.ManagerModule
 import com.cramsan.templatereplaceme.client.lib.di.ManagerPlatformModule
 import com.cramsan.templatereplaceme.client.lib.di.ServiceModule
@@ -25,6 +26,7 @@ actual fun ComposableKoinContext(content: @Composable () -> Unit) {
             // Load modules
             modules(
                 moduleList(
+                    databaseModule = DatabaseModule,
                     cacheModule = CacheModule,
                     applicationModule = ApplicationModule,
                     serviceModule = ServiceModule,

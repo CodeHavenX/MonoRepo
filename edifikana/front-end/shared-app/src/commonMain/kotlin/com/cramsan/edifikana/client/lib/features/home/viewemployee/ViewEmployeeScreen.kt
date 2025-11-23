@@ -52,7 +52,9 @@ import org.koin.core.qualifier.named
 fun ViewEmployeeScreen(
     employeePK: EmployeeId,
     viewModel: ViewEmployeeViewModel = koinViewModel(),
-    delegatedEventEmitter: EventEmitter<EdifikanaWindowDelegatedEvent> = koinInject(named(WindowIdentifier.DELEGATED_EVENT_BUS)),
+    delegatedEventEmitter: EventEmitter<EdifikanaWindowDelegatedEvent> = koinInject(
+        named(WindowIdentifier.DELEGATED_EVENT_BUS)
+    ),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 

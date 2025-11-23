@@ -1,14 +1,9 @@
-package com.cramsan.edifikana.client.lib.di
+package com.cramsan.templatereplaceme.client.lib.di
 
-import androidx.room.Room
-import androidx.sqlite.driver.bundled.BundledSQLiteDriver
-import com.cramsan.edifikana.client.lib.db.AppDatabase
-import kotlinx.coroutines.Dispatchers
 import org.koin.dsl.module
-import java.io.File
 
 internal actual val DatabaseModule = module {
-
+    /*
     @Suppress("InjectDispatcher")
     single {
         val dbFile = File(System.getProperty("java.io.tmpdir"), "my_room.db")
@@ -23,4 +18,5 @@ internal actual val DatabaseModule = module {
             .setQueryCoroutineContext(Dispatchers.IO)
             .build()
     }
+     */
 }

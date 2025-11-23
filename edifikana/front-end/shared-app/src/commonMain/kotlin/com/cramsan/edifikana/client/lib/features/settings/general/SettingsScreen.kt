@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.client.lib.features.settings
+package com.cramsan.edifikana.client.lib.features.settings.general
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -59,7 +59,7 @@ fun SettingsScreen(
  * and stacked selectable options.
  */
 @Composable
-fun SettingsContent(
+internal fun SettingsContent(
     uiState: SettingsUIState,
     onThemeSelected: (SelectedTheme) -> Unit,
     onBackSelected: () -> Unit,
@@ -118,7 +118,6 @@ fun SettingsContent(
             buttonContent = { /* no actions */ }
         )
     }
-
 }
 
 @Composable

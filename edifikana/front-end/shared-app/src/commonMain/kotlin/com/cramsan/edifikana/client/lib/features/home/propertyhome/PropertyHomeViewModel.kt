@@ -125,7 +125,8 @@ class PropertyHomeViewModel(
                 EdifikanaWindowsEvent.NavigateToNavGraph(
                     EdifikanaNavGraphDestination.SettingsNavGraphDestination,
 
-            ))
+                )
+            )
         }
     }
 

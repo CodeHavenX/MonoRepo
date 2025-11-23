@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.client.lib.features.settings
+package com.cramsan.edifikana.client.lib.features.settings.general
 
 import androidx.compose.runtime.Composable
 import com.cramsan.edifikana.client.ui.theme.AppTheme

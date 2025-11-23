@@ -9,7 +9,9 @@ internal actual val DatabaseModule = module {
             androidApplication(),
             AppDatabase::class.java,
             "database-name"
-        ).build()
+        )
+            .fallbackToDestructiveMigration(true)
+            .build()
     }
      */
 }

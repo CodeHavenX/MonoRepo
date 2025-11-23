@@ -45,7 +45,7 @@ class PropertyHomeViewModel(
     }
 
     private suspend fun updatePropertyList() {
-        val properties = propertyManager.getPropertyList().getOrThrow()
+        val properties = propertyManager.getPropertyList().getOrNull().orEmpty()
         val selectedProperty = propertyManager.activeProperty().value
         var name = ""
         updateUiState {
@@ -115,6 +115,17 @@ class PropertyHomeViewModel(
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToScreen(AccountDestination.NotificationsDestination)
             )
+        }
+    }
+
+    fun navigateToSettings() {
+        logI(TAG, "Navigating to settings page.")
+        viewModelScope.launch {
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateToNavGraph(
+                    EdifikanaNavGraphDestination.SettingsNavGraphDestination,
+
+            ))
         }
     }
 

@@ -25,6 +25,7 @@ import com.cramsan.edifikana.client.lib.features.home.timecard.TimeCartViewModel
 import com.cramsan.edifikana.client.lib.features.home.timecardemployeelist.TimeCardEmployeeListViewModel
 import com.cramsan.edifikana.client.lib.features.home.viewemployee.ViewEmployeeViewModel
 import com.cramsan.edifikana.client.lib.features.home.viewrecord.ViewRecordViewModel
+import com.cramsan.edifikana.client.lib.features.settings.SettingsViewModel
 import com.cramsan.edifikana.client.lib.features.splash.SplashViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
@@ -56,4 +57,5 @@ internal val ViewModelModule = module {
     viewModelOf(::ScreenSelectorViewModel)
     viewModelOf(::ChangePasswordDialogViewModel)
     viewModelOf(::GoToOrganizationViewModel)
+    viewModelOf(::SettingsViewModel)
 }

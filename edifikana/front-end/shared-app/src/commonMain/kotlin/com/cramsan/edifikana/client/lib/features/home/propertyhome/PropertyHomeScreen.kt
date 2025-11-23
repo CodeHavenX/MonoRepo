@@ -91,6 +91,7 @@ fun PropertyHomeScreen(
         onTabSelected = { viewModel.selectTab(it) },
         onNotificationsButtonSelected = { viewModel.navigateToNotifications() },
         onNavigationIconSelected = { managementViewModel.toggleNavigationState() },
+        onSettingsSelected = { viewModel.navigateToSettings() },
     )
 }
 
@@ -117,6 +118,7 @@ internal fun PropertyHomeScreenContent(
     onPropertySelected: (PropertyId) -> Unit,
     onTabSelected: (Tabs) -> Unit,
     onNotificationsButtonSelected: () -> Unit,
+    onSettingsSelected: () -> Unit,
 ) {
     Scaffold(
         modifier = modifier,
@@ -139,6 +141,7 @@ internal fun PropertyHomeScreenContent(
                 AccountDropDown(
                     onAccountSelected = onAccountButtonClicked,
                     onNotificationsSelected = onNotificationsButtonSelected,
+                    onSettingsSelected = onSettingsSelected,
                 )
             }
         },
@@ -240,6 +243,7 @@ fun AccountDropDown(
     modifier: Modifier = Modifier,
     onAccountSelected: () -> Unit,
     onNotificationsSelected: () -> Unit,
+    onSettingsSelected: () -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -260,6 +264,13 @@ fun AccountDropDown(
                 text = { Text("My Account") },
                 onClick = {
                     onAccountSelected()
+                    expanded = false
+                },
+            )
+            DropdownMenuItem(
+                text = { Text("Settings") },
+                onClick = {
+                    onSettingsSelected()
                     expanded = false
                 },
             )

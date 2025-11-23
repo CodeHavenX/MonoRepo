@@ -31,8 +31,8 @@ class Initializer(
     }
 
     private suspend fun enforcePermissions() {
-        val result = authManager.verifyPermissions().getOrThrow()
-        assert(result, TAG, "Permission issue detected. Proceed with caution.")
+        val result = authManager.verifyPermissions().getOrNull()
+        assert(result == true, TAG, "Permission issue detected. Proceed with caution.")
     }
 
     private suspend fun loadOrganization() {

@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import coil3.compose.AsyncImage
+import com.cramsan.architecture.client.di.WindowIdentifier
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowDelegatedEvent
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.edifikana.lib.model.EmployeeId
@@ -42,6 +43,7 @@ import io.github.jan.supabase.storage.authenticatedStorageItem
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.qualifier.named
 
 /**
  * View employee screen.
@@ -50,7 +52,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun ViewEmployeeScreen(
     employeePK: EmployeeId,
     viewModel: ViewEmployeeViewModel = koinViewModel(),
-    delegatedEventEmitter: EventEmitter<EdifikanaWindowDelegatedEvent> = koinInject(),
+    delegatedEventEmitter: EventEmitter<EdifikanaWindowDelegatedEvent> = koinInject(named(WindowIdentifier.DELEGATED_EVENT_BUS)),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 

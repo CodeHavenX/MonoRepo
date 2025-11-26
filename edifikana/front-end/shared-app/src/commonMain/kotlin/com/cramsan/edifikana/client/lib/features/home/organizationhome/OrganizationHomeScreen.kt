@@ -79,7 +79,10 @@ fun OrganizationHomeScreen(
         },
         onOrganizationSelected = {
             viewModel.selectOrganization(it.id)
-        }
+        },
+        onSettingsSelected = {
+            viewModel.navigateToSettings()
+        },
     )
 }
 
@@ -108,7 +111,8 @@ internal fun OrganizationHomeScreenContent(
     onTabSelected: (Tabs) -> Unit,
     onNotificationsButtonSelected: () -> Unit,
     onNavigationIconSelected: () -> Unit,
-    onOrganizationSelected: (OrganizationUIModel) -> Unit = {},
+    onOrganizationSelected: (OrganizationUIModel) -> Unit,
+    onSettingsSelected: () -> Unit,
 ) {
     Scaffold(
         modifier = modifier,
@@ -133,6 +137,7 @@ internal fun OrganizationHomeScreenContent(
                 AccountDropDown(
                     onAccountSelected = onAccountButtonClicked,
                     onNotificationsSelected = onNotificationsButtonSelected,
+                    onSettingsSelected = onSettingsSelected,
                 )
             }
         },

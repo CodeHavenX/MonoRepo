@@ -45,4 +45,10 @@ sealed class EdifikanaNavGraphDestination : NavigationGraphDestination {
      */
     @Serializable
     data object DebugNavGraphDestination : EdifikanaNavGraphDestination()
+
+    /**
+     * A class representing navigating to the settings page.
+     */
+    @Serializable
+    data object SettingsNavGraphDestination : EdifikanaNavGraphDestination()
 }

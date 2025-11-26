@@ -33,6 +33,7 @@ private fun PropertyHomeScreenPreview() {
             onTabSelected = {},
             onNotificationsButtonSelected = {},
             onNavigationIconSelected = {},
+            onSettingsSelected = {},
         )
     }
 }
@@ -44,6 +45,7 @@ private fun AccountDropDownPreview() {
         Box(Modifier.size(200.dp))
         AccountDropDown(
             Modifier,
+            {},
             {},
             {},
         )

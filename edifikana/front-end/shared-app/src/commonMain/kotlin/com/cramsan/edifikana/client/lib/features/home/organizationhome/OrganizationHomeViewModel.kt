@@ -117,6 +117,20 @@ class OrganizationHomeViewModel(
         }
     }
 
+    /**
+     * Navigate to the settings page.
+     */
+    fun navigateToSettings() {
+        logI(TAG, "Navigating to settings page.")
+        viewModelScope.launch {
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateToNavGraph(
+                    EdifikanaNavGraphDestination.SettingsNavGraphDestination,
+                )
+            )
+        }
+    }
+
     companion object {
         private const val TAG = "OrganizationHomeViewModel"
     }

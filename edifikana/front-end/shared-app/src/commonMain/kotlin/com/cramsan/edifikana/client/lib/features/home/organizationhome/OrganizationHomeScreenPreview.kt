@@ -29,5 +29,7 @@ private fun OrganizationHomeScreenPreview() = AppTheme {
         onAccountButtonClicked = {},
         onNotificationsButtonSelected = {},
         onNavigationIconSelected = {},
+        onOrganizationSelected = {},
+        onSettingsSelected = {},
     )
 }

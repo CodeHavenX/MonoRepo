@@ -20,6 +20,7 @@ fun startAndroidApplication(
         // Load modules
         modules(
             moduleList(
+                databaseModule = DatabaseModule,
                 cacheModule = CacheModule,
                 applicationModule = ApplicationModule,
                 serviceModule = ServiceModule,

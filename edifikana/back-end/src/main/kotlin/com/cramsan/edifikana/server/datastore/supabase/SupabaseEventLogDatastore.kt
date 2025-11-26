@@ -74,11 +74,15 @@ class SupabaseEventLogDatastore(
     }
 
     @OptIn(SupabaseModel::class)
-    override suspend fun getEventLogEntries(): Result<List<EventLogEntry>> = runSuspendCatching(TAG) {
+    override suspend fun getEventLogEntries(
+        propertyId: PropertyId,
+    ): Result<List<EventLogEntry>> = runSuspendCatching(TAG) {
         logD(TAG, "Getting all event log entries")
 
         postgrest.from(EventLogEntryEntity.COLLECTION).select {
-            select()
+            filter {
+                EventLogEntryEntity::propertyId eq propertyId.propertyId
+            }
         }.decodeList<EventLogEntryEntity>().map { it.toEventLogEntry() }
     }
 

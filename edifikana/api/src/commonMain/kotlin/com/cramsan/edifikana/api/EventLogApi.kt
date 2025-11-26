@@ -4,6 +4,7 @@ import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.network.CreateEventLogEntryNetworkRequest
 import com.cramsan.edifikana.lib.model.network.EventLogEntryListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.EventLogEntryNetworkResponse
+import com.cramsan.edifikana.lib.model.network.GetEventLogEntriesQueryParams
 import com.cramsan.edifikana.lib.model.network.UpdateEventLogEntryNetworkRequest
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.NoPathParam
@@ -34,7 +35,7 @@ object EventLogApi : Api("event_log") {
 
     val getEventLogEntries = operation<
         NoRequestBody,
-        NoQueryParam,
+        GetEventLogEntriesQueryParams,
         NoPathParam,
         EventLogEntryListNetworkResponse
         >(HttpMethod.Get)

@@ -25,8 +25,6 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.home.drawer.DrawerViewModel
-import com.cramsan.edifikana.client.lib.features.home.employeelist.EmployeeListScreen
-import com.cramsan.edifikana.client.lib.features.home.properties.PropertyManagerScreen
 import com.cramsan.edifikana.client.lib.features.home.propertyhome.AccountDropDown
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
@@ -177,10 +175,15 @@ private fun HubContent(
     modifier: Modifier,
     selectedTab: Tabs,
 ) {
-    Crossfade(selectedTab) {
+    Crossfade(
+        targetState = selectedTab,
+        modifier = modifier,
+    ) {
         when (it) {
-            Tabs.Properties -> PropertyManagerScreen(modifier)
-            Tabs.Employee -> EmployeeListScreen(modifier)
+            Tabs.Properties -> {
+            }
+            Tabs.Employee -> {
+            }
             Tabs.None -> {
                 // No content
             }

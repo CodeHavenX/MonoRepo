@@ -149,15 +149,16 @@ class EventLogServiceTest {
     @Test
     fun `getEventLogEntries should call database and return list`() = runTest {
         // Arrange
+        val propertyId = PropertyId("property1")
         val entryList = listOf(mockk<EventLogEntry>(), mockk<EventLogEntry>())
-        coEvery { eventLogDatastore.getEventLogEntries() } returns Result.success(entryList)
+        coEvery { eventLogDatastore.getEventLogEntries(propertyId) } returns Result.success(entryList)
 
         // Act
-        val result = eventLogService.getEventLogEntries()
+        val result = eventLogService.getEventLogEntries(propertyId)
 
         // Assert
         assertEquals(entryList, result)
-        coVerify { eventLogDatastore.getEventLogEntries() }
+        coVerify { eventLogDatastore.getEventLogEntries(propertyId) }
     }
 
     /**

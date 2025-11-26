@@ -54,17 +54,18 @@ class EventLogManagerTest : CoroutineTest() {
         // Arrange
         val cached = listOf(eventTest1, eventTest2)
         val online = listOf(eventTest3)
+        val propertyId = PropertyId("Cenit")
         coEvery { eventLogCache.getRecords() } returns cached
-        coEvery { eventLogService.getRecords() } returns Result.success(online)
+        coEvery { eventLogService.getRecords(propertyId) } returns Result.success(online)
         // Act
-        val result = manager.getRecords()
+        val result = manager.getRecords(propertyId)
         // Assert
         assertTrue(result.isSuccess)
         val merged = result.getOrNull()!!
         assertEquals(3, merged.size)
         assertEquals(listOf("incident2", "maintenance1", "incident1"), merged.map { it.id.toString() })
         coVerify { eventLogCache.getRecords() }
-        coVerify { eventLogService.getRecords() }
+        coVerify { eventLogService.getRecords(propertyId) }
     }
 
     /**

@@ -21,10 +21,16 @@ fun NavGraphBuilder.debugNavGraphNavigation(
         startDestination = DebugDestination.MainDebugDestination,
         typeMap = typeMap,
     ) {
-        composable(DebugDestination.MainDebugDestination::class) {
+        composable(
+            DebugDestination.MainDebugDestination::class,
+            typeMap = typeMap,
+        ) {
             DebugScreen()
         }
-        composable(DebugDestination.ScreenSelectorDestination::class) {
+        composable(
+            DebugDestination.ScreenSelectorDestination::class,
+            typeMap = typeMap,
+        ) {
             ScreenSelectorScreen()
         }
     }

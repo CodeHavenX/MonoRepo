@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.home.propertyhome
 
 import com.cramsan.edifikana.client.lib.models.PropertyModel
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.core.compose.ViewModelUIState
 import org.jetbrains.compose.resources.DrawableResource
@@ -14,12 +15,16 @@ data class PropertyHomeUIModel(
     val label: String,
     val availableProperties: List<PropertyUiModel>,
     val selectedTab: Tabs,
+    val propertyId: PropertyId?,
+    val orgId: OrganizationId?,
 ) : ViewModelUIState {
     companion object {
         val Empty = PropertyHomeUIModel(
             label = "",
             selectedTab = Tabs.None,
             availableProperties = emptyList(),
+            propertyId = null,
+            orgId = null,
         )
     }
 }
@@ -39,8 +44,6 @@ data class BottomBarDestinationUiModel(
  */
 enum class Tabs {
     None,
-    TimeCard,
-    EventLog,
     GoToOrganization,
 }
 

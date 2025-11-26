@@ -185,8 +185,9 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
         val expectedResponse = readFileContent("requests/get_event_log_entries_response.json")
         val userService = get<EventLogService>()
         val rbacService = get<RBACService>()
+        val propertyId = PropertyId("property1")
         coEvery {
-            userService.getEventLogEntries()
+            userService.getEventLogEntries(propertyId)
         }.answers {
             listOf(
                 EventLogEntry(
@@ -229,7 +230,7 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
         }
 
         // Act
-        val response = client.get("event_log")
+        val response = client.get("event_log?propertyId=property1")
 
         // Assert
         assertEquals(HttpStatusCode.OK, response.status)

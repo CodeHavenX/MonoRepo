@@ -20,9 +20,6 @@ data class DrawerUIState(
                 DrawerItem.Title("Management"),
                 DrawerItem.Selectable(SelectableDrawerItem.Property),
                 DrawerItem.Selectable(SelectableDrawerItem.Organization),
-                DrawerItem.Divider,
-                DrawerItem.Title("View Mode"),
-                DrawerItem.Selectable(SelectableDrawerItem.ResidentMode),
             ),
         )
     }

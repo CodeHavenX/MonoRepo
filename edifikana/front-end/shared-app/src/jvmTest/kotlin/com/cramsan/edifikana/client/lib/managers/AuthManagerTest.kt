@@ -30,7 +30,6 @@ import kotlin.test.assertTrue
  */
 class AuthManagerTest : CoroutineTest() {
     private lateinit var dependencies: ManagerDependencies
-    private lateinit var propertyService: PropertyService
     private lateinit var authService: AuthService
     private lateinit var manager: AuthManager
     private lateinit var organizationService: OrganizationService
@@ -41,7 +40,6 @@ class AuthManagerTest : CoroutineTest() {
     @BeforeTest
     fun setup() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
-        propertyService = mockk(relaxed = true)
         authService = mockk(relaxed = true)
         organizationService = mockk(relaxed = true)
 
@@ -49,7 +47,7 @@ class AuthManagerTest : CoroutineTest() {
         every { dependencies.appScope } returns testCoroutineScope
         every { dependencies.dispatcherProvider } returns UnifiedDispatcherProvider(testCoroutineDispatcher)
 
-        manager = AuthManager(dependencies, propertyService, organizationService, authService)
+        manager = AuthManager(dependencies, authService)
     }
 
     /**
@@ -71,7 +69,7 @@ class AuthManagerTest : CoroutineTest() {
      * Tests signIn returns user and sets active property if available.
      */
     @Test
-    fun `signIn returns user and sets active property`() = runTest {
+    fun `signIn returns user`() = runCoroutineTest {
         // Arrange
         val user = mockk<UserModel>()
         val propertyId = PropertyId("property-1")
@@ -79,23 +77,19 @@ class AuthManagerTest : CoroutineTest() {
             every { id } returns propertyId
         })
         coEvery { authService.signInWithPassword(any(), any()) } returns Result.success(user)
-        coEvery { propertyService.getPropertyList() } returns Result.success(propertyList)
-        coEvery { propertyService.setActiveProperty(propertyId) } returns Result.success(Unit)
         // Act
         val result = manager.signInWithPassword("email", "password")
         // Assert
         assertTrue(result.isSuccess)
         assertEquals(user, result.getOrNull())
         coVerify { authService.signInWithPassword("email", "password") }
-        coVerify { propertyService.getPropertyList() }
-        coVerify { propertyService.setActiveProperty(propertyId) }
     }
 
     /**
      * Tests signInWithOtp returns user and sets active property.
      */
     @Test
-    fun `signInWithOtp returns user and sets active property`() = runTest {
+    fun `signInWithOtp returns user`() = runTest {
         // Arrange
         val user = mockk<UserModel>()
         val propertyId = PropertyId("property-1")
@@ -103,8 +97,6 @@ class AuthManagerTest : CoroutineTest() {
             every { id } returns propertyId
         })
         coEvery { authService.signInWithOtp("email", "token", createUser = false) } returns Result.success(user)
-        coEvery { propertyService.getPropertyList() } returns Result.success(propertyList)
-        coEvery { propertyService.setActiveProperty(propertyId) } returns Result.success(Unit)
 
         // Act
         val result = manager.signInWithOtp("email", "token", createUser = false)
@@ -197,10 +189,9 @@ class AuthManagerTest : CoroutineTest() {
         // Arrange
         val email = "test@example.com"
         val organizationId = OrganizationId("org-1")
-        every { organizationService.observableActiveOrganization } returns MutableStateFlow(Organization(organizationId))
         coEvery { authService.inviteEmployee(email, organizationId) } returns Result.success(Unit)
         // Act
-        val result = manager.inviteEmployee(email)
+        val result = manager.inviteEmployee(email, organizationId)
         // Assert
         assertTrue(result.isSuccess)
         coVerify { authService.inviteEmployee(email, organizationId) }

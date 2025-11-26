@@ -1,12 +1,15 @@
 package com.cramsan.edifikana.client.lib.features.home.home
 
 import app.cash.turbine.test
+import com.cramsan.architecture.client.manager.PreferencesManager
 import com.cramsan.edifikana.client.lib.features.account.AccountDestination
 import com.cramsan.edifikana.client.lib.features.home.propertyhome.PropertyHomeViewModel
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.models.PropertyModel
+import com.cramsan.edifikana.client.lib.settings.EdifikanaSettingKey
+import com.cramsan.edifikana.client.lib.settings.getLastSelectedPropertyId
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.core.UnifiedDispatcherProvider
@@ -36,6 +39,8 @@ class HomeViewModelTest : CoroutineTest() {
     private lateinit var applicationEventReceiver: EventBus<ApplicationEvent>
     private lateinit var windowEventBus: EventBus<WindowEvent>
 
+    private lateinit var preferencesManager: PreferencesManager
+
     @BeforeEach
     fun setUp() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
@@ -43,6 +48,7 @@ class HomeViewModelTest : CoroutineTest() {
         exceptionHandler = CollectorCoroutineExceptionHandler()
         applicationEventReceiver = EventBus()
         windowEventBus = EventBus()
+        preferencesManager = mockk()
         val dependencies = ViewModelDependencies(
             appScope = testCoroutineScope,
             dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),
@@ -50,7 +56,7 @@ class HomeViewModelTest : CoroutineTest() {
             applicationEventReceiver = applicationEventReceiver,
             windowEventReceiver = windowEventBus,
         )
-        viewModel = PropertyHomeViewModel(dependencies, propertyManager)
+        viewModel = PropertyHomeViewModel(dependencies, propertyManager, preferencesManager)
     }
 
     @Test
@@ -71,9 +77,10 @@ class HomeViewModelTest : CoroutineTest() {
                 organizationId = organizationId
             ),
         )
-        val activeProperty = MutableStateFlow(PropertyId("1"))
         coEvery { propertyManager.getPropertyList() } returns Result.success(properties)
-        coEvery { propertyManager.activeProperty() } returns activeProperty
+        coEvery {
+            preferencesManager.getStringPreference(EdifikanaSettingKey.lastSelectedProperty)
+        } returns Result.success(null)
 
         // Act
         viewModel.loadContent()
@@ -89,15 +96,14 @@ class HomeViewModelTest : CoroutineTest() {
     fun `test selectProperty updates active property`() = runCoroutineTest {
         // Arrange
         val propertyId = PropertyId("1")
-        coEvery { propertyManager.setActiveProperty(propertyId) } returns Result.success(Unit)
         coEvery { propertyManager.getPropertyList() } returns Result.success(emptyList())
-        coEvery { propertyManager.activeProperty() } returns MutableStateFlow(propertyId)
 
         // Act
         viewModel.selectProperty(propertyId)
 
         // Assert
-        coVerify { propertyManager.setActiveProperty(propertyId) }
+        val uiState = viewModel.uiState.value
+        assertEquals(propertyId, uiState.propertyId)
     }
 
     @Test

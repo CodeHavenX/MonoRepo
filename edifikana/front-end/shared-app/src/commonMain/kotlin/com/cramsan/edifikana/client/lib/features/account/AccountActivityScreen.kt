@@ -23,13 +23,22 @@ fun NavGraphBuilder.accountNavGraph(
         startDestination = AccountDestination.MyAccountDestination,
         typeMap = typeMap,
     ) {
-        composable(AccountDestination.MyAccountDestination::class) {
+        composable(
+            AccountDestination.MyAccountDestination::class,
+            typeMap = typeMap,
+        ) {
             AccountScreen()
         }
-        composable(AccountDestination.NotificationsDestination::class) {
+        composable(
+            AccountDestination.NotificationsDestination::class,
+            typeMap = typeMap,
+        ) {
             NotificationsScreen()
         }
-        dialog(AccountDestination.ChangePasswordDestination::class) {
+        dialog(
+            AccountDestination.ChangePasswordDestination::class,
+            typeMap = typeMap,
+        ) {
             ChangePasswordDialog()
         }
     }

@@ -1,21 +1,19 @@
 package com.cramsan.edifikana.client.lib.managers
 
 import com.cramsan.edifikana.client.lib.models.PropertyModel
-import com.cramsan.edifikana.client.lib.service.OrganizationService
 import com.cramsan.edifikana.client.lib.service.PropertyService
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.utils.requireSuccess
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.getOrCatch
 import com.cramsan.framework.logging.logI
-import kotlinx.coroutines.flow.StateFlow
 
 /**
  * Manager for property configuration.
  */
 class PropertyManager(
     private val propertyService: PropertyService,
-    private val organizationService: OrganizationService,
     private val dependencies: ManagerDependencies,
 ) {
     /**
@@ -25,19 +23,6 @@ class PropertyManager(
         logI(TAG, "getPropertyList")
         propertyService.getPropertyList().getOrThrow()
     }
-
-    /**
-     * Set the active property.
-     */
-    suspend fun setActiveProperty(propertyId: PropertyId?) = dependencies.getOrCatch(TAG) {
-        logI(TAG, "setActiveProperty")
-        propertyService.setActiveProperty(propertyId).getOrThrow()
-    }
-
-    /**
-     * Get the active property. You can use this function to either fetch the value or observe it.
-     */
-    fun activeProperty(): StateFlow<PropertyId?> = propertyService.activeProperty()
 
     /**
      * Get the list of properties that the current user has admin access to.
@@ -53,10 +38,9 @@ class PropertyManager(
     suspend fun addProperty(
         propertyName: String,
         address: String,
+        organizationId: OrganizationId,
     ) = dependencies.getOrCatch(TAG) {
         logI(TAG, "addProperty")
-        val organizationId = organizationService.observableActiveOrganization.value?.id
-            ?: error("No active organization set")
 
         propertyService.addProperty(propertyName, address, organizationId).getOrThrow()
     }

@@ -1,13 +1,15 @@
 package com.cramsan.edifikana.client.lib.features.home.propertyhome
 
+import com.cramsan.architecture.client.manager.PreferencesManager
 import com.cramsan.edifikana.client.lib.features.account.AccountDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
+import com.cramsan.edifikana.client.lib.settings.getLastSelectedPropertyId
+import com.cramsan.edifikana.client.lib.settings.setLastSelectedPropertyId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
-import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logI
 import kotlinx.coroutines.launch
 
@@ -17,6 +19,7 @@ import kotlinx.coroutines.launch
 class PropertyHomeViewModel(
     dependencies: ViewModelDependencies,
     private val propertyManager: PropertyManager,
+    private val preferencesManager: PreferencesManager,
 ) : BaseViewModel<PropertyHomeEvent, PropertyHomeUIModel>(
     dependencies,
     PropertyHomeUIModel.Empty,
@@ -39,14 +42,17 @@ class PropertyHomeViewModel(
     fun selectProperty(propertyId: PropertyId) {
         logI(TAG, "Property selected: $propertyId")
         viewModelScope.launch {
-            propertyManager.setActiveProperty(propertyId)
+            updateUiState { it.copy(propertyId = propertyId) }
+            preferencesManager.setLastSelectedPropertyId(propertyId)
             updatePropertyList()
         }
     }
 
     private suspend fun updatePropertyList() {
         val properties = propertyManager.getPropertyList().getOrNull().orEmpty()
-        val selectedProperty = propertyManager.activeProperty().value
+        val selectedProperty = uiState.value.propertyId
+            ?: preferencesManager.getLastSelectedPropertyId()
+            ?: properties.firstOrNull()?.id
         var name = ""
         updateUiState {
             val propertyUiModels = properties.map { property ->
@@ -65,9 +71,6 @@ class PropertyHomeViewModel(
         if (properties.isEmpty()) {
             logI(TAG, "No properties found. Show the fallback tab.")
             selectTab(Tabs.GoToOrganization)
-        } else {
-            logD(TAG, "Properties found. Show the properties tab.")
-            selectTab(Tabs.EventLog)
         }
     }
 

@@ -11,7 +11,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 private fun AddPropertyScreenPreview() = AppTheme {
     AddPropertyContent(
-        content = AddPropertyUIState(true),
+        content = AddPropertyUIState(true, null),
         onBackSelected = {},
         onAddPropertySelected = { _, _ -> }
     )

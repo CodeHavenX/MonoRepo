@@ -5,6 +5,7 @@ import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.network.CreateEventLogEntryNetworkRequest
 import com.cramsan.edifikana.lib.model.network.EventLogEntryListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.EventLogEntryNetworkResponse
+import com.cramsan.edifikana.lib.model.network.GetEventLogEntriesQueryParams
 import com.cramsan.edifikana.lib.model.network.UpdateEventLogEntryNetworkRequest
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.service.EventLogService
@@ -104,15 +105,27 @@ class EventLogController(
      */
     @Suppress("UnusedParameter")
     @OptIn(NetworkModel::class)
-    fun getEventLogEntries(
+    suspend fun getEventLogEntries(
         request: OperationRequest<
             NoRequestBody,
-            NoQueryParam,
+            GetEventLogEntriesQueryParams,
             NoPathParam,
             ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
             >
     ): EventLogEntryListNetworkResponse {
-        TODO("This function is not yet implemented")
+        val propertyId = request.queryParam.propertyId
+        if (!rbacService.hasRoleOrHigher(request.context, propertyId, UserRole.EMPLOYEE)) {
+            throw UnauthorizedException(
+                "User does not have permission to view event log entries for property $propertyId"
+            )
+        }
+
+        val entries = eventLogService.getEventLogEntries(propertyId).map {
+            it.toEventLogEntryNetworkResponse()
+        }
+        return EventLogEntryListNetworkResponse(
+            content = entries
+        )
     }
 
     /**

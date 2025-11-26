@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import com.cramsan.edifikana.client.lib.features.home.HomeDestination
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
@@ -34,6 +35,7 @@ import org.koin.compose.viewmodel.koinViewModel
  */
 @Composable
 fun AddPropertyScreen(
+    destination: HomeDestination.AddPropertyManagementDestination,
     viewModel: AddPropertyViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -41,6 +43,9 @@ fun AddPropertyScreen(
     /**
      * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
      */
+    LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
+        viewModel.initialize(destination.orgId)
+    }
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
         // Call this feature's viewModel
     }

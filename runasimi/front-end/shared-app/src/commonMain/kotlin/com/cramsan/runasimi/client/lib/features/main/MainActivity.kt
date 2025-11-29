@@ -20,7 +20,10 @@ fun NavGraphBuilder.mainNavGraphNavigation(
         startDestination = MainDestination.MenuDestination,
         typeMap = typeMap,
     ) {
-        composable(MainDestination.MenuDestination::class) {
+        composable(
+            MainDestination.MenuDestination::class,
+            typeMap = typeMap,
+        ) {
             MenuScreen()
         }
     }

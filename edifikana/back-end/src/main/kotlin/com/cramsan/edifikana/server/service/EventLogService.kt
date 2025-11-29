@@ -63,8 +63,8 @@ class EventLogService(
     /**
      * Retrieves all event logs.
      */
-    suspend fun getEventLogEntries(): List<EventLogEntry> {
-        val eventLogs = eventLogDatastore.getEventLogEntries().getOrThrow()
+    suspend fun getEventLogEntries(propertyId: PropertyId): List<EventLogEntry> {
+        val eventLogs = eventLogDatastore.getEventLogEntries(propertyId).getOrThrow()
         return eventLogs
     }
 

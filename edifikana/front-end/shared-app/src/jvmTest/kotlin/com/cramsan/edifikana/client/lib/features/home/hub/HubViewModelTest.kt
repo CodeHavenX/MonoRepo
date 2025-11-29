@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.home.hub
 
 import app.cash.turbine.test
+import com.cramsan.architecture.client.manager.PreferencesManager
 import com.cramsan.edifikana.client.lib.features.account.AccountDestination
 import com.cramsan.edifikana.client.lib.features.home.organizationhome.OrganizationHomeViewModel
 import com.cramsan.edifikana.client.lib.features.home.organizationhome.Tabs
@@ -30,6 +31,7 @@ class HubViewModelTest : CoroutineTest() {
     private lateinit var windowEventBus: EventBus<WindowEvent>
     private lateinit var applicationEventReceiver: EventBus<ApplicationEvent>
     private lateinit var organizationManager: OrganizationManager
+    private lateinit var preferencesManager: PreferencesManager
 
     @BeforeEach
     fun setupTest() {
@@ -38,6 +40,7 @@ class HubViewModelTest : CoroutineTest() {
         windowEventBus = EventBus()
         exceptionHandler = CollectorCoroutineExceptionHandler()
         organizationManager = mockk()
+        preferencesManager = mockk()
         viewModel = OrganizationHomeViewModel(
             dependencies = ViewModelDependencies(
                 appScope = testCoroutineScope,
@@ -47,6 +50,7 @@ class HubViewModelTest : CoroutineTest() {
                 applicationEventReceiver = applicationEventReceiver,
             ),
             organizationManager = organizationManager,
+            preferencesManager = preferencesManager,
         )
     }
 

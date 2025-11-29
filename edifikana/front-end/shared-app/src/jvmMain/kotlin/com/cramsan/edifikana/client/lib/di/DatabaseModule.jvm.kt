@@ -7,6 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import org.koin.dsl.module
 import java.io.File
 
+@Suppress("InjectDispatcher")
 internal actual val DatabaseModule = module {
 
     @Suppress("InjectDispatcher")

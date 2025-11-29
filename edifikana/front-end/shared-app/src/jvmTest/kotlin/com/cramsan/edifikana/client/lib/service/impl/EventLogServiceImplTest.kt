@@ -92,6 +92,7 @@ class EventLogServiceImplTest {
     @OptIn(NetworkModel::class)
     fun `getRecords should return mapped records`() = runTest {
         // Arrange
+        val propertyId = PropertyId("Muralla")
         val networkResponse = EventLogEntryListNetworkResponse(listOf(
             EventLogEntryNetworkResponse(
                 id = EventLogEntryId("event-1"),
@@ -113,7 +114,7 @@ class EventLogServiceImplTest {
         }
 
         // Act
-        val result = service.getRecords()
+        val result = service.getRecords(propertyId)
 
         // Assert
         assertTrue(result.isSuccess)

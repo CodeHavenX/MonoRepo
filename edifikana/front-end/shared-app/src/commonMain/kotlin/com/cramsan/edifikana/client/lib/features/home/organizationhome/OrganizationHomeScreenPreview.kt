@@ -24,6 +24,7 @@ private fun OrganizationHomeScreenPreview() = AppTheme {
                     selected = false,
                 ),
             ),
+            selectedOrgId = OrganizationId("org-1"),
         ),
         onTabSelected = {},
         onAccountButtonClicked = {},

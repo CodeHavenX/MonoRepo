@@ -35,9 +35,11 @@ interface EventLogDatastore {
     ): Result<EventLogEntry?>
 
     /**
-     * Retrieves all event log entries. Returns the [Result] of the operation with a list of [EventLogEntry].
+     * Retrieves all event log entries for the given [propertyId]. Returns the [Result] of the operation with the list of [EventLogEntry]s.
      */
-    suspend fun getEventLogEntries(): Result<List<EventLogEntry>>
+    suspend fun getEventLogEntries(
+        propertyId: PropertyId
+    ): Result<List<EventLogEntry>>
 
     /**
      * Updates an event log entry with the given [request]. Returns the [Result] of the operation with the updated [EventLogEntry].

@@ -44,7 +44,7 @@ class PropertyManagerTest : CoroutineTest() {
         every { dependencies.appScope } returns testCoroutineScope
         every { dependencies.dispatcherProvider } returns UnifiedDispatcherProvider(testCoroutineDispatcher)
 
-        manager = PropertyManager(propertyService, organizationService, dependencies)
+        manager = PropertyManager(propertyService, dependencies)
     }
 
     /**
@@ -61,36 +61,6 @@ class PropertyManagerTest : CoroutineTest() {
         assertTrue(result.isSuccess)
         assertEquals(propertyList, result.getOrNull())
         coVerify { propertyService.getPropertyList() }
-    }
-
-    /**
-     * Tests that setActiveProperty calls the service and returns success.
-     */
-    @Test
-    fun `setActiveProperty calls service`() = runCoroutineTest {
-        // Arrange
-        val propertyId = PropertyId("property-1")
-        coEvery { propertyService.setActiveProperty(propertyId) } returns Result.success(Unit)
-        // Act
-        val result = manager.setActiveProperty(propertyId)
-        // Assert
-        assertTrue(result.isSuccess)
-        coVerify { propertyService.setActiveProperty(propertyId) }
-    }
-
-    /**
-     * Tests that activeProperty returns the StateFlow from the service.
-     */
-    @Test
-    fun `activeProperty returns StateFlow`() {
-        // Arrange
-        val stateFlow = MutableStateFlow<PropertyId?>(PropertyId("property-1"))
-        every { propertyService.activeProperty() } returns stateFlow
-        // Act
-        val result = manager.activeProperty()
-        // Assert
-        assertEquals(stateFlow, result)
-        coVerify(exactly = 0) { propertyService.setActiveProperty(any()) }
     }
 
     /**
@@ -119,10 +89,9 @@ class PropertyManagerTest : CoroutineTest() {
         val propertyName = "Cenit"
         val address = "Jiron Juan de Arona 123"
         val organizationId = OrganizationId("org-1")
-        every { organizationService.observableActiveOrganization } returns MutableStateFlow(Organization(organizationId))
         coEvery { propertyService.addProperty(propertyName, address, organizationId) } returns Result.success(mockk())
         // Act
-        val result = manager.addProperty(propertyName, address)
+        val result = manager.addProperty(propertyName, address, organizationId)
         // Assert
         assertTrue(result.isSuccess)
         coVerify { propertyService.addProperty(propertyName, address, organizationId) }

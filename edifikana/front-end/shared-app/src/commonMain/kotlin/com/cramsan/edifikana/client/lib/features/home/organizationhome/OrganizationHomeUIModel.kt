@@ -13,12 +13,14 @@ data class OrganizationHomeUIModel(
     val label: String,
     val selectedTab: Tabs,
     val availableOrganizations: List<OrganizationUIModel>,
+    val selectedOrgId: OrganizationId?,
 ) : ViewModelUIState {
     companion object {
         val Empty = OrganizationHomeUIModel(
             label = "",
             selectedTab = Tabs.Properties,
             availableOrganizations = listOf(),
+            selectedOrgId = null,
         )
     }
 }

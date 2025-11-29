@@ -3,8 +3,6 @@ package com.cramsan.edifikana.client.lib.managers
 import com.cramsan.edifikana.client.lib.models.Invite
 import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.client.lib.service.AuthService
-import com.cramsan.edifikana.client.lib.service.OrganizationService
-import com.cramsan.edifikana.client.lib.service.PropertyService
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.framework.core.ManagerDependencies
@@ -19,8 +17,6 @@ import kotlinx.coroutines.flow.StateFlow
  */
 class AuthManager(
     private val dependencies: ManagerDependencies,
-    private val propertyService: PropertyService,
-    private val organizationService: OrganizationService,
     private val authService: AuthService,
 ) {
     /**
@@ -37,11 +33,6 @@ class AuthManager(
     suspend fun signInWithPassword(email: String, password: String): Result<UserModel> = dependencies.getOrCatch(TAG) {
         logI(TAG, "signIn")
         val userModel = authService.signInWithPassword(email, password).getOrThrow()
-
-        val properties = propertyService.getPropertyList().getOrThrow()
-        if (properties.isNotEmpty()) {
-            propertyService.setActiveProperty(properties.firstOrNull()?.id)
-        }
 
         userModel
     }
@@ -66,11 +57,6 @@ class AuthManager(
     ): Result<UserModel> = dependencies.getOrCatch(TAG) {
         logI(TAG, "signing in with OTP code")
         val userModel = authService.signInWithOtp(email, hashToken, createUser).getOrThrow()
-
-        val properties = propertyService.getPropertyList().getOrThrow()
-        if (properties.isNotEmpty()) {
-            propertyService.setActiveProperty(properties.firstOrNull()?.id)
-        }
 
         userModel
     }
@@ -175,13 +161,11 @@ class AuthManager(
     /**
      * Invite a employee.
      */
-    suspend fun inviteEmployee(email: String) = dependencies.getOrCatch(TAG) {
+    suspend fun inviteEmployee(email: String, orgId: OrganizationId) = dependencies.getOrCatch(TAG) {
         logI(TAG, "inviteEmployee")
-        val activeOrganization = organizationService.observableActiveOrganization.value?.id
-            ?: error("No active organization set")
         authService.inviteEmployee(
             email = email,
-            organizationId = activeOrganization
+            organizationId = orgId,
         ).getOrThrow()
     }
 

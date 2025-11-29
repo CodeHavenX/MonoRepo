@@ -4,6 +4,8 @@ import com.cramsan.edifikana.api.EventLogApi
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.client.lib.service.EventLogService
 import com.cramsan.edifikana.lib.model.EventLogEntryId
+import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.network.GetEventLogEntriesQueryParams
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.networkapi.buildRequest
@@ -16,9 +18,13 @@ class EventLogServiceImpl(
     private val http: HttpClient,
 ) : EventLogService {
     @OptIn(NetworkModel::class)
-    override suspend fun getRecords(): Result<List<EventLogRecordModel>> = runSuspendCatching(TAG) {
+    override suspend fun getRecords(propertyId: PropertyId): Result<List<EventLogRecordModel>> = runSuspendCatching(
+        TAG
+    ) {
         val response = EventLogApi.getEventLogEntries
-            .buildRequest()
+            .buildRequest(
+                queryParam = GetEventLogEntriesQueryParams(propertyId)
+            )
             .execute(http)
 
         response.content.map { it.toEventLogRecordModel() }

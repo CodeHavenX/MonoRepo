@@ -2,6 +2,7 @@ package com.cramsan.edifikana.client.lib.features.home.addproperty
 
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import kotlinx.coroutines.launch
@@ -17,6 +18,16 @@ class AddPropertyViewModel(
     AddPropertyUIState.Initial,
     TAG,
 ) {
+
+    /**
+     * Initialize the ViewModel with the organization ID.
+     */
+    fun initialize(orgId: OrganizationId) {
+        viewModelScope.launch {
+            updateUiState { it.copy(orgId = orgId) }
+        }
+    }
+
     /**
      * Navigate back to the previous screen.
      */
@@ -31,8 +42,9 @@ class AddPropertyViewModel(
      */
     fun addProperty(propertyName: String, address: String) {
         viewModelScope.launch {
+            val organizationId = requireNotNull(uiState.value.orgId)
             updateUiState { it.copy(isLoading = true) }
-            val newProperty = propertyManager.addProperty(propertyName, address).onFailure {
+            val newProperty = propertyManager.addProperty(propertyName, address, organizationId).onFailure {
                 updateUiState { it.copy(isLoading = false) }
             }.getOrThrow()
 

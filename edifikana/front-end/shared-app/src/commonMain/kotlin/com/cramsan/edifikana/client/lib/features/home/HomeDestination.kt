@@ -4,6 +4,7 @@ package com.cramsan.edifikana.client.lib.features.home
 
 import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EventLogEntryId
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.core.compose.navigation.Destination
 import kotlinx.serialization.Serializable
@@ -13,13 +14,6 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 sealed class HomeDestination : Destination {
-
-    /**
-     * A class representing navigating to the property list screen within
-     * the Management nav graph.
-     */
-    @Serializable
-    data object PropertiesManagementDestination : HomeDestination()
 
     /**
      * A class representing navigating to the property screen.
@@ -33,19 +27,25 @@ sealed class HomeDestination : Destination {
      * A class representing navigating to the add property screen.
      */
     @Serializable
-    data object AddPropertyManagementDestination : HomeDestination()
+    data class AddPropertyManagementDestination(
+        val orgId: OrganizationId,
+    ) : HomeDestination()
 
     /**
      * A class representing navigating to the add primary employee screen.
      */
     @Serializable
-    data object AddPrimaryEmployeeManagementDestination : HomeDestination()
+    data class AddPrimaryEmployeeManagementDestination(
+        val orgId: OrganizationId,
+    ) : HomeDestination()
 
     /**
      * A class representing navigating to the add secondary employee screen.
      */
     @Serializable
-    data object AddSecondaryEmployeeManagementDestination : HomeDestination()
+    data class AddSecondaryEmployeeManagementDestination(
+        val propertyId: PropertyId,
+    ) : HomeDestination()
 
     /**
      * A class representing navigating to the employee Screen.
@@ -59,13 +59,18 @@ sealed class HomeDestination : Destination {
      * A class representing navigating to the time card employee list screen.
      */
     @Serializable
-    data object TimeCardEmployeeListDestination : HomeDestination()
+    data class TimeCardEmployeeListDestination(
+        val propertyId: PropertyId,
+    ) : HomeDestination()
 
     /**
      * A class representing navigating to the time card single employee screen.
      */
     @Serializable
-    data class TimeCardSingleEmployeeDestination(val employeePk: EmployeeId) : HomeDestination()
+    data class TimeCardSingleEmployeeDestination(
+        val employeePk: EmployeeId,
+        val propertyId: PropertyId,
+    ) : HomeDestination()
 
     /**
      * A class representing navigating to the event log single item screen.
@@ -77,7 +82,9 @@ sealed class HomeDestination : Destination {
      * A class representing navigating to the event log add item screen.
      */
     @Serializable
-    data object EventLogAddItemDestination : HomeDestination()
+    data class EventLogAddItemDestination(
+        val propertyId: PropertyId
+    ) : HomeDestination()
 
     /**
      * A class representing navigating to the management screen.

@@ -4,6 +4,7 @@ import com.cramsan.edifikana.client.lib.db.EventLogCache
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.client.lib.service.EventLogService
 import com.cramsan.edifikana.lib.model.EventLogEntryId
+import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.getOrCatch
 import com.cramsan.framework.logging.logE
@@ -28,12 +29,12 @@ class EventLogManager(
     /**
      * Get all event log records.
      */
-    suspend fun getRecords(): Result<List<EventLogRecordModel>> = dependencies.getOrCatch(TAG) {
+    suspend fun getRecords(propertyId: PropertyId): Result<List<EventLogRecordModel>> = dependencies.getOrCatch(TAG) {
         logI(TAG, "getRecords")
 
         val cachedData = eventLogCache.getRecords()
 
-        val onlineData = eventLogService.getRecords()
+        val onlineData = eventLogService.getRecords(propertyId)
             .getOrThrow()
 
         (cachedData + onlineData).sortedByDescending { it.timeRecorded }

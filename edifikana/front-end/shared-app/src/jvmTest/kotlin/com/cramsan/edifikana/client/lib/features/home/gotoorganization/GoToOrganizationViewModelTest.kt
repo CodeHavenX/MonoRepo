@@ -27,7 +27,6 @@ import kotlin.test.assertEquals
  *
  * @see CoroutineTest
  */
-// TODO: Move this file to the respective folder in the test folder.
 @Suppress("UNCHECKED_CAST")
 class GoToOrganizationViewModelTest : CoroutineTest() {
 

@@ -61,7 +61,6 @@ class TimeCardManagerTest : CoroutineTest() {
             storageService,
             dependencies,
             ioDependencies,
-            propertyService,
         )
     }
 
@@ -82,9 +81,10 @@ class TimeCardManagerTest : CoroutineTest() {
         )
         coEvery { timeCardCache.getRecords(employeeIdTest) } returns cached
         coEvery { timeCardService.getRecords(employeeIdTest, any()) } returns Result.success(online)
+        val propertyId = PropertyId("Muralla")
 
         // Act
-        val result = manager.getRecords(employeeIdTest)
+        val result = manager.getRecords(employeeIdTest, propertyId)
 
         // Assert
         assertTrue(result.isSuccess)
@@ -99,6 +99,7 @@ class TimeCardManagerTest : CoroutineTest() {
     @Test
     fun `getAllRecords returns merged and sorted records`() = runCoroutineTest {
         // Arrange
+        val propertyId = PropertyId("Muralla")
         val cached = listOf(
             timeCardRecordTest1
         )
@@ -110,7 +111,7 @@ class TimeCardManagerTest : CoroutineTest() {
 
 
         // Act
-        val result = manager.getAllRecords()
+        val result = manager.getAllRecords(propertyId)
 
         // Assert
         assertTrue(result.isSuccess)

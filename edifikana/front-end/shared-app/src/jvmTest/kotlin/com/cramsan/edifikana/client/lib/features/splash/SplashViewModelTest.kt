@@ -56,7 +56,6 @@ class SplashViewModelTest : CoroutineTest() {
         viewModel = SplashViewModel(
             dependencies = dependencies,
             authManager = authManager,
-            propertyManager = propertyManager,
         )
     }
 
@@ -71,12 +70,10 @@ class SplashViewModelTest : CoroutineTest() {
     @Test
     fun `test enforceAuth when not signed in`() = runCoroutineTest {
         coEvery { authManager.isSignedIn() } returns Result.success(false)
-        coEvery { propertyManager.setActiveProperty(null) } returns  Result.success(Unit)
 
         viewModel.enforceAuth()
 
         assertTrue(exceptionHandler.exceptions.isEmpty())
-        coVerify { propertyManager.setActiveProperty(null) }
         coVerify { windowEventBus.push(
             EdifikanaWindowsEvent.NavigateToNavGraph(
                 EdifikanaNavGraphDestination.AuthNavGraphDestination,
@@ -90,12 +87,10 @@ class SplashViewModelTest : CoroutineTest() {
     fun `test enforceAuth when signed in`() = runCoroutineTest {
         coEvery { authManager.isSignedIn() } returns Result.success(true)
         coEvery { propertyManager.getPropertyList() } returns Result.success(emptyList())
-        coEvery { propertyManager.setActiveProperty(null) } returns  Result.success(Unit)
 
         viewModel.enforceAuth()
 
         assertTrue(exceptionHandler.exceptions.isEmpty())
-        coVerify { propertyManager.setActiveProperty(null) }
         coVerify {
             windowEventBus.push(
                 EdifikanaWindowsEvent.NavigateToNavGraph(

@@ -28,6 +28,7 @@ import com.cramsan.edifikana.client.lib.features.settings.settingsNavGraphNaviga
 import com.cramsan.edifikana.client.lib.features.splash.SplashScreen
 import com.cramsan.edifikana.client.lib.navigation.EmployeeIdNavType
 import com.cramsan.edifikana.client.lib.navigation.EventLogEntryIdNavType
+import com.cramsan.edifikana.client.lib.navigation.OrganizationIdNavType
 import com.cramsan.edifikana.client.lib.navigation.PropertyIdNavType
 import com.cramsan.edifikana.client.lib.navigation.TimeCardEventIdNavType
 import com.cramsan.edifikana.client.lib.navigation.UserIdNavType
@@ -35,6 +36,7 @@ import com.cramsan.edifikana.client.lib.ui.di.Coil3Provider
 import com.cramsan.edifikana.client.ui.theme.AppTheme
 import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EventLogEntryId
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.UserId
@@ -220,6 +222,7 @@ private fun WindowNavigationHost(
             typeOf<TimeCardEventId>() to TimeCardEventIdNavType(),
             typeOf<UserId>() to UserIdNavType(),
             typeOf<EmployeeId>() to EmployeeIdNavType(),
+            typeOf<OrganizationId>() to OrganizationIdNavType(),
         )
     }
     NavHost(

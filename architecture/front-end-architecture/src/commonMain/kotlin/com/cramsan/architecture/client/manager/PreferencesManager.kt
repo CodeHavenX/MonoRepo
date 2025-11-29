@@ -151,6 +151,15 @@ class PreferencesManager(
     }
 
     /**
+     * Remove a preference with the given key.
+     * @param key The [SettingKey] representing the preference to remove.
+     */
+    suspend fun removePreference(key: SettingKey<*>) = dependencies.getOrCatch(TAG) {
+        settingsHolder.cleanPreference(key)
+        _modifiedKey.emit(key)
+    }
+
+    /**
      * Clear all preferences.
      */
     suspend fun clearPreferences() = dependencies.getOrCatch(TAG) {

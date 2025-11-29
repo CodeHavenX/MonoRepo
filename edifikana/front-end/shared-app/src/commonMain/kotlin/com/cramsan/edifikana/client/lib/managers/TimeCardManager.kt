@@ -2,7 +2,6 @@ package com.cramsan.edifikana.client.lib.managers
 
 import com.cramsan.edifikana.client.lib.db.TimeCardCache
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
-import com.cramsan.edifikana.client.lib.service.PropertyService
 import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.edifikana.client.lib.service.TimeCardService
 import com.cramsan.edifikana.client.lib.utils.IODependencies
@@ -10,6 +9,7 @@ import com.cramsan.edifikana.client.lib.utils.getFilename
 import com.cramsan.edifikana.client.lib.utils.processImageData
 import com.cramsan.edifikana.client.lib.utils.readBytes
 import com.cramsan.edifikana.lib.model.EmployeeId
+import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.ManagerDependencies
@@ -31,7 +31,6 @@ class TimeCardManager(
     private val storageService: StorageService,
     private val dependencies: ManagerDependencies,
     private val ioDependencies: IODependencies,
-    private val propertyService: PropertyService,
 ) {
     private val mutex = Mutex()
     private var uploadJob: Job? = null
@@ -39,10 +38,12 @@ class TimeCardManager(
     /**
      * Get all time card records for a employee member.
      */
-    suspend fun getRecords(employeePK: EmployeeId): Result<List<TimeCardRecordModel>> = dependencies.getOrCatch(TAG) {
+    suspend fun getRecords(
+        employeePK: EmployeeId,
+        propertyId: PropertyId
+    ): Result<List<TimeCardRecordModel>> = dependencies.getOrCatch(TAG) {
         logI(TAG, "getRecords")
         val cachedData = timeCardCache.getRecords(employeePK)
-        val propertyId = propertyService.activeProperty().value ?: error("No active property set")
 
         val onlineData = timeCardService.getRecords(employeePK, propertyId).getOrThrow()
         (cachedData + onlineData).sortedByDescending { it.eventTime }
@@ -51,10 +52,11 @@ class TimeCardManager(
     /**
      * Get all time card records.
      */
-    suspend fun getAllRecords(): Result<List<TimeCardRecordModel>> = dependencies.getOrCatch(TAG) {
+    suspend fun getAllRecords(
+        propertyId: PropertyId
+    ): Result<List<TimeCardRecordModel>> = dependencies.getOrCatch(TAG) {
         logI(TAG, "getAllRecords")
         val cachedData = timeCardCache.getAllRecords()
-        val propertyId = propertyService.activeProperty().value ?: error("No active property set")
 
         val onlineData = timeCardService.getAllRecords(propertyId).getOrThrow()
         (cachedData + onlineData).sortedByDescending { it.eventTime }

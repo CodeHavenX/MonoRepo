@@ -23,13 +23,22 @@ fun NavGraphBuilder.authNavGraphNavigation(
         startDestination = AuthDestination.SignInDestination,
         typeMap = typeMap,
     ) {
-        composable(AuthDestination.SignInDestination::class) {
+        composable(
+            AuthDestination.SignInDestination::class,
+            typeMap = typeMap,
+        ) {
             SignInScreen()
         }
-        composable(AuthDestination.SignUpDestination::class) {
+        composable(
+            AuthDestination.SignUpDestination::class,
+            typeMap = typeMap,
+        ) {
             SignUpScreen()
         }
-        composable(AuthDestination.ValidationDestination::class) { backStackEntry ->
+        composable(
+            AuthDestination.ValidationDestination::class,
+            typeMap = typeMap,
+        ) { backStackEntry ->
             OtpValidationScreen(
                 destination = backStackEntry.toRoute()
             )

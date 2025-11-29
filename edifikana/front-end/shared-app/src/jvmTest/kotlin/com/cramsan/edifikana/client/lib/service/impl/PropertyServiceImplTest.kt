@@ -33,7 +33,6 @@ class PropertyServiceImplTest {
     private lateinit var httpClient: HttpClient
     private lateinit var service: PropertyServiceImpl
     private lateinit var json: Json
-    private lateinit var preferences: Preferences
 
     @BeforeTest
     fun setupTest() {
@@ -45,8 +44,7 @@ class PropertyServiceImplTest {
             }
         }
 
-        preferences = mockk(relaxed = true)
-        service = PropertyServiceImpl(httpClient, preferences)
+        service = PropertyServiceImpl(httpClient)
 
         AssertUtil.setInstance(NoopAssertUtil())
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
@@ -71,8 +69,6 @@ class PropertyServiceImplTest {
             ),
         ))
 
-        coEvery { preferences.loadString(PropertyServiceImpl.PREF_ACTIVE_PROPERTY) } returns "property-2"
-
         ktorTestEngine.configure {
             coEvery { produceResponse(any()) } returns MockResponseData.Success(
                 json.encodeToString(networkResponse)
@@ -87,8 +83,6 @@ class PropertyServiceImplTest {
         val list = result.getOrNull()
         assertEquals(2, list?.size)
         assertEquals("Prop 1", list?.get(0)?.name)
-        // active property should be set from preferences
-        assertEquals(PropertyId("property-2"), service.activeProperty().value)
     }
 
     @OptIn(NetworkModel::class)
@@ -110,9 +104,6 @@ class PropertyServiceImplTest {
             ),
         ))
 
-        // preferences returns id that does not match any property
-        coEvery { preferences.loadString(PropertyServiceImpl.PREF_ACTIVE_PROPERTY) } returns "not-found"
-
         ktorTestEngine.configure {
             coEvery { produceResponse(any()) } returns MockResponseData.Success(
                 json.encodeToString(networkResponse)
@@ -126,27 +117,6 @@ class PropertyServiceImplTest {
         assertTrue(result.isSuccess)
         val list = result.getOrNull()
         assertEquals(2, list?.size)
-        assertEquals(PropertyId("property-10"), service.activeProperty().value)
-    }
-
-    @Test
-    fun `activeProperty should be null by default`() {
-        assertEquals(null, service.activeProperty().value)
-    }
-
-    @Test
-    fun `setActiveProperty should save to preferences and update flow`() {
-        // Arrange
-        val id = PropertyId("set-1")
-        coEvery { preferences.saveString(PropertyServiceImpl.PREF_ACTIVE_PROPERTY, id.propertyId) } returns Unit
-
-        // Act
-        val result = service.setActiveProperty(id)
-
-        // Assert
-        assertTrue(result.isSuccess)
-        coVerify { preferences.saveString(PropertyServiceImpl.PREF_ACTIVE_PROPERTY, id.propertyId) }
-        assertEquals(id, service.activeProperty().value)
     }
 
     @OptIn(NetworkModel::class)

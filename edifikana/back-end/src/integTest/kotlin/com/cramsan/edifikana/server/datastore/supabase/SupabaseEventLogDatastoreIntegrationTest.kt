@@ -102,6 +102,7 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
         // Arrange
         val title1 = "${test_prefix}_EventTitleA"
         val title2 = "${test_prefix}_EventTitleB"
+        val property2Id = createTestProperty("${test_prefix}_Property2", testUserId!!, orgId!!)
 
         // Act
         val result1 = eventLogDatastore.createEventLogEntry(
@@ -127,10 +128,22 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
             timestamp = Clock.System.now(),
             unit = "TestUnitB", // Use a valid unit
         ).registerEventLogEntryForDeletion()
+        val result3 = eventLogDatastore.createEventLogEntry(
+            title = title2,
+            description = "${test_prefix}_EventDescriptionC",
+            employeeId = null, // Set as needed
+            fallbackEmployeeName = null, // Set as needed
+            propertyId = property2Id,
+            type = EventLogEventType.DELIVERY, // Use a valid EventLogEventType
+            fallbackEventType = null, // Set as needed
+            timestamp = Clock.System.now(),
+            unit = "TestUnitB", // Use a valid unit
+        ).registerEventLogEntryForDeletion()
         assertTrue(result1.isSuccess)
         assertTrue(result2.isSuccess)
+        assertTrue(result3.isSuccess)
 
-        val getAllResult = eventLogDatastore.getEventLogEntries()
+        val getAllResult = eventLogDatastore.getEventLogEntries(propertyId!!)
 
         // Assert
         assertTrue(getAllResult.isSuccess)

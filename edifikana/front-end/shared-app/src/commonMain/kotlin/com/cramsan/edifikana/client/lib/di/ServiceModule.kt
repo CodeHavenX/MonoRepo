@@ -41,8 +41,8 @@ internal val ServiceModule = module {
 
     single {
         val settingsHolder: SettingsHolder = get()
-        val supabaseUrl = settingsHolder.getString(EdifikanaSettingKey.SupabaseOverrideUrl).orEmpty()
-        val supabaseKey = settingsHolder.getString(EdifikanaSettingKey.SupabaseOverrideKey).orEmpty()
+        val supabaseUrl = settingsHolder.getString(EdifikanaSettingKey.SupabaseOverrideUrl).orEmpty().trim()
+        val supabaseKey = settingsHolder.getString(EdifikanaSettingKey.SupabaseOverrideKey).orEmpty().trim()
 
         createSupabaseClient(
             supabaseUrl = supabaseUrl,

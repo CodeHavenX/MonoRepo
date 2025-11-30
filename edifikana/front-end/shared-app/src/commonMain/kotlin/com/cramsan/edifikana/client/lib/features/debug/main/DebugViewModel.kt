@@ -71,7 +71,7 @@ class DebugViewModel(
     private fun getPropertyValue(key: SettingKey<*>, value: Any): PropertyValue {
         return when (key.type) {
             is PropertyValueType.StringType -> {
-                PropertyValue.StringValue(value as String)
+                PropertyValue.StringValue((value as String).trim())
             }
 
             is PropertyValueType.BooleanType -> {
@@ -172,14 +172,14 @@ class DebugViewModel(
                             "These settings are used to override the default Supabase settings.",
                         ),
                         Field.StringField(
-                            title = "Supabase URL",
-                            subtitle = "Provide an override URL",
+                            title = "Supabase API URL",
+                            subtitle = "To find the api url, run `supabase status` in terminal",
                             key = EdifikanaSettingKey.SupabaseOverrideUrl,
                             value = supabaseOverrideUrl.orEmpty(),
                         ),
                         Field.StringField(
-                            title = "Supabase Anon Key",
-                            subtitle = "Provide an override Api Anon Key",
+                            title = "Supabase Publishable Key",
+                            subtitle = "To find the publishable key, run `supabase status` in terminal",
                             key = EdifikanaSettingKey.SupabaseOverrideKey,
                             value = supabaseOverrideKey.orEmpty(),
                             secure = true,

@@ -1,6 +1,8 @@
 package com.cramsan.edifikana.client.lib.features.home.propertiesoverview
 
+import com.cramsan.edifikana.client.lib.features.home.HomeDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
+import com.cramsan.edifikana.client.lib.managers.OrganizationManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
@@ -12,6 +14,7 @@ import kotlinx.coroutines.launch
 class PropertiesOverviewViewModel(
     dependencies: ViewModelDependencies,
     private val propertyManager: PropertyManager,
+    private val organizationManager: OrganizationManager,
 ) : BaseViewModel<PropertiesOverviewEvent, PropertiesOverviewUIState>(
     dependencies,
     PropertiesOverviewUIState.Initial,
@@ -52,7 +55,26 @@ class PropertiesOverviewViewModel(
      * Called when the user selects to add a new property.
      */
     fun onAddPropertySelected() {
-        // TODO: Implement navigation to the add property screen
+        viewModelScope.launch {
+            val organization = organizationManager.getOrganizations().getOrThrow().firstOrNull()
+
+            if (organization == null) {
+                emitWindowEvent(
+                    EdifikanaWindowsEvent.ShowSnackbar(
+                        "No organization found. Please create an organization first."
+                    )
+                )
+                return@launch
+            }
+
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateToScreen(
+                    HomeDestination.AddPropertyManagementDestination(
+                        orgId = organization.id,
+                    )
+                )
+            )
+        }
     }
 
     /**

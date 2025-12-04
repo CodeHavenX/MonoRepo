@@ -1,6 +1,7 @@
 package ${PACKAGE_NAME}.${Package_Name}
 
 import app.cash.turbine.test
+import app.cash.turbine.turbineScope
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
 import com.cramsan.framework.core.compose.EventBus
@@ -67,19 +68,17 @@ class ${Feature_Name}ViewModelTest : CoroutineTest() {
     
         @Test
     fun `test events`() = runCoroutineTest {
-        // Set up
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                // TODO: Update this test with the event that applies
-                assertEquals(WindowEvent.NavigateBack, awaitItem())
-                advanceUntilIdleAndAwaitComplete(this)
-            }
+        turbineScope {
+            // Set up
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+    
+            // Act
+            viewModel.onBackSelected()
+            
+            // Assert
+            // TODO: Update this test with the event that applies
+            assertEquals(WindowEvent.NavigateBack, turbine.awaitItem())
+            advanceUntilIdleAndAwaitComplete(turbine)
         }
-
-        // Act
-        viewModel.onBackSelected()
-        
-        // Assert
-        verificationJob.join()
     }
 }

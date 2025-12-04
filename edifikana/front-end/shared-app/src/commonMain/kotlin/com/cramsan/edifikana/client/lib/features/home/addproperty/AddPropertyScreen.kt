@@ -1,7 +1,9 @@
 package com.cramsan.edifikana.client.lib.features.home.addproperty
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
@@ -15,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.home.HomeDestination
@@ -98,22 +101,28 @@ internal fun AddPropertyContent(
             contentAlignment = Alignment.TopCenter,
         ) {
             ScreenLayout(
+                fixedFooter = true,
                 sectionContent = { sectionModifier ->
-                    OutlinedTextField(
-                        value = propertyName,
-                        onValueChange = { propertyName = it },
-                        label = { Text("Property name") },
-                        modifier = sectionModifier,
-                        singleLine = true,
-                    )
-
-                    OutlinedTextField(
-                        value = address,
-                        onValueChange = { address = it },
-                        label = { Text("Address") },
-                        modifier = sectionModifier,
-                        singleLine = true,
-                    )
+                    Column(sectionModifier) {
+                        Text("Property Name", fontWeight = FontWeight.Bold)
+                        OutlinedTextField(
+                            value = propertyName,
+                            onValueChange = { propertyName = it },
+                            placeholder = { Text("Enter your property name") },
+                            modifier = Modifier.fillMaxWidth(),
+                            singleLine = true,
+                        )
+                    }
+                    Column(sectionModifier) {
+                        Text("Address", fontWeight = FontWeight.Bold)
+                        OutlinedTextField(
+                            value = address,
+                            onValueChange = { address = it },
+                            placeholder = { Text("Enter the property address") },
+                            modifier = Modifier.fillMaxWidth(),
+                            singleLine = true,
+                        )
+                    }
                 },
                 buttonContent = { buttonModifier ->
                     Button(

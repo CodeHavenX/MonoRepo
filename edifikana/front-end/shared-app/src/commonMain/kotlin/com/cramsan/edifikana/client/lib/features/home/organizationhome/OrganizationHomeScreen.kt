@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.home.drawer.DrawerViewModel
+import com.cramsan.edifikana.client.lib.features.home.propertiesoverview.PropertiesOverviewScreen
 import com.cramsan.edifikana.client.lib.features.home.propertyhome.AccountDropDown
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
@@ -63,23 +64,11 @@ fun OrganizationHomeScreen(
 
     OrganizationHomeScreenContent(
         uiState,
-        onAccountButtonClicked = {
-            viewModel.navigateToAccount()
-        },
         onTabSelected = { tab ->
             viewModel.selectTab(tab)
         },
-        onNotificationsButtonSelected = {
-            viewModel.navigateToNotifications()
-        },
         onNavigationIconSelected = {
             managementViewModel.toggleNavigationState()
-        },
-        onOrganizationSelected = {
-            viewModel.selectOrganization(it.id)
-        },
-        onSettingsSelected = {
-            viewModel.navigateToSettings()
         },
     )
 }
@@ -105,12 +94,8 @@ val BottomBarDestinationUiModels
 internal fun OrganizationHomeScreenContent(
     uiState: OrganizationHomeUIModel,
     modifier: Modifier = Modifier,
-    onAccountButtonClicked: () -> Unit,
     onTabSelected: (Tabs) -> Unit,
-    onNotificationsButtonSelected: () -> Unit,
     onNavigationIconSelected: () -> Unit,
-    onOrganizationSelected: (OrganizationUIModel) -> Unit,
-    onSettingsSelected: () -> Unit,
 ) {
     Scaffold(
         modifier = modifier,
@@ -119,25 +104,7 @@ internal fun OrganizationHomeScreenContent(
                 title = stringResource(Res.string.app_name),
                 navigationIcon = Icons.Default.Menu,
                 onNavigationIconSelected = onNavigationIconSelected,
-            ) {
-                // Organization selection
-                if (uiState.availableOrganizations.size > 1) {
-                    OrganizationsDropDown(
-                        organizations = uiState.availableOrganizations,
-                        onOrganizationSelected = {
-                            // Handle organization selection here if needed
-                            onOrganizationSelected(it)
-                        }
-                    )
-                }
-
-                // Account button
-                AccountDropDown(
-                    onAccountSelected = onAccountButtonClicked,
-                    onNotificationsSelected = onNotificationsButtonSelected,
-                    onSettingsSelected = onSettingsSelected,
-                )
-            }
+            ) { }
         },
         bottomBar = {
             NavigationBar {
@@ -181,6 +148,7 @@ private fun HubContent(
     ) {
         when (it) {
             Tabs.Properties -> {
+                PropertiesOverviewScreen()
             }
             Tabs.Employee -> {
             }

@@ -5,7 +5,14 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalInspectionMode
+import coil3.ColorImage
 import coil3.ImageLoader
+import coil3.annotation.ExperimentalCoilApi
+import coil3.compose.AsyncImagePreviewHandler
+import coil3.compose.LocalAsyncImagePreviewHandler
 import coil3.compose.setSingletonImageLoaderFactory
 import coil3.network.ktor3.KtorNetworkFetcherFactory
 import coil3.util.DebugLogger
@@ -15,6 +22,7 @@ import io.github.jan.supabase.coil.Coil3Integration
 /**
  * App theme.
  */
+@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun AppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -28,6 +36,15 @@ fun AppTheme(
 
     WindowDecorations(colorScheme, darkTheme)
 
+    val previewImageProvider = if (LocalInspectionMode.current) {
+        val previewHandler = AsyncImagePreviewHandler {
+            ColorImage(Color.DarkGray.toArgb())
+        }
+        LocalAsyncImagePreviewHandler provides previewHandler
+    } else {
+        null
+    }
+
     coil3?.let {
         setSingletonImageLoaderFactory { platformContext ->
             ImageLoader.Builder(platformContext)
@@ -40,7 +57,14 @@ fun AppTheme(
         }
     }
 
-    CompositionLocalProvider(LocalDebugLayoutInspection provides debugLayoutInspection) {
+    val localProviders = listOfNotNull(
+        LocalDebugLayoutInspection provides debugLayoutInspection,
+        previewImageProvider,
+    ).toTypedArray()
+
+    CompositionLocalProvider(
+        values = localProviders,
+    ) {
         MaterialTheme(
             colorScheme = colorScheme,
             content = content

@@ -7,7 +7,6 @@ import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.OrganizationManager
 import com.cramsan.edifikana.client.lib.models.Organization
 import com.cramsan.edifikana.client.lib.settings.getLastSelectedOrganizationId
-import com.cramsan.edifikana.client.lib.settings.setLastSelectedOrganizationId
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.utils.requireSuccess
 import com.cramsan.framework.core.compose.BaseViewModel

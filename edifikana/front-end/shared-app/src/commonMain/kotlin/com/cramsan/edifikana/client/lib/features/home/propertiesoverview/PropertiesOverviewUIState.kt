@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.home.propertiesoverview
 
+import com.cramsan.edifikana.client.lib.models.PropertyModel
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.core.compose.ViewModelUIState
 
@@ -21,9 +22,26 @@ data class PropertiesOverviewUIState(
     }
 }
 
+/**
+ * UI model to represent a property in the properties list.
+ */
 data class PropertyItemUIModel(
     val id: PropertyId,
     val name: String,
     val address: String,
     val imageUrl: String?,
-)
+) {
+    companion object {
+        /**
+         * Create a [PropertyItemUIModel] from a [PropertyModel].
+         */
+        fun fromDomainModel(property: PropertyModel): PropertyItemUIModel {
+            return PropertyItemUIModel(
+                id = property.id,
+                name = property.name,
+                address = property.address,
+                imageUrl = null,
+            )
+        }
+    }
+}

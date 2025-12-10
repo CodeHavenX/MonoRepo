@@ -31,6 +31,7 @@ fun ScreenLayout(
     maxWith: Dp = Size.COLUMN_MAX_WIDTH,
     topPadding: Dp = Padding.X_LARGE,
     bottomPadding: Dp = Padding.X_LARGE,
+    verticalArrangement: Arrangement.Vertical = Arrangement.spacedBy(Padding.MEDIUM),
     sectionContent: @Composable ColumnScope.(Modifier) -> Unit,
     buttonContent: (@Composable ColumnScope.(Modifier) -> Unit)? = null,
 ) {
@@ -47,7 +48,7 @@ fun ScreenLayout(
         }
     Column(
         modifier = debugModifier(screenLayoutModifier),
-        verticalArrangement = Arrangement.spacedBy(Padding.MEDIUM),
+        verticalArrangement = verticalArrangement,
     ) {
         val sectionModifier = Modifier.ifTrue(fixedFooter) {
             weight(1f)

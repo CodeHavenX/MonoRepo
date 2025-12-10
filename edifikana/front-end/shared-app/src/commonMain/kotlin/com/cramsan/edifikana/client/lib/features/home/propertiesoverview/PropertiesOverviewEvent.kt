@@ -1,7 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.home.propertiesoverview
 
 import com.cramsan.framework.core.compose.ViewModelEvent
-import kotlin.random.Random
 
 /**
  * Events that can be triggered within the domain of the PropertiesOverview feature.

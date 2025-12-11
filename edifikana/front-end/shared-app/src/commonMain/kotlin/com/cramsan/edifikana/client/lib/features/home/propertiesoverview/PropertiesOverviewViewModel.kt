@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.home.propertiesoverview
 
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
@@ -24,30 +25,43 @@ class PropertiesOverviewViewModel(
             updateUiState {
                 it.copy(isLoading = true)
             }
-            val resultList = propertyManager.getPropertyList()
-                .getOrThrow()
-            val uiModels = resultList.map { property ->
-                PropertyItemUIModel.fromDomainModel(property)
-            }
-            updateUiState {
-                it.copy(
-                    isLoading = false,
-                    propertyList = uiModels,
-                )
-            }
+            propertyManager.getPropertyList()
+                .onSuccess { resultList ->
+                    val uiModels = resultList.map { property ->
+                        PropertyItemUIModel.fromDomainModel(property)
+                    }
+                    updateUiState {
+                        it.copy(
+                            isLoading = false,
+                            propertyList = uiModels,
+                        )
+                    }
+                }
+                .onFailure { throwable ->
+                    updateUiState { it.copy(isLoading = false) }
+                    emitWindowEvent(
+                        EdifikanaWindowsEvent.ShowSnackbar(
+                            "Failed to load properties: ${throwable.message ?: "Unknown error"}"
+                        )
+                    )
+                }
         }
     }
 
     /**
      * Called when the user selects to add a new property.
      */
-    fun onAddPropertySelected() = Unit
+    fun onAddPropertySelected() {
+        // TODO: Implement navigation to the add property screen
+    }
 
     /**
      * Called when the user selects a property from the list.
      */
     @Suppress("UNUSED_PARAMETER")
-    fun onPropertySelected(property: PropertyItemUIModel) = Unit
+    fun onPropertySelected(property: PropertyItemUIModel) {
+        // TODO: Implement navigation to the property details screen
+    }
 
     companion object {
         private const val TAG = "PropertiesOverviewViewModel"

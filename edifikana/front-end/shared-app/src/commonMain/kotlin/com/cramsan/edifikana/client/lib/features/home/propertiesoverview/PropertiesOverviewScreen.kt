@@ -96,7 +96,7 @@ internal fun PropertiesOverviewContent(
             ) {
                 Icon(
                     imageVector = Icons.Sharp.Add,
-                    contentDescription = null,
+                    contentDescription = "Add new property",
                 )
             }
         }
@@ -110,12 +110,26 @@ internal fun PropertiesOverviewContent(
             ScreenLayout(
                 verticalArrangement = Arrangement.spacedBy(Padding.XX_SMALL),
                 sectionContent = { sectionModifier ->
-                    content.propertyList.forEach {
-                        PropertyItem(
-                            property = it,
-                            modifier = sectionModifier,
-                            onPropertySelected = onPropertySelected,
-                        )
+                    if (content.propertyList.isEmpty()) {
+                        Box(
+                            modifier = sectionModifier
+                                .fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "No properties yet. Tap + to add your first property.",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onBackground,
+                            )
+                        }
+                    } else {
+                        content.propertyList.forEach {
+                            PropertyItem(
+                                property = it,
+                                modifier = sectionModifier,
+                                onPropertySelected = onPropertySelected,
+                            )
+                        }
                     }
                 },
             )
@@ -140,20 +154,20 @@ private fun PropertyItem(
             )
             .clickable { onPropertySelected(property) },
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.Start,
     ) {
         val imageModifier = Modifier
             .size(Size.xx_large)
         if (property.imageUrl != null) {
             AsyncImage(
                 model = property.imageUrl,
-                contentDescription = null,
+                contentDescription = "Property image for ${property.name}",
                 modifier = imageModifier,
             )
         } else {
             Icon(
                 imageVector = Icons.Default.Apartment,
-                contentDescription = null,
+                contentDescription = "No image available for ${property.name}",
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = imageModifier.padding(
                     Padding.SMALL

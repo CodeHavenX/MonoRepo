@@ -46,8 +46,8 @@ fun LoadingAnimationOverlay(
                 modifier = Modifier
                     .background(color, shape = MaterialTheme.shapes.large)
                     .sizeIn(
-                        maxHeight = Size.xx_large,
-                        maxWidth = Size.xx_large,
+                        maxHeight = Size.xxx_large,
+                        maxWidth = Size.xxx_large,
                     )
                     .fillMaxSize(),
                 contentAlignment = Alignment.Center,

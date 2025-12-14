@@ -1,31 +1,25 @@
 package com.cramsan.edifikana.client.lib.features.home.organizationhome
 
 import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Apartment
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.home.drawer.DrawerViewModel
-import com.cramsan.edifikana.client.lib.features.home.propertyhome.AccountDropDown
+import com.cramsan.edifikana.client.lib.features.home.propertiesoverview.PropertiesOverviewScreen
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import edifikana_lib.Res
@@ -63,23 +57,11 @@ fun OrganizationHomeScreen(
 
     OrganizationHomeScreenContent(
         uiState,
-        onAccountButtonClicked = {
-            viewModel.navigateToAccount()
-        },
         onTabSelected = { tab ->
             viewModel.selectTab(tab)
         },
-        onNotificationsButtonSelected = {
-            viewModel.navigateToNotifications()
-        },
         onNavigationIconSelected = {
             managementViewModel.toggleNavigationState()
-        },
-        onOrganizationSelected = {
-            viewModel.selectOrganization(it.id)
-        },
-        onSettingsSelected = {
-            viewModel.navigateToSettings()
         },
     )
 }
@@ -105,12 +87,8 @@ val BottomBarDestinationUiModels
 internal fun OrganizationHomeScreenContent(
     uiState: OrganizationHomeUIModel,
     modifier: Modifier = Modifier,
-    onAccountButtonClicked: () -> Unit,
     onTabSelected: (Tabs) -> Unit,
-    onNotificationsButtonSelected: () -> Unit,
     onNavigationIconSelected: () -> Unit,
-    onOrganizationSelected: (OrganizationUIModel) -> Unit,
-    onSettingsSelected: () -> Unit,
 ) {
     Scaffold(
         modifier = modifier,
@@ -119,25 +97,7 @@ internal fun OrganizationHomeScreenContent(
                 title = stringResource(Res.string.app_name),
                 navigationIcon = Icons.Default.Menu,
                 onNavigationIconSelected = onNavigationIconSelected,
-            ) {
-                // Organization selection
-                if (uiState.availableOrganizations.size > 1) {
-                    OrganizationsDropDown(
-                        organizations = uiState.availableOrganizations,
-                        onOrganizationSelected = {
-                            // Handle organization selection here if needed
-                            onOrganizationSelected(it)
-                        }
-                    )
-                }
-
-                // Account button
-                AccountDropDown(
-                    onAccountSelected = onAccountButtonClicked,
-                    onNotificationsSelected = onNotificationsButtonSelected,
-                    onSettingsSelected = onSettingsSelected,
-                )
-            }
+            ) { }
         },
         bottomBar = {
             NavigationBar {
@@ -181,50 +141,12 @@ private fun HubContent(
     ) {
         when (it) {
             Tabs.Properties -> {
+                PropertiesOverviewScreen()
             }
             Tabs.Employee -> {
             }
             Tabs.None -> {
                 // No content
-            }
-        }
-    }
-}
-
-@Composable
-private fun OrganizationsDropDown(
-    modifier: Modifier = Modifier,
-    organizations: List<OrganizationUIModel>,
-    onOrganizationSelected: (OrganizationUIModel) -> Unit,
-) {
-    var expanded by remember { mutableStateOf(false) }
-
-    Box(
-        modifier = modifier
-    ) {
-        val selectedOrganization = organizations.firstOrNull { it.selected }
-
-        TextButton(onClick = { expanded = !expanded }) {
-            Icon(
-                imageVector = Icons.Default.Apartment,
-                contentDescription = "",
-            )
-            selectedOrganization?.let {
-                Text(it.name)
-            }
-        }
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
-        ) {
-            organizations.forEach { organization ->
-                DropdownMenuItem(
-                    text = { Text(organization.name) },
-                    onClick = {
-                        onOrganizationSelected(organization)
-                        expanded = false
-                    },
-                )
             }
         }
     }

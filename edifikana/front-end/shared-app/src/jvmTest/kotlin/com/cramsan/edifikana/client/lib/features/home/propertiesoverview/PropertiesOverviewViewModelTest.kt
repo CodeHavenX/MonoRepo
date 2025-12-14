@@ -1,6 +1,9 @@
-package ${PACKAGE_NAME}.${Package_Name}
+package com.cramsan.edifikana.client.lib.features.home.propertiesoverview
 
-import app.cash.turbine.test
+import com.cramsan.edifikana.client.lib.managers.PropertyManager
+import com.cramsan.edifikana.client.lib.models.PropertyModel
+import com.cramsan.edifikana.lib.model.OrganizationId
+import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
 import com.cramsan.framework.core.compose.EventBus
@@ -12,13 +15,12 @@ import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.test.CoroutineTest
-import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
+import io.mockk.coEvery
 import io.mockk.mockk
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
-import kotlinx.coroutines.launch
 
 /**
  * It is recommended to use the [CoroutineTest] class to run your tests. To run your tests annotate your functions with
@@ -26,11 +28,10 @@ import kotlinx.coroutines.launch
  *
  * @see CoroutineTest
  */
- // TODO: Move this file to the respective folder in the test folder.
 @Suppress("UNCHECKED_CAST")
-class ${Feature_Name}ViewModelTest : CoroutineTest() {
+class PropertiesOverviewViewModelTest : CoroutineTest() {
 
-    private lateinit var viewModel: ${Feature_Name}ViewModel
+    private lateinit var viewModel: PropertiesOverviewViewModel
 
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
 
@@ -39,7 +40,9 @@ class ${Feature_Name}ViewModelTest : CoroutineTest() {
     private lateinit var applicationEventReceiver: EventBus<ApplicationEvent>
 
     private lateinit var stringProvider: StringProvider
-    
+
+    private lateinit var propertyManager: PropertyManager
+
     @BeforeTest
     fun setupTest() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
@@ -47,6 +50,7 @@ class ${Feature_Name}ViewModelTest : CoroutineTest() {
         applicationEventReceiver = EventBus()
         windowEventBus = EventBus()
         stringProvider = mockk()
+        propertyManager = mockk()
         val dependencies = ViewModelDependencies(
             appScope = testCoroutineScope,
             dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),
@@ -55,31 +59,38 @@ class ${Feature_Name}ViewModelTest : CoroutineTest() {
             windowEventReceiver = windowEventBus,
         )
 
-        viewModel = ${Feature_Name}ViewModel(
+        viewModel = PropertiesOverviewViewModel(
             dependencies = dependencies,
+            propertyManager = propertyManager,
         )
     }
 
     @Test
-    fun `test ui state`() = runCoroutineTest {
-        assertNull(viewModel.uiState.value.title)
-    }
-    
-        @Test
-    fun `test events`() = runCoroutineTest {
+    fun `test initial ui state`() = runCoroutineTest {
         // Set up
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                // TODO: Update this test with the event that applies
-                assertEquals(WindowEvent.NavigateBack, awaitItem())
-                advanceUntilIdleAndAwaitComplete(this)
-            }
-        }
+        coEvery { propertyManager.getPropertyList() } returns Result.success(listOf(
+            PropertyModel(
+                id = PropertyId("property-1"),
+                name = "Test Property 1",
+                address = "123 Main St",
+                organizationId = OrganizationId("org-1"),
+            )
+        ))
 
         // Act
-        viewModel.onBackSelected()
-        
+        val initialState = viewModel.uiState.value
+        viewModel.initialize()
+        val loadedState = viewModel.uiState.value
+
         // Assert
-        verificationJob.join()
+        assertEquals(true, initialState.isLoading)
+        assertEquals(0, initialState.propertyList.size)
+        assertEquals(false, loadedState.isLoading)
+        assertEquals(1, loadedState.propertyList.size)
+        val propertyItem = loadedState.propertyList[0]
+        assertEquals(PropertyId("property-1"), propertyItem.id)
+        assertEquals("Test Property 1", propertyItem.name)
+        assertEquals("123 Main St", propertyItem.address)
+        assertNull(propertyItem.imageUrl)
     }
 }

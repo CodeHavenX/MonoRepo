@@ -7,7 +7,6 @@ import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.OrganizationManager
 import com.cramsan.edifikana.client.lib.models.Organization
 import com.cramsan.edifikana.client.lib.settings.getLastSelectedOrganizationId
-import com.cramsan.edifikana.client.lib.settings.setLastSelectedOrganizationId
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.utils.requireSuccess
 import com.cramsan.framework.core.compose.BaseViewModel
@@ -61,17 +60,6 @@ class OrganizationHomeViewModel(
         }
     }
 
-    /**
-     * Select an organization by its ID.
-     */
-    fun selectOrganization(organizationId: OrganizationId) {
-        logI(TAG, "Selecting organization with ID: ${organizationId.id}")
-        viewModelScope.launch {
-            preferencesManager.setLastSelectedOrganizationId(organizationId)
-            updateSelectedOrganization(organizationId)
-        }
-    }
-
     private fun Organization.toUIModel(): OrganizationUIModel {
         return OrganizationUIModel(
             id = this.id,
@@ -110,20 +98,6 @@ class OrganizationHomeViewModel(
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToScreen(
                     AccountDestination.NotificationsDestination,
-                )
-            )
-        }
-    }
-
-    /**
-     * Navigate to the settings page.
-     */
-    fun navigateToSettings() {
-        logI(TAG, "Navigating to settings page.")
-        viewModelScope.launch {
-            emitWindowEvent(
-                EdifikanaWindowsEvent.NavigateToNavGraph(
-                    EdifikanaNavGraphDestination.SettingsNavGraphDestination,
                 )
             )
         }

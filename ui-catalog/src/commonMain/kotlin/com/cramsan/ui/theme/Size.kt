@@ -14,5 +14,6 @@ object Size {
     val medium = 32.dp
     val large = 48.dp
     val x_large = 52.dp
-    val xx_large = 96.dp
+    val xx_large = 74.dp
+    val xxx_large = 96.dp
 }

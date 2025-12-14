@@ -80,9 +80,16 @@ class PropertiesOverviewViewModel(
     /**
      * Called when the user selects a property from the list.
      */
-    @Suppress("UNUSED_PARAMETER")
     fun onPropertySelected(property: PropertyItemUIModel) {
-        // TODO: Implement navigation to the property details screen
+        viewModelScope.launch {
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateToScreen(
+                    HomeDestination.PropertyManagementDestination(
+                        propertyId = property.id,
+                    )
+                )
+            )
+        }
     }
 
     companion object {

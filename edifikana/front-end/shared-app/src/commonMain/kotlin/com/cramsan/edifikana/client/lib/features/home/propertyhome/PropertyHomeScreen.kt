@@ -35,6 +35,7 @@ import androidx.compose.ui.draw.clip
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.home.drawer.DrawerViewModel
+import com.cramsan.edifikana.client.lib.features.home.eventlog.EventLogScreen
 import com.cramsan.edifikana.client.lib.features.home.gotoorganization.GoToOrganizationScreen
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.edifikana.lib.model.PropertyId
@@ -45,6 +46,8 @@ import edifikana_lib.app_name
 import edifikana_lib.home_screen_account_description
 import edifikana_lib.home_screen_property_dropdown_description
 import edifikana_lib.home_screen_property_dropdown_selected_description
+import edifikana_lib.string_event_log_title
+import edifikana_lib.two_pager
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -90,13 +93,13 @@ fun PropertyHomeScreen(
 }
 
 private val BottomBarDestinationUiModels = listOf<BottomBarDestinationUiModel>(
-    /*
     BottomBarDestinationUiModel(
         Tabs.EventLog,
         Res.drawable.two_pager,
         Res.string.string_event_log_title,
         isStartDestination = true,
     ),
+    /*
     BottomBarDestinationUiModel(
         Tabs.TimeCard,
         Res.drawable.schedule,
@@ -303,6 +306,13 @@ private fun HomeContent(
                 Tabs.GoToOrganization -> {
                     GoToOrganizationScreen(
                         modifier
+                    )
+                }
+
+                Tabs.EventLog -> {
+                    EventLogScreen(
+                        propertyId = propertyId,
+                        modifier = modifier,
                     )
                 }
             }

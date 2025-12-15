@@ -40,6 +40,7 @@ interface PropertyDatastore {
     suspend fun updateProperty(
         propertyId: PropertyId,
         name: String?,
+        address: String?,
     ): Result<Property>
 
     /**

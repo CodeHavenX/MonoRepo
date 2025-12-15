@@ -45,6 +45,7 @@ data class BottomBarDestinationUiModel(
 enum class Tabs {
     None,
     GoToOrganization,
+    EventLog,
 }
 
 /**

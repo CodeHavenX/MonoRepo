@@ -67,11 +67,13 @@ class PropertyService(
     suspend fun updateProperty(
         id: PropertyId,
         name: String?,
+        address: String?,
     ): Property {
         logD(TAG, "updateProperty")
         return propertyDatastore.updateProperty(
             propertyId = id,
             name = name,
+            address = address,
         ).getOrThrow()
     }
 

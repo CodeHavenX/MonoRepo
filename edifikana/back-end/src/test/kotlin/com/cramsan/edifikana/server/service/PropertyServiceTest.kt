@@ -138,22 +138,61 @@ class PropertyServiceTest {
     }
 
     /**
-     * Tests that updateProperty updates a property and returns the updated property.
+     * Tests that updateProperty updates a property with both name and address.
      */
     @Test
     fun `updateProperty should call propertyDatastore and return updated property`() = runTest {
         // Arrange
         val propertyId = PropertyId("Edificio")
         val name = "Updated Name"
+        val address = "123 Main St"
         val property = mockk<Property>()
-        coEvery { propertyDatastore.updateProperty(any(), any()) } returns Result.success(property)
+        coEvery { propertyDatastore.updateProperty(any(), any(), any()) } returns Result.success(property)
 
         // Act
-        val result = propertyService.updateProperty(propertyId, name)
+        val result = propertyService.updateProperty(propertyId, name, address)
 
         // Assert
         assertEquals(property, result)
-        coVerify { propertyDatastore.updateProperty(propertyId, name) }
+        coVerify { propertyDatastore.updateProperty(propertyId, name, address) }
+    }
+
+    /**
+     * Tests that updateProperty updates only the address when name is null.
+     */
+    @Test
+    fun `updateProperty should update only address when name is null`() = runTest {
+        // Arrange
+        val propertyId = PropertyId("Edificio")
+        val address = "456 New Address"
+        val property = mockk<Property>()
+        coEvery { propertyDatastore.updateProperty(any(), any(), any()) } returns Result.success(property)
+
+        // Act
+        val result = propertyService.updateProperty(propertyId, null, address)
+
+        // Assert
+        assertEquals(property, result)
+        coVerify { propertyDatastore.updateProperty(propertyId, null, address) }
+    }
+
+    /**
+     * Tests that updateProperty updates only the name when address is null.
+     */
+    @Test
+    fun `updateProperty should update only name when address is null`() = runTest {
+        // Arrange
+        val propertyId = PropertyId("Edificio")
+        val name = "Updated Name Only"
+        val property = mockk<Property>()
+        coEvery { propertyDatastore.updateProperty(any(), any(), any()) } returns Result.success(property)
+
+        // Act
+        val result = propertyService.updateProperty(propertyId, name, null)
+
+        // Assert
+        assertEquals(property, result)
+        coVerify { propertyDatastore.updateProperty(propertyId, name, null) }
     }
 
     /**

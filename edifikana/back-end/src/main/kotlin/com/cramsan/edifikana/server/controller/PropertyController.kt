@@ -121,6 +121,7 @@ class PropertyController(
         val updatedProperty = propertyService.updateProperty(
             id = request.pathParam,
             name = request.requestBody.name,
+            address = request.requestBody.address,
         ).toPropertyNetworkResponse()
         return updatedProperty
     }

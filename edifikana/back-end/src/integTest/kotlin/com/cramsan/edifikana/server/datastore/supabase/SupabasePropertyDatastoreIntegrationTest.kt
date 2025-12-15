@@ -108,7 +108,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `updateProperty should update property fields`() = runCoroutineTest {
+    fun `updateProperty should update only name when address is null`() = runCoroutineTest {
         // Arrange
         val createResult = propertyDatastore.createProperty(
             name = "${test_prefix}_ToUpdate",
@@ -123,13 +123,69 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val updateResult = propertyDatastore.updateProperty(
             propertyId = property.id,
             name = "${test_prefix}_UpdatedName",
+            address = null,
         ).registerPropertyForDeletion()
 
         // Assert
         assertTrue(updateResult.isSuccess)
         val updated = updateResult.getOrNull()
         assertNotNull(updated)
-        assertTrue(updated.name == "${test_prefix}_UpdatedName")
+        assertEquals("${test_prefix}_UpdatedName", updated.name)
+        assertEquals("123 Update St, Update City, UC 12345", updated.address)
+    }
+
+    @Test
+    fun `updateProperty should update only address when name is null`() = runCoroutineTest {
+        // Arrange
+        val createResult = propertyDatastore.createProperty(
+            name = "${test_prefix}_ToUpdate",
+            address = "123 Update St, Update City, UC 12345",
+            creatorUserId = testUserId!!,
+            organizationId = testOrg!!,
+        )
+        assertTrue(createResult.isSuccess)
+        val property = createResult.getOrNull()!!
+
+        // Act
+        val updateResult = propertyDatastore.updateProperty(
+            propertyId = property.id,
+            name = null,
+            address = "456 New Address St, New City, NC 67890",
+        ).registerPropertyForDeletion()
+
+        // Assert
+        assertTrue(updateResult.isSuccess)
+        val updated = updateResult.getOrNull()
+        assertNotNull(updated)
+        assertEquals("${test_prefix}_ToUpdate", updated.name)
+        assertEquals("456 New Address St, New City, NC 67890", updated.address)
+    }
+
+    @Test
+    fun `updateProperty should update both name and address`() = runCoroutineTest {
+        // Arrange
+        val createResult = propertyDatastore.createProperty(
+            name = "${test_prefix}_ToUpdate",
+            address = "123 Update St, Update City, UC 12345",
+            creatorUserId = testUserId!!,
+            organizationId = testOrg!!,
+        )
+        assertTrue(createResult.isSuccess)
+        val property = createResult.getOrNull()!!
+
+        // Act
+        val updateResult = propertyDatastore.updateProperty(
+            propertyId = property.id,
+            name = "${test_prefix}_CompletelyUpdated",
+            address = "789 Complete St, Full City, FC 11111",
+        ).registerPropertyForDeletion()
+
+        // Assert
+        assertTrue(updateResult.isSuccess)
+        val updated = updateResult.getOrNull()
+        assertNotNull(updated)
+        assertEquals("${test_prefix}_CompletelyUpdated", updated.name)
+        assertEquals("789 Complete St, Full City, FC 11111", updated.address)
     }
 
     @Test

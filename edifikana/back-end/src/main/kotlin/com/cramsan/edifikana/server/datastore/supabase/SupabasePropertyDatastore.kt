@@ -100,12 +100,14 @@ class SupabasePropertyDatastore(
     override suspend fun updateProperty(
         propertyId: PropertyId,
         name: String?,
+        address: String?,
     ): Result<Property> = runSuspendCatching(TAG) {
         logD(TAG, "Updating property: %s", propertyId)
 
         postgrest.from(PropertyEntity.COLLECTION).update(
             {
                 name?.let { value -> Property::name setTo value }
+                address?.let { value -> Property::address setTo value }
             }
         ) {
             select()

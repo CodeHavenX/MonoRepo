@@ -155,7 +155,7 @@ class SignInViewModelTest : CoroutineTest() {
      * Test the [SignInViewModel.signInWithPassword] method fails with invalid login credentials
      */
     @Test
-    fun `test SignIn fails with invalid login credentials`() = runBlockingTest {
+    fun `test SignIn fails with invalid login credentials`() = runCoroutineTest {
         // Arrange
         val username = "wrongUser@email.com"
         val password = "ValidPassword123"

@@ -4,6 +4,11 @@
 apply plugin: "com.android.library"
 apply plugin: "org.jetbrains.kotlin.multiplatform"
 
+kotlin {
+    androidTarget()
+    jvmToolchain(21)
+}
+
 android {
     compileSdkVersion project.compileSdkVersion.toInteger()
 
@@ -21,10 +26,6 @@ android {
         resources {
             excludes += "/META-INF/**"
         }
-    }
-
-    kotlin {
-        jvmToolchain(21)
     }
 
     testOptions {
@@ -69,10 +70,6 @@ dependencies {
     androidTestImplementation "org.jetbrains.kotlin:kotlin-test-junit:_"
     androidTestImplementation "io.mockk:mockk-android:_"
     androidTestImplementation "org.robolectric:robolectric:_"
-}
-
-kotlin {
-    androidTarget()
 }
 
 tasks.register("releaseAndroid") {

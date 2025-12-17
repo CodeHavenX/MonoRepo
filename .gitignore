@@ -98,3 +98,6 @@ google-services.json
 *.keystore
 *.local.properties
 .secrets/
+
+# Claude Files
+.claude/settings.local.json

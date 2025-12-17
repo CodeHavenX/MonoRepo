@@ -16,6 +16,15 @@ plugins {
 
 subprojects {
     apply(from = "$rootDir/gradle/detekt.gradle")
+
+    // Configure Java toolchain to use JDK 21 for all subprojects
+    pluginManager.withPlugin("java") {
+        extensions.configure<JavaPluginExtension> {
+            toolchain {
+                languageVersion.set(JavaLanguageVersion.of(21))
+            }
+        }
+    }
 }
 
 /**

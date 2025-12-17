@@ -20,13 +20,14 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.advanceUntilIdle
 
+@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 class SettingsViewModelTest : CoroutineTest() {
 
     private lateinit var viewModel: SettingsViewModel

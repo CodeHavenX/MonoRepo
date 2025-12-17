@@ -12,10 +12,10 @@ import com.cramsan.framework.test.CoroutineTest
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertNull
+import kotlinx.coroutines.test.advanceUntilIdle
 
 /**
  * It is recommended to use the [CoroutineTest] class to run your tests. To run your tests annotate your functions with
@@ -24,6 +24,7 @@ import kotlin.test.assertNull
  * @see CoroutineTest
  */
 @Suppress("UNCHECKED_CAST")
+@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 class ManagementViewModelTest : CoroutineTest() {
 
     private lateinit var viewModel: DrawerViewModel

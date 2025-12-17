@@ -100,4 +100,4 @@ google-services.json
 .secrets/
 
 # Claude Files
-.claude/settings.loclal.json
+.claude/settings.local.json

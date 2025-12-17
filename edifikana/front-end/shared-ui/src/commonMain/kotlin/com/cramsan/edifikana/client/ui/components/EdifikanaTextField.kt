@@ -1,6 +1,8 @@
 package com.cramsan.edifikana.client.ui.components
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -19,6 +21,7 @@ import androidx.compose.ui.unit.dp
  * @param onValueChange Callback when the text changes
  * @param modifier Modifier for the text field
  * @param placeholder Placeholder text to display when empty
+ * @param label Optional label to display above the text field
  * @param isPassword Whether this is a password field
  * @param enabled Whether the field is enabled
  */
@@ -28,31 +31,44 @@ fun EdifikanaTextField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     placeholder: String = "",
+    label: String? = null,
     isPassword: Boolean = false,
     enabled: Boolean = true,
 ) {
-    OutlinedTextField(
-        value = value,
-        onValueChange = onValueChange,
+    Column(
         modifier = modifier.fillMaxWidth(),
-        placeholder = {
+    ) {
+        // If label is provided, show it above the text field
+        if (!label.isNullOrBlank()) {
             Text(
-                text = placeholder,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                label,
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(bottom = 8.dp),
             )
-        },
-        visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
-        enabled = enabled,
-        singleLine = true,
-        shape = RoundedCornerShape(25.dp),
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-            disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-            focusedBorderColor = MaterialTheme.colorScheme.primary,
-            unfocusedBorderColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-        ),
-        textStyle = MaterialTheme.typography.bodyLarge,
-    )
+        }
+        OutlinedTextField(
+            value = value,
+            modifier = Modifier.fillMaxWidth(),
+            onValueChange = onValueChange,
+            placeholder = {
+                Text(
+                    text = placeholder,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                )
+            },
+            visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
+            enabled = enabled,
+            singleLine = true,
+            shape = RoundedCornerShape(25.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+            ),
+            textStyle = MaterialTheme.typography.bodyLarge,
+        )
+    }
 }

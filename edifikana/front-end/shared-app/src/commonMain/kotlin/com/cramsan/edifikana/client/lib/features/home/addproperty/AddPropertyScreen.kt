@@ -1,14 +1,9 @@
 package com.cramsan.edifikana.client.lib.features.home.addproperty
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -17,10 +12,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.home.HomeDestination
+import com.cramsan.edifikana.client.ui.components.EdifikanaPrimaryButton
+import com.cramsan.edifikana.client.ui.components.EdifikanaTextField
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
@@ -103,36 +99,29 @@ internal fun AddPropertyContent(
             ScreenLayout(
                 fixedFooter = true,
                 sectionContent = { sectionModifier ->
-                    Column(sectionModifier) {
-                        Text("Property Name", fontWeight = FontWeight.Bold)
-                        OutlinedTextField(
-                            value = propertyName,
-                            onValueChange = { propertyName = it },
-                            placeholder = { Text("Enter your property name") },
-                            modifier = Modifier.fillMaxWidth(),
-                            singleLine = true,
-                        )
-                    }
-                    Column(sectionModifier) {
-                        Text("Address", fontWeight = FontWeight.Bold)
-                        OutlinedTextField(
-                            value = address,
-                            onValueChange = { address = it },
-                            placeholder = { Text("Enter the property address") },
-                            modifier = Modifier.fillMaxWidth(),
-                            singleLine = true,
-                        )
-                    }
+                    EdifikanaTextField(
+                        value = propertyName,
+                        onValueChange = { propertyName = it },
+                        label = "Property Name",
+                        placeholder = "Enter Property Name",
+                        modifier = sectionModifier,
+                    )
+                    EdifikanaTextField(
+                        value = address,
+                        onValueChange = { address = it },
+                        label = "Address",
+                        placeholder = "Enter the property address",
+                        modifier = sectionModifier,
+                    )
                 },
                 buttonContent = { buttonModifier ->
-                    Button(
+                    EdifikanaPrimaryButton(
+                        text = stringResource(Res.string.text_add),
                         modifier = buttonModifier,
                         onClick = {
                             onAddPropertySelected(propertyName, address)
                         },
-                    ) {
-                        Text(text = stringResource(Res.string.text_add))
-                    }
+                    )
                 }
             )
             LoadingAnimationOverlay(content.isLoading)

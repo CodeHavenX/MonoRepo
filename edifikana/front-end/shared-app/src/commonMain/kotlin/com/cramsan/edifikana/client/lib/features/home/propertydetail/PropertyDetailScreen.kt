@@ -3,17 +3,13 @@ package com.cramsan.edifikana.client.lib.features.home.propertydetail
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -30,6 +26,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.home.HomeDestination
+import com.cramsan.edifikana.client.ui.components.EdifikanaPrimaryButton
+import com.cramsan.edifikana.client.ui.components.EdifikanaSecondaryButton
+import com.cramsan.edifikana.client.ui.components.EdifikanaTextField
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
@@ -127,16 +126,14 @@ internal fun PropertyDetailContent(
                 fixedFooter = content.isEditMode,
                 sectionContent = { sectionModifier ->
                     Column(sectionModifier) {
-                        Text("Property Name", fontWeight = FontWeight.Bold)
                         if (content.isEditMode) {
-                            OutlinedTextField(
+                            EdifikanaTextField(
                                 value = content.name,
                                 onValueChange = onNameChanged,
-                                placeholder = { Text("Enter property name") },
-                                modifier = Modifier.fillMaxWidth(),
-                                singleLine = true,
+                                label = "Property Name",
                             )
                         } else {
+                            Text("Property Name", fontWeight = FontWeight.Bold)
                             Text(
                                 text = content.name,
                                 modifier = Modifier.padding(vertical = 8.dp),
@@ -144,16 +141,14 @@ internal fun PropertyDetailContent(
                         }
                     }
                     Column(sectionModifier) {
-                        Text("Address", fontWeight = FontWeight.Bold)
                         if (content.isEditMode) {
-                            OutlinedTextField(
+                            EdifikanaTextField(
                                 value = content.address,
                                 onValueChange = onAddressChanged,
-                                placeholder = { Text("Enter property address") },
-                                modifier = Modifier.fillMaxWidth(),
-                                singleLine = true,
+                                label = "Address",
                             )
                         } else {
+                            Text("Address", fontWeight = FontWeight.Bold)
                             Text(
                                 text = content.address,
                                 modifier = Modifier.padding(vertical = 8.dp),
@@ -163,20 +158,16 @@ internal fun PropertyDetailContent(
                 },
                 buttonContent = if (content.isEditMode) {
                     { buttonModifier ->
-                        Column(buttonModifier) {
-                            Button(
-                                modifier = Modifier.fillMaxWidth(),
-                                onClick = onSaveProperty,
-                            ) {
-                                Text(text = "Save")
-                            }
-                            OutlinedButton(
-                                modifier = Modifier.fillMaxWidth(),
-                                onClick = onCancelEdit,
-                            ) {
-                                Text(text = "Cancel")
-                            }
-                        }
+                        EdifikanaPrimaryButton(
+                            text = "Save",
+                            modifier = buttonModifier,
+                            onClick = onSaveProperty,
+                        )
+                        EdifikanaSecondaryButton(
+                            text = "Cancel",
+                            modifier = buttonModifier,
+                            onClick = onCancelEdit,
+                        )
                     }
                 } else {
                     null

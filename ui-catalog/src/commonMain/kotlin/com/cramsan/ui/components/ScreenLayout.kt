@@ -32,6 +32,7 @@ fun ScreenLayout(
     topPadding: Dp = Padding.X_LARGE,
     bottomPadding: Dp = Padding.X_LARGE,
     verticalArrangement: Arrangement.Vertical = Arrangement.spacedBy(Padding.MEDIUM),
+    buttonVerticalArrangement: Arrangement.Vertical = Arrangement.spacedBy(Padding.SMALL),
     sectionContent: @Composable ColumnScope.(Modifier) -> Unit,
     buttonContent: (@Composable ColumnScope.(Modifier) -> Unit)? = null,
 ) {
@@ -61,6 +62,7 @@ fun ScreenLayout(
         buttonContent?.let {
             val actionModifier = Modifier
             ButtonSection(
+                verticalArrangement = buttonVerticalArrangement,
                 modifier = debugModifier(actionModifier),
                 buttons = it,
             )

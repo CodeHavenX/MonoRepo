@@ -3,10 +3,7 @@ package com.cramsan.edifikana.client.lib.features.home.addproperty
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -18,6 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.home.HomeDestination
+import com.cramsan.edifikana.client.ui.components.EdifikanaPrimaryButton
+import com.cramsan.edifikana.client.ui.components.EdifikanaTextField
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
@@ -98,32 +97,31 @@ internal fun AddPropertyContent(
             contentAlignment = Alignment.TopCenter,
         ) {
             ScreenLayout(
+                fixedFooter = true,
                 sectionContent = { sectionModifier ->
-                    OutlinedTextField(
+                    EdifikanaTextField(
                         value = propertyName,
                         onValueChange = { propertyName = it },
-                        label = { Text("Property name") },
+                        label = "Property Name",
+                        placeholder = "Enter Property Name",
                         modifier = sectionModifier,
-                        singleLine = true,
                     )
-
-                    OutlinedTextField(
+                    EdifikanaTextField(
                         value = address,
                         onValueChange = { address = it },
-                        label = { Text("Address") },
+                        label = "Address",
+                        placeholder = "Enter the property address",
                         modifier = sectionModifier,
-                        singleLine = true,
                     )
                 },
                 buttonContent = { buttonModifier ->
-                    Button(
+                    EdifikanaPrimaryButton(
+                        text = stringResource(Res.string.text_add),
                         modifier = buttonModifier,
                         onClick = {
                             onAddPropertySelected(propertyName, address)
                         },
-                    ) {
-                        Text(text = stringResource(Res.string.text_add))
-                    }
+                    )
                 }
             )
             LoadingAnimationOverlay(content.isLoading)

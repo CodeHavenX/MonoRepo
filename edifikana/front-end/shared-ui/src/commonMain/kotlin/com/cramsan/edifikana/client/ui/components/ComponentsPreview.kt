@@ -36,6 +36,7 @@ private fun EdifikanaTextFieldPreview() {
     AppTheme {
         var username by remember { mutableStateOf("") }
         var password by remember { mutableStateOf("") }
+        var address by remember { mutableStateOf("") }
 
         Column(
             modifier = Modifier
@@ -56,6 +57,14 @@ private fun EdifikanaTextFieldPreview() {
                 value = password,
                 onValueChange = { password = it },
                 placeholder = "Password",
+                isPassword = true,
+            )
+
+            EdifikanaTextField(
+                value = address,
+                onValueChange = { address = it },
+                placeholder = "Enter your address",
+                label = "Address",
                 isPassword = true,
             )
         }
@@ -329,6 +338,8 @@ private fun EdifikanaSectionHeaderPreview() {
             Text("Section Headers", style = MaterialTheme.typography.headlineSmall)
 
             EdifikanaSectionHeader(title = "Account")
+            EdifikanaSectionSubHeader("First Name")
+            EdifikanaSectionSubHeader("Last Name")
             EdifikanaSectionHeader(title = "Properties")
             EdifikanaSectionHeader(title = "Settings")
         }

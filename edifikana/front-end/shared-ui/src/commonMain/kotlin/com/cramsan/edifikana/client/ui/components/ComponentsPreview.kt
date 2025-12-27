@@ -80,7 +80,6 @@ private fun EdifikanaButtonsPreview() {
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
                 .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Text("Buttons", style = MaterialTheme.typography.headlineSmall)
 

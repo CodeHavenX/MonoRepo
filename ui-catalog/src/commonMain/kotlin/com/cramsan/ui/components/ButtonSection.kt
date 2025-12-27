@@ -1,6 +1,5 @@
 package com.cramsan.ui.components
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,7 +17,6 @@ import com.cramsan.ui.theme.Padding
 @Composable
 fun ButtonSection(
     modifier: Modifier = Modifier,
-    verticalArrangement: Arrangement.Vertical = Arrangement.spacedBy(Padding.SMALL),
     buttons: @Composable ColumnScope.(Modifier) -> Unit,
 ) {
     val buttonModifier = Modifier
@@ -28,7 +26,6 @@ fun ButtonSection(
         )
     Column(
         modifier = modifier,
-        verticalArrangement = verticalArrangement,
         content = {
             buttons(debugModifier(buttonModifier))
         },

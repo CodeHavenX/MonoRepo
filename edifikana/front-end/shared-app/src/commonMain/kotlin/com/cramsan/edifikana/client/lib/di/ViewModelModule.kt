@@ -13,6 +13,7 @@ import com.cramsan.edifikana.client.lib.features.home.drawer.DrawerViewModel
 import com.cramsan.edifikana.client.lib.features.home.gotoorganization.GoToOrganizationViewModel
 import com.cramsan.edifikana.client.lib.features.home.organizationhome.OrganizationHomeViewModel
 import com.cramsan.edifikana.client.lib.features.home.propertiesoverview.PropertiesOverviewViewModel
+import com.cramsan.edifikana.client.lib.features.home.propertydetail.PropertyDetailViewModel
 import com.cramsan.edifikana.client.lib.features.home.propertyhome.PropertyHomeViewModel
 import com.cramsan.edifikana.client.lib.features.settings.general.SettingsViewModel
 import com.cramsan.edifikana.client.lib.features.splash.SplashViewModel
@@ -36,4 +37,5 @@ internal val ViewModelModule = module {
     viewModelOf(::GoToOrganizationViewModel)
     viewModelOf(::SettingsViewModel)
     viewModelOf(::PropertiesOverviewViewModel)
+    viewModelOf(::PropertyDetailViewModel)
 }

@@ -282,13 +282,14 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
         coEvery {
             propertyService.updateProperty(
                 id = propId,
-                name = "Updated Property"
+                name = "Updated Property",
+                address = "calle bottger",
             )
         }.answers {
             Property(
                 id = PropertyId("property123"),
                 name = "Updated Property",
-                address = "123 Main St",
+                address = "calle bottger",
                 OrganizationId("org123"),
             )
         }

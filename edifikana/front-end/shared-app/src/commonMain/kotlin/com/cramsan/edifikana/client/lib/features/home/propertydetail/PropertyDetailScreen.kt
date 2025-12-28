@@ -126,6 +126,7 @@ internal fun PropertyDetailContent(
                 fixedFooter = content.isEditMode,
                 sectionContent = { sectionModifier ->
                     Column(sectionModifier) {
+                        Text("Property Name", fontWeight = FontWeight.Bold)
                         if (content.isEditMode) {
                             EdifikanaTextField(
                                 value = content.name,
@@ -141,6 +142,7 @@ internal fun PropertyDetailContent(
                         }
                     }
                     Column(sectionModifier) {
+                        Text("Address", fontWeight = FontWeight.Bold)
                         if (content.isEditMode) {
                             EdifikanaTextField(
                                 value = content.address,

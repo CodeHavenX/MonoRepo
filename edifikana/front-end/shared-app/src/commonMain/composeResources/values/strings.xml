@@ -129,5 +129,5 @@
     <string name="time_card_screen_add_event">Add Event</string>
 
     <string name="hub_screen_properties_button_title">Properties</string>
-    <string name="hub_screen_employee_button_title">employee</string>
+    <string name="hub_screen_employee_button_title">Team</string>
 </resources>

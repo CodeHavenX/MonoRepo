@@ -65,16 +65,19 @@ class PropertyHomeViewModel(
             it.copy(
                 label = name,
                 availableProperties = propertyUiModels,
+                propertyId = selectedProperty
             )
         }
         // Check if there is a list of properties. If the list is empty, show the fallback tab.
         if (properties.isEmpty()) {
             logI(TAG, "No properties found. Show the fallback tab.")
             selectTab(Tabs.GoToOrganization)
+            preferencesManager.setLastSelectedPropertyId(null)
         } else if (uiState.value.selectedTab == Tabs.None || uiState.value.selectedTab == Tabs.GoToOrganization) {
             // If properties exist and no tab is selected (or fallback is selected), show EventLog
             logI(TAG, "Properties found. Show the EventLog tab.")
             selectTab(Tabs.EventLog)
+            preferencesManager.setLastSelectedPropertyId(selectedProperty)
         }
     }
 

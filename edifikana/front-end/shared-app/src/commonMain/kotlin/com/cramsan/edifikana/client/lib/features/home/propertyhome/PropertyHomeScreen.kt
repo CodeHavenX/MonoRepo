@@ -295,21 +295,19 @@ private fun HomeContent(
     Crossfade(uIModel) {
         val selectedTab = it.selectedTab
         val propertyId = it.propertyId
-        if (propertyId == null || selectedTab == Tabs.None) {
-            // No property selected, show nothing.
-        } else {
-            when (selectedTab) {
-                Tabs.None -> {
-                    // No content
-                }
+        when (selectedTab) {
+            Tabs.None -> {
+                // No content
+            }
 
-                Tabs.GoToOrganization -> {
-                    GoToOrganizationScreen(
-                        modifier
-                    )
-                }
+            Tabs.GoToOrganization -> {
+                GoToOrganizationScreen(
+                    modifier
+                )
+            }
 
-                Tabs.EventLog -> {
+            Tabs.EventLog -> {
+                if (propertyId != null) {
                     EventLogScreen(
                         propertyId = propertyId,
                         modifier = modifier,

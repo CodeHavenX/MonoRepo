@@ -10,6 +10,7 @@ import com.cramsan.edifikana.client.lib.features.debug.main.DebugViewModel
 import com.cramsan.edifikana.client.lib.features.debug.screenselector.ScreenSelectorViewModel
 import com.cramsan.edifikana.client.lib.features.home.addproperty.AddPropertyViewModel
 import com.cramsan.edifikana.client.lib.features.home.drawer.DrawerViewModel
+import com.cramsan.edifikana.client.lib.features.home.employeeoverview.EmployeeOverviewViewModel
 import com.cramsan.edifikana.client.lib.features.home.eventlog.EventLogViewModel
 import com.cramsan.edifikana.client.lib.features.home.gotoorganization.GoToOrganizationViewModel
 import com.cramsan.edifikana.client.lib.features.home.organizationhome.OrganizationHomeViewModel
@@ -40,4 +41,5 @@ internal val ViewModelModule = module {
     viewModelOf(::SettingsViewModel)
     viewModelOf(::PropertiesOverviewViewModel)
     viewModelOf(::PropertyDetailViewModel)
+    viewModelOf(::EmployeeOverviewViewModel)
 }

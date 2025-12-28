@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.home.drawer.DrawerViewModel
+import com.cramsan.edifikana.client.lib.features.home.employeeoverview.EmployeeOverviewScreen
 import com.cramsan.edifikana.client.lib.features.home.propertiesoverview.PropertiesOverviewScreen
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
@@ -144,6 +145,7 @@ private fun HubContent(
                 PropertiesOverviewScreen()
             }
             Tabs.Employee -> {
+                EmployeeOverviewScreen()
             }
             Tabs.None -> {
                 // No content

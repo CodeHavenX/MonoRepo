@@ -60,6 +60,7 @@ class AccountViewModel(
                     lastName = user.lastName,
                     email = user.email,
                     phoneNumber = user.phoneNumber,
+                    isPasswordSet = user.authMetadata?.isPasswordSet == true,
                 )
             }
         }

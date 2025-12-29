@@ -27,6 +27,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import com.cramsan.edifikana.client.ui.components.EdifikanaAccountInfoItem
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.framework.core.compose.rememberDialogController
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
@@ -125,38 +126,37 @@ internal fun AccountContent(
                     }
 
                     // First name
-                    ContentLine(
-                        value = content.firstName.orEmpty(),
+                    EdifikanaAccountInfoItem(
                         label = stringResource(Res.string.account_screen_first_name),
-                        readOnly = !content.isEditable || content.isLoading,
-                        onContentChange = { onFirstNameChange(it) },
+                        value = content.firstName.orEmpty(),
                         modifier = modifier.focusRequester(focusRequester),
                     )
 
                     // Last name
-                    ContentLine(
+                    EdifikanaAccountInfoItem(
                         value = content.lastName.orEmpty(),
                         label = stringResource(Res.string.account_screen_last_name),
-                        readOnly = !content.isEditable || content.isLoading,
-                        onContentChange = { onLastNameChange(it) },
                         modifier = modifier,
                     )
 
                     // Phonenumber
-                    ContentLine(
+                    EdifikanaAccountInfoItem(
                         value = content.phoneNumber.orEmpty(),
                         label = stringResource(Res.string.account_screen_phone_number),
-                        readOnly = !content.isEditable || content.isLoading,
-                        onContentChange = { onPhoneNumberChange(it) },
                         modifier = modifier,
                     )
 
                     // Email
-                    ContentLine(
+                    EdifikanaAccountInfoItem(
                         value = content.email.orEmpty(),
                         label = stringResource(Res.string.account_screen_email),
-                        readOnly = !content.isEditable || content.isLoading,
-                        onContentChange = { onEmailChange(it) },
+                        modifier = modifier,
+                    )
+
+                    // Password field
+                    EdifikanaAccountInfoItem(
+                        value = if (content.isPasswordSet) "********" else "Not Set",
+                        label = "Password",
                         modifier = modifier,
                     )
 

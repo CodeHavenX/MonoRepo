@@ -32,14 +32,6 @@ sealed class HomeDestination : Destination {
     ) : HomeDestination()
 
     /**
-     * A class representing navigating to the add primary employee screen.
-     */
-    @Serializable
-    data class AddPrimaryEmployeeManagementDestination(
-        val orgId: OrganizationId,
-    ) : HomeDestination()
-
-    /**
      * A class representing navigating to the add secondary employee screen.
      */
     @Serializable
@@ -91,4 +83,12 @@ sealed class HomeDestination : Destination {
      */
     @Serializable
     data object ManagementHub : HomeDestination()
+
+    /**
+     * A class representing navigating to the invite staff member screen.
+     */
+    @Serializable
+    data class InviteStaffMemberDestination(
+        val orgId: OrganizationId,
+    ) : HomeDestination()
 }

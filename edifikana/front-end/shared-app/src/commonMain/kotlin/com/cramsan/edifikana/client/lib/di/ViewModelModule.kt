@@ -13,6 +13,7 @@ import com.cramsan.edifikana.client.lib.features.home.drawer.DrawerViewModel
 import com.cramsan.edifikana.client.lib.features.home.employeeoverview.EmployeeOverviewViewModel
 import com.cramsan.edifikana.client.lib.features.home.eventlog.EventLogViewModel
 import com.cramsan.edifikana.client.lib.features.home.gotoorganization.GoToOrganizationViewModel
+import com.cramsan.edifikana.client.lib.features.home.invitestaffmember.InviteStaffMemberViewModel
 import com.cramsan.edifikana.client.lib.features.home.organizationhome.OrganizationHomeViewModel
 import com.cramsan.edifikana.client.lib.features.home.propertiesoverview.PropertiesOverviewViewModel
 import com.cramsan.edifikana.client.lib.features.home.propertydetail.PropertyDetailViewModel
@@ -42,4 +43,5 @@ internal val ViewModelModule = module {
     viewModelOf(::PropertiesOverviewViewModel)
     viewModelOf(::PropertyDetailViewModel)
     viewModelOf(::EmployeeOverviewViewModel)
+    viewModelOf(::InviteStaffMemberViewModel)
 }

@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.home.employeeoverview
 
-import com.cramsan.edifikana.lib.model.EmployeeId
+import com.cramsan.edifikana.lib.model.OrganizationId
+import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.framework.core.compose.ViewModelUIState
 
 /**
@@ -11,12 +12,16 @@ import com.cramsan.framework.core.compose.ViewModelUIState
  */
 data class EmployeeOverviewUIState(
     val isLoading: Boolean,
+    val orgId: OrganizationId?,
     val employeeList: List<EmployeeItemUIModel>,
+    val inviteList: List<InviteItemUIModel>,
 ) : ViewModelUIState {
     companion object {
         val Initial = EmployeeOverviewUIState(
             isLoading = true,
+            orgId = null,
             employeeList = emptyList(),
+            inviteList = emptyList(),
         )
     }
 }
@@ -25,8 +30,15 @@ data class EmployeeOverviewUIState(
  * UI model to represent an employee in the employees list.
  */
 data class EmployeeItemUIModel(
-    val id: EmployeeId,
+    val id: UserId,
     val name: String,
-    val role: String,
+    val email: String,
     val imageUrl: String?,
+)
+
+/**
+ * UI model to represent a pending invite in the invites list.
+ */
+data class InviteItemUIModel(
+    val email: String,
 )

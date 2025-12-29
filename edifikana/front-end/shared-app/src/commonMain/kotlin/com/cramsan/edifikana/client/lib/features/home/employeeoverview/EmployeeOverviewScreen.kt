@@ -19,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -29,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import coil3.compose.AsyncImage
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
@@ -46,6 +48,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun EmployeeOverviewScreen(
     modifier: Modifier = Modifier,
     viewModel: EmployeeOverviewViewModel = koinViewModel(),
+    orgId: OrganizationId,
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -59,6 +62,10 @@ fun EmployeeOverviewScreen(
         // Call this feature's viewModel
     }
 
+    LaunchedEffect(orgId) {
+        viewModel.setOrgId(orgId)
+    }
+
     ObserveViewModelEvents(viewModel) { event ->
         when (event) {
             EmployeeOverviewEvent.Noop -> Unit
@@ -69,7 +76,9 @@ fun EmployeeOverviewScreen(
     EmployeeOverviewContent(
         content = uiState,
         modifier = modifier,
-        onAddEmployeeSelected = { },
+        onAddEmployeeSelected = {
+            viewModel.navigateToAddEmployeeScreen()
+        },
         onEmployeeSelected = { },
     )
 }
@@ -106,7 +115,7 @@ internal fun EmployeeOverviewContent(
             ScreenLayout(
                 verticalArrangement = Arrangement.spacedBy(Padding.XX_SMALL),
                 sectionContent = { sectionModifier ->
-                    if (content.employeeList.isEmpty()) {
+                    if (content.employeeList.isEmpty() && content.inviteList.isEmpty()) {
                         Box(
                             modifier = sectionModifier
                                 .fillMaxSize(),
@@ -124,6 +133,12 @@ internal fun EmployeeOverviewContent(
                                 employee = it,
                                 modifier = sectionModifier,
                                 onEmployeeSelected = onEmployeeSelected,
+                            )
+                        }
+                        content.inviteList.forEach {
+                            InviteItem(
+                                invite = it,
+                                modifier = sectionModifier,
                             )
                         }
                     }
@@ -179,8 +194,51 @@ private fun EmployeeItem(
                 style = MaterialTheme.typography.titleMedium,
             )
             Text(
-                employee.role,
+                employee.email,
                 style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+    }
+}
+
+@Composable
+private fun InviteItem(
+    invite: InviteItemUIModel,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier
+            .clip(MaterialTheme.shapes.medium)
+            .border(
+                width = 1.dp,
+                color = Color.LightGray,
+                shape = MaterialTheme.shapes.medium,
+            ),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start,
+    ) {
+        val imageModifier = Modifier
+            .size(Size.xx_large)
+        Icon(
+            imageVector = Icons.Default.Person,
+            contentDescription = "Pending invite for ${invite.email}",
+            tint = MaterialTheme.colorScheme.outline,
+            modifier = imageModifier.padding(
+                Padding.SMALL
+            ),
+        )
+        Spacer(Modifier.size(Padding.MEDIUM))
+        Column(
+            modifier = Modifier.padding(Padding.SMALL)
+        ) {
+            Text(
+                invite.email,
+                style = MaterialTheme.typography.titleMedium,
+            )
+            Text(
+                "Pending invite",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.outline,
             )
         }
     }

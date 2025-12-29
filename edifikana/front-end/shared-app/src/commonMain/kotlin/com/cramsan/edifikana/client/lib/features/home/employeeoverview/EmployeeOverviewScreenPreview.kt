@@ -2,7 +2,8 @@ package com.cramsan.edifikana.client.lib.features.home.employeeoverview
 
 import androidx.compose.runtime.Composable
 import com.cramsan.edifikana.client.ui.theme.AppTheme
-import com.cramsan.edifikana.lib.model.EmployeeId
+import com.cramsan.edifikana.lib.model.OrganizationId
+import com.cramsan.edifikana.lib.model.UserId
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
@@ -15,18 +16,24 @@ private fun EmployeeOverviewScreenPreview() {
         EmployeeOverviewContent(
             content = EmployeeOverviewUIState(
                 isLoading = false,
+                orgId = OrganizationId("org-1"),
                 employeeList = listOf(
                     EmployeeItemUIModel(
-                        id = EmployeeId("employee-1"),
+                        id = UserId("user-1"),
                         name = "John Doe",
-                        role = "Property Manager",
+                        email = "john.doe@example.com",
                         imageUrl = null,
                     ),
                     EmployeeItemUIModel(
-                        id = EmployeeId("employee-2"),
+                        id = UserId("user-2"),
                         name = "Jane Smith",
-                        role = "Maintenance Staff",
+                        email = "jane.smith@example.com",
                         imageUrl = null,
+                    ),
+                ),
+                inviteList = listOf(
+                    InviteItemUIModel(
+                        email = "pending@example.com",
                     ),
                 ),
             ),
@@ -44,7 +51,9 @@ private fun EmployeeOverviewScreenEmptyPreview() {
         EmployeeOverviewContent(
             content = EmployeeOverviewUIState(
                 isLoading = false,
+                orgId = OrganizationId("org-1"),
                 employeeList = emptyList(),
+                inviteList = emptyList(),
             ),
         )
     }

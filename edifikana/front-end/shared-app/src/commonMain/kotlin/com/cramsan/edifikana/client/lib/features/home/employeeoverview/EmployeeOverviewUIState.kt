@@ -14,31 +14,36 @@ data class EmployeeOverviewUIState(
     val isLoading: Boolean,
     val orgId: OrganizationId?,
     val employeeList: List<EmployeeItemUIModel>,
-    val inviteList: List<InviteItemUIModel>,
 ) : ViewModelUIState {
     companion object {
         val Initial = EmployeeOverviewUIState(
             isLoading = true,
             orgId = null,
             employeeList = emptyList(),
-            inviteList = emptyList(),
         )
     }
 }
 
 /**
- * UI model to represent an employee in the employees list.
+ * UI model to represent an employee or an invitation in the employees list.
  */
-data class EmployeeItemUIModel(
-    val id: UserId,
-    val name: String,
-    val email: String,
-    val imageUrl: String?,
-)
+sealed interface EmployeeItemUIModel {
+    val email: String
+}
 
 /**
- * UI model to represent a pending invite in the invites list.
+ * UI model to represent a user employee in the employees list.
+ */
+data class UserItemUIModel(
+    val id: UserId,
+    val name: String,
+    override val email: String,
+    val imageUrl: String?,
+) : EmployeeItemUIModel
+
+/**
+ * UI model to represent an invitation in the employees list.
  */
 data class InviteItemUIModel(
-    val email: String,
-)
+    override val email: String,
+) : EmployeeItemUIModel

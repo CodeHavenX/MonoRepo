@@ -115,31 +115,21 @@ internal fun EmployeeOverviewContent(
             ScreenLayout(
                 verticalArrangement = Arrangement.spacedBy(Padding.XX_SMALL),
                 sectionContent = { sectionModifier ->
-                    if (content.employeeList.isEmpty() && content.inviteList.isEmpty()) {
-                        Box(
-                            modifier = sectionModifier
-                                .fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "No employees yet. Tap + to add your first employee.",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onBackground,
-                            )
-                        }
-                    } else {
-                        content.employeeList.forEach {
-                            EmployeeItem(
-                                employee = it,
-                                modifier = sectionModifier,
-                                onEmployeeSelected = onEmployeeSelected,
-                            )
-                        }
-                        content.inviteList.forEach {
-                            InviteItem(
-                                invite = it,
-                                modifier = sectionModifier,
-                            )
+                    content.employeeList.forEach {
+                        when (it) {
+                            is InviteItemUIModel -> {
+                                InviteItem(
+                                    invite = it,
+                                    modifier = sectionModifier,
+                                )
+                            }
+                            is UserItemUIModel -> {
+                                UserItem(
+                                    employee = it,
+                                    modifier = sectionModifier,
+                                    onEmployeeSelected = onEmployeeSelected,
+                                )
+                            }
                         }
                     }
                 },
@@ -150,10 +140,10 @@ internal fun EmployeeOverviewContent(
 }
 
 @Composable
-private fun EmployeeItem(
-    employee: EmployeeItemUIModel,
+private fun UserItem(
+    employee: UserItemUIModel,
     modifier: Modifier = Modifier,
-    onEmployeeSelected: (EmployeeItemUIModel) -> Unit,
+    onEmployeeSelected: (UserItemUIModel) -> Unit,
 ) {
     Row(
         modifier
@@ -236,7 +226,7 @@ private fun InviteItem(
                 style = MaterialTheme.typography.titleMedium,
             )
             Text(
-                "Pending invite",
+                "Invite sent",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.outline,
             )

@@ -45,18 +45,7 @@ class EmployeeOverviewViewModel(
 
         updateUiState { it.copy(isLoading = true) }
 
-        authManager.getUsers(orgId)
-            .onSuccess { users ->
-                val employeeModels = users.map { user ->
-                    EmployeeItemUIModel(
-                        id = user.id,
-                        name = "${user.firstName} ${user.lastName}".trim().ifEmpty { user.email },
-                        email = user.email,
-                        imageUrl = null,
-                    )
-                }
-                updateUiState { it.copy(employeeList = employeeModels) }
-            }
+        val employeesResult = authManager.getUsers(orgId)
             .onFailure { throwable ->
                 emitWindowEvent(
                     EdifikanaWindowsEvent.ShowSnackbar(
@@ -65,13 +54,7 @@ class EmployeeOverviewViewModel(
                 )
             }
 
-        authManager.getInvites(orgId)
-            .onSuccess { invites ->
-                val inviteModels = invites.map { invite ->
-                    InviteItemUIModel(email = invite.email)
-                }
-                updateUiState { it.copy(inviteList = inviteModels) }
-            }
+        val invitesResult = authManager.getInvites(orgId)
             .onFailure { throwable ->
                 emitWindowEvent(
                     EdifikanaWindowsEvent.ShowSnackbar(
@@ -80,7 +63,35 @@ class EmployeeOverviewViewModel(
                 )
             }
 
-        updateUiState { it.copy(isLoading = false) }
+        val inviteModels = invitesResult.getOrNull()?.map { invite ->
+            InviteItemUIModel(
+                email = invite.email,
+            )
+        }.orEmpty()
+
+        val employeeModels = employeesResult.getOrNull()?.map { user ->
+            UserItemUIModel(
+                id = user.id,
+                name = "${user.firstName} ${user.lastName}".trim(),
+                email = user.email,
+                imageUrl = null,
+            )
+        }.orEmpty()
+
+        val combinedList = (employeeModels + inviteModels).sortedBy {
+            when (it) {
+                is UserItemUIModel -> it.name.lowercase()
+                is InviteItemUIModel -> it.email.lowercase()
+            }
+        }
+
+        updateUiState {
+            it.copy(
+                isLoading = false,
+                employeeList = combinedList,
+
+            )
+        }
     }
 
     /**

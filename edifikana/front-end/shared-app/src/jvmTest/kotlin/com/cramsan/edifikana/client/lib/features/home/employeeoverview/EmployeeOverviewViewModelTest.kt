@@ -26,6 +26,7 @@ import kotlinx.coroutines.launch
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
 class EmployeeOverviewViewModelTest : CoroutineTest() {
@@ -60,7 +61,6 @@ class EmployeeOverviewViewModelTest : CoroutineTest() {
         assertEquals(true, viewModel.uiState.value.isLoading)
         assertEquals(null, viewModel.uiState.value.orgId)
         assertEquals(emptyList(), viewModel.uiState.value.employeeList)
-        assertEquals(emptyList(), viewModel.uiState.value.inviteList)
     }
 
     @Test
@@ -72,7 +72,7 @@ class EmployeeOverviewViewModelTest : CoroutineTest() {
     }
 
     @Test
-    fun `test setOrgId sets orgId and loads employees and invites`() = runCoroutineTest {
+    fun `test setOrgId sets orgId and loads employees and invites into combined list`() = runCoroutineTest {
         val organizationId = OrganizationId("org_id_1")
         val users = listOf(
             UserModel(
@@ -104,20 +104,8 @@ class EmployeeOverviewViewModelTest : CoroutineTest() {
 
         assertEquals(organizationId, viewModel.uiState.value.orgId)
         assertEquals(false, viewModel.uiState.value.isLoading)
-        assertEquals(2, viewModel.uiState.value.employeeList.size)
-        assertEquals(1, viewModel.uiState.value.inviteList.size)
-
-        // Verify employee mapping
-        assertEquals(UserId("user-1"), viewModel.uiState.value.employeeList[0].id)
-        assertEquals("John Doe", viewModel.uiState.value.employeeList[0].name)
-        assertEquals("john@example.com", viewModel.uiState.value.employeeList[0].email)
-
-        assertEquals(UserId("user-2"), viewModel.uiState.value.employeeList[1].id)
-        assertEquals("Jane Smith", viewModel.uiState.value.employeeList[1].name)
-        assertEquals("jane@example.com", viewModel.uiState.value.employeeList[1].email)
-
-        // Verify invite mapping
-        assertEquals("pending@example.com", viewModel.uiState.value.inviteList[0].email)
+        // Combined list: 2 users + 1 invite = 3 items
+        assertEquals(3, viewModel.uiState.value.employeeList.size)
 
         coVerify { authManager.getUsers(organizationId) }
         coVerify { authManager.getInvites(organizationId) }
@@ -125,7 +113,54 @@ class EmployeeOverviewViewModelTest : CoroutineTest() {
     }
 
     @Test
-    fun `test setOrgId with user without name uses email as name`() = runCoroutineTest {
+    fun `test setOrgId sorts combined list alphabetically`() = runCoroutineTest {
+        val organizationId = OrganizationId("org_id_1")
+        val users = listOf(
+            UserModel(
+                id = UserId("user-1"),
+                email = "zack@example.com",
+                phoneNumber = "1234567890",
+                firstName = "Zack",
+                lastName = "Williams",
+            ),
+            UserModel(
+                id = UserId("user-2"),
+                email = "alice@example.com",
+                phoneNumber = "0987654321",
+                firstName = "Alice",
+                lastName = "Brown",
+            ),
+        )
+        val invites = listOf(
+            Invite(
+                id = InviteId("invite-1"),
+                email = "mike@example.com",
+            ),
+        )
+
+        coEvery { authManager.getUsers(organizationId) } returns Result.success(users)
+        coEvery { authManager.getInvites(organizationId) } returns Result.success(invites)
+
+        viewModel.setOrgId(organizationId)
+
+        assertEquals(3, viewModel.uiState.value.employeeList.size)
+
+        // Sorted order: Alice Brown, mike@example.com (invite), Zack Williams
+        val first = viewModel.uiState.value.employeeList[0]
+        assertIs<UserItemUIModel>(first)
+        assertEquals("Alice Brown", first.name)
+
+        val second = viewModel.uiState.value.employeeList[1]
+        assertIs<InviteItemUIModel>(second)
+        assertEquals("mike@example.com", second.email)
+
+        val third = viewModel.uiState.value.employeeList[2]
+        assertIs<UserItemUIModel>(third)
+        assertEquals("Zack Williams", third.name)
+    }
+
+    @Test
+    fun `test setOrgId with user without name has empty name`() = runCoroutineTest {
         val organizationId = OrganizationId("org_id_1")
         val users = listOf(
             UserModel(
@@ -143,7 +178,10 @@ class EmployeeOverviewViewModelTest : CoroutineTest() {
         viewModel.setOrgId(organizationId)
 
         assertEquals(1, viewModel.uiState.value.employeeList.size)
-        assertEquals("noname@example.com", viewModel.uiState.value.employeeList[0].name)
+        val userItem = viewModel.uiState.value.employeeList[0]
+        assertIs<UserItemUIModel>(userItem)
+        assertEquals("", userItem.name)
+        assertEquals("noname@example.com", userItem.email)
     }
 
     @Test
@@ -189,7 +227,7 @@ class EmployeeOverviewViewModelTest : CoroutineTest() {
         verificationJob.join()
 
         assertEquals(false, viewModel.uiState.value.isLoading)
-        assertEquals(emptyList(), viewModel.uiState.value.inviteList)
+        assertEquals(emptyList(), viewModel.uiState.value.employeeList)
     }
 
     @Test
@@ -216,6 +254,73 @@ class EmployeeOverviewViewModelTest : CoroutineTest() {
         verificationJob.join()
 
         assertEquals(false, viewModel.uiState.value.isLoading)
+    }
+
+    @Test
+    fun `test setOrgId with getUsers failure still shows invites`() = runCoroutineTest {
+        val organizationId = OrganizationId("org_id_1")
+        val invites = listOf(
+            Invite(
+                id = InviteId("invite-1"),
+                email = "pending@example.com",
+            ),
+        )
+
+        coEvery { authManager.getUsers(organizationId) } returns Result.failure(Exception("Network error"))
+        coEvery { authManager.getInvites(organizationId) } returns Result.success(invites)
+
+        val verificationJob = launch {
+            windowEventBus.events.test {
+                assertEquals(
+                    EdifikanaWindowsEvent.ShowSnackbar("Failed to load employees: Network error"),
+                    awaitItem()
+                )
+            }
+        }
+
+        viewModel.setOrgId(organizationId)
+        verificationJob.join()
+
+        assertEquals(false, viewModel.uiState.value.isLoading)
+        assertEquals(1, viewModel.uiState.value.employeeList.size)
+        val inviteItem = viewModel.uiState.value.employeeList[0]
+        assertIs<InviteItemUIModel>(inviteItem)
+        assertEquals("pending@example.com", inviteItem.email)
+    }
+
+    @Test
+    fun `test setOrgId with getInvites failure still shows users`() = runCoroutineTest {
+        val organizationId = OrganizationId("org_id_1")
+        val users = listOf(
+            UserModel(
+                id = UserId("user-1"),
+                email = "john@example.com",
+                phoneNumber = "1234567890",
+                firstName = "John",
+                lastName = "Doe",
+            ),
+        )
+
+        coEvery { authManager.getUsers(organizationId) } returns Result.success(users)
+        coEvery { authManager.getInvites(organizationId) } returns Result.failure(Exception("Server error"))
+
+        val verificationJob = launch {
+            windowEventBus.events.test {
+                assertEquals(
+                    EdifikanaWindowsEvent.ShowSnackbar("Failed to load invites: Server error"),
+                    awaitItem()
+                )
+            }
+        }
+
+        viewModel.setOrgId(organizationId)
+        verificationJob.join()
+
+        assertEquals(false, viewModel.uiState.value.isLoading)
+        assertEquals(1, viewModel.uiState.value.employeeList.size)
+        val userItem = viewModel.uiState.value.employeeList[0]
+        assertIs<UserItemUIModel>(userItem)
+        assertEquals("John Doe", userItem.name)
     }
 
     @Test

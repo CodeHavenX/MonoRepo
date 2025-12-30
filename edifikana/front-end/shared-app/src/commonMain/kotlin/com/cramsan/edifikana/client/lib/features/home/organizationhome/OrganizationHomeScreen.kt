@@ -22,6 +22,7 @@ import com.cramsan.edifikana.client.lib.features.home.drawer.DrawerViewModel
 import com.cramsan.edifikana.client.lib.features.home.employeeoverview.EmployeeOverviewScreen
 import com.cramsan.edifikana.client.lib.features.home.propertiesoverview.PropertiesOverviewScreen
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import edifikana_lib.Res
 import edifikana_lib.app_name
@@ -123,7 +124,8 @@ internal fun OrganizationHomeScreenContent(
         // Render the screen
         HubContent(
             modifier = Modifier.padding(innerPadding),
-            uiState.selectedTab,
+            selectedTab = uiState.selectedTab,
+            organizationId = uiState.selectedOrgId,
         )
     }
 }
@@ -135,6 +137,7 @@ internal fun OrganizationHomeScreenContent(
 private fun HubContent(
     modifier: Modifier,
     selectedTab: Tabs,
+    organizationId: OrganizationId?,
 ) {
     Crossfade(
         targetState = selectedTab,
@@ -145,7 +148,9 @@ private fun HubContent(
                 PropertiesOverviewScreen()
             }
             Tabs.Employee -> {
-                EmployeeOverviewScreen()
+                organizationId?.let {
+                    EmployeeOverviewScreen(orgId = it)
+                }
             }
             Tabs.None -> {
                 // No content

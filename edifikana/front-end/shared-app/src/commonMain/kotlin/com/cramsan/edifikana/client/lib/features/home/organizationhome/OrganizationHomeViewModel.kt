@@ -34,7 +34,8 @@ class OrganizationHomeViewModel(
                 )
             }
             currentState.copy(
-                availableOrganizations = updatedOrganizations
+                availableOrganizations = updatedOrganizations,
+                selectedOrgId = orgId,
             )
         }
     }

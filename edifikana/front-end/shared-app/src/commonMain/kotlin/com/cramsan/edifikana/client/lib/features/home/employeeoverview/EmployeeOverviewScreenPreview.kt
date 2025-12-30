@@ -2,7 +2,8 @@ package com.cramsan.edifikana.client.lib.features.home.employeeoverview
 
 import androidx.compose.runtime.Composable
 import com.cramsan.edifikana.client.ui.theme.AppTheme
-import com.cramsan.edifikana.lib.model.EmployeeId
+import com.cramsan.edifikana.lib.model.OrganizationId
+import com.cramsan.edifikana.lib.model.UserId
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
@@ -15,36 +16,24 @@ private fun EmployeeOverviewScreenPreview() {
         EmployeeOverviewContent(
             content = EmployeeOverviewUIState(
                 isLoading = false,
+                orgId = OrganizationId("org-1"),
                 employeeList = listOf(
-                    EmployeeItemUIModel(
-                        id = EmployeeId("employee-1"),
+                    UserItemUIModel(
+                        id = UserId("user-1"),
                         name = "John Doe",
-                        role = "Property Manager",
+                        email = "john.doe@example.com",
                         imageUrl = null,
                     ),
-                    EmployeeItemUIModel(
-                        id = EmployeeId("employee-2"),
+                    UserItemUIModel(
+                        id = UserId("user-2"),
                         name = "Jane Smith",
-                        role = "Maintenance Staff",
+                        email = "jane.smith@example.com",
                         imageUrl = null,
                     ),
+                    InviteItemUIModel(
+                        email = "another.user@test.com",
+                    )
                 ),
-            ),
-        )
-    }
-}
-
-/**
- * Preview for the EmployeeOverview feature screen in empty state.
- */
-@Preview
-@Composable
-private fun EmployeeOverviewScreenEmptyPreview() {
-    AppTheme {
-        EmployeeOverviewContent(
-            content = EmployeeOverviewUIState(
-                isLoading = false,
-                employeeList = emptyList(),
             ),
         )
     }

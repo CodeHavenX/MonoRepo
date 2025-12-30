@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.cramsan.edifikana.client.lib.features.home.addproperty.AddPropertyScreen
 import com.cramsan.edifikana.client.lib.features.home.drawer.DrawerScreen
+import com.cramsan.edifikana.client.lib.features.home.invitestaffmember.InviteStaffMemberScreen
 import com.cramsan.edifikana.client.lib.features.home.propertydetail.PropertyDetailScreen
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.framework.core.compose.navigation.navigationGraph
@@ -45,6 +46,14 @@ fun NavGraphBuilder.homeNavGraphNavigation(
             typeMap = typeMap,
         ) {
             DrawerScreen()
+        }
+        composable(
+            HomeDestination.InviteStaffMemberDestination::class,
+            typeMap = typeMap,
+        ) {
+            InviteStaffMemberScreen(
+                destination = it.toRoute(),
+            )
         }
     }
 }

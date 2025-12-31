@@ -3,6 +3,7 @@ package com.cramsan.edifikana.server.dependencyinjection
 import com.cramsan.edifikana.server.controller.EmployeeController
 import com.cramsan.edifikana.server.controller.EventLogController
 import com.cramsan.edifikana.server.controller.HealthCheckController
+import com.cramsan.edifikana.server.controller.NotificationController
 import com.cramsan.edifikana.server.controller.OrganizationController
 import com.cramsan.edifikana.server.controller.PropertyController
 import com.cramsan.edifikana.server.controller.StorageController
@@ -26,4 +27,5 @@ internal val ControllerModule = module {
     singleOf(::TimeCardController) { bind<Controller>() }
     singleOf(::StorageController) { bind<Controller>() }
     singleOf(::OrganizationController) { bind<Controller>() }
+    singleOf(::NotificationController) { bind<Controller>() }
 }

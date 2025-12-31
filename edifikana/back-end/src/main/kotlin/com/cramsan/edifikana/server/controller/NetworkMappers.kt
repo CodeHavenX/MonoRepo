@@ -7,6 +7,7 @@ import com.cramsan.edifikana.lib.model.network.AuthMetadataNetworkResponse
 import com.cramsan.edifikana.lib.model.network.EmployeeNetworkResponse
 import com.cramsan.edifikana.lib.model.network.EventLogEntryNetworkResponse
 import com.cramsan.edifikana.lib.model.network.InviteNetworkResponse
+import com.cramsan.edifikana.lib.model.network.NotificationNetworkResponse
 import com.cramsan.edifikana.lib.model.network.OrganizationNetworkResponse
 import com.cramsan.edifikana.lib.model.network.PropertyNetworkResponse
 import com.cramsan.edifikana.lib.model.network.TimeCardEventNetworkResponse
@@ -15,6 +16,7 @@ import com.cramsan.edifikana.server.service.models.Asset
 import com.cramsan.edifikana.server.service.models.Employee
 import com.cramsan.edifikana.server.service.models.EventLogEntry
 import com.cramsan.edifikana.server.service.models.Invite
+import com.cramsan.edifikana.server.service.models.Notification
 import com.cramsan.edifikana.server.service.models.Organization
 import com.cramsan.edifikana.server.service.models.Property
 import com.cramsan.edifikana.server.service.models.TimeCardEvent
@@ -134,5 +136,20 @@ fun Invite.toInviteNetworkResponse(): InviteNetworkResponse {
     return InviteNetworkResponse(
         inviteId = inviteId,
         email = email,
+    )
+}
+
+/**
+ * Converts a [Notification] domain model to a [NotificationNetworkResponse] network model.
+ */
+@OptIn(NetworkModel::class)
+fun Notification.toNotificationNetworkResponse(): NotificationNetworkResponse {
+    return NotificationNetworkResponse(
+        notificationId = notificationId,
+        organizationId = organizationId,
+        notificationType = notificationType,
+        isRead = isRead,
+        createdAt = createdAt.epochSeconds,
+        readAt = readAt?.epochSeconds,
     )
 }

@@ -10,6 +10,7 @@ import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.framework.logging.logD
+import com.cramsan.framework.logging.logW
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.days
 
@@ -19,6 +20,7 @@ import kotlin.time.Duration.Companion.days
 class UserService(
     private val userDatastore: UserDatastore,
     private val organizationDatastore: OrganizationDatastore,
+    private val notificationService: NotificationService?,
     private val clock: Clock,
 ) {
 
@@ -44,12 +46,18 @@ class UserService(
         )
 
         if (!isTransient) {
+            val user = result.getOrThrow()
             val orgID = organizationDatastore.createOrganization().getOrThrow().id
             organizationDatastore.addUserToOrganization(
-                userId = result.getOrThrow().id,
+                userId = user.id,
                 organizationId = orgID,
                 role = UserRole.OWNER,
             )
+
+            // Link any pending notifications to this user
+            notificationService?.linkNotificationsToUser(email, user.id)?.onFailure { e ->
+                logW(TAG, "Failed to link notifications to user", e)
+            }
         }
 
         return result
@@ -69,12 +77,18 @@ class UserService(
         )
 
         if (result.isSuccess) {
+            val user = result.getOrThrow()
             val orgId = organizationDatastore.createOrganization().getOrThrow().id
             organizationDatastore.addUserToOrganization(
-                userId = result.getOrThrow().id,
+                userId = user.id,
                 organizationId = orgId,
                 role = UserRole.OWNER
             )
+
+            // Link any pending notifications to this user
+            notificationService?.linkNotificationsToUser(email, user.id)?.onFailure { e ->
+                logW(TAG, "Failed to link notifications to user", e)
+            }
         }
 
         return result
@@ -149,6 +163,7 @@ class UserService(
 
     /**
      * Records an invite for a user with the provided [email] and [organizationId].
+     * Also creates a notification for the invited user.
      */
     suspend fun inviteUser(
         email: String,
@@ -160,6 +175,15 @@ class UserService(
             organizationId,
             expiration = clock.now() + 14.days,
         ).getOrThrow()
+
+        // Create a notification for the invited user
+        notificationService?.createInviteNotification(
+            recipientEmail = email,
+            organizationId = organizationId,
+        )?.onFailure { e ->
+            logW(TAG, "Failed to create invite notification", e)
+        }
+
         Unit
     }
 

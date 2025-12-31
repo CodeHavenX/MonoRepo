@@ -3,6 +3,7 @@ package com.cramsan.edifikana.server.dependencyinjection
 import com.cramsan.edifikana.server.controller.EmployeeController
 import com.cramsan.edifikana.server.controller.EventLogController
 import com.cramsan.edifikana.server.controller.HealthCheckController
+import com.cramsan.edifikana.server.controller.NotificationController
 import com.cramsan.edifikana.server.controller.OrganizationController
 import com.cramsan.edifikana.server.controller.PropertyController
 import com.cramsan.edifikana.server.controller.StorageController
@@ -10,6 +11,7 @@ import com.cramsan.edifikana.server.controller.TimeCardController
 import com.cramsan.edifikana.server.controller.UserController
 import com.cramsan.edifikana.server.service.EmployeeService
 import com.cramsan.edifikana.server.service.EventLogService
+import com.cramsan.edifikana.server.service.NotificationService
 import com.cramsan.edifikana.server.service.OrganizationService
 import com.cramsan.edifikana.server.service.PropertyService
 import com.cramsan.edifikana.server.service.StorageService
@@ -36,6 +38,7 @@ internal val TestControllerModule = module {
     singleOf(::TimeCardController) { bind<Controller>() }
     singleOf(::StorageController) { bind<Controller>() }
     singleOf(::OrganizationController) { bind<Controller>() }
+    singleOf(::NotificationController) { bind<Controller>() }
 }
 
 /**
@@ -50,6 +53,7 @@ internal val TestServiceModule = module {
     single<StorageService> { mockk() }
     single<OrganizationService> { mockk() }
     single<RBACService> { mockk() }
+    single<NotificationService> { mockk() }
 }
 
 internal fun testApplicationModule(json: Json) = module {

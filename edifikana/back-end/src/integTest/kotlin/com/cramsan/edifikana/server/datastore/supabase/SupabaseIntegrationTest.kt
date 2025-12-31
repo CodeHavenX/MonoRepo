@@ -30,6 +30,7 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
     protected val timeCardDatastore: SupabaseTimeCardDatastore by inject()
     protected val userDatastore: SupabaseUserDatastore by inject()
     protected val organizationDatastore: SupabaseOrganizationDatastore by inject()
+    protected val notificationDatastore: SupabaseNotificationDatastore by inject()
 
     private val eventLogResources = mutableSetOf<EventLogEntryId>()
     private val propertyResources = mutableSetOf<PropertyId>()
@@ -39,6 +40,7 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
     private val supabaseUsers = mutableSetOf<String>()
     private val organizationResources = mutableSetOf<OrganizationId>()
     private val invitationResources = mutableSetOf<InviteId>()
+    private val notificationResources = mutableSetOf<NotificationId>()
 
     @BeforeEach
     fun supabaseSetup() {
@@ -77,6 +79,10 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
 
     private fun registerInviteForDeletion(inviteId: InviteId) {
         invitationResources.add(inviteId)
+    }
+
+    private fun registerNotificationForDeletion(notificationId: NotificationId) {
+        notificationResources.add(notificationId)
     }
 
     protected fun createTestUser(email: String): UserId {
@@ -170,6 +176,12 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
         }
     }
 
+    fun Result<Notification>.registerNotificationForDeletion(): Result<Notification> {
+        return this.onSuccess { notification ->
+            registerNotificationForDeletion(notification.notificationId)
+        }
+    }
+
     fun registerSupabaseUserForDeletion(userId: String) {
         supabaseUsers.add(userId)
     }
@@ -200,6 +212,9 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
             supabase.auth.signOut()
             supabase.auth.clearSession()
 
+            notificationResources.forEach {
+                notificationDatastore.deleteNotification(it)
+            }
             invitationResources.forEach {
                 userDatastore.removeInvite(it).getOrThrow()
             }
@@ -225,6 +240,7 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
                 supabase.auth.admin.deleteUser(userId)
             }
         }
+        notificationResources.clear()
         eventLogResources.clear()
         timeCardResources.clear()
         employeeResources.clear()

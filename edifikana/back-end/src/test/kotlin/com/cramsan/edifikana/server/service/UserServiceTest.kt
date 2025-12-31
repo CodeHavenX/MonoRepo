@@ -39,6 +39,7 @@ class UserServiceTest {
     private lateinit var userDatastore: UserDatastore
     private lateinit var userService: UserService
     private lateinit var organizationDatastore: OrganizationDatastore
+    private lateinit var notificationService: NotificationService
     private lateinit var testTimeSource: TestTimeSource
     private lateinit var clock: Clock
 
@@ -50,9 +51,10 @@ class UserServiceTest {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         userDatastore = mockk()
         organizationDatastore = mockk()
+        notificationService = mockk()
         testTimeSource = TestTimeSource()
         clock = testTimeSource.asClock(2024, 1, 1, 0, 0)
-        userService = UserService(userDatastore, organizationDatastore, clock)
+        userService = UserService(userDatastore, organizationDatastore, notificationService, clock)
     }
 
     /**
@@ -140,6 +142,7 @@ class UserServiceTest {
             organizationDatastore.createOrganization()
         } returns Result.success(organization)
         coEvery { organizationDatastore.addUserToOrganization(userId, orgId, role) } returns Result.success(Unit)
+        coEvery { notificationService.linkNotificationsToUser(email, userId) } returns Result.success(0)
 
         // Act
         val result = userService.createUser(email, phone, password, firstName, lastName)
@@ -158,6 +161,7 @@ class UserServiceTest {
         }
         coVerify { organizationDatastore.createOrganization() }
         coVerify { organizationDatastore.addUserToOrganization(userId, orgId, role) }
+        coVerify { notificationService.linkNotificationsToUser(email, userId) }
     }
 
     /**
@@ -283,6 +287,7 @@ class UserServiceTest {
         val expirationTime = clock.now() + 14.days
 
         coEvery { userDatastore.recordInvite(email, orgId, expirationTime) } returns Result.success(mockk())
+        coEvery { notificationService.createInviteNotification(email, orgId) } returns Result.success(mockk())
 
         // Act
         val result = userService.inviteUser(email, orgId)
@@ -290,6 +295,7 @@ class UserServiceTest {
         // Assert
         assertTrue(result.isSuccess)
         coVerify { userDatastore.recordInvite(email, orgId, any()) }
+        coVerify { notificationService.createInviteNotification(email, orgId) }
     }
 
     /**

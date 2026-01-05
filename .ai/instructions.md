@@ -5,7 +5,7 @@
 The back-end is layered using the design Controllers → Services → Datastores (strict layering).
 
 ## Controller Layer
-- Validated API permission
+- Validate API permission
 - Extract parameters
 
 ## Service Layer

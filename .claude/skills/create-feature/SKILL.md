@@ -7,7 +7,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 # Create Feature - Front-End Feature Generator
 
 ## Purpose
-This skill generates the boilerplate files for a new feature screen in the our Kotlin Multiplatform front-end application following the established MVVM architecture pattern.
+This skill generates the boilerplate files for a new feature screen in our Kotlin Multiplatform front-end application following the established MVVM architecture pattern.
 
 ## Required Information
 Before creating a feature, gather:

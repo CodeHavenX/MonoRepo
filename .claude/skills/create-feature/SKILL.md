@@ -20,7 +20,7 @@ Provide the user with some examples of valid feature names and parent folders bu
 
 For a feature named `{FeatureName}` in package `{packagePath}`:
 
-Look at the templates in `.idea/fileTemplates/Compose Feature*` and create each folder by injecting the feature name and package path.
+Look at the templates in `.idea/fileTemplates/Compose Feature*` and create each file by injecting the feature name and package path.
 
 ## Registration
 

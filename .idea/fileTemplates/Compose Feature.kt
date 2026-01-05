@@ -83,19 +83,17 @@ internal fun ${Feature_Name}Content(
             )
         },
     ) { innerPadding ->
-        Box(
+        ScreenLayout(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
-            contentAlignment = Alignment.TopCenter,
-        ) {
-            ScreenLayout(
-                sectionContent = { sectionModifier ->
-                },
-                buttonContent = { buttonModifier ->
-                }
-            )
-            LoadingAnimationOverlay(content.isLoading)
-        }
+            overlay = {
+                LoadingAnimationOverlay(content.isLoading)
+            },
+            sectionContent = { sectionModifier ->
+            },
+            buttonContent = { buttonModifier ->
+            }
+        )
     }
 }

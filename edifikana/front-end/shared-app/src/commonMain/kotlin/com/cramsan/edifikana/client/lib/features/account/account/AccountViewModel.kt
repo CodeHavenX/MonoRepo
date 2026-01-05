@@ -34,10 +34,15 @@ class AccountViewModel(
 
     /**
      * Navigate back to the previous screen.
+     * If in edit mode, cancel edit and stay on screen instead.
      */
     fun navigateBack() {
         viewModelScope.launch {
-            emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
+            if (uiState.value.isEditable) {
+                cancelEdit()
+            } else {
+                emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
+            }
         }
     }
 
@@ -76,6 +81,31 @@ class AccountViewModel(
         } else {
             viewModelScope.launch {
                 updateUiState { it.copy(isEditable = true) }
+            }
+        }
+    }
+
+    /**
+     * Cancel edit mode and revert changes.
+     */
+    fun cancelEdit() {
+        viewModelScope.launch {
+            updateUiState { it.copy(isLoading = true, isEditable = false) }
+            val response = auth.getUser()
+            if (response.isFailure) {
+                updateUiState { it.copy(isLoading = false) }
+                return@launch
+            }
+            val user = response.getOrThrow()
+            updateUiState {
+                it.copy(
+                    isLoading = false,
+                    firstName = user.firstName,
+                    lastName = user.lastName,
+                    email = user.email,
+                    phoneNumber = user.phoneNumber,
+                    isPasswordSet = user.authMetadata?.isPasswordSet == true,
+                )
             }
         }
     }

@@ -19,10 +19,10 @@ import com.cramsan.framework.test.CoroutineTest
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.launch
-import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlinx.coroutines.launch
+import org.junit.jupiter.api.BeforeEach
 
 class AccountViewModelTest : CoroutineTest() {
 
@@ -75,8 +75,9 @@ class AccountViewModelTest : CoroutineTest() {
     }
 
     @Test
-    fun `test navigateBack emits NavigateBack event`() = runCoroutineTest {
+    fun `test navigateBack in view mode emits NavigateBack event`() = runCoroutineTest {
         // Arrange
+        assertEquals(false, viewModel.uiState.value.isEditable)
 
         // Act
         val verificationJob = launch {
@@ -90,7 +91,35 @@ class AccountViewModelTest : CoroutineTest() {
         viewModel.navigateBack()
 
         // Assert
-        verificationJob.join()    }
+        verificationJob.join()
+    }
+
+    @Test
+    fun `test navigateBack in edit mode cancels edit and stays on screen`() = runCoroutineTest {
+        // Arrange
+        val user = UserModel(
+            id = UserId("123"),
+            firstName = "John",
+            lastName = "Doe",
+            email = "john.doe@example.com",
+            phoneNumber = "1234567890",
+            authMetadata = null,
+        )
+        coEvery { authManager.getUser() } returns Result.success(user)
+
+        // Enter edit mode first
+        viewModel.editOrSave()
+        assertEquals(true, viewModel.uiState.value.isEditable)
+
+        // Act
+        viewModel.navigateBack()
+
+        // Assert - should NOT emit NavigateBack event, should call cancelEdit instead
+        coVerify { authManager.getUser() }
+        val uiState = viewModel.uiState.value
+        assertEquals(false, uiState.isEditable)
+        assertEquals("John", uiState.firstName)
+    }
 
     @Test
     fun `test loadUserData updates UI state with user data`() = runCoroutineTest {
@@ -134,5 +163,150 @@ class AccountViewModelTest : CoroutineTest() {
         assertEquals("", uiState.lastName)
         assertEquals("", uiState.email)
         assertEquals("", uiState.phoneNumber)
+    }
+
+    @Test
+    fun `test cancelEdit reloads user data and exits edit mode`() = runCoroutineTest {
+        // Arrange
+        val user = UserModel(
+            id = UserId("123"),
+            firstName = "John",
+            lastName = "Doe",
+            email = "john.doe@example.com",
+            phoneNumber = "1234567890",
+            authMetadata = null,
+        )
+        coEvery { authManager.getUser() } returns Result.success(user)
+
+        // First enter edit mode
+        viewModel.editOrSave()
+        assertEquals(true, viewModel.uiState.value.isEditable)
+
+        // Act
+        viewModel.cancelEdit()
+
+        // Assert
+        coVerify { authManager.getUser() }
+        val uiState = viewModel.uiState.value
+        assertEquals(false, uiState.isLoading)
+        assertEquals(false, uiState.isEditable)
+        assertEquals("John", uiState.firstName)
+        assertEquals("Doe", uiState.lastName)
+        assertEquals("john.doe@example.com", uiState.email)
+        assertEquals("1234567890", uiState.phoneNumber)
+    }
+
+    @Test
+    fun `test cancelEdit handles failure`() = runCoroutineTest {
+        // Arrange
+        coEvery { authManager.getUser() } returns Result.failure(Exception("Error"))
+
+        // First enter edit mode
+        viewModel.editOrSave()
+        assertEquals(true, viewModel.uiState.value.isEditable)
+
+        // Act
+        viewModel.cancelEdit()
+
+        // Assert
+        coVerify { authManager.getUser() }
+        val uiState = viewModel.uiState.value
+        assertEquals(false, uiState.isLoading)
+        assertEquals(false, uiState.isEditable)
+    }
+
+    @Test
+    fun `test editOrSave enters edit mode when not editable`() = runCoroutineTest {
+        // Arrange
+        assertEquals(false, viewModel.uiState.value.isEditable)
+
+        // Act
+        viewModel.editOrSave()
+
+        // Assert
+        val uiState = viewModel.uiState.value
+        assertEquals(true, uiState.isEditable)
+    }
+
+    @Test
+    fun `test editOrSave saves changes when already editable`() = runCoroutineTest {
+        // Arrange
+        coEvery {
+            authManager.updateUser(
+                firstName = "Jane",
+                lastName = "Smith",
+                email = "jane.smith@example.com",
+                phoneNumber = "9876543210",
+            )
+        } returns Result.success(Unit)
+
+        // Enter edit mode and update fields
+        viewModel.editOrSave()
+        viewModel.updateFirstName("Jane")
+        viewModel.updateLastName("Smith")
+        viewModel.updateEmail("jane.smith@example.com")
+        viewModel.updatePhoneNumber("9876543210")
+        assertEquals(true, viewModel.uiState.value.isEditable)
+
+        // Act
+        val verificationJob = launch {
+            windowEventBus.events.test {
+                assertEquals(
+                    EdifikanaWindowsEvent.ShowSnackbar("Account information updated successfully."),
+                    awaitItem(),
+                )
+            }
+        }
+
+        viewModel.editOrSave()
+
+        // Assert
+        coVerify {
+            authManager.updateUser(
+                firstName = "Jane",
+                lastName = "Smith",
+                email = "jane.smith@example.com",
+                phoneNumber = "9876543210",
+            )
+        }
+        val uiState = viewModel.uiState.value
+        assertEquals(false, uiState.isLoading)
+        assertEquals(false, uiState.isEditable)
+        verificationJob.join()
+    }
+
+    @Test
+    fun `test editOrSave handles save failure`() = runCoroutineTest {
+        // Arrange
+        coEvery {
+            authManager.updateUser(
+                firstName = any(),
+                lastName = any(),
+                email = any(),
+                phoneNumber = any(),
+            )
+        } returns Result.failure(Exception("Network error"))
+
+        // Enter edit mode
+        viewModel.editOrSave()
+        assertEquals(true, viewModel.uiState.value.isEditable)
+
+        // Act
+        val verificationJob = launch {
+            windowEventBus.events.test {
+                assertEquals(
+                    EdifikanaWindowsEvent.ShowSnackbar("Failed to update account information. Please try again."),
+                    awaitItem(),
+                )
+            }
+        }
+
+        viewModel.editOrSave()
+
+        // Assert
+        val uiState = viewModel.uiState.value
+        assertEquals(false, uiState.isLoading)
+        assertEquals(true, uiState.isEditable) // Should stay in edit mode on failure
+        verificationJob.join()
     }
 }

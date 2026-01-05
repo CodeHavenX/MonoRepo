@@ -130,7 +130,7 @@ class AuthManager(
         lastName: String?,
         email: String?,
         phoneNumber: String?,
-    ) = dependencies.getOrCatch(TAG) {
+    ): Result<Unit> = dependencies.getOrCatch(TAG) {
         logI(TAG, "updateUser")
         authService.updateUser(
             firstName = firstName,

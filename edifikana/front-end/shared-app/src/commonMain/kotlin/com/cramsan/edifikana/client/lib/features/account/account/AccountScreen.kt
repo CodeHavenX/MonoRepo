@@ -12,7 +12,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +26,9 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import com.cramsan.edifikana.client.ui.components.EdifikanaAccountInfoItem
+import com.cramsan.edifikana.client.ui.components.EdifikanaSecondaryButton
+import com.cramsan.edifikana.client.ui.components.EdifikanaTextField
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.framework.core.compose.rememberDialogController
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
@@ -68,6 +70,7 @@ fun AccountScreen(
         uiState,
         onBackNavigation = { viewModel.navigateBack() },
         onEditClicked = { viewModel.editOrSave() },
+        onCancelEdit = { viewModel.cancelEdit() },
         onSignOutClicked = { viewModel.signOut() },
         onFirstNameChange = { viewModel.updateFirstName(it) },
         onLastNameChange = { viewModel.updateLastName(it) },
@@ -90,6 +93,7 @@ internal fun AccountContent(
     onBackNavigation: () -> Unit,
     onSignOutClicked: () -> Unit,
     onEditClicked: () -> Unit,
+    onCancelEdit: () -> Unit,
     onEditPasswordClicked: () -> Unit,
 ) {
     Scaffold(
@@ -125,38 +129,73 @@ internal fun AccountContent(
                     }
 
                     // First name
-                    ContentLine(
-                        value = content.firstName.orEmpty(),
-                        label = stringResource(Res.string.account_screen_first_name),
-                        readOnly = !content.isEditable || content.isLoading,
-                        onContentChange = { onFirstNameChange(it) },
-                        modifier = modifier.focusRequester(focusRequester),
-                    )
+                    if (content.isEditable) {
+                        EdifikanaTextField(
+                            value = content.firstName.orEmpty(),
+                            onValueChange = onFirstNameChange,
+                            label = stringResource(Res.string.account_screen_first_name),
+                            modifier = modifier.focusRequester(focusRequester),
+                        )
+                    } else {
+                        EdifikanaAccountInfoItem(
+                            label = stringResource(Res.string.account_screen_first_name),
+                            value = content.firstName.orEmpty(),
+                            modifier = modifier,
+                        )
+                    }
 
                     // Last name
-                    ContentLine(
-                        value = content.lastName.orEmpty(),
-                        label = stringResource(Res.string.account_screen_last_name),
-                        readOnly = !content.isEditable || content.isLoading,
-                        onContentChange = { onLastNameChange(it) },
-                        modifier = modifier,
-                    )
+                    if (content.isEditable) {
+                        EdifikanaTextField(
+                            value = content.lastName.orEmpty(),
+                            onValueChange = onLastNameChange,
+                            label = stringResource(Res.string.account_screen_last_name),
+                            modifier = modifier,
+                        )
+                    } else {
+                        EdifikanaAccountInfoItem(
+                            value = content.lastName.orEmpty(),
+                            label = stringResource(Res.string.account_screen_last_name),
+                            modifier = modifier,
+                        )
+                    }
 
                     // Phonenumber
-                    ContentLine(
-                        value = content.phoneNumber.orEmpty(),
-                        label = stringResource(Res.string.account_screen_phone_number),
-                        readOnly = !content.isEditable || content.isLoading,
-                        onContentChange = { onPhoneNumberChange(it) },
-                        modifier = modifier,
-                    )
+                    if (content.isEditable) {
+                        EdifikanaTextField(
+                            value = content.phoneNumber.orEmpty(),
+                            onValueChange = onPhoneNumberChange,
+                            label = stringResource(Res.string.account_screen_phone_number),
+                            modifier = modifier,
+                        )
+                    } else {
+                        EdifikanaAccountInfoItem(
+                            value = content.phoneNumber.orEmpty(),
+                            label = stringResource(Res.string.account_screen_phone_number),
+                            modifier = modifier,
+                        )
+                    }
 
                     // Email
-                    ContentLine(
-                        value = content.email.orEmpty(),
-                        label = stringResource(Res.string.account_screen_email),
-                        readOnly = !content.isEditable || content.isLoading,
-                        onContentChange = { onEmailChange(it) },
+                    if (content.isEditable) {
+                        EdifikanaTextField(
+                            value = content.email.orEmpty(),
+                            onValueChange = onEmailChange,
+                            label = stringResource(Res.string.account_screen_email),
+                            modifier = modifier,
+                        )
+                    } else {
+                        EdifikanaAccountInfoItem(
+                            value = content.email.orEmpty(),
+                            label = stringResource(Res.string.account_screen_email),
+                            modifier = modifier,
+                        )
+                    }
+
+                    // Password field
+                    EdifikanaAccountInfoItem(
+                        value = if (content.isPasswordSet) "********" else "Not Set",
+                        label = "Password",
                         modifier = modifier,
                     )
 
@@ -168,40 +207,38 @@ internal fun AccountContent(
                         onClick = onEditPasswordClicked,
                     )
                 },
-                buttonContent = { modifier ->
-                    // Sign Out button
-                    Button(
-                        modifier = modifier,
-                        enabled = !content.isLoading && !content.isEditable,
-                        onClick = onSignOutClicked,
-                    ) {
-                        Text(
-                            text = stringResource(Res.string.account_screen_sign_out),
+                buttonContent = if (content.isEditable) {
+                    { modifier ->
+                        Button(
+                            modifier = modifier,
+                            enabled = !content.isLoading,
+                            onClick = onEditClicked,
+                        ) {
+                            Text(text = "Save Changes")
+                        }
+
+                        EdifikanaSecondaryButton(
+                            text = "Cancel",
+                            modifier = modifier,
+                            enabled = !content.isLoading,
+                            onClick = onCancelEdit,
                         )
+                    }
+                } else {
+                    { modifier ->
+                        Button(
+                            modifier = modifier,
+                            enabled = !content.isLoading,
+                            onClick = onSignOutClicked,
+                        ) {
+                            Text(text = stringResource(Res.string.account_screen_sign_out))
+                        }
                     }
                 },
             )
             LoadingAnimationOverlay(isLoading = content.isLoading)
         }
     }
-}
-
-@Composable
-private fun ContentLine(
-    label: String,
-    value: String,
-    readOnly: Boolean,
-    onContentChange: (String) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    OutlinedTextField(
-        value = value,
-        onValueChange = { onContentChange(it) },
-        label = { Text(label) },
-        modifier = modifier,
-        singleLine = true,
-        readOnly = readOnly,
-    )
 }
 
 @Composable

@@ -1,21 +1,21 @@
 package ${PACKAGE_NAME}.${Package_Name}
 
-import com.cramsan.framework.core.compose.ViewModelUIState
+import androidx.compose.runtime.Composable
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
- * UI state of the ${Feature_Name} feature.
- *
- * This class models the top level state of the page.
- * For modeling more specific details of the page, see the respective UI model class.
+ * Preview for the ${Feature_Name} feature screen.
  */
-data class ${Feature_Name}UIState(
-    val title: String?,
-    val isLoading: Boolean,
-) : ViewModelUIState {
-    companion object {
-        val Initial = ${Feature_Name}UIState(
-            title = null,
-            isLoading = true,
+@Preview
+@Composable
+private fun ${Feature_Name}ScreenPreview() {
+    AppTheme {
+        ${Feature_Name}Content(
+            content = ${Feature_Name}UIState(
+                title = "${Feature_Name}ScreenPreview",
+                isLoading = true,
+            ),
+            onBackSelected = {},
         )
     }
 }

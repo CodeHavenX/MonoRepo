@@ -3,14 +3,18 @@ package com.cramsan.ui.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
@@ -32,6 +36,7 @@ fun ScreenLayout(
     topPadding: Dp = Padding.X_LARGE,
     bottomPadding: Dp = Padding.X_LARGE,
     verticalArrangement: Arrangement.Vertical = Arrangement.spacedBy(Padding.MEDIUM),
+    overlay: @Composable BoxScope.() -> Unit = { },
     sectionContent: @Composable ColumnScope.(Modifier) -> Unit,
     buttonContent: (@Composable ColumnScope.(Modifier) -> Unit)? = null,
 ) {
@@ -46,25 +51,29 @@ fun ScreenLayout(
         .ifNotTrue(fixedFooter) {
             verticalScroll(rememberScrollState())
         }
-    Column(
+    Box(
         modifier = debugModifier(screenLayoutModifier),
-        verticalArrangement = verticalArrangement,
     ) {
-        val sectionModifier = Modifier.ifTrue(fixedFooter) {
-            weight(1f)
-                .verticalScroll(rememberScrollState())
-        }
-        ContentSection(
-            modifier = debugModifier(sectionModifier),
-            content = sectionContent,
-        )
-        buttonContent?.let {
-            val actionModifier = Modifier
-            ButtonSection(
-                modifier = debugModifier(actionModifier),
-                buttons = it,
+        Column(
+            verticalArrangement = verticalArrangement,
+        ) {
+            val sectionModifier = Modifier.ifTrue(fixedFooter) {
+                weight(1f)
+                    .verticalScroll(rememberScrollState())
+            }
+            ContentSection(
+                modifier = debugModifier(sectionModifier),
+                content = sectionContent,
             )
+            buttonContent?.let {
+                val actionModifier = Modifier
+                ButtonSection(
+                    modifier = debugModifier(actionModifier),
+                    buttons = it,
+                )
+            }
         }
+        overlay()
     }
 }
 

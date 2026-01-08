@@ -5,6 +5,7 @@ import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
+import com.cramsan.edifikana.client.lib.managers.OrganizationManager
 import com.cramsan.edifikana.client.lib.models.Theme
 import com.cramsan.edifikana.client.lib.settings.EdifikanaSettingKey
 import com.cramsan.framework.core.compose.BaseViewModel
@@ -25,6 +26,7 @@ import kotlinx.coroutines.launch
 class SignInViewModel(
     dependencies: ViewModelDependencies,
     private val auth: AuthManager,
+    private val organizationManager: OrganizationManager,
     private val stringProvider: StringProvider,
     private val preferencesManager: PreferencesManager,
 ) : BaseViewModel<SignInEvent, SignInUIState>(dependencies, SignInUIState.Initial, TAG) {
@@ -98,12 +100,24 @@ class SignInViewModel(
                 }
                 return@launch
             }
-            emitWindowEvent(
-                EdifikanaWindowsEvent.NavigateToNavGraph(
-                    EdifikanaNavGraphDestination.HomeNavGraphDestination,
-                    clearTop = true,
+
+            val organizations = organizationManager.getOrganizations().getOrNull()
+
+            if(organizations.isNullOrEmpty()) {
+                emitWindowEvent(
+                    EdifikanaWindowsEvent.NavigateToScreen(
+                        AuthDestination.SelectOrgDestination,
+                        clearTop = true,
+                    )
                 )
-            )
+            } else {
+                emitWindowEvent(
+                    EdifikanaWindowsEvent.NavigateToNavGraph(
+                        EdifikanaNavGraphDestination.HomeNavGraphDestination,
+                        clearTop = true,
+                    )
+                )
+            }
         }
     }
 

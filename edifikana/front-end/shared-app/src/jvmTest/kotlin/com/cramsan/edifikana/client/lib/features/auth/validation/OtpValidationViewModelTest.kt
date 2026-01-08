@@ -52,8 +52,9 @@ class OtpValidationViewModelTest : CoroutineTest() {
                 applicationEventReceiver = applicationEventReceiver,
                 windowEventReceiver = windowEventBus,
             ),
-            authManager,
-            mockk(),
+            auth = authManager,
+            organizationManager = mockk(),
+            stringProvider = mockk(),
         )
     }
 

@@ -19,7 +19,6 @@ import kotlin.time.Duration.Companion.days
  */
 class UserService(
     private val userDatastore: UserDatastore,
-    private val organizationDatastore: OrganizationDatastore,
     private val notificationService: NotificationService?,
     private val clock: Clock,
 ) {
@@ -47,12 +46,6 @@ class UserService(
 
         if (!isTransient) {
             val user = result.getOrThrow()
-            val orgID = organizationDatastore.createOrganization().getOrThrow().id
-            organizationDatastore.addUserToOrganization(
-                userId = user.id,
-                organizationId = orgID,
-                role = UserRole.OWNER,
-            )
 
             // Link any pending notifications to this user
             notificationService?.linkNotificationsToUser(email, user.id)?.onFailure { e ->
@@ -78,12 +71,6 @@ class UserService(
 
         if (result.isSuccess) {
             val user = result.getOrThrow()
-            val orgId = organizationDatastore.createOrganization().getOrThrow().id
-            organizationDatastore.addUserToOrganization(
-                userId = user.id,
-                organizationId = orgId,
-                role = UserRole.OWNER
-            )
 
             // Link any pending notifications to this user
             notificationService?.linkNotificationsToUser(email, user.id)?.onFailure { e ->

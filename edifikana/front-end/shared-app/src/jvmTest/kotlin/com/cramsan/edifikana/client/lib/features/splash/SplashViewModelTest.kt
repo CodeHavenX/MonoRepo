@@ -3,6 +3,7 @@ package com.cramsan.edifikana.client.lib.features.splash
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
+import com.cramsan.edifikana.client.lib.managers.OrganizationManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
@@ -30,6 +31,7 @@ class SplashViewModelTest : CoroutineTest() {
 
     private lateinit var viewModel: SplashViewModel
     private lateinit var authManager: AuthManager
+    private lateinit var organizationManager: OrganizationManager
     private lateinit var propertyManager: PropertyManager
 
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
@@ -52,10 +54,12 @@ class SplashViewModelTest : CoroutineTest() {
             windowEventReceiver = windowEventBus,
         )
         authManager = mockk()
+        organizationManager = mockk()
         propertyManager = mockk()
         viewModel = SplashViewModel(
             dependencies = dependencies,
             authManager = authManager,
+            organizationManager = organizationManager,
         )
     }
 

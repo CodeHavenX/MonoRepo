@@ -1,8 +1,10 @@
 package com.cramsan.edifikana.client.lib.features.auth.validation
 
+import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
+import com.cramsan.edifikana.client.lib.managers.OrganizationManager
 import com.cramsan.edifikana.lib.utils.requireSuccess
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
@@ -20,6 +22,7 @@ import kotlinx.coroutines.launch
 class OtpValidationViewModel(
     dependencies: ViewModelDependencies,
     private val auth: AuthManager,
+    private val organizationManager: OrganizationManager,
     private val stringProvider: StringProvider,
 ) : BaseViewModel<OtpValidationEvent, OtpValidationUIState>(
     dependencies,
@@ -66,12 +69,23 @@ class OtpValidationViewModel(
 
                 emitWindowEvent(EdifikanaWindowsEvent.ShowSnackbar(getErrorMessage(it)))
             }.onSuccess {
-                emitWindowEvent(
-                    EdifikanaWindowsEvent.NavigateToNavGraph(
-                        EdifikanaNavGraphDestination.HomeNavGraphDestination,
-                        clearTop = true,
+                val organizations = organizationManager.getOrganizations().getOrNull()
+
+                if(organizations.isNullOrEmpty()) {
+                    emitWindowEvent(
+                        EdifikanaWindowsEvent.NavigateToScreen(
+                            AuthDestination.SelectOrgDestination,
+                            clearTop = true,
+                        )
                     )
-                )
+                } else {
+                    emitWindowEvent(
+                        EdifikanaWindowsEvent.NavigateToNavGraph(
+                            EdifikanaNavGraphDestination.HomeNavGraphDestination,
+                            clearTop = true,
+                        )
+                    )
+                }
             }
         }
     }

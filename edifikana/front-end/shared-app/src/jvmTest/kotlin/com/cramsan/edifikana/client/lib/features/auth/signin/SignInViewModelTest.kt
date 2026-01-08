@@ -6,6 +6,7 @@ import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
+import com.cramsan.edifikana.client.lib.managers.OrganizationManager
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
 import com.cramsan.framework.core.compose.EventBus
@@ -43,7 +44,7 @@ class SignInViewModelTest : CoroutineTest() {
     private lateinit var windowEventBus: EventBus<WindowEvent>
     private lateinit var applicationEventReceiver: EventBus<ApplicationEvent>
     private lateinit var stringProvider: StringProvider
-
+    private lateinit var organizationManager: OrganizationManager
     private lateinit var preferencesManager: PreferencesManager
 
 
@@ -58,6 +59,7 @@ class SignInViewModelTest : CoroutineTest() {
         windowEventBus = EventBus()
         exceptionHandler = CollectorCoroutineExceptionHandler()
         stringProvider = mockk()
+        organizationManager = mockk()
         preferencesManager = mockk()
         viewModel = SignInViewModel(
             dependencies = ViewModelDependencies(
@@ -68,6 +70,7 @@ class SignInViewModelTest : CoroutineTest() {
                 applicationEventReceiver = applicationEventReceiver,
             ),
             auth = authManager,
+            organizationManager = organizationManager,
             stringProvider = stringProvider,
             preferencesManager = preferencesManager,
         )

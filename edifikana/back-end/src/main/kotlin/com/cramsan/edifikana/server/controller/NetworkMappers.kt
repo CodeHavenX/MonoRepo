@@ -87,6 +87,7 @@ fun Property.toPropertyNetworkResponse(): PropertyNetworkResponse {
         name = name,
         address = address,
         organizationId = organizationId,
+        imageUrl = imageUrl,
     )
 }
 

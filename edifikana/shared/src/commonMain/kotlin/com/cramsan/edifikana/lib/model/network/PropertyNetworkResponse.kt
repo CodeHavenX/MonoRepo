@@ -21,4 +21,6 @@ data class PropertyNetworkResponse(
     val address: String? = null,
     @SerialName("organization_id")
     val organizationId: OrganizationId,
+    @SerialName("image_url")
+    val imageUrl: String? = null,
 ) : ResponseBody

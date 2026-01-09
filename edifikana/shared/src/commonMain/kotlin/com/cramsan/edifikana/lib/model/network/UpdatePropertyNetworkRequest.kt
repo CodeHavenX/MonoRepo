@@ -15,4 +15,6 @@ data class UpdatePropertyNetworkRequest(
     val name: String?,
     @SerialName("address")
     val address: String?,
+    @SerialName("image_url")
+    val imageUrl: String? = null,
 ) : RequestBody

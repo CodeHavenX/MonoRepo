@@ -28,12 +28,14 @@ class SupabasePropertyDatastore(
         address: String,
         creatorUserId: UserId,
         organizationId: OrganizationId,
+        imageUrl: String?,
     ): Result<Property> = runSuspendCatching(TAG) {
         logD(TAG, "Creating property: %s", name)
         val requestEntity: PropertyEntity.CreatePropertyEntity = CreatePropertyEntity(
             name = name,
             address = address,
             organizationId = organizationId,
+            imageUrl = imageUrl,
         )
 
         // Insert the property into the database and select the created entity
@@ -101,6 +103,7 @@ class SupabasePropertyDatastore(
         propertyId: PropertyId,
         name: String?,
         address: String?,
+        imageUrl: String?,
     ): Result<Property> = runSuspendCatching(TAG) {
         logD(TAG, "Updating property: %s", propertyId)
 
@@ -108,6 +111,7 @@ class SupabasePropertyDatastore(
             {
                 name?.let { value -> Property::name setTo value }
                 address?.let { value -> Property::address setTo value }
+                imageUrl?.let { value -> Property::imageUrl setTo value }
             }
         ) {
             select()

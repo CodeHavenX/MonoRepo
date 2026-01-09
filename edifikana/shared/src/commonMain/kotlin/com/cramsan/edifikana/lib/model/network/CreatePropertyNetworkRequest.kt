@@ -18,4 +18,6 @@ data class CreatePropertyNetworkRequest(
     val address: String,
     @SerialName("organization_id")
     val organizationId: OrganizationId,
+    @SerialName("image_url")
+    val imageUrl: String? = null,
 ) : RequestBody

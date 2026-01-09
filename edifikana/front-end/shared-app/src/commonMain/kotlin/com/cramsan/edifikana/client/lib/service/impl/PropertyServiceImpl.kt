@@ -46,6 +46,7 @@ class PropertyServiceImpl(
         propertyName: String,
         address: String,
         organizationId: OrganizationId,
+        imageUrl: String?,
     ): Result<PropertyModel> = runSuspendCatching(TAG) {
         val response = PropertyApi
             .createProperty
@@ -54,6 +55,7 @@ class PropertyServiceImpl(
                     name = propertyName,
                     address = address,
                     organizationId = organizationId,
+                    imageUrl = imageUrl,
                 )
             )
             .execute(http)
@@ -66,6 +68,7 @@ class PropertyServiceImpl(
         propertyId: PropertyId,
         name: String,
         address: String,
+        imageUrl: String?,
     ): Result<PropertyModel> = runSuspendCatching(TAG) {
         val response = PropertyApi
             .updateProperty.buildRequest(
@@ -73,6 +76,7 @@ class PropertyServiceImpl(
                 UpdatePropertyNetworkRequest(
                     name = name,
                     address = address,
+                    imageUrl = imageUrl,
                 )
             ).execute(http)
 
@@ -98,5 +102,6 @@ private fun PropertyNetworkResponse.toPropertyModel(): PropertyModel {
         name = name,
         address = address.orEmpty(),
         organizationId = organizationId,
+        imageUrl = imageUrl,
     )
 }

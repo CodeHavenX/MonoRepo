@@ -23,6 +23,7 @@ class PropertyService(
         name: String,
         address: String,
         organizationId: OrganizationId,
+        imageUrl: String? = null,
         clientContext: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
     ): Property {
         logD(TAG, "createProperty")
@@ -31,6 +32,7 @@ class PropertyService(
             address = address,
             creatorUserId = clientContext.payload.userId,
             organizationId = organizationId,
+            imageUrl = imageUrl,
         ).getOrThrow()
     }
 
@@ -68,12 +70,14 @@ class PropertyService(
         id: PropertyId,
         name: String?,
         address: String?,
+        imageUrl: String? = null,
     ): Property {
         logD(TAG, "updateProperty")
         return propertyDatastore.updateProperty(
             propertyId = id,
             name = name,
             address = address,
+            imageUrl = imageUrl,
         ).getOrThrow()
     }
 

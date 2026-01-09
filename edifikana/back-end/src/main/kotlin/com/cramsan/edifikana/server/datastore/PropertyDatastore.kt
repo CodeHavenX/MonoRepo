@@ -18,6 +18,7 @@ interface PropertyDatastore {
         address: String,
         creatorUserId: UserId,
         organizationId: OrganizationId,
+        imageUrl: String? = null,
     ): Result<Property>
 
     /**
@@ -41,6 +42,7 @@ interface PropertyDatastore {
         propertyId: PropertyId,
         name: String?,
         address: String?,
+        imageUrl: String? = null,
     ): Result<Property>
 
     /**

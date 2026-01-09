@@ -77,12 +77,8 @@ internal fun MainMenuContent(
     Scaffold(
         modifier = modifier,
     ) { innerPadding ->
-        // Render the screen
         Box(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center,
+            modifier = Modifier.padding(innerPadding).fillMaxSize(),
         ) {
             ScreenLayout(
                 sectionContent = { modifier ->
@@ -113,6 +109,9 @@ internal fun MainMenuContent(
                         )
                     }
                 },
+                overlay = {
+                    LoadingAnimationOverlay(uiState.isLoading)
+                }
             )
             Row(
                 modifier = Modifier.align(Alignment.TopEnd).padding(16.dp),
@@ -127,5 +126,4 @@ internal fun MainMenuContent(
             }
         }
     }
-    LoadingAnimationOverlay(uiState.isLoading)
 }

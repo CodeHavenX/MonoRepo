@@ -17,7 +17,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.zIndex
@@ -91,53 +90,49 @@ internal fun VerbsContent(
             )
         },
     ) { innerPadding ->
-        Box(
+        ScreenLayout(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
-            contentAlignment = Alignment.Center,
-        ) {
-            ScreenLayout(
-                sectionContent = { sectionModifier ->
-                    // Toggle button to select which direction to start with
-                    var startInFront by remember { mutableStateOf(true) }
-                    Row(
-                        sectionModifier,
-                        horizontalArrangement = Arrangement.End,
-                    ) {
-                        Switch(
-                            startInFront,
-                            { startInFront = it }
-                        )
-                    }
+            sectionContent = { sectionModifier ->
+                // Toggle button to select which direction to start with
+                var startInFront by remember { mutableStateOf(true) }
+                Row(
+                    sectionModifier,
+                    horizontalArrangement = Arrangement.End,
+                ) {
+                    Switch(
+                        startInFront,
+                        { startInFront = it }
+                    )
+                }
 
-                    // Wrap the Card in a non-clipping layer so animated children can overflow
-                    Box(
-                        modifier = sectionModifier
-                            .graphicsLayer { clip = false }
-                            .zIndex(1f) // optional: ensure it draws above other siblings
+                // Wrap the Card in a non-clipping layer so animated children can overflow
+                Box(
+                    modifier = sectionModifier
+                        .graphicsLayer { clip = false }
+                        .zIndex(1f) // optional: ensure it draws above other siblings
+                ) {
+                    Card(
+                        content.content?.original,
+                        content.content?.translated,
+                        startInFront = startInFront,
+                    )
+                }
+            },
+            buttonContent = { buttonModifier ->
+                Row(
+                    buttonModifier,
+                    horizontalArrangement = Arrangement.spacedBy(Size.x_small)
+                ) {
+                    Button(
+                        onNewConjugationRequested,
+                        modifier = Modifier.weight(1f),
                     ) {
-                        Card(
-                            content.content?.original,
-                            content.content?.translated,
-                            startInFront = startInFront,
-                        )
-                    }
-                },
-                buttonContent = { buttonModifier ->
-                    Row(
-                        buttonModifier,
-                        horizontalArrangement = Arrangement.spacedBy(Size.x_small)
-                    ) {
-                        Button(
-                            onNewConjugationRequested,
-                            modifier = Modifier.weight(1f),
-                        ) {
-                            Text("Next")
-                        }
+                        Text("Next")
                     }
                 }
-            )
-        }
+            }
+        )
     }
 }

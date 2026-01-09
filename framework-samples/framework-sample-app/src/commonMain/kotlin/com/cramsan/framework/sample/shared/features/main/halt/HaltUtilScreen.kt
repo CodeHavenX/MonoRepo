@@ -1,5 +1,6 @@
 package com.cramsan.framework.sample.shared.features.main.halt
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
@@ -64,7 +65,7 @@ internal fun HaltUtilContent(
 ) {
     Scaffold { innerPadding ->
         ScreenLayout(
-            modifier = Modifier.padding(innerPadding),
+            modifier = Modifier.padding(innerPadding).fillMaxSize(),
             sectionContent = { modifier ->
                 Button(
                     onClick = onStopThreadSelected,
@@ -85,7 +86,9 @@ internal fun HaltUtilContent(
                     Text("Crash App")
                 }
             },
+            overlay = {
+                LoadingAnimationOverlay(isLoading = content.isLoading)
+            }
         )
-        LoadingAnimationOverlay(isLoading = content.isLoading)
     }
 }

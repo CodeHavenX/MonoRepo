@@ -6,7 +6,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -97,101 +96,96 @@ internal fun SignUpContent(
             )
         },
     ) { innerPadding ->
-        // Render the screen
-        Box(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center,
-        ) {
-            ScreenLayout(
-                sectionContent = { modifier ->
-                    AnimatedContent(
-                        uiState.errorMessages,
-                        modifier = modifier,
-                        transitionSpec = {
-                            fadeIn()
-                                .togetherWith(
-                                    fadeOut()
-                                )
-                        },
-                    ) {
-                        if (!uiState.errorMessages.isNullOrEmpty()) {
-                            it?.forEach { errorMessage ->
-                                Text(
-                                    text = errorMessage,
-                                    style = MaterialTheme.typography.labelMedium,
-                                    color = MaterialTheme.colorScheme.error,
-                                )
-                            }
+        ScreenLayout(
+            modifier = Modifier.padding(innerPadding).fillMaxSize(),
+            sectionContent = { modifier ->
+                AnimatedContent(
+                    uiState.errorMessages,
+                    modifier = modifier,
+                    transitionSpec = {
+                        fadeIn()
+                            .togetherWith(
+                                fadeOut()
+                            )
+                    },
+                ) {
+                    if (!uiState.errorMessages.isNullOrEmpty()) {
+                        it?.forEach { errorMessage ->
+                            Text(
+                                text = errorMessage,
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.error,
+                            )
                         }
                     }
+                }
 
-                    OutlinedTextField(
-                        value = uiState.firstName,
-                        onValueChange = { onFirstNameValueChange(it) },
-                        modifier = modifier,
-                        label = { Text(stringResource(Res.string.sign_up_screen_text_first_name)) },
-                        maxLines = 1,
-                    )
+                OutlinedTextField(
+                    value = uiState.firstName,
+                    onValueChange = { onFirstNameValueChange(it) },
+                    modifier = modifier,
+                    label = { Text(stringResource(Res.string.sign_up_screen_text_first_name)) },
+                    maxLines = 1,
+                )
 
-                    OutlinedTextField(
-                        value = uiState.lastName,
-                        onValueChange = { onLastNameValueChange(it) },
-                        modifier = modifier,
-                        label = { Text(stringResource(Res.string.sign_up_screen_text_last_name)) },
-                        maxLines = 1,
+                OutlinedTextField(
+                    value = uiState.lastName,
+                    onValueChange = { onLastNameValueChange(it) },
+                    modifier = modifier,
+                    label = { Text(stringResource(Res.string.sign_up_screen_text_last_name)) },
+                    maxLines = 1,
+                )
+                OutlinedTextField(
+                    value = uiState.email,
+                    onValueChange = { onEmailValueChange(it) },
+                    modifier = modifier,
+                    label = { Text(stringResource(Res.string.sign_up_screen_text_email)) },
+                    maxLines = 1,
+                )
+                OutlinedTextField(
+                    value = uiState.phoneNumber,
+                    onValueChange = { onPhoneNumberValueChange(it) },
+                    modifier = modifier,
+                    label = { Text(stringResource(Res.string.sign_up_screen_text_phone_number)) },
+                    maxLines = 1,
+                )
+                val interactionSource = remember { MutableInteractionSource() }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = modifier
+                        .clip(MaterialTheme.shapes.small)
+                        .clickable(
+                            interactionSource = interactionSource,
+                            indication = ripple(),
+                        ) {
+                            onPolicyChecked(!uiState.policyChecked)
+                        }
+                        .padding(Padding.XX_SMALL)
+                ) {
+                    Checkbox(
+                        checked = uiState.policyChecked,
+                        onCheckedChange = null,
+                        modifier = Modifier.padding(end = Padding.SMALL),
                     )
-                    OutlinedTextField(
-                        value = uiState.email,
-                        onValueChange = { onEmailValueChange(it) },
-                        modifier = modifier,
-                        label = { Text(stringResource(Res.string.sign_up_screen_text_email)) },
-                        maxLines = 1,
+                    Text(
+                        stringResource(Res.string.sign_up_screen_text_policy),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
-                    OutlinedTextField(
-                        value = uiState.phoneNumber,
-                        onValueChange = { onPhoneNumberValueChange(it) },
-                        modifier = modifier,
-                        label = { Text(stringResource(Res.string.sign_up_screen_text_phone_number)) },
-                        maxLines = 1,
-                    )
-                    val interactionSource = remember { MutableInteractionSource() }
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = modifier
-                            .clip(MaterialTheme.shapes.small)
-                            .clickable(
-                                interactionSource = interactionSource,
-                                indication = ripple(),
-                            ) {
-                                onPolicyChecked(!uiState.policyChecked)
-                            }
-                            .padding(Padding.XX_SMALL)
-                    ) {
-                        Checkbox(
-                            checked = uiState.policyChecked,
-                            onCheckedChange = null,
-                            modifier = Modifier.padding(end = Padding.SMALL),
-                        )
-                        Text(
-                            stringResource(Res.string.sign_up_screen_text_policy),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                },
-                buttonContent = { modifier ->
-                    ElevatedButton(
-                        modifier = modifier,
-                        enabled = uiState.registerEnabled,
-                        onClick = onSignUpClicked,
-                    ) {
-                        Text(stringResource(Res.string.sign_up_screen_text_sign_up))
-                    }
-                },
-            )
-        }
-        LoadingAnimationOverlay(uiState.isLoading)
+                }
+            },
+            buttonContent = { modifier ->
+                ElevatedButton(
+                    modifier = modifier,
+                    enabled = uiState.registerEnabled,
+                    onClick = onSignUpClicked,
+                ) {
+                    Text(stringResource(Res.string.sign_up_screen_text_sign_up))
+                }
+            },
+            overlay = {
+                LoadingAnimationOverlay(uiState.isLoading)
+            }
+        )
     }
 }

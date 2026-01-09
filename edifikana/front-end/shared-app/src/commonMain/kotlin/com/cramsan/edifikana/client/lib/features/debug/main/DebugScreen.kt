@@ -3,7 +3,6 @@ package com.cramsan.edifikana.client.lib.features.debug.main
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -108,40 +107,36 @@ internal fun DebugContent(
         },
     ) { innerPadding ->
         // Render the screen
-        Box(
+        ScreenLayout(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
-            contentAlignment = Alignment.TopCenter,
-        ) {
-            ScreenLayout(
-                sectionContent = { modifier ->
-                    content.fields.forEach {
-                        when (it) {
-                            is Field.BooleanField -> {
-                                BooleanRow(it, modifier, saveChanges)
-                            }
+            sectionContent = { modifier ->
+                content.fields.forEach {
+                    when (it) {
+                        is Field.BooleanField -> {
+                            BooleanRow(it, modifier, saveChanges)
+                        }
 
-                            is Field.StringField -> {
-                                StringRow(it, modifier, bufferChanges, saveChanges)
-                            }
+                        is Field.StringField -> {
+                            StringRow(it, modifier, bufferChanges, saveChanges)
+                        }
 
-                            Field.Divider -> {
-                                HorizontalDivider(modifier)
-                            }
+                        Field.Divider -> {
+                            HorizontalDivider(modifier)
+                        }
 
-                            is Field.Label -> {
-                                LabelRow(it, modifier)
-                            }
+                        is Field.Label -> {
+                            LabelRow(it, modifier)
+                        }
 
-                            is Field.ActionField -> {
-                                ActionRow(it, modifier, onAction)
-                            }
+                        is Field.ActionField -> {
+                            ActionRow(it, modifier, onAction)
                         }
                     }
                 }
-            )
-        }
+            }
+        )
     }
 }
 

@@ -39,18 +39,24 @@ class PropertyManager(
         propertyName: String,
         address: String,
         organizationId: OrganizationId,
+        imageUrl: String? = null,
     ) = dependencies.getOrCatch(TAG) {
         logI(TAG, "addProperty")
 
-        propertyService.addProperty(propertyName, address, organizationId).getOrThrow()
+        propertyService.addProperty(propertyName, address, organizationId, imageUrl).getOrThrow()
     }
 
     /**
      * Update the property with the given [propertyId].
      */
-    suspend fun updateProperty(propertyId: PropertyId, name: String, address: String) = dependencies.getOrCatch(TAG) {
+    suspend fun updateProperty(
+        propertyId: PropertyId,
+        name: String,
+        address: String,
+        imageUrl: String? = null,
+    ) = dependencies.getOrCatch(TAG) {
         logI(TAG, "updateProperty")
-        propertyService.updateProperty(propertyId, name, address).getOrThrow()
+        propertyService.updateProperty(propertyId, name, address, imageUrl).getOrThrow()
     }
 
     /**

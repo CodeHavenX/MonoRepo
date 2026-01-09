@@ -15,6 +15,8 @@ data class PropertyEntity(
     val address: String,
     @SerialName("organization_id")
     val organizationId: String,
+    @SerialName("image_url")
+    val imageUrl: String? = null,
 ) {
     companion object {
         const val COLLECTION = "properties"
@@ -30,5 +32,7 @@ data class PropertyEntity(
         val address: String,
         @SerialName("organization_id")
         val organizationId: String,
+        @SerialName("image_url")
+        val imageUrl: String? = null,
     )
 }

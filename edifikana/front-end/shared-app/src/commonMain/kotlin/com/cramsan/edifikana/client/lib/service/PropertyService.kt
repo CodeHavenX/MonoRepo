@@ -25,13 +25,19 @@ interface PropertyService {
     suspend fun addProperty(
         propertyName: String,
         address: String,
-        organizationId: OrganizationId
+        organizationId: OrganizationId,
+        imageUrl: String? = null,
     ): Result<PropertyModel>
 
     /**
      * Update the property with the given [propertyId].
      */
-    suspend fun updateProperty(propertyId: PropertyId, name: String, address: String): Result<PropertyModel>
+    suspend fun updateProperty(
+        propertyId: PropertyId,
+        name: String,
+        address: String,
+        imageUrl: String? = null,
+    ): Result<PropertyModel>
 
     /**
      * Remove the property with the given [propertyId].

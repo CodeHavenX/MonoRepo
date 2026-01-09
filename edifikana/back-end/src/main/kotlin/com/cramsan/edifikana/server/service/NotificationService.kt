@@ -1,11 +1,8 @@
 package com.cramsan.edifikana.server.service
 
 import com.cramsan.edifikana.lib.model.NotificationId
-import com.cramsan.edifikana.lib.model.NotificationType
-import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.datastore.NotificationDatastore
-import com.cramsan.edifikana.server.datastore.UserDatastore
 import com.cramsan.edifikana.server.service.models.Notification
 import com.cramsan.framework.logging.logD
 
@@ -15,32 +12,7 @@ import com.cramsan.framework.logging.logD
  */
 class NotificationService(
     private val notificationDatastore: NotificationDatastore,
-    private val userDatastore: UserDatastore,
 ) {
-
-    /**
-     * Creates an invitation notification.
-     *
-     * @param recipientEmail The email address of the recipient
-     * @param organizationId The organization the user is being invited to
-     * @return Result containing the created notification
-     */
-    suspend fun createInviteNotification(
-        recipientEmail: String,
-        organizationId: OrganizationId,
-    ): Result<Notification> {
-        logD(TAG, "Creating invite notification for: $recipientEmail")
-
-        val userId = userDatastore.getUser(recipientEmail).getOrNull()?.id
-
-        return notificationDatastore.createNotification(
-            recipientUserId = userId,
-            recipientEmail = recipientEmail,
-            organizationId = organizationId,
-            notificationType = NotificationType.INVITE,
-        )
-    }
-
     /**
      * Retrieves notifications for a user.
      *

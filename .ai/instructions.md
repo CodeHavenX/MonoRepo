@@ -2,6 +2,8 @@
 
 ### Back End
 
+**The most up to date information can be found in: https://wikijs-ok0o4wwsow8s80wwsgo40k4s.cramsan.com/en/codehavenx/design-architecture/back-end**
+
 The back-end is layered using the design Controllers → Services → Datastores (strict layering).
 
 ## Controller Layer
@@ -17,7 +19,7 @@ The back-end is layered using the design Controllers → Services → Datastores
 
 ### Front End
 
-TODO
+**The most up to date information can be found in: https://wikijs-ok0o4wwsow8s80wwsgo40k4s.cramsan.com/en/codehavenx/design-architecture/front-end**
 
 ## Validating a change
 

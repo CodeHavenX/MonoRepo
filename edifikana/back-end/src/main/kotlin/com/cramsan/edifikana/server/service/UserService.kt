@@ -1,7 +1,9 @@
 package com.cramsan.edifikana.server.service
 
+import com.cramsan.edifikana.lib.model.NotificationType
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.server.datastore.NotificationDatastore
 import com.cramsan.edifikana.server.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.datastore.UserDatastore
 import com.cramsan.edifikana.server.service.models.Invite
@@ -20,7 +22,7 @@ import kotlin.time.Duration.Companion.days
 class UserService(
     private val userDatastore: UserDatastore,
     private val organizationDatastore: OrganizationDatastore,
-    private val notificationService: NotificationService?,
+    private val notificationDatastore: NotificationDatastore,
     private val clock: Clock,
 ) {
 
@@ -55,7 +57,7 @@ class UserService(
             )
 
             // Link any pending notifications to this user
-            notificationService?.linkNotificationsToUser(email, user.id)?.onFailure { e ->
+            notificationDatastore.linkNotificationsToUser(email, user.id).onFailure { e ->
                 logW(TAG, "Failed to link notifications to user", e)
             }
         }
@@ -86,7 +88,7 @@ class UserService(
             )
 
             // Link any pending notifications to this user
-            notificationService?.linkNotificationsToUser(email, user.id)?.onFailure { e ->
+            notificationDatastore.linkNotificationsToUser(email, user.id).onFailure { e ->
                 logW(TAG, "Failed to link notifications to user", e)
             }
         }
@@ -170,6 +172,8 @@ class UserService(
         organizationId: OrganizationId,
     ): Result<Unit> = runCatching {
         logD(TAG, "inviteUser")
+        val userId = userDatastore.getUser(email).getOrNull()?.id
+
         userDatastore.recordInvite(
             email,
             organizationId,
@@ -177,14 +181,14 @@ class UserService(
         ).getOrThrow()
 
         // Create a notification for the invited user
-        notificationService?.createInviteNotification(
+        notificationDatastore.createNotification(
+            recipientUserId = userId,
             recipientEmail = email,
             organizationId = organizationId,
-        )?.onFailure { e ->
+            notificationType = NotificationType.INVITE,
+        ).onFailure { e ->
             logW(TAG, "Failed to create invite notification", e)
         }
-
-        Unit
     }
 
     /**

@@ -6,10 +6,10 @@ import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.datastore.EmployeeDatastore
+import com.cramsan.edifikana.server.datastore.EventLogDatastore
 import com.cramsan.edifikana.server.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.datastore.PropertyDatastore
-import com.cramsan.edifikana.server.service.EventLogService
-import com.cramsan.edifikana.server.service.TimeCardService
+import com.cramsan.edifikana.server.datastore.TimeCardDatastore
 import com.cramsan.edifikana.server.service.models.Employee
 import com.cramsan.edifikana.server.service.models.Property
 import com.cramsan.edifikana.server.service.models.User
@@ -39,8 +39,8 @@ class RBACServiceTest {
     private lateinit var propertyDatastore: PropertyDatastore
     private lateinit var orgDatastore: OrganizationDatastore
     private lateinit var employeeDatastore: EmployeeDatastore
-    private lateinit var timeCardService: TimeCardService
-    private lateinit var eventLogService: EventLogService
+    private lateinit var timeCardDatastore: TimeCardDatastore
+    private lateinit var eventLogDatastore: EventLogDatastore
     private lateinit var rbac: RBACService
 
     @BeforeEach
@@ -49,9 +49,9 @@ class RBACServiceTest {
         propertyDatastore = mockk()
         orgDatastore = mockk()
         employeeDatastore = mockk()
-        timeCardService = mockk()
-        eventLogService = mockk()
-        rbac = RBACService(propertyDatastore, orgDatastore, employeeDatastore, timeCardService, eventLogService)
+        timeCardDatastore = mockk()
+        eventLogDatastore = mockk()
+        rbac = RBACService(propertyDatastore, orgDatastore, employeeDatastore, timeCardDatastore, eventLogDatastore)
     }
 
     /**

@@ -101,40 +101,36 @@ internal fun PropertiesOverviewContent(
             }
         }
     ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize(),
-            contentAlignment = Alignment.TopCenter,
-        ) {
-            ScreenLayout(
-                verticalArrangement = Arrangement.spacedBy(Padding.XX_SMALL),
-                sectionContent = { sectionModifier ->
-                    if (content.propertyList.isEmpty()) {
-                        Box(
-                            modifier = sectionModifier
-                                .fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "No properties yet. Tap + to add your first property.",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onBackground,
-                            )
-                        }
-                    } else {
-                        content.propertyList.forEach {
-                            PropertyItem(
-                                property = it,
-                                modifier = sectionModifier,
-                                onPropertySelected = onPropertySelected,
-                            )
-                        }
+        ScreenLayout(
+            modifier = Modifier.padding(innerPadding).fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(Padding.XX_SMALL),
+            sectionContent = { sectionModifier ->
+                if (content.propertyList.isEmpty()) {
+                    Box(
+                        modifier = sectionModifier
+                            .fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "No properties yet. Tap + to add your first property.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onBackground,
+                        )
                     }
-                },
-            )
-            LoadingAnimationOverlay(content.isLoading)
-        }
+                } else {
+                    content.propertyList.forEach {
+                        PropertyItem(
+                            property = it,
+                            modifier = sectionModifier,
+                            onPropertySelected = onPropertySelected,
+                        )
+                    }
+                }
+            },
+            overlay = {
+                LoadingAnimationOverlay(content.isLoading)
+            }
+        )
     }
 }
 

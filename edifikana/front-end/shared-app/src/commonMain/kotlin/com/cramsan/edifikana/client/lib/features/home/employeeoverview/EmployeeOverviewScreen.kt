@@ -3,7 +3,6 @@ package com.cramsan.edifikana.client.lib.features.home.employeeoverview
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -106,36 +105,32 @@ internal fun EmployeeOverviewContent(
             }
         }
     ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize(),
-            contentAlignment = Alignment.TopCenter,
-        ) {
-            ScreenLayout(
-                verticalArrangement = Arrangement.spacedBy(Padding.XX_SMALL),
-                sectionContent = { sectionModifier ->
-                    content.employeeList.forEach {
-                        when (it) {
-                            is InviteItemUIModel -> {
-                                InviteItem(
-                                    invite = it,
-                                    modifier = sectionModifier,
-                                )
-                            }
-                            is UserItemUIModel -> {
-                                UserItem(
-                                    employee = it,
-                                    modifier = sectionModifier,
-                                    onEmployeeSelected = onEmployeeSelected,
-                                )
-                            }
+        ScreenLayout(
+            modifier = Modifier.padding(innerPadding).fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(Padding.XX_SMALL),
+            sectionContent = { sectionModifier ->
+                content.employeeList.forEach {
+                    when (it) {
+                        is InviteItemUIModel -> {
+                            InviteItem(
+                                invite = it,
+                                modifier = sectionModifier,
+                            )
+                        }
+                        is UserItemUIModel -> {
+                            UserItem(
+                                employee = it,
+                                modifier = sectionModifier,
+                                onEmployeeSelected = onEmployeeSelected,
+                            )
                         }
                     }
-                },
-            )
-            LoadingAnimationOverlay(content.isLoading)
-        }
+                }
+            },
+            overlay = {
+                LoadingAnimationOverlay(content.isLoading)
+            }
+        )
     }
 }
 

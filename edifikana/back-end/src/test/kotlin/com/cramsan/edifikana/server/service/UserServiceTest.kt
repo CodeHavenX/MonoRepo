@@ -1,7 +1,9 @@
 package com.cramsan.edifikana.server.service
 
+import com.cramsan.edifikana.lib.model.NotificationType
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.server.datastore.NotificationDatastore
 import com.cramsan.edifikana.server.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.datastore.UserDatastore
 import com.cramsan.edifikana.server.service.models.Organization
@@ -39,7 +41,7 @@ class UserServiceTest {
     private lateinit var userDatastore: UserDatastore
     private lateinit var userService: UserService
     private lateinit var organizationDatastore: OrganizationDatastore
-    private lateinit var notificationService: NotificationService
+    private lateinit var notificationDatastore: NotificationDatastore
     private lateinit var testTimeSource: TestTimeSource
     private lateinit var clock: Clock
 
@@ -51,10 +53,10 @@ class UserServiceTest {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         userDatastore = mockk()
         organizationDatastore = mockk()
-        notificationService = mockk()
+        notificationDatastore = mockk()
         testTimeSource = TestTimeSource()
         clock = testTimeSource.asClock(2024, 1, 1, 0, 0)
-        userService = UserService(userDatastore, organizationDatastore, notificationService, clock)
+        userService = UserService(userDatastore, organizationDatastore, notificationDatastore, clock)
     }
 
     /**
@@ -142,7 +144,7 @@ class UserServiceTest {
             organizationDatastore.createOrganization()
         } returns Result.success(organization)
         coEvery { organizationDatastore.addUserToOrganization(userId, orgId, role) } returns Result.success(Unit)
-        coEvery { notificationService.linkNotificationsToUser(email, userId) } returns Result.success(0)
+        coEvery { notificationDatastore.linkNotificationsToUser(email, userId) } returns Result.success(0)
 
         // Act
         val result = userService.createUser(email, phone, password, firstName, lastName)
@@ -161,7 +163,7 @@ class UserServiceTest {
         }
         coVerify { organizationDatastore.createOrganization() }
         coVerify { organizationDatastore.addUserToOrganization(userId, orgId, role) }
-        coVerify { notificationService.linkNotificationsToUser(email, userId) }
+        coVerify { notificationDatastore.linkNotificationsToUser(email, userId) }
     }
 
     /**
@@ -285,9 +287,20 @@ class UserServiceTest {
         val email = "invite@example.com"
         val orgId = OrganizationId("orgId")
         val expirationTime = clock.now() + 14.days
+        val userId = UserId("id")
+        val user = mockk<User>()
 
+        coEvery { user.id } returns userId
+        coEvery { userDatastore.getUser(email) } returns Result.success(user)
         coEvery { userDatastore.recordInvite(email, orgId, expirationTime) } returns Result.success(mockk())
-        coEvery { notificationService.createInviteNotification(email, orgId) } returns Result.success(mockk())
+        coEvery {
+            notificationDatastore.createNotification(
+                userId,
+                email,
+                orgId,
+                NotificationType.INVITE,
+            )
+        } returns Result.success(mockk())
 
         // Act
         val result = userService.inviteUser(email, orgId)
@@ -295,7 +308,14 @@ class UserServiceTest {
         // Assert
         assertTrue(result.isSuccess)
         coVerify { userDatastore.recordInvite(email, orgId, any()) }
-        coVerify { notificationService.createInviteNotification(email, orgId) }
+        coVerify {
+            notificationDatastore.createNotification(
+                userId,
+                email,
+                orgId,
+                NotificationType.INVITE,
+            )
+        }
     }
 
     /**
@@ -307,9 +327,13 @@ class UserServiceTest {
         val email = "invite@example.com"
         val orgId = OrganizationId("orgId")
         val expirationTime = clock.now() + 14.days
+        val userId = UserId("id")
+        val user = mockk<User>()
 
         val error = Exception("Failed to record invite")
         coEvery { userDatastore.recordInvite(email, orgId, expirationTime) } returns Result.failure(error)
+        coEvery { user.id } returns userId
+        coEvery { userDatastore.getUser(email) } returns Result.success(user)
 
         // Act
         val result = userService.inviteUser(email, orgId)

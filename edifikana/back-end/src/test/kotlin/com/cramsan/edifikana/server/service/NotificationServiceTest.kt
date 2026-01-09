@@ -1,19 +1,15 @@
 package com.cramsan.edifikana.server.service
 
 import com.cramsan.edifikana.lib.model.NotificationId
-import com.cramsan.edifikana.lib.model.NotificationType
-import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.datastore.NotificationDatastore
 import com.cramsan.edifikana.server.datastore.UserDatastore
 import com.cramsan.edifikana.server.service.models.Notification
-import com.cramsan.edifikana.server.service.models.User
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -44,7 +40,9 @@ class NotificationServiceTest {
         notificationDatastore = mockk()
         userDatastore = mockk()
         testTimeSource = TestTimeSource()
-        notificationService = NotificationService(notificationDatastore, userDatastore)
+        notificationService = NotificationService(
+            notificationDatastore,
+        )
     }
 
     /**
@@ -53,81 +51,6 @@ class NotificationServiceTest {
     @AfterTest
     fun cleanUp() {
         stopKoin()
-    }
-
-    /**
-     * Tests that createInviteNotification creates a notification for a user that exists.
-     */
-    @Test
-    fun `createInviteNotification should create notification for existing user`() = runTest {
-        // Arrange
-        val email = "test@example.com"
-        val organizationId = OrganizationId("org123")
-        val userId = UserId("user123")
-        val user = mockk<User>()
-        val notification = mockk<Notification>()
-
-        every { user.id } returns userId
-        coEvery { userDatastore.getUser(email) } returns Result.success(user)
-        coEvery {
-            notificationDatastore.createNotification(
-                recipientUserId = userId,
-                recipientEmail = email,
-                organizationId = organizationId,
-                notificationType = NotificationType.INVITE,
-            )
-        } returns Result.success(notification)
-
-        // Act
-        val result = notificationService.createInviteNotification(email, organizationId)
-
-        // Assert
-        assertTrue(result.isSuccess)
-        assertEquals(notification, result.getOrThrow())
-        coVerify {
-            notificationDatastore.createNotification(
-                recipientUserId = userId,
-                recipientEmail = email,
-                organizationId = organizationId,
-                notificationType = NotificationType.INVITE,
-            )
-        }
-    }
-
-    /**
-     * Tests that createInviteNotification creates a notification for a user that does not exist.
-     */
-    @Test
-    fun `createInviteNotification should create notification for non-existing user`() = runTest {
-        // Arrange
-        val email = "newuser@example.com"
-        val organizationId = OrganizationId("org123")
-        val notification = mockk<Notification>()
-
-        coEvery { userDatastore.getUser(email) } returns Result.success(null)
-        coEvery {
-            notificationDatastore.createNotification(
-                recipientUserId = null,
-                recipientEmail = email,
-                organizationId = organizationId,
-                notificationType = NotificationType.INVITE,
-            )
-        } returns Result.success(notification)
-
-        // Act
-        val result = notificationService.createInviteNotification(email, organizationId)
-
-        // Assert
-        assertTrue(result.isSuccess)
-        assertEquals(notification, result.getOrThrow())
-        coVerify {
-            notificationDatastore.createNotification(
-                recipientUserId = null,
-                recipientEmail = email,
-                organizationId = organizationId,
-                notificationType = NotificationType.INVITE,
-            )
-        }
     }
 
     /**

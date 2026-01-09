@@ -1,6 +1,5 @@
 package com.cramsan.edifikana.client.lib.features.home.addproperty
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -10,7 +9,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
@@ -90,41 +88,37 @@ internal fun AddPropertyContent(
             )
         },
     ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize(),
-            contentAlignment = Alignment.TopCenter,
-        ) {
-            ScreenLayout(
-                fixedFooter = true,
-                sectionContent = { sectionModifier ->
-                    EdifikanaTextField(
-                        value = propertyName,
-                        onValueChange = { propertyName = it },
-                        label = "Property Name",
-                        placeholder = "Enter Property Name",
-                        modifier = sectionModifier,
-                    )
-                    EdifikanaTextField(
-                        value = address,
-                        onValueChange = { address = it },
-                        label = "Address",
-                        placeholder = "Enter the property address",
-                        modifier = sectionModifier,
-                    )
-                },
-                buttonContent = { buttonModifier ->
-                    EdifikanaPrimaryButton(
-                        text = stringResource(Res.string.text_add),
-                        modifier = buttonModifier,
-                        onClick = {
-                            onAddPropertySelected(propertyName, address)
-                        },
-                    )
-                }
-            )
-            LoadingAnimationOverlay(content.isLoading)
-        }
+        ScreenLayout(
+            modifier = Modifier.padding(innerPadding).fillMaxSize(),
+            fixedFooter = true,
+            sectionContent = { sectionModifier ->
+                EdifikanaTextField(
+                    value = propertyName,
+                    onValueChange = { propertyName = it },
+                    label = "Property Name",
+                    placeholder = "Enter Property Name",
+                    modifier = sectionModifier,
+                )
+                EdifikanaTextField(
+                    value = address,
+                    onValueChange = { address = it },
+                    label = "Address",
+                    placeholder = "Enter the property address",
+                    modifier = sectionModifier,
+                )
+            },
+            buttonContent = { buttonModifier ->
+                EdifikanaPrimaryButton(
+                    text = stringResource(Res.string.text_add),
+                    modifier = buttonModifier,
+                    onClick = {
+                        onAddPropertySelected(propertyName, address)
+                    },
+                )
+            },
+            overlay = {
+                LoadingAnimationOverlay(content.isLoading)
+            }
+        )
     }
 }

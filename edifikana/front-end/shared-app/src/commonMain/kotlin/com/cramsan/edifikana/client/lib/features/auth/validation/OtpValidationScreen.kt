@@ -2,7 +2,6 @@ package com.cramsan.edifikana.client.lib.features.auth.validation
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -16,7 +15,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -103,71 +101,67 @@ internal fun OtpValidationContent(
         },
     ) { innerPadding ->
         // Render the screen
-        Box(
+        ScreenLayout(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
-            contentAlignment = Alignment.Center,
-        ) {
-            ScreenLayout(
-                sectionContent = { sectionModifier ->
-                    // Image above the text
-                    Image(
-                        painter = painterResource(Res.drawable.alpacaIcon),
-                        contentDescription = "Validation Image",
-                        modifier = sectionModifier.size(
-                            width = 150.dp,
-                            height = 150.dp
-                        ),
-                    )
-                    // Display text message
-                    Text(
-                        text = stringResource(Res.string.otp_validation_screen_text),
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        textAlign = TextAlign.Center,
-                        modifier = sectionModifier
-                            .wrapContentWidth(),
-                    )
+            sectionContent = { sectionModifier ->
+                // Image above the text
+                Image(
+                    painter = painterResource(Res.drawable.alpacaIcon),
+                    contentDescription = "Validation Image",
+                    modifier = sectionModifier.size(
+                        width = 150.dp,
+                        height = 150.dp
+                    ),
+                )
+                // Display text message
+                Text(
+                    text = stringResource(Res.string.otp_validation_screen_text),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = TextAlign.Center,
+                    modifier = sectionModifier
+                        .wrapContentWidth(),
+                )
 
-                    // Error message
-                    AnimatedContent(
-                        uiState.errorMessage,
-                    ) {
-                        val showErrorMessage = it.isNullOrBlank().not()
-                        if (showErrorMessage) {
-                            // Render the error message
-                            Text(
-                                it,
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.error,
-                                modifier = sectionModifier
-                                    .wrapContentWidth(),
-                            )
-                        }
-                    }
-
-                    OtpSection(
-                        uiState.otpCode,
-                        onValueChanged,
-                        modifier = sectionModifier
-                            .wrapContentWidth(),
-                    )
-
-                    // Submit button
-                    ElevatedButton(
-                        onClick = {
-                            onLoginClicked()
-                        },
-                        enabled = uiState.enabledContinueButton,
-                        modifier = sectionModifier
-                            .padding(top = 16.dp)
-                            .wrapContentWidth()
-                    ) {
-                        Text("Login")
+                // Error message
+                AnimatedContent(
+                    uiState.errorMessage,
+                ) {
+                    val showErrorMessage = it.isNullOrBlank().not()
+                    if (showErrorMessage) {
+                        // Render the error message
+                        Text(
+                            it,
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = sectionModifier
+                                .wrapContentWidth(),
+                        )
                     }
                 }
-            )
-        }
+
+                OtpSection(
+                    uiState.otpCode,
+                    onValueChanged,
+                    modifier = sectionModifier
+                        .wrapContentWidth(),
+                )
+
+                // Submit button
+                ElevatedButton(
+                    onClick = {
+                        onLoginClicked()
+                    },
+                    enabled = uiState.enabledContinueButton,
+                    modifier = sectionModifier
+                        .padding(top = 16.dp)
+                        .wrapContentWidth()
+                ) {
+                    Text("Login")
+                }
+            }
+        )
     }
 }

@@ -111,7 +111,8 @@ internal fun MainMenuContent(
                 },
                 overlay = {
                     LoadingAnimationOverlay(uiState.isLoading)
-                }
+                },
+                contentAlignment = Alignment.Center,
             )
             Row(
                 modifier = Modifier.align(Alignment.TopEnd).padding(16.dp),

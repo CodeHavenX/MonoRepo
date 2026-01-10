@@ -196,7 +196,8 @@ internal fun SignInContent(
                 },
                 overlay = {
                     LoadingAnimationOverlay(uiState.isLoading)
-                }
+                },
+                contentAlignment = Alignment.Center,
             )
 
             IconButton(

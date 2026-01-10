@@ -185,7 +185,8 @@ internal fun SignUpContent(
             },
             overlay = {
                 LoadingAnimationOverlay(uiState.isLoading)
-            }
+            },
+            contentAlignment = Alignment.Center,
         )
     }
 }

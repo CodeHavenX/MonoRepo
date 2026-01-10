@@ -38,10 +38,11 @@ fun ScreenLayout(
     sectionContent: @Composable ColumnScope.(Modifier) -> Unit,
     buttonContent: (@Composable ColumnScope.(Modifier) -> Unit)? = null,
     overlay: (@Composable BoxScope.() -> Unit)? = null,
+    contentAlignment: Alignment = Alignment.TopCenter,
 ) {
     Box(
         modifier = modifier,
-        contentAlignment = Alignment.TopCenter,
+        contentAlignment = contentAlignment,
     ) {
         val screenLayoutModifier = Modifier
             .ifTrue(maxWith != Dp.Unspecified) {

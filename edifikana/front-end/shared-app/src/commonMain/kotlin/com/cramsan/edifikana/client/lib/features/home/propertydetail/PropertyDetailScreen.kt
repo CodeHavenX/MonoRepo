@@ -1,6 +1,5 @@
 package com.cramsan.edifikana.client.lib.features.home.propertydetail
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -19,7 +18,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -116,65 +114,61 @@ internal fun PropertyDetailContent(
             )
         },
     ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize(),
-            contentAlignment = Alignment.TopCenter,
-        ) {
-            ScreenLayout(
-                fixedFooter = content.isEditMode,
-                sectionContent = { sectionModifier ->
-                    Column(sectionModifier) {
-                        if (content.isEditMode) {
-                            EdifikanaTextField(
-                                value = content.name,
-                                onValueChange = onNameChanged,
-                                label = "Property Name",
-                            )
-                        } else {
-                            Text("Property Name", fontWeight = FontWeight.Bold)
-                            Text(
-                                text = content.name,
-                                modifier = Modifier.padding(vertical = 8.dp),
-                            )
-                        }
-                    }
-                    Column(sectionModifier) {
-                        if (content.isEditMode) {
-                            EdifikanaTextField(
-                                value = content.address,
-                                onValueChange = onAddressChanged,
-                                label = "Address",
-                            )
-                        } else {
-                            Text("Address", fontWeight = FontWeight.Bold)
-                            Text(
-                                text = content.address,
-                                modifier = Modifier.padding(vertical = 8.dp),
-                            )
-                        }
-                    }
-                },
-                buttonContent = if (content.isEditMode) {
-                    { buttonModifier ->
-                        EdifikanaPrimaryButton(
-                            text = "Save",
-                            modifier = buttonModifier,
-                            onClick = onSaveProperty,
+        ScreenLayout(
+            modifier = Modifier.padding(innerPadding).fillMaxSize(),
+            fixedFooter = content.isEditMode,
+            sectionContent = { sectionModifier ->
+                Column(sectionModifier) {
+                    if (content.isEditMode) {
+                        EdifikanaTextField(
+                            value = content.name,
+                            onValueChange = onNameChanged,
+                            label = "Property Name",
                         )
-                        EdifikanaSecondaryButton(
-                            text = "Cancel",
-                            modifier = buttonModifier,
-                            onClick = onCancelEdit,
+                    } else {
+                        Text("Property Name", fontWeight = FontWeight.Bold)
+                        Text(
+                            text = content.name,
+                            modifier = Modifier.padding(vertical = 8.dp),
                         )
                     }
-                } else {
-                    null
                 }
-            )
-            LoadingAnimationOverlay(content.isLoading)
-        }
+                Column(sectionModifier) {
+                    if (content.isEditMode) {
+                        EdifikanaTextField(
+                            value = content.address,
+                            onValueChange = onAddressChanged,
+                            label = "Address",
+                        )
+                    } else {
+                        Text("Address", fontWeight = FontWeight.Bold)
+                        Text(
+                            text = content.address,
+                            modifier = Modifier.padding(vertical = 8.dp),
+                        )
+                    }
+                }
+            },
+            buttonContent = if (content.isEditMode) {
+                { buttonModifier ->
+                    EdifikanaPrimaryButton(
+                        text = "Save",
+                        modifier = buttonModifier,
+                        onClick = onSaveProperty,
+                    )
+                    EdifikanaSecondaryButton(
+                        text = "Cancel",
+                        modifier = buttonModifier,
+                        onClick = onCancelEdit,
+                    )
+                }
+            } else {
+                null
+            },
+            overlay = {
+                LoadingAnimationOverlay(content.isLoading)
+            }
+        )
     }
 
     if (showDeleteDialog) {

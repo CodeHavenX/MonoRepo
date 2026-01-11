@@ -8,10 +8,10 @@ import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.datastore.EmployeeDatastore
+import com.cramsan.edifikana.server.datastore.EventLogDatastore
 import com.cramsan.edifikana.server.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.datastore.PropertyDatastore
-import com.cramsan.edifikana.server.service.EventLogService
-import com.cramsan.edifikana.server.service.TimeCardService
+import com.cramsan.edifikana.server.datastore.TimeCardDatastore
 import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.core.ktor.auth.ClientContext
 import com.cramsan.framework.logging.logI
@@ -25,8 +25,8 @@ class RBACService(
     private val propertyDatastore: PropertyDatastore,
     private val orgDataStore: OrganizationDatastore,
     private val employeeDatastore: EmployeeDatastore,
-    private val timeCardService: TimeCardService,
-    private val eventLogService: EventLogService,
+    private val timeCardDatastore: TimeCardDatastore,
+    private val eventLogDatastore: EventLogDatastore,
 ) {
 
     val propertyNotFoundException = "ERROR: PROPERTY NOT FOUND!"
@@ -201,7 +201,7 @@ class RBACService(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         targetEventLogId: EventLogEntryId
     ): UserRole {
-        val eventLog = eventLogService.getEventLogEntry(targetEventLogId)
+        val eventLog = eventLogDatastore.getEventLogEntry(targetEventLogId).getOrThrow()
             ?: throw InvalidRequestException(eventLogNotFound)
         return getUserRoleForPropertyAction(context, eventLog.propertyId)
     }
@@ -326,7 +326,7 @@ class RBACService(
         targetTimecardId: TimeCardEventId
     ): UserRole {
         logI(TAG, "Retrieving user role(s) for ${context.payload.userId}")
-        val timeCardEvent = timeCardService.getTimeCardEvent(targetTimecardId)
+        val timeCardEvent = timeCardDatastore.getTimeCardEvent(targetTimecardId).getOrThrow()
             ?: throw InvalidRequestException(timecardEventNotFoundException)
         return getUserRoleForPropertyAction(context, timeCardEvent.propertyId)
     }

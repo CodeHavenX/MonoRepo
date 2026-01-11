@@ -1,6 +1,5 @@
 package com.cramsan.edifikana.client.lib.features.home.invitestaffmember
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,7 +25,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -105,42 +103,38 @@ internal fun InviteStaffMemberContent(
             )
         },
     ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize(),
-            contentAlignment = Alignment.TopCenter,
-        ) {
-            ScreenLayout(
-                fixedFooter = true,
-                sectionContent = { sectionModifier ->
-                    EdifikanaTextField(
-                        value = email,
-                        onValueChange = { email = it },
-                        label = "Email address",
-                        placeholder = "e.g. name@example.com",
-                        modifier = sectionModifier,
-                    )
-                    RoleDropdown(
-                        label = "Role",
-                        roles = content.roles,
-                        selectedRole = selectedRole,
-                        onRoleSelected = { selectedRole = it },
-                        modifier = sectionModifier,
-                    )
-                },
-                buttonContent = { buttonModifier ->
-                    EdifikanaPrimaryButton(
-                        text = "Send Invitation",
-                        modifier = buttonModifier,
-                        onClick = {
-                            onSendInvitationSelected(email, selectedRole)
-                        },
-                    )
-                }
-            )
-            LoadingAnimationOverlay(content.isLoading)
-        }
+        ScreenLayout(
+            modifier = Modifier.padding(innerPadding).fillMaxSize(),
+            fixedFooter = true,
+            sectionContent = { sectionModifier ->
+                EdifikanaTextField(
+                    value = email,
+                    onValueChange = { email = it },
+                    label = "Email address",
+                    placeholder = "e.g. name@example.com",
+                    modifier = sectionModifier,
+                )
+                RoleDropdown(
+                    label = "Role",
+                    roles = content.roles,
+                    selectedRole = selectedRole,
+                    onRoleSelected = { selectedRole = it },
+                    modifier = sectionModifier,
+                )
+            },
+            buttonContent = { buttonModifier ->
+                EdifikanaPrimaryButton(
+                    text = "Send Invitation",
+                    modifier = buttonModifier,
+                    onClick = {
+                        onSendInvitationSelected(email, selectedRole)
+                    },
+                )
+            },
+            overlay = {
+                LoadingAnimationOverlay(content.isLoading)
+            }
+        )
     }
 }
 

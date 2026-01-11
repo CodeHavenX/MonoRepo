@@ -100,12 +100,8 @@ internal fun SignInContent(
     Scaffold(
         modifier = modifier,
     ) { innerPadding ->
-        // Render the screen
         Box(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center,
+            modifier = Modifier.padding(innerPadding).fillMaxSize(),
         ) {
             ScreenLayout(
                 sectionContent = { modifier ->
@@ -198,6 +194,10 @@ internal fun SignInContent(
                         )
                     }
                 },
+                overlay = {
+                    LoadingAnimationOverlay(uiState.isLoading)
+                },
+                contentAlignment = Alignment.Center,
             )
 
             IconButton(
@@ -217,5 +217,4 @@ internal fun SignInContent(
             )
         }
     }
-    LoadingAnimationOverlay(uiState.isLoading)
 }

@@ -1,6 +1,5 @@
 package com.cramsan.edifikana.client.lib.features.debug.screenselector
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -8,7 +7,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
@@ -80,39 +78,35 @@ internal fun ScreenSelectorContent(
             )
         },
     ) { innerPadding ->
-        Box(
+        ScreenLayout(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
-            contentAlignment = Alignment.TopCenter,
-        ) {
-            ScreenLayout(
-                sectionContent = { sectionModifier ->
-                    ListCell(
-                        modifier = sectionModifier,
-                        onSelection = {
-                            onScreenSelected(
-                                AuthDestination.ValidationDestination(
-                                    "test@test.com",
-                                    accountCreationFlow = true,
-                                )
+            sectionContent = { sectionModifier ->
+                ListCell(
+                    modifier = sectionModifier,
+                    onSelection = {
+                        onScreenSelected(
+                            AuthDestination.ValidationDestination(
+                                "test@test.com",
+                                accountCreationFlow = true,
                             )
-                        },
-                        content = {
-                            Text("Auth Validation Screen")
-                        },
-                    )
-                    ListCell(
-                        modifier = sectionModifier,
-                        onSelection = {
-                            onScreenSelected(AccountDestination.MyAccountDestination)
-                        },
-                        content = {
-                            Text("Account Screen")
-                        },
-                    )
-                },
-            )
-        }
+                        )
+                    },
+                    content = {
+                        Text("Auth Validation Screen")
+                    },
+                )
+                ListCell(
+                    modifier = sectionModifier,
+                    onSelection = {
+                        onScreenSelected(AccountDestination.MyAccountDestination)
+                    },
+                    content = {
+                        Text("Account Screen")
+                    },
+                )
+            },
+        )
     }
 }

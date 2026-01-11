@@ -1,7 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.account.account
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -19,7 +18,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -112,132 +110,128 @@ internal fun AccountContent(
             }
         },
     ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize(),
-            contentAlignment = Alignment.TopCenter,
-        ) {
-            ScreenLayout(
-                sectionContent = { modifier ->
-                    val focusRequester = remember { FocusRequester() }
+        ScreenLayout(
+            modifier = Modifier.padding(innerPadding).fillMaxSize(),
+            sectionContent = { modifier ->
+                val focusRequester = remember { FocusRequester() }
 
-                    LaunchedEffect(content.isEditable) {
-                        if (content.isEditable) {
-                            focusRequester.requestFocus()
-                        }
-                    }
-
-                    // First name
+                LaunchedEffect(content.isEditable) {
                     if (content.isEditable) {
-                        EdifikanaTextField(
-                            value = content.firstName.orEmpty(),
-                            onValueChange = onFirstNameChange,
-                            label = stringResource(Res.string.account_screen_first_name),
-                            modifier = modifier.focusRequester(focusRequester),
-                        )
-                    } else {
-                        EdifikanaAccountInfoItem(
-                            label = stringResource(Res.string.account_screen_first_name),
-                            value = content.firstName.orEmpty(),
-                            modifier = modifier,
-                        )
+                        focusRequester.requestFocus()
                     }
+                }
 
-                    // Last name
-                    if (content.isEditable) {
-                        EdifikanaTextField(
-                            value = content.lastName.orEmpty(),
-                            onValueChange = onLastNameChange,
-                            label = stringResource(Res.string.account_screen_last_name),
-                            modifier = modifier,
-                        )
-                    } else {
-                        EdifikanaAccountInfoItem(
-                            value = content.lastName.orEmpty(),
-                            label = stringResource(Res.string.account_screen_last_name),
-                            modifier = modifier,
-                        )
-                    }
-
-                    // Phonenumber
-                    if (content.isEditable) {
-                        EdifikanaTextField(
-                            value = content.phoneNumber.orEmpty(),
-                            onValueChange = onPhoneNumberChange,
-                            label = stringResource(Res.string.account_screen_phone_number),
-                            modifier = modifier,
-                        )
-                    } else {
-                        EdifikanaAccountInfoItem(
-                            value = content.phoneNumber.orEmpty(),
-                            label = stringResource(Res.string.account_screen_phone_number),
-                            modifier = modifier,
-                        )
-                    }
-
-                    // Email
-                    if (content.isEditable) {
-                        EdifikanaTextField(
-                            value = content.email.orEmpty(),
-                            onValueChange = onEmailChange,
-                            label = stringResource(Res.string.account_screen_email),
-                            modifier = modifier,
-                        )
-                    } else {
-                        EdifikanaAccountInfoItem(
-                            value = content.email.orEmpty(),
-                            label = stringResource(Res.string.account_screen_email),
-                            modifier = modifier,
-                        )
-                    }
-
-                    // Password field
+                // First name
+                if (content.isEditable) {
+                    EdifikanaTextField(
+                        value = content.firstName.orEmpty(),
+                        onValueChange = onFirstNameChange,
+                        label = stringResource(Res.string.account_screen_first_name),
+                        modifier = modifier.focusRequester(focusRequester),
+                    )
+                } else {
                     EdifikanaAccountInfoItem(
-                        value = if (content.isPasswordSet) "********" else "Not Set",
-                        label = "Password",
+                        label = stringResource(Res.string.account_screen_first_name),
+                        value = content.firstName.orEmpty(),
                         modifier = modifier,
                     )
+                }
 
-                    HorizontalDivider(modifier)
+                // Last name
+                if (content.isEditable) {
+                    EdifikanaTextField(
+                        value = content.lastName.orEmpty(),
+                        onValueChange = onLastNameChange,
+                        label = stringResource(Res.string.account_screen_last_name),
+                        modifier = modifier,
+                    )
+                } else {
+                    EdifikanaAccountInfoItem(
+                        value = content.lastName.orEmpty(),
+                        label = stringResource(Res.string.account_screen_last_name),
+                        modifier = modifier,
+                    )
+                }
 
-                    EditPasswordLine(
+                // Phonenumber
+                if (content.isEditable) {
+                    EdifikanaTextField(
+                        value = content.phoneNumber.orEmpty(),
+                        onValueChange = onPhoneNumberChange,
+                        label = stringResource(Res.string.account_screen_phone_number),
+                        modifier = modifier,
+                    )
+                } else {
+                    EdifikanaAccountInfoItem(
+                        value = content.phoneNumber.orEmpty(),
+                        label = stringResource(Res.string.account_screen_phone_number),
+                        modifier = modifier,
+                    )
+                }
+
+                // Email
+                if (content.isEditable) {
+                    EdifikanaTextField(
+                        value = content.email.orEmpty(),
+                        onValueChange = onEmailChange,
+                        label = stringResource(Res.string.account_screen_email),
+                        modifier = modifier,
+                    )
+                } else {
+                    EdifikanaAccountInfoItem(
+                        value = content.email.orEmpty(),
+                        label = stringResource(Res.string.account_screen_email),
+                        modifier = modifier,
+                    )
+                }
+
+                // Password field
+                EdifikanaAccountInfoItem(
+                    value = if (content.isPasswordSet) "********" else "Not Set",
+                    label = "Password",
+                    modifier = modifier,
+                )
+
+                HorizontalDivider(modifier)
+
+                EditPasswordLine(
+                    modifier = modifier,
+                    enabled = !content.isLoading,
+                    onClick = onEditPasswordClicked,
+                )
+            },
+            buttonContent = if (content.isEditable) {
+                { modifier ->
+                    Button(
                         modifier = modifier,
                         enabled = !content.isLoading,
-                        onClick = onEditPasswordClicked,
-                    )
-                },
-                buttonContent = if (content.isEditable) {
-                    { modifier ->
-                        Button(
-                            modifier = modifier,
-                            enabled = !content.isLoading,
-                            onClick = onEditClicked,
-                        ) {
-                            Text(text = "Save Changes")
-                        }
+                        onClick = onEditClicked,
+                    ) {
+                        Text(text = "Save Changes")
+                    }
 
-                        EdifikanaSecondaryButton(
-                            text = "Cancel",
-                            modifier = modifier,
-                            enabled = !content.isLoading,
-                            onClick = onCancelEdit,
-                        )
+                    EdifikanaSecondaryButton(
+                        text = "Cancel",
+                        modifier = modifier,
+                        enabled = !content.isLoading,
+                        onClick = onCancelEdit,
+                    )
+                }
+            } else {
+                { modifier ->
+                    Button(
+                        modifier = modifier,
+                        enabled = !content.isLoading,
+                        onClick = onSignOutClicked,
+                    ) {
+                        Text(text = stringResource(Res.string.account_screen_sign_out))
                     }
-                } else {
-                    { modifier ->
-                        Button(
-                            modifier = modifier,
-                            enabled = !content.isLoading,
-                            onClick = onSignOutClicked,
-                        ) {
-                            Text(text = stringResource(Res.string.account_screen_sign_out))
-                        }
-                    }
-                },
-            )
-            LoadingAnimationOverlay(isLoading = content.isLoading)
-        }
+                }
+            },
+            overlay = {
+                LoadingAnimationOverlay(isLoading = content.isLoading)
+            }
+        )
     }
 }
 

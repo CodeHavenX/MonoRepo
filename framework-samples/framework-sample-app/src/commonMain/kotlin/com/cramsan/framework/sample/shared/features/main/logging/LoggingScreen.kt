@@ -1,5 +1,6 @@
 package com.cramsan.framework.sample.shared.features.main.logging
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
@@ -68,7 +69,7 @@ internal fun LoggingContent(
 ) {
     Scaffold { innerPadding ->
         ScreenLayout(
-            modifier = Modifier.padding(innerPadding),
+            modifier = Modifier.padding(innerPadding).fillMaxSize(),
             sectionContent = { modifier ->
                 Button(
                     onClick = onVerboseSelected,
@@ -101,7 +102,9 @@ internal fun LoggingContent(
                     Text("Log Error")
                 }
             },
+            overlay = {
+                LoadingAnimationOverlay(isLoading = content.isLoading)
+            }
         )
-        LoadingAnimationOverlay(isLoading = content.isLoading)
     }
 }

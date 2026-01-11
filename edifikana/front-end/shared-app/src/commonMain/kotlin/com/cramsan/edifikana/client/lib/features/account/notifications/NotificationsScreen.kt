@@ -1,13 +1,11 @@
 package com.cramsan.edifikana.client.lib.features.account.notifications
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
@@ -73,19 +71,15 @@ internal fun NotificationsContent(
             )
         },
     ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize(),
-            contentAlignment = Alignment.TopCenter,
-        ) {
-            ScreenLayout(
-                sectionContent = { sectionModifier ->
-                },
-                buttonContent = { buttonModifier ->
-                }
-            )
-            LoadingAnimationOverlay(content.isLoading)
-        }
+        ScreenLayout(
+            modifier = Modifier.padding(innerPadding).fillMaxSize(),
+            sectionContent = { sectionModifier ->
+            },
+            buttonContent = { buttonModifier ->
+            },
+            overlay = {
+                LoadingAnimationOverlay(content.isLoading)
+            }
+        )
     }
 }

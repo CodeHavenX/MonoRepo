@@ -89,12 +89,13 @@ class PropertyManagerTest : CoroutineTest() {
         val propertyName = "Cenit"
         val address = "Jiron Juan de Arona 123"
         val organizationId = OrganizationId("org-1")
-        coEvery { propertyService.addProperty(propertyName, address, organizationId) } returns Result.success(mockk())
+        val imageUrl = "drawable:CASA"
+        coEvery { propertyService.addProperty(propertyName, address, organizationId, imageUrl) } returns Result.success(mockk())
         // Act
-        val result = manager.addProperty(propertyName, address, organizationId)
+        val result = manager.addProperty(propertyName, address, organizationId, imageUrl)
         // Assert
         assertTrue(result.isSuccess)
-        coVerify { propertyService.addProperty(propertyName, address, organizationId) }
+        coVerify { propertyService.addProperty(propertyName, address, organizationId, imageUrl) }
     }
 
     /**
@@ -106,12 +107,13 @@ class PropertyManagerTest : CoroutineTest() {
         val propertyId = PropertyId("property-1")
         val name = "Cenito"
         val address = "Jiron Juan de Arona 456"
-        coEvery { propertyService.updateProperty(propertyId, name, address) } returns Result.success(mockk())
+        val imageUrl = "drawable:QUINTA"
+        coEvery { propertyService.updateProperty(propertyId, name, address, imageUrl) } returns Result.success(mockk())
         // Act
-        val result = manager.updateProperty(propertyId, name, address)
+        val result = manager.updateProperty(propertyId, name, address, imageUrl)
         // Assert
         assertTrue(result.isSuccess)
-        coVerify { propertyService.updateProperty(propertyId, name, address) }
+        coVerify { propertyService.updateProperty(propertyId, name, address, imageUrl) }
     }
 
     /**

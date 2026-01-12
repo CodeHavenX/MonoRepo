@@ -60,12 +60,14 @@ class PropertyServiceImplTest {
                 name = "Prop 1",
                 address = "Address 1",
                 organizationId = OrganizationId("org-1"),
+                imageUrl = "drawable:CASA",
             ),
             PropertyNetworkResponse(
                 id = PropertyId("property-2"),
                 name = "Prop 2",
                 address = "Address 2",
                 organizationId = OrganizationId("org-1"),
+                imageUrl = "drawable:S_DEPA",
             ),
         ))
 
@@ -83,6 +85,7 @@ class PropertyServiceImplTest {
         val list = result.getOrNull()
         assertEquals(2, list?.size)
         assertEquals("Prop 1", list?.get(0)?.name)
+        assertEquals("drawable:CASA", list?.get(0)?.imageUrl)
     }
 
     @OptIn(NetworkModel::class)
@@ -95,12 +98,14 @@ class PropertyServiceImplTest {
                 name = "FirstProp",
                 address = "A1",
                 organizationId = OrganizationId("org-1"),
+                imageUrl = "drawable:QUINTA",
             ),
             PropertyNetworkResponse(
                 id = PropertyId("property-20"),
                 name = "SecondProp",
                 address = "A2",
                 organizationId = OrganizationId("org-1"),
+                imageUrl = "drawable:M_DEPA",
             ),
         ))
 
@@ -128,6 +133,7 @@ class PropertyServiceImplTest {
             name = "GetProp",
             address = "Addr",
             organizationId = OrganizationId("org-1"),
+            imageUrl = "drawable:L_DEPA",
         )
 
         ktorTestEngine.configure {
@@ -142,6 +148,7 @@ class PropertyServiceImplTest {
         // Assert
         assertTrue(result.isSuccess)
         assertEquals("GetProp", result.getOrNull()?.name)
+        assertEquals("drawable:L_DEPA", result.getOrNull()?.imageUrl)
     }
 
     @OptIn(NetworkModel::class)
@@ -153,6 +160,7 @@ class PropertyServiceImplTest {
             name = "NewProp",
             address = "NewAddr",
             organizationId = OrganizationId("org-1"),
+            imageUrl = "drawable:CASA",
         )
 
         ktorTestEngine.configure {
@@ -162,11 +170,12 @@ class PropertyServiceImplTest {
         }
 
         // Act
-        val result = service.addProperty("NewProp", "NewAddr", OrganizationId("org-1"))
+        val result = service.addProperty("NewProp", "NewAddr", OrganizationId("org-1"), "drawable:CASA")
 
         // Assert
         assertTrue(result.isSuccess)
         assertEquals("NewProp", result.getOrNull()?.name)
+        assertEquals("drawable:CASA", result.getOrNull()?.imageUrl)
     }
 
     @OptIn(NetworkModel::class)
@@ -178,6 +187,7 @@ class PropertyServiceImplTest {
             name = "Updated",
             address = "UpdAddr",
             organizationId = OrganizationId("org-1"),
+            imageUrl = "drawable:QUINTA",
         )
 
         ktorTestEngine.configure {
@@ -187,11 +197,12 @@ class PropertyServiceImplTest {
         }
 
         // Act
-        val result = service.updateProperty(PropertyId("p-upd"), "Updated", "UpdAddr")
+        val result = service.updateProperty(PropertyId("p-upd"), "Updated", "UpdAddr", "drawable:QUINTA")
 
         // Assert
         assertTrue(result.isSuccess)
         assertEquals("Updated", result.getOrNull()?.name)
+        assertEquals("drawable:QUINTA", result.getOrNull()?.imageUrl)
     }
 
     @Test

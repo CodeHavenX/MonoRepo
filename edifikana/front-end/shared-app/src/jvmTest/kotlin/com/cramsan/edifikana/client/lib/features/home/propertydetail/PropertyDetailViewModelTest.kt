@@ -71,6 +71,7 @@ class PropertyDetailViewModelTest : CoroutineTest() {
             name = "Test Property",
             address = "123 Test Street",
             organizationId = OrganizationId("org-1"),
+            imageUrl = "drawable:CASA",
         )
         coEvery { propertyManager.getProperty(propertyId) } returns Result.success(property)
 
@@ -79,6 +80,7 @@ class PropertyDetailViewModelTest : CoroutineTest() {
         assertEquals(propertyId, viewModel.uiState.value.propertyId)
         assertEquals("Test Property", viewModel.uiState.value.name)
         assertEquals("123 Test Street", viewModel.uiState.value.address)
+        assertEquals("drawable:CASA", viewModel.uiState.value.imageUrl)
         assertFalse(viewModel.uiState.value.isLoading)
         coVerify { propertyManager.getProperty(propertyId) }
         assertTrue(exceptionHandler.exceptions.isEmpty())
@@ -136,6 +138,7 @@ class PropertyDetailViewModelTest : CoroutineTest() {
             name = "Original Name",
             address = "Original Address",
             organizationId = OrganizationId("org-1"),
+            imageUrl = "drawable:QUINTA",
         )
         coEvery { propertyManager.getProperty(propertyId) } returns Result.success(property)
 
@@ -143,15 +146,18 @@ class PropertyDetailViewModelTest : CoroutineTest() {
         viewModel.toggleEditMode()
         viewModel.onNameChanged("Modified Name")
         viewModel.onAddressChanged("Modified Address")
+        viewModel.onImageUrlChanged("drawable:CASA")
 
         assertEquals("Modified Name", viewModel.uiState.value.name)
         assertEquals("Modified Address", viewModel.uiState.value.address)
+        assertEquals("drawable:CASA", viewModel.uiState.value.imageUrl)
         assertTrue(viewModel.uiState.value.isEditMode)
 
         viewModel.cancelEdit()
 
         assertEquals("Original Name", viewModel.uiState.value.name)
         assertEquals("Original Address", viewModel.uiState.value.address)
+        assertEquals("drawable:QUINTA", viewModel.uiState.value.imageUrl)
         assertFalse(viewModel.uiState.value.isEditMode)
         assertFalse(viewModel.uiState.value.isLoading)
     }
@@ -179,6 +185,12 @@ class PropertyDetailViewModelTest : CoroutineTest() {
     }
 
     @Test
+    fun `test onImageUrlChanged updates imageUrl in UI state`() = runCoroutineTest {
+        viewModel.onImageUrlChanged("drawable:L_DEPA")
+        assertEquals("drawable:L_DEPA", viewModel.uiState.value.imageUrl)
+    }
+
+    @Test
     fun `test saveProperty with success updates property and shows success message`() = runCoroutineTest {
         val propertyId = PropertyId("test-property-id")
         val property = PropertyModel(
@@ -186,22 +198,25 @@ class PropertyDetailViewModelTest : CoroutineTest() {
             name = "Test Property",
             address = "123 Test Street",
             organizationId = OrganizationId("org-1"),
+            imageUrl = "drawable:L_DEPA",
         )
         val updatedProperty = PropertyModel(
             id = propertyId,
             name = "Updated Name",
             address = "Updated Address",
             organizationId = OrganizationId("org-1"),
+            imageUrl = "drawable:M_DEPA",
         )
         coEvery { propertyManager.getProperty(propertyId) } returns Result.success(property)
         coEvery {
-            propertyManager.updateProperty(propertyId, "Updated Name", "Updated Address")
+            propertyManager.updateProperty(propertyId, "Updated Name", "Updated Address", "drawable:M_DEPA")
         } returns Result.success(updatedProperty)
 
         viewModel.initialize(propertyId)
         viewModel.toggleEditMode()
         viewModel.onNameChanged("Updated Name")
         viewModel.onAddressChanged("Updated Address")
+        viewModel.onImageUrlChanged("drawable:M_DEPA")
 
         val verificationJob = launch {
             windowEventBus.events.test {
@@ -215,7 +230,7 @@ class PropertyDetailViewModelTest : CoroutineTest() {
 
         assertFalse(viewModel.uiState.value.isLoading)
         assertFalse(viewModel.uiState.value.isEditMode)
-        coVerify { propertyManager.updateProperty(propertyId, "Updated Name", "Updated Address") }
+        coVerify { propertyManager.updateProperty(propertyId, "Updated Name", "Updated Address", "drawable:M_DEPA") }
         assertTrue(exceptionHandler.exceptions.isEmpty())
     }
 
@@ -227,10 +242,11 @@ class PropertyDetailViewModelTest : CoroutineTest() {
             name = "Test Property",
             address = "123 Test Street",
             organizationId = OrganizationId("org-1"),
+            imageUrl = "drawable:S_DEPA",
         )
         coEvery { propertyManager.getProperty(propertyId) } returns Result.success(property)
         coEvery {
-            propertyManager.updateProperty(propertyId, any(), any())
+            propertyManager.updateProperty(propertyId, any(), any(), any())
         } returns Result.failure(Exception("Update failed"))
 
         viewModel.initialize(propertyId)
@@ -254,7 +270,7 @@ class PropertyDetailViewModelTest : CoroutineTest() {
     fun `test saveProperty without propertyId does nothing`() = runCoroutineTest {
         viewModel.saveProperty()
 
-        coVerify(exactly = 0) { propertyManager.updateProperty(any(), any(), any()) }
+        coVerify(exactly = 0) { propertyManager.updateProperty(any(), any(), any(), any()) }
     }
 
     @Test
@@ -265,6 +281,7 @@ class PropertyDetailViewModelTest : CoroutineTest() {
             name = "Test Property",
             address = "123 Test Street",
             organizationId = OrganizationId("org-1"),
+            imageUrl = "drawable:CASA",
         )
         coEvery { propertyManager.getProperty(propertyId) } returns Result.success(property)
         coEvery { propertyManager.removeProperty(propertyId) } returns Result.success(Unit)
@@ -294,6 +311,7 @@ class PropertyDetailViewModelTest : CoroutineTest() {
             name = "Test Property",
             address = "123 Test Street",
             organizationId = OrganizationId("org-1"),
+            imageUrl = "drawable:QUINTA",
         )
         coEvery { propertyManager.getProperty(propertyId) } returns Result.success(property)
         coEvery { propertyManager.removeProperty(propertyId) } returns Result.failure(

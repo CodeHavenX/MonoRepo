@@ -13,9 +13,12 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.home.HomeDestination
+import com.cramsan.edifikana.client.lib.features.home.shared.PropertyIconOptions
+import com.cramsan.edifikana.client.ui.components.EdifikanaImageDropdown
 import com.cramsan.edifikana.client.ui.components.EdifikanaPrimaryButton
 import com.cramsan.edifikana.client.ui.components.EdifikanaTextField
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
+import com.cramsan.edifikana.client.ui.components.ImageOptionUIModel
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
@@ -60,8 +63,8 @@ fun AddPropertyScreen(
     AddPropertyContent(
         uiState,
         onBackSelected = { viewModel.navigateBack() },
-        onAddPropertySelected = { propertyName, address ->
-            viewModel.addProperty(propertyName, address)
+        onAddPropertySelected = { propertyName, address, imageUrl ->
+            viewModel.addProperty(propertyName, address, imageUrl)
         },
     )
 }
@@ -74,10 +77,16 @@ internal fun AddPropertyContent(
     content: AddPropertyUIState,
     modifier: Modifier = Modifier,
     onBackSelected: () -> Unit,
-    onAddPropertySelected: (propertyName: String, address: String) -> Unit,
+    onAddPropertySelected: (propertyName: String, address: String, imageUrl: String?) -> Unit,
 ) {
     var propertyName by remember { mutableStateOf("") }
     var address by remember { mutableStateOf("") }
+    // Default to S_DEPA icon
+    val defaultIcon = remember {
+        PropertyIconOptions.getDefaultOptions().find { it.id == "S_DEPA" }
+            ?: PropertyIconOptions.getDefaultOptions().first()
+    }
+    var selectedIcon by remember { mutableStateOf(defaultIcon) }
 
     Scaffold(
         modifier = modifier,
@@ -106,13 +115,22 @@ internal fun AddPropertyContent(
                     placeholder = "Enter the property address",
                     modifier = sectionModifier,
                 )
+                EdifikanaImageDropdown(
+                    label = "Property Icon",
+                    options = PropertyIconOptions.getDefaultOptions(),
+                    selectedOption = selectedIcon,
+                    onOptionSelected = { selectedIcon = it },
+                    placeholder = "Select a property icon",
+                    modifier = sectionModifier,
+                )
             },
             buttonContent = { buttonModifier ->
                 EdifikanaPrimaryButton(
                     text = stringResource(Res.string.text_add),
                     modifier = buttonModifier,
                     onClick = {
-                        onAddPropertySelected(propertyName, address)
+                        val imageUrl = PropertyIconOptions.toImageUrl(selectedIcon)
+                        onAddPropertySelected(propertyName, address, imageUrl)
                     },
                 )
             },

@@ -32,6 +32,7 @@ class PropertyDetailViewModel(
                             isLoading = false,
                             name = property.name,
                             address = property.address,
+                            imageUrl = property.imageUrl,
                         )
                     }
                 }
@@ -78,6 +79,7 @@ class PropertyDetailViewModel(
                             isLoading = false,
                             name = property.name,
                             address = property.address,
+                            imageUrl = property.imageUrl,
                         )
                     }
                 }
@@ -106,6 +108,15 @@ class PropertyDetailViewModel(
     }
 
     /**
+     * Update the property image URL.
+     */
+    fun onImageUrlChanged(imageUrl: String?) {
+        viewModelScope.launch {
+            updateUiState { it.copy(imageUrl = imageUrl) }
+        }
+    }
+
+    /**
      * Save the property changes.
      */
     fun saveProperty() {
@@ -114,7 +125,7 @@ class PropertyDetailViewModel(
             val propertyId = state.propertyId ?: return@launch
 
             updateUiState { it.copy(isLoading = true) }
-            propertyManager.updateProperty(propertyId, state.name, state.address)
+            propertyManager.updateProperty(propertyId, state.name, state.address, state.imageUrl)
                 .onSuccess {
                     updateUiState { it.copy(isLoading = false, isEditMode = false) }
                     emitWindowEvent(

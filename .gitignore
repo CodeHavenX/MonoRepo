@@ -101,3 +101,4 @@ google-services.json
 
 # Claude Files
 .claude/settings.local.json
+edifikana/.claude/settings.local.json

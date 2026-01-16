@@ -16,14 +16,6 @@ import org.jetbrains.compose.resources.DrawableResource
  *
  * This object also provides conversion functions between DrawableResource
  * and the string format used by the API ("drawable:ICON_NAME").
- *
- * Usage in Compose:
- * ```
- * Image(
- *     painter = painterResource(PropertyIcons.CASA),
- *     contentDescription = "Casa"
- * )
- * ```
  */
 object PropertyIcons {
     /**

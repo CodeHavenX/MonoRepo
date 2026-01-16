@@ -14,7 +14,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.home.HomeDestination
 import com.cramsan.edifikana.client.lib.features.home.shared.PropertyIconOptions
-import com.cramsan.edifikana.client.ui.components.EdifikanaImageDropdown
+import com.cramsan.edifikana.client.ui.components.EdifikanaImageSelector
 import com.cramsan.edifikana.client.ui.components.EdifikanaPrimaryButton
 import com.cramsan.edifikana.client.ui.components.EdifikanaTextField
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
@@ -114,7 +114,7 @@ internal fun AddPropertyContent(
                     placeholder = "Enter the property address",
                     modifier = sectionModifier,
                 )
-                EdifikanaImageDropdown(
+                EdifikanaImageSelector(
                     label = "Property Icon",
                     options = PropertyIconOptions.getDefaultOptions(),
                     selectedOption = selectedIcon,

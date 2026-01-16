@@ -384,7 +384,7 @@ private fun EdifikanaAccountInfoItemPreview() {
 
 @Preview
 @Composable
-private fun EdifikanaImageDropdownPreview() {
+private fun EdifikanaImageSelectorPreview() {
     AppTheme {
         var selectedOption by remember { mutableStateOf<ImageOptionUIModel?>(null) }
 
@@ -423,9 +423,9 @@ private fun EdifikanaImageDropdownPreview() {
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            Text("Image Dropdown", style = MaterialTheme.typography.headlineSmall)
+            Text("Image Selector", style = MaterialTheme.typography.headlineSmall)
 
-            EdifikanaImageDropdown(
+            EdifikanaImageSelector(
                 label = "Property Icon",
                 options = options,
                 selectedOption = selectedOption,

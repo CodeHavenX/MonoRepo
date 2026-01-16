@@ -40,11 +40,11 @@ class AddPropertyViewModel(
     /**
      * Add a new property.
      */
-    fun addProperty(propertyName: String, address: String) {
+    fun addProperty(propertyName: String, address: String, imageUrl: String? = null) {
         viewModelScope.launch {
             val organizationId = requireNotNull(uiState.value.orgId)
             updateUiState { it.copy(isLoading = true) }
-            val newProperty = propertyManager.addProperty(propertyName, address, organizationId).onFailure {
+            val newProperty = propertyManager.addProperty(propertyName, address, organizationId, imageUrl).onFailure {
                 updateUiState { it.copy(isLoading = false) }
             }.getOrThrow()
 

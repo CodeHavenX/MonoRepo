@@ -4,13 +4,15 @@
             "id": "property123",
             "name": "building 1",
             "address": "123 Main St",
-            "organization_id": "org123"
+            "organization_id": "org123",
+            "image_url": "drawable:CASA"
         },
         {
             "id": "property456",
             "name": "building 2",
             "address": "456 Elm St",
-            "organization_id": "org123"
+            "organization_id": "org123",
+            "image_url": "drawable:S_DEPA"
         }
     ]
 }

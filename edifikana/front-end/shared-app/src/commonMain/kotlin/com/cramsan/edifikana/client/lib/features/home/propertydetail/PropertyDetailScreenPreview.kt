@@ -17,6 +17,7 @@ private fun PropertyDetailScreenPreview() = AppTheme {
             propertyId = PropertyId("preview-property-id"),
             name = "Sample Property",
             address = "123 Main Street, City, State 12345",
+            imageUrl = "drawable:CASA",
             isEditMode = false,
         ),
         onBackSelected = {},
@@ -26,6 +27,7 @@ private fun PropertyDetailScreenPreview() = AppTheme {
         onDeleteProperty = {},
         onNameChanged = {},
         onAddressChanged = {},
+        onImageUrlChanged = {},
     )
 }
 
@@ -41,6 +43,7 @@ private fun PropertyDetailScreenEditModePreview() = AppTheme {
             propertyId = PropertyId("preview-property-id"),
             name = "Sample Property",
             address = "123 Main Street, City, State 12345",
+            imageUrl = "drawable:QUINTA",
             isEditMode = true,
         ),
         onBackSelected = {},
@@ -50,5 +53,6 @@ private fun PropertyDetailScreenEditModePreview() = AppTheme {
         onDeleteProperty = {},
         onNameChanged = {},
         onAddressChanged = {},
+        onImageUrlChanged = {},
     )
 }

@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.cramsan.edifikana.client.ui.resources.PropertyIcons
 import com.cramsan.edifikana.client.ui.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -376,6 +377,60 @@ private fun EdifikanaAccountInfoItemPreview() {
             EdifikanaAccountInfoItem(
                 label = "Password",
                 value = "********",
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun EdifikanaImageDropdownPreview() {
+    AppTheme {
+        var selectedOption by remember { mutableStateOf<ImageOptionUIModel?>(null) }
+
+        val options = listOf(
+            ImageOptionUIModel(
+                id = "CASA",
+                displayName = "Casa",
+                imageSource = ImageSource.Drawable(PropertyIcons.CASA),
+            ),
+            ImageOptionUIModel(
+                id = "QUINTA",
+                displayName = "Quinta",
+                imageSource = ImageSource.Drawable(PropertyIcons.QUINTA),
+            ),
+            ImageOptionUIModel(
+                id = "L_DEPA",
+                displayName = "Large Department",
+                imageSource = ImageSource.Drawable(PropertyIcons.L_DEPA),
+            ),
+            ImageOptionUIModel(
+                id = "M_DEPA",
+                displayName = "Medium Department",
+                imageSource = ImageSource.Drawable(PropertyIcons.M_DEPA),
+            ),
+            ImageOptionUIModel(
+                id = "S_DEPA",
+                displayName = "Small Department",
+                imageSource = ImageSource.Drawable(PropertyIcons.S_DEPA),
+            ),
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Text("Image Dropdown", style = MaterialTheme.typography.headlineSmall)
+
+            EdifikanaImageDropdown(
+                label = "Property Icon",
+                options = options,
+                selectedOption = selectedOption,
+                onOptionSelected = { selectedOption = it },
+                placeholder = "Select a property icon",
             )
         }
     }

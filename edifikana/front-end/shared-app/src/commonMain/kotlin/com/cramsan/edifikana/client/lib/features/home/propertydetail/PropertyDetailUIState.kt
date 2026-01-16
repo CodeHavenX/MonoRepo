@@ -14,6 +14,7 @@ data class PropertyDetailUIState(
     val propertyId: PropertyId?,
     val name: String,
     val address: String,
+    val imageUrl: String?,
     val isEditMode: Boolean,
 ) : ViewModelUIState {
     companion object {
@@ -22,6 +23,7 @@ data class PropertyDetailUIState(
             propertyId = null,
             name = "",
             address = "",
+            imageUrl = null,
             isEditMode = false,
         )
     }

@@ -73,6 +73,7 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
                 "building 1",
                 "1234, Nairobi",
                 OrganizationId("org123"),
+                "drawable:CASA",
                 any(),
             )
         }.answers {
@@ -81,6 +82,7 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
                 name = "building 1",
                 address = "1234, Nairobi",
                 organizationId = OrganizationId("org123"),
+                imageUrl = "drawable:CASA",
             )
         }
         val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
@@ -164,7 +166,8 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
                 id = PropertyId("property123"),
                 name = "building 1",
                 address = "123 Main St",
-                OrganizationId("org123"),
+                organizationId = OrganizationId("org123"),
+                imageUrl = "drawable:CASA",
             )
         }
         val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
@@ -241,13 +244,15 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
                     id = PropertyId("property123"),
                     name = "building 1",
                     address = "123 Main St",
-                    OrganizationId("org123"),
+                    organizationId = OrganizationId("org123"),
+                    imageUrl = "drawable:CASA",
                 ),
                 Property(
                     id = PropertyId("property456"),
                     name = "building 2",
                     address = "456 Elm St",
-                    OrganizationId("org123"),
+                    organizationId = OrganizationId("org123"),
+                    imageUrl = "drawable:S_DEPA",
                 )
             )
         }
@@ -284,13 +289,15 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
                 id = propId,
                 name = "Updated Property",
                 address = "calle bottger",
+                imageUrl = "drawable:QUINTA",
             )
         }.answers {
             Property(
                 id = PropertyId("property123"),
                 name = "Updated Property",
                 address = "calle bottger",
-                OrganizationId("org123"),
+                organizationId = OrganizationId("org123"),
+                imageUrl = "drawable:QUINTA",
             )
         }
         val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()

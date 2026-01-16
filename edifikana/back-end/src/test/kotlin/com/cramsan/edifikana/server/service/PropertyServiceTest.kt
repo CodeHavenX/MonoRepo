@@ -59,8 +59,10 @@ class PropertyServiceTest {
         val userId = UserId("TestUser")
         val organizationId = OrganizationId("TestOrg")
         coEvery { clientContext.payload.userId } returns userId
+        val imageUrl = "drawable:CASA"
         coEvery {
             propertyDatastore.createProperty(
+                any(),
                 any(),
                 any(),
                 any(),
@@ -69,7 +71,7 @@ class PropertyServiceTest {
         } returns Result.success(property)
 
         // Act
-        val result = propertyService.createProperty(name, address, organizationId, clientContext)
+        val result = propertyService.createProperty(name, address, organizationId, imageUrl, clientContext)
 
         // Assert
         assertEquals(property, result)
@@ -79,6 +81,7 @@ class PropertyServiceTest {
                 address,
                 userId,
                 organizationId,
+                imageUrl,
             )
         }
     }
@@ -146,15 +149,16 @@ class PropertyServiceTest {
         val propertyId = PropertyId("Edificio")
         val name = "Updated Name"
         val address = "123 Main St"
+        val imageUrl = "drawable:QUINTA"
         val property = mockk<Property>()
-        coEvery { propertyDatastore.updateProperty(any(), any(), any()) } returns Result.success(property)
+        coEvery { propertyDatastore.updateProperty(any(), any(), any(), any()) } returns Result.success(property)
 
         // Act
-        val result = propertyService.updateProperty(propertyId, name, address)
+        val result = propertyService.updateProperty(propertyId, name, address, imageUrl)
 
         // Assert
         assertEquals(property, result)
-        coVerify { propertyDatastore.updateProperty(propertyId, name, address) }
+        coVerify { propertyDatastore.updateProperty(propertyId, name, address, imageUrl) }
     }
 
     /**
@@ -165,15 +169,16 @@ class PropertyServiceTest {
         // Arrange
         val propertyId = PropertyId("Edificio")
         val address = "456 New Address"
+        val imageUrl = "drawable:L_DEPA"
         val property = mockk<Property>()
-        coEvery { propertyDatastore.updateProperty(any(), any(), any()) } returns Result.success(property)
+        coEvery { propertyDatastore.updateProperty(any(), any(), any(), any()) } returns Result.success(property)
 
         // Act
-        val result = propertyService.updateProperty(propertyId, null, address)
+        val result = propertyService.updateProperty(propertyId, null, address, imageUrl)
 
         // Assert
         assertEquals(property, result)
-        coVerify { propertyDatastore.updateProperty(propertyId, null, address) }
+        coVerify { propertyDatastore.updateProperty(propertyId, null, address, imageUrl) }
     }
 
     /**
@@ -184,15 +189,16 @@ class PropertyServiceTest {
         // Arrange
         val propertyId = PropertyId("Edificio")
         val name = "Updated Name Only"
+        val imageUrl = "drawable:M_DEPA"
         val property = mockk<Property>()
-        coEvery { propertyDatastore.updateProperty(any(), any(), any()) } returns Result.success(property)
+        coEvery { propertyDatastore.updateProperty(any(), any(), any(), any()) } returns Result.success(property)
 
         // Act
-        val result = propertyService.updateProperty(propertyId, name, null)
+        val result = propertyService.updateProperty(propertyId, name, null, imageUrl)
 
         // Assert
         assertEquals(property, result)
-        coVerify { propertyDatastore.updateProperty(propertyId, name, null) }
+        coVerify { propertyDatastore.updateProperty(propertyId, name, null, imageUrl) }
     }
 
     /**

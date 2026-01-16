@@ -72,13 +72,15 @@ class AddPropertyViewModelTest : CoroutineTest() {
         val propertyName = "Test Property"
         val address = "123 Test Street"
         val organizationId = OrganizationId("org_id_1")
+        val imageUrl = "drawable:S_DEPA"
         val newProperty = PropertyModel(
             id = PropertyId("test-id"),
             name = propertyName,
             address = address,
             organizationId = organizationId,
+            imageUrl = imageUrl,
         )
-        coEvery { propertyManager.addProperty(propertyName, address, organizationId) } returns Result.success(
+        coEvery { propertyManager.addProperty(propertyName, address, organizationId, imageUrl) } returns Result.success(
             newProperty
         )
 
@@ -95,10 +97,10 @@ class AddPropertyViewModelTest : CoroutineTest() {
         }
 
         viewModel.initialize(organizationId)
-        viewModel.addProperty(propertyName, address)
+        viewModel.addProperty(propertyName, address, imageUrl)
         verificationJob.join()
 
-        coVerify { propertyManager.addProperty(propertyName, address, organizationId) }
+        coVerify { propertyManager.addProperty(propertyName, address, organizationId, imageUrl) }
         assertTrue(exceptionHandler.exceptions.isEmpty())
     }
 
@@ -107,11 +109,12 @@ class AddPropertyViewModelTest : CoroutineTest() {
         val propertyName = "Test Property"
         val address = "123 Test Street"
         val organizationId = OrganizationId("org_id_1")
+        val imageUrl = "drawable:S_DEPA"
         coEvery {
-            propertyManager.addProperty(propertyName, address, organizationId)
+            propertyManager.addProperty(propertyName, address, organizationId, imageUrl)
         } returns Result.failure(Exception("Error"))
 
-        viewModel.addProperty(propertyName, address)
+        viewModel.addProperty(propertyName, address, imageUrl)
 
         assertEquals(1, exceptionHandler.exceptions.size)
         assertEquals(false, viewModel.uiState.value.isLoading)

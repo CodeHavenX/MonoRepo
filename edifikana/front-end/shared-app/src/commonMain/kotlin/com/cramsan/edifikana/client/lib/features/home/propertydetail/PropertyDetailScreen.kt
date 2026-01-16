@@ -1,8 +1,10 @@
 package com.cramsan.edifikana.client.lib.features.home.propertydetail
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -18,19 +20,25 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import coil3.compose.AsyncImage
 import com.cramsan.edifikana.client.lib.features.home.HomeDestination
+import com.cramsan.edifikana.client.lib.features.home.shared.PropertyIconOptions
+import com.cramsan.edifikana.client.ui.components.EdifikanaImageDropdown
 import com.cramsan.edifikana.client.ui.components.EdifikanaPrimaryButton
 import com.cramsan.edifikana.client.ui.components.EdifikanaSecondaryButton
 import com.cramsan.edifikana.client.ui.components.EdifikanaTextField
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
+import com.cramsan.edifikana.client.ui.components.ImageSource
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
+import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -69,6 +77,7 @@ fun PropertyDetailScreen(
         onDeleteProperty = { viewModel.deleteProperty() },
         onNameChanged = { viewModel.onNameChanged(it) },
         onAddressChanged = { viewModel.onAddressChanged(it) },
+        onImageUrlChanged = { viewModel.onImageUrlChanged(it) },
     )
 }
 
@@ -86,6 +95,7 @@ internal fun PropertyDetailContent(
     onDeleteProperty: () -> Unit,
     onNameChanged: (String) -> Unit,
     onAddressChanged: (String) -> Unit,
+    onImageUrlChanged: (String?) -> Unit,
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
 
@@ -118,6 +128,36 @@ internal fun PropertyDetailContent(
             modifier = Modifier.padding(innerPadding).fillMaxSize(),
             fixedFooter = content.isEditMode,
             sectionContent = { sectionModifier ->
+                // Property Icon - Show at the top
+                if (!content.isEditMode) {
+                    Column(
+                        modifier = sectionModifier,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Text("Property Icon", fontWeight = FontWeight.Bold)
+                        val iconOption = PropertyIconOptions.fromImageUrl(content.imageUrl)
+                            ?: PropertyIconOptions.getDefaultOptions().find { it.id == "S_DEPA" }
+                        iconOption?.let { option ->
+                            when (val imageSource = option.imageSource) {
+                                is ImageSource.Drawable -> {
+                                    Image(
+                                        painter = painterResource(imageSource.resource),
+                                        contentDescription = option.displayName,
+                                        modifier = Modifier.size(80.dp).padding(vertical = 8.dp),
+                                    )
+                                }
+                                is ImageSource.Url -> {
+                                    AsyncImage(
+                                        model = imageSource.url,
+                                        contentDescription = option.displayName,
+                                        modifier = Modifier.size(80.dp).padding(vertical = 8.dp),
+                                    )
+                                }
+                                else -> Unit
+                            }
+                        }
+                    }
+                }
                 Column(sectionModifier) {
                     if (content.isEditMode) {
                         EdifikanaTextField(
@@ -145,6 +185,21 @@ internal fun PropertyDetailContent(
                         Text(
                             text = content.address,
                             modifier = Modifier.padding(vertical = 8.dp),
+                        )
+                    }
+                }
+                // Property Icon Dropdown - Show in edit mode
+                if (content.isEditMode) {
+                    Column(sectionModifier) {
+                        EdifikanaImageDropdown(
+                            label = "Property Icon",
+                            options = PropertyIconOptions.getDefaultOptions(),
+                            selectedOption = PropertyIconOptions.fromImageUrl(content.imageUrl)
+                                ?: PropertyIconOptions.getDefaultOptions().find { it.id == "S_DEPA" },
+                            onOptionSelected = { option ->
+                                onImageUrlChanged(PropertyIconOptions.toImageUrl(option))
+                            },
+                            placeholder = "Select a property icon",
                         )
                     }
                 }

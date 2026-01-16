@@ -146,11 +146,13 @@ fun CreatePropertyEntity(
     name: String,
     address: String,
     organizationId: OrganizationId,
+    imageUrl: String? = null,
 ): PropertyEntity.CreatePropertyEntity {
     return PropertyEntity.CreatePropertyEntity(
         name = name,
         address = address,
         organizationId = organizationId.id,
+        imageUrl = imageUrl,
     )
 }
 
@@ -164,6 +166,7 @@ fun PropertyEntity.toProperty(): Property {
         name = this.name,
         address = this.address,
         organizationId = OrganizationId(this.organizationId),
+        imageUrl = this.imageUrl,
     )
 }
 

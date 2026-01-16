@@ -35,6 +35,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
             address = "123 Test St, Test City, TC 12345",
             creatorUserId = testUserId!!,
             organizationId = testOrg!!,
+            imageUrl = "drawable:CASA",
         ).registerPropertyForDeletion()
         // Assert
         assertTrue(result.isSuccess)
@@ -44,6 +45,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
                 name = "${test_prefix}_Property",
                 address = "123 Test St, Test City, TC 12345",
                 organizationId = testOrg!!,
+                imageUrl = "drawable:CASA",
             ),
             result.getOrNull(),
         )
@@ -62,6 +64,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
             address = "456 Example Ave, Sample Town, ST 67890",
             creatorUserId = testUserId!!,
             organizationId = testOrg!!,
+            imageUrl = "drawable:QUINTA",
         ).registerPropertyForDeletion()
         assertTrue(createResult.isSuccess)
         val property = createResult.getOrNull()!!
@@ -72,6 +75,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val fetched = getResult.getOrNull()
         assertNotNull(fetched)
         assertTrue(fetched.name == "${test_prefix}_GetProperty")
+        assertEquals("drawable:QUINTA", fetched.imageUrl)
 
         // Clean up
     }
@@ -87,12 +91,14 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
             address = "789 Sample Rd, Example City, EC 10112",
             creatorUserId = testUserId!!,
             organizationId = testOrg!!,
+            imageUrl = "drawable:L_DEPA",
         ).registerPropertyForDeletion()
         val result2 = propertyDatastore.createProperty(
             name = "${test_prefix}_PropertyB",
             address = "101 Sample Blvd, Testville, TV 13141",
             creatorUserId = testUserId!!,
             organizationId = testOrg!!,
+            imageUrl = "drawable:M_DEPA",
         ).registerPropertyForDeletion()
         assertTrue(result1.isSuccess)
         assertTrue(result2.isSuccess)
@@ -115,6 +121,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
             address = "123 Update St, Update City, UC 12345",
             creatorUserId = testUserId!!,
             organizationId = testOrg!!,
+            imageUrl = "drawable:CASA",
         )
         assertTrue(createResult.isSuccess)
         val property = createResult.getOrNull()!!
@@ -124,6 +131,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
             propertyId = property.id,
             name = "${test_prefix}_UpdatedName",
             address = null,
+            imageUrl = "drawable:S_DEPA",
         ).registerPropertyForDeletion()
 
         // Assert
@@ -132,6 +140,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
         assertNotNull(updated)
         assertEquals("${test_prefix}_UpdatedName", updated.name)
         assertEquals("123 Update St, Update City, UC 12345", updated.address)
+        assertEquals("drawable:S_DEPA", updated.imageUrl)
     }
 
     @Test
@@ -142,6 +151,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
             address = "123 Update St, Update City, UC 12345",
             creatorUserId = testUserId!!,
             organizationId = testOrg!!,
+            imageUrl = "drawable:QUINTA",
         )
         assertTrue(createResult.isSuccess)
         val property = createResult.getOrNull()!!
@@ -151,6 +161,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
             propertyId = property.id,
             name = null,
             address = "456 New Address St, New City, NC 67890",
+            imageUrl = "drawable:M_DEPA",
         ).registerPropertyForDeletion()
 
         // Assert
@@ -159,6 +170,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
         assertNotNull(updated)
         assertEquals("${test_prefix}_ToUpdate", updated.name)
         assertEquals("456 New Address St, New City, NC 67890", updated.address)
+        assertEquals("drawable:M_DEPA", updated.imageUrl)
     }
 
     @Test
@@ -169,6 +181,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
             address = "123 Update St, Update City, UC 12345",
             creatorUserId = testUserId!!,
             organizationId = testOrg!!,
+            imageUrl = "drawable:L_DEPA",
         )
         assertTrue(createResult.isSuccess)
         val property = createResult.getOrNull()!!
@@ -178,6 +191,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
             propertyId = property.id,
             name = "${test_prefix}_CompletelyUpdated",
             address = "789 Complete St, Full City, FC 11111",
+            imageUrl = "drawable:CASA",
         ).registerPropertyForDeletion()
 
         // Assert
@@ -186,6 +200,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
         assertNotNull(updated)
         assertEquals("${test_prefix}_CompletelyUpdated", updated.name)
         assertEquals("789 Complete St, Full City, FC 11111", updated.address)
+        assertEquals("drawable:CASA", updated.imageUrl)
     }
 
     @Test
@@ -196,6 +211,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
             address = "789 Delete St, Delete City, DC 67890",
             creatorUserId = testUserId!!,
             organizationId = testOrg!!,
+            imageUrl = "drawable:QUINTA",
         )
         assertTrue(createResult.isSuccess)
         val property = createResult.getOrNull()!!

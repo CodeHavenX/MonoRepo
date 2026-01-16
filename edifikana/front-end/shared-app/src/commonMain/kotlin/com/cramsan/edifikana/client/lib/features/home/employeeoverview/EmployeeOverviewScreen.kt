@@ -28,7 +28,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
-import coil3.compose.AsyncImage
+import com.cramsan.edifikana.client.ui.components.EdifikanaImage
+import com.cramsan.edifikana.client.ui.components.ImageSource
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
@@ -155,8 +156,8 @@ private fun UserItem(
         val imageModifier = Modifier
             .size(Size.xx_large)
         if (employee.imageUrl != null) {
-            AsyncImage(
-                model = employee.imageUrl,
+            EdifikanaImage(
+                imageSource = ImageSource.Url(employee.imageUrl),
                 contentDescription = "Employee image for ${employee.name}",
                 modifier = imageModifier,
             )

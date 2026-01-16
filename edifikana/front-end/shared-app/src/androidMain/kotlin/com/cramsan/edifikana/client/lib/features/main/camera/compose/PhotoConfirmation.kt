@@ -1,7 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.main.camera.compose
 
 import android.net.Uri
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -17,7 +16,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil3.compose.rememberAsyncImagePainter
+import com.cramsan.edifikana.client.ui.components.EdifikanaImage
+import com.cramsan.edifikana.client.ui.components.ImageSource
 import edifikana_lib.Res
 import edifikana_lib.string_cancel
 import edifikana_lib.string_confirm
@@ -33,8 +33,8 @@ fun PhotoConfirmation(
     onConfirmClick: (Uri) -> Unit,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
-        Image(
-            painter = rememberAsyncImagePainter(photoUri),
+        EdifikanaImage(
+            imageSource = ImageSource.Url(photoUri.toString()),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop,

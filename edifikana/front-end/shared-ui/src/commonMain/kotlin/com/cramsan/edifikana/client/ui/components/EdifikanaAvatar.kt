@@ -11,10 +11,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
 
 /**
  * Edifikana avatar component for displaying circular profile images.
+ *
+ * Uses [EdifikanaImage] internally with [ImageSource.Url] for the provided URL string.
  *
  * @param imageUrl URL of the image to display
  * @param contentDescription Content description for accessibility
@@ -34,15 +35,17 @@ fun EdifikanaAvatar(
             .clip(CircleShape)
             .background(MaterialTheme.colorScheme.surfaceContainerHighest),
     ) {
-        if (imageUrl != null) {
-            AsyncImage(
-                model = imageUrl,
-                contentDescription = contentDescription,
-                modifier = Modifier
-                    .size(size)
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop,
-            )
+        val imageSource = if (imageUrl != null) {
+            ImageSource.Url(imageUrl)
+        } else {
+            ImageSource.None
         }
+        EdifikanaImage(
+            imageSource = imageSource,
+            contentDescription = contentDescription,
+            size = size,
+            cornerRadius = size / 2, // Circle shape
+            contentScale = ContentScale.Crop,
+        )
     }
 }

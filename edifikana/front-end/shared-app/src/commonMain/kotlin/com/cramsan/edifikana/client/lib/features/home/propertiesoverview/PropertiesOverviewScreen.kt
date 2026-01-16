@@ -28,7 +28,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
-import coil3.compose.AsyncImage
+import com.cramsan.edifikana.client.lib.features.home.shared.PropertyIconOptions
+import com.cramsan.edifikana.client.ui.components.EdifikanaImage
+import com.cramsan.edifikana.client.ui.components.ImageSource
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
@@ -152,24 +154,13 @@ private fun PropertyItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start,
     ) {
-        val imageModifier = Modifier
-            .size(Size.xx_large)
-        if (property.imageUrl != null) {
-            AsyncImage(
-                model = property.imageUrl,
-                contentDescription = "Property image for ${property.name}",
-                modifier = imageModifier,
-            )
-        } else {
-            Icon(
-                imageVector = Icons.Default.Apartment,
-                contentDescription = "No image available for ${property.name}",
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = imageModifier.padding(
-                    Padding.SMALL
-                ),
-            )
-        }
+        val imageSource = PropertyIconOptions.fromImageUrl(property.imageUrl)?.imageSource
+            ?: ImageSource.None
+        EdifikanaImage(
+            imageSource = imageSource,
+            contentDescription = "Property image for ${property.name}",
+            modifier = Modifier.size(Size.xx_large),
+        )
         Spacer(Modifier.size(Padding.MEDIUM))
         Column(
             modifier = Modifier.padding(Padding.SMALL)

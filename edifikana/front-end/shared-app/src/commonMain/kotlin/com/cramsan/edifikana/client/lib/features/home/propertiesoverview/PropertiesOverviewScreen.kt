@@ -158,6 +158,7 @@ private fun PropertyItem(
         EdifikanaImage(
             imageSource = imageSource,
             contentDescription = "Property image for ${property.name}",
+            cornerRadius = 8.dp,
             modifier = Modifier.size(Size.xx_large),
         )
         Spacer(Modifier.size(Padding.MEDIUM))

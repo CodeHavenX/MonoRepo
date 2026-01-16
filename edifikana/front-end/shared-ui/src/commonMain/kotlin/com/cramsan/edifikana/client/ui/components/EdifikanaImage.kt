@@ -3,6 +3,7 @@ package com.cramsan.edifikana.client.ui.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -64,6 +65,15 @@ fun EdifikanaImage(
         }
         is ImageSource.None -> {
             // Default icon for "no image" state - uses S-Depa icon
+            Image(
+                painter = painterResource(PropertyIcons.S_DEPA),
+                contentDescription = contentDescription,
+                modifier = finalModifier,
+                contentScale = contentScale,
+            )
+        }
+        is ImageSource.UploadPlaceholder -> {
+            // Icon for "upload" placeholder - uses S-Depa icon
             Image(
                 painter = painterResource(PropertyIcons.S_DEPA),
                 contentDescription = contentDescription,

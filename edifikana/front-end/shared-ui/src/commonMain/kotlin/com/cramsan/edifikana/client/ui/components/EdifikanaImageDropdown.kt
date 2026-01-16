@@ -1,7 +1,6 @@
 package com.cramsan.edifikana.client.ui.components
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,7 +22,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -68,10 +66,15 @@ fun EdifikanaImageDropdown(
             onExpandedChange = { expanded = it },
         ) {
             OutlinedTextField(
-                value = displayValue,
+                value = "",
                 modifier = Modifier
                     .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
                     .fillMaxWidth(),
+                placeholder = {
+                    if (selectedOption == null) {
+                        Text(placeholder)
+                    }
+                },
                 leadingIcon = {
                     selectedOption?.let { option ->
                         EdifikanaImage(
@@ -110,18 +113,12 @@ fun EdifikanaImageDropdown(
                 options.forEach { option ->
                     DropdownMenuItem(
                         text = {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
-                                EdifikanaImage(
-                                    imageSource = option.imageSource,
-                                    contentDescription = option.displayName,
-                                    size = 48.dp,
-                                    cornerRadius = 8.dp,
-                                    modifier = Modifier.padding(end = 12.dp)
-                                )
-                                Text(option.displayName)
-                            }
+                            EdifikanaImage(
+                                imageSource = option.imageSource,
+                                contentDescription = option.displayName,
+                                size = 48.dp,
+                                cornerRadius = 8.dp,
+                            )
                         },
                         onClick = {
                             onOptionSelected(option)

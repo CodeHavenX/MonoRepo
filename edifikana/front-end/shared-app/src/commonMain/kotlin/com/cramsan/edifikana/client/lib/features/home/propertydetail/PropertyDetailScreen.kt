@@ -139,8 +139,9 @@ internal fun PropertyDetailContent(
                             EdifikanaImage(
                                 imageSource = option.imageSource,
                                 contentDescription = option.displayName,
-                                modifier = Modifier.padding(vertical = 8.dp),
+                                cornerRadius = 8.dp,
                                 size = 80.dp,
+                                modifier = Modifier.padding(vertical = 8.dp),
                             )
                         }
                     }

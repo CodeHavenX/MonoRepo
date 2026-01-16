@@ -71,14 +71,5 @@ fun EdifikanaImage(
                 contentScale = contentScale,
             )
         }
-        is ImageSource.UploadPlaceholder -> {
-            // Icon for "upload" placeholder - uses S-Depa icon
-            Image(
-                painter = painterResource(PropertyIcons.S_DEPA),
-                contentDescription = contentDescription,
-                modifier = finalModifier,
-                contentScale = contentScale,
-            )
-        }
     }
 }

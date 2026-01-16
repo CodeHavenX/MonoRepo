@@ -72,11 +72,6 @@ fun EdifikanaImageDropdown(
                 modifier = Modifier
                     .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
                     .fillMaxWidth(),
-                placeholder = {
-                    if (selectedOption == null) {
-                        Text(placeholder)
-                    }
-                },
                 leadingIcon = {
                     selectedOption?.let { option ->
                         EdifikanaImage(

@@ -44,7 +44,6 @@ fun EdifikanaAvatar(
             imageSource = imageSource,
             contentDescription = contentDescription,
             size = size,
-            cornerRadius = size / 2, // Circle shape
             contentScale = ContentScale.Crop,
         )
     }

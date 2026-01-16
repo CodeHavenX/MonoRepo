@@ -31,7 +31,7 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun EdifikanaImage(
     imageSource: ImageSource,
-    contentDescription: String,
+    contentDescription: String?,
     modifier: Modifier = Modifier,
     size: Dp? = null,
     cornerRadius: Dp = 0.dp,
@@ -64,15 +64,6 @@ fun EdifikanaImage(
         }
         is ImageSource.None -> {
             // Default icon for "no image" state - uses S-Depa icon
-            Image(
-                painter = painterResource(PropertyIcons.S_DEPA),
-                contentDescription = contentDescription,
-                modifier = finalModifier,
-                contentScale = contentScale,
-            )
-        }
-        is ImageSource.UploadPlaceholder -> {
-            // Icon for "upload" placeholder - uses S-Depa icon
             Image(
                 painter = painterResource(PropertyIcons.S_DEPA),
                 contentDescription = contentDescription,

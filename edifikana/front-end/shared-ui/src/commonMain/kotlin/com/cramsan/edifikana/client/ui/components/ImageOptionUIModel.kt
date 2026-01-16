@@ -44,10 +44,4 @@ sealed class ImageSource {
      * No image - used for "None" or default options.
      */
     data object None : ImageSource()
-
-    /**
-     * Placeholder for "Upload Custom Image" option.
-     * This doesn't represent an actual image but triggers upload flow.
-     */
-    data object UploadPlaceholder : ImageSource()
 }

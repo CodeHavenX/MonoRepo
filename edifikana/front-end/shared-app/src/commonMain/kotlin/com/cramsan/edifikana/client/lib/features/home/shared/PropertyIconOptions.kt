@@ -36,7 +36,6 @@ object PropertyIconOptions {
             is ImageSource.Drawable -> "drawable:${option.id}"
             is ImageSource.Url -> (option.imageSource as ImageSource.Url).url
             is ImageSource.None, null -> null
-            is ImageSource.UploadPlaceholder -> null // Placeholder doesn't map to a URL
         }
     }
 

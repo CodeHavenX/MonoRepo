@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Apartment
 import androidx.compose.material.icons.sharp.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon

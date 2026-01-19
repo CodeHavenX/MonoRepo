@@ -30,4 +30,16 @@ sealed class AuthDestination : Destination {
         val userEmail: String,
         val accountCreationFlow: Boolean,
     ) : AuthDestination()
+
+    /**
+     * A class representing navigating to the select organization screen.
+     */
+    @Serializable
+    data object SelectOrgDestination : AuthDestination()
+
+    /**
+     * A class representing navigating to the create new org screen.
+     */
+    @Serializable
+    data object CreateNewOrgDestination : AuthDestination()
 }

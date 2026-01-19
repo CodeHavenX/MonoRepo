@@ -22,4 +22,13 @@ interface OrganizationService {
      * @return A [Result] containing a list of [Organization] if successful, or an error if not.
      */
     suspend fun getOrganizations(): Result<List<Organization>>
+
+    /**
+     * Creates a new organization with the provided name and description.
+     *
+     * @param name The name of the organization.
+     * @param description The description of the organization.
+     * @return A [Result] containing the created [Organization] if successful, or an error if not.
+     */
+    suspend fun createOrganization(name: String, description: String): Result<Organization>
 }

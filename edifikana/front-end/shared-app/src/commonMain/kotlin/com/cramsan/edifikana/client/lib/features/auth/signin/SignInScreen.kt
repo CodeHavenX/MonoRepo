@@ -101,7 +101,10 @@ internal fun SignInContent(
         modifier = modifier,
     ) { innerPadding ->
         Box(
-            modifier = Modifier.padding(innerPadding).fillMaxSize(),
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center,
         ) {
             ScreenLayout(
                 sectionContent = { modifier ->

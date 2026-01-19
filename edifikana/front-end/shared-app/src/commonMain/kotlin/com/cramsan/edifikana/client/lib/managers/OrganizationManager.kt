@@ -31,6 +31,16 @@ class OrganizationManager(
         organizationService.getOrganizations().getOrThrow()
     }
 
+    /**
+     * Create a new organization with the provided name and description.
+     */
+    suspend fun createOrganization(name: String, description: String): Result<Organization> = dependencies.getOrCatch(
+        TAG
+    ) {
+        logI(TAG, "createOrganization: $name")
+        organizationService.createOrganization(name, description).getOrThrow()
+    }
+
     companion object {
         private const val TAG = "OrganizationManager"
     }

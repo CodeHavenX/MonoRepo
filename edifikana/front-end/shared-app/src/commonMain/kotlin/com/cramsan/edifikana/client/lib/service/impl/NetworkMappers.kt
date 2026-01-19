@@ -171,5 +171,7 @@ fun UserNetworkResponse.toUserModel(): UserModel {
 fun OrganizationNetworkResponse.toOrganizationModel(): Organization {
     return Organization(
         id = id,
+        name = name,
+        description = description,
     )
 }

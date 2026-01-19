@@ -7,4 +7,6 @@ import com.cramsan.edifikana.lib.model.OrganizationId
  */
 data class Organization(
     val id: OrganizationId,
+    val name: String,
+    val description: String,
 )

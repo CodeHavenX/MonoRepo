@@ -37,7 +37,7 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `createNotification should create notification without user ID`() = runCoroutineTest {
         // Arrange
         val email = "${testPrefix}_notify@test.com"
-        val organizationId = createTestOrganization()
+        val organizationId = createTestOrganization("org_$testPrefix", "")
 
         // Act
         val result = notificationDatastore.createNotification(
@@ -66,7 +66,7 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
         // Arrange
         val email = "${testPrefix}_notify@test.com"
         val userId = createTestUser("${testPrefix}_user@test.com")
-        val organizationId = createTestOrganization()
+        val organizationId = createTestOrganization("org_$testPrefix", "")
 
         // Act
         val result = notificationDatastore.createNotification(
@@ -93,7 +93,7 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `getNotification should return created notification`() = runCoroutineTest {
         // Arrange
         val email = "${testPrefix}_notify@test.com"
-        val organizationId = createTestOrganization()
+        val organizationId = createTestOrganization("org_$testPrefix", "")
         val createResult = notificationDatastore.createNotification(
             recipientUserId = null,
             recipientEmail = email,
@@ -137,7 +137,7 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `getNotificationsForUser should return notifications for user`() = runCoroutineTest {
         // Arrange
         val userId = createTestUser("${testPrefix}_user@test.com")
-        val organizationId = createTestOrganization()
+        val organizationId = createTestOrganization("org_$testPrefix", "")
 
         // Create two notifications for the user
         notificationDatastore.createNotification(
@@ -171,7 +171,7 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `getNotificationsForUser should filter unread only when requested`() = runCoroutineTest {
         // Arrange
         val userId = createTestUser("${testPrefix}_user@test.com")
-        val organizationId = createTestOrganization()
+        val organizationId = createTestOrganization("org_$testPrefix", "")
 
         // Create first notification and mark as read
         val first = notificationDatastore.createNotification(
@@ -208,7 +208,7 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `getNotificationsForUser should respect limit parameter`() = runCoroutineTest {
         // Arrange
         val userId = createTestUser("${testPrefix}_user@test.com")
-        val organizationId = createTestOrganization()
+        val organizationId = createTestOrganization("org_$testPrefix", "")
 
         // Create three notifications
         repeat(3) { i ->
@@ -236,7 +236,7 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `getNotificationsByEmail should return notifications for email`() = runCoroutineTest {
         // Arrange
         val email = "${testPrefix}_notify@test.com"
-        val organizationId = createTestOrganization()
+        val organizationId = createTestOrganization("org_$testPrefix", "")
 
         notificationDatastore.createNotification(
             recipientUserId = null,
@@ -279,7 +279,7 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `markAsRead should mark notification as read`() = runCoroutineTest {
         // Arrange
         val email = "${testPrefix}_notify@test.com"
-        val organizationId = createTestOrganization()
+        val organizationId = createTestOrganization("org_$testPrefix", "")
         val created = notificationDatastore.createNotification(
             recipientUserId = null,
             recipientEmail = email,
@@ -321,7 +321,7 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `deleteNotification should delete notification`() = runCoroutineTest {
         // Arrange
         val email = "${testPrefix}_notify@test.com"
-        val organizationId = createTestOrganization()
+        val organizationId = createTestOrganization("org_$testPrefix", "")
         val created = notificationDatastore.createNotification(
             recipientUserId = null,
             recipientEmail = email,
@@ -365,7 +365,7 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `linkNotificationsToUser should link notifications to user`() = runCoroutineTest {
         // Arrange
         val email = "${testPrefix}_link@test.com"
-        val organizationId = createTestOrganization()
+        val organizationId = createTestOrganization("org_$testPrefix", "")
 
         // Create notifications without user ID
         notificationDatastore.createNotification(
@@ -423,7 +423,7 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `linkNotificationsToUser should only link notifications without user ID`() = runCoroutineTest {
         // Arrange
         val email = "${testPrefix}_partial@test.com"
-        val organizationId = createTestOrganization()
+        val organizationId = createTestOrganization("org_$testPrefix", "")
         val existingUserId = createTestUser("${testPrefix}_existing@test.com")
         val newUserId = createTestUser("${testPrefix}_new@test.com")
 

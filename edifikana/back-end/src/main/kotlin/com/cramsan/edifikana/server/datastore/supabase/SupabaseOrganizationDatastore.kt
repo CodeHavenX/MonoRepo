@@ -21,11 +21,17 @@ class SupabaseOrganizationDatastore(
     private val postgrest: Postgrest,
 ) : OrganizationDatastore {
 
-    override suspend fun createOrganization(): Result<Organization> = runSuspendCatching(
+    override suspend fun createOrganization(
+        name: String,
+        description: String,
+    ): Result<Organization> = runSuspendCatching(
         TAG
     ) {
-        logD(TAG, "Creating new organization")
-        val entity = OrganizationEntity.CreateOrganizationEntity
+        logD(TAG, "Creating new organization: %s", name)
+        val entity = OrganizationEntity.CreateOrganizationEntity(
+            name = name,
+            description = description,
+        )
         val createdOrg = postgrest.from(OrganizationEntity.COLLECTION).insert(entity) { select() }
             .decodeSingle<OrganizationEntity>()
 
@@ -45,13 +51,15 @@ class SupabaseOrganizationDatastore(
 
     override suspend fun updateOrganization(
         id: OrganizationId,
-        owner: UserId
+        name: String?,
+        description: String?
     ): Result<Organization> = runSuspendCatching(
         TAG
     ) {
         logD(TAG, "Updating organization: %s", id)
-        val updatedOrganization = OrganizationEntity(
-            id = id.id,
+        val updatedOrganization = OrganizationEntity.UpdateOrganizationEntity(
+            name = name,
+            description = description,
         )
         val updated = postgrest.from(OrganizationEntity.COLLECTION).update(updatedOrganization) {
             select()

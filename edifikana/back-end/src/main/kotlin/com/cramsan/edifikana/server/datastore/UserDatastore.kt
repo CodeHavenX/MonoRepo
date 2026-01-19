@@ -104,4 +104,12 @@ interface UserDatastore {
     suspend fun getInvites(
         organizationId: OrganizationId,
     ): Result<List<Invite>>
+
+    /**
+     * Retrieves all pending invites for the given [email].
+     * Returns the [Result] of the operation with a list of [Invite].
+     */
+    suspend fun getInvitesByEmail(
+        email: String,
+    ): Result<List<Invite>>
 }

@@ -338,7 +338,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `recordInvite with valid data should succeed`() = runCoroutineTest {
         // Arrange
         val orgOwner = createTestUser("${test_prefix}a@s.com")
-        val organizationId = createTestOrganization()
+        val organizationId = createTestOrganization("org_$test_prefix", "")
         val expiration = clock.now() + 1.minutes // 1 minute in the future
         val email = "${test_prefix}_invite@test.com"
 
@@ -357,7 +357,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `getInvites should return recorded invite`() = runCoroutineTest {
         // Arrange
         val orgOwner = createTestUser("${test_prefix}_a@s.com")
-        val organizationId = createTestOrganization()
+        val organizationId = createTestOrganization("org_$test_prefix", "")
         val email = "${test_prefix}_invite2@test.com"
         val expiration = clock.now() + 2.minutes // 2 minute in the future
         userDatastore.recordInvite(
@@ -380,7 +380,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `getInvites for organization with expired invites should return empty list`() = runCoroutineTest {
         // Arrange
         val orgOwner = createTestUser("${test_prefix}_a@s.com")
-        val organizationId = createTestOrganization()
+        val organizationId = createTestOrganization("org_$test_prefix", "")
         val email = "${test_prefix}_invite2@test.com"
         val expiration = clock.now() + 2.minutes // 2 minute in the future
         userDatastore.recordInvite(

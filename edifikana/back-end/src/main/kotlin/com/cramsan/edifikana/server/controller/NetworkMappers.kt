@@ -126,6 +126,8 @@ fun Asset.toAssetNetworkResponse(): AssetNetworkResponse {
 fun Organization.toOrganizationNetworkResponse(): OrganizationNetworkResponse {
     return OrganizationNetworkResponse(
         id = id,
+        name = name,
+        description = description,
     )
 }
 

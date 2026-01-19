@@ -4,23 +4,18 @@ import com.cramsan.edifikana.lib.model.NotificationType
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.datastore.NotificationDatastore
-import com.cramsan.edifikana.server.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.datastore.UserDatastore
-import com.cramsan.edifikana.server.service.models.Organization
 import com.cramsan.edifikana.server.service.models.User
-import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.asClock
-import io.mockk.Called
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -40,7 +35,6 @@ import kotlin.time.TestTimeSource
 class UserServiceTest {
     private lateinit var userDatastore: UserDatastore
     private lateinit var userService: UserService
-    private lateinit var organizationDatastore: OrganizationDatastore
     private lateinit var notificationDatastore: NotificationDatastore
     private lateinit var testTimeSource: TestTimeSource
     private lateinit var clock: Clock
@@ -52,11 +46,10 @@ class UserServiceTest {
     fun setUp() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         userDatastore = mockk()
-        organizationDatastore = mockk()
         notificationDatastore = mockk()
         testTimeSource = TestTimeSource()
         clock = testTimeSource.asClock(2024, 1, 1, 0, 0)
-        userService = UserService(userDatastore, organizationDatastore, notificationDatastore, clock)
+        userService = UserService(userDatastore, notificationDatastore, clock)
     }
 
     /**
@@ -68,10 +61,10 @@ class UserServiceTest {
     }
 
     /**
-     * Tests that createUser creates a transient user.
+     * Tests that createUser creates a transient user (no password).
      */
     @Test
-    fun `createUser should create user`() = runTest {
+    fun `createUser should create transient user when password is blank`() = runTest {
         // Arrange
         val email = "test@example.com"
         val phone = "1234567890"
@@ -90,9 +83,6 @@ class UserServiceTest {
             )
         } returns Result.success(user)
         every { user.id } returns UserId("id")
-        coEvery {
-            organizationDatastore.createOrganization()
-        } returns Result.success(mockk())
 
         // Act
         val result = userService.createUser(email, phone, password, firstName, lastName)
@@ -102,21 +92,21 @@ class UserServiceTest {
         coVerify {
             userDatastore.createUser(
                 email,
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
+                phone,
+                password,
+                firstName,
+                lastName,
+                true, // isTransient = true
             )
         }
-        verify { organizationDatastore wasNot Called }
+        coVerify(exactly = 0) { notificationDatastore.linkNotificationsToUser(any(), any()) }
     }
 
     /**
-     * Tests that createUser creates a user and organization.
+     * Tests that createUser creates a non-transient user and links notifications.
      */
     @Test
-    fun `createUser should create user and organization`() = runTest {
+    fun `createUser should create user and link notifications when password is provided`() = runTest {
         // Arrange
         val email = "test@example.com"
         val phone = "1234567890"
@@ -124,10 +114,7 @@ class UserServiceTest {
         val firstName = "John"
         val lastName = "Doe"
         val user = mockk<User>()
-        val organization = mockk<Organization>()
         val userId = UserId("id")
-        val orgId = OrganizationId("orgId")
-        val role = UserRole.OWNER
         coEvery {
             userDatastore.createUser(
                 any(),
@@ -139,11 +126,6 @@ class UserServiceTest {
             )
         } returns Result.success(user)
         every { user.id } returns userId
-        every { organization.id } returns orgId
-        coEvery {
-            organizationDatastore.createOrganization()
-        } returns Result.success(organization)
-        coEvery { organizationDatastore.addUserToOrganization(userId, orgId, role) } returns Result.success(Unit)
         coEvery { notificationDatastore.linkNotificationsToUser(email, userId) } returns Result.success(0)
 
         // Act
@@ -154,15 +136,13 @@ class UserServiceTest {
         coVerify {
             userDatastore.createUser(
                 email,
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
+                phone,
+                password,
+                firstName,
+                lastName,
+                false, // isTransient = false
             )
         }
-        coVerify { organizationDatastore.createOrganization() }
-        coVerify { organizationDatastore.addUserToOrganization(userId, orgId, role) }
         coVerify { notificationDatastore.linkNotificationsToUser(email, userId) }
     }
 

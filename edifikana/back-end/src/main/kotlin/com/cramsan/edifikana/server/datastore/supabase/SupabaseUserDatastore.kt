@@ -366,6 +366,18 @@ class SupabaseUserDatastore(
         }
     }
 
+    override suspend fun getInvitesByEmail(email: String): Result<List<Invite>> {
+        return runSuspendCatching(TAG) {
+            val invites = postgrest.from(InviteEntity.COLLECTION).select {
+                filter {
+                    eq("email", email)
+                    gt("expiration", clock.now()) // Only non-expired invites
+                }
+            }
+            invites.decodeList<InviteEntity>().map { it.toInvite() }
+        }
+    }
+
     override suspend fun removeInvite(
         inviteId: InviteId,
     ): Result<Unit> = runSuspendCatching(TAG) {

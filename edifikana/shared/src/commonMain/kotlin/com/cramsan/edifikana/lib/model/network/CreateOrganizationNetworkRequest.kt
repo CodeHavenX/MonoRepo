@@ -1,21 +1,18 @@
 package com.cramsan.edifikana.lib.model.network
 
-import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.framework.annotations.NetworkModel
-import com.cramsan.framework.annotations.api.ResponseBody
+import com.cramsan.framework.annotations.api.RequestBody
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
- * Network model representing an organization.
+ * Request model for creating an organization.
  */
 @NetworkModel
 @Serializable
-data class OrganizationNetworkResponse(
-    @SerialName("id")
-    val id: OrganizationId,
+data class CreateOrganizationNetworkRequest(
     @SerialName("name")
     val name: String,
     @SerialName("description")
     val description: String,
-) : ResponseBody
+) : RequestBody

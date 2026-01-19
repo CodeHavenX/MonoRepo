@@ -2,8 +2,10 @@ package com.cramsan.edifikana.server.controller
 
 import com.cramsan.edifikana.api.OrganizationApi
 import com.cramsan.edifikana.lib.model.OrganizationId
+import com.cramsan.edifikana.lib.model.network.CreateOrganizationNetworkRequest
 import com.cramsan.edifikana.lib.model.network.OrganizationNetworkListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.OrganizationNetworkResponse
+import com.cramsan.edifikana.lib.model.network.UpdateOrganizationNetworkRequest
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.service.OrganizationService
 import com.cramsan.edifikana.server.service.authorization.RBACService
@@ -18,6 +20,7 @@ import com.cramsan.framework.core.ktor.OperationRequest
 import com.cramsan.framework.core.ktor.auth.ClientContext
 import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.core.ktor.handler
+import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import com.cramsan.framework.utils.exceptions.UnauthorizedException
 import io.ktor.server.routing.Routing
 
@@ -74,6 +77,56 @@ class OrganizationController(
     }
 
     /**
+     * Creates a new organization with the provided name and description.
+     * The authenticated user becomes the owner with OWNER role.
+     */
+    suspend fun createOrganization(
+        request:
+        OperationRequest<
+            CreateOrganizationNetworkRequest,
+            NoQueryParam,
+            NoPathParam,
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
+            >
+    ): OrganizationNetworkResponse {
+        // Validate the request body
+        if (request.requestBody.name.isBlank()) {
+            throw ClientRequestExceptions.InvalidRequestException("Organization name cannot be blank.")
+        }
+
+        val organization = organizationService.createOrganization(
+            userId = request.context.payload.userId,
+            name = request.requestBody.name,
+            description = request.requestBody.description,
+        ).getOrThrow()
+        return organization.toOrganizationNetworkResponse()
+    }
+
+    /**
+     * Updates an organization's name and/or description.
+     * The authenticated user must be an admin of the organization.
+     */
+    suspend fun updateOrganization(
+        request:
+        OperationRequest<
+            UpdateOrganizationNetworkRequest,
+            NoQueryParam,
+            OrganizationId,
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
+            >
+    ): OrganizationNetworkResponse {
+        if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.ADMIN)) {
+            throw UnauthorizedException(unauthorizedMsg)
+        }
+        val organization = organizationService.updateOrganization(
+            id = request.pathParam,
+            name = request.requestBody.name,
+            description = request.requestBody.description,
+        ).getOrThrow()
+        return organization.toOrganizationNetworkResponse()
+    }
+
+    /**
      * Registers the routes for the organization controller.
      * Sets up the API endpoints and handlers for organization operations.
      */
@@ -84,6 +137,12 @@ class OrganizationController(
             }
             handler(api.getOrganization, contextRetriever) { request ->
                 getOrganization(request)
+            }
+            handler(api.createOrganization, contextRetriever) { request ->
+                createOrganization(request)
+            }
+            handler(api.updateOrganization, contextRetriever) { request ->
+                updateOrganization(request)
             }
         }
     }

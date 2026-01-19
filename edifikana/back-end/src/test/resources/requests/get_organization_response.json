@@ -1,3 +1,5 @@
 {
-    "id": "org123"
+    "id": "org123",
+    "name": "Test Organization",
+    "description": "Test Description"
 }

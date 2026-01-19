@@ -24,7 +24,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `createOrganization should return organization on success`() = runCoroutineTest {
         // Act
-        val result = organizationDatastore.createOrganization().registerOrganizationForDeletion()
+        val result = organizationDatastore.createOrganization("test_org_$test_prefix", "").registerOrganizationForDeletion()
 
         // Assert
         assertTrue(result.isSuccess)
@@ -35,7 +35,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `getOrganization should return created organization`() = runCoroutineTest {
         // Arrange
-        val createResult = organizationDatastore.createOrganization().registerOrganizationForDeletion()
+        val createResult = organizationDatastore.createOrganization("test_org_$test_prefix", "").registerOrganizationForDeletion()
         assertTrue(createResult.isSuccess)
         val org = createResult.getOrNull()!!
 
@@ -52,25 +52,26 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `updateOrganization should update organization fields`() = runCoroutineTest {
         // Arrange
-        val createResult = organizationDatastore.createOrganization().registerOrganizationForDeletion()
+        val createResult = organizationDatastore.createOrganization("test_org_$test_prefix", "").registerOrganizationForDeletion()
         assertTrue(createResult.isSuccess)
         val org = createResult.getOrNull()!!
-        val newOwner = createTestUser("user2-${test_prefix}@test.com")
 
         // Act
-        val updateResult = organizationDatastore.updateOrganization(id = org.id, owner = newOwner)
+        val updateResult = organizationDatastore.updateOrganization(id = org.id, name = "new_name", description = "new_description")
 
         // Assert
         assertTrue(updateResult.isSuccess)
         val updated = updateResult.getOrNull()
         assertNotNull(updated)
         assertEquals(org.id, updated.id)
+        assertEquals("new_name", updated.name)
+        assertEquals("new_description", updated.description)
     }
 
     @Test
     fun `deleteOrganization should remove organization`() = runCoroutineTest {
         // Arrange
-        val createResult = organizationDatastore.createOrganization()
+        val createResult = organizationDatastore.createOrganization("test_org_$test_prefix", "")
         assertTrue(createResult.isSuccess)
         val org = createResult.getOrNull()!!
 
@@ -100,9 +101,9 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `getOrganizationList should return organizations for user`() = runCoroutineTest {
         // Arrange
-        val org1 = createTestOrganization()
+        val org1 = createTestOrganization("test_org_$test_prefix", "")
         val role1 = UserRole.ADMIN
-        val org2 = createTestOrganization()
+        val org2 = createTestOrganization("test_org_$test_prefix", "")
         val role2 = UserRole.EMPLOYEE
         organizationDatastore.addUserToOrganization(testUserId!!, org1, role1)
         organizationDatastore.addUserToOrganization(testUserId!!, org2, role2)
@@ -136,7 +137,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `addUserToOrganization should add user to organization and getOrganizationsForUser should reflect this`() = runCoroutineTest {
         // Arrange
-        val orgId = createTestOrganization()
+        val orgId = createTestOrganization("test_org_$test_prefix", "")
         val newUser = createTestUser("adduser-${test_prefix}@test.com")
         val role = UserRole.MANAGER
 
@@ -155,7 +156,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `addUserToOrganization should handle adding same user twice gracefully`() = runCoroutineTest {
         // Arrange
-        val orgId = createTestOrganization()
+        val orgId = createTestOrganization("test_org_$test_prefix", "")
         val newUser = createTestUser("dupeuser-${test_prefix}@test.com")
         val newRole = UserRole.EMPLOYEE
 

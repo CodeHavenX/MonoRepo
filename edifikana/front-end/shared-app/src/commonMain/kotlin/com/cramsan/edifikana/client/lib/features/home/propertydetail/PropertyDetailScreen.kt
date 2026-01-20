@@ -28,7 +28,7 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.home.HomeDestination
 import com.cramsan.edifikana.client.lib.features.home.shared.PropertyIconOptions
 import com.cramsan.edifikana.client.ui.components.EdifikanaImage
-import com.cramsan.edifikana.client.ui.components.EdifikanaImageDropdown
+import com.cramsan.edifikana.client.ui.components.EdifikanaImageSelector
 import com.cramsan.edifikana.client.ui.components.EdifikanaPrimaryButton
 import com.cramsan.edifikana.client.ui.components.EdifikanaSecondaryButton
 import com.cramsan.edifikana.client.ui.components.EdifikanaTextField
@@ -175,10 +175,10 @@ internal fun PropertyDetailContent(
                         )
                     }
                 }
-                // Property Icon Dropdown - Show in edit mode
+                // Property Icon Selector - Show in edit mode
                 if (content.isEditMode) {
                     Column(sectionModifier) {
-                        EdifikanaImageDropdown(
+                        EdifikanaImageSelector(
                             label = "Property Icon",
                             options = PropertyIconOptions.getDefaultOptions(),
                             selectedOption = PropertyIconOptions.fromImageUrl(content.imageUrl)

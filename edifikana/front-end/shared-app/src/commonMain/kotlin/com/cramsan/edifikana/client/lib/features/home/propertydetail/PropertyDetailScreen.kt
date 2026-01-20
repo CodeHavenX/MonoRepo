@@ -1,6 +1,5 @@
 package com.cramsan.edifikana.client.lib.features.home.propertydetail
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -26,19 +25,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
-import coil3.compose.AsyncImage
 import com.cramsan.edifikana.client.lib.features.home.HomeDestination
 import com.cramsan.edifikana.client.lib.features.home.shared.PropertyIconOptions
+import com.cramsan.edifikana.client.ui.components.EdifikanaImage
 import com.cramsan.edifikana.client.ui.components.EdifikanaImageDropdown
 import com.cramsan.edifikana.client.ui.components.EdifikanaPrimaryButton
 import com.cramsan.edifikana.client.ui.components.EdifikanaSecondaryButton
 import com.cramsan.edifikana.client.ui.components.EdifikanaTextField
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
-import com.cramsan.edifikana.client.ui.components.ImageSource
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
-import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -138,23 +135,13 @@ internal fun PropertyDetailContent(
                         val iconOption = PropertyIconOptions.fromImageUrl(content.imageUrl)
                             ?: PropertyIconOptions.getDefaultOptions().find { it.id == "S_DEPA" }
                         iconOption?.let { option ->
-                            when (val imageSource = option.imageSource) {
-                                is ImageSource.Drawable -> {
-                                    Image(
-                                        painter = painterResource(imageSource.resource),
-                                        contentDescription = option.displayName,
-                                        modifier = Modifier.size(80.dp).padding(vertical = 8.dp),
-                                    )
-                                }
-                                is ImageSource.Url -> {
-                                    AsyncImage(
-                                        model = imageSource.url,
-                                        contentDescription = option.displayName,
-                                        modifier = Modifier.size(80.dp).padding(vertical = 8.dp),
-                                    )
-                                }
-                                else -> Unit
-                            }
+                            EdifikanaImage(
+                                imageSource = option.imageSource,
+                                contentDescription = option.displayName,
+                                cornerRadius = 8.dp,
+                                size = 80.dp,
+                                modifier = Modifier.padding(vertical = 8.dp),
+                            )
                         }
                     }
                 }

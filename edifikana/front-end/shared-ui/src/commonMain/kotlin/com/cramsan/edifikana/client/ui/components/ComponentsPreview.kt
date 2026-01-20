@@ -146,21 +146,21 @@ private fun EdifikanaListItemPreview() {
                 title = "Arrived",
                 subtitle = "Visitor: Olivia",
                 onClick = {},
-                avatarUrl = "https://i.pravatar.cc/150?img=1",
+                imageUrl = "https://i.pravatar.cc/150?img=1",
             )
 
             EdifikanaListItem(
                 title = "Departed",
                 subtitle = "Visitor: Nathan",
                 onClick = {},
-                avatarUrl = "https://i.pravatar.cc/150?img=2",
+                imageUrl = "https://i.pravatar.cc/150?img=2",
             )
 
             EdifikanaListItem(
                 title = "Arrived",
                 subtitle = "Visitor: Isabella",
                 onClick = {},
-                avatarUrl = "https://i.pravatar.cc/150?img=3",
+                imageUrl = "https://i.pravatar.cc/150?img=3",
             )
         }
     }
@@ -489,7 +489,7 @@ private fun EdifikanaComponentsFullPreview() {
                 title = "Arrived",
                 subtitle = "Visitor: Olivia",
                 onClick = {},
-                avatarUrl = "https://i.pravatar.cc/150?img=1",
+                imageUrl = "https://i.pravatar.cc/150?img=1",
             )
 
             HorizontalDivider()

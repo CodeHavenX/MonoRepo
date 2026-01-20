@@ -19,18 +19,19 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
 
 /**
  * Edifikana list item component that can display either an icon or an avatar.
  * Used for both event items and visitor log items.
+ *
+ * Uses [EdifikanaImage] internally with [ImageSource.Url] for avatar URLs.
  *
  * @param title Primary text (e.g., "Maintenance Request", "Arrived")
  * @param subtitle Secondary text (e.g., "Reported by: Alex", "Visitor: Olivia")
  * @param onClick Callback when item is clicked
  * @param modifier Modifier for the item
  * @param icon Optional icon vector for events
- * @param avatarUrl Optional avatar URL for visitor logs
+ * @param imageUrl Optional avatar URL for visitor logs
  */
 @Composable
 fun EdifikanaListItem(
@@ -39,7 +40,7 @@ fun EdifikanaListItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     icon: ImageVector? = null,
-    avatarUrl: String? = null,
+    imageUrl: String? = null,
 ) {
     Row(
         modifier = modifier
@@ -51,14 +52,13 @@ fun EdifikanaListItem(
     ) {
         // Icon or Avatar
         when {
-            avatarUrl != null -> {
+            imageUrl != null -> {
                 // Avatar for visitor logs
-                AsyncImage(
-                    model = avatarUrl,
+                EdifikanaImage(
+                    imageSource = ImageSource.Url(imageUrl),
                     contentDescription = title,
-                    modifier = Modifier
-                        .size(56.dp)
-                        .clip(CircleShape),
+                    size = 56.dp,
+                    cornerRadius = 28.dp, // Circle
                     contentScale = ContentScale.Crop,
                 )
             }

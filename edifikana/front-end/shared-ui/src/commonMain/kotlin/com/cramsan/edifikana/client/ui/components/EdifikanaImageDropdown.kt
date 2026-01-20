@@ -1,16 +1,13 @@
 package com.cramsan.edifikana.client.ui.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
-import androidx.compose.material.icons.filled.Image
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
@@ -29,15 +26,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
-import org.jetbrains.compose.resources.painterResource
 
 /**
  * Generic dropdown component for selecting images.
  *
- * Displays a list of image options with previews and labels.
+ * Displays a list of image options with image-only previews (no text labels).
+ * Uses [EdifikanaImage] component for efficient rendering of both drawable resources and URLs.
  * Follows Edifikana design patterns with rounded corners and Material3 colors.
  *
  * @param label The label displayed above the dropdown
@@ -79,10 +74,11 @@ fun EdifikanaImageDropdown(
                     .fillMaxWidth(),
                 leadingIcon = {
                     selectedOption?.let { option ->
-                        ImagePreview(
+                        EdifikanaImage(
                             imageSource = option.imageSource,
                             contentDescription = option.displayName,
-                            size = 24.dp,
+                            size = 40.dp,
+                            cornerRadius = 8.dp,
                         )
                     }
                 },
@@ -117,11 +113,12 @@ fun EdifikanaImageDropdown(
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
-                                ImagePreview(
+                                EdifikanaImage(
                                     imageSource = option.imageSource,
                                     contentDescription = option.displayName,
-                                    size = 32.dp,
-                                    modifier = Modifier.padding(end = 12.dp),
+                                    size = 48.dp,
+                                    cornerRadius = 8.dp,
+                                    modifier = Modifier.padding(end = 12.dp)
                                 )
                                 Text(option.displayName)
                             }
@@ -134,50 +131,6 @@ fun EdifikanaImageDropdown(
                     )
                 }
             }
-        }
-    }
-}
-
-/**
- * Helper composable to display image preview based on ImageSource type.
- */
-@Composable
-private fun ImagePreview(
-    imageSource: ImageSource,
-    contentDescription: String,
-    size: Dp,
-    modifier: Modifier = Modifier,
-) {
-    when (imageSource) {
-        is ImageSource.Drawable -> {
-            Image(
-                painter = painterResource(imageSource.resource),
-                contentDescription = contentDescription,
-                modifier = modifier.size(size),
-            )
-        }
-        is ImageSource.Url -> {
-            AsyncImage(
-                model = imageSource.url,
-                contentDescription = contentDescription,
-                modifier = modifier.size(size),
-            )
-        }
-        is ImageSource.None -> {
-            Icon(
-                imageVector = Icons.Default.Image,
-                contentDescription = contentDescription,
-                modifier = modifier.size(size),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
-        is ImageSource.UploadPlaceholder -> {
-            Icon(
-                imageVector = Icons.Default.Image,
-                contentDescription = contentDescription,
-                modifier = modifier.size(size),
-                tint = MaterialTheme.colorScheme.primary,
-            )
         }
     }
 }

@@ -2,7 +2,6 @@ package com.cramsan.edifikana.server.datastore.supabase
 
 import com.cramsan.edifikana.lib.model.NotificationId
 import com.cramsan.edifikana.lib.model.NotificationType
-import com.cramsan.edifikana.server.service.models.Notification
 import com.cramsan.framework.utils.uuid.UUID
 import org.koin.test.inject
 import kotlin.test.BeforeTest

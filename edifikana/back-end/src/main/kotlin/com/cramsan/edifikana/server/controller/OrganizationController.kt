@@ -118,10 +118,18 @@ class OrganizationController(
         if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.ADMIN)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
+
+        val body = request.requestBody
+        val name = body.name
+        val description = body.description
+        if (name != null && name.isBlank()) {
+            throw ClientRequestExceptions.InvalidRequestException("Organization name cannot be blank.")
+        }
+
         val organization = organizationService.updateOrganization(
             id = request.pathParam,
-            name = request.requestBody.name,
-            description = request.requestBody.description,
+            name = name,
+            description = description,
         ).getOrThrow()
         return organization.toOrganizationNetworkResponse()
     }

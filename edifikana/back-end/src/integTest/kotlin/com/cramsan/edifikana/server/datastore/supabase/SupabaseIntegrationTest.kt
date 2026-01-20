@@ -25,15 +25,15 @@ import com.cramsan.framework.test.CoroutineTest
 import com.cramsan.framework.utils.password.generateRandomPassword
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
-import kotlin.test.AfterTest
-import kotlin.time.ExperimentalTime
-import kotlin.time.Instant
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeEach
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
 import org.koin.test.inject
+import kotlin.test.AfterTest
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
 abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
@@ -133,7 +133,10 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
     protected fun createTestProperty(name: String, userId: UserId, organizationId: OrganizationId): PropertyId {
         val propertyId = runBlocking {
             propertyDatastore.createProperty(
-                name, "123 main St", userId, organizationId,
+                name,
+                "123 main St",
+                userId,
+                organizationId,
             ).getOrThrow().id
         }
         registerPropertyForDeletion(propertyId)

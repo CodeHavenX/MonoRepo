@@ -337,7 +337,6 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `recordInvite with valid data should succeed`() = runCoroutineTest {
         // Arrange
-        val orgOwner = createTestUser("${test_prefix}a@s.com")
         val organizationId = createTestOrganization("org_$test_prefix", "")
         val expiration = clock.now() + 1.minutes // 1 minute in the future
         val email = "${test_prefix}_invite@test.com"
@@ -356,7 +355,6 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `getInvites should return recorded invite`() = runCoroutineTest {
         // Arrange
-        val orgOwner = createTestUser("${test_prefix}_a@s.com")
         val organizationId = createTestOrganization("org_$test_prefix", "")
         val email = "${test_prefix}_invite2@test.com"
         val expiration = clock.now() + 2.minutes // 2 minute in the future
@@ -367,7 +365,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
         ).registerInviteForDeletion()
 
         // Act
-        testTimeSource +=  1.minutes
+        testTimeSource += 1.minutes
         val invitesResult = userDatastore.getInvites(organizationId)
 
         // Assert
@@ -379,7 +377,6 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `getInvites for organization with expired invites should return empty list`() = runCoroutineTest {
         // Arrange
-        val orgOwner = createTestUser("${test_prefix}_a@s.com")
         val organizationId = createTestOrganization("org_$test_prefix", "")
         val email = "${test_prefix}_invite2@test.com"
         val expiration = clock.now() + 2.minutes // 2 minute in the future
@@ -390,12 +387,34 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
         ).registerInviteForDeletion()
 
         // Act
-        testTimeSource +=  5.minutes
+        testTimeSource += 5.minutes
         val invitesResult = userDatastore.getInvites(organizationId)
 
         // Assert
         assertTrue(invitesResult.isSuccess)
         val invites = invitesResult.getOrThrow()
         assertTrue(invites.isEmpty())
+    }
+
+    @Test
+    fun `getInvitesByEmail should return recorded invite`() = runCoroutineTest {
+        // Arrange
+        val organizationId = createTestOrganization("org_$test_prefix", "")
+        val email = "${test_prefix}_invite2@test.com"
+        val expiration = clock.now() + 2.minutes // 2 minute in the future
+        userDatastore.recordInvite(
+            email = email,
+            organizationId = organizationId,
+            expiration = expiration,
+        ).registerInviteForDeletion()
+
+        // Act
+        testTimeSource += 1.minutes
+        val invitesResult = userDatastore.getInvitesByEmail(email)
+
+        // Assert
+        assertTrue(invitesResult.isSuccess)
+        val invites = invitesResult.getOrThrow()
+        assertTrue(invites.any { it.email == email })
     }
 }

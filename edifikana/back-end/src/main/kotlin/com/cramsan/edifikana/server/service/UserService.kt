@@ -4,11 +4,9 @@ import com.cramsan.edifikana.lib.model.NotificationType
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.datastore.NotificationDatastore
-import com.cramsan.edifikana.server.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.datastore.UserDatastore
 import com.cramsan.edifikana.server.service.models.Invite
 import com.cramsan.edifikana.server.service.models.User
-import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.framework.logging.logD
@@ -21,7 +19,6 @@ import kotlin.time.Duration.Companion.days
  */
 class UserService(
     private val userDatastore: UserDatastore,
-    private val organizationDatastore: OrganizationDatastore,
     private val notificationDatastore: NotificationDatastore,
     private val clock: Clock,
 ) {
@@ -49,12 +46,6 @@ class UserService(
 
         if (!isTransient) {
             val user = result.getOrThrow()
-            val orgID = organizationDatastore.createOrganization().getOrThrow().id
-            organizationDatastore.addUserToOrganization(
-                userId = user.id,
-                organizationId = orgID,
-                role = UserRole.OWNER,
-            )
 
             // Link any pending notifications to this user
             notificationDatastore.linkNotificationsToUser(email, user.id).onFailure { e ->
@@ -80,12 +71,6 @@ class UserService(
 
         if (result.isSuccess) {
             val user = result.getOrThrow()
-            val orgId = organizationDatastore.createOrganization().getOrThrow().id
-            organizationDatastore.addUserToOrganization(
-                userId = user.id,
-                organizationId = orgId,
-                role = UserRole.OWNER
-            )
 
             // Link any pending notifications to this user
             notificationDatastore.linkNotificationsToUser(email, user.id).onFailure { e ->

@@ -27,7 +27,7 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
         test_prefix = UUID.random()
         runBlocking {
             testUserId = createTestUser("user-${test_prefix}@test.com")
-            orgId = createTestOrganization()
+            orgId = createTestOrganization("org_$test_prefix", "")
             propertyId = createTestProperty("${test_prefix}_Property", testUserId!!, orgId!!)
         }
     }
@@ -90,7 +90,9 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
         assertTrue(createResult.isSuccess)
         val createdEntry = createResult.getOrNull()
         assertNotNull(createdEntry)
-        val getResult = eventLogDatastore.getEventLogEntry(EventLogEntryId(eventLogEntryId = createdEntry.id.eventLogEntryId))
+        val getResult = eventLogDatastore.getEventLogEntry(
+            EventLogEntryId(eventLogEntryId = createdEntry.id.eventLogEntryId)
+        )
 
         // Assert
         assertTrue(getResult.isSuccess)
@@ -195,7 +197,8 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `deleteEventLogEntry should remove entry`() = runCoroutineTest {
         // Arrange
-        val createResult = eventLogDatastore.createEventLogEntry(title = "${test_prefix}_EventTitleToDelete",
+        val createResult = eventLogDatastore.createEventLogEntry(
+            title = "${test_prefix}_EventTitleToDelete",
             description = "${test_prefix}_EventDescriptionToDelete",
             employeeId = null, // Set as needed
             fallbackEmployeeName = null, // Set as needed

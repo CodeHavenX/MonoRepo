@@ -13,9 +13,11 @@ interface OrganizationDatastore {
     /**
      * Create a new organization.
      *
+     * @param name The name of the organization.
+     * @param description The description of the organization.
      * @return The created organization or an error.
      */
-    suspend fun createOrganization(): Result<Organization>
+    suspend fun createOrganization(name: String, description: String): Result<Organization>
 
     /**
      * Retrieve an organization by its ID.
@@ -29,10 +31,15 @@ interface OrganizationDatastore {
      * Update an existing organization.
      *
      * @param id The ID of the organization to update.
-     * @param owner The new owner ID for the organization.
+     * @param name The new name for the organization, or null to keep existing.
+     * @param description The new description for the organization, or null to keep existing.
      * @return The updated organization or an error.
      */
-    suspend fun updateOrganization(id: OrganizationId, owner: UserId): Result<Organization>
+    suspend fun updateOrganization(
+        id: OrganizationId,
+        name: String?,
+        description: String?
+    ): Result<Organization>
 
     /**
      * Delete an organization by its ID.

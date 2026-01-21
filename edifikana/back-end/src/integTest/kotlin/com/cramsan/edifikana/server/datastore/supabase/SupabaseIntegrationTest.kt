@@ -2,9 +2,25 @@ package com.cramsan.edifikana.server.datastore.supabase
 
 import com.cramsan.architecture.server.test.dependencyinjection.TestArchitectureModule
 import com.cramsan.architecture.server.test.dependencyinjection.integTestFrameworkModule
-import com.cramsan.edifikana.lib.model.*
+import com.cramsan.edifikana.lib.model.EmployeeId
+import com.cramsan.edifikana.lib.model.EmployeeRole
+import com.cramsan.edifikana.lib.model.EventLogEntryId
+import com.cramsan.edifikana.lib.model.IdType
+import com.cramsan.edifikana.lib.model.InviteId
+import com.cramsan.edifikana.lib.model.NotificationId
+import com.cramsan.edifikana.lib.model.OrganizationId
+import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.TimeCardEventId
+import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.dependencyinjection.DatastoreModule
-import com.cramsan.edifikana.server.service.models.*
+import com.cramsan.edifikana.server.service.models.Employee
+import com.cramsan.edifikana.server.service.models.EventLogEntry
+import com.cramsan.edifikana.server.service.models.Invite
+import com.cramsan.edifikana.server.service.models.Notification
+import com.cramsan.edifikana.server.service.models.Organization
+import com.cramsan.edifikana.server.service.models.Property
+import com.cramsan.edifikana.server.service.models.TimeCardEvent
+import com.cramsan.edifikana.server.service.models.User
 import com.cramsan.framework.test.CoroutineTest
 import com.cramsan.framework.utils.password.generateRandomPassword
 import io.github.jan.supabase.SupabaseClient
@@ -100,9 +116,15 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
         return userId
     }
 
-    protected fun createTestOrganization(): OrganizationId {
+    protected fun createTestOrganization(
+        name: String,
+        description: String,
+    ): OrganizationId {
         val organizationId = runBlocking {
-            organizationDatastore.createOrganization().getOrThrow().id
+            organizationDatastore.createOrganization(
+                name = name,
+                description = description,
+            ).getOrThrow().id
         }
         registerOrganizationForDeletion(organizationId)
         return organizationId
@@ -111,7 +133,10 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
     protected fun createTestProperty(name: String, userId: UserId, organizationId: OrganizationId): PropertyId {
         val propertyId = runBlocking {
             propertyDatastore.createProperty(
-                name, "123 main St", userId, organizationId,
+                name,
+                "123 main St",
+                userId,
+                organizationId,
             ).getOrThrow().id
         }
         registerPropertyForDeletion(propertyId)

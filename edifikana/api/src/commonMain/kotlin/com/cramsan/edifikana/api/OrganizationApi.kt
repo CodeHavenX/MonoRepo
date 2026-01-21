@@ -1,8 +1,10 @@
 package com.cramsan.edifikana.api
 
 import com.cramsan.edifikana.lib.model.OrganizationId
+import com.cramsan.edifikana.lib.model.network.CreateOrganizationNetworkRequest
 import com.cramsan.edifikana.lib.model.network.OrganizationNetworkListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.OrganizationNetworkResponse
+import com.cramsan.edifikana.lib.model.network.UpdateOrganizationNetworkRequest
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
@@ -28,4 +30,18 @@ object OrganizationApi : Api("organization") {
         OrganizationId,
         OrganizationNetworkResponse
         >(HttpMethod.Get)
+
+    val createOrganization = operation<
+        CreateOrganizationNetworkRequest,
+        NoQueryParam,
+        NoPathParam,
+        OrganizationNetworkResponse
+        >(HttpMethod.Post)
+
+    val updateOrganization = operation<
+        UpdateOrganizationNetworkRequest,
+        NoQueryParam,
+        OrganizationId,
+        OrganizationNetworkResponse
+        >(HttpMethod.Put)
 }

@@ -1,10 +1,10 @@
 package com.cramsan.edifikana.server.datastore.supabase
 
+import com.cramsan.edifikana.lib.model.EmployeeId
+import com.cramsan.edifikana.lib.model.EmployeeRole
 import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.EmployeeId
-import com.cramsan.edifikana.lib.model.EmployeeRole
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.framework.utils.uuid.UUID
 import kotlinx.coroutines.runBlocking
@@ -26,7 +26,7 @@ class SupabaseEmployeeDatastoreIntegrationTest : SupabaseIntegrationTest() {
         test_prefix = UUID.random()
         runBlocking {
             testUserId = createTestUser("user-${test_prefix}@test.com")
-            orgId = createTestOrganization()
+            orgId = createTestOrganization("org_$test_prefix", "")
             propertyId = createTestProperty("${test_prefix}_Property", testUserId!!, orgId!!)
         }
     }

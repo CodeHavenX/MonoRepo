@@ -262,4 +262,6 @@ fun EventLogEntryEntity.toEventLogEntry(): EventLogEntry {
 @OptIn(SupabaseModel::class)
 fun OrganizationEntity.toOrganization() = Organization(
     id = OrganizationId(this.id),
+    name = this.name,
+    description = this.description,
 )

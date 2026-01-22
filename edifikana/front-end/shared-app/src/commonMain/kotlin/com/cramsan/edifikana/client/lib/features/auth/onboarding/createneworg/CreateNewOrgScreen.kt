@@ -123,10 +123,15 @@ internal fun CreateNewOrgContent(
                 )
 
                 // Organization Description field (multiline)
-                OrganizationDescriptionField(
+                EdifikanaTextField(
                     value = content.organizationDescription,
                     onValueChange = onOrganizationDescriptionChanged,
+                    label = "Organization Description",
+                    placeholder = "Briefly describe what this workspace is for...",
                     modifier = sectionModifier,
+                    minLines = 4,
+                    maxLines = 5,
+                    singleLine = false,
                 )
             },
             buttonContent = { buttonModifier ->
@@ -137,49 +142,6 @@ internal fun CreateNewOrgContent(
                     enabled = content.isButtonEnabled,
                 )
             }
-        )
-    }
-}
-
-/**
- * Multiline text field for organization description.
- */
-@Composable
-private fun OrganizationDescriptionField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier.fillMaxWidth(),
-    ) {
-        Text(
-            text = "Organization Description",
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 8.dp),
-        )
-        OutlinedTextField(
-            value = value,
-            onValueChange = onValueChange,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(150.dp),
-            placeholder = {
-                Text(
-                    text = "Briefly describe what this workspace is for...",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
-                )
-            },
-            shape = RoundedCornerShape(25.dp),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-                disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                unfocusedBorderColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-            ),
-            textStyle = MaterialTheme.typography.bodyLarge,
         )
     }
 }

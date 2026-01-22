@@ -29,6 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
+import com.cramsan.edifikana.client.ui.components.OptionCard
 import com.cramsan.framework.core.compose.rememberDialogController
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.ScreenLayout
@@ -133,67 +134,5 @@ internal fun SelectOrgContent(
                 )
             }
         )
-    }
-}
-
-@Composable
-private fun OptionCard(
-    title: String,
-    description: String,
-    icon: ImageVector,
-    onClick: (() -> Unit)?,
-    colors: CardColors = CardDefaults.cardColors(),
-    modifier: Modifier = Modifier,
-) {
-    Card(
-        modifier = modifier
-            .fillMaxWidth(),
-        colors = colors,
-        shape = MaterialTheme.shapes.large,
-    ) {
-        Row(
-            modifier = Modifier
-                .clickable(enabled = onClick != null) {
-                    onClick?.invoke()
-                }
-                .fillMaxWidth()
-                .padding(Padding.MEDIUM),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            Column(
-                modifier = Modifier.weight(1f),
-            ) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
-                )
-                Spacer(modifier = Modifier.size(Padding.X_SMALL))
-                Text(
-                    text = description,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = colors.contentColor,
-                )
-            }
-
-            Spacer(modifier = Modifier.size(Padding.MEDIUM))
-
-            // Icon with circular background
-            Box(
-                modifier = Modifier
-                    .size(Size.xx_large)
-                    .clip(CircleShape)
-                    .background(colors.containerColor.copy(alpha = 0.3f)),
-                contentAlignment = Alignment.Center,
-            ) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = null,
-                    tint = colors.contentColor,
-                    modifier = Modifier.size(Size.large),
-                )
-            }
-        }
     }
 }

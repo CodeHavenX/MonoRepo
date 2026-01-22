@@ -3,6 +3,7 @@ package com.cramsan.edifikana.client.lib.features.splash
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
+import com.cramsan.edifikana.client.lib.managers.OrganizationManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
@@ -30,6 +31,7 @@ class SplashViewModelTest : CoroutineTest() {
 
     private lateinit var viewModel: SplashViewModel
     private lateinit var authManager: AuthManager
+    private lateinit var organizationManager: OrganizationManager
     private lateinit var propertyManager: PropertyManager
 
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
@@ -52,10 +54,12 @@ class SplashViewModelTest : CoroutineTest() {
             windowEventReceiver = windowEventBus,
         )
         authManager = mockk()
+        organizationManager = mockk()
         propertyManager = mockk()
         viewModel = SplashViewModel(
             dependencies = dependencies,
             authManager = authManager,
+            organizationManager = organizationManager,
         )
     }
 
@@ -70,6 +74,7 @@ class SplashViewModelTest : CoroutineTest() {
     @Test
     fun `test enforceAuth when not signed in`() = runCoroutineTest {
         coEvery { authManager.isSignedIn() } returns Result.success(false)
+        coEvery { organizationManager.getOrganizations() } returns Result.failure(Exception("Should not be called"))
 
         viewModel.enforceAuth()
 
@@ -87,6 +92,7 @@ class SplashViewModelTest : CoroutineTest() {
     fun `test enforceAuth when signed in`() = runCoroutineTest {
         coEvery { authManager.isSignedIn() } returns Result.success(true)
         coEvery { propertyManager.getPropertyList() } returns Result.success(emptyList())
+        coEvery { organizationManager.getOrganizations() } returns Result.success(listOf(mockk()))
 
         viewModel.enforceAuth()
 

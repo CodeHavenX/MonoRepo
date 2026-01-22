@@ -1,8 +1,10 @@
 package com.cramsan.edifikana.client.lib.features.splash
 
+import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
+import com.cramsan.edifikana.client.lib.managers.OrganizationManager
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logI
@@ -15,6 +17,7 @@ import kotlinx.coroutines.launch
 class SplashViewModel(
     dependencies: ViewModelDependencies,
     private val authManager: AuthManager,
+    private val organizationManager: OrganizationManager,
 ) : BaseViewModel<SplashEvent, SplashUIState>(
     dependencies,
     SplashUIState.Initial,
@@ -43,7 +46,13 @@ class SplashViewModel(
             if (!result.getOrThrow()) {
                 navigateToSignInScreen()
             } else {
-                navigateToMainScreen()
+                val orgResult = organizationManager.getOrganizations()
+                val orgs = orgResult.getOrNull()
+                if (orgs.isNullOrEmpty()) {
+                    navigateToOnboardingScreen()
+                } else {
+                    navigateToMainScreen()
+                }
             }
         }
     }
@@ -58,6 +67,15 @@ class SplashViewModel(
         emitWindowEvent(
             EdifikanaWindowsEvent.NavigateToNavGraph(
                 EdifikanaNavGraphDestination.AuthNavGraphDestination,
+                clearStack = true,
+            )
+        )
+    }
+
+    private suspend fun navigateToOnboardingScreen() {
+        emitWindowEvent(
+            EdifikanaWindowsEvent.NavigateToScreen(
+                AuthDestination.SelectOrgDestination,
                 clearStack = true,
             )
         )

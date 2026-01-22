@@ -4,6 +4,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.cramsan.edifikana.client.lib.features.auth.onboarding.createneworg.CreateNewOrgScreen
+import com.cramsan.edifikana.client.lib.features.auth.onboarding.selectorg.SelectOrgScreen
 import com.cramsan.edifikana.client.lib.features.auth.signin.SignInScreen
 import com.cramsan.edifikana.client.lib.features.auth.signup.SignUpScreen
 import com.cramsan.edifikana.client.lib.features.auth.validation.OtpValidationScreen
@@ -42,6 +44,18 @@ fun NavGraphBuilder.authNavGraphNavigation(
             OtpValidationScreen(
                 destination = backStackEntry.toRoute()
             )
+        }
+        composable(
+            AuthDestination.SelectOrgDestination::class,
+            typeMap = typeMap,
+        ) {
+            SelectOrgScreen()
+        }
+        composable(
+            AuthDestination.CreateNewOrgDestination::class,
+            typeMap = typeMap,
+        ) {
+            CreateNewOrgScreen()
         }
     }
 }

@@ -22,7 +22,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun setup() {
         test_prefix = UUID.random()
         testUserId = createTestUser("user-${test_prefix}@test.com")
-        testOrg = createTestOrganization("org-${test_prefix}", "")
+        testOrg = createTestOrganization("org-${test_prefix}","")
     }
 
     @Test
@@ -109,8 +109,8 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val properties = getAllResult.getOrNull()
         assertNotNull(properties)
         val names = properties!!.map { it.name }
-        assertTrue(names.contains("${test_prefix}_PropertyA"))
-        assertTrue(names.contains("${test_prefix}_PropertyB"))
+        assertTrue(names.contains( "${test_prefix}_PropertyA"))
+        assertTrue(names.contains( "${test_prefix}_PropertyB"))
     }
 
     @Test

@@ -1,11 +1,13 @@
 package com.cramsan.edifikana.client.lib.features.auth.signin
 
 import app.cash.turbine.test
+import app.cash.turbine.turbineScope
 import com.cramsan.architecture.client.manager.PreferencesManager
 import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
+import com.cramsan.edifikana.client.lib.managers.OrganizationManager
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
 import com.cramsan.framework.core.compose.EventBus
@@ -43,7 +45,7 @@ class SignInViewModelTest : CoroutineTest() {
     private lateinit var windowEventBus: EventBus<WindowEvent>
     private lateinit var applicationEventReceiver: EventBus<ApplicationEvent>
     private lateinit var stringProvider: StringProvider
-
+    private lateinit var organizationManager: OrganizationManager
     private lateinit var preferencesManager: PreferencesManager
 
 
@@ -58,6 +60,7 @@ class SignInViewModelTest : CoroutineTest() {
         windowEventBus = EventBus()
         exceptionHandler = CollectorCoroutineExceptionHandler()
         stringProvider = mockk()
+        organizationManager = mockk()
         preferencesManager = mockk()
         viewModel = SignInViewModel(
             dependencies = ViewModelDependencies(
@@ -68,6 +71,7 @@ class SignInViewModelTest : CoroutineTest() {
                 applicationEventReceiver = applicationEventReceiver,
             ),
             auth = authManager,
+            organizationManager = organizationManager,
             stringProvider = stringProvider,
             preferencesManager = preferencesManager,
         )
@@ -117,10 +121,11 @@ class SignInViewModelTest : CoroutineTest() {
      * Test the [SignInViewModel.signInWithPassword] method succeeds as expected
      */
     @Test
-    fun `test SignIn success`() = runCoroutineTest {
+    fun `test SignIn success`() = runCoroutineTest { turbineScope {
         // Arrange
         val username = "real@email.com"
         val password = "Password123"
+        val turbine = windowEventBus.events.testIn(backgroundScope)
 
         coEvery {
             authManager.signInWithPassword(
@@ -128,28 +133,25 @@ class SignInViewModelTest : CoroutineTest() {
                 password,
             )
         } returns Result.success(mockk())
-
-        viewModel.changeUsernameValue(username)
-        viewModel.changePasswordValue(password)
+        coEvery {
+            organizationManager.getOrganizations()
+        } returns Result.success(listOf(mockk()))
 
         // Act
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(
-                    EdifikanaWindowsEvent.NavigateToNavGraph(
-                        EdifikanaNavGraphDestination.HomeNavGraphDestination,
-                        clearTop = true,
-                    ),
-                    awaitItem()
-                )
-            }
-        }
+        viewModel.changeUsernameValue(username)
+        viewModel.changePasswordValue(password)
         viewModel.signInWithPassword()
 
         // Verify
         coVerify { authManager.signInWithPassword(username, password) }
-        verificationJob.join()
-    }
+        assertEquals(
+            EdifikanaWindowsEvent.NavigateToNavGraph(
+                EdifikanaNavGraphDestination.HomeNavGraphDestination,
+                clearTop = true,
+            ),
+            turbine.awaitItem()
+        )
+    } }
 
     /**
      * Test the [SignInViewModel.signInWithPassword] method fails with invalid login credentials

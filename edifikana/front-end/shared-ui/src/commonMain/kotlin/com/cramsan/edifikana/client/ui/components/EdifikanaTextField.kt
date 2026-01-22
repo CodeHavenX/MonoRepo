@@ -35,6 +35,9 @@ fun EdifikanaTextField(
     label: String? = null,
     isPassword: Boolean = false,
     enabled: Boolean = true,
+    maxLines: Int = 1,
+    minLines: Int = 1,
+    singleLine: Boolean = true,
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -60,7 +63,9 @@ fun EdifikanaTextField(
             },
             visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
             enabled = enabled,
-            singleLine = true,
+            singleLine = singleLine,
+            maxLines = maxLines,
+            minLines = minLines,
             shape = RoundedCornerShape(25.dp),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,

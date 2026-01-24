@@ -3,7 +3,6 @@ package com.cramsan.edifikana.client.lib.models
 import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.edifikana.lib.model.NotificationId
 import com.cramsan.edifikana.lib.model.NotificationType
-import com.cramsan.edifikana.lib.model.OrganizationId
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 

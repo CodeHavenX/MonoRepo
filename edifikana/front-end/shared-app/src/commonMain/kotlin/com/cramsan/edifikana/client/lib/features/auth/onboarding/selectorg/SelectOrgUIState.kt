@@ -1,7 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.auth.onboarding.selectorg
 
 import com.cramsan.edifikana.lib.model.InviteId
-import com.cramsan.edifikana.lib.model.NotificationId
 import com.cramsan.framework.core.compose.ViewModelUIState
 
 /**
@@ -22,6 +21,9 @@ data class SelectOrgUIState(
     }
 }
 
+/**
+ * UI model representing an invite item.
+ */
 data class InviteItemUIModel(
     val description: String,
     val inviteId: InviteId,

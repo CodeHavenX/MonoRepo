@@ -3,7 +3,6 @@ package com.cramsan.edifikana.server.datastore
 import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.edifikana.lib.model.NotificationId
 import com.cramsan.edifikana.lib.model.NotificationType
-import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.service.models.Notification
 

@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import com.cramsan.edifikana.client.ui.theme.AppTheme
 import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.edifikana.lib.model.NotificationId
-import com.cramsan.edifikana.lib.model.OrganizationId
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**

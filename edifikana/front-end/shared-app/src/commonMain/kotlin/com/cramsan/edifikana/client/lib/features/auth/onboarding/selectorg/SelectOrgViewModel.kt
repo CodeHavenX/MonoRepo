@@ -25,6 +25,10 @@ class SelectOrgViewModel(
     SelectOrgUIState.Default,
     TAG,
 ) {
+
+    /**
+     * Initialize the ViewModel by fetching notifications.
+     */
     fun initialize() {
         logI(TAG, "Initializing SelectOrgViewModel")
         viewModelScope.launch {
@@ -100,6 +104,9 @@ class SelectOrgViewModel(
         }
     }
 
+    /**
+     * Request to show join organization confirmation dialog for the given invite ID.
+     */
     fun requestJoinOrganization(inviteId: InviteId) {
         logI(TAG, "Join organization requested for inviteId: $inviteId")
         viewModelScope.launch {
@@ -107,6 +114,9 @@ class SelectOrgViewModel(
         }
     }
 
+    /**
+     * Accept the invite for the given invite ID.
+     */
     fun acceptInvite(inviteId: InviteId) {
         logI(TAG, "Accept invite clicked for inviteId: $inviteId")
         viewModelScope.launch {

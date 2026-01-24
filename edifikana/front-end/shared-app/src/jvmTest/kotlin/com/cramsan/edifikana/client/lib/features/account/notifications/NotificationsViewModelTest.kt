@@ -8,7 +8,6 @@ import com.cramsan.edifikana.client.lib.models.Notification
 import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.edifikana.lib.model.NotificationId
 import com.cramsan.edifikana.lib.model.NotificationType
-import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
 import com.cramsan.framework.core.compose.EventBus
@@ -97,11 +96,9 @@ class NotificationsViewModelTest : CoroutineTest() {
 
     @Test
     fun `test initialize loads notifications`() = runCoroutineTest {
-        val organizationId = OrganizationId("org1")
         val notifications = listOf(
             Notification(
                 id = NotificationId("1"),
-                organizationId = organizationId,
                 type = NotificationType.INVITE,
                 description = "You have been invited to Test Org",
                 isRead = false,
@@ -237,7 +234,6 @@ class NotificationsViewModelTest : CoroutineTest() {
         val notificationId = NotificationId("1")
         val notification = Notification(
             id = notificationId,
-            organizationId = OrganizationId("org1"),
             type = NotificationType.SYSTEM,
             description = "System notification",
             isRead = true,
@@ -256,11 +252,9 @@ class NotificationsViewModelTest : CoroutineTest() {
 
     @Test
     fun `test invite notification without inviteId is filtered out`() = runCoroutineTest {
-        val organizationId = OrganizationId("org1")
         val notifications = listOf(
             Notification(
                 id = NotificationId("1"),
-                organizationId = organizationId,
                 type = NotificationType.INVITE,
                 description = "You have been invited",
                 isRead = false,

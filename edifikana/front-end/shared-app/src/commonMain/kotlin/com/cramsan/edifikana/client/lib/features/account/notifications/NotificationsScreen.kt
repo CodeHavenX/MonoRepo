@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.sharp.Cancel
 import androidx.compose.material.icons.sharp.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -283,7 +282,7 @@ private fun SystemNotificationItem(
             Icon(
                 imageVector = Icons.Sharp.Close,
                 contentDescription = stringResource(Res.string.string_cancel),
-                //tint = Color.White,
+                // tint = Color.White,
                 modifier = Modifier.fillMaxSize()
                     .padding(5.dp)
             )

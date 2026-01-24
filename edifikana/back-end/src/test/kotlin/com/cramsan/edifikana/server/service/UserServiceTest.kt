@@ -1,13 +1,13 @@
 package com.cramsan.edifikana.server.service
 
 import com.cramsan.edifikana.lib.model.InviteId
-import com.cramsan.edifikana.lib.model.NotificationType
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.datastore.NotificationDatastore
 import com.cramsan.edifikana.server.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.datastore.UserDatastore
 import com.cramsan.edifikana.server.service.models.Invite
+import com.cramsan.edifikana.server.service.models.Organization
 import com.cramsan.edifikana.server.service.models.User
 import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.core.SecureString
@@ -272,22 +272,30 @@ class UserServiceTest {
         // Arrange
         val email = "invite@example.com"
         val orgId = OrganizationId("orgId")
-        val expirationTime = clock.now() + 14.days
         val userId = UserId("id")
         val user = mockk<User>()
         val role = UserRole.USER
+        val inviteId = InviteId("inviteId")
+        val invite = mockk<Invite>()
+        val organization = Organization(id = orgId, name = "Test Org", description = "Test Description")
 
-        coEvery { user.id } returns userId
+        val notificationId = com.cramsan.edifikana.lib.model.NotificationId("notifId")
+        val createdNotification = mockk<com.cramsan.edifikana.server.service.models.Notification>()
+        every { createdNotification.id } returns notificationId
+
+        every { user.id } returns userId
+        every { invite.id } returns inviteId
         coEvery { userDatastore.getUser(email) } returns Result.success(user)
-        coEvery { userDatastore.recordInvite(email, orgId, expirationTime, role) } returns Result.success(mockk())
+        coEvery { organizationDatastore.getOrganization(orgId) } returns Result.success(organization)
+        coEvery { userDatastore.recordInvite(email, orgId, any(), role) } returns Result.success(invite)
         coEvery {
             notificationDatastore.createNotification(
-                userId,
-                email,
-                orgId,
-                NotificationType.INVITE,
+                recipientUserId = any(),
+                notificationType = any(),
+                description = any(),
+                inviteId = any(),
             )
-        } returns Result.success(mockk())
+        } returns Result.success(createdNotification)
 
         // Act
         val result = userService.inviteUser(email, orgId, role)
@@ -297,10 +305,10 @@ class UserServiceTest {
         coVerify { userDatastore.recordInvite(email, orgId, any(), role) }
         coVerify {
             notificationDatastore.createNotification(
-                userId,
-                email,
-                orgId,
-                NotificationType.INVITE,
+                recipientUserId = any(),
+                notificationType = any(),
+                description = any(),
+                inviteId = any(),
             )
         }
     }
@@ -313,15 +321,16 @@ class UserServiceTest {
         // Arrange
         val email = "invite@example.com"
         val orgId = OrganizationId("orgId")
-        val expirationTime = clock.now() + 14.days
         val userId = UserId("id")
         val user = mockk<User>()
         val role = UserRole.USER
+        val organization = Organization(id = orgId, name = "Test Org", description = "Test Description")
 
         val error = Exception("Failed to record invite")
-        coEvery { userDatastore.recordInvite(email, orgId, expirationTime, role) } returns Result.failure(error)
+        coEvery { userDatastore.recordInvite(email, orgId, any(), role) } returns Result.failure(error)
         coEvery { user.id } returns userId
         coEvery { userDatastore.getUser(email) } returns Result.success(user)
+        coEvery { organizationDatastore.getOrganization(orgId) } returns Result.success(organization)
 
         // Act
         val result = userService.inviteUser(email, orgId, role)
@@ -377,6 +386,7 @@ class UserServiceTest {
         val orgId = OrganizationId("org123")
         val email = "test@example.com"
         val futureTime = clock.now() + 7.days
+        val notificationId = com.cramsan.edifikana.lib.model.NotificationId("notif123")
 
         val invite = Invite(
             id = inviteId,
@@ -388,9 +398,14 @@ class UserServiceTest {
         val user = mockk<User>()
         every { user.email } returns email
 
+        val notification = mockk<com.cramsan.edifikana.server.service.models.Notification>()
+        every { notification.id } returns notificationId
+
         coEvery { userDatastore.getInvite(inviteId) } returns Result.success(invite)
         coEvery { userDatastore.getUser(userId) } returns Result.success(user)
         coEvery { organizationDatastore.addUserToOrganization(userId, orgId, UserRole.USER) } returns Result.success(Unit)
+        coEvery { notificationDatastore.getNotificationByInvite(inviteId) } returns Result.success(notification)
+        coEvery { notificationDatastore.deleteNotification(notificationId) } returns Result.success(true)
         coEvery { userDatastore.removeInvite(inviteId) } returns Result.success(Unit)
 
         // Act
@@ -399,6 +414,7 @@ class UserServiceTest {
         // Assert
         assertTrue(result.isSuccess)
         coVerify { organizationDatastore.addUserToOrganization(userId, orgId, UserRole.USER) }
+        coVerify { notificationDatastore.deleteNotification(notificationId) }
         coVerify { userDatastore.removeInvite(inviteId) }
     }
 
@@ -496,6 +512,7 @@ class UserServiceTest {
         val orgId = OrganizationId("org123")
         val email = "test@example.com"
         val futureTime = clock.now() + 7.days
+        val notificationId = com.cramsan.edifikana.lib.model.NotificationId("notif123")
 
         val invite = Invite(
             id = inviteId,
@@ -507,8 +524,13 @@ class UserServiceTest {
         val user = mockk<User>()
         every { user.email } returns email
 
+        val notification = mockk<com.cramsan.edifikana.server.service.models.Notification>()
+        every { notification.id } returns notificationId
+
         coEvery { userDatastore.getInvite(inviteId) } returns Result.success(invite)
         coEvery { userDatastore.getUser(userId) } returns Result.success(user)
+        coEvery { notificationDatastore.getNotificationByInvite(inviteId) } returns Result.success(notification)
+        coEvery { notificationDatastore.deleteNotification(notificationId) } returns Result.success(true)
         coEvery { userDatastore.removeInvite(inviteId) } returns Result.success(Unit)
 
         // Act
@@ -516,6 +538,7 @@ class UserServiceTest {
 
         // Assert
         assertTrue(result.isSuccess)
+        coVerify { notificationDatastore.deleteNotification(notificationId) }
         coVerify { userDatastore.removeInvite(inviteId) }
     }
 

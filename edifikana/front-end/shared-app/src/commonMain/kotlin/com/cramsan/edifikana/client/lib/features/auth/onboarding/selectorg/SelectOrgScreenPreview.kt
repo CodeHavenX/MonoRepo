@@ -19,7 +19,6 @@ private fun SelectOrgScreenPreviewNoInvites() = AppTheme {
     )
 }
 
-
 /**
  * Preview for the SelectOrg screen with existing invites.
  */

@@ -2,9 +2,9 @@ package com.cramsan.edifikana.server.controller
 
 import com.cramsan.architecture.server.test.startTestKoin
 import com.cramsan.architecture.server.test.testBackEndApplication
+import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.edifikana.lib.model.NotificationId
 import com.cramsan.edifikana.lib.model.NotificationType
-import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.serialization.createJson
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
@@ -59,8 +59,6 @@ class NotificationControllerTest : CoroutineTest(), KoinTest {
     private fun createTestNotification(
         notificationId: NotificationId = NotificationId("notif123"),
         recipientUserId: UserId = UserId("user123"),
-        recipientEmail: String = "test@example.com",
-        organizationId: OrganizationId = OrganizationId("org123"),
         notificationType: NotificationType = NotificationType.INVITE,
         isRead: Boolean = false,
     ): Notification {
@@ -68,12 +66,12 @@ class NotificationControllerTest : CoroutineTest(), KoinTest {
         return Notification(
             id = notificationId,
             recipientUserId = recipientUserId,
-            recipientEmail = recipientEmail,
-            organizationId = organizationId,
             notificationType = notificationType,
+            description = "Test notification",
             isRead = isRead,
             createdAt = clock.now(),
             readAt = null,
+            inviteId = if (notificationType == NotificationType.INVITE) InviteId("invite123") else null,
         )
     }
 
@@ -159,7 +157,7 @@ class NotificationControllerTest : CoroutineTest(), KoinTest {
         assertEquals(HttpStatusCode.OK, response.status)
         val body = response.bodyAsText()
         assertTrue(body.contains("notif123"))
-        assertTrue(body.contains("org123"))
+        assertTrue(body.contains("Test notification"))
         coVerify { notificationService.getNotification(notificationId) }
     }
 

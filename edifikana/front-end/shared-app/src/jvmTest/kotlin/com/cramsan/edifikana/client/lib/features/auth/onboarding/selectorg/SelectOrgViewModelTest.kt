@@ -5,6 +5,7 @@ import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
+import com.cramsan.edifikana.client.lib.managers.NotificationManager
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
 import com.cramsan.framework.core.compose.EventBus
@@ -40,6 +41,8 @@ class SelectOrgViewModelTest : CoroutineTest() {
 
     private lateinit var authManager: AuthManager
 
+    private lateinit var notificationManager: NotificationManager
+
     @BeforeTest
     fun setupTest() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
@@ -47,6 +50,7 @@ class SelectOrgViewModelTest : CoroutineTest() {
         applicationEventReceiver = EventBus()
         windowEventBus = EventBus()
         authManager = mockk()
+        notificationManager = mockk(relaxed = true)
         coEvery { authManager.signOut() } returns Result.success(Unit)
         val dependencies = ViewModelDependencies(
             appScope = testCoroutineScope,
@@ -58,13 +62,14 @@ class SelectOrgViewModelTest : CoroutineTest() {
 
         viewModel = SelectOrgViewModel(
             authManager = authManager,
+            notificationManager = notificationManager,
             dependencies = dependencies,
         )
     }
 
     @Test
     fun `test initial ui state`() = runCoroutineTest {
-        assertEquals(SelectOrgUIState, viewModel.uiState.value)
+        assertEquals(SelectOrgUIState.Default, viewModel.uiState.value)
     }
 
     @Test

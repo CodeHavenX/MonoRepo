@@ -12,6 +12,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import kotlin.time.Clock
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.ExperimentalTime
 
 /**
@@ -35,22 +36,24 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `createNotification should create notification without user ID`() = runCoroutineTest {
         // Arrange
-        val email = "${testPrefix}_notify@test.com"
         val organizationId = createTestOrganization("org_$testPrefix", "")
+        val expiration = clock.now() + 5.minutes
+        val inviteId = createTestInvite("${testPrefix}_invite@test.com", organizationId, expiration)
+        val description = "You have been invited to join org_$testPrefix"
 
         // Act
         val result = notificationDatastore.createNotification(
             recipientUserId = null,
-            recipientEmail = email,
-            organizationId = organizationId,
             notificationType = NotificationType.INVITE,
+            description = description,
+            inviteId = inviteId,
         ).registerNotificationForDeletion()
 
         // Assert
         assertTrue(result.isSuccess)
         val notification = result.getOrThrow()
-        assertEquals(email, notification.recipientEmail)
-        assertEquals(organizationId, notification.organizationId)
+        assertEquals(description, notification.description)
+        assertEquals(inviteId, notification.inviteId)
         assertEquals(NotificationType.INVITE, notification.notificationType)
         assertNull(notification.recipientUserId)
         assertFalse(notification.isRead)
@@ -63,25 +66,27 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `createNotification should create notification with user ID`() = runCoroutineTest {
         // Arrange
-        val email = "${testPrefix}_notify@test.com"
         val userId = createTestUser("${testPrefix}_user@test.com")
         val organizationId = createTestOrganization("org_$testPrefix", "")
+        val expiration = clock.now() + 5.minutes
+        val inviteId = createTestInvite("${testPrefix}_invite@test.com", organizationId, expiration)
+        val description = "You have been invited to join org_$testPrefix"
 
         // Act
         val result = notificationDatastore.createNotification(
             recipientUserId = userId,
-            recipientEmail = email,
-            organizationId = organizationId,
-            notificationType = NotificationType.SYSTEM,
+            notificationType = NotificationType.INVITE,
+            description = description,
+            inviteId = inviteId,
         ).registerNotificationForDeletion()
 
         // Assert
         assertTrue(result.isSuccess)
         val notification = result.getOrThrow()
-        assertEquals(email, notification.recipientEmail)
+        assertEquals(description, notification.description)
         assertEquals(userId, notification.recipientUserId)
-        assertEquals(organizationId, notification.organizationId)
-        assertEquals(NotificationType.SYSTEM, notification.notificationType)
+        assertEquals(inviteId, notification.inviteId)
+        assertEquals(NotificationType.INVITE, notification.notificationType)
         assertFalse(notification.isRead)
     }
 
@@ -91,13 +96,15 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `getNotification should return created notification`() = runCoroutineTest {
         // Arrange
-        val email = "${testPrefix}_notify@test.com"
         val organizationId = createTestOrganization("org_$testPrefix", "")
+        val expiration = clock.now() + 5.minutes
+        val inviteId = createTestInvite("${testPrefix}_invite@test.com", organizationId, expiration)
+        val description = "You have been invited to join org_$testPrefix"
         val createResult = notificationDatastore.createNotification(
             recipientUserId = null,
-            recipientEmail = email,
-            organizationId = organizationId,
             notificationType = NotificationType.INVITE,
+            description = description,
+            inviteId = inviteId,
         ).registerNotificationForDeletion()
         val created = createResult.getOrThrow()
 
@@ -109,8 +116,8 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val fetched = getResult.getOrThrow()
         assertNotNull(fetched)
         assertEquals(created.id, fetched.id)
-        assertEquals(email, fetched.recipientEmail)
-        assertEquals(organizationId, fetched.organizationId)
+        assertEquals(description, fetched.description)
+        assertEquals(inviteId, fetched.inviteId)
     }
 
     /**
@@ -137,20 +144,23 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
         // Arrange
         val userId = createTestUser("${testPrefix}_user@test.com")
         val organizationId = createTestOrganization("org_$testPrefix", "")
+        val expiration = clock.now() + 5.minutes
+        val inviteId1 = createTestInvite("${testPrefix}_1@test.com", organizationId, expiration)
+        val inviteId2 = createTestInvite("${testPrefix}_2@test.com", organizationId, expiration)
 
         // Create two notifications for the user
         notificationDatastore.createNotification(
             recipientUserId = userId,
-            recipientEmail = "${testPrefix}_1@test.com",
-            organizationId = organizationId,
             notificationType = NotificationType.INVITE,
+            description = "Invite notification 1",
+            inviteId = inviteId1,
         ).registerNotificationForDeletion()
 
         notificationDatastore.createNotification(
             recipientUserId = userId,
-            recipientEmail = "${testPrefix}_2@test.com",
-            organizationId = organizationId,
-            notificationType = NotificationType.SYSTEM,
+            notificationType = NotificationType.INVITE,
+            description = "Invite notification 2",
+            inviteId = inviteId2,
         ).registerNotificationForDeletion()
 
         // Act
@@ -171,13 +181,16 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
         // Arrange
         val userId = createTestUser("${testPrefix}_user@test.com")
         val organizationId = createTestOrganization("org_$testPrefix", "")
+        val expiration = clock.now() + 5.minutes
+        val inviteId1 = createTestInvite("${testPrefix}_1@test.com", organizationId, expiration)
+        val inviteId2 = createTestInvite("${testPrefix}_2@test.com", organizationId, expiration)
 
         // Create first notification and mark as read
         val first = notificationDatastore.createNotification(
             recipientUserId = userId,
-            recipientEmail = "${testPrefix}_1@test.com",
-            organizationId = organizationId,
             notificationType = NotificationType.INVITE,
+            description = "Invite notification 1",
+            inviteId = inviteId1,
         ).registerNotificationForDeletion().getOrThrow()
 
         notificationDatastore.markAsRead(first.id)
@@ -185,9 +198,9 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
         // Create second notification (unread)
         notificationDatastore.createNotification(
             recipientUserId = userId,
-            recipientEmail = "${testPrefix}_2@test.com",
-            organizationId = organizationId,
-            notificationType = NotificationType.SYSTEM,
+            notificationType = NotificationType.INVITE,
+            description = "Invite notification 2",
+            inviteId = inviteId2,
         ).registerNotificationForDeletion()
 
         // Act
@@ -208,14 +221,16 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
         // Arrange
         val userId = createTestUser("${testPrefix}_user@test.com")
         val organizationId = createTestOrganization("org_$testPrefix", "")
+        val expiration = clock.now() + 5.minutes
 
         // Create three notifications
         repeat(3) { i ->
+            val inviteId = createTestInvite("${testPrefix}_$i@test.com", organizationId, expiration)
             notificationDatastore.createNotification(
                 recipientUserId = userId,
-                recipientEmail = "${testPrefix}_$i@test.com",
-                organizationId = organizationId,
                 notificationType = NotificationType.INVITE,
+                description = "Invite notification $i",
+                inviteId = inviteId,
             ).registerNotificationForDeletion()
         }
 
@@ -229,61 +244,19 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     /**
-     * Tests that getNotificationsByEmail returns notifications for an email.
-     */
-    @Test
-    fun `getNotificationsByEmail should return notifications for email`() = runCoroutineTest {
-        // Arrange
-        val email = "${testPrefix}_notify@test.com"
-        val organizationId = createTestOrganization("org_$testPrefix", "")
-
-        notificationDatastore.createNotification(
-            recipientUserId = null,
-            recipientEmail = email,
-            organizationId = organizationId,
-            notificationType = NotificationType.INVITE,
-        ).registerNotificationForDeletion()
-
-        // Act
-        val result = notificationDatastore.getNotificationsByEmail(email)
-
-        // Assert
-        assertTrue(result.isSuccess)
-        val notifications = result.getOrThrow()
-        assertEquals(1, notifications.size)
-        assertEquals(email, notifications.first().recipientEmail)
-    }
-
-    /**
-     * Tests that getNotificationsByEmail returns empty list for non-existent email.
-     */
-    @Test
-    fun `getNotificationsByEmail should return empty list for non-existent email`() = runCoroutineTest {
-        // Arrange
-        val email = "${testPrefix}_nonexistent@test.com"
-
-        // Act
-        val result = notificationDatastore.getNotificationsByEmail(email)
-
-        // Assert
-        assertTrue(result.isSuccess)
-        val notifications = result.getOrThrow()
-        assertTrue(notifications.isEmpty())
-    }
-
-    /**
      * Tests that markAsRead marks a notification as read.
      */
     @Test
     fun `markAsRead should mark notification as read`() = runCoroutineTest {
         // Arrange
-        val email = "${testPrefix}_notify@test.com"
         val organizationId = createTestOrganization("org_$testPrefix", "")
+        val expiration = clock.now() + 5.minutes
+        val inviteId = createTestInvite("${testPrefix}_notify@test.com", organizationId, expiration)
         val created = notificationDatastore.createNotification(
             recipientUserId = null,
-            recipientEmail = email,
-            organizationId = organizationId,
             notificationType = NotificationType.INVITE,
+            description = "Test invite notification",
+            inviteId = inviteId,
         ).registerNotificationForDeletion().getOrThrow()
 
         assertFalse(created.isRead)
@@ -319,13 +292,14 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `deleteNotification should delete notification`() = runCoroutineTest {
         // Arrange
-        val email = "${testPrefix}_notify@test.com"
         val organizationId = createTestOrganization("org_$testPrefix", "")
+        val expiration = clock.now() + 5.minutes
+        val inviteId = createTestInvite("${testPrefix}_notify@test.com", organizationId, expiration)
         val created = notificationDatastore.createNotification(
             recipientUserId = null,
-            recipientEmail = email,
-            organizationId = organizationId,
             notificationType = NotificationType.INVITE,
+            description = "Test invite notification",
+            inviteId = inviteId,
         ).getOrThrow() // Not registering for deletion since we're deleting it
 
         // Act
@@ -358,111 +332,47 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     /**
-     * Tests that linkNotificationsToUser links notifications to a user.
+     * Tests that getNotificationByInvite returns notification for an invite.
      */
     @Test
-    fun `linkNotificationsToUser should link notifications to user`() = runCoroutineTest {
+    fun `getNotificationByInvite should return notification for invite`() = runCoroutineTest {
         // Arrange
-        val email = "${testPrefix}_link@test.com"
         val organizationId = createTestOrganization("org_$testPrefix", "")
-
-        // Create notifications without user ID
-        notificationDatastore.createNotification(
+        val expiration = clock.now() + 5.minutes
+        val inviteId = createTestInvite("${testPrefix}_invite@test.com", organizationId, expiration)
+        val description = "You have been invited to join org_$testPrefix"
+        val createResult = notificationDatastore.createNotification(
             recipientUserId = null,
-            recipientEmail = email,
-            organizationId = organizationId,
             notificationType = NotificationType.INVITE,
+            description = description,
+            inviteId = inviteId,
         ).registerNotificationForDeletion()
-
-        notificationDatastore.createNotification(
-            recipientUserId = null,
-            recipientEmail = email,
-            organizationId = organizationId,
-            notificationType = NotificationType.SYSTEM,
-        ).registerNotificationForDeletion()
-
-        // Create user
-        val userId = createTestUser("${testPrefix}_newuser@test.com")
+        val created = createResult.getOrThrow()
 
         // Act
-        val result = notificationDatastore.linkNotificationsToUser(email, userId)
+        val getResult = notificationDatastore.getNotificationByInvite(inviteId)
 
         // Assert
-        assertTrue(result.isSuccess)
-        assertEquals(2, result.getOrThrow())
-
-        // Verify notifications are now linked to user
-        val userNotifications = notificationDatastore.getNotificationsForUser(userId, unreadOnly = false, limit = null)
-        assertTrue(userNotifications.isSuccess)
-        assertEquals(2, userNotifications.getOrThrow().size)
-        assertTrue(userNotifications.getOrThrow().all { it.recipientUserId == userId })
+        assertTrue(getResult.isSuccess)
+        val fetched = getResult.getOrThrow()
+        assertNotNull(fetched)
+        assertEquals(created.id, fetched.id)
+        assertEquals(inviteId, fetched.inviteId)
     }
 
     /**
-     * Tests that linkNotificationsToUser returns 0 when no notifications match.
+     * Tests that getNotificationByInvite returns null for non-existent invite.
      */
     @Test
-    fun `linkNotificationsToUser should return 0 when no notifications match`() = runCoroutineTest {
+    fun `getNotificationByInvite should return null for non-existent invite`() = runCoroutineTest {
         // Arrange
-        val email = "${testPrefix}_nomatch@test.com"
-        val userId = createTestUser("${testPrefix}_user@test.com")
+        val fakeInviteId = com.cramsan.edifikana.lib.model.InviteId("00000000-0000-0000-0000-000000000000")
 
         // Act
-        val result = notificationDatastore.linkNotificationsToUser(email, userId)
+        val result = notificationDatastore.getNotificationByInvite(fakeInviteId)
 
         // Assert
         assertTrue(result.isSuccess)
-        assertEquals(0, result.getOrThrow())
-    }
-
-    /**
-     * Tests that linkNotificationsToUser only links notifications without a user ID.
-     */
-    @Test
-    fun `linkNotificationsToUser should only link notifications without user ID`() = runCoroutineTest {
-        // Arrange
-        val email = "${testPrefix}_partial@test.com"
-        val organizationId = createTestOrganization("org_$testPrefix", "")
-        val existingUserId = createTestUser("${testPrefix}_existing@test.com")
-        val newUserId = createTestUser("${testPrefix}_new@test.com")
-
-        // Create notification already linked to a user
-        notificationDatastore.createNotification(
-            recipientUserId = existingUserId,
-            recipientEmail = email,
-            organizationId = organizationId,
-            notificationType = NotificationType.INVITE,
-        ).registerNotificationForDeletion()
-
-        // Create notification without user ID
-        notificationDatastore.createNotification(
-            recipientUserId = null,
-            recipientEmail = email,
-            organizationId = organizationId,
-            notificationType = NotificationType.SYSTEM,
-        ).registerNotificationForDeletion()
-
-        // Act
-        val result = notificationDatastore.linkNotificationsToUser(email, newUserId)
-
-        // Assert
-        assertTrue(result.isSuccess)
-        assertEquals(1, result.getOrThrow()) // Only one should be linked
-
-        // Verify the existing one is still linked to the original user
-        val existingUserNotifications = notificationDatastore.getNotificationsForUser(
-            existingUserId,
-            unreadOnly = false,
-            limit = null
-        )
-        assertEquals(1, existingUserNotifications.getOrThrow().size)
-
-        // Verify the new user has one notification
-        val newUserNotifications = notificationDatastore.getNotificationsForUser(
-            newUserId,
-            unreadOnly = false,
-            limit = null
-        )
-        assertEquals(1, newUserNotifications.getOrThrow().size)
+        assertNull(result.getOrThrow())
     }
 }

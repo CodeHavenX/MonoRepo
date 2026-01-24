@@ -2,7 +2,6 @@ package com.cramsan.edifikana.client.lib.features.account.notifications
 
 import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.edifikana.lib.model.NotificationId
-import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.framework.core.compose.ViewModelUIState
 
 /**

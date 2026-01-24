@@ -4,7 +4,6 @@ import com.cramsan.edifikana.client.lib.models.Notification
 import com.cramsan.edifikana.client.lib.service.NotificationService
 import com.cramsan.edifikana.lib.model.NotificationId
 import com.cramsan.edifikana.lib.model.NotificationType
-import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.logging.EventLogger
@@ -57,8 +56,8 @@ class NotificationManagerTest : CoroutineTest() {
         val notifications = listOf(
             Notification(
                 id = NotificationId("1"),
-                organizationId = OrganizationId("org-1"),
                 type = NotificationType.INVITE,
+                description = "You have been invited",
                 isRead = false,
                 createdAt = Instant.fromEpochSeconds(0),
                 readAt = null,
@@ -102,8 +101,8 @@ class NotificationManagerTest : CoroutineTest() {
         val notificationId = NotificationId("1")
         val notification = Notification(
             id = notificationId,
-            organizationId = OrganizationId("org-1"),
             type = NotificationType.SYSTEM,
+            description = "System notification",
             isRead = false,
             createdAt = Instant.fromEpochSeconds(0),
             readAt = null,
@@ -129,8 +128,8 @@ class NotificationManagerTest : CoroutineTest() {
         val notificationId = NotificationId("1")
         val notification = Notification(
             id = notificationId,
-            organizationId = OrganizationId("org-1"),
             type = NotificationType.SYSTEM,
+            description = "System notification",
             isRead = true,
             createdAt = Instant.fromEpochSeconds(0),
             readAt = Instant.fromEpochSeconds(1),

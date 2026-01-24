@@ -1,8 +1,8 @@
 package com.cramsan.edifikana.server
 
+import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.edifikana.lib.model.NotificationId
 import com.cramsan.edifikana.lib.model.NotificationType
-import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.model.network.AuthMetadataNetworkResponse
 import com.cramsan.edifikana.lib.model.network.NotificationNetworkResponse
@@ -60,20 +60,21 @@ class NetworkMapperTest {
         val notification = Notification(
             id = NotificationId("notif123"),
             recipientUserId = UserId("user123"),
-            recipientEmail = "test@test.com",
-            organizationId = OrganizationId("org123"),
             notificationType = NotificationType.INVITE,
+            description = "You have been invited to join Test Org",
             isRead = false,
             createdAt = createdAt,
             readAt = null,
+            inviteId = InviteId("invite123"),
         )
         val expectedResponse = NotificationNetworkResponse(
             id = NotificationId("notif123"),
-            organizationId = OrganizationId("org123"),
             notificationType = NotificationType.INVITE,
+            description = "You have been invited to join Test Org",
             isRead = false,
             createdAt = createdAt.epochSeconds,
             readAt = null,
+            inviteId = InviteId("invite123"),
         )
 
         // Act
@@ -95,20 +96,21 @@ class NetworkMapperTest {
         val notification = Notification(
             id = NotificationId("notif123"),
             recipientUserId = UserId("user123"),
-            recipientEmail = "test@test.com",
-            organizationId = OrganizationId("org123"),
             notificationType = NotificationType.SYSTEM,
+            description = "System maintenance scheduled",
             isRead = true,
             createdAt = createdAt,
             readAt = readAt,
+            inviteId = null,
         )
         val expectedResponse = NotificationNetworkResponse(
             id = NotificationId("notif123"),
-            organizationId = OrganizationId("org123"),
             notificationType = NotificationType.SYSTEM,
+            description = "System maintenance scheduled",
             isRead = true,
             createdAt = createdAt.epochSeconds,
             readAt = readAt.epochSeconds,
+            inviteId = null,
         )
 
         // Act

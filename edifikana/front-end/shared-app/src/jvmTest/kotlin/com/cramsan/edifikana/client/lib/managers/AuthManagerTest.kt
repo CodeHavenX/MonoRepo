@@ -5,9 +5,11 @@ import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.client.lib.service.AuthService
 import com.cramsan.edifikana.client.lib.service.OrganizationService
 import com.cramsan.edifikana.client.lib.service.PropertyService
+import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.UserRole
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.logging.EventLogger
@@ -189,12 +191,13 @@ class AuthManagerTest : CoroutineTest() {
         // Arrange
         val email = "test@example.com"
         val organizationId = OrganizationId("org-1")
-        coEvery { authService.inviteEmployee(email, organizationId) } returns Result.success(Unit)
+        val role = UserRole.EMPLOYEE
+        coEvery { authService.inviteEmployee(email, organizationId, role) } returns Result.success(Unit)
         // Act
-        val result = manager.inviteEmployee(email, organizationId)
+        val result = manager.inviteEmployee(email, organizationId, role)
         // Assert
         assertTrue(result.isSuccess)
-        coVerify { authService.inviteEmployee(email, organizationId) }
+        coVerify { authService.inviteEmployee(email, organizationId, role) }
     }
 
     /**
@@ -231,6 +234,76 @@ class AuthManagerTest : CoroutineTest() {
         // Assert
         assertTrue(result.isFailure)
         coVerify { authService.checkUserExists(email) }
+    }
+
+    /**
+     * Tests that acceptInvite calls the service and returns success.
+     */
+    @Test
+    fun `acceptInvite calls service and returns success`() = runTest {
+        // Arrange
+        val inviteId = InviteId("invite-1")
+        coEvery { authService.acceptInvite(inviteId) } returns Result.success(Unit)
+
+        // Act
+        val result = manager.acceptInvite(inviteId)
+
+        // Assert
+        assertTrue(result.isSuccess)
+        coVerify { authService.acceptInvite(inviteId) }
+    }
+
+    /**
+     * Tests that acceptInvite returns failure when service fails.
+     */
+    @Test
+    fun `acceptInvite returns failure when service errors`() = runTest {
+        // Arrange
+        val inviteId = InviteId("invite-1")
+        val exception = Exception("accept failed")
+        coEvery { authService.acceptInvite(inviteId) } returns Result.failure(exception)
+
+        // Act
+        val result = manager.acceptInvite(inviteId)
+
+        // Assert
+        assertTrue(result.isFailure)
+        coVerify { authService.acceptInvite(inviteId) }
+    }
+
+    /**
+     * Tests that declineInvite calls the service and returns success.
+     */
+    @Test
+    fun `declineInvite calls service and returns success`() = runTest {
+        // Arrange
+        val inviteId = InviteId("invite-1")
+        coEvery { authService.declineInvite(inviteId) } returns Result.success(Unit)
+
+        // Act
+        val result = manager.declineInvite(inviteId)
+
+        // Assert
+        assertTrue(result.isSuccess)
+        coVerify { authService.declineInvite(inviteId) }
+    }
+
+    /**
+     * Tests that declineInvite returns failure when service fails.
+     */
+    @Test
+    fun `declineInvite returns failure when service errors`() = runTest {
+        // Arrange
+        val inviteId = InviteId("invite-1")
+        val exception = Exception("decline failed")
+        coEvery { authService.declineInvite(inviteId) } returns Result.failure(exception)
+
+        // Act
+        val result = manager.declineInvite(inviteId)
+
+        // Assert
+        assertTrue(result.isFailure)
+        coVerify { authService.declineInvite(inviteId) }
     }
 
 }

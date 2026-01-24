@@ -21,6 +21,7 @@ import com.cramsan.edifikana.server.service.models.Organization
 import com.cramsan.edifikana.server.service.models.Property
 import com.cramsan.edifikana.server.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.service.models.User
+import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.test.CoroutineTest
 import com.cramsan.framework.utils.password.generateRandomPassword
 import io.github.jan.supabase.SupabaseClient
@@ -147,13 +148,15 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
         email: String,
         organizationId: OrganizationId,
         expiration: Instant,
+        role: UserRole = UserRole.USER,
     ): InviteId {
         val inviteId = runBlocking {
             userDatastore.recordInvite(
                 email = email,
                 organizationId = organizationId,
                 expiration = expiration,
-            ).getOrThrow().inviteId
+                role = role,
+            ).getOrThrow().id
         }
         registerInviteForDeletion(inviteId)
         return inviteId
@@ -197,13 +200,13 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
 
     fun Result<Invite>.registerInviteForDeletion(): Result<Invite> {
         return this.onSuccess { invite ->
-            registerInviteForDeletion(invite.inviteId)
+            registerInviteForDeletion(invite.id)
         }
     }
 
     fun Result<Notification>.registerNotificationForDeletion(): Result<Notification> {
         return this.onSuccess { notification ->
-            registerNotificationForDeletion(notification.notificationId)
+            registerNotificationForDeletion(notification.id)
         }
     }
 

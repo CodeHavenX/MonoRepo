@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.server.controller
 
 import com.cramsan.edifikana.api.UserApi
+import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.model.network.CheckUserNetworkResponse
@@ -203,8 +204,9 @@ class UserController(
     }
 
     /**
-     * Handle a call to invite a user to the system via email.
+     * Handle a call to invite a user to the system via email with a specified role.
      * Invites a user with the given [inviteRequest] if the authenticated context has the required role.
+     * The inviter cannot assign a role higher than their own.
      * Returns [NoResponseBody] to indicate successful invitation.
      * Throws [UnauthorizedException] if the user does not have permission.
      */
@@ -215,13 +217,22 @@ class UserController(
     ): NoResponseBody {
         val email = inviteRequest.email
         val orgId = inviteRequest.organizationId
+        val inviteRole: UserRole = inviteRequest.role.toServiceUserRole()
+
         if (!rbacService.hasRoleOrHigher(context, orgId, UserRole.MANAGER)) {
             throw UnauthorizedException(unauthorizedMsg)
+        }
+
+        // Validate that the inviter cannot assign a role higher than their own
+        val inviterRole = rbacService.getUserRoleForOrganizationAction(context, orgId)
+        if (inviteRole.level < inviterRole.level) {
+            throw UnauthorizedException("Cannot invite users with higher privileges than your own")
         }
 
         userService.inviteUser(
             email,
             orgId,
+            inviteRole,
         ).requireSuccess()
         return NoResponseBody
     }
@@ -261,6 +272,66 @@ class UserController(
     }
 
     /**
+     * Handle a call to accept a pending invitation.
+     * Accepts the invitation identified by [inviteId] for the authenticated user.
+     * Returns [NoResponseBody] to indicate successful acceptance.
+     */
+    suspend fun acceptInvite(
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+        inviteId: InviteId,
+    ): NoResponseBody {
+        val userId = context.payload.userId
+
+        userService.acceptInvite(
+            userId = userId,
+            inviteId = inviteId,
+        ).requireSuccess()
+
+        return NoResponseBody
+    }
+
+    /**
+     * Handle a call to decline a pending invitation.
+     * Declines the invitation identified by [inviteId] for the authenticated user.
+     * Returns [NoResponseBody] to indicate successful decline.
+     */
+    suspend fun declineInvite(
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+        inviteId: InviteId,
+    ): NoResponseBody {
+        val userId = context.payload.userId
+
+        userService.declineInvite(
+            userId = userId,
+            inviteId = inviteId,
+        ).requireSuccess()
+
+        return NoResponseBody
+    }
+
+    /**
+     * Handle a call to cancel a pending invite (manager action).
+     * Cancels the invitation identified by [inviteId] if the authenticated context has the required role.
+     * Returns [NoResponseBody] to indicate successful cancellation.
+     * Throws [UnauthorizedException] if the user does not have permission.
+     */
+    suspend fun cancelInvite(
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+        inviteId: InviteId,
+    ): NoResponseBody {
+        // First get the organization ID for authorization check
+        val orgId = userService.getInviteOrganization(inviteId).requireSuccess()
+
+        if (!rbacService.hasRoleOrHigher(context, orgId, UserRole.MANAGER)) {
+            throw UnauthorizedException(unauthorizedMsg)
+        }
+
+        userService.cancelInvite(inviteId).requireSuccess()
+
+        return NoResponseBody
+    }
+
+    /**
      * Registers the routes for the user controller. The [route] parameter is the root path for the controller.
      */
     @OptIn(NetworkModel::class)
@@ -292,6 +363,15 @@ class UserController(
             }
             handler(api.getInvites, contextRetriever) { request ->
                 getInvites(request.context, request.pathParam)
+            }
+            handler(api.acceptInvite, contextRetriever) { request ->
+                acceptInvite(request.context, request.pathParam)
+            }
+            handler(api.declineInvite, contextRetriever) { request ->
+                declineInvite(request.context, request.pathParam)
+            }
+            handler(api.cancelInvite, contextRetriever) { request ->
+                cancelInvite(request.context, request.pathParam)
             }
             unauthenticatedHandler(api.checkUserExists, contextRetriever) { request ->
                 checkUserIsRegistered(request.queryParam.email)

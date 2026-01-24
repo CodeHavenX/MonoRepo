@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.datastore
 
+import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.edifikana.lib.model.NotificationId
 import com.cramsan.edifikana.lib.model.NotificationType
 import com.cramsan.edifikana.lib.model.OrganizationId
@@ -17,9 +18,9 @@ interface NotificationDatastore {
      */
     suspend fun createNotification(
         recipientUserId: UserId?,
-        recipientEmail: String,
-        organizationId: OrganizationId,
         notificationType: NotificationType,
+        description: String,
+        inviteId: InviteId,
     ): Result<Notification>
 
     /**
@@ -28,6 +29,14 @@ interface NotificationDatastore {
      */
     suspend fun getNotification(
         id: NotificationId,
+    ): Result<Notification?>
+
+    /**
+     * Retrieves a notification by associated invite ID.
+     * Returns the [Result] of the operation with the fetched [Notification] if found.
+     */
+    suspend fun getNotificationByInvite(
+        inviteId: InviteId,
     ): Result<Notification?>
 
     /**

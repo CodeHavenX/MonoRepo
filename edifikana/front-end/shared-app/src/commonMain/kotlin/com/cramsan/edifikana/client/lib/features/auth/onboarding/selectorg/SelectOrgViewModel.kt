@@ -4,6 +4,10 @@ import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
+import com.cramsan.edifikana.client.lib.managers.NotificationManager
+import com.cramsan.edifikana.client.lib.models.Notification
+import com.cramsan.edifikana.lib.model.InviteId
+import com.cramsan.edifikana.lib.model.NotificationType
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logI
@@ -14,12 +18,48 @@ import kotlinx.coroutines.launch
  */
 class SelectOrgViewModel(
     private val authManager: AuthManager,
+    private val notificationManager: NotificationManager,
     dependencies: ViewModelDependencies,
 ) : BaseViewModel<SelectOrgEvent, SelectOrgUIState>(
     dependencies,
-    SelectOrgUIState,
+    SelectOrgUIState.Default,
     TAG,
 ) {
+    fun initialize() {
+        logI(TAG, "Initializing SelectOrgViewModel")
+        viewModelScope.launch {
+            updateUiState { it.copy(isLoading = true) }
+            val notificationResult = notificationManager.getNotifications()
+
+            if (notificationResult.isFailure) {
+                logI(TAG, "Failed to fetch notifications: ${notificationResult.exceptionOrNull()}")
+                updateUiState { it.copy(isLoading = false) }
+                return@launch
+            }
+
+            val notifications = notificationResult.getOrDefault(emptyList()).mapNotNull {
+                it.toNotificationItemUIModel()
+            }
+
+            updateUiState {
+                it.copy(
+                    isLoading = false,
+                    inviteList = notifications,
+                )
+            }
+        }
+    }
+
+    private fun Notification.toNotificationItemUIModel(): InviteItemUIModel? {
+        if (type != NotificationType.INVITE || inviteId == null) {
+            return null
+        }
+        return InviteItemUIModel(
+            description = this.description,
+            inviteId = this.inviteId,
+        )
+    }
+
     /**
      * Handle create organization option click.
      */
@@ -54,6 +94,33 @@ class SelectOrgViewModel(
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToNavGraph(
                     EdifikanaNavGraphDestination.AuthNavGraphDestination,
+                    clearStack = true,
+                )
+            )
+        }
+    }
+
+    fun requestJoinOrganization(inviteId: InviteId) {
+        logI(TAG, "Join organization requested for inviteId: $inviteId")
+        viewModelScope.launch {
+            emitEvent(SelectOrgEvent.ShowJoinOrgConfirmation(inviteId))
+        }
+    }
+
+    fun acceptInvite(inviteId: InviteId) {
+        logI(TAG, "Accept invite clicked for inviteId: $inviteId")
+        viewModelScope.launch {
+            updateUiState { it.copy(isLoading = true) }
+            val acceptResult = authManager.acceptInvite(inviteId)
+            if (acceptResult.isFailure) {
+                logI(TAG, "Failed to accept invite: ${acceptResult.exceptionOrNull()}")
+                updateUiState { it.copy(isLoading = false) }
+                return@launch
+            }
+
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateToNavGraph(
+                    EdifikanaNavGraphDestination.HomeNavGraphDestination,
                     clearStack = true,
                 )
             )

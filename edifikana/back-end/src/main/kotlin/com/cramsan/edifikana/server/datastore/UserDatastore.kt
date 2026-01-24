@@ -1,10 +1,12 @@
 package com.cramsan.edifikana.server.datastore
 
 import com.cramsan.edifikana.lib.model.InviteId
+import com.cramsan.edifikana.lib.model.NotificationId
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.service.models.Invite
 import com.cramsan.edifikana.server.service.models.User
+import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
 import kotlin.time.Instant
@@ -82,13 +84,23 @@ interface UserDatastore {
     ): Result<Unit>
 
     /**
-     * Records an invite for a user with the given [email] and [organizationId]. Returns the [Result] of the operation.
+     * Records an invite for a user with the given [email], [organizationId], and [role].
+     * Returns the [Result] of the operation with the created [Invite].
      */
     suspend fun recordInvite(
         email: String,
         organizationId: OrganizationId,
         expiration: Instant,
+        role: UserRole,
     ): Result<Invite>
+
+    /**
+     * Retrieves an invite with the given [inviteId].
+     * Returns the [Result] of the operation with the [Invite] if found.
+     */
+    suspend fun getInvite(
+        inviteId: InviteId,
+    ): Result<Invite?>
 
     /**
      * Removes an invite with the given [inviteId]. Returns the [Result] of the operation.

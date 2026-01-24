@@ -2,8 +2,10 @@ package com.cramsan.edifikana.client.lib.service
 
 import com.cramsan.edifikana.client.lib.models.Invite
 import com.cramsan.edifikana.client.lib.models.UserModel
+import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.UserRole
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
 import kotlinx.coroutines.flow.StateFlow
@@ -103,12 +105,23 @@ interface AuthService {
     ): Result<Unit>
 
     /**
-     * Invite an employee member to the organization with the provided [organizationId] using the given [email].
+     * Invite an employee member to the organization with the provided [organizationId] using the given [email]
+     * and assign them the specified [role].
      */
-    suspend fun inviteEmployee(email: String, organizationId: OrganizationId): Result<Unit>
+    suspend fun inviteEmployee(email: String, organizationId: OrganizationId, role: UserRole): Result<Unit>
 
     /**
      * Retrieves all pending invites for the given [organizationId].
      */
     suspend fun getInvites(organizationId: OrganizationId): Result<List<Invite>>
+
+    /**
+     * Accept an invitation.
+     */
+    suspend fun acceptInvite(inviteId: InviteId): Result<Unit>
+
+    /**
+     * Decline an invitation.
+     */
+    suspend fun declineInvite(inviteId: InviteId): Result<Unit>
 }

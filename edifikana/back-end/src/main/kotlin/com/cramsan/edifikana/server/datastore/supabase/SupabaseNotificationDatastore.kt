@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.datastore.supabase
 
+import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.edifikana.lib.model.NotificationId
 import com.cramsan.edifikana.lib.model.NotificationType
 import com.cramsan.edifikana.lib.model.OrganizationId
@@ -25,17 +26,17 @@ class SupabaseNotificationDatastore(
 
     override suspend fun createNotification(
         recipientUserId: UserId?,
-        recipientEmail: String,
-        organizationId: OrganizationId,
         notificationType: NotificationType,
+        description: String,
+        inviteId: InviteId,
     ): Result<Notification> = runSuspendCatching(TAG) {
-        logD(TAG, "Creating notification for email: $recipientEmail")
+        logD(TAG, "Creating notification for email: $recipientUserId")
 
         val createEntity = NotificationEntity.Create(
             recipientUserId = recipientUserId?.userId,
-            recipientEmail = recipientEmail,
-            organizationId = organizationId.id,
             notificationType = notificationType.name,
+            description = description,
+            inviteId = inviteId.id,
         )
 
         val createdEntity = postgrest.from(NotificationEntity.COLLECTION).insert(createEntity) {
@@ -53,6 +54,16 @@ class SupabaseNotificationDatastore(
         postgrest.from(NotificationEntity.COLLECTION).select {
             filter {
                 eq("id", id.id)
+            }
+        }.decodeSingleOrNull<NotificationEntity>()?.toNotification()
+    }
+
+    override suspend fun getNotificationByInvite(inviteId: InviteId): Result<Notification?> = runSuspendCatching(TAG) {
+        logD(TAG, "Getting notification by invite: $inviteId")
+
+        postgrest.from(NotificationEntity.COLLECTION).select {
+            filter {
+                eq("invite_id", inviteId.id)
             }
         }.decodeSingleOrNull<NotificationEntity>()?.toNotification()
     }
@@ -150,13 +161,13 @@ class SupabaseNotificationDatastore(
 @SupabaseModel
 private fun NotificationEntity.toNotification(): Notification {
     return Notification(
-        notificationId = NotificationId(this.id),
+        id = NotificationId(this.id),
         recipientUserId = this.recipientUserId?.let { UserId(it) },
-        recipientEmail = this.recipientEmail,
-        organizationId = OrganizationId(this.organizationId),
         notificationType = NotificationType.fromString(this.notificationType),
+        description = this.description,
         isRead = this.isRead,
         createdAt = this.createdAt,
         readAt = this.readAt,
+        inviteId = this.inviteId?.let { InviteId(it) }
     )
 }

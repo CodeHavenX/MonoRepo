@@ -16,4 +16,6 @@ data class InviteUserNetworkRequest(
     val email: String,
     @SerialName("organization_id")
     val organizationId: OrganizationId,
+    @SerialName("role")
+    val role: String,
 ) : RequestBody

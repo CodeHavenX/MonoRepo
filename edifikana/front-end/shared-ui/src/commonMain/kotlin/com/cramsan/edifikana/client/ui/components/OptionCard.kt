@@ -31,6 +31,16 @@ import com.cramsan.ui.theme.Padding
 import com.cramsan.ui.theme.Size
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+/**
+ * A card representing an option with a title, description, and icon.
+ *
+ * @param title The title of the option.
+ * @param description A brief description of the option.
+ * @param icon The icon to display alongside the option.
+ * @param onClick An optional click handler for the card. If null, the card is not clickable.
+ * @param colors The colors to use for the card's background and content.
+ * @param modifier Optional [Modifier] for this card.
+ */
 @Composable
 fun OptionCard(
     title: String,
@@ -40,7 +50,7 @@ fun OptionCard(
     colors: CardColors = CardDefaults.cardColors(),
     modifier: Modifier = Modifier,
 ) {
-    Card (
+    Card(
         modifier = modifier
             .fillMaxWidth(),
         colors = colors,
@@ -56,7 +66,7 @@ fun OptionCard(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            Column (
+            Column(
                 modifier = Modifier.weight(1f),
             ) {
                 Text(

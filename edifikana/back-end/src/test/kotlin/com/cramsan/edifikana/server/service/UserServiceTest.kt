@@ -1,11 +1,15 @@
 package com.cramsan.edifikana.server.service
 
+import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.edifikana.lib.model.NotificationType
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.datastore.NotificationDatastore
+import com.cramsan.edifikana.server.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.datastore.UserDatastore
+import com.cramsan.edifikana.server.service.models.Invite
 import com.cramsan.edifikana.server.service.models.User
+import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.framework.logging.EventLogger
@@ -36,6 +40,7 @@ class UserServiceTest {
     private lateinit var userDatastore: UserDatastore
     private lateinit var userService: UserService
     private lateinit var notificationDatastore: NotificationDatastore
+    private lateinit var organizationDatastore: OrganizationDatastore
     private lateinit var testTimeSource: TestTimeSource
     private lateinit var clock: Clock
 
@@ -47,9 +52,10 @@ class UserServiceTest {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         userDatastore = mockk()
         notificationDatastore = mockk()
+        organizationDatastore = mockk()
         testTimeSource = TestTimeSource()
         clock = testTimeSource.asClock(2024, 1, 1, 0, 0)
-        userService = UserService(userDatastore, notificationDatastore, clock)
+        userService = UserService(userDatastore, notificationDatastore, organizationDatastore, clock)
     }
 
     /**
@@ -269,10 +275,11 @@ class UserServiceTest {
         val expirationTime = clock.now() + 14.days
         val userId = UserId("id")
         val user = mockk<User>()
+        val role = UserRole.USER
 
         coEvery { user.id } returns userId
         coEvery { userDatastore.getUser(email) } returns Result.success(user)
-        coEvery { userDatastore.recordInvite(email, orgId, expirationTime) } returns Result.success(mockk())
+        coEvery { userDatastore.recordInvite(email, orgId, expirationTime, role) } returns Result.success(mockk())
         coEvery {
             notificationDatastore.createNotification(
                 userId,
@@ -283,11 +290,11 @@ class UserServiceTest {
         } returns Result.success(mockk())
 
         // Act
-        val result = userService.inviteUser(email, orgId)
+        val result = userService.inviteUser(email, orgId, role)
 
         // Assert
         assertTrue(result.isSuccess)
-        coVerify { userDatastore.recordInvite(email, orgId, any()) }
+        coVerify { userDatastore.recordInvite(email, orgId, any(), role) }
         coVerify {
             notificationDatastore.createNotification(
                 userId,
@@ -309,18 +316,19 @@ class UserServiceTest {
         val expirationTime = clock.now() + 14.days
         val userId = UserId("id")
         val user = mockk<User>()
+        val role = UserRole.USER
 
         val error = Exception("Failed to record invite")
-        coEvery { userDatastore.recordInvite(email, orgId, expirationTime) } returns Result.failure(error)
+        coEvery { userDatastore.recordInvite(email, orgId, expirationTime, role) } returns Result.failure(error)
         coEvery { user.id } returns userId
         coEvery { userDatastore.getUser(email) } returns Result.success(user)
 
         // Act
-        val result = userService.inviteUser(email, orgId)
+        val result = userService.inviteUser(email, orgId, role)
 
         // Assert
         assertTrue(result.isFailure)
-        coVerify { userDatastore.recordInvite(email, orgId, any()) }
+        coVerify { userDatastore.recordInvite(email, orgId, any(), role) }
     }
 
     /**
@@ -356,5 +364,305 @@ class UserServiceTest {
         // Assert
         assertEquals(Result.success(false), result)
         coVerify { userDatastore.getUser(email) }
+    }
+
+    /**
+     * Tests that acceptInvite successfully adds user to organization.
+     */
+    @Test
+    fun `acceptInvite should add user to organization when invite is valid`() = runTest {
+        // Arrange
+        val userId = UserId("user123")
+        val inviteId = InviteId("invite123")
+        val orgId = OrganizationId("org123")
+        val email = "test@example.com"
+        val futureTime = clock.now() + 7.days
+
+        val invite = Invite(
+            id = inviteId,
+            email = email,
+            organizationId = orgId,
+            role = UserRole.USER,
+            expiration = futureTime,
+        )
+        val user = mockk<User>()
+        every { user.email } returns email
+
+        coEvery { userDatastore.getInvite(inviteId) } returns Result.success(invite)
+        coEvery { userDatastore.getUser(userId) } returns Result.success(user)
+        coEvery { organizationDatastore.addUserToOrganization(userId, orgId, UserRole.USER) } returns Result.success(Unit)
+        coEvery { userDatastore.removeInvite(inviteId) } returns Result.success(Unit)
+
+        // Act
+        val result = userService.acceptInvite(userId, inviteId)
+
+        // Assert
+        assertTrue(result.isSuccess)
+        coVerify { organizationDatastore.addUserToOrganization(userId, orgId, UserRole.USER) }
+        coVerify { userDatastore.removeInvite(inviteId) }
+    }
+
+    /**
+     * Tests that acceptInvite fails when invite is not found.
+     */
+    @Test
+    fun `acceptInvite should fail when invite is not found`() = runTest {
+        // Arrange
+        val userId = UserId("user123")
+        val inviteId = InviteId("invite123")
+
+        coEvery { userDatastore.getInvite(inviteId) } returns Result.success(null)
+
+        // Act
+        val result = userService.acceptInvite(userId, inviteId)
+
+        // Assert
+        assertTrue(result.isFailure)
+        coVerify(exactly = 0) { organizationDatastore.addUserToOrganization(any(), any(), any()) }
+    }
+
+    /**
+     * Tests that acceptInvite fails when invite is expired.
+     */
+    @Test
+    fun `acceptInvite should fail when invite is expired`() = runTest {
+        // Arrange
+        val userId = UserId("user123")
+        val inviteId = InviteId("invite123")
+        val orgId = OrganizationId("org123")
+        val email = "test@example.com"
+        val pastTime = clock.now() - 1.days
+
+        val invite = Invite(
+            id = inviteId,
+            email = email,
+            organizationId = orgId,
+            role = UserRole.USER,
+            expiration = pastTime, // Expired
+        )
+
+        coEvery { userDatastore.getInvite(inviteId) } returns Result.success(invite)
+
+        // Act
+        val result = userService.acceptInvite(userId, inviteId)
+
+        // Assert
+        assertTrue(result.isFailure)
+        coVerify(exactly = 0) { organizationDatastore.addUserToOrganization(any(), any(), any()) }
+    }
+
+    /**
+     * Tests that acceptInvite fails when user email does not match invite email.
+     */
+    @Test
+    fun `acceptInvite should fail when user email does not match invite`() = runTest {
+        // Arrange
+        val userId = UserId("user123")
+        val inviteId = InviteId("invite123")
+        val orgId = OrganizationId("org123")
+        val inviteEmail = "invite@example.com"
+        val userEmail = "different@example.com"
+        val futureTime = clock.now() + 7.days
+
+        val invite = Invite(
+            id = inviteId,
+            email = inviteEmail,
+            organizationId = orgId,
+            role = UserRole.USER,
+            expiration = futureTime,
+        )
+        val user = mockk<User>()
+        every { user.email } returns userEmail
+
+        coEvery { userDatastore.getInvite(inviteId) } returns Result.success(invite)
+        coEvery { userDatastore.getUser(userId) } returns Result.success(user)
+
+        // Act
+        val result = userService.acceptInvite(userId, inviteId)
+
+        // Assert
+        assertTrue(result.isFailure)
+        coVerify(exactly = 0) { organizationDatastore.addUserToOrganization(any(), any(), any()) }
+    }
+
+    /**
+     * Tests that declineInvite removes the invite when valid.
+     */
+    @Test
+    fun `declineInvite should remove invite when user email matches`() = runTest {
+        // Arrange
+        val userId = UserId("user123")
+        val inviteId = InviteId("invite123")
+        val orgId = OrganizationId("org123")
+        val email = "test@example.com"
+        val futureTime = clock.now() + 7.days
+
+        val invite = Invite(
+            id = inviteId,
+            email = email,
+            organizationId = orgId,
+            role = UserRole.USER,
+            expiration = futureTime,
+        )
+        val user = mockk<User>()
+        every { user.email } returns email
+
+        coEvery { userDatastore.getInvite(inviteId) } returns Result.success(invite)
+        coEvery { userDatastore.getUser(userId) } returns Result.success(user)
+        coEvery { userDatastore.removeInvite(inviteId) } returns Result.success(Unit)
+
+        // Act
+        val result = userService.declineInvite(userId, inviteId)
+
+        // Assert
+        assertTrue(result.isSuccess)
+        coVerify { userDatastore.removeInvite(inviteId) }
+    }
+
+    /**
+     * Tests that declineInvite fails when invite is not found.
+     */
+    @Test
+    fun `declineInvite should fail when invite is not found`() = runTest {
+        // Arrange
+        val userId = UserId("user123")
+        val inviteId = InviteId("invite123")
+
+        coEvery { userDatastore.getInvite(inviteId) } returns Result.success(null)
+
+        // Act
+        val result = userService.declineInvite(userId, inviteId)
+
+        // Assert
+        assertTrue(result.isFailure)
+        coVerify(exactly = 0) { userDatastore.removeInvite(any()) }
+    }
+
+    /**
+     * Tests that declineInvite fails when user email does not match invite email.
+     */
+    @Test
+    fun `declineInvite should fail when user email does not match invite`() = runTest {
+        // Arrange
+        val userId = UserId("user123")
+        val inviteId = InviteId("invite123")
+        val orgId = OrganizationId("org123")
+        val inviteEmail = "invite@example.com"
+        val userEmail = "different@example.com"
+        val futureTime = clock.now() + 7.days
+
+        val invite = Invite(
+            id = inviteId,
+            email = inviteEmail,
+            organizationId = orgId,
+            role = UserRole.USER,
+            expiration = futureTime,
+        )
+        val user = mockk<User>()
+        every { user.email } returns userEmail
+
+        coEvery { userDatastore.getInvite(inviteId) } returns Result.success(invite)
+        coEvery { userDatastore.getUser(userId) } returns Result.success(user)
+
+        // Act
+        val result = userService.declineInvite(userId, inviteId)
+
+        // Assert
+        assertTrue(result.isFailure)
+        coVerify(exactly = 0) { userDatastore.removeInvite(any()) }
+    }
+
+    /**
+     * Tests that getInviteOrganization returns the organization ID for the invite.
+     */
+    @Test
+    fun `getInviteOrganization should return organization ID`() = runTest {
+        // Arrange
+        val orgId = OrganizationId("org123")
+        val inviteId = InviteId("invite123")
+        val email = "test@example.com"
+        val futureTime = clock.now() + 7.days
+
+        val invite = Invite(
+            id = inviteId,
+            email = email,
+            organizationId = orgId,
+            role = UserRole.USER,
+            expiration = futureTime,
+        )
+
+        coEvery { userDatastore.getInvite(inviteId) } returns Result.success(invite)
+
+        // Act
+        val result = userService.getInviteOrganization(inviteId)
+
+        // Assert
+        assertTrue(result.isSuccess)
+        assertEquals(orgId, result.getOrNull())
+    }
+
+    /**
+     * Tests that getInviteOrganization fails when invite is not found.
+     */
+    @Test
+    fun `getInviteOrganization should fail when invite is not found`() = runTest {
+        // Arrange
+        val inviteId = InviteId("invite123")
+
+        coEvery { userDatastore.getInvite(inviteId) } returns Result.success(null)
+
+        // Act
+        val result = userService.getInviteOrganization(inviteId)
+
+        // Assert
+        assertTrue(result.isFailure)
+    }
+
+    /**
+     * Tests that cancelInvite removes the invite.
+     */
+    @Test
+    fun `cancelInvite should remove invite`() = runTest {
+        // Arrange
+        val orgId = OrganizationId("org123")
+        val inviteId = InviteId("invite123")
+        val email = "test@example.com"
+        val futureTime = clock.now() + 7.days
+
+        val invite = Invite(
+            id = inviteId,
+            email = email,
+            organizationId = orgId,
+            role = UserRole.USER,
+            expiration = futureTime,
+        )
+
+        coEvery { userDatastore.getInvite(inviteId) } returns Result.success(invite)
+        coEvery { userDatastore.removeInvite(inviteId) } returns Result.success(Unit)
+
+        // Act
+        val result = userService.cancelInvite(inviteId)
+
+        // Assert
+        assertTrue(result.isSuccess)
+        coVerify { userDatastore.removeInvite(inviteId) }
+    }
+
+    /**
+     * Tests that cancelInvite fails when invite is not found.
+     */
+    @Test
+    fun `cancelInvite should fail when invite is not found`() = runTest {
+        // Arrange
+        val inviteId = InviteId("invite123")
+
+        coEvery { userDatastore.getInvite(inviteId) } returns Result.success(null)
+
+        // Act
+        val result = userService.cancelInvite(inviteId)
+
+        // Assert
+        assertTrue(result.isFailure)
+        coVerify(exactly = 0) { userDatastore.removeInvite(any()) }
     }
 }

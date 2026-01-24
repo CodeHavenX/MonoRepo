@@ -3,6 +3,7 @@ package com.cramsan.edifikana.client.lib.service.impl
 import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.UserRole
 import com.cramsan.edifikana.lib.model.network.CheckUserNetworkResponse
 import com.cramsan.edifikana.lib.model.network.InviteListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.InviteNetworkResponse
@@ -548,12 +549,13 @@ class AuthServiceImplTest {
         // Arrange
         val email = "invite@example.com"
         val organizationId = OrganizationId("org-123")
+        val role = UserRole.EMPLOYEE
         ktorTestEngine.configure {
             coEvery { produceResponse(any()) } returns MockResponseData.Success("")
         }
 
         // Act
-        val result = service.inviteEmployee(email, organizationId)
+        val result = service.inviteEmployee(email, organizationId, role)
 
         // Assert
         assertTrue(result.isSuccess)
@@ -570,10 +572,16 @@ class AuthServiceImplTest {
         val inviteResponse1 = InviteNetworkResponse(
             inviteId = InviteId("invite-1"),
             email = "user1@example.com",
+            organizationId = organizationId,
+            role = "EMPLOYEE",
+            expiresAt = 1234567890L,
         )
         val inviteResponse2 = InviteNetworkResponse(
             inviteId = InviteId("invite-2"),
             email = "user2@example.com",
+            organizationId = organizationId,
+            role = "MANAGER",
+            expiresAt = 1234567891L,
         )
         ktorTestEngine.configure {
             coEvery { produceResponse(any()) } returns MockResponseData.Success(

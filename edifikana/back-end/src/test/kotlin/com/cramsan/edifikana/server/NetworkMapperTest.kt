@@ -58,7 +58,7 @@ class NetworkMapperTest {
         val createdAt = clock.now()
 
         val notification = Notification(
-            notificationId = NotificationId("notif123"),
+            id = NotificationId("notif123"),
             recipientUserId = UserId("user123"),
             recipientEmail = "test@test.com",
             organizationId = OrganizationId("org123"),
@@ -68,7 +68,7 @@ class NetworkMapperTest {
             readAt = null,
         )
         val expectedResponse = NotificationNetworkResponse(
-            notificationId = NotificationId("notif123"),
+            id = NotificationId("notif123"),
             organizationId = OrganizationId("org123"),
             notificationType = NotificationType.INVITE,
             isRead = false,
@@ -93,7 +93,7 @@ class NetworkMapperTest {
         val readAt = clock.now()
 
         val notification = Notification(
-            notificationId = NotificationId("notif123"),
+            id = NotificationId("notif123"),
             recipientUserId = UserId("user123"),
             recipientEmail = "test@test.com",
             organizationId = OrganizationId("org123"),
@@ -103,7 +103,7 @@ class NetworkMapperTest {
             readAt = readAt,
         )
         val expectedResponse = NotificationNetworkResponse(
-            notificationId = NotificationId("notif123"),
+            id = NotificationId("notif123"),
             organizationId = OrganizationId("org123"),
             notificationType = NotificationType.SYSTEM,
             isRead = true,

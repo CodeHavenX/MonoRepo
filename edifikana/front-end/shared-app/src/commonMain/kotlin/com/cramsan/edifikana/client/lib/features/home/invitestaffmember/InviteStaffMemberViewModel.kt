@@ -3,6 +3,7 @@ package com.cramsan.edifikana.client.lib.features.home.invitestaffmember
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.lib.model.OrganizationId
+import com.cramsan.edifikana.lib.model.UserRole
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.utils.loginvalidation.validateEmail
@@ -26,9 +27,9 @@ class InviteStaffMemberViewModel(
     fun initialize(orgId: OrganizationId) {
         viewModelScope.launch {
             val roles = listOf(
-                StaffRoleUIModel("admin", "Admin"),
-                StaffRoleUIModel("manager", "Manager"),
-                StaffRoleUIModel("employee", "Employee"),
+                StaffRoleUIModel(UserRole.ADMIN, "Admin"),
+                StaffRoleUIModel(UserRole.MANAGER, "Manager"),
+                StaffRoleUIModel(UserRole.EMPLOYEE, "Employee"),
             )
             updateUiState { it.copy(orgId = orgId, roles = roles) }
         }
@@ -66,7 +67,7 @@ class InviteStaffMemberViewModel(
             }
 
             updateUiState { it.copy(isLoading = true) }
-            authManager.inviteEmployee(email, organizationId).onFailure {
+            authManager.inviteEmployee(email, organizationId, role.role).onFailure {
                 updateUiState { it.copy(isLoading = false) }
                 emitWindowEvent(
                     EdifikanaWindowsEvent.ShowSnackbar("Failed to send invitation")

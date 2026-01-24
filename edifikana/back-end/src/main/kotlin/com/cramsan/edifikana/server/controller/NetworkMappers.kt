@@ -21,6 +21,7 @@ import com.cramsan.edifikana.server.service.models.Organization
 import com.cramsan.edifikana.server.service.models.Property
 import com.cramsan.edifikana.server.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.service.models.User
+import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.annotations.NetworkModel
 import kotlin.time.ExperimentalTime
 
@@ -137,8 +138,11 @@ fun Organization.toOrganizationNetworkResponse(): OrganizationNetworkResponse {
 @OptIn(NetworkModel::class)
 fun Invite.toInviteNetworkResponse(): InviteNetworkResponse {
     return InviteNetworkResponse(
-        inviteId = inviteId,
+        inviteId = id,
         email = email,
+        organizationId = organizationId,
+        role = role.name,
+        expiresAt = expiration.epochSeconds,
     )
 }
 
@@ -148,11 +152,28 @@ fun Invite.toInviteNetworkResponse(): InviteNetworkResponse {
 @OptIn(NetworkModel::class)
 fun Notification.toNotificationNetworkResponse(): NotificationNetworkResponse {
     return NotificationNetworkResponse(
-        notificationId = notificationId,
-        organizationId = organizationId,
+        id = id,
         notificationType = notificationType,
+        description = description,
         isRead = isRead,
         createdAt = createdAt.epochSeconds,
         readAt = readAt?.epochSeconds,
+        inviteId = inviteId,
     )
+}
+
+/**
+ * Converts a string to a [UserRole].
+ */
+fun String.toServiceUserRole(): UserRole {
+    return when (this) {
+        "SUPERUSER" -> UserRole.SUPERUSER
+        "OWNER" -> UserRole.OWNER
+        "ADMIN" -> UserRole.ADMIN
+        "MANAGER" -> UserRole.MANAGER
+        "EMPLOYEE" -> UserRole.EMPLOYEE
+        "USER" -> UserRole.USER
+        "UNAUTHORIZED" -> UserRole.UNAUTHORIZED
+        else -> throw IllegalArgumentException("Invalid UserRole value: $this")
+    }
 }

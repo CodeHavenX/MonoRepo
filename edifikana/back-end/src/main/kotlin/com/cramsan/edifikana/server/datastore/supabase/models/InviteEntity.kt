@@ -21,6 +21,8 @@ data class InviteEntity(
     val createdAt: Instant,
     @SerialName("expiration")
     val expiration: Instant,
+    @SerialName("role")
+    val role: String,
 ) {
 
     /**
@@ -37,6 +39,8 @@ data class InviteEntity(
         val createdAt: Instant,
         @SerialName("expiration")
         val expiration: Instant,
+        @SerialName("role")
+        val role: String,
     )
 
     companion object {

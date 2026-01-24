@@ -9,6 +9,8 @@ import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.UserRole
+import kotlinx.datetime.Instant
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
 import com.cramsan.framework.core.compose.EventBus
@@ -28,7 +30,9 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 import kotlin.test.assertTrue
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class EmployeeOverviewViewModelTest : CoroutineTest() {
 
     private lateinit var viewModel: EmployeeOverviewViewModel
@@ -94,6 +98,9 @@ class EmployeeOverviewViewModelTest : CoroutineTest() {
             Invite(
                 id = InviteId("invite-1"),
                 email = "pending@example.com",
+                organizationId = organizationId,
+                role = UserRole.EMPLOYEE,
+                expiresAt = Instant.fromEpochSeconds(0),
             ),
         )
 
@@ -135,6 +142,9 @@ class EmployeeOverviewViewModelTest : CoroutineTest() {
             Invite(
                 id = InviteId("invite-1"),
                 email = "mike@example.com",
+                organizationId = organizationId,
+                role = UserRole.EMPLOYEE,
+                expiresAt = Instant.fromEpochSeconds(0),
             ),
         )
 
@@ -263,6 +273,9 @@ class EmployeeOverviewViewModelTest : CoroutineTest() {
             Invite(
                 id = InviteId("invite-1"),
                 email = "pending@example.com",
+                organizationId = organizationId,
+                role = UserRole.EMPLOYEE,
+                expiresAt = Instant.fromEpochSeconds(0),
             ),
         )
 

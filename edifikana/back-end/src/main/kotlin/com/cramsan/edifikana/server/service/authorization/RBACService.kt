@@ -247,7 +247,7 @@ class RBACService(
      * @param org The ID of the target organization on which the action is to be performed.
      * @return The user role if the action is allowed, or UNAUTHORIZED if not
      */
-    private suspend fun getUserRoleForOrganizationAction(
+    suspend fun getUserRoleForOrganizationAction(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         org: OrganizationId
     ): UserRole {

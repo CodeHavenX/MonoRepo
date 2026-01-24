@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.datastore.supabase
 
+import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.service.models.User
 import com.cramsan.edifikana.server.service.models.UserRole
@@ -347,10 +348,37 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
             email = email,
             organizationId = organizationId,
             expiration = expiration,
+            role = UserRole.USER,
         ).registerInviteForDeletion()
 
         // Assert
         assertTrue(result.isSuccess)
+        val invite = result.getOrThrow()
+        assertEquals(email, invite.email)
+        assertEquals(organizationId, invite.organizationId)
+        assertEquals(UserRole.USER, invite.role)
+    }
+
+    @Test
+    fun `recordInvite with manager role should succeed`() = runCoroutineTest {
+        // Arrange
+        val orgOwner = createTestUser("${test_prefix}a@s.com")
+        val organizationId = createTestOrganization("org_$test_prefix", "")
+        val expiration = clock.now() + 1.minutes
+        val email = "${test_prefix}_manager_invite@test.com"
+
+        // Act
+        val result = userDatastore.recordInvite(
+            email = email,
+            organizationId = organizationId,
+            expiration = expiration,
+            role = UserRole.MANAGER,
+        ).registerInviteForDeletion()
+
+        // Assert
+        assertTrue(result.isSuccess)
+        val invite = result.getOrThrow()
+        assertEquals(UserRole.MANAGER, invite.role)
     }
 
     @Test
@@ -364,6 +392,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
             email = email,
             organizationId = organizationId,
             expiration = expiration,
+            role = UserRole.USER,
         ).registerInviteForDeletion()
 
         // Act
@@ -387,6 +416,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
             email = email,
             organizationId = organizationId,
             expiration = expiration,
+            role = UserRole.USER,
         ).registerInviteForDeletion()
 
         // Act
@@ -397,5 +427,146 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
         assertTrue(invitesResult.isSuccess)
         val invites = invitesResult.getOrThrow()
         assertTrue(invites.isEmpty())
+    }
+
+    @Test
+    fun `getInvite should return invite by ID`() = runCoroutineTest {
+        // Arrange
+        val orgOwner = createTestUser("${test_prefix}_a@s.com")
+        val organizationId = createTestOrganization("org_$test_prefix", "")
+        val email = "${test_prefix}_getinvite@test.com"
+        val expiration = clock.now() + 5.minutes
+        val recordResult = userDatastore.recordInvite(
+            email = email,
+            organizationId = organizationId,
+            expiration = expiration,
+            role = UserRole.MANAGER,
+        ).registerInviteForDeletion()
+        val createdInvite = recordResult.getOrThrow()
+
+        // Act
+        val getResult = userDatastore.getInvite(createdInvite.id)
+
+        // Assert
+        assertTrue(getResult.isSuccess)
+        val invite = getResult.getOrThrow()
+        assertTrue(invite != null)
+        assertEquals(createdInvite.id, invite.id)
+        assertEquals(email, invite.email)
+        assertEquals(organizationId, invite.organizationId)
+        assertEquals(UserRole.MANAGER, invite.role)
+    }
+
+    @Test
+    fun `getInvite should return null for non-existent ID`() = runCoroutineTest {
+        // Arrange - Use valid UUID format that doesn't exist in database
+        val nonExistentId = InviteId("00000000-0000-0000-0000-000000000000")
+
+        // Act
+        val getResult = userDatastore.getInvite(nonExistentId)
+
+        // Assert
+        assertTrue(getResult.isSuccess)
+        assertTrue(getResult.getOrNull() == null)
+    }
+
+    @Test
+    fun `getInvitesByEmail should return invites for email`() = runCoroutineTest {
+        // Arrange
+        val orgOwner = createTestUser("${test_prefix}_a@s.com")
+        val organizationId = createTestOrganization("org_$test_prefix", "")
+        val email = "${test_prefix}_byemail_invite@test.com"
+        val expiration = clock.now() + 5.minutes
+        userDatastore.recordInvite(
+            email = email,
+            organizationId = organizationId,
+            expiration = expiration,
+            role = UserRole.USER,
+        ).registerInviteForDeletion()
+
+        // Act
+        val result = userDatastore.getInvitesByEmail(email)
+
+        // Assert
+        assertTrue(result.isSuccess)
+        val invites = result.getOrThrow()
+        assertTrue(invites.isNotEmpty())
+        assertTrue(invites.all { it.email == email })
+    }
+
+    @Test
+    fun `getInvitesByEmail should return empty list for non-existent email`() = runCoroutineTest {
+        // Arrange
+        val email = "${test_prefix}_nonexistent_invite@test.com"
+
+        // Act
+        val result = userDatastore.getInvitesByEmail(email)
+
+        // Assert
+        assertTrue(result.isSuccess)
+        assertTrue(result.getOrThrow().isEmpty())
+    }
+
+    @Test
+    fun `getInvitesByEmail should not return expired invites`() = runCoroutineTest {
+        // Arrange
+        val orgOwner = createTestUser("${test_prefix}_a@s.com")
+        val organizationId = createTestOrganization("org_$test_prefix", "")
+        val email = "${test_prefix}_expired_invite@test.com"
+        val expiration = clock.now() + 2.minutes
+        userDatastore.recordInvite(
+            email = email,
+            organizationId = organizationId,
+            expiration = expiration,
+            role = UserRole.USER,
+        ).registerInviteForDeletion()
+
+        // Act: Move time forward past expiration
+        testTimeSource += 5.minutes
+        val result = userDatastore.getInvitesByEmail(email)
+
+        // Assert
+        assertTrue(result.isSuccess)
+        assertTrue(result.getOrThrow().isEmpty())
+    }
+
+    @Test
+    fun `removeInvite should delete invite`() = runCoroutineTest {
+        // Arrange
+        val orgOwner = createTestUser("${test_prefix}_a@s.com")
+        val organizationId = createTestOrganization("org_$test_prefix", "")
+        val email = "${test_prefix}_remove_invite@test.com"
+        val expiration = clock.now() + 5.minutes
+        val recordResult = userDatastore.recordInvite(
+            email = email,
+            organizationId = organizationId,
+            expiration = expiration,
+            role = UserRole.USER,
+        )
+        val createdInvite = recordResult.getOrThrow()
+
+        // Act
+        val removeResult = userDatastore.removeInvite(createdInvite.id)
+
+        // Assert
+        assertTrue(removeResult.isSuccess)
+
+        // Verify invite is deleted
+        val getResult = userDatastore.getInvite(createdInvite.id)
+        assertTrue(getResult.isSuccess)
+        assertTrue(getResult.getOrNull() == null)
+    }
+
+    @Test
+    fun `removeInvite should fail for non-existent invite`() = runCoroutineTest {
+        // Arrange - Use valid UUID format that doesn't exist in database
+        val nonExistentId = InviteId("00000000-0000-0000-0000-000000000000")
+
+        // Act
+        val removeResult = userDatastore.removeInvite(nonExistentId)
+
+        // Assert
+        assertTrue(removeResult.isFailure)
+        assertInstanceOf<ClientRequestExceptions.NotFoundException>(removeResult.exceptionOrNull())
     }
 }

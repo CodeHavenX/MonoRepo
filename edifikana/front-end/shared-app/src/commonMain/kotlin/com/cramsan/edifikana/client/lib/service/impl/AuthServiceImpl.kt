@@ -4,8 +4,10 @@ import com.cramsan.edifikana.api.UserApi
 import com.cramsan.edifikana.client.lib.models.Invite
 import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.client.lib.service.AuthService
+import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.UserRole
 import com.cramsan.edifikana.lib.model.network.CreateUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.GetAllUsersQueryParams
 import com.cramsan.edifikana.lib.model.network.InviteNetworkResponse
@@ -33,6 +35,8 @@ import io.ktor.client.HttpClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 /**
  * Default implementation for the [AuthService].
@@ -223,14 +227,16 @@ class AuthServiceImpl(
     @OptIn(NetworkModel::class)
     override suspend fun inviteEmployee(
         email: String,
-        organizationId: OrganizationId
+        organizationId: OrganizationId,
+        role: UserRole,
     ): Result<Unit> = runSuspendCatching(
         TAG
     ) {
         UserApi.inviteUser.buildRequest(
             InviteUserNetworkRequest(
                 email = email,
-                organizationId = organizationId
+                organizationId = organizationId,
+                role = role.name,
             ),
         ).execute(http)
     }
@@ -244,15 +250,32 @@ class AuthServiceImpl(
         invites
     }
 
+    @OptIn(NetworkModel::class)
+    override suspend fun acceptInvite(inviteId: InviteId): Result<Unit> = runSuspendCatching(TAG) {
+        UserApi.acceptInvite.buildRequest(
+            argument = inviteId
+        ).execute(http)
+    }
+
+    @OptIn(NetworkModel::class)
+    override suspend fun declineInvite(inviteId: InviteId): Result<Unit> = runSuspendCatching(TAG) {
+        UserApi.declineInvite.buildRequest(
+            argument = inviteId
+        ).execute(http)
+    }
+
     companion object {
         private const val TAG = "AuthServiceImpl"
     }
 }
 
-@OptIn(NetworkModel::class)
+@OptIn(NetworkModel::class, ExperimentalTime::class)
 private fun InviteNetworkResponse.toInvite(): Invite {
     return Invite(
         id = this.inviteId,
         email = this.email,
+        organizationId = this.organizationId,
+        role = UserRole.valueOf(this.role),
+        expiresAt = Instant.fromEpochSeconds(this.expiresAt),
     )
 }

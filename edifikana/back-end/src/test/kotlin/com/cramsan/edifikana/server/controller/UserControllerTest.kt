@@ -2,6 +2,7 @@ package com.cramsan.edifikana.server.controller
 
 import com.cramsan.architecture.server.test.startTestKoin
 import com.cramsan.architecture.server.test.testBackEndApplication
+import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.serialization.createJson
@@ -40,6 +41,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
+@Suppress("LargeClass")
 class UserControllerTest : CoroutineTest(), KoinTest {
 
     @BeforeTest
@@ -592,5 +594,242 @@ class UserControllerTest : CoroutineTest(), KoinTest {
         val body = response.bodyAsText()
         assertTrue(body.contains("isUserRegistered"))
         assertTrue(body.contains("false"))
+    }
+
+    /**
+     * Test that acceptInvite succeeds for authenticated user.
+     */
+    @Test
+    fun `test acceptInvite succeeds for authenticated user`() = testBackEndApplication {
+        // Arrange
+        val userId = UserId("user123")
+        val inviteId = InviteId("invite123")
+        val userService = get<UserService>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+
+        val context = ClientContext.AuthenticatedClientContext(
+            SupabaseContextPayload(
+                userInfo = mockk(),
+                userId = userId,
+            )
+        )
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            context
+        }
+        coEvery {
+            userService.acceptInvite(userId, inviteId)
+        }.answers {
+            Result.success(Unit)
+        }
+
+        // Act
+        val response = client.post("user/invite/accept/invite123")
+
+        // Assert
+        assertEquals(HttpStatusCode.OK, response.status)
+        coVerify { userService.acceptInvite(userId, inviteId) }
+    }
+
+    /**
+     * Test that acceptInvite fails when service returns failure.
+     */
+    @Test
+    fun `test acceptInvite fails when service returns failure`() = testBackEndApplication {
+        // Arrange
+        val userId = UserId("user123")
+        val inviteId = InviteId("invite123")
+        val userService = get<UserService>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+
+        val context = ClientContext.AuthenticatedClientContext(
+            SupabaseContextPayload(
+                userInfo = mockk(),
+                userId = userId,
+            )
+        )
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            context
+        }
+        coEvery {
+            userService.acceptInvite(userId, inviteId)
+        }.answers {
+            Result.failure(ClientRequestExceptions.NotFoundException("Invite not found"))
+        }
+
+        // Act
+        val response = client.post("user/invite/accept/invite123")
+
+        // Assert
+        assertEquals(HttpStatusCode.NotFound, response.status)
+        assertTrue(response.bodyAsText().contains("Invite not found"))
+    }
+
+    /**
+     * Test that declineInvite succeeds for authenticated user.
+     */
+    @Test
+    fun `test declineInvite succeeds for authenticated user`() = testBackEndApplication {
+        // Arrange
+        val userId = UserId("user123")
+        val inviteId = InviteId("invite123")
+        val userService = get<UserService>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+
+        val context = ClientContext.AuthenticatedClientContext(
+            SupabaseContextPayload(
+                userInfo = mockk(),
+                userId = userId,
+            )
+        )
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            context
+        }
+        coEvery {
+            userService.declineInvite(userId, inviteId)
+        }.answers {
+            Result.success(Unit)
+        }
+
+        // Act
+        val response = client.post("user/invite/decline/invite123")
+
+        // Assert
+        assertEquals(HttpStatusCode.OK, response.status)
+        coVerify { userService.declineInvite(userId, inviteId) }
+    }
+
+    /**
+     * Test that declineInvite fails when service returns failure.
+     */
+    @Test
+    fun `test declineInvite fails when service returns failure`() = testBackEndApplication {
+        // Arrange
+        val userId = UserId("user123")
+        val inviteId = InviteId("invite123")
+        val userService = get<UserService>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+
+        val context = ClientContext.AuthenticatedClientContext(
+            SupabaseContextPayload(
+                userInfo = mockk(),
+                userId = userId,
+            )
+        )
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            context
+        }
+        coEvery {
+            userService.declineInvite(userId, inviteId)
+        }.answers {
+            Result.failure(ClientRequestExceptions.ForbiddenException("This invite is not for your email address"))
+        }
+
+        // Act
+        val response = client.post("user/invite/decline/invite123")
+
+        // Assert
+        assertEquals(HttpStatusCode.Forbidden, response.status)
+        assertTrue(response.bodyAsText().contains("This invite is not for your email address"))
+    }
+
+    /**
+     * Test that cancelInvite succeeds for manager.
+     */
+    @Test
+    fun `test cancelInvite succeeds when user has manager role`() = testBackEndApplication {
+        // Arrange
+        val userId = UserId("user123")
+        val orgId = OrganizationId("org123")
+        val inviteId = InviteId("invite123")
+        val userService = get<UserService>()
+        val rbacService = get<RBACService>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+
+        val context = ClientContext.AuthenticatedClientContext(
+            SupabaseContextPayload(
+                userInfo = mockk(),
+                userId = userId,
+            )
+        )
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            context
+        }
+        coEvery {
+            userService.getInviteOrganization(inviteId)
+        }.answers {
+            Result.success(orgId)
+        }
+        coEvery {
+            rbacService.hasRoleOrHigher(context, orgId, UserRole.MANAGER)
+        }.answers {
+            true
+        }
+        coEvery {
+            userService.cancelInvite(inviteId)
+        }.answers {
+            Result.success(Unit)
+        }
+
+        // Act
+        val response = client.delete("user/invites/invite123")
+
+        // Assert
+        assertEquals(HttpStatusCode.OK, response.status)
+        coVerify { userService.cancelInvite(inviteId) }
+    }
+
+    /**
+     * Test that cancelInvite fails when user does not have manager role.
+     */
+    @Test
+    fun `test cancelInvite fails when user does NOT have manager role`() = testBackEndApplication {
+        // Arrange
+        val expectedResponse = "You are not authorized to perform this action."
+        val userId = UserId("user123")
+        val orgId = OrganizationId("org123")
+        val userService = get<UserService>()
+        val rbacService = get<RBACService>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+
+        val context = ClientContext.AuthenticatedClientContext(
+            SupabaseContextPayload(
+                userInfo = mockk(),
+                userId = userId,
+            )
+        )
+        val inviteId = InviteId("invite123")
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            context
+        }
+        coEvery {
+            userService.getInviteOrganization(inviteId)
+        }.answers {
+            Result.success(orgId)
+        }
+        coEvery {
+            rbacService.hasRoleOrHigher(context, orgId, UserRole.MANAGER)
+        }.answers {
+            false
+        }
+
+        // Act
+        val response = client.delete("user/invites/invite123")
+
+        // Assert
+        coVerify(exactly = 0) { userService.cancelInvite(any()) }
+        assertEquals(HttpStatusCode.Unauthorized, response.status)
+        assertEquals(expectedResponse, response.bodyAsText())
     }
 }

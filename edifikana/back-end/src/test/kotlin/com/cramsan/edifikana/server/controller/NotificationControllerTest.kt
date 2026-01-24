@@ -66,7 +66,7 @@ class NotificationControllerTest : CoroutineTest(), KoinTest {
     ): Notification {
         val clock = testTimeSource.asClock(2024, 1, 1, 0, 0)
         return Notification(
-            notificationId = notificationId,
+            id = notificationId,
             recipientUserId = recipientUserId,
             recipientEmail = recipientEmail,
             organizationId = organizationId,

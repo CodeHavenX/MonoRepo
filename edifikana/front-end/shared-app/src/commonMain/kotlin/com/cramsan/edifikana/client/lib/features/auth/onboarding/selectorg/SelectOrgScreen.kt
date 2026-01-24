@@ -1,40 +1,28 @@
 package com.cramsan.edifikana.client.lib.features.auth.onboarding.selectorg
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Domain
 import androidx.compose.material.icons.filled.Groups
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.edifikana.client.ui.components.OptionCard
+import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.framework.core.compose.rememberDialogController
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
+import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
-import com.cramsan.ui.theme.Padding
-import com.cramsan.ui.theme.Size
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -48,24 +36,38 @@ fun SelectOrgScreen(
     modifier: Modifier = Modifier,
     viewModel: SelectOrgViewModel = koinViewModel(),
 ) {
+    val uiState by viewModel.uiState.collectAsState()
     val dialogController = rememberDialogController()
+
+    LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
+        viewModel.initialize()
+    }
 
     ObserveViewModelEvents(viewModel) { event ->
         when (event) {
             SelectOrgEvent.Noop -> Unit
             SelectOrgEvent.ShowSignOutConfirmation -> {
-                val signOutDialog = SignOutConfirmationDialog(
+                val signOutDialog = JoinOrgConfirmationDialog(
                     onConfirm = { viewModel.confirmSignOut() },
                     onDismiss = { /* User cancelled */ }
                 )
                 dialogController.showDialog(signOutDialog)
             }
+            is SelectOrgEvent.ShowJoinOrgConfirmation -> {
+                val joinOrgDialog = JoinOrgConfirmationDialog(
+                    onConfirm = { viewModel.acceptInvite(event.inviteId) },
+                    onDismiss = { /* User cancelled */ }
+                )
+                dialogController.showDialog(joinOrgDialog)
+            }
         }
     }
 
     SelectOrgContent(
+        uiState = uiState,
         onCreateWorkspaceClicked = { viewModel.createOrganization() },
         onSignOutClicked = { viewModel.requestSignOut() },
+        onJoinOrganizationClicked = { inviteId -> viewModel.requestJoinOrganization(inviteId) },
         modifier = modifier,
     )
 
@@ -77,8 +79,12 @@ fun SelectOrgScreen(
  */
 @Composable
 internal fun SelectOrgContent(
+    uiState: SelectOrgUIState,
     onCreateWorkspaceClicked: () -> Unit,
     onSignOutClicked: () -> Unit,
+    onJoinOrganizationClicked: (
+        inviteId: InviteId,
+    ) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -94,6 +100,9 @@ internal fun SelectOrgContent(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
+            overlay = {
+                LoadingAnimationOverlay(uiState.isLoading)
+            },
             sectionContent = { sectionModifier ->
                 // Title
                 Text(
@@ -111,18 +120,31 @@ internal fun SelectOrgContent(
                     modifier = sectionModifier,
                 )
 
-                // Join existing team option
-                OptionCard(
-                    title = "Join an existing team",
-                    description = "I have an invite code or want to search for my company.",
-                    icon = Icons.Default.Groups,
-                    colors = CardDefaults.cardColors().copy(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
-                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f),
-                    ),
-                    onClick = null,
-                    modifier = sectionModifier,
-                )
+                if (uiState.inviteList.isNotEmpty()) {
+                    uiState.inviteList.forEach { invite ->
+                        // Join existing team option
+                        OptionCard(
+                            title = "Join an existing team",
+                            description = invite.description,
+                            icon = Icons.Default.Groups,
+                            onClick = { onJoinOrganizationClicked(invite.inviteId) },
+                            modifier = sectionModifier,
+                        )
+                    }
+                } else {
+                    // Join existing team option
+                    OptionCard(
+                        title = "Join an existing team",
+                        description = "I have an invite code or want to search for my company.",
+                        icon = Icons.Default.Groups,
+                        colors = CardDefaults.cardColors().copy(
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+                            contentColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f),
+                        ),
+                        onClick = null,
+                        modifier = sectionModifier,
+                    )
+                }
 
                 // Create new workspace option
                 OptionCard(

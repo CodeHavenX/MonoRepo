@@ -1,8 +1,8 @@
 package com.cramsan.edifikana.lib.model.network
 
+import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.edifikana.lib.model.NotificationId
 import com.cramsan.edifikana.lib.model.NotificationType
-import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.ResponseBody
 import kotlinx.serialization.Serializable
@@ -13,10 +13,11 @@ import kotlinx.serialization.Serializable
 @NetworkModel
 @Serializable
 data class NotificationNetworkResponse(
-    val notificationId: NotificationId,
-    val organizationId: OrganizationId,
+    val id: NotificationId,
     val notificationType: NotificationType,
+    val description: String,
     val isRead: Boolean,
     val createdAt: Long,
     val readAt: Long?,
+    val inviteId: InviteId?,
 ) : ResponseBody

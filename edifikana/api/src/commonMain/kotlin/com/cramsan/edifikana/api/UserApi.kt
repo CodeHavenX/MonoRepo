@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.api
 
+import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.model.network.CheckUserNetworkResponse
@@ -95,6 +96,48 @@ object UserApi : Api("user") {
         InviteListNetworkResponse
         >(
         HttpMethod.Get,
+        "invites"
+    )
+
+    /**
+     * Accept a pending invitation.
+     * Route: POST /user/invite/accept/{inviteId}
+     */
+    val acceptInvite = operation<
+        NoRequestBody,
+        NoQueryParam,
+        InviteId,
+        NoResponseBody
+        >(
+        HttpMethod.Post,
+        "invite/accept"
+    )
+
+    /**
+     * Decline a pending invitation.
+     * Route: POST /user/invite/decline/{inviteId}
+     */
+    val declineInvite = operation<
+        NoRequestBody,
+        NoQueryParam,
+        InviteId,
+        NoResponseBody
+        >(
+        HttpMethod.Post,
+        "invite/decline"
+    )
+
+    /**
+     * Cancel a pending invite (manager action).
+     * Route: DELETE /user/invites/{inviteId}
+     */
+    val cancelInvite = operation<
+        NoRequestBody,
+        NoQueryParam,
+        InviteId,
+        NoResponseBody
+        >(
+        HttpMethod.Delete,
         "invites"
     )
 

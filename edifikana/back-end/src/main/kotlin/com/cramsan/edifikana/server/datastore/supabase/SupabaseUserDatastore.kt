@@ -11,6 +11,7 @@ import com.cramsan.edifikana.server.datastore.supabase.models.UserEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.UserOrganizationMappingEntity
 import com.cramsan.edifikana.server.service.models.Invite
 import com.cramsan.edifikana.server.service.models.User
+import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.annotations.SupabaseModel
 import com.cramsan.framework.assertlib.assert
 import com.cramsan.framework.core.Hashing
@@ -338,20 +339,32 @@ class SupabaseUserDatastore(
         email: String,
         organizationId: OrganizationId,
         expiration: Instant,
+        role: UserRole,
     ): Result<Invite> = runSuspendCatching(TAG) {
-        logD(TAG, "Recording invite for email: %s", email)
+        logD(TAG, "Recording invite for email: %s with role: %s", email, role)
 
         val inviteEntity = InviteEntity.Create(
             email = email,
             organizationId = organizationId.id,
             createdAt = clock.now(),
             expiration = expiration,
+            role = role.name,
         )
 
         val data = postgrest.from(InviteEntity.COLLECTION).insert(inviteEntity) {
             select()
         }
         data.decodeSingle<InviteEntity>().toInvite()
+    }
+
+    override suspend fun getInvite(inviteId: InviteId): Result<Invite?> = runSuspendCatching(TAG) {
+        logD(TAG, "Getting invite: %s", inviteId)
+
+        postgrest.from(InviteEntity.COLLECTION).select {
+            filter {
+                eq("id", inviteId.id)
+            }
+        }.decodeSingleOrNull<InviteEntity>()?.toInvite()
     }
 
     override suspend fun getInvites(organizationId: OrganizationId): Result<List<Invite>> {
@@ -416,8 +429,10 @@ class SupabaseUserDatastore(
 @OptIn(SupabaseModel::class)
 private fun InviteEntity.toInvite(): Invite {
     return Invite(
-        inviteId = InviteId(this.id),
+        id = InviteId(this.id),
         email = this.email,
         organizationId = OrganizationId(this.organizationId),
+        role = UserRole.fromString(this.role),
+        expiration = this.expiration,
     )
 }

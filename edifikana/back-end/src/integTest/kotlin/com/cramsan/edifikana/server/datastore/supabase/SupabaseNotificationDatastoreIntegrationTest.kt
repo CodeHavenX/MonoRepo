@@ -102,13 +102,13 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val created = createResult.getOrThrow()
 
         // Act
-        val getResult = notificationDatastore.getNotification(created.notificationId)
+        val getResult = notificationDatastore.getNotification(created.id)
 
         // Assert
         assertTrue(getResult.isSuccess)
         val fetched = getResult.getOrThrow()
         assertNotNull(fetched)
-        assertEquals(created.notificationId, fetched.notificationId)
+        assertEquals(created.id, fetched.id)
         assertEquals(email, fetched.recipientEmail)
         assertEquals(organizationId, fetched.organizationId)
     }
@@ -180,7 +180,7 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
             notificationType = NotificationType.INVITE,
         ).registerNotificationForDeletion().getOrThrow()
 
-        notificationDatastore.markAsRead(first.notificationId)
+        notificationDatastore.markAsRead(first.id)
 
         // Create second notification (unread)
         notificationDatastore.createNotification(
@@ -289,7 +289,7 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
         assertFalse(created.isRead)
 
         // Act
-        val result = notificationDatastore.markAsRead(created.notificationId)
+        val result = notificationDatastore.markAsRead(created.id)
 
         // Assert
         assertTrue(result.isSuccess)
@@ -329,14 +329,14 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
         ).getOrThrow() // Not registering for deletion since we're deleting it
 
         // Act
-        val deleteResult = notificationDatastore.deleteNotification(created.notificationId)
+        val deleteResult = notificationDatastore.deleteNotification(created.id)
 
         // Assert
         assertTrue(deleteResult.isSuccess)
         assertTrue(deleteResult.getOrThrow())
 
         // Verify it's gone
-        val getResult = notificationDatastore.getNotification(created.notificationId)
+        val getResult = notificationDatastore.getNotification(created.id)
         assertTrue(getResult.isSuccess)
         assertNull(getResult.getOrThrow())
     }

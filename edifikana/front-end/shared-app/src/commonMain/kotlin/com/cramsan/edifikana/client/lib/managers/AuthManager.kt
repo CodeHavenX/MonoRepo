@@ -3,8 +3,10 @@ package com.cramsan.edifikana.client.lib.managers
 import com.cramsan.edifikana.client.lib.models.Invite
 import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.client.lib.service.AuthService
+import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.UserRole
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
@@ -159,13 +161,18 @@ class AuthManager(
     }
 
     /**
-     * Invite a employee.
+     * Invite a employee with the specified [role] to the organization.
      */
-    suspend fun inviteEmployee(email: String, orgId: OrganizationId) = dependencies.getOrCatch(TAG) {
+    suspend fun inviteEmployee(
+        email: String,
+        orgId: OrganizationId,
+        role: UserRole,
+    ) = dependencies.getOrCatch(TAG) {
         logI(TAG, "inviteEmployee")
         authService.inviteEmployee(
             email = email,
             organizationId = orgId,
+            role = role,
         ).getOrThrow()
     }
 
@@ -175,6 +182,22 @@ class AuthManager(
     suspend fun getInvites(organizationId: OrganizationId): Result<List<Invite>> = dependencies.getOrCatch(TAG) {
         logI(TAG, "getInvitedEmployees for organizationId: $organizationId")
         authService.getInvites(organizationId).getOrThrow()
+    }
+
+    /**
+     * Accepts an invitation.
+     */
+    suspend fun acceptInvite(inviteId: InviteId): Result<Unit> = dependencies.getOrCatch(TAG) {
+        logI(TAG, "acceptInvite: $inviteId")
+        authService.acceptInvite(inviteId).getOrThrow()
+    }
+
+    /**
+     * Declines an invitation.
+     */
+    suspend fun declineInvite(inviteId: InviteId): Result<Unit> = dependencies.getOrCatch(TAG) {
+        logI(TAG, "declineInvite: $inviteId")
+        authService.declineInvite(inviteId).getOrThrow()
     }
 
     companion object {

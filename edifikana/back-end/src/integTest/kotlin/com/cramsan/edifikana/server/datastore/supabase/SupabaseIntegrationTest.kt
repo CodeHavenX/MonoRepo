@@ -2,6 +2,7 @@ package com.cramsan.edifikana.server.datastore.supabase
 
 import com.cramsan.architecture.server.test.dependencyinjection.TestArchitectureModule
 import com.cramsan.architecture.server.test.dependencyinjection.integTestFrameworkModule
+import com.cramsan.edifikana.server.dependencyinjection.IntegTestApplicationModule
 import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EmployeeRole
 import com.cramsan.edifikana.lib.model.EventLogEntryId
@@ -62,10 +63,12 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
     @BeforeEach
     fun supabaseSetup() {
         startKoin {
+            allowOverride(true)
             modules(
                 TestArchitectureModule,
                 integTestFrameworkModule("EDIFIKANA"),
                 DatastoreModule,
+                IntegTestApplicationModule, // Override Clock with TestTimeSource clock
             )
         }
     }

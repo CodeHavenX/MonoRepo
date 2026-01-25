@@ -3,6 +3,7 @@ package com.cramsan.edifikana.server.datastore.supabase.models
 import com.cramsan.framework.annotations.SupabaseModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlin.time.Instant
 
 /**
  * Entity representing a property.
@@ -17,6 +18,8 @@ data class PropertyEntity(
     val organizationId: String,
     @SerialName("image_url")
     val imageUrl: String? = null,
+    @SerialName("deleted_at")
+    val deletedAt: Instant? = null,
 ) {
     companion object {
         const val COLLECTION = "properties"

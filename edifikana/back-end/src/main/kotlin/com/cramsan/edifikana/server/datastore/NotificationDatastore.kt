@@ -13,10 +13,12 @@ interface NotificationDatastore {
 
     /**
      * Creates a new notification.
+     * If [recipientUserId] is null, [recipientEmail] should be provided for later association.
      * Returns the [Result] of the operation with the created [Notification].
      */
     suspend fun createNotification(
         recipientUserId: UserId?,
+        recipientEmail: String?,
         notificationType: NotificationType,
         description: String,
         inviteId: InviteId,

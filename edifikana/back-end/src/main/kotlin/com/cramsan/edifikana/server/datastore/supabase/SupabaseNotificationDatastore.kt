@@ -23,16 +23,22 @@ class SupabaseNotificationDatastore(
     private val clock: Clock,
 ) : NotificationDatastore {
 
+    /**
+     * Creates a new notification for a user, linked to an invite.
+     * If [recipientUserId] is null, [recipientEmail] is used for later association when user signs up.
+     */
     override suspend fun createNotification(
         recipientUserId: UserId?,
+        recipientEmail: String?,
         notificationType: NotificationType,
         description: String,
         inviteId: InviteId,
     ): Result<Notification> = runSuspendCatching(TAG) {
-        logD(TAG, "Creating notification for email: $recipientUserId")
+        logD(TAG, "Creating notification for user: $recipientUserId, email: $recipientEmail")
 
         val createEntity = NotificationEntity.Create(
             recipientUserId = recipientUserId?.userId,
+            recipientEmail = recipientEmail,
             notificationType = notificationType.name,
             description = description,
             inviteId = inviteId.id,
@@ -45,6 +51,9 @@ class SupabaseNotificationDatastore(
         createdEntity.toNotification()
     }
 
+    /**
+     * Retrieves a notification by [id]. Returns the [Notification] if found, null otherwise.
+     */
     override suspend fun getNotification(
         id: NotificationId,
     ): Result<Notification?> = runSuspendCatching(TAG) {
@@ -52,21 +61,29 @@ class SupabaseNotificationDatastore(
 
         postgrest.from(NotificationEntity.COLLECTION).select {
             filter {
-                eq("id", id.id)
+                NotificationEntity::id eq id.id
+                NotificationEntity::deletedAt isExact null
             }
         }.decodeSingleOrNull<NotificationEntity>()?.toNotification()
     }
 
+    /**
+     * Retrieves a notification by its associated [inviteId].
+     */
     override suspend fun getNotificationByInvite(inviteId: InviteId): Result<Notification?> = runSuspendCatching(TAG) {
         logD(TAG, "Getting notification by invite: $inviteId")
 
         postgrest.from(NotificationEntity.COLLECTION).select {
             filter {
-                eq("invite_id", inviteId.id)
+                NotificationEntity::inviteId eq inviteId.id
+                NotificationEntity::deletedAt isExact null
             }
         }.decodeSingleOrNull<NotificationEntity>()?.toNotification()
     }
 
+    /**
+     * Gets notifications for a user, optionally filtering to [unreadOnly].
+     */
     override suspend fun getNotificationsForUser(
         userId: UserId,
         unreadOnly: Boolean,
@@ -76,9 +93,10 @@ class SupabaseNotificationDatastore(
 
         postgrest.from(NotificationEntity.COLLECTION).select {
             filter {
-                eq("recipient_user_id", userId.userId)
+                NotificationEntity::recipientUserId eq userId.userId
+                NotificationEntity::deletedAt isExact null
                 if (unreadOnly) {
-                    eq("is_read", false)
+                    NotificationEntity::isRead eq false
                 }
             }
             order("created_at", order = io.github.jan.supabase.postgrest.query.Order.DESCENDING)
@@ -86,6 +104,9 @@ class SupabaseNotificationDatastore(
         }.decodeList<NotificationEntity>().map { it.toNotification() }
     }
 
+    /**
+     * Gets notifications sent to an [email] address (before user association).
+     */
     override suspend fun getNotificationsByEmail(
         email: String,
     ): Result<List<Notification>> = runSuspendCatching(TAG) {
@@ -93,12 +114,16 @@ class SupabaseNotificationDatastore(
 
         postgrest.from(NotificationEntity.COLLECTION).select {
             filter {
-                eq("recipient_email", email)
+                NotificationEntity::recipientEmail eq email
+                NotificationEntity::deletedAt isExact null
             }
             order("created_at", order = io.github.jan.supabase.postgrest.query.Order.DESCENDING)
         }.decodeList<NotificationEntity>().map { it.toNotification() }
     }
 
+    /**
+     * Marks a notification as read and sets the read timestamp.
+     */
     override suspend fun markAsRead(
         id: NotificationId,
     ): Result<Notification> = runSuspendCatching(TAG) {
@@ -112,61 +137,58 @@ class SupabaseNotificationDatastore(
         ) {
             select()
             filter {
-                eq("id", id.id)
+                NotificationEntity::id eq id.id
             }
         }.decodeSingleOrNull<NotificationEntity>()?.toNotification()
             ?: throw ClientRequestExceptions.NotFoundException("Notification not found: $id")
     }
 
+    /**
+     * Soft deletes a notification by [id]. Returns true if successful.
+     */
     override suspend fun deleteNotification(
         id: NotificationId,
     ): Result<Boolean> = runSuspendCatching(TAG) {
-        logD(TAG, "Deleting notification: $id")
+        logD(TAG, "Soft deleting notification: $id")
 
-        postgrest.from(NotificationEntity.COLLECTION).delete {
+        postgrest.from(NotificationEntity.COLLECTION).update({
+            NotificationEntity::deletedAt setTo clock.now()
+        }) {
             select()
             filter {
-                eq("id", id.id)
+                NotificationEntity::id eq id.id
+                NotificationEntity::deletedAt isExact null
             }
         }.decodeSingleOrNull<NotificationEntity>() != null
     }
 
+    /**
+     * Links all notifications for the given email to the specified user.
+     * Uses count mode to avoid fetching full notification objects (optimized query).
+     */
     override suspend fun linkNotificationsToUser(
         email: String,
         userId: UserId,
     ): Result<Int> = runSuspendCatching(TAG) {
         logD(TAG, "Linking notifications for email: $email to user: $userId")
 
-        val updated = postgrest.from(NotificationEntity.COLLECTION).update(
+        // Use count mode to avoid fetching full objects - more efficient
+        val result = postgrest.from(NotificationEntity.COLLECTION).update(
             {
                 NotificationEntity::recipientUserId setTo userId.userId
             }
         ) {
-            select()
             filter {
-                eq("recipient_email", email)
-                exact("recipient_user_id", null)
+                NotificationEntity::recipientEmail eq email
+                NotificationEntity::recipientUserId isExact null
             }
-        }.decodeList<NotificationEntity>()
+            count(io.github.jan.supabase.postgrest.query.Count.EXACT)
+        }
 
-        updated.size
+        result.countOrNull()?.toInt() ?: 0
     }
 
     companion object {
         const val TAG = "SupabaseNotificationDatastore"
     }
-}
-
-@SupabaseModel
-private fun NotificationEntity.toNotification(): Notification {
-    return Notification(
-        id = NotificationId(this.id),
-        recipientUserId = this.recipientUserId?.let { UserId(it) },
-        notificationType = NotificationType.fromString(this.notificationType),
-        description = this.description,
-        isRead = this.isRead,
-        createdAt = this.createdAt,
-        readAt = this.readAt,
-        inviteId = this.inviteId?.let { InviteId(it) }
-    )
 }

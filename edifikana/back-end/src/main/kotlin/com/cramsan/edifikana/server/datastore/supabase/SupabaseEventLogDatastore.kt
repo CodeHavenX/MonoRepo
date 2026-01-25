@@ -11,6 +11,7 @@ import com.cramsan.framework.annotations.SupabaseModel
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.postgrest.Postgrest
+import kotlin.time.Clock
 import kotlin.time.Instant
 
 /**
@@ -18,10 +19,11 @@ import kotlin.time.Instant
  */
 class SupabaseEventLogDatastore(
     private val postgrest: Postgrest,
+    private val clock: Clock,
 ) : EventLogDatastore {
 
     /**
-     * Creates a new event log entry for the given [request]. Returns the [Result] of the operation with the created [EventLogEntry].
+     * Creates a new event log entry for tracking property events.
      */
     @OptIn(SupabaseModel::class)
     override suspend fun createEventLogEntry(
@@ -56,7 +58,7 @@ class SupabaseEventLogDatastore(
     }
 
     /**
-     * Retrieves an event log entry for the given [request]. Returns the [Result] of the operation with the fetched [EventLogEntry] if found.
+     * Retrieves an event log entry by [id]. Returns the [EventLogEntry] if found, null otherwise.
      */
     @OptIn(SupabaseModel::class)
     override suspend fun getEventLogEntry(
@@ -67,12 +69,16 @@ class SupabaseEventLogDatastore(
         val eventLogEntryEntity = postgrest.from(EventLogEntryEntity.COLLECTION).select {
             filter {
                 EventLogEntryEntity::id eq id.eventLogEntryId
+                EventLogEntryEntity::deletedAt isExact null
             }
         }.decodeSingleOrNull<EventLogEntryEntity>()
 
         eventLogEntryEntity?.toEventLogEntry()
     }
 
+    /**
+     * Gets all event log entries for a [propertyId].
+     */
     @OptIn(SupabaseModel::class)
     override suspend fun getEventLogEntries(
         propertyId: PropertyId,
@@ -82,12 +88,13 @@ class SupabaseEventLogDatastore(
         postgrest.from(EventLogEntryEntity.COLLECTION).select {
             filter {
                 EventLogEntryEntity::propertyId eq propertyId.propertyId
+                EventLogEntryEntity::deletedAt isExact null
             }
         }.decodeList<EventLogEntryEntity>().map { it.toEventLogEntry() }
     }
 
     /**
-     * Updates an event log entry with the given [request]. Returns the [Result] of the operation with the updated [EventLogEntry].
+     * Updates an event log entry's attributes. Only non-null parameters are updated.
      */
     @OptIn(SupabaseModel::class)
     override suspend fun updateEventLogEntry(
@@ -117,18 +124,21 @@ class SupabaseEventLogDatastore(
     }
 
     /**
-     * Deletes an event log entry with the given [request]. Returns the [Result] of the operation with a [Boolean] indicating success.
+     * Soft deletes an event log entry by [id]. Returns true if successful.
      */
     @OptIn(SupabaseModel::class)
     override suspend fun deleteEventLogEntry(
         id: EventLogEntryId,
     ): Result<Boolean> = runSuspendCatching(TAG) {
-        logD(TAG, "Deleting event log entry: %s", id)
+        logD(TAG, "Soft deleting event log entry: %s", id)
 
-        postgrest.from(EventLogEntryEntity.COLLECTION).delete {
+        postgrest.from(EventLogEntryEntity.COLLECTION).update({
+            EventLogEntryEntity::deletedAt setTo clock.now()
+        }) {
             select()
             filter {
                 EventLogEntryEntity::id eq id.eventLogEntryId
+                EventLogEntryEntity::deletedAt isExact null
             }
         }.decodeSingleOrNull<EventLogEntryEntity>() != null
     }

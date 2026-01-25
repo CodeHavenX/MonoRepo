@@ -15,7 +15,7 @@ class SupabaseStorageDatastore(
     private val storage: Storage,
 ) : StorageDatastore {
     /**
-     * Creates a new asset for the given [request]. Returns the [Result] of the operation with the created [Asset].
+     * Uploads a new asset to storage with the given [fileName] and [content].
      */
     override suspend fun createAsset(
         fileName: String,
@@ -31,8 +31,7 @@ class SupabaseStorageDatastore(
     }
 
     /**
-     * Retrieves an asset for the given [request]. Returns the [Result] of the operation with the fetched [Asset]
-     * if found.
+     * Retrieves an asset by [id], including its signed download URL and content bytes.
      */
     override suspend fun getAsset(
         id: AssetId,

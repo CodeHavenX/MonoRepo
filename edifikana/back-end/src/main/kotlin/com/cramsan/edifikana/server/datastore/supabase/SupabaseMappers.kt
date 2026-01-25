@@ -7,6 +7,9 @@ import com.cramsan.edifikana.lib.model.EmployeeRole
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.IdType
+import com.cramsan.edifikana.lib.model.InviteId
+import com.cramsan.edifikana.lib.model.NotificationId
+import com.cramsan.edifikana.lib.model.NotificationType
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
@@ -15,12 +18,16 @@ import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.datastore.supabase.models.AuthMetadataEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.EmployeeEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.EventLogEntryEntity
+import com.cramsan.edifikana.server.datastore.supabase.models.InviteEntity
+import com.cramsan.edifikana.server.datastore.supabase.models.NotificationEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.OrganizationEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.PropertyEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.TimeCardEventEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.UserEntity
 import com.cramsan.edifikana.server.service.models.Employee
 import com.cramsan.edifikana.server.service.models.EventLogEntry
+import com.cramsan.edifikana.server.service.models.Invite
+import com.cramsan.edifikana.server.service.models.Notification
 import com.cramsan.edifikana.server.service.models.Organization
 import com.cramsan.edifikana.server.service.models.Property
 import com.cramsan.edifikana.server.service.models.TimeCardEvent
@@ -265,3 +272,35 @@ fun OrganizationEntity.toOrganization() = Organization(
     name = this.name,
     description = this.description,
 )
+
+/**
+ * Maps a [NotificationEntity] to the [Notification] model.
+ */
+@SupabaseModel
+fun NotificationEntity.toNotification(): Notification {
+    return Notification(
+        id = NotificationId(this.id),
+        recipientUserId = this.recipientUserId?.let { UserId(it) },
+        recipientEmail = this.recipientEmail,
+        notificationType = NotificationType.fromString(this.notificationType),
+        description = this.description,
+        isRead = this.isRead,
+        createdAt = this.createdAt,
+        readAt = this.readAt,
+        inviteId = this.inviteId?.let { InviteId(it) }
+    )
+}
+
+/**
+ * Maps an [InviteEntity] to the [Invite] model.
+ */
+@OptIn(SupabaseModel::class)
+fun InviteEntity.toInvite(): Invite {
+    return Invite(
+        id = InviteId(this.id),
+        email = this.email,
+        organizationId = OrganizationId(this.organizationId),
+        role = UserRole.fromString(this.role),
+        expiration = this.expiration,
+    )
+}

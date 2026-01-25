@@ -291,6 +291,7 @@ class UserServiceTest {
         coEvery {
             notificationDatastore.createNotification(
                 recipientUserId = any(),
+                recipientEmail = any(),
                 notificationType = any(),
                 description = any(),
                 inviteId = any(),
@@ -306,6 +307,7 @@ class UserServiceTest {
         coVerify {
             notificationDatastore.createNotification(
                 recipientUserId = any(),
+                recipientEmail = any(),
                 notificationType = any(),
                 description = any(),
                 inviteId = any(),

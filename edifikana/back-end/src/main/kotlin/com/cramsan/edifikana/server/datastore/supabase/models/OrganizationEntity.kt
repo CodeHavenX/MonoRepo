@@ -3,6 +3,7 @@ package com.cramsan.edifikana.server.datastore.supabase.models
 import com.cramsan.framework.annotations.SupabaseModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlin.time.Instant
 
 /**
  * Supabase entity representing an organization.
@@ -13,6 +14,8 @@ data class OrganizationEntity(
     val id: String,
     val name: String,
     val description: String,
+    @SerialName("deleted_at")
+    val deletedAt: Instant? = null,
 ) {
     companion object {
         const val COLLECTION = "organizations"

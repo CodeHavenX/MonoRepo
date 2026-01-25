@@ -30,8 +30,12 @@ import io.github.jan.supabase.storage.storage
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
+import kotlin.time.Clock
 
 val DatastoreModule = module {
+
+    // Provide Clock.System for soft delete timestamps
+    single<Clock> { Clock.System }
 
     single {
         val settingsHolder: SettingsHolder = get()

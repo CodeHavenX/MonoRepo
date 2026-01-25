@@ -8,7 +8,7 @@ import com.cramsan.framework.annotations.SupabaseModel
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-@OptIn(SupabaseModel::class)
+@OptIn(SupabaseModel::class, kotlin.time.ExperimentalTime::class)
 class SupabaseMappersTest {
 
     @Test

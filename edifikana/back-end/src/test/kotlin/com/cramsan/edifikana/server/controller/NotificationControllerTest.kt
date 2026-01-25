@@ -66,6 +66,7 @@ class NotificationControllerTest : CoroutineTest(), KoinTest {
         return Notification(
             id = notificationId,
             recipientUserId = recipientUserId,
+            recipientEmail = null,
             notificationType = notificationType,
             description = "Test notification",
             isRead = isRead,

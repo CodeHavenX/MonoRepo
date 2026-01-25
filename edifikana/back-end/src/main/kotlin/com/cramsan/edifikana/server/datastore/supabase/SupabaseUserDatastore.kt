@@ -43,7 +43,7 @@ class SupabaseUserDatastore(
 ) : UserDatastore {
 
     /**
-     * Creates a new user for the given [request]. Returns the [Result] of the operation with the created [User].
+     * Creates a new user with the given credentials. Transient users skip Supabase Auth.
      */
     @OptIn(SecureStringAccess::class)
     override suspend fun createUser(
@@ -112,6 +112,9 @@ class SupabaseUserDatastore(
         createdUser.toUser()
     }
 
+    /**
+     * Associates a Supabase Auth user with an existing transient user record.
+     */
     override suspend fun associateUser(
         userId: UserId,
         email: String,
@@ -162,7 +165,7 @@ class SupabaseUserDatastore(
     }
 
     /**
-     * Retrieves a user for the given [request]. Returns the [Result] of the operation with the fetched [User] if found.
+     * Retrieves a user by [id]. Returns the [User] if found, null otherwise.
      */
     override suspend fun getUser(
         id: UserId,
@@ -174,6 +177,9 @@ class SupabaseUserDatastore(
         userEntity?.toUser()
     }
 
+    /**
+     * Retrieves a user by [email]. Returns the [User] if found, null otherwise.
+     */
     override suspend fun getUser(email: String): Result<User?> = runSuspendCatching(TAG) {
         logD(TAG, "Getting user by email: %s", email)
         val userEntity = getUserByEmail(email)
@@ -183,7 +189,8 @@ class SupabaseUserDatastore(
     private suspend fun getUserImpl(id: UserId): UserEntity? {
         return postgrest.from(UserEntity.COLLECTION).select {
             filter {
-                eq("id", id.userId)
+                UserEntity::id eq id.userId
+                UserEntity::deletedAt isExact null
             }
         }.decodeSingleOrNull<UserEntity>()
     }
@@ -191,11 +198,15 @@ class SupabaseUserDatastore(
     private suspend fun getUserByEmail(email: String): UserEntity? {
         return postgrest.from(UserEntity.COLLECTION).select {
             filter {
-                eq("email", email)
+                UserEntity::email eq email
+                UserEntity::deletedAt isExact null
             }
         }.decodeSingleOrNull<UserEntity>()
     }
 
+    /**
+     * Gets all users belonging to the given [organizationId].
+     */
     override suspend fun getUsers(
         organizationId: OrganizationId,
     ): Result<List<User>> = runSuspendCatching(TAG) {
@@ -207,14 +218,17 @@ class SupabaseUserDatastore(
             Columns.list("...${UserEntity.COLLECTION}(*)")
         ) {
             filter {
-                eq("organization_id", organizationId.id)
+                UserOrganizationMappingEntity::organizationId eq organizationId.id
             }
         }
-        organizations.decodeList<UserEntity>().map { it.toUser() }
+        // Filter out soft-deleted users
+        organizations.decodeList<UserEntity>()
+            .filter { it.deletedAt == null }
+            .map { it.toUser() }
     }
 
     /**
-     * Updates a user with the given [request]. Returns the [Result] of the operation with the updated [User].
+     * Updates a user's attributes. Only non-null parameters are updated.
      */
     override suspend fun updateUser(
         id: UserId,
@@ -253,32 +267,40 @@ class SupabaseUserDatastore(
     }
 
     /**
-     * Deletes a user with the given [request].
-     * Returns the [Result] of the operation with a [Boolean] indicating success.
+     * Soft deletes a user by [id]. Also attempts to delete from Supabase Auth.
      */
     override suspend fun deleteUser(
         id: UserId,
     ): Result<Boolean> = runSuspendCatching(TAG) {
-        logD(TAG, "Deleting user: %s", id)
+        logD(TAG, "Soft deleting user: %s", id)
 
         val user = getUserImpl(id) ?: throw ClientRequestExceptions.NotFoundException(
             message = "Error: User with ID $id not found in our database.",
         )
 
-        // Check if the user is pending association with a supabase auth
-        // if the user is pending association, then there is no user to delete in Supabase Auth
-        if (!user.authMetadata.pendingAssociation) {
-            adminApi.deleteUser(id.userId)
-        }
-
-        postgrest.from(UserEntity.COLLECTION).delete {
+        // Soft delete in our database first
+        val softDeleted = postgrest.from(UserEntity.COLLECTION).update({
+            UserEntity::deletedAt setTo clock.now()
+        }) {
             select()
             filter {
                 UserEntity::id eq id.userId
+                UserEntity::deletedAt isExact null
             }
-        }.decodeSingleOrNull<UserEntity>() != null
+        }.decodeSingleOrNull<UserEntity>()
+
+        // Auth deletion can fail without affecting our soft delete
+        // A background process can retry failed auth deletions later
+        if (softDeleted != null && !user.authMetadata.pendingAssociation) {
+            runCatching { adminApi.deleteUser(id.userId) }
+        }
+
+        softDeleted != null
     }
 
+    /**
+     * Updates the user's password. Requires current password if one is already set.
+     */
     @OptIn(SecureStringAccess::class)
     override suspend fun updatePassword(
         id: UserId,
@@ -335,6 +357,9 @@ class SupabaseUserDatastore(
         )
     }
 
+    /**
+     * Creates an invite for an [email] to join an organization with the specified [role].
+     */
     override suspend fun recordInvite(
         email: String,
         organizationId: OrganizationId,
@@ -357,49 +382,67 @@ class SupabaseUserDatastore(
         data.decodeSingle<InviteEntity>().toInvite()
     }
 
+    /**
+     * Retrieves an invite by [inviteId]. Returns the [Invite] if found, null otherwise.
+     */
     override suspend fun getInvite(inviteId: InviteId): Result<Invite?> = runSuspendCatching(TAG) {
         logD(TAG, "Getting invite: %s", inviteId)
 
         postgrest.from(InviteEntity.COLLECTION).select {
             filter {
-                eq("id", inviteId.id)
+                InviteEntity::id eq inviteId.id
+                InviteEntity::deletedAt isExact null
             }
         }.decodeSingleOrNull<InviteEntity>()?.toInvite()
     }
 
+    /**
+     * Gets all non-expired invites for an organization.
+     */
     override suspend fun getInvites(organizationId: OrganizationId): Result<List<Invite>> {
         return runSuspendCatching(TAG) {
             val organizations = postgrest.from(InviteEntity.COLLECTION).select {
                 filter {
-                    eq("organization_id", organizationId.id)
+                    InviteEntity::organizationId eq organizationId.id
                     gt("expiration", clock.now()) // Only non-expired invites
+                    InviteEntity::deletedAt isExact null
                 }
             }
             organizations.decodeList<InviteEntity>().map { it.toInvite() }
         }
     }
 
+    /**
+     * Gets all non-expired invites for an [email] address.
+     */
     override suspend fun getInvitesByEmail(email: String): Result<List<Invite>> {
         return runSuspendCatching(TAG) {
             val invites = postgrest.from(InviteEntity.COLLECTION).select {
                 filter {
-                    eq("email", email)
+                    InviteEntity::email eq email
                     gt("expiration", clock.now()) // Only non-expired invites
+                    InviteEntity::deletedAt isExact null
                 }
             }
             invites.decodeList<InviteEntity>().map { it.toInvite() }
         }
     }
 
+    /**
+     * Soft deletes an invite by [inviteId].
+     */
     override suspend fun removeInvite(
         inviteId: InviteId,
     ): Result<Unit> = runSuspendCatching(TAG) {
-        logD(TAG, "Removing invite: %s", inviteId)
+        logD(TAG, "Soft deleting invite: %s", inviteId)
 
-        val deleted = postgrest.from(InviteEntity.COLLECTION).delete {
+        val deleted = postgrest.from(InviteEntity.COLLECTION).update({
+            InviteEntity::deletedAt setTo clock.now()
+        }) {
             select()
             filter {
-                eq("id", inviteId.id)
+                InviteEntity::id eq inviteId.id
+                InviteEntity::deletedAt isExact null
             }
         }.decodeSingleOrNull<InviteEntity>() != null
 
@@ -424,15 +467,4 @@ class SupabaseUserDatastore(
     companion object {
         const val TAG = "SupabaseUserDatastore"
     }
-}
-
-@OptIn(SupabaseModel::class)
-private fun InviteEntity.toInvite(): Invite {
-    return Invite(
-        id = InviteId(this.id),
-        email = this.email,
-        organizationId = OrganizationId(this.organizationId),
-        role = UserRole.fromString(this.role),
-        expiration = this.expiration,
-    )
 }

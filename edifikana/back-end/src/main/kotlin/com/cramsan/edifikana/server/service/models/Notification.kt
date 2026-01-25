@@ -12,6 +12,7 @@ import kotlin.time.Instant
 data class Notification(
     val id: NotificationId,
     val recipientUserId: UserId?,
+    val recipientEmail: String?,
     val notificationType: NotificationType,
     val description: String,
     val isRead: Boolean,

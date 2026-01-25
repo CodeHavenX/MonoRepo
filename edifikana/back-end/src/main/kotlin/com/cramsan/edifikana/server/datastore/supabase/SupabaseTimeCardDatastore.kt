@@ -11,6 +11,7 @@ import com.cramsan.framework.annotations.SupabaseModel
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.postgrest.Postgrest
+import kotlin.time.Clock
 import kotlin.time.Instant
 
 /**
@@ -18,10 +19,11 @@ import kotlin.time.Instant
  */
 class SupabaseTimeCardDatastore(
     private val postgrest: Postgrest,
+    private val clock: Clock,
 ) : TimeCardDatastore {
 
     /**
-     * Creates a new time card event for the given [request]. Returns the [Result] of the operation with the created [TimeCardEvent].
+     * Creates a new time card event for an employee clock-in/out.
      */
     @OptIn(SupabaseModel::class)
     override suspend fun createTimeCardEvent(
@@ -50,7 +52,7 @@ class SupabaseTimeCardDatastore(
     }
 
     /**
-     * Retrieves a time card event for the given [request]. Returns the [Result] of the operation with the fetched [TimeCardEvent] if found.
+     * Retrieves a time card event by [id]. Returns the [TimeCardEvent] if found, null otherwise.
      */
     @OptIn(SupabaseModel::class)
     override suspend fun getTimeCardEvent(
@@ -61,12 +63,16 @@ class SupabaseTimeCardDatastore(
         val timeCardEventEntity = postgrest.from(TimeCardEventEntity.COLLECTION).select {
             filter {
                 TimeCardEventEntity::id eq id.timeCardEventId
+                TimeCardEventEntity::deletedAt isExact null
             }
         }.decodeSingleOrNull<TimeCardEventEntity>()
 
         timeCardEventEntity?.toTimeCardEvent()
     }
 
+    /**
+     * Gets time card events, optionally filtered by [employeeId].
+     */
     @OptIn(SupabaseModel::class)
     override suspend fun getTimeCardEvents(
         employeeId: EmployeeId?,
@@ -75,6 +81,7 @@ class SupabaseTimeCardDatastore(
 
         postgrest.from(TimeCardEventEntity.COLLECTION).select {
             filter {
+                TimeCardEventEntity::deletedAt isExact null
                 employeeId?.let {
                     TimeCardEventEntity::employeeId eq it.empId
                 }
@@ -84,18 +91,21 @@ class SupabaseTimeCardDatastore(
     }
 
     /**
-     * Deletes a time card event for the given [request]. Returns the [Result] of the operation.
+     * Soft deletes a time card event by [id]. Returns true if successful.
      */
     @OptIn(SupabaseModel::class)
     override suspend fun deleteTimeCardEvent(
         id: TimeCardEventId,
     ): Result<Boolean> = runSuspendCatching(TAG) {
-        logD(TAG, "Deleting time card event: %s", id)
+        logD(TAG, "Soft deleting time card event: %s", id)
 
-        postgrest.from(TimeCardEventEntity.COLLECTION).delete {
+        postgrest.from(TimeCardEventEntity.COLLECTION).update({
+            TimeCardEventEntity::deletedAt setTo clock.now()
+        }) {
             select()
             filter {
                 TimeCardEventEntity::id eq id.timeCardEventId
+                TimeCardEventEntity::deletedAt isExact null
             }
         }.decodeSingleOrNull<TimeCardEventEntity>() != null
     }

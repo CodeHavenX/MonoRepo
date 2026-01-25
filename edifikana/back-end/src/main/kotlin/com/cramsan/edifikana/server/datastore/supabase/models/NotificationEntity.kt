@@ -15,6 +15,8 @@ data class NotificationEntity(
     val id: String,
     @SerialName("recipient_user_id")
     val recipientUserId: String?,
+    @SerialName("recipient_email")
+    val recipientEmail: String?,
     @SerialName("notification_type")
     val notificationType: String,
     @SerialName("description")
@@ -27,6 +29,8 @@ data class NotificationEntity(
     val readAt: Instant?,
     @SerialName("invite_id")
     val inviteId: String?,
+    @SerialName("deleted_at")
+    val deletedAt: Instant? = null,
 ) {
     /**
      * Supabase entity representing a create notification request.
@@ -36,6 +40,8 @@ data class NotificationEntity(
     data class Create(
         @SerialName("recipient_user_id")
         val recipientUserId: String?,
+        @SerialName("recipient_email")
+        val recipientEmail: String?,
         @SerialName("notification_type")
         val notificationType: String,
         @SerialName("description")

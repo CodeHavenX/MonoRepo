@@ -12,6 +12,7 @@ import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.query.Columns
+import kotlin.time.Clock
 
 /**
  * Datastore for managing organizations in Supabase.
@@ -19,8 +20,12 @@ import io.github.jan.supabase.postgrest.query.Columns
 @OptIn(SupabaseModel::class)
 class SupabaseOrganizationDatastore(
     private val postgrest: Postgrest,
+    private val clock: Clock,
 ) : OrganizationDatastore {
 
+    /**
+     * Creates a new organization with the given [name] and [description].
+     */
     override suspend fun createOrganization(
         name: String,
         description: String,
@@ -38,6 +43,9 @@ class SupabaseOrganizationDatastore(
         createdOrg.toOrganization()
     }
 
+    /**
+     * Retrieves an organization by [id]. Returns the [Organization] if found, null otherwise.
+     */
     override suspend fun getOrganization(
         id: OrganizationId
     ): Result<Organization?> = runSuspendCatching(
@@ -45,10 +53,16 @@ class SupabaseOrganizationDatastore(
     ) {
         logD(TAG, "Getting organization: %s", id)
         postgrest.from(OrganizationEntity.COLLECTION).select {
-            filter { eq("id", id.id) }
+            filter {
+                OrganizationEntity::id eq id.id
+                OrganizationEntity::deletedAt isExact null
+            }
         }.decodeSingleOrNull<OrganizationEntity>()?.toOrganization()
     }
 
+    /**
+     * Updates an organization's attributes. Only non-null parameters are updated.
+     */
     override suspend fun updateOrganization(
         id: OrganizationId,
         name: String?,
@@ -63,30 +77,38 @@ class SupabaseOrganizationDatastore(
         )
         val updated = postgrest.from(OrganizationEntity.COLLECTION).update(updatedOrganization) {
             select()
-            filter { eq("id", id.id) }
+            filter { OrganizationEntity::id eq id.id }
         }.decodeSingle<OrganizationEntity>()
         updated.toOrganization()
     }
 
+    /**
+     * Soft deletes an organization with the given [id]. Returns the [Result] of the operation with a [Boolean] indicating success.
+     * Note: User-organization mappings are NOT deleted - they remain until the organization is permanently purged.
+     */
     override suspend fun deleteOrganization(
         id: OrganizationId
     ): Result<Boolean> = runSuspendCatching(
         TAG
     ) {
-        logD(TAG, "Deleting organization: %s", id)
+        logD(TAG, "Soft deleting organization: %s", id)
 
-        postgrest.from(UserOrganizationMappingEntity.COLLECTION).delete {
+        // Soft delete the organization by setting deleted_at timestamp
+        val deleted = postgrest.from(OrganizationEntity.COLLECTION).update({
+            OrganizationEntity::deletedAt setTo clock.now()
+        }) {
             select()
-            filter { eq("organization_id", id.id) }
-        }.decodeList<UserOrganizationMappingEntity>()
-
-        val deleted = postgrest.from(OrganizationEntity.COLLECTION).delete {
-            select()
-            filter { eq("id", id.id) }
+            filter {
+                OrganizationEntity::id eq id.id
+                OrganizationEntity::deletedAt isExact null
+            }
         }.decodeSingleOrNull<OrganizationEntity>()
         deleted != null
     }
 
+    /**
+     * Gets all organizations the given [userId] belongs to.
+     */
     override suspend fun getOrganizationsForUser(userId: UserId): Result<List<Organization>> {
         return runSuspendCatching(TAG) {
             logD(TAG, "Getting organizations for user: %s", userId)
@@ -95,12 +117,18 @@ class SupabaseOrganizationDatastore(
                 // https://supabase.com/blog/postgrest-11-prerelease
                 Columns.list("...${OrganizationEntity.COLLECTION}(*)")
             ) {
-                filter { eq("user_id", userId.userId) }
+                filter { UserOrganizationMappingEntity::userId eq userId.userId }
             }
-            organizations.decodeList<OrganizationEntity>().map { it.toOrganization() }
+            // Filter out soft-deleted organizations
+            organizations.decodeList<OrganizationEntity>()
+                .filter { it.deletedAt == null }
+                .map { it.toOrganization() }
         }
     }
 
+    /**
+     * Adds a user to an organization with the specified [role].
+     */
     override suspend fun addUserToOrganization(
         userId: UserId,
         organizationId: OrganizationId,
@@ -118,6 +146,9 @@ class SupabaseOrganizationDatastore(
         }
     }
 
+    /**
+     * Removes a user from an organization.
+     */
     override suspend fun removeUserFromOrganization(
         userId: UserId,
         organizationId: OrganizationId
@@ -127,22 +158,25 @@ class SupabaseOrganizationDatastore(
             postgrest.from(UserOrganizationMappingEntity.COLLECTION).delete {
                 filter {
                     and {
-                        eq("user_id", userId.userId)
-                        eq("organization_id", organizationId.id)
+                        UserOrganizationMappingEntity::userId eq userId.userId
+                        UserOrganizationMappingEntity::organizationId eq organizationId.id
                     }
                 }
             }.decodeList<UserOrganizationMappingEntity>()
         }
     }
 
+    /**
+     * Gets the user's role within an organization. Returns null if not a member.
+     */
     override suspend fun getUserRole(userId: UserId, orgId: OrganizationId): Result<UserRole?> = runSuspendCatching(
         TAG
     ) {
         logD(TAG, "Getting role for user in organization: $orgId")
         postgrest.from(UserOrganizationMappingEntity.COLLECTION).select {
             filter {
-                eq("organization_id", orgId.id)
-                eq("user_id", userId.userId)
+                UserOrganizationMappingEntity::organizationId eq orgId.id
+                UserOrganizationMappingEntity::userId eq userId.userId
             }
         }.decodeSingleOrNull<UserOrganizationMappingEntity>()?.role
     }

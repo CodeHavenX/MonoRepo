@@ -6,21 +6,24 @@ import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.datastore.PropertyDatastore
 import com.cramsan.edifikana.server.datastore.supabase.models.PropertyEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.UserPropertyMappingEntity
+import com.cramsan.edifikana.server.datastore.supabase.models.UserPropertyViewEntity
 import com.cramsan.edifikana.server.service.models.Property
 import com.cramsan.framework.annotations.SupabaseModel
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.postgrest.Postgrest
+import kotlin.time.Clock
 
 /**
  * Datastore for managing properties.
  */
 class SupabasePropertyDatastore(
     private val postgrest: Postgrest,
+    private val clock: Clock,
 ) : PropertyDatastore {
 
     /**
-     * Creates a new property for the given [request]. Returns the [Result] of the operation with the created [Property].
+     * Creates a new property and associates it with [creatorUserId].
      */
     @OptIn(SupabaseModel::class)
     override suspend fun createProperty(
@@ -60,7 +63,7 @@ class SupabasePropertyDatastore(
     }
 
     /**
-     * Retrieves a property for the given [request]. Returns the [Result] of the operation with the fetched [Property] if found.
+     * Retrieves a property by [propertyId]. Returns the [Property] if found, null otherwise.
      */
     @OptIn(SupabaseModel::class)
     override suspend fun getProperty(
@@ -71,32 +74,31 @@ class SupabasePropertyDatastore(
         val propertyEntity = postgrest.from(PropertyEntity.COLLECTION).select {
             filter {
                 PropertyEntity::id eq propertyId.propertyId
+                PropertyEntity::deletedAt isExact null
             }
         }.decodeSingleOrNull<PropertyEntity>()
 
         propertyEntity?.toProperty()
     }
 
+    /**
+     * Gets all properties accessible to the given user.
+     * Uses the v_user_properties view for single-query retrieval (eliminates N+1 pattern).
+     */
     @OptIn(SupabaseModel::class)
     override suspend fun getProperties(
         userId: UserId
     ): Result<List<Property>> = runSuspendCatching(TAG) {
-        logD(TAG, "Getting all properties")
+        logD(TAG, "Getting all properties for user: %s", userId)
 
-        val propertyIds =
-            postgrest.from(UserPropertyMappingEntity.COLLECTION).select {
-                filter { UserPropertyMappingEntity::userId eq userId.userId }
-                select()
-            }.decodeList<UserPropertyMappingEntity>().map { it.propertyId }
-
-        postgrest.from(PropertyEntity.COLLECTION).select {
-            filter { PropertyEntity::id isIn propertyIds }
-            select()
-        }.decodeList<PropertyEntity>().map { it.toProperty() }
+        // Use the v_user_properties view for single-query retrieval
+        postgrest.from(VIEW_USER_PROPERTIES).select {
+            filter { UserPropertyViewEntity::userId eq userId.userId }
+        }.decodeList<UserPropertyViewEntity>().map { it.toProperty() }
     }
 
     /**
-     * Updates a property with the given [request]. Returns the [Result] of the operation with the updated [Property].
+     * Updates a property's attributes. Only non-null parameters are updated.
      */
     @OptIn(SupabaseModel::class)
     override suspend fun updateProperty(
@@ -109,9 +111,9 @@ class SupabasePropertyDatastore(
 
         postgrest.from(PropertyEntity.COLLECTION).update(
             {
-                name?.let { value -> Property::name setTo value }
-                address?.let { value -> Property::address setTo value }
-                imageUrl?.let { value -> Property::imageUrl setTo value }
+                name?.let { value -> PropertyEntity::name setTo value }
+                address?.let { value -> PropertyEntity::address setTo value }
+                imageUrl?.let { value -> PropertyEntity::imageUrl setTo value }
             }
         ) {
             select()
@@ -122,32 +124,28 @@ class SupabasePropertyDatastore(
     }
 
     /**
-     * Deletes a property with the given [request]. Returns the [Result] of the operation with a [Boolean] indicating success.
+     * Soft deletes a property by [propertyId]. Returns true if successful.
      */
     @OptIn(SupabaseModel::class)
     override suspend fun deleteProperty(
         propertyId: PropertyId,
     ): Result<Boolean> = runSuspendCatching(TAG) {
-        logD(TAG, "Deleting property: %s", propertyId)
+        logD(TAG, "Soft deleting property: %s", propertyId)
 
-        // Delete the property mappings first
-        postgrest.from(UserPropertyMappingEntity.COLLECTION).delete {
-            select()
-            filter {
-                UserPropertyMappingEntity::propertyId eq propertyId.propertyId
-            }
-        }
-
-        // Then delete the property itself
-        postgrest.from(PropertyEntity.COLLECTION).delete {
+        // Soft delete the property by setting deleted_at timestamp
+        postgrest.from(PropertyEntity.COLLECTION).update({
+            PropertyEntity::deletedAt setTo clock.now()
+        }) {
             select()
             filter {
                 PropertyEntity::id eq propertyId.propertyId
+                PropertyEntity::deletedAt isExact null
             }
         }.decodeSingleOrNull<PropertyEntity>() != null
     }
 
     companion object {
         const val TAG = "SupabasePropertyDatastore"
+        const val VIEW_USER_PROPERTIES = "v_user_properties"
     }
 }

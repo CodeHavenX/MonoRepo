@@ -5,6 +5,7 @@ import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.framework.annotations.SupabaseModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlin.time.Instant
 
 /**
  * Entity representing employee member.
@@ -22,6 +23,8 @@ data class EmployeeEntity(
     val role: EmployeeRole,
     @SerialName("property_id")
     val propertyId: String,
+    @SerialName("deleted_at")
+    val deletedAt: Instant? = null,
 ) {
     companion object {
         const val COLLECTION = "employee"

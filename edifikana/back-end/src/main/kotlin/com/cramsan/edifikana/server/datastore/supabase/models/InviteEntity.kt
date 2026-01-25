@@ -23,6 +23,8 @@ data class InviteEntity(
     val expiration: Instant,
     @SerialName("role")
     val role: String,
+    @SerialName("deleted_at")
+    val deletedAt: Instant? = null,
 ) {
 
     /**

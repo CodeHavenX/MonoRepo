@@ -3,6 +3,7 @@ package com.cramsan.edifikana.server.datastore.supabase.models
 import com.cramsan.framework.annotations.SupabaseModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlin.time.Instant
 
 /**
  * Supabase entity representing a user.
@@ -20,6 +21,8 @@ data class UserEntity(
     val lastName: String,
     @SerialName("auth_metadata")
     val authMetadata: AuthMetadataEntity,
+    @SerialName("deleted_at")
+    val deletedAt: Instant? = null,
 ) {
     companion object {
         const val COLLECTION = "users"

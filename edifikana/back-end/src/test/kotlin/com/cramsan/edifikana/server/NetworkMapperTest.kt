@@ -60,6 +60,7 @@ class NetworkMapperTest {
         val notification = Notification(
             id = NotificationId("notif123"),
             recipientUserId = UserId("user123"),
+            recipientEmail = null,
             notificationType = NotificationType.INVITE,
             description = "You have been invited to join Test Org",
             isRead = false,
@@ -96,6 +97,7 @@ class NetworkMapperTest {
         val notification = Notification(
             id = NotificationId("notif123"),
             recipientUserId = UserId("user123"),
+            recipientEmail = null,
             notificationType = NotificationType.SYSTEM,
             description = "System maintenance scheduled",
             isRead = true,

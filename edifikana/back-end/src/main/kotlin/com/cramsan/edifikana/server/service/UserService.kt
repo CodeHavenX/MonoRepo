@@ -175,8 +175,10 @@ class UserService(
         ).getOrThrow()
 
         // Create a notification for the invited user
+        // If user doesn't exist yet, store the email for later association when they sign up
         val notificationResult = notificationDatastore.createNotification(
             recipientUserId = userId,
+            recipientEmail = if (userId == null) email else null,
             notificationType = NotificationType.INVITE,
             description = "You have been invited to join ${organization.name}.",
             inviteId = invite.id,

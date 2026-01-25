@@ -4,6 +4,7 @@ import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.framework.annotations.SupabaseModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlin.time.Instant
 
 /**
  * Entity representing an event log entry.
@@ -25,6 +26,8 @@ data class EventLogEntryEntity(
     val title: String,
     val description: String?,
     val unit: String,
+    @SerialName("deleted_at")
+    val deletedAt: Instant? = null,
 ) {
     companion object {
         const val COLLECTION = "event_log_entries"

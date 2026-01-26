@@ -9,6 +9,12 @@
 CREATE INDEX IF NOT EXISTS idx_notifications_user_read
 ON notifications(recipient_user_id, is_read);
 
+-- ============================================================================
+-- ADD invite_id COLUMN
+-- ============================================================================
+-- Links notification to the invite that triggered it.
+ALTER TABLE notifications ADD COLUMN IF NOT EXISTS invite_id UUID REFERENCES invites(id) ON DELETE CASCADE;
+
 -- Notification queries by invite_id
 CREATE INDEX IF NOT EXISTS idx_notifications_invite
 ON notifications(invite_id);

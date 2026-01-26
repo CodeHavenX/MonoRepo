@@ -4,7 +4,6 @@
 -- 1. Makes recipient_email nullable (for notifications to existing users)
 -- 2. Drops organization_id column (notifications are linked via invite_id instead)
 -- 3. Adds description column for notification text
--- 4. Adds invite_id column to link notifications to invites
 
 -- ===============================================================
 -- PRELUDE: ADD recipient_email COLUMN IF NOT EXISTS
@@ -36,13 +35,7 @@ UPDATE notifications SET description = 'Notification' WHERE description IS NULL;
 ALTER TABLE notifications ALTER COLUMN description SET NOT NULL;
 
 -- ============================================================================
--- PART 4: ADD invite_id COLUMN
--- ============================================================================
--- Links notification to the invite that triggered it.
-ALTER TABLE notifications ADD COLUMN IF NOT EXISTS invite_id UUID REFERENCES invites(id) ON DELETE CASCADE;
-
--- ============================================================================
--- PART 5: UPDATE recipient_email INDEX
+-- PART 4: UPDATE recipient_email INDEX
 -- ============================================================================
 -- Update the index to be a partial index (more efficient for the common query pattern)
 DROP INDEX IF EXISTS idx_notifications_recipient_email;

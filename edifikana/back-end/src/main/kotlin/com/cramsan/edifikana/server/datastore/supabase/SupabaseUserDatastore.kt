@@ -147,21 +147,24 @@ class SupabaseUserDatastore(
             )
         }
 
-        // Create the new user entity in our database
-        val requestEntity: UserEntity.CreateUserEntity = CreateUserEntity(
-            userId = userId,
-            email = email,
-            userEntity = temporaryUser,
-        )
-        val createdUser = createUserEntity(requestEntity)
+        // Update the temporary user's ID and auth metadata instead of creating a new user
+        val updatedUser = postgrest.from(UserEntity.COLLECTION).update(
+            {
+                UserEntity::id setTo userId.userId
+                UserEntity::authMetadata setTo temporaryUser.authMetadata.copy(
+                    pendingAssociation = false,
+                    canPasswordAuth = true,
+                )
+            }
+        ) {
+            select()
+            filter {
+                UserEntity::id eq temporaryUser.id
+            }
+        }.decodeSingle<UserEntity>()
 
-        if (deleteUser(UserId(temporaryUser.id)).isFailure) {
-            logW(TAG, "Failed to delete temporary user with email: $email")
-            error("Failed to delete temporary user with.")
-        }
-
-        // Return the created user as a domain model
-        createdUser.toUser()
+        // Return the updated user as a domain model
+        updatedUser.toUser()
     }
 
     /**

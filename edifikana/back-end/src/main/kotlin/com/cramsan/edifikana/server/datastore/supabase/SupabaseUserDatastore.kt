@@ -148,21 +148,30 @@ class SupabaseUserDatastore(
         }
 
         // Update the temporary user's ID and auth metadata instead of creating a new user
-        val updatedUser = postgrest.from(UserEntity.COLLECTION).update(
-            {
-                UserEntity::id setTo userId.userId
-                UserEntity::authMetadata setTo temporaryUser.authMetadata.copy(
-                    pendingAssociation = false,
-                    canPasswordAuth = true,
-                )
-            }
-        ) {
-            select()
-            filter {
-                UserEntity::id eq temporaryUser.id
-                UserEntity::deletedAt isExact null
-            }
-        }.decodeSingleOrNull<UserEntity>()
+        val updatedUser = runCatching {
+            postgrest.from(UserEntity.COLLECTION).update(
+                {
+                    UserEntity::id setTo userId.userId
+                    UserEntity::authMetadata setTo temporaryUser.authMetadata.copy(
+                        pendingAssociation = false,
+                        canPasswordAuth = true,
+                    )
+                }
+            ) {
+                select()
+                filter {
+                    UserEntity::id eq temporaryUser.id
+                    UserEntity::deletedAt isExact null
+                }
+            }.decodeSingleOrNull<UserEntity>()
+        }.getOrElse { exception ->
+            // Check if the error is due to a duplicate key constraint violation
+            // This could happen if the userId already exists in the database
+            logW(TAG, "Failed to update temporary user with email: $email", exception)
+            throw ClientRequestExceptions.ConflictException(
+                message = "Error: User with ID $userId already exists or update failed.",
+            )
+        }
 
         if (updatedUser == null) {
             logW(TAG, "Failed to update temporary user with email: $email - user may have been deleted or modified")

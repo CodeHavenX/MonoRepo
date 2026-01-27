@@ -31,7 +31,6 @@ import com.cramsan.edifikana.client.ui.components.EdifikanaTextButton
 import com.cramsan.edifikana.client.ui.components.EdifikanaTextField
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
-import com.cramsan.ui.components.PasswordOutlinedTextField
 import com.cramsan.ui.components.ScreenLayout
 import com.cramsan.ui.components.themetoggle.SelectedTheme
 import com.cramsan.ui.components.themetoggle.ThemeToggle

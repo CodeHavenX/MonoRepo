@@ -25,7 +25,6 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.ui.components.EdifikanaPasswordTextField
 import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.ui.components.LoadingAnimationOverlay
-import com.cramsan.ui.components.PasswordOutlinedTextField
 import com.cramsan.ui.theme.Padding
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -68,7 +67,10 @@ internal fun RenderContent(
     Card(
         modifier = Modifier
             .width(IntrinsicSize.Min)
-            .height(IntrinsicSize.Min)
+            .height(IntrinsicSize.Min),
+        colors = androidx.compose.material3.CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+        ),
     ) {
         Box {
             Column(

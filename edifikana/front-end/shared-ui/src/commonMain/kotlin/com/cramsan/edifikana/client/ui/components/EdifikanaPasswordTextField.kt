@@ -55,7 +55,7 @@ fun EdifikanaPasswordTextField(
     var showPassword by remember { mutableStateOf(false) }
 
     Column(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier,
     ) {
         // If label is provided, show it above the text field
         if (!label.isNullOrBlank()) {
@@ -67,6 +67,7 @@ fun EdifikanaPasswordTextField(
         }
         OutlinedTextField(
             value = value,
+            //TODO: Update this so we are dynamically filling the screen instead
             modifier = Modifier.fillMaxWidth(),
             onValueChange = onValueChange,
             placeholder = {

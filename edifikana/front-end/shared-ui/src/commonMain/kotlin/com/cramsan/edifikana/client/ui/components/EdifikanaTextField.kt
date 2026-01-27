@@ -52,7 +52,7 @@ fun EdifikanaTextField(
         }
         OutlinedTextField(
             value = value,
-            //TODO: Update this so we are dynamically filling the screen instead
+            // TODO: Update this so we are dynamically filling the screen instead
             modifier = Modifier.fillMaxWidth(),
             onValueChange = onValueChange,
             placeholder = {

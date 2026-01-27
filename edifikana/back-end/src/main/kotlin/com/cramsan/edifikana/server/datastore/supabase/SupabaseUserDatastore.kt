@@ -166,15 +166,24 @@ class SupabaseUserDatastore(
             }.decodeSingleOrNull<UserEntity>()
         }.getOrElse { exception ->
             // Check if the error is due to a duplicate key constraint violation
-            // This could happen if the userId already exists in the database
+            // The exception message will contain details about the constraint violation
+            val exceptionMessage = exception.message.orEmpty()
             logW(TAG, "Failed to update temporary user with email: $email", exception)
-            throw ClientRequestExceptions.ConflictException(
-                message = "Error: User with ID $userId already exists or update failed.",
-            )
+            
+            // Check if it's a primary key or unique constraint violation
+            if (exceptionMessage.contains("duplicate key") || exceptionMessage.contains("unique constraint")) {
+                throw ClientRequestExceptions.ConflictException(
+                    message = "Error: User with ID $userId already exists in the database.",
+                )
+            } else {
+                throw ClientRequestExceptions.ConflictException(
+                    message = "Error: Failed to associate user account. ${exception.message}",
+                )
+            }
         }
 
         if (updatedUser == null) {
-            logW(TAG, "Failed to update temporary user with email: $email - user may have been deleted or modified")
+            logW(TAG, "No user was updated for email: $email - user may have been deleted or modified")
             throw ClientRequestExceptions.NotFoundException(
                 message = "Error: Temporary user with email $email was not found or has been modified.",
             )

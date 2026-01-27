@@ -16,16 +16,29 @@ ALTER TABLE ONLY "public"."users"
 -- Recreate the foreign key constraints (they will now reference the PRIMARY KEY)
 ALTER TABLE "public"."user_property_mapping"
     ADD CONSTRAINT "user_property_mapping_user_id_fkey"
-    FOREIGN KEY (user_id) REFERENCES users(id);
+    FOREIGN KEY (user_id) REFERENCES users(id) NOT VALID;
 
 ALTER TABLE "public"."global_perm_override"
     ADD CONSTRAINT "global_perm_override_id_fkey"
-    FOREIGN KEY (id) REFERENCES users(id);
+    FOREIGN KEY (id) REFERENCES users(id) NOT VALID;
 
 ALTER TABLE "public"."user_organization_mapping"
     ADD CONSTRAINT "user_organization_mapping_user_id_fkey"
-    FOREIGN KEY (user_id) REFERENCES users(id);
+    FOREIGN KEY (user_id) REFERENCES users(id) NOT VALID;
 
 ALTER TABLE "public"."notifications"
     ADD CONSTRAINT "notifications_recipient_user_id_fkey"
-    FOREIGN KEY (recipient_user_id) REFERENCES users(id) ON DELETE CASCADE;
+    FOREIGN KEY (recipient_user_id) REFERENCES users(id) ON DELETE CASCADE NOT VALID;
+
+-- Validate the newly created foreign key constraints without holding long locks
+ALTER TABLE "public"."user_property_mapping"
+    VALIDATE CONSTRAINT "user_property_mapping_user_id_fkey";
+
+ALTER TABLE "public"."global_perm_override"
+    VALIDATE CONSTRAINT "global_perm_override_id_fkey";
+
+ALTER TABLE "public"."user_organization_mapping"
+    VALIDATE CONSTRAINT "user_organization_mapping_user_id_fkey";
+
+ALTER TABLE "public"."notifications"
+    VALIDATE CONSTRAINT "notifications_recipient_user_id_fkey";

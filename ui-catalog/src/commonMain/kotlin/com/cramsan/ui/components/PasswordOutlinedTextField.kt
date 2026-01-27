@@ -72,12 +72,12 @@ fun PasswordOutlinedTextField(
     isError: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions(
         autoCorrectEnabled = false,
-        keyboardType = KeyboardType.Password
+        keyboardType = KeyboardType.Password,
     ),
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     interactionSource: MutableInteractionSource? = null,
     shape: Shape = OutlinedTextFieldDefaults.shape,
-    colors: TextFieldColors = OutlinedTextFieldDefaults.colors()
+    colors: TextFieldColors = OutlinedTextFieldDefaults.colors(),
 ) {
     var showPassword by remember { mutableStateOf(false) }
     OutlinedTextField(
@@ -105,7 +105,7 @@ fun PasswordOutlinedTextField(
                 modifier = Modifier
                     .clip(CircleShape)
                     .clickable { showPassword = !showPassword }
-                    .padding(Padding.XX_SMALL)
+                    .padding(Padding.XX_SMALL),
             )
         },
         prefix = prefix,

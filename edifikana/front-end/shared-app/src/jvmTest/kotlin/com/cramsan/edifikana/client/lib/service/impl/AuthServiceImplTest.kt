@@ -393,7 +393,7 @@ class AuthServiceImplTest {
             lastName = "Doe",
             authMetadata = null,
         )
-        coEvery { auth.verifyEmailOtp(OtpType.Email.EMAIL, email, hashToken) } just Runs
+        coEvery { auth.verifyEmailOtp(OtpType.Email.EMAIL, email, hashToken) } returns mockk()
         coEvery { auth.currentUserOrNull() } returns userInfo
         ktorTestEngine.configure {
             coEvery { produceResponse(any()) } returns MockResponseData.Success(
@@ -424,7 +424,7 @@ class AuthServiceImplTest {
             lastName = "Smith",
             authMetadata = null,
         )
-        coEvery { auth.verifyEmailOtp(OtpType.Email.EMAIL, email, hashToken) } just Runs
+        coEvery { auth.verifyEmailOtp(OtpType.Email.EMAIL, email, hashToken) } returns mockk()
         coEvery { auth.currentUserOrNull() } returns userInfo
         ktorTestEngine.configure {
             coEvery { produceResponse(any()) } returns MockResponseData.Success(

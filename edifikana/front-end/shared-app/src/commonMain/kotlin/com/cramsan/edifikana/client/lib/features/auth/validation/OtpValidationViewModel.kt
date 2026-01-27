@@ -76,14 +76,14 @@ class OtpValidationViewModel(
                         EdifikanaWindowsEvent.NavigateToScreen(
                             AuthDestination.SelectOrgDestination,
                             clearTop = true,
-                        )
+                        ),
                     )
                 } else {
                     emitWindowEvent(
                         EdifikanaWindowsEvent.NavigateToNavGraph(
                             EdifikanaNavGraphDestination.HomeNavGraphDestination,
                             clearTop = true,
-                        )
+                        ),
                     )
                 }
             }
@@ -100,7 +100,7 @@ class OtpValidationViewModel(
             updateUiState {
                 it.copy(
                     otpCode = sanitizedText,
-                    enabledContinueButton = sanitizedText.length == uiState.value.otpLength
+                    enabledContinueButton = sanitizedText.length == uiState.value.otpLength,
                 )
             }
         }
@@ -113,7 +113,7 @@ class OtpValidationViewModel(
         logD(TAG, "navigateBack called")
         viewModelScope.launch {
             emitWindowEvent(
-                EdifikanaWindowsEvent.NavigateBack
+                EdifikanaWindowsEvent.NavigateBack,
             )
         }
     }
@@ -121,13 +121,11 @@ class OtpValidationViewModel(
     /**
      * Get the custom client error message based on the exception type.
      */
-    private suspend fun getErrorMessage(exception: Throwable): String {
-        return when (exception) {
-            is ClientRequestExceptions.UnauthorizedException ->
-                "OTP code is not valid. Please try again."
+    private suspend fun getErrorMessage(exception: Throwable): String = when (exception) {
+        is ClientRequestExceptions.UnauthorizedException ->
+            "OTP code is not valid. Please try again."
 
-            else -> stringProvider.getString(Res.string.error_message_unexpected_error)
-        }
+        else -> stringProvider.getString(Res.string.error_message_unexpected_error)
     }
 
     companion object {

@@ -14,9 +14,7 @@ import kotlin.reflect.KType
 /**
  * Main Nav Graph Route.
  */
-fun NavGraphBuilder.mainNavGraphNavigation(
-    typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> = emptyMap(),
-) {
+fun NavGraphBuilder.mainNavGraphNavigation(typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> = emptyMap()) {
     navigationGraph(
         graphDestination = ApplicationNavGraphDestination.MainDestination::class,
         startDestination = MainDestination.MainMenuDestination,

@@ -42,7 +42,9 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 @Suppress("LargeClass")
-class UserControllerTest : CoroutineTest(), KoinTest {
+class UserControllerTest :
+    CoroutineTest(),
+    KoinTest {
 
     @BeforeTest
     fun setupTest() {
@@ -82,7 +84,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
                     lastName = "Doe",
                     authMetadata = null,
                     role = UserRole.USER,
-                )
+                ),
             )
         }
         val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
@@ -93,7 +95,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
                 SupabaseContextPayload(
                     userInfo = mockk(),
                     userId = UserId("user123"),
-                )
+                ),
             )
         }
 
@@ -136,7 +138,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
                 SupabaseContextPayload(
                     userInfo = mockk(),
                     userId = UserId("user123"),
-                )
+                ),
             )
         }
 
@@ -179,7 +181,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
                 SupabaseContextPayload(
                     userInfo = mockk(),
                     userId = UserId("user123"),
-                )
+                ),
             )
         }
 
@@ -213,7 +215,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
                     lastName = "Doe",
                     authMetadata = null,
                     role = UserRole.EMPLOYEE,
-                )
+                ),
             )
         }
         val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
@@ -221,7 +223,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-            )
+            ),
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -255,8 +257,8 @@ class UserControllerTest : CoroutineTest(), KoinTest {
         val context = ClientContext.AuthenticatedClientContext(
             SupabaseContextPayload(
                 userInfo = mockk(),
-                userId = userID
-            )
+                userId = userID,
+            ),
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -307,10 +309,10 @@ class UserControllerTest : CoroutineTest(), KoinTest {
                         firstName = "Jane",
                         lastName = "Smith",
                         authMetadata = null,
-                        role = UserRole.EMPLOYEE
+                        role = UserRole.EMPLOYEE,
 
-                    )
-                )
+                    ),
+                ),
             )
         }
         val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
@@ -318,7 +320,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-            )
+            ),
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -351,7 +353,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-            )
+            ),
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -384,7 +386,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
         coEvery {
             userService.updateUser(
                 id = userId,
-                email = "updated.email@example.com"
+                email = "updated.email@example.com",
             )
         }.answers {
             Result.success(
@@ -395,8 +397,8 @@ class UserControllerTest : CoroutineTest(), KoinTest {
                     firstName = "Updated",
                     lastName = "Email",
                     authMetadata = null,
-                    role = UserRole.USER
-                )
+                    role = UserRole.USER,
+                ),
             )
         }
         val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
@@ -404,7 +406,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-            )
+            ),
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -442,7 +444,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = userId,
-            )
+            ),
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -483,7 +485,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = userId,
-            )
+            ),
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -515,7 +517,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = userId,
-            )
+            ),
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -611,7 +613,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = userId,
-            )
+            ),
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -647,7 +649,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = userId,
-            )
+            ),
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -683,7 +685,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = userId,
-            )
+            ),
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -719,7 +721,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = userId,
-            )
+            ),
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -757,7 +759,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = userId,
-            )
+            ),
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -805,7 +807,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = userId,
-            )
+            ),
         )
         val inviteId = InviteId("invite123")
         coEvery {

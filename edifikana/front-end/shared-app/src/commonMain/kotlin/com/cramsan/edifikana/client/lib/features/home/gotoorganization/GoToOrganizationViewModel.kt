@@ -8,13 +8,12 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for the GoToOrganization screen.
  **/
-class GoToOrganizationViewModel(
-    dependencies: ViewModelDependencies,
-) : BaseViewModel<GoToOrganizationEvent, GoToOrganizationUIState>(
-    dependencies,
-    GoToOrganizationUIState,
-    TAG,
-) {
+class GoToOrganizationViewModel(dependencies: ViewModelDependencies) :
+    BaseViewModel<GoToOrganizationEvent, GoToOrganizationUIState>(
+        dependencies,
+        GoToOrganizationUIState,
+        TAG,
+    ) {
 
     /**
      * Trigger the back event.

@@ -31,12 +31,10 @@ object PropertyIconOptions {
      * @param option The selected image option
      * @return API-compatible string (e.g., "drawable:CASA") or null if option is null
      */
-    fun toImageUrl(option: ImageOptionUIModel?): String? {
-        return when (option?.imageSource) {
-            is ImageSource.Drawable -> "drawable:${option.id}"
-            is ImageSource.Url -> (option.imageSource as ImageSource.Url).url
-            is ImageSource.None, null -> null
-        }
+    fun toImageUrl(option: ImageOptionUIModel?): String? = when (option?.imageSource) {
+        is ImageSource.Drawable -> "drawable:${option.id}"
+        is ImageSource.Url -> (option.imageSource as ImageSource.Url).url
+        is ImageSource.None, null -> null
     }
 
     /**

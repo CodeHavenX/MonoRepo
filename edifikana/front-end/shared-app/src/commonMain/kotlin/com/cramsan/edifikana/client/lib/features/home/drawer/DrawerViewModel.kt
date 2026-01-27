@@ -8,13 +8,12 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for the Management screen.
  **/
-class DrawerViewModel(
-    dependencies: ViewModelDependencies,
-) : BaseViewModel<DrawerEvent, DrawerUIState>(
-    dependencies,
-    DrawerUIState.Initial,
-    TAG,
-) {
+class DrawerViewModel(dependencies: ViewModelDependencies) :
+    BaseViewModel<DrawerEvent, DrawerUIState>(
+        dependencies,
+        DrawerUIState.Initial,
+        TAG,
+    ) {
 
     /**
      * Trigger the back event.

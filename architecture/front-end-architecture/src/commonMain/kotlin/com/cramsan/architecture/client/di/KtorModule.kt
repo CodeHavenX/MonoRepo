@@ -36,14 +36,19 @@ internal val KtorModule = module {
                     when (exceptionResponse.status) {
                         HttpStatusCode.NotFound ->
                             throw ClientRequestExceptions.NotFoundException(exceptionResponse.bodyAsText())
+
                         HttpStatusCode.Unauthorized ->
                             throw ClientRequestExceptions.UnauthorizedException(exceptionResponse.bodyAsText())
+
                         HttpStatusCode.Forbidden ->
                             throw ClientRequestExceptions.ForbiddenException(exceptionResponse.bodyAsText())
+
                         HttpStatusCode.Conflict ->
                             throw ClientRequestExceptions.ConflictException(exceptionResponse.bodyAsText())
+
                         HttpStatusCode.BadRequest ->
                             throw ClientRequestExceptions.InvalidRequestException(exceptionResponse.bodyAsText())
+
                         else -> {
                             // Throw the default exception
                             throw clientException

@@ -22,34 +22,34 @@ object PropertyApi : Api("property") {
         CreatePropertyNetworkRequest,
         NoQueryParam,
         NoPathParam,
-        PropertyNetworkResponse
+        PropertyNetworkResponse,
         >(HttpMethod.Post)
 
     val getProperty = operation<
         NoRequestBody,
         NoQueryParam,
         PropertyId,
-        PropertyNetworkResponse
+        PropertyNetworkResponse,
         >(HttpMethod.Get)
 
     val getAssignedProperties = operation<
         NoRequestBody,
         NoQueryParam,
         NoPathParam,
-        PropertyListNetworkResponse
+        PropertyListNetworkResponse,
         >(HttpMethod.Get)
 
     val updateProperty = operation<
         UpdatePropertyNetworkRequest,
         NoQueryParam,
         PropertyId,
-        PropertyNetworkResponse
+        PropertyNetworkResponse,
         >(HttpMethod.Put)
 
     val deleteProperty = operation<
         NoRequestBody,
         NoQueryParam,
         PropertyId,
-        NoResponseBody
+        NoResponseBody,
         >(HttpMethod.Delete)
 }

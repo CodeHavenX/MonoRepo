@@ -17,7 +17,7 @@ object BackEndApplicationSettingKey {
     /**
      * Key for determining whether the application should halt on assertion failures.
      */
-    val HaltOnFailure = SettingKey.boolean("halt_on_failure",)
+    val HaltOnFailure = SettingKey.boolean("halt_on_failure")
 
     /**
      * Key for specifying the allowed host for CORS configuration.

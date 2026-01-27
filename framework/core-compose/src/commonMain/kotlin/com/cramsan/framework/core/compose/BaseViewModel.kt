@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
  * Base ViewModel class that provides a [viewModelScope] and logs when the ViewModel is created and cleared.
  */
 @Suppress("UNCHECKED_CAST")
-open class BaseViewModel<E : ViewModelEvent, UI : ViewModelUIState> (
+open class BaseViewModel<E : ViewModelEvent, UI : ViewModelUIState>(
     protected val dependencies: ViewModelDependencies,
     initialState: UI,
     private val tag: String,
@@ -26,7 +26,7 @@ open class BaseViewModel<E : ViewModelEvent, UI : ViewModelUIState> (
 
     protected val viewModelScope: CoroutineScope by lazy {
         CoroutineScope(
-            SupervisorJob() + dependencies.coroutineExceptionHandler + dependencies.dispatcherProvider.uiDispatcher()
+            SupervisorJob() + dependencies.coroutineExceptionHandler + dependencies.dispatcherProvider.uiDispatcher(),
         )
     }
 

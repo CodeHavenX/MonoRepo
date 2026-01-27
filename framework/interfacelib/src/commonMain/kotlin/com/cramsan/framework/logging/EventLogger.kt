@@ -37,9 +37,7 @@ object EventLogger {
     }
 }
 
-/**
- * List of global functions to provide an easy API for logging
- */
+// List of global functions to provide an easy API for logging
 
 /**
  * Global function that delegates to [EventLogger.singleton] and calls [EventLoggerInterface.log]

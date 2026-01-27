@@ -8,14 +8,12 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for the Verbs screen.
  **/
-class VerbsViewModel(
-    dependencies: ViewModelDependencies,
-    private val quechuaManager: QuechuaManager,
-) : BaseViewModel<VerbsEvent, VerbsUIState>(
-    dependencies,
-    VerbsUIState.Initial,
-    TAG,
-) {
+class VerbsViewModel(dependencies: ViewModelDependencies, private val quechuaManager: QuechuaManager) :
+    BaseViewModel<VerbsEvent, VerbsUIState>(
+        dependencies,
+        VerbsUIState.Initial,
+        TAG,
+    ) {
 
     /**
      * Update the UI with a new verb conjugation.

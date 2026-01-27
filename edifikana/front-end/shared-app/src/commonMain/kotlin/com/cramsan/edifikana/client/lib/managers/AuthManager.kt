@@ -17,10 +17,7 @@ import kotlinx.coroutines.flow.StateFlow
 /**
  * Manager for authentication.
  */
-class AuthManager(
-    private val dependencies: ManagerDependencies,
-    private val authService: AuthService,
-) {
+class AuthManager(private val dependencies: ManagerDependencies, private val authService: AuthService) {
     /**
      * Signs in the user with the given email and password.
      */
@@ -42,9 +39,7 @@ class AuthManager(
     /**
      * Sends an OTP code email to the user with the provided [email] address.
      */
-    suspend fun sendOtpCode(
-        email: String
-    ): Result<Unit> = dependencies.getOrCatch(TAG) {
+    suspend fun sendOtpCode(email: String): Result<Unit> = dependencies.getOrCatch(TAG) {
         logI(TAG, "sending OTP code email")
         authService.sendOtpEmail(email).getOrThrow()
     }
@@ -52,31 +47,24 @@ class AuthManager(
     /**
      * Sign in the user with a magic link that contains the user's [email] and a [hashToken] to verify.
      */
-    suspend fun signInWithOtp(
-        email: String,
-        hashToken: String,
-        createUser: Boolean,
-    ): Result<UserModel> = dependencies.getOrCatch(TAG) {
-        logI(TAG, "signing in with OTP code")
-        val userModel = authService.signInWithOtp(email, hashToken, createUser).getOrThrow()
+    suspend fun signInWithOtp(email: String, hashToken: String, createUser: Boolean): Result<UserModel> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "signing in with OTP code")
+            val userModel = authService.signInWithOtp(email, hashToken, createUser).getOrThrow()
 
-        userModel
-    }
+            userModel
+        }
 
     /**
      * Signs up the user with the given email and password.
      */
-    suspend fun signUp(
-        email: String,
-        phoneNumber: String,
-        firstName: String,
-        lastName: String,
-    ): Result<UserModel> = dependencies.getOrCatch(
-        TAG
-    ) {
-        logI(TAG, "signUp")
-        authService.signUp(email, phoneNumber, firstName, lastName).getOrThrow()
-    }
+    suspend fun signUp(email: String, phoneNumber: String, firstName: String, lastName: String): Result<UserModel> =
+        dependencies.getOrCatch(
+            TAG,
+        ) {
+            logI(TAG, "signUp")
+            authService.signUp(email, phoneNumber, firstName, lastName).getOrThrow()
+        }
 
     /**
      * Signs out the user.
@@ -127,47 +115,37 @@ class AuthManager(
     /**
      * Update the user information with the provided [firstName], [lastName], [email], and [phoneNumber].
      */
-    suspend fun updateUser(
-        firstName: String?,
-        lastName: String?,
-        email: String?,
-        phoneNumber: String?,
-    ): Result<Unit> = dependencies.getOrCatch(TAG) {
-        logI(TAG, "updateUser")
-        authService.updateUser(
-            firstName = firstName,
-            lastName = lastName,
-            email = email,
-            phoneNumber = phoneNumber
-        ).getOrThrow()
-    }
+    suspend fun updateUser(firstName: String?, lastName: String?, email: String?, phoneNumber: String?): Result<Unit> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "updateUser")
+            authService.updateUser(
+                firstName = firstName,
+                lastName = lastName,
+                email = email,
+                phoneNumber = phoneNumber,
+            ).getOrThrow()
+        }
 
     /**
      * Update the current user's password and set it to [newPassword]. If a password is already set, then
      * [currentPassword] will need to be provided.
      */
     @OptIn(SecureStringAccess::class)
-    suspend fun changePassword(
-        currentPassword: SecureString,
-        newPassword: SecureString,
-    ): Result<Unit> = dependencies.getOrCatch(TAG) {
-        logI(TAG, "changePassword")
-        val email = authService.getUser().getOrThrow().email
-        authService.changePassword(
-            email,
-            currentPassword,
-            newPassword,
-        ).getOrThrow()
-    }
+    suspend fun changePassword(currentPassword: SecureString, newPassword: SecureString): Result<Unit> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "changePassword")
+            val email = authService.getUser().getOrThrow().email
+            authService.changePassword(
+                email,
+                currentPassword,
+                newPassword,
+            ).getOrThrow()
+        }
 
     /**
      * Invite a employee with the specified [role] to the organization.
      */
-    suspend fun inviteEmployee(
-        email: String,
-        orgId: OrganizationId,
-        role: UserRole,
-    ) = dependencies.getOrCatch(TAG) {
+    suspend fun inviteEmployee(email: String, orgId: OrganizationId, role: UserRole) = dependencies.getOrCatch(TAG) {
         logI(TAG, "inviteEmployee")
         authService.inviteEmployee(
             email = email,

@@ -17,10 +17,7 @@ import kotlin.time.Clock
 /**
  * Datastore for managing properties.
  */
-class SupabasePropertyDatastore(
-    private val postgrest: Postgrest,
-    private val clock: Clock,
-) : PropertyDatastore {
+class SupabasePropertyDatastore(private val postgrest: Postgrest, private val clock: Clock) : PropertyDatastore {
 
     /**
      * Creates a new property and associates it with [creatorUserId].
@@ -51,7 +48,7 @@ class SupabasePropertyDatastore(
             UserPropertyMappingEntity.CreateUserPropertyMappingEntity(
                 userId = creatorUserId.userId,
                 propertyId = createdProperty.id,
-            )
+            ),
         ) {
             select()
         }.decodeSingleOrNull<UserPropertyMappingEntity>() ?: run {
@@ -66,9 +63,7 @@ class SupabasePropertyDatastore(
      * Retrieves a property by [propertyId]. Returns the [Property] if found, null otherwise.
      */
     @OptIn(SupabaseModel::class)
-    override suspend fun getProperty(
-        propertyId: PropertyId,
-    ): Result<Property?> = runSuspendCatching(TAG) {
+    override suspend fun getProperty(propertyId: PropertyId): Result<Property?> = runSuspendCatching(TAG) {
         logD(TAG, "Getting property: %s", propertyId)
 
         val propertyEntity = postgrest.from(PropertyEntity.COLLECTION).select {
@@ -86,9 +81,7 @@ class SupabasePropertyDatastore(
      * Uses the v_user_properties view for single-query retrieval (eliminates N+1 pattern).
      */
     @OptIn(SupabaseModel::class)
-    override suspend fun getProperties(
-        userId: UserId
-    ): Result<List<Property>> = runSuspendCatching(TAG) {
+    override suspend fun getProperties(userId: UserId): Result<List<Property>> = runSuspendCatching(TAG) {
         logD(TAG, "Getting all properties for user: %s", userId)
 
         // Use the v_user_properties view for single-query retrieval
@@ -114,7 +107,7 @@ class SupabasePropertyDatastore(
                 name?.let { value -> PropertyEntity::name setTo value }
                 address?.let { value -> PropertyEntity::address setTo value }
                 imageUrl?.let { value -> PropertyEntity::imageUrl setTo value }
-            }
+            },
         ) {
             select()
             filter {
@@ -127,9 +120,7 @@ class SupabasePropertyDatastore(
      * Soft deletes a property by [propertyId]. Returns true if successful.
      */
     @OptIn(SupabaseModel::class)
-    override suspend fun deleteProperty(
-        propertyId: PropertyId,
-    ): Result<Boolean> = runSuspendCatching(TAG) {
+    override suspend fun deleteProperty(propertyId: PropertyId): Result<Boolean> = runSuspendCatching(TAG) {
         logD(TAG, "Soft deleting property: %s", propertyId)
 
         // Soft delete the property by setting deleted_at timestamp
@@ -149,9 +140,7 @@ class SupabasePropertyDatastore(
      * Only purges records that are already soft-deleted (deletedAt is not null).
      */
     @OptIn(SupabaseModel::class)
-    override suspend fun purgeProperty(
-        propertyId: PropertyId,
-    ): Result<Boolean> = runSuspendCatching(TAG) {
+    override suspend fun purgeProperty(propertyId: PropertyId): Result<Boolean> = runSuspendCatching(TAG) {
         logD(TAG, "Purging soft-deleted property: %s", propertyId)
 
         // First verify the record exists and is soft-deleted

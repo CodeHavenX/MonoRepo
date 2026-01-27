@@ -32,24 +32,26 @@ class SingleValueDecoder(private val value: String) : AbstractDecoder() {
     override fun decodeChar(): Char = decodeString().single()
     override fun decodeShort(): Short = decodeString().toShort()
     override fun decodeByte(): Byte = decodeString().toByte()
-    override fun decodeEnum(enumDescriptor: SerialDescriptor): Int {
-        return enumDescriptor.getElementIndex(decodeString())
-    }
+    override fun decodeEnum(enumDescriptor: SerialDescriptor): Int = enumDescriptor.getElementIndex(decodeString())
 
     override fun <T> decodeSerializableValue(deserializer: DeserializationStrategy<T>): T {
         when (deserializer.descriptor.kind) {
             PrimitiveKind.BOOLEAN, PrimitiveKind.BYTE, PrimitiveKind.CHAR, PrimitiveKind.DOUBLE,
             PrimitiveKind.FLOAT, PrimitiveKind.INT, PrimitiveKind.LONG, PrimitiveKind.SHORT,
-            PrimitiveKind.STRING, SerialKind.ENUM, -> {
+            PrimitiveKind.STRING, SerialKind.ENUM,
+            -> {
                 // Supported primitive types
             }
+
             StructureKind.CLASS -> {
                 if (!deserializer.descriptor.isInline || deserializer.descriptor.elementsCount != 1) {
                     error("SingleValueDecoder only supports inline value classes with a single property")
                 }
             }
+
             SerialKind.CONTEXTUAL, StructureKind.LIST, StructureKind.MAP, StructureKind.OBJECT,
-            PolymorphicKind.OPEN, PolymorphicKind.SEALED -> {
+            PolymorphicKind.OPEN, PolymorphicKind.SEALED,
+            -> {
                 error("SingleValueDecoder does not support ${deserializer.descriptor.kind}")
             }
         }
@@ -65,9 +67,8 @@ class SingleValueDecoder(private val value: String) : AbstractDecoder() {
  * @return The decoded value, or null if the input value is null.
  */
 @OptIn(ExperimentalSerializationApi::class)
-fun <T> decodeFromValue(deserializer: DeserializationStrategy<T>, value: String): T {
-    return SingleValueDecoder(value).decodeSerializableValue(deserializer)
-}
+fun <T> decodeFromValue(deserializer: DeserializationStrategy<T>, value: String): T =
+    SingleValueDecoder(value).decodeSerializableValue(deserializer)
 
 /**
  * Inline function to decode a value from its string representation using reified type.
@@ -77,5 +78,4 @@ fun <T> decodeFromValue(deserializer: DeserializationStrategy<T>, value: String)
  * @return The decoded value of type T, or null if the input value is null.
  */
 @OptIn(ExperimentalSerializationApi::class)
-inline fun <reified T> decodeFromValue(value: String): T =
-    decodeFromValue(serializer(), value)
+inline fun <reified T> decodeFromValue(value: String): T = decodeFromValue(serializer(), value)

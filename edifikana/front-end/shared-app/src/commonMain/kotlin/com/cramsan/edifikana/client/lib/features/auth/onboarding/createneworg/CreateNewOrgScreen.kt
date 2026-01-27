@@ -27,15 +27,10 @@ import org.koin.compose.viewmodel.koinViewModel
  * application. This includes observing the view model's state and event flows and rendering the screen.
  */
 @Composable
-fun CreateNewOrgScreen(
-    modifier: Modifier = Modifier,
-    viewModel: CreateNewOrgViewModel = koinViewModel(),
-) {
+fun CreateNewOrgScreen(modifier: Modifier = Modifier, viewModel: CreateNewOrgViewModel = koinViewModel()) {
     val uiState by viewModel.uiState.collectAsState()
 
-    /**
-     * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
-     */
+    // For other possible lifecycle events, see the Lifecycle.Event documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
         // Call this feature's viewModel
     }
@@ -134,7 +129,7 @@ internal fun CreateNewOrgContent(
                     modifier = buttonModifier,
                     enabled = content.isButtonEnabled,
                 )
-            }
+            },
         )
     }
 }

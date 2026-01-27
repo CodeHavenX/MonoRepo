@@ -28,17 +28,13 @@ interface NotificationDatastore {
      * Retrieves a notification by ID.
      * Returns the [Result] of the operation with the fetched [Notification] if found.
      */
-    suspend fun getNotification(
-        id: NotificationId,
-    ): Result<Notification?>
+    suspend fun getNotification(id: NotificationId): Result<Notification?>
 
     /**
      * Retrieves a notification by associated invite ID.
      * Returns the [Result] of the operation with the fetched [Notification] if found.
      */
-    suspend fun getNotificationByInvite(
-        inviteId: InviteId,
-    ): Result<Notification?>
+    suspend fun getNotificationByInvite(inviteId: InviteId): Result<Notification?>
 
     /**
      * Retrieves all notifications for a user by user ID.
@@ -54,35 +50,26 @@ interface NotificationDatastore {
      * Retrieves all notifications for a user by email.
      * Returns the [Result] of the operation with a list of [Notification].
      */
-    suspend fun getNotificationsByEmail(
-        email: String,
-    ): Result<List<Notification>>
+    suspend fun getNotificationsByEmail(email: String): Result<List<Notification>>
 
     /**
      * Marks a notification as read.
      * Returns the [Result] of the operation with the updated [Notification].
      */
-    suspend fun markAsRead(
-        id: NotificationId,
-    ): Result<Notification>
+    suspend fun markAsRead(id: NotificationId): Result<Notification>
 
     /**
      * Deletes a notification.
      * Returns the [Result] of the operation with a [Boolean] indicating success.
      */
-    suspend fun deleteNotification(
-        id: NotificationId,
-    ): Result<Boolean>
+    suspend fun deleteNotification(id: NotificationId): Result<Boolean>
 
     /**
      * Links all notifications with a given email to a user ID.
      * This is called when a user signs up or associates their account.
      * Returns the [Result] of the operation with the number of notifications updated.
      */
-    suspend fun linkNotificationsToUser(
-        email: String,
-        userId: UserId,
-    ): Result<Int>
+    suspend fun linkNotificationsToUser(email: String, userId: UserId): Result<Int>
 
     /**
      * Permanently deletes a soft-deleted notification record by ID.
@@ -90,7 +77,5 @@ interface NotificationDatastore {
      * This is intended for testing and maintenance purposes only.
      * Returns the [Result] of the operation with a [Boolean] indicating if the record was purged.
      */
-    suspend fun purgeNotification(
-        id: NotificationId,
-    ): Result<Boolean>
+    suspend fun purgeNotification(id: NotificationId): Result<Boolean>
 }

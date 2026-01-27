@@ -11,10 +11,8 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for the Main Menu screen.
  */
-class MainMenuViewModel(
-    dependencies: ViewModelDependencies,
-    private val userManager: UserManager,
-) : BaseViewModel<MainMenuEvent, MainMenuUIState>(dependencies, MainMenuUIState.Initial, TAG) {
+class MainMenuViewModel(dependencies: ViewModelDependencies, private val userManager: UserManager) :
+    BaseViewModel<MainMenuEvent, MainMenuUIState>(dependencies, MainMenuUIState.Initial, TAG) {
 
     /**
      * Handle first name value change.
@@ -56,15 +54,15 @@ class MainMenuViewModel(
                 updateUiState { it.copy(isLoading = false) }
                 emitWindowEvent(
                     TemplateReplaceMeWindowsEvent.ShowSnackbar(
-                        message = "Failed to create user: ${it.message}"
-                    )
+                        message = "Failed to create user: ${it.message}",
+                    ),
                 )
             }.onSuccess {
                 updateUiState { it.copy(isLoading = false) }
                 emitWindowEvent(
                     TemplateReplaceMeWindowsEvent.ShowSnackbar(
-                        message = "User $firstName $lastName created successfully!"
-                    )
+                        message = "User $firstName $lastName created successfully!",
+                    ),
                 )
             }.getOrThrow()
 

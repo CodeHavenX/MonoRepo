@@ -53,6 +53,7 @@ fun EdifikanaImage(
                 contentScale = contentScale,
             )
         }
+
         is ImageSource.Url -> {
             // Asynchronous loading for remote URLs
             AsyncImage(
@@ -62,6 +63,7 @@ fun EdifikanaImage(
                 contentScale = contentScale,
             )
         }
+
         is ImageSource.None -> {
             // Default icon for "no image" state - uses S-Depa icon
             Image(

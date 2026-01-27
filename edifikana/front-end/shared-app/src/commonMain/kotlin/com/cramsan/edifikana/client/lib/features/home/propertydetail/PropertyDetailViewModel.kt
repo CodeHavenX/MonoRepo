@@ -10,14 +10,12 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for the PropertyDetail screen.
  **/
-class PropertyDetailViewModel(
-    dependencies: ViewModelDependencies,
-    private val propertyManager: PropertyManager,
-) : BaseViewModel<PropertyDetailEvent, PropertyDetailUIState>(
-    dependencies,
-    PropertyDetailUIState.Initial,
-    TAG,
-) {
+class PropertyDetailViewModel(dependencies: ViewModelDependencies, private val propertyManager: PropertyManager) :
+    BaseViewModel<PropertyDetailEvent, PropertyDetailUIState>(
+        dependencies,
+        PropertyDetailUIState.Initial,
+        TAG,
+    ) {
 
     /**
      * Initialize the ViewModel with the property ID.
@@ -40,8 +38,8 @@ class PropertyDetailViewModel(
                     updateUiState { it.copy(isLoading = false) }
                     emitWindowEvent(
                         EdifikanaWindowsEvent.ShowSnackbar(
-                            "Failed to load property: ${throwable.message ?: "Unknown error"}"
-                        )
+                            "Failed to load property: ${throwable.message ?: "Unknown error"}",
+                        ),
                     )
                 }
         }
@@ -129,15 +127,15 @@ class PropertyDetailViewModel(
                 .onSuccess {
                     updateUiState { it.copy(isLoading = false, isEditMode = false) }
                     emitWindowEvent(
-                        EdifikanaWindowsEvent.ShowSnackbar("Property updated successfully")
+                        EdifikanaWindowsEvent.ShowSnackbar("Property updated successfully"),
                     )
                 }
                 .onFailure { throwable ->
                     updateUiState { it.copy(isLoading = false) }
                     emitWindowEvent(
                         EdifikanaWindowsEvent.ShowSnackbar(
-                            "Failed to update property: ${throwable.message ?: "Unknown error"}"
-                        )
+                            "Failed to update property: ${throwable.message ?: "Unknown error"}",
+                        ),
                     )
                 }
         }
@@ -154,7 +152,7 @@ class PropertyDetailViewModel(
             propertyManager.removeProperty(propertyId)
                 .onSuccess {
                     emitWindowEvent(
-                        EdifikanaWindowsEvent.ShowSnackbar("Property deleted successfully")
+                        EdifikanaWindowsEvent.ShowSnackbar("Property deleted successfully"),
                     )
                     emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
                 }
@@ -162,8 +160,8 @@ class PropertyDetailViewModel(
                     updateUiState { it.copy(isLoading = false) }
                     emitWindowEvent(
                         EdifikanaWindowsEvent.ShowSnackbar(
-                            "Failed to delete property: ${throwable.message ?: "Unknown error"}"
-                        )
+                            "Failed to delete property: ${throwable.message ?: "Unknown error"}",
+                        ),
                     )
                 }
         }

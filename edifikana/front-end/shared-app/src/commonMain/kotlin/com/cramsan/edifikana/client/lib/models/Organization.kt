@@ -5,8 +5,4 @@ import com.cramsan.edifikana.lib.model.OrganizationId
 /**
  * Represents an organization in the system.
  */
-data class Organization(
-    val id: OrganizationId,
-    val name: String,
-    val description: String,
-)
+data class Organization(val id: OrganizationId, val name: String, val description: String)

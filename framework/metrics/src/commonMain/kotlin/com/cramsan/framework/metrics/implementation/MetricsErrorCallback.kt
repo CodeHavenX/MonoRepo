@@ -42,7 +42,9 @@ class MetricsErrorCallback(
                     )
                     dispatchBatch()
                 }
+
                 Severity.WARNING -> batchWarningEvent()
+
                 Severity.ERROR -> batchErrorEvent()
             }
         }

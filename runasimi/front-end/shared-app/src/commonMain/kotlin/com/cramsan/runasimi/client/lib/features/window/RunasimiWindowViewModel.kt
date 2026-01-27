@@ -19,7 +19,7 @@ class RunasimiWindowViewModel(
 ) : BaseViewModel<RunasimiWindowViewModelEvent, RunasimiWindowUIState>(
     dependencies,
     RunasimiWindowUIState,
-    TAG
+    TAG,
 ) {
 
     init {
@@ -28,8 +28,8 @@ class RunasimiWindowViewModel(
                 logI(TAG, "Window event received: $event")
                 emitEvent(
                     RunasimiWindowViewModelEvent.RunasimiWindowEventWrapper(
-                        event as RunasimiWindowsEvent
-                    )
+                        event as RunasimiWindowsEvent,
+                    ),
                 )
             }
         }

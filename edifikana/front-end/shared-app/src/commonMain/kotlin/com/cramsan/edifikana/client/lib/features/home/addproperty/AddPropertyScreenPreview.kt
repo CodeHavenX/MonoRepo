@@ -13,6 +13,6 @@ private fun AddPropertyScreenPreview() = AppTheme {
     AddPropertyContent(
         content = AddPropertyUIState(true, null),
         onBackSelected = {},
-        onAddPropertySelected = { _, _, _ -> }
+        onAddPropertySelected = { _, _, _ -> },
     )
 }

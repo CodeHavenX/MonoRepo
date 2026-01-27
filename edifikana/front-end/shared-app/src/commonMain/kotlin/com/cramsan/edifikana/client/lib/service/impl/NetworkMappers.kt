@@ -22,29 +22,27 @@ import com.cramsan.framework.annotations.NetworkModel
  * Maps the [EventLogEntryNetworkResponse] models to [EventLogRecordModel] domain models.
  */
 @OptIn(NetworkModel::class)
-fun EventLogEntryNetworkResponse.toEventLogRecordModel(): EventLogRecordModel {
-    return EventLogRecordModel(
-        id = id,
-        entityId = null,
-        employeePk = employeeId,
-        propertyId = propertyId,
-        timeRecorded = timestamp,
-        unit = unit,
-        eventType = type,
-        fallbackEmployeeName = fallbackEventType,
-        fallbackEventType = fallbackEmployeeName,
-        title = title,
-        description = description.orEmpty(),
-        emptyList(),
-    )
-}
+fun EventLogEntryNetworkResponse.toEventLogRecordModel(): EventLogRecordModel = EventLogRecordModel(
+    id = id,
+    entityId = null,
+    employeePk = employeeId,
+    propertyId = propertyId,
+    timeRecorded = timestamp,
+    unit = unit,
+    eventType = type,
+    fallbackEmployeeName = fallbackEventType,
+    fallbackEventType = fallbackEmployeeName,
+    title = title,
+    description = description.orEmpty(),
+    emptyList(),
+)
 
 /**
  * Maps the [EventLogRecordModel] domain models to [CreateEventLogEntryNetworkRequest] models.
  */
 @OptIn(NetworkModel::class)
-fun EventLogRecordModel.toCreateEventLogEntryNetworkRequest(): CreateEventLogEntryNetworkRequest {
-    return CreateEventLogEntryNetworkRequest(
+fun EventLogRecordModel.toCreateEventLogEntryNetworkRequest(): CreateEventLogEntryNetworkRequest =
+    CreateEventLogEntryNetworkRequest(
         employeeId = employeePk,
         fallbackEmployeeName = fallbackEmployeeName,
         propertyId = propertyId,
@@ -55,123 +53,110 @@ fun EventLogRecordModel.toCreateEventLogEntryNetworkRequest(): CreateEventLogEnt
         description = description,
         unit = unit,
     )
-}
 
 /**
  * Maps the [EventLogRecordModel] domain models to [UpdateEventLogEntryNetworkRequest] models.
  */
 @OptIn(NetworkModel::class)
-fun EventLogRecordModel.toUpdateEventLogEntryNetworkRequest(): UpdateEventLogEntryNetworkRequest {
-    return UpdateEventLogEntryNetworkRequest(
+fun EventLogRecordModel.toUpdateEventLogEntryNetworkRequest(): UpdateEventLogEntryNetworkRequest =
+    UpdateEventLogEntryNetworkRequest(
         type = eventType,
         fallbackEventType = fallbackEventType,
         title = title,
         description = description,
         unit = unit,
     )
-}
 
 /**
  * Maps the [EmployeeModel.CreateEmployeeRequest] models to [CreateEmployeeNetworkRequest] models.
  */
 @NetworkModel
-fun EmployeeModel.CreateEmployeeRequest.toCreateEmployeeNetworkRequest(): CreateEmployeeNetworkRequest {
-    return CreateEmployeeNetworkRequest(
+fun EmployeeModel.CreateEmployeeRequest.toCreateEmployeeNetworkRequest(): CreateEmployeeNetworkRequest =
+    CreateEmployeeNetworkRequest(
         idType = idType,
         firstName = firstName,
         lastName = lastName,
         role = role,
         propertyId = propertyId,
     )
-}
 
 /**
  * Maps the [EmployeeModel.UpdateEmployeeRequest] models to [UpdateEmployeeNetworkRequest] models.
  * Note: IdType is not updatable, so it is set to null.
  */
 @NetworkModel
-fun EmployeeModel.UpdateEmployeeRequest.toUpdateEmployeeNetworkRequest(): UpdateEmployeeNetworkRequest {
-    return UpdateEmployeeNetworkRequest(
+fun EmployeeModel.UpdateEmployeeRequest.toUpdateEmployeeNetworkRequest(): UpdateEmployeeNetworkRequest =
+    UpdateEmployeeNetworkRequest(
         idType = null, // IdType is not updatable
         firstName = firstName,
         lastName = lastName,
         role = role,
     )
-}
 
 /**
  * Maps the [EmployeeNetworkResponse] models to [EmployeeModel] domain models.
  */
 @NetworkModel
-fun EmployeeNetworkResponse.toEmployeeModel(): EmployeeModel {
-    return EmployeeModel(
-        id = id,
-        firstName = firstName,
-        lastName = lastName,
-        role = role,
-        idType = idType,
-        email = null,
-    )
-}
+fun EmployeeNetworkResponse.toEmployeeModel(): EmployeeModel = EmployeeModel(
+    id = id,
+    firstName = firstName,
+    lastName = lastName,
+    role = role,
+    idType = idType,
+    email = null,
+)
 
 /**
  * Maps the [TimeCardRecordModel] domain models to [CreateTimeCardEventNetworkRequest] models.
  */
 @NetworkModel
-fun TimeCardRecordModel.toCreateTimeCardEventNetworkRequest(): CreateTimeCardEventNetworkRequest {
-    return CreateTimeCardEventNetworkRequest(
+fun TimeCardRecordModel.toCreateTimeCardEventNetworkRequest(): CreateTimeCardEventNetworkRequest =
+    CreateTimeCardEventNetworkRequest(
         employeeId = employeePk,
         fallbackEmployeeName = "",
         type = eventType,
         propertyId = propertyId,
         imageUrl = imageUrl,
     )
-}
 
 /**
  * Maps the [TimeCardEventNetworkResponse] models to [TimeCardRecordModel] domain models.
  */
 @NetworkModel
-fun TimeCardEventNetworkResponse.toTimeCardRecordModel(): TimeCardRecordModel {
-    return TimeCardRecordModel(
-        id = id,
-        entityId = null,
-        employeePk = employeeId!!, // TODO: Fix this
-        propertyId = propertyId,
-        eventType = type,
-        eventTime = timestamp,
-        imageUrl = imageUrl,
-        imageRef = null,
-    )
-}
+fun TimeCardEventNetworkResponse.toTimeCardRecordModel(): TimeCardRecordModel = TimeCardRecordModel(
+    id = id,
+    entityId = null,
+    employeePk = employeeId!!, // TODO: Fix this
+    propertyId = propertyId,
+    eventType = type,
+    eventTime = timestamp,
+    imageUrl = imageUrl,
+    imageRef = null,
+)
 
 /**
  * Maps the [UserNetworkResponse] models to [UserModel] domain models.
  */
 @NetworkModel
-fun UserNetworkResponse.toUserModel(): UserModel {
-    return UserModel(
-        id = UserId(id),
-        email = email,
-        phoneNumber = phoneNumber,
-        firstName = firstName,
-        lastName = lastName,
-        authMetadata = authMetadata?.let {
-            UserModel.AuthMetadataModel(
-                isPasswordSet = it.isPasswordSet,
-            )
-        },
-    )
-}
+fun UserNetworkResponse.toUserModel(): UserModel = UserModel(
+    id = UserId(id),
+    email = email,
+    phoneNumber = phoneNumber,
+    firstName = firstName,
+    lastName = lastName,
+    authMetadata = authMetadata?.let {
+        UserModel.AuthMetadataModel(
+            isPasswordSet = it.isPasswordSet,
+        )
+    },
+)
 
 /**
  * Maps the [OrganizationNetworkResponse] models to [Organization] domain models.
  */
 @OptIn(NetworkModel::class)
-fun OrganizationNetworkResponse.toOrganizationModel(): Organization {
-    return Organization(
-        id = id,
-        name = name,
-        description = description,
-    )
-}
+fun OrganizationNetworkResponse.toOrganizationModel(): Organization = Organization(
+    id = id,
+    name = name,
+    description = description,
+)

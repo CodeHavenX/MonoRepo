@@ -38,35 +38,32 @@ class TimeCardManager(
     /**
      * Get all time card records for a employee member.
      */
-    suspend fun getRecords(
-        employeePK: EmployeeId,
-        propertyId: PropertyId
-    ): Result<List<TimeCardRecordModel>> = dependencies.getOrCatch(TAG) {
-        logI(TAG, "getRecords")
-        val cachedData = timeCardCache.getRecords(employeePK)
+    suspend fun getRecords(employeePK: EmployeeId, propertyId: PropertyId): Result<List<TimeCardRecordModel>> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "getRecords")
+            val cachedData = timeCardCache.getRecords(employeePK)
 
-        val onlineData = timeCardService.getRecords(employeePK, propertyId).getOrThrow()
-        (cachedData + onlineData).sortedByDescending { it.eventTime }
-    }
+            val onlineData = timeCardService.getRecords(employeePK, propertyId).getOrThrow()
+            (cachedData + onlineData).sortedByDescending { it.eventTime }
+        }
 
     /**
      * Get all time card records.
      */
-    suspend fun getAllRecords(
-        propertyId: PropertyId
-    ): Result<List<TimeCardRecordModel>> = dependencies.getOrCatch(TAG) {
-        logI(TAG, "getAllRecords")
-        val cachedData = timeCardCache.getAllRecords()
+    suspend fun getAllRecords(propertyId: PropertyId): Result<List<TimeCardRecordModel>> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "getAllRecords")
+            val cachedData = timeCardCache.getAllRecords()
 
-        val onlineData = timeCardService.getAllRecords(propertyId).getOrThrow()
-        (cachedData + onlineData).sortedByDescending { it.eventTime }
-    }
+            val onlineData = timeCardService.getAllRecords(propertyId).getOrThrow()
+            (cachedData + onlineData).sortedByDescending { it.eventTime }
+        }
 
     /**
      * Get a specific time card record.
      */
     suspend fun getRecord(timeCardRecordPK: TimeCardEventId): Result<TimeCardRecordModel> = dependencies.getOrCatch(
-        TAG
+        TAG,
     ) {
         logI(TAG, "getRecord")
         timeCardService.getRecord(timeCardRecordPK).getOrThrow()

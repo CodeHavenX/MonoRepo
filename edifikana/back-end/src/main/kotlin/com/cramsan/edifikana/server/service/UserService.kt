@@ -46,7 +46,7 @@ class UserService(
             password,
             firstName,
             lastName,
-            isTransient
+            isTransient,
         )
 
         if (!isTransient) {
@@ -64,14 +64,11 @@ class UserService(
     /**
      * Associate a user from another service with a new user in our system.
      */
-    suspend fun associateUser(
-        id: UserId,
-        email: String,
-    ): Result<User> {
+    suspend fun associateUser(id: UserId, email: String): Result<User> {
         logD(TAG, "associateUser")
         val result = userDatastore.associateUser(
             userId = id,
-            email = email
+            email = email,
         )
 
         if (result.isSuccess) {
@@ -89,9 +86,7 @@ class UserService(
     /**
      * Retrieves a user with the provided [id].
      */
-    suspend fun getUser(
-        id: UserId,
-    ): Result<User?> {
+    suspend fun getUser(id: UserId): Result<User?> {
         logD(TAG, "getUser")
         return userDatastore.getUser(
             id = id,
@@ -101,9 +96,7 @@ class UserService(
     /**
      * Retrieves all users.
      */
-    suspend fun getUsers(
-        organizationId: OrganizationId,
-    ): Result<List<User>> {
+    suspend fun getUsers(organizationId: OrganizationId): Result<List<User>> {
         logD(TAG, "getUsers")
         return userDatastore.getUsers(
             organizationId = organizationId,
@@ -113,10 +106,7 @@ class UserService(
     /**
      * Updates a user with the provided [id] and [email].
      */
-    suspend fun updateUser(
-        id: UserId,
-        email: String?,
-    ): Result<User> {
+    suspend fun updateUser(id: UserId, email: String?): Result<User> {
         logD(TAG, "updateUser")
         return userDatastore.updateUser(
             id = id,
@@ -127,9 +117,7 @@ class UserService(
     /**
      * Deletes a user with the provided [id].
      */
-    suspend fun deleteUser(
-        id: UserId,
-    ): Result<Boolean> {
+    suspend fun deleteUser(id: UserId): Result<Boolean> {
         logD(TAG, "deleteUser")
         return userDatastore.deleteUser(
             id = id,
@@ -157,11 +145,7 @@ class UserService(
      * Records an invitation for a user with the provided [email], [organizationId], and [role].
      * Also creates a notification for the invited user.
      */
-    suspend fun inviteUser(
-        email: String,
-        organizationId: OrganizationId,
-        role: UserRole,
-    ): Result<Unit> = runCatching {
+    suspend fun inviteUser(email: String, organizationId: OrganizationId, role: UserRole): Result<Unit> = runCatching {
         logD(TAG, "inviteUser with role: $role")
         val userId = userDatastore.getUser(email).getOrNull()?.id
         val organization = organizationDatastore.getOrganization(organizationId).getOrNull()
@@ -192,9 +176,7 @@ class UserService(
     /**
      * Retrieves all pending invites for the provided [organizationId].
      */
-    suspend fun getInvites(
-        organizationId: OrganizationId,
-    ): Result<List<Invite>> {
+    suspend fun getInvites(organizationId: OrganizationId): Result<List<Invite>> {
         logD(TAG, "getInvites")
         return userDatastore.getInvites(organizationId)
     }
@@ -213,10 +195,7 @@ class UserService(
      * @param userId The ID of the user accepting the invite
      * @param inviteId The ID of the invite to accept
      */
-    suspend fun acceptInvite(
-        userId: UserId,
-        inviteId: InviteId,
-    ): Result<Unit> = runCatching {
+    suspend fun acceptInvite(userId: UserId, inviteId: InviteId): Result<Unit> = runCatching {
         logD(TAG, "acceptInvite: $inviteId for user: $userId")
 
         // Get the invite
@@ -234,7 +213,7 @@ class UserService(
 
         if (user.email != invite.email) {
             throw ClientRequestExceptions.ForbiddenException(
-                "This invite is not for your email address"
+                "This invite is not for your email address",
             )
         }
 
@@ -262,10 +241,7 @@ class UserService(
      * @param userId The ID of the user declining the invite
      * @param inviteId The ID of the invite to decline
      */
-    suspend fun declineInvite(
-        userId: UserId,
-        inviteId: InviteId,
-    ): Result<Unit> = runCatching {
+    suspend fun declineInvite(userId: UserId, inviteId: InviteId): Result<Unit> = runCatching {
         logD(TAG, "declineInvite: $inviteId for user: $userId")
 
         // Get the invite to verify ownership
@@ -278,7 +254,7 @@ class UserService(
 
         if (user.email != invite.email) {
             throw ClientRequestExceptions.ForbiddenException(
-                "This invite is not for your email address"
+                "This invite is not for your email address",
             )
         }
 
@@ -299,9 +275,7 @@ class UserService(
      * @param inviteId The ID of the invite
      * @return The organization ID the invite belongs to
      */
-    suspend fun getInviteOrganization(
-        inviteId: InviteId,
-    ): Result<OrganizationId> = runCatching {
+    suspend fun getInviteOrganization(inviteId: InviteId): Result<OrganizationId> = runCatching {
         logD(TAG, "getInviteOrganization: $inviteId")
 
         val invite = userDatastore.getInvite(inviteId).getOrThrow()
@@ -314,9 +288,7 @@ class UserService(
      * Cancels a pending invite (manager action).
      * @param inviteId The ID of the invite to cancel
      */
-    suspend fun cancelInvite(
-        inviteId: InviteId,
-    ): Result<Unit> = runCatching {
+    suspend fun cancelInvite(inviteId: InviteId): Result<Unit> = runCatching {
         logD(TAG, "cancelInvite: $inviteId")
 
         // Verify the invite exists

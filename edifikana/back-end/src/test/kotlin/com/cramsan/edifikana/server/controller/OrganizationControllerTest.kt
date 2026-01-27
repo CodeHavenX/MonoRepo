@@ -37,7 +37,9 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class OrganizationControllerTest : CoroutineTest(), KoinTest {
+class OrganizationControllerTest :
+    CoroutineTest(),
+    KoinTest {
     @BeforeTest
     fun setupTest() {
         startTestKoin(
@@ -73,7 +75,7 @@ class OrganizationControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = UserId("user456"),
-            )
+            ),
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -106,7 +108,7 @@ class OrganizationControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = UserId("user456"),
-            )
+            ),
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -138,7 +140,7 @@ class OrganizationControllerTest : CoroutineTest(), KoinTest {
         }.answers {
             listOf(
                 Organization(id = OrganizationId("org123"), name = "Org 1", description = "Description 1"),
-                Organization(id = OrganizationId("org456"), name = "Org 2", description = "Description 2")
+                Organization(id = OrganizationId("org456"), name = "Org 2", description = "Description 2"),
             )
         }
         val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
@@ -149,7 +151,7 @@ class OrganizationControllerTest : CoroutineTest(), KoinTest {
                 SupabaseContextPayload(
                     userInfo = mockk(),
                     userId = UserId("user456"),
-                )
+                ),
             )
         }
 
@@ -180,7 +182,7 @@ class OrganizationControllerTest : CoroutineTest(), KoinTest {
                     id = OrganizationId("org789"),
                     name = "New Organization",
                     description = "A new test organization",
-                )
+                ),
             )
         }
         val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
@@ -191,7 +193,7 @@ class OrganizationControllerTest : CoroutineTest(), KoinTest {
                 SupabaseContextPayload(
                     userInfo = mockk(),
                     userId = userId,
-                )
+                ),
             )
         }
 
@@ -227,7 +229,7 @@ class OrganizationControllerTest : CoroutineTest(), KoinTest {
                     id = OrganizationId("org123"),
                     name = "Updated Organization",
                     description = "Updated description",
-                )
+                ),
             )
         }
         val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
@@ -235,7 +237,7 @@ class OrganizationControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = UserId("user456"),
-            )
+            ),
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -273,7 +275,7 @@ class OrganizationControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = UserId("user456"),
-            )
+            ),
         )
         coEvery {
             contextRetriever.getContext(any())

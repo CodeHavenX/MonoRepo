@@ -21,9 +21,7 @@ import org.koin.compose.viewmodel.koinViewModel
  * Application screen.
  */
 @Composable
-fun ApplicationScreen(
-    viewModel: ApplicationViewModel = koinViewModel(),
-) {
+fun ApplicationScreen(viewModel: ApplicationViewModel = koinViewModel()) {
     val navController = rememberNavController()
 
     val snackbarHostState = remember { SnackbarHostState() }
@@ -72,12 +70,15 @@ private fun handleApplicationEvent(
             }
             navController.navigate(event.destination)
         }
+
         is SampleWindowEvent.NavigateToScreen -> {
             navController.navigate(event.destination)
         }
+
         is SampleWindowEvent.NavigateBack -> {
             navController.popBackStack()
         }
+
         is SampleWindowEvent.CloseNavGraph -> {
             val currentNavGraph = navController.currentBackStack.value.reversed().find {
                 it.destination.navigatorName == "navigation"
@@ -86,6 +87,7 @@ private fun handleApplicationEvent(
                 navController.popBackStack(it, inclusive = true)
             }
         }
+
         is SampleWindowEvent.ShowSnackbar -> {
             scope.launch {
                 handleSnackbarEvent(
@@ -116,9 +118,7 @@ private suspend fun handleSnackbarEvent(
 }
 
 @Composable
-private fun ApplicationNavigationHost(
-    navHostController: NavHostController,
-) {
+private fun ApplicationNavigationHost(navHostController: NavHostController) {
     NavHost(
         navController = navHostController,
         startDestination = ApplicationNavGraphDestination.MainDestination,

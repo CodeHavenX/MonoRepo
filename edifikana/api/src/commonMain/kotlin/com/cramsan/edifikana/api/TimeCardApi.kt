@@ -21,20 +21,20 @@ object TimeCardApi : Api("time_card") {
         CreateTimeCardEventNetworkRequest,
         NoQueryParam,
         NoPathParam,
-        TimeCardEventNetworkResponse
+        TimeCardEventNetworkResponse,
         >(HttpMethod.Post)
 
     val getTimeCardEvent = operation<
         NoRequestBody,
         NoQueryParam,
         TimeCardEventId,
-        TimeCardEventNetworkResponse
+        TimeCardEventNetworkResponse,
         >(HttpMethod.Get)
 
     val getTimeCardEvents = operation<
         NoRequestBody,
         GetTimeCardEventsQueryParams,
         NoPathParam,
-        TimeCardEventListNetworkResponse
+        TimeCardEventListNetworkResponse,
         >(HttpMethod.Get)
 }

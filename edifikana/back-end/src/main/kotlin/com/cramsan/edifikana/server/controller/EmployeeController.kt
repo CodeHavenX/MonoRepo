@@ -41,18 +41,17 @@ class EmployeeController(
      */
     @OptIn(NetworkModel::class)
     suspend fun createEmployee(
-        request:
-        OperationRequest<
+        request: OperationRequest<
             CreateEmployeeNetworkRequest,
             NoQueryParam,
             NoPathParam,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
             >,
     ): EmployeeNetworkResponse {
         if (!rbacService.hasRoleOrHigher(
                 request.context,
                 request.requestBody.propertyId,
-                UserRole.ADMIN
+                UserRole.ADMIN,
             )
         ) {
             throw UnauthorizedException(unauthorizedMsg)
@@ -75,18 +74,17 @@ class EmployeeController(
      */
     @OptIn(NetworkModel::class)
     suspend fun getEmployee(
-        request:
-        OperationRequest<
+        request: OperationRequest<
             NoRequestBody,
             NoQueryParam,
             EmployeeId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
             >,
     ): EmployeeNetworkResponse? {
         checkHasRole(
             request.context,
             request.pathParam,
-            UserRole.MANAGER
+            UserRole.MANAGER,
         )
         return employeeService.getEmployee(
             request.pathParam,
@@ -100,13 +98,12 @@ class EmployeeController(
      */
     @OptIn(NetworkModel::class)
     suspend fun getEmployees(
-        request:
-        OperationRequest<
+        request: OperationRequest<
             NoRequestBody,
             NoQueryParam,
             NoPathParam,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): EmployeeListNetworkResponse {
         val employees = employeeService.getEmployees(request.context).map { it.toEmployeeNetworkResponse() }
         return EmployeeListNetworkResponse(employees)
@@ -118,18 +115,17 @@ class EmployeeController(
      */
     @OptIn(NetworkModel::class)
     suspend fun updateEmployee(
-        request:
-        OperationRequest<
+        request: OperationRequest<
             UpdateEmployeeNetworkRequest,
             NoQueryParam,
             EmployeeId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
             >,
     ): EmployeeNetworkResponse {
         checkHasRole(
             request.context,
             request.pathParam,
-            UserRole.ADMIN
+            UserRole.ADMIN,
         )
         val updateEmpRequest = request.requestBody
         val updatedEmployee = employeeService.updateEmployee(
@@ -147,18 +143,17 @@ class EmployeeController(
      * Returns [NoResponseBody] to indicate successful deletion.
      */
     suspend fun deleteEmployee(
-        request:
-        OperationRequest<
+        request: OperationRequest<
             NoRequestBody,
             NoQueryParam,
             EmployeeId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
             >,
     ): NoResponseBody {
         checkHasRole(
             request.context,
             request.pathParam,
-            UserRole.ADMIN
+            UserRole.ADMIN,
         )
         employeeService.deleteEmployee(request.pathParam)
         return NoResponseBody

@@ -10,13 +10,9 @@ import com.cramsan.framework.thread.ThreadUtilInterface
  */
 class ThreadUtilImpl(private val platformDelegate: ThreadUtilDelegate) : ThreadUtilInterface {
 
-    override fun isUIThread(): Boolean {
-        return platformDelegate.isUIThread()
-    }
+    override fun isUIThread(): Boolean = platformDelegate.isUIThread()
 
-    override fun isBackgroundThread(): Boolean {
-        return platformDelegate.isBackgroundThread()
-    }
+    override fun isBackgroundThread(): Boolean = platformDelegate.isBackgroundThread()
 
     override fun assertIsUIThread() {
         platformDelegate.assertIsUIThread()

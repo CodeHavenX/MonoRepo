@@ -33,9 +33,7 @@ import org.koin.compose.viewmodel.koinViewModel
  * @param viewModel The ViewModel that manages the state and logic for the change password dialog.
  */
 @Composable
-fun ChangePasswordDialog(
-    viewModel: ChangePasswordDialogViewModel = koinViewModel(),
-) {
+fun ChangePasswordDialog(viewModel: ChangePasswordDialogViewModel = koinViewModel()) {
     val uiState by viewModel.uiState.collectAsState()
 
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
@@ -67,7 +65,7 @@ internal fun RenderContent(
     Card(
         modifier = Modifier
             .width(IntrinsicSize.Min)
-            .height(IntrinsicSize.Min)
+            .height(IntrinsicSize.Min),
     ) {
         Box {
             Column(
@@ -102,7 +100,7 @@ internal fun RenderContent(
                                     },
                                 )
                             }
-                        }
+                        },
                     )
                 }
                 PasswordOutlinedTextField(
@@ -121,7 +119,7 @@ internal fun RenderContent(
                                 color = MaterialTheme.colorScheme.error,
                             )
                         }
-                    }
+                    },
                 )
                 PasswordOutlinedTextField(
                     value = uiState.confirmPassword.reveal(),
@@ -139,7 +137,7 @@ internal fun RenderContent(
                                 color = MaterialTheme.colorScheme.error,
                             )
                         }
-                    }
+                    },
                 )
                 Row(
                     modifier = Modifier

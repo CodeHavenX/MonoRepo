@@ -10,14 +10,10 @@ actual object UUID {
     /**
      * Generates a random UUID based on a platform specific implementation.
      */
-    actual fun random(): String {
-        return UUID.randomUUID().toString()
-    }
+    actual fun random(): String = UUID.randomUUID().toString()
 
     /**
      * Generates a UUID based on the byte content of the provided [input].
      */
-    actual fun fromString(input: String): String {
-        return UUID.nameUUIDFromBytes(input.toByteArray()).toString()
-    }
+    actual fun fromString(input: String): String = UUID.nameUUIDFromBytes(input.toByteArray()).toString()
 }

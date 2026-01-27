@@ -39,7 +39,9 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class PropertyControllerTest : CoroutineTest(), KoinTest {
+class PropertyControllerTest :
+    CoroutineTest(),
+    KoinTest {
 
     /**
      * Setup the test.
@@ -90,7 +92,7 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-            )
+            ),
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -127,7 +129,7 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
                 SupabaseContextPayload(
                     userInfo = mockk(),
                     userId = UserId("user123"),
-                )
+                ),
             )
             coEvery {
                 contextRetriever.getContext(any())
@@ -175,7 +177,7 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-            )
+            ),
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -208,7 +210,7 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-            )
+            ),
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -253,7 +255,7 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
                     address = "456 Elm St",
                     organizationId = OrganizationId("org123"),
                     imageUrl = "drawable:S_DEPA",
-                )
+                ),
             )
         }
         val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
@@ -264,7 +266,7 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
                 SupabaseContextPayload(
                     userInfo = mockk(),
                     userId = UserId("user123"),
-                )
+                ),
             )
         }
 
@@ -305,7 +307,7 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-            )
+            ),
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -342,7 +344,7 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-            )
+            ),
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -383,7 +385,7 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-            )
+            ),
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -415,7 +417,7 @@ class PropertyControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-            )
+            ),
         )
         coEvery {
             contextRetriever.getContext(any())

@@ -25,7 +25,7 @@ expect abstract class CoroutineTest() {
 
     @Deprecated(
         message = "Use runCoroutineTest instead",
-        replaceWith = ReplaceWith("runCoroutineTest(block)")
+        replaceWith = ReplaceWith("runCoroutineTest(block)"),
     )
     fun runBlockingTest(block: suspend TestScope.() -> Unit)
 }

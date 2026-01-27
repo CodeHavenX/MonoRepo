@@ -14,10 +14,8 @@ import io.ktor.server.routing.Routing
 /**
  * Controller for user related operations.
  */
-class UserController(
-    private val userService: UserService,
-    private val contextRetriever: ContextRetriever<Unit>,
-) : Controller {
+class UserController(private val userService: UserService, private val contextRetriever: ContextRetriever<Unit>) :
+    Controller {
 
     /**
      * Creates a new user.

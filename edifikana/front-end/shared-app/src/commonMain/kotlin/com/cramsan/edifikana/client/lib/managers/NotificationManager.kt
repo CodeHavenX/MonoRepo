@@ -25,29 +25,26 @@ class NotificationManager(
     /**
      * Gets a specific notification by ID.
      */
-    suspend fun getNotification(notificationId: NotificationId): Result<Notification> =
-        dependencies.getOrCatch(TAG) {
-            logI(TAG, "getNotification: $notificationId")
-            notificationService.getNotification(notificationId).getOrThrow()
-        }
+    suspend fun getNotification(notificationId: NotificationId): Result<Notification> = dependencies.getOrCatch(TAG) {
+        logI(TAG, "getNotification: $notificationId")
+        notificationService.getNotification(notificationId).getOrThrow()
+    }
 
     /**
      * Marks a notification as read.
      */
-    suspend fun markAsRead(notificationId: NotificationId): Result<Notification> =
-        dependencies.getOrCatch(TAG) {
-            logI(TAG, "markAsRead: $notificationId")
-            notificationService.markAsRead(notificationId).getOrThrow()
-        }
+    suspend fun markAsRead(notificationId: NotificationId): Result<Notification> = dependencies.getOrCatch(TAG) {
+        logI(TAG, "markAsRead: $notificationId")
+        notificationService.markAsRead(notificationId).getOrThrow()
+    }
 
     /**
      * Deletes a notification.
      */
-    suspend fun deleteNotification(notificationId: NotificationId): Result<Unit> =
-        dependencies.getOrCatch(TAG) {
-            logI(TAG, "deleteNotification: $notificationId")
-            notificationService.deleteNotification(notificationId).getOrThrow()
-        }
+    suspend fun deleteNotification(notificationId: NotificationId): Result<Unit> = dependencies.getOrCatch(TAG) {
+        logI(TAG, "deleteNotification: $notificationId")
+        notificationService.deleteNotification(notificationId).getOrThrow()
+    }
 
     companion object {
         private const val TAG = "NotificationManager"

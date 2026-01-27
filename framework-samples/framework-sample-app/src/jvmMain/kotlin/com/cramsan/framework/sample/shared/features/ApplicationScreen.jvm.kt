@@ -16,7 +16,7 @@ actual fun ComposableKoinContext(content: @Composable () -> Unit) {
             logger(PrintLogger())
             // Load modules
             modules(moduleList)
-        }
+        },
     ) {
         content()
     }

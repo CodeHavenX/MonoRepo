@@ -73,7 +73,7 @@ class SelectOrgViewModel(
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToScreen(
                     AuthDestination.CreateNewOrgDestination,
-                )
+                ),
             )
         }
     }
@@ -99,7 +99,7 @@ class SelectOrgViewModel(
                 EdifikanaWindowsEvent.NavigateToNavGraph(
                     EdifikanaNavGraphDestination.AuthNavGraphDestination,
                     clearStack = true,
-                )
+                ),
             )
         }
     }
@@ -132,7 +132,7 @@ class SelectOrgViewModel(
                 EdifikanaWindowsEvent.NavigateToNavGraph(
                     EdifikanaNavGraphDestination.HomeNavGraphDestination,
                     clearStack = true,
-                )
+                ),
             )
         }
     }

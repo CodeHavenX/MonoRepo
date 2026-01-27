@@ -29,9 +29,7 @@ import org.koin.compose.viewmodel.koinViewModel
  * Settings screen with a theme toggle and back navigation.
  */
 @Composable
-fun SettingsScreen(
-    viewModel: SettingsViewModel = koinViewModel(),
-) {
+fun SettingsScreen(viewModel: SettingsViewModel = koinViewModel()) {
     val uiState by viewModel.uiState.collectAsState()
 
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
@@ -83,7 +81,7 @@ internal fun SettingsContent(
             sectionContent = { mod ->
                 Column(
                     modifier = mod,
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     Text(
                         text = "Appearance",
@@ -115,18 +113,13 @@ internal fun SettingsContent(
                     )
                 }
             },
-            buttonContent = { /* no actions */ }
+            buttonContent = { /* no actions */ },
         )
     }
 }
 
 @Composable
-private fun SettingOption(
-    title: String,
-    subtitle: String? = null,
-    selected: Boolean,
-    onClick: () -> Unit,
-) {
+private fun SettingOption(title: String, subtitle: String? = null, selected: Boolean, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()

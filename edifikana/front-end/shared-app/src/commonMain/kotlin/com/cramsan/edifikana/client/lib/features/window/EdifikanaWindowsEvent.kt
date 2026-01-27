@@ -13,9 +13,7 @@ sealed class EdifikanaWindowsEvent : WindowEvent {
     /**
      * Open the camera.
      */
-    data class OpenCamera(
-        val filename: String,
-    ) : EdifikanaWindowsEvent()
+    data class OpenCamera(val filename: String) : EdifikanaWindowsEvent()
 
     /**
      * Open the photo picker.
@@ -25,10 +23,7 @@ sealed class EdifikanaWindowsEvent : WindowEvent {
     /**
      * Share content.
      */
-    data class ShareContent(
-        val text: String,
-        val imageUri: CoreUri? = null,
-    ) : EdifikanaWindowsEvent()
+    data class ShareContent(val text: String, val imageUri: CoreUri? = null) : EdifikanaWindowsEvent()
 
     /**
      * Navigate to nav graph.
@@ -37,7 +32,8 @@ sealed class EdifikanaWindowsEvent : WindowEvent {
         val destination: EdifikanaNavGraphDestination,
         override val clearTop: Boolean = false,
         override val clearStack: Boolean = false,
-    ) : EdifikanaWindowsEvent(), NavigationEvent
+    ) : EdifikanaWindowsEvent(),
+        NavigationEvent
 
     /**
      * Navigate to destination.
@@ -46,7 +42,8 @@ sealed class EdifikanaWindowsEvent : WindowEvent {
         val destination: Destination,
         override val clearTop: Boolean = false,
         override val clearStack: Boolean = false,
-    ) : EdifikanaWindowsEvent(), NavigationEvent
+    ) : EdifikanaWindowsEvent(),
+        NavigationEvent
 
     /**
      * Close the nav graph.
@@ -56,16 +53,12 @@ sealed class EdifikanaWindowsEvent : WindowEvent {
     /**
      * Show a snackbar.
      */
-    data class ShowSnackbar(
-        val message: String,
-    ) : EdifikanaWindowsEvent()
+    data class ShowSnackbar(val message: String) : EdifikanaWindowsEvent()
 
     /**
      * Open an image externally.
      */
-    data class OpenImageExternally(
-        val imageUri: CoreUri,
-    ) : EdifikanaWindowsEvent()
+    data class OpenImageExternally(val imageUri: CoreUri) : EdifikanaWindowsEvent()
 
     /**
      * Navigate back.

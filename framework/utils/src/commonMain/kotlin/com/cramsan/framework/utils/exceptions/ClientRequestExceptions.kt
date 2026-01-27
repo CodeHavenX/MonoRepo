@@ -5,10 +5,7 @@ package com.cramsan.framework.utils.exceptions
  * expect and return custom error messaging with corresponding 400 status codes.
  */
 @Suppress("MagicNumber")
-sealed class ClientRequestExceptions(
-    val statusCode: Int,
-    override val message: String
-) : Throwable() {
+sealed class ClientRequestExceptions(val statusCode: Int, override val message: String) : Throwable() {
     /**
      * Invalid request exception.
      */
@@ -80,20 +77,14 @@ fun <T> requireAll(
  * @param values The values to check.
  * @throws ClientRequestExceptions.InvalidRequestException If none of the values are not null.
  */
-fun requireAtLeastOne(
-    message: String = "At least one field must be provided.",
-    vararg values: String?,
-) {
+fun requireAtLeastOne(message: String = "At least one field must be provided.", vararg values: String?) {
     requireAtLeastOne(message, { !it.isNullOrBlank() }, *values)
 }
 
 /**
  * Helper function: Requires that all the string values are not null or blank.
  */
-fun requireAll(
-    message: String = "All fields must be provided.",
-    vararg values: String?,
-) {
+fun requireAll(message: String = "All fields must be provided.", vararg values: String?) {
     requireAll(message, { !it.isNullOrBlank() }, *values)
 }
 

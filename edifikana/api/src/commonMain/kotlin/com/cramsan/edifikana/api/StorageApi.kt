@@ -18,6 +18,6 @@ object StorageApi : Api("storage") {
         BytesRequestBody,
         CreateAssetQueryParams,
         NoPathParam,
-        AssetNetworkResponse
+        AssetNetworkResponse,
         >(HttpMethod.Post)
 }

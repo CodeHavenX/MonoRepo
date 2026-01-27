@@ -18,7 +18,7 @@ object FrontEndApplicationSettingKey {
     /**
      * Key for halting on failure setting.
      */
-    val HaltOnFailure = SettingKey.boolean("halt_on_failure",)
+    val HaltOnFailure = SettingKey.boolean("halt_on_failure")
 
     /**
      * Key for the back-end URL setting.

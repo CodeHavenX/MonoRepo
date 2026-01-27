@@ -47,15 +47,13 @@ class LoggerJVM(
         /**
          * Return the [Level] that maps to [this] [Severity].
          */
-        fun Severity.toLevel(): Level {
-            return when (this) {
-                Severity.DISABLED -> Level.OFF
-                Severity.ERROR -> Level.ERROR
-                Severity.WARNING -> Level.WARN
-                Severity.INFO -> Level.INFO
-                Severity.DEBUG -> Level.DEBUG
-                Severity.VERBOSE -> Level.TRACE
-            }
+        fun Severity.toLevel(): Level = when (this) {
+            Severity.DISABLED -> Level.OFF
+            Severity.ERROR -> Level.ERROR
+            Severity.WARNING -> Level.WARN
+            Severity.INFO -> Level.INFO
+            Severity.DEBUG -> Level.DEBUG
+            Severity.VERBOSE -> Level.TRACE
         }
     }
 }

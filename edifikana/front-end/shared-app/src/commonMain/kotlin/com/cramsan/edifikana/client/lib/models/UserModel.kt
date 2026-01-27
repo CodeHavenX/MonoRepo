@@ -17,7 +17,5 @@ data class UserModel(
      * Metadata for user authentication.
      * This is used to store additional information about the user's authentication capabilities.
      */
-    data class AuthMetadataModel(
-        val isPasswordSet: Boolean,
-    )
+    data class AuthMetadataModel(val isPasswordSet: Boolean)
 }

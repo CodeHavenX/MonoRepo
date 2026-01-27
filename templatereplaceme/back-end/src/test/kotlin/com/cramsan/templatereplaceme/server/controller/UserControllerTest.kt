@@ -28,7 +28,9 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class UserControllerTest : CoroutineTest(), KoinTest {
+class UserControllerTest :
+    CoroutineTest(),
+    KoinTest {
 
     @BeforeTest
     fun setupTest() {
@@ -61,7 +63,7 @@ class UserControllerTest : CoroutineTest(), KoinTest {
                     id = UserId("user123"),
                     firstName = "John",
                     lastName = "Doe",
-                )
+                ),
             )
         }
         val contextRetriever = get<ContextRetriever<Unit>>()

@@ -38,12 +38,11 @@ suspend inline fun <
     reified RequestType : RequestBody,
     reified QueryParamsType : QueryParam,
     reified PathParamsType : PathParam,
-    reified ResponseType : ResponseBody
-    >
-    OperationRequest<RequestType, QueryParamsType, PathParamsType, ResponseType>.execute(
-        http: HttpClient,
-        noinline headersBlock: (HeadersBuilder.() -> Unit)? = null,
-    ): ResponseType {
+    reified ResponseType : ResponseBody,
+    > OperationRequest<RequestType, QueryParamsType, PathParamsType, ResponseType>.execute(
+    http: HttpClient,
+    noinline headersBlock: (HeadersBuilder.() -> Unit)? = null,
+): ResponseType {
     val request = this
     val httpRequest = http.request {
         method = request.method

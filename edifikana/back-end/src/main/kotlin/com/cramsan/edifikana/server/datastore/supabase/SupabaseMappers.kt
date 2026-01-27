@@ -43,20 +43,18 @@ import kotlin.time.Instant
  * Maps a [UserEntity] to the [User] model.
  */
 @OptIn(SupabaseModel::class)
-fun UserEntity.toUser(): User {
-    return User(
-        id = UserId(this.id),
-        email = this.email,
-        phoneNumber = this.phoneNumber,
-        firstName = this.firstName,
-        lastName = this.lastName,
-        authMetadata = User.AuthMetadata(
-            isPasswordSet = this.authMetadata.canPasswordAuth,
-        ),
-        role = UserRole.USER,
+fun UserEntity.toUser(): User = User(
+    id = UserId(this.id),
+    email = this.email,
+    phoneNumber = this.phoneNumber,
+    firstName = this.firstName,
+    lastName = this.lastName,
+    authMetadata = User.AuthMetadata(
+        isPasswordSet = this.authMetadata.canPasswordAuth,
+    ),
+    role = UserRole.USER,
 
-    )
-}
+)
 
 /**
  * Create a [UserEntity.CreateUserEntity] from the provided parameters.
@@ -72,20 +70,18 @@ fun CreateUserEntity(
     pendingAssociation: Boolean,
     canPasswordAuth: Boolean,
     hashedPassword: SecureString?,
-): UserEntity.CreateUserEntity {
-    return UserEntity.CreateUserEntity(
-        id = userId.userId,
-        email = email,
-        phoneNumber = phoneNumber,
-        firstName = firstName,
-        lastName = lastName,
-        authMetadata = AuthMetadataEntity(
-            pendingAssociation = pendingAssociation,
-            canPasswordAuth = canPasswordAuth,
-            hashedPassword = hashedPassword?.reveal(),
-        ),
-    )
-}
+): UserEntity.CreateUserEntity = UserEntity.CreateUserEntity(
+    id = userId.userId,
+    email = email,
+    phoneNumber = phoneNumber,
+    firstName = firstName,
+    lastName = lastName,
+    authMetadata = AuthMetadataEntity(
+        pendingAssociation = pendingAssociation,
+        canPasswordAuth = canPasswordAuth,
+        hashedPassword = hashedPassword?.reveal(),
+    ),
+)
 
 /**
  * Create a [UserEntity.CreateUserEntity] from the provided [UserId] and [UserEntity].
@@ -93,12 +89,8 @@ fun CreateUserEntity(
  * This is useful in cases of migrating from a transient user to a permanent user.
  */
 @OptIn(SupabaseModel::class)
-fun CreateUserEntity(
-    userId: UserId,
-    email: String,
-    userEntity: UserEntity,
-): UserEntity.CreateUserEntity {
-    return UserEntity.CreateUserEntity(
+fun CreateUserEntity(userId: UserId, email: String, userEntity: UserEntity): UserEntity.CreateUserEntity =
+    UserEntity.CreateUserEntity(
         id = userId.userId,
         email = email,
         phoneNumber = userEntity.phoneNumber,
@@ -106,9 +98,8 @@ fun CreateUserEntity(
         lastName = userEntity.lastName,
         authMetadata = userEntity.authMetadata.copy(
             pendingAssociation = false,
-        )
+        ),
     )
-}
 
 /**
  * Create a [UserEntity.CreateUserEntity] from the provided parameters.
@@ -120,30 +111,26 @@ fun CreateEmployeeEntity(
     lastName: String,
     role: EmployeeRole,
     propertyId: PropertyId,
-): EmployeeEntity.CreateEmployeeEntity {
-    return EmployeeEntity.CreateEmployeeEntity(
-        idType = idType,
-        firstName = firstName,
-        lastName = lastName,
-        role = role,
-        propertyId = propertyId.propertyId,
-    )
-}
+): EmployeeEntity.CreateEmployeeEntity = EmployeeEntity.CreateEmployeeEntity(
+    idType = idType,
+    firstName = firstName,
+    lastName = lastName,
+    role = role,
+    propertyId = propertyId.propertyId,
+)
 
 /**
  * Maps a [EmployeeEntity] to the [Employee] model.
  */
 @OptIn(SupabaseModel::class)
-fun EmployeeEntity.toEmployee(): Employee {
-    return Employee(
-        id = EmployeeId(this.id),
-        idType = this.idType,
-        firstName = this.firstName,
-        lastName = this.lastName,
-        role = this.role,
-        propertyId = PropertyId(this.propertyId),
-    )
-}
+fun EmployeeEntity.toEmployee(): Employee = Employee(
+    id = EmployeeId(this.id),
+    idType = this.idType,
+    firstName = this.firstName,
+    lastName = this.lastName,
+    role = this.role,
+    propertyId = PropertyId(this.propertyId),
+)
 
 /**
  * Maps a [CreatePropertyRequest] to the [PropertyEntity.CreatePropertyEntity] model.
@@ -154,28 +141,24 @@ fun CreatePropertyEntity(
     address: String,
     organizationId: OrganizationId,
     imageUrl: String? = null,
-): PropertyEntity.CreatePropertyEntity {
-    return PropertyEntity.CreatePropertyEntity(
-        name = name,
-        address = address,
-        organizationId = organizationId.id,
-        imageUrl = imageUrl,
-    )
-}
+): PropertyEntity.CreatePropertyEntity = PropertyEntity.CreatePropertyEntity(
+    name = name,
+    address = address,
+    organizationId = organizationId.id,
+    imageUrl = imageUrl,
+)
 
 /**
  * Maps a [PropertyEntity] to the [Property] model.
  */
 @OptIn(SupabaseModel::class)
-fun PropertyEntity.toProperty(): Property {
-    return Property(
-        id = PropertyId(this.id),
-        name = this.name,
-        address = this.address,
-        organizationId = OrganizationId(this.organizationId),
-        imageUrl = this.imageUrl,
-    )
-}
+fun PropertyEntity.toProperty(): Property = Property(
+    id = PropertyId(this.id),
+    name = this.name,
+    address = this.address,
+    organizationId = OrganizationId(this.organizationId),
+    imageUrl = this.imageUrl,
+)
 
 /**
  * Creates a [TimeCardEventEntity.CreateTimeCardEventEntity] from the provided parameters.
@@ -188,16 +171,14 @@ fun CreateTimeCardEventEntity(
     type: TimeCardEventType,
     imageUrl: String?,
     timestamp: Instant,
-): TimeCardEventEntity.CreateTimeCardEventEntity {
-    return TimeCardEventEntity.CreateTimeCardEventEntity(
-        employeeId = employeeId.empId,
-        fallbackEmployeeName = fallbackEmpName,
-        propertyId = propertyId.propertyId,
-        type = type,
-        imageUrl = imageUrl,
-        timestamp = timestamp.epochSeconds,
-    )
-}
+): TimeCardEventEntity.CreateTimeCardEventEntity = TimeCardEventEntity.CreateTimeCardEventEntity(
+    employeeId = employeeId.empId,
+    fallbackEmployeeName = fallbackEmpName,
+    propertyId = propertyId.propertyId,
+    type = type,
+    imageUrl = imageUrl,
+    timestamp = timestamp.epochSeconds,
+)
 
 /**
  * Maps a [TimeCardEventEntity] to the [TimeCardEvent] model.
@@ -230,38 +211,34 @@ fun CreateEventLogEntryEntity(
     title: String,
     description: String?,
     unit: String,
-): EventLogEntryEntity.CreateEventLogEntryEntity {
-    return EventLogEntryEntity.CreateEventLogEntryEntity(
-        employeeId = employeeId?.empId,
-        fallbackEmployeeName = fallbackEmployeeName,
-        propertyId = propertyId.propertyId,
-        type = type,
-        fallbackEventType = fallbackEventType,
-        timestamp = timestamp.epochSeconds,
-        title = title,
-        description = description,
-        unit = unit,
-    )
-}
+): EventLogEntryEntity.CreateEventLogEntryEntity = EventLogEntryEntity.CreateEventLogEntryEntity(
+    employeeId = employeeId?.empId,
+    fallbackEmployeeName = fallbackEmployeeName,
+    propertyId = propertyId.propertyId,
+    type = type,
+    fallbackEventType = fallbackEventType,
+    timestamp = timestamp.epochSeconds,
+    title = title,
+    description = description,
+    unit = unit,
+)
 
 /**
  * Maps a [EventLogEntryEntity] to the [EventLogEntry] model.
  */
 @OptIn(SupabaseModel::class)
-fun EventLogEntryEntity.toEventLogEntry(): EventLogEntry {
-    return EventLogEntry(
-        id = EventLogEntryId(this.id),
-        employeeId = this.employeeId?.let { EmployeeId(it) },
-        fallbackEmployeeName = this.fallbackEmployeeName,
-        propertyId = PropertyId(this.propertyId),
-        type = this.type,
-        fallbackEventType = this.fallbackEventType,
-        timestamp = Instant.fromEpochSeconds(this.timestamp),
-        title = this.title,
-        description = this.description,
-        unit = this.unit,
-    )
-}
+fun EventLogEntryEntity.toEventLogEntry(): EventLogEntry = EventLogEntry(
+    id = EventLogEntryId(this.id),
+    employeeId = this.employeeId?.let { EmployeeId(it) },
+    fallbackEmployeeName = this.fallbackEmployeeName,
+    propertyId = PropertyId(this.propertyId),
+    type = this.type,
+    fallbackEventType = this.fallbackEventType,
+    timestamp = Instant.fromEpochSeconds(this.timestamp),
+    title = this.title,
+    description = this.description,
+    unit = this.unit,
+)
 
 /**
  * Maps an [OrganizationEntity] to the [Organization] model.
@@ -277,30 +254,26 @@ fun OrganizationEntity.toOrganization() = Organization(
  * Maps a [NotificationEntity] to the [Notification] model.
  */
 @SupabaseModel
-fun NotificationEntity.toNotification(): Notification {
-    return Notification(
-        id = NotificationId(this.id),
-        recipientUserId = this.recipientUserId?.let { UserId(it) },
-        recipientEmail = this.recipientEmail,
-        notificationType = NotificationType.fromString(this.notificationType),
-        description = this.description,
-        isRead = this.isRead,
-        createdAt = this.createdAt,
-        readAt = this.readAt,
-        inviteId = this.inviteId?.let { InviteId(it) }
-    )
-}
+fun NotificationEntity.toNotification(): Notification = Notification(
+    id = NotificationId(this.id),
+    recipientUserId = this.recipientUserId?.let { UserId(it) },
+    recipientEmail = this.recipientEmail,
+    notificationType = NotificationType.fromString(this.notificationType),
+    description = this.description,
+    isRead = this.isRead,
+    createdAt = this.createdAt,
+    readAt = this.readAt,
+    inviteId = this.inviteId?.let { InviteId(it) },
+)
 
 /**
  * Maps an [InviteEntity] to the [Invite] model.
  */
 @OptIn(SupabaseModel::class)
-fun InviteEntity.toInvite(): Invite {
-    return Invite(
-        id = InviteId(this.id),
-        email = this.email,
-        organizationId = OrganizationId(this.organizationId),
-        role = UserRole.fromString(this.role),
-        expiration = this.expiration,
-    )
-}
+fun InviteEntity.toInvite(): Invite = Invite(
+    id = InviteId(this.id),
+    email = this.email,
+    organizationId = OrganizationId(this.organizationId),
+    role = UserRole.fromString(this.role),
+    expiration = this.expiration,
+)

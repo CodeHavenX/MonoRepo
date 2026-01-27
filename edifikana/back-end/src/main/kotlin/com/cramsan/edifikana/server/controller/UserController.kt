@@ -54,7 +54,7 @@ class UserController(
         requireAll(
             "An email and phone number must be provided.",
             createUserRequest.email,
-            createUserRequest.phoneNumber
+            createUserRequest.phoneNumber,
         )
 
         val newUserResult = userService.createUser(
@@ -76,7 +76,7 @@ class UserController(
     @OptIn(NetworkModel::class)
     suspend fun getUser(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
-        userId: UserId
+        userId: UserId,
     ): UserNetworkResponse? {
         if (!rbacService.hasRole(context, userId)) {
             throw UnauthorizedException(unauthorizedMsg)
@@ -146,7 +146,7 @@ class UserController(
     suspend fun updateUser(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         updateUserRequest: UpdateUserNetworkRequest,
-        userId: UserId
+        userId: UserId,
     ): UserNetworkResponse {
         if (!rbacService.hasRole(context, userId)) {
             throw UnauthorizedException(unauthorizedMsg)
@@ -167,7 +167,7 @@ class UserController(
      */
     suspend fun deleteUser(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
-        userId: UserId
+        userId: UserId,
     ): NoResponseBody {
         if (!rbacService.hasRole(context, userId)) {
             throw UnauthorizedException(unauthorizedMsg)
@@ -188,7 +188,7 @@ class UserController(
      */
     @OptIn(NetworkModel::class)
     suspend fun associate(
-        authenticatedContext: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
+        authenticatedContext: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
     ): UserNetworkResponse {
         val userId = authenticatedContext.payload.userId
         val email = authenticatedContext.payload.userInfo.email
@@ -213,7 +213,7 @@ class UserController(
     @OptIn(NetworkModel::class)
     suspend fun inviteUser(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
-        inviteRequest: InviteUserNetworkRequest
+        inviteRequest: InviteUserNetworkRequest,
     ): NoResponseBody {
         val email = inviteRequest.email
         val orgId = inviteRequest.organizationId
@@ -264,9 +264,7 @@ class UserController(
      * Throws [IllegalArgumentException] if required fields are missing.
      */
     @OptIn(NetworkModel::class)
-    suspend fun checkUserIsRegistered(
-        email: String
-    ): CheckUserNetworkResponse {
+    suspend fun checkUserIsRegistered(email: String): CheckUserNetworkResponse {
         val registeredUser = userService.checkUserIsRegistered(email).getOrThrow()
         return CheckUserNetworkResponse(registeredUser)
     }

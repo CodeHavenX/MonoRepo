@@ -12,14 +12,12 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for the EventLog screen.
  */
-class EventLogViewModel(
-    dependencies: ViewModelDependencies,
-    private val eventLogManager: EventLogManager,
-) : BaseViewModel<EventLogEvent, EventLogUIState>(
-    dependencies,
-    EventLogUIState.Initial,
-    TAG,
-) {
+class EventLogViewModel(dependencies: ViewModelDependencies, private val eventLogManager: EventLogManager) :
+    BaseViewModel<EventLogEvent, EventLogUIState>(
+        dependencies,
+        EventLogUIState.Initial,
+        TAG,
+    ) {
 
     /**
      * Load events for the given property.

@@ -18,10 +18,7 @@ import kotlin.time.Clock
 /**
  * Datastore for managing employee members.
  */
-class SupabaseEmployeeDatastore(
-    private val postgrest: Postgrest,
-    private val clock: Clock,
-) : EmployeeDatastore {
+class SupabaseEmployeeDatastore(private val postgrest: Postgrest, private val clock: Clock) : EmployeeDatastore {
 
     /**
      * Creates a new employee member. Returns the created [Employee].
@@ -54,9 +51,7 @@ class SupabaseEmployeeDatastore(
      * Retrieves an employee by [id]. Returns the [Employee] if found, null otherwise.
      */
     @OptIn(SupabaseModel::class)
-    override suspend fun getEmployee(
-        id: EmployeeId,
-    ): Result<Employee?> = runSuspendCatching(TAG) {
+    override suspend fun getEmployee(id: EmployeeId): Result<Employee?> = runSuspendCatching(TAG) {
         logD(TAG, "Getting employee: %s", id)
 
         val employeeEntity = postgrest.from(EmployeeEntity.COLLECTION).select {
@@ -102,7 +97,7 @@ class SupabaseEmployeeDatastore(
                 lastName?.let { value -> EmployeeEntity::lastName setTo value }
                 role?.let { value -> EmployeeEntity::role setTo value }
                 idType?.let { value -> EmployeeEntity::idType setTo value }
-            }
+            },
         ) {
             select()
             filter {
@@ -115,9 +110,7 @@ class SupabaseEmployeeDatastore(
      * Soft deletes an employee by [id]. Returns true if successful.
      */
     @OptIn(SupabaseModel::class)
-    override suspend fun deleteEmployee(
-        id: EmployeeId,
-    ): Result<Boolean> = runSuspendCatching(TAG) {
+    override suspend fun deleteEmployee(id: EmployeeId): Result<Boolean> = runSuspendCatching(TAG) {
         logD(TAG, "Soft deleting employee: %s", id)
 
         postgrest.from(EmployeeEntity.COLLECTION).update({
@@ -136,9 +129,7 @@ class SupabaseEmployeeDatastore(
      * Only purges records that are already soft-deleted (deletedAt is not null).
      */
     @OptIn(SupabaseModel::class)
-    override suspend fun purgeEmployee(
-        id: EmployeeId,
-    ): Result<Boolean> = runSuspendCatching(TAG) {
+    override suspend fun purgeEmployee(id: EmployeeId): Result<Boolean> = runSuspendCatching(TAG) {
         logD(TAG, "Purging soft-deleted employee: %s", id)
 
         // First verify the record exists and is soft-deleted

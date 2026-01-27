@@ -11,13 +11,12 @@ import com.cramsan.framework.logging.logW
 /**
  * ViewModel for the Logging screen.
  **/
-class LoggingViewModel(
-    dependencies: ViewModelDependencies,
-) : BaseViewModel<LoggingEvent, LoggingUIState>(
-    dependencies,
-    LoggingUIState.Initial,
-    TAG,
-) {
+class LoggingViewModel(dependencies: ViewModelDependencies) :
+    BaseViewModel<LoggingEvent, LoggingUIState>(
+        dependencies,
+        LoggingUIState.Initial,
+        TAG,
+    ) {
 
     /**
      * Log an info message.

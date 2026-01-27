@@ -94,6 +94,7 @@ private fun handleWindowEvent(
         is TemplateReplaceMeWindowsEvent.ShareContent -> {
             eventHandler.shareContent(event)
         }
+
         is TemplateReplaceMeWindowsEvent.NavigateToNavGraph -> {
             handleNavigationEvent(
                 navController = navController,
@@ -101,6 +102,7 @@ private fun handleWindowEvent(
             )
             navController.navigate(event.destination)
         }
+
         is TemplateReplaceMeWindowsEvent.NavigateToScreen -> {
             handleNavigationEvent(
                 navController = navController,
@@ -108,9 +110,11 @@ private fun handleWindowEvent(
             )
             navController.navigate(event.destination)
         }
+
         is TemplateReplaceMeWindowsEvent.NavigateBack -> {
             navController.popBackStack()
         }
+
         is TemplateReplaceMeWindowsEvent.CloseNavGraph -> {
             val currentNavGraph = navController.currentBackStack.value.reversed().find {
                 it.destination.navigatorName == "navigation"
@@ -119,6 +123,7 @@ private fun handleWindowEvent(
                 navController.popBackStack(it, inclusive = true)
             }
         }
+
         is TemplateReplaceMeWindowsEvent.ShowSnackbar -> {
             scope.launch {
                 handleSnackbarEvent(
@@ -132,10 +137,7 @@ private fun handleWindowEvent(
     }
 }
 
-private fun handleNavigationEvent(
-    navController: NavHostController,
-    event: NavigationEvent,
-) {
+private fun handleNavigationEvent(navController: NavHostController, event: NavigationEvent) {
     if (event.clearStack) {
         while (navController.currentBackStack.value.isNotEmpty()) {
             navController.popBackStack()

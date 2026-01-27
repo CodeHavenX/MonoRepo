@@ -22,6 +22,6 @@ private fun InviteStaffMemberScreenPreview() = AppTheme {
             ),
         ),
         onBackSelected = {},
-        onSendInvitationSelected = { _, _ -> }
+        onSendInvitationSelected = { _, _ -> },
     )
 }

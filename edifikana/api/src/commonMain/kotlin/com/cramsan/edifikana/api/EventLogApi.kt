@@ -23,34 +23,34 @@ object EventLogApi : Api("event_log") {
         CreateEventLogEntryNetworkRequest,
         NoQueryParam,
         NoPathParam,
-        EventLogEntryNetworkResponse
+        EventLogEntryNetworkResponse,
         >(HttpMethod.Post)
 
     val getEventLogEntry = operation<
         NoRequestBody,
         NoQueryParam,
         EventLogEntryId,
-        EventLogEntryNetworkResponse
+        EventLogEntryNetworkResponse,
         >(HttpMethod.Get)
 
     val getEventLogEntries = operation<
         NoRequestBody,
         GetEventLogEntriesQueryParams,
         NoPathParam,
-        EventLogEntryListNetworkResponse
+        EventLogEntryListNetworkResponse,
         >(HttpMethod.Get)
 
     val updateEventLogEntry = operation<
         UpdateEventLogEntryNetworkRequest,
         NoQueryParam,
         EventLogEntryId,
-        EventLogEntryNetworkResponse
+        EventLogEntryNetworkResponse,
         >(HttpMethod.Put)
 
     val deleteEventLogEntry = operation<
         NoRequestBody,
         NoQueryParam,
         EventLogEntryId,
-        NoResponseBody
+        NoResponseBody,
         >(HttpMethod.Delete)
 }

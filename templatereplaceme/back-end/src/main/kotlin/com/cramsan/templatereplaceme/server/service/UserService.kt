@@ -9,10 +9,7 @@ import com.cramsan.templatereplaceme.server.settings.TemplateReplaceMeSettingKey
 /**
  * Example of service to manage users.
  */
-class UserService(
-    private val userDatastore: UserDatastore,
-    private val settingsHolder: SettingsHolder,
-) {
+class UserService(private val userDatastore: UserDatastore, private val settingsHolder: SettingsHolder) {
 
     /**
      * Creates a new user with the given first and last name.
@@ -21,10 +18,7 @@ class UserService(
      * @param lastName The last name of the user.
      * @return A [Result] containing the created [User] or an error if the operation failed.
      */
-    suspend fun createUser(
-        firstName: String,
-        lastName: String,
-    ): Result<User> {
+    suspend fun createUser(firstName: String, lastName: String): Result<User> {
         logD(TAG, "createUser")
         val result = userDatastore.createUser(
             firstName,

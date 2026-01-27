@@ -34,16 +34,11 @@ import org.koin.compose.viewmodel.koinViewModel
  * application. This includes observing the view model's state and event flows and rendering the screen.
  */
 @Composable
-fun MenuScreen(
-    modifier: Modifier = Modifier,
-    viewModel: MenuViewModel = koinViewModel(),
-) {
+fun MenuScreen(modifier: Modifier = Modifier, viewModel: MenuViewModel = koinViewModel()) {
     val uiState by viewModel.uiState.collectAsState()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
-    /**
-     * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
-     */
+    // For other possible lifecycle events, see the Lifecycle.Event documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
         viewModel.initialize()
     }
@@ -65,6 +60,7 @@ fun MenuScreen(
                     }
                 }
             }
+
             MenuEvent.CloseDrawer -> {
                 if (!drawerState.isAnimationRunning) {
                     drawerState.close()
@@ -102,7 +98,7 @@ internal fun MenuContent(
                     modifier = Modifier.padding(
                         horizontal = Padding.SMALL,
                         vertical = Padding.LARGE,
-                    )
+                    ),
                 ) {
                     content.drawerItems.forEach { item ->
                         DrawerItem(item, content.selectedItem) {
@@ -122,12 +118,15 @@ internal fun MenuContent(
                 SelectableDrawerItem.Numbers -> {
                     YupayScreen()
                 }
+
                 SelectableDrawerItem.Verbs -> {
                     VerbsScreen()
                 }
+
                 SelectableDrawerItem.Questions -> {
                     QuestionsScreen()
                 }
+
                 null -> {
                     // No-op
                 }
@@ -149,7 +148,7 @@ private fun DrawerItem(
                 item = item.item,
                 selected = item.item == selectedItem,
                 onClick = onClick,
-                modifier = modifier
+                modifier = modifier,
             )
         }
     }

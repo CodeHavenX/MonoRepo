@@ -21,7 +21,7 @@ class EdifikanaApplicationViewModel(
 ) : BaseViewModel<EdifikanaApplicationViewModelEvent, EdifikanaApplicationUIState>(
     dependencies,
     EdifikanaApplicationUIState.Initial,
-    TAG
+    TAG,
 ) {
 
     /**
@@ -81,7 +81,7 @@ class EdifikanaApplicationViewModel(
         }
         updateUiState {
             it.copy(
-                showDebugWindow = showDebugWindow
+                showDebugWindow = showDebugWindow,
             )
         }
     }

@@ -17,7 +17,7 @@ private fun QuestionsScreenPreview() {
                 Content(
                     translated = "Sample",
                     original = "Chaymi rikhurqa",
-                )
+                ),
             ),
         )
     }

@@ -62,7 +62,7 @@ fun EdifikanaBottomSheet(
                             Modifier
                                 .widthIn(max = Size.COLUMN_MAX_WIDTH)
                                 .heightIn(max = 600.dp)
-                        }
+                        },
                     ) {
                         content()
                     }

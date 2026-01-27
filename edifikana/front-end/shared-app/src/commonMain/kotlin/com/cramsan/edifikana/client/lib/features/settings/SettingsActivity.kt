@@ -12,9 +12,7 @@ import kotlin.reflect.KType
 /**
  * Settings Nav Graph Activity.
  */
-fun NavGraphBuilder.settingsNavGraphNavigation(
-    typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> = emptyMap(),
-) {
+fun NavGraphBuilder.settingsNavGraphNavigation(typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> = emptyMap()) {
     navigationGraph(
         graphDestination = EdifikanaNavGraphDestination.SettingsNavGraphDestination::class,
         startDestination = SettingsDestination.GeneralSettingsDestination,

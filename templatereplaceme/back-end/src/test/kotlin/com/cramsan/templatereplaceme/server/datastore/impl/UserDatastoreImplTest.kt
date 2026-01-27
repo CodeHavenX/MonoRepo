@@ -23,7 +23,7 @@ class UserDatastoreImplTest : CoroutineTest() {
         // Act
         val user = userDatastore.createUser(
             firstName = "John",
-            lastName = "Doe"
+            lastName = "Doe",
         )
 
         // Assert

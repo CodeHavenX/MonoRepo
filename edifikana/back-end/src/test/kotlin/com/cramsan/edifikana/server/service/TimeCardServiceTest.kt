@@ -79,7 +79,7 @@ class TimeCardServiceTest {
             propertyId,
             type,
             imageUrl,
-            timestamp
+            timestamp,
         )
 
         // Assert

@@ -14,15 +14,11 @@ object Converters {
      * Convert a list of strings to a single string.
      */
     @TypeConverter
-    fun fromString(value: String?): List<String> {
-        return value?.let { json.decodeFromString<List<String>>(it) }.orEmpty()
-    }
+    fun fromString(value: String?): List<String> = value?.let { json.decodeFromString<List<String>>(it) }.orEmpty()
 
     /**
      * Convert a single string to a list of strings.
      */
     @TypeConverter
-    fun fromList(list: List<String>?): String {
-        return list?.let { json.encodeToString(it) }.orEmpty()
-    }
+    fun fromList(list: List<String>?): String = list?.let { json.encodeToString(it) }.orEmpty()
 }

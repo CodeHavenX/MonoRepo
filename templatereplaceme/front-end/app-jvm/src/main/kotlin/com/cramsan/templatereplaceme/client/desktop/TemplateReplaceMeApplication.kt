@@ -35,8 +35,8 @@ fun main() = application {
             onCloseRequest = ::exitApplication,
             title = "TemplateReplaceMe",
             state = rememberWindowState(
-                size = DpSize(600.dp, 800.dp)
-            )
+                size = DpSize(600.dp, 800.dp),
+            ),
         ) {
             KoinScope<String>("root-window") {
                 TemplateReplaceMeWindowScreen(
@@ -50,8 +50,8 @@ fun main() = application {
                 onCloseRequest = { processViewModel.setShowDebugWindow(false) },
                 title = "Debug Window - TemplateReplaceMe",
                 state = rememberWindowState(
-                    size = DpSize(400.dp, 600.dp)
-                )
+                    size = DpSize(400.dp, 600.dp),
+                ),
             ) {
                 KoinScope<String>("debug-window") {
                     TemplateReplaceMeWindowScreen(

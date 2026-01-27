@@ -51,9 +51,7 @@ fun PropertyDetailScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    /**
-     * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
-     */
+    // For other possible lifecycle events, see the Lifecycle.Event documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
         viewModel.initialize(destination.propertyId)
     }
@@ -209,7 +207,7 @@ internal fun PropertyDetailContent(
             },
             overlay = {
                 LoadingAnimationOverlay(content.isLoading)
-            }
+            },
         )
     }
 
@@ -223,7 +221,7 @@ internal fun PropertyDetailContent(
                     onClick = {
                         showDeleteDialog = false
                         onDeleteProperty()
-                    }
+                    },
                 ) {
                     Text("Delete")
                 }
@@ -232,7 +230,7 @@ internal fun PropertyDetailContent(
                 TextButton(onClick = { showDeleteDialog = false }) {
                     Text("Cancel")
                 }
-            }
+            },
         )
     }
 }

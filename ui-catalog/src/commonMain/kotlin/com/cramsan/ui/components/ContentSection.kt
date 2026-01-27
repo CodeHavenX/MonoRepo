@@ -15,10 +15,7 @@ import com.cramsan.ui.theme.Padding
  * will define the padding and width of the content.
  */
 @Composable
-fun ContentSection(
-    modifier: Modifier = Modifier,
-    content: @Composable ColumnScope.(Modifier) -> Unit,
-) {
+fun ContentSection(modifier: Modifier = Modifier, content: @Composable ColumnScope.(Modifier) -> Unit) {
     val contentSectionModifier = Modifier
         .fillMaxWidth()
         .padding(

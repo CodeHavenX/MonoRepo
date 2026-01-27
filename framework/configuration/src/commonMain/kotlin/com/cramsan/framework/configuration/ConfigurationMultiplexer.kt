@@ -47,14 +47,17 @@ class ConfigurationMultiplexer {
                     val stringValue = configuration.readString(normalizedKey)
                     stringValue?.let { PropertyValue.StringValue(it) }
                 }
+
                 is PropertyValueType.IntType -> {
                     val intValue = configuration.readInt(normalizedKey)
                     intValue?.let { PropertyValue.IntValue(it) }
                 }
+
                 is PropertyValueType.LongType -> {
                     val longValue = configuration.readLong(normalizedKey)
                     longValue?.let { PropertyValue.LongValue(it) }
                 }
+
                 is PropertyValueType.BooleanType -> {
                     val booleanValue = configuration.readBoolean(normalizedKey)
                     booleanValue?.let { PropertyValue.BooleanValue(it) }

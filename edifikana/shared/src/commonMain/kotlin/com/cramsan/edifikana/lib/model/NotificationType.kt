@@ -22,8 +22,6 @@ enum class NotificationType {
         /**
          * Converts a string to a NotificationType.
          */
-        fun fromString(value: String): NotificationType {
-            return entries.find { it.name == value } ?: SYSTEM
-        }
+        fun fromString(value: String): NotificationType = entries.find { it.name == value } ?: SYSTEM
     }
 }

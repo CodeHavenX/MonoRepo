@@ -40,7 +40,7 @@ class SignUpViewModel(
         viewModelScope.launch {
             updateUiState {
                 it.copy(
-                    email = username
+                    email = username,
                 )
             }
         }
@@ -54,7 +54,7 @@ class SignUpViewModel(
         viewModelScope.launch {
             updateUiState {
                 it.copy(
-                    phoneNumber = username
+                    phoneNumber = username,
                 )
             }
         }
@@ -68,7 +68,7 @@ class SignUpViewModel(
         viewModelScope.launch {
             updateUiState {
                 it.copy(
-                    firstName = firstName
+                    firstName = firstName,
                 )
             }
         }
@@ -82,7 +82,7 @@ class SignUpViewModel(
         viewModelScope.launch {
             updateUiState {
                 it.copy(
-                    lastName = lastName
+                    lastName = lastName,
                 )
             }
         }
@@ -94,7 +94,7 @@ class SignUpViewModel(
     fun navigateBack() {
         viewModelScope.launch {
             emitWindowEvent(
-                EdifikanaWindowsEvent.NavigateBack
+                EdifikanaWindowsEvent.NavigateBack,
             )
         }
     }
@@ -120,7 +120,7 @@ class SignUpViewModel(
             if (errorMessages.isNotEmpty()) {
                 updateUiState {
                     it.copy(
-                        errorMessages = errorMessages
+                        errorMessages = errorMessages,
                     )
                 }
                 return@launch
@@ -138,7 +138,7 @@ class SignUpViewModel(
                 updateUiState {
                     it.copy(
                         isLoading = false,
-                        errorMessages = listOf(getErrorMessage(exception))
+                        errorMessages = listOf(getErrorMessage(exception)),
                     )
                 }
 
@@ -150,7 +150,7 @@ class SignUpViewModel(
                 EdifikanaWindowsEvent.NavigateToScreen(
                     AuthDestination.ValidationDestination(email, accountCreationFlow = true),
                     clearTop = true,
-                )
+                ),
             )
         }
     }
@@ -176,13 +176,11 @@ class SignUpViewModel(
     /**
      * Get the custom client error message based on the exception type.
      */
-    private suspend fun getErrorMessage(exception: Throwable): String {
-        return when (exception) {
-            is ClientRequestExceptions.ConflictException ->
-                "This email is already registered. You can reset your " +
-                    "password or use another email."
+    private suspend fun getErrorMessage(exception: Throwable): String = when (exception) {
+        is ClientRequestExceptions.ConflictException ->
+            "This email is already registered. You can reset your " +
+                "password or use another email."
 
-            else -> stringProvider.getString(Res.string.error_message_unexpected_error)
-        }
+        else -> stringProvider.getString(Res.string.error_message_unexpected_error)
     }
 }

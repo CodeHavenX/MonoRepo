@@ -9,14 +9,10 @@ sealed class ClientContext<P> {
     /**
      * Represents a client that has been authenticated.
      */
-    data class AuthenticatedClientContext<P> (
-        val payload: P,
-    ) : ClientContext<P>()
+    data class AuthenticatedClientContext<P>(val payload: P) : ClientContext<P>()
 
     /**
      * Represents a client that has not been authenticated.
      */
-    data class UnauthenticatedClientContext<P> (
-        val payload: P? = null,
-    ) : ClientContext<P>()
+    data class UnauthenticatedClientContext<P>(val payload: P? = null) : ClientContext<P>()
 }

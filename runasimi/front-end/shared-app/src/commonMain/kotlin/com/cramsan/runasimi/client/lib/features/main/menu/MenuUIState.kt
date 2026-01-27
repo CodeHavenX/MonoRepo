@@ -31,9 +31,7 @@ sealed class DrawerItem {
     /**
      * A selectable item in the navigation drawer.
      */
-    data class Selectable(
-        val item: SelectableDrawerItem,
-    ) : DrawerItem()
+    data class Selectable(val item: SelectableDrawerItem) : DrawerItem()
 }
 
 /**

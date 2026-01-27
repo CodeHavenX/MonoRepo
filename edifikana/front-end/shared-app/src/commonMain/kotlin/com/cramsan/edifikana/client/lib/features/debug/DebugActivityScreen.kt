@@ -13,9 +13,7 @@ import kotlin.reflect.KType
 /**
  * Debug Nav Graph Route.
  */
-fun NavGraphBuilder.debugNavGraphNavigation(
-    typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> = emptyMap(),
-) {
+fun NavGraphBuilder.debugNavGraphNavigation(typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> = emptyMap()) {
     navigationGraph(
         graphDestination = EdifikanaNavGraphDestination.DebugNavGraphDestination::class,
         startDestination = DebugDestination.MainDebugDestination,

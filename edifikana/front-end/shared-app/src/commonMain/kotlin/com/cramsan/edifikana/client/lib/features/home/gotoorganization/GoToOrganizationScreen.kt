@@ -27,9 +27,7 @@ fun GoToOrganizationScreen(
     managementViewModel: DrawerViewModel = koinViewModel(),
     viewModel: GoToOrganizationViewModel = koinViewModel(),
 ) {
-    /**
-     * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
-     */
+    // For other possible lifecycle events, see the Lifecycle.Event documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
         // Call this feature's viewModel
     }
@@ -55,10 +53,7 @@ fun GoToOrganizationScreen(
  * Content of the GoToOrganization.
  */
 @Composable
-internal fun GoToOrganizationContent(
-    modifier: Modifier = Modifier,
-    onNavigateToOrganizationsClicked: () -> Unit,
-) {
+internal fun GoToOrganizationContent(modifier: Modifier = Modifier, onNavigateToOrganizationsClicked: () -> Unit) {
     Box(
         modifier = modifier
             .fillMaxSize(),

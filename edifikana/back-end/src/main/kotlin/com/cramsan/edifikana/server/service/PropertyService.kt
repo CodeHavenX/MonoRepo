@@ -12,9 +12,7 @@ import com.cramsan.framework.logging.logD
 /**
  * Service for property operations.
  */
-class PropertyService(
-    private val propertyDatastore: PropertyDatastore,
-) {
+class PropertyService(private val propertyDatastore: PropertyDatastore) {
 
     /**
      * Creates a property with the provided [name].
@@ -39,9 +37,7 @@ class PropertyService(
     /**
      * Retrieves a property with the provided [id].
      */
-    suspend fun getProperty(
-        id: PropertyId,
-    ): Property? {
+    suspend fun getProperty(id: PropertyId): Property? {
         logD(TAG, "getProperty")
         val property = propertyDatastore.getProperty(
             propertyId = id,
@@ -53,9 +49,7 @@ class PropertyService(
     /**
      * Retrieves all properties.
      */
-    suspend fun getProperties(
-        userId: UserId,
-    ): List<Property> {
+    suspend fun getProperties(userId: UserId): List<Property> {
         logD(TAG, "getProperties")
         val properties = propertyDatastore.getProperties(
             userId,
@@ -66,12 +60,7 @@ class PropertyService(
     /**
      * Updates a property with the provided [id] and [name].
      */
-    suspend fun updateProperty(
-        id: PropertyId,
-        name: String?,
-        address: String?,
-        imageUrl: String? = null,
-    ): Property {
+    suspend fun updateProperty(id: PropertyId, name: String?, address: String?, imageUrl: String? = null): Property {
         logD(TAG, "updateProperty")
         return propertyDatastore.updateProperty(
             propertyId = id,
@@ -84,9 +73,7 @@ class PropertyService(
     /**
      * Deletes a property with the provided [id].
      */
-    suspend fun deleteProperty(
-        id: PropertyId,
-    ): Boolean {
+    suspend fun deleteProperty(id: PropertyId): Boolean {
         logD(TAG, "deleteProperty")
         return propertyDatastore.deleteProperty(
             propertyId = id,

@@ -38,11 +38,11 @@ fun TemplateReplaceMeTopBar(
                 ) {
                     Icon(
                         imageVector = navigationIcon,
-                        contentDescription = stringResource(Res.string.string_back_navigation)
+                        contentDescription = stringResource(Res.string.string_back_navigation),
                     )
                 }
             }
         },
-        actions = { content?.invoke(this) }
+        actions = { content?.invoke(this) },
     )
 }

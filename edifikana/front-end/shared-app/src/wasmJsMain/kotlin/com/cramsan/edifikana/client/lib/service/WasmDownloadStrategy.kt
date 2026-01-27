@@ -7,15 +7,9 @@ import com.cramsan.framework.core.CoreUri
  */
 class WasmDownloadStrategy : DownloadStrategy {
 
-    override fun isFileCached(targetRef: String): Boolean {
-        return false
-    }
+    override fun isFileCached(targetRef: String): Boolean = false
 
-    override fun getCachedFile(targetRef: String): CoreUri {
-        throw RuntimeException("Not supported")
-    }
+    override fun getCachedFile(targetRef: String): CoreUri = throw RuntimeException("Not supported")
 
-    override fun saveToFile(data: ByteArray, targetRef: String): CoreUri {
-        throw RuntimeException("Not supported")
-    }
+    override fun saveToFile(data: ByteArray, targetRef: String): CoreUri = throw RuntimeException("Not supported")
 }

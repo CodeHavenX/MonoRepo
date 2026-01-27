@@ -7,9 +7,7 @@ import com.cramsan.framework.preferences.Preferences
 /**
  * Class to read and write settings.
  */
-class SettingsHolder(
-    private val preferences: Preferences
-) {
+class SettingsHolder(private val preferences: Preferences) {
 
     /**
      * Reads a property value from the configuration.
@@ -208,10 +206,7 @@ class SettingsHolder(
  * @property key The key of the setting.
  * @property type The type of the property value.
  */
-data class SettingKey<T : PropertyValueType> (
-    val key: String,
-    val type: T,
-) {
+data class SettingKey<T : PropertyValueType>(val key: String, val type: T) {
     companion object {
         /**
          * Creates a [SettingKey] for a string property.

@@ -6,9 +6,7 @@ package com.cramsan.framework.configuration
  * @param domainPrefix The prefix to use for the environment variables. This IS REQUIRED to be a non-empty
  * alphanumeric string. Only uppercase letters, numbers and underscores are allowed.
  */
-class EnvironmentConfiguration(
-    private val domainPrefix: String,
-) : Configuration {
+class EnvironmentConfiguration(private val domainPrefix: String) : Configuration {
 
     init {
         // Ensure that the domain prefix is not empty and uppercase and underscores
@@ -18,9 +16,9 @@ class EnvironmentConfiguration(
         require(
             domainPrefix.all {
                 it.isDigit() ||
-                    it.isLetter() && it.isUpperCase() ||
+                    (it.isLetter() && it.isUpperCase()) ||
                     it == '_'
-            }
+            },
         ) {
             "Domain prefix must only contain uppercase letters, numbers and underscores"
         }
@@ -29,39 +27,27 @@ class EnvironmentConfiguration(
     /**
      * Reads a string from the environment variables.
      */
-    override fun readString(key: String): String? {
-        return readSimpleConfig(key)
-    }
+    override fun readString(key: String): String? = readSimpleConfig(key)
 
     /**
      * Reads an integer from the environment variable.
      */
-    override fun readInt(key: String): Int? {
-        return readSimpleConfig(key)?.toIntOrNull()
-    }
+    override fun readInt(key: String): Int? = readSimpleConfig(key)?.toIntOrNull()
 
     /**
      * Reads a long from the environment variable.
      */
-    override fun readLong(key: String): Long? {
-        return readSimpleConfig(key)?.toLongOrNull()
-    }
+    override fun readLong(key: String): Long? = readSimpleConfig(key)?.toLongOrNull()
 
     /**
      * Reads a boolean from the environment variable.
      */
-    override fun readBoolean(key: String): Boolean? {
-        return readSimpleConfig(key)?.toBooleanStrictOrNull()
-    }
+    override fun readBoolean(key: String): Boolean? = readSimpleConfig(key)?.toBooleanStrictOrNull()
 
     /**
      * Reads a property from the environment variable.
      */
-    private fun readSimpleConfig(
-        key: String,
-    ): String? {
-        return System.getenv(key)
-    }
+    private fun readSimpleConfig(key: String): String? = System.getenv(key)
 
     /**
      * Transforms the key to match environment variable naming conventions.

@@ -45,9 +45,7 @@ import org.koin.compose.viewmodel.koinViewModel
  * Sign Up screen
  */
 @Composable
-fun SignUpScreen(
-    viewModel: SignUpViewModel = koinViewModel(),
-) {
+fun SignUpScreen(viewModel: SignUpViewModel = koinViewModel()) {
     val uiState by viewModel.uiState.collectAsState()
 
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
@@ -105,7 +103,7 @@ internal fun SignUpContent(
                     transitionSpec = {
                         fadeIn()
                             .togetherWith(
-                                fadeOut()
+                                fadeOut(),
                             )
                     },
                 ) {
@@ -160,7 +158,7 @@ internal fun SignUpContent(
                         ) {
                             onPolicyChecked(!uiState.policyChecked)
                         }
-                        .padding(Padding.XX_SMALL)
+                        .padding(Padding.XX_SMALL),
                 ) {
                     Checkbox(
                         checked = uiState.policyChecked,

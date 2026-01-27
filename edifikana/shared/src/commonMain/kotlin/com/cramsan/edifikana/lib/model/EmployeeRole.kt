@@ -9,19 +9,18 @@ enum class EmployeeRole {
     SECURITY_COVER,
     CLEANING,
     ;
+
     companion object {
 
         /**
          * Converts a string value to a EmployeeRole.
          */
-        fun fromString(value: String?): EmployeeRole {
-            return when (value) {
-                "MANAGER" -> MANAGER
-                "SECURITY" -> SECURITY
-                "SECURITY_COVER" -> SECURITY_COVER
-                "CLEANING" -> CLEANING
-                else -> throw IllegalArgumentException("Invalid EmployeeRole value: $value")
-            }
+        fun fromString(value: String?): EmployeeRole = when (value) {
+            "MANAGER" -> MANAGER
+            "SECURITY" -> SECURITY
+            "SECURITY_COVER" -> SECURITY_COVER
+            "CLEANING" -> CLEANING
+            else -> throw IllegalArgumentException("Invalid EmployeeRole value: $value")
         }
     }
 }

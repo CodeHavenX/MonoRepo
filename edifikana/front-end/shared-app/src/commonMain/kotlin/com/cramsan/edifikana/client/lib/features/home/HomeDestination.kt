@@ -19,50 +19,38 @@ sealed class HomeDestination : Destination {
      * A class representing navigating to the property screen.
      */
     @Serializable
-    data class PropertyManagementDestination(
-        val propertyId: PropertyId,
-    ) : HomeDestination()
+    data class PropertyManagementDestination(val propertyId: PropertyId) : HomeDestination()
 
     /**
      * A class representing navigating to the add property screen.
      */
     @Serializable
-    data class AddPropertyManagementDestination(
-        val orgId: OrganizationId,
-    ) : HomeDestination()
+    data class AddPropertyManagementDestination(val orgId: OrganizationId) : HomeDestination()
 
     /**
      * A class representing navigating to the add secondary employee screen.
      */
     @Serializable
-    data class AddSecondaryEmployeeManagementDestination(
-        val propertyId: PropertyId,
-    ) : HomeDestination()
+    data class AddSecondaryEmployeeManagementDestination(val propertyId: PropertyId) : HomeDestination()
 
     /**
      * A class representing navigating to the employee Screen.
      */
     @Serializable
-    data class EmployeeDestination(
-        val employeeId: EmployeeId,
-    ) : HomeDestination()
+    data class EmployeeDestination(val employeeId: EmployeeId) : HomeDestination()
 
     /**
      * A class representing navigating to the time card employee list screen.
      */
     @Serializable
-    data class TimeCardEmployeeListDestination(
-        val propertyId: PropertyId,
-    ) : HomeDestination()
+    data class TimeCardEmployeeListDestination(val propertyId: PropertyId) : HomeDestination()
 
     /**
      * A class representing navigating to the time card single employee screen.
      */
     @Serializable
-    data class TimeCardSingleEmployeeDestination(
-        val employeePk: EmployeeId,
-        val propertyId: PropertyId,
-    ) : HomeDestination()
+    data class TimeCardSingleEmployeeDestination(val employeePk: EmployeeId, val propertyId: PropertyId) :
+        HomeDestination()
 
     /**
      * A class representing navigating to the event log single item screen.
@@ -74,9 +62,7 @@ sealed class HomeDestination : Destination {
      * A class representing navigating to the event log add item screen.
      */
     @Serializable
-    data class EventLogAddItemDestination(
-        val propertyId: PropertyId
-    ) : HomeDestination()
+    data class EventLogAddItemDestination(val propertyId: PropertyId) : HomeDestination()
 
     /**
      * A class representing navigating to the management screen.
@@ -88,7 +74,5 @@ sealed class HomeDestination : Destination {
      * A class representing navigating to the invite staff member screen.
      */
     @Serializable
-    data class InviteStaffMemberDestination(
-        val orgId: OrganizationId,
-    ) : HomeDestination()
+    data class InviteStaffMemberDestination(val orgId: OrganizationId) : HomeDestination()
 }

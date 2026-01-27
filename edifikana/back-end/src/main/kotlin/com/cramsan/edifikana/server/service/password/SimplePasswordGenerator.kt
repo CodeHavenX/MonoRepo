@@ -6,11 +6,9 @@ package com.cramsan.edifikana.server.service.password
 class SimplePasswordGenerator : PasswordGenerator {
 
     @Suppress("MagicNumber")
-    override fun generate(): String {
-        return (1..10)
-            .map { ALLOWED_CHARS.random() }
-            .joinToString("")
-    }
+    override fun generate(): String = (1..10)
+        .map { ALLOWED_CHARS.random() }
+        .joinToString("")
 }
 
 private const val ALLOWED_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#"

@@ -65,7 +65,7 @@ class PropertyHomeViewModel(
             it.copy(
                 label = name,
                 availableProperties = propertyUiModels,
-                propertyId = selectedProperty
+                propertyId = selectedProperty,
             )
         }
         // Check if there is a list of properties. If the list is empty, show the fallback tab.
@@ -88,7 +88,7 @@ class PropertyHomeViewModel(
         viewModelScope.launch {
             logI(TAG, "Navigating back.")
             emitWindowEvent(
-                EdifikanaWindowsEvent.NavigateBack
+                EdifikanaWindowsEvent.NavigateBack,
             )
         }
     }
@@ -102,7 +102,7 @@ class PropertyHomeViewModel(
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToNavGraph(
                     EdifikanaNavGraphDestination.AccountNavGraphDestination,
-                )
+                ),
             )
         }
     }
@@ -123,7 +123,7 @@ class PropertyHomeViewModel(
         logI(TAG, "Navigating to notifications page.")
         viewModelScope.launch {
             emitWindowEvent(
-                EdifikanaWindowsEvent.NavigateToScreen(AccountDestination.NotificationsDestination)
+                EdifikanaWindowsEvent.NavigateToScreen(AccountDestination.NotificationsDestination),
             )
         }
     }
@@ -138,7 +138,7 @@ class PropertyHomeViewModel(
                 EdifikanaWindowsEvent.NavigateToNavGraph(
                     EdifikanaNavGraphDestination.SettingsNavGraphDestination,
 
-                )
+                ),
             )
         }
     }

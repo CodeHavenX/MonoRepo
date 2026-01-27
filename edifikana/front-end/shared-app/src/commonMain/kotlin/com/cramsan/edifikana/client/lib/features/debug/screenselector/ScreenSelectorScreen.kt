@@ -26,15 +26,10 @@ import org.koin.compose.viewmodel.koinViewModel
  * application. This includes observing the view model's state and event flows and rendering the screen.
  */
 @Composable
-fun ScreenSelectorScreen(
-    modifier: Modifier = Modifier,
-    viewModel: ScreenSelectorViewModel = koinViewModel(),
-) {
+fun ScreenSelectorScreen(modifier: Modifier = Modifier, viewModel: ScreenSelectorViewModel = koinViewModel()) {
     val uiState by viewModel.uiState.collectAsState()
 
-    /**
-     * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
-     */
+    // For other possible lifecycle events, see the Lifecycle.Event documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
         // Call this feature's viewModel
     }
@@ -90,7 +85,7 @@ internal fun ScreenSelectorContent(
                             AuthDestination.ValidationDestination(
                                 "test@test.com",
                                 accountCreationFlow = true,
-                            )
+                            ),
                         )
                     },
                     content = {

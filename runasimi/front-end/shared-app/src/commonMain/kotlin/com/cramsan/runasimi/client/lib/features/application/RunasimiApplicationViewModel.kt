@@ -7,14 +7,12 @@ import com.cramsan.runasimi.client.lib.init.Initializer
 /**
  * View model for the entire application.
  */
-class RunasimiApplicationViewModel(
-    private val initHandler: Initializer,
-    dependencies: ViewModelDependencies,
-) : BaseViewModel<RunasimiApplicationViewModelEvent, RunasimiApplicationUIState>(
-    dependencies,
-    RunasimiApplicationUIState(),
-    TAG
-) {
+class RunasimiApplicationViewModel(private val initHandler: Initializer, dependencies: ViewModelDependencies) :
+    BaseViewModel<RunasimiApplicationViewModelEvent, RunasimiApplicationUIState>(
+        dependencies,
+        RunasimiApplicationUIState(),
+        TAG,
+    ) {
 
     /**
      * Run code that should be run before the application fully launches.

@@ -15,7 +15,7 @@ private fun SelectOrgScreenPreviewNoInvites() = AppTheme {
         onCreateWorkspaceClicked = { },
         onSignOutClicked = { },
         onJoinOrganizationClicked = { _ -> },
-        uiState = SelectOrgUIState.Default
+        uiState = SelectOrgUIState.Default,
     )
 }
 
@@ -38,8 +38,8 @@ private fun SelectOrgScreenPreviewWithInvites() = AppTheme {
                 InviteItemUIModel(
                     description = "You have been invited to join Beta LLC",
                     inviteId = InviteId("invite-2"),
-                )
-            )
-        )
+                ),
+            ),
+        ),
     )
 }

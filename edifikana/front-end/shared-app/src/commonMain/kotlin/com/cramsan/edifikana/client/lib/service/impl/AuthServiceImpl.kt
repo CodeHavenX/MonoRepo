@@ -41,17 +41,14 @@ import kotlin.time.Instant
 /**
  * Default implementation for the [AuthService].
  */
-class AuthServiceImpl(
-    private val auth: Auth,
-    private val http: HttpClient,
-) : AuthService {
+class AuthServiceImpl(private val auth: Auth, private val http: HttpClient) : AuthService {
 
-    private val _activeUser = MutableStateFlow<UserId?>(null)
+    private val activeUserMutable = MutableStateFlow<UserId?>(null)
 
     override suspend fun isSignedIn(): Result<Boolean> = runSuspendCatching(TAG) {
         auth.awaitInitialization()
         val user = auth.currentUserOrNull()
-        _activeUser.value = user?.id?.let { UserId(it) }
+        activeUserMutable.value = user?.id?.let { UserId(it) }
         if (user == null) {
             logD(TAG, "User not signed in")
             false
@@ -75,20 +72,19 @@ class AuthServiceImpl(
             argument = userId,
         ).execute(http)
         val userModel = response.toUserModel()
-        _activeUser.value = userModel.id
+        activeUserMutable.value = userModel.id
         userModel
     }
 
     @OptIn(NetworkModel::class)
-    override suspend fun getUsersByOrganization(
-        organizationId: OrganizationId,
-    ): Result<List<UserModel>> = runSuspendCatching(TAG) {
-        val response = UserApi.getAllUsers
-            .buildRequest(GetAllUsersQueryParams(organizationId))
-            .execute(http)
-        val userModels = response.content.map { it.toUserModel() }
-        userModels
-    }
+    override suspend fun getUsersByOrganization(organizationId: OrganizationId): Result<List<UserModel>> =
+        runSuspendCatching(TAG) {
+            val response = UserApi.getAllUsers
+                .buildRequest(GetAllUsersQueryParams(organizationId))
+                .execute(http)
+            val userModels = response.content.map { it.toUserModel() }
+            userModels
+        }
 
     override suspend fun signInWithPassword(email: String, password: String): Result<UserModel> =
         runSuspendCatching(TAG) {
@@ -106,12 +102,10 @@ class AuthServiceImpl(
 
     override suspend fun signOut() = runSuspendCatching(TAG) {
         auth.signOut()
-        _activeUser.value = null
+        activeUserMutable.value = null
     }
 
-    override fun activeUser(): StateFlow<UserId?> {
-        return _activeUser.asStateFlow()
-    }
+    override fun activeUser(): StateFlow<UserId?> = activeUserMutable.asStateFlow()
 
     @OptIn(NetworkModel::class)
     override suspend fun signUp(
@@ -149,30 +143,27 @@ class AuthServiceImpl(
     }
 
     @OptIn(NetworkModel::class)
-    override suspend fun signInWithOtp(
-        email: String,
-        hashToken: String,
-        createUser: Boolean,
-    ): Result<UserModel> = runSuspendCatching(
-        TAG
-    ) {
-        try {
-            auth.verifyEmailOtp(OtpType.Email.EMAIL, email, hashToken)
-        } catch (e: AuthRestException) {
-            logE(TAG, "Error verifying OTP", e)
-            throw ClientRequestExceptions.UnauthorizedException("ERROR: Invalid OTP code.")
-        }
-
-        if (createUser) {
+    override suspend fun signInWithOtp(email: String, hashToken: String, createUser: Boolean): Result<UserModel> =
+        runSuspendCatching(
+            TAG,
+        ) {
             try {
-                UserApi.associateUser.buildRequest().execute(http)
-            } catch (e: ClientRequestExceptions.ConflictException) {
-                logW(TAG, "User already exists, not creating a new user.", e)
+                auth.verifyEmailOtp(OtpType.Email.EMAIL, email, hashToken)
+            } catch (e: AuthRestException) {
+                logE(TAG, "Error verifying OTP", e)
+                throw ClientRequestExceptions.UnauthorizedException("ERROR: Invalid OTP code.")
             }
-        }
 
-        getUser().getOrThrow()
-    }
+            if (createUser) {
+                try {
+                    UserApi.associateUser.buildRequest().execute(http)
+                } catch (e: ClientRequestExceptions.ConflictException) {
+                    logW(TAG, "User already exists, not creating a new user.", e)
+                }
+            }
+
+            getUser().getOrThrow()
+        }
 
     override suspend fun passwordReset(email: String?, phoneNumber: String?): Result<Unit> = runSuspendCatching(TAG) {
         TODO("Implement functionality to reset password and authenticate user.")
@@ -195,7 +186,7 @@ class AuthServiceImpl(
     @OptIn(NetworkModel::class)
     override suspend fun checkUserExists(email: String): Result<Boolean> = runSuspendCatching(TAG) {
         UserApi.checkUserExists.buildRequest(
-            UserEmailQueryParam(email)
+            UserEmailQueryParam(email),
         ).execute(http).isUserRegistered
     }
 
@@ -203,7 +194,7 @@ class AuthServiceImpl(
         firstName: String?,
         lastName: String?,
         email: String?,
-        phoneNumber: String?
+        phoneNumber: String?,
     ): Result<UserModel> {
         TODO()
     }
@@ -212,34 +203,31 @@ class AuthServiceImpl(
     override suspend fun changePassword(
         email: String,
         currentPassword: SecureString,
-        newPassword: SecureString
+        newPassword: SecureString,
     ): Result<Unit> = runSuspendCatching(TAG) {
         val hashedCurrentPassword = Hashing.insecureHash(currentPassword.reveal().encodeToByteArray()).toString()
 
         UserApi.updatePassword.buildRequest(
             UpdatePasswordNetworkRequest(
                 currentPasswordHashed = hashedCurrentPassword,
-                newPassword = newPassword.reveal()
+                newPassword = newPassword.reveal(),
             ),
         ).execute(http)
     }
 
     @OptIn(NetworkModel::class)
-    override suspend fun inviteEmployee(
-        email: String,
-        organizationId: OrganizationId,
-        role: UserRole,
-    ): Result<Unit> = runSuspendCatching(
-        TAG
-    ) {
-        UserApi.inviteUser.buildRequest(
-            InviteUserNetworkRequest(
-                email = email,
-                organizationId = organizationId,
-                role = role.name,
-            ),
-        ).execute(http)
-    }
+    override suspend fun inviteEmployee(email: String, organizationId: OrganizationId, role: UserRole): Result<Unit> =
+        runSuspendCatching(
+            TAG,
+        ) {
+            UserApi.inviteUser.buildRequest(
+                InviteUserNetworkRequest(
+                    email = email,
+                    organizationId = organizationId,
+                    role = role.name,
+                ),
+            ).execute(http)
+        }
 
     @OptIn(NetworkModel::class)
     override suspend fun getInvites(organizationId: OrganizationId): Result<List<Invite>> = runSuspendCatching(TAG) {
@@ -253,14 +241,14 @@ class AuthServiceImpl(
     @OptIn(NetworkModel::class)
     override suspend fun acceptInvite(inviteId: InviteId): Result<Unit> = runSuspendCatching(TAG) {
         UserApi.acceptInvite.buildRequest(
-            argument = inviteId
+            argument = inviteId,
         ).execute(http)
     }
 
     @OptIn(NetworkModel::class)
     override suspend fun declineInvite(inviteId: InviteId): Result<Unit> = runSuspendCatching(TAG) {
         UserApi.declineInvite.buildRequest(
-            argument = inviteId
+            argument = inviteId,
         ).execute(http)
     }
 
@@ -270,12 +258,10 @@ class AuthServiceImpl(
 }
 
 @OptIn(NetworkModel::class, ExperimentalTime::class)
-private fun InviteNetworkResponse.toInvite(): Invite {
-    return Invite(
-        id = this.inviteId,
-        email = this.email,
-        organizationId = this.organizationId,
-        role = UserRole.valueOf(this.role),
-        expiresAt = Instant.fromEpochSeconds(this.expiresAt),
-    )
-}
+private fun InviteNetworkResponse.toInvite(): Invite = Invite(
+    id = this.inviteId,
+    email = this.email,
+    organizationId = this.organizationId,
+    role = UserRole.valueOf(this.role),
+    expiresAt = Instant.fromEpochSeconds(this.expiresAt),
+)

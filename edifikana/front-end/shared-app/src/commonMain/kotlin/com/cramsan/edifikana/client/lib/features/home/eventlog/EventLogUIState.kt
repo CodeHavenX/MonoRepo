@@ -9,10 +9,7 @@ import com.cramsan.framework.core.compose.ViewModelUIState
  *
  * This class models the top level state of the page.
  */
-data class EventLogUIState(
-    val isLoading: Boolean,
-    val events: List<EventLogUIModel>,
-) : ViewModelUIState {
+data class EventLogUIState(val isLoading: Boolean, val events: List<EventLogUIModel>) : ViewModelUIState {
     companion object {
         val Initial = EventLogUIState(
             isLoading = true,

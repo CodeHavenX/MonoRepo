@@ -11,9 +11,5 @@ class NoopUserEvents : UserEventsInterface {
 
     override fun log(tag: String, event: String) = Unit
 
-    override fun log(
-        tag: String,
-        event: String,
-        metadata: Map<String, String>
-    ) = Unit
+    override fun log(tag: String, event: String, metadata: Map<String, String>) = Unit
 }

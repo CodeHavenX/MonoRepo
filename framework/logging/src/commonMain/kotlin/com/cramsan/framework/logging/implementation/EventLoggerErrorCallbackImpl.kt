@@ -32,6 +32,7 @@ class EventLoggerErrorCallbackImpl(
                     null,
                 )
             }
+
             else -> {
                 eventLoggerDelegate.log(
                     Severity.ERROR,

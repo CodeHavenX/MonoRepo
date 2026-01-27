@@ -21,7 +21,7 @@ import com.cramsan.edifikana.client.lib.db.models.TimeCardRecordEntity
     ],
     version = 1,
     exportSchema = true,
-    autoMigrations = []
+    autoMigrations = [],
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {

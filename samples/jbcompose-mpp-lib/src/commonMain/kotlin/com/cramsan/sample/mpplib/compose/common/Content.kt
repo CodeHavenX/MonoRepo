@@ -24,13 +24,13 @@ fun Content() {
     Column(
         modifier = Modifier.clickable {
             visible = !visible
-        }
+        },
     ) {
         Text("Hello World!")
         AnimatedVisibility(visible) {
             Image(
                 painter = painterResource(Res.drawable.compose),
-                contentDescription = null
+                contentDescription = null,
             )
         }
     }

@@ -17,9 +17,7 @@ interface EventLogService {
     /**
      * Get a specific event log record.
      */
-    suspend fun getRecord(
-        eventLogRecordPK: EventLogEntryId,
-    ): Result<EventLogRecordModel>
+    suspend fun getRecord(eventLogRecordPK: EventLogEntryId): Result<EventLogRecordModel>
 
     /**
      * Add a new event log record.

@@ -17,9 +17,7 @@ import kotlin.reflect.KType
  * Management nav graph Route.
  */
 @Suppress("LongMethod")
-fun NavGraphBuilder.homeNavGraphNavigation(
-    typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> = emptyMap(),
-) {
+fun NavGraphBuilder.homeNavGraphNavigation(typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> = emptyMap()) {
     navigationGraph(
         graphDestination = EdifikanaNavGraphDestination.HomeNavGraphDestination::class,
         startDestination = HomeDestination.ManagementHub,

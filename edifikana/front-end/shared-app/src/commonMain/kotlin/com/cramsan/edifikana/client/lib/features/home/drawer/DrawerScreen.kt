@@ -40,10 +40,7 @@ import org.koin.compose.viewmodel.koinViewModel
  * application. This includes observing the view model's state and event flows and rendering the screen.
  */
 @Composable
-fun DrawerScreen(
-    modifier: Modifier = Modifier,
-    viewModel: DrawerViewModel = koinViewModel(),
-) {
+fun DrawerScreen(modifier: Modifier = Modifier, viewModel: DrawerViewModel = koinViewModel()) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val uiState by viewModel.uiState.collectAsState()
 
@@ -58,6 +55,7 @@ fun DrawerScreen(
                     }
                 }
             }
+
             DrawerEvent.CloseDrawer -> {
                 if (!drawerState.isAnimationRunning) {
                     drawerState.close()
@@ -66,9 +64,7 @@ fun DrawerScreen(
         }
     }
 
-    /**
-     * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
-     */
+    // For other possible lifecycle events, see the Lifecycle.Event documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
         // Call this feature's viewModel
     }
@@ -103,7 +99,7 @@ internal fun DrawerContent(
             ModalDrawerSheet {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(Padding.SMALL),
-                    modifier = Modifier.padding(horizontal = Padding.MEDIUM)
+                    modifier = Modifier.padding(horizontal = Padding.MEDIUM),
                 ) {
                     content.drawerItems.forEach { item ->
                         DrawerItem(item, content.selectedItem) {
@@ -123,10 +119,13 @@ internal fun DrawerContent(
                 SelectableDrawerItem.Property -> {
                     PropertyHomeScreen()
                 }
+
                 SelectableDrawerItem.Organization -> {
                     OrganizationHomeScreen()
                 }
+
                 SelectableDrawerItem.ResidentMode -> Unit
+
                 null -> Unit
             }
         }
@@ -142,6 +141,7 @@ private fun DrawerItem(
 ) {
     when (item) {
         DrawerItem.Divider -> HorizontalDivider()
+
         is DrawerItem.Selectable -> {
             SelectableDrawerItem(
                 item = item.item,
@@ -149,6 +149,7 @@ private fun DrawerItem(
                 onClick = onClick,
             )
         }
+
         is DrawerItem.Title -> {
             Text(
                 item.title,

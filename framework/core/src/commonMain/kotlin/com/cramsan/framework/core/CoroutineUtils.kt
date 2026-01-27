@@ -9,13 +9,11 @@ import kotlinx.coroutines.withContext
  *
  * If you do not need automatic context switching, consider using [runSuspendCatching] instead.
  */
-suspend inline fun <T> ManagerDependencies.getOrCatch(
-    tag: String,
-    crossinline block: suspend () -> T,
-): Result<T> = runSuspendCatching(tag) {
-    withContext(dispatcherProvider.ioDispatcher()) {
-        block()
+suspend inline fun <T> ManagerDependencies.getOrCatch(tag: String, crossinline block: suspend () -> T): Result<T> =
+    runSuspendCatching(tag) {
+        withContext(dispatcherProvider.ioDispatcher()) {
+            block()
+        }
+    }.onFailure {
+        logE(tag, "Operation failed. ", it)
     }
-}.onFailure {
-    logE(tag, "Operation failed. ", it)
-}

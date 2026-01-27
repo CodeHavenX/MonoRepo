@@ -12,7 +12,7 @@ enum class Person {
 
     SECOND,
 
-    THIRD
+    THIRD,
 }
 
 /**
@@ -21,7 +21,7 @@ enum class Person {
 enum class Plurality {
     SINGULAR,
 
-    PLURAL
+    PLURAL,
 }
 
 /**
@@ -32,16 +32,13 @@ enum class Tense {
 
     PRESENT,
 
-    FUTURE
+    FUTURE,
 }
 
 /**
  * Data class that represents a verb in quechua.
  */
-data class Verb(
-    val root: String,
-    val meaning: String,
-)
+data class Verb(val root: String, val meaning: String)
 
 /**
  * Data class that represents a verb conjugation in quechua.
@@ -68,30 +65,31 @@ private val quechuaVerbList = listOf(
     Verb("qawa", "to see"),
     Verb("uyari", "to hear"),
     Verb("ni", "to say"),
-    Verb("puklla", "to play")
+    Verb("puklla", "to play"),
 )
 
 /**
  * Extension function to get the pronoun for a given conjugation.
  */
-fun Conjugation.toPronoun(): String =
-    when (person) {
-        Person.FIRST -> if (plurality == Plurality.SINGULAR) {
-            "ñuqa"
-        } else {
-            if (inclusive) "ñuqanchik" else "ñuqayku"
-        }
-        Person.SECOND -> if (plurality == Plurality.SINGULAR) {
-            "qam"
-        } else {
-            "qamkuna"
-        }
-        Person.THIRD -> if (plurality == Plurality.SINGULAR) {
-            "pay"
-        } else {
-            "paykuna"
-        }
+fun Conjugation.toPronoun(): String = when (person) {
+    Person.FIRST -> if (plurality == Plurality.SINGULAR) {
+        "ñuqa"
+    } else {
+        if (inclusive) "ñuqanchik" else "ñuqayku"
     }
+
+    Person.SECOND -> if (plurality == Plurality.SINGULAR) {
+        "qam"
+    } else {
+        "qamkuna"
+    }
+
+    Person.THIRD -> if (plurality == Plurality.SINGULAR) {
+        "pay"
+    } else {
+        "paykuna"
+    }
+}
 
 /**
  * Generate a random verb conjugation.
@@ -119,22 +117,46 @@ fun generateConjugation(): Conjugation {
 fun Conjugation.toSuffix(): String {
     // helper for present tense person suffix
     fun presentPersonSuffix(): String = when (person) {
-        Person.FIRST -> if (plurality == Plurality.SINGULAR) "ni" else if (inclusive) "" else "ni"
+        Person.FIRST -> if (plurality == Plurality.SINGULAR) {
+            "ni"
+        } else if (inclusive) {
+            ""
+        } else {
+            "ni"
+        }
+
         Person.SECOND -> "nki"
+
         Person.THIRD -> "n"
     }
 
     // helper for past tense person suffix
     fun pastPersonSuffix(): String = when (person) {
-        Person.FIRST -> if (plurality == Plurality.SINGULAR) "rqani" else if (inclusive) "rqa" else "rqani"
+        Person.FIRST -> if (plurality == Plurality.SINGULAR) {
+            "rqani"
+        } else if (inclusive) {
+            "rqa"
+        } else {
+            "rqani"
+        }
+
         Person.SECOND -> "rqanki"
+
         Person.THIRD -> "rqa"
     }
 
     // helper for future tense person suffix
     fun futurePersonSuffix(): String = when (person) {
-        Person.FIRST -> if (plurality == Plurality.SINGULAR) "saq" else if (inclusive) "su" else "saq"
+        Person.FIRST -> if (plurality == Plurality.SINGULAR) {
+            "saq"
+        } else if (inclusive) {
+            "su"
+        } else {
+            "saq"
+        }
+
         Person.SECOND -> "nki"
+
         Person.THIRD -> "nqa"
     }
 
@@ -146,10 +168,12 @@ fun Conjugation.toSuffix(): String {
 
     val pluralitySuffix = when {
         inclusive -> "nchik"
+
         plurality == Plurality.PLURAL -> when (person) {
             Person.FIRST, Person.THIRD -> "ku"
             Person.SECOND -> "chik"
         }
+
         else -> ""
     }
 
@@ -159,9 +183,7 @@ fun Conjugation.toSuffix(): String {
 /**
  * Convert a [Conjugation] to a quechua sentence.
  */
-fun Conjugation.toSentence(): String {
-    return "${toPronoun()} ${this.verb.root}${toSuffix()}"
-}
+fun Conjugation.toSentence(): String = "${toPronoun()} ${this.verb.root}${toSuffix()}"
 
 /**
  * Convert a [Conjugation] to a translation string.

@@ -44,9 +44,7 @@ fun VerbsScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    /**
-     * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
-     */
+    // For other possible lifecycle events, see the Lifecycle.Event documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
         viewModel.generateNewConjugation()
     }
@@ -103,7 +101,7 @@ internal fun VerbsContent(
                 ) {
                     Switch(
                         startInFront,
-                        { startInFront = it }
+                        { startInFront = it },
                     )
                 }
 
@@ -111,7 +109,7 @@ internal fun VerbsContent(
                 Box(
                     modifier = sectionModifier
                         .graphicsLayer { clip = false }
-                        .zIndex(1f) // optional: ensure it draws above other siblings
+                        .zIndex(1f), // optional: ensure it draws above other siblings
                 ) {
                     Card(
                         content.content?.original,
@@ -123,7 +121,7 @@ internal fun VerbsContent(
             buttonContent = { buttonModifier ->
                 Row(
                     buttonModifier,
-                    horizontalArrangement = Arrangement.spacedBy(Size.x_small)
+                    horizontalArrangement = Arrangement.spacedBy(Size.x_small),
                 ) {
                     Button(
                         onNewConjugationRequested,
@@ -132,7 +130,7 @@ internal fun VerbsContent(
                         Text("Next")
                     }
                 }
-            }
+            },
         )
     }
 }

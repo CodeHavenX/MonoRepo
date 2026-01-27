@@ -17,10 +17,8 @@ import kotlinx.coroutines.launch
  *
  * @property dependencies The ViewModelDependencies instance providing necessary dependencies.
  */
-class ChangePasswordDialogViewModel(
-    private val authManager: AuthManager,
-    dependencies: ViewModelDependencies,
-) : BaseViewModel<AccountEvent, ChangePasswordDialogUIState>(dependencies, ChangePasswordDialogUIState.Initial, TAG) {
+class ChangePasswordDialogViewModel(private val authManager: AuthManager, dependencies: ViewModelDependencies) :
+    BaseViewModel<AccountEvent, ChangePasswordDialogUIState>(dependencies, ChangePasswordDialogUIState.Initial, TAG) {
 
     /**
      * Handles changes to the current password input field.

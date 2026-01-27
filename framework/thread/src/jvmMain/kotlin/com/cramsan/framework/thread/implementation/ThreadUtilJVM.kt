@@ -15,13 +15,9 @@ class ThreadUtilJVM constructor(
     private val assertUtil: AssertUtilInterface,
 ) : ThreadUtilDelegate {
 
-    override fun isUIThread(): Boolean {
-        return false
-    }
+    override fun isUIThread(): Boolean = false
 
-    override fun isBackgroundThread(): Boolean {
-        return true
-    }
+    override fun isBackgroundThread(): Boolean = true
 
     override fun assertIsUIThread() {
         assertUtil.assert(false, "ThreadUtilJVM", "assertIsUIThread: Always return false")

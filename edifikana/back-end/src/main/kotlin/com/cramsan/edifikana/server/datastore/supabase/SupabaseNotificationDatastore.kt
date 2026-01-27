@@ -18,10 +18,8 @@ import kotlin.time.Clock
  * Datastore for managing notifications using Supabase.
  */
 @OptIn(SupabaseModel::class)
-class SupabaseNotificationDatastore(
-    private val postgrest: Postgrest,
-    private val clock: Clock,
-) : NotificationDatastore {
+class SupabaseNotificationDatastore(private val postgrest: Postgrest, private val clock: Clock) :
+    NotificationDatastore {
 
     /**
      * Creates a new notification for a user, linked to an invite.
@@ -54,9 +52,7 @@ class SupabaseNotificationDatastore(
     /**
      * Retrieves a notification by [id]. Returns the [Notification] if found, null otherwise.
      */
-    override suspend fun getNotification(
-        id: NotificationId,
-    ): Result<Notification?> = runSuspendCatching(TAG) {
+    override suspend fun getNotification(id: NotificationId): Result<Notification?> = runSuspendCatching(TAG) {
         logD(TAG, "Getting notification: $id")
 
         postgrest.from(NotificationEntity.COLLECTION).select {
@@ -107,9 +103,7 @@ class SupabaseNotificationDatastore(
     /**
      * Gets notifications sent to an [email] address (before user association).
      */
-    override suspend fun getNotificationsByEmail(
-        email: String,
-    ): Result<List<Notification>> = runSuspendCatching(TAG) {
+    override suspend fun getNotificationsByEmail(email: String): Result<List<Notification>> = runSuspendCatching(TAG) {
         logD(TAG, "Getting notifications for email: $email")
 
         postgrest.from(NotificationEntity.COLLECTION).select {
@@ -124,16 +118,14 @@ class SupabaseNotificationDatastore(
     /**
      * Marks a notification as read and sets the read timestamp.
      */
-    override suspend fun markAsRead(
-        id: NotificationId,
-    ): Result<Notification> = runSuspendCatching(TAG) {
+    override suspend fun markAsRead(id: NotificationId): Result<Notification> = runSuspendCatching(TAG) {
         logD(TAG, "Marking notification as read: $id")
 
         postgrest.from(NotificationEntity.COLLECTION).update(
             {
                 NotificationEntity::isRead setTo true
                 NotificationEntity::readAt setTo clock.now()
-            }
+            },
         ) {
             select()
             filter {
@@ -146,9 +138,7 @@ class SupabaseNotificationDatastore(
     /**
      * Soft deletes a notification by [id]. Returns true if successful.
      */
-    override suspend fun deleteNotification(
-        id: NotificationId,
-    ): Result<Boolean> = runSuspendCatching(TAG) {
+    override suspend fun deleteNotification(id: NotificationId): Result<Boolean> = runSuspendCatching(TAG) {
         logD(TAG, "Soft deleting notification: $id")
 
         postgrest.from(NotificationEntity.COLLECTION).update({
@@ -166,17 +156,14 @@ class SupabaseNotificationDatastore(
      * Links all notifications for the given email to the specified user.
      * Uses count mode to avoid fetching full notification objects (optimized query).
      */
-    override suspend fun linkNotificationsToUser(
-        email: String,
-        userId: UserId,
-    ): Result<Int> = runSuspendCatching(TAG) {
+    override suspend fun linkNotificationsToUser(email: String, userId: UserId): Result<Int> = runSuspendCatching(TAG) {
         logD(TAG, "Linking notifications for email: $email to user: $userId")
 
         // Use count mode to avoid fetching full objects - more efficient
         val result = postgrest.from(NotificationEntity.COLLECTION).update(
             {
                 NotificationEntity::recipientUserId setTo userId.userId
-            }
+            },
         ) {
             filter {
                 NotificationEntity::recipientEmail eq email
@@ -192,9 +179,7 @@ class SupabaseNotificationDatastore(
      * Permanently deletes a soft-deleted notification by [id]. Returns true if successful.
      * Only purges records that are already soft-deleted (deletedAt is not null).
      */
-    override suspend fun purgeNotification(
-        id: NotificationId,
-    ): Result<Boolean> = runSuspendCatching(TAG) {
+    override suspend fun purgeNotification(id: NotificationId): Result<Boolean> = runSuspendCatching(TAG) {
         logD(TAG, "Purging soft-deleted notification: $id")
 
         // First verify the record exists and is soft-deleted

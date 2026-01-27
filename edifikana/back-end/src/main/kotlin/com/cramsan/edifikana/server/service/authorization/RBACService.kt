@@ -199,7 +199,7 @@ class RBACService(
      */
     private suspend fun getUserRoleForEventLogEntryAction(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
-        targetEventLogId: EventLogEntryId
+        targetEventLogId: EventLogEntryId,
     ): UserRole {
         val eventLog = eventLogDatastore.getEventLogEntry(targetEventLogId).getOrThrow()
             ?: throw InvalidRequestException(eventLogNotFound)
@@ -249,7 +249,7 @@ class RBACService(
      */
     suspend fun getUserRoleForOrganizationAction(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
-        org: OrganizationId
+        org: OrganizationId,
     ): UserRole {
         logI(TAG, "Retrieving user role(s) for ${context.payload.userId}")
         val role = orgDataStore.getUserRole(context.payload.userId, org).getOrNull()
@@ -270,7 +270,7 @@ class RBACService(
      */
     private suspend fun getUserRoleForPropertyAction(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
-        targetProperty: PropertyId
+        targetProperty: PropertyId,
     ): UserRole {
         logI(TAG, "Retrieving user role(s) for ${context.payload.userId}")
         val requestedProperty = propertyDatastore.getProperty(targetProperty)
@@ -294,15 +294,15 @@ class RBACService(
      */
     private suspend fun getUserRoleForEmployeeAction(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
-        targetEmployee: EmployeeId
+        targetEmployee: EmployeeId,
     ): UserRole {
         logI(TAG, "Retrieving user role(s) for ${context.payload.userId}")
         val employee =
             employeeDatastore.getEmployee(targetEmployee).getOrThrow() ?: throw InvalidRequestException(
-                employeeNotFoundException
+                employeeNotFoundException,
             )
         val property = propertyDatastore.getProperty(employee.propertyId).getOrThrow() ?: throw InvalidRequestException(
-            propertyNotFoundException
+            propertyNotFoundException,
         )
         val role = orgDataStore.getUserRole(context.payload.userId, property.organizationId).getOrNull()
 
@@ -323,7 +323,7 @@ class RBACService(
      */
     private suspend fun getUserRoleForTimeCardEventAction(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
-        targetTimecardId: TimeCardEventId
+        targetTimecardId: TimeCardEventId,
     ): UserRole {
         logI(TAG, "Retrieving user role(s) for ${context.payload.userId}")
         val timeCardEvent = timeCardDatastore.getTimeCardEvent(targetTimecardId).getOrThrow()

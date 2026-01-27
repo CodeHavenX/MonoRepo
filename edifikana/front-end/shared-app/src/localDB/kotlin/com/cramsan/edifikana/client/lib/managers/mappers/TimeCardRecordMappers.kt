@@ -10,29 +10,25 @@ import com.cramsan.framework.core.CoreUri
 /**
  * Maps a time card record model to a time card record entity.
  */
-fun TimeCardRecordModel.toEntity(cachedImageUrl: CoreUri): TimeCardRecordEntity {
-    return TimeCardRecordEntity(
-        requireNotNull(entityId),
-        employeePk.empId,
-        propertyId.propertyId,
-        eventType.name,
-        eventTime,
-        cachedImageUrl.toString(),
-    )
-}
+fun TimeCardRecordModel.toEntity(cachedImageUrl: CoreUri): TimeCardRecordEntity = TimeCardRecordEntity(
+    requireNotNull(entityId),
+    employeePk.empId,
+    propertyId.propertyId,
+    eventType.name,
+    eventTime,
+    cachedImageUrl.toString(),
+)
 
 /**
  * Maps a time card record entity to a time card record model.
  */
-fun TimeCardRecordEntity.toDomainModel(): TimeCardRecordModel {
-    return TimeCardRecordModel(
-        null,
-        id,
-        EmployeeId(employeeDocumentId ?: TODO("Employee document ID cannot be null")),
-        PropertyId(propertyId ?: TODO("Property ID cannot be null")),
-        TimeCardEventType.fromString(eventType),
-        eventTime ?: TODO("Event time cannot be null"),
-        cachedImageUrl,
-        null,
-    )
-}
+fun TimeCardRecordEntity.toDomainModel(): TimeCardRecordModel = TimeCardRecordModel(
+    null,
+    id,
+    EmployeeId(employeeDocumentId ?: TODO("Employee document ID cannot be null")),
+    PropertyId(propertyId ?: TODO("Property ID cannot be null")),
+    TimeCardEventType.fromString(eventType),
+    eventTime ?: TODO("Event time cannot be null"),
+    cachedImageUrl,
+    null,
+)

@@ -10,14 +10,12 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for the AddProperty screen.
  **/
-class AddPropertyViewModel(
-    dependencies: ViewModelDependencies,
-    private val propertyManager: PropertyManager,
-) : BaseViewModel<AddPropertyEvent, AddPropertyUIState>(
-    dependencies,
-    AddPropertyUIState.Initial,
-    TAG,
-) {
+class AddPropertyViewModel(dependencies: ViewModelDependencies, private val propertyManager: PropertyManager) :
+    BaseViewModel<AddPropertyEvent, AddPropertyUIState>(
+        dependencies,
+        AddPropertyUIState.Initial,
+        TAG,
+    ) {
 
     /**
      * Initialize the ViewModel with the organization ID.
@@ -50,11 +48,11 @@ class AddPropertyViewModel(
 
             emitWindowEvent(
                 EdifikanaWindowsEvent.ShowSnackbar(
-                    "Property ${newProperty.name} added successfully"
-                )
+                    "Property ${newProperty.name} added successfully",
+                ),
             )
             emitWindowEvent(
-                EdifikanaWindowsEvent.NavigateBack
+                EdifikanaWindowsEvent.NavigateBack,
             )
         }
     }

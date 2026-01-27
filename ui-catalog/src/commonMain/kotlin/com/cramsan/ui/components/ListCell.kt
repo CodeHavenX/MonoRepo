@@ -26,7 +26,7 @@ fun ListCell(
                 Modifier.clickable { onSelection() }
             } else {
                 Modifier
-            }
+            },
         ).then(modifier),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround,

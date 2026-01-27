@@ -32,21 +32,21 @@ object UserApi : Api("user") {
             CreateUserNetworkRequest,
             NoQueryParam,
             NoPathParam,
-            UserNetworkResponse
+            UserNetworkResponse,
             >(HttpMethod.Post)
 
     val getUser = operation<
         NoRequestBody,
         NoQueryParam,
         UserId,
-        UserNetworkResponse
+        UserNetworkResponse,
         >(HttpMethod.Get)
 
     val updatePassword = operation<
         UpdatePasswordNetworkRequest,
         NoQueryParam,
         NoPathParam,
-        NoResponseBody
+        NoResponseBody,
         >(
         HttpMethod.Put,
         "password",
@@ -56,47 +56,47 @@ object UserApi : Api("user") {
         NoRequestBody,
         GetAllUsersQueryParams,
         NoPathParam,
-        UserListNetworkResponse
+        UserListNetworkResponse,
         >(
-        HttpMethod.Get
+        HttpMethod.Get,
     )
 
     val updateUser = operation<
         UpdateUserNetworkRequest,
         NoQueryParam,
         UserId,
-        UserNetworkResponse
+        UserNetworkResponse,
         >(HttpMethod.Put)
 
     val deleteUser = operation<
         NoRequestBody,
         NoQueryParam,
         UserId,
-        NoResponseBody
+        NoResponseBody,
         >(HttpMethod.Delete)
 
     val associateUser = operation<
         NoRequestBody,
         NoQueryParam,
         NoPathParam,
-        UserNetworkResponse
+        UserNetworkResponse,
         >(HttpMethod.Post, "associate")
 
     val inviteUser = operation<
         InviteUserNetworkRequest,
         NoQueryParam,
         NoPathParam,
-        NoResponseBody
+        NoResponseBody,
         >(HttpMethod.Post, "invite")
 
     val getInvites = operation<
         NoRequestBody,
         NoQueryParam,
         OrganizationId,
-        InviteListNetworkResponse
+        InviteListNetworkResponse,
         >(
         HttpMethod.Get,
-        "invites"
+        "invites",
     )
 
     /**
@@ -107,10 +107,10 @@ object UserApi : Api("user") {
         NoRequestBody,
         NoQueryParam,
         InviteId,
-        NoResponseBody
+        NoResponseBody,
         >(
         HttpMethod.Post,
-        "invite/accept"
+        "invite/accept",
     )
 
     /**
@@ -121,10 +121,10 @@ object UserApi : Api("user") {
         NoRequestBody,
         NoQueryParam,
         InviteId,
-        NoResponseBody
+        NoResponseBody,
         >(
         HttpMethod.Post,
-        "invite/decline"
+        "invite/decline",
     )
 
     /**
@@ -135,19 +135,19 @@ object UserApi : Api("user") {
         NoRequestBody,
         NoQueryParam,
         InviteId,
-        NoResponseBody
+        NoResponseBody,
         >(
         HttpMethod.Delete,
-        "invites"
+        "invites",
     )
 
     val checkUserExists = operation<
         NoRequestBody,
         UserEmailQueryParam,
         NoPathParam,
-        CheckUserNetworkResponse
+        CheckUserNetworkResponse,
         >(
         HttpMethod.Get,
-        "checkUser"
+        "checkUser",
     )
 }

@@ -11,7 +11,5 @@ sealed class EdifikanaWindowViewModelEvent : ViewModelEvent {
     /**
      * Wrapper for [EdifikanaWindowsEvent] to be used in the view model.
      */
-    data class EdifikanaWindowEventWrapper(
-        val event: EdifikanaWindowsEvent,
-    ) : EdifikanaWindowViewModelEvent()
+    data class EdifikanaWindowEventWrapper(val event: EdifikanaWindowsEvent) : EdifikanaWindowViewModelEvent()
 }

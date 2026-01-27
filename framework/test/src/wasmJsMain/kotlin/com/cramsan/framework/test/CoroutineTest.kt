@@ -13,7 +13,7 @@ actual abstract class CoroutineTest actual constructor() {
 
     @Deprecated(
         message = "Use runCoroutineTest instead",
-        replaceWith = ReplaceWith(expression = "runCoroutineTest(block)")
+        replaceWith = ReplaceWith(expression = "runCoroutineTest(block)"),
     )
     actual fun runBlockingTest(block: suspend TestScope.() -> Unit) = runCoroutineTest(block)
 }

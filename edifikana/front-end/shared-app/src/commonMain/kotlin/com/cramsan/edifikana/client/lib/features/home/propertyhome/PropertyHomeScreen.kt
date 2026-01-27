@@ -65,9 +65,7 @@ fun PropertyHomeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    /**
-     * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
-     */
+    // For other possible lifecycle events, see the Lifecycle.Event documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
         viewModel.loadContent()
     }
@@ -185,7 +183,7 @@ private fun PropertyDropDown(
     val interactionSource = remember { MutableInteractionSource() }
 
     Box(
-        modifier = modifier
+        modifier = modifier,
     ) {
         AnimatedContent(label) {
             Row(
@@ -197,19 +195,19 @@ private fun PropertyDropDown(
                     ) {
                         expanded = !expanded
                     }
-                    .padding(Padding.X_SMALL)
+                    .padding(Padding.X_SMALL),
             ) {
                 Text(it)
                 Spacer(Modifier.width(Padding.X_SMALL))
                 Icon(
                     Icons.Default.Apartment,
-                    contentDescription = stringResource(Res.string.home_screen_property_dropdown_description)
+                    contentDescription = stringResource(Res.string.home_screen_property_dropdown_description),
                 )
             }
         }
         DropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false }
+            onDismissRequest = { expanded = false },
         ) {
             list.forEach { uiModel ->
                 DropdownMenuItem(
@@ -223,11 +221,11 @@ private fun PropertyDropDown(
                             Icon(
                                 Icons.Default.Check,
                                 contentDescription = stringResource(
-                                    Res.string.home_screen_property_dropdown_selected_description
-                                )
+                                    Res.string.home_screen_property_dropdown_selected_description,
+                                ),
                             )
                         }
-                    }
+                    },
                 )
             }
         }
@@ -247,7 +245,7 @@ fun AccountDropDown(
     var expanded by remember { mutableStateOf(false) }
 
     Box(
-        modifier = modifier
+        modifier = modifier,
     ) {
         IconButton(onClick = { expanded = !expanded }) {
             Icon(
@@ -257,7 +255,7 @@ fun AccountDropDown(
         }
         DropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false }
+            onDismissRequest = { expanded = false },
         ) {
             DropdownMenuItem(
                 text = { Text("My Account") },
@@ -288,10 +286,7 @@ fun AccountDropDown(
  * Content of the AccountEdit screen.
  */
 @Composable
-private fun HomeContent(
-    modifier: Modifier,
-    uIModel: PropertyHomeUIModel,
-) {
+private fun HomeContent(modifier: Modifier, uIModel: PropertyHomeUIModel) {
     Crossfade(uIModel) {
         val selectedTab = it.selectedTab
         val propertyId = it.propertyId
@@ -302,7 +297,7 @@ private fun HomeContent(
 
             Tabs.GoToOrganization -> {
                 GoToOrganizationScreen(
-                    modifier
+                    modifier,
                 )
             }
 

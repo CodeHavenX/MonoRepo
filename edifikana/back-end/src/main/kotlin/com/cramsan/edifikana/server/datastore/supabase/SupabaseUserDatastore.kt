@@ -104,7 +104,7 @@ class SupabaseUserDatastore(
             } else {
                 // We verified above that if the account is not transient, a password is provided
                 SecureString(Hashing.insecureHash(requireNotBlank(password).encodeToByteArray()).toString())
-            }
+            },
         )
         val createdUser = createUserEntity(requestEntity)
 
@@ -115,10 +115,7 @@ class SupabaseUserDatastore(
     /**
      * Associates a Supabase Auth user with an existing transient user record.
      */
-    override suspend fun associateUser(
-        userId: UserId,
-        email: String,
-    ): Result<User> = runSuspendCatching(TAG) {
+    override suspend fun associateUser(userId: UserId, email: String): Result<User> = runSuspendCatching(TAG) {
         logD(TAG, "Associating user: %s", email)
 
         val supabaseUser = runCatching { adminApi.retrieveUserById(userId.userId) }.getOrNull()
@@ -160,7 +157,7 @@ class SupabaseUserDatastore(
                         pendingAssociation = false,
                         canPasswordAuth = true,
                     )
-                }
+                },
             ) {
                 select()
                 filter {
@@ -189,9 +186,7 @@ class SupabaseUserDatastore(
     /**
      * Retrieves a user by [id]. Returns the [User] if found, null otherwise.
      */
-    override suspend fun getUser(
-        id: UserId,
-    ): Result<User?> = runSuspendCatching(TAG) {
+    override suspend fun getUser(id: UserId): Result<User?> = runSuspendCatching(TAG) {
         logD(TAG, "Getting user: %s", id)
 
         val userEntity = getUserImpl(id)
@@ -208,36 +203,30 @@ class SupabaseUserDatastore(
         userEntity?.toUser()
     }
 
-    private suspend fun getUserImpl(id: UserId): UserEntity? {
-        return postgrest.from(UserEntity.COLLECTION).select {
-            filter {
-                UserEntity::id eq id.userId
-                UserEntity::deletedAt isExact null
-            }
-        }.decodeSingleOrNull<UserEntity>()
-    }
+    private suspend fun getUserImpl(id: UserId): UserEntity? = postgrest.from(UserEntity.COLLECTION).select {
+        filter {
+            UserEntity::id eq id.userId
+            UserEntity::deletedAt isExact null
+        }
+    }.decodeSingleOrNull<UserEntity>()
 
-    private suspend fun getUserByEmail(email: String): UserEntity? {
-        return postgrest.from(UserEntity.COLLECTION).select {
-            filter {
-                UserEntity::email eq email
-                UserEntity::deletedAt isExact null
-            }
-        }.decodeSingleOrNull<UserEntity>()
-    }
+    private suspend fun getUserByEmail(email: String): UserEntity? = postgrest.from(UserEntity.COLLECTION).select {
+        filter {
+            UserEntity::email eq email
+            UserEntity::deletedAt isExact null
+        }
+    }.decodeSingleOrNull<UserEntity>()
 
     /**
      * Gets all users belonging to the given [organizationId].
      */
-    override suspend fun getUsers(
-        organizationId: OrganizationId,
-    ): Result<List<User>> = runSuspendCatching(TAG) {
+    override suspend fun getUsers(organizationId: OrganizationId): Result<List<User>> = runSuspendCatching(TAG) {
         logD(TAG, "Getting all users")
 
         val organizations = postgrest.from(UserOrganizationMappingEntity.COLLECTION).select(
             // HINT: Here we are using the POSTgREST feature to select related rows and spread them into the result.
             // https://supabase.com/blog/postgrest-11-prerelease
-            Columns.list("...${UserEntity.COLLECTION}(*)")
+            Columns.list("...${UserEntity.COLLECTION}(*)"),
         ) {
             filter {
                 UserOrganizationMappingEntity::organizationId eq organizationId.id
@@ -252,10 +241,7 @@ class SupabaseUserDatastore(
     /**
      * Updates a user's attributes. Only non-null parameters are updated.
      */
-    override suspend fun updateUser(
-        id: UserId,
-        email: String?,
-    ): Result<User> = runSuspendCatching(TAG) {
+    override suspend fun updateUser(id: UserId, email: String?): Result<User> = runSuspendCatching(TAG) {
         logD(TAG, "Updating user: %s", id)
 
         updateUserImpl(
@@ -271,29 +257,25 @@ class SupabaseUserDatastore(
         lastName: String? = null,
         phoneNumber: String? = null,
         authMetadata: AuthMetadataEntity? = null,
-    ): UserEntity {
-        return postgrest.from(UserEntity.COLLECTION).update(
-            {
-                email?.let { UserEntity::email setTo it }
-                firstName?.let { UserEntity::firstName setTo it }
-                lastName?.let { UserEntity::lastName setTo it }
-                phoneNumber?.let { UserEntity::phoneNumber setTo it }
-                authMetadata?.let { UserEntity::authMetadata setTo it }
-            }
-        ) {
-            select()
-            filter {
-                UserEntity::id eq id.userId
-            }
-        }.decodeSingle<UserEntity>()
-    }
+    ): UserEntity = postgrest.from(UserEntity.COLLECTION).update(
+        {
+            email?.let { UserEntity::email setTo it }
+            firstName?.let { UserEntity::firstName setTo it }
+            lastName?.let { UserEntity::lastName setTo it }
+            phoneNumber?.let { UserEntity::phoneNumber setTo it }
+            authMetadata?.let { UserEntity::authMetadata setTo it }
+        },
+    ) {
+        select()
+        filter {
+            UserEntity::id eq id.userId
+        }
+    }.decodeSingle<UserEntity>()
 
     /**
      * Soft deletes a user by [id]. Also attempts to delete from Supabase Auth.
      */
-    override suspend fun deleteUser(
-        id: UserId,
-    ): Result<Boolean> = runSuspendCatching(TAG) {
+    override suspend fun deleteUser(id: UserId): Result<Boolean> = runSuspendCatching(TAG) {
         logD(TAG, "Soft deleting user: %s", id)
 
         val user = getUserImpl(id) ?: throw ClientRequestExceptions.NotFoundException(
@@ -360,7 +342,7 @@ class SupabaseUserDatastore(
         if (passwordErrors.isNotEmpty()) {
             logW(TAG, "Password validation failed for user: $id, with ${passwordErrors.size} errors.")
             throw ClientRequestExceptions.InvalidRequestException(
-                message = "Error: Password validation failed for user $id. "
+                message = "Error: Password validation failed for user $id. ",
             )
         }
 
@@ -375,7 +357,7 @@ class SupabaseUserDatastore(
             authMetadata = user.authMetadata.copy(
                 hashedPassword = newHashedPassword,
                 canPasswordAuth = true,
-            )
+            ),
         )
     }
 
@@ -421,41 +403,35 @@ class SupabaseUserDatastore(
     /**
      * Gets all non-expired invites for an organization.
      */
-    override suspend fun getInvites(organizationId: OrganizationId): Result<List<Invite>> {
-        return runSuspendCatching(TAG) {
-            val organizations = postgrest.from(InviteEntity.COLLECTION).select {
-                filter {
-                    InviteEntity::organizationId eq organizationId.id
-                    gt("expiration", clock.now()) // Only non-expired invites
-                    InviteEntity::deletedAt isExact null
-                }
+    override suspend fun getInvites(organizationId: OrganizationId): Result<List<Invite>> = runSuspendCatching(TAG) {
+        val organizations = postgrest.from(InviteEntity.COLLECTION).select {
+            filter {
+                InviteEntity::organizationId eq organizationId.id
+                gt("expiration", clock.now()) // Only non-expired invites
+                InviteEntity::deletedAt isExact null
             }
-            organizations.decodeList<InviteEntity>().map { it.toInvite() }
         }
+        organizations.decodeList<InviteEntity>().map { it.toInvite() }
     }
 
     /**
      * Gets all non-expired invites for an [email] address.
      */
-    override suspend fun getInvitesByEmail(email: String): Result<List<Invite>> {
-        return runSuspendCatching(TAG) {
-            val invites = postgrest.from(InviteEntity.COLLECTION).select {
-                filter {
-                    InviteEntity::email eq email
-                    gt("expiration", clock.now()) // Only non-expired invites
-                    InviteEntity::deletedAt isExact null
-                }
+    override suspend fun getInvitesByEmail(email: String): Result<List<Invite>> = runSuspendCatching(TAG) {
+        val invites = postgrest.from(InviteEntity.COLLECTION).select {
+            filter {
+                InviteEntity::email eq email
+                gt("expiration", clock.now()) // Only non-expired invites
+                InviteEntity::deletedAt isExact null
             }
-            invites.decodeList<InviteEntity>().map { it.toInvite() }
         }
+        invites.decodeList<InviteEntity>().map { it.toInvite() }
     }
 
     /**
      * Soft deletes an invite by [inviteId].
      */
-    override suspend fun removeInvite(
-        inviteId: InviteId,
-    ): Result<Unit> = runSuspendCatching(TAG) {
+    override suspend fun removeInvite(inviteId: InviteId): Result<Unit> = runSuspendCatching(TAG) {
         logD(TAG, "Soft deleting invite: %s", inviteId)
 
         val deleted = postgrest.from(InviteEntity.COLLECTION).update({
@@ -475,9 +451,7 @@ class SupabaseUserDatastore(
         }
     }
 
-    private suspend fun createUserEntity(
-        userEntity: UserEntity.CreateUserEntity,
-    ): UserEntity {
+    private suspend fun createUserEntity(userEntity: UserEntity.CreateUserEntity): UserEntity {
         // Create the user entity in our database
         val createdUser = postgrest.from(UserEntity.COLLECTION).insert(userEntity) {
             select()
@@ -490,9 +464,7 @@ class SupabaseUserDatastore(
      * Permanently deletes a soft-deleted user by [id]. Returns true if successful.
      * Only purges records that are already soft-deleted (deletedAt is not null).
      */
-    override suspend fun purgeUser(
-        id: UserId,
-    ): Result<Boolean> = runSuspendCatching(TAG) {
+    override suspend fun purgeUser(id: UserId): Result<Boolean> = runSuspendCatching(TAG) {
         logD(TAG, "Purging soft-deleted user: %s", id)
 
         // First verify the record exists and is soft-deleted
@@ -520,9 +492,7 @@ class SupabaseUserDatastore(
      * Permanently deletes a soft-deleted invite by [id]. Returns true if successful.
      * Only purges records that are already soft-deleted (deletedAt is not null).
      */
-    override suspend fun purgeInvite(
-        id: InviteId,
-    ): Result<Boolean> = runSuspendCatching(TAG) {
+    override suspend fun purgeInvite(id: InviteId): Result<Boolean> = runSuspendCatching(TAG) {
         logD(TAG, "Purging soft-deleted invite: %s", id)
 
         // First verify the record exists and is soft-deleted

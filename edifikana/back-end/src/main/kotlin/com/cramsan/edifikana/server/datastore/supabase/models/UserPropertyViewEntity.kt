@@ -27,13 +27,11 @@ data class UserPropertyViewEntity(
     /**
      * Converts this view entity to a Property domain model.
      */
-    fun toProperty(): Property {
-        return Property(
-            id = PropertyId(id),
-            name = name,
-            address = address,
-            organizationId = OrganizationId(organizationId),
-            imageUrl = imageUrl,
-        )
-    }
+    fun toProperty(): Property = Property(
+        id = PropertyId(id),
+        name = name,
+        address = address,
+        organizationId = OrganizationId(organizationId),
+        imageUrl = imageUrl,
+    )
 }

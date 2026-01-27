@@ -22,7 +22,7 @@ class HaltUtilAndroid(private val appContext: Context) : HaltUtilDelegate {
         displayNotification()
 
         while (shouldStop) {
-            Thread.sleep(sleepTime)
+            Thread.sleep(SLEEP_TIME)
         }
     }
 
@@ -34,10 +34,9 @@ class HaltUtilAndroid(private val appContext: Context) : HaltUtilDelegate {
         android.os.Process.killProcess(android.os.Process.myPid())
     }
 
-    private fun getStacktrace() =
-        Thread.currentThread().stackTrace
-            .drop(STACK_TRACE_HEAD_EXTRA_LINES)
-            .joinToString(separator = "\n") { "at ${it.methodName}(${it.fileName}:${it.lineNumber})" }
+    private fun getStacktrace() = Thread.currentThread().stackTrace
+        .drop(STACK_TRACE_HEAD_EXTRA_LINES)
+        .joinToString(separator = "\n") { "at ${it.methodName}(${it.fileName}:${it.lineNumber})" }
 
     private fun displayNotification() {
         createNotificationChannel()
@@ -77,7 +76,7 @@ class HaltUtilAndroid(private val appContext: Context) : HaltUtilDelegate {
 
     companion object {
         private const val STACK_TRACE_HEAD_EXTRA_LINES = 90
-        private const val sleepTime = 1000L
+        private const val SLEEP_TIME = 1000L
         private const val CHANNEL_ID = "com.cramsan.framework.halt.implementation"
     }
 }

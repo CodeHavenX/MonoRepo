@@ -13,9 +13,7 @@ import com.cramsan.framework.logging.logD
 /**
  * Service for employee operations.
  */
-class EmployeeService(
-    private val employeeDatastore: EmployeeDatastore,
-) {
+class EmployeeService(private val employeeDatastore: EmployeeDatastore) {
 
     /**
      * Creates an employee with the provided [name].
@@ -40,9 +38,7 @@ class EmployeeService(
     /**
      * Retrieves an employee with the provided [id].
      */
-    suspend fun getEmployee(
-        id: EmployeeId,
-    ): Employee? {
+    suspend fun getEmployee(id: EmployeeId): Employee? {
         logD(TAG, "getEmployee")
         val employee = employeeDatastore.getEmployee(
             id = id,
@@ -87,9 +83,7 @@ class EmployeeService(
     /**
      * Deletes an employee with the provided [id].
      */
-    suspend fun deleteEmployee(
-        id: EmployeeId,
-    ): Boolean {
+    suspend fun deleteEmployee(id: EmployeeId): Boolean {
         logD(TAG, "deleteEmployee")
         return employeeDatastore.deleteEmployee(
             id = id,

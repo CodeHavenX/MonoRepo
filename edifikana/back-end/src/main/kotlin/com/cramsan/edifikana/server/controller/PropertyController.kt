@@ -42,13 +42,12 @@ class PropertyController(
      * Throws [UnauthorizedException] if the user does not have ADMIN role in the organization.
      */
     suspend fun createProperty(
-        request:
-        OperationRequest<
+        request: OperationRequest<
             CreatePropertyNetworkRequest,
             NoQueryParam,
             NoPathParam,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): PropertyNetworkResponse {
         if (!rbacService.hasRoleOrHigher(request.context, request.requestBody.organizationId, UserRole.ADMIN)) {
             throw UnauthorizedException(unauthorizedMsg)
@@ -70,13 +69,12 @@ class PropertyController(
      */
     @OptIn(NetworkModel::class)
     suspend fun getProperty(
-        request:
-        OperationRequest<
+        request: OperationRequest<
             NoRequestBody,
             NoQueryParam,
             PropertyId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): PropertyNetworkResponse? {
         if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.MANAGER)) {
             throw UnauthorizedException(unauthorizedMsg)
@@ -90,13 +88,12 @@ class PropertyController(
      */
     @OptIn(NetworkModel::class)
     suspend fun getAssignedProperties(
-        request:
-        OperationRequest<
+        request: OperationRequest<
             NoRequestBody,
             NoQueryParam,
             NoPathParam,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): PropertyListNetworkResponse {
         val userId = request.context.payload.userId
         val properties = propertyService.getProperties(userId = userId).map { it.toPropertyNetworkResponse() }
@@ -110,13 +107,12 @@ class PropertyController(
      */
     @OptIn(NetworkModel::class)
     suspend fun updateProperty(
-        request:
-        OperationRequest<
+        request: OperationRequest<
             UpdatePropertyNetworkRequest,
             NoQueryParam,
             PropertyId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): PropertyNetworkResponse {
         checkUserHasRole(request.context, request.pathParam, UserRole.ADMIN)
         val updatedProperty = propertyService.updateProperty(
@@ -134,13 +130,12 @@ class PropertyController(
      * Throws [UnauthorizedException] if the user does not have ADMIN role for the property.
      */
     suspend fun deleteProperty(
-        request:
-        OperationRequest<
+        request: OperationRequest<
             NoRequestBody,
             NoQueryParam,
             PropertyId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): NoResponseBody {
         checkUserHasRole(request.context, request.pathParam, UserRole.ADMIN)
         propertyService.deleteProperty(request.pathParam)
@@ -154,7 +149,7 @@ class PropertyController(
     private suspend fun checkUserHasRole(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         propId: PropertyId,
-        role: UserRole
+        role: UserRole,
     ) {
         if (!rbacService.hasRoleOrHigher(context, propId, role)) {
             throw UnauthorizedException(unauthorizedMsg)

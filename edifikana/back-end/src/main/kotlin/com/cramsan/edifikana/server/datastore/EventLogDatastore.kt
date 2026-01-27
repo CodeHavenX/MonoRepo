@@ -30,16 +30,12 @@ interface EventLogDatastore {
     /**
      * Retrieves an event log entry for the given [request]. Returns the [Result] of the operation with the fetched [EventLogEntry] if found.
      */
-    suspend fun getEventLogEntry(
-        id: EventLogEntryId,
-    ): Result<EventLogEntry?>
+    suspend fun getEventLogEntry(id: EventLogEntryId): Result<EventLogEntry?>
 
     /**
      * Retrieves all event log entries for the given [propertyId]. Returns the [Result] of the operation with the list of [EventLogEntry]s.
      */
-    suspend fun getEventLogEntries(
-        propertyId: PropertyId
-    ): Result<List<EventLogEntry>>
+    suspend fun getEventLogEntries(propertyId: PropertyId): Result<List<EventLogEntry>>
 
     /**
      * Updates an event log entry with the given [request]. Returns the [Result] of the operation with the updated [EventLogEntry].
@@ -56,9 +52,7 @@ interface EventLogDatastore {
     /**
      * Deletes an event log entry with the given [request]. Returns the [Result] of the operation with a [Boolean] indicating success.
      */
-    suspend fun deleteEventLogEntry(
-        id: EventLogEntryId,
-    ): Result<Boolean>
+    suspend fun deleteEventLogEntry(id: EventLogEntryId): Result<Boolean>
 
     /**
      * Permanently deletes a soft-deleted event log entry record by ID.
@@ -66,7 +60,5 @@ interface EventLogDatastore {
      * This is intended for testing and maintenance purposes only.
      * Returns the [Result] of the operation with a [Boolean] indicating if the record was purged.
      */
-    suspend fun purgeEventLogEntry(
-        id: EventLogEntryId,
-    ): Result<Boolean>
+    suspend fun purgeEventLogEntry(id: EventLogEntryId): Result<Boolean>
 }

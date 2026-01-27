@@ -4,8 +4,8 @@ complexity:
   LongParameterList:
     ignoreAnnotated: [ 'Composable' ]
     active: true
-    functionThreshold: 12
-    constructorThreshold: 12
+    allowedFunctionParameters: 12
+    allowedConstructorParameters: 12
     ignoreDefaultParameters: false
     ignoreDataClasses: true
     ignoreAnnotatedParameter: []
@@ -59,8 +59,15 @@ style:
     max: 8
   MaxLineLength:
     active: false
-  UnusedPrivateMember:
+  # UnusedPrivateMember was split into UnusedPrivateClass, UnusedPrivateFunction, UnusedPrivateProperty in detekt 2.0
+  UnusedPrivateClass:
+    active: true
+  UnusedPrivateFunction:
     ignoreAnnotated: [ 'Preview' ]
+    active: true
+  UnusedPrivateProperty:
+    ignoreAnnotated: [ 'Preview' ]
+    active: true
 
 coroutines:
   excludes:
@@ -68,17 +75,15 @@ coroutines:
   InjectDispatcher:
     ignoreAnnotated: [ 'BackgroundDispatcher', 'UIThreadDispatcher' ]
 
-formatting:
+# ktlint rules (detekt 2.0 uses ktlint-wrapper with different config schema)
+ktlint:
   active: true
-  android: true
-  autoCorrect: true
   excludes:
     - '**/build/generated/**'
-  MaximumLineLength:
-    active: true
-    ignoreAnnotated: [ 'Test', 'Preview' ]
-    autoCorrect: true
-    maxLineLength: 120
+  ClassSignature:
+    active: false
+  FunctionSignature:
+    active: false
 
 empty-blocks:
   excludes:

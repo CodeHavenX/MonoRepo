@@ -7,9 +7,7 @@ import com.cramsan.framework.logging.Severity
 /**
  * A simple implementation of [EventLoggerInterface] that simply delegates calls to the [platformDelegate].
  */
-class PassthroughEventLogger(
-    private val platformDelegate: EventLoggerDelegate,
-) : EventLoggerInterface {
+class PassthroughEventLogger(private val platformDelegate: EventLoggerDelegate) : EventLoggerInterface {
 
     override fun log(
         severity: Severity,

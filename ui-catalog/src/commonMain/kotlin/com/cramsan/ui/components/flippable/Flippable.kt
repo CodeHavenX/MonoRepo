@@ -36,7 +36,7 @@ import kotlinx.coroutines.launch
 enum class FlippableState {
     INITIALIZED,
     FRONT,
-    BACK
+    BACK,
 }
 
 /**
@@ -62,7 +62,7 @@ enum class FlipAnimationType {
     /**
      * Rotates the [Flippable] vertically in the anti-clockwise direction
      */
-    VERTICAL_ANTI_CLOCKWISE
+    VERTICAL_ANTI_CLOCKWISE,
 }
 
 /**
@@ -111,7 +111,7 @@ fun Flippable(
     autoFlip: Boolean = false,
     autoFlipDurationMs: Int = 1000,
     flipAnimationType: FlipAnimationType = FlipAnimationType.HORIZONTAL_CLOCKWISE,
-    onFlippedListener: (currentSide: FlippableState) -> Unit = { _, -> }
+    onFlippedListener: (currentSide: FlippableState) -> Unit = { _ -> },
 ) {
     var prevViewState by remember { mutableStateOf(FlippableState.INITIALIZED) }
     var flippableState by remember { mutableStateOf(FlippableState.INITIALIZED) }
@@ -120,7 +120,7 @@ fun Flippable(
         label = "Flip Transition",
     )
     flipController.setConfig(
-        flipEnabled = flipEnabled
+        flipEnabled = flipEnabled,
     )
 
     LaunchedEffect(key1 = flipController, block = {
@@ -188,7 +188,7 @@ fun Flippable(
                 else -> snap()
             }
         },
-        label = "Front Rotation"
+        label = "Front Rotation",
     ) { state ->
         when (state) {
             FlippableState.INITIALIZED, FRONT -> 0f
@@ -220,7 +220,7 @@ fun Flippable(
                 else -> snap()
             }
         },
-        label = "Back Rotation"
+        label = "Back Rotation",
     ) { state ->
         when (state) {
             FlippableState.INITIALIZED, FRONT -> 180f
@@ -236,9 +236,9 @@ fun Flippable(
                     flipCall()
                 },
                 interactionSource = remember { MutableInteractionSource() },
-                indication = null
+                indication = null,
             ),
-        contentAlignment = contentAlignment
+        contentAlignment = contentAlignment,
     ) {
         if (backRotation < 90) {
             Box(
@@ -253,7 +253,7 @@ fun Flippable(
                             VERTICAL_ANTI_CLOCKWISE -> rotationX = -backRotation
                         }
                     }
-                    .zIndex(1F - backRotation)
+                    .zIndex(1F - backRotation),
             ) {
                 backSide()
             }
@@ -272,7 +272,7 @@ fun Flippable(
                             VERTICAL_ANTI_CLOCKWISE -> rotationX = -frontRotation
                         }
                     }
-                    .zIndex(1F - frontRotation)
+                    .zIndex(1F - frontRotation),
             ) {
                 frontSide()
             }

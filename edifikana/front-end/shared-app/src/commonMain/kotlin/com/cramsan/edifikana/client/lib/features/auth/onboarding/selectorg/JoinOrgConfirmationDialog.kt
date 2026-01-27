@@ -11,10 +11,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
  * A confirmation dialog that asks the user if they want to accept an
  * organization invite.
  */
-class JoinOrgConfirmationDialog(
-    private val onConfirm: () -> Unit,
-    private val onDismiss: () -> Unit,
-) : Dialog() {
+class JoinOrgConfirmationDialog(private val onConfirm: () -> Unit, private val onDismiss: () -> Unit) : Dialog() {
 
     @Composable
     override fun Content() {
@@ -30,7 +27,7 @@ class JoinOrgConfirmationDialog(
                     onClick = {
                         hide()
                         onConfirm()
-                    }
+                    },
                 ) {
                     Text("Join")
                 }
@@ -40,11 +37,11 @@ class JoinOrgConfirmationDialog(
                     onClick = {
                         hide()
                         onDismiss()
-                    }
+                    },
                 ) {
                     Text("Cancel")
                 }
-            }
+            },
         )
     }
 }
@@ -54,6 +51,6 @@ class JoinOrgConfirmationDialog(
 private fun SignOutConfirmationDialogPreview() {
     JoinOrgConfirmationDialog(
         onConfirm = {},
-        onDismiss = {}
+        onDismiss = {},
     ).Content()
 }

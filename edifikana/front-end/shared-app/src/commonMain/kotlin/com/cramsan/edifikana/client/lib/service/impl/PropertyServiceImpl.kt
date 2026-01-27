@@ -16,9 +16,7 @@ import io.ktor.client.HttpClient
 /**
  * Default implementation for the [PropertyService].
  */
-class PropertyServiceImpl(
-    private val http: HttpClient,
-) : PropertyService {
+class PropertyServiceImpl(private val http: HttpClient) : PropertyService {
 
     @OptIn(NetworkModel::class)
     override suspend fun getPropertyList(): Result<List<PropertyModel>> = runSuspendCatching(TAG) {
@@ -56,7 +54,7 @@ class PropertyServiceImpl(
                     address = address,
                     organizationId = organizationId,
                     imageUrl = imageUrl,
-                )
+                ),
             )
             .execute(http)
 
@@ -77,7 +75,7 @@ class PropertyServiceImpl(
                     name = name,
                     address = address,
                     imageUrl = imageUrl,
-                )
+                ),
             ).execute(http)
 
         response.toPropertyModel()
@@ -96,12 +94,10 @@ class PropertyServiceImpl(
 }
 
 @NetworkModel
-private fun PropertyNetworkResponse.toPropertyModel(): PropertyModel {
-    return PropertyModel(
-        id = id,
-        name = name,
-        address = address.orEmpty(),
-        organizationId = organizationId,
-        imageUrl = imageUrl,
-    )
-}
+private fun PropertyNetworkResponse.toPropertyModel(): PropertyModel = PropertyModel(
+    id = id,
+    name = name,
+    address = address.orEmpty(),
+    organizationId = organizationId,
+    imageUrl = imageUrl,
+)

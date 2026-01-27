@@ -44,8 +44,8 @@ class PropertiesOverviewViewModel(
                     updateUiState { it.copy(isLoading = false) }
                     emitWindowEvent(
                         EdifikanaWindowsEvent.ShowSnackbar(
-                            "Failed to load properties: ${throwable.message ?: "Unknown error"}"
-                        )
+                            "Failed to load properties: ${throwable.message ?: "Unknown error"}",
+                        ),
                     )
                 }
         }
@@ -61,8 +61,8 @@ class PropertiesOverviewViewModel(
             if (organization == null) {
                 emitWindowEvent(
                     EdifikanaWindowsEvent.ShowSnackbar(
-                        "No organization found. Please create an organization first."
-                    )
+                        "No organization found. Please create an organization first.",
+                    ),
                 )
                 return@launch
             }
@@ -71,8 +71,8 @@ class PropertiesOverviewViewModel(
                 EdifikanaWindowsEvent.NavigateToScreen(
                     HomeDestination.AddPropertyManagementDestination(
                         orgId = organization.id,
-                    )
-                )
+                    ),
+                ),
             )
         }
     }
@@ -86,8 +86,8 @@ class PropertiesOverviewViewModel(
                 EdifikanaWindowsEvent.NavigateToScreen(
                     HomeDestination.PropertyManagementDestination(
                         propertyId = property.id,
-                    )
-                )
+                    ),
+                ),
             )
         }
     }

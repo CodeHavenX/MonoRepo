@@ -10,9 +10,7 @@ import com.cramsan.framework.logging.logD
 /**
  * Service for organization operations.
  */
-class OrganizationService(
-    private val organizationDatastore: OrganizationDatastore,
-) {
+class OrganizationService(private val organizationDatastore: OrganizationDatastore) {
 
     /**
      * Retrieves an organization with the provided [id].
@@ -25,9 +23,7 @@ class OrganizationService(
     /**
      * Retrieves all organizations that the user belongs to.
      */
-    suspend fun getOrganizations(
-        userId: UserId,
-    ): List<Organization> {
+    suspend fun getOrganizations(userId: UserId): List<Organization> {
         logD(TAG, "getOrganizations")
         return organizationDatastore.getOrganizationsForUser(userId).getOrThrow()
     }
@@ -36,11 +32,7 @@ class OrganizationService(
      * Creates a new organization with the provided [name] and [description].
      * The user who creates the organization becomes the owner with OWNER role.
      */
-    suspend fun createOrganization(
-        userId: UserId,
-        name: String,
-        description: String,
-    ): Result<Organization> {
+    suspend fun createOrganization(userId: UserId, name: String, description: String): Result<Organization> {
         logD(TAG, "createOrganization: %s", name)
         val orgResult = organizationDatastore.createOrganization(name, description)
 
@@ -76,11 +68,7 @@ class OrganizationService(
      * Updates an organization's name and/or description.
      * Only fields that are non-null will be updated.
      */
-    suspend fun updateOrganization(
-        id: OrganizationId,
-        name: String?,
-        description: String?,
-    ): Result<Organization> {
+    suspend fun updateOrganization(id: OrganizationId, name: String?, description: String?): Result<Organization> {
         logD(TAG, "updateOrganization: %s", id)
         return organizationDatastore.updateOrganization(id, name, description)
     }

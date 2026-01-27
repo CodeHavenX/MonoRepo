@@ -35,9 +35,9 @@ actual fun ComposableKoinContext(content: @Composable () -> Unit) {
                     managerPlatformModule = ManagerPlatformModule,
                     viewModelModule = ViewModelModule,
                     viewModelPlatformModule = ViewModelPlatformModule,
-                )
+                ),
             )
-        }
+        },
     ) {
         content()
     }

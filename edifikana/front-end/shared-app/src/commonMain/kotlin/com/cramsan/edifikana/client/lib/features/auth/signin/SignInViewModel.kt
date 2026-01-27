@@ -108,14 +108,14 @@ class SignInViewModel(
                     EdifikanaWindowsEvent.NavigateToScreen(
                         AuthDestination.SelectOrgDestination,
                         clearTop = true,
-                    )
+                    ),
                 )
             } else {
                 emitWindowEvent(
                     EdifikanaWindowsEvent.NavigateToNavGraph(
                         EdifikanaNavGraphDestination.HomeNavGraphDestination,
                         clearTop = true,
-                    )
+                    ),
                 )
             }
         }
@@ -140,12 +140,12 @@ class SignInViewModel(
             if (registeredUser) {
                 emitWindowEvent(
                     EdifikanaWindowsEvent.NavigateToScreen(
-                        AuthDestination.ValidationDestination(email, accountCreationFlow = false)
-                    )
+                        AuthDestination.ValidationDestination(email, accountCreationFlow = false),
+                    ),
                 )
             } else {
                 emitWindowEvent(
-                    EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.SignUpDestination)
+                    EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.SignUpDestination),
                 )
             }
         }
@@ -157,7 +157,7 @@ class SignInViewModel(
     fun navigateToSignUpPage() {
         viewModelScope.launch {
             emitWindowEvent(
-                EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.SignUpDestination)
+                EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.SignUpDestination),
             )
         }
     }
@@ -168,7 +168,7 @@ class SignInViewModel(
     fun navigateToDebugPage() {
         viewModelScope.launch {
             emitWindowEvent(
-                EdifikanaWindowsEvent.NavigateToNavGraph(EdifikanaNavGraphDestination.DebugNavGraphDestination)
+                EdifikanaWindowsEvent.NavigateToNavGraph(EdifikanaNavGraphDestination.DebugNavGraphDestination),
             )
         }
     }
@@ -186,14 +186,14 @@ class SignInViewModel(
             logD(TAG, "email field found to be invalid.")
             updateUiState {
                 it.copy(
-                    errorMessages = errorMessages
+                    errorMessages = errorMessages,
                 )
             }
             return false
         }
         updateUiState {
             it.copy(
-                errorMessages = emptyList()
+                errorMessages = emptyList(),
             )
         }
         return true
@@ -202,14 +202,12 @@ class SignInViewModel(
     /**
      * Get the custom client error message based on the exception type.
      */
-    private suspend fun getErrorMessage(exception: Throwable): String {
-        return when (exception) {
-            is ClientRequestExceptions.UnauthorizedException ->
-                "Invalid login credentials. Please check your " +
-                    "username and password and try again."
+    private suspend fun getErrorMessage(exception: Throwable): String = when (exception) {
+        is ClientRequestExceptions.UnauthorizedException ->
+            "Invalid login credentials. Please check your " +
+                "username and password and try again."
 
-            else -> stringProvider.getString(Res.string.error_message_unexpected_error)
-        }
+        else -> stringProvider.getString(Res.string.error_message_unexpected_error)
     }
 
     /**

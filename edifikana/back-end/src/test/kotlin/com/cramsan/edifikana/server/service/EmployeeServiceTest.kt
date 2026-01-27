@@ -133,7 +133,7 @@ class EmployeeServiceTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = UserId("user-1"),
-            )
+            ),
         )
         coEvery { employeeDatastore.getEmployees(request) } returns Result.success(employeeLists)
 

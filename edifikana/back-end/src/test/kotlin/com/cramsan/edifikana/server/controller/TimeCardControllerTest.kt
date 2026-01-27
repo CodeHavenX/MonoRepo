@@ -40,7 +40,9 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
-class TimeCardControllerTest : CoroutineTest(), KoinTest {
+class TimeCardControllerTest :
+    CoroutineTest(),
+    KoinTest {
 
     @BeforeTest
     fun setupTest() {
@@ -89,7 +91,7 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-            )
+            ),
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -137,7 +139,7 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-            )
+            ),
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -185,7 +187,7 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
                     type = TimeCardEventType.CLOCK_IN,
                     imageUrl = "http://example.com/image2.jpg",
                     timestamp = Instant.fromEpochSeconds(1727702654),
-                )
+                ),
             )
         }
         val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
@@ -193,7 +195,7 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = UserId("emp123"),
-            )
+            ),
         )
         coEvery {
             contextRetriever.getContext(any())

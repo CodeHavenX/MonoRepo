@@ -5,6 +5,4 @@ import com.cramsan.framework.core.compose.ViewModelUIState
 /**
  * Application UI state.
  */
-data class RunasimiApplicationUIState(
-    val showDebugWindow: Boolean = false,
-) : ViewModelUIState
+data class RunasimiApplicationUIState(val showDebugWindow: Boolean = false) : ViewModelUIState

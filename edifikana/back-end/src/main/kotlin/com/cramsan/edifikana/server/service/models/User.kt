@@ -12,14 +12,12 @@ data class User(
     val firstName: String,
     val lastName: String,
     val authMetadata: AuthMetadata?,
-    val role: UserRole
+    val role: UserRole,
 ) {
 
     /**
      * Metadata for user authentication.
      * This is used to store additional information about the user's authentication capabilities.
      */
-    data class AuthMetadata(
-        val isPasswordSet: Boolean,
-    )
+    data class AuthMetadata(val isPasswordSet: Boolean)
 }

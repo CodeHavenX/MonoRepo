@@ -12,10 +12,7 @@ import com.cramsan.framework.logging.logI
 /**
  * Manager for property configuration.
  */
-class PropertyManager(
-    private val propertyService: PropertyService,
-    private val dependencies: ManagerDependencies,
-) {
+class PropertyManager(private val propertyService: PropertyService, private val dependencies: ManagerDependencies) {
     /**
      * Get the list of properties.
      */
@@ -49,15 +46,11 @@ class PropertyManager(
     /**
      * Update the property with the given [propertyId].
      */
-    suspend fun updateProperty(
-        propertyId: PropertyId,
-        name: String,
-        address: String,
-        imageUrl: String? = null,
-    ) = dependencies.getOrCatch(TAG) {
-        logI(TAG, "updateProperty")
-        propertyService.updateProperty(propertyId, name, address, imageUrl).getOrThrow()
-    }
+    suspend fun updateProperty(propertyId: PropertyId, name: String, address: String, imageUrl: String? = null) =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "updateProperty")
+            propertyService.updateProperty(propertyId, name, address, imageUrl).getOrThrow()
+        }
 
     /**
      * Remove the property with the given [propertyId].

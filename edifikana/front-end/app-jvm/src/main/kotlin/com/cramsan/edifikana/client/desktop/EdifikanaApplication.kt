@@ -36,8 +36,8 @@ fun main() = application {
                 onCloseRequest = ::exitApplication,
                 title = "Edifikana",
                 state = rememberWindowState(
-                    size = DpSize(600.dp, 800.dp)
-                )
+                    size = DpSize(600.dp, 800.dp),
+                ),
             ) {
                 KoinScope<String>("root-window") {
                     EdifikanaWindowScreen(
@@ -51,8 +51,8 @@ fun main() = application {
                     onCloseRequest = { },
                     title = "Edifikana - Debug Window",
                     state = rememberWindowState(
-                        size = DpSize(400.dp, 600.dp)
-                    )
+                        size = DpSize(400.dp, 600.dp),
+                    ),
                 ) {
                     KoinScope<String>("debug-window") {
                         EdifikanaWindowScreen(

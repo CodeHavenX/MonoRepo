@@ -80,12 +80,12 @@ class CreateNewOrgViewModel(
                         EdifikanaWindowsEvent.NavigateToNavGraph(
                             EdifikanaNavGraphDestination.HomeNavGraphDestination,
                             clearTop = true,
-                        )
+                        ),
                     )
                 }.onFailure { error ->
                     logE(TAG, "Failed to create organization: ${error.message}", error.cause)
                     emitWindowEvent(
-                        EdifikanaWindowsEvent.ShowSnackbar("Failed to create organization. Please try again.")
+                        EdifikanaWindowsEvent.ShowSnackbar("Failed to create organization. Please try again."),
                     )
                 }
             } finally {

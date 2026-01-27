@@ -14,14 +14,12 @@ import kotlinx.coroutines.launch
  * ViewModel for the Settings screen.
  * Responsible for reading and updating the selected theme preference.
  */
-class SettingsViewModel(
-    dependencies: ViewModelDependencies,
-    private val preferencesManager: PreferencesManager,
-) : BaseViewModel<SettingsEvent, SettingsUIState>(
-    dependencies,
-    SettingsUIState.Initial,
-    TAG,
-) {
+class SettingsViewModel(dependencies: ViewModelDependencies, private val preferencesManager: PreferencesManager) :
+    BaseViewModel<SettingsEvent, SettingsUIState>(
+        dependencies,
+        SettingsUIState.Initial,
+        TAG,
+    ) {
 
     /**
      * Initialize and start listening to preference changes.

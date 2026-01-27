@@ -59,7 +59,7 @@ class SplashViewModel(
 
     private suspend fun navigateToMainScreen() {
         emitWindowEvent(
-            EdifikanaWindowsEvent.NavigateToNavGraph(EdifikanaNavGraphDestination.HomeNavGraphDestination)
+            EdifikanaWindowsEvent.NavigateToNavGraph(EdifikanaNavGraphDestination.HomeNavGraphDestination),
         )
     }
 
@@ -68,7 +68,7 @@ class SplashViewModel(
             EdifikanaWindowsEvent.NavigateToNavGraph(
                 EdifikanaNavGraphDestination.AuthNavGraphDestination,
                 clearStack = true,
-            )
+            ),
         )
     }
 
@@ -77,7 +77,7 @@ class SplashViewModel(
             EdifikanaWindowsEvent.NavigateToScreen(
                 AuthDestination.SelectOrgDestination,
                 clearStack = true,
-            )
+            ),
         )
     }
 

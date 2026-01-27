@@ -12,14 +12,12 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for the InviteStaffMember screen.
  **/
-class InviteStaffMemberViewModel(
-    dependencies: ViewModelDependencies,
-    private val authManager: AuthManager,
-) : BaseViewModel<InviteStaffMemberEvent, InviteStaffMemberUIState>(
-    dependencies,
-    InviteStaffMemberUIState.Initial,
-    TAG,
-) {
+class InviteStaffMemberViewModel(dependencies: ViewModelDependencies, private val authManager: AuthManager) :
+    BaseViewModel<InviteStaffMemberEvent, InviteStaffMemberUIState>(
+        dependencies,
+        InviteStaffMemberUIState.Initial,
+        TAG,
+    ) {
 
     /**
      * Initialize the ViewModel with the organization ID.
@@ -54,14 +52,14 @@ class InviteStaffMemberViewModel(
             val emailErrors = validateEmail(email)
             if (emailErrors.isNotEmpty()) {
                 emitWindowEvent(
-                    EdifikanaWindowsEvent.ShowSnackbar(emailErrors.first())
+                    EdifikanaWindowsEvent.ShowSnackbar(emailErrors.first()),
                 )
                 return@launch
             }
 
             if (role == null) {
                 emitWindowEvent(
-                    EdifikanaWindowsEvent.ShowSnackbar("Please select a role")
+                    EdifikanaWindowsEvent.ShowSnackbar("Please select a role"),
                 )
                 return@launch
             }
@@ -70,16 +68,16 @@ class InviteStaffMemberViewModel(
             authManager.inviteEmployee(email, organizationId, role.role).onFailure {
                 updateUiState { it.copy(isLoading = false) }
                 emitWindowEvent(
-                    EdifikanaWindowsEvent.ShowSnackbar("Failed to send invitation")
+                    EdifikanaWindowsEvent.ShowSnackbar("Failed to send invitation"),
                 )
                 return@launch
             }
 
             emitWindowEvent(
-                EdifikanaWindowsEvent.ShowSnackbar("Invitation sent to $email")
+                EdifikanaWindowsEvent.ShowSnackbar("Invitation sent to $email"),
             )
             emitWindowEvent(
-                EdifikanaWindowsEvent.NavigateBack
+                EdifikanaWindowsEvent.NavigateBack,
             )
         }
     }

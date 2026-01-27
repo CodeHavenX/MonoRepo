@@ -11,14 +11,12 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for the EmployeeOverview screen.
  **/
-class EmployeeOverviewViewModel(
-    dependencies: ViewModelDependencies,
-    private val authManager: AuthManager,
-) : BaseViewModel<EmployeeOverviewEvent, EmployeeOverviewUIState>(
-    dependencies,
-    EmployeeOverviewUIState.Initial,
-    TAG,
-) {
+class EmployeeOverviewViewModel(dependencies: ViewModelDependencies, private val authManager: AuthManager) :
+    BaseViewModel<EmployeeOverviewEvent, EmployeeOverviewUIState>(
+        dependencies,
+        EmployeeOverviewUIState.Initial,
+        TAG,
+    ) {
     /**
      * Initialize the ViewModel.
      */
@@ -49,8 +47,8 @@ class EmployeeOverviewViewModel(
             .onFailure { throwable ->
                 emitWindowEvent(
                     EdifikanaWindowsEvent.ShowSnackbar(
-                        "Failed to load employees: ${throwable.message ?: "Unknown error"}"
-                    )
+                        "Failed to load employees: ${throwable.message ?: "Unknown error"}",
+                    ),
                 )
             }
 
@@ -58,8 +56,8 @@ class EmployeeOverviewViewModel(
             .onFailure { throwable ->
                 emitWindowEvent(
                     EdifikanaWindowsEvent.ShowSnackbar(
-                        "Failed to load invites: ${throwable.message ?: "Unknown error"}"
-                    )
+                        "Failed to load invites: ${throwable.message ?: "Unknown error"}",
+                    ),
                 )
             }
 
@@ -104,8 +102,8 @@ class EmployeeOverviewViewModel(
                     EdifikanaWindowsEvent.NavigateToScreen(
                         HomeDestination.InviteStaffMemberDestination(
                             orgId = orgId,
-                        )
-                    )
+                        ),
+                    ),
                 )
             }
         }

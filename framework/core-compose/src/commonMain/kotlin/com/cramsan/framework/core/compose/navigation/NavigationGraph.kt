@@ -11,11 +11,11 @@ import kotlin.reflect.KType
  * Navigation graph builder for creating a navigation graph with a specified start destination
  * and graph destination type.
  */
-fun <G : NavigationGraphDestination, D : Destination,> NavGraphBuilder.navigationGraph(
+fun <G : NavigationGraphDestination, D : Destination> NavGraphBuilder.navigationGraph(
     graphDestination: KClass<G>,
     startDestination: D,
     typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> = emptyMap(),
-    builder: NavGraphBuilder.() -> Unit
+    builder: NavGraphBuilder.() -> Unit,
 ) {
     navigation(
         route = graphDestination,

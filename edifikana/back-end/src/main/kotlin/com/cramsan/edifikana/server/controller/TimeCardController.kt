@@ -45,13 +45,13 @@ class TimeCardController(
             CreateTimeCardEventNetworkRequest,
             NoQueryParam,
             NoPathParam,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
             >,
     ): TimeCardEventNetworkResponse {
         if (!rbacService.hasRoleOrHigher(request.context, request.requestBody.propertyId, UserRole.EMPLOYEE)) {
             throw UnauthorizedException(
                 "User does not have permission to create time card events " +
-                    "for property ${request.requestBody.propertyId}"
+                    "for property ${request.requestBody.propertyId}",
             )
         }
 
@@ -75,7 +75,7 @@ class TimeCardController(
             NoRequestBody,
             NoQueryParam,
             TimeCardEventId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
             >,
     ): TimeCardEventNetworkResponse? {
         if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.EMPLOYEE)) {
@@ -98,7 +98,7 @@ class TimeCardController(
             NoRequestBody,
             GetTimeCardEventsQueryParams,
             NoPathParam,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
             >,
     ): TimeCardEventListNetworkResponse {
         val targetEmployeeId = request.queryParam.employeeId
@@ -108,7 +108,7 @@ class TimeCardController(
             if (!rbacService.hasRoleOrHigher(request.context, it, UserRole.EMPLOYEE)) {
                 throw UnauthorizedException(
                     "User does not have permission to view time card events for employee " +
-                        "${request.queryParam.employeeId}"
+                        "${request.queryParam.employeeId}",
                 )
             }
         }
@@ -116,7 +116,7 @@ class TimeCardController(
         if (!rbacService.hasRoleOrHigher(request.context, targetPropertyId, UserRole.EMPLOYEE)) {
             throw UnauthorizedException(
                 "User does not have permission to view time card events for property " +
-                    "${request.queryParam.propertyId}"
+                    "${request.queryParam.propertyId}",
             )
         }
 

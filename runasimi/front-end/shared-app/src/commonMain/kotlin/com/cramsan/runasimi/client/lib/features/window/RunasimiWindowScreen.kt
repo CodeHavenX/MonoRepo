@@ -95,6 +95,7 @@ private fun handleWindowEvent(
             )
             navController.navigate(event.destination)
         }
+
         is RunasimiWindowsEvent.NavigateToScreen -> {
             handleNavigationEvent(
                 navController = navController,
@@ -102,9 +103,11 @@ private fun handleWindowEvent(
             )
             navController.navigate(event.destination)
         }
+
         is RunasimiWindowsEvent.NavigateBack -> {
             navController.popBackStack()
         }
+
         is RunasimiWindowsEvent.CloseNavGraph -> {
             val currentNavGraph = navController.currentBackStack.value.reversed().find {
                 it.destination.navigatorName == "navigation"
@@ -113,6 +116,7 @@ private fun handleWindowEvent(
                 navController.popBackStack(it, inclusive = true)
             }
         }
+
         is RunasimiWindowsEvent.ShowSnackbar -> {
             scope.launch {
                 handleSnackbarEvent(
@@ -126,10 +130,7 @@ private fun handleWindowEvent(
     }
 }
 
-private fun handleNavigationEvent(
-    navController: NavHostController,
-    event: NavigationEvent,
-) {
+private fun handleNavigationEvent(navController: NavHostController, event: NavigationEvent) {
     if (event.clearStack) {
         while (navController.currentBackStack.value.isNotEmpty()) {
             navController.popBackStack()
@@ -158,10 +159,7 @@ private suspend fun handleSnackbarEvent(
 }
 
 @Composable
-private fun WindowNavigationHost(
-    navHostController: NavHostController,
-    startDestination: RunasimiNavGraphDestination,
-) {
+private fun WindowNavigationHost(navHostController: NavHostController, startDestination: RunasimiNavGraphDestination) {
     val typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> = remember {
         mapOf()
     }

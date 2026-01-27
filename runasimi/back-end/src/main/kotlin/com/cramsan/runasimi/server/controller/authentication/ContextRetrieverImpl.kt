@@ -8,7 +8,6 @@ import io.ktor.server.application.ApplicationCall
  * Implementation of [ContextRetriever] that returns an unauthenticated context.
  */
 class ContextRetrieverImpl : ContextRetriever<Unit> {
-    override suspend fun getContext(applicationCall: ApplicationCall): ClientContext<Unit> {
-        return ClientContext.UnauthenticatedClientContext()
-    }
+    override suspend fun getContext(applicationCall: ApplicationCall): ClientContext<Unit> =
+        ClientContext.UnauthenticatedClientContext()
 }

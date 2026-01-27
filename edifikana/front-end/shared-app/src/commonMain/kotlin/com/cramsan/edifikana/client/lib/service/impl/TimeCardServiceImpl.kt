@@ -15,9 +15,7 @@ import io.ktor.client.HttpClient
 /**
  * Time card service default implementation.
  */
-class TimeCardServiceImpl(
-    private val http: HttpClient,
-) : TimeCardService {
+class TimeCardServiceImpl(private val http: HttpClient) : TimeCardService {
 
     @OptIn(NetworkModel::class)
     override suspend fun getRecords(
@@ -28,11 +26,10 @@ class TimeCardServiceImpl(
     }
 
     @OptIn(NetworkModel::class)
-    override suspend fun getAllRecords(
-        propertyId: PropertyId,
-    ): Result<List<TimeCardRecordModel>> = runSuspendCatching(TAG) {
-        getRecordsImpl(null, propertyId).getOrThrow()
-    }
+    override suspend fun getAllRecords(propertyId: PropertyId): Result<List<TimeCardRecordModel>> =
+        runSuspendCatching(TAG) {
+            getRecordsImpl(null, propertyId).getOrThrow()
+        }
 
     // TODO: THIS CURRENTLY PULLS RECORDS FOR ALL PROPERTIES. WE WANT TO UPDATE SO WE ONLY PULL RECORDS FOR SPECIFIED PROPERTIES
     @NetworkModel
@@ -51,29 +48,27 @@ class TimeCardServiceImpl(
     }
 
     @OptIn(NetworkModel::class)
-    override suspend fun getRecord(
-        timeCardRecordPK: TimeCardEventId,
-    ): Result<TimeCardRecordModel> = runSuspendCatching(TAG) {
-        val response = TimeCardApi
-            .getTimeCardEvent
-            .buildRequest(timeCardRecordPK)
-            .execute(http)
-        val record = response.toTimeCardRecordModel()
-        record
-    }
+    override suspend fun getRecord(timeCardRecordPK: TimeCardEventId): Result<TimeCardRecordModel> =
+        runSuspendCatching(TAG) {
+            val response = TimeCardApi
+                .getTimeCardEvent
+                .buildRequest(timeCardRecordPK)
+                .execute(http)
+            val record = response.toTimeCardRecordModel()
+            record
+        }
 
     @OptIn(NetworkModel::class)
-    override suspend fun addRecord(
-        timeCardRecord: TimeCardRecordModel,
-    ): Result<TimeCardRecordModel> = runSuspendCatching(TAG) {
-        val response = TimeCardApi
-            .createTimeCardEvent
-            .buildRequest(timeCardRecord.toCreateTimeCardEventNetworkRequest())
-            .execute(http)
+    override suspend fun addRecord(timeCardRecord: TimeCardRecordModel): Result<TimeCardRecordModel> =
+        runSuspendCatching(TAG) {
+            val response = TimeCardApi
+                .createTimeCardEvent
+                .buildRequest(timeCardRecord.toCreateTimeCardEventNetworkRequest())
+                .execute(http)
 
-        val record = response.toTimeCardRecordModel()
-        record
-    }
+            val record = response.toTimeCardRecordModel()
+            record
+        }
 
     companion object {
         private const val TAG = "TimeCardServiceImpl"

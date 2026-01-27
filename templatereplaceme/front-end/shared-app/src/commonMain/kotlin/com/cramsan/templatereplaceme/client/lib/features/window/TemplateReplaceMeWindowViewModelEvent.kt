@@ -11,7 +11,6 @@ sealed class TemplateReplaceMeWindowViewModelEvent : ViewModelEvent {
     /**
      * Wrapper for [TemplateReplaceMeWindowsEvent] to be used in the view model.
      */
-    data class TemplateReplaceMeWindowEventWrapper(
-        val event: TemplateReplaceMeWindowsEvent,
-    ) : TemplateReplaceMeWindowViewModelEvent()
+    data class TemplateReplaceMeWindowEventWrapper(val event: TemplateReplaceMeWindowsEvent) :
+        TemplateReplaceMeWindowViewModelEvent()
 }

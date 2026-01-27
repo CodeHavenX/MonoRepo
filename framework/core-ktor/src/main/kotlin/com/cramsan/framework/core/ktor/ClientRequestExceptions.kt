@@ -17,10 +17,7 @@ import io.ktor.server.response.respond
  * @param tag The tag to use for logging.
  * @param result The result of the function call.
  */
-suspend inline fun ApplicationCall.validateClientError(
-    tag: String,
-    result: Result<*>,
-) {
+suspend inline fun ApplicationCall.validateClientError(tag: String, result: Result<*>) {
     // Handle the error based on our created exceptions.
     val originalException = result.exceptionOrNull()
     val exception = originalException as? ClientRequestExceptions
@@ -48,10 +45,7 @@ suspend inline fun ApplicationCall.validateClientError(
  * @param exception The exception to validate.
  * @param tag The tag to use for logging.
  */
-suspend inline fun ApplicationCall.validateClientError(
-    tag: String,
-    exception: ClientRequestExceptions,
-) {
+suspend inline fun ApplicationCall.validateClientError(tag: String, exception: ClientRequestExceptions) {
     // Log the error
     logE(tag, "Client Request Exception:", exception)
     when (exception) {

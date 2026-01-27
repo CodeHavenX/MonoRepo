@@ -17,9 +17,7 @@ import kotlin.reflect.KType
 /**
  * Auth Nav Graph Route.
  */
-fun NavGraphBuilder.authNavGraphNavigation(
-    typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> = emptyMap(),
-) {
+fun NavGraphBuilder.authNavGraphNavigation(typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> = emptyMap()) {
     navigationGraph(
         graphDestination = EdifikanaNavGraphDestination.AuthNavGraphDestination::class,
         startDestination = AuthDestination.SignInDestination,
@@ -42,7 +40,7 @@ fun NavGraphBuilder.authNavGraphNavigation(
             typeMap = typeMap,
         ) { backStackEntry ->
             OtpValidationScreen(
-                destination = backStackEntry.toRoute()
+                destination = backStackEntry.toRoute(),
             )
         }
         composable(

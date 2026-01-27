@@ -35,16 +35,20 @@ class SingleValueEncoder : AbstractEncoder() {
         when (serializer.descriptor.kind) {
             PrimitiveKind.BOOLEAN, PrimitiveKind.BYTE, PrimitiveKind.CHAR, PrimitiveKind.DOUBLE,
             PrimitiveKind.FLOAT, PrimitiveKind.INT, PrimitiveKind.LONG, PrimitiveKind.SHORT,
-            PrimitiveKind.STRING, SerialKind.ENUM -> {
+            PrimitiveKind.STRING, SerialKind.ENUM,
+            -> {
                 // Supported primitive types
             }
+
             StructureKind.CLASS -> {
                 if (!serializer.descriptor.isInline || serializer.descriptor.elementsCount != 1) {
                     error("SingleValueEncoder only supports inline value classes with a single property")
                 }
             }
+
             SerialKind.CONTEXTUAL, StructureKind.LIST, StructureKind.MAP, StructureKind.OBJECT,
-            PolymorphicKind.OPEN, PolymorphicKind.SEALED -> {
+            PolymorphicKind.OPEN, PolymorphicKind.SEALED,
+            -> {
                 error("SingleValueEncoder does not support ${serializer.descriptor.kind}")
             }
         }

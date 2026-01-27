@@ -405,7 +405,13 @@ class UserServiceTest {
 
         coEvery { userDatastore.getInvite(inviteId) } returns Result.success(invite)
         coEvery { userDatastore.getUser(userId) } returns Result.success(user)
-        coEvery { organizationDatastore.addUserToOrganization(userId, orgId, UserRole.USER) } returns Result.success(Unit)
+        coEvery {
+            organizationDatastore.addUserToOrganization(
+                userId,
+                orgId,
+                UserRole.USER,
+            )
+        } returns Result.success(Unit)
         coEvery { notificationDatastore.getNotificationByInvite(inviteId) } returns Result.success(notification)
         coEvery { notificationDatastore.deleteNotification(notificationId) } returns Result.success(true)
         coEvery { userDatastore.removeInvite(inviteId) } returns Result.success(Unit)

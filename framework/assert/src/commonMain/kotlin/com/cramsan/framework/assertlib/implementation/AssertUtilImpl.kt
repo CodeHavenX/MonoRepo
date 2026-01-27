@@ -16,9 +16,7 @@ class AssertUtilImpl(
 ) : AssertUtilInterface {
 
     init {
-        /**
-         * Ensure that [haltOnFailure] is not true while [haltUtil] is null
-         */
+        // Ensure that haltOnFailure is not true while haltUtil is null
         if (haltOnFailure && haltUtil == null) {
             throw RuntimeException("haltUtil cannot be null if haltOnFailure is set to true")
         }

@@ -18,38 +18,32 @@ import kotlin.time.Clock
  * Datastore for managing organizations in Supabase.
  */
 @OptIn(SupabaseModel::class)
-class SupabaseOrganizationDatastore(
-    private val postgrest: Postgrest,
-    private val clock: Clock,
-) : OrganizationDatastore {
+class SupabaseOrganizationDatastore(private val postgrest: Postgrest, private val clock: Clock) :
+    OrganizationDatastore {
 
     /**
      * Creates a new organization with the given [name] and [description].
      */
-    override suspend fun createOrganization(
-        name: String,
-        description: String,
-    ): Result<Organization> = runSuspendCatching(
-        TAG
-    ) {
-        logD(TAG, "Creating new organization: %s", name)
-        val entity = OrganizationEntity.CreateOrganizationEntity(
-            name = name,
-            description = description,
-        )
-        val createdOrg = postgrest.from(OrganizationEntity.COLLECTION).insert(entity) { select() }
-            .decodeSingle<OrganizationEntity>()
+    override suspend fun createOrganization(name: String, description: String): Result<Organization> =
+        runSuspendCatching(
+            TAG,
+        ) {
+            logD(TAG, "Creating new organization: %s", name)
+            val entity = OrganizationEntity.CreateOrganizationEntity(
+                name = name,
+                description = description,
+            )
+            val createdOrg = postgrest.from(OrganizationEntity.COLLECTION).insert(entity) { select() }
+                .decodeSingle<OrganizationEntity>()
 
-        createdOrg.toOrganization()
-    }
+            createdOrg.toOrganization()
+        }
 
     /**
      * Retrieves an organization by [id]. Returns the [Organization] if found, null otherwise.
      */
-    override suspend fun getOrganization(
-        id: OrganizationId
-    ): Result<Organization?> = runSuspendCatching(
-        TAG
+    override suspend fun getOrganization(id: OrganizationId): Result<Organization?> = runSuspendCatching(
+        TAG,
     ) {
         logD(TAG, "Getting organization: %s", id)
         postgrest.from(OrganizationEntity.COLLECTION).select {
@@ -66,9 +60,9 @@ class SupabaseOrganizationDatastore(
     override suspend fun updateOrganization(
         id: OrganizationId,
         name: String?,
-        description: String?
+        description: String?,
     ): Result<Organization> = runSuspendCatching(
-        TAG
+        TAG,
     ) {
         logD(TAG, "Updating organization: %s", id)
         val updatedOrganization = OrganizationEntity.UpdateOrganizationEntity(
@@ -86,10 +80,8 @@ class SupabaseOrganizationDatastore(
      * Soft deletes an organization with the given [id]. Returns the [Result] of the operation with a [Boolean] indicating success.
      * Note: User-organization mappings are NOT deleted - they remain until the organization is permanently purged.
      */
-    override suspend fun deleteOrganization(
-        id: OrganizationId
-    ): Result<Boolean> = runSuspendCatching(
-        TAG
+    override suspend fun deleteOrganization(id: OrganizationId): Result<Boolean> = runSuspendCatching(
+        TAG,
     ) {
         logD(TAG, "Soft deleting organization: %s", id)
 
@@ -109,21 +101,19 @@ class SupabaseOrganizationDatastore(
     /**
      * Gets all organizations the given [userId] belongs to.
      */
-    override suspend fun getOrganizationsForUser(userId: UserId): Result<List<Organization>> {
-        return runSuspendCatching(TAG) {
-            logD(TAG, "Getting organizations for user: %s", userId)
-            val organizations = postgrest.from(UserOrganizationMappingEntity.COLLECTION).select(
-                // HINT: Here we are using the POSTgREST feature to select related rows and spread them into the result.
-                // https://supabase.com/blog/postgrest-11-prerelease
-                Columns.list("...${OrganizationEntity.COLLECTION}(*)")
-            ) {
-                filter { UserOrganizationMappingEntity::userId eq userId.userId }
-            }
-            // Filter out soft-deleted organizations
-            organizations.decodeList<OrganizationEntity>()
-                .filter { it.deletedAt == null }
-                .map { it.toOrganization() }
+    override suspend fun getOrganizationsForUser(userId: UserId): Result<List<Organization>> = runSuspendCatching(TAG) {
+        logD(TAG, "Getting organizations for user: %s", userId)
+        val organizations = postgrest.from(UserOrganizationMappingEntity.COLLECTION).select(
+            // HINT: Here we are using the POSTgREST feature to select related rows and spread them into the result.
+            // https://supabase.com/blog/postgrest-11-prerelease
+            Columns.list("...${OrganizationEntity.COLLECTION}(*)"),
+        ) {
+            filter { UserOrganizationMappingEntity::userId eq userId.userId }
         }
+        // Filter out soft-deleted organizations
+        organizations.decodeList<OrganizationEntity>()
+            .filter { it.deletedAt == null }
+            .map { it.toOrganization() }
     }
 
     /**
@@ -132,28 +122,23 @@ class SupabaseOrganizationDatastore(
     override suspend fun addUserToOrganization(
         userId: UserId,
         organizationId: OrganizationId,
-        role: UserRole
-    ): Result<Unit> {
-        return runSuspendCatching(TAG) {
-            logD(TAG, "Adding user %s to organization %s", userId, organizationId)
-            val userOrgMapping = UserOrganizationMappingEntity.CreateUserOrganizationMappingEntity(
-                userId = userId.userId,
-                organizationId = organizationId.id,
-                role = role,
-            )
-            postgrest.from(UserOrganizationMappingEntity.COLLECTION).insert(userOrgMapping) { select() }
-                .decodeSingle<UserOrganizationMappingEntity>()
-        }
+        role: UserRole,
+    ): Result<Unit> = runSuspendCatching(TAG) {
+        logD(TAG, "Adding user %s to organization %s", userId, organizationId)
+        val userOrgMapping = UserOrganizationMappingEntity.CreateUserOrganizationMappingEntity(
+            userId = userId.userId,
+            organizationId = organizationId.id,
+            role = role,
+        )
+        postgrest.from(UserOrganizationMappingEntity.COLLECTION).insert(userOrgMapping) { select() }
+            .decodeSingle<UserOrganizationMappingEntity>()
     }
 
     /**
      * Removes a user from an organization.
      */
-    override suspend fun removeUserFromOrganization(
-        userId: UserId,
-        organizationId: OrganizationId
-    ): Result<Unit> {
-        return runSuspendCatching(TAG) {
+    override suspend fun removeUserFromOrganization(userId: UserId, organizationId: OrganizationId): Result<Unit> =
+        runSuspendCatching(TAG) {
             logD(TAG, "Removing user %s from organization %s", userId, organizationId)
             postgrest.from(UserOrganizationMappingEntity.COLLECTION).delete {
                 filter {
@@ -164,13 +149,12 @@ class SupabaseOrganizationDatastore(
                 }
             }.decodeList<UserOrganizationMappingEntity>()
         }
-    }
 
     /**
      * Gets the user's role within an organization. Returns null if not a member.
      */
     override suspend fun getUserRole(userId: UserId, orgId: OrganizationId): Result<UserRole?> = runSuspendCatching(
-        TAG
+        TAG,
     ) {
         logD(TAG, "Getting role for user in organization: $orgId")
         postgrest.from(UserOrganizationMappingEntity.COLLECTION).select {

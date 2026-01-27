@@ -7,9 +7,7 @@ import kotlin.system.exitProcess
 /**
  * JVM implementation of [HaltUtilDelegate]. This implementation uses a spin-lock for halting a thread.
  */
-class HaltUtilJVM(
-    private val eventLogger: EventLoggerInterface,
-) : HaltUtilDelegate {
+class HaltUtilJVM(private val eventLogger: EventLoggerInterface) : HaltUtilDelegate {
 
     // TODO: Refactor this into an AtomicBoolean
     private var shouldStop = false
@@ -23,7 +21,7 @@ class HaltUtilJVM(
         eventLogger.w(TAG, "Stopping current thread.")
         shouldStop = true
         while (shouldStop) {
-            Thread.sleep(sleepTime)
+            Thread.sleep(SLEEP_TIME)
         }
     }
 
@@ -32,7 +30,7 @@ class HaltUtilJVM(
     }
 
     companion object {
-        private const val sleepTime = 1000L
+        private const val SLEEP_TIME = 1000L
         private const val TAG = "HaltUtilJVM"
     }
 }

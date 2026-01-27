@@ -24,7 +24,7 @@ object NotificationApi : Api("notification") {
         NoRequestBody,
         NoQueryParam,
         NoPathParam,
-        NotificationListNetworkResponse
+        NotificationListNetworkResponse,
         >(HttpMethod.Get)
 
     /**
@@ -34,7 +34,7 @@ object NotificationApi : Api("notification") {
         NoRequestBody,
         NoQueryParam,
         NotificationId,
-        NotificationNetworkResponse
+        NotificationNetworkResponse,
         >(HttpMethod.Get)
 
     /**
@@ -45,7 +45,7 @@ object NotificationApi : Api("notification") {
         NoRequestBody,
         NoQueryParam,
         NotificationId,
-        NotificationNetworkResponse
+        NotificationNetworkResponse,
         >(HttpMethod.Post)
 
     /**
@@ -55,6 +55,6 @@ object NotificationApi : Api("notification") {
         NoRequestBody,
         NoQueryParam,
         NotificationId,
-        NoResponseBody
+        NoResponseBody,
         >(HttpMethod.Delete)
 }

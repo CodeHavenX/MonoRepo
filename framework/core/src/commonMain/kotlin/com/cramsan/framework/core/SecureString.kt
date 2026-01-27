@@ -16,13 +16,9 @@ value class SecureString(private val content: String) {
      * This method is intended to be used with caution, as it exposes the sensitive content.
      */
 
-    fun reveal(): String {
-        return content
-    }
+    fun reveal(): String = content
 
-    override fun toString(): String {
-        return "SecureString(content=****)"
-    }
+    override fun toString(): String = "SecureString(content=****)"
 }
 
 /**

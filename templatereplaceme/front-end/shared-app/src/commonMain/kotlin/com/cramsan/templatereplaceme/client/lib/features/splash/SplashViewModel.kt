@@ -11,13 +11,12 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for the Splash screen.
  **/
-class SplashViewModel(
-    dependencies: ViewModelDependencies,
-) : BaseViewModel<SplashEvent, SplashUIState>(
-    dependencies,
-    SplashUIState.Initial,
-    TAG,
-) {
+class SplashViewModel(dependencies: ViewModelDependencies) :
+    BaseViewModel<SplashEvent, SplashUIState>(
+        dependencies,
+        SplashUIState.Initial,
+        TAG,
+    ) {
 
     /**
      * Navigate to the Main Screen after splash.
@@ -29,8 +28,8 @@ class SplashViewModel(
             delay(1000) // Simulate loading time
             emitWindowEvent(
                 TemplateReplaceMeWindowsEvent.NavigateToNavGraph(
-                    TemplateReplaceMeWindowNavGraphDestination.AuthNavGraphDestination
-                )
+                    TemplateReplaceMeWindowNavGraphDestination.AuthNavGraphDestination,
+                ),
             )
         }
     }

@@ -114,7 +114,7 @@ internal fun SignInContent(
                         transitionSpec = {
                             fadeIn()
                                 .togetherWith(
-                                    fadeOut()
+                                    fadeOut(),
                                 )
                         },
                     ) {
@@ -161,7 +161,7 @@ internal fun SignInContent(
                                 )
                             } else {
                                 Text(
-                                    stringResource(Res.string.sign_in_screen_text_sign_in_otp)
+                                    stringResource(Res.string.sign_in_screen_text_sign_in_otp),
                                 )
                             }
                         }
@@ -182,7 +182,7 @@ internal fun SignInContent(
                                 )
                             } else {
                                 Text(
-                                    stringResource(Res.string.sign_in_screen_text_sign_in)
+                                    stringResource(Res.string.sign_in_screen_text_sign_in),
                                 )
                             }
                         }

@@ -19,33 +19,25 @@ class BrowserLocalStoragePreferencesDelegate : PreferencesDelegate {
         }
     }
 
-    override fun loadString(key: String): String? {
-        return storage[key]
-    }
+    override fun loadString(key: String): String? = storage[key]
 
     override fun saveInt(key: String, value: Int) {
         storage[key] = value.toString()
     }
 
-    override fun loadInt(key: String): Int? {
-        return storage[key]?.toIntOrNull()
-    }
+    override fun loadInt(key: String): Int? = storage[key]?.toIntOrNull()
 
     override fun saveLong(key: String, value: Long) {
         storage[key] = value.toString()
     }
 
-    override fun loadLong(key: String): Long? {
-        return storage[key]?.toLongOrNull()
-    }
+    override fun loadLong(key: String): Long? = storage[key]?.toLongOrNull()
 
     override fun saveBoolean(key: String, value: Boolean) {
         storage[key] = value.toString()
     }
 
-    override fun loadBoolean(key: String): Boolean? {
-        return storage[key]?.toBooleanStrictOrNull()
-    }
+    override fun loadBoolean(key: String): Boolean? = storage[key]?.toBooleanStrictOrNull()
 
     override fun remove(key: String) {
         storage.removeItem(key)

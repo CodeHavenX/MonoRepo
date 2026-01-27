@@ -27,7 +27,4 @@ data class InviteStaffMemberUIState(
 /**
  * UI model representing a staff role option in the dropdown.
  */
-data class StaffRoleUIModel(
-    val role: UserRole,
-    val displayName: String,
-)
+data class StaffRoleUIModel(val role: UserRole, val displayName: String)

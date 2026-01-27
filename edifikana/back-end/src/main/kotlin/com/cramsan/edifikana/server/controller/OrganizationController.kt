@@ -42,13 +42,12 @@ class OrganizationController(
      * Throws [UnauthorizedException] if the user does not have permission.
      */
     suspend fun getOrganization(
-        request:
-        OperationRequest<
+        request: OperationRequest<
             NoRequestBody,
             NoQueryParam,
             OrganizationId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): OrganizationNetworkResponse? {
         if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.ADMIN)) {
             throw UnauthorizedException(unauthorizedMsg)
@@ -62,13 +61,12 @@ class OrganizationController(
      * Returns a list of organizations as a network response.
      */
     suspend fun getOrganizationList(
-        request:
-        OperationRequest<
+        request: OperationRequest<
             NoRequestBody,
             NoQueryParam,
             NoPathParam,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): OrganizationNetworkListNetworkResponse {
         val orgs = organizationService.getOrganizations(request.context.payload.userId).map {
             it.toOrganizationNetworkResponse()
@@ -81,13 +79,12 @@ class OrganizationController(
      * The authenticated user becomes the owner with OWNER role.
      */
     suspend fun createOrganization(
-        request:
-        OperationRequest<
+        request: OperationRequest<
             CreateOrganizationNetworkRequest,
             NoQueryParam,
             NoPathParam,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): OrganizationNetworkResponse {
         // Validate the request body
         if (request.requestBody.name.isBlank()) {
@@ -107,13 +104,12 @@ class OrganizationController(
      * The authenticated user must be an admin of the organization.
      */
     suspend fun updateOrganization(
-        request:
-        OperationRequest<
+        request: OperationRequest<
             UpdateOrganizationNetworkRequest,
             NoQueryParam,
             OrganizationId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): OrganizationNetworkResponse {
         if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.ADMIN)) {
             throw UnauthorizedException(unauthorizedMsg)

@@ -37,30 +37,24 @@ import kotlin.time.Instant
 /**
  * Converts the [EmployeeRole] to a friendly string.
  */
-suspend fun EmployeeRole?.toRoleFriendlyName(
-    stringProvider: StringProvider,
-): String {
-    return when (this) {
-        EmployeeRole.MANAGER -> stringProvider.getString(Res.string.role_admin)
-        EmployeeRole.SECURITY -> stringProvider.getString(Res.string.role_security)
-        EmployeeRole.SECURITY_COVER -> stringProvider.getString(Res.string.role_security_cover)
-        EmployeeRole.CLEANING -> stringProvider.getString(Res.string.role_limpieza)
-        null -> stringProvider.getString(Res.string.role_unknown)
-    }
+suspend fun EmployeeRole?.toRoleFriendlyName(stringProvider: StringProvider): String = when (this) {
+    EmployeeRole.MANAGER -> stringProvider.getString(Res.string.role_admin)
+    EmployeeRole.SECURITY -> stringProvider.getString(Res.string.role_security)
+    EmployeeRole.SECURITY_COVER -> stringProvider.getString(Res.string.role_security_cover)
+    EmployeeRole.CLEANING -> stringProvider.getString(Res.string.role_limpieza)
+    null -> stringProvider.getString(Res.string.role_unknown)
 }
 
 /**
  * Converts the [EmployeeRole] to a friendly string.
  */
 @Composable
-fun EmployeeRole?.toRoleFriendlyNameCompose(): String {
-    return when (this) {
-        EmployeeRole.MANAGER -> stringResource(Res.string.role_admin)
-        EmployeeRole.SECURITY -> stringResource(Res.string.role_security)
-        EmployeeRole.SECURITY_COVER -> stringResource(Res.string.role_security_cover)
-        EmployeeRole.CLEANING -> stringResource(Res.string.role_limpieza)
-        null -> stringResource(Res.string.role_unknown)
-    }
+fun EmployeeRole?.toRoleFriendlyNameCompose(): String = when (this) {
+    EmployeeRole.MANAGER -> stringResource(Res.string.role_admin)
+    EmployeeRole.SECURITY -> stringResource(Res.string.role_security)
+    EmployeeRole.SECURITY_COVER -> stringResource(Res.string.role_security_cover)
+    EmployeeRole.CLEANING -> stringResource(Res.string.role_limpieza)
+    null -> stringResource(Res.string.role_unknown)
 }
 
 private val dateTimeFormatter = LocalDateTime.Formats.ISO
@@ -79,65 +73,51 @@ fun Long?.toFriendlyDateTime(): String {
 /**
  * Converts the [TimeCardEventType] to a friendly string.
  */
-suspend fun TimeCardEventType?.eventTypeFriendlyName(
-    stringProvider: StringProvider,
-): String {
-    return when (this) {
-        TimeCardEventType.CLOCK_IN -> stringProvider.getString(Res.string.time_card_event_clock_in)
-        TimeCardEventType.CLOCK_OUT -> stringProvider.getString(Res.string.time_card_event_clock_out)
-        TimeCardEventType.OTHER, null -> stringProvider.getString(Res.string.role_unknown)
-    }
+suspend fun TimeCardEventType?.eventTypeFriendlyName(stringProvider: StringProvider): String = when (this) {
+    TimeCardEventType.CLOCK_IN -> stringProvider.getString(Res.string.time_card_event_clock_in)
+    TimeCardEventType.CLOCK_OUT -> stringProvider.getString(Res.string.time_card_event_clock_out)
+    TimeCardEventType.OTHER, null -> stringProvider.getString(Res.string.role_unknown)
 }
 
 /**
  * Converts the [IdType] to a friendly string.
  */
 @Composable
-fun IdType.toIdTypeFriendlyName(): String {
-    return when (this) {
-        IdType.DNI -> stringResource(Res.string.id_type_dni)
-        IdType.PASSPORT -> stringResource(Res.string.id_type_ce)
-        IdType.CE -> stringResource(Res.string.id_type_passport)
-        IdType.OTHER -> stringResource(Res.string.id_type_other)
-    }
+fun IdType.toIdTypeFriendlyName(): String = when (this) {
+    IdType.DNI -> stringResource(Res.string.id_type_dni)
+    IdType.PASSPORT -> stringResource(Res.string.id_type_ce)
+    IdType.CE -> stringResource(Res.string.id_type_passport)
+    IdType.OTHER -> stringResource(Res.string.id_type_other)
 }
 
 /**
  * Converts the [EventLogEventType] to a friendly string.
  */
-suspend fun EventLogEventType?.toFriendlyString(
-    stringProvider: StringProvider,
-): String {
-    return when (this) {
-        EventLogEventType.GUEST -> stringProvider.getString(Res.string.event_type_guest)
-        EventLogEventType.DELIVERY -> stringProvider.getString(Res.string.event_type_delivery)
-        EventLogEventType.INCIDENT -> stringProvider.getString(Res.string.event_type_incident)
-        EventLogEventType.MAINTENANCE_SERVICE -> stringProvider.getString(Res.string.event_type_maintenance_service)
-        else -> stringProvider.getString(Res.string.event_type_other)
-    }
+suspend fun EventLogEventType?.toFriendlyString(stringProvider: StringProvider): String = when (this) {
+    EventLogEventType.GUEST -> stringProvider.getString(Res.string.event_type_guest)
+    EventLogEventType.DELIVERY -> stringProvider.getString(Res.string.event_type_delivery)
+    EventLogEventType.INCIDENT -> stringProvider.getString(Res.string.event_type_incident)
+    EventLogEventType.MAINTENANCE_SERVICE -> stringProvider.getString(Res.string.event_type_maintenance_service)
+    else -> stringProvider.getString(Res.string.event_type_other)
 }
 
 /**
  * Converts the [EventLogEventType] to a friendly string.
  */
 @Composable
-fun EventLogEventType?.toFriendlyStringCompose(): String {
-    return when (this) {
-        EventLogEventType.GUEST -> stringResource(Res.string.event_type_guest)
-        EventLogEventType.DELIVERY -> stringResource(Res.string.event_type_delivery)
-        EventLogEventType.INCIDENT -> stringResource(Res.string.event_type_incident)
-        EventLogEventType.MAINTENANCE_SERVICE -> stringResource(Res.string.event_type_maintenance_service)
-        else -> stringResource(Res.string.event_type_other)
-    }
+fun EventLogEventType?.toFriendlyStringCompose(): String = when (this) {
+    EventLogEventType.GUEST -> stringResource(Res.string.event_type_guest)
+    EventLogEventType.DELIVERY -> stringResource(Res.string.event_type_delivery)
+    EventLogEventType.INCIDENT -> stringResource(Res.string.event_type_incident)
+    EventLogEventType.MAINTENANCE_SERVICE -> stringResource(Res.string.event_type_maintenance_service)
+    else -> stringResource(Res.string.event_type_other)
 }
 
 /**
  * Converts the [Theme] to a [SelectedTheme].
  */
-fun Theme.toSelectedTheme(): SelectedTheme {
-    return when (this) {
-        Theme.LIGHT -> SelectedTheme.LIGHT
-        Theme.DARK -> SelectedTheme.DARK
-        Theme.SYSTEM_DEFAULT -> SelectedTheme.SYSTEM_DEFAULT
-    }
+fun Theme.toSelectedTheme(): SelectedTheme = when (this) {
+    Theme.LIGHT -> SelectedTheme.LIGHT
+    Theme.DARK -> SelectedTheme.DARK
+    Theme.SYSTEM_DEFAULT -> SelectedTheme.SYSTEM_DEFAULT
 }

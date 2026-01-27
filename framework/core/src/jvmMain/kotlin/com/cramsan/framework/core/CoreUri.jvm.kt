@@ -10,9 +10,7 @@ actual class CoreUri(
     /**
      * Get the URI as a string.
      */
-    actual fun getUri(): String {
-        return uri
-    }
+    actual fun getUri(): String = uri
 
     actual override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -23,16 +21,12 @@ actual class CoreUri(
         return true
     }
 
-    actual override fun hashCode(): Int {
-        return uri.hashCode()
-    }
+    actual override fun hashCode(): Int = uri.hashCode()
     actual companion object {
 
         /**
          * Create a URI object from a string.
          */
-        actual fun createUri(uri: String): CoreUri {
-            return CoreUri(uri)
-        }
+        actual fun createUri(uri: String): CoreUri = CoreUri(uri)
     }
 }

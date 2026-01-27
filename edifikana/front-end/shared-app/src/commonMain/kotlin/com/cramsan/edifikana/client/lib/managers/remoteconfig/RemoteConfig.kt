@@ -15,10 +15,7 @@ data class RemoteConfig(
  *
  * The [fetchPeriod] is the period in days to retrieve data for.
  */
-data class BehaviorConfig(
-    val fetchPeriod: Int,
-    val allowListedCodes: List<String>,
-)
+data class BehaviorConfig(val fetchPeriod: Int, val allowListedCodes: List<String>)
 
 /**
  * The configuration data for compression and caching.
@@ -27,9 +24,7 @@ data class BehaviorConfig(
  *
  * @see [Bitmap.compress]
  */
-data class CachingConfig(
-    val imageQualityHint: Int,
-)
+data class CachingConfig(val imageQualityHint: Int)
 
 /**
  * Class that represents the preferred size at which the images will be taken. This is important as most of the
@@ -39,21 +34,14 @@ data class CachingConfig(
  * [ImageCapture.Builder.setTargetResolution] API. In general terms, these dimensions define the min size of the image
  * while fitting the largest dimension and keeping the aspect ratio.
  */
-data class ImageConfig(
-    val captureWidth: Int,
-    val captureHeight: Int,
-)
+data class ImageConfig(val captureWidth: Int, val captureHeight: Int)
 
 /**
  * The configuration data for the features of the app.
  */
-data class FeatureConfig(
-    val flags: Map<Features, Boolean>,
-) {
+data class FeatureConfig(val flags: Map<Features, Boolean>) {
     /**
      * Check if a feature is enabled.
      */
-    fun isFeatureEnabled(feature: Features): Boolean {
-        return flags[feature] ?: false
-    }
+    fun isFeatureEnabled(feature: Features): Boolean = flags[feature] ?: false
 }

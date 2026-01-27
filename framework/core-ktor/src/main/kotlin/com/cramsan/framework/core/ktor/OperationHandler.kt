@@ -39,10 +39,7 @@ object OperationHandler {
      * @param api The API instance being registered.
      * @param route The Ktor route associated with the API.
      */
-    data class RegistrationBuilder<T : Api>(
-        val api: T,
-        val route: Route,
-    )
+    data class RegistrationBuilder<T : Api>(val api: T, val route: Route)
 
     /**
      * Registers the routes for the given API within the provided Ktor routing context.
@@ -79,15 +76,14 @@ object OperationHandler {
         PathParamType : PathParam,
         ResponseType : ResponseBody,
         P,
-        C : ClientContext<P>
-        >
-        Operation<RequestType, QueryParamType, PathParamType, ResponseType>.handle(
-            route: Route,
-            contextRetriever: suspend ApplicationCall.() -> C,
-            handler: suspend ApplicationCall.(
-                OperationRequest<RequestType, QueryParamType, PathParamType, C>
-            ) -> HttpResponse<ResponseType>,
-        ) {
+        C : ClientContext<P>,
+        > Operation<RequestType, QueryParamType, PathParamType, ResponseType>.handle(
+        route: Route,
+        contextRetriever: suspend ApplicationCall.() -> C,
+        handler: suspend ApplicationCall.(
+            OperationRequest<RequestType, QueryParamType, PathParamType, C>,
+        ) -> HttpResponse<ResponseType>,
+    ) {
         this.handleImpl(route, contextRetriever) { request ->
             handler(request)
         }
@@ -113,14 +109,13 @@ object OperationHandler {
         ResponseType : ResponseBody,
         P,
         Context : ClientContext<P>,
-        >
-        Operation<RequestType, QueryParamType, PathParamType, ResponseType>.handleImpl(
-            route: Route,
-            contextRetriever: suspend (ApplicationCall) -> Context,
-            block: suspend ApplicationCall.(
-                OperationRequest<RequestType, QueryParamType, PathParamType, Context>,
-            ) -> HttpResponse<ResponseType>,
-        ) {
+        > Operation<RequestType, QueryParamType, PathParamType, ResponseType>.handleImpl(
+        route: Route,
+        contextRetriever: suspend (ApplicationCall) -> Context,
+        block: suspend ApplicationCall.(
+            OperationRequest<RequestType, QueryParamType, PathParamType, Context>,
+        ) -> HttpResponse<ResponseType>,
+    ) {
         val handler = this.toOperationHandler()
         route.route(handler.path, handler.method) {
             handle {
@@ -136,7 +131,7 @@ object OperationHandler {
                     call.validateClientError(
                         tag = TAG,
                         exception = ClientRequestExceptions.UnauthorizedException(
-                            "Unauthorized: ${contextResult.exceptionOrNull()?.message ?: "Unknown error"}"
+                            "Unauthorized: ${contextResult.exceptionOrNull()?.message ?: "Unknown error"}",
                         ),
                     )
                     return@handle

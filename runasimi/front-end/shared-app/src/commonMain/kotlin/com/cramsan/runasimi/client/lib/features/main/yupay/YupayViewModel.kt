@@ -8,14 +8,12 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for the Yupay screen.
  **/
-class YupayViewModel(
-    dependencies: ViewModelDependencies,
-    private val quechuaManager: QuechuaManager,
-) : BaseViewModel<YupayEvent, YupayUIState>(
-    dependencies,
-    YupayUIState.Initial,
-    TAG,
-) {
+class YupayViewModel(dependencies: ViewModelDependencies, private val quechuaManager: QuechuaManager) :
+    BaseViewModel<YupayEvent, YupayUIState>(
+        dependencies,
+        YupayUIState.Initial,
+        TAG,
+    ) {
 
     /**
      * Update the UI with a new number.

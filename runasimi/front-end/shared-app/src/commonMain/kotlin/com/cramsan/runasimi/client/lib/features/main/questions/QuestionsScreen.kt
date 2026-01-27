@@ -90,7 +90,7 @@ internal fun QuestionsContent(
                 ) {
                     Switch(
                         startInFront,
-                        { startInFront = it }
+                        { startInFront = it },
                     )
                 }
 
@@ -98,7 +98,7 @@ internal fun QuestionsContent(
                 Box(
                     modifier = sectionModifier
                         .graphicsLayer { clip = false }
-                        .zIndex(1f)
+                        .zIndex(1f),
                 ) {
                     Card(
                         content.content?.original,
@@ -110,7 +110,7 @@ internal fun QuestionsContent(
             buttonContent = { buttonModifier ->
                 Row(
                     buttonModifier,
-                    horizontalArrangement = Arrangement.spacedBy(Size.x_small)
+                    horizontalArrangement = Arrangement.spacedBy(Size.x_small),
                 ) {
                     Button(
                         onNewQuestionRequested,
@@ -119,7 +119,7 @@ internal fun QuestionsContent(
                         Text("Next")
                     }
                 }
-            }
+            },
         )
     }
 }

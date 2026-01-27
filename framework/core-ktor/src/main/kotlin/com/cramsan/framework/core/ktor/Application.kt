@@ -18,10 +18,7 @@ import io.ktor.server.routing.routing
 /**
  * Initialize monitoring
  */
-fun Application.initializeMonitoring(
-    tag: String,
-    logger: EventLoggerInterface,
-) {
+fun Application.initializeMonitoring(tag: String, logger: EventLoggerInterface) {
     monitor.subscribe(ApplicationStarting) {
         logger.i(tag, "ApplicationStarting")
     }

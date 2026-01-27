@@ -10,11 +10,5 @@ interface EventLoggerDelegate {
      * There is also an optional [throwable] that can be logged. The [args] can be provided to apply as
      * arguments to format into the [message].
      */
-    fun log(
-        severity: Severity,
-        tag: String,
-        message: String,
-        throwable: Throwable?,
-        vararg args: Any?,
-    )
+    fun log(severity: Severity, tag: String, message: String, throwable: Throwable?, vararg args: Any?)
 }

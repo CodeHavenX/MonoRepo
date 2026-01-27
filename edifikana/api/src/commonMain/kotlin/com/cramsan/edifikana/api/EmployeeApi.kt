@@ -22,14 +22,14 @@ object EmployeeApi : Api("employee") {
         CreateEmployeeNetworkRequest,
         NoQueryParam,
         NoPathParam,
-        EmployeeNetworkResponse
+        EmployeeNetworkResponse,
         >(HttpMethod.Post)
 
     val getEmployee = operation<
         NoRequestBody,
         NoQueryParam,
         EmployeeId,
-        EmployeeNetworkResponse
+        EmployeeNetworkResponse,
         >(HttpMethod.Get)
 
     val getEmployees = operation<
@@ -43,13 +43,13 @@ object EmployeeApi : Api("employee") {
         UpdateEmployeeNetworkRequest,
         NoQueryParam,
         EmployeeId,
-        EmployeeNetworkResponse
+        EmployeeNetworkResponse,
         >(HttpMethod.Put)
 
     val deleteEmployee = operation<
         NoRequestBody,
         NoQueryParam,
         EmployeeId,
-        NoResponseBody
+        NoResponseBody,
         >(HttpMethod.Delete)
 }

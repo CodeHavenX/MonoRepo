@@ -31,16 +31,14 @@ enum class UserRole {
         /**
          * Converts a string value to a UserRole.
          */
-        fun fromString(value: String?): UserRole {
-            return when (value) {
-                "SUPERUSER" -> SUPERUSER
-                "OWNER" -> OWNER
-                "ADMIN" -> ADMIN
-                "MANAGER" -> MANAGER
-                "EMPLOYEE" -> EMPLOYEE
-                "USER" -> USER
-                else -> throw IllegalArgumentException("Invalid UserRole value: $value")
-            }
+        fun fromString(value: String?): UserRole = when (value) {
+            "SUPERUSER" -> SUPERUSER
+            "OWNER" -> OWNER
+            "ADMIN" -> ADMIN
+            "MANAGER" -> MANAGER
+            "EMPLOYEE" -> EMPLOYEE
+            "USER" -> USER
+            else -> throw IllegalArgumentException("Invalid UserRole value: $value")
         }
     }
 }

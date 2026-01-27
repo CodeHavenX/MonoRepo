@@ -25,7 +25,9 @@ import kotlin.test.assertEquals
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
-class HealthCheckControllerTest : CoroutineTest(), KoinTest {
+class HealthCheckControllerTest :
+    CoroutineTest(),
+    KoinTest {
 
     /**
      * Setup the test.
@@ -74,8 +76,8 @@ class HealthCheckControllerTest : CoroutineTest(), KoinTest {
             ClientContext.AuthenticatedClientContext(
                 SupabaseContextPayload(
                     userId = UserId("test-user-id"),
-                    userInfo = mockk()
-                )
+                    userInfo = mockk(),
+                ),
             )
         }
 

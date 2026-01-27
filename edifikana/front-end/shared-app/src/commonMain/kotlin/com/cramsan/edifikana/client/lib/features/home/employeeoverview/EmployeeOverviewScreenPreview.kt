@@ -32,7 +32,7 @@ private fun EmployeeOverviewScreenPreview() {
                     ),
                     InviteItemUIModel(
                         email = "another.user@test.com",
-                    )
+                    ),
                 ),
             ),
         )

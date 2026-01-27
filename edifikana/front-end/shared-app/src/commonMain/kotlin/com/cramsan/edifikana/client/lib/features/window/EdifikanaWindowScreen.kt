@@ -105,7 +105,7 @@ private fun WindowsContent(
     }
     AppTheme(
         coil3 = koinInject<Coil3Provider>().coil3Integration,
-        darkTheme = darkTheme
+        darkTheme = darkTheme,
     ) {
         Scaffold(
             snackbarHost = {
@@ -132,15 +132,19 @@ private fun handleWindowEvent(
         is EdifikanaWindowsEvent.OpenCamera -> {
             eventHandler.openCamera(event)
         }
+
         is EdifikanaWindowsEvent.OpenImageExternally -> {
             eventHandler.openImageExternally(event)
         }
+
         is EdifikanaWindowsEvent.OpenPhotoPicker -> {
             eventHandler.openPhotoPicker(event)
         }
+
         is EdifikanaWindowsEvent.ShareContent -> {
             eventHandler.shareContent(event)
         }
+
         is EdifikanaWindowsEvent.NavigateToNavGraph -> {
             handleNavigationEvent(
                 navController = navController,
@@ -148,6 +152,7 @@ private fun handleWindowEvent(
             )
             navController.navigate(event.destination)
         }
+
         is EdifikanaWindowsEvent.NavigateToScreen -> {
             handleNavigationEvent(
                 navController = navController,
@@ -155,9 +160,11 @@ private fun handleWindowEvent(
             )
             navController.navigate(event.destination)
         }
+
         is EdifikanaWindowsEvent.NavigateBack -> {
             navController.popBackStack()
         }
+
         is EdifikanaWindowsEvent.CloseNavGraph -> {
             val currentNavGraph = navController.currentBackStack.value.reversed().find {
                 it.destination.navigatorName == "navigation"
@@ -166,6 +173,7 @@ private fun handleWindowEvent(
                 navController.popBackStack(it, inclusive = true)
             }
         }
+
         is EdifikanaWindowsEvent.ShowSnackbar -> {
             scope.launch {
                 handleSnackbarEvent(
@@ -179,10 +187,7 @@ private fun handleWindowEvent(
     }
 }
 
-private fun handleNavigationEvent(
-    navController: NavHostController,
-    event: NavigationEvent,
-) {
+private fun handleNavigationEvent(navController: NavHostController, event: NavigationEvent) {
     if (event.clearStack) {
         while (navController.currentBackStack.value.isNotEmpty()) {
             navController.popBackStack()

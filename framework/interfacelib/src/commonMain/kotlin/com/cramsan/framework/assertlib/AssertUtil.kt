@@ -36,9 +36,7 @@ object AssertUtil {
     }
 }
 
-/**
- * List of global functions to provide an easy API for assertions
- */
+// List of global functions to provide an easy API for assertions
 
 /**
  * Global function that delegates to [AssertUtil._singleton] and calls [AssertUtilInterface.assert].

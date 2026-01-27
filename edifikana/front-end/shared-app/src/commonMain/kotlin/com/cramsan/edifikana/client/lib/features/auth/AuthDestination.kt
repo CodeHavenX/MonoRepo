@@ -26,10 +26,7 @@ sealed class AuthDestination : Destination {
      * A class representing navigating to the validation screen.
      */
     @Serializable
-    data class ValidationDestination(
-        val userEmail: String,
-        val accountCreationFlow: Boolean,
-    ) : AuthDestination()
+    data class ValidationDestination(val userEmail: String, val accountCreationFlow: Boolean) : AuthDestination()
 
     /**
      * A class representing navigating to the select organization screen.

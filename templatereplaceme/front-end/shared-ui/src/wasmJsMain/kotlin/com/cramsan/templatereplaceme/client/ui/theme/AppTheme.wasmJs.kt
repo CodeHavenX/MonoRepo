@@ -11,12 +11,10 @@ actual fun getColorScheme(
     darkTheme: Boolean,
     dynamicColor: Boolean,
     darkColorScheme: ColorScheme,
-    lightColorScheme: ColorScheme
-): ColorScheme {
-    return when {
-        darkTheme -> darkColorScheme
-        else -> lightColorScheme
-    }
+    lightColorScheme: ColorScheme,
+): ColorScheme = when {
+    darkTheme -> darkColorScheme
+    else -> lightColorScheme
 }
 
 /**

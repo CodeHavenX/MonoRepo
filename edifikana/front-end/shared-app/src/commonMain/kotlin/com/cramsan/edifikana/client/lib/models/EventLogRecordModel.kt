@@ -61,7 +61,4 @@ data class EventLogRecordModel(
 /**
  * Holder for an attachment.
  */
-data class AttachmentHolder(
-    val publicUrl: String,
-    val storageRef: String?,
-)
+data class AttachmentHolder(val publicUrl: String, val storageRef: String?)

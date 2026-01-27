@@ -36,8 +36,8 @@ class StorageController(
             BytesRequestBody,
             CreateAssetQueryParams,
             NoPathParam,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): AssetNetworkResponse {
         val uploadFile = request.requestBody.bytes
         val fileName = requireNotBlank(request.queryParam.filename)

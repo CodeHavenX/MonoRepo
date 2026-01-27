@@ -21,27 +21,27 @@ object OrganizationApi : Api("organization") {
         NoRequestBody,
         NoQueryParam,
         NoPathParam,
-        OrganizationNetworkListNetworkResponse
+        OrganizationNetworkListNetworkResponse,
         >(HttpMethod.Get)
 
     val getOrganization = operation<
         NoRequestBody,
         NoQueryParam,
         OrganizationId,
-        OrganizationNetworkResponse
+        OrganizationNetworkResponse,
         >(HttpMethod.Get)
 
     val createOrganization = operation<
         CreateOrganizationNetworkRequest,
         NoQueryParam,
         NoPathParam,
-        OrganizationNetworkResponse
+        OrganizationNetworkResponse,
         >(HttpMethod.Post)
 
     val updateOrganization = operation<
         UpdateOrganizationNetworkRequest,
         NoQueryParam,
         OrganizationId,
-        OrganizationNetworkResponse
+        OrganizationNetworkResponse,
         >(HttpMethod.Put)
 }

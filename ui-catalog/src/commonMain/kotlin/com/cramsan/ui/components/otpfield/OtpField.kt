@@ -37,7 +37,7 @@ fun OtpSection(
         textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center),
         singleLine = true,
         keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Number
+            keyboardType = KeyboardType.Number,
         ),
         label = { Text("Verification code") },
         modifier = modifier,

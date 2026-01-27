@@ -34,16 +34,10 @@ sealed interface EmployeeItemUIModel {
 /**
  * UI model to represent a user employee in the employees list.
  */
-data class UserItemUIModel(
-    val id: UserId,
-    val name: String,
-    override val email: String,
-    val imageUrl: String?,
-) : EmployeeItemUIModel
+data class UserItemUIModel(val id: UserId, val name: String, override val email: String, val imageUrl: String?) :
+    EmployeeItemUIModel
 
 /**
  * UI model to represent an invitation in the employees list.
  */
-data class InviteItemUIModel(
-    override val email: String,
-) : EmployeeItemUIModel
+data class InviteItemUIModel(override val email: String) : EmployeeItemUIModel

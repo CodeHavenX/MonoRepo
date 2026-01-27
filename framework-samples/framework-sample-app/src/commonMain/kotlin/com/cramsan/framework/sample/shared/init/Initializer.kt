@@ -7,9 +7,7 @@ import org.koin.core.component.KoinComponent
 /**
  * Initializer class for the application.
  */
-class Initializer(
-    private val eventLogger: EventLoggerInterface,
-) : KoinComponent {
+class Initializer(private val eventLogger: EventLoggerInterface) : KoinComponent {
 
     /**
      * Start the initialization steps.

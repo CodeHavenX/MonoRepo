@@ -22,10 +22,7 @@ import com.cramsan.ui.theme.Size
  * Loading animation overlay.
  */
 @Composable
-fun LoadingAnimationOverlay(
-    isLoading: Boolean,
-    color: Color = TransparentGray,
-) {
+fun LoadingAnimationOverlay(isLoading: Boolean, color: Color = TransparentGray) {
     AnimatedVisibility(
         visible = isLoading,
         enter = fadeIn(),

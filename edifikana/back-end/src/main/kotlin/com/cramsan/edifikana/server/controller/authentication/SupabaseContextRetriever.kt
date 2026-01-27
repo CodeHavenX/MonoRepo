@@ -12,9 +12,7 @@ import io.ktor.server.application.ApplicationCall
 /**
  * A [ContextRetriever] that retrieves the client context from a Supabase auth token.
  */
-class SupabaseContextRetriever(
-    private val auth: Auth,
-) : ContextRetriever<SupabaseContextPayload> {
+class SupabaseContextRetriever(private val auth: Auth) : ContextRetriever<SupabaseContextPayload> {
 
     override suspend fun getContext(applicationCall: ApplicationCall): ClientContext<SupabaseContextPayload> {
         val headerMap = applicationCall.request.headers.entries().associate {
@@ -35,7 +33,7 @@ class SupabaseContextRetriever(
             SupabaseContextPayload(
                 userInfo = user,
                 userId = UserId(user.id),
-            )
+            ),
         )
     }
 

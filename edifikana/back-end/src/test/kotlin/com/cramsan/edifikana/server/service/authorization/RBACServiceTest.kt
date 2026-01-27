@@ -197,7 +197,7 @@ class RBACServiceTest {
     @ParameterizedTest
     @CsvSource(
         "testUserId, OWNER, testProperty, OWNER, true",
-        "testUserId2, EMPLOYEE, testProp2, OWNER, false"
+        "testUserId2, EMPLOYEE, testProp2, OWNER, false",
     )
     fun `hasRole for property actions returns expected results for requester`(
         userId: UserId,
@@ -262,7 +262,7 @@ class RBACServiceTest {
     @ParameterizedTest
     @CsvSource(
         "testUserId, EMPLOYEE, Employee1, EMPLOYEE, true",
-        "testUserId2, MANAGER, Employee2, ADMIN, false"
+        "testUserId2, MANAGER, Employee2, ADMIN, false",
     )
     fun `hasRole for employee actions returns expected results for requester`(
         userId: UserId,

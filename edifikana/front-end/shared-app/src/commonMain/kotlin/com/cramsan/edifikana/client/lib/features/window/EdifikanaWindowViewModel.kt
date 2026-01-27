@@ -20,7 +20,7 @@ class EdifikanaWindowViewModel(
 ) : BaseViewModel<EdifikanaWindowViewModelEvent, EdifikanaWindowUIState>(
     dependencies,
     EdifikanaWindowUIState,
-    TAG
+    TAG,
 ) {
 
     /**
@@ -32,8 +32,8 @@ class EdifikanaWindowViewModel(
                 logI(TAG, "Window event received: $event")
                 emitEvent(
                     EdifikanaWindowViewModelEvent.EdifikanaWindowEventWrapper(
-                        event as EdifikanaWindowsEvent
-                    )
+                        event as EdifikanaWindowsEvent,
+                    ),
                 )
             }
         }

@@ -11,10 +11,8 @@ import io.github.jan.supabase.storage.Storage
 /**
  * Supabase implementation of [StorageService].
  */
-class StorageServiceImpl(
-    private val storage: Storage,
-    private val downloadStrategy: DownloadStrategy,
-) : StorageService {
+class StorageServiceImpl(private val storage: Storage, private val downloadStrategy: DownloadStrategy) :
+    StorageService {
     override suspend fun uploadFile(data: ByteArray, targetRef: String): Result<String> = runSuspendCatching(TAG) {
         val bucket = storage.from(BUCKET_NAME)
         bucket.upload(targetRef, data) {

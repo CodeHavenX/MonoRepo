@@ -32,10 +32,7 @@ import org.koin.compose.viewmodel.koinViewModel
  * application. This includes observing the view model's state and event flows and rendering the screen.
  */
 @Composable
-fun SelectOrgScreen(
-    modifier: Modifier = Modifier,
-    viewModel: SelectOrgViewModel = koinViewModel(),
-) {
+fun SelectOrgScreen(modifier: Modifier = Modifier, viewModel: SelectOrgViewModel = koinViewModel()) {
     val uiState by viewModel.uiState.collectAsState()
     val dialogController = rememberDialogController()
 
@@ -46,17 +43,19 @@ fun SelectOrgScreen(
     ObserveViewModelEvents(viewModel) { event ->
         when (event) {
             SelectOrgEvent.Noop -> Unit
+
             SelectOrgEvent.ShowSignOutConfirmation -> {
                 val signOutDialog = JoinOrgConfirmationDialog(
                     onConfirm = { viewModel.confirmSignOut() },
-                    onDismiss = { /* User cancelled */ }
+                    onDismiss = { /* User cancelled */ },
                 )
                 dialogController.showDialog(signOutDialog)
             }
+
             is SelectOrgEvent.ShowJoinOrgConfirmation -> {
                 val joinOrgDialog = JoinOrgConfirmationDialog(
                     onConfirm = { viewModel.acceptInvite(event.inviteId) },
-                    onDismiss = { /* User cancelled */ }
+                    onDismiss = { /* User cancelled */ },
                 )
                 dialogController.showDialog(joinOrgDialog)
             }
@@ -94,7 +93,7 @@ internal fun SelectOrgContent(
                 title = "Get Started",
                 onNavigationIconSelected = onSignOutClicked,
             )
-        }
+        },
     ) { innerPadding ->
         ScreenLayout(
             modifier = Modifier
@@ -154,7 +153,7 @@ internal fun SelectOrgContent(
                     onClick = onCreateWorkspaceClicked,
                     modifier = sectionModifier,
                 )
-            }
+            },
         )
     }
 }

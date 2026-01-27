@@ -14,16 +14,12 @@ import io.ktor.server.routing.Routing
  * Controller for handling health check requests.
  */
 @OptIn(NetworkModel::class)
-class HealthCheckController(
-    private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
-) : Controller {
+class HealthCheckController(private val contextRetriever: ContextRetriever<SupabaseContextPayload>) : Controller {
 
     /**
      * Handles a health check request.
      */
-    fun healthCheck(): HealthCheckNetworkResponse {
-        return HealthCheckNetworkResponse("OK")
-    }
+    fun healthCheck(): HealthCheckNetworkResponse = HealthCheckNetworkResponse("OK")
 
     /**
      * Registers the routes for the health check controller.

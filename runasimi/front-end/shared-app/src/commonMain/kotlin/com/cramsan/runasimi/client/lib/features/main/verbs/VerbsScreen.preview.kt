@@ -17,7 +17,7 @@ private fun VerbsScreenPreview() {
                 Content(
                     translated = "Iskay chunka pichqayuq",
                     original = "25",
-                )
+                ),
             ),
         )
     }

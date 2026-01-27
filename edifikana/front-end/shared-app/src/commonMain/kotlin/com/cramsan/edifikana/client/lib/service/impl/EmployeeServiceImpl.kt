@@ -12,9 +12,7 @@ import io.ktor.client.HttpClient
 /**
  * Default implementation for the [EmployeeService].
  */
-class EmployeeServiceImpl(
-    private val http: HttpClient,
-) : EmployeeService {
+class EmployeeServiceImpl(private val http: HttpClient) : EmployeeService {
 
     @OptIn(NetworkModel::class)
     override suspend fun getEmployeeList(): Result<List<EmployeeModel>> = runSuspendCatching(TAG) {
@@ -33,29 +31,27 @@ class EmployeeServiceImpl(
     }
 
     @OptIn(NetworkModel::class)
-    override suspend fun createEmployee(
-        employee: EmployeeModel.CreateEmployeeRequest,
-    ): Result<EmployeeModel> = runSuspendCatching(TAG) {
-        val response = EmployeeApi
-            .createEmployee
-            .buildRequest(employee.toCreateEmployeeNetworkRequest())
-            .execute(http)
-        val employeeModel = response.toEmployeeModel()
-        employeeModel
-    }
+    override suspend fun createEmployee(employee: EmployeeModel.CreateEmployeeRequest): Result<EmployeeModel> =
+        runSuspendCatching(TAG) {
+            val response = EmployeeApi
+                .createEmployee
+                .buildRequest(employee.toCreateEmployeeNetworkRequest())
+                .execute(http)
+            val employeeModel = response.toEmployeeModel()
+            employeeModel
+        }
 
     @OptIn(NetworkModel::class)
-    override suspend fun updateEmployee(
-        employee: EmployeeModel.UpdateEmployeeRequest,
-    ): Result<EmployeeModel> = runSuspendCatching(TAG) {
-        val response = EmployeeApi
-            .updateEmployee
-            .buildRequest(employee.employeeId, employee.toUpdateEmployeeNetworkRequest())
-            .execute(http)
+    override suspend fun updateEmployee(employee: EmployeeModel.UpdateEmployeeRequest): Result<EmployeeModel> =
+        runSuspendCatching(TAG) {
+            val response = EmployeeApi
+                .updateEmployee
+                .buildRequest(employee.employeeId, employee.toUpdateEmployeeNetworkRequest())
+                .execute(http)
 
-        val employeeModel = response.toEmployeeModel()
-        employeeModel
-    }
+            val employeeModel = response.toEmployeeModel()
+            employeeModel
+        }
 
     companion object {
         private const val TAG = "EmployeeServiceImpl"

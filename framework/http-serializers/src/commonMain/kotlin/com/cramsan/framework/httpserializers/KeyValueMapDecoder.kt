@@ -29,21 +29,15 @@ import kotlinx.serialization.serializer
  * Note: This decoder does not support nested objects or complex types.
  */
 @ExperimentalSerializationApi
-open class KeyValueMapDecoder(
-    private val params: Map<String, List<String>>
-) : AbstractDecoder() {
+open class KeyValueMapDecoder(private val params: Map<String, List<String>>) : AbstractDecoder() {
     private var currentIndex = -1
     private lateinit var currentDescriptor: SerialDescriptor
     override val serializersModule: SerializersModule = SerializersModule {}
     private var currentList: List<String>? = null
     private var currentListIndex: Int = -1
 
-    override fun <T : Any?> decodeSerializableValue(
-        deserializer: DeserializationStrategy<T>,
-        previousValue: T?
-    ): T {
-        return decodeSerializableValue(deserializer)
-    }
+    override fun <T : Any?> decodeSerializableValue(deserializer: DeserializationStrategy<T>, previousValue: T?): T =
+        decodeSerializableValue(deserializer)
 
     override fun decodeEnum(enumDescriptor: SerialDescriptor): Int {
         val enumValue = decodeString()
@@ -86,20 +80,18 @@ open class KeyValueMapDecoder(
         return CompositeDecoder.DECODE_DONE
     }
 
-    override fun decodeString(): String {
-        return if (currentList != null) {
-            currentList?.get(currentListIndex) ?: error("No value for list at index $currentListIndex")
-        } else {
-            val name = currentDescriptor.getElementName(currentIndex)
-            val value = params[name]
-            if (value.isNullOrEmpty()) {
-                error("Missing value for key: $name")
-            }
-            if (value.size > 1) {
-                error("Multiple values for key: $name. Found: $value")
-            }
-            value[0]
+    override fun decodeString(): String = if (currentList != null) {
+        currentList?.get(currentListIndex) ?: error("No value for list at index $currentListIndex")
+    } else {
+        val name = currentDescriptor.getElementName(currentIndex)
+        val value = params[name]
+        if (value.isNullOrEmpty()) {
+            error("Missing value for key: $name")
         }
+        if (value.size > 1) {
+            error("Multiple values for key: $name. Found: $value")
+        }
+        value[0]
     }
 
     override fun decodeInt(): Int = decodeString().toInt()

@@ -13,10 +13,7 @@ sealed class TemplateReplaceMeWindowsEvent : WindowEvent {
     /**
      * Share content.
      */
-    data class ShareContent(
-        val text: String,
-        val imageUri: CoreUri? = null,
-    ) : TemplateReplaceMeWindowsEvent()
+    data class ShareContent(val text: String, val imageUri: CoreUri? = null) : TemplateReplaceMeWindowsEvent()
 
     /**
      * Navigate to nav graph.
@@ -25,7 +22,8 @@ sealed class TemplateReplaceMeWindowsEvent : WindowEvent {
         val destination: TemplateReplaceMeWindowNavGraphDestination,
         override val clearTop: Boolean = false,
         override val clearStack: Boolean = false,
-    ) : TemplateReplaceMeWindowsEvent(), NavigationEvent
+    ) : TemplateReplaceMeWindowsEvent(),
+        NavigationEvent
 
     /**
      * Navigate to destination.
@@ -34,7 +32,8 @@ sealed class TemplateReplaceMeWindowsEvent : WindowEvent {
         val destination: Destination,
         override val clearTop: Boolean = false,
         override val clearStack: Boolean = false,
-    ) : TemplateReplaceMeWindowsEvent(), NavigationEvent
+    ) : TemplateReplaceMeWindowsEvent(),
+        NavigationEvent
 
     /**
      * Close the nav graph.
@@ -44,9 +43,7 @@ sealed class TemplateReplaceMeWindowsEvent : WindowEvent {
     /**
      * Show a snackbar.
      */
-    data class ShowSnackbar(
-        val message: String,
-    ) : TemplateReplaceMeWindowsEvent()
+    data class ShowSnackbar(val message: String) : TemplateReplaceMeWindowsEvent()
 
     /**
      * Navigate back.

@@ -16,9 +16,7 @@ import org.koin.compose.viewmodel.koinViewModel
  * Main Menu screen
  */
 @Composable
-fun MainMenuScreen(
-    viewModel: MainMenuViewModel = koinViewModel(),
-) {
+fun MainMenuScreen(viewModel: MainMenuViewModel = koinViewModel()) {
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
     }
 

@@ -11,16 +11,12 @@ class TimeCardNoopCache : TimeCardCache {
     /**
      * Get all time card records for an employee member.
      */
-    override suspend fun getRecords(employeePK: EmployeeId): List<TimeCardRecordModel> {
-        return emptyList()
-    }
+    override suspend fun getRecords(employeePK: EmployeeId): List<TimeCardRecordModel> = emptyList()
 
     /**
      * Get all time card records.
      */
-    override suspend fun getAllRecords(): List<TimeCardRecordModel> {
-        return emptyList()
-    }
+    override suspend fun getAllRecords(): List<TimeCardRecordModel> = emptyList()
 
     /**
      * Add a time card record.

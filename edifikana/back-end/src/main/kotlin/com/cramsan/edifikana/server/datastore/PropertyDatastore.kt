@@ -24,16 +24,12 @@ interface PropertyDatastore {
     /**
      * Retrieves a property by its ID. Returns the [Result] of the operation with the fetched [Property] if found.
      */
-    suspend fun getProperty(
-        propertyId: PropertyId,
-    ): Result<Property?>
+    suspend fun getProperty(propertyId: PropertyId): Result<Property?>
 
     /**
      * Retrieves all properties for a user. Returns the [Result] of the operation with a list of [Property].
      */
-    suspend fun getProperties(
-        userId: UserId,
-    ): Result<List<Property>>
+    suspend fun getProperties(userId: UserId): Result<List<Property>>
 
     /**
      * Updates a property with the given ID. Returns the [Result] of the operation with the updated [Property].
@@ -48,9 +44,7 @@ interface PropertyDatastore {
     /**
      * Deletes a property with the given ID. Returns the [Result] of the operation with a [Boolean] indicating success.
      */
-    suspend fun deleteProperty(
-        propertyId: PropertyId,
-    ): Result<Boolean>
+    suspend fun deleteProperty(propertyId: PropertyId): Result<Boolean>
 
     /**
      * Permanently deletes a soft-deleted property record by ID.
@@ -58,7 +52,5 @@ interface PropertyDatastore {
      * This is intended for testing and maintenance purposes only.
      * Returns the [Result] of the operation with a [Boolean] indicating if the record was purged.
      */
-    suspend fun purgeProperty(
-        propertyId: PropertyId,
-    ): Result<Boolean>
+    suspend fun purgeProperty(propertyId: PropertyId): Result<Boolean>
 }

@@ -37,7 +37,9 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.TestTimeSource
 
 @OptIn(ExperimentalTime::class)
-class NotificationControllerTest : CoroutineTest(), KoinTest {
+class NotificationControllerTest :
+    CoroutineTest(),
+    KoinTest {
 
     private lateinit var testTimeSource: TestTimeSource
 
@@ -91,7 +93,7 @@ class NotificationControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = userId,
-            )
+            ),
         )
         coEvery { contextRetriever.getContext(any()) } returns context
         coEvery { notificationService.getNotificationsForUser(userId) } returns Result.success(notifications)
@@ -118,7 +120,7 @@ class NotificationControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = userId,
-            )
+            ),
         )
         coEvery { contextRetriever.getContext(any()) } returns context
         coEvery { notificationService.getNotificationsForUser(userId) } returns Result.success(emptyList())
@@ -146,7 +148,7 @@ class NotificationControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = userId,
-            )
+            ),
         )
         coEvery { contextRetriever.getContext(any()) } returns context
         coEvery { notificationService.getNotification(notificationId) } returns Result.success(notification)
@@ -174,7 +176,7 @@ class NotificationControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = userId,
-            )
+            ),
         )
         coEvery { contextRetriever.getContext(any()) } returns context
         coEvery { notificationService.getNotification(notificationId) } returns Result.success(null)
@@ -200,7 +202,7 @@ class NotificationControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = userId,
-            )
+            ),
         )
         coEvery { contextRetriever.getContext(any()) } returns context
         coEvery { notificationService.getNotification(notificationId) } returns Result.success(notification)
@@ -226,7 +228,7 @@ class NotificationControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = userId,
-            )
+            ),
         )
         coEvery { contextRetriever.getContext(any()) } returns context
         coEvery { notificationService.getNotification(notificationId) } returns Result.success(notification)
@@ -252,7 +254,7 @@ class NotificationControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = userId,
-            )
+            ),
         )
         coEvery { contextRetriever.getContext(any()) } returns context
         coEvery { notificationService.getNotification(notificationId) } returns Result.success(null)
@@ -278,7 +280,7 @@ class NotificationControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = userId,
-            )
+            ),
         )
         coEvery { contextRetriever.getContext(any()) } returns context
         coEvery { notificationService.getNotification(notificationId) } returns Result.success(notification)
@@ -303,7 +305,7 @@ class NotificationControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = userId,
-            )
+            ),
         )
         coEvery { contextRetriever.getContext(any()) } returns context
         coEvery { notificationService.getNotification(notificationId) } returns Result.success(notification)
@@ -329,7 +331,7 @@ class NotificationControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = userId,
-            )
+            ),
         )
         coEvery { contextRetriever.getContext(any()) } returns context
         coEvery { notificationService.getNotification(notificationId) } returns Result.success(null)
@@ -355,7 +357,7 @@ class NotificationControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = userId,
-            )
+            ),
         )
         coEvery { contextRetriever.getContext(any()) } returns context
         coEvery { notificationService.getNotification(notificationId) } returns Result.success(notification)

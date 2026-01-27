@@ -82,8 +82,7 @@ object PropertyIcons {
      * @param drawable The DrawableResource
      * @return The corresponding icon ID, or null if not found
      */
-    fun getIdByDrawable(drawable: DrawableResource): String? =
-        iconMap.entries.firstOrNull { it.value == drawable }?.key
+    fun getIdByDrawable(drawable: DrawableResource): String? = iconMap.entries.firstOrNull { it.value == drawable }?.key
 
     /**
      * Get all available property icons as a map of ID to DrawableResource.

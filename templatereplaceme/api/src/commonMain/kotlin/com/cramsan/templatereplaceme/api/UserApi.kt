@@ -19,6 +19,6 @@ object UserApi : Api("user") {
             CreateUserNetworkRequest,
             NoQueryParam,
             NoPathParam,
-            UserNetworkResponse
+            UserNetworkResponse,
             >(HttpMethod.Post)
 }

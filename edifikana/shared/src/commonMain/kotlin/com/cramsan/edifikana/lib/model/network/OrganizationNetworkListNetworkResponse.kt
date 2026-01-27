@@ -12,5 +12,5 @@ import kotlinx.serialization.Serializable
 @NetworkModel
 @Serializable
 data class OrganizationNetworkListNetworkResponse(
-    val organizations: List<OrganizationNetworkResponse>
+    val organizations: List<OrganizationNetworkResponse>,
 ) : ResponseBody

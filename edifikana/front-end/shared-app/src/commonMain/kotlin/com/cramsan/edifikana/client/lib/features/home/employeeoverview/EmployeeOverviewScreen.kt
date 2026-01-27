@@ -52,9 +52,7 @@ fun EmployeeOverviewScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    /**
-     * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
-     */
+    // For other possible lifecycle events, see the Lifecycle.Event documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
         viewModel.initialize()
     }
@@ -104,7 +102,7 @@ internal fun EmployeeOverviewContent(
                     contentDescription = "Add new employee",
                 )
             }
-        }
+        },
     ) { innerPadding ->
         ScreenLayout(
             modifier = Modifier.padding(innerPadding).fillMaxSize(),
@@ -118,6 +116,7 @@ internal fun EmployeeOverviewContent(
                                 modifier = sectionModifier,
                             )
                         }
+
                         is UserItemUIModel -> {
                             UserItem(
                                 employee = it,
@@ -130,7 +129,7 @@ internal fun EmployeeOverviewContent(
             },
             overlay = {
                 LoadingAnimationOverlay(content.isLoading)
-            }
+            },
         )
     }
 }
@@ -167,13 +166,13 @@ private fun UserItem(
                 contentDescription = "No image available for ${employee.name}",
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = imageModifier.padding(
-                    Padding.SMALL
+                    Padding.SMALL,
                 ),
             )
         }
         Spacer(Modifier.size(Padding.MEDIUM))
         Column(
-            modifier = Modifier.padding(Padding.SMALL)
+            modifier = Modifier.padding(Padding.SMALL),
         ) {
             Text(
                 employee.name,
@@ -188,10 +187,7 @@ private fun UserItem(
 }
 
 @Composable
-private fun InviteItem(
-    invite: InviteItemUIModel,
-    modifier: Modifier = Modifier,
-) {
+private fun InviteItem(invite: InviteItemUIModel, modifier: Modifier = Modifier) {
     Row(
         modifier
             .clip(MaterialTheme.shapes.medium)
@@ -210,12 +206,12 @@ private fun InviteItem(
             contentDescription = "Pending invite for ${invite.email}",
             tint = MaterialTheme.colorScheme.outline,
             modifier = imageModifier.padding(
-                Padding.SMALL
+                Padding.SMALL,
             ),
         )
         Spacer(Modifier.size(Padding.MEDIUM))
         Column(
-            modifier = Modifier.padding(Padding.SMALL)
+            modifier = Modifier.padding(Padding.SMALL),
         ) {
             Text(
                 invite.email,

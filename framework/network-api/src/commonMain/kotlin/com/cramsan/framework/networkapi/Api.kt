@@ -31,9 +31,9 @@ open class Api(
         RequestType : RequestBody,
         QueryParamType : QueryParam,
         PathParamType : PathParam,
-        ResponseType : ResponseBody
+        ResponseType : ResponseBody,
         > registerOperation(
-        registrar: Operation<RequestType, QueryParamType, PathParamType, ResponseType>
+        registrar: Operation<RequestType, QueryParamType, PathParamType, ResponseType>,
     ) {
         operations.add(registrar as Operation<RequestBody, QueryParam, PathParam, ResponseBody>)
     }
@@ -71,7 +71,7 @@ open class Api(
         requestBodyType,
         queryParamType,
         pathParamType,
-        responseBodyType
+        responseBodyType,
     ).also {
         registerOperation(it)
     }

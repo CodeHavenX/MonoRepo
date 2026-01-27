@@ -17,6 +17,6 @@ object HealthApi : Api("health") {
         NoRequestBody,
         NoQueryParam,
         NoPathParam,
-        HealthCheckNetworkResponse
+        HealthCheckNetworkResponse,
         >(HttpMethod.Get)
 }

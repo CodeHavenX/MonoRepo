@@ -47,9 +47,7 @@ fun OtpValidationScreen(
     val uiState by viewModel.uiState.collectAsState()
     val screenScope = rememberCoroutineScope()
 
-    /**
-     * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
-     */
+    // For other possible lifecycle events, see the Lifecycle.Event documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
         viewModel.initializeOTPValidationScreen(destination.userEmail, destination.accountCreationFlow)
     }
@@ -113,7 +111,7 @@ internal fun OtpValidationContent(
                     contentDescription = "Validation Image",
                     modifier = sectionModifier.size(
                         width = 150.dp,
-                        height = 150.dp
+                        height = 150.dp,
                     ),
                 )
                 // Display text message
@@ -158,7 +156,7 @@ internal fun OtpValidationContent(
                     enabled = uiState.enabledContinueButton,
                     modifier = sectionModifier
                         .padding(top = 16.dp)
-                        .wrapContentWidth()
+                        .wrapContentWidth(),
                 ) {
                     Text("Login")
                 }

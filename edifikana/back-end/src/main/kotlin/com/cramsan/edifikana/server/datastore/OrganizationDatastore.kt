@@ -35,11 +35,7 @@ interface OrganizationDatastore {
      * @param description The new description for the organization, or null to keep existing.
      * @return The updated organization or an error.
      */
-    suspend fun updateOrganization(
-        id: OrganizationId,
-        name: String?,
-        description: String?
-    ): Result<Organization>
+    suspend fun updateOrganization(id: OrganizationId, name: String?, description: String?): Result<Organization>
 
     /**
      * Delete an organization by its ID.

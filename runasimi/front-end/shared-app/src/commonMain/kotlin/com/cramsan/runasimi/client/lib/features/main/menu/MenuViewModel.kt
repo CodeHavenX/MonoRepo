@@ -10,14 +10,12 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for the Menu screen.
  **/
-class MenuViewModel(
-    dependencies: ViewModelDependencies,
-    private val preferencesManager: PreferencesManager,
-) : BaseViewModel<MenuEvent, MenuUIState>(
-    dependencies,
-    MenuUIState.Initial,
-    TAG,
-) {
+class MenuViewModel(dependencies: ViewModelDependencies, private val preferencesManager: PreferencesManager) :
+    BaseViewModel<MenuEvent, MenuUIState>(
+        dependencies,
+        MenuUIState.Initial,
+        TAG,
+    ) {
 
     /**
      * Initialize the ViewModel.

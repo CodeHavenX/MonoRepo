@@ -52,15 +52,10 @@ import org.koin.compose.viewmodel.koinViewModel
  * application. This includes observing the view model's state and event flows and rendering the screen.
  */
 @Composable
-fun NotificationsScreen(
-    modifier: Modifier = Modifier,
-    viewModel: NotificationsViewModel = koinViewModel(),
-) {
+fun NotificationsScreen(modifier: Modifier = Modifier, viewModel: NotificationsViewModel = koinViewModel()) {
     val uiState by viewModel.uiState.collectAsState()
 
-    /**
-     * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
-     */
+    // For other possible lifecycle events, see the Lifecycle.Event documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
         viewModel.initialize()
     }
@@ -125,6 +120,7 @@ internal fun NotificationsContent(
                                     modifier = sectionModifier,
                                 )
                             }
+
                             is SystemNotificationUIModel -> {
                                 SystemNotificationItem(
                                     notification = notification,
@@ -141,15 +137,13 @@ internal fun NotificationsContent(
             },
             overlay = {
                 LoadingAnimationOverlay(content.isLoading)
-            }
+            },
         )
     }
 }
 
 @Composable
-private fun EmptyNotificationsMessage(
-    modifier: Modifier = Modifier,
-) {
+private fun EmptyNotificationsMessage(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier.fillMaxWidth(),
         contentAlignment = Alignment.Center,
@@ -284,7 +278,7 @@ private fun SystemNotificationItem(
                 contentDescription = stringResource(Res.string.string_cancel),
                 // tint = Color.White,
                 modifier = Modifier.fillMaxSize()
-                    .padding(5.dp)
+                    .padding(5.dp),
             )
         }
     }

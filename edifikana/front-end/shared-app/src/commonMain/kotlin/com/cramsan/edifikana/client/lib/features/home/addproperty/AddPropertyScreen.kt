@@ -39,9 +39,7 @@ fun AddPropertyScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    /**
-     * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
-     */
+    // For other possible lifecycle events, see the Lifecycle.Event documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
         viewModel.initialize(destination.orgId)
     }
@@ -135,7 +133,7 @@ internal fun AddPropertyContent(
             },
             overlay = {
                 LoadingAnimationOverlay(content.isLoading)
-            }
+            },
         )
     }
 }

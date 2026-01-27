@@ -9,10 +9,8 @@ import org.koin.core.component.KoinComponent
 /**
  * Initializer class for the application.
  */
-class Initializer(
-    private val eventLogger: EventLoggerInterface,
-    private val authManager: AuthManager,
-) : KoinComponent {
+class Initializer(private val eventLogger: EventLoggerInterface, private val authManager: AuthManager) :
+    KoinComponent {
 
     /**
      * Start the initialization steps.

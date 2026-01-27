@@ -9,10 +9,8 @@ import com.cramsan.templatereplaceme.lib.model.network.UserNetworkResponse
  * Maps a [UserNetworkResponse] network model to a [UserModel] domain model.
  */
 @OptIn(NetworkModel::class)
-fun UserNetworkResponse.toUserModel(): UserModel {
-    return UserModel(
-        id = UserId(this.id),
-        firstName = this.firstName,
-        lastName = this.lastName,
-    )
-}
+fun UserNetworkResponse.toUserModel(): UserModel = UserModel(
+    id = UserId(this.id),
+    firstName = this.firstName,
+    lastName = this.lastName,
+)

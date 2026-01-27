@@ -10,10 +10,7 @@ import com.cramsan.framework.logging.logI
 /**
  * Manager for employee.
  */
-class EmployeeManager(
-    private val employeeService: EmployeeService,
-    private val dependencies: ManagerDependencies,
-) {
+class EmployeeManager(private val employeeService: EmployeeService, private val dependencies: ManagerDependencies) {
 
     /**
      * Get all employees.

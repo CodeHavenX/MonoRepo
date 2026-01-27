@@ -20,15 +20,10 @@ import org.koin.compose.viewmodel.koinViewModel
  * application. This includes observing the view model's state and event flows and rendering the screen.
  */
 @Composable
-fun SplashScreen(
-    modifier: Modifier = Modifier,
-    viewModel: SplashViewModel = koinViewModel(),
-) {
+fun SplashScreen(modifier: Modifier = Modifier, viewModel: SplashViewModel = koinViewModel()) {
     val uiState by viewModel.uiState.collectAsState()
 
-    /**
-     * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
-     */
+    // For other possible lifecycle events, see the Lifecycle.Event documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
         viewModel.navigateToMainScreen()
     }
@@ -50,10 +45,7 @@ fun SplashScreen(
  * Content of the AccountEdit screen.
  */
 @Composable
-internal fun SplashContent(
-    content: SplashUIState,
-    modifier: Modifier = Modifier,
-) {
+internal fun SplashContent(content: SplashUIState, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,

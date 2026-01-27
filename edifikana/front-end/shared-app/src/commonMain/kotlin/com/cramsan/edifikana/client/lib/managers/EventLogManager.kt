@@ -43,15 +43,14 @@ class EventLogManager(
     /**
      * Get a specific event log record.
      */
-    suspend fun getRecord(
-        eventLogRecordPK: EventLogEntryId,
-    ): Result<EventLogRecordModel> = dependencies.getOrCatch(TAG) {
-        logI(TAG, "getRecord")
-        val record = eventLogService.getRecord(eventLogRecordPK).getOrThrow()
-        record.copy(
-            attachments = record.attachments,
-        )
-    }
+    suspend fun getRecord(eventLogRecordPK: EventLogEntryId): Result<EventLogRecordModel> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "getRecord")
+            val record = eventLogService.getRecord(eventLogRecordPK).getOrThrow()
+            record.copy(
+                attachments = record.attachments,
+            )
+        }
 
     /**
      * Add a new event log record.

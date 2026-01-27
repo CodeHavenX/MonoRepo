@@ -11,7 +11,5 @@ sealed class RunasimiWindowViewModelEvent : ViewModelEvent {
     /**
      * Wrapper for [RunasimiWindowsEvent] to be used in the view model.
      */
-    data class RunasimiWindowEventWrapper(
-        val event: RunasimiWindowsEvent,
-    ) : RunasimiWindowViewModelEvent()
+    data class RunasimiWindowEventWrapper(val event: RunasimiWindowsEvent) : RunasimiWindowViewModelEvent()
 }

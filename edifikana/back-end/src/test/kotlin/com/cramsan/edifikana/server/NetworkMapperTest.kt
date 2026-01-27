@@ -32,7 +32,7 @@ class NetworkMapperTest {
             firstName = "Test",
             lastName = "User",
             authMetadata = User.AuthMetadata(isPasswordSet = true),
-            role = UserRole.SUPERUSER
+            role = UserRole.SUPERUSER,
         )
         val expectedResponse = UserNetworkResponse(
             id = "123",
@@ -40,7 +40,7 @@ class NetworkMapperTest {
             phoneNumber = "1234567890",
             firstName = "Test",
             lastName = "User",
-            authMetadata = AuthMetadataNetworkResponse(isPasswordSet = true)
+            authMetadata = AuthMetadataNetworkResponse(isPasswordSet = true),
         )
 
         // Act

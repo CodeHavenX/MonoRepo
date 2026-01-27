@@ -36,15 +36,17 @@ fun ThemeToggle(
             when (theme) {
                 SelectedTheme.LIGHT -> Icon(
                     imageVector = Icons.Sharp.LightMode,
-                    contentDescription = "Light Theme"
+                    contentDescription = "Light Theme",
                 )
+
                 SelectedTheme.DARK -> Icon(
                     imageVector = Icons.Sharp.DarkMode,
-                    contentDescription = "Dark Theme"
+                    contentDescription = "Dark Theme",
                 )
+
                 SelectedTheme.SYSTEM_DEFAULT -> Icon(
                     imageVector = Icons.Sharp.Settings,
-                    contentDescription = "System Default Theme"
+                    contentDescription = "System Default Theme",
                 )
             }
         }
@@ -57,5 +59,5 @@ fun ThemeToggle(
 enum class SelectedTheme {
     LIGHT,
     DARK,
-    SYSTEM_DEFAULT
+    SYSTEM_DEFAULT,
 }

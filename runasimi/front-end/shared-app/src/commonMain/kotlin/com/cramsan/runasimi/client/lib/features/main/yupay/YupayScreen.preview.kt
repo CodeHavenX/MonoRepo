@@ -17,8 +17,8 @@ private fun YupayScreenPreview() {
                 Content(
                     translated = "Iskay chunka pichqayuq",
                     original = "25",
-                )
-            )
+                ),
+            ),
         )
     }
 }

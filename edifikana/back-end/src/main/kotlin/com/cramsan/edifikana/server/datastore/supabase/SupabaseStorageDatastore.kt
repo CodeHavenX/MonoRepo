@@ -11,16 +11,11 @@ import kotlin.time.Duration.Companion.minutes
 /**
  * Datastore for managing storage of assets using Supabase.
  */
-class SupabaseStorageDatastore(
-    private val storage: Storage,
-) : StorageDatastore {
+class SupabaseStorageDatastore(private val storage: Storage) : StorageDatastore {
     /**
      * Uploads a new asset to storage with the given [fileName] and [content].
      */
-    override suspend fun createAsset(
-        fileName: String,
-        content: ByteArray,
-    ): Result<Asset> = runSuspendCatching(TAG) {
+    override suspend fun createAsset(fileName: String, content: ByteArray): Result<Asset> = runSuspendCatching(TAG) {
         logD(TAG, "Creating a new asset: %s", fileName)
         val bucket = storage.from("images/timecard-images")
         bucket.upload(fileName, content) {
@@ -33,9 +28,7 @@ class SupabaseStorageDatastore(
     /**
      * Retrieves an asset by [id], including its signed download URL and content bytes.
      */
-    override suspend fun getAsset(
-        id: AssetId,
-    ): Result<Asset?> = runSuspendCatching(TAG) {
+    override suspend fun getAsset(id: AssetId): Result<Asset?> = runSuspendCatching(TAG) {
         logD(TAG, "Getting assetId: %s", id)
         // Extract the file's bucketId and file name from the assetId
         val fileIdParts = extractFileIdPartsFromAssetId(id)
@@ -54,10 +47,7 @@ class SupabaseStorageDatastore(
     /**
      * Generates a unique asset ID based on the bucket name and file name.
      */
-    private fun generateAssetId(
-        bucketName: String,
-        fileName: String
-    ): AssetId {
+    private fun generateAssetId(bucketName: String, fileName: String): AssetId {
         val assetId = "$bucketName/$fileName"
         return AssetId(assetId)
     }
@@ -65,9 +55,7 @@ class SupabaseStorageDatastore(
     /**
      * Extracts the file name from the asset ID.
      */
-    private fun extractFileIdPartsFromAssetId(
-        assetId: AssetId
-    ): List<String> {
+    private fun extractFileIdPartsFromAssetId(assetId: AssetId): List<String> {
         val parts = assetId.assetId.split("/")
         return parts
     }

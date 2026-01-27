@@ -72,14 +72,13 @@ inline fun <
     ResponseType : ResponseBody,
     T : Api,
     P,
-    >
-    OperationHandler.RegistrationBuilder<T>.unauthenticatedHandler(
-        operation: Operation<RequestType, QueryParamType, PathParamType, ResponseType>,
-        contextRetriever: ContextRetriever<P>,
-        crossinline handler: suspend (
-            OperationRequest<RequestType, QueryParamType, PathParamType, ClientContext<P>>,
-        ) -> ResponseType?,
-    ) {
+    > OperationHandler.RegistrationBuilder<T>.unauthenticatedHandler(
+    operation: Operation<RequestType, QueryParamType, PathParamType, ResponseType>,
+    contextRetriever: ContextRetriever<P>,
+    crossinline handler: suspend (
+        OperationRequest<RequestType, QueryParamType, PathParamType, ClientContext<P>>,
+    ) -> ResponseType?,
+) {
     operation.handle(
         route,
         { contextRetriever.getContext(this) },
@@ -215,7 +214,7 @@ suspend inline fun <P, T : ClientContext<P>> ApplicationCall.handleCall(
  */
 @Suppress("UseCheckOrError")
 inline fun <P> requireAuthenticatedClientContext(
-    clientContext: ClientContext<P>
+    clientContext: ClientContext<P>,
 ): ClientContext.AuthenticatedClientContext<P> {
     when (clientContext) {
         is ClientContext.AuthenticatedClientContext -> {

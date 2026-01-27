@@ -73,7 +73,7 @@ class AttachmentManager(
                 attachments = eventLogRecord.attachments + AttachmentHolder(
                     publicUrl = imagePhotoRef,
                     storageRef = imagePhotoRef,
-                )
+                ),
             )
 
             eventLogService.updateRecord(updatedRecord).getOrThrow()

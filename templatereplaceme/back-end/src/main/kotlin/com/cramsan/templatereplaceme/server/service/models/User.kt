@@ -5,8 +5,4 @@ import com.cramsan.templatereplaceme.lib.model.UserId
 /**
  * Domain model representing a user.
  */
-data class User(
-    val id: UserId,
-    val firstName: String,
-    val lastName: String,
-)
+data class User(val id: UserId, val firstName: String, val lastName: String)

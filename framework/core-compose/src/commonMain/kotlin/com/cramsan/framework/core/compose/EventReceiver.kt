@@ -29,7 +29,9 @@ interface EventEmitter<T> {
  *
  * This is used to indicate that no event bus is available, and should not be used.
  */
-class InvalidEventBus<T> : EventReceiver<T>, EventEmitter<T> {
+class InvalidEventBus<T> :
+    EventReceiver<T>,
+    EventEmitter<T> {
     override val events: Flow<T>
         get() = error("Do not use this receiver.")
 
@@ -41,9 +43,9 @@ class InvalidEventBus<T> : EventReceiver<T>, EventEmitter<T> {
 /**
  * A receiver that uses a [MutableSharedFlow] to emit events.
  */
-open class EventBus<T>(
-    private val sharedFlow: MutableSharedFlow<T> = MutableSharedFlow(),
-) : EventReceiver<T>, EventEmitter<T> {
+open class EventBus<T>(private val sharedFlow: MutableSharedFlow<T> = MutableSharedFlow()) :
+    EventReceiver<T>,
+    EventEmitter<T> {
 
     override val events: Flow<T>
         get() = sharedFlow.asSharedFlow()

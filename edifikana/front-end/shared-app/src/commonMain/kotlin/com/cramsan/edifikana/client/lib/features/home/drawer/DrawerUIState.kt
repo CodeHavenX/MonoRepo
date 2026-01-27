@@ -36,16 +36,12 @@ sealed class DrawerItem {
     /**
      * Title item for the drawer.
      */
-    data class Title(
-        val title: String,
-    ) : DrawerItem()
+    data class Title(val title: String) : DrawerItem()
 
     /**
      * Selectable item for the drawer.
      */
-    data class Selectable(
-        val item: SelectableDrawerItem,
-    ) : DrawerItem()
+    data class Selectable(val item: SelectableDrawerItem) : DrawerItem()
 
     /**
      * Divider item for the drawer.

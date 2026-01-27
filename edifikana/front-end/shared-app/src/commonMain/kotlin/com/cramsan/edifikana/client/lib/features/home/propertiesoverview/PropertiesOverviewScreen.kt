@@ -44,15 +44,10 @@ import org.koin.compose.viewmodel.koinViewModel
  * application. This includes observing the view model's state and event flows and rendering the screen.
  */
 @Composable
-fun PropertiesOverviewScreen(
-    modifier: Modifier = Modifier,
-    viewModel: PropertiesOverviewViewModel = koinViewModel(),
-) {
+fun PropertiesOverviewScreen(modifier: Modifier = Modifier, viewModel: PropertiesOverviewViewModel = koinViewModel()) {
     val uiState by viewModel.uiState.collectAsState()
 
-    /**
-     * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
-     */
+    // For other possible lifecycle events, see the Lifecycle.Event documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
         viewModel.initialize()
     }
@@ -100,7 +95,7 @@ internal fun PropertiesOverviewContent(
                     contentDescription = "Add new property",
                 )
             }
-        }
+        },
     ) { innerPadding ->
         ScreenLayout(
             modifier = Modifier.padding(innerPadding).fillMaxSize(),
@@ -110,7 +105,7 @@ internal fun PropertiesOverviewContent(
                     Box(
                         modifier = sectionModifier
                             .fillMaxSize(),
-                        contentAlignment = Alignment.Center
+                        contentAlignment = Alignment.Center,
                     ) {
                         Text(
                             text = "No properties yet. Tap + to add your first property.",
@@ -130,7 +125,7 @@ internal fun PropertiesOverviewContent(
             },
             overlay = {
                 LoadingAnimationOverlay(content.isLoading)
-            }
+            },
         )
     }
 }
@@ -163,7 +158,7 @@ private fun PropertyItem(
         )
         Spacer(Modifier.size(Padding.MEDIUM))
         Column(
-            modifier = Modifier.padding(Padding.SMALL)
+            modifier = Modifier.padding(Padding.SMALL),
         ) {
             Text(
                 property.name,

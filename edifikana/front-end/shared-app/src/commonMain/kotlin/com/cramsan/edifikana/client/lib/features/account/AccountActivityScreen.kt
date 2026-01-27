@@ -15,9 +15,7 @@ import kotlin.reflect.KType
 /**
  * Account Nav Graph Route.
  */
-fun NavGraphBuilder.accountNavGraph(
-    typeMap: Map<KType, @JvmSuppressWildcards NavType<*>>,
-) {
+fun NavGraphBuilder.accountNavGraph(typeMap: Map<KType, @JvmSuppressWildcards NavType<*>>) {
     navigationGraph(
         graphDestination = EdifikanaNavGraphDestination.AccountNavGraphDestination::class,
         startDestination = AccountDestination.MyAccountDestination,

@@ -10,8 +10,5 @@ interface UserService {
     /**
      * Create a new user.
      */
-    suspend fun createUser(
-        firstName: String,
-        lastName: String
-    ): Result<UserModel>
+    suspend fun createUser(firstName: String, lastName: String): Result<UserModel>
 }

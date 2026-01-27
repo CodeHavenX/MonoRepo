@@ -42,12 +42,10 @@ enum class Severity {
          * Get a [Severity] from a string. If the string is not a valid [Severity], the [default] value
          * is returned.
          */
-        fun fromStringOrDefault(value: String?, default: Severity = DEBUG): Severity {
-            return if (value == null) {
-                default
-            } else {
-                entries.find { it.name.lowercase() == value.lowercase() } ?: default
-            }
+        fun fromStringOrDefault(value: String?, default: Severity = DEBUG): Severity = if (value == null) {
+            default
+        } else {
+            entries.find { it.name.lowercase() == value.lowercase() } ?: default
         }
     }
 }

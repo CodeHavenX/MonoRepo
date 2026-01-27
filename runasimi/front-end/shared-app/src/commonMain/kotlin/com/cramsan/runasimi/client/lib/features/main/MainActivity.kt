@@ -12,9 +12,7 @@ import kotlin.reflect.KType
 /**
  * Auth Nav Graph Route.
  */
-fun NavGraphBuilder.mainNavGraphNavigation(
-    typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> = emptyMap(),
-) {
+fun NavGraphBuilder.mainNavGraphNavigation(typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> = emptyMap()) {
     navigationGraph(
         graphDestination = RunasimiNavGraphDestination.MainNavGraphDestination::class,
         startDestination = MainDestination.MenuDestination,

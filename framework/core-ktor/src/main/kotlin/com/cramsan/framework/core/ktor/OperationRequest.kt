@@ -20,7 +20,7 @@ data class OperationRequest<
     RequestType : RequestBody,
     QueryParamType : QueryParam,
     PathParamType : PathParam,
-    Context
+    Context,
     >(
     val requestBody: RequestType,
     val queryParam: QueryParamType,

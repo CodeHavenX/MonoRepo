@@ -51,19 +51,13 @@ enum class Tabs {
 /**
  * UI model for a single property.
  */
-data class PropertyUiModel(
-    val propertyId: PropertyId,
-    val name: String,
-    val selected: Boolean,
-)
+data class PropertyUiModel(val propertyId: PropertyId, val name: String, val selected: Boolean)
 
 /**
  * Convert a property model to a UI model.
  */
-fun PropertyModel.toUIModel(selected: Boolean = false): PropertyUiModel {
-    return PropertyUiModel(
-        propertyId = id,
-        name = name,
-        selected = selected,
-    )
-}
+fun PropertyModel.toUIModel(selected: Boolean = false): PropertyUiModel = PropertyUiModel(
+    propertyId = id,
+    name = name,
+    selected = selected,
+)

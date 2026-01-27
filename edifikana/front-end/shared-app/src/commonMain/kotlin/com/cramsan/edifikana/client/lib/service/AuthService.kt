@@ -50,12 +50,7 @@ interface AuthService {
      * Sign up the user with the provided [email], [phoneNumber], and [firstName] & [lastName].
      * Returns the user model if successful.
      */
-    suspend fun signUp(
-        email: String,
-        phoneNumber: String,
-        firstName: String,
-        lastName: String
-    ): Result<UserModel>
+    suspend fun signUp(email: String, phoneNumber: String, firstName: String, lastName: String): Result<UserModel>
 
     /**
      * Send an OTP email to the user with the provided [email] address.
@@ -98,11 +93,7 @@ interface AuthService {
      * [currentPassword] will need to be provided.
      */
     @OptIn(SecureStringAccess::class)
-    suspend fun changePassword(
-        email: String,
-        currentPassword: SecureString,
-        newPassword: SecureString,
-    ): Result<Unit>
+    suspend fun changePassword(email: String, currentPassword: SecureString, newPassword: SecureString): Result<Unit>
 
     /**
      * Invite an employee member to the organization with the provided [organizationId] using the given [email]

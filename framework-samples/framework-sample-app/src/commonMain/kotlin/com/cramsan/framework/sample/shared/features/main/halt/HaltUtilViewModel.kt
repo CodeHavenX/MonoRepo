@@ -7,14 +7,12 @@ import com.cramsan.framework.halt.HaltUtil
 /**
  * ViewModel for the HaltUtil screen.
  **/
-class HaltUtilViewModel(
-    dependencies: ViewModelDependencies,
-    private val haltUtil: HaltUtil,
-) : BaseViewModel<HaltUtilEvent, HaltUtilUIState>(
-    dependencies,
-    HaltUtilUIState.Initial,
-    TAG,
-) {
+class HaltUtilViewModel(dependencies: ViewModelDependencies, private val haltUtil: HaltUtil) :
+    BaseViewModel<HaltUtilEvent, HaltUtilUIState>(
+        dependencies,
+        HaltUtilUIState.Initial,
+        TAG,
+    ) {
 
     /**
      * Crash the app.

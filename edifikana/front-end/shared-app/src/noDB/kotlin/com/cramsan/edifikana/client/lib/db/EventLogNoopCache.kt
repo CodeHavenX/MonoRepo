@@ -9,9 +9,7 @@ class EventLogNoopCache : EventLogCache {
     /**
      * Get all event log records.
      */
-    override suspend fun getRecords(): List<EventLogRecordModel> {
-        return emptyList()
-    }
+    override suspend fun getRecords(): List<EventLogRecordModel> = emptyList()
 
     /**
      * Add a new event log record.

@@ -7,13 +7,9 @@ import com.cramsan.framework.thread.ThreadUtilInterface
  */
 class NoopThreadUtil : ThreadUtilInterface {
 
-    override fun isUIThread(): Boolean {
-        return false
-    }
+    override fun isUIThread(): Boolean = false
 
-    override fun isBackgroundThread(): Boolean {
-        return false
-    }
+    override fun isBackgroundThread(): Boolean = false
 
     override fun assertIsUIThread() = Unit
 

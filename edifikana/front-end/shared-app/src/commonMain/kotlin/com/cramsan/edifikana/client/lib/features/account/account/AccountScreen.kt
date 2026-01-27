@@ -48,9 +48,7 @@ import org.koin.compose.viewmodel.koinViewModel
  * Account screen.
  */
 @Composable
-fun AccountScreen(
-    viewModel: AccountViewModel = koinViewModel(),
-) {
+fun AccountScreen(viewModel: AccountViewModel = koinViewModel()) {
     val uiState by viewModel.uiState.collectAsState()
     val dialogController = rememberDialogController()
 
@@ -230,17 +228,13 @@ internal fun AccountContent(
             },
             overlay = {
                 LoadingAnimationOverlay(isLoading = content.isLoading)
-            }
+            },
         )
     }
 }
 
 @Composable
-private fun EditPasswordLine(
-    modifier: Modifier = Modifier,
-    enabled: Boolean,
-    onClick: () -> Unit,
-) {
+private fun EditPasswordLine(modifier: Modifier = Modifier, enabled: Boolean, onClick: () -> Unit) {
     Text(
         text = "Change Password",
         modifier = modifier

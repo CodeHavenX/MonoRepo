@@ -12,7 +12,5 @@ sealed class RunasimiWindowDelegatedEvent {
     /**
      * Handle snackbar result.
      */
-    data class HandleSnackbarResult(
-        val result: SnackbarResult,
-    ) : RunasimiWindowDelegatedEvent()
+    data class HandleSnackbarResult(val result: SnackbarResult) : RunasimiWindowDelegatedEvent()
 }

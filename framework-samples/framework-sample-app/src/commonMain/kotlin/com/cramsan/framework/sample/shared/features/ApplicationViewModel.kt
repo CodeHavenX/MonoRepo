@@ -16,7 +16,7 @@ class ApplicationViewModel(
 ) : BaseViewModel<SampleApplicationViewModelEvent, ApplicationUIState>(
     dependencies,
     ApplicationUIState,
-    TAG
+    TAG,
 ) {
 
     init {

@@ -121,9 +121,7 @@ private fun initializeDependencies(
 /**
  * Configures the entry points of the application.
  */
-private fun Application.configureEntryPoints(
-    controllerList: List<Controller>,
-) {
+private fun Application.configureEntryPoints(controllerList: List<Controller>) {
     routing {
         controllerList.forEach { controller ->
             controller.registerRoutes(this)

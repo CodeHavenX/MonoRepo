@@ -30,7 +30,7 @@ fun AppTheme(
     dynamicColor: Boolean = true,
     coil3: Coil3Integration? = null,
     debugLayoutInspection: Boolean = false,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val colorScheme = getColorScheme(darkTheme, dynamicColor, darkScheme, lightScheme)
 
@@ -67,7 +67,7 @@ fun AppTheme(
     ) {
         MaterialTheme(
             colorScheme = colorScheme,
-            content = content
+            content = content,
         )
     }
 }

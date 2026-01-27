@@ -32,8 +32,8 @@ fun main() = application {
             onCloseRequest = ::exitApplication,
             title = "Runasimi",
             state = rememberWindowState(
-                size = DpSize(600.dp, 800.dp)
-            )
+                size = DpSize(600.dp, 800.dp),
+            ),
         ) {
             KoinScope<String>("root-window") {
                 RunasimiWindowScreen(

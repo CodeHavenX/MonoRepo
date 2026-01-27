@@ -32,14 +32,12 @@ data class UserEmployeeViewEntity(
     /**
      * Converts this view entity to an Employee domain model.
      */
-    fun toEmployee(): Employee {
-        return Employee(
-            id = EmployeeId(id),
-            idType = idType,
-            firstName = firstName,
-            lastName = lastName,
-            role = role,
-            propertyId = PropertyId(propertyId),
-        )
-    }
+    fun toEmployee(): Employee = Employee(
+        id = EmployeeId(id),
+        idType = idType,
+        firstName = firstName,
+        lastName = lastName,
+        role = role,
+        propertyId = PropertyId(propertyId),
+    )
 }

@@ -7,9 +7,7 @@ import com.cramsan.framework.configuration.PropertyValueType
 /**
  * Class to read settings from the ConfigurationMultiplexer.
  */
-class SettingsHolder(
-    private val configuration: ConfigurationMultiplexer
-) {
+class SettingsHolder(private val configuration: ConfigurationMultiplexer) {
 
     /**
      * Reads a property value from the configuration.
@@ -17,12 +15,10 @@ class SettingsHolder(
      * @param propertyKey The key of the property to read.
      * @return The property value, or null if not found.
      */
-    fun getValue(propertyKey: SettingKey<*>): PropertyValue? {
-        return configuration.readProperty(
-            propertyKey.key,
-            propertyKey.type,
-        )
-    }
+    fun getValue(propertyKey: SettingKey<*>): PropertyValue? = configuration.readProperty(
+        propertyKey.key,
+        propertyKey.type,
+    )
 
     /**
      * Reads a string property from the configuration.
@@ -90,9 +86,7 @@ class SettingsHolder(
      * @param propertyKey The key of the property.
      * @return A list of keys.
      */
-    fun getKeyNames(propertyKey: SettingKey<*>): List<String> {
-        return configuration.getSearchLocations(propertyKey.key)
-    }
+    fun getKeyNames(propertyKey: SettingKey<*>): List<String> = configuration.getSearchLocations(propertyKey.key)
 }
 
 /**
@@ -102,10 +96,7 @@ class SettingsHolder(
  * @property key The key of the setting.
  * @property type The type of the property value.
  */
-data class SettingKey<T : PropertyValueType> (
-    val key: String,
-    val type: T,
-) {
+data class SettingKey<T : PropertyValueType>(val key: String, val type: T) {
     companion object {
         /**
          * Creates a [SettingKey] for a string property.

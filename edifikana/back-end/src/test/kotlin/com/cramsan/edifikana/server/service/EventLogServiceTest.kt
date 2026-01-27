@@ -88,7 +88,7 @@ class EventLogServiceTest {
             timestamp,
             title,
             description,
-            unit
+            unit,
         )
 
         // Assert

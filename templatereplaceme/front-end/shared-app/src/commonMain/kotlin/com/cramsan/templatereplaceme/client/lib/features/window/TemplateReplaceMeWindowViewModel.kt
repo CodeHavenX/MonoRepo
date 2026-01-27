@@ -19,7 +19,7 @@ class TemplateReplaceMeWindowViewModel(
 ) : BaseViewModel<TemplateReplaceMeWindowViewModelEvent, TemplateReplaceMeWindowUIState>(
     dependencies,
     TemplateReplaceMeWindowUIState,
-    TAG
+    TAG,
 ) {
 
     init {
@@ -28,8 +28,8 @@ class TemplateReplaceMeWindowViewModel(
                 logI(TAG, "Window event received: $event")
                 emitEvent(
                     TemplateReplaceMeWindowViewModelEvent.TemplateReplaceMeWindowEventWrapper(
-                        event as TemplateReplaceMeWindowsEvent
-                    )
+                        event as TemplateReplaceMeWindowsEvent,
+                    ),
                 )
             }
         }

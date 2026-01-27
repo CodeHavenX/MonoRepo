@@ -14,9 +14,7 @@ import kotlin.time.Instant
  * Service for event log operations.
  */
 @OptIn(ExperimentalTime::class)
-class EventLogService(
-    private val eventLogDatastore: EventLogDatastore,
-) {
+class EventLogService(private val eventLogDatastore: EventLogDatastore) {
 
     /**
      * Creates an event log entry with the provided parameters.
@@ -49,9 +47,7 @@ class EventLogService(
     /**
      * Retrieves an event log with the provided [id].
      */
-    suspend fun getEventLogEntry(
-        id: EventLogEntryId,
-    ): EventLogEntry? {
+    suspend fun getEventLogEntry(id: EventLogEntryId): EventLogEntry? {
         logD(TAG, "getEventLogEntry")
         val eventLog = eventLogDatastore.getEventLogEntry(
             id = id,
@@ -93,9 +89,7 @@ class EventLogService(
     /**
      * Deletes an event log with the provided [id].
      */
-    suspend fun deleteEventLogEntry(
-        id: EventLogEntryId,
-    ): Boolean {
+    suspend fun deleteEventLogEntry(id: EventLogEntryId): Boolean {
         logD(TAG, "deleteEventLogEntry")
         return eventLogDatastore.deleteEventLogEntry(
             id = id,

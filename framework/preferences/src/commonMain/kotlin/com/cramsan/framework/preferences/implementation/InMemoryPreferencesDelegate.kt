@@ -17,33 +17,25 @@ class InMemoryPreferencesDelegate : PreferencesDelegate {
         map[key] = value
     }
 
-    override fun loadString(key: String): String? {
-        return map[key] as String?
-    }
+    override fun loadString(key: String): String? = map[key] as String?
 
     override fun saveInt(key: String, value: Int) {
         map[key] = value
     }
 
-    override fun loadInt(key: String): Int? {
-        return map[key] as? Int
-    }
+    override fun loadInt(key: String): Int? = map[key] as? Int
 
     override fun saveLong(key: String, value: Long) {
         map[key] = value
     }
 
-    override fun loadLong(key: String): Long? {
-        return map[key] as? Long
-    }
+    override fun loadLong(key: String): Long? = map[key] as? Long
 
     override fun saveBoolean(key: String, value: Boolean) {
         map[key] = value
     }
 
-    override fun loadBoolean(key: String): Boolean? {
-        return map[key] as? Boolean
-    }
+    override fun loadBoolean(key: String): Boolean? = map[key] as? Boolean
 
     override fun remove(key: String) {
         map.remove(key)

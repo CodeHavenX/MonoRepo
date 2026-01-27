@@ -44,9 +44,7 @@ fun OrganizationHomeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    /**
-     * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
-     */
+    // For other possible lifecycle events, see the Lifecycle.Event documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
         viewModel.loadInitialData()
     }
@@ -134,11 +132,7 @@ internal fun OrganizationHomeScreenContent(
  * Content of the AccountEdit screen.
  */
 @Composable
-private fun HubContent(
-    modifier: Modifier,
-    selectedTab: Tabs,
-    organizationId: OrganizationId?,
-) {
+private fun HubContent(modifier: Modifier, selectedTab: Tabs, organizationId: OrganizationId?) {
     Crossfade(
         targetState = selectedTab,
         modifier = modifier,
@@ -147,11 +141,13 @@ private fun HubContent(
             Tabs.Properties -> {
                 PropertiesOverviewScreen()
             }
+
             Tabs.Employee -> {
                 organizationId?.let {
                     EmployeeOverviewScreen(orgId = it)
                 }
             }
+
             Tabs.None -> {
                 // No content
             }

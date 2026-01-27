@@ -11,10 +11,8 @@ import kotlinx.coroutines.launch
 /**
  * Account screen view model.
  */
-class AccountViewModel(
-    private val auth: AuthManager,
-    dependencies: ViewModelDependencies,
-) : BaseViewModel<AccountEvent, AccountUIState>(dependencies, AccountUIState.Empty, TAG) {
+class AccountViewModel(private val auth: AuthManager, dependencies: ViewModelDependencies) :
+    BaseViewModel<AccountEvent, AccountUIState>(dependencies, AccountUIState.Empty, TAG) {
 
     /**
      * Sign out and navigate out of this screen.
@@ -27,7 +25,7 @@ class AccountViewModel(
                 EdifikanaWindowsEvent.NavigateToNavGraph(
                     EdifikanaNavGraphDestination.AuthNavGraphDestination,
                     clearStack = true,
-                )
+                ),
             )
         }
     }
@@ -158,8 +156,8 @@ class AccountViewModel(
                 updateUiState { it.copy(isLoading = false) }
                 emitWindowEvent(
                     EdifikanaWindowsEvent.ShowSnackbar(
-                        "Failed to update account information. Please try again."
-                    )
+                        "Failed to update account information. Please try again.",
+                    ),
                 )
                 return@launch
             }
@@ -171,8 +169,8 @@ class AccountViewModel(
             }
             emitWindowEvent(
                 EdifikanaWindowsEvent.ShowSnackbar(
-                    "Account information updated successfully."
-                )
+                    "Account information updated successfully.",
+                ),
             )
         }
     }
@@ -184,8 +182,8 @@ class AccountViewModel(
         viewModelScope.launch {
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToScreen(
-                    AccountDestination.ChangePasswordDestination
-                )
+                    AccountDestination.ChangePasswordDestination,
+                ),
             )
         }
     }

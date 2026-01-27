@@ -5,12 +5,7 @@ import com.cramsan.edifikana.lib.model.AssetId
 /**
  * Domain model representing a file [Asset].
  */
-data class Asset(
-    val id: AssetId,
-    val fileName: String,
-    val signedUrl: String?,
-    val content: ByteArray,
-) {
+data class Asset(val id: AssetId, val fileName: String, val signedUrl: String?, val content: ByteArray) {
     /**
      * Checks if this file is equal to another object.
      */

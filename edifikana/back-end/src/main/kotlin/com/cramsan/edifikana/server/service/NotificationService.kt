@@ -10,9 +10,7 @@ import com.cramsan.framework.logging.logD
  * Service for managing notifications.
  * Handles creation, retrieval, and management of notifications.
  */
-class NotificationService(
-    private val notificationDatastore: NotificationDatastore,
-) {
+class NotificationService(private val notificationDatastore: NotificationDatastore) {
     /**
      * Retrieves notifications for a user.
      *
@@ -36,9 +34,7 @@ class NotificationService(
      * @param notificationId The notification ID
      * @return Result containing the notification if found
      */
-    suspend fun getNotification(
-        notificationId: NotificationId,
-    ): Result<Notification?> {
+    suspend fun getNotification(notificationId: NotificationId): Result<Notification?> {
         logD(TAG, "Getting notification: $notificationId")
         return notificationDatastore.getNotification(notificationId)
     }
@@ -49,9 +45,7 @@ class NotificationService(
      * @param notificationId The notification ID
      * @return Result containing the updated notification
      */
-    suspend fun markAsRead(
-        notificationId: NotificationId,
-    ): Result<Notification> {
+    suspend fun markAsRead(notificationId: NotificationId): Result<Notification> {
         logD(TAG, "Marking notification as read: $notificationId")
         return notificationDatastore.markAsRead(notificationId)
     }
@@ -62,9 +56,7 @@ class NotificationService(
      * @param notificationId The notification ID
      * @return Result indicating success
      */
-    suspend fun deleteNotification(
-        notificationId: NotificationId,
-    ): Result<Boolean> {
+    suspend fun deleteNotification(notificationId: NotificationId): Result<Boolean> {
         logD(TAG, "Deleting notification: $notificationId")
         return notificationDatastore.deleteNotification(notificationId)
     }
@@ -77,10 +69,7 @@ class NotificationService(
      * @param userId The user ID to link notifications to
      * @return Result containing the number of notifications updated
      */
-    suspend fun linkNotificationsToUser(
-        email: String,
-        userId: UserId,
-    ): Result<Int> {
+    suspend fun linkNotificationsToUser(email: String, userId: UserId): Result<Int> {
         logD(TAG, "Linking notifications for email: $email to user: $userId")
         return notificationDatastore.linkNotificationsToUser(email, userId)
     }

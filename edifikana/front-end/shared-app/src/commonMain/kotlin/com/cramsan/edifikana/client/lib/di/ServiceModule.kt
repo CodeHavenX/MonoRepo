@@ -56,7 +56,7 @@ internal val ServiceModule = module {
             }
             install(ComposeAuth) {
                 googleNativeLogin(
-                    serverClientId = "225276838088-9pqht0mn9panaukdn8tpig8v6q1qfds0.apps.googleusercontent.com"
+                    serverClientId = "225276838088-9pqht0mn9panaukdn8tpig8v6q1qfds0.apps.googleusercontent.com",
                 )
                 appleNativeLogin()
             }

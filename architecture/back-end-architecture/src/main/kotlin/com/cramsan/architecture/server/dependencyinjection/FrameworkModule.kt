@@ -112,7 +112,7 @@ val FrameworkModule = module(createdAtStart = true) {
             listOf(
                 environmentConfiguration, // Look for overrides in environment variables first
                 simpleConfiguration, // Then in the config file
-            )
+            ),
         )
         configurationMultiplexer
     }

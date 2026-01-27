@@ -10,13 +10,12 @@ import androidx.compose.ui.Modifier
  * Only a true condition will apply the block.
  */
 @Composable
-fun Modifier.ifTrue(condition: Boolean?, block: @Composable Modifier.() -> Modifier): Modifier {
-    return if (condition == true) {
+fun Modifier.ifTrue(condition: Boolean?, block: @Composable Modifier.() -> Modifier): Modifier =
+    if (condition == true) {
         block(this)
     } else {
         this
     }
-}
 
 /**
  * Apply the given [block] to this [Modifier] if the [condition] is not true.
@@ -25,6 +24,5 @@ fun Modifier.ifTrue(condition: Boolean?, block: @Composable Modifier.() -> Modif
  * Both a null and false condition will apply the block.
  */
 @Composable
-fun Modifier.ifNotTrue(condition: Boolean?, block: @Composable Modifier.() -> Modifier): Modifier {
-    return ifTrue(condition?.not(), block)
-}
+fun Modifier.ifNotTrue(condition: Boolean?, block: @Composable Modifier.() -> Modifier): Modifier =
+    ifTrue(condition?.not(), block)

@@ -55,9 +55,7 @@ fun EventLogScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    /**
-     * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
-     */
+    // For other possible lifecycle events, see the Lifecycle.Event documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
         viewModel.loadEvents(propertyId)
     }
@@ -80,11 +78,7 @@ fun EventLogScreen(
  * Content of the EventLog screen.
  */
 @Composable
-internal fun EventLogContent(
-    uiState: EventLogUIState,
-    onAddEventClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
+internal fun EventLogContent(uiState: EventLogUIState, onAddEventClick: () -> Unit, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier.fillMaxSize(),
     ) {
@@ -152,10 +146,7 @@ internal fun EventLogContent(
  * A single event log item.
  */
 @Composable
-private fun EventLogItem(
-    event: EventLogUIModel,
-    modifier: Modifier = Modifier,
-) {
+private fun EventLogItem(event: EventLogUIModel, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -201,12 +192,10 @@ private fun EventLogItem(
 /**
  * Get the appropriate icon for the event type.
  */
-private fun getEventTypeIcon(eventType: EventLogEventType): ImageVector {
-    return when (eventType) {
-        EventLogEventType.INCIDENT -> Icons.Default.Warning
-        EventLogEventType.DELIVERY -> Icons.Default.ShoppingCart
-        EventLogEventType.GUEST -> Icons.Default.Person
-        EventLogEventType.MAINTENANCE_SERVICE -> Icons.Default.Build
-        else -> Icons.Default.Warning
-    }
+private fun getEventTypeIcon(eventType: EventLogEventType): ImageVector = when (eventType) {
+    EventLogEventType.INCIDENT -> Icons.Default.Warning
+    EventLogEventType.DELIVERY -> Icons.Default.ShoppingCart
+    EventLogEventType.GUEST -> Icons.Default.Person
+    EventLogEventType.MAINTENANCE_SERVICE -> Icons.Default.Build
+    else -> Icons.Default.Warning
 }

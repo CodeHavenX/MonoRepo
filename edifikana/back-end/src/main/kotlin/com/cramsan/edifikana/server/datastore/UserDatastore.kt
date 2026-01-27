@@ -30,47 +30,33 @@ interface UserDatastore {
      * Associates a user from another service with a new user in our system. Returns the [Result] of the operation with
      * the created [User].
      */
-    suspend fun associateUser(
-        userId: UserId,
-        email: String,
-    ): Result<User>
+    suspend fun associateUser(userId: UserId, email: String): Result<User>
 
     /**
      * Retrieves a user for the given [request]. Returns the [Result] of the operation with the fetched [User] if found.
      */
-    suspend fun getUser(
-        id: UserId,
-    ): Result<User?>
+    suspend fun getUser(id: UserId): Result<User?>
 
     /**
      * Retrieves all users. Returns the [Result] of the operation with a list of [User].
      */
-    suspend fun getUsers(
-        organizationId: OrganizationId,
-    ): Result<List<User>>
+    suspend fun getUsers(organizationId: OrganizationId): Result<List<User>>
 
     /**
      * Retrieves a user by email. Returns the [Result] of the operation with the fetched [User].
      */
-    suspend fun getUser(
-        email: String,
-    ): Result<User?>
+    suspend fun getUser(email: String): Result<User?>
 
     /**
      * Updates a user with the given [request]. Returns the [Result] of the operation with the updated [User].
      */
-    suspend fun updateUser(
-        id: UserId,
-        email: String?,
-    ): Result<User>
+    suspend fun updateUser(id: UserId, email: String?): Result<User>
 
     /**
      * Deletes a user with the given [request].
      * Returns the [Result] of the operation with a [Boolean] indicating success.
      */
-    suspend fun deleteUser(
-        id: UserId,
-    ): Result<Boolean>
+    suspend fun deleteUser(id: UserId): Result<Boolean>
 
     /**
      * Updates the password for a user with the given [request]. Returns the [Result] of the operation.
@@ -97,32 +83,24 @@ interface UserDatastore {
      * Retrieves an invite with the given [inviteId].
      * Returns the [Result] of the operation with the [Invite] if found.
      */
-    suspend fun getInvite(
-        inviteId: InviteId,
-    ): Result<Invite?>
+    suspend fun getInvite(inviteId: InviteId): Result<Invite?>
 
     /**
      * Removes an invite with the given [inviteId]. Returns the [Result] of the operation.
      */
-    suspend fun removeInvite(
-        inviteId: InviteId,
-    ): Result<Unit>
+    suspend fun removeInvite(inviteId: InviteId): Result<Unit>
 
     /**
      * Retrieves all pending invites for the given [organizationId].
      * Returns the [Result] of the operation with a list of [Invite].
      */
-    suspend fun getInvites(
-        organizationId: OrganizationId,
-    ): Result<List<Invite>>
+    suspend fun getInvites(organizationId: OrganizationId): Result<List<Invite>>
 
     /**
      * Retrieves all pending invites for the given [email].
      * Returns the [Result] of the operation with a list of [Invite].
      */
-    suspend fun getInvitesByEmail(
-        email: String,
-    ): Result<List<Invite>>
+    suspend fun getInvitesByEmail(email: String): Result<List<Invite>>
 
     /**
      * Permanently deletes a soft-deleted user record by ID.
@@ -130,9 +108,7 @@ interface UserDatastore {
      * This is intended for testing and maintenance purposes only.
      * Returns the [Result] of the operation with a [Boolean] indicating if the record was purged.
      */
-    suspend fun purgeUser(
-        id: UserId,
-    ): Result<Boolean>
+    suspend fun purgeUser(id: UserId): Result<Boolean>
 
     /**
      * Permanently deletes a soft-deleted invite record by ID.
@@ -140,7 +116,5 @@ interface UserDatastore {
      * This is intended for testing and maintenance purposes only.
      * Returns the [Result] of the operation with a [Boolean] indicating if the record was purged.
      */
-    suspend fun purgeInvite(
-        id: InviteId,
-    ): Result<Boolean>
+    suspend fun purgeInvite(id: InviteId): Result<Boolean>
 }

@@ -43,7 +43,9 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
-class EventLogControllerTest : CoroutineTest(), KoinTest {
+class EventLogControllerTest :
+    CoroutineTest(),
+    KoinTest {
 
     /**
      * Setup the test.
@@ -104,7 +106,7 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-            )
+            ),
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -157,7 +159,7 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-            )
+            ),
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -221,7 +223,7 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-            )
+            ),
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -272,7 +274,7 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-            )
+            ),
         )
         coEvery {
             contextRetriever.getContext(any())
@@ -311,7 +313,7 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-            )
+            ),
         )
         coEvery {
             contextRetriever.getContext(any())

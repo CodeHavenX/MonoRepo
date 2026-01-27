@@ -26,7 +26,7 @@ class QuechuaManager {
         val translation = number.toYupay()
         return Content(
             translated = translation,
-            original = number.toString()
+            original = number.toString(),
         )
     }
 }
@@ -34,7 +34,4 @@ class QuechuaManager {
 /**
  * Data class that represents a content with both original and translated forms.
  */
-data class Content(
-    val translated: String,
-    val original: String
-)
+data class Content(val translated: String, val original: String)

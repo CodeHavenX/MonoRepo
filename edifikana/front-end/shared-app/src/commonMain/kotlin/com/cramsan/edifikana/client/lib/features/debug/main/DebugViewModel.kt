@@ -64,23 +64,21 @@ class DebugViewModel(
         logI(TAG, "Debug key $key changed to $value")
         loadDataImpl()
         emitWindowEvent(
-            EdifikanaWindowsEvent.ShowSnackbar("Value saved.Restart the app to apply changes.")
+            EdifikanaWindowsEvent.ShowSnackbar("Value saved.Restart the app to apply changes."),
         )
     }
 
-    private fun getPropertyValue(key: SettingKey<*>, value: Any): PropertyValue {
-        return when (key.type) {
-            is PropertyValueType.StringType -> {
-                PropertyValue.StringValue((value as String).trim())
-            }
+    private fun getPropertyValue(key: SettingKey<*>, value: Any): PropertyValue = when (key.type) {
+        is PropertyValueType.StringType -> {
+            PropertyValue.StringValue((value as String).trim())
+        }
 
-            is PropertyValueType.BooleanType -> {
-                PropertyValue.BooleanValue(value as Boolean)
-            }
+        is PropertyValueType.BooleanType -> {
+            PropertyValue.BooleanValue(value as Boolean)
+        }
 
-            else -> {
-                error("Unsupported key type: ${key.type} for key: $key")
-            }
+        else -> {
+            error("Unsupported key type: ${key.type} for key: $key")
         }
     }
 
@@ -136,7 +134,7 @@ class DebugViewModel(
     fun navigateBack() {
         viewModelScope.launch {
             emitWindowEvent(
-                EdifikanaWindowsEvent.NavigateBack
+                EdifikanaWindowsEvent.NavigateBack,
             )
         }
     }
@@ -241,7 +239,7 @@ class DebugViewModel(
                                 emitWindowEvent(
                                     EdifikanaWindowsEvent.NavigateToScreen(
                                         DebugDestination.ScreenSelectorDestination,
-                                    )
+                                    ),
                                 )
                             },
                         ),

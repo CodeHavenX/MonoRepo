@@ -12,13 +12,11 @@ import kotlin.io.path.exists
  */
 class JvmDownloadStrategy : DownloadStrategy {
 
-    override fun isFileCached(targetRef: String): Boolean {
-        return getFileImp(targetRef) != null
-    }
+    override fun isFileCached(targetRef: String): Boolean = getFileImp(targetRef) != null
 
-    override fun getCachedFile(targetRef: String): CoreUri {
-        return getFileImp(targetRef) ?: throw RuntimeException("File not found")
-    }
+    override fun getCachedFile(targetRef: String): CoreUri = getFileImp(
+        targetRef,
+    ) ?: throw RuntimeException("File not found")
 
     private fun getFileImp(targetRef: String): CoreUri? {
         // Define the path of the directory

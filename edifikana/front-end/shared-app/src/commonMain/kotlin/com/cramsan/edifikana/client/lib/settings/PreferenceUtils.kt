@@ -7,11 +7,10 @@ import com.cramsan.edifikana.lib.model.PropertyId
 /**
  * Utility functions to get and set specific preferences related to Edifikana.
  */
-suspend fun PreferencesManager.getLastSelectedOrganizationId(): OrganizationId? {
-    return this.getStringPreference(EdifikanaSettingKey.lastSelectedOrganization).getOrNull()?.let {
+suspend fun PreferencesManager.getLastSelectedOrganizationId(): OrganizationId? =
+    this.getStringPreference(EdifikanaSettingKey.lastSelectedOrganization).getOrNull()?.let {
         OrganizationId(it)
     }
-}
 
 /**
  * Set the last selected organization ID in preferences.
@@ -29,11 +28,10 @@ suspend fun PreferencesManager.setLastSelectedOrganizationId(organizationId: Org
 /**
  * Get the last selected property ID from preferences.
  */
-suspend fun PreferencesManager.getLastSelectedPropertyId(): PropertyId? {
-    return this.getStringPreference(EdifikanaSettingKey.lastSelectedProperty).getOrNull()?.let {
+suspend fun PreferencesManager.getLastSelectedPropertyId(): PropertyId? =
+    this.getStringPreference(EdifikanaSettingKey.lastSelectedProperty).getOrNull()?.let {
         PropertyId(it)
     }
-}
 
 /**
  * Set the last selected property ID in preferences.

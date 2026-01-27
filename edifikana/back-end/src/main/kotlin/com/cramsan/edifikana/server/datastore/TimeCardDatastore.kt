@@ -27,23 +27,17 @@ interface TimeCardDatastore {
     /**
      * Retrieves a time card event by its ID. Returns the [Result] of the operation with the fetched [TimeCardEvent] if found.
      */
-    suspend fun getTimeCardEvent(
-        id: TimeCardEventId,
-    ): Result<TimeCardEvent?>
+    suspend fun getTimeCardEvent(id: TimeCardEventId): Result<TimeCardEvent?>
 
     /**
      * Retrieves all time card events for an employee member. Returns the [Result] of the operation with a list of [TimeCardEvent].
      */
-    suspend fun getTimeCardEvents(
-        employeeId: EmployeeId?,
-    ): Result<List<TimeCardEvent>>
+    suspend fun getTimeCardEvents(employeeId: EmployeeId?): Result<List<TimeCardEvent>>
 
     /**
      * Deletes a time card event by its ID. Returns the [Result] of the operation.
      */
-    suspend fun deleteTimeCardEvent(
-        id: TimeCardEventId,
-    ): Result<Boolean>
+    suspend fun deleteTimeCardEvent(id: TimeCardEventId): Result<Boolean>
 
     /**
      * Permanently deletes a soft-deleted time card event record by ID.
@@ -51,7 +45,5 @@ interface TimeCardDatastore {
      * This is intended for testing and maintenance purposes only.
      * Returns the [Result] of the operation with a [Boolean] indicating if the record was purged.
      */
-    suspend fun purgeTimeCardEvent(
-        id: TimeCardEventId,
-    ): Result<Boolean>
+    suspend fun purgeTimeCardEvent(id: TimeCardEventId): Result<Boolean>
 }

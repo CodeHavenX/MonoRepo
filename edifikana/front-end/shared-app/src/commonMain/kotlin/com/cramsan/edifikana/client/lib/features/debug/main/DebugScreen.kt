@@ -43,14 +43,10 @@ import org.koin.compose.viewmodel.koinViewModel
  * application. This includes observing the view model's state and event flows and rendering the screen.
  */
 @Composable
-fun DebugScreen(
-    viewModel: DebugViewModel = koinViewModel(),
-) {
+fun DebugScreen(viewModel: DebugViewModel = koinViewModel()) {
     val uiState by viewModel.uiState.collectAsState()
 
-    /**
-     * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
-     */
+    // For other possible lifecycle events, see the Lifecycle.Event documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
         viewModel.loadData()
     }
@@ -66,6 +62,7 @@ fun DebugScreen(
             DebugEvent.CloseApplication -> {
                 viewModel.closeApplication()
             }
+
             DebugEvent.ClearPreferences -> {
                 viewModel.clearPreferences()
             }
@@ -135,7 +132,7 @@ internal fun DebugContent(
                         }
                     }
                 }
-            }
+            },
         )
     }
 }
@@ -171,7 +168,7 @@ private fun BooleanRow(
                 interactionSource = interactionSource,
                 enabled = field.enabled,
                 indication = ripple(),
-                onClick = { onValueChanged(field.key, !field.value) }
+                onClick = { onValueChanged(field.key, !field.value) },
             )
             .then(modifier),
         horizontalArrangement = Arrangement.spacedBy(Padding.SMALL),
@@ -180,7 +177,7 @@ private fun BooleanRow(
         Column(
             modifier = Modifier
                 .wrapContentHeight()
-                .weight(1f)
+                .weight(1f),
         ) {
             val textColor = if (field.enabled) {
                 MaterialTheme.colorScheme.onSurface
@@ -282,11 +279,7 @@ private fun Modifier.hasLostFocus(onFocusLost: () -> Unit): Modifier {
 }
 
 @Composable
-private fun ActionRow(
-    field: Field.ActionField,
-    modifier: Modifier,
-    onAction: (Field.ActionField) -> Unit,
-) {
+private fun ActionRow(field: Field.ActionField, modifier: Modifier, onAction: (Field.ActionField) -> Unit) {
     Column(
         modifier = Modifier
             .clickable(

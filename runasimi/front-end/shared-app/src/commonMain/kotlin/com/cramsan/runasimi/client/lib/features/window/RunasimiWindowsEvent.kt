@@ -16,7 +16,8 @@ sealed class RunasimiWindowsEvent : WindowEvent {
         val destination: RunasimiNavGraphDestination,
         override val clearTop: Boolean = false,
         override val clearStack: Boolean = false,
-    ) : RunasimiWindowsEvent(), NavigationEvent
+    ) : RunasimiWindowsEvent(),
+        NavigationEvent
 
     /**
      * Navigate to destination.
@@ -25,7 +26,8 @@ sealed class RunasimiWindowsEvent : WindowEvent {
         val destination: Destination,
         override val clearTop: Boolean = false,
         override val clearStack: Boolean = false,
-    ) : RunasimiWindowsEvent(), NavigationEvent
+    ) : RunasimiWindowsEvent(),
+        NavigationEvent
 
     /**
      * Close the nav graph.
@@ -35,9 +37,7 @@ sealed class RunasimiWindowsEvent : WindowEvent {
     /**
      * Show a snackbar.
      */
-    data class ShowSnackbar(
-        val message: String,
-    ) : RunasimiWindowsEvent()
+    data class ShowSnackbar(val message: String) : RunasimiWindowsEvent()
 
     /**
      * Navigate back.

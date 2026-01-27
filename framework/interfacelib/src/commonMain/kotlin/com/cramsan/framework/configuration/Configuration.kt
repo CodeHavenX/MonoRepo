@@ -28,7 +28,5 @@ interface Configuration {
     /**
      * Transforms the key to a different format if needed.
      */
-    fun transformKey(key: String): String {
-        return key
-    }
+    fun transformKey(key: String): String = key
 }

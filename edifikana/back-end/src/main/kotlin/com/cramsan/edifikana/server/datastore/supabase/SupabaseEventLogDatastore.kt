@@ -17,10 +17,7 @@ import kotlin.time.Instant
 /**
  * Datastore for managing event log entries.
  */
-class SupabaseEventLogDatastore(
-    private val postgrest: Postgrest,
-    private val clock: Clock,
-) : EventLogDatastore {
+class SupabaseEventLogDatastore(private val postgrest: Postgrest, private val clock: Clock) : EventLogDatastore {
 
     /**
      * Creates a new event log entry for tracking property events.
@@ -47,7 +44,7 @@ class SupabaseEventLogDatastore(
             timestamp = timestamp,
             title = title,
             description = description,
-            unit = unit
+            unit = unit,
         )
 
         val createdEventLogEntry = postgrest.from(EventLogEntryEntity.COLLECTION).insert(requestEntity) {
@@ -61,9 +58,7 @@ class SupabaseEventLogDatastore(
      * Retrieves an event log entry by [id]. Returns the [EventLogEntry] if found, null otherwise.
      */
     @OptIn(SupabaseModel::class)
-    override suspend fun getEventLogEntry(
-        id: EventLogEntryId,
-    ): Result<EventLogEntry?> = runSuspendCatching(TAG) {
+    override suspend fun getEventLogEntry(id: EventLogEntryId): Result<EventLogEntry?> = runSuspendCatching(TAG) {
         logD(TAG, "Getting event log entry: %s", id)
 
         val eventLogEntryEntity = postgrest.from(EventLogEntryEntity.COLLECTION).select {
@@ -80,18 +75,17 @@ class SupabaseEventLogDatastore(
      * Gets all event log entries for a [propertyId].
      */
     @OptIn(SupabaseModel::class)
-    override suspend fun getEventLogEntries(
-        propertyId: PropertyId,
-    ): Result<List<EventLogEntry>> = runSuspendCatching(TAG) {
-        logD(TAG, "Getting all event log entries")
+    override suspend fun getEventLogEntries(propertyId: PropertyId): Result<List<EventLogEntry>> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "Getting all event log entries")
 
-        postgrest.from(EventLogEntryEntity.COLLECTION).select {
-            filter {
-                EventLogEntryEntity::propertyId eq propertyId.propertyId
-                EventLogEntryEntity::deletedAt isExact null
-            }
-        }.decodeList<EventLogEntryEntity>().map { it.toEventLogEntry() }
-    }
+            postgrest.from(EventLogEntryEntity.COLLECTION).select {
+                filter {
+                    EventLogEntryEntity::propertyId eq propertyId.propertyId
+                    EventLogEntryEntity::deletedAt isExact null
+                }
+            }.decodeList<EventLogEntryEntity>().map { it.toEventLogEntry() }
+        }
 
     /**
      * Updates an event log entry's attributes. Only non-null parameters are updated.
@@ -114,7 +108,7 @@ class SupabaseEventLogDatastore(
                 title?.let { value -> EventLogEntryEntity::title setTo value }
                 description?.let { value -> EventLogEntryEntity::description setTo value }
                 unit?.let { value -> EventLogEntryEntity::unit setTo value }
-            }
+            },
         ) {
             select()
             filter {
@@ -127,9 +121,7 @@ class SupabaseEventLogDatastore(
      * Soft deletes an event log entry by [id]. Returns true if successful.
      */
     @OptIn(SupabaseModel::class)
-    override suspend fun deleteEventLogEntry(
-        id: EventLogEntryId,
-    ): Result<Boolean> = runSuspendCatching(TAG) {
+    override suspend fun deleteEventLogEntry(id: EventLogEntryId): Result<Boolean> = runSuspendCatching(TAG) {
         logD(TAG, "Soft deleting event log entry: %s", id)
 
         postgrest.from(EventLogEntryEntity.COLLECTION).update({
@@ -148,9 +140,7 @@ class SupabaseEventLogDatastore(
      * Only purges records that are already soft-deleted (deletedAt is not null).
      */
     @OptIn(SupabaseModel::class)
-    override suspend fun purgeEventLogEntry(
-        id: EventLogEntryId,
-    ): Result<Boolean> = runSuspendCatching(TAG) {
+    override suspend fun purgeEventLogEntry(id: EventLogEntryId): Result<Boolean> = runSuspendCatching(TAG) {
         logD(TAG, "Purging soft-deleted event log entry: %s", id)
 
         // First verify the record exists and is soft-deleted

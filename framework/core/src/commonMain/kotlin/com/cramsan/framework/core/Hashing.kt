@@ -12,9 +12,7 @@ object Hashing {
      * @return An integer representing the hash of the input data.
      */
     @Suppress("MagicNumber")
-    fun insecureHash(
-        data: ByteArray,
-    ): Int {
+    fun insecureHash(data: ByteArray): Int {
         // https://github.com/CodeHavenX/MonoRepo/issues/215
         // This is placeholder code to simulate a hash function until a proper implementation is available.
         var hash = data.size

@@ -35,7 +35,7 @@ class OrganizationManager(
      * Create a new organization with the provided name and description.
      */
     suspend fun createOrganization(name: String, description: String): Result<Organization> = dependencies.getOrCatch(
-        TAG
+        TAG,
     ) {
         logI(TAG, "createOrganization: $name")
         organizationService.createOrganization(name, description).getOrThrow()

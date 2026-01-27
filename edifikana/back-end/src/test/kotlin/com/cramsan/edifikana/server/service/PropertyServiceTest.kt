@@ -129,7 +129,7 @@ class PropertyServiceTest {
         // Arrange
         val propertyList = listOf(mockk<Property>(), mockk<Property>())
         coEvery { propertyDatastore.getProperties(UserId("TestId1")) } returns Result.success(
-            propertyList
+            propertyList,
         )
 
         // Act

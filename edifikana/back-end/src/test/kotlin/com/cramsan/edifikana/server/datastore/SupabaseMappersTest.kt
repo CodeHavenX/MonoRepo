@@ -21,8 +21,8 @@ class SupabaseMappersTest {
             lastName = "Doe",
             authMetadata = AuthMetadataEntity(
                 pendingAssociation = false,
-                canPasswordAuth = true
-            )
+                canPasswordAuth = true,
+            ),
         )
 
         val user = entity.toUser()

@@ -14,9 +14,7 @@ import kotlin.time.Instant
  * Service for time card operations.
  */
 @OptIn(ExperimentalTime::class)
-class TimeCardService(
-    private val timeCardDatastore: TimeCardDatastore,
-) {
+class TimeCardService(private val timeCardDatastore: TimeCardDatastore) {
 
     /**
      * Creates a time card event with the provided parameters.
@@ -43,9 +41,7 @@ class TimeCardService(
     /**
      * Retrieves a time card event with the provided [id].
      */
-    suspend fun getTimeCardEvent(
-        id: TimeCardEventId,
-    ): TimeCardEvent? {
+    suspend fun getTimeCardEvent(id: TimeCardEventId): TimeCardEvent? {
         logD(TAG, "getTimeCardEvent")
         val timeCard = timeCardDatastore.getTimeCardEvent(
             id = id,
@@ -57,9 +53,7 @@ class TimeCardService(
     /**
      * Retrieves all time cards.
      */
-    suspend fun getTimeCardEvents(
-        employeeId: EmployeeId?,
-    ): List<TimeCardEvent> {
+    suspend fun getTimeCardEvents(employeeId: EmployeeId?): List<TimeCardEvent> {
         logD(TAG, "getTimeCardEvents")
         val timeCards = timeCardDatastore.getTimeCardEvents(
             employeeId = employeeId,

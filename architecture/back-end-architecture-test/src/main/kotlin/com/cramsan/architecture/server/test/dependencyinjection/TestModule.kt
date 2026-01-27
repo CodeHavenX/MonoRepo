@@ -82,9 +82,7 @@ val TestFrameworkModule = module(createdAtStart = true) {
 /**
  * Produce a framework module for integration tests.
  */
-fun integTestFrameworkModule(
-    domain: String,
-) = module(createdAtStart = true) {
+fun integTestFrameworkModule(domain: String) = module(createdAtStart = true) {
     single<Logger> {
         Log4J2Helpers.getRootLogger(false, get())
     }
@@ -132,7 +130,7 @@ fun integTestFrameworkModule(
             listOf(
                 environmentConfiguration, // Look for overrides in environment variables first
                 simpleConfiguration, // Then in the config file
-            )
+            ),
         )
         configurationMultiplexer
     }

@@ -62,6 +62,7 @@ fun EdifikanaListItem(
                     contentScale = ContentScale.Crop,
                 )
             }
+
             icon != null -> {
                 // Icon for events
                 Icon(

@@ -36,7 +36,9 @@ import kotlin.test.assertEquals
  * Unit tests for StorageController.
  */
 @OptIn(NetworkModel::class)
-class StorageControllerTest : CoroutineTest(), KoinTest {
+class StorageControllerTest :
+    CoroutineTest(),
+    KoinTest {
     @BeforeTest
     fun setupTest() {
         startTestKoin(
@@ -62,7 +64,7 @@ class StorageControllerTest : CoroutineTest(), KoinTest {
         coEvery {
             storageService.createAsset(
                 fileName = any(),
-                content = any()
+                content = any(),
             )
         } returns ASSET_1
         val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()

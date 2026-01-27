@@ -14,8 +14,5 @@ interface UserDatastore {
      * @param lastName The last name of the user.
      * @return A [Result] containing the created [User] or an error if the operation failed.
      */
-    suspend fun createUser(
-        firstName: String,
-        lastName: String,
-    ): Result<User>
+    suspend fun createUser(firstName: String, lastName: String): Result<User>
 }

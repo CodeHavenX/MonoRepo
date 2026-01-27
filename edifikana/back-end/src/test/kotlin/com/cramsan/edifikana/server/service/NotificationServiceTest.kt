@@ -61,7 +61,13 @@ class NotificationServiceTest {
         // Arrange
         val userId = UserId("user123")
         val notifications = listOf(mockk<Notification>(), mockk<Notification>())
-        coEvery { notificationDatastore.getNotificationsForUser(userId, false, null) } returns Result.success(notifications)
+        coEvery {
+            notificationDatastore.getNotificationsForUser(
+                userId,
+                false,
+                null,
+            )
+        } returns Result.success(notifications)
 
         // Act
         val result = notificationService.getNotificationsForUser(userId)
@@ -80,7 +86,13 @@ class NotificationServiceTest {
         // Arrange
         val userId = UserId("user123")
         val notifications = listOf(mockk<Notification>())
-        coEvery { notificationDatastore.getNotificationsForUser(userId, true, 10) } returns Result.success(notifications)
+        coEvery {
+            notificationDatastore.getNotificationsForUser(
+                userId,
+                true,
+                10,
+            )
+        } returns Result.success(notifications)
 
         // Act
         val result = notificationService.getNotificationsForUser(userId, unreadOnly = true, limit = 10)

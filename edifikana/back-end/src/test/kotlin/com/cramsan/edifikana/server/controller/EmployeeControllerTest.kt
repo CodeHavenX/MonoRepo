@@ -41,7 +41,9 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class EmployeeControllerTest : CoroutineTest(), KoinTest {
+class EmployeeControllerTest :
+    CoroutineTest(),
+    KoinTest {
 
     @BeforeTest
     fun setupTest() {
@@ -87,7 +89,7 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-            )
+            ),
         )
         coEvery { contextRetriever.getContext(any()) } returns context
         coEvery { rbacService.hasRoleOrHigher(context, PropertyId("property123"), UserRole.ADMIN) } returns true
@@ -115,7 +117,7 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-            )
+            ),
         )
         coEvery { contextRetriever.getContext(any()) } returns context
         coEvery { rbacService.hasRoleOrHigher(context, PropertyId("property123"), UserRole.ADMIN) } returns false
@@ -154,7 +156,7 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-            )
+            ),
         )
         coEvery { contextRetriever.getContext(any()) } returns context
         coEvery { rbacService.hasRoleOrHigher(context, empId, UserRole.MANAGER) } returns true
@@ -179,7 +181,7 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-            )
+            ),
         )
         coEvery { contextRetriever.getContext(any()) } returns context
         coEvery { rbacService.hasRoleOrHigher(context, empId, UserRole.MANAGER) } returns false
@@ -204,7 +206,7 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-            )
+            ),
         )
 
         coEvery {
@@ -231,7 +233,7 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
                     idType = IdType.PASSPORT,
                     role = EmployeeRole.CLEANING,
                     propertyId = PropertyId("property456"),
-                )
+                ),
             )
         }
 
@@ -272,7 +274,7 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-            )
+            ),
         )
         coEvery { contextRetriever.getContext(any()) } returns context
         coEvery { rbacService.hasRoleOrHigher(context, empId, UserRole.ADMIN) } returns true
@@ -301,7 +303,7 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-            )
+            ),
         )
         coEvery { contextRetriever.getContext(any()) } returns context
         coEvery { rbacService.hasRoleOrHigher(context, empId, UserRole.ADMIN) } returns false
@@ -330,7 +332,7 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-            )
+            ),
         )
         coEvery { contextRetriever.getContext(any()) } returns context
         coEvery { rbacService.hasRoleOrHigher(context, empId, UserRole.ADMIN) } returns true
@@ -354,7 +356,7 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
             SupabaseContextPayload(
                 userInfo = mockk(),
                 userId = UserId("user123"),
-            )
+            ),
         )
         coEvery { contextRetriever.getContext(any()) } returns context
         coEvery { rbacService.hasRoleOrHigher(context, empId, UserRole.ADMIN) } returns false

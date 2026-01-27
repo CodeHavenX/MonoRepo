@@ -147,21 +147,53 @@ class SupabaseUserDatastore(
             )
         }
 
-        // Create the new user entity in our database
-        val requestEntity: UserEntity.CreateUserEntity = CreateUserEntity(
-            userId = userId,
-            email = email,
-            userEntity = temporaryUser,
-        )
-        val createdUser = createUserEntity(requestEntity)
-
-        if (deleteUser(UserId(temporaryUser.id)).isFailure) {
-            logW(TAG, "Failed to delete temporary user with email: $email")
-            error("Failed to delete temporary user with.")
+        // Update the temporary user's ID and auth metadata instead of creating a new user
+        val updatedUser = runCatching {
+            postgrest.from(UserEntity.COLLECTION).update(
+                {
+                    UserEntity::id setTo userId.userId
+                    UserEntity::authMetadata setTo temporaryUser.authMetadata.copy(
+                        pendingAssociation = false,
+                        canPasswordAuth = true,
+                    )
+                }
+            ) {
+                select()
+                filter {
+                    UserEntity::id eq temporaryUser.id
+                    UserEntity::deletedAt isExact null
+                }
+            }.decodeSingleOrNull<UserEntity>()
+        }.getOrElse { exception ->
+            // Log the full exception details for debugging
+            logW(TAG, "Failed to update temporary user with email: $email", exception)
+            
+            // Check if it's a constraint violation based on common error patterns
+            // Note: This is a best-effort approach since we're using Supabase client
+            val exceptionMessage = exception.message.orEmpty().lowercase()
+            if (exceptionMessage.contains("duplicate") || 
+                exceptionMessage.contains("unique") || 
+                exceptionMessage.contains("23505")) { // PostgreSQL unique violation code
+                throw ClientRequestExceptions.ConflictException(
+                    message = "Error: User with ID $userId already exists in the database.",
+                )
+            } else {
+                // Generic error message that doesn't expose internal details
+                throw ClientRequestExceptions.ConflictException(
+                    message = "Error: Failed to associate user account. Please try again.",
+                )
+            }
         }
 
-        // Return the created user as a domain model
-        createdUser.toUser()
+        if (updatedUser == null) {
+            logW(TAG, "No user was updated for email: $email - user may have been deleted or modified")
+            throw ClientRequestExceptions.NotFoundException(
+                message = "Error: Temporary user with email $email was not found or has been modified.",
+            )
+        }
+
+        // Return the updated user as a domain model
+        updatedUser.toUser()
     }
 
     /**

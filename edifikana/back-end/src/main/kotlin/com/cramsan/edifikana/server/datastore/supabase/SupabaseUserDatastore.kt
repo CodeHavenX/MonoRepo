@@ -160,8 +160,16 @@ class SupabaseUserDatastore(
             select()
             filter {
                 UserEntity::id eq temporaryUser.id
+                UserEntity::deletedAt isExact null
             }
-        }.decodeSingle<UserEntity>()
+        }.decodeSingleOrNull<UserEntity>()
+
+        if (updatedUser == null) {
+            logW(TAG, "Failed to update temporary user with email: $email - user may have been deleted or modified")
+            throw ClientRequestExceptions.NotFoundException(
+                message = "Error: Temporary user with email $email was not found or has been modified.",
+            )
+        }
 
         // Return the updated user as a domain model
         updatedUser.toUser()

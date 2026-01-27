@@ -58,4 +58,5 @@ roborazzi {
 
 compose.resources {
     packageOfResClass = "ui_catalog"
+    publicResClass = true
 }

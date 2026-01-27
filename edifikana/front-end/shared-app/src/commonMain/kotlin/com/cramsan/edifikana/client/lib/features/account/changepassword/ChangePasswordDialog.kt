@@ -90,7 +90,7 @@ internal fun RenderContent(
                         onValueChange = {
                             onCurrentPasswordChange(it)
                         },
-                        label = ("Current password"),
+                        label = "Current password",
                         modifier = Modifier
                             .fillMaxWidth(),
                         supportingText = {

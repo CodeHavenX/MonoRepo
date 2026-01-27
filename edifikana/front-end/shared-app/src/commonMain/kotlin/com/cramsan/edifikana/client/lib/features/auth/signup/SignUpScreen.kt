@@ -126,6 +126,7 @@ internal fun SignUpContent(
                     modifier = modifier,
                     label = stringResource(Res.string.sign_up_screen_text_first_name),
                     maxLines = 1,
+                    singleLine = true,
                 )
 
                 EdifikanaTextField(
@@ -134,6 +135,7 @@ internal fun SignUpContent(
                     modifier = modifier,
                     label = stringResource(Res.string.sign_up_screen_text_last_name),
                     maxLines = 1,
+                    singleLine = true,
                 )
                 EdifikanaTextField(
                     value = uiState.email,
@@ -141,6 +143,7 @@ internal fun SignUpContent(
                     modifier = modifier,
                     label = stringResource(Res.string.sign_up_screen_text_email),
                     maxLines = 1,
+                    singleLine = true,
                 )
                 EdifikanaTextField(
                     value = uiState.phoneNumber,
@@ -148,6 +151,7 @@ internal fun SignUpContent(
                     modifier = modifier,
                     label = stringResource(Res.string.sign_up_screen_text_phone_number),
                     maxLines = 1,
+                    singleLine = true,
                 )
                 val interactionSource = remember { MutableInteractionSource() }
                 Row(

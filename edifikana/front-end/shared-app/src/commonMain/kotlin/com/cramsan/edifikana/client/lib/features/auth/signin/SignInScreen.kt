@@ -146,19 +146,21 @@ internal fun SignInContent(
                     }
                 },
                 buttonContent = { modifier ->
-                    EdifikanaPrimaryButton(
-                        text = if (uiState.showPassword) {
-                            stringResource(Res.string.sign_in_screen_text_sign_in)
-                        } else {
-                            stringResource(Res.string.sign_in_screen_text_sign_in_otp)
-                        },
-                        onClick = if (uiState.showPassword) {
-                            onPWSignInClicked
-                        } else {
-                            onSignInOtpClicked
-                        },
-                        modifier = modifier,
-                    )
+                    AnimatedContent( uiState.showPassword) {
+                        EdifikanaPrimaryButton(
+                            text = if (it) {
+                                stringResource(Res.string.sign_in_screen_text_sign_in)
+                            } else {
+                                stringResource(Res.string.sign_in_screen_text_sign_in_otp)
+                            },
+                            onClick = if (it) {
+                                onPWSignInClicked
+                            } else {
+                                onSignInOtpClicked
+                            },
+                            modifier = modifier,
+                        )
+                    }
 
                     EdifikanaSecondaryButton(
                         text = if (uiState.showPassword) {

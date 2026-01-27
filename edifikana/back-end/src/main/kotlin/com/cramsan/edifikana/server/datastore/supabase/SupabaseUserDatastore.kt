@@ -165,19 +165,22 @@ class SupabaseUserDatastore(
                 }
             }.decodeSingleOrNull<UserEntity>()
         }.getOrElse { exception ->
-            // Check if the error is due to a duplicate key constraint violation
-            // The exception message will contain details about the constraint violation
-            val exceptionMessage = exception.message.orEmpty()
+            // Log the full exception details for debugging
             logW(TAG, "Failed to update temporary user with email: $email", exception)
             
-            // Check if it's a primary key or unique constraint violation
-            if (exceptionMessage.contains("duplicate key") || exceptionMessage.contains("unique constraint")) {
+            // Check if it's a constraint violation based on common error patterns
+            // Note: This is a best-effort approach since we're using Supabase client
+            val exceptionMessage = exception.message.orEmpty().lowercase()
+            if (exceptionMessage.contains("duplicate") || 
+                exceptionMessage.contains("unique") || 
+                exceptionMessage.contains("23505")) { // PostgreSQL unique violation code
                 throw ClientRequestExceptions.ConflictException(
                     message = "Error: User with ID $userId already exists in the database.",
                 )
             } else {
+                // Generic error message that doesn't expose internal details
                 throw ClientRequestExceptions.ConflictException(
-                    message = "Error: Failed to associate user account. ${exception.message}",
+                    message = "Error: Failed to associate user account. Please try again.",
                 )
             }
         }

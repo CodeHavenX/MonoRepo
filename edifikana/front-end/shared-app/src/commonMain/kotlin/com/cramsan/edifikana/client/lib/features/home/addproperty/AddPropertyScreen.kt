@@ -14,6 +14,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.home.HomeDestination
 import com.cramsan.edifikana.client.lib.features.home.shared.PropertyIconOptions
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowDelegatedEvent
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowViewModel
 import com.cramsan.edifikana.client.ui.components.EdifikanaImageSelector
 import com.cramsan.edifikana.client.ui.components.EdifikanaPrimaryButton
 import com.cramsan.edifikana.client.ui.components.EdifikanaTextField
@@ -36,6 +38,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun AddPropertyScreen(
     destination: HomeDestination.AddPropertyManagementDestination,
     viewModel: AddPropertyViewModel = koinViewModel(),
+    windowViewModel: EdifikanaWindowViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -55,6 +58,16 @@ fun AddPropertyScreen(
     ObserveViewModelEvents(viewModel) { event ->
         when (event) {
             AddPropertyEvent.Noop -> Unit
+        }
+    }
+
+    // Observe delegated events from window (e.g., photo picker results)
+    ObserveViewModelEvents(windowViewModel) { event ->
+        when (event) {
+            is EdifikanaWindowDelegatedEvent.HandleReceivedImages -> {
+                viewModel.handleReceivedImages(event.uris)
+            }
+            else -> Unit
         }
     }
 

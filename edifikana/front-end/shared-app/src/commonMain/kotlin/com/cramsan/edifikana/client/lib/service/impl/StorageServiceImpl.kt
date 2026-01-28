@@ -6,6 +6,9 @@ import com.cramsan.edifikana.client.lib.service.DownloadStrategy
 import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.runSuspendCatching
+import com.cramsan.framework.logging.logE
+import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
+import io.github.jan.supabase.exceptions.RestException
 import io.github.jan.supabase.storage.Storage
 
 /**
@@ -16,11 +19,25 @@ class StorageServiceImpl(
     private val downloadStrategy: DownloadStrategy,
 ) : StorageService {
     override suspend fun uploadFile(data: ByteArray, targetRef: String): Result<String> = runSuspendCatching(TAG) {
-        val bucket = storage.from(BUCKET_NAME)
-        bucket.upload(targetRef, data) {
-            upsert = false
+        try {
+            val bucket = storage.from(BUCKET_NAME)
+            bucket.upload(targetRef, data) {
+                upsert = false
+            }
+            targetRef
+        } catch (e: RestException) {
+            logE(TAG, "Error uploading file", e)
+            throw when (e.statusCode) {
+                "400" -> ClientRequestExceptions.InvalidRequestException("Invalid file format")
+                "401" -> ClientRequestExceptions.UnauthorizedException("Authentication required")
+                "403" -> ClientRequestExceptions.ForbiddenException("Permission denied")
+                "409" -> ClientRequestExceptions.ConflictException("File already exists")
+                else -> ClientRequestExceptions.InvalidRequestException("Upload failed: ${e.message}")
+            }
+        } catch (e: Exception) {
+            logE(TAG, "Unexpected error uploading file", e)
+            throw ClientRequestExceptions.InvalidRequestException("Upload failed: ${e.message}")
         }
-        targetRef
     }
 
     override suspend fun downloadFile(targetRef: String): Result<CoreUri> = runSuspendCatching(TAG) {

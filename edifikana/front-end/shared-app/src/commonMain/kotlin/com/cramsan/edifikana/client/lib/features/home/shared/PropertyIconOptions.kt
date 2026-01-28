@@ -26,6 +26,21 @@ object PropertyIconOptions {
     }
 
     /**
+     * Get the list of property icon options including the upload option.
+     *
+     * @return List of ImageOptionUIModel including default icons and an "Upload Custom Image" option
+     */
+    fun getOptionsWithUpload(): List<ImageOptionUIModel> {
+        val defaultOptions = getDefaultOptions()
+        val uploadOption = ImageOptionUIModel(
+            id = "custom_upload",
+            displayName = "Upload Custom Image",
+            imageSource = ImageSource.None,
+        )
+        return defaultOptions + uploadOption
+    }
+
+    /**
      * Convert an ImageOptionUIModel to the API string format.
      *
      * @param option The selected image option
@@ -35,6 +50,7 @@ object PropertyIconOptions {
         return when (option?.imageSource) {
             is ImageSource.Drawable -> "drawable:${option.id}"
             is ImageSource.Url -> (option.imageSource as ImageSource.Url).url
+            is ImageSource.LocalFile -> null // LocalFile should be uploaded first before calling this
             is ImageSource.None, null -> null
         }
     }

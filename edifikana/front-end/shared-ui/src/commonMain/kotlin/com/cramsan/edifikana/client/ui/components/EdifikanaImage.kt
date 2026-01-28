@@ -19,9 +19,10 @@ import org.jetbrains.compose.resources.painterResource
  * This component provides optimized image loading based on the source type:
  * - Drawable resources: Uses synchronous Image + painterResource (fast, efficient)
  * - URLs: Uses asynchronous AsyncImage with Coil (network loading)
+ * - LocalFile: Uses asynchronous AsyncImage with local file URI
  * - None/Placeholder: Shows S-Depa icon as default
  *
- * @param imageSource The source of the image (Drawable, Url, None, or UploadPlaceholder)
+ * @param imageSource The source of the image (Drawable, Url, LocalFile, or None)
  * @param contentDescription Accessibility description for screen readers
  * @param modifier Modifier for the component
  * @param size Optional fixed size (applies both width and height)
@@ -57,6 +58,15 @@ fun EdifikanaImage(
             // Asynchronous loading for remote URLs
             AsyncImage(
                 model = imageSource.url,
+                contentDescription = contentDescription,
+                modifier = finalModifier,
+                contentScale = contentScale,
+            )
+        }
+        is ImageSource.LocalFile -> {
+            // Asynchronous loading for local file URIs (pending upload)
+            AsyncImage(
+                model = imageSource.uri.toString(),
                 contentDescription = contentDescription,
                 modifier = finalModifier,
                 contentScale = contentScale,

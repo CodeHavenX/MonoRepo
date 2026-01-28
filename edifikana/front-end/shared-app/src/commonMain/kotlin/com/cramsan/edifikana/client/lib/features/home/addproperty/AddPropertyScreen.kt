@@ -65,6 +65,7 @@ fun AddPropertyScreen(
         onAddPropertySelected = { propertyName, address, imageUrl ->
             viewModel.addProperty(propertyName, address, imageUrl)
         },
+        onTriggerPhotoPicker = { viewModel.triggerPhotoPicker() },
     )
 }
 
@@ -77,15 +78,20 @@ internal fun AddPropertyContent(
     modifier: Modifier = Modifier,
     onBackSelected: () -> Unit,
     onAddPropertySelected: (propertyName: String, address: String, imageUrl: String?) -> Unit,
+    onTriggerPhotoPicker: () -> Unit,
 ) {
     var propertyName by remember { mutableStateOf("") }
     var address by remember { mutableStateOf("") }
-    // Default to S_DEPA icon
+
+    // Local state for default icon selection
     val defaultIcon = remember {
         PropertyIconOptions.getDefaultOptions().find { it.id == "S_DEPA" }
             ?: PropertyIconOptions.getDefaultOptions().first()
     }
-    var selectedIcon by remember { mutableStateOf(defaultIcon) }
+    var localSelectedIcon by remember { mutableStateOf(defaultIcon) }
+
+    // Effective selected icon: uploaded image takes priority over local selection
+    val effectiveSelectedIcon = content.selectedIcon ?: localSelectedIcon
 
     Scaffold(
         modifier = modifier,
@@ -116,10 +122,16 @@ internal fun AddPropertyContent(
                 )
                 EdifikanaImageSelector(
                     label = "Property Icon",
-                    options = PropertyIconOptions.getDefaultOptions(),
-                    selectedOption = selectedIcon,
-                    onOptionSelected = { selectedIcon = it },
-                    placeholder = "Select a property icon",
+                    options = PropertyIconOptions.getOptionsWithUpload(),
+                    selectedOption = effectiveSelectedIcon,
+                    onOptionSelected = { option ->
+                        if (option.id == "custom_upload") {
+                            onTriggerPhotoPicker()
+                        } else {
+                            localSelectedIcon = option
+                        }
+                    },
+                    placeholder = if (content.isUploading) "Uploading..." else "Select a property icon",
                     modifier = sectionModifier,
                 )
             },
@@ -127,14 +139,15 @@ internal fun AddPropertyContent(
                 EdifikanaPrimaryButton(
                     text = stringResource(Res.string.text_add),
                     modifier = buttonModifier,
+                    enabled = !content.isUploading,
                     onClick = {
-                        val imageUrl = PropertyIconOptions.toImageUrl(selectedIcon)
+                        val imageUrl = PropertyIconOptions.toImageUrl(effectiveSelectedIcon)
                         onAddPropertySelected(propertyName, address, imageUrl)
                     },
                 )
             },
             overlay = {
-                LoadingAnimationOverlay(content.isLoading)
+                LoadingAnimationOverlay(content.isLoading || content.isUploading)
             }
         )
     }

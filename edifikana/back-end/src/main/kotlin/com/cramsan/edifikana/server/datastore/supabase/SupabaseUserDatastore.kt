@@ -148,6 +148,10 @@ class SupabaseUserDatastore(
         }
 
         // Update the temporary user's ID and auth metadata instead of creating a new user
+        // NOTE: This operation updates the primary key, which requires that no foreign key references
+        // exist yet. The workflow must call associateUser before creating any FK references
+        // (user_property_mapping, user_organization_mapping, etc.). Consider migrating to a design
+        // with a separate supabase_auth_id column to avoid PK updates.
         val updatedUser = runCatching {
             postgrest.from(UserEntity.COLLECTION).update(
                 {
@@ -165,30 +169,16 @@ class SupabaseUserDatastore(
                 }
             }.decodeSingleOrNull<UserEntity>()
         }.getOrElse { exception ->
-            // Log the full exception details for debugging
-            logW(TAG, "Failed to update temporary user with email: $email", exception)
-            
-            // Check if it's a constraint violation based on common error patterns
-            // Note: This is a best-effort approach since we're using Supabase client
-            val exceptionMessage = exception.message.orEmpty().lowercase()
-            if (exceptionMessage.contains("duplicate") || 
-                exceptionMessage.contains("unique") || 
-                exceptionMessage.contains("23505")) { // PostgreSQL unique violation code
-                throw ClientRequestExceptions.ConflictException(
-                    message = "Error: User with ID $userId already exists in the database.",
-                )
-            } else {
-                // Generic error message that doesn't expose internal details
-                throw ClientRequestExceptions.ConflictException(
-                    message = "Error: Failed to associate user account. Please try again.",
-                )
-            }
+            logW(TAG, "Failed to update temporary user", exception)
+            throw ClientRequestExceptions.InvalidRequestException(
+                message = "Error: Failed to associate user account. Please try again.",
+            )
         }
 
         if (updatedUser == null) {
-            logW(TAG, "No user was updated for email: $email - user may have been deleted or modified")
+            logW(TAG, "No user was updated - user may have been deleted or modified concurrently")
             throw ClientRequestExceptions.NotFoundException(
-                message = "Error: Temporary user with email $email was not found or has been modified.",
+                message = "Error: The temporary user account was not found or has been modified.",
             )
         }
 

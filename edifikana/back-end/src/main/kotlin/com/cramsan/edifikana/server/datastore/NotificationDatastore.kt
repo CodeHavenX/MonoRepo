@@ -83,4 +83,14 @@ interface NotificationDatastore {
         email: String,
         userId: UserId,
     ): Result<Int>
+
+    /**
+     * Permanently deletes a soft-deleted notification record by ID.
+     * Only purges if the record is already soft-deleted.
+     * This is intended for testing and maintenance purposes only.
+     * Returns the [Result] of the operation with a [Boolean] indicating if the record was purged.
+     */
+    suspend fun purgeNotification(
+        id: NotificationId,
+    ): Result<Boolean>
 }

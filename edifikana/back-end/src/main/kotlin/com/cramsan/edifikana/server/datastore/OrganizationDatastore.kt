@@ -83,4 +83,14 @@ interface OrganizationDatastore {
      * @return The role of the user in the organization, or an error
      */
     suspend fun getUserRole(userId: UserId, orgId: OrganizationId): Result<UserRole?>
+
+    /**
+     * Permanently deletes a soft-deleted organization record by ID.
+     * Only purges if the record is already soft-deleted.
+     * This is intended for testing and maintenance purposes only.
+     *
+     * @param id The ID of the organization to purge.
+     * @return True if the record was purged, false if not found or not soft-deleted.
+     */
+    suspend fun purgeOrganization(id: OrganizationId): Result<Boolean>
 }

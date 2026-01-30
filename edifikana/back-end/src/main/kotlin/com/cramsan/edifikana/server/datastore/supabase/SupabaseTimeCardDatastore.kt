@@ -110,6 +110,37 @@ class SupabaseTimeCardDatastore(
         }.decodeSingleOrNull<TimeCardEventEntity>() != null
     }
 
+    /**
+     * Permanently deletes a soft-deleted time card event by [id]. Returns true if successful.
+     * Only purges records that are already soft-deleted (deletedAt is not null).
+     */
+    @OptIn(SupabaseModel::class)
+    override suspend fun purgeTimeCardEvent(
+        id: TimeCardEventId,
+    ): Result<Boolean> = runSuspendCatching(TAG) {
+        logD(TAG, "Purging soft-deleted time card event: %s", id)
+
+        // First verify the record exists and is soft-deleted
+        val entity = postgrest.from(TimeCardEventEntity.COLLECTION).select {
+            filter {
+                TimeCardEventEntity::id eq id.timeCardEventId
+            }
+        }.decodeSingleOrNull<TimeCardEventEntity>()
+
+        // Only purge if it exists and is soft-deleted
+        if (entity?.deletedAt == null) {
+            return@runSuspendCatching false
+        }
+
+        // Delete the record
+        postgrest.from(TimeCardEventEntity.COLLECTION).delete {
+            filter {
+                TimeCardEventEntity::id eq id.timeCardEventId
+            }
+        }
+        true
+    }
+
     companion object {
         const val TAG = "SupabaseTimeCardDatastore"
     }

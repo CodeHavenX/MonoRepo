@@ -51,4 +51,14 @@ interface PropertyDatastore {
     suspend fun deleteProperty(
         propertyId: PropertyId,
     ): Result<Boolean>
+
+    /**
+     * Permanently deletes a soft-deleted property record by ID.
+     * Only purges if the record is already soft-deleted.
+     * This is intended for testing and maintenance purposes only.
+     * Returns the [Result] of the operation with a [Boolean] indicating if the record was purged.
+     */
+    suspend fun purgeProperty(
+        propertyId: PropertyId,
+    ): Result<Boolean>
 }

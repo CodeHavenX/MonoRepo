@@ -464,6 +464,66 @@ class SupabaseUserDatastore(
         return createdUser
     }
 
+    /**
+     * Permanently deletes a soft-deleted user by [id]. Returns true if successful.
+     * Only purges records that are already soft-deleted (deletedAt is not null).
+     */
+    override suspend fun purgeUser(
+        id: UserId,
+    ): Result<Boolean> = runSuspendCatching(TAG) {
+        logD(TAG, "Purging soft-deleted user: %s", id)
+
+        // First verify the record exists and is soft-deleted
+        val entity = postgrest.from(UserEntity.COLLECTION).select {
+            filter {
+                UserEntity::id eq id.userId
+            }
+        }.decodeSingleOrNull<UserEntity>()
+
+        // Only purge if it exists and is soft-deleted
+        if (entity?.deletedAt == null) {
+            return@runSuspendCatching false
+        }
+
+        // Delete the record
+        postgrest.from(UserEntity.COLLECTION).delete {
+            filter {
+                UserEntity::id eq id.userId
+            }
+        }
+        true
+    }
+
+    /**
+     * Permanently deletes a soft-deleted invite by [id]. Returns true if successful.
+     * Only purges records that are already soft-deleted (deletedAt is not null).
+     */
+    override suspend fun purgeInvite(
+        id: InviteId,
+    ): Result<Boolean> = runSuspendCatching(TAG) {
+        logD(TAG, "Purging soft-deleted invite: %s", id)
+
+        // First verify the record exists and is soft-deleted
+        val entity = postgrest.from(InviteEntity.COLLECTION).select {
+            filter {
+                InviteEntity::id eq id.id
+            }
+        }.decodeSingleOrNull<InviteEntity>()
+
+        // Only purge if it exists and is soft-deleted
+        if (entity?.deletedAt == null) {
+            return@runSuspendCatching false
+        }
+
+        // Delete the record
+        postgrest.from(InviteEntity.COLLECTION).delete {
+            filter {
+                InviteEntity::id eq id.id
+            }
+        }
+        true
+    }
+
     companion object {
         const val TAG = "SupabaseUserDatastore"
     }

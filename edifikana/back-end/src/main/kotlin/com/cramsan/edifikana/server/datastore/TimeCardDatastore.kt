@@ -44,4 +44,14 @@ interface TimeCardDatastore {
     suspend fun deleteTimeCardEvent(
         id: TimeCardEventId,
     ): Result<Boolean>
+
+    /**
+     * Permanently deletes a soft-deleted time card event record by ID.
+     * Only purges if the record is already soft-deleted.
+     * This is intended for testing and maintenance purposes only.
+     * Returns the [Result] of the operation with a [Boolean] indicating if the record was purged.
+     */
+    suspend fun purgeTimeCardEvent(
+        id: TimeCardEventId,
+    ): Result<Boolean>
 }

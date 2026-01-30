@@ -122,7 +122,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
             creatorUserId = testUserId!!,
             organizationId = testOrg!!,
             imageUrl = "drawable:CASA",
-        )
+        ).registerPropertyForDeletion()
         assertTrue(createResult.isSuccess)
         val property = createResult.getOrNull()!!
 
@@ -132,7 +132,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
             name = "${test_prefix}_UpdatedName",
             address = null,
             imageUrl = "drawable:S_DEPA",
-        ).registerPropertyForDeletion()
+        )
 
         // Assert
         assertTrue(updateResult.isSuccess)
@@ -152,7 +152,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
             creatorUserId = testUserId!!,
             organizationId = testOrg!!,
             imageUrl = "drawable:QUINTA",
-        )
+        ).registerPropertyForDeletion()
         assertTrue(createResult.isSuccess)
         val property = createResult.getOrNull()!!
 
@@ -162,7 +162,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
             name = null,
             address = "456 New Address St, New City, NC 67890",
             imageUrl = "drawable:M_DEPA",
-        ).registerPropertyForDeletion()
+        )
 
         // Assert
         assertTrue(updateResult.isSuccess)
@@ -182,7 +182,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
             creatorUserId = testUserId!!,
             organizationId = testOrg!!,
             imageUrl = "drawable:L_DEPA",
-        )
+        ).registerPropertyForDeletion()
         assertTrue(createResult.isSuccess)
         val property = createResult.getOrNull()!!
 
@@ -192,7 +192,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
             name = "${test_prefix}_CompletelyUpdated",
             address = "789 Complete St, Full City, FC 11111",
             imageUrl = "drawable:CASA",
-        ).registerPropertyForDeletion()
+        )
 
         // Assert
         assertTrue(updateResult.isSuccess)
@@ -225,6 +225,9 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val getResult = propertyDatastore.getProperty(property.id)
         assertTrue(getResult.isSuccess)
         assertNull(getResult.getOrNull())
+
+        // Clean up
+        propertyDatastore.purgeProperty(property.id)
     }
 
     @Test

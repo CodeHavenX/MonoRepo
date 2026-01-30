@@ -207,7 +207,7 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
             fallbackEventType = null, // Set as needed
             timestamp = Clock.System.now(),
             unit = "TestUnitToDelete", // Use a valid unit
-        )
+        ).registerEventLogEntryForDeletion()
         assertTrue(createResult.isSuccess)
         val createdEntry = createResult.getOrNull()
         assertNotNull(createdEntry)

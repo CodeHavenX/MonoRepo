@@ -123,4 +123,24 @@ interface UserDatastore {
     suspend fun getInvitesByEmail(
         email: String,
     ): Result<List<Invite>>
+
+    /**
+     * Permanently deletes a soft-deleted user record by ID.
+     * Only purges if the record is already soft-deleted.
+     * This is intended for testing and maintenance purposes only.
+     * Returns the [Result] of the operation with a [Boolean] indicating if the record was purged.
+     */
+    suspend fun purgeUser(
+        id: UserId,
+    ): Result<Boolean>
+
+    /**
+     * Permanently deletes a soft-deleted invite record by ID.
+     * Only purges if the record is already soft-deleted.
+     * This is intended for testing and maintenance purposes only.
+     * Returns the [Result] of the operation with a [Boolean] indicating if the record was purged.
+     */
+    suspend fun purgeInvite(
+        id: InviteId,
+    ): Result<Boolean>
 }

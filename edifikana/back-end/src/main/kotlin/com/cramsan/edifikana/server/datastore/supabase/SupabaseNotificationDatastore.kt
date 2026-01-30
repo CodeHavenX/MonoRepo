@@ -188,6 +188,36 @@ class SupabaseNotificationDatastore(
         result.countOrNull()?.toInt() ?: 0
     }
 
+    /**
+     * Permanently deletes a soft-deleted notification by [id]. Returns true if successful.
+     * Only purges records that are already soft-deleted (deletedAt is not null).
+     */
+    override suspend fun purgeNotification(
+        id: NotificationId,
+    ): Result<Boolean> = runSuspendCatching(TAG) {
+        logD(TAG, "Purging soft-deleted notification: $id")
+
+        // First verify the record exists and is soft-deleted
+        val entity = postgrest.from(NotificationEntity.COLLECTION).select {
+            filter {
+                NotificationEntity::id eq id.id
+            }
+        }.decodeSingleOrNull<NotificationEntity>()
+
+        // Only purge if it exists and is soft-deleted
+        if (entity?.deletedAt == null) {
+            return@runSuspendCatching false
+        }
+
+        // Delete the record
+        postgrest.from(NotificationEntity.COLLECTION).delete {
+            filter {
+                NotificationEntity::id eq id.id
+            }
+        }
+        true
+    }
+
     companion object {
         const val TAG = "SupabaseNotificationDatastore"
     }

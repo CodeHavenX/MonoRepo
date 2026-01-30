@@ -237,6 +237,10 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
         assertTrue(deleteResult.isSuccess && deleteResult.getOrNull() == true)
         val getResult = userDatastore.getUser(user.id)
         assertTrue(getResult.isSuccess && getResult.getOrNull() == null)
+
+
+        // Clean up
+        userDatastore.purgeUser(user.id)
     }
 
     @Test
@@ -338,7 +342,6 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `recordInvite with valid data should succeed`() = runCoroutineTest {
         // Arrange
-        val orgOwner = createTestUser("${test_prefix}a@s.com")
         val organizationId = createTestOrganization("org_$test_prefix", "")
         val expiration = clock.now() + 1.minutes // 1 minute in the future
         val email = "${test_prefix}_invite@test.com"
@@ -362,7 +365,6 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `recordInvite with manager role should succeed`() = runCoroutineTest {
         // Arrange
-        val orgOwner = createTestUser("${test_prefix}a@s.com")
         val organizationId = createTestOrganization("org_$test_prefix", "")
         val expiration = clock.now() + 1.minutes
         val email = "${test_prefix}_manager_invite@test.com"
@@ -384,7 +386,6 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `getInvites should return recorded invite`() = runCoroutineTest {
         // Arrange
-        val orgOwner = createTestUser("${test_prefix}_a@s.com")
         val organizationId = createTestOrganization("org_$test_prefix", "")
         val email = "${test_prefix}_invite2@test.com"
         val expiration = clock.now() + 2.minutes // 2 minute in the future
@@ -408,7 +409,6 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `getInvites for organization with expired invites should return empty list`() = runCoroutineTest {
         // Arrange
-        val orgOwner = createTestUser("${test_prefix}_a@s.com")
         val organizationId = createTestOrganization("org_$test_prefix", "")
         val email = "${test_prefix}_invite2@test.com"
         val expiration = clock.now() + 2.minutes // 2 minute in the future
@@ -432,7 +432,6 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `getInvite should return invite by ID`() = runCoroutineTest {
         // Arrange
-        val orgOwner = createTestUser("${test_prefix}_a@s.com")
         val organizationId = createTestOrganization("org_$test_prefix", "")
         val email = "${test_prefix}_getinvite@test.com"
         val expiration = clock.now() + 5.minutes
@@ -473,7 +472,6 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `getInvitesByEmail should return invites for email`() = runCoroutineTest {
         // Arrange
-        val orgOwner = createTestUser("${test_prefix}_a@s.com")
         val organizationId = createTestOrganization("org_$test_prefix", "")
         val email = "${test_prefix}_byemail_invite@test.com"
         val expiration = clock.now() + 5.minutes
@@ -510,7 +508,6 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `getInvitesByEmail should not return expired invites`() = runCoroutineTest {
         // Arrange
-        val orgOwner = createTestUser("${test_prefix}_a@s.com")
         val organizationId = createTestOrganization("org_$test_prefix", "")
         val email = "${test_prefix}_expired_invite@test.com"
         val expiration = clock.now() + 2.minutes
@@ -533,7 +530,6 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `removeInvite should delete invite`() = runCoroutineTest {
         // Arrange
-        val orgOwner = createTestUser("${test_prefix}_a@s.com")
         val organizationId = createTestOrganization("org_$test_prefix", "")
         val email = "${test_prefix}_remove_invite@test.com"
         val expiration = clock.now() + 5.minutes
@@ -555,6 +551,9 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val getResult = userDatastore.getInvite(createdInvite.id)
         assertTrue(getResult.isSuccess)
         assertTrue(getResult.getOrNull() == null)
+
+        // Clean up
+        userDatastore.purgeInvite(createdInvite.id)
     }
 
     @Test

@@ -59,4 +59,14 @@ interface EventLogDatastore {
     suspend fun deleteEventLogEntry(
         id: EventLogEntryId,
     ): Result<Boolean>
+
+    /**
+     * Permanently deletes a soft-deleted event log entry record by ID.
+     * Only purges if the record is already soft-deleted.
+     * This is intended for testing and maintenance purposes only.
+     * Returns the [Result] of the operation with a [Boolean] indicating if the record was purged.
+     */
+    suspend fun purgeEventLogEntry(
+        id: EventLogEntryId,
+    ): Result<Boolean>
 }

@@ -181,6 +181,34 @@ class SupabaseOrganizationDatastore(
         }.decodeSingleOrNull<UserOrganizationMappingEntity>()?.role
     }
 
+    /**
+     * Permanently deletes a soft-deleted organization by [id]. Returns true if successful.
+     * Only purges records that are already soft-deleted (deletedAt is not null).
+     */
+    override suspend fun purgeOrganization(id: OrganizationId): Result<Boolean> = runSuspendCatching(TAG) {
+        logD(TAG, "Purging soft-deleted organization: %s", id)
+
+        // First verify the record exists and is soft-deleted
+        val entity = postgrest.from(OrganizationEntity.COLLECTION).select {
+            filter {
+                OrganizationEntity::id eq id.id
+            }
+        }.decodeSingleOrNull<OrganizationEntity>()
+
+        // Only purge if it exists and is soft-deleted
+        if (entity?.deletedAt == null) {
+            return@runSuspendCatching false
+        }
+
+        // Delete the record
+        postgrest.from(OrganizationEntity.COLLECTION).delete {
+            filter {
+                OrganizationEntity::id eq id.id
+            }
+        }
+        true
+    }
+
     companion object {
         private const val TAG = "SupabaseOrganizationDatastore"
     }

@@ -2,7 +2,6 @@ package com.cramsan.edifikana.server.datastore.supabase
 
 import com.cramsan.architecture.server.test.dependencyinjection.TestArchitectureModule
 import com.cramsan.architecture.server.test.dependencyinjection.integTestFrameworkModule
-import com.cramsan.edifikana.server.dependencyinjection.IntegTestApplicationModule
 import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EmployeeRole
 import com.cramsan.edifikana.lib.model.EventLogEntryId
@@ -13,7 +12,9 @@ import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.utils.requireSuccess
 import com.cramsan.edifikana.server.dependencyinjection.DatastoreModule
+import com.cramsan.edifikana.server.dependencyinjection.IntegTestApplicationModule
 import com.cramsan.edifikana.server.service.models.Employee
 import com.cramsan.edifikana.server.service.models.EventLogEntry
 import com.cramsan.edifikana.server.service.models.Invite
@@ -239,46 +240,63 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
     fun tearDown() {
         // Clean up resources created during tests
         // The order matters since there are foreign key constraints
-        runBlocking {
-            supabase.auth.signOut()
-            supabase.auth.clearSession()
+        // First soft delete, then purge each record
 
-            notificationResources.forEach {
-                notificationDatastore.deleteNotification(it)
+        val results = mutableListOf<Result<*>>()
+        try {
+            runBlocking {
+                supabase.auth.signOut()
+                supabase.auth.clearSession()
+
+                notificationResources.forEach {
+                    results += notificationDatastore.deleteNotification(it)
+                    results += notificationDatastore.purgeNotification(it)
+                }
+                invitationResources.forEach {
+                    results += userDatastore.removeInvite(it)
+                    results += userDatastore.purgeInvite(it)
+                }
+                eventLogResources.forEach {
+                    results += eventLogDatastore.deleteEventLogEntry(it)
+                    results += eventLogDatastore.purgeEventLogEntry(it)
+                }
+                timeCardResources.forEach {
+                    results += timeCardDatastore.deleteTimeCardEvent(it)
+                    results += timeCardDatastore.purgeTimeCardEvent(it)
+                }
+                employeeResources.forEach {
+                    results += employeeDatastore.deleteEmployee(it)
+                    results += employeeDatastore.purgeEmployee(it)
+                }
+                propertyResources.forEach {
+                    results += propertyDatastore.deleteProperty(it)
+                    results += propertyDatastore.purgeProperty(it)
+                }
+                organizationResources.forEach {
+                    results += organizationDatastore.deleteOrganization(it)
+                    results += organizationDatastore.purgeOrganization(it)
+                }
+                userResources.forEach {
+                    results += userDatastore.deleteUser(it)
+                    results += userDatastore.purgeUser(it)
+                }
+                supabaseUsers.forEach { userId ->
+                    supabase.auth.admin.deleteUser(userId)
+                }
             }
-            invitationResources.forEach {
-                userDatastore.removeInvite(it).getOrThrow()
-            }
-            eventLogResources.forEach {
-                eventLogDatastore.deleteEventLogEntry(it).getOrThrow()
-            }
-            timeCardResources.forEach {
-                timeCardDatastore.deleteTimeCardEvent(it).getOrThrow()
-            }
-            employeeResources.forEach {
-                employeeDatastore.deleteEmployee(it).getOrThrow()
-            }
-            propertyResources.forEach {
-                propertyDatastore.deleteProperty(it).getOrThrow()
-            }
-            organizationResources.forEach {
-                organizationDatastore.deleteOrganization(it).getOrThrow()
-            }
-            userResources.forEach {
-                userDatastore.deleteUser(it).getOrThrow()
-            }
-            supabaseUsers.forEach { userId ->
-                supabase.auth.admin.deleteUser(userId)
-            }
+        } finally {
+            notificationResources.clear()
+            invitationResources.clear()
+            eventLogResources.clear()
+            timeCardResources.clear()
+            employeeResources.clear()
+            propertyResources.clear()
+            userResources.clear()
+            organizationResources.clear()
+            supabaseUsers.clear()
+            stopKoin()
         }
-        notificationResources.clear()
-        eventLogResources.clear()
-        timeCardResources.clear()
-        employeeResources.clear()
-        propertyResources.clear()
-        userResources.clear()
-        organizationResources.clear()
-        supabaseUsers.clear()
-        stopKoin()
+
+        results.forEach { it.requireSuccess() }
     }
 }

@@ -24,7 +24,9 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `createOrganization should return organization on success`() = runCoroutineTest {
         // Act
-        val result = organizationDatastore.createOrganization("test_org_$test_prefix", "").registerOrganizationForDeletion()
+        val result = organizationDatastore
+            .createOrganization("test_org_$test_prefix", "")
+            .registerOrganizationForDeletion()
 
         // Assert
         assertTrue(result.isSuccess)
@@ -35,7 +37,9 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `getOrganization should return created organization`() = runCoroutineTest {
         // Arrange
-        val createResult = organizationDatastore.createOrganization("test_org_$test_prefix", "").registerOrganizationForDeletion()
+        val createResult = organizationDatastore
+            .createOrganization("test_org_$test_prefix", "")
+            .registerOrganizationForDeletion()
         assertTrue(createResult.isSuccess)
         val org = createResult.getOrNull()!!
 
@@ -52,7 +56,9 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `updateOrganization should update organization fields`() = runCoroutineTest {
         // Arrange
-        val createResult = organizationDatastore.createOrganization("test_org_$test_prefix", "").registerOrganizationForDeletion()
+        val createResult = organizationDatastore
+            .createOrganization("test_org_$test_prefix", "")
+            .registerOrganizationForDeletion()
         assertTrue(createResult.isSuccess)
         val org = createResult.getOrNull()!!
 
@@ -71,7 +77,9 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `deleteOrganization should remove organization`() = runCoroutineTest {
         // Arrange
-        val createResult = organizationDatastore.createOrganization("test_org_$test_prefix", "")
+        val createResult = organizationDatastore
+            .createOrganization("test_org_$test_prefix", "")
+            .registerOrganizationForDeletion()
         assertTrue(createResult.isSuccess)
         val org = createResult.getOrNull()!!
 

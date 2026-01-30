@@ -143,6 +143,37 @@ class SupabaseEventLogDatastore(
         }.decodeSingleOrNull<EventLogEntryEntity>() != null
     }
 
+    /**
+     * Permanently deletes a soft-deleted event log entry by [id]. Returns true if successful.
+     * Only purges records that are already soft-deleted (deletedAt is not null).
+     */
+    @OptIn(SupabaseModel::class)
+    override suspend fun purgeEventLogEntry(
+        id: EventLogEntryId,
+    ): Result<Boolean> = runSuspendCatching(TAG) {
+        logD(TAG, "Purging soft-deleted event log entry: %s", id)
+
+        // First verify the record exists and is soft-deleted
+        val entity = postgrest.from(EventLogEntryEntity.COLLECTION).select {
+            filter {
+                EventLogEntryEntity::id eq id.eventLogEntryId
+            }
+        }.decodeSingleOrNull<EventLogEntryEntity>()
+
+        // Only purge if it exists and is soft-deleted
+        if (entity?.deletedAt == null) {
+            return@runSuspendCatching false
+        }
+
+        // Delete the record
+        postgrest.from(EventLogEntryEntity.COLLECTION).delete {
+            filter {
+                EventLogEntryEntity::id eq id.eventLogEntryId
+            }
+        }
+        true
+    }
+
     companion object {
         const val TAG = "SupabaseEventLogDatastore"
     }

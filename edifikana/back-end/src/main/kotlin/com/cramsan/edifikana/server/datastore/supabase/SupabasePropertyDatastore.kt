@@ -144,6 +144,37 @@ class SupabasePropertyDatastore(
         }.decodeSingleOrNull<PropertyEntity>() != null
     }
 
+    /**
+     * Permanently deletes a soft-deleted property by [propertyId]. Returns true if successful.
+     * Only purges records that are already soft-deleted (deletedAt is not null).
+     */
+    @OptIn(SupabaseModel::class)
+    override suspend fun purgeProperty(
+        propertyId: PropertyId,
+    ): Result<Boolean> = runSuspendCatching(TAG) {
+        logD(TAG, "Purging soft-deleted property: %s", propertyId)
+
+        // First verify the record exists and is soft-deleted
+        val entity = postgrest.from(PropertyEntity.COLLECTION).select {
+            filter {
+                PropertyEntity::id eq propertyId.propertyId
+            }
+        }.decodeSingleOrNull<PropertyEntity>()
+
+        // Only purge if it exists and is soft-deleted
+        if (entity?.deletedAt == null) {
+            return@runSuspendCatching false
+        }
+
+        // Delete the record
+        postgrest.from(PropertyEntity.COLLECTION).delete {
+            filter {
+                PropertyEntity::id eq propertyId.propertyId
+            }
+        }
+        true
+    }
+
     companion object {
         const val TAG = "SupabasePropertyDatastore"
         const val VIEW_USER_PROPERTIES = "v_user_properties"

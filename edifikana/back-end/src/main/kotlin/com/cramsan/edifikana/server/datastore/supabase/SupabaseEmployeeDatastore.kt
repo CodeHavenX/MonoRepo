@@ -131,6 +131,37 @@ class SupabaseEmployeeDatastore(
         }.decodeSingleOrNull<EmployeeEntity>() != null
     }
 
+    /**
+     * Permanently deletes a soft-deleted employee by [id]. Returns true if successful.
+     * Only purges records that are already soft-deleted (deletedAt is not null).
+     */
+    @OptIn(SupabaseModel::class)
+    override suspend fun purgeEmployee(
+        id: EmployeeId,
+    ): Result<Boolean> = runSuspendCatching(TAG) {
+        logD(TAG, "Purging soft-deleted employee: %s", id)
+
+        // First verify the record exists and is soft-deleted
+        val entity = postgrest.from(EmployeeEntity.COLLECTION).select {
+            filter {
+                EmployeeEntity::id eq id.empId
+            }
+        }.decodeSingleOrNull<EmployeeEntity>()
+
+        // Only purge if it exists and is soft-deleted
+        if (entity?.deletedAt == null) {
+            return@runSuspendCatching false
+        }
+
+        // Delete the record
+        postgrest.from(EmployeeEntity.COLLECTION).delete {
+            filter {
+                EmployeeEntity::id eq id.empId
+            }
+        }
+        true
+    }
+
     companion object {
         const val TAG = "SupabaseEmployeeDatastore"
         const val VIEW_USER_EMPLOYEES = "v_user_employees"

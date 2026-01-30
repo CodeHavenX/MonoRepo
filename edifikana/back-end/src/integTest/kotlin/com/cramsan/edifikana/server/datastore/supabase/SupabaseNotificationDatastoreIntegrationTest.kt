@@ -310,7 +310,7 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
             notificationType = NotificationType.INVITE,
             description = "Test invite notification",
             inviteId = inviteId,
-        ).getOrThrow() // Not registering for deletion since we're deleting it
+        ).registerNotificationForDeletion().getOrThrow()
 
         // Act
         val deleteResult = notificationDatastore.deleteNotification(created.id)

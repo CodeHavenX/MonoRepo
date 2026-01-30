@@ -145,7 +145,7 @@ class SupabaseEmployeeDatastoreIntegrationTest : SupabaseIntegrationTest() {
             role = EmployeeRole.SECURITY,
             idType = IdType.DNI,
             propertyId = propertyId!!,
-        )
+        ).registerEmployeeForDeletion()
         assertTrue(createResult.isSuccess)
         val employee = createResult.getOrNull()!!
 

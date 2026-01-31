@@ -1,3 +1,9 @@
+---
+name: upgrade-versions
+description: "Systematically upgrade dependencies in versions.properties using refreshVersions, with iterative verification and proper documentation."
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash
+---
+
 # Skill: Upgrade Package Versions
 
 Systematically upgrade dependencies in `versions.properties` using refreshVersions, with iterative verification and proper documentation.

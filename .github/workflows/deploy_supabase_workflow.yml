@@ -51,7 +51,7 @@ jobs:
       - name: Build with Gradle
         uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
         with:
-          arguments: edifikana:back-end:integTest
+          arguments: edifikana:back-end:integTest --rerun
   stage:
     runs-on: self-hosted
     environment: "stage"
@@ -84,7 +84,7 @@ jobs:
       - name: Build with Gradle
         uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
         with:
-          arguments: edifikana:back-end:integTest
+          arguments: edifikana:back-end:integTest --rerun
 #jobs:
 #  deploy-stage:
 #    uses: ./.github/workflows/deploy_supabase_step.yml

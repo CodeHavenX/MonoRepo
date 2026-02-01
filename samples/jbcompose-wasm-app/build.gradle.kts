@@ -14,15 +14,6 @@ val wasmModuleName by extra("SamplesWasmApp")
 apply(from = "$rootDir/gradle/kotlin-mpp-target-common-compose.gradle")
 apply(from = "$rootDir/gradle/kotlin-mpp-target-wasm-compose-application.gradle")
 
-// https://github.com/CodeHavenX/MonoRepo/issues/228
-// Remove this workaround once we upgrade packages.
-// When upgrading kotlin, also update this line manually.
-configurations.all {
-    resolutionStrategy {
-        force("org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.2.21")
-    }
-}
-
 kotlin {
     wasmJs {
         // Refactored from KotlinWebpackConfig to avoid serialization issues

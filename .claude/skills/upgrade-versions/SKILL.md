@@ -180,14 +180,6 @@ Based on typical dependency chains in this project:
 
 ## Packages with Special Handling
 
-### Kotlin
-Requires manual update of `kotlin-stdlib-wasm-js` workaround in multiple gradle files.
-See: https://github.com/CodeHavenX/MonoRepo/issues/228
-
-### Roborazzi
-Blocked by version detection issue with ComposablePreviewScanner.
-See: https://github.com/takahirom/roborazzi/issues/753
-
 ### Navigation Compose (JetBrains)
 Does not update automatically from refreshVersions. Check manually:
 https://mvnrepository.com/artifact/org.jetbrains.androidx.navigation/navigation-compose

@@ -35,7 +35,7 @@ object PropertyIconOptions {
         val uploadOption = ImageOptionUIModel(
             id = "custom_upload",
             displayName = "Upload Custom Image",
-            imageSource = ImageSource.None,
+            imageSource = ImageSource.UploadPlaceholder,
         )
         return defaultOptions + uploadOption
     }
@@ -51,6 +51,7 @@ object PropertyIconOptions {
             is ImageSource.Drawable -> "drawable:${option.id}"
             is ImageSource.Url -> (option.imageSource as ImageSource.Url).url
             is ImageSource.LocalFile -> null // LocalFile should be uploaded first before calling this
+            is ImageSource.UploadPlaceholder -> null // Upload placeholder should not be converted to URL
             is ImageSource.None, null -> null
         }
     }

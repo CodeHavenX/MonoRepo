@@ -519,7 +519,7 @@ private fun EdifikanaImageSelectorWithUploadPreview() {
             ImageOptionUIModel(
                 id = "custom_upload",
                 displayName = "Upload Custom Image",
-                imageSource = ImageSource.None,
+                imageSource = ImageSource.UploadPlaceholder,
             ),
         )
 
@@ -569,7 +569,7 @@ private fun EdifikanaImageSelectorWithCustomImagePreview() {
             ImageOptionUIModel(
                 id = "custom_upload",
                 displayName = "Upload Custom Image",
-                imageSource = ImageSource.None,
+                imageSource = ImageSource.UploadPlaceholder,
             ),
         )
 

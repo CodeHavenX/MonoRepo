@@ -51,4 +51,10 @@ sealed class ImageSource {
      * Contains the URI and filename for display and processing.
      */
     data class LocalFile(val uri: CoreUri, val filename: String) : ImageSource()
+
+    /**
+     * Upload placeholder - displays an upload icon to indicate the "Upload Custom Image" option.
+     * This is different from [None] which shows a default property icon.
+     */
+    data object UploadPlaceholder : ImageSource()
 }

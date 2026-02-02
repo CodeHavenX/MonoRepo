@@ -28,10 +28,10 @@ class StorageServiceImpl(
         } catch (e: RestException) {
             logE(TAG, "Error uploading file", e)
             throw when (e.statusCode) {
-                "400" -> ClientRequestExceptions.InvalidRequestException("Invalid file format")
-                "401" -> ClientRequestExceptions.UnauthorizedException("Authentication required")
-                "403" -> ClientRequestExceptions.ForbiddenException("Permission denied")
-                "409" -> ClientRequestExceptions.ConflictException("File already exists")
+                400 -> ClientRequestExceptions.InvalidRequestException("Invalid file format")
+                401 -> ClientRequestExceptions.UnauthorizedException("Authentication required")
+                403 -> ClientRequestExceptions.ForbiddenException("Permission denied")
+                409 -> ClientRequestExceptions.ConflictException("File already exists")
                 else -> ClientRequestExceptions.InvalidRequestException("Upload failed: ${e.message}")
             }
         } catch (e: Exception) {

@@ -8,6 +8,7 @@ import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logW
 import io.github.jan.supabase.auth.Auth
+import io.github.jan.supabase.auth.user.UserInfo
 import io.ktor.server.application.ApplicationCall
 
 /**
@@ -37,12 +38,16 @@ class SupabaseContextRetriever(
         }
         assertNull(auth.currentUserOrNull(), TAG, "Library cannot sign in user")
 
-        return ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(
-                userInfo = user,
-                userId = UserId(user.id),
+        return if (user == null) {
+            ClientContext.UnauthenticatedClientContext()
+        } else {
+            ClientContext.AuthenticatedClientContext(
+                SupabaseContextPayload(
+                    userInfo = user,
+                    userId = UserId(user.id),
+                )
             )
-        )
+        }
     }
 
     companion object {

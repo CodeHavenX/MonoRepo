@@ -14,4 +14,13 @@ sealed class EdifikanaWindowViewModelEvent : ViewModelEvent {
     data class EdifikanaWindowEventWrapper(
         val event: EdifikanaWindowsEvent,
     ) : EdifikanaWindowViewModelEvent()
+
+    /**
+     * Wrapper for [EdifikanaWindowDelegatedEvent] to be used in the view model.
+     * These are events that flow from the window back to feature screens
+     * (e.g., photo picker results, camera results).
+     */
+    data class EdifikanaDelegatedEventWrapper(
+        val event: EdifikanaWindowDelegatedEvent,
+    ) : EdifikanaWindowViewModelEvent()
 }

@@ -44,13 +44,22 @@ object PropertyIconOptions {
      * Convert an ImageOptionUIModel to the API string format.
      *
      * @param option The selected image option
-     * @return API-compatible string (e.g., "drawable:CASA") or null if option is null
+     * @return API-compatible string (e.g., "drawable:CASA", "storage:properties/file.jpg") or null if option is null
      */
     fun toImageUrl(option: ImageOptionUIModel?): String? {
         return when (option?.imageSource) {
             is ImageSource.Drawable -> "drawable:${option.id}"
             is ImageSource.Url -> (option.imageSource as ImageSource.Url).url
-            is ImageSource.LocalFile -> null // LocalFile should be uploaded first before calling this
+            is ImageSource.LocalFile -> {
+                // Check if this is an uploaded file with storage ref embedded in ID
+                if (option.id.startsWith("custom_uploaded:")) {
+                    // Extract storage reference from ID (format: "custom_uploaded:properties/filename")
+                    val storageRef = option.id.removePrefix("custom_uploaded:")
+                    "storage:$storageRef"
+                } else {
+                    null // Not yet uploaded
+                }
+            }
             is ImageSource.UploadPlaceholder -> null // Upload placeholder should not be converted to URL
             is ImageSource.None, null -> null
         }

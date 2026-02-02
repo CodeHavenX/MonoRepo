@@ -16,6 +16,7 @@ import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.logE
+import com.cramsan.framework.logging.logI
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import edifikana_lib.Res
 import edifikana_lib.error_message_unexpected_error
@@ -91,10 +92,12 @@ class AddPropertyViewModel(
      */
     fun handleReceivedImages(uris: List<CoreUri>) {
         viewModelScope.launch {
+            logI(TAG, "handleReceivedImages called with ${uris.size} URIs")
             if (uris.isEmpty()) return@launch
 
             // Only handle the first image for property icon upload
             val uri = uris.first()
+            logI(TAG, "Starting upload for URI: $uri")
             uploadImageAndSelect(uri)
         }
     }
@@ -104,7 +107,27 @@ class AddPropertyViewModel(
      */
     private fun uploadImageAndSelect(uri: CoreUri) {
         viewModelScope.launch {
-            updateUiState { it.copy(isUploading = true, uploadError = null) }
+            // Show the local file preview immediately
+            val localFileName = try {
+                uri.getFilename(ioDependencies)
+            } catch (e: Exception) {
+                logE(TAG, "Failed to get filename for preview", e)
+                "custom_image"
+            }
+
+            val previewIcon = ImageOptionUIModel(
+                id = "custom_local",
+                displayName = "Custom Image",
+                imageSource = ImageSource.LocalFile(uri, localFileName),
+            )
+
+            updateUiState {
+                it.copy(
+                    selectedIcon = previewIcon,
+                    isUploading = true,
+                    uploadError = null
+                )
+            }
 
             // Validate file size
             FileValidationUtils.validateFileSize(uri, ioDependencies).onFailure { error ->
@@ -152,14 +175,20 @@ class AddPropertyViewModel(
             }
 
             // Upload to storage
-            val targetRef = "properties/$filename"
-            storageService.uploadFile(processedBytes, targetRef).onSuccess { uploadedUrl ->
-                // Create ImageOptionUIModel with the uploaded URL
+            val targetRef = "properties/${filename}"
+            logI(TAG, "Uploading to storage with targetRef: $targetRef, size: ${processedBytes.size} bytes")
+            storageService.uploadFile(processedBytes, targetRef).onSuccess { storageRef ->
+                logI(TAG, "Upload successful! storageRef: $storageRef")
+                // Keep showing the local file preview, mark as uploaded
+                // Note: storageRef is just "properties/filename", not a full URL
+                // We keep the LocalFile source for preview and store the ref for saving
                 val uploadedIcon = ImageOptionUIModel(
-                    id = "custom_uploaded",
+                    id = "custom_uploaded:$storageRef",
                     displayName = "Custom Image",
-                    imageSource = ImageSource.Url(uploadedUrl),
+                    // Keep showing local file for preview since we can't load storage ref as URL
+                    imageSource = ImageSource.LocalFile(uri, filename),
                 )
+                logI(TAG, "Upload complete, keeping local preview")
                 updateUiState {
                     it.copy(
                         selectedIcon = uploadedIcon,
@@ -169,7 +198,9 @@ class AddPropertyViewModel(
                 }
                 emitWindowEvent(EdifikanaWindowsEvent.ShowSnackbar("Image uploaded successfully"))
             }.onFailure { error ->
+                logE(TAG, "Upload failed", error)
                 val message = getUploadErrorMessage(error)
+                // Keep the local preview but show error
                 updateUiState { it.copy(isUploading = false, uploadError = message) }
                 emitWindowEvent(EdifikanaWindowsEvent.ShowSnackbar(message))
             }

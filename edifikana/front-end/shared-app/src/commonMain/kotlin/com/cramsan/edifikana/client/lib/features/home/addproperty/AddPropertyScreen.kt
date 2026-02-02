@@ -16,6 +16,7 @@ import com.cramsan.edifikana.client.lib.features.home.HomeDestination
 import com.cramsan.edifikana.client.lib.features.home.shared.PropertyIconOptions
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowDelegatedEvent
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowViewModel
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowViewModelEvent
 import com.cramsan.edifikana.client.ui.components.EdifikanaImageSelector
 import com.cramsan.edifikana.client.ui.components.EdifikanaPrimaryButton
 import com.cramsan.edifikana.client.ui.components.EdifikanaTextField
@@ -26,6 +27,7 @@ import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
 import edifikana_lib.text_add
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -38,7 +40,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun AddPropertyScreen(
     destination: HomeDestination.AddPropertyManagementDestination,
     viewModel: AddPropertyViewModel = koinViewModel(),
-    windowViewModel: EdifikanaWindowViewModel = koinViewModel(),
+    windowViewModel: EdifikanaWindowViewModel = koinInject(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -61,13 +63,25 @@ fun AddPropertyScreen(
         }
     }
 
-    // Observe delegated events from window (e.g., photo picker results)
+    // Observe window events (including delegated events like photo picker results)
     ObserveViewModelEvents(windowViewModel) { event ->
+        println("AddPropertyScreen received windowViewModel event: $event")
         when (event) {
-            is EdifikanaWindowDelegatedEvent.HandleReceivedImages -> {
-                viewModel.handleReceivedImages(event.uris)
+            is EdifikanaWindowViewModelEvent.EdifikanaDelegatedEventWrapper -> {
+                println("AddPropertyScreen: It's a delegated event wrapper!")
+                when (val delegatedEvent = event.event) {
+                    is EdifikanaWindowDelegatedEvent.HandleReceivedImages -> {
+                        println("AddPropertyScreen: Handling received images: ${delegatedEvent.uris.size} URIs")
+                        viewModel.handleReceivedImages(delegatedEvent.uris)
+                    }
+                    else -> {
+                        println("AddPropertyScreen: Other delegated event: $delegatedEvent")
+                    }
+                }
             }
-            else -> Unit
+            is EdifikanaWindowViewModelEvent.EdifikanaWindowEventWrapper -> {
+                println("AddPropertyScreen: Window event wrapper (ignored here)")
+            }
         }
     }
 

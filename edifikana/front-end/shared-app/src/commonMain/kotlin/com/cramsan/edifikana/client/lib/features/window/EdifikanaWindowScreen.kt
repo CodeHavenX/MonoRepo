@@ -54,7 +54,7 @@ import kotlin.reflect.typeOf
 @Composable
 fun EdifikanaWindowScreen(
     eventHandler: EdifikanaMainScreenEventHandler,
-    viewModel: EdifikanaWindowViewModel = koinViewModel(),
+    viewModel: EdifikanaWindowViewModel,
     applicationViewModel: EdifikanaApplicationViewModel = koinInject(),
     startDestination: EdifikanaNavGraphDestination = EdifikanaNavGraphDestination.SplashNavGraphDestination,
 ) {
@@ -94,6 +94,9 @@ private fun WindowsContent(
                     viewModel = viewModel,
                     windowEvent = event.event,
                 )
+            }
+            is EdifikanaWindowViewModelEvent.EdifikanaDelegatedEventWrapper -> {
+                // Delegated events are handled by individual feature screens, not here
             }
         }
     }

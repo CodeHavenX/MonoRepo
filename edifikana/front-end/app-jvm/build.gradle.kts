@@ -9,6 +9,7 @@ plugins {
 apply(from = "$rootDir/gradle/kotlin-jvm-target-lib-compose.gradle")
 
 dependencies {
+    implementation(project(":framework:core"))
     implementation(project(":framework:core-compose"))
 
     implementation(project(":edifikana:front-end:shared-app"))

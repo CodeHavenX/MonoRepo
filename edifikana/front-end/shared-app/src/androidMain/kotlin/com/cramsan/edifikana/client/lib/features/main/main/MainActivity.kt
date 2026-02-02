@@ -49,7 +49,8 @@ class MainActivity : ComponentActivity(), EdifikanaMainScreenEventHandler {
             ComposableKoinContext {
                 KoinScope<String>("root-window") {
                     EdifikanaWindowScreen(
-                        eventHandler = this,
+                        eventHandler = this@MainActivity,
+                        viewModel = viewModel,
                     )
                 }
             }

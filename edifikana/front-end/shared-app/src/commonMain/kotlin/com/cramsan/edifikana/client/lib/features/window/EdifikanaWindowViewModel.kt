@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 class EdifikanaWindowViewModel(
     dependencies: ViewModelDependencies,
     private val windowEventEmitter: EventEmitter<WindowEvent>,
-    private val delegatedEvents: EventReceiver<EdifikanaWindowDelegatedEvent>,
+    private val delegatedEventsEmitter: EventEmitter<EdifikanaWindowDelegatedEvent>,
 ) : BaseViewModel<EdifikanaWindowViewModelEvent, EdifikanaWindowUIState>(
     dependencies,
     EdifikanaWindowUIState,
@@ -27,6 +27,7 @@ class EdifikanaWindowViewModel(
      * Initialize the view model and all required state for the entire application.
      */
     fun initialize() {
+        // Observe and re-emit window events
         viewModelScope.launch {
             windowEventEmitter.events.collect { event ->
                 logI(TAG, "Window event received: $event")
@@ -47,7 +48,8 @@ class EdifikanaWindowViewModel(
             logI(TAG, "Uri was null.")
         } else {
             logI(TAG, "Uri was received: $uri")
-            delegatedEvents.push(EdifikanaWindowDelegatedEvent.HandleReceivedImage(uri))
+            val event = EdifikanaWindowDelegatedEvent.HandleReceivedImage(uri)
+            emitEvent(EdifikanaWindowViewModelEvent.EdifikanaDelegatedEventWrapper(event))
         }
     }
 
@@ -59,7 +61,8 @@ class EdifikanaWindowViewModel(
             logI(TAG, "Uri list is empty.")
         } else {
             logI(TAG, "Uri list received with ${uris.count()} elements.")
-            delegatedEvents.push(EdifikanaWindowDelegatedEvent.HandleReceivedImages(uris))
+            val event = EdifikanaWindowDelegatedEvent.HandleReceivedImages(uris)
+            emitEvent(EdifikanaWindowViewModelEvent.EdifikanaDelegatedEventWrapper(event))
         }
     }
 
@@ -69,7 +72,8 @@ class EdifikanaWindowViewModel(
     fun handleSnackbarResult(result: SnackbarResult) {
         viewModelScope.launch {
             logI(TAG, "Result from snackbar: $result")
-            delegatedEvents.push(EdifikanaWindowDelegatedEvent.HandleSnackbarResult(result))
+            val event = EdifikanaWindowDelegatedEvent.HandleSnackbarResult(result)
+            emitEvent(EdifikanaWindowViewModelEvent.EdifikanaDelegatedEventWrapper(event))
         }
     }
 

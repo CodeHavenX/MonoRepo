@@ -8,6 +8,7 @@ import com.cramsan.edifikana.client.lib.features.application.EdifikanaApplicatio
 import com.cramsan.edifikana.client.lib.features.application.EdifikanaWasmMainScreenEventHandler
 import com.cramsan.edifikana.client.lib.features.window.ComposableKoinContext
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowScreen
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowViewModel
 import org.jetbrains.skiko.wasm.onWasmReady
 import org.koin.compose.koinInject
 import org.koin.compose.scope.KoinScope
@@ -28,8 +29,10 @@ fun main() {
                 }
 
                 KoinScope<String>("root-window") {
+                    val windowViewModel: EdifikanaWindowViewModel = koinInject()
                     EdifikanaWindowScreen(
                         eventHandler = eventHandler,
+                        viewModel = windowViewModel,
                     )
                 }
             }

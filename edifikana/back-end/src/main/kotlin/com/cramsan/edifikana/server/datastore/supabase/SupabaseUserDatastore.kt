@@ -147,21 +147,43 @@ class SupabaseUserDatastore(
             )
         }
 
-        // Create the new user entity in our database
-        val requestEntity: UserEntity.CreateUserEntity = CreateUserEntity(
-            userId = userId,
-            email = email,
-            userEntity = temporaryUser,
-        )
-        val createdUser = createUserEntity(requestEntity)
-
-        if (deleteUser(UserId(temporaryUser.id)).isFailure) {
-            logW(TAG, "Failed to delete temporary user with email: $email")
-            error("Failed to delete temporary user with.")
+        // Update the temporary user's ID and auth metadata instead of creating a new user
+        // NOTE: This operation updates the primary key, which requires that no foreign key references
+        // exist yet. The workflow must call associateUser before creating any FK references
+        // (user_property_mapping, user_organization_mapping, etc.). Consider migrating to a design
+        // with a separate supabase_auth_id column to avoid PK updates.
+        val updatedUser = runCatching {
+            postgrest.from(UserEntity.COLLECTION).update(
+                {
+                    UserEntity::id setTo userId.userId
+                    UserEntity::authMetadata setTo temporaryUser.authMetadata.copy(
+                        pendingAssociation = false,
+                        canPasswordAuth = true,
+                    )
+                }
+            ) {
+                select()
+                filter {
+                    UserEntity::id eq temporaryUser.id
+                    UserEntity::deletedAt isExact null
+                }
+            }.decodeSingleOrNull<UserEntity>()
+        }.getOrElse { exception ->
+            logW(TAG, "Failed to update temporary user", exception)
+            throw ClientRequestExceptions.InvalidRequestException(
+                message = "Error: Failed to associate user account. Please try again.",
+            )
         }
 
-        // Return the created user as a domain model
-        createdUser.toUser()
+        if (updatedUser == null) {
+            logW(TAG, "No user was updated - user may have been deleted or modified concurrently")
+            throw ClientRequestExceptions.NotFoundException(
+                message = "Error: The temporary user account was not found or has been modified.",
+            )
+        }
+
+        // Return the updated user as a domain model
+        updatedUser.toUser()
     }
 
     /**

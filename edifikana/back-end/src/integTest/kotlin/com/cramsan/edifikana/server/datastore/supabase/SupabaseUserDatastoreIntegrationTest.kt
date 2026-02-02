@@ -303,7 +303,8 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
         // Assert
         assertTrue(associateResult.isSuccess)
         val associatedUser = associateResult.getOrThrow()
-        assertEquals(createdUser.id, associatedUser.id)
+        // The user ID should now be the Supabase user ID
+        assertEquals(UserId(supabaseUserId), associatedUser.id)
         assertEquals(createdUser.email, associatedUser.email)
         assertEquals(createdUser.phoneNumber, associatedUser.phoneNumber)
         assertEquals(createdUser.firstName, associatedUser.firstName)

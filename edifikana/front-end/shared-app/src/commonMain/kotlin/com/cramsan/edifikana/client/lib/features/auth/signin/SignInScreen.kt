@@ -146,7 +146,7 @@ internal fun SignInContent(
                     }
                 },
                 buttonContent = { modifier ->
-                    AnimatedContent( uiState.showPassword) {
+                    AnimatedContent(uiState.showPassword) {
                         EdifikanaPrimaryButton(
                             text = if (it) {
                                 stringResource(Res.string.sign_in_screen_text_sign_in)

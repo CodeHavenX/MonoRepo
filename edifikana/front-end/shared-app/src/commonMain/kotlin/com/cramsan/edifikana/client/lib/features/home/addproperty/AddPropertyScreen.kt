@@ -12,7 +12,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
-import com.cramsan.architecture.client.di.WindowIdentifier
+import com.cramsan.architecture.client.di.koinEventEmitter
 import com.cramsan.edifikana.client.lib.features.home.HomeDestination
 import com.cramsan.edifikana.client.lib.features.home.shared.PropertyIconOptions
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowDelegatedEvent
@@ -28,9 +28,7 @@ import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
 import edifikana_lib.text_add
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.qualifier.named
 
 /**
  * AddProperty screen.
@@ -42,7 +40,7 @@ import org.koin.core.qualifier.named
 fun AddPropertyScreen(
     destination: HomeDestination.AddPropertyManagementDestination,
     viewModel: AddPropertyViewModel = koinViewModel(),
-    eventEmitter: EventEmitter<EdifikanaWindowDelegatedEvent> = koinInject(named(WindowIdentifier.DELEGATED_EVENT_BUS)),
+    eventEmitter: EventEmitter<EdifikanaWindowDelegatedEvent> = koinEventEmitter(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 

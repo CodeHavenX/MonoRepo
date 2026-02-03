@@ -22,9 +22,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import com.cramsan.edifikana.client.ui.components.EdifikanaPasswordTextField
 import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.ui.components.LoadingAnimationOverlay
-import com.cramsan.ui.components.PasswordOutlinedTextField
 import com.cramsan.ui.theme.Padding
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -67,7 +67,10 @@ internal fun RenderContent(
     Card(
         modifier = Modifier
             .width(IntrinsicSize.Min)
-            .height(IntrinsicSize.Min)
+            .height(IntrinsicSize.Min),
+        colors = androidx.compose.material3.CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+        ),
     ) {
         Box {
             Column(
@@ -82,12 +85,12 @@ internal fun RenderContent(
                     textAlign = TextAlign.Start,
                 )
                 if (uiState.showCurrentPassword) {
-                    PasswordOutlinedTextField(
+                    EdifikanaPasswordTextField(
                         value = uiState.currentPassword.reveal(),
                         onValueChange = {
                             onCurrentPasswordChange(it)
                         },
-                        label = { Text("Current password") },
+                        label = "Current password",
                         modifier = Modifier
                             .fillMaxWidth(),
                         supportingText = {
@@ -105,12 +108,12 @@ internal fun RenderContent(
                         }
                     )
                 }
-                PasswordOutlinedTextField(
+                EdifikanaPasswordTextField(
                     value = uiState.newPassword.reveal(),
                     onValueChange = {
                         onNewPasswordChange(it)
                     },
-                    label = { Text("New password") },
+                    label = "New password",
                     modifier = Modifier
                         .fillMaxWidth(),
                     supportingText = {
@@ -123,12 +126,12 @@ internal fun RenderContent(
                         }
                     }
                 )
-                PasswordOutlinedTextField(
+                EdifikanaPasswordTextField(
                     value = uiState.confirmPassword.reveal(),
                     onValueChange = {
                         onConfirmPasswordChange(it)
                     },
-                    label = { Text("Confirm password") },
+                    label = "Confirm password",
                     modifier = Modifier
                         .fillMaxWidth(),
                     supportingText = {

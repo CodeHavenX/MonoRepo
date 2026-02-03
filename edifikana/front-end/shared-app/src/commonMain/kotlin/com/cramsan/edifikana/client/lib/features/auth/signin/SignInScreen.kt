@@ -9,27 +9,28 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.application.EdifikanaApplicationUIState
 import com.cramsan.edifikana.client.lib.features.application.EdifikanaApplicationViewModel
+import com.cramsan.edifikana.client.ui.components.EdifikanaPasswordTextField
+import com.cramsan.edifikana.client.ui.components.EdifikanaPrimaryButton
+import com.cramsan.edifikana.client.ui.components.EdifikanaSecondaryButton
+import com.cramsan.edifikana.client.ui.components.EdifikanaTextButton
+import com.cramsan.edifikana.client.ui.components.EdifikanaTextField
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
-import com.cramsan.ui.components.PasswordOutlinedTextField
 import com.cramsan.ui.components.ScreenLayout
 import com.cramsan.ui.components.themetoggle.SelectedTheme
 import com.cramsan.ui.components.themetoggle.ThemeToggle
@@ -129,78 +130,64 @@ internal fun SignInContent(
                         }
                     }
 
-                    OutlinedTextField(
+                    EdifikanaTextField(
                         value = uiState.email,
                         onValueChange = { onUsernameValueChange(it) },
                         modifier = modifier,
-                        label = { Text(stringResource(Res.string.sign_in_screen_text_email)) },
-                        maxLines = 1,
+                        placeholder = stringResource(Res.string.sign_in_screen_text_email),
                     )
                     if (uiState.showPassword) {
-                        PasswordOutlinedTextField(
+                        EdifikanaPasswordTextField(
                             value = uiState.password,
                             onValueChange = { onPasswordValueChange(it) },
                             modifier = modifier,
-                            label = { Text(stringResource(Res.string.sign_in_screen_text_password)) },
+                            placeholder = stringResource(Res.string.sign_in_screen_text_password),
                         )
                     }
                 },
                 buttonContent = { modifier ->
-                    Button(
-                        onClick = if (uiState.showPassword) {
-                            onPWSignInClicked
-                        } else {
-                            onSignInOtpClicked
-                        },
-                        modifier = modifier,
-                    ) {
-                        AnimatedContent(uiState.showPassword) {
-                            if (it) {
-                                Text(
-                                    stringResource(Res.string.sign_in_screen_text_sign_in),
-                                )
+                    AnimatedContent(uiState.showPassword) {
+                        EdifikanaPrimaryButton(
+                            text = if (it) {
+                                stringResource(Res.string.sign_in_screen_text_sign_in)
                             } else {
-                                Text(
-                                    stringResource(Res.string.sign_in_screen_text_sign_in_otp)
-                                )
-                            }
-                        }
+                                stringResource(Res.string.sign_in_screen_text_sign_in_otp)
+                            },
+                            onClick = if (it) {
+                                onPWSignInClicked
+                            } else {
+                                onSignInOtpClicked
+                            },
+                            modifier = modifier,
+                        )
                     }
 
-                    OutlinedButton(
+                    EdifikanaSecondaryButton(
+                        text = if (uiState.showPassword) {
+                            stringResource(Res.string.sign_in_screen_text_sign_in_otp)
+                        } else {
+                            stringResource(Res.string.sign_in_screen_text_sign_in)
+                        },
                         onClick = if (uiState.showPassword) {
                             onSignInOtpClicked
                         } else {
                             onContinueWithPWClicked
                         },
                         modifier = modifier,
-                    ) {
-                        AnimatedContent(uiState.showPassword) {
-                            if (it) {
-                                Text(
-                                    stringResource(Res.string.sign_in_screen_text_sign_in_otp),
-                                )
-                            } else {
-                                Text(
-                                    stringResource(Res.string.sign_in_screen_text_sign_in)
-                                )
-                            }
-                        }
-                    }
-
-                    TextButton(
-                        onClick = onSignUpClicked,
-                        modifier = modifier,
-                    ) {
-                        Text(
-                            stringResource(Res.string.sign_in_screen_text_sign_up),
-                        )
-                    }
+                    )
                 },
                 overlay = {
                     LoadingAnimationOverlay(uiState.isLoading)
                 },
                 contentAlignment = Alignment.Center,
+            )
+
+            EdifikanaTextButton(
+                text = stringResource(Res.string.sign_in_screen_text_sign_up),
+                onClick = onSignUpClicked,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 16.dp),
             )
 
             IconButton(

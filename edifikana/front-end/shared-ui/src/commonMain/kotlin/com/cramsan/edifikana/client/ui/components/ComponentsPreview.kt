@@ -37,6 +37,7 @@ private fun EdifikanaTextFieldPreview() {
     AppTheme {
         var username by remember { mutableStateOf("") }
         var password by remember { mutableStateOf("") }
+        var passwordWithToggle by remember { mutableStateOf("") }
         var address by remember { mutableStateOf("") }
 
         Column(
@@ -61,12 +62,59 @@ private fun EdifikanaTextFieldPreview() {
                 isPassword = true,
             )
 
+            EdifikanaPasswordTextField(
+                value = passwordWithToggle,
+                onValueChange = { passwordWithToggle = it },
+                placeholder = "Password with toggle",
+                label = "Password",
+            )
+
             EdifikanaTextField(
                 value = address,
                 onValueChange = { address = it },
                 placeholder = "Enter your address",
                 label = "Address",
                 isPassword = true,
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun EdifikanaPasswordTextFieldPreview() {
+    AppTheme {
+        var password1 by remember { mutableStateOf("") }
+        var password2 by remember { mutableStateOf("SecurePassword123") }
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Text("Password Text Fields", style = MaterialTheme.typography.headlineSmall)
+
+            EdifikanaPasswordTextField(
+                value = password1,
+                onValueChange = { password1 = it },
+                placeholder = "Enter your password",
+            )
+
+            EdifikanaPasswordTextField(
+                value = password2,
+                onValueChange = { password2 = it },
+                placeholder = "Enter your password",
+                label = "Password",
+            )
+
+            EdifikanaPasswordTextField(
+                value = "DisabledPassword",
+                onValueChange = {},
+                placeholder = "Enter your password",
+                label = "Disabled Password",
+                enabled = false,
             )
         }
     }
@@ -453,6 +501,7 @@ private fun EdifikanaComponentsFullPreview() {
             // Text Fields
             var username by remember { mutableStateOf("") }
             var password by remember { mutableStateOf("") }
+            var passwordWithToggle by remember { mutableStateOf("") }
 
             Text("Text Fields", style = MaterialTheme.typography.titleMedium)
             EdifikanaTextField(
@@ -465,6 +514,12 @@ private fun EdifikanaComponentsFullPreview() {
                 onValueChange = { password = it },
                 placeholder = "Password",
                 isPassword = true,
+            )
+            EdifikanaPasswordTextField(
+                value = passwordWithToggle,
+                onValueChange = { passwordWithToggle = it },
+                placeholder = "Enter password",
+                label = "Password",
             )
 
             HorizontalDivider()

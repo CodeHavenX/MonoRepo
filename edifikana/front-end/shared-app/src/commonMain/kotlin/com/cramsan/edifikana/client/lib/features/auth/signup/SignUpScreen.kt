@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
@@ -25,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import com.cramsan.edifikana.client.ui.components.EdifikanaTextField
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
@@ -120,34 +120,38 @@ internal fun SignUpContent(
                     }
                 }
 
-                OutlinedTextField(
+                EdifikanaTextField(
                     value = uiState.firstName,
                     onValueChange = { onFirstNameValueChange(it) },
                     modifier = modifier,
-                    label = { Text(stringResource(Res.string.sign_up_screen_text_first_name)) },
+                    label = stringResource(Res.string.sign_up_screen_text_first_name),
                     maxLines = 1,
+                    singleLine = true,
                 )
 
-                OutlinedTextField(
+                EdifikanaTextField(
                     value = uiState.lastName,
                     onValueChange = { onLastNameValueChange(it) },
                     modifier = modifier,
-                    label = { Text(stringResource(Res.string.sign_up_screen_text_last_name)) },
+                    label = stringResource(Res.string.sign_up_screen_text_last_name),
                     maxLines = 1,
+                    singleLine = true,
                 )
-                OutlinedTextField(
+                EdifikanaTextField(
                     value = uiState.email,
                     onValueChange = { onEmailValueChange(it) },
                     modifier = modifier,
-                    label = { Text(stringResource(Res.string.sign_up_screen_text_email)) },
+                    label = stringResource(Res.string.sign_up_screen_text_email),
                     maxLines = 1,
+                    singleLine = true,
                 )
-                OutlinedTextField(
+                EdifikanaTextField(
                     value = uiState.phoneNumber,
                     onValueChange = { onPhoneNumberValueChange(it) },
                     modifier = modifier,
-                    label = { Text(stringResource(Res.string.sign_up_screen_text_phone_number)) },
+                    label = stringResource(Res.string.sign_up_screen_text_phone_number),
                     maxLines = 1,
+                    singleLine = true,
                 )
                 val interactionSource = remember { MutableInteractionSource() }
                 Row(

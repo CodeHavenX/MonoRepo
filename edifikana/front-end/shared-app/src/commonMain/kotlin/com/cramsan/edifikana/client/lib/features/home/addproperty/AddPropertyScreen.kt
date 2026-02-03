@@ -12,15 +12,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import com.cramsan.architecture.client.di.WindowIdentifier
 import com.cramsan.edifikana.client.lib.features.home.HomeDestination
 import com.cramsan.edifikana.client.lib.features.home.shared.PropertyIconOptions
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowDelegatedEvent
-import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowViewModel
-import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowViewModelEvent
 import com.cramsan.edifikana.client.ui.components.EdifikanaImageSelector
 import com.cramsan.edifikana.client.ui.components.EdifikanaPrimaryButton
 import com.cramsan.edifikana.client.ui.components.EdifikanaTextField
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
+import com.cramsan.framework.core.compose.EventEmitter
+import com.cramsan.framework.core.compose.ui.ObserveEventEmitterEvents
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
@@ -29,6 +30,7 @@ import edifikana_lib.text_add
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.qualifier.named
 
 /**
  * AddProperty screen.
@@ -40,7 +42,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun AddPropertyScreen(
     destination: HomeDestination.AddPropertyManagementDestination,
     viewModel: AddPropertyViewModel = koinViewModel(),
-    windowViewModel: EdifikanaWindowViewModel = koinInject(),
+    eventEmitter: EventEmitter<EdifikanaWindowDelegatedEvent> = koinInject(named(WindowIdentifier.DELEGATED_EVENT_BUS)),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -63,25 +65,16 @@ fun AddPropertyScreen(
         }
     }
 
-    // Observe window events (including delegated events like photo picker results)
-    ObserveViewModelEvents(windowViewModel) { event ->
+    ObserveEventEmitterEvents(eventEmitter) { event ->
         println("AddPropertyScreen received windowViewModel event: $event")
         when (event) {
-            is EdifikanaWindowViewModelEvent.EdifikanaDelegatedEventWrapper -> {
-                println("AddPropertyScreen: It's a delegated event wrapper!")
-                when (val delegatedEvent = event.event) {
-                    is EdifikanaWindowDelegatedEvent.HandleReceivedImages -> {
-                        println("AddPropertyScreen: Handling received images: ${delegatedEvent.uris.size} URIs")
-                        viewModel.handleReceivedImages(delegatedEvent.uris)
-                    }
-                    else -> {
-                        println("AddPropertyScreen: Other delegated event: $delegatedEvent")
-                    }
-                }
+            is EdifikanaWindowDelegatedEvent.HandleReceivedImage -> {
+                viewModel.handleReceivedImages(listOf(event.uri))
             }
-            is EdifikanaWindowViewModelEvent.EdifikanaWindowEventWrapper -> {
-                println("AddPropertyScreen: Window event wrapper (ignored here)")
+            is EdifikanaWindowDelegatedEvent.HandleReceivedImages -> {
+                viewModel.handleReceivedImages(event.uris)
             }
+            else -> Unit
         }
     }
 

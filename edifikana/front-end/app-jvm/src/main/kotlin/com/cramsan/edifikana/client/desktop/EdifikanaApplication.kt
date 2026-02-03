@@ -26,7 +26,6 @@ import org.koin.core.annotation.KoinExperimentalAPI
 fun main() = application {
     ComposableKoinContext {
         val processViewModel: EdifikanaApplicationViewModel = koinInject()
-        // val eventHandler = remember { EdifikanaJvmMainScreenEventHandler() }
         val appState by processViewModel.uiState.collectAsState()
 
         LaunchedEffect(Unit) {

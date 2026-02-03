@@ -95,9 +95,6 @@ private fun WindowsContent(
                     windowEvent = event.event,
                 )
             }
-            is EdifikanaWindowViewModelEvent.EdifikanaDelegatedEventWrapper -> {
-                // Delegated events are handled by individual feature screens, not here
-            }
         }
     }
 

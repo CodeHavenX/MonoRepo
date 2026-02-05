@@ -58,7 +58,8 @@ class AttachmentManager(
 
             val fileName = fileUri.getFilename(ioDependencies)
 
-            val uploadRef = fileName
+            // Upload to private/attachments/ folder per RLS policies
+            val uploadRef = "private/attachments/$fileName"
 
             val imagePhotoResult = storageService.uploadFile(
                 fileData,

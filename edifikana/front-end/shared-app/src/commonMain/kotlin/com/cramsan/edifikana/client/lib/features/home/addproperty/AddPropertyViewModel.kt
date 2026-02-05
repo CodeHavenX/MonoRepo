@@ -174,8 +174,8 @@ class AddPropertyViewModel(
                 return@launch
             }
 
-            // Upload to storage
-            val targetRef = "properties/${filename}"
+            // Upload to storage (must be in private/ folder per RLS policies)
+            val targetRef = "private/properties/${filename}"
             logI(TAG, "Uploading to storage with targetRef: $targetRef, size: ${processedBytes.size} bytes")
             storageService.uploadFile(processedBytes, targetRef).onSuccess { storageRef ->
                 logI(TAG, "Upload successful! storageRef: $storageRef")

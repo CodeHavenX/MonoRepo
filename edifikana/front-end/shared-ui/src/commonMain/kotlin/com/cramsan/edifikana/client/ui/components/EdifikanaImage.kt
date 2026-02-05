@@ -70,7 +70,7 @@ fun EdifikanaImage(
         is ImageSource.LocalFile -> {
             // Asynchronous loading for local file URIs (pending upload)
             AsyncImage(
-                model = imageSource.uri.toString(),
+                model = imageSource.uri.getUri(),
                 contentDescription = contentDescription,
                 modifier = finalModifier,
                 contentScale = contentScale,

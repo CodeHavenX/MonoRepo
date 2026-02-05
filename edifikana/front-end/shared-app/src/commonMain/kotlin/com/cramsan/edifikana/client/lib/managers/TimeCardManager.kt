@@ -97,9 +97,10 @@ class TimeCardManager(
 
                 val fileName = localImageUri.getFilename(ioDependencies)
 
+                // Upload to private/time_cards/ folder per RLS policies
                 storageService.uploadFile(
                     processedImage,
-                    fileName,
+                    "private/time_cards/$fileName",
                 ).getOrThrow()
             }
 

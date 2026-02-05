@@ -26,8 +26,8 @@ tasks.register("releaseJs") {
     group = 'release'
     description = 'Run all the steps to build a Js artifact'
     dependsOn 'compileKotlinJs'
-    dependsOn 'detektMetadataMain' // Run the code analyzer on the common-code source set
-    dependsOn 'detektJsMain' // Run the code analyzer
+    dependsOn 'detektCommonMainSourceSet' // Run the code analyzer on the common-code source set
+    dependsOn 'detektJsMainSourceSet' // Run the code analyzer
     dependsOn 'jsTest'
 }
 

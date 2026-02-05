@@ -24,8 +24,8 @@ tasks.register("releaseWasm") {
     group = 'release'
     description = 'Run all the steps to build a releaseWasn artifact'
     dependsOn 'wasmJsMainClasses'
-    dependsOn 'detektMetadataMain' // Run the code analyzer on the common-code source set
-    dependsOn 'detektWasmJsMain' // Run the code analyzer
+    dependsOn 'detektCommonMainSourceSet' // Run the code analyzer on the common-code source set
+    dependsOn 'detektWasmJsMainSourceSet' // Run the code analyzer
     // TODO: Identify the right target to run tests
 }
 

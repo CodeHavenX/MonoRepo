@@ -1,8 +1,8 @@
 import static de.fayard.refreshVersions.core.Versions.versionFor
 
-apply plugin: "io.gitlab.arturbosch.detekt"
+apply plugin: "dev.detekt"
 
-def detektFormattingVersion = versionFor(project, "version.io.gitlab.arturbosch.detekt..detekt-formatting")
+def detektKtlintWrapperVersion = versionFor(project, "version.dev.detekt..detekt-rules-ktlint-wrapper")
 
 
 /**
@@ -33,6 +33,6 @@ detekt {
     }
 
     dependencies {
-        detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:$detektFormattingVersion")
+        detektPlugins("dev.detekt:detekt-rules-ktlint-wrapper:$detektKtlintWrapperVersion")
     }
 }

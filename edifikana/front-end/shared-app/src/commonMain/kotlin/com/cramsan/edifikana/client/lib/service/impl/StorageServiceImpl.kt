@@ -54,6 +54,6 @@ class StorageServiceImpl(
 
     companion object {
         private const val TAG = "StorageServiceImpl"
-        private const val BUCKET_NAME = "time_card_events"
+        private const val BUCKET_NAME = "images"
     }
 }

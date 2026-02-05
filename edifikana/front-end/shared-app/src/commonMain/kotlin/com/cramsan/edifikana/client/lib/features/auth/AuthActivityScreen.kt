@@ -35,7 +35,9 @@ fun NavGraphBuilder.authNavGraphNavigation(
             AuthDestination.SignUpDestination::class,
             typeMap = typeMap,
         ) {
-            SignUpScreen()
+            SignUpScreen(
+                destination = it.toRoute()
+            )
         }
         composable(
             AuthDestination.ValidationDestination::class,

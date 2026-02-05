@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
 import com.cramsan.edifikana.client.ui.components.EdifikanaTextField
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
@@ -46,12 +47,13 @@ import org.koin.compose.viewmodel.koinViewModel
  */
 @Composable
 fun SignUpScreen(
+    destination: AuthDestination.SignUpDestination,
     viewModel: SignUpViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
-        viewModel.initializePage()
+        viewModel.initializePage(destination)
     }
 
     LifecycleEventEffect(Lifecycle.Event.ON_STOP) {

@@ -81,7 +81,6 @@ class SignUpViewModelTest : CoroutineTest() {
         assertEquals("user@test.com", viewModel.uiState.value.email)
         assertEquals("", viewModel.uiState.value.firstName)
         assertEquals("", viewModel.uiState.value.lastName)
-        assertEquals("user@test.com", viewModel.uiState.value.email)
         assertEquals("", viewModel.uiState.value.phoneNumber)
         assertFalse(viewModel.uiState.value.policyChecked)
         assertFalse(viewModel.uiState.value.registerEnabled)

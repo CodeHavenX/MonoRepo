@@ -28,8 +28,16 @@ class SignUpViewModel(
     /**
      * Initialize the page.
      */
-    fun initializePage() {
+    fun initializePage(destination: AuthDestination.SignUpDestination) {
         logI(TAG, "SignUpViewModel initialized")
+        viewModelScope.launch {
+            updateUiState {
+                it.copy(
+                    email = destination.userEmail,
+                    errorMessages = emptyList()
+                )
+            }
+        }
     }
 
     /**

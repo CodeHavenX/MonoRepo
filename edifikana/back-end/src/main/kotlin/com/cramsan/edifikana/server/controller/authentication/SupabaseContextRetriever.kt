@@ -6,6 +6,7 @@ import com.cramsan.framework.assertlib.assertNull
 import com.cramsan.framework.core.ktor.auth.ClientContext
 import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.logging.logD
+import com.cramsan.framework.logging.logW
 import io.github.jan.supabase.auth.Auth
 import io.ktor.server.application.ApplicationCall
 
@@ -28,7 +29,12 @@ class SupabaseContextRetriever(
             return ClientContext.UnauthenticatedClientContext()
         }
 
-        val user = auth.retrieveUser(token)
+        val user = try {
+            auth.retrieveUser(token)
+        } catch (e: Exception) {
+            logW(TAG, "Error retrieving user from Supabase token: ${e.message}")
+            return ClientContext.UnauthenticatedClientContext()
+        }
         assertNull(auth.currentUserOrNull(), TAG, "Library cannot sign in user")
 
         return ClientContext.AuthenticatedClientContext(

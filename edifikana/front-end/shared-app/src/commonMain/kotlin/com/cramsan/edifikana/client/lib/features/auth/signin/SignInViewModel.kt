@@ -145,7 +145,7 @@ class SignInViewModel(
                 )
             } else {
                 emitWindowEvent(
-                    EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.SignUpDestination)
+                    EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.SignUpDestination(email))
                 )
             }
         }
@@ -156,8 +156,9 @@ class SignInViewModel(
      */
     fun navigateToSignUpPage() {
         viewModelScope.launch {
+            val email = uiState.value.email.trim()
             emitWindowEvent(
-                EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.SignUpDestination)
+                EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.SignUpDestination(email))
             )
         }
     }

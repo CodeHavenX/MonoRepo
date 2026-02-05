@@ -235,7 +235,7 @@ class SignInViewModelTest : CoroutineTest() {
         val verificationJob = launch {
             windowEventBus.events.test {
                 assertEquals(
-                    EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.SignUpDestination),
+                    EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.SignUpDestination("")),
                     awaitItem()
                 )
             }
@@ -310,7 +310,7 @@ class SignInViewModelTest : CoroutineTest() {
         val verificationJob = launch {
             windowEventBus.events.test {
                 assertEquals(
-                    EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.SignUpDestination),
+                    EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.SignUpDestination(email)),
                     awaitItem()
                 )
             }

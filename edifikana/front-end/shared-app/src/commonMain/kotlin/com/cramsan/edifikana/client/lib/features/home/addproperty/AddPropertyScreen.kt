@@ -20,6 +20,8 @@ import com.cramsan.edifikana.client.ui.components.EdifikanaImageSelector
 import com.cramsan.edifikana.client.ui.components.EdifikanaPrimaryButton
 import com.cramsan.edifikana.client.ui.components.EdifikanaTextField
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
+import com.cramsan.edifikana.client.ui.components.ImageSource
+import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.compose.EventEmitter
 import com.cramsan.framework.core.compose.ui.ObserveEventEmitterEvents
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
@@ -80,8 +82,8 @@ fun AddPropertyScreen(
     AddPropertyContent(
         uiState,
         onBackSelected = { viewModel.navigateBack() },
-        onAddPropertySelected = { propertyName, address, imageUrl ->
-            viewModel.addProperty(propertyName, address, imageUrl)
+        onAddPropertySelected = { propertyName, address, imageUrl, selectedImageUri ->
+            viewModel.addProperty(propertyName, address, imageUrl, selectedImageUri)
         },
         onTriggerPhotoPicker = { viewModel.triggerPhotoPicker() },
     )
@@ -95,7 +97,7 @@ internal fun AddPropertyContent(
     content: AddPropertyUIState,
     modifier: Modifier = Modifier,
     onBackSelected: () -> Unit,
-    onAddPropertySelected: (propertyName: String, address: String, imageUrl: String?) -> Unit,
+    onAddPropertySelected: (propertyName: String, address: String, imageUrl: String?, selectedImageUri: CoreUri?) -> Unit,
     onTriggerPhotoPicker: () -> Unit,
 ) {
     var propertyName by remember { mutableStateOf("") }
@@ -159,8 +161,23 @@ internal fun AddPropertyContent(
                     modifier = buttonModifier,
                     enabled = !content.isUploading,
                     onClick = {
-                        val imageUrl = PropertyIconOptions.toImageUrl(effectiveSelectedIcon)
-                        onAddPropertySelected(propertyName, address, imageUrl)
+                        // Extract URI if user selected a custom local file
+                        val selectedImageUri = if (effectiveSelectedIcon?.id == "custom_local" &&
+                            effectiveSelectedIcon.imageSource is ImageSource.LocalFile
+                        ) {
+                            (effectiveSelectedIcon.imageSource as ImageSource.LocalFile).uri
+                        } else {
+                            null
+                        }
+
+                        // For non-custom images, use the converted imageUrl
+                        val imageUrl = if (selectedImageUri == null) {
+                            PropertyIconOptions.toImageUrl(effectiveSelectedIcon)
+                        } else {
+                            null
+                        }
+
+                        onAddPropertySelected(propertyName, address, imageUrl, selectedImageUri)
                     },
                 )
             },

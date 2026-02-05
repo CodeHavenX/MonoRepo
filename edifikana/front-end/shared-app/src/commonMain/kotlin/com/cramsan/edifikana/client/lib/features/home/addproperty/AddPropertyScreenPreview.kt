@@ -20,7 +20,7 @@ private fun AddPropertyScreenPreview() = AppTheme {
             uploadError = null,
         ),
         onBackSelected = {},
-        onAddPropertySelected = { _, _, _ -> },
+        onAddPropertySelected = { _, _, _, _ -> },
         onTriggerPhotoPicker = {},
     )
 }
@@ -40,7 +40,7 @@ private fun AddPropertyScreenUploadingPreview() = AppTheme {
             uploadError = null,
         ),
         onBackSelected = {},
-        onAddPropertySelected = { _, _, _ -> },
+        onAddPropertySelected = { _, _, _, _ -> },
         onTriggerPhotoPicker = {},
     )
 }
@@ -60,7 +60,7 @@ private fun AddPropertyScreenWithCustomImagePreview() = AppTheme {
             uploadError = null,
         ),
         onBackSelected = {},
-        onAddPropertySelected = { _, _, _ -> },
+        onAddPropertySelected = { _, _, _, _ -> },
         onTriggerPhotoPicker = {},
     )
 }
@@ -80,7 +80,7 @@ private fun AddPropertyScreenUploadErrorPreview() = AppTheme {
             uploadError = "File size exceeds 10MB limit",
         ),
         onBackSelected = {},
-        onAddPropertySelected = { _, _, _ -> },
+        onAddPropertySelected = { _, _, _, _ -> },
         onTriggerPhotoPicker = {},
     )
 }

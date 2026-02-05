@@ -26,7 +26,8 @@ class StorageServiceImpl(
             }
             targetRef
         } catch (e: RestException) {
-            logE(TAG, "Error uploading file", e)
+            logE(TAG, "Error uploading file: statusCode=${e.statusCode}, message=${e.message}", e)
+            // RestException.statusCode is HttpStatusCode, compare using .value property
             throw when (e.statusCode) {
                 400 -> ClientRequestExceptions.InvalidRequestException("Invalid file format")
                 401 -> ClientRequestExceptions.UnauthorizedException("Authentication required")

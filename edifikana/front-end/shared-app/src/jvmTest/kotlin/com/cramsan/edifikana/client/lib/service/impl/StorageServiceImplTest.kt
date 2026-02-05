@@ -29,7 +29,8 @@ class StorageServiceImplTest : CoroutineTest() {
         // Arrange
         val storage = mockk<Storage>()
         val bucket = mockk<BucketApi>()
-        val storageService: StorageService = StorageServiceImpl(storage)
+        val downloadStrategy = mockk<com.cramsan.edifikana.client.lib.service.DownloadStrategy>(relaxed = true)
+        val storageService: StorageService = StorageServiceImpl(storage, downloadStrategy)
         val testData = "test content".toByteArray()
         val targetRef = "private/properties/test.jpg"
 
@@ -52,7 +53,8 @@ class StorageServiceImplTest : CoroutineTest() {
         // Arrange
         val storage = mockk<Storage>()
         val bucket = mockk<BucketApi>()
-        val storageService: StorageService = StorageServiceImpl(storage)
+        val downloadStrategy = mockk<com.cramsan.edifikana.client.lib.service.DownloadStrategy>(relaxed = true)
+        val storageService: StorageService = StorageServiceImpl(storage, downloadStrategy)
         val testData = "test content".toByteArray()
         val targetRef = "private/properties/test.jpg"
 
@@ -80,7 +82,8 @@ class StorageServiceImplTest : CoroutineTest() {
         // Arrange
         val storage = mockk<Storage>()
         val bucket = mockk<BucketApi>()
-        val storageService: StorageService = StorageServiceImpl(storage)
+        val downloadStrategy = mockk<com.cramsan.edifikana.client.lib.service.DownloadStrategy>(relaxed = true)
+        val storageService: StorageService = StorageServiceImpl(storage, downloadStrategy)
         val testData = "test content".toByteArray()
         val targetRef = "private/properties/test.jpg"
 
@@ -108,7 +111,8 @@ class StorageServiceImplTest : CoroutineTest() {
         // Arrange
         val storage = mockk<Storage>()
         val bucket = mockk<BucketApi>()
-        val storageService: StorageService = StorageServiceImpl(storage)
+        val downloadStrategy = mockk<com.cramsan.edifikana.client.lib.service.DownloadStrategy>(relaxed = true)
+        val storageService: StorageService = StorageServiceImpl(storage, downloadStrategy)
         val testData = "test content".toByteArray()
         val targetRef = "private/properties/test.jpg"
 
@@ -136,7 +140,8 @@ class StorageServiceImplTest : CoroutineTest() {
         // Arrange
         val storage = mockk<Storage>()
         val bucket = mockk<BucketApi>()
-        val storageService: StorageService = StorageServiceImpl(storage)
+        val downloadStrategy = mockk<com.cramsan.edifikana.client.lib.service.DownloadStrategy>(relaxed = true)
+        val storageService: StorageService = StorageServiceImpl(storage, downloadStrategy)
         val testData = "test content".toByteArray()
         val targetRef = "private/properties/test.jpg"
 
@@ -164,7 +169,8 @@ class StorageServiceImplTest : CoroutineTest() {
         // Arrange
         val storage = mockk<Storage>()
         val bucket = mockk<BucketApi>()
-        val storageService: StorageService = StorageServiceImpl(storage)
+        val downloadStrategy = mockk<com.cramsan.edifikana.client.lib.service.DownloadStrategy>(relaxed = true)
+        val storageService: StorageService = StorageServiceImpl(storage, downloadStrategy)
         val testData = "test content".toByteArray()
         val targetRef = "private/properties/test.jpg"
 

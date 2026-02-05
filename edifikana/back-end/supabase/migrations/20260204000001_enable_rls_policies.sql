@@ -1,83 +1,16 @@
 -- ============================================================================
--- RLS Policies Migration
+-- RLS Policies Migration - Database Tables Only
 -- ============================================================================
--- This migration enables Row Level Security (RLS) on:
--- 1. Storage buckets (images, documents) - Required for frontend direct access
--- 2. Database tables - Defense-in-depth (backend uses service_role which bypasses RLS)
+-- This migration enables Row Level Security (RLS) on database tables
+--
+-- NOTE: Storage bucket RLS policies have been moved to a separate seed file
+-- (seed_storage_policies.sql) because they require supabase_storage_admin permissions
 --
 -- Backend Impact: NONE (service_role key bypasses all RLS policies)
--- Frontend Impact: Allows authenticated users to upload/download from storage
 -- ============================================================================
 
 -- ----------------------------------------------------------------------------
--- PART 1: STORAGE RLS POLICIES (Required for frontend uploads/downloads)
--- ----------------------------------------------------------------------------
-
--- Enable RLS on storage.objects table
-ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
-
--- Images Bucket Policies
--- Allow authenticated users to upload images
-CREATE POLICY "authenticated_insert_images"
-ON storage.objects
-FOR INSERT
-TO authenticated
-WITH CHECK (bucket_id = 'images');
-
--- Allow authenticated users to view images
-CREATE POLICY "authenticated_select_images"
-ON storage.objects
-FOR SELECT
-TO authenticated
-USING (bucket_id = 'images');
-
--- Allow authenticated users to update their uploads
-CREATE POLICY "authenticated_update_images"
-ON storage.objects
-FOR UPDATE
-TO authenticated
-USING (bucket_id = 'images')
-WITH CHECK (bucket_id = 'images');
-
--- Allow authenticated users to delete their uploads
-CREATE POLICY "authenticated_delete_images"
-ON storage.objects
-FOR DELETE
-TO authenticated
-USING (bucket_id = 'images');
-
--- Documents Bucket Policies (for future document uploads)
--- Allow authenticated users to upload documents
-CREATE POLICY "authenticated_insert_documents"
-ON storage.objects
-FOR INSERT
-TO authenticated
-WITH CHECK (bucket_id = 'documents');
-
--- Allow authenticated users to view documents
-CREATE POLICY "authenticated_select_documents"
-ON storage.objects
-FOR SELECT
-TO authenticated
-USING (bucket_id = 'documents');
-
--- Allow authenticated users to update their documents
-CREATE POLICY "authenticated_update_documents"
-ON storage.objects
-FOR UPDATE
-TO authenticated
-USING (bucket_id = 'documents')
-WITH CHECK (bucket_id = 'documents');
-
--- Allow authenticated users to delete their documents
-CREATE POLICY "authenticated_delete_documents"
-ON storage.objects
-FOR DELETE
-TO authenticated
-USING (bucket_id = 'documents');
-
--- ----------------------------------------------------------------------------
--- PART 2: DATABASE TABLE RLS POLICIES (Defense-in-depth)
+-- DATABASE TABLE RLS POLICIES (Defense-in-depth)
 -- ----------------------------------------------------------------------------
 -- Note: Backend uses service_role key which bypasses these policies.
 -- These policies provide additional security if:
@@ -98,7 +31,6 @@ ALTER TABLE time_card_events ENABLE ROW LEVEL SECURITY;
 ALTER TABLE user_organization_mapping ENABLE ROW LEVEL SECURITY;
 ALTER TABLE user_property_mapping ENABLE ROW LEVEL SECURITY;
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
-ALTER TABLE staff ENABLE ROW LEVEL SECURITY;  -- Deprecated table but still exists
 
 -- Employee table policies
 CREATE POLICY "authenticated_all_employee"
@@ -183,14 +115,6 @@ WITH CHECK (true);
 -- Users table policies
 CREATE POLICY "authenticated_all_users"
 ON users
-FOR ALL
-TO authenticated
-USING (true)
-WITH CHECK (true);
-
--- Staff table policies (deprecated table)
-CREATE POLICY "authenticated_all_staff"
-ON staff
 FOR ALL
 TO authenticated
 USING (true)

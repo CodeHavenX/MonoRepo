@@ -64,6 +64,7 @@ fun VerbsScreen(
     VerbsContent(
         content = uiState,
         onNewConjugationRequested = { viewModel.generateNewConjugation() },
+        onLanguageToggle = { viewModel.toggleLanguage() },
         modifier = modifier,
         toggleDrawer = {
             mainMenuViewModel.toggleDrawer()
@@ -79,6 +80,7 @@ internal fun VerbsContent(
     content: VerbsUIState,
     modifier: Modifier = Modifier,
     onNewConjugationRequested: () -> Unit = { },
+    onLanguageToggle: () -> Unit = { },
     toggleDrawer: () -> Unit = { },
 ) {
     Scaffold(
@@ -99,8 +101,14 @@ internal fun VerbsContent(
                 var startInFront by remember { mutableStateOf(true) }
                 Row(
                     sectionModifier,
-                    horizontalArrangement = Arrangement.End,
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
+                    // Language toggle: EN/ES
+                    Button(
+                        onClick = onLanguageToggle,
+                    ) {
+                        Text(if (content.showSpanish) "ES" else "EN")
+                    }
                     Switch(
                         startInFront,
                         { startInFront = it }
@@ -115,7 +123,7 @@ internal fun VerbsContent(
                 ) {
                     Card(
                         content.content?.original,
-                        content.content?.translated,
+                        content.displayedTranslation,
                         startInFront = startInFront,
                     )
                 }

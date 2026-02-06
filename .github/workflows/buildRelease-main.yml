@@ -18,15 +18,12 @@ permissions:
 
 env:
   ANDROID_HOME: "/opt/Android/sdk"
-  
+
 jobs:
   build:
     runs-on: self-hosted
     environment: "CI"
     steps:
-    - name: Unlock mac keychain
-      run: |
-        security -v unlock-keychain -p ${{ secrets.SELF_HOST_MAC_PASS }} ~/Library/Keychains/login.keychain-db
     - uses: actions/checkout@v3
     - name: Set up JDK 21
       uses: actions/setup-java@v3
@@ -47,6 +44,9 @@ jobs:
           samples/service-ktor/build/libs/service-ktor-all.jar
           samples/jbcompose-wasm-app/build/dist/wasmJs/SamplesWasmApp.zip
           runasimi/front-end/app-wasm/build/dist/wasmJs/RunasimiWasmApp.zip
+    - name: Unlock mac keychain
+      run: |
+        security -v unlock-keychain -p ${{ secrets.SELF_HOST_MAC_PASS }} ~/Library/Keychains/login.keychain-db
     - name: Push containers to the container registry
       run: |
         ./scripts/deploy_images.sh

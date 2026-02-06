@@ -11,10 +11,24 @@ import com.cramsan.runasimi.client.lib.manager.Content
  */
 data class VerbsUIState(
     val content: Content? = null,
+    val showSpanish: Boolean = false,
 ) : ViewModelUIState {
+
+    /**
+     * Returns the translated content based on the current language setting.
+     * Falls back to grammatical description if translation is not available.
+     */
+    val displayedTranslation: String?
+        get() = if (showSpanish) {
+            content?.spanishTranslation ?: content?.translated
+        } else {
+            content?.englishTranslation ?: content?.translated
+        }
+
     companion object {
         val Initial = VerbsUIState(
             content = null,
+            showSpanish = false,
         )
     }
 }

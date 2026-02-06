@@ -31,6 +31,17 @@ class VerbsViewModel(
         }
     }
 
+    /**
+     * Toggle between English and Spanish translations.
+     */
+    fun toggleLanguage() {
+        viewModelScope.launch {
+            updateUiState {
+                it.copy(showSpanish = !it.showSpanish)
+            }
+        }
+    }
+
     companion object {
         private const val TAG = "VerbsViewModel"
     }

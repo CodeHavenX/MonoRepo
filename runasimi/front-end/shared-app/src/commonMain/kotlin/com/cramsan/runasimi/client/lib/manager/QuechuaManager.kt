@@ -5,16 +5,23 @@ import kotlin.math.pow
 /**
  * Manager that handles quechua related content generation.
  */
-class QuechuaManager {
+class QuechuaManager(
+    private val verbTranslationRepository: VerbTranslationRepository,
+) {
 
     /**
      * Generate a random verb conjugation content.
      */
-    fun generateVerbConjugation(): Content {
+    suspend fun generateVerbConjugation(): Content {
+        verbTranslationRepository.initialize()
         val conjugation = generateConjugation()
+        val englishTranslation = verbTranslationRepository.getEnglishTranslation(conjugation)
+        val spanishTranslation = verbTranslationRepository.getSpanishTranslation(conjugation)
         return Content(
             translated = conjugation.toTranslation(),
             original = conjugation.toSentence(),
+            englishTranslation = englishTranslation,
+            spanishTranslation = spanishTranslation,
         )
     }
 
@@ -36,5 +43,7 @@ class QuechuaManager {
  */
 data class Content(
     val translated: String,
-    val original: String
+    val original: String,
+    val englishTranslation: String? = null,
+    val spanishTranslation: String? = null,
 )

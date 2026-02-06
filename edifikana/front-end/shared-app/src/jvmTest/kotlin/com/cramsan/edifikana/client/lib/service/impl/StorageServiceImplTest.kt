@@ -1,12 +1,16 @@
 package com.cramsan.edifikana.client.lib.service.impl
 
+import com.cramsan.edifikana.client.lib.service.DownloadStrategy
 import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.framework.test.CoroutineTest
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import io.github.jan.supabase.storage.Storage
 import io.github.jan.supabase.storage.BucketApi
+import io.github.jan.supabase.storage.FileUploadResponse
+import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpStatusCode
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import kotlinx.coroutines.test.runTest
@@ -15,11 +19,20 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 import io.github.jan.supabase.exceptions.RestException
+import com.cramsan.framework.logging.EventLogger
+import com.cramsan.framework.logging.implementation.PassthroughEventLogger
+import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
+import org.junit.jupiter.api.BeforeEach
 
 /**
  * Unit tests for [StorageServiceImpl].
  */
 class StorageServiceImplTest : CoroutineTest() {
+
+    @BeforeEach
+    fun setupTest() {
+        EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
+    }
 
     /**
      * Test that uploadFile with valid data returns success with storage reference.
@@ -29,13 +42,14 @@ class StorageServiceImplTest : CoroutineTest() {
         // Arrange
         val storage = mockk<Storage>()
         val bucket = mockk<BucketApi>()
-        val downloadStrategy = mockk<com.cramsan.edifikana.client.lib.service.DownloadStrategy>(relaxed = true)
+        val downloadStrategy = mockk<DownloadStrategy>(relaxed = true)
         val storageService: StorageService = StorageServiceImpl(storage, downloadStrategy)
         val testData = "test content".toByteArray()
         val targetRef = "private/properties/test.jpg"
 
-        coEvery { storage.from(any()) } returns bucket
-        coEvery { bucket.upload(any(), any(), any()) } returns Unit
+        val mockUploadResponse = mockk<FileUploadResponse>(relaxed = true)
+        coEvery { storage.from(any<String>()) } returns bucket
+        coEvery { bucket.upload(any<String>(), any<ByteArray>(), any()) } returns mockUploadResponse
 
         // Act
         val result = storageService.uploadFile(testData, targetRef)
@@ -53,15 +67,19 @@ class StorageServiceImplTest : CoroutineTest() {
         // Arrange
         val storage = mockk<Storage>()
         val bucket = mockk<BucketApi>()
-        val downloadStrategy = mockk<com.cramsan.edifikana.client.lib.service.DownloadStrategy>(relaxed = true)
+        val downloadStrategy = mockk<DownloadStrategy>(relaxed = true)
         val storageService: StorageService = StorageServiceImpl(storage, downloadStrategy)
         val testData = "test content".toByteArray()
         val targetRef = "private/properties/test.jpg"
 
-        coEvery { storage.from(any()) } returns bucket
-        coEvery { bucket.upload(any(), any(), any()) } throws RestException(
-            error = "Bad Request",
-            statusCode = HttpStatusCode.BadRequest
+        val mockResponse = mockk<HttpResponse>(relaxed = true) {
+            every { status } returns HttpStatusCode.BadRequest
+        }
+        coEvery { storage.from(any<String>()) } returns bucket
+        coEvery { bucket.upload(any<String>(), any<ByteArray>(), any()) } throws RestException(
+            "Bad Request",
+            "400 Error",
+            mockResponse
         )
 
         // Act
@@ -82,15 +100,19 @@ class StorageServiceImplTest : CoroutineTest() {
         // Arrange
         val storage = mockk<Storage>()
         val bucket = mockk<BucketApi>()
-        val downloadStrategy = mockk<com.cramsan.edifikana.client.lib.service.DownloadStrategy>(relaxed = true)
+        val downloadStrategy = mockk<DownloadStrategy>(relaxed = true)
         val storageService: StorageService = StorageServiceImpl(storage, downloadStrategy)
         val testData = "test content".toByteArray()
         val targetRef = "private/properties/test.jpg"
 
-        coEvery { storage.from(any()) } returns bucket
-        coEvery { bucket.upload(any(), any(), any()) } throws RestException(
-            error = "Unauthorized",
-            statusCode = HttpStatusCode.Unauthorized
+        val mockResponse = mockk<HttpResponse>(relaxed = true) {
+            every { status } returns HttpStatusCode.Unauthorized
+        }
+        coEvery { storage.from(any<String>()) } returns bucket
+        coEvery { bucket.upload(any<String>(), any<ByteArray>(), any()) } throws RestException(
+            "Unauthorized",
+            "401 Error",
+            mockResponse
         )
 
         // Act
@@ -111,15 +133,19 @@ class StorageServiceImplTest : CoroutineTest() {
         // Arrange
         val storage = mockk<Storage>()
         val bucket = mockk<BucketApi>()
-        val downloadStrategy = mockk<com.cramsan.edifikana.client.lib.service.DownloadStrategy>(relaxed = true)
+        val downloadStrategy = mockk<DownloadStrategy>(relaxed = true)
         val storageService: StorageService = StorageServiceImpl(storage, downloadStrategy)
         val testData = "test content".toByteArray()
         val targetRef = "private/properties/test.jpg"
 
-        coEvery { storage.from(any()) } returns bucket
-        coEvery { bucket.upload(any(), any(), any()) } throws RestException(
-            error = "Forbidden",
-            statusCode = HttpStatusCode.Forbidden
+        val mockResponse = mockk<HttpResponse>(relaxed = true) {
+            every { status } returns HttpStatusCode.Forbidden
+        }
+        coEvery { storage.from(any<String>()) } returns bucket
+        coEvery { bucket.upload(any<String>(), any<ByteArray>(), any()) } throws RestException(
+            "Forbidden",
+            "403 Error",
+            mockResponse
         )
 
         // Act
@@ -140,15 +166,19 @@ class StorageServiceImplTest : CoroutineTest() {
         // Arrange
         val storage = mockk<Storage>()
         val bucket = mockk<BucketApi>()
-        val downloadStrategy = mockk<com.cramsan.edifikana.client.lib.service.DownloadStrategy>(relaxed = true)
+        val downloadStrategy = mockk<DownloadStrategy>(relaxed = true)
         val storageService: StorageService = StorageServiceImpl(storage, downloadStrategy)
         val testData = "test content".toByteArray()
         val targetRef = "private/properties/test.jpg"
 
-        coEvery { storage.from(any()) } returns bucket
-        coEvery { bucket.upload(any(), any(), any()) } throws RestException(
-            error = "Conflict",
-            statusCode = HttpStatusCode.Conflict
+        val mockResponse = mockk<HttpResponse>(relaxed = true) {
+            every { status } returns HttpStatusCode.Conflict
+        }
+        coEvery { storage.from(any<String>()) } returns bucket
+        coEvery { bucket.upload(any<String>(), any<ByteArray>(), any()) } throws RestException(
+            "Conflict",
+            "409 Error",
+            mockResponse
         )
 
         // Act
@@ -169,13 +199,13 @@ class StorageServiceImplTest : CoroutineTest() {
         // Arrange
         val storage = mockk<Storage>()
         val bucket = mockk<BucketApi>()
-        val downloadStrategy = mockk<com.cramsan.edifikana.client.lib.service.DownloadStrategy>(relaxed = true)
+        val downloadStrategy = mockk<DownloadStrategy>(relaxed = true)
         val storageService: StorageService = StorageServiceImpl(storage, downloadStrategy)
         val testData = "test content".toByteArray()
         val targetRef = "private/properties/test.jpg"
 
-        coEvery { storage.from(any()) } returns bucket
-        coEvery { bucket.upload(any(), any(), any()) } throws Exception("Unexpected error")
+        coEvery { storage.from(any<String>()) } returns bucket
+        coEvery { bucket.upload(any<String>(), any<ByteArray>(), any()) } throws Exception("Unexpected error")
 
         // Act
         val result = storageService.uploadFile(testData, targetRef)

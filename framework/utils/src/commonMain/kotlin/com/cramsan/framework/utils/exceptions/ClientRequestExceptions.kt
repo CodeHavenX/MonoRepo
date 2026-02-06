@@ -7,32 +7,33 @@ package com.cramsan.framework.utils.exceptions
 @Suppress("MagicNumber")
 sealed class ClientRequestExceptions(
     val statusCode: Int,
-    override val message: String
+    override val message: String,
+    override val cause: Throwable?
 ) : Throwable() {
     /**
      * Invalid request exception.
      */
-    class InvalidRequestException(message: String) : ClientRequestExceptions(400, message)
+    class InvalidRequestException(message: String, cause: Throwable? = null) : ClientRequestExceptions(400, message, cause)
 
     /**
      * Unauthorized exception.
      */
-    class UnauthorizedException(message: String) : ClientRequestExceptions(401, message)
+    class UnauthorizedException(message: String, cause: Throwable? = null) : ClientRequestExceptions(401, message, cause)
 
     /**
      * Forbidden exception.
      */
-    class ForbiddenException(message: String) : ClientRequestExceptions(403, message)
+    class ForbiddenException(message: String, cause: Throwable? = null) : ClientRequestExceptions(403, message, cause)
 
     /**
      * Not found exception.
      */
-    class NotFoundException(message: String) : ClientRequestExceptions(404, message)
+    class NotFoundException(message: String, cause: Throwable? = null) : ClientRequestExceptions(404, message, cause)
 
     /**
      * Conflict exception.
      */
-    class ConflictException(message: String) : ClientRequestExceptions(409, message)
+    class ConflictException(message: String, cause: Throwable? = null) : ClientRequestExceptions(409, message, cause)
 }
 
 /**

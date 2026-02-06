@@ -85,8 +85,10 @@ object PropertyIconOptions {
             )
         }
 
-        // Check if it's a URL
-        if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
+        // Check if it's a storage reference or URL
+        if (imageUrl.startsWith("storage:") ||
+            imageUrl.startsWith("http://") ||
+            imageUrl.startsWith("https://")) {
             return ImageOptionUIModel(
                 id = "custom_url",
                 displayName = "Custom Image",

@@ -1,13 +1,11 @@
 package com.cramsan.edifikana.client.lib.features.home.addproperty
 
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
+import com.cramsan.edifikana.client.lib.managers.FileManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.edifikana.client.lib.utils.FileValidationUtils
 import com.cramsan.edifikana.client.lib.utils.IODependencies
-import com.cramsan.edifikana.client.lib.utils.getFilename
-import com.cramsan.edifikana.client.lib.utils.processImageData
-import com.cramsan.edifikana.client.lib.utils.readBytes
 import com.cramsan.edifikana.client.ui.components.ImageOptionUIModel
 import com.cramsan.edifikana.client.ui.components.ImageSource
 import com.cramsan.edifikana.lib.model.OrganizationId
@@ -29,6 +27,7 @@ class AddPropertyViewModel(
     dependencies: ViewModelDependencies,
     private val propertyManager: PropertyManager,
     private val storageService: StorageService,
+    private val fileManager: FileManager,
     private val ioDependencies: IODependencies,
     private val stringProvider: StringProvider,
 ) : BaseViewModel<AddPropertyEvent, AddPropertyUIState>(
@@ -140,7 +139,7 @@ class AddPropertyViewModel(
 
         // Step 2: Get filename and prepare for upload
         val originalFilename = try {
-            selectedImageUri.getFilename(ioDependencies)
+            fileManager.getFilename(selectedImageUri)
         } catch (e: Exception) {
             logE(TAG, "Failed to get filename", e)
             val message = "Unable to read file. Property created but image not uploaded."
@@ -150,19 +149,9 @@ class AddPropertyViewModel(
             return
         }
 
-        // Read bytes
-        val bytes = readBytes(selectedImageUri, ioDependencies).getOrElse { error ->
-            logE(TAG, "Failed to read file bytes", error)
-            val message = "Unable to read file. Property created but image not uploaded."
-            updateUiState { it.copy(isLoading = false, isUploading = false, uploadError = message) }
-            emitWindowEvent(EdifikanaWindowsEvent.ShowSnackbar(message))
-            emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
-            return
-        }
-
-        // Process image data (EXIF rotation + compression on Android, raw data on JVM)
-        val processedBytes = processImageData(bytes).getOrElse { error ->
-            logE(TAG, "Failed to process image", error)
+        // Step 3: Read and process image bytes
+        val processedBytes = prepareImageForUpload(selectedImageUri).getOrElse { error ->
+            logE(TAG, "Failed to prepare image: ${error.message}", error)
             val message = "Unable to process image. Property created but image not uploaded."
             updateUiState { it.copy(isLoading = false, isUploading = false, uploadError = message) }
             emitWindowEvent(EdifikanaWindowsEvent.ShowSnackbar(message))
@@ -170,14 +159,57 @@ class AddPropertyViewModel(
             return
         }
 
-        // Step 3: Upload with propertyID in filename for easy association
+        // Step 4: Upload image and link to property
+        uploadAndLinkImage(propertyId, propertyName, address, processedBytes, originalFilename, newProperty)
+    }
+
+    /**
+     * Read and process image bytes for upload.
+     * Handles reading bytes from URI and processing (EXIF rotation + compression on Android).
+     *
+     * @param uri The image URI to read
+     * @return Result containing processed bytes, or error if read/process failed
+     */
+    private suspend fun prepareImageForUpload(uri: CoreUri): Result<ByteArray> {
+        // Read bytes from URI
+        val bytes = fileManager.readFileBytes(uri).getOrElse { error ->
+            return Result.failure(Exception("Failed to read file bytes", error))
+        }
+
+        // Process image data (EXIF rotation + compression on Android, raw data on JVM)
+        val processedBytes = fileManager.processImage(bytes).getOrElse { error ->
+            return Result.failure(Exception("Failed to process image", error))
+        }
+
+        return Result.success(processedBytes)
+    }
+
+    /**
+     * Upload image to storage and link to property.
+     * Handles the complete upload → update property flow with all error cases.
+     *
+     * @param propertyId The property to link the image to
+     * @param propertyName The property name (for success message)
+     * @param address The property address
+     * @param processedBytes The processed image bytes to upload
+     * @param originalFilename The original filename (for storage reference)
+     * @param newProperty The newly created property model
+     */
+    private suspend fun uploadAndLinkImage(
+        propertyId: com.cramsan.edifikana.lib.model.PropertyId,
+        propertyName: String,
+        address: String,
+        processedBytes: ByteArray,
+        originalFilename: String,
+        newProperty: com.cramsan.edifikana.client.lib.models.PropertyModel
+    ) {
         val targetRef = "private/properties/${propertyId}_${originalFilename}"
         logI(TAG, "Uploading image to properties folder, size: ${processedBytes.size} bytes")
 
         storageService.uploadFile(processedBytes, targetRef).onSuccess { storageRef ->
             logI(TAG, "Upload successful!")
 
-            // Step 4: Update property with storage reference
+            // Update property with storage reference
             val storageUrl = "storage:$storageRef"
             propertyManager.updateProperty(propertyId, propertyName, address, storageUrl)
                 .onSuccess {
@@ -259,7 +291,7 @@ class AddPropertyViewModel(
 
             // Get filename for preview
             val filename = try {
-                uri.getFilename(ioDependencies)
+                fileManager.getFilename(uri)
             } catch (e: Exception) {
                 logE(TAG, "Failed to get filename", e)
                 val message = "Unable to read file. Please try again."

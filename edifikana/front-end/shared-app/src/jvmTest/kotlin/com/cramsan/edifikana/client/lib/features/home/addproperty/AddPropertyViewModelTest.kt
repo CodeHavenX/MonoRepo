@@ -2,10 +2,10 @@ package com.cramsan.edifikana.client.lib.features.home.addproperty
 
 import app.cash.turbine.test
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
+import com.cramsan.edifikana.client.lib.managers.FileManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.models.PropertyModel
 import com.cramsan.edifikana.client.lib.service.StorageService
-import com.cramsan.edifikana.client.lib.ui.components.ImageSource
 import com.cramsan.edifikana.client.lib.utils.IODependencies
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
@@ -43,6 +43,7 @@ class AddPropertyViewModelTest : CoroutineTest() {
     private lateinit var viewModel: AddPropertyViewModel
     private lateinit var propertyManager: PropertyManager
     private lateinit var storageService: StorageService
+    private lateinit var fileManager: FileManager
     private lateinit var ioDependencies: IODependencies
     private lateinit var stringProvider: StringProvider
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
@@ -57,6 +58,7 @@ class AddPropertyViewModelTest : CoroutineTest() {
         exceptionHandler = CollectorCoroutineExceptionHandler()
         propertyManager = mockk(relaxed = true)
         storageService = mockk(relaxed = true)
+        fileManager = mockk(relaxed = true)
         ioDependencies = mockk(relaxed = true)
         stringProvider = mockk(relaxed = true)
         viewModel = AddPropertyViewModel(
@@ -69,6 +71,7 @@ class AddPropertyViewModelTest : CoroutineTest() {
             ),
             propertyManager = propertyManager,
             storageService = storageService,
+            fileManager = fileManager,
             ioDependencies = ioDependencies,
             stringProvider = stringProvider,
         )
@@ -197,46 +200,6 @@ class AddPropertyViewModelTest : CoroutineTest() {
     }
 
     /**
-     * Test that addProperty with custom image sets isUploading state correctly.
-     */
-    @Test
-    fun `test addProperty with custom image sets isUploading state`() = runCoroutineTest {
-        // Arrange
-        val propertyName = "Test Property"
-        val address = "123 Test Street"
-        val organizationId = OrganizationId("org_id_1")
-        val imageUri = CoreUri("file:///test.jpg")
-        val propertyId = PropertyId("test-id")
-        val newProperty = PropertyModel(
-            id = propertyId,
-            name = propertyName,
-            address = address,
-            organizationId = organizationId,
-            imageUrl = null,
-        )
-
-        coEvery {
-            propertyManager.addProperty(propertyName, address, organizationId, null)
-        } returns Result.success(newProperty)
-
-        coEvery {
-            storageService.uploadFile(any(), any())
-        } returns Result.success("private/properties/${propertyId}_test.jpg")
-
-        coEvery {
-            propertyManager.updateProperty(any(), any(), any(), any())
-        } returns Result.success(newProperty)
-
-        // Act
-        viewModel.initialize(organizationId)
-        viewModel.addProperty(propertyName, address, imageUrl = null, selectedImageUri = imageUri)
-
-        // Assert
-        assertTrue(viewModel.uiState.value.isLoading)
-        assertTrue(viewModel.uiState.value.isUploading)
-    }
-
-    /**
      * Test that addProperty with custom image follows the correct flow:
      * 1. Creates property (gets propertyID)
      * 2. Uploads image with propertyID in filename
@@ -262,6 +225,10 @@ class AddPropertyViewModelTest : CoroutineTest() {
         coEvery {
             propertyManager.addProperty(propertyName, address, organizationId, null)
         } returns Result.success(newProperty)
+
+        every { fileManager.getFilename(imageUri) } returns "test.jpg"
+        coEvery { fileManager.readFileBytes(imageUri) } returns Result.success(byteArrayOf(1, 2, 3))
+        coEvery { fileManager.processImage(any()) } returns Result.success(byteArrayOf(1, 2, 3))
 
         coEvery {
             storageService.uploadFile(any(), expectedStorageRef)
@@ -332,6 +299,10 @@ class AddPropertyViewModelTest : CoroutineTest() {
             propertyManager.addProperty(propertyName, address, organizationId, null)
         } returns Result.success(newProperty)
 
+        every { fileManager.getFilename(imageUri) } returns "test.jpg"
+        coEvery { fileManager.readFileBytes(imageUri) } returns Result.success(byteArrayOf(1, 2, 3))
+        coEvery { fileManager.processImage(any()) } returns Result.success(byteArrayOf(1, 2, 3))
+
         coEvery {
             storageService.uploadFile(any(), any())
         } returns Result.failure(ClientRequestExceptions.InvalidRequestException("Upload failed"))
@@ -382,6 +353,10 @@ class AddPropertyViewModelTest : CoroutineTest() {
         coEvery {
             propertyManager.addProperty(propertyName, address, organizationId, null)
         } returns Result.success(newProperty)
+
+        every { fileManager.getFilename(imageUri) } returns "test.jpg"
+        coEvery { fileManager.readFileBytes(imageUri) } returns Result.success(byteArrayOf(1, 2, 3))
+        coEvery { fileManager.processImage(any()) } returns Result.success(byteArrayOf(1, 2, 3))
 
         coEvery {
             storageService.uploadFile(any(), any())

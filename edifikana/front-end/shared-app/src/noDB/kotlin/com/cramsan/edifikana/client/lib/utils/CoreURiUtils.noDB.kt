@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.utils
 
 import com.cramsan.framework.core.CoreUri
+import kotlin.time.Clock
 
 /**
  * Core URI utils for noDB platforms (WASM/browser).
@@ -22,7 +23,7 @@ actual fun CoreUri.getFilename(ioDependencies: IODependencies): String {
         uriString.startsWith("blob:") -> {
             // Blob URIs don't contain filenames, generate a timestamp-based name
             // Don't assume extension - let MIME type validation handle the actual format
-            "upload_${System.currentTimeMillis()}"
+            "upload_${Clock.System.now()}"
         }
         // For file URIs or paths, extract the last segment (preserves original extension)
         else -> {

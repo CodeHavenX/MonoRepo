@@ -29,15 +29,15 @@ class StorageServiceImpl(
             logE(TAG, "Error uploading file: statusCode=${e.statusCode}, message=${e.message}", e)
             // RestException.statusCode is HttpStatusCode, compare using .value property
             throw when (e.statusCode) {
-                400 -> ClientRequestExceptions.InvalidRequestException("Invalid file format")
-                401 -> ClientRequestExceptions.UnauthorizedException("Authentication required")
-                403 -> ClientRequestExceptions.ForbiddenException("Permission denied")
-                409 -> ClientRequestExceptions.ConflictException("File already exists")
-                else -> ClientRequestExceptions.InvalidRequestException("Upload failed: ${e.message}")
+                400 -> ClientRequestExceptions.InvalidRequestException("Invalid file format", e)
+                401 -> ClientRequestExceptions.UnauthorizedException("Authentication required", e)
+                403 -> ClientRequestExceptions.ForbiddenException("Permission denied", e)
+                409 -> ClientRequestExceptions.ConflictException("File already exists", e)
+                else -> ClientRequestExceptions.InvalidRequestException("Upload failed: ${e.message}", e)
             }
         } catch (e: Exception) {
             logE(TAG, "Unexpected error uploading file", e)
-            throw ClientRequestExceptions.InvalidRequestException("Upload failed: ${e.message}")
+            throw ClientRequestExceptions.InvalidRequestException("Upload failed: ${e.message}", e)
         }
     }
 

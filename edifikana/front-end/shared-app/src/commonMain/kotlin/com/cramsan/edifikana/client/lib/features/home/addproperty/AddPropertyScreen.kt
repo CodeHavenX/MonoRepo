@@ -12,12 +12,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import com.cramsan.architecture.client.di.koinEventEmitter
 import com.cramsan.edifikana.client.lib.features.home.HomeDestination
 import com.cramsan.edifikana.client.lib.features.home.shared.PropertyIconOptions
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowDelegatedEvent
 import com.cramsan.edifikana.client.ui.components.EdifikanaImageSelector
 import com.cramsan.edifikana.client.ui.components.EdifikanaPrimaryButton
 import com.cramsan.edifikana.client.ui.components.EdifikanaTextField
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
+import com.cramsan.edifikana.client.ui.components.ImageSource
+import com.cramsan.framework.core.CoreUri
+import com.cramsan.framework.core.compose.EventEmitter
+import com.cramsan.framework.core.compose.ui.ObserveEventEmitterEvents
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
@@ -36,6 +42,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun AddPropertyScreen(
     destination: HomeDestination.AddPropertyManagementDestination,
     viewModel: AddPropertyViewModel = koinViewModel(),
+    eventEmitter: EventEmitter<EdifikanaWindowDelegatedEvent> = koinEventEmitter(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -58,13 +65,27 @@ fun AddPropertyScreen(
         }
     }
 
+    ObserveEventEmitterEvents(eventEmitter) { event ->
+        println("AddPropertyScreen received windowViewModel event: $event")
+        when (event) {
+            is EdifikanaWindowDelegatedEvent.HandleReceivedImage -> {
+                viewModel.handleReceivedImages(listOf(event.uri))
+            }
+            is EdifikanaWindowDelegatedEvent.HandleReceivedImages -> {
+                viewModel.handleReceivedImages(event.uris)
+            }
+            else -> Unit
+        }
+    }
+
     // Render the screen
     AddPropertyContent(
         uiState,
         onBackSelected = { viewModel.navigateBack() },
-        onAddPropertySelected = { propertyName, address, imageUrl ->
-            viewModel.addProperty(propertyName, address, imageUrl)
+        onAddPropertySelected = { propertyName, address, imageUrl, selectedImageUri ->
+            viewModel.addProperty(propertyName, address, imageUrl, selectedImageUri)
         },
+        onTriggerPhotoPicker = { viewModel.triggerPhotoPicker() },
     )
 }
 
@@ -76,16 +97,21 @@ internal fun AddPropertyContent(
     content: AddPropertyUIState,
     modifier: Modifier = Modifier,
     onBackSelected: () -> Unit,
-    onAddPropertySelected: (propertyName: String, address: String, imageUrl: String?) -> Unit,
+    onAddPropertySelected: (propertyName: String, address: String, imageUrl: String?, selectedImageUri: CoreUri?) -> Unit,
+    onTriggerPhotoPicker: () -> Unit,
 ) {
     var propertyName by remember { mutableStateOf("") }
     var address by remember { mutableStateOf("") }
-    // Default to S_DEPA icon
+
+    // Local state for default icon selection
     val defaultIcon = remember {
         PropertyIconOptions.getDefaultOptions().find { it.id == "S_DEPA" }
             ?: PropertyIconOptions.getDefaultOptions().first()
     }
-    var selectedIcon by remember { mutableStateOf(defaultIcon) }
+    var localSelectedIcon by remember { mutableStateOf(defaultIcon) }
+
+    // Effective selected icon: uploaded image takes priority over local selection
+    val effectiveSelectedIcon = content.selectedIcon ?: localSelectedIcon
 
     Scaffold(
         modifier = modifier,
@@ -116,10 +142,16 @@ internal fun AddPropertyContent(
                 )
                 EdifikanaImageSelector(
                     label = "Property Icon",
-                    options = PropertyIconOptions.getDefaultOptions(),
-                    selectedOption = selectedIcon,
-                    onOptionSelected = { selectedIcon = it },
-                    placeholder = "Select a property icon",
+                    options = PropertyIconOptions.getOptionsWithUpload(),
+                    selectedOption = effectiveSelectedIcon,
+                    onOptionSelected = { option ->
+                        if (option.id == "custom_upload") {
+                            onTriggerPhotoPicker()
+                        } else {
+                            localSelectedIcon = option
+                        }
+                    },
+                    placeholder = if (content.isUploading) "Uploading..." else "Select a property icon",
                     modifier = sectionModifier,
                 )
             },
@@ -127,14 +159,30 @@ internal fun AddPropertyContent(
                 EdifikanaPrimaryButton(
                     text = stringResource(Res.string.text_add),
                     modifier = buttonModifier,
+                    enabled = !content.isUploading,
                     onClick = {
-                        val imageUrl = PropertyIconOptions.toImageUrl(selectedIcon)
-                        onAddPropertySelected(propertyName, address, imageUrl)
+                        // Extract URI if user selected a custom local file
+                        val selectedImageUri = if (effectiveSelectedIcon?.id == "custom_local" &&
+                            effectiveSelectedIcon.imageSource is ImageSource.LocalFile
+                        ) {
+                            (effectiveSelectedIcon.imageSource as ImageSource.LocalFile).uri
+                        } else {
+                            null
+                        }
+
+                        // For non-custom images, use the converted imageUrl
+                        val imageUrl = if (selectedImageUri == null) {
+                            PropertyIconOptions.toImageUrl(effectiveSelectedIcon)
+                        } else {
+                            null
+                        }
+
+                        onAddPropertySelected(propertyName, address, imageUrl, selectedImageUri)
                     },
                 )
             },
             overlay = {
-                LoadingAnimationOverlay(content.isLoading)
+                LoadingAnimationOverlay(content.isLoading || content.isUploading)
             }
         )
     }

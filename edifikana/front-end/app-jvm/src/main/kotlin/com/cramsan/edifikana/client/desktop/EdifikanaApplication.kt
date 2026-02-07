@@ -4,6 +4,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
@@ -13,6 +14,7 @@ import com.cramsan.edifikana.client.lib.features.application.EdifikanaApplicatio
 import com.cramsan.edifikana.client.lib.features.application.EdifikanaJvmMainScreenEventHandler
 import com.cramsan.edifikana.client.lib.features.window.ComposableKoinContext
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowScreen
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowViewModel
 import org.koin.compose.koinInject
 import org.koin.compose.scope.KoinScope
 import org.koin.core.annotation.KoinExperimentalAPI
@@ -24,7 +26,6 @@ import org.koin.core.annotation.KoinExperimentalAPI
 fun main() = application {
     ComposableKoinContext {
         val processViewModel: EdifikanaApplicationViewModel = koinInject()
-        val eventHandler = remember { EdifikanaJvmMainScreenEventHandler() }
         val appState by processViewModel.uiState.collectAsState()
 
         LaunchedEffect(Unit) {
@@ -40,25 +41,22 @@ fun main() = application {
                 )
             ) {
                 KoinScope<String>("root-window") {
-                    EdifikanaWindowScreen(
-                        eventHandler = eventHandler,
-                    )
-                }
-            }
+                    val windowViewModel: EdifikanaWindowViewModel = koinInject()
+                    val scope = rememberCoroutineScope()
 
-            if (appState.showDebugWindow) {
-                Window(
-                    onCloseRequest = { },
-                    title = "Edifikana - Debug Window",
-                    state = rememberWindowState(
-                        size = DpSize(400.dp, 600.dp)
-                    )
-                ) {
-                    KoinScope<String>("debug-window") {
-                        EdifikanaWindowScreen(
-                            eventHandler = eventHandler,
+                    // Create event handler with photo picker callback
+                    val windowEventHandler = remember(scope) {
+                        EdifikanaJvmMainScreenEventHandler(
+                            scope = scope,
+                            onPhotoPickerResult = { uris ->
+                                windowViewModel.handleReceivedImages(uris)
+                            }
                         )
                     }
+                    EdifikanaWindowScreen(
+                        eventHandler = windowEventHandler,
+                        viewModel = windowViewModel,
+                    )
                 }
             }
         }

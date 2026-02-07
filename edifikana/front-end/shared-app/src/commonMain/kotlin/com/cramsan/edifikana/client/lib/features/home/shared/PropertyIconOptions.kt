@@ -26,15 +26,41 @@ object PropertyIconOptions {
     }
 
     /**
+     * Get the list of property icon options including the upload option.
+     *
+     * @return List of ImageOptionUIModel including default icons and an "Upload Custom Image" option
+     */
+    fun getOptionsWithUpload(): List<ImageOptionUIModel> {
+        val defaultOptions = getDefaultOptions()
+        val uploadOption = ImageOptionUIModel(
+            id = "custom_upload",
+            displayName = "Upload Custom Image",
+            imageSource = ImageSource.UploadPlaceholder,
+        )
+        return defaultOptions + uploadOption
+    }
+
+    /**
      * Convert an ImageOptionUIModel to the API string format.
      *
      * @param option The selected image option
-     * @return API-compatible string (e.g., "drawable:CASA") or null if option is null
+     * @return API-compatible string (e.g., "drawable:CASA", "storage:properties/file.jpg") or null if option is null
      */
     fun toImageUrl(option: ImageOptionUIModel?): String? {
         return when (option?.imageSource) {
             is ImageSource.Drawable -> "drawable:${option.id}"
             is ImageSource.Url -> (option.imageSource as ImageSource.Url).url
+            is ImageSource.LocalFile -> {
+                // Check if this is an uploaded file with storage ref embedded in ID
+                if (option.id.startsWith("custom_uploaded:")) {
+                    // Extract storage reference from ID (format: "custom_uploaded:properties/filename")
+                    val storageRef = option.id.removePrefix("custom_uploaded:")
+                    "storage:$storageRef"
+                } else {
+                    null // Not yet uploaded
+                }
+            }
+            is ImageSource.UploadPlaceholder -> null // Upload placeholder should not be converted to URL
             is ImageSource.None, null -> null
         }
     }
@@ -59,8 +85,10 @@ object PropertyIconOptions {
             )
         }
 
-        // Check if it's a URL
-        if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
+        // Check if it's a storage reference or URL
+        if (imageUrl.startsWith("storage:") ||
+            imageUrl.startsWith("http://") ||
+            imageUrl.startsWith("https://")) {
             return ImageOptionUIModel(
                 id = "custom_url",
                 displayName = "Custom Image",

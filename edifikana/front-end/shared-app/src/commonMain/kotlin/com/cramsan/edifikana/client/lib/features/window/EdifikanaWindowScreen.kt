@@ -54,7 +54,7 @@ import kotlin.reflect.typeOf
 @Composable
 fun EdifikanaWindowScreen(
     eventHandler: EdifikanaMainScreenEventHandler,
-    viewModel: EdifikanaWindowViewModel = koinViewModel(),
+    viewModel: EdifikanaWindowViewModel,
     applicationViewModel: EdifikanaApplicationViewModel = koinInject(),
     startDestination: EdifikanaNavGraphDestination = EdifikanaNavGraphDestination.SplashNavGraphDestination,
 ) {

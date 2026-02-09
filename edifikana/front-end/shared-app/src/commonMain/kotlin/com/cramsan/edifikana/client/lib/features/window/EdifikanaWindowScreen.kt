@@ -45,7 +45,6 @@ import com.cramsan.ui.components.themetoggle.SelectedTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
-import org.koin.compose.viewmodel.koinViewModel
 import kotlin.reflect.typeOf
 
 /**

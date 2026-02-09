@@ -9,7 +9,7 @@ sealed class ClientRequestExceptions(
     val statusCode: Int,
     override val message: String,
     override val cause: Throwable?
-) : Throwable() {
+) : Throwable(message, cause) {
     /**
      * Invalid request exception.
      */

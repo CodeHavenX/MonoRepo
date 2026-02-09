@@ -66,7 +66,6 @@ fun AddPropertyScreen(
     }
 
     ObserveEventEmitterEvents(eventEmitter) { event ->
-        println("AddPropertyScreen received windowViewModel event: $event")
         when (event) {
             is EdifikanaWindowDelegatedEvent.HandleReceivedImage -> {
                 viewModel.handleReceivedImages(listOf(event.uri))

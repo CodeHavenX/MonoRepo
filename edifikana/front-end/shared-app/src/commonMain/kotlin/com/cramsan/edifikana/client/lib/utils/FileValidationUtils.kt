@@ -53,7 +53,7 @@ object FileValidationUtils {
                     val maxSizeMB = MAX_FILE_SIZE_BYTES / (1024.0 * 1024.0)
                     Result.failure(
                         IllegalArgumentException(
-                            "File size $sizeMB MB) exceeds maximum allowed size $maxSizeMB MB"
+                            "File size $sizeMB MB exceeds maximum allowed size $maxSizeMB MB"
                         )
                     )
                 } else {

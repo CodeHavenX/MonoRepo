@@ -23,7 +23,7 @@ actual fun CoreUri.getFilename(ioDependencies: IODependencies): String {
         uriString.startsWith("blob:") -> {
             // Blob URIs don't contain filenames, generate a timestamp-based name
             // Don't assume extension - let MIME type validation handle the actual format
-            "upload_${Clock.System.now()}"
+            "upload_${Clock.System.now().toEpochMilliseconds()}"
         }
         // For file URIs or paths, extract the last segment (preserves original extension)
         else -> {

@@ -127,12 +127,12 @@ class AddPropertyViewModel(
         // Step 1: Create property without imageUrl first to get propertyID
         logI(TAG, "Creating property without image...")
         val newProperty = propertyManager.addProperty(propertyName, address, organizationId, imageUrl = null)
-            .onFailure { error ->
+            .getOrElse { error ->
                 logE(TAG, "Failed to create property", error)
                 updateUiState { it.copy(isLoading = false, isUploading = false) }
                 emitWindowEvent(EdifikanaWindowsEvent.ShowSnackbar("Failed to create property"))
+                return
             }
-            .getOrThrow()
 
         val propertyId = newProperty.id
         logI(TAG, "Property created with ID: $propertyId")

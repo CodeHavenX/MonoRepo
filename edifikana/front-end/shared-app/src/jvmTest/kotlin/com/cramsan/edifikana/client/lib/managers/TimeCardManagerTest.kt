@@ -3,7 +3,6 @@ package com.cramsan.edifikana.client.lib.managers
 import com.cramsan.edifikana.client.lib.db.TimeCardCache
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
 import com.cramsan.edifikana.client.lib.service.PropertyService
-import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.edifikana.client.lib.service.TimeCardService
 import com.cramsan.edifikana.client.lib.utils.IODependencies
 import com.cramsan.edifikana.lib.model.EmployeeId
@@ -33,7 +32,7 @@ import kotlin.test.assertTrue
 class TimeCardManagerTest : CoroutineTest() {
     private lateinit var timeCardService: TimeCardService
     private lateinit var timeCardCache: TimeCardCache
-    private lateinit var storageService: StorageService
+    private lateinit var storageManager: StorageManager
     private lateinit var dependencies: ManagerDependencies
     private lateinit var ioDependencies: IODependencies
     private lateinit var propertyService: PropertyService
@@ -47,7 +46,7 @@ class TimeCardManagerTest : CoroutineTest() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         timeCardService = mockk()
         timeCardCache = mockk()
-        storageService = mockk()
+        storageManager = mockk()
         propertyService = mockk()
 
         dependencies = mockk(relaxed = true)
@@ -58,7 +57,7 @@ class TimeCardManagerTest : CoroutineTest() {
         manager = TimeCardManager(
             timeCardService,
             timeCardCache,
-            storageService,
+            storageManager,
             dependencies,
             ioDependencies,
         )

@@ -4,9 +4,12 @@ import app.cash.turbine.test
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.FileManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
+import com.cramsan.edifikana.client.lib.managers.StorageManager
 import com.cramsan.edifikana.client.lib.models.PropertyModel
-import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.edifikana.client.lib.utils.IODependencies
+import com.cramsan.edifikana.client.ui.components.ImageOptionUIModel
+import com.cramsan.edifikana.client.ui.components.ImageSource
+import com.cramsan.edifikana.client.ui.resources.PropertyIcons
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.core.CoreUri
@@ -42,7 +45,7 @@ class AddPropertyViewModelTest : CoroutineTest() {
 
     private lateinit var viewModel: AddPropertyViewModel
     private lateinit var propertyManager: PropertyManager
-    private lateinit var storageService: StorageService
+    private lateinit var storageManager: StorageManager
     private lateinit var fileManager: FileManager
     private lateinit var ioDependencies: IODependencies
     private lateinit var stringProvider: StringProvider
@@ -57,7 +60,7 @@ class AddPropertyViewModelTest : CoroutineTest() {
         windowEventBus = EventBus()
         exceptionHandler = CollectorCoroutineExceptionHandler()
         propertyManager = mockk(relaxed = true)
-        storageService = mockk(relaxed = true)
+        storageManager = mockk(relaxed = true)
         fileManager = mockk(relaxed = true)
         ioDependencies = mockk(relaxed = true)
         stringProvider = mockk(relaxed = true)
@@ -70,7 +73,7 @@ class AddPropertyViewModelTest : CoroutineTest() {
                 applicationEventReceiver = applicationEventReceiver,
             ),
             propertyManager = propertyManager,
-            storageService = storageService,
+            storageManager = storageManager,
             fileManager = fileManager,
             ioDependencies = ioDependencies,
             stringProvider = stringProvider,
@@ -108,6 +111,11 @@ class AddPropertyViewModelTest : CoroutineTest() {
         val address = "123 Test Street"
         val organizationId = OrganizationId("org_id_1")
         val imageUrl = "drawable:S_DEPA"
+        val selectedIcon = ImageOptionUIModel(
+            id = "S_DEPA",
+            displayName = "Departamento",
+            imageSource = ImageSource.Drawable(PropertyIcons.S_DEPA)
+        )
         val newProperty = PropertyModel(
             id = PropertyId("test-id"),
             name = propertyName,
@@ -134,7 +142,7 @@ class AddPropertyViewModelTest : CoroutineTest() {
 
         // Act
         viewModel.initialize(organizationId)
-        viewModel.addProperty(propertyName, address, imageUrl, selectedImageUri = null)
+        viewModel.addProperty(propertyName, address, selectedIcon)
         verificationJob.join()
 
         // Assert
@@ -152,17 +160,98 @@ class AddPropertyViewModelTest : CoroutineTest() {
         val address = "123 Test Street"
         val organizationId = OrganizationId("org_id_1")
         val imageUrl = "drawable:S_DEPA"
+        val selectedIcon = ImageOptionUIModel(
+            id = "S_DEPA",
+            displayName = "Departamento",
+            imageSource = ImageSource.Drawable(PropertyIcons.S_DEPA)
+        )
         coEvery {
             propertyManager.addProperty(propertyName, address, organizationId, imageUrl)
         } returns Result.failure(Exception("Error"))
 
         // Act
         viewModel.initialize(organizationId)
-        viewModel.addProperty(propertyName, address, imageUrl, selectedImageUri = null)
+        viewModel.addProperty(propertyName, address, selectedIcon)
 
         // Assert
         assertEquals(1, exceptionHandler.exceptions.size)
         assertEquals(false, viewModel.uiState.value.isLoading)
+    }
+
+    /**
+     * Test that addProperty extracts custom local file URI correctly.
+     */
+    @Test
+    fun `test addProperty with custom local file extracts URI`() = runCoroutineTest {
+        // Arrange
+        val propertyName = "Test Property"
+        val address = "123 Test Street"
+        val organizationId = OrganizationId("org_id_1")
+        val imageUri = CoreUri("file:///test/image.jpg")
+        val propertyId = PropertyId("test-property-id")
+        val selectedIcon = ImageOptionUIModel(
+            id = "custom_local",
+            displayName = "Custom Image",
+            imageSource = ImageSource.LocalFile(imageUri, "image.jpg")
+        )
+
+        val newProperty = PropertyModel(
+            id = propertyId,
+            name = propertyName,
+            address = address,
+            organizationId = organizationId,
+            imageUrl = null,
+        )
+
+        // Mock property creation and storage upload
+        coEvery { propertyManager.addProperty(propertyName, address, organizationId, null) }
+            .returns(Result.success(newProperty))
+        every { fileManager.getFilename(imageUri) } returns "image.jpg"
+
+        val expectedStorageRef = "private/properties/${propertyId}_image.jpg"
+        coEvery { storageManager.uploadImage(imageUri, expectedStorageRef) }
+            .returns(Result.success(expectedStorageRef))
+        coEvery {
+            propertyManager.updateProperty(propertyId, propertyName, address, "storage:$expectedStorageRef")
+        } returns Result.success(newProperty.copy(imageUrl = "storage:$expectedStorageRef"))
+
+        // Act
+        viewModel.initialize(organizationId)
+        viewModel.addProperty(propertyName, address, selectedIcon)
+
+        // Assert - verify upload was attempted with extracted URI
+        coVerify(exactly = 1) { storageManager.uploadImage(imageUri, expectedStorageRef) }
+        coVerify(exactly = 1) { propertyManager.addProperty(propertyName, address, organizationId, null) }
+        coVerify(exactly = 1) {
+            propertyManager.updateProperty(propertyId, propertyName, address, "storage:$expectedStorageRef")
+        }
+    }
+
+    /**
+     * Test that addProperty with null icon uses null imageUrl.
+     */
+    @Test
+    fun `test addProperty with null icon uses null imageUrl`() = runCoroutineTest {
+        // Arrange
+        val propertyName = "Test Property"
+        val address = "123 Test Street"
+        val organizationId = OrganizationId("org_id_1")
+        val newProperty = PropertyModel(
+            id = PropertyId("test-id"),
+            name = propertyName,
+            address = address,
+            organizationId = organizationId,
+            imageUrl = null,
+        )
+        coEvery { propertyManager.addProperty(propertyName, address, organizationId, null) }
+            .returns(Result.success(newProperty))
+
+        // Act
+        viewModel.initialize(organizationId)
+        viewModel.addProperty(propertyName, address, selectedIcon = null)
+
+        // Assert - verify imageUrl is null
+        coVerify { propertyManager.addProperty(propertyName, address, organizationId, null) }
     }
 
     /**
@@ -227,11 +316,9 @@ class AddPropertyViewModelTest : CoroutineTest() {
         } returns Result.success(newProperty)
 
         every { fileManager.getFilename(imageUri) } returns "test.jpg"
-        coEvery { fileManager.readFileBytes(imageUri) } returns Result.success(byteArrayOf(1, 2, 3))
-        coEvery { fileManager.processImage(any()) } returns Result.success(byteArrayOf(1, 2, 3))
 
         coEvery {
-            storageService.uploadFile(any(), expectedStorageRef)
+            storageManager.uploadImage(imageUri, expectedStorageRef)
         } returns Result.success(expectedStorageRef)
 
         coEvery {
@@ -253,7 +340,12 @@ class AddPropertyViewModelTest : CoroutineTest() {
 
         // Act
         viewModel.initialize(organizationId)
-        viewModel.addProperty(propertyName, address, imageUrl = null, selectedImageUri = imageUri)
+        val selectedIcon = ImageOptionUIModel(
+            id = "custom_local",
+            displayName = "Custom Image",
+            imageSource = ImageSource.LocalFile(imageUri, "test.jpg")
+        )
+        viewModel.addProperty(propertyName, address, selectedIcon)
         verificationJob.join()
 
         // Assert
@@ -261,7 +353,7 @@ class AddPropertyViewModelTest : CoroutineTest() {
             propertyManager.addProperty(propertyName, address, organizationId, null)
         }
         coVerify(exactly = 1) {
-            storageService.uploadFile(any(), expectedStorageRef)
+            storageManager.uploadImage(imageUri, expectedStorageRef)
         }
         coVerify(exactly = 1) {
             propertyManager.updateProperty(
@@ -300,11 +392,9 @@ class AddPropertyViewModelTest : CoroutineTest() {
         } returns Result.success(newProperty)
 
         every { fileManager.getFilename(imageUri) } returns "test.jpg"
-        coEvery { fileManager.readFileBytes(imageUri) } returns Result.success(byteArrayOf(1, 2, 3))
-        coEvery { fileManager.processImage(any()) } returns Result.success(byteArrayOf(1, 2, 3))
 
         coEvery {
-            storageService.uploadFile(any(), any())
+            storageManager.uploadImage(any(), any())
         } returns Result.failure(ClientRequestExceptions.InvalidRequestException("Upload failed"))
 
         val verificationJob = launch {
@@ -317,7 +407,12 @@ class AddPropertyViewModelTest : CoroutineTest() {
 
         // Act
         viewModel.initialize(organizationId)
-        viewModel.addProperty(propertyName, address, imageUrl = null, selectedImageUri = imageUri)
+        val selectedIcon = ImageOptionUIModel(
+            id = "custom_local",
+            displayName = "Custom Image",
+            imageSource = ImageSource.LocalFile(imageUri, "test.jpg")
+        )
+        viewModel.addProperty(propertyName, address, selectedIcon)
         verificationJob.join()
 
         // Assert
@@ -355,11 +450,9 @@ class AddPropertyViewModelTest : CoroutineTest() {
         } returns Result.success(newProperty)
 
         every { fileManager.getFilename(imageUri) } returns "test.jpg"
-        coEvery { fileManager.readFileBytes(imageUri) } returns Result.success(byteArrayOf(1, 2, 3))
-        coEvery { fileManager.processImage(any()) } returns Result.success(byteArrayOf(1, 2, 3))
 
         coEvery {
-            storageService.uploadFile(any(), any())
+            storageManager.uploadImage(any(), any())
         } returns Result.success(storageRef)
 
         coEvery {
@@ -376,7 +469,12 @@ class AddPropertyViewModelTest : CoroutineTest() {
 
         // Act
         viewModel.initialize(organizationId)
-        viewModel.addProperty(propertyName, address, imageUrl = null, selectedImageUri = imageUri)
+        val selectedIcon = ImageOptionUIModel(
+            id = "custom_local",
+            displayName = "Custom Image",
+            imageSource = ImageSource.LocalFile(imageUri, "test.jpg")
+        )
+        viewModel.addProperty(propertyName, address, selectedIcon)
         verificationJob.join()
 
         // Assert
@@ -384,7 +482,7 @@ class AddPropertyViewModelTest : CoroutineTest() {
             propertyManager.addProperty(propertyName, address, organizationId, null)
         }
         coVerify(exactly = 1) {
-            storageService.uploadFile(any(), any())
+            storageManager.uploadImage(any(), any())
         }
         coVerify(exactly = 1) {
             propertyManager.updateProperty(any(), any(), any(), any())

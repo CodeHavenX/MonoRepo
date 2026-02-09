@@ -1,9 +1,10 @@
 package com.cramsan.edifikana.client.lib.features.home.addproperty
 
+import com.cramsan.edifikana.client.lib.features.home.shared.PropertyIconOptions
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.FileManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
-import com.cramsan.edifikana.client.lib.service.StorageService
+import com.cramsan.edifikana.client.lib.managers.StorageManager
 import com.cramsan.edifikana.client.lib.utils.FileValidationUtils
 import com.cramsan.edifikana.client.lib.utils.IODependencies
 import com.cramsan.edifikana.client.ui.components.ImageOptionUIModel
@@ -26,7 +27,7 @@ import kotlinx.coroutines.launch
 class AddPropertyViewModel(
     dependencies: ViewModelDependencies,
     private val propertyManager: PropertyManager,
-    private val storageService: StorageService,
+    private val storageManager: StorageManager,
     private val fileManager: FileManager,
     private val ioDependencies: IODependencies,
     private val stringProvider: StringProvider,
@@ -56,21 +57,35 @@ class AddPropertyViewModel(
 
     /**
      * Add a new property.
-     * If selectedImageUri is provided, creates property first, uploads image with propertyID, then updates property.
+     * If selectedIcon is a custom local file, creates property first, uploads image with propertyID, then updates property.
      *
      * @param propertyName Name of the property
      * @param address Address of the property
-     * @param imageUrl Pre-defined image URL (e.g., "drawable:CASA" for default icons)
-     * @param selectedImageUri Local file URI for custom image upload
+     * @param selectedIcon The selected icon (default icon or custom upload)
      */
     fun addProperty(
         propertyName: String,
         address: String,
-        imageUrl: String? = null,
-        selectedImageUri: CoreUri? = null
+        selectedIcon: ImageOptionUIModel?
     ) {
         viewModelScope.launch {
             val organizationId = requireNotNull(uiState.value.orgId)
+
+            // Extract URI if user selected a custom local file
+            val selectedImageUri = if (selectedIcon?.id == "custom_local" &&
+                selectedIcon.imageSource is ImageSource.LocalFile
+            ) {
+                (selectedIcon.imageSource as ImageSource.LocalFile).uri
+            } else {
+                null
+            }
+
+            // For non-custom images, use the converted imageUrl
+            val imageUrl = if (selectedImageUri == null) {
+                PropertyIconOptions.toImageUrl(selectedIcon)
+            } else {
+                null
+            }
 
             // Set loading states - isUploading only if we have a custom image
             updateUiState {
@@ -149,64 +164,11 @@ class AddPropertyViewModel(
             return
         }
 
-        // Step 3: Read and process image bytes
-        val processedBytes = prepareImageForUpload(selectedImageUri).getOrElse { error ->
-            logE(TAG, "Failed to prepare image: ${error.message}", error)
-            val message = "Unable to process image. Property created but image not uploaded."
-            updateUiState { it.copy(isLoading = false, isUploading = false, uploadError = message) }
-            emitWindowEvent(EdifikanaWindowsEvent.ShowSnackbar(message))
-            emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
-            return
-        }
-
-        // Step 4: Upload image and link to property
-        uploadAndLinkImage(propertyId, propertyName, address, processedBytes, originalFilename, newProperty)
-    }
-
-    /**
-     * Read and process image bytes for upload.
-     * Handles reading bytes from URI and processing (EXIF rotation + compression on Android).
-     *
-     * @param uri The image URI to read
-     * @return Result containing processed bytes, or error if read/process failed
-     */
-    private suspend fun prepareImageForUpload(uri: CoreUri): Result<ByteArray> {
-        // Read bytes from URI
-        val bytes = fileManager.readFileBytes(uri).getOrElse { error ->
-            return Result.failure(Exception("Failed to read file bytes", error))
-        }
-
-        // Process image data (EXIF rotation + compression on Android, raw data on JVM)
-        val processedBytes = fileManager.processImage(bytes).getOrElse { error ->
-            return Result.failure(Exception("Failed to process image", error))
-        }
-
-        return Result.success(processedBytes)
-    }
-
-    /**
-     * Upload image to storage and link to property.
-     * Handles the complete upload → update property flow with all error cases.
-     *
-     * @param propertyId The property to link the image to
-     * @param propertyName The property name (for success message)
-     * @param address The property address
-     * @param processedBytes The processed image bytes to upload
-     * @param originalFilename The original filename (for storage reference)
-     * @param newProperty The newly created property model
-     */
-    private suspend fun uploadAndLinkImage(
-        propertyId: com.cramsan.edifikana.lib.model.PropertyId,
-        propertyName: String,
-        address: String,
-        processedBytes: ByteArray,
-        originalFilename: String,
-        newProperty: com.cramsan.edifikana.client.lib.models.PropertyModel
-    ) {
+        // Step 3: Upload image using StorageManager
         val targetRef = "private/properties/${propertyId}_${originalFilename}"
-        logI(TAG, "Uploading image to properties folder, size: ${processedBytes.size} bytes")
+        logI(TAG, "Uploading image to properties folder")
 
-        storageService.uploadFile(processedBytes, targetRef).onSuccess { storageRef ->
+        storageManager.uploadImage(selectedImageUri, targetRef).onSuccess { storageRef ->
             logI(TAG, "Upload successful!")
 
             // Update property with storage reference
@@ -275,6 +237,7 @@ class AddPropertyViewModel(
         viewModelScope.launch {
             // Validate file size first
             FileValidationUtils.validateFileSize(uri, ioDependencies).onFailure { error ->
+                logE(TAG, "Failed to validate image size: ${error.message}", error)
                 val message = "File size must be less than 10MB"
                 updateUiState { it.copy(uploadError = message, selectedIcon = null) }
                 emitWindowEvent(EdifikanaWindowsEvent.ShowSnackbar(message))
@@ -283,6 +246,7 @@ class AddPropertyViewModel(
 
             // Validate file type
             FileValidationUtils.validateFileType(uri, ioDependencies, imagesOnly = true).onFailure { error ->
+                logE(TAG, "File type validation failed: $error")
                 val message = "Please select a valid image file (JPG, PNG, GIF, or WebP)"
                 updateUiState { it.copy(uploadError = message, selectedIcon = null) }
                 emitWindowEvent(EdifikanaWindowsEvent.ShowSnackbar(message))

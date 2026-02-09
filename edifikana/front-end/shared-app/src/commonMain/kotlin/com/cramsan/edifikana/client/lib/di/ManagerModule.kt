@@ -7,6 +7,7 @@ import com.cramsan.edifikana.client.lib.managers.EventLogManager
 import com.cramsan.edifikana.client.lib.managers.NotificationManager
 import com.cramsan.edifikana.client.lib.managers.OrganizationManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
+import com.cramsan.edifikana.client.lib.managers.StorageManager
 import com.cramsan.edifikana.client.lib.managers.TimeCardManager
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
@@ -19,5 +20,6 @@ internal val ManagerModule = module {
     singleOf(::PropertyManager)
     singleOf(::PreferencesManager)
     singleOf(::OrganizationManager)
+    singleOf(::StorageManager)
     singleOf(::NotificationManager)
 }

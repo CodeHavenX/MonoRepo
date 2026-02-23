@@ -1,15 +1,18 @@
 #!/bin/bash
 set -e
 
-export BUILDKIT_PROGRESS=plain
-export BUILDX_EXPERIMENTAL=1
+REGISTRY="ghcr.io/codehavenx"
+PLATFORMS="linux/amd64,linux/arm64"
+CONF="$(dirname "$0")/deploy_images.conf"
 
-docker buildx build --progress=plain --platform linux/amd64,linux/arm64 -t ghcr.io/codehavenx/edifikana-backend:latest edifikana/back-end/ --push
+while IFS=' ' read -r image_name build_context || [[ -n "$image_name" ]]; do
+  # Skip blank lines and comments
+  [[ -z "$image_name" || "$image_name" == \#* ]] && continue
 
-docker buildx build --progress=plain --platform linux/amd64,linux/arm64 -t ghcr.io/codehavenx/edifikana-frontend:latest edifikana/front-end/app-wasm --push
-
-docker buildx build --progress=plain --platform linux/amd64,linux/arm64 -t ghcr.io/codehavenx/runasimi-frontend:latest runasimi/front-end/app-wasm --push
-
-docker buildx build --progress=plain --platform linux/amd64,linux/arm64 -t ghcr.io/codehavenx/samples-ktor-service:latest samples/service-ktor --push
-
-docker buildx build --progress=plain --platform linux/amd64,linux/arm64 -t ghcr.io/codehavenx/samples-wasm-frontend:latest samples/jbcompose-wasm-app --push
+  docker buildx build \
+    --progress=plain \
+    --platform "$PLATFORMS" \
+    -t "${REGISTRY}/${image_name}:latest" \
+    "$build_context" \
+    --push
+done < "$CONF"

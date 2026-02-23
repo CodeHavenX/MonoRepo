@@ -73,14 +73,3 @@ jobs:
       run: |
         ./scripts/deploy_images.sh
 
-  notify:
-    runs-on: ubuntu-latest
-    needs: push-containers
-    environment: "Coolify"
-    steps:
-    - name: Invoke deployment hook
-      uses: distributhor/workflow-webhook@v3
-      with:
-        webhook_url: ${{ vars.WEBHOOK_URL }}
-        webhook_auth_type: "bearer"
-        webhook_auth: ${{ secrets.WEBHOOK_AUTH }}

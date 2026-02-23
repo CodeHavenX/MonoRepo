@@ -7,6 +7,7 @@ plugins {
 }
 
 val mainClassTarget by extra("io.ktor.server.netty.EngineMain")
+val jarNameTarget by extra("runasimi-back-end.jar")
 
 // Configures default settings for JVM/Ktor project
 apply(from = "$rootDir/gradle/kotlin-jvm-target-ktor.gradle")

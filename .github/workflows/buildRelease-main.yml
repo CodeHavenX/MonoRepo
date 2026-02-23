@@ -39,9 +39,9 @@ jobs:
       with:
         # List of files to include in the release
         files: |
-          edifikana/back-end/build/libs/back-end-all.jar
+          edifikana/back-end/build/libs/edifikana-back-end.jar
           edifikana/front-end/app-wasm/build/dist/wasmJs/EdifikanaWasmApp.zip
-          samples/service-ktor/build/libs/service-ktor-all.jar
+          samples/service-ktor/build/libs/sample-service-ktor.jar
           samples/jbcompose-wasm-app/build/dist/wasmJs/SamplesWasmApp.zip
           runasimi/front-end/app-wasm/build/dist/wasmJs/RunasimiWasmApp.zip
     - name: Unlock mac keychain

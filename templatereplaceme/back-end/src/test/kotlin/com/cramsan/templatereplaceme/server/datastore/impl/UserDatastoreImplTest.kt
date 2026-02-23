@@ -30,8 +30,8 @@ class UserDatastoreImplTest : CoroutineTest() {
         assertTrue(user.isSuccess)
         val createdUser = user.getOrNull()
         assertNotNull(createdUser)
-        assertEquals("John", createdUser?.firstName)
-        assertEquals("Doe", createdUser?.lastName)
-        assertNotNull(createdUser?.id)
+        assertEquals("John", createdUser.firstName)
+        assertEquals("Doe", createdUser.lastName)
+        assertNotNull(createdUser.id)
     }
 }

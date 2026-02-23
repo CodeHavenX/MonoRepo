@@ -5,6 +5,7 @@ plugins {
 }
 
 val mainClassTarget by extra("io.ktor.server.netty.EngineMain")
+val jarNameTarget by extra("sample-service-ktor.jar")
 
 // Configures default settings for the JVM/Ktor project
 apply(from = "$rootDir/gradle/kotlin-jvm-target-ktor.gradle")

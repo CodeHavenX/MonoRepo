@@ -6,8 +6,29 @@
 apply from: "$rootDir/gradle/kotlin-jvm-target-lib.gradle" // Inherit the main configuration settings from the kotlin-jvm-lib plugin
 apply plugin: "application" // Enable this application to run as an application.
 
+
+if (!project.hasProperty('jarNameTarget') || jarNameTarget == null || jarNameTarget.toString().isBlank()) {
+    throw new GradleException(
+        "Missing required property 'jarNameTarget' in project '${project.name}'.\n" +
+        "Please define it in your module's build.gradle file:\n\n" +
+        "    ext.jarNameTarget = \"my-app.jar\"\n" +
+        "For a build.gradle.kts file, use:\n\n" +
+        "    val jarNameTarget by extra(\"my-app.jar\")\n"
+    )
+}
+
+if (!project.hasProperty('mainClassTarget') || mainClassTarget == null || mainClassTarget.toString().isBlank()) {
+    throw new GradleException(
+        "Missing required property 'mainClassTarget' in project '${project.name}'.\n" +
+        "Please define it in your module's build.gradle file:\n\n" +
+        "    ext.mainClassTarget = \"com.example.MainKt\"\n" +
+        "For a build.gradle.kts file, use:\n\n" +
+        "    val mainClassTarget by extra(\"com.example.MainKt\")\n"
+    )
+}
 // Export as a jar with the referenced main class to execute
 jar {
+    archiveFileName.set(jarNameTarget) // Set the name of the jar file to be produced.
     manifest {
         attributes(
             'Main-Class' : mainClassTarget

@@ -1,5 +1,5 @@
-edifikana/back-end/build/libs/edifikana-back-end.jar
+edifikana/back-end/build/libs/edifikana-back-end-all.jar
 edifikana/front-end/app-wasm/build/dist/wasmJs/
-samples/service-ktor/build/libs/sample-service-ktor.jar
+samples/service-ktor/build/libs/sample-service-ktor-all.jar
 samples/jbcompose-wasm-app/build/dist/wasmJs/
 runasimi/front-end/app-wasm/build/dist/wasmJs/

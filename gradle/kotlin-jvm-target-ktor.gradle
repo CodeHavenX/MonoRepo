@@ -8,6 +8,12 @@ apply plugin: "io.ktor.plugin"
 
 apply from: "$rootDir/gradle/kotlin-jvm-target-application.gradle"
 
+ktor {
+    fatJar {
+        archiveFileName.set("${jarNameTarget}-all.jar")
+    }
+}
+
 // To list the produced artifacts into the release page, add the path to your file
 // in the github actions workflow file at .github/workflows/buildRelease-main.yml
 releaseJvm.dependsOn("buildFatJar")

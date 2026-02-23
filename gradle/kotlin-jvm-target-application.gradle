@@ -11,9 +11,9 @@ if (!project.hasProperty('jarNameTarget') || jarNameTarget == null || jarNameTar
     throw new GradleException(
         "Missing required property 'jarNameTarget' in project '${project.name}'.\n" +
         "Please define it in your module's build.gradle file:\n\n" +
-        "    ext.jarNameTarget = \"my-app.jar\"\n" +
+        "    ext.jarNameTarget = \"my-app\"\n" +
         "For a build.gradle.kts file, use:\n\n" +
-        "    val jarNameTarget by extra(\"my-app.jar\")\n"
+        "    val jarNameTarget by extra(\"my-app\")\n"
     )
 }
 
@@ -28,7 +28,9 @@ if (!project.hasProperty('mainClassTarget') || mainClassTarget == null || mainCl
 }
 // Export as a jar with the referenced main class to execute
 jar {
-    archiveFileName.set(jarNameTarget) // Set the name of the jar file to be produced.
+    archiveBaseName.set(jarNameTarget)
+    archiveVersion.set("")
+    archiveClassifier.set("")
     manifest {
         attributes(
             'Main-Class' : mainClassTarget

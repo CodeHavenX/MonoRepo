@@ -3,8 +3,6 @@ package com.cramsan.edifikana.client.lib.features.home.propertydetail
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.managers.StorageManager
-import com.cramsan.edifikana.client.lib.service.FileService
-import com.cramsan.edifikana.client.lib.utils.IODependencies
 import com.cramsan.edifikana.client.ui.components.ImageSource
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.core.CoreUri

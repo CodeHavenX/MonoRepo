@@ -1,6 +1,5 @@
 package com.cramsan.edifikana.client.lib.managers
 
-import com.cramsan.edifikana.client.lib.models.Organization
 import com.cramsan.edifikana.client.lib.models.PropertyModel
 import com.cramsan.edifikana.client.lib.service.FileService
 import com.cramsan.edifikana.client.lib.service.OrganizationService
@@ -17,7 +16,6 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

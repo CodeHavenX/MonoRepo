@@ -2,6 +2,7 @@ package com.cramsan.edifikana.client.lib.managers
 
 import com.cramsan.edifikana.client.lib.models.Organization
 import com.cramsan.edifikana.client.lib.models.PropertyModel
+import com.cramsan.edifikana.client.lib.service.FileService
 import com.cramsan.edifikana.client.lib.service.OrganizationService
 import com.cramsan.edifikana.client.lib.service.PropertyService
 import com.cramsan.edifikana.lib.model.OrganizationId
@@ -27,6 +28,8 @@ import kotlin.test.assertTrue
  */
 class PropertyManagerTest : CoroutineTest() {
     private lateinit var propertyService: PropertyService
+    private lateinit var storageManager: StorageManager
+    private lateinit var fileService: FileService
     private lateinit var dependencies: ManagerDependencies
     private lateinit var manager: PropertyManager
     private lateinit var organizationService: OrganizationService
@@ -38,13 +41,15 @@ class PropertyManagerTest : CoroutineTest() {
     fun setup() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         propertyService = mockk()
+        storageManager = mockk(relaxed = true)
+        fileService = mockk(relaxed = true)
         organizationService = mockk()
 
         dependencies = mockk(relaxed = true)
         every { dependencies.appScope } returns testCoroutineScope
         every { dependencies.dispatcherProvider } returns UnifiedDispatcherProvider(testCoroutineDispatcher)
 
-        manager = PropertyManager(propertyService, dependencies)
+        manager = PropertyManager(propertyService, storageManager, fileService, dependencies)
     }
 
     /**

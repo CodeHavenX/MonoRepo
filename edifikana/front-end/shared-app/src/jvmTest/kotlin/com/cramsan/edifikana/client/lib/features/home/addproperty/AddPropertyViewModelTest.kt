@@ -2,7 +2,7 @@ package com.cramsan.edifikana.client.lib.features.home.addproperty
 
 import app.cash.turbine.test
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
-import com.cramsan.edifikana.client.lib.managers.FileManager
+import com.cramsan.edifikana.client.lib.service.FileService
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.managers.StorageManager
 import com.cramsan.edifikana.client.lib.models.PropertyModel
@@ -34,7 +34,6 @@ import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -46,7 +45,7 @@ class AddPropertyViewModelTest : CoroutineTest() {
     private lateinit var viewModel: AddPropertyViewModel
     private lateinit var propertyManager: PropertyManager
     private lateinit var storageManager: StorageManager
-    private lateinit var fileManager: FileManager
+    private lateinit var fileService: FileService
     private lateinit var ioDependencies: IODependencies
     private lateinit var stringProvider: StringProvider
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
@@ -61,7 +60,7 @@ class AddPropertyViewModelTest : CoroutineTest() {
         exceptionHandler = CollectorCoroutineExceptionHandler()
         propertyManager = mockk(relaxed = true)
         storageManager = mockk(relaxed = true)
-        fileManager = mockk(relaxed = true)
+        fileService = mockk(relaxed = true)
         ioDependencies = mockk(relaxed = true)
         stringProvider = mockk(relaxed = true)
         viewModel = AddPropertyViewModel(
@@ -74,7 +73,7 @@ class AddPropertyViewModelTest : CoroutineTest() {
             ),
             propertyManager = propertyManager,
             storageManager = storageManager,
-            fileManager = fileManager,
+            fileService = fileService,
             ioDependencies = ioDependencies,
             stringProvider = stringProvider,
         )
@@ -206,7 +205,7 @@ class AddPropertyViewModelTest : CoroutineTest() {
         // Mock property creation and storage upload
         coEvery { propertyManager.addProperty(propertyName, address, organizationId, null) }
             .returns(Result.success(newProperty))
-        every { fileManager.getFilename(imageUri) } returns "image.jpg"
+        every { fileService.getFilename(imageUri) } returns "image.jpg"
 
         val expectedStorageRef = "private/properties/${propertyId}_image.jpg"
         coEvery { storageManager.uploadImage(imageUri, expectedStorageRef) }
@@ -315,7 +314,7 @@ class AddPropertyViewModelTest : CoroutineTest() {
             propertyManager.addProperty(propertyName, address, organizationId, null)
         } returns Result.success(newProperty)
 
-        every { fileManager.getFilename(imageUri) } returns "test.jpg"
+        every { fileService.getFilename(imageUri) } returns "test.jpg"
 
         coEvery {
             storageManager.uploadImage(imageUri, expectedStorageRef)
@@ -391,7 +390,7 @@ class AddPropertyViewModelTest : CoroutineTest() {
             propertyManager.addProperty(propertyName, address, organizationId, null)
         } returns Result.success(newProperty)
 
-        every { fileManager.getFilename(imageUri) } returns "test.jpg"
+        every { fileService.getFilename(imageUri) } returns "test.jpg"
 
         coEvery {
             storageManager.uploadImage(any(), any())
@@ -449,7 +448,7 @@ class AddPropertyViewModelTest : CoroutineTest() {
             propertyManager.addProperty(propertyName, address, organizationId, null)
         } returns Result.success(newProperty)
 
-        every { fileManager.getFilename(imageUri) } returns "test.jpg"
+        every { fileService.getFilename(imageUri) } returns "test.jpg"
 
         coEvery {
             storageManager.uploadImage(any(), any())

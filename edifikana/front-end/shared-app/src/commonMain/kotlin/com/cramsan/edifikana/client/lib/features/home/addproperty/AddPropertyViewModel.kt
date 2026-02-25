@@ -2,7 +2,7 @@ package com.cramsan.edifikana.client.lib.features.home.addproperty
 
 import com.cramsan.edifikana.client.lib.features.home.shared.PropertyIconOptions
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
-import com.cramsan.edifikana.client.lib.managers.FileManager
+import com.cramsan.edifikana.client.lib.service.FileService
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.managers.StorageManager
 import com.cramsan.edifikana.client.lib.utils.FileValidationUtils
@@ -28,7 +28,7 @@ class AddPropertyViewModel(
     dependencies: ViewModelDependencies,
     private val propertyManager: PropertyManager,
     private val storageManager: StorageManager,
-    private val fileManager: FileManager,
+    private val fileService: FileService,
     private val ioDependencies: IODependencies,
     private val stringProvider: StringProvider,
 ) : BaseViewModel<AddPropertyEvent, AddPropertyUIState>(
@@ -132,6 +132,7 @@ class AddPropertyViewModel(
     /**
      * Add property with custom image upload.
      * Flow: Create property → Upload image with propertyID → Update property with storage ref.
+     * TODO: Refactor further down stack with @Cramsan
      */
     private suspend fun handleAddPropertyWithCustomImage(
         propertyName: String,
@@ -154,7 +155,7 @@ class AddPropertyViewModel(
 
         // Step 2: Get filename and prepare for upload
         val originalFilename = try {
-            fileManager.getFilename(selectedImageUri)
+            fileService.getFilename(selectedImageUri)
         } catch (e: Exception) {
             logE(TAG, "Failed to get filename", e)
             val message = "Unable to read file. Property created but image not uploaded."
@@ -255,7 +256,7 @@ class AddPropertyViewModel(
 
             // Get filename for preview
             val filename = try {
-                fileManager.getFilename(uri)
+                fileService.getFilename(uri)
             } catch (e: Exception) {
                 logE(TAG, "Failed to get filename", e)
                 val message = "Unable to read file. Please try again."

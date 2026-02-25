@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.client.lib.managers
 
+import com.cramsan.edifikana.client.lib.service.FileService
 import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.ManagerDependencies
@@ -14,7 +15,7 @@ import com.cramsan.framework.logging.logI
  */
 class StorageManager(
     private val storageService: StorageService,
-    private val fileManager: FileManager,
+    private val fileService: FileService,
     private val dependencies: ManagerDependencies,
 ) {
     /**
@@ -52,11 +53,11 @@ class StorageManager(
         logI(TAG, "uploadImage: uri=$uri, targetRef=$targetRef")
 
         // Read bytes from URI
-        val bytes = fileManager.readFileBytes(uri).getOrThrow()
+        val bytes = fileService.readFileBytes(uri).getOrThrow()
         logI(TAG, "Read ${bytes.size} bytes from file")
 
         // Process image (EXIF rotation + compression on Android, raw on JVM)
-        val processedBytes = fileManager.processImage(bytes).getOrThrow()
+        val processedBytes = fileService.processImage(bytes).getOrThrow()
         logI(TAG, "Processed image, final size: ${processedBytes.size} bytes")
 
         // Upload to storage

@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.di
 
-import com.cramsan.edifikana.client.lib.managers.FileManager
-import com.cramsan.edifikana.client.lib.managers.FileManagerImpl
+import com.cramsan.edifikana.client.lib.service.FileService
+import com.cramsan.edifikana.client.lib.service.FileServiceImpl
 import com.cramsan.edifikana.client.lib.service.DownloadStrategy
 import com.cramsan.edifikana.client.lib.service.JvmDownloadStrategy
 import com.cramsan.edifikana.client.lib.utils.IODependencies
@@ -16,7 +16,7 @@ internal actual val ManagerPlatformModule = module {
         JvmDownloadStrategy()
     }
 
-    single<FileManager> {
-        FileManagerImpl(get())
+    single<FileService> {
+        FileServiceImpl(get())
     }
 }

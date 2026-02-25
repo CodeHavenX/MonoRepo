@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.client.lib.managers
+package com.cramsan.edifikana.client.lib.service
 
 import com.cramsan.edifikana.client.lib.utils.IODependencies
 import com.cramsan.edifikana.client.lib.utils.getFilename
@@ -15,9 +15,9 @@ import com.cramsan.framework.core.CoreUri
  * - Returns raw image data without processing (JVM limitation documented in CorutilesUtils)
  * - Extracts filenames from file:// URIs
  */
-class FileManagerImpl(
+class FileServiceImpl(
     private val ioDependencies: IODependencies
-) : FileManager {
+) : FileService {
 
     override suspend fun readFileBytes(uri: CoreUri): Result<ByteArray> {
         return readBytes(uri, ioDependencies)

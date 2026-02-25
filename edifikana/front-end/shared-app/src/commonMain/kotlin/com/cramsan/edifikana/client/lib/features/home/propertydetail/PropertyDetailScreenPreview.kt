@@ -28,6 +28,7 @@ private fun PropertyDetailScreenPreview() = AppTheme {
         onNameChanged = {},
         onAddressChanged = {},
         onImageUrlChanged = {},
+        onTriggerPhotoPicker = {},
     )
 }
 
@@ -54,5 +55,6 @@ private fun PropertyDetailScreenEditModePreview() = AppTheme {
         onNameChanged = {},
         onAddressChanged = {},
         onImageUrlChanged = {},
+        onTriggerPhotoPicker = {},
     )
 }

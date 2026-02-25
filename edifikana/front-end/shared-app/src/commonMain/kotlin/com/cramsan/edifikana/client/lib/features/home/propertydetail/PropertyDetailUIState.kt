@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.home.propertydetail
 
+import com.cramsan.edifikana.client.ui.components.ImageOptionUIModel
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.core.compose.ViewModelUIState
 
@@ -16,6 +17,9 @@ data class PropertyDetailUIState(
     val address: String,
     val imageUrl: String?,
     val isEditMode: Boolean,
+    val selectedIcon: ImageOptionUIModel? = null,
+    val isUploading: Boolean = false,
+    val uploadError: String? = null,
 ) : ViewModelUIState {
     companion object {
         val Initial = PropertyDetailUIState(
@@ -25,6 +29,9 @@ data class PropertyDetailUIState(
             address = "",
             imageUrl = null,
             isEditMode = false,
+            selectedIcon = null,
+            isUploading = false,
+            uploadError = null,
         )
     }
 }

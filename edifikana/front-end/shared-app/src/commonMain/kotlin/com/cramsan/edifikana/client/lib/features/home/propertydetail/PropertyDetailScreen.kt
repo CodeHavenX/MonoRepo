@@ -25,14 +25,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import com.cramsan.architecture.client.di.koinEventEmitter
 import com.cramsan.edifikana.client.lib.features.home.HomeDestination
 import com.cramsan.edifikana.client.lib.features.home.shared.PropertyIconOptions
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowDelegatedEvent
 import com.cramsan.edifikana.client.ui.components.EdifikanaImage
 import com.cramsan.edifikana.client.ui.components.EdifikanaImageSelector
 import com.cramsan.edifikana.client.ui.components.EdifikanaPrimaryButton
 import com.cramsan.edifikana.client.ui.components.EdifikanaSecondaryButton
 import com.cramsan.edifikana.client.ui.components.EdifikanaTextField
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
+import com.cramsan.framework.core.compose.EventEmitter
+import com.cramsan.framework.core.compose.ui.ObserveEventEmitterEvents
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
@@ -48,6 +52,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun PropertyDetailScreen(
     destination: HomeDestination.PropertyManagementDestination,
     viewModel: PropertyDetailViewModel = koinViewModel(),
+    eventEmitter: EventEmitter<EdifikanaWindowDelegatedEvent> = koinEventEmitter(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -64,6 +69,18 @@ fun PropertyDetailScreen(
         }
     }
 
+    ObserveEventEmitterEvents(eventEmitter) { event ->
+        when (event) {
+            is EdifikanaWindowDelegatedEvent.HandleReceivedImage -> {
+                viewModel.handleReceivedImages(listOf(event.uri))
+            }
+            is EdifikanaWindowDelegatedEvent.HandleReceivedImages -> {
+                viewModel.handleReceivedImages(event.uris)
+            }
+            else -> Unit
+        }
+    }
+
     // Render the screen
     PropertyDetailContent(
         uiState,
@@ -75,6 +92,7 @@ fun PropertyDetailScreen(
         onNameChanged = { viewModel.onNameChanged(it) },
         onAddressChanged = { viewModel.onAddressChanged(it) },
         onImageUrlChanged = { viewModel.onImageUrlChanged(it) },
+        onTriggerPhotoPicker = { viewModel.triggerPhotoPicker() },
     )
 }
 
@@ -93,6 +111,7 @@ internal fun PropertyDetailContent(
     onNameChanged: (String) -> Unit,
     onAddressChanged: (String) -> Unit,
     onImageUrlChanged: (String?) -> Unit,
+    onTriggerPhotoPicker: () -> Unit,
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
 
@@ -178,16 +197,36 @@ internal fun PropertyDetailContent(
                 // Property Icon Selector - Show in edit mode
                 if (content.isEditMode) {
                     Column(sectionModifier) {
+                        // Determine current selected icon:
+                        // 1. If custom image uploaded (selectedIcon from state), use that
+                        // 2. Otherwise, parse from imageUrl
+                        val currentIcon = content.selectedIcon
+                            ?: PropertyIconOptions.fromImageUrl(content.imageUrl)
+                            ?: PropertyIconOptions.getDefaultOptions().find { it.id == "S_DEPA" }
+
                         EdifikanaImageSelector(
                             label = "Property Icon",
-                            options = PropertyIconOptions.getDefaultOptions(),
-                            selectedOption = PropertyIconOptions.fromImageUrl(content.imageUrl)
-                                ?: PropertyIconOptions.getDefaultOptions().find { it.id == "S_DEPA" },
+                            options = PropertyIconOptions.getOptionsWithUpload(),
+                            selectedOption = currentIcon,
                             onOptionSelected = { option ->
-                                onImageUrlChanged(PropertyIconOptions.toImageUrl(option))
+                                if (option.id == "custom_upload") {
+                                    onTriggerPhotoPicker()
+                                } else {
+                                    onImageUrlChanged(PropertyIconOptions.toImageUrl(option))
+                                }
                             },
-                            placeholder = "Select a property icon",
+                            placeholder = if (content.isUploading) "Uploading..." else "Select a property icon",
                         )
+
+                        // Show upload error if any
+                        content.uploadError?.let { error ->
+                            Text(
+                                text = error,
+                                color = androidx.compose.material3.MaterialTheme.colorScheme.error,
+                                style = androidx.compose.material3.MaterialTheme.typography.bodySmall,
+                                modifier = Modifier.padding(top = 4.dp),
+                            )
+                        }
                     }
                 }
             },
@@ -196,6 +235,7 @@ internal fun PropertyDetailContent(
                     EdifikanaPrimaryButton(
                         text = "Save",
                         modifier = buttonModifier,
+                        enabled = !content.isUploading,
                         onClick = onSaveProperty,
                     )
                     EdifikanaSecondaryButton(
@@ -208,7 +248,7 @@ internal fun PropertyDetailContent(
                 null
             },
             overlay = {
-                LoadingAnimationOverlay(content.isLoading)
+                LoadingAnimationOverlay(content.isLoading || content.isUploading)
             }
         )
     }

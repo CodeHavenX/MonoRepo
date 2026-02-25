@@ -45,7 +45,6 @@ import com.cramsan.ui.components.themetoggle.SelectedTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
-import org.koin.compose.viewmodel.koinViewModel
 import kotlin.reflect.typeOf
 
 /**
@@ -54,7 +53,7 @@ import kotlin.reflect.typeOf
 @Composable
 fun EdifikanaWindowScreen(
     eventHandler: EdifikanaMainScreenEventHandler,
-    viewModel: EdifikanaWindowViewModel = koinViewModel(),
+    viewModel: EdifikanaWindowViewModel,
     applicationViewModel: EdifikanaApplicationViewModel = koinInject(),
     startDestination: EdifikanaNavGraphDestination = EdifikanaNavGraphDestination.SplashNavGraphDestination,
 ) {

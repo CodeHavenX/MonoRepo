@@ -2,7 +2,6 @@ package com.cramsan.edifikana.client.lib.managers
 
 import com.cramsan.edifikana.client.lib.db.TimeCardCache
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
-import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.edifikana.client.lib.service.TimeCardService
 import com.cramsan.edifikana.client.lib.utils.IODependencies
 import com.cramsan.edifikana.client.lib.utils.getFilename
@@ -28,7 +27,7 @@ import kotlinx.coroutines.sync.withLock
 class TimeCardManager(
     private val timeCardService: TimeCardService,
     private val timeCardCache: TimeCardCache,
-    private val storageService: StorageService,
+    private val storageManager: StorageManager,
     private val dependencies: ManagerDependencies,
     private val ioDependencies: IODependencies,
 ) {
@@ -97,9 +96,10 @@ class TimeCardManager(
 
                 val fileName = localImageUri.getFilename(ioDependencies)
 
-                storageService.uploadFile(
+                // Upload to private/time_cards/ folder per RLS policies
+                storageManager.uploadFile(
                     processedImage,
-                    fileName,
+                    "private/time_cards/$fileName",
                 ).getOrThrow()
             }
 

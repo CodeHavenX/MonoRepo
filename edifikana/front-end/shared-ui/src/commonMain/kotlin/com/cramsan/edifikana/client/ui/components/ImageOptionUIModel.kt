@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.client.ui.components
 
+import com.cramsan.framework.core.CoreUri
 import org.jetbrains.compose.resources.DrawableResource
 
 /**
@@ -44,4 +45,16 @@ sealed class ImageSource {
      * No image - used for "None" or default options.
      */
     data object None : ImageSource()
+
+    /**
+     * A local file selected by the user, pending upload.
+     * Contains the URI and filename for display and processing.
+     */
+    data class LocalFile(val uri: CoreUri, val filename: String) : ImageSource()
+
+    /**
+     * Upload placeholder - displays an upload icon to indicate the "Upload Custom Image" option.
+     * This is different from [None] which shows a default property icon.
+     */
+    data object UploadPlaceholder : ImageSource()
 }

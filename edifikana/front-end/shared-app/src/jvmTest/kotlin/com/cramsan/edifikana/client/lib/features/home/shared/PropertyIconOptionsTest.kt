@@ -1,11 +1,14 @@
 package com.cramsan.edifikana.client.lib.features.home.shared
 
+import com.cramsan.edifikana.client.ui.components.ImageOptionUIModel
 import com.cramsan.edifikana.client.ui.components.ImageSource
 import com.cramsan.edifikana.client.ui.resources.PropertyIcons
+import com.cramsan.framework.core.CoreUri
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 /**
  * Unit tests for PropertyIconOptions.
@@ -156,5 +159,82 @@ class PropertyIconOptionsTest {
         assertEquals("custom_url", convertedOption.id)
         assert(convertedOption.imageSource is ImageSource.Url)
         assertEquals(customUrl, (convertedOption.imageSource as ImageSource.Url).url)
+    }
+
+    @Test
+    fun `getOptionsWithUpload returns default options plus upload option`() {
+        // Act
+        val options = PropertyIconOptions.getOptionsWithUpload()
+
+        // Assert
+        assertEquals(6, options.size) // 5 defaults + 1 upload
+
+        val uploadOption = options.last()
+        assertEquals("custom_upload", uploadOption.id)
+        assertEquals("Upload Custom Image", uploadOption.displayName)
+        assertTrue(uploadOption.imageSource is ImageSource.UploadPlaceholder)
+    }
+
+    @Test
+    fun `toImageUrl extracts storage ref from custom_uploaded prefix`() {
+        // Arrange
+        val option = ImageOptionUIModel(
+            id = "custom_uploaded:private/properties/abc123_image.jpg",
+            displayName = "Custom Image",
+            imageSource = ImageSource.LocalFile(CoreUri("file:///test.jpg"), "test.jpg")
+        )
+
+        // Act
+        val result = PropertyIconOptions.toImageUrl(option)
+
+        // Assert
+        assertEquals("storage:private/properties/abc123_image.jpg", result)
+    }
+
+    @Test
+    fun `toImageUrl returns null for LocalFile without custom_uploaded prefix`() {
+        // Arrange
+        val option = ImageOptionUIModel(
+            id = "custom_local",
+            displayName = "Custom Image",
+            imageSource = ImageSource.LocalFile(CoreUri("file:///test.jpg"), "test.jpg")
+        )
+
+        // Act
+        val result = PropertyIconOptions.toImageUrl(option)
+
+        // Assert
+        assertNull(result)
+    }
+
+    @Test
+    fun `toImageUrl returns null for UploadPlaceholder`() {
+        // Arrange
+        val option = ImageOptionUIModel(
+            id = "custom_upload",
+            displayName = "Upload Custom Image",
+            imageSource = ImageSource.UploadPlaceholder
+        )
+
+        // Act
+        val result = PropertyIconOptions.toImageUrl(option)
+
+        // Assert
+        assertNull(result)
+    }
+
+    @Test
+    fun `fromImageUrl handles storage URL format`() {
+        // Act
+        val result = PropertyIconOptions.fromImageUrl("storage:private/properties/abc123_image.jpg")
+
+        // Assert
+        assertNotNull(result)
+        assertEquals("custom_url", result.id)
+        assertTrue(result.imageSource is ImageSource.Url)
+        assertEquals(
+            "storage:private/properties/abc123_image.jpg",
+            (result.imageSource as ImageSource.Url).url
+        )
     }
 }

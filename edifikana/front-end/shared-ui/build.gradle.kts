@@ -24,6 +24,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            implementation(project(":framework:core"))
             implementation(project(":framework:core-compose"))
             implementation(project(":ui-catalog"))
 

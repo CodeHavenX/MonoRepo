@@ -3,9 +3,12 @@ package com.cramsan.edifikana.client.ui.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CloudUpload
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -19,9 +22,11 @@ import org.jetbrains.compose.resources.painterResource
  * This component provides optimized image loading based on the source type:
  * - Drawable resources: Uses synchronous Image + painterResource (fast, efficient)
  * - URLs: Uses asynchronous AsyncImage with Coil (network loading)
+ * - LocalFile: Uses asynchronous AsyncImage with local file URI
  * - None/Placeholder: Shows S-Depa icon as default
+ * - UploadPlaceholder: Shows cloud upload icon for "Upload Custom Image" option
  *
- * @param imageSource The source of the image (Drawable, Url, None, or UploadPlaceholder)
+ * @param imageSource The source of the image (Drawable, Url, LocalFile, None, or UploadPlaceholder)
  * @param contentDescription Accessibility description for screen readers
  * @param modifier Modifier for the component
  * @param size Optional fixed size (applies both width and height)
@@ -57,6 +62,24 @@ fun EdifikanaImage(
             // Asynchronous loading for remote URLs
             AsyncImage(
                 model = imageSource.url,
+                contentDescription = contentDescription,
+                modifier = finalModifier,
+                contentScale = contentScale,
+            )
+        }
+        is ImageSource.LocalFile -> {
+            // Asynchronous loading for local file URIs (pending upload)
+            AsyncImage(
+                model = imageSource.uri.getUri(),
+                contentDescription = contentDescription,
+                modifier = finalModifier,
+                contentScale = contentScale,
+            )
+        }
+        is ImageSource.UploadPlaceholder -> {
+            // Upload icon for "Upload Custom Image" option
+            Image(
+                painter = rememberVectorPainter(Icons.Filled.CloudUpload),
                 contentDescription = contentDescription,
                 modifier = finalModifier,
                 contentScale = contentScale,

@@ -486,6 +486,115 @@ private fun EdifikanaImageSelectorPreview() {
 
 @Preview
 @Composable
+private fun EdifikanaImageSelectorWithUploadPreview() {
+    AppTheme {
+        var selectedOption by remember { mutableStateOf<ImageOptionUIModel?>(null) }
+
+        val optionsWithUpload = listOf(
+            ImageOptionUIModel(
+                id = "CASA",
+                displayName = "Casa",
+                imageSource = ImageSource.Drawable(PropertyIcons.CASA),
+            ),
+            ImageOptionUIModel(
+                id = "QUINTA",
+                displayName = "Quinta",
+                imageSource = ImageSource.Drawable(PropertyIcons.QUINTA),
+            ),
+            ImageOptionUIModel(
+                id = "L_DEPA",
+                displayName = "Large Department",
+                imageSource = ImageSource.Drawable(PropertyIcons.L_DEPA),
+            ),
+            ImageOptionUIModel(
+                id = "M_DEPA",
+                displayName = "Medium Department",
+                imageSource = ImageSource.Drawable(PropertyIcons.M_DEPA),
+            ),
+            ImageOptionUIModel(
+                id = "S_DEPA",
+                displayName = "Small Department",
+                imageSource = ImageSource.Drawable(PropertyIcons.S_DEPA),
+            ),
+            ImageOptionUIModel(
+                id = "custom_upload",
+                displayName = "Upload Custom Image",
+                imageSource = ImageSource.UploadPlaceholder,
+            ),
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Text("Image Selector with Upload Option", style = MaterialTheme.typography.headlineSmall)
+
+            EdifikanaImageSelector(
+                label = "Property Icon",
+                options = optionsWithUpload,
+                selectedOption = selectedOption,
+                onOptionSelected = { selectedOption = it },
+                placeholder = "Select a property icon",
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun EdifikanaImageSelectorWithCustomImagePreview() {
+    AppTheme {
+        val customImageOption = ImageOptionUIModel(
+            id = "custom_uploaded",
+            displayName = "Custom Image",
+            imageSource = ImageSource.Url("https://picsum.photos/200"),
+        )
+
+        var selectedOption by remember { mutableStateOf<ImageOptionUIModel?>(customImageOption) }
+
+        val optionsWithUpload = listOf(
+            ImageOptionUIModel(
+                id = "CASA",
+                displayName = "Casa",
+                imageSource = ImageSource.Drawable(PropertyIcons.CASA),
+            ),
+            ImageOptionUIModel(
+                id = "QUINTA",
+                displayName = "Quinta",
+                imageSource = ImageSource.Drawable(PropertyIcons.QUINTA),
+            ),
+            ImageOptionUIModel(
+                id = "custom_upload",
+                displayName = "Upload Custom Image",
+                imageSource = ImageSource.UploadPlaceholder,
+            ),
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Text("Image Selector with Uploaded Custom Image", style = MaterialTheme.typography.headlineSmall)
+
+            EdifikanaImageSelector(
+                label = "Property Icon",
+                options = optionsWithUpload,
+                selectedOption = selectedOption,
+                onOptionSelected = { selectedOption = it },
+                placeholder = "Select a property icon",
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
 private fun EdifikanaComponentsFullPreview() {
     AppTheme {
         Column(

@@ -9,7 +9,6 @@ import com.cramsan.edifikana.lib.utils.requireSuccess
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.getOrCatch
-import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logI
 
 /**

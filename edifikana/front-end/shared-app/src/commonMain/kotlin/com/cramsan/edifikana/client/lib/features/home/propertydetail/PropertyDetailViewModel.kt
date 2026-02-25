@@ -1,13 +1,10 @@
 package com.cramsan.edifikana.client.lib.features.home.propertydetail
 
-import com.cramsan.edifikana.client.lib.features.home.shared.PropertyIconOptions
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.managers.StorageManager
 import com.cramsan.edifikana.client.lib.service.FileService
-import com.cramsan.edifikana.client.lib.utils.FileValidationUtils
 import com.cramsan.edifikana.client.lib.utils.IODependencies
-import com.cramsan.edifikana.client.ui.components.ImageOptionUIModel
 import com.cramsan.edifikana.client.ui.components.ImageSource
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.core.CoreUri
@@ -28,8 +25,6 @@ class PropertyDetailViewModel(
     dependencies: ViewModelDependencies,
     private val propertyManager: PropertyManager,
     private val storageManager: StorageManager,
-    private val fileService: FileService,
-    private val ioDependencies: IODependencies,
     private val stringProvider: StringProvider,
 ) : BaseViewModel<PropertyDetailEvent, PropertyDetailUIState>(
     dependencies,

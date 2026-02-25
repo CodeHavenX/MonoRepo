@@ -2,11 +2,8 @@ package com.cramsan.edifikana.client.lib.features.home.addproperty
 
 import com.cramsan.edifikana.client.lib.features.home.shared.PropertyIconOptions
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
-import com.cramsan.edifikana.client.lib.service.FileService
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.managers.StorageManager
-import com.cramsan.edifikana.client.lib.utils.FileValidationUtils
-import com.cramsan.edifikana.client.lib.utils.IODependencies
 import com.cramsan.edifikana.client.ui.components.ImageOptionUIModel
 import com.cramsan.edifikana.client.ui.components.ImageSource
 import com.cramsan.edifikana.lib.model.OrganizationId
@@ -28,8 +25,6 @@ class AddPropertyViewModel(
     dependencies: ViewModelDependencies,
     private val propertyManager: PropertyManager,
     private val storageManager: StorageManager,
-    private val fileService: FileService,
-    private val ioDependencies: IODependencies,
     private val stringProvider: StringProvider,
 ) : BaseViewModel<AddPropertyEvent, AddPropertyUIState>(
     dependencies,
@@ -57,7 +52,7 @@ class AddPropertyViewModel(
 
     /**
      * Add a new property.
-     * If selectedIcon is a custom local file, creates property first, uploads image with propertyID, then updates property.
+     * Supports both default icons and custom image uploads.
      *
      * @param propertyName Name of the property
      * @param address Address of the property
@@ -72,7 +67,7 @@ class AddPropertyViewModel(
             val organizationId = requireNotNull(uiState.value.orgId)
 
             // Extract URI if user selected a custom local file
-            val selectedImageUri = if (selectedIcon?.id == "custom_local" &&
+            val imageUri = if (selectedIcon?.id == "custom_local" &&
                 selectedIcon.imageSource is ImageSource.LocalFile
             ) {
                 (selectedIcon.imageSource as ImageSource.LocalFile).uri
@@ -81,7 +76,7 @@ class AddPropertyViewModel(
             }
 
             // For non-custom images, use the converted imageUrl
-            val imageUrl = if (selectedImageUri == null) {
+            val imageUrl = if (imageUri == null) {
                 PropertyIconOptions.toImageUrl(selectedIcon)
             } else {
                 null
@@ -91,117 +86,28 @@ class AddPropertyViewModel(
             updateUiState {
                 it.copy(
                     isLoading = true,
-                    isUploading = selectedImageUri != null
+                    isUploading = imageUri != null
                 )
             }
 
-            // Check if user selected a custom image that needs upload
-            if (selectedImageUri != null) {
-                // Flow: Create property → Upload image with propertyID → Update property
-                handleAddPropertyWithCustomImage(propertyName, address, organizationId, selectedImageUri)
-            } else {
-                // Flow: Create property with imageUrl (default icon or no icon)
-                handleAddPropertyWithDefaultIcon(propertyName, address, organizationId, imageUrl)
-            }
-        }
-    }
-
-    /**
-     * Add property with default icon (normal flow).
-     */
-    private suspend fun handleAddPropertyWithDefaultIcon(
-        propertyName: String,
-        address: String,
-        organizationId: OrganizationId,
-        imageUrl: String?
-    ) {
-        val newProperty = propertyManager.addProperty(propertyName, address, organizationId, imageUrl)
-            .onFailure {
-                updateUiState { it.copy(isLoading = false) }
-            }
-            .getOrThrow()
-
-        emitWindowEvent(
-            EdifikanaWindowsEvent.ShowSnackbar(
-                "Property ${newProperty.name} added successfully"
-            )
-        )
-        emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
-    }
-
-    /**
-     * Add property with custom image upload.
-     * Flow: Create property → Upload image with propertyID → Update property with storage ref.
-     * TODO: Refactor further down stack with @Cramsan
-     */
-    private suspend fun handleAddPropertyWithCustomImage(
-        propertyName: String,
-        address: String,
-        organizationId: OrganizationId,
-        selectedImageUri: CoreUri
-    ) {
-        // Step 1: Create property without imageUrl first to get propertyID
-        logI(TAG, "Creating property without image...")
-        val newProperty = propertyManager.addProperty(propertyName, address, organizationId, imageUrl = null)
-            .getOrElse { error ->
-                logE(TAG, "Failed to create property", error)
-                updateUiState { it.copy(isLoading = false, isUploading = false) }
-                emitWindowEvent(EdifikanaWindowsEvent.ShowSnackbar("Failed to create property"))
-                return
-            }
-
-        val propertyId = newProperty.id
-        logI(TAG, "Property created with ID: $propertyId")
-
-        // Step 2: Get filename and prepare for upload
-        val originalFilename = try {
-            fileService.getFilename(selectedImageUri)
-        } catch (e: Exception) {
-            logE(TAG, "Failed to get filename", e)
-            val message = "Unable to read file. Property created but image not uploaded."
-            updateUiState { it.copy(isLoading = false, isUploading = false, uploadError = message) }
-            emitWindowEvent(EdifikanaWindowsEvent.ShowSnackbar(message))
-            emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
-            return
-        }
-
-        // Step 3: Upload image using StorageManager
-        val targetRef = "private/properties/${propertyId}_${originalFilename}"
-        logI(TAG, "Uploading image to properties folder")
-
-        storageManager.uploadImage(selectedImageUri, targetRef).onSuccess { storageRef ->
-            logI(TAG, "Upload successful!")
-
-            // Update property with storage reference
-            val storageUrl = "storage:$storageRef"
-            propertyManager.updateProperty(propertyId, propertyName, address, storageUrl)
-                .onSuccess {
-                    logI(TAG, "Property updated with image successfully")
+            // Call PropertyManager with either imageUrl or imageUri
+            propertyManager.addProperty(propertyName, address, organizationId, imageUrl, imageUri)
+                .onSuccess { newProperty ->
                     updateUiState { it.copy(isLoading = false, isUploading = false) }
-                    emitWindowEvent(
-                        EdifikanaWindowsEvent.ShowSnackbar(
-                            "Property ${newProperty.name} added with custom image"
-                        )
-                    )
-                    emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
-                }
-                .onFailure { error ->
-                    logE(TAG, "Failed to update property with image", error)
-                    val message = "Property created but failed to attach image"
-                    updateUiState { it.copy(isLoading = false, isUploading = false, uploadError = message) }
+                    val message = if (imageUri != null) {
+                        "Property ${newProperty.name} added with custom image"
+                    } else {
+                        "Property ${newProperty.name} added successfully"
+                    }
                     emitWindowEvent(EdifikanaWindowsEvent.ShowSnackbar(message))
                     emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
                 }
-        }.onFailure { error ->
-            logE(TAG, "Upload failed", error)
-            val message = getUploadErrorMessage(error)
-            updateUiState { it.copy(isLoading = false, isUploading = false, uploadError = message) }
-            emitWindowEvent(
-                EdifikanaWindowsEvent.ShowSnackbar(
-                    "Property created but image upload failed: $message"
-                )
-            )
-            emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
+                .onFailure { error ->
+                    logE(TAG, "Failed to add property", error)
+                    val message = getUploadErrorMessage(error)
+                    updateUiState { it.copy(isLoading = false, isUploading = false, uploadError = message) }
+                    emitWindowEvent(EdifikanaWindowsEvent.ShowSnackbar("Failed to add property: $message"))
+                }
         }
     }
 
@@ -236,49 +142,22 @@ class AddPropertyViewModel(
      */
     private fun validateAndPreviewImage(uri: CoreUri) {
         viewModelScope.launch {
-            // Validate file size first
-            FileValidationUtils.validateFileSize(uri, ioDependencies).onFailure { error ->
-                logE(TAG, "Failed to validate image size: ${error.message}", error)
-                val message = "File size must be less than 10MB"
-                updateUiState { it.copy(uploadError = message, selectedIcon = null) }
-                emitWindowEvent(EdifikanaWindowsEvent.ShowSnackbar(message))
-                return@launch
-            }
-
-            // Validate file type
-            FileValidationUtils.validateFileType(uri, ioDependencies, imagesOnly = true).onFailure { error ->
-                logE(TAG, "File type validation failed: $error")
-                val message = "Please select a valid image file (JPG, PNG, GIF, or WebP)"
-                updateUiState { it.copy(uploadError = message, selectedIcon = null) }
-                emitWindowEvent(EdifikanaWindowsEvent.ShowSnackbar(message))
-                return@launch
-            }
-
-            // Get filename for preview
-            val filename = try {
-                fileService.getFilename(uri)
-            } catch (e: Exception) {
-                logE(TAG, "Failed to get filename", e)
-                val message = "Unable to read file. Please try again."
-                updateUiState { it.copy(uploadError = message, selectedIcon = null) }
-                emitWindowEvent(EdifikanaWindowsEvent.ShowSnackbar(message))
-                return@launch
-            }
-
-            // Show local preview - NO upload yet
-            val previewIcon = ImageOptionUIModel(
-                id = "custom_local",
-                displayName = "Custom Image",
-                imageSource = ImageSource.LocalFile(uri, filename),
-            )
-
-            logI(TAG, "Validation successful, showing local preview")
-            updateUiState {
-                it.copy(
-                    selectedIcon = previewIcon,
-                    uploadError = null
-                )
-            }
+            storageManager.validateAndPrepareImagePreview(uri)
+                .onSuccess { previewIcon ->
+                    logI(TAG, "Validation successful, showing local preview")
+                    updateUiState {
+                        it.copy(
+                            selectedIcon = previewIcon,
+                            uploadError = null
+                        )
+                    }
+                }
+                .onFailure { error ->
+                    logE(TAG, "Validation failed: ${error.message}", error)
+                    val message = error.message ?: "Failed to validate image"
+                    updateUiState { it.copy(uploadError = message, selectedIcon = null) }
+                    emitWindowEvent(EdifikanaWindowsEvent.ShowSnackbar(message))
+                }
         }
     }
 

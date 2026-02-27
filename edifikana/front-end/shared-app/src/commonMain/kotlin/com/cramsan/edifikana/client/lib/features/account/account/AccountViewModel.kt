@@ -52,22 +52,7 @@ class AccountViewModel(
     fun loadUserData() {
         viewModelScope.launch {
             updateUiState { it.copy(isLoading = true) }
-            val response = auth.getUser()
-            if (response.isFailure) {
-                updateUiState { it.copy(isLoading = false) }
-                return@launch
-            }
-            val user = response.getOrThrow()
-            updateUiState {
-                it.copy(
-                    isLoading = false,
-                    firstName = user.firstName,
-                    lastName = user.lastName,
-                    email = user.email,
-                    phoneNumber = user.phoneNumber,
-                    isPasswordSet = user.authMetadata?.isPasswordSet == true,
-                )
-            }
+            fetchAndApplyUser()
         }
     }
 
@@ -91,22 +76,7 @@ class AccountViewModel(
     fun cancelEdit() {
         viewModelScope.launch {
             updateUiState { it.copy(isLoading = true, isEditable = false) }
-            val response = auth.getUser()
-            if (response.isFailure) {
-                updateUiState { it.copy(isLoading = false) }
-                return@launch
-            }
-            val user = response.getOrThrow()
-            updateUiState {
-                it.copy(
-                    isLoading = false,
-                    firstName = user.firstName,
-                    lastName = user.lastName,
-                    email = user.email,
-                    phoneNumber = user.phoneNumber,
-                    isPasswordSet = user.authMetadata?.isPasswordSet == true,
-                )
-            }
+            fetchAndApplyUser()
         }
     }
 
@@ -186,6 +156,28 @@ class AccountViewModel(
                 EdifikanaWindowsEvent.NavigateToScreen(
                     AccountDestination.ChangePasswordDestination
                 )
+            )
+        }
+    }
+
+    /**
+     * Helper method for fetching the user data and applying it to the UI state.
+     */
+    private suspend fun fetchAndApplyUser() {
+        val response = auth.getUser()
+        if (response.isFailure) {
+            updateUiState { it.copy(isLoading = false) }
+            return
+        }
+        val user = response.getOrThrow()
+        updateUiState {
+            it.copy(
+                isLoading = false,
+                firstName = user.firstName,
+                lastName = user.lastName,
+                email = user.email,
+                phoneNumber = user.phoneNumber,
+                isPasswordSet = user.authMetadata?.isPasswordSet == true,
             )
         }
     }

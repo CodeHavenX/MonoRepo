@@ -54,7 +54,7 @@ fun AccountScreen(
     val uiState by viewModel.uiState.collectAsState()
     val dialogController = rememberDialogController()
 
-    LifecycleEventEffect(Lifecycle.Event.ON_START) {
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         viewModel.loadUserData()
     }
 
@@ -111,8 +111,7 @@ internal fun AccountContent(
         },
     ) { innerPadding ->
         ScreenLayout(
-            modifier = Modifier.padding(innerPadding).fillMaxSize(),
-            sectionContent = { modifier ->
+            modifier = Modifier.padding(innerPadding).fillMaxSize(), sectionContent = { modifier ->
                 val focusRequester = remember { FocusRequester() }
 
                 LaunchedEffect(content.isEditable) {
@@ -187,7 +186,9 @@ internal fun AccountContent(
 
                 // Password field
                 EdifikanaAccountInfoItem(
-                    value = if (content.isPasswordSet) "********" else "Not Set",
+                    value = if (content.isPasswordSet == true) "********"
+                    else if (content.isPasswordSet == null) ""
+                    else "Not Set",
                     label = "Password",
                     modifier = modifier,
                 )
@@ -199,8 +200,7 @@ internal fun AccountContent(
                     enabled = !content.isLoading,
                     onClick = onEditPasswordClicked,
                 )
-            },
-            buttonContent = if (content.isEditable) {
+            }, buttonContent = if (content.isEditable) {
                 { modifier ->
                     Button(
                         modifier = modifier,
@@ -227,11 +227,9 @@ internal fun AccountContent(
                         Text(text = stringResource(Res.string.account_screen_sign_out))
                     }
                 }
-            },
-            overlay = {
+            }, overlay = {
                 LoadingAnimationOverlay(isLoading = content.isLoading)
-            }
-        )
+            })
     }
 }
 
@@ -243,13 +241,11 @@ private fun EditPasswordLine(
 ) {
     Text(
         text = "Change Password",
-        modifier = modifier
-            .clickable {
-                if (enabled) {
-                    onClick()
-                }
+        modifier = modifier.clickable {
+            if (enabled) {
+                onClick()
             }
-            .padding(vertical = Padding.SMALL),
+        }.padding(vertical = Padding.SMALL),
         style = MaterialTheme.typography.bodyLarge,
         fontWeight = FontWeight.Bold,
         color = if (enabled) {

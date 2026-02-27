@@ -116,6 +116,7 @@ class ChangePasswordDialogViewModel(
     @OptIn(SecureStringAccess::class)
     fun onSubmitSelected() {
         viewModelScope.launch {
+            updateUiState { it.copy(isLoading = true) }
             authManager.changePassword(
                 currentPassword = uiState.value.currentPassword,
                 newPassword = uiState.value.newPassword,
@@ -153,8 +154,12 @@ class ChangePasswordDialogViewModel(
     fun loadUserData() {
         viewModelScope.launch {
             updateUiState { it.copy(isLoading = true) }
-
-            val user = authManager.getUser().getOrThrow()
+            val response = authManager.getUser()
+            if (response.isFailure) {
+                updateUiState { it.copy(isLoading = false) }
+                return@launch
+            }
+            val user = response.getOrThrow()
             val isPasswordSet = user.authMetadata?.isPasswordSet == true
             updateUiState {
                 it.copy(

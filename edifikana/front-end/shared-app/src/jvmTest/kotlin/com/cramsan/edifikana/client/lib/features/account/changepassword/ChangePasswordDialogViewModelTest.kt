@@ -151,5 +151,13 @@ class ChangePasswordDialogViewModelTest : CoroutineTest() {
         assertTrue(viewModel.uiState.value.showCurrentPassword)
     }
 
+    @Test
+    fun `loadUserData handles getUser failure gracefully`() = runCoroutineTest {
+        coEvery { authManager.getUser() } returns Result.failure(Exception("network error"))
 
+        viewModel.loadUserData()
+
+        assertFalse(viewModel.uiState.value.isLoading)
+        assertFalse(viewModel.uiState.value.showCurrentPassword)
+    }
 }

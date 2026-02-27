@@ -67,18 +67,8 @@ class PropertyManager(
             val propertyId = newProperty.id
             logI(TAG, "Property created with ID: $propertyId")
 
-            // Step 2: Get filename for storage reference
-            val filename = fileService.getFilename(imageUri)
-            logI(TAG, "Filename: $filename")
-
-            // Step 3: Upload image with propertyId in path
-            val targetRef = "private/properties/${propertyId}_$filename"
-            logI(TAG, "Uploading image to: $targetRef")
-            val storageRef = storageManager.uploadImage(imageUri, targetRef).getOrThrow()
-            logI(TAG, "Upload successful: $storageRef")
-
-            // Step 4: Update property with storage reference
-            val storageUrl = "storage:$storageRef"
+            // Step 2-3: Upload image and get storage reference
+            val storageUrl = uploadPropertyImage(imageUri, propertyId)
             val updatedProperty = propertyService.updateProperty(propertyId, propertyName, address, storageUrl)
                 .getOrThrow()
             logI(TAG, "Property updated with custom image successfully")
@@ -115,18 +105,8 @@ class PropertyManager(
 
         // If custom image upload is requested
         if (imageUri != null) {
-            // Step 1: Get filename for storage reference
-            val filename = fileService.getFilename(imageUri)
-            logI(TAG, "Filename: $filename")
-
-            // Step 2: Upload image with propertyId in path
-            val targetRef = "private/properties/${propertyId}_$filename"
-            logI(TAG, "Uploading image to: $targetRef")
-            val storageRef = storageManager.uploadImage(imageUri, targetRef).getOrThrow()
-            logI(TAG, "Upload successful: $storageRef")
-
-            // Step 3: Update property with storage reference
-            val storageUrl = "storage:$storageRef"
+            // Step 1-2: Upload image and get storage reference
+            val storageUrl = uploadPropertyImage(imageUri, propertyId)
             val updatedProperty = propertyService.updateProperty(propertyId, name, address, storageUrl)
                 .getOrThrow()
             logI(TAG, "Property updated with custom image successfully")
@@ -146,6 +126,36 @@ class PropertyManager(
         logI(TAG, "removeProperty")
         propertyService.removeProperty(propertyId).requireSuccess()
         propertyService.getPropertyList().requireSuccess()
+    }
+
+    /**
+     * Uploads a property image and returns the storage URL ready for persistence.
+     * Sanitizes the filename, builds the storage path, and uploads the image.
+     *
+     * @param imageUri Local URI of the image to upload
+     * @param propertyId Property ID used to namespace the storage path
+     * @return Storage URL string in the format "storage:<ref>"
+     */
+    private suspend fun uploadPropertyImage(imageUri: CoreUri, propertyId: PropertyId): String {
+        val filename = sanitizeFilename(fileService.getFilename(imageUri))
+        logI(TAG, "Filename: $filename")
+        val targetRef = "private/properties/${propertyId}_$filename"
+        logI(TAG, "Uploading image to: $targetRef")
+        val storageRef = storageManager.uploadImage(imageUri, targetRef).getOrThrow()
+        logI(TAG, "Upload successful: $storageRef")
+        return "storage:$storageRef"
+    }
+
+    /**
+     * Sanitizes a filename to prevent path traversal attacks.
+     * Strips any directory components and replaces unsafe characters.
+     */
+    private fun sanitizeFilename(filename: String): String {
+        return filename
+            .substringAfterLast('/')
+            .substringAfterLast('\\')
+            .replace(Regex("[^a-zA-Z0-9._-]"), "_")
+            .ifEmpty { "file" }
     }
 
     companion object {

@@ -3,7 +3,6 @@ package com.cramsan.edifikana.client.ui.components
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.widthIn
@@ -36,12 +35,13 @@ fun EdifikanaBottomSheet(
     visible: Boolean,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
-    sheetState: SheetState = rememberModalBottomSheetState(),
-    content: @Composable ColumnScope.() -> Unit,
+    sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+    content: @Composable () -> Unit,
 ) {
     if (visible) {
         BoxWithConstraints {
             val isMobile = maxWidth < 600.dp
+            val screenMaxHeight = maxHeight
 
             ModalBottomSheet(
                 onDismissRequest = onDismissRequest,
@@ -57,7 +57,9 @@ fun EdifikanaBottomSheet(
                 ) {
                     Column(
                         modifier = if (isMobile) {
-                            Modifier.fillMaxWidth()
+                            Modifier
+                                .fillMaxWidth()
+                                .heightIn(max = screenMaxHeight)
                         } else {
                             Modifier
                                 .widthIn(max = Size.COLUMN_MAX_WIDTH)

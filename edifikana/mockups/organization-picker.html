@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edifikana - Select Organization</title>
+  <link rel="stylesheet" href="styles/common.css">
+</head>
+<body>
+  <div class="mobile-viewport">
+    <div class="screen">
+      <div class="screen-content screen-content--no-nav">
+
+        <!-- Logo -->
+        <div style="text-align: center; padding-top: var(--space-10); padding-bottom: var(--space-6);">
+          <div class="auth-logo">Edifikana</div>
+        </div>
+
+        <!-- Heading -->
+        <div class="px-4 mb-6">
+          <h1 class="text-h1 text-center">Select an Organization</h1>
+          <p class="text-small text-secondary text-center mt-2">Choose which organization you'd like to manage.</p>
+        </div>
+
+        <!-- Organization Cards -->
+        <div class="px-4 flex-col gap-3" style="display: flex; flex-direction: column; gap: var(--space-3);">
+
+          <!-- Org 1: Sunrise Property Management -->
+          <a href="dashboard.html" class="card card--clickable" style="text-decoration: none; color: inherit;">
+            <div style="display: flex; align-items: center; gap: var(--space-3);">
+              <div class="org-card__icon">&#x1F3E2;</div>
+              <div class="org-card__info">
+                <div class="org-card__name">Sunrise Property Management</div>
+                <div class="org-card__meta" style="display: flex; align-items: center; gap: var(--space-2); margin-top: var(--space-1);">
+                  <span class="badge badge-info">Admin</span>
+                  <span>12 properties</span>
+                </div>
+              </div>
+              <div class="org-card__arrow">&rsaquo;</div>
+            </div>
+          </a>
+
+          <!-- Org 2: Downtown Realty Group -->
+          <a href="dashboard.html" class="card card--clickable" style="text-decoration: none; color: inherit;">
+            <div style="display: flex; align-items: center; gap: var(--space-3);">
+              <div class="org-card__icon">&#x1F3E2;</div>
+              <div class="org-card__info">
+                <div class="org-card__name">Downtown Realty Group</div>
+                <div class="org-card__meta" style="display: flex; align-items: center; gap: var(--space-2); margin-top: var(--space-1);">
+                  <span class="badge badge-info">Admin</span>
+                  <span>8 properties</span>
+                </div>
+              </div>
+              <div class="org-card__arrow">&rsaquo;</div>
+            </div>
+          </a>
+
+          <!-- Org 3: Coastal Living Properties -->
+          <a href="dashboard.html" class="card card--clickable" style="text-decoration: none; color: inherit;">
+            <div style="display: flex; align-items: center; gap: var(--space-3);">
+              <div class="org-card__icon">&#x1F3E2;</div>
+              <div class="org-card__info">
+                <div class="org-card__name">Coastal Living Properties</div>
+                <div class="org-card__meta" style="display: flex; align-items: center; gap: var(--space-2); margin-top: var(--space-1);">
+                  <span class="badge badge-neutral">Staff</span>
+                  <span>24 properties</span>
+                </div>
+              </div>
+              <div class="org-card__arrow">&rsaquo;</div>
+            </div>
+          </a>
+
+          <!-- Join Organization Button (dashed border) -->
+          <button class="btn btn-secondary btn--full-width" style="border-style: dashed; margin-top: var(--space-2);">
+            + Join Organization
+          </button>
+
+          <!-- Create New Organization Link -->
+          <div class="text-center mt-2">
+            <a href="create-organization.html" class="text-small text-link">Create New Organization</a>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</body>
+</html>

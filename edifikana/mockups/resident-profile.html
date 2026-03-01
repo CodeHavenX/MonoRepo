@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edifikana - Profile</title>
+  <link rel="stylesheet" href="styles/common.css">
+</head>
+<body>
+  <div class="mobile-viewport">
+    <div class="screen">
+
+      <!-- Top Bar -->
+      <div class="top-bar">
+        <span class="top-bar__title">Profile</span>
+      </div>
+
+      <div class="screen-content">
+
+        <!-- Avatar & Name -->
+        <div class="flex-col items-center px-4 pt-4 mb-4">
+          <div class="avatar avatar--xl mb-3">SM</div>
+          <div class="text-h2 text-center">Sarah Martinez</div>
+          <div class="text-small text-secondary text-center">sarah@email.com</div>
+        </div>
+
+        <!-- Info Card -->
+        <div class="px-4 mb-4">
+          <div class="card">
+            <div class="info-row">
+              <span class="info-row__label">Display Name</span>
+              <span class="info-row__value">Sarah Martinez</span>
+            </div>
+            <div class="info-row">
+              <span class="info-row__label">Email</span>
+              <span class="info-row__value">sarah@email.com</span>
+            </div>
+            <div class="info-row">
+              <span class="info-row__label">Phone</span>
+              <span class="info-row__value">(555) 234-5678</span>
+            </div>
+            <div class="info-row">
+              <span class="info-row__label">Unit</span>
+              <span class="info-row__value">204</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider mx-4"></div>
+
+        <!-- Menu List -->
+        <div class="px-4 mb-4">
+          <div class="list-group">
+            <a href="edit-profile.html" class="list-item">
+              <div class="list-item__content">
+                <div class="list-item__title">Edit Profile</div>
+              </div>
+              <div class="list-item__trailing">&rsaquo;</div>
+            </a>
+            <a href="resident-change-password.html" class="list-item">
+              <div class="list-item__content">
+                <div class="list-item__title">Change Password</div>
+              </div>
+              <div class="list-item__trailing">&rsaquo;</div>
+            </a>
+            <a href="notification-preferences.html" class="list-item">
+              <div class="list-item__content">
+                <div class="list-item__title">Notification Settings</div>
+              </div>
+              <div class="list-item__trailing">&rsaquo;</div>
+            </a>
+          </div>
+        </div>
+
+        <div class="divider mx-4"></div>
+
+        <!-- Sign Out -->
+        <div class="px-4 mb-6">
+          <div class="list-group">
+            <a href="sign-in.html" class="list-item">
+              <div class="list-item__content">
+                <div class="list-item__title text-error">Sign Out</div>
+              </div>
+              <div class="list-item__trailing">&rsaquo;</div>
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom Nav -->
+      <nav class="bottom-nav">
+        <a href="resident-home.html" class="bottom-nav__item"><span class="bottom-nav__icon">&#9750;</span>Home</a>
+        <a href="my-requests.html" class="bottom-nav__item"><span class="bottom-nav__icon">&#9998;</span>Requests</a>
+        <a href="my-documents.html" class="bottom-nav__item"><span class="bottom-nav__icon">&#128196;</span>Documents</a>
+        <a href="resident-profile.html" class="bottom-nav__item bottom-nav__item--active"><span class="bottom-nav__icon">&#128100;</span>Profile</a>
+      </nav>
+
+    </div>
+  </div>
+</body>
+</html>

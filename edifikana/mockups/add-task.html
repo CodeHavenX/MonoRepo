@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edifikana - New Task</title>
+  <link rel="stylesheet" href="styles/common.css">
+</head>
+<body>
+  <div class="mobile-viewport">
+    <div class="screen">
+
+      <!-- Top Bar -->
+      <div class="top-bar">
+        <a href="task-list.html" class="top-bar__back">&times;</a>
+        <span class="top-bar__title">New Task</span>
+        <div class="top-bar__actions"></div>
+      </div>
+
+      <div class="screen-content">
+        <div class="px-4 pb-6">
+
+          <form>
+            <div class="form-group">
+              <label class="form-label" for="task-title">Title</label>
+              <input type="text" id="task-title" class="input" placeholder="Enter task title">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="task-description">Description</label>
+              <textarea id="task-description" class="textarea" placeholder="Describe the task..."></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="task-property">Property</label>
+              <select id="task-property" class="select">
+                <option value="" disabled selected>Select property</option>
+                <option value="sunset">Sunset Apartments</option>
+                <option value="oak">Oak Street Condos</option>
+                <option value="maple">Maple Gardens</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="task-unit">Unit / Area</label>
+              <select id="task-unit" class="select">
+                <option value="" disabled selected>Select unit or area</option>
+                <option value="101">Unit 101</option>
+                <option value="204">Unit 204</option>
+                <option value="305">Unit 305</option>
+                <option value="410">Unit 410</option>
+                <option value="lobby">Lobby</option>
+                <option value="pool">Pool</option>
+                <option value="gym">Gym</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="task-priority">Priority</label>
+              <select id="task-priority" class="select">
+                <option value="" disabled selected>Select priority</option>
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="task-due">Due Date</label>
+              <input type="date" id="task-due" class="input">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="task-assignee">Assignee</label>
+              <select id="task-assignee" class="select">
+                <option value="" disabled selected>Select assignee</option>
+                <option value="john">John M</option>
+                <option value="maria">Maria S</option>
+                <option value="carlos">Carlos R</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn--full-width mt-4">Create Task</button>
+          </form>
+
+        </div>
+      </div>
+
+      <!-- Bottom Navigation -->
+      <nav class="bottom-nav">
+        <a href="dashboard.html" class="bottom-nav__item"><span class="bottom-nav__icon">&#9750;</span>Dashboard</a>
+        <a href="property-list.html" class="bottom-nav__item"><span class="bottom-nav__icon">&#9962;</span>Properties</a>
+        <a href="task-list.html" class="bottom-nav__item bottom-nav__item--active"><span class="bottom-nav__icon">&#9745;</span>Tasks</a>
+        <a href="settings.html" class="bottom-nav__item"><span class="bottom-nav__icon">&#8943;</span>More</a>
+      </nav>
+
+    </div>
+  </div>
+</body>
+</html>

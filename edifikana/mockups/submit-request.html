@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edifikana - Submit Request</title>
+  <link rel="stylesheet" href="styles/common.css">
+</head>
+<body>
+  <div class="mobile-viewport">
+    <div class="screen">
+
+      <!-- Top Bar -->
+      <div class="top-bar">
+        <a href="my-requests.html" class="top-bar__back" style="font-size:22px;">&times;</a>
+        <span class="top-bar__title">Submit Request</span>
+        <span style="min-width:44px;"></span>
+      </div>
+
+      <div class="screen-content">
+        <div class="px-4 pb-6">
+
+          <!-- Title -->
+          <div class="form-group">
+            <label class="form-label">Title</label>
+            <input type="text" class="input" placeholder="Brief description of the issue">
+          </div>
+
+          <!-- Description -->
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea class="textarea" placeholder="Provide details about the maintenance issue..."></textarea>
+          </div>
+
+          <!-- Urgency -->
+          <div class="form-group">
+            <label class="form-label">Urgency</label>
+            <select class="select">
+              <option value="" disabled selected>Select urgency level</option>
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+              <option value="emergency">Emergency</option>
+            </select>
+          </div>
+
+          <!-- Location -->
+          <div class="form-group">
+            <label class="form-label">Location</label>
+            <select class="select">
+              <option value="" disabled selected>Select location</option>
+              <option value="kitchen">Kitchen</option>
+              <option value="bathroom">Bathroom</option>
+              <option value="bedroom">Bedroom</option>
+              <option value="living-room">Living Room</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <!-- Photo Upload -->
+          <div class="form-group">
+            <label class="form-label">Photos</label>
+            <div class="card--flat" style="border: 2px dashed var(--color-border-medium); border-radius: var(--radius-md); padding: var(--space-8) var(--space-4); text-align: center; cursor: pointer;">
+              <div style="font-size: 32px; color: var(--color-text-muted); margin-bottom: var(--space-2);">&#128247;</div>
+              <div class="text-small text-muted">Add Photos (optional)</div>
+              <div class="text-caption text-muted mt-2">Tap to upload images</div>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <button class="btn btn-primary btn--full-width mt-4">Submit Request</button>
+
+        </div>
+      </div>
+
+      <!-- Bottom Nav -->
+      <nav class="bottom-nav">
+        <a href="resident-home.html" class="bottom-nav__item"><span class="bottom-nav__icon">&#9750;</span>Home</a>
+        <a href="my-requests.html" class="bottom-nav__item bottom-nav__item--active"><span class="bottom-nav__icon">&#9998;</span>Requests</a>
+        <a href="my-documents.html" class="bottom-nav__item"><span class="bottom-nav__icon">&#128196;</span>Documents</a>
+        <a href="resident-profile.html" class="bottom-nav__item"><span class="bottom-nav__icon">&#128100;</span>Profile</a>
+      </nav>
+
+    </div>
+  </div>
+</body>
+</html>

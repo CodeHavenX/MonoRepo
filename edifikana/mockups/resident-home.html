@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edifikana - Home</title>
+  <link rel="stylesheet" href="styles/common.css">
+</head>
+<body>
+  <div class="mobile-viewport">
+    <div class="screen">
+
+      <!-- Top Bar -->
+      <div class="top-bar">
+        <span class="top-bar__title">Home</span>
+      </div>
+
+      <div class="screen-content">
+
+        <!-- Welcome -->
+        <div class="px-4 mb-4">
+          <h2 class="text-h2">Good morning, Sarah</h2>
+        </div>
+
+        <!-- Your Unit Card -->
+        <div class="px-4 mb-4">
+          <a href="my-unit.html" class="card card--clickable" style="text-decoration:none;">
+            <div class="flex-between mb-2">
+              <div>
+                <div class="text-h3">Unit 204</div>
+                <div class="text-small text-secondary">Sunset Apartments</div>
+              </div>
+              <span class="badge badge-success">Occupied</span>
+            </div>
+            <div class="text-small text-muted">2 bed &middot; 1 bath &middot; 850 sqft</div>
+          </a>
+        </div>
+
+        <div class="divider mx-4"></div>
+
+        <!-- Quick Actions -->
+        <div class="px-4 mb-4">
+          <div class="text-small text-bold text-secondary mb-3" style="text-transform:uppercase; letter-spacing:0.5px;">Quick Actions</div>
+          <div class="grid-2">
+            <a href="submit-request.html" class="card card--clickable flex-col items-center gap-2 p-4" style="text-decoration:none; text-align:center;">
+              <span style="font-size:28px;">&#9998;</span>
+              <span class="text-small text-bold">Submit Request</span>
+            </a>
+            <a href="my-documents.html" class="card card--clickable flex-col items-center gap-2 p-4" style="text-decoration:none; text-align:center;">
+              <span style="font-size:28px;">&#128196;</span>
+              <span class="text-small text-bold">View Documents</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Recent Requests -->
+        <div class="px-4 mb-4">
+          <div class="text-small text-bold text-secondary mb-3" style="text-transform:uppercase; letter-spacing:0.5px;">Recent Requests</div>
+          <div class="flex-col gap-3">
+            <a href="request-detail.html" class="card card--clickable" style="text-decoration:none;">
+              <div class="flex-between mb-1">
+                <div class="text-body text-bold">Leaking faucet</div>
+                <span class="badge badge-warning">Under Review</span>
+              </div>
+              <div class="text-small text-muted">Feb 7, 2025</div>
+            </a>
+            <a href="request-detail.html" class="card card--clickable" style="text-decoration:none;">
+              <div class="flex-between mb-1">
+                <div class="text-body text-bold">AC maintenance</div>
+                <span class="badge badge-success">Completed</span>
+              </div>
+              <div class="text-small text-muted">Jan 28, 2025</div>
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom Nav -->
+      <nav class="bottom-nav">
+        <a href="resident-home.html" class="bottom-nav__item bottom-nav__item--active"><span class="bottom-nav__icon">&#9750;</span>Home</a>
+        <a href="my-requests.html" class="bottom-nav__item"><span class="bottom-nav__icon">&#9998;</span>Requests</a>
+        <a href="my-documents.html" class="bottom-nav__item"><span class="bottom-nav__icon">&#128196;</span>Documents</a>
+        <a href="resident-profile.html" class="bottom-nav__item"><span class="bottom-nav__icon">&#128100;</span>Profile</a>
+      </nav>
+
+    </div>
+  </div>
+</body>
+</html>

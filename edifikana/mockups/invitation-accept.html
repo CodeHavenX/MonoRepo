@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edifikana - Accept Invitation</title>
+  <link rel="stylesheet" href="styles/common.css">
+</head>
+<body>
+  <div class="mobile-viewport">
+    <div class="screen">
+      <div class="screen-content screen-content--no-nav">
+        <div class="auth-layout" style="justify-content: flex-start; padding-top: var(--space-10);">
+          <div class="auth-logo">Edifikana</div>
+          <h1 class="text-h1 mb-6">You've been invited!</h1>
+
+          <div class="auth-form">
+            <!-- Invitation details card -->
+            <div class="card mb-6">
+              <div class="flex-col gap-3">
+                <div>
+                  <div class="text-caption text-muted">Organization</div>
+                  <div class="text-body text-bold">Sunrise Property Management</div>
+                </div>
+                <div>
+                  <div class="text-caption text-muted">Role</div>
+                  <div class="text-body text-bold">Staff</div>
+                </div>
+                <div class="divider" style="margin: 0;"></div>
+                <div class="text-small text-secondary">Invited by: Admin User</div>
+              </div>
+            </div>
+
+            <!-- Account creation form -->
+            <form>
+              <div class="form-group">
+                <label class="form-label" for="full-name">Full Name</label>
+                <input class="input" type="text" id="full-name" placeholder="Jane Smith" value="Jane Smith" autocomplete="name">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="email">Email</label>
+                <input class="input" type="email" id="email" value="jane.smith@example.com" disabled style="opacity: 0.7; cursor: not-allowed;">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="password">Create Password</label>
+                <input class="input" type="password" id="password" placeholder="Create a password" autocomplete="new-password">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="confirm-password">Confirm Password</label>
+                <input class="input" type="password" id="confirm-password" placeholder="Confirm your password" autocomplete="new-password">
+              </div>
+
+              <div class="form-group">
+                <button type="submit" class="btn btn-primary btn--full-width">Accept Invitation</button>
+              </div>
+            </form>
+
+            <div class="auth-footer">
+              <span class="text-caption text-secondary">Already have an account? <a href="sign-in.html">Sign In</a></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

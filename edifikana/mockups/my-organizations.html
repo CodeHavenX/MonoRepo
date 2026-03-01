@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edifikana - My Organizations</title>
+  <link rel="stylesheet" href="styles/common.css">
+</head>
+<body>
+  <div class="mobile-viewport">
+    <div class="screen">
+
+      <!-- Top Bar -->
+      <div class="top-bar">
+        <a href="settings.html" class="top-bar__back">
+          &#8592;
+        </a>
+        <span class="top-bar__title">My Organizations</span>
+        <div class="top-bar__actions"></div>
+      </div>
+
+      <div class="screen-content screen-content--no-nav">
+        <div class="px-4 pt-4 pb-6">
+
+          <!-- Organization List -->
+          <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+
+            <!-- Org 1: Sunrise Property Management (Current) -->
+            <a href="organization-detail.html" class="org-card" style="position: relative;">
+              <div class="org-card__icon">&#x1F3E2;</div>
+              <div class="org-card__info">
+                <div style="display: flex; align-items: center; gap: var(--space-2);">
+                  <span class="org-card__name">Sunrise Property Management</span>
+                  <span class="badge badge-info">Current</span>
+                </div>
+                <div class="org-card__meta">Admin &middot; 12 properties</div>
+              </div>
+              <div class="org-card__arrow">&rsaquo;</div>
+            </a>
+
+            <!-- Org 2: Downtown Realty Group -->
+            <a href="dashboard.html" class="org-card">
+              <div class="org-card__icon">&#x1F3E2;</div>
+              <div class="org-card__info">
+                <div class="org-card__name">Downtown Realty Group</div>
+                <div class="org-card__meta">Admin &middot; 8 properties</div>
+              </div>
+              <div class="org-card__arrow">&rsaquo;</div>
+            </a>
+
+            <!-- Org 3: Coastal Living Properties -->
+            <a href="dashboard.html" class="org-card">
+              <div class="org-card__icon">&#x1F3E2;</div>
+              <div class="org-card__info">
+                <div class="org-card__name">Coastal Living Properties</div>
+                <div class="org-card__meta">Staff &middot; 24 properties</div>
+              </div>
+              <div class="org-card__arrow">&rsaquo;</div>
+            </a>
+
+          </div>
+
+          <!-- Divider -->
+          <div class="divider"></div>
+
+          <!-- Join Organization Button -->
+          <button class="btn btn-secondary btn--full-width">
+            + Join Organization
+          </button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edifikana - Financials</title>
+  <link rel="stylesheet" href="styles/common.css">
+</head>
+<body>
+  <div class="mobile-viewport">
+    <div class="screen">
+
+      <!-- Top Bar -->
+      <div class="top-bar">
+        <a href="unit-detail.html" class="top-bar__back">&larr;</a>
+        <span class="top-bar__title">Financials - Unit 204</span>
+        <div class="top-bar__actions"></div>
+      </div>
+
+      <div class="screen-content">
+        <div class="px-4 pb-6 pt-4">
+
+          <!-- Summary Card -->
+          <div class="card mb-4">
+            <div class="flex-between mb-2">
+              <span class="text-small text-secondary">Monthly Rent</span>
+              <span class="text-h2 text-bold">$1,500</span>
+            </div>
+            <div class="flex-between">
+              <span class="text-small text-secondary">Due Day</span>
+              <span class="text-body text-bold">1st</span>
+            </div>
+          </div>
+
+          <!-- Status Overview Grid -->
+          <div class="grid-3 mb-6">
+            <div class="metric-card">
+              <div class="metric-card__value" style="color: var(--color-success-500);">10</div>
+              <div class="metric-card__label">Paid</div>
+            </div>
+            <div class="metric-card metric-card--warning">
+              <div class="metric-card__value">1</div>
+              <div class="metric-card__label">Pending</div>
+            </div>
+            <div class="metric-card metric-card--error">
+              <div class="metric-card__value">1</div>
+              <div class="metric-card__label">Overdue</div>
+            </div>
+          </div>
+
+          <!-- Recent Payments -->
+          <div class="section-header">Recent Payments</div>
+
+          <div class="list-group mb-3">
+            <div class="list-item" style="cursor: default;">
+              <div class="list-item__content">
+                <div class="list-item__title">Feb 2025</div>
+                <div class="list-item__subtitle">$1,500</div>
+              </div>
+              <div class="list-item__trailing">
+                <span class="badge badge-warning">Pending</span>
+              </div>
+            </div>
+            <div class="list-item" style="cursor: default;">
+              <div class="list-item__content">
+                <div class="list-item__title">Jan 2025</div>
+                <div class="list-item__subtitle">$1,500</div>
+              </div>
+              <div class="list-item__trailing">
+                <span class="badge badge-success">Paid</span>
+              </div>
+            </div>
+            <div class="list-item" style="cursor: default;">
+              <div class="list-item__content">
+                <div class="list-item__title">Dec 2024</div>
+                <div class="list-item__subtitle">$1,500</div>
+              </div>
+              <div class="list-item__trailing">
+                <span class="badge badge-success">Paid</span>
+              </div>
+            </div>
+            <div class="list-item" style="cursor: default;">
+              <div class="list-item__content">
+                <div class="list-item__title">Nov 2024</div>
+                <div class="list-item__subtitle">$1,500</div>
+              </div>
+              <div class="list-item__trailing">
+                <span class="badge badge-success">Paid</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- View All Link -->
+          <div class="text-center mb-4">
+            <a href="payment-list.html" class="text-link text-small text-bold">View All Payments</a>
+          </div>
+
+          <!-- Record Payment Button -->
+          <a href="add-payment.html" class="btn btn-primary btn--full-width">+ Record Payment</a>
+
+        </div>
+      </div>
+
+      <!-- Bottom Nav -->
+      <nav class="bottom-nav">
+        <a href="dashboard.html" class="bottom-nav__item"><span class="bottom-nav__icon">&#9750;</span>Dashboard</a>
+        <a href="property-list.html" class="bottom-nav__item bottom-nav__item--active"><span class="bottom-nav__icon">&#9962;</span>Properties</a>
+        <a href="task-list.html" class="bottom-nav__item"><span class="bottom-nav__icon">&#9745;</span>Tasks</a>
+        <a href="settings.html" class="bottom-nav__item"><span class="bottom-nav__icon">&#8943;</span>More</a>
+      </nav>
+
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edifikana - Create Organization</title>
+  <link rel="stylesheet" href="styles/common.css">
+</head>
+<body>
+  <div class="mobile-viewport">
+    <div class="screen">
+
+      <!-- Top Bar -->
+      <div class="top-bar">
+        <a href="organization-picker.html" class="top-bar__back">
+          &#8592;
+        </a>
+        <span class="top-bar__title">Create Organization</span>
+        <div class="top-bar__actions"></div>
+      </div>
+
+      <div class="screen-content screen-content--no-nav">
+        <div class="px-4 pt-4 pb-6">
+
+          <p class="text-small text-secondary mb-6">Set up a new organization to start managing your properties.</p>
+
+          <!-- Form -->
+          <form>
+
+            <!-- Organization Name -->
+            <div class="form-group">
+              <label class="form-label" for="org-name">Organization Name</label>
+              <input type="text" id="org-name" class="input" placeholder="e.g. Sunrise Property Management">
+            </div>
+
+            <!-- Organization Type -->
+            <div class="form-group">
+              <label class="form-label" for="org-type">Organization Type</label>
+              <select id="org-type" class="select">
+                <option value="" disabled selected>Select a type</option>
+                <option value="property-management">Property Management</option>
+                <option value="hoa">HOA</option>
+                <option value="real-estate">Real Estate</option>
+              </select>
+            </div>
+
+            <!-- Description -->
+            <div class="form-group">
+              <label class="form-label" for="org-description">Description <span class="text-muted">(optional)</span></label>
+              <textarea id="org-description" class="textarea" placeholder="Briefly describe your organization..."></textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary btn--full-width mt-4">
+              Create Organization
+            </button>
+
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,5 +1,7 @@
-package com.cramsan.edifikana.client.lib.managers
+package com.cramsan.edifikana.client.lib.service.impl
 
+import com.cramsan.edifikana.client.lib.service.FileService
+import com.cramsan.edifikana.client.lib.service.FileServiceImpl
 import com.cramsan.edifikana.client.lib.utils.IODependencies
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.logging.EventLogger
@@ -10,7 +12,6 @@ import java.io.File
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -20,9 +21,9 @@ import kotlin.test.assertTrue
  * Tests the JVM implementation which delegates to platform-specific utility functions.
  * These are integration tests that verify FileManagerImpl correctly wraps the utilities.
  */
-class FileManagerImplTest : CoroutineTest() {
+class FileServiceImplTest : CoroutineTest() {
     private lateinit var ioDependencies: IODependencies
-    private lateinit var fileManager: FileManager
+    private lateinit var fileService: FileService
     private lateinit var tempFile: File
 
     /**
@@ -32,7 +33,7 @@ class FileManagerImplTest : CoroutineTest() {
     fun setup() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         ioDependencies = IODependencies()
-        fileManager = FileManagerImpl(ioDependencies)
+        fileService = FileServiceImpl(ioDependencies)
 
         // Create a temporary test file
         tempFile = File.createTempFile("test_image", ".jpg")
@@ -49,7 +50,7 @@ class FileManagerImplTest : CoroutineTest() {
         val expectedBytes = byteArrayOf(1, 2, 3, 4, 5)
 
         // Act
-        val result = fileManager.readFileBytes(uri)
+        val result = fileService.readFileBytes(uri)
 
         // Assert
         assertTrue(result.isSuccess)
@@ -67,7 +68,7 @@ class FileManagerImplTest : CoroutineTest() {
         val uri = CoreUri("/non/existent/file.jpg")
 
         // Act
-        val result = fileManager.readFileBytes(uri)
+        val result = fileService.readFileBytes(uri)
 
         // Assert
         assertFalse(result.isSuccess)
@@ -85,7 +86,7 @@ class FileManagerImplTest : CoroutineTest() {
         val expectedBytes = byteArrayOf(1, 2, 3, 4, 5)
 
         // Act
-        val result = fileManager.readFileBytes(uri)
+        val result = fileService.readFileBytes(uri)
 
         // Assert
         assertTrue(result.isSuccess)
@@ -104,7 +105,7 @@ class FileManagerImplTest : CoroutineTest() {
         val inputData = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8)
 
         // Act
-        val result = fileManager.processImage(inputData)
+        val result = fileService.processImage(inputData)
 
         // Assert
         assertTrue(result.isSuccess)
@@ -122,7 +123,7 @@ class FileManagerImplTest : CoroutineTest() {
         val inputData = byteArrayOf()
 
         // Act
-        val result = fileManager.processImage(inputData)
+        val result = fileService.processImage(inputData)
 
         // Assert
         assertTrue(result.isSuccess)
@@ -139,7 +140,7 @@ class FileManagerImplTest : CoroutineTest() {
         val uri = CoreUri(tempFile.absolutePath)
 
         // Act
-        val filename = fileManager.getFilename(uri)
+        val filename = fileService.getFilename(uri)
 
         // Assert
         assertTrue(filename.startsWith("test_image"))
@@ -156,7 +157,7 @@ class FileManagerImplTest : CoroutineTest() {
         val uri = CoreUri(tempFile.toURI().toString())
 
         // Act
-        val filename = fileManager.getFilename(uri)
+        val filename = fileService.getFilename(uri)
 
         // Assert
         assertTrue(filename.startsWith("test_image"))
@@ -172,7 +173,7 @@ class FileManagerImplTest : CoroutineTest() {
         val uri = CoreUri("/path/to/image.png")
 
         // Act
-        val filename = fileManager.getFilename(uri)
+        val filename = fileService.getFilename(uri)
 
         // Assert
         assertEquals("image.png", filename)

@@ -2,11 +2,9 @@ package com.cramsan.edifikana.client.lib.features.home.addproperty
 
 import app.cash.turbine.test
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
-import com.cramsan.edifikana.client.lib.managers.FileManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.managers.StorageManager
 import com.cramsan.edifikana.client.lib.models.PropertyModel
-import com.cramsan.edifikana.client.lib.utils.IODependencies
 import com.cramsan.edifikana.client.ui.components.ImageOptionUIModel
 import com.cramsan.edifikana.client.ui.components.ImageSource
 import com.cramsan.edifikana.client.ui.resources.PropertyIcons
@@ -27,14 +25,12 @@ import com.cramsan.framework.test.CoroutineTest
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.launch
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -46,8 +42,6 @@ class AddPropertyViewModelTest : CoroutineTest() {
     private lateinit var viewModel: AddPropertyViewModel
     private lateinit var propertyManager: PropertyManager
     private lateinit var storageManager: StorageManager
-    private lateinit var fileManager: FileManager
-    private lateinit var ioDependencies: IODependencies
     private lateinit var stringProvider: StringProvider
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
     private lateinit var applicationEventReceiver: EventBus<ApplicationEvent>
@@ -61,8 +55,6 @@ class AddPropertyViewModelTest : CoroutineTest() {
         exceptionHandler = CollectorCoroutineExceptionHandler()
         propertyManager = mockk(relaxed = true)
         storageManager = mockk(relaxed = true)
-        fileManager = mockk(relaxed = true)
-        ioDependencies = mockk(relaxed = true)
         stringProvider = mockk(relaxed = true)
         viewModel = AddPropertyViewModel(
             dependencies = ViewModelDependencies(
@@ -74,8 +66,6 @@ class AddPropertyViewModelTest : CoroutineTest() {
             ),
             propertyManager = propertyManager,
             storageManager = storageManager,
-            fileManager = fileManager,
-            ioDependencies = ioDependencies,
             stringProvider = stringProvider,
         )
     }
@@ -166,15 +156,22 @@ class AddPropertyViewModelTest : CoroutineTest() {
             imageSource = ImageSource.Drawable(PropertyIcons.S_DEPA)
         )
         coEvery {
-            propertyManager.addProperty(propertyName, address, organizationId, imageUrl)
+            propertyManager.addProperty(propertyName, address, organizationId, imageUrl, null)
         } returns Result.failure(Exception("Error"))
+
+        val verificationJob = launch {
+            windowEventBus.events.test {
+                val snackbarEvent = awaitItem() as EdifikanaWindowsEvent.ShowSnackbar
+                assertTrue(snackbarEvent.message.contains("Failed to add property"))
+            }
+        }
 
         // Act
         viewModel.initialize(organizationId)
         viewModel.addProperty(propertyName, address, selectedIcon)
+        verificationJob.join()
 
         // Assert
-        assertEquals(1, exceptionHandler.exceptions.size)
         assertEquals(false, viewModel.uiState.value.isLoading)
     }
 
@@ -203,28 +200,16 @@ class AddPropertyViewModelTest : CoroutineTest() {
             imageUrl = null,
         )
 
-        // Mock property creation and storage upload
-        coEvery { propertyManager.addProperty(propertyName, address, organizationId, null) }
-            .returns(Result.success(newProperty))
-        every { fileManager.getFilename(imageUri) } returns "image.jpg"
-
-        val expectedStorageRef = "private/properties/${propertyId}_image.jpg"
-        coEvery { storageManager.uploadImage(imageUri, expectedStorageRef) }
-            .returns(Result.success(expectedStorageRef))
-        coEvery {
-            propertyManager.updateProperty(propertyId, propertyName, address, "storage:$expectedStorageRef")
-        } returns Result.success(newProperty.copy(imageUrl = "storage:$expectedStorageRef"))
+        // Mock property creation with custom image (PropertyManager handles upload internally)
+        coEvery { propertyManager.addProperty(propertyName, address, organizationId, null, imageUri) }
+            .returns(Result.success(newProperty.copy(imageUrl = "storage:private/properties/${propertyId}_image.jpg")))
 
         // Act
         viewModel.initialize(organizationId)
         viewModel.addProperty(propertyName, address, selectedIcon)
 
-        // Assert - verify upload was attempted with extracted URI
-        coVerify(exactly = 1) { storageManager.uploadImage(imageUri, expectedStorageRef) }
-        coVerify(exactly = 1) { propertyManager.addProperty(propertyName, address, organizationId, null) }
-        coVerify(exactly = 1) {
-            propertyManager.updateProperty(propertyId, propertyName, address, "storage:$expectedStorageRef")
-        }
+        // Assert - verify PropertyManager.addProperty was called with imageUri
+        coVerify(exactly = 1) { propertyManager.addProperty(propertyName, address, organizationId, null, imageUri) }
     }
 
     /**
@@ -312,22 +297,7 @@ class AddPropertyViewModelTest : CoroutineTest() {
         val expectedStorageRef = "private/properties/${propertyId}_test.jpg"
 
         coEvery {
-            propertyManager.addProperty(propertyName, address, organizationId, null)
-        } returns Result.success(newProperty)
-
-        every { fileManager.getFilename(imageUri) } returns "test.jpg"
-
-        coEvery {
-            storageManager.uploadImage(imageUri, expectedStorageRef)
-        } returns Result.success(expectedStorageRef)
-
-        coEvery {
-            propertyManager.updateProperty(
-                propertyId,
-                propertyName,
-                address,
-                "storage:$expectedStorageRef"
-            )
+            propertyManager.addProperty(propertyName, address, organizationId, null, imageUri)
         } returns Result.success(newProperty.copy(imageUrl = "storage:$expectedStorageRef"))
 
         val verificationJob = launch {
@@ -350,18 +320,7 @@ class AddPropertyViewModelTest : CoroutineTest() {
 
         // Assert
         coVerify(exactly = 1) {
-            propertyManager.addProperty(propertyName, address, organizationId, null)
-        }
-        coVerify(exactly = 1) {
-            storageManager.uploadImage(imageUri, expectedStorageRef)
-        }
-        coVerify(exactly = 1) {
-            propertyManager.updateProperty(
-                propertyId,
-                propertyName,
-                address,
-                "storage:$expectedStorageRef"
-            )
+            propertyManager.addProperty(propertyName, address, organizationId, null, imageUri)
         }
         assertFalse(viewModel.uiState.value.isLoading)
         assertFalse(viewModel.uiState.value.isUploading)
@@ -378,30 +337,15 @@ class AddPropertyViewModelTest : CoroutineTest() {
         val address = "123 Test Street"
         val organizationId = OrganizationId("org_id_1")
         val imageUri = CoreUri("file:///test.jpg")
-        val propertyId = PropertyId("test-id")
-        val newProperty = PropertyModel(
-            id = propertyId,
-            name = propertyName,
-            address = address,
-            organizationId = organizationId,
-            imageUrl = null,
-        )
 
         coEvery {
-            propertyManager.addProperty(propertyName, address, organizationId, null)
-        } returns Result.success(newProperty)
-
-        every { fileManager.getFilename(imageUri) } returns "test.jpg"
-
-        coEvery {
-            storageManager.uploadImage(any(), any())
+            propertyManager.addProperty(propertyName, address, organizationId, null, imageUri)
         } returns Result.failure(ClientRequestExceptions.InvalidRequestException("Upload failed"))
 
         val verificationJob = launch {
             windowEventBus.events.test {
                 val snackbarEvent = awaitItem() as EdifikanaWindowsEvent.ShowSnackbar
-                assertTrue(snackbarEvent.message.contains("upload failed"))
-                assertEquals(EdifikanaWindowsEvent.NavigateBack, awaitItem())
+                assertTrue(snackbarEvent.message.contains("Failed to add property"))
             }
         }
 
@@ -417,16 +361,13 @@ class AddPropertyViewModelTest : CoroutineTest() {
 
         // Assert
         coVerify(exactly = 1) {
-            propertyManager.addProperty(propertyName, address, organizationId, null)
-        }
-        coVerify(exactly = 0) {
-            propertyManager.updateProperty(any(), any(), any(), any())
+            propertyManager.addProperty(propertyName, address, organizationId, null, imageUri)
         }
     }
 
     /**
-     * Test that addProperty with custom image handles property update failure gracefully.
-     * Property is created and image is uploaded, but linking them fails.
+     * Test that addProperty with custom image handles failures gracefully.
+     * PropertyManager handles the complete flow internally and reports any failures.
      */
     @Test
     fun `test addProperty with custom image handles property update failure`() = runCoroutineTest {
@@ -435,35 +376,15 @@ class AddPropertyViewModelTest : CoroutineTest() {
         val address = "123 Test Street"
         val organizationId = OrganizationId("org_id_1")
         val imageUri = CoreUri("file:///test.jpg")
-        val propertyId = PropertyId("test-id")
-        val newProperty = PropertyModel(
-            id = propertyId,
-            name = propertyName,
-            address = address,
-            organizationId = organizationId,
-            imageUrl = null,
-        )
-        val storageRef = "private/properties/${propertyId}_test.jpg"
 
         coEvery {
-            propertyManager.addProperty(propertyName, address, organizationId, null)
-        } returns Result.success(newProperty)
-
-        every { fileManager.getFilename(imageUri) } returns "test.jpg"
-
-        coEvery {
-            storageManager.uploadImage(any(), any())
-        } returns Result.success(storageRef)
-
-        coEvery {
-            propertyManager.updateProperty(any(), any(), any(), any())
-        } returns Result.failure(Exception("Update failed"))
+            propertyManager.addProperty(propertyName, address, organizationId, null, imageUri)
+        } returns Result.failure(Exception("Property creation with image failed"))
 
         val verificationJob = launch {
             windowEventBus.events.test {
                 val snackbarEvent = awaitItem() as EdifikanaWindowsEvent.ShowSnackbar
-                assertTrue(snackbarEvent.message.contains("failed to attach image"))
-                assertEquals(EdifikanaWindowsEvent.NavigateBack, awaitItem())
+                assertTrue(snackbarEvent.message.contains("Failed to add property"))
             }
         }
 
@@ -479,13 +400,7 @@ class AddPropertyViewModelTest : CoroutineTest() {
 
         // Assert
         coVerify(exactly = 1) {
-            propertyManager.addProperty(propertyName, address, organizationId, null)
-        }
-        coVerify(exactly = 1) {
-            storageManager.uploadImage(any(), any())
-        }
-        coVerify(exactly = 1) {
-            propertyManager.updateProperty(any(), any(), any(), any())
+            propertyManager.addProperty(propertyName, address, organizationId, null, imageUri)
         }
     }
 }

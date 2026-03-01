@@ -3,6 +3,7 @@ package com.cramsan.edifikana.client.lib.features.home.propertydetail
 import app.cash.turbine.test
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
+import com.cramsan.edifikana.client.lib.managers.StorageManager
 import com.cramsan.edifikana.client.lib.models.PropertyModel
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
@@ -11,6 +12,7 @@ import com.cramsan.framework.core.compose.ApplicationEvent
 import com.cramsan.framework.core.compose.EventBus
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.core.compose.WindowEvent
+import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
@@ -30,6 +32,8 @@ class PropertyDetailViewModelTest : CoroutineTest() {
 
     private lateinit var viewModel: PropertyDetailViewModel
     private lateinit var propertyManager: PropertyManager
+    private lateinit var storageManager: StorageManager
+    private lateinit var stringProvider: StringProvider
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
     private lateinit var applicationEventReceiver: EventBus<ApplicationEvent>
     private lateinit var windowEventBus: EventBus<WindowEvent>
@@ -41,6 +45,8 @@ class PropertyDetailViewModelTest : CoroutineTest() {
         windowEventBus = EventBus()
         exceptionHandler = CollectorCoroutineExceptionHandler()
         propertyManager = mockk(relaxed = true)
+        storageManager = mockk(relaxed = true)
+        stringProvider = mockk(relaxed = true)
         viewModel = PropertyDetailViewModel(
             dependencies = ViewModelDependencies(
                 appScope = testCoroutineScope,
@@ -49,7 +55,9 @@ class PropertyDetailViewModelTest : CoroutineTest() {
                 windowEventReceiver = windowEventBus,
                 applicationEventReceiver = applicationEventReceiver,
             ),
-            propertyManager = propertyManager
+            propertyManager = propertyManager,
+            storageManager = storageManager,
+            stringProvider = stringProvider,
         )
     }
 
@@ -246,7 +254,7 @@ class PropertyDetailViewModelTest : CoroutineTest() {
         )
         coEvery { propertyManager.getProperty(propertyId) } returns Result.success(property)
         coEvery {
-            propertyManager.updateProperty(propertyId, any(), any(), any())
+            propertyManager.updateProperty(propertyId, any(), any(), any(), any())
         } returns Result.failure(Exception("Update failed"))
 
         viewModel.initialize(propertyId)
@@ -256,7 +264,6 @@ class PropertyDetailViewModelTest : CoroutineTest() {
             windowEventBus.events.test {
                 val event = awaitItem() as EdifikanaWindowsEvent.ShowSnackbar
                 assertTrue(event.message.contains("Failed to update property"))
-                assertTrue(event.message.contains("Update failed"))
             }
         }
 

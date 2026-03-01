@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -480,6 +482,21 @@ private fun EdifikanaImageSelectorPreview() {
                 onOptionSelected = { selectedOption = it },
                 placeholder = "Select a property icon",
             )
+
+            HorizontalDivider()
+
+            Text("Grid (simulates open sheet)", style = MaterialTheme.typography.labelMedium)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp),
+            ) {
+                EdifikanaImageGrid(
+                    options = options,
+                    selectedOption = selectedOption,
+                    onOptionSelected = { selectedOption = it },
+                )
+            }
         }
     }
 }
@@ -539,6 +556,21 @@ private fun EdifikanaImageSelectorWithUploadPreview() {
                 onOptionSelected = { selectedOption = it },
                 placeholder = "Select a property icon",
             )
+
+            HorizontalDivider()
+
+            Text("Grid (simulates open sheet)", style = MaterialTheme.typography.labelMedium)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp),
+            ) {
+                EdifikanaImageGrid(
+                    options = optionsWithUpload,
+                    selectedOption = selectedOption,
+                    onOptionSelected = { selectedOption = it },
+                )
+            }
         }
     }
 }
@@ -589,6 +621,109 @@ private fun EdifikanaImageSelectorWithCustomImagePreview() {
                 onOptionSelected = { selectedOption = it },
                 placeholder = "Select a property icon",
             )
+
+            HorizontalDivider()
+
+            Text("Grid (simulates open sheet)", style = MaterialTheme.typography.labelMedium)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp),
+            ) {
+                EdifikanaImageGrid(
+                    options = optionsWithUpload,
+                    selectedOption = selectedOption,
+                    onOptionSelected = { selectedOption = it },
+                )
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun EdifikanaImageSelectorGridOverflowPreview() {
+    AppTheme {
+        var selectedOption by remember { mutableStateOf<ImageOptionUIModel?>(null) }
+
+        val options = (1..12).map { i ->
+            ImageOptionUIModel(
+                id = "OPTION_$i",
+                displayName = "Option $i",
+                imageSource = ImageSource.Drawable(PropertyIcons.CASA),
+            )
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Text("Image Selector — Grid Overflow (12 items)", style = MaterialTheme.typography.headlineSmall)
+
+            EdifikanaImageSelector(
+                label = "Property Icon",
+                options = options,
+                selectedOption = selectedOption,
+                onOptionSelected = { selectedOption = it },
+                placeholder = "Select a property icon",
+            )
+
+            HorizontalDivider()
+
+            Text("Grid (simulates open sheet — scrolls at runtime)", style = MaterialTheme.typography.labelMedium)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp),
+            ) {
+                EdifikanaImageGrid(
+                    options = options,
+                    selectedOption = selectedOption,
+                    onOptionSelected = { selectedOption = it },
+                )
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun EdifikanaImageSelectorGridEmptyPreview() {
+    AppTheme {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Text("Image Selector — Empty Grid", style = MaterialTheme.typography.headlineSmall)
+
+            EdifikanaImageSelector(
+                label = "Property Icon",
+                options = emptyList(),
+                selectedOption = null,
+                onOptionSelected = {},
+                placeholder = "Select a property icon",
+            )
+
+            HorizontalDivider()
+
+            Text("Grid (simulates open sheet — empty state)", style = MaterialTheme.typography.labelMedium)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp),
+            ) {
+                EdifikanaImageGrid(
+                    options = emptyList(),
+                    selectedOption = null,
+                    onOptionSelected = {},
+                )
+            }
         }
     }
 }

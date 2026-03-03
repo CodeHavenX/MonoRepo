@@ -36,6 +36,13 @@ import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
 import com.cramsan.ui.theme.Padding
 import com.cramsan.ui.theme.Size
+import edifikana_lib.Res
+import edifikana_lib.employee_overview_add_employee_description
+import edifikana_lib.employee_overview_employee_image_description
+import edifikana_lib.employee_overview_invite_sent
+import edifikana_lib.employee_overview_no_image_description
+import edifikana_lib.employee_overview_pending_invite_description
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 /**

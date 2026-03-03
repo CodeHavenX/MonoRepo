@@ -196,4 +196,10 @@
     <string name="properties_overview_add_property_description">Agregar nueva propiedad</string>
     <string name="properties_overview_no_properties_message">Aún no hay propiedades. Toca + para agregar tu primera propiedad.</string>
     <string name="properties_overview_property_image_description">Imagen de la propiedad %1$s</string>
+
+    <string name="property_detail_screen_title">Detalles de la propiedad</string>
+    <string name="property_detail_screen_edit_title">Editar propiedad</string>
+    <string name="property_detail_screen_delete_label">Eliminar propiedad</string>
+    <string name="property_detail_screen_delete_dialog_message">¿Estás seguro de que quieres eliminar esta propiedad? Esta acción no se puede deshacer.</string>
+    <string name="property_detail_screen_delete_dialog_confirm">Eliminar</string>
 </resources>

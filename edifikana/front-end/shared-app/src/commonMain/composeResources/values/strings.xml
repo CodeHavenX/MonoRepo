@@ -197,4 +197,10 @@
     <string name="properties_overview_add_property_description">Add new property</string>
     <string name="properties_overview_no_properties_message">No properties yet. Tap + to add your first property.</string>
     <string name="properties_overview_property_image_description">Property image for %1$s</string>
+
+    <string name="property_detail_screen_title">Property Details</string>
+    <string name="property_detail_screen_edit_title">Edit Property</string>
+    <string name="property_detail_screen_delete_label">Delete Property</string>
+    <string name="property_detail_screen_delete_dialog_message">Are you sure you want to delete this property? This action cannot be undone.</string>
+    <string name="property_detail_screen_delete_dialog_confirm">Delete</string>
 </resources>

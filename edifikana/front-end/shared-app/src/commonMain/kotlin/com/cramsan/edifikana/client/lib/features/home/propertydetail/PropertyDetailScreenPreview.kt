@@ -144,3 +144,51 @@ private fun PropertyDetailScreenUploadErrorPreview() = AppTheme {
         onOpenSelectorSelected = {},
     )
 }
+
+@Preview(locale = "es")
+@Composable
+private fun PropertyDetailScreenPreview_ES() = AppTheme {
+    PropertyDetailContent(
+        content = PropertyDetailUIState(
+            isLoading = false,
+            propertyId = PropertyId("preview-property-id"),
+            name = "Edificio Las Palmeras",
+            address = "Av. Javier Prado 456, San Isidro, Lima",
+            imageUrl = "drawable:CASA",
+            isEditMode = false,
+        ),
+        onBackSelected = {},
+        onEditSelected = {},
+        onCancelEdit = {},
+        onSaveProperty = {},
+        onDeleteProperty = {},
+        onNameChanged = {},
+        onAddressChanged = {},
+        onImageUrlChanged = {},
+        onTriggerPhotoPicker = {},
+    )
+}
+
+@Preview(locale = "es")
+@Composable
+private fun PropertyDetailScreenEditModePreview_ES() = AppTheme {
+    PropertyDetailContent(
+        content = PropertyDetailUIState(
+            isLoading = false,
+            propertyId = PropertyId("preview-property-id"),
+            name = "Edificio Las Palmeras",
+            address = "Av. Javier Prado 456, San Isidro, Lima",
+            imageUrl = "drawable:QUINTA",
+            isEditMode = true,
+        ),
+        onBackSelected = {},
+        onEditSelected = {},
+        onCancelEdit = {},
+        onSaveProperty = {},
+        onDeleteProperty = {},
+        onNameChanged = {},
+        onAddressChanged = {},
+        onImageUrlChanged = {},
+        onTriggerPhotoPicker = {},
+    )
+}

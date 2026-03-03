@@ -20,7 +20,7 @@ data class AccountUIState(
             lastName = "",
             email = "",
             phoneNumber = "",
-            isPasswordSet = false,
+            isPasswordSet = null,
             isLoading = true,
             isEditable = false,
         )

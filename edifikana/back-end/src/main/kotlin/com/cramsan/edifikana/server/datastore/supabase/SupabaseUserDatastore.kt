@@ -158,7 +158,6 @@ class SupabaseUserDatastore(
                     UserEntity::id setTo userId.userId
                     UserEntity::authMetadata setTo temporaryUser.authMetadata.copy(
                         pendingAssociation = false,
-                        canPasswordAuth = true,
                     )
                 }
             ) {

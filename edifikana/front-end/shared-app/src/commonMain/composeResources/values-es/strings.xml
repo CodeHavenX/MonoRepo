@@ -178,4 +178,8 @@
     <string name="employee_overview_no_image_description">No hay imagen disponible para %1$s</string>
     <string name="employee_overview_pending_invite_description">Invitación pendiente para %1$s</string>
     <string name="employee_overview_invite_sent">Invitación enviada</string>
+
+    <string name="event_log_screen_no_events">No se encontraron eventos</string>
+    <string name="event_log_screen_today_header">Hoy</string>
+    <string name="event_log_screen_reported_by">Reportado por: %1$s</string>
 </resources>

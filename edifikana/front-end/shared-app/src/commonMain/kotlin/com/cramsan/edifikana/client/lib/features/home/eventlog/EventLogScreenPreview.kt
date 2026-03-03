@@ -83,6 +83,51 @@ private fun EventLogScreenPreview_WithEvents() = AppTheme {
     )
 }
 
+@Preview(locale = "es")
+@Composable
+private fun EventLogScreenPreview_Empty_ES() = AppTheme {
+    EventLogContent(
+        uiState = EventLogUIState(
+            isLoading = false,
+            events = emptyList(),
+        ),
+        onAddEventClick = {},
+    )
+}
+
+@Preview(locale = "es")
+@Composable
+private fun EventLogScreenPreview_WithEvents_ES() = AppTheme {
+    EventLogContent(
+        uiState = EventLogUIState(
+            isLoading = false,
+            events = listOf(
+                EventLogUIModel(
+                    id = EventLogEntryId("event-1"),
+                    title = "Fuga de agua detectada",
+                    description = "Fuga de agua encontrada en el sótano cerca de la tubería principal.",
+                    eventType = EventLogEventType.INCIDENT,
+                    fallbackEventType = null,
+                    unit = "Sótano",
+                    timeRecorded = "15 dic. 2025 10:30",
+                    employeeName = "Juan Pérez",
+                ),
+                EventLogUIModel(
+                    id = EventLogEntryId("event-2"),
+                    title = "Llegada de visita",
+                    description = "Visita llegó al departamento 301.",
+                    eventType = EventLogEventType.GUEST,
+                    fallbackEventType = null,
+                    unit = "Dpto 301",
+                    timeRecorded = "15 dic. 2025 09:15",
+                    employeeName = null,
+                ),
+            ),
+        ),
+        onAddEventClick = {},
+    )
+}
+
 @Preview
 @Composable
 private fun EventLogScreenPreview_SingleEvent() = AppTheme {

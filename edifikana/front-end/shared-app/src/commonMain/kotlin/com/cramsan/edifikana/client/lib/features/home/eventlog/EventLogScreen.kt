@@ -39,6 +39,12 @@ import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.theme.Padding
+import edifikana_lib.Res
+import edifikana_lib.event_log_screen_add_record
+import edifikana_lib.event_log_screen_no_events
+import edifikana_lib.event_log_screen_reported_by
+import edifikana_lib.event_log_screen_today_header
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -95,7 +101,7 @@ internal fun EventLogContent(
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
-                    text = "No events found",
+                    text = stringResource(Res.string.event_log_screen_no_events),
                     style = MaterialTheme.typography.bodyLarge,
                 )
             }
@@ -110,7 +116,7 @@ internal fun EventLogContent(
                 item {
                     Spacer(modifier = Modifier.height(Padding.MEDIUM))
                     Text(
-                        text = "Today",
+                        text = stringResource(Res.string.event_log_screen_today_header),
                         style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier.padding(vertical = Padding.SMALL),
                     )
@@ -140,7 +146,7 @@ internal fun EventLogContent(
                 )
             },
             text = {
-                Text(text = "Add Event")
+                Text(text = stringResource(Res.string.event_log_screen_add_record))
             },
         )
 
@@ -189,7 +195,7 @@ private fun EventLogItem(
             )
             event.employeeName?.let { name ->
                 Text(
-                    text = "Reported by: $name",
+                    text = stringResource(Res.string.event_log_screen_reported_by, name),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

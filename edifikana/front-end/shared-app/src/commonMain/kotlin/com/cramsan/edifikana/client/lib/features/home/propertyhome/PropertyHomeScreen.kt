@@ -43,9 +43,12 @@ import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.theme.Padding
 import edifikana_lib.Res
 import edifikana_lib.app_name
+import edifikana_lib.account_screen_title
 import edifikana_lib.home_screen_account_description
+import edifikana_lib.home_screen_notifications_description
 import edifikana_lib.home_screen_property_dropdown_description
 import edifikana_lib.home_screen_property_dropdown_selected_description
+import edifikana_lib.home_screen_settings_description
 import edifikana_lib.edifikana_string_event_log
 import edifikana_lib.two_pager
 import org.jetbrains.compose.resources.painterResource
@@ -260,21 +263,21 @@ fun AccountDropDown(
             onDismissRequest = { expanded = false }
         ) {
             DropdownMenuItem(
-                text = { Text("My Account") },
+                text = { Text(stringResource(Res.string.account_screen_title)) },
                 onClick = {
                     onAccountSelected()
                     expanded = false
                 },
             )
             DropdownMenuItem(
-                text = { Text("Settings") },
+                text = { Text(stringResource(Res.string.home_screen_settings_description)) },
                 onClick = {
                     onSettingsSelected()
                     expanded = false
                 },
             )
             DropdownMenuItem(
-                text = { Text("Notifications") },
+                text = { Text(stringResource(Res.string.home_screen_notifications_description)) },
                 onClick = {
                     onNotificationsSelected()
                     expanded = false

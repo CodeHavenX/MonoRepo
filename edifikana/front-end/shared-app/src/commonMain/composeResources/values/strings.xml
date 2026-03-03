@@ -110,6 +110,7 @@
     <!-- Home screen -->
     <string name="home_screen_settings_description">Settings</string>
     <string name="home_screen_account_description">My Account</string>
+    <string name="home_screen_notifications_description">Notifications</string>
     <string name="home_screen_property_dropdown_description">Properties</string>
     <string name="home_screen_property_dropdown_selected_description">Selected Property</string>
 

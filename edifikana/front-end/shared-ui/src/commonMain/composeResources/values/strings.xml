@@ -1,3 +1,4 @@
 <resources>
     <string name="edifikana_string_back_navigation">Back</string>
+    <string name="edifikana_string_selected">Selected</string>
 </resources>

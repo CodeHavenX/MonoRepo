@@ -186,4 +186,15 @@
 
     <string name="go_to_org_screen_no_properties_message">You don\'t have any properties yet. Create your first property to get started!</string>
     <string name="go_to_org_screen_get_started_button">Get Started!</string>
+
+    <string name="invite_staff_member_screen_title">Invite Staff Member</string>
+    <string name="invite_staff_member_screen_email_label">Email address</string>
+    <string name="invite_staff_member_screen_email_placeholder">e.g. name@example.com</string>
+    <string name="invite_staff_member_screen_role_label">Role</string>
+    <string name="invite_staff_member_screen_role_placeholder">Select a role</string>
+    <string name="invite_staff_member_screen_send_button">Send Invitation</string>
+
+    <string name="properties_overview_add_property_description">Add new property</string>
+    <string name="properties_overview_no_properties_message">No properties yet. Tap + to add your first property.</string>
+    <string name="properties_overview_property_image_description">Property image for %1$s</string>
 </resources>

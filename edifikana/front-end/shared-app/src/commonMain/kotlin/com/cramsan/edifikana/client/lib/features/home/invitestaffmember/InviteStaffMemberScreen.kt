@@ -37,6 +37,14 @@ import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
+import edifikana_lib.Res
+import edifikana_lib.invite_staff_member_screen_email_label
+import edifikana_lib.invite_staff_member_screen_email_placeholder
+import edifikana_lib.invite_staff_member_screen_role_label
+import edifikana_lib.invite_staff_member_screen_role_placeholder
+import edifikana_lib.invite_staff_member_screen_send_button
+import edifikana_lib.invite_staff_member_screen_title
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -98,7 +106,7 @@ internal fun InviteStaffMemberContent(
         modifier = modifier,
         topBar = {
             EdifikanaTopBar(
-                title = "Invite Staff Member",
+                title = stringResource(Res.string.invite_staff_member_screen_title),
                 onNavigationIconSelected = onBackSelected,
             )
         },
@@ -110,12 +118,12 @@ internal fun InviteStaffMemberContent(
                 EdifikanaTextField(
                     value = email,
                     onValueChange = { email = it },
-                    label = "Email address",
-                    placeholder = "e.g. name@example.com",
+                    label = stringResource(Res.string.invite_staff_member_screen_email_label),
+                    placeholder = stringResource(Res.string.invite_staff_member_screen_email_placeholder),
                     modifier = sectionModifier,
                 )
                 RoleDropdown(
-                    label = "Role",
+                    label = stringResource(Res.string.invite_staff_member_screen_role_label),
                     roles = content.roles,
                     selectedRole = selectedRole,
                     onRoleSelected = { selectedRole = it },
@@ -124,7 +132,7 @@ internal fun InviteStaffMemberContent(
             },
             buttonContent = { buttonModifier ->
                 EdifikanaPrimaryButton(
-                    text = "Send Invitation",
+                    text = stringResource(Res.string.invite_staff_member_screen_send_button),
                     modifier = buttonModifier,
                     onClick = {
                         onSendInvitationSelected(email, selectedRole)
@@ -148,7 +156,7 @@ private fun RoleDropdown(
     modifier: Modifier = Modifier,
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val displayValue = selectedRole?.displayName ?: "Select a role"
+    val displayValue = selectedRole?.displayName ?: stringResource(Res.string.invite_staff_member_screen_role_placeholder)
 
     Column(
         modifier = modifier.fillMaxWidth(),

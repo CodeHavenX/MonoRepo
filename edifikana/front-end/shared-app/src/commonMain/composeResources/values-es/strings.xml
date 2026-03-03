@@ -185,4 +185,15 @@
 
     <string name="go_to_org_screen_no_properties_message">Aún no tienes propiedades. ¡Crea tu primera propiedad para comenzar!</string>
     <string name="go_to_org_screen_get_started_button">¡Comenzar!</string>
+
+    <string name="invite_staff_member_screen_title">Invitar miembro del equipo</string>
+    <string name="invite_staff_member_screen_email_label">Correo electrónico</string>
+    <string name="invite_staff_member_screen_email_placeholder">ej. nombre@ejemplo.com</string>
+    <string name="invite_staff_member_screen_role_label">Función</string>
+    <string name="invite_staff_member_screen_role_placeholder">Selecciona una función</string>
+    <string name="invite_staff_member_screen_send_button">Enviar invitación</string>
+
+    <string name="properties_overview_add_property_description">Agregar nueva propiedad</string>
+    <string name="properties_overview_no_properties_message">Aún no hay propiedades. Toca + para agregar tu primera propiedad.</string>
+    <string name="properties_overview_property_image_description">Imagen de la propiedad %1$s</string>
 </resources>

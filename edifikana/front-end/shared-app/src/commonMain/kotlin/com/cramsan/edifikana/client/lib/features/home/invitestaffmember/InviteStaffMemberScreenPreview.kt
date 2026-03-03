@@ -25,3 +25,21 @@ private fun InviteStaffMemberScreenPreview() = AppTheme {
         onSendInvitationSelected = { _, _ -> }
     )
 }
+
+@Preview(locale = "es")
+@Composable
+private fun InviteStaffMemberScreenPreview_ES() = AppTheme {
+    InviteStaffMemberContent(
+        content = InviteStaffMemberUIState(
+            isLoading = false,
+            orgId = null,
+            roles = listOf(
+                StaffRoleUIModel(UserRole.ADMIN, "Administrador"),
+                StaffRoleUIModel(UserRole.MANAGER, "Gerente"),
+                StaffRoleUIModel(UserRole.EMPLOYEE, "Empleado"),
+            ),
+        ),
+        onBackSelected = {},
+        onSendInvitationSelected = { _, _ -> }
+    )
+}

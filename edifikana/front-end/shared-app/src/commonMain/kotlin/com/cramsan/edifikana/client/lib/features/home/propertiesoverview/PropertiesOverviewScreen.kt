@@ -35,6 +35,11 @@ import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
 import com.cramsan.ui.theme.Padding
 import com.cramsan.ui.theme.Size
+import edifikana_lib.Res
+import edifikana_lib.properties_overview_add_property_description
+import edifikana_lib.properties_overview_no_properties_message
+import edifikana_lib.properties_overview_property_image_description
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -97,7 +102,7 @@ internal fun PropertiesOverviewContent(
             ) {
                 Icon(
                     imageVector = Icons.Sharp.Add,
-                    contentDescription = "Add new property",
+                    contentDescription = stringResource(Res.string.properties_overview_add_property_description),
                 )
             }
         }
@@ -113,7 +118,7 @@ internal fun PropertiesOverviewContent(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "No properties yet. Tap + to add your first property.",
+                            text = stringResource(Res.string.properties_overview_no_properties_message),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onBackground,
                         )
@@ -157,7 +162,7 @@ private fun PropertyItem(
             ?: ImageSource.None
         EdifikanaImage(
             imageSource = imageSource,
-            contentDescription = "Property image for ${property.name}",
+            contentDescription = stringResource(Res.string.properties_overview_property_image_description, property.name),
             cornerRadius = 8.dp,
             modifier = Modifier.size(Size.xx_large),
         )

@@ -29,7 +29,15 @@ import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
+import edifikana_lib.add_property_screen_address_label
+import edifikana_lib.add_property_screen_address_placeholder
+import edifikana_lib.add_property_screen_property_icon_label
+import edifikana_lib.add_property_screen_property_icon_placeholder
+import edifikana_lib.add_property_screen_property_name_label
+import edifikana_lib.add_property_screen_property_name_placeholder
+import edifikana_lib.add_property_screen_title
 import edifikana_lib.text_add
+import edifikana_lib.text_upload
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -121,7 +129,7 @@ internal fun AddPropertyContent(
         modifier = modifier,
         topBar = {
             EdifikanaTopBar(
-                title = "Add Property", // TODO: Use string resource
+                title = stringResource(Res.string.add_property_screen_title),
                 onNavigationIconSelected = onBackSelected,
             )
         },
@@ -133,22 +141,25 @@ internal fun AddPropertyContent(
                 EdifikanaTextField(
                     value = propertyName,
                     onValueChange = { propertyName = it },
-                    label = "Property Name",
-                    placeholder = "Enter Property Name",
+                    label = stringResource(Res.string.add_property_screen_property_name_label),
+                    placeholder = stringResource(Res.string.add_property_screen_property_name_placeholder),
                     modifier = sectionModifier,
                 )
                 EdifikanaTextField(
                     value = address,
                     onValueChange = { address = it },
-                    label = "Address",
-                    placeholder = "Enter the property address",
+                    label = stringResource(Res.string.add_property_screen_address_label),
+                    placeholder = stringResource(Res.string.add_property_screen_address_placeholder),
                     modifier = sectionModifier,
                 )
                 EdifikanaImageSelector(
                     label = "Property Icon",
                     selectedOption = content.selectedIcon,
-                    placeholder = if (content.isUploading) "Uploading..." else "Select a property icon",
-                    onOpenSelectorSelected = onOpenSelectorSelected,
+                    placeholder = if (content.isUploading) {
+                        stringResource(Res.string.text_upload)
+                    } else {
+                        stringResource(Res.string.add_property_screen_property_icon_placeholder)
+                    },                    onOpenSelectorSelected = onOpenSelectorSelected,
                     modifier = sectionModifier,
                 )
             },

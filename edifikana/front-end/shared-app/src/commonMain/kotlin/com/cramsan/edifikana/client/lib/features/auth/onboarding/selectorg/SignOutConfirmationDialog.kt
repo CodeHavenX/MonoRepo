@@ -6,9 +6,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import com.cramsan.framework.core.compose.Dialog
 import edifikana_lib.Res
-import edifikana_lib.sign_out
+import edifikana_lib.edifikana_string_cancel
+import edifikana_lib.edifikana_string_sign_out
 import edifikana_lib.sign_out_onboarding_dialog_message
-import edifikana_lib.string_cancel
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -28,8 +28,8 @@ class SignOutConfirmationDialog(
                 hide()
                 onDismiss()
             },
-            title = { Text(stringResource(Res.string.sign_out)) },
-            text = { Text(stringResource(Res.string.sign_out_onboarding_dialog_message)) },
+            title = { Text(stringResource(Res.string.edifikana_string_sign_out)) },
+            text = { Text(stringResource(Res.string.edifikana_string_sign_out_onboarding_dialog_message)) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -37,7 +37,7 @@ class SignOutConfirmationDialog(
                         onConfirm()
                     }
                 ) {
-                    Text(stringResource(Res.string.sign_out))
+                    Text(stringResource(Res.string.edifikana_string_sign_out))
                 }
             },
             dismissButton = {
@@ -47,7 +47,7 @@ class SignOutConfirmationDialog(
                         onDismiss()
                     }
                 ) {
-                    Text(stringResource(Res.string.string_cancel))
+                    Text(stringResource(Res.string.edifikana_string_cancel))
                 }
             }
         )

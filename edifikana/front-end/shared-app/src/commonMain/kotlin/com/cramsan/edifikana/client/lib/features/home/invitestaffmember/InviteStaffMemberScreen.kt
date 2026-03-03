@@ -40,7 +40,7 @@ import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
 import edifikana_lib.invite_staff_member_screen_email_label
 import edifikana_lib.invite_staff_member_screen_email_placeholder
-import edifikana_lib.invite_staff_member_screen_role_label
+import edifikana_lib.edifikana_string_role
 import edifikana_lib.invite_staff_member_screen_role_placeholder
 import edifikana_lib.invite_staff_member_screen_send_button
 import edifikana_lib.invite_staff_member_screen_title
@@ -123,7 +123,7 @@ internal fun InviteStaffMemberContent(
                     modifier = sectionModifier,
                 )
                 RoleDropdown(
-                    label = stringResource(Res.string.invite_staff_member_screen_role_label),
+                    label = stringResource(Res.string.edifikana_string_role),
                     roles = content.roles,
                     selectedRole = selectedRole,
                     onRoleSelected = { selectedRole = it },

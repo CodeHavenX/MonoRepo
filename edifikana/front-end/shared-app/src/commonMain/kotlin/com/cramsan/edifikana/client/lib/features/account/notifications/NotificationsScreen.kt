@@ -41,7 +41,7 @@ import com.cramsan.ui.components.ScreenLayout
 import com.cramsan.ui.theme.Padding
 import com.cramsan.ui.theme.Size
 import edifikana_lib.Res
-import edifikana_lib.string_cancel
+import edifikana_lib.edifikana_string_cancel
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -281,7 +281,7 @@ private fun SystemNotificationItem(
         IconButton(onClick = { onDeleteNotification(notification.id) }) {
             Icon(
                 imageVector = Icons.Sharp.Close,
-                contentDescription = stringResource(Res.string.string_cancel),
+                contentDescription = stringResource(Res.string.edifikana_string_cancel),
                 // tint = Color.White,
                 modifier = Modifier.fillMaxSize()
                     .padding(5.dp)

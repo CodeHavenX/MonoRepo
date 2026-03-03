@@ -19,8 +19,8 @@ import androidx.compose.ui.unit.dp
 import com.cramsan.edifikana.client.ui.components.EdifikanaImage
 import com.cramsan.edifikana.client.ui.components.ImageSource
 import edifikana_lib.Res
-import edifikana_lib.string_cancel
-import edifikana_lib.string_confirm
+import edifikana_lib.edifikana_string_cancel
+import edifikana_lib.edifikana_string_confirm
 import org.jetbrains.compose.resources.stringResource
 
 /**
@@ -45,7 +45,7 @@ fun PhotoConfirmation(
                 IconButton(onClick = { onConfirmClick(photoUri) }) {
                     Icon(
                         imageVector = Icons.Sharp.Check,
-                        contentDescription = stringResource(Res.string.string_confirm),
+                        contentDescription = stringResource(Res.string.edifikana_string_confirm),
                         tint = Color.White,
                         modifier = Modifier.fillMaxSize()
                     )
@@ -55,7 +55,7 @@ fun PhotoConfirmation(
                 IconButton(onClick = onCancelClick) {
                     Icon(
                         imageVector = Icons.Sharp.Cancel,
-                        contentDescription = stringResource(Res.string.string_cancel),
+                        contentDescription = stringResource(Res.string.edifikana_string_cancel),
                         tint = Color.White,
                         modifier = Modifier.fillMaxSize()
                             .padding(5.dp)

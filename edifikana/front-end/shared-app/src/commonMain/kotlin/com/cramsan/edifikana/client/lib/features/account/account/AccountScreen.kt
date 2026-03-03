@@ -34,18 +34,18 @@ import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
 import com.cramsan.ui.theme.Padding
 import edifikana_lib.Res
-import edifikana_lib.account_screen_edit_button
-import edifikana_lib.account_screen_email
-import edifikana_lib.account_screen_first_name
-import edifikana_lib.account_screen_last_name
-import edifikana_lib.account_screen_password_label
 import edifikana_lib.account_screen_password_not_set
-import edifikana_lib.account_screen_phone_number
 import edifikana_lib.account_screen_save_changes_button
-import edifikana_lib.account_screen_sign_out
 import edifikana_lib.account_screen_title
 import edifikana_lib.change_password_dialog_title
-import edifikana_lib.string_cancel
+import edifikana_lib.edifikana_string_cancel
+import edifikana_lib.edifikana_string_edit
+import edifikana_lib.edifikana_string_email
+import edifikana_lib.edifikana_string_first_name
+import edifikana_lib.edifikana_string_last_name
+import edifikana_lib.edifikana_string_password
+import edifikana_lib.edifikana_string_phone_number
+import edifikana_lib.edifikana_string_sign_out
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -109,7 +109,7 @@ internal fun AccountContent(
                 IconButton(onClick = onEditClicked) {
                     Icon(
                         imageVector = if (content.isEditable) Icons.Default.Save else Icons.Default.Edit,
-                        contentDescription = stringResource(Res.string.account_screen_edit_button),
+                        contentDescription = stringResource(Res.string.edifikana_string_edit),
                     )
                 }
             }
@@ -130,12 +130,12 @@ internal fun AccountContent(
                     EdifikanaTextField(
                         value = content.firstName.orEmpty(),
                         onValueChange = onFirstNameChange,
-                        label = stringResource(Res.string.account_screen_first_name),
+                        label = stringResource(Res.string.edifikana_string_first_name),
                         modifier = modifier.focusRequester(focusRequester),
                     )
                 } else {
                     EdifikanaAccountInfoItem(
-                        label = stringResource(Res.string.account_screen_first_name),
+                        label = stringResource(Res.string.edifikana_string_first_name),
                         value = content.firstName.orEmpty(),
                         modifier = modifier,
                     )
@@ -146,13 +146,13 @@ internal fun AccountContent(
                     EdifikanaTextField(
                         value = content.lastName.orEmpty(),
                         onValueChange = onLastNameChange,
-                        label = stringResource(Res.string.account_screen_last_name),
+                        label = stringResource(Res.string.edifikana_string_last_name),
                         modifier = modifier,
                     )
                 } else {
                     EdifikanaAccountInfoItem(
                         value = content.lastName.orEmpty(),
-                        label = stringResource(Res.string.account_screen_last_name),
+                        label = stringResource(Res.string.edifikana_string_last_name),
                         modifier = modifier,
                     )
                 }
@@ -162,13 +162,13 @@ internal fun AccountContent(
                     EdifikanaTextField(
                         value = content.phoneNumber.orEmpty(),
                         onValueChange = onPhoneNumberChange,
-                        label = stringResource(Res.string.account_screen_phone_number),
+                        label = stringResource(Res.string.edifikana_string_phone_number),
                         modifier = modifier,
                     )
                 } else {
                     EdifikanaAccountInfoItem(
                         value = content.phoneNumber.orEmpty(),
-                        label = stringResource(Res.string.account_screen_phone_number),
+                        label = stringResource(Res.string.edifikana_string_phone_number),
                         modifier = modifier,
                     )
                 }
@@ -178,13 +178,13 @@ internal fun AccountContent(
                     EdifikanaTextField(
                         value = content.email.orEmpty(),
                         onValueChange = onEmailChange,
-                        label = stringResource(Res.string.account_screen_email),
+                        label = stringResource(Res.string.edifikana_string_email),
                         modifier = modifier,
                     )
                 } else {
                     EdifikanaAccountInfoItem(
                         value = content.email.orEmpty(),
-                        label = stringResource(Res.string.account_screen_email),
+                        label = stringResource(Res.string.edifikana_string_email),
                         modifier = modifier,
                     )
                 }
@@ -194,7 +194,7 @@ internal fun AccountContent(
                     value = if (content.isPasswordSet == true) "********"
                     else if (content.isPasswordSet == null) ""
                     else stringResource(Res.string.account_screen_password_not_set),
-                    label = stringResource(Res.string.account_screen_password_label),
+                    label = stringResource(Res.string.edifikana_string_password),
                     modifier = modifier,
                 )
 
@@ -216,7 +216,7 @@ internal fun AccountContent(
                     }
 
                     EdifikanaSecondaryButton(
-                        text = stringResource(Res.string.string_cancel),
+                        text = stringResource(Res.string.edifikana_string_cancel),
                         modifier = modifier,
                         enabled = !content.isLoading,
                         onClick = onCancelEdit,
@@ -229,7 +229,7 @@ internal fun AccountContent(
                         enabled = !content.isLoading,
                         onClick = onSignOutClicked,
                     ) {
-                        Text(text = stringResource(Res.string.account_screen_sign_out))
+                        Text(text = stringResource(Res.string.edifikana_string_sign_out))
                     }
                 }
             }, overlay = {

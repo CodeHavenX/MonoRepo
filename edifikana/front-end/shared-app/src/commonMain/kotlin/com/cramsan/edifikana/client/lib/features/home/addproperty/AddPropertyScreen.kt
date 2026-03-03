@@ -36,8 +36,8 @@ import edifikana_lib.add_property_screen_property_icon_placeholder
 import edifikana_lib.add_property_screen_property_name_label
 import edifikana_lib.add_property_screen_property_name_placeholder
 import edifikana_lib.add_property_screen_title
-import edifikana_lib.text_add
-import edifikana_lib.text_upload
+import edifikana_lib.edifikana_string_add
+import edifikana_lib.edifikana_string_upload
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -156,7 +156,7 @@ internal fun AddPropertyContent(
                     label = "Property Icon",
                     selectedOption = content.selectedIcon,
                     placeholder = if (content.isUploading) {
-                        stringResource(Res.string.text_upload)
+                        stringResource(Res.string.edifikana_string_upload)
                     } else {
                         stringResource(Res.string.add_property_screen_property_icon_placeholder)
                     },                    onOpenSelectorSelected = onOpenSelectorSelected,
@@ -165,7 +165,7 @@ internal fun AddPropertyContent(
             },
             buttonContent = { buttonModifier ->
                 EdifikanaPrimaryButton(
-                    text = stringResource(Res.string.text_add),
+                    text = stringResource(Res.string.edifikana_string_add),
                     modifier = buttonModifier,
                     enabled = !content.isUploading,
                     onClick = {

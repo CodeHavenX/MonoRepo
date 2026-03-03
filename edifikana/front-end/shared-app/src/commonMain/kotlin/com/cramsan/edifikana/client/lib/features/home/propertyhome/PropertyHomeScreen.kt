@@ -46,7 +46,7 @@ import edifikana_lib.app_name
 import edifikana_lib.home_screen_account_description
 import edifikana_lib.home_screen_property_dropdown_description
 import edifikana_lib.home_screen_property_dropdown_selected_description
-import edifikana_lib.string_event_log_title
+import edifikana_lib.edifikana_string_event_log
 import edifikana_lib.two_pager
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -96,7 +96,7 @@ private val BottomBarDestinationUiModels = listOf<BottomBarDestinationUiModel>(
     BottomBarDestinationUiModel(
         Tabs.EventLog,
         Res.drawable.two_pager,
-        Res.string.string_event_log_title,
+        Res.string.edifikana_string_event_log,
         isStartDestination = true,
     ),
     /*

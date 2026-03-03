@@ -29,8 +29,8 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import edifikana_lib.Res
-import edifikana_lib.text_flip_camera
-import edifikana_lib.text_take_photo
+import edifikana_lib.edifikana_string_flip_camera
+import edifikana_lib.edifikana_string_take_photo
 import org.jetbrains.compose.resources.stringResource
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -94,7 +94,7 @@ fun CameraPreview(
                 IconButton(onClick = { onShutterButtonClick(imageCapture) }) {
                     Icon(
                         imageVector = Icons.Sharp.Lens,
-                        contentDescription = stringResource(Res.string.text_take_photo),
+                        contentDescription = stringResource(Res.string.edifikana_string_take_photo),
                         tint = Color.White,
                         modifier = Modifier
                             .border(1.dp, Color.White, CircleShape)
@@ -106,7 +106,7 @@ fun CameraPreview(
                 IconButton(onClick = onToggleCameraClick) {
                     Icon(
                         imageVector = Icons.Sharp.FlipCameraAndroid,
-                        contentDescription = stringResource(Res.string.text_flip_camera),
+                        contentDescription = stringResource(Res.string.edifikana_string_flip_camera),
                         tint = Color.White,
                         modifier = Modifier
                             .padding(5.dp)

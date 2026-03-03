@@ -9,7 +9,7 @@ import edifikana_lib.Res
 import edifikana_lib.join_org_dialog_confirm_button
 import edifikana_lib.join_org_dialog_message
 import edifikana_lib.join_org_dialog_title
-import edifikana_lib.string_cancel
+import edifikana_lib.edifikana_string_cancel
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -48,7 +48,7 @@ class JoinOrgConfirmationDialog(
                         onDismiss()
                     }
                 ) {
-                    Text(stringResource(Res.string.string_cancel))
+                    Text(stringResource(Res.string.edifikana_string_cancel))
                 }
             }
         )

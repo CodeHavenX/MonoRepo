@@ -46,13 +46,13 @@ import edifikana_lib.add_property_screen_address_label
 import edifikana_lib.add_property_screen_property_icon_label
 import edifikana_lib.add_property_screen_property_icon_placeholder
 import edifikana_lib.add_property_screen_property_name_label
-import edifikana_lib.property_detail_screen_delete_dialog_confirm
+import edifikana_lib.edifikana_string_cancel
+import edifikana_lib.edifikana_string_delete
+import edifikana_lib.edifikana_string_save
 import edifikana_lib.property_detail_screen_delete_dialog_message
 import edifikana_lib.property_detail_screen_delete_label
 import edifikana_lib.property_detail_screen_edit_title
 import edifikana_lib.property_detail_screen_title
-import edifikana_lib.string_cancel
-import edifikana_lib.string_save
 import edifikana_lib.text_upload
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -246,13 +246,13 @@ internal fun PropertyDetailContent(
             buttonContent = if (content.isEditMode) {
                 { buttonModifier ->
                     EdifikanaPrimaryButton(
-                        text = stringResource(Res.string.string_save),
+                        text = stringResource(Res.string.edifikana_string_save),
                         modifier = buttonModifier,
                         enabled = !content.isUploading,
                         onClick = onSaveProperty,
                     )
                     EdifikanaSecondaryButton(
-                        text = stringResource(Res.string.string_cancel),
+                        text = stringResource(Res.string.edifikana_string_cancel),
                         modifier = buttonModifier,
                         onClick = onCancelEdit,
                     )
@@ -278,12 +278,12 @@ internal fun PropertyDetailContent(
                         onDeleteProperty()
                     }
                 ) {
-                    Text(stringResource(Res.string.property_detail_screen_delete_dialog_confirm))
+                    Text(stringResource(Res.string.edifikana_string_delete))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = false }) {
-                    Text(stringResource(Res.string.string_cancel))
+                    Text(stringResource(Res.string.edifikana_string_cancel))
                 }
             }
         )

@@ -23,6 +23,15 @@ import com.cramsan.framework.core.compose.rememberDialogController
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
+import edifikana_lib.Res
+import edifikana_lib.create_new_org_screen_title
+import edifikana_lib.select_org_screen_create_workspace_description
+import edifikana_lib.select_org_screen_create_workspace_title
+import edifikana_lib.select_org_screen_heading
+import edifikana_lib.select_org_screen_join_team_description
+import edifikana_lib.select_org_screen_join_team_title
+import edifikana_lib.select_org_screen_subtitle
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -91,7 +100,7 @@ internal fun SelectOrgContent(
         modifier = modifier,
         topBar = {
             EdifikanaTopBar(
-                title = "Get Started",
+                title = stringResource(Res.string.create_new_org_screen_title),
                 onNavigationIconSelected = onSignOutClicked,
             )
         }
@@ -106,7 +115,7 @@ internal fun SelectOrgContent(
             sectionContent = { sectionModifier ->
                 // Title
                 Text(
-                    text = "How do you want to start?",
+                    text = stringResource(Res.string.select_org_screen_heading),
                     style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.Bold,
                     modifier = sectionModifier,
@@ -114,7 +123,7 @@ internal fun SelectOrgContent(
 
                 // Subtitle
                 Text(
-                    text = "Choose how you want to manage your properties.",
+                    text = stringResource(Res.string.select_org_screen_subtitle),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = sectionModifier,
@@ -124,7 +133,7 @@ internal fun SelectOrgContent(
                     uiState.inviteList.forEach { invite ->
                         // Join existing team option
                         OptionCard(
-                            title = "Join an existing team",
+                            title = stringResource(Res.string.select_org_screen_join_team_title),
                             description = invite.description,
                             icon = Icons.Default.Groups,
                             onClick = { onJoinOrganizationClicked(invite.inviteId) },
@@ -132,10 +141,10 @@ internal fun SelectOrgContent(
                         )
                     }
                 } else {
-                    // Join existing team option
+                    // Join existing team option (disabled, no invites)
                     OptionCard(
-                        title = "Join an existing team",
-                        description = "I have an invite code or want to search for my company.",
+                        title = stringResource(Res.string.select_org_screen_join_team_title),
+                        description = stringResource(Res.string.select_org_screen_join_team_description),
                         icon = Icons.Default.Groups,
                         colors = CardDefaults.cardColors().copy(
                             containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
@@ -148,8 +157,8 @@ internal fun SelectOrgContent(
 
                 // Create new workspace option
                 OptionCard(
-                    title = "Create a new workspace",
-                    description = "I want to set up a new property portfolio for my team.",
+                    title = stringResource(Res.string.select_org_screen_create_workspace_title),
+                    description = stringResource(Res.string.select_org_screen_create_workspace_description),
                     icon = Icons.Default.Domain,
                     onClick = onCreateWorkspaceClicked,
                     modifier = sectionModifier,

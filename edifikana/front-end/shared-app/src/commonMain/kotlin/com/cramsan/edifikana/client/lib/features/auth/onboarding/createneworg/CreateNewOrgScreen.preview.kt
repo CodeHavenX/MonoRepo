@@ -47,3 +47,41 @@ private fun CreateNewOrgScreenWithContentPreview() {
         )
     }
 }
+
+@Preview(locale = "es")
+@Composable
+private fun CreateNewOrgScreenPreview_ES() {
+    AppTheme {
+        CreateNewOrgContent(
+            content = CreateNewOrgUIState(
+                organizationName = "",
+                organizationDescription = "",
+                isLoading = false,
+                isButtonEnabled = false,
+            ),
+            onBackSelected = {},
+            onOrganizationNameChanged = {},
+            onOrganizationDescriptionChanged = {},
+            onCreateOrganizationClicked = {},
+        )
+    }
+}
+
+@Preview(locale = "es")
+@Composable
+private fun CreateNewOrgScreenWithContentPreview_ES() {
+    AppTheme {
+        CreateNewOrgContent(
+            content = CreateNewOrgUIState(
+                organizationName = "Acme Propiedades",
+                organizationDescription = "Gestión de propiedades residenciales en el centro.",
+                isLoading = false,
+                isButtonEnabled = true,
+            ),
+            onBackSelected = {},
+            onOrganizationNameChanged = {},
+            onOrganizationDescriptionChanged = {},
+            onCreateOrganizationClicked = {},
+        )
+    }
+}

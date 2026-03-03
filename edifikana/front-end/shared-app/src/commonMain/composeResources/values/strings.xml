@@ -30,6 +30,7 @@
     <string name="edifikana_string_add">Add</string>
     <string name="edifikana_string_edit">Edit</string>
     <string name="edifikana_string_delete">Delete</string>
+    <string name="edifikana_string_decline">Decline</string>
     <string name="edifikana_string_share">Share</string>
     <string name="edifikana_string_accept">Accept</string>
     <string name="edifikana_string_upload">Uploading</string>
@@ -205,6 +206,12 @@
     <string name="invite_staff_member_screen_email_placeholder">e.g. name@example.com</string>
     <string name="invite_staff_member_screen_role_placeholder">Select a role</string>
     <string name="invite_staff_member_screen_send_button">Send Invitation</string>
+
+    <!-- Notifications screen -->
+    <string name="notifications_screen_no_notifications">No notifications</string>
+    <string name="notifications_screen_invitation_description">Invitation</string>
+    <string name="notifications_screen_organization_invite_title">Organization Invite</string>
+    <string name="notifications_screen_system_notification_description">System notification</string>
 
     <!-- Properties overview screen -->
     <string name="properties_overview_add_property_description">Add new property</string>

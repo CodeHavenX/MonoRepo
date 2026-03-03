@@ -30,6 +30,7 @@
     <string name="edifikana_string_add">Agregar</string>
     <string name="edifikana_string_edit">Editar</string>
     <string name="edifikana_string_delete">Eliminar</string>
+    <string name="edifikana_string_decline">Rechazar</string>
     <string name="edifikana_string_share">Compartir</string>
     <string name="edifikana_string_accept">Aceptar</string>
     <string name="edifikana_string_upload">Subiendo</string>
@@ -205,6 +206,12 @@
     <string name="invite_staff_member_screen_email_placeholder">ej. nombre@ejemplo.com</string>
     <string name="invite_staff_member_screen_role_placeholder">Selecciona una función</string>
     <string name="invite_staff_member_screen_send_button">Enviar invitación</string>
+
+    <!-- Notifications screen -->
+    <string name="notifications_screen_no_notifications">Sin notificaciones</string>
+    <string name="notifications_screen_invitation_description">Invitación</string>
+    <string name="notifications_screen_organization_invite_title">Invitación de organización</string>
+    <string name="notifications_screen_system_notification_description">Notificación del sistema</string>
 
     <!-- Properties overview screen -->
     <string name="properties_overview_add_property_description">Agregar nueva propiedad</string>

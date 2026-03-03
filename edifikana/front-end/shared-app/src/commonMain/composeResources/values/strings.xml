@@ -1,152 +1,161 @@
 <resources>
     <string name="app_name">Edifikana</string>
 
-    <string name="sign_out">Sign Out</string>
+    <!-- Role types -->
     <string name="role_admin">Office Manager</string>
     <string name="role_security">Security</string>
     <string name="role_security_cover">Security-Cover</string>
     <string name="role_limpieza">Cleaning</string>
     <string name="role_unknown">Unknown</string>
 
+    <!-- Time card event types -->
     <string name="time_card_event_clock_in">Clock-In</string>
     <string name="time_card_event_clock_out">Clock-Out</string>
 
+    <!-- ID types -->
     <string name="id_type_dni">DNI</string>
     <string name="id_type_ce">CE</string>
     <string name="id_type_passport">Passport</string>
-    <string name="id_type_other">Other</string>
 
+    <!-- Event types -->
     <string name="event_type_guest">Guest</string>
     <string name="event_type_delivery">Delivery</string>
     <string name="event_type_incident">Incident/Security</string>
     <string name="event_type_maintenance_service">Maintenance/Servicing</string>
-    <string name="event_type_other">Other</string>
 
-    <!-- Strings -->
-    <string name="string_id_number">Document Number</string>
-    <string name="string_id_type">Document Type</string>
-    <string name="string_names">First Name</string>
-    <string name="string_last_names">Last Name</string>
-    <string name="string_role">Role</string>
-    <string name="string_save">Save</string>
-    <string name="string_confirm">Confirm</string>
-    <string name="string_cancel">Cancel</string>
+    <!-- Common action strings -->
+    <string name="edifikana_string_save">Save</string>
+    <string name="edifikana_string_cancel">Cancel</string>
+    <string name="edifikana_string_confirm">Confirm</string>
+    <string name="edifikana_string_add">Add</string>
+    <string name="edifikana_string_edit">Edit</string>
+    <string name="edifikana_string_delete">Delete</string>
+    <string name="edifikana_string_share">Share</string>
+    <string name="edifikana_string_accept">Accept</string>
+    <string name="edifikana_string_upload">Uploading</string>
+    <string name="edifikana_string_other">Other</string>
+
+    <!-- Common navigation strings -->
+    <string name="edifikana_string_back_navigation">Back</string>
+
+    <!-- Common auth / user field strings -->
+    <string name="edifikana_string_sign_out">Sign Out</string>
+    <string name="edifikana_string_sign_up">Sign Up</string>
+    <string name="edifikana_string_email">Email</string>
+    <string name="edifikana_string_password">Password</string>
+    <string name="edifikana_string_phone_number">Phone Number</string>
+    <string name="edifikana_string_first_name">First Name</string>
+    <string name="edifikana_string_last_name">Last Name</string>
+    <string name="edifikana_string_role">Role</string>
+    <string name="edifikana_string_id_number">Document Number</string>
+    <string name="edifikana_string_id_type">Document Type</string>
+
+    <!-- Common employee strings -->
+    <string name="edifikana_string_employee">Employee</string>
+    <string name="edifikana_string_employee_name">Employee Name</string>
+    <string name="edifikana_string_employee_list">Employee List</string>
+    <string name="edifikana_string_add_employee">Add Employee</string>
+    <string name="edifikana_string_clock_in">Clock In</string>
+    <string name="edifikana_string_clock_out">Clock Out</string>
+
+    <!-- Common event log strings -->
+    <string name="edifikana_string_event_log">Event Log</string>
+    <string name="edifikana_string_assistance">Attendance</string>
+    <string name="edifikana_string_event_type">Event Type</string>
+    <string name="edifikana_string_apartment">Apartment</string>
+    <string name="edifikana_string_simple_description">Simple Description</string>
+    <string name="edifikana_string_full_description">Full Description</string>
+    <string name="edifikana_string_forms">Forms</string>
+    <string name="edifikana_string_view_records">View Records</string>
+    <string name="edifikana_string_field_event">Event:</string>
+    <string name="edifikana_string_field_date_time">Date and Time:</string>
+    <string name="edifikana_string_field_unit">Unit #:</string>
+
+    <!-- Common camera / media strings -->
+    <string name="edifikana_string_camera">Camera</string>
+    <string name="edifikana_string_gallery">Gallery</string>
+    <string name="edifikana_string_take_photo">Take Photo</string>
+    <string name="edifikana_string_flip_camera">Flip Camera</string>
+    <string name="edifikana_string_error_take_photo">There was an error loading the photo</string>
+    <string name="edifikana_string_permissions_camera">To take photos, you need to give permission to use the camera.</string>
+    <string name="edifikana_string_permissions_open_setting">Open Settings</string>
+
+    <!-- Common error / status strings -->
+    <string name="edifikana_string_please_complete_fields">Please complete all fields.</string>
+    <string name="edifikana_string_error_processing_request">There was an error processing the request.</string>
+
+    <!-- Error messages -->
     <string name="error_message_unexpected_error">There was an unexpected error.</string>
-    <string name="error_message_invalid_credentials">Username and/or password didn't match our records.</string>
-    <string name="string_field_event">Event:</string>
-    <string name="string_field_date_time">Date and Time:</string>
-    <string name="string_field_unit">Unit #:</string>
-    <string name="string_share">Share</string>
-    <string name="string_add">Add</string>
-    <string name="string_camera">Camera</string>
-    <string name="string_gallery">Gallery</string>
-    <string name="string_event_log_title">Event Log</string>
-    <string name="string_assistance">Attendance</string>
-    <string name="string_back_navigation">Back</string>
-    <string name="text_accept">Accept</string>
-    <string name="text_take_photo">Take Photo</string>
-    <string name="text_error_take_photo">There was an error loading the photo</string>
-    <string name="string_other">Other</string>
-    <string name="text_please_complete_fields">Please complete all fields.</string>
-    <string name="text_there_was_an_error_processing_request">There was an error processing the request.</string>
-    <string name="text_clock_in">Clock In</string>
-    <string name="text_clock_out">Clock Out</string>
-    <string name="text_employee">Employee</string>
-    <string name="text_event_type">Event Type</string>
-    <string name="text_apartment">Apartment</string>
-    <string name="text_simple_desc">Simple Description</string>
-    <string name="text_full_desc">Full Description</string>
-    <string name="text_add">Add</string>
-    <string name="text_flip_camera">Flip Camera</string>
-    <string name="text_employee_name">Employee Name</string>
-    <string name="text_forms">Forms</string>
-    <string name="text_view_records">View Records</string>
-    <string name="text_upload">Uploading</string>
+    <string name="error_message_invalid_credentials">Username and/or password didn\'t match our records.</string>
     <string name="error_message_currently_uploading">Processing… Please wait a few seconds…</string>
 
-
-    <string name="text_permissions_camera">To take photos, you need to give permission to use the camera.</string>
-    <string name="text_permissions_open_setting">Open Settings</string>
-
-    <string name="title_event_log">Event Log</string>
-    <string name="title_event_log_add">Add Event</string>
-    <string name="title_event_log_view">View Event</string>
-    <string name="title_form_list">Form List</string>
-    <string name="title_form_entry">Form Entry</string>
-    <string name="title_form_record">Form Record</string>
-    <string name="title_form_record_view">View Form Record</string>
-    <string name="title_timecard">Attendance Control</string>
-    <string name="title_timecard_add_employee">Add Employee</string>
-    <string name="title_timecard_view_employee">Employee</string>
-    <string name="title_timecard_employee_list">Employee List</string>
-
+    <!-- Sign in screen -->
     <string name="sign_in_screen_text_sign_in">Continue with password</string>
     <string name="sign_in_screen_text_sign_in_password">Sign in</string>
     <string name="sign_in_screen_text_sign_in_otp">Sign in with OTP</string>
-    <string name="sign_in_screen_text_email">Email</string>
-    <string name="sign_in_screen_text_password">Password</string>
-    <string name="sign_in_screen_text_sign_up">Sign Up</string>
 
-    <string name="sign_up_screen_text_first_name">First Name</string>
-    <string name="sign_up_screen_text_last_name">Last Name</string>
-    <string name="sign_up_screen_text_email">Email</string>
-    <string name="sign_up_screen_text_phone_number">Phone Number</string>
-    <string name="sign_up_screen_text_password">Password</string>
-    <string name="sign_up_screen_text_sign_up">Sign Up</string>
-    <string name="sign_up_screen_text_policy">By creating an account, I accept Edifikans's Terms of Service and Privacy Policy.</string>
+    <!-- Sign up screen -->
+    <string name="sign_up_screen_text_policy">By creating an account, I accept Edifikans\'s Terms of Service and Privacy Policy.</string>
 
-    <string name="otp_validation_screen_text">We've sent an OTP code to your email. Please enter your code below.</string>
+    <!-- OTP validation screen -->
+    <string name="otp_validation_screen_text">We\'ve sent an OTP code to your email. Please enter your code below.</string>
+    <string name="otp_validation_screen_image_description">Validation Image</string>
+    <string name="otp_validation_screen_login_button">Login</string>
 
+    <!-- Account screen -->
     <string name="account_screen_title">My Account</string>
-    <string name="account_screen_edit_button">Edit</string>
-    <string name="account_screen_first_name">First Name</string>
-    <string name="account_screen_last_name">Last Name</string>
-    <string name="account_screen_email">Email</string>
-    <string name="account_screen_phone_number">Phone Number</string>
-    <string name="account_screen_sign_out">Sign Out</string>
+    <string name="account_screen_password_not_set">Not Set</string>
+    <string name="account_screen_save_changes_button">Save Changes</string>
 
-    <string name="properties_screen_title">Properties</string>
-    <string name="properties_screen_add_button">Add Property</string>
-
-    <string name="signup_screen_title">Create Account</string>
-
+    <!-- Home screen -->
     <string name="home_screen_settings_description">Settings</string>
     <string name="home_screen_account_description">My Account</string>
     <string name="home_screen_property_dropdown_description">Properties</string>
     <string name="home_screen_property_dropdown_selected_description">Selected Property</string>
 
-    <string name="event_log_screen_add_record">Add Event</string>
+    <!-- Properties screen -->
+    <string name="properties_screen_title">Properties</string>
+    <string name="properties_screen_add_button">Add Property</string>
+    <string name="signup_screen_title">Create Account</string>
 
-    <string name="view_record_screen_title">View Record</string>
-
-    <string name="add_record_screen_title">Add Record</string>
-
-    <string name="employee_list_screen_title">Employee List</string>
-    <string name="employee_list_screen_add_button_description">Add Employee</string>
-
-    <string name="add_employee_screen_title">Add Employee</string>
-
-    <string name="time_card_screen_add_event">Add Event</string>
-
+    <!-- Hub screen -->
     <string name="hub_screen_properties_button_title">Properties</string>
     <string name="hub_screen_employee_button_title">Team</string>
 
+    <!-- Event log screens -->
+    <string name="event_log_screen_add_record">Add Event</string>
+    <string name="view_record_screen_title">View Record</string>
+    <string name="add_record_screen_title">Add Record</string>
+    <string name="title_event_log_add">Add Event</string>
+    <string name="title_event_log_view">View Event</string>
+
+    <!-- Form screens -->
+    <string name="title_form_list">Form List</string>
+    <string name="title_form_entry">Form Entry</string>
+    <string name="title_form_record">Form Record</string>
+    <string name="title_form_record_view">View Form Record</string>
+
+    <!-- Timecard screens -->
+    <string name="title_timecard">Attendance Control</string>
+    <string name="title_timecard_view_employee">Employee</string>
+    <string name="time_card_screen_add_event">Add Event</string>
+
+    <!-- Change password dialog -->
     <string name="change_password_dialog_title">Change Password</string>
     <string name="change_password_dialog_current_password">Current password</string>
     <string name="change_password_dialog_new_password">New password</string>
     <string name="change_password_dialog_confirm_password">Confirm password</string>
     <string name="change_password_dialog_submit">Submit</string>
 
-    <string name="account_screen_password_label">Password</string>
-    <string name="account_screen_password_not_set">Not Set</string>
-    <string name="account_screen_save_changes_button">Save Changes</string>
-
+    <!-- Join org dialog -->
     <string name="join_org_dialog_title">Join Organization</string>
     <string name="join_org_dialog_message">Are you sure you want to join this organization</string>
     <string name="join_org_dialog_confirm_button">Join</string>
 
+    <!-- Sign out onboarding dialog -->
     <string name="sign_out_onboarding_dialog_message">Are you sure you want to sign out and leave the onboarding process?</string>
 
+    <!-- Create new org screen -->
     <string name="create_new_org_screen_title">Get Started</string>
     <string name="create_new_org_screen_heading">Create New Organization</string>
     <string name="create_new_org_screen_subtitle">Enter the details for your new team workspace.</string>
@@ -156,6 +165,7 @@
     <string name="create_new_org_screen_org_description_placeholder">Briefly describe what this workspace is for...</string>
     <string name="create_new_org_screen_create_button">Create Organization</string>
 
+    <!-- Select org screen -->
     <string name="select_org_screen_heading">How do you want to start?</string>
     <string name="select_org_screen_subtitle">Choose how you want to manage your properties.</string>
     <string name="select_org_screen_join_team_title">Join an existing team</string>
@@ -163,9 +173,7 @@
     <string name="select_org_screen_create_workspace_title">Create a new workspace</string>
     <string name="select_org_screen_create_workspace_description">I want to set up a new property portfolio for my team.</string>
 
-    <string name="otp_validation_screen_image_description">Validation Image</string>
-    <string name="otp_validation_screen_login_button">Login</string>
-
+    <!-- Add property screen -->
     <string name="add_property_screen_title">Add Property</string>
     <string name="add_property_screen_property_name_label">Property Name</string>
     <string name="add_property_screen_property_name_placeholder">Enter Property Name</string>
@@ -174,33 +182,37 @@
     <string name="add_property_screen_property_icon_label">Property Icon</string>
     <string name="add_property_screen_property_icon_placeholder">Select a property icon</string>
 
+    <!-- Employee overview screen -->
     <string name="employee_overview_add_employee_description">Add new employee</string>
     <string name="employee_overview_employee_image_description">Employee image for %1$s</string>
     <string name="employee_overview_no_image_description">No image available for %1$s</string>
     <string name="employee_overview_pending_invite_description">Pending invite for %1$s</string>
     <string name="employee_overview_invite_sent">Invite sent</string>
 
+    <!-- Event log screen -->
     <string name="event_log_screen_no_events">No events found</string>
     <string name="event_log_screen_today_header">Today</string>
     <string name="event_log_screen_reported_by">Reported by: %1$s</string>
 
+    <!-- Go to org screen -->
     <string name="go_to_org_screen_no_properties_message">You don\'t have any properties yet. Create your first property to get started!</string>
     <string name="go_to_org_screen_get_started_button">Get Started!</string>
 
+    <!-- Invite staff member screen -->
     <string name="invite_staff_member_screen_title">Invite Staff Member</string>
     <string name="invite_staff_member_screen_email_label">Email address</string>
     <string name="invite_staff_member_screen_email_placeholder">e.g. name@example.com</string>
-    <string name="invite_staff_member_screen_role_label">Role</string>
     <string name="invite_staff_member_screen_role_placeholder">Select a role</string>
     <string name="invite_staff_member_screen_send_button">Send Invitation</string>
 
+    <!-- Properties overview screen -->
     <string name="properties_overview_add_property_description">Add new property</string>
     <string name="properties_overview_no_properties_message">No properties yet. Tap + to add your first property.</string>
     <string name="properties_overview_property_image_description">Property image for %1$s</string>
 
+    <!-- Property detail screen -->
     <string name="property_detail_screen_title">Property Details</string>
     <string name="property_detail_screen_edit_title">Edit Property</string>
     <string name="property_detail_screen_delete_label">Delete Property</string>
     <string name="property_detail_screen_delete_dialog_message">Are you sure you want to delete this property? This action cannot be undone.</string>
-    <string name="property_detail_screen_delete_dialog_confirm">Delete</string>
 </resources>

@@ -12,7 +12,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import edifikana_ui.Res
-import edifikana_ui.string_back_navigation
+import edifikana_ui.edifikana_string_back_navigation
 import org.jetbrains.compose.resources.stringResource
 
 /**
@@ -38,7 +38,7 @@ fun EdifikanaTopBar(
                 ) {
                     Icon(
                         imageVector = navigationIcon,
-                        contentDescription = stringResource(Res.string.string_back_navigation)
+                        contentDescription = stringResource(Res.string.edifikana_string_back_navigation)
                     )
                 }
             }

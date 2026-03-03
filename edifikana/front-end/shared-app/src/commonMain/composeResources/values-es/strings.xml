@@ -32,6 +32,7 @@
     <string name="string_confirm">Confirmar</string>
     <string name="string_cancel">Cancelar</string>
     <string name="error_message_unexpected_error">Hubo un error inesperado.</string>
+    <string name="error_message_invalid_credentials">El usuario y/o contraseña no coinciden con nuestros registros.</string>
     <string name="string_field_event">Evento:</string>
     <string name="string_field_date_time">Fecha y hora:</string>
     <string name="string_field_unit">Dpto:</string>
@@ -42,8 +43,6 @@
     <string name="string_event_log_title">Libro de Ocurrencias</string>
     <string name="string_assistance">Asistencia</string>
     <string name="string_back_navigation">Atrás</string>
-    <string name="text_input_activation_code">Ingrese el código de activación</string>
-    <string name="text_code">Código</string>
     <string name="text_accept">Aceptar</string>
     <string name="text_take_photo">Tomar foto</string>
     <string name="text_error_take_photo">Hubo un error cargando la foto</string>
@@ -127,4 +126,56 @@
     <string name="add_employee_screen_title">Agregar Empleado</string>
 
     <string name="time_card_screen_add_event">Agregar Evento</string>
+
+    <string name="hub_screen_properties_button_title">Propiedades</string>
+    <string name="hub_screen_employee_button_title">Equipo</string>
+
+    <string name="change_password_dialog_title">Cambiar Contraseña</string>
+    <string name="change_password_dialog_current_password">Contraseña actual</string>
+    <string name="change_password_dialog_new_password">Nueva contraseña</string>
+    <string name="change_password_dialog_confirm_password">Confirmar contraseña</string>
+    <string name="change_password_dialog_submit">Enviar</string>
+
+    <string name="account_screen_password_label">Contraseña</string>
+    <string name="account_screen_password_not_set">No configurada</string>
+    <string name="account_screen_save_changes_button">Guardar cambios</string>
+
+    <string name="join_org_dialog_title">Unirse a la organización</string>
+    <string name="join_org_dialog_message">¿Estás seguro de que quieres unirte a esta organización?</string>
+    <string name="join_org_dialog_confirm_button">Unirse</string>
+
+    <string name="sign_out_onboarding_dialog_message">¿Estás seguro de que quieres cerrar sesión y salir del proceso de registro?</string>
+
+    <string name="create_new_org_screen_title">Comenzar</string>
+    <string name="create_new_org_screen_heading">Crear nueva organización</string>
+    <string name="create_new_org_screen_subtitle">Ingresa los detalles de tu nuevo espacio de trabajo.</string>
+    <string name="create_new_org_screen_org_name_label">Nombre de la organización</string>
+    <string name="create_new_org_screen_org_name_placeholder">ej. Acme Propiedades</string>
+    <string name="create_new_org_screen_org_description_label">Descripción de la organización</string>
+    <string name="create_new_org_screen_org_description_placeholder">Describe brevemente para qué es este espacio...</string>
+    <string name="create_new_org_screen_create_button">Crear organización</string>
+
+    <string name="select_org_screen_heading">¿Cómo quieres comenzar?</string>
+    <string name="select_org_screen_subtitle">Elige cómo quieres gestionar tus propiedades.</string>
+    <string name="select_org_screen_join_team_title">Unirse a un equipo existente</string>
+    <string name="select_org_screen_join_team_description">Tengo un código de invitación o quiero buscar mi empresa.</string>
+    <string name="select_org_screen_create_workspace_title">Crear un nuevo espacio de trabajo</string>
+    <string name="select_org_screen_create_workspace_description">Quiero configurar un nuevo portafolio de propiedades para mi equipo.</string>
+
+    <string name="otp_validation_screen_image_description">Imagen de validación</string>
+    <string name="otp_validation_screen_login_button">Iniciar sesión</string>
+
+    <string name="add_property_screen_title">Agregar propiedad</string>
+    <string name="add_property_screen_property_name_label">Nombre de la propiedad</string>
+    <string name="add_property_screen_property_name_placeholder">Ingresa el nombre de la propiedad</string>
+    <string name="add_property_screen_address_label">Dirección</string>
+    <string name="add_property_screen_address_placeholder">Ingresa la dirección de la propiedad</string>
+    <string name="add_property_screen_property_icon_label">Ícono de la propiedad</string>
+    <string name="add_property_screen_property_icon_placeholder">Selecciona un ícono de propiedad</string>
+
+    <string name="employee_overview_add_employee_description">Agregar nuevo empleado</string>
+    <string name="employee_overview_employee_image_description">Imagen de %1$s</string>
+    <string name="employee_overview_no_image_description">No hay imagen disponible para %1$s</string>
+    <string name="employee_overview_pending_invite_description">Invitación pendiente para %1$s</string>
+    <string name="employee_overview_invite_sent">Invitación enviada</string>
 </resources>

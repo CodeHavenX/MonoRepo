@@ -479,7 +479,9 @@ private fun EdifikanaImageSelectorPreview() {
                 label = "Property Icon",
                 options = options,
                 selectedOption = selectedOption,
-                onOptionSelected = { selectedOption = it },
+                onOpenSelectorSelected = {
+                    // TODO
+                },
                 placeholder = "Select a property icon",
             )
 
@@ -553,7 +555,9 @@ private fun EdifikanaImageSelectorWithUploadPreview() {
                 label = "Property Icon",
                 options = optionsWithUpload,
                 selectedOption = selectedOption,
-                onOptionSelected = { selectedOption = it },
+                onOpenSelectorSelected = {
+                    // TODO
+                },
                 placeholder = "Select a property icon",
             )
 
@@ -618,7 +622,9 @@ private fun EdifikanaImageSelectorWithCustomImagePreview() {
                 label = "Property Icon",
                 options = optionsWithUpload,
                 selectedOption = selectedOption,
-                onOptionSelected = { selectedOption = it },
+                onOpenSelectorSelected = {
+                    // TODO
+                },
                 placeholder = "Select a property icon",
             )
 
@@ -667,7 +673,7 @@ private fun EdifikanaImageSelectorGridOverflowPreview() {
                 label = "Property Icon",
                 options = options,
                 selectedOption = selectedOption,
-                onOptionSelected = { selectedOption = it },
+                onOpenSelectorSelected = { },
                 placeholder = "Select a property icon",
             )
 
@@ -706,7 +712,7 @@ private fun EdifikanaImageSelectorGridEmptyPreview() {
                 label = "Property Icon",
                 options = emptyList(),
                 selectedOption = null,
-                onOptionSelected = {},
+                onOpenSelectorSelected = {},
                 placeholder = "Select a property icon",
             )
 

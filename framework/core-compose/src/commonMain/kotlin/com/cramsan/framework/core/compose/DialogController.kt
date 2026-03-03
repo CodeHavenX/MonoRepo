@@ -113,7 +113,7 @@ abstract class Dialog(
     /**
      * Hides the dialog. This function should be called to dismiss the dialog.
      */
-    fun hide() {
+    open fun hide() {
         state.targetState = false
     }
 }

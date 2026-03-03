@@ -6,10 +6,10 @@ visual design system, back-end architecture, and front-end architecture.
 
 ## Wiki Links
 
-- [High-Level Application Design](https://wikijs-ok0o4wwsow8s80wwsgo40k4s.cramsan.com/en/Edifikana/application-design)
-- [Visual Design System](https://wikijs-ok0o4wwsow8s80wwsgo40k4s.cramsan.com/en/Edifikana/visual-design-system)
-- [Back-End Architecture](https://wikijs-ok0o4wwsow8s80wwsgo40k4s.cramsan.com/en/Edifikana/design-architecture/back-end)
-- [Front-End Architecture](https://wikijs-ok0o4wwsow8s80wwsgo40k4s.cramsan.com/en/Edifikana/design-architecture/front-end)
+- [High-Level Application Design](https://wikijs-ok0o4wwsow8s80wwsgo40k4s.cramsan.com/en/Projects/Edifikana/Design/application-design)
+- [Visual Design System](https://wikijs-ok0o4wwsow8s80wwsgo40k4s.cramsan.com/en/Projects/Edifikana/Design/visual-design-system)
+- [Back-End Architecture](https://wikijs-ok0o4wwsow8s80wwsgo40k4s.cramsan.com/en/Projects/Edifikana/Architecture/back-end)
+- [Front-End Architecture](https://wikijs-ok0o4wwsow8s80wwsgo40k4s.cramsan.com/en/Projects/Edifikana/Architecture/front-end)
 
 ## Mocks
 

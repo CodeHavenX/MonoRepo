@@ -3,8 +3,10 @@ package com.cramsan.edifikana.client.lib.features.home.propertydetail
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.managers.StorageManager
+import com.cramsan.edifikana.client.ui.components.ImageOptionUIModel
 import com.cramsan.edifikana.client.ui.components.ImageSource
 import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.framework.annotations.TestOnly
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
@@ -121,6 +123,7 @@ class PropertyDetailViewModel(
     /**
      * Update the property image URL.
      */
+    @TestOnly
     fun onImageUrlChanged(imageUrl: String?) {
         viewModelScope.launch {
             updateUiState { it.copy(imageUrl = imageUrl) }
@@ -130,7 +133,7 @@ class PropertyDetailViewModel(
     /**
      * Trigger the photo picker to select a custom image.
      */
-    fun triggerPhotoPicker() {
+    private fun triggerPhotoPicker() {
         viewModelScope.launch {
             emitWindowEvent(EdifikanaWindowsEvent.OpenPhotoPicker)
         }
@@ -165,6 +168,28 @@ class PropertyDetailViewModel(
                     updateUiState { it.copy(uploadError = message, selectedIcon = null) }
                     emitWindowEvent(EdifikanaWindowsEvent.ShowSnackbar(message))
                 }
+        }
+    }
+
+    fun openImageSelector() {
+        viewModelScope.launch {
+            emitEvent(PropertyDetailEvent.OpenImageSelector)
+        }
+    }
+
+
+    fun selectPhoto(option: ImageOptionUIModel) {
+        viewModelScope.launch {
+            if (option.id == "custom_upload") {
+                triggerPhotoPicker()
+            } else {
+                updateUiState {
+                    it.copy(
+                        selectedIcon = option,
+                        uploadError = null
+                    )
+                }
+            }
         }
     }
 

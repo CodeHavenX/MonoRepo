@@ -37,7 +37,13 @@ class AddPropertyViewModel(
      */
     fun initialize(orgId: OrganizationId) {
         viewModelScope.launch {
-            updateUiState { it.copy(orgId = orgId) }
+            val defaultIcon = PropertyIconOptions.getDefaultOptions().find { it.id == "S_DEPA" }
+                ?: PropertyIconOptions.getDefaultOptions().first()
+
+            updateUiState { it.copy(
+                orgId = orgId,
+                selectedIcon = defaultIcon
+            ) }
         }
     }
 
@@ -114,10 +120,8 @@ class AddPropertyViewModel(
     /**
      * Trigger the photo picker to select a custom image.
      */
-    fun triggerPhotoPicker() {
-        viewModelScope.launch {
-            emitWindowEvent(EdifikanaWindowsEvent.OpenPhotoPicker)
-        }
+    private suspend fun triggerPhotoPicker() {
+        emitWindowEvent(EdifikanaWindowsEvent.OpenPhotoPicker)
     }
 
     /**
@@ -179,6 +183,27 @@ class AddPropertyViewModel(
                 "A file with this name already exists."
 
             else -> stringProvider.getString(Res.string.error_message_unexpected_error)
+        }
+    }
+
+    fun openImageSelector() {
+        viewModelScope.launch {
+            emitEvent(AddPropertyEvent.OpenImageSelector)
+        }
+    }
+
+    fun selectPhoto(option: ImageOptionUIModel) {
+        viewModelScope.launch {
+            if (option.id == "custom_upload") {
+                triggerPhotoPicker()
+            } else {
+                updateUiState {
+                    it.copy(
+                        selectedIcon = option,
+                        uploadError = null
+                    )
+                }
+            }
         }
     }
 

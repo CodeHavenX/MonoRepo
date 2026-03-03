@@ -21,7 +21,7 @@ private fun AddPropertyScreenPreview() = AppTheme {
         ),
         onBackSelected = {},
         onAddPropertySelected = { _, _, _ -> },
-        onTriggerPhotoPicker = {},
+        onOpenSelectorSelected = { },
     )
 }
 
@@ -41,7 +41,7 @@ private fun AddPropertyScreenUploadingPreview() = AppTheme {
         ),
         onBackSelected = {},
         onAddPropertySelected = { _, _, _ -> },
-        onTriggerPhotoPicker = {},
+        onOpenSelectorSelected = { },
     )
 }
 
@@ -61,7 +61,7 @@ private fun AddPropertyScreenWithCustomImagePreview() = AppTheme {
         ),
         onBackSelected = {},
         onAddPropertySelected = { _, _, _ -> },
-        onTriggerPhotoPicker = {},
+        onOpenSelectorSelected = { },
     )
 }
 
@@ -81,6 +81,6 @@ private fun AddPropertyScreenUploadErrorPreview() = AppTheme {
         ),
         onBackSelected = {},
         onAddPropertySelected = { _, _, _ -> },
-        onTriggerPhotoPicker = {},
+        onOpenSelectorSelected = { },
     )
 }

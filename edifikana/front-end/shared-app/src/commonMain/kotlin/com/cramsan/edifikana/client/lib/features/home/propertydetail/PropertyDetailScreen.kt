@@ -34,7 +34,9 @@ import com.cramsan.edifikana.client.ui.components.EdifikanaPrimaryButton
 import com.cramsan.edifikana.client.ui.components.EdifikanaSecondaryButton
 import com.cramsan.edifikana.client.ui.components.EdifikanaTextField
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
+import com.cramsan.edifikana.client.ui.components.ImageSelectorBottomsheet
 import com.cramsan.framework.core.compose.EventEmitter
+import com.cramsan.framework.core.compose.rememberDialogController
 import com.cramsan.framework.core.compose.ui.ObserveEventEmitterEvents
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
@@ -55,6 +57,8 @@ fun PropertyDetailScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    val dialogController = rememberDialogController()
+
     /**
      * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
      */
@@ -64,7 +68,18 @@ fun PropertyDetailScreen(
 
     ObserveViewModelEvents(viewModel) { event ->
         when (event) {
-            PropertyDetailEvent.Noop -> Unit
+            PropertyDetailEvent.OpenImageSelector -> {
+                val modal = ImageSelectorBottomsheet(
+                    label = "Select Property Icon",
+                    options = PropertyIconOptions.getOptionsWithUpload(),
+                    selectedOption = uiState.selectedIcon,
+                    onOptionSelected = { option ->
+                        viewModel.selectPhoto(option)
+                    },
+                )
+                dialogController.showDialog(modal)
+            }
+             else -> Unit
         }
     }
 
@@ -90,9 +105,10 @@ fun PropertyDetailScreen(
         onDeleteProperty = { viewModel.deleteProperty() },
         onNameChanged = { viewModel.onNameChanged(it) },
         onAddressChanged = { viewModel.onAddressChanged(it) },
-        onImageUrlChanged = { viewModel.onImageUrlChanged(it) },
-        onTriggerPhotoPicker = { viewModel.triggerPhotoPicker() },
+        onOpenSelectorSelected = { viewModel.openImageSelector() },
     )
+
+    dialogController.Render()
 }
 
 /**
@@ -109,8 +125,7 @@ internal fun PropertyDetailContent(
     onDeleteProperty: () -> Unit,
     onNameChanged: (String) -> Unit,
     onAddressChanged: (String) -> Unit,
-    onImageUrlChanged: (String?) -> Unit,
-    onTriggerPhotoPicker: () -> Unit,
+    onOpenSelectorSelected: () -> Unit,
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
 
@@ -196,24 +211,11 @@ internal fun PropertyDetailContent(
                 // Property Icon Selector - Show in edit mode
                 if (content.isEditMode) {
                     Column(sectionModifier) {
-                        // Determine current selected icon:
-                        // 1. If custom image uploaded (selectedIcon from state), use that
-                        // 2. Otherwise, parse from imageUrl
-                        val currentIcon = content.selectedIcon
-                            ?: PropertyIconOptions.fromImageUrl(content.imageUrl)
-                            ?: PropertyIconOptions.getDefaultOptions().find { it.id == "S_DEPA" }
-
                         EdifikanaImageSelector(
                             label = "Property Icon",
                             options = PropertyIconOptions.getOptionsWithUpload(),
-                            selectedOption = currentIcon,
-                            onOptionSelected = { option ->
-                                if (option.id == "custom_upload") {
-                                    onTriggerPhotoPicker()
-                                } else {
-                                    onImageUrlChanged(PropertyIconOptions.toImageUrl(option))
-                                }
-                            },
+                            selectedOption = content.selectedIcon,
+                            onOpenSelectorSelected = onOpenSelectorSelected,
                             placeholder = if (content.isUploading) "Uploading..." else "Select a property icon",
                         )
 

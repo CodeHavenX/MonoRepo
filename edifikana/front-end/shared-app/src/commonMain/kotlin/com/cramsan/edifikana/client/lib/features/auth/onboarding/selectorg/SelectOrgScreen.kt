@@ -47,7 +47,7 @@ fun SelectOrgScreen(
         when (event) {
             SelectOrgEvent.Noop -> Unit
             SelectOrgEvent.ShowSignOutConfirmation -> {
-                val signOutDialog = JoinOrgConfirmationDialog(
+                val signOutDialog = SignOutConfirmationDialog(
                     onConfirm = { viewModel.confirmSignOut() },
                     onDismiss = { /* User cancelled */ }
                 )

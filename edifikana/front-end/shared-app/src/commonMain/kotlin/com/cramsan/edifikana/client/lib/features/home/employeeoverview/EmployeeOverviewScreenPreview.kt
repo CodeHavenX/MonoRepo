@@ -38,3 +38,33 @@ private fun EmployeeOverviewScreenPreview() {
         )
     }
 }
+
+@Preview(locale = "es")
+@Composable
+private fun EmployeeOverviewScreenPreview_ES() {
+    AppTheme {
+        EmployeeOverviewContent(
+            content = EmployeeOverviewUIState(
+                isLoading = false,
+                orgId = OrganizationId("org-1"),
+                employeeList = listOf(
+                    UserItemUIModel(
+                        id = UserId("user-1"),
+                        name = "Juan García",
+                        email = "juan.garcia@example.com",
+                        imageUrl = null,
+                    ),
+                    UserItemUIModel(
+                        id = UserId("user-2"),
+                        name = "María López",
+                        email = "maria.lopez@example.com",
+                        imageUrl = null,
+                    ),
+                    InviteItemUIModel(
+                        email = "otro.usuario@test.com",
+                    )
+                ),
+            ),
+        )
+    }
+}

@@ -53,7 +53,7 @@ import edifikana_lib.property_detail_screen_delete_dialog_message
 import edifikana_lib.property_detail_screen_delete_label
 import edifikana_lib.property_detail_screen_edit_title
 import edifikana_lib.property_detail_screen_title
-import edifikana_lib.text_upload
+import edifikana_lib.edifikana_string_upload
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -228,7 +228,7 @@ internal fun PropertyDetailContent(
                             label = stringResource(Res.string.add_property_screen_property_icon_label),
                             selectedOption = content.selectedIcon,
                             onOpenSelectorSelected = onOpenSelectorSelected,
-                            placeholder = if (content.isUploading) stringResource(Res.string.text_upload) else stringResource(Res.string.add_property_screen_property_icon_placeholder),
+                            placeholder = if (content.isUploading) stringResource(Res.string.edifikana_string_upload) else stringResource(Res.string.add_property_screen_property_icon_placeholder),
                         )
 
                         // Show upload error if any

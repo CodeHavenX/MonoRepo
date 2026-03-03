@@ -218,6 +218,15 @@
     <string name="properties_overview_no_properties_message">Aún no hay propiedades. Toca + para agregar tu primera propiedad.</string>
     <string name="properties_overview_property_image_description">Imagen de la propiedad %1$s</string>
 
+    <!-- Settings screen -->
+    <string name="settings_screen_appearance_title">Apariencia</string>
+    <string name="settings_screen_theme_light">Claro</string>
+    <string name="settings_screen_theme_light_subtitle">Usar colores claros</string>
+    <string name="settings_screen_theme_dark">Oscuro</string>
+    <string name="settings_screen_theme_dark_subtitle">Usar colores oscuros</string>
+    <string name="settings_screen_theme_system_default">Predeterminado del sistema</string>
+    <string name="settings_screen_theme_system_default_subtitle">Seguir la apariencia del sistema</string>
+
     <!-- Property detail screen -->
     <string name="property_detail_screen_title">Detalles de la propiedad</string>
     <string name="property_detail_screen_edit_title">Editar propiedad</string>

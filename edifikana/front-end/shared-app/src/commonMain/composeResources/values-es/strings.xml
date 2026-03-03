@@ -182,4 +182,7 @@
     <string name="event_log_screen_no_events">No se encontraron eventos</string>
     <string name="event_log_screen_today_header">Hoy</string>
     <string name="event_log_screen_reported_by">Reportado por: %1$s</string>
+
+    <string name="go_to_org_screen_no_properties_message">Aún no tienes propiedades. ¡Crea tu primera propiedad para comenzar!</string>
+    <string name="go_to_org_screen_get_started_button">¡Comenzar!</string>
 </resources>

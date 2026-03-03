@@ -14,3 +14,11 @@ private fun GoToOrganizationScreenPreview() {
         GoToOrganizationContent {}
     }
 }
+
+@Preview(locale = "es")
+@Composable
+private fun GoToOrganizationScreenPreview_ES() {
+    AppTheme {
+        GoToOrganizationContent {}
+    }
+}

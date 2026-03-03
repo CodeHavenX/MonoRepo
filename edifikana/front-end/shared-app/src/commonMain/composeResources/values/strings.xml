@@ -183,4 +183,7 @@
     <string name="event_log_screen_no_events">No events found</string>
     <string name="event_log_screen_today_header">Today</string>
     <string name="event_log_screen_reported_by">Reported by: %1$s</string>
+
+    <string name="go_to_org_screen_no_properties_message">You don\'t have any properties yet. Create your first property to get started!</string>
+    <string name="go_to_org_screen_get_started_button">Get Started!</string>
 </resources>

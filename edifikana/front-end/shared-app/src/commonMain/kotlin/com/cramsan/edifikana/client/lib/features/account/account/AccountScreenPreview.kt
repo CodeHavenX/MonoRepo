@@ -78,3 +78,53 @@ private fun AccountScreenPreview_Loading() = AppTheme {
         onEditPasswordClicked = {},
     )
 }
+
+@Preview(locale = "es")
+@Composable
+private fun AccountScreenPreview_ES() = AppTheme {
+    AccountContent(
+        content = AccountUIState(
+            firstName = "Luis Antonio",
+            lastName = "Vega",
+            email = "lvega@gmail.com",
+            phoneNumber = "+51 987654321",
+            isPasswordSet = true,
+            isLoading = false,
+            isEditable = false,
+        ),
+        onBackNavigation = {},
+        onSignOutClicked = {},
+        onEditClicked = {},
+        onCancelEdit = {},
+        onFirstNameChange = {},
+        onLastNameChange = {},
+        onEmailChange = {},
+        onPhoneNumberChange = {},
+        onEditPasswordClicked = {},
+    )
+}
+
+@Preview(locale = "es")
+@Composable
+private fun AccountScreenPreview_Editable_ES() = AppTheme {
+    AccountContent(
+        content = AccountUIState(
+            firstName = "Luis Antonio",
+            lastName = "Vega",
+            email = "lvega@gmail.com",
+            phoneNumber = "+51 987654321",
+            isPasswordSet = false,
+            isLoading = false,
+            isEditable = true,
+        ),
+        onBackNavigation = {},
+        onSignOutClicked = {},
+        onEditClicked = {},
+        onCancelEdit = {},
+        onFirstNameChange = {},
+        onLastNameChange = {},
+        onEmailChange = {},
+        onPhoneNumberChange = {},
+        onEditPasswordClicked = {},
+    )
+}

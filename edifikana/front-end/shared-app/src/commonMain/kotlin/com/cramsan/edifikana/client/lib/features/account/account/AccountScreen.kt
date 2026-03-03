@@ -38,9 +38,14 @@ import edifikana_lib.account_screen_edit_button
 import edifikana_lib.account_screen_email
 import edifikana_lib.account_screen_first_name
 import edifikana_lib.account_screen_last_name
+import edifikana_lib.account_screen_password_label
+import edifikana_lib.account_screen_password_not_set
 import edifikana_lib.account_screen_phone_number
+import edifikana_lib.account_screen_save_changes_button
 import edifikana_lib.account_screen_sign_out
 import edifikana_lib.account_screen_title
+import edifikana_lib.change_password_dialog_title
+import edifikana_lib.string_cancel
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -188,8 +193,8 @@ internal fun AccountContent(
                 EdifikanaAccountInfoItem(
                     value = if (content.isPasswordSet == true) "********"
                     else if (content.isPasswordSet == null) ""
-                    else "Not Set",
-                    label = "Password",
+                    else stringResource(Res.string.account_screen_password_not_set),
+                    label = stringResource(Res.string.account_screen_password_label),
                     modifier = modifier,
                 )
 
@@ -207,11 +212,11 @@ internal fun AccountContent(
                         enabled = !content.isLoading,
                         onClick = onEditClicked,
                     ) {
-                        Text(text = "Save Changes")
+                        Text(text = stringResource(Res.string.account_screen_save_changes_button))
                     }
 
                     EdifikanaSecondaryButton(
-                        text = "Cancel",
+                        text = stringResource(Res.string.string_cancel),
                         modifier = modifier,
                         enabled = !content.isLoading,
                         onClick = onCancelEdit,
@@ -240,7 +245,7 @@ private fun EditPasswordLine(
     onClick: () -> Unit,
 ) {
     Text(
-        text = "Change Password",
+        text = stringResource(Res.string.change_password_dialog_title),
         modifier = modifier.clickable {
             if (enabled) {
                 onClick()

@@ -12,11 +12,20 @@ import com.cramsan.framework.core.compose.ApplicationEvent
 import com.cramsan.framework.core.compose.EventBus
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.core.compose.WindowEvent
+import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.test.CoroutineTest
+import edifikana_lib.Res
+import edifikana_lib.change_password_dialog_error_confirm_password_empty
+import edifikana_lib.change_password_dialog_error_current_password_empty
+import edifikana_lib.change_password_dialog_error_failed
+import edifikana_lib.change_password_dialog_error_new_password_empty
+import edifikana_lib.change_password_dialog_error_new_password_too_short
+import edifikana_lib.change_password_dialog_error_passwords_do_not_match
+import edifikana_lib.change_password_dialog_success
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -30,6 +39,7 @@ import kotlin.test.assertTrue
 class ChangePasswordDialogViewModelTest : CoroutineTest() {
 
     private lateinit var authManager: AuthManager
+    private lateinit var stringProvider: StringProvider
     private lateinit var viewModel: ChangePasswordDialogViewModel
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
     private lateinit var windowEventBus: EventBus<WindowEvent>
@@ -39,6 +49,7 @@ class ChangePasswordDialogViewModelTest : CoroutineTest() {
     fun setUp() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         authManager = mockk()
+        stringProvider = mockk()
         applicationEventReceiver = EventBus()
         windowEventBus = EventBus()
         exceptionHandler = CollectorCoroutineExceptionHandler()
@@ -49,11 +60,13 @@ class ChangePasswordDialogViewModelTest : CoroutineTest() {
             windowEventReceiver = windowEventBus,
             applicationEventReceiver = applicationEventReceiver,
         )
-        viewModel = ChangePasswordDialogViewModel(authManager, dependencies)
+        viewModel = ChangePasswordDialogViewModel(authManager, stringProvider, dependencies)
     }
 
     @Test
     fun `onCurrentPasswordChange updates state and validates empty`() = runCoroutineTest {
+        coEvery { stringProvider.getString(Res.string.change_password_dialog_error_current_password_empty) } returns "Current password cannot be empty"
+
         viewModel.onCurrentPasswordChange("")
         assertTrue(viewModel.uiState.value.currentPasswordInError)
         assertEquals("Current password cannot be empty", viewModel.uiState.value.currentPasswordMessage)
@@ -65,6 +78,9 @@ class ChangePasswordDialogViewModelTest : CoroutineTest() {
 
     @Test
     fun `onNewPasswordChange validates password rules`() = runCoroutineTest {
+        coEvery { stringProvider.getString(Res.string.change_password_dialog_error_new_password_empty) } returns "New password cannot be empty"
+        coEvery { stringProvider.getString(Res.string.change_password_dialog_error_new_password_too_short) } returns "New password must be at least 8 characters"
+
         viewModel.onNewPasswordChange("")
         assertEquals("New password cannot be empty", viewModel.uiState.value.newPasswordMessage)
 
@@ -77,6 +93,9 @@ class ChangePasswordDialogViewModelTest : CoroutineTest() {
 
     @Test
     fun `onConfirmPasswordChange validates match with new password`() = runCoroutineTest {
+        coEvery { stringProvider.getString(Res.string.change_password_dialog_error_confirm_password_empty) } returns "Confirm password cannot be empty"
+        coEvery { stringProvider.getString(Res.string.change_password_dialog_error_passwords_do_not_match) } returns "Passwords do not match"
+
         viewModel.onNewPasswordChange("validPassword1!")
         viewModel.onConfirmPasswordChange("")
         assertEquals("Confirm password cannot be empty", viewModel.uiState.value.confirmPasswordMessage)
@@ -90,6 +109,8 @@ class ChangePasswordDialogViewModelTest : CoroutineTest() {
 
     @Test
     fun `submitEnabled is true only when all fields valid`() = runCoroutineTest {
+        coEvery { stringProvider.getString(Res.string.change_password_dialog_error_passwords_do_not_match) } returns "Passwords do not match"
+
         // Set up valid state
         viewModel.onCurrentPasswordChange("oldPassword1!")
         viewModel.onNewPasswordChange("newPassword1!")
@@ -105,6 +126,7 @@ class ChangePasswordDialogViewModelTest : CoroutineTest() {
     @Test
     fun `onSubmitSelected success emits NavigateBack`() = runCoroutineTest {
         coEvery { authManager.changePassword(any(), any()) } returns Result.success(Unit)
+        coEvery { stringProvider.getString(Res.string.change_password_dialog_success) } returns "Password was updated!"
 
         turbineScope {
             // Arrange
@@ -128,6 +150,7 @@ class ChangePasswordDialogViewModelTest : CoroutineTest() {
     @Test
     fun `onSubmitSelected failure updates error state`() = runCoroutineTest {
         coEvery { authManager.changePassword(any(), any()) } returns Result.failure(Exception("bad password"))
+        coEvery { stringProvider.getString(Res.string.change_password_dialog_error_failed) } returns "Failed to change password: %1\$s"
 
         viewModel.onCurrentPasswordChange("oldPassword1!")
         viewModel.onNewPasswordChange("newPassword1!")

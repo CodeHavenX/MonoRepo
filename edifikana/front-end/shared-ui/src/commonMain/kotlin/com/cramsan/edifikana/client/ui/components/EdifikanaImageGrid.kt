@@ -23,6 +23,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.cramsan.ui.theme.Padding
+import edifikana_ui.Res
+import edifikana_ui.edifikana_string_selected
+import org.jetbrains.compose.resources.stringResource
 
 /**
  * Grid of selectable images.
@@ -91,7 +94,7 @@ private fun ImageGridItem(
             ) {
                 Icon(
                     imageVector = Icons.Default.Check,
-                    contentDescription = "Selected",
+                    contentDescription = stringResource(Res.string.edifikana_string_selected),
                     tint = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.size(16.dp),
                 )

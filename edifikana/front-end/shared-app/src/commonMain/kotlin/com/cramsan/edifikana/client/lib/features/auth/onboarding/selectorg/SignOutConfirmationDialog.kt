@@ -29,7 +29,7 @@ class SignOutConfirmationDialog(
                 onDismiss()
             },
             title = { Text(stringResource(Res.string.edifikana_string_sign_out)) },
-            text = { Text(stringResource(Res.string.edifikana_string_sign_out_onboarding_dialog_message)) },
+            text = { Text(stringResource(Res.string.sign_out_onboarding_dialog_message)) },
             confirmButton = {
                 TextButton(
                     onClick = {

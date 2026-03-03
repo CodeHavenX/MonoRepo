@@ -148,6 +148,13 @@
     <string name="change_password_dialog_new_password">Nueva contraseña</string>
     <string name="change_password_dialog_confirm_password">Confirmar contraseña</string>
     <string name="change_password_dialog_submit">Enviar</string>
+    <string name="change_password_dialog_error_current_password_empty">La contraseña actual no puede estar vacía</string>
+    <string name="change_password_dialog_error_new_password_empty">La nueva contraseña no puede estar vacía</string>
+    <string name="change_password_dialog_error_new_password_too_short">La nueva contraseña debe tener al menos 8 caracteres</string>
+    <string name="change_password_dialog_error_confirm_password_empty">La confirmación de contraseña no puede estar vacía</string>
+    <string name="change_password_dialog_error_passwords_do_not_match">Las contraseñas no coinciden</string>
+    <string name="change_password_dialog_success">¡Contraseña actualizada!</string>
+    <string name="change_password_dialog_error_failed">Error al cambiar la contraseña: %1$s</string>
 
     <!-- Join org dialog -->
     <string name="join_org_dialog_title">Unirse a la organización</string>

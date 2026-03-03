@@ -148,6 +148,13 @@
     <string name="change_password_dialog_new_password">New password</string>
     <string name="change_password_dialog_confirm_password">Confirm password</string>
     <string name="change_password_dialog_submit">Submit</string>
+    <string name="change_password_dialog_error_current_password_empty">Current password cannot be empty</string>
+    <string name="change_password_dialog_error_new_password_empty">New password cannot be empty</string>
+    <string name="change_password_dialog_error_new_password_too_short">New password must be at least 8 characters</string>
+    <string name="change_password_dialog_error_confirm_password_empty">Confirm password cannot be empty</string>
+    <string name="change_password_dialog_error_passwords_do_not_match">Passwords do not match</string>
+    <string name="change_password_dialog_success">Password was updated!</string>
+    <string name="change_password_dialog_error_failed">Failed to change password: %1$s</string>
 
     <!-- Join org dialog -->
     <string name="join_org_dialog_title">Join Organization</string>

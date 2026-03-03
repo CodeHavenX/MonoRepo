@@ -140,7 +140,9 @@ class ChangePasswordDialogViewModel(
                     it.copy(
                         isLoading = false,
                         currentPasswordInError = true,
-                        currentPasswordMessage = stringProvider.getString(Res.string.change_password_dialog_error_failed).format(error.message),
+                        currentPasswordMessage = "Failed to change password: ${error.message}",
+                        // TODO: Update StringFormatter to support error messages with parameters and use it here instead of hardcoding the message
+//                        currentPasswordMessage = stringProvider.getString(Res.string.change_password_dialog_error_failed).format(error.message),
                     )
                 }
             }

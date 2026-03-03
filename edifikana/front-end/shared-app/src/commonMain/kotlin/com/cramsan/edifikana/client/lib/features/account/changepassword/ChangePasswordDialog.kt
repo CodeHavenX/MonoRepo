@@ -26,6 +26,13 @@ import com.cramsan.edifikana.client.ui.components.EdifikanaPasswordTextField
 import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.theme.Padding
+import edifikana_lib.Res
+import edifikana_lib.change_password_dialog_confirm_password
+import edifikana_lib.change_password_dialog_current_password
+import edifikana_lib.change_password_dialog_new_password
+import edifikana_lib.change_password_dialog_submit
+import edifikana_lib.change_password_dialog_title
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 /** * Composable function to render a dialog for changing the user's password.
@@ -78,7 +85,7 @@ internal fun RenderContent(
                     .padding(Padding.MEDIUM),
             ) {
                 Text(
-                    text = "Change Password",
+                    text = stringResource(Res.string.change_password_dialog_title),
                     modifier = Modifier
                         .fillMaxWidth(),
                     style = MaterialTheme.typography.titleLarge,
@@ -90,7 +97,7 @@ internal fun RenderContent(
                         onValueChange = {
                             onCurrentPasswordChange(it)
                         },
-                        label = "Current password",
+                        label = stringResource(Res.string.change_password_dialog_current_password),
                         modifier = Modifier
                             .fillMaxWidth(),
                         supportingText = {
@@ -113,7 +120,7 @@ internal fun RenderContent(
                     onValueChange = {
                         onNewPasswordChange(it)
                     },
-                    label = "New password",
+                    label = stringResource(Res.string.change_password_dialog_new_password),
                     modifier = Modifier
                         .fillMaxWidth(),
                     supportingText = {
@@ -131,7 +138,7 @@ internal fun RenderContent(
                     onValueChange = {
                         onConfirmPasswordChange(it)
                     },
-                    label = "Confirm password",
+                    label = stringResource(Res.string.change_password_dialog_confirm_password),
                     modifier = Modifier
                         .fillMaxWidth(),
                     supportingText = {
@@ -154,7 +161,7 @@ internal fun RenderContent(
                         enabled = uiState.submitEnabled && !uiState.isLoading,
                         onClick = { onSubmitSelected() },
                     ) {
-                        Text("Submit")
+                        Text(stringResource(Res.string.change_password_dialog_submit))
                     }
                 }
             }

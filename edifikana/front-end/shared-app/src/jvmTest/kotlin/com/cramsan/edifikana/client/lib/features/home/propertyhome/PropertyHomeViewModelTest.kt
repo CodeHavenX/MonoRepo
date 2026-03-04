@@ -146,8 +146,13 @@ class PropertyHomeViewModelTest : CoroutineTest() {
     @Test
     fun `test navigateBack emits NavigateBack event`() = runCoroutineTest {
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
             viewModel.navigateBack()
+
+            // Assert
             assertEquals(EdifikanaWindowsEvent.NavigateBack, turbine.awaitItem())
             advanceUntilIdleAndAwaitComplete(turbine)
         }
@@ -156,8 +161,13 @@ class PropertyHomeViewModelTest : CoroutineTest() {
     @Test
     fun `test navigateToAccount emits NavigateToNavGraph event`() = runCoroutineTest {
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
             viewModel.navigateToAccount()
+
+            // Assert
             assertEquals(
                 EdifikanaWindowsEvent.NavigateToNavGraph(EdifikanaNavGraphDestination.AccountNavGraphDestination),
                 turbine.awaitItem()
@@ -169,8 +179,13 @@ class PropertyHomeViewModelTest : CoroutineTest() {
     @Test
     fun `test navigateToNotifications emits NavigateToScreen event`() = runCoroutineTest {
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
             viewModel.navigateToNotifications()
+
+            // Assert
             assertEquals(
                 EdifikanaWindowsEvent.NavigateToScreen(AccountDestination.NotificationsDestination),
                 turbine.awaitItem()
@@ -182,8 +197,13 @@ class PropertyHomeViewModelTest : CoroutineTest() {
     @Test
     fun `test navigateToSettings emits NavigateToNavGraph event`() = runCoroutineTest {
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
             viewModel.navigateToSettings()
+
+            // Assert
             assertEquals(
                 EdifikanaWindowsEvent.NavigateToNavGraph(EdifikanaNavGraphDestination.SettingsNavGraphDestination),
                 turbine.awaitItem()

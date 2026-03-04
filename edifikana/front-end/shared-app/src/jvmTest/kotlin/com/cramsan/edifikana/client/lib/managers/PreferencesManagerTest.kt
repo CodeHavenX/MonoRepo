@@ -75,8 +75,13 @@ class PreferencesManagerTest : CoroutineTest() {
         coEvery { settingsHolder.saveValue(key, value) } returns Unit
 
         turbineScope {
+            // Arrange
             val turbine = manager.modifiedKey.testIn(backgroundScope)
+
+            // Act
             manager.updatePreference(key, value)
+
+            // Assert
             assertEquals(EdifikanaSettingKey.SupabaseOverrideUrl, turbine.awaitItem())
             advanceUntilIdleAndAwaitComplete(turbine)
         }

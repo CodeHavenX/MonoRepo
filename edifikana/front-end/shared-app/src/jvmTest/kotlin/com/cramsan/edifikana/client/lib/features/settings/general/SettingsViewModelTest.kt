@@ -86,6 +86,7 @@ class SettingsViewModelTest : CoroutineTest() {
     @Test
     fun `navigateBack emits NavigateBack window event`() = runCoroutineTest {
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
 
             // Act

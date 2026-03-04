@@ -108,10 +108,14 @@ class HomeViewModelTest : CoroutineTest() {
 
     @Test
     fun `test navigateBack emits NavigateBack event`() = runCoroutineTest {
-        // Act & Assert
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
             viewModel.navigateBack()
+
+            // Assert
             assertEquals(EdifikanaWindowsEvent.NavigateBack, turbine.awaitItem())
             advanceUntilIdleAndAwaitComplete(turbine)
         }
@@ -119,10 +123,14 @@ class HomeViewModelTest : CoroutineTest() {
 
     @Test
     fun `test navigateToAccount emits NavigateToNavGraph event`() = runCoroutineTest {
-        // Act & Assert
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
             viewModel.navigateToAccount()
+
+            // Assert
             assertEquals(
                 EdifikanaWindowsEvent.NavigateToNavGraph(
                     EdifikanaNavGraphDestination.AccountNavGraphDestination
@@ -135,10 +143,14 @@ class HomeViewModelTest : CoroutineTest() {
 
     @Test
     fun `test navigateToNotifications emits NavigateToScreen event`() = runCoroutineTest {
-        // Act & Assert
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
             viewModel.navigateToNotifications()
+
+            // Assert
             assertEquals(
                 EdifikanaWindowsEvent.NavigateToScreen(
                     AccountDestination.NotificationsDestination

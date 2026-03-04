@@ -57,8 +57,13 @@ class HubViewModelTest : CoroutineTest() {
     @Test
     fun `test navigateToAccount emits NavigateToNavGraph event`() = runCoroutineTest {
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
             viewModel.navigateToAccount()
+
+            // Assert
             assertEquals(
                 EdifikanaWindowsEvent.NavigateToNavGraph(EdifikanaNavGraphDestination.AccountNavGraphDestination),
                 turbine.awaitItem()
@@ -77,8 +82,13 @@ class HubViewModelTest : CoroutineTest() {
     @Test
     fun `test navigateToNotifications emits NavigateToScreen event`() = runCoroutineTest {
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
             viewModel.navigateToNotifications()
+
+            // Assert
             assertEquals(
                 EdifikanaWindowsEvent.NavigateToScreen(AccountDestination.NotificationsDestination),
                 turbine.awaitItem()

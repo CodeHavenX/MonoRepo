@@ -62,8 +62,13 @@ class BaseViewModelTest : CoroutineTest() {
     @Test
     fun `test emitting some numbers`() = runCoroutineTest {
         turbineScope {
+            // Arrange
             val turbine = viewModel.events.testIn(backgroundScope)
+
+            // Act
             viewModel.emitNumbers()
+
+            // Assert
             assertEquals(TestableEvent.EmitNumber(1), turbine.awaitItem())
             assertEquals(TestableEvent.EmitNumber(2), turbine.awaitItem())
             assertEquals(TestableEvent.EmitNumber(3), turbine.awaitItem())
@@ -74,8 +79,13 @@ class BaseViewModelTest : CoroutineTest() {
     @Test
     fun `test emitting an application event`() = runCoroutineTest {
         turbineScope {
+            // Arrange
             val turbine = windowEventReceiver.events.testIn(backgroundScope)
+
+            // Act
             viewModel.emitApplicationEvent()
+
+            // Assert
             assertEquals(TestableApplicationEvent.Signal, turbine.awaitItem())
             advanceUntilIdleAndAwaitComplete(turbine)
         }

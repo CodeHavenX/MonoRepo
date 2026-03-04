@@ -74,10 +74,14 @@ class SelectOrgViewModelTest : CoroutineTest() {
 
     @Test
     fun `test createOrganization emits NavigateToScreen event`() = runCoroutineTest {
-        // Act & Assert
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
             viewModel.createOrganization()
+
+            // Assert
             assertEquals(
                 EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.CreateNewOrgDestination),
                 turbine.awaitItem()
@@ -94,10 +98,14 @@ class SelectOrgViewModelTest : CoroutineTest() {
 
     @Test
     fun `test confirmSignOut calls signOut and emits NavigateToNavGraph event`() = runCoroutineTest {
-        // Act & Assert
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
             viewModel.confirmSignOut()
+
+            // Assert
             assertEquals(
                 EdifikanaWindowsEvent.NavigateToNavGraph(
                     EdifikanaNavGraphDestination.AuthNavGraphDestination,

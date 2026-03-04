@@ -130,10 +130,14 @@ class OtpValidationViewModelTest : CoroutineTest() {
      */
     @Test
     fun `navigateBack should call emitEvent`() = runCoroutineTest {
-        // Act & Assert
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
             viewModel.navigateBack()
+
+            // Assert
             assertEquals(EdifikanaWindowsEvent.NavigateBack, turbine.awaitItem())
             advanceUntilIdleAndAwaitComplete(turbine)
         }

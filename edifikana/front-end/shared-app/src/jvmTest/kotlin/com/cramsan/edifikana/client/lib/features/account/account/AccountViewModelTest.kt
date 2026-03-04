@@ -54,10 +54,14 @@ class AccountViewModelTest : CoroutineTest() {
         // Arrange
         coEvery { authManager.signOut() } returns Result.success(Unit)
 
-        // Act & Assert
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
             viewModel.signOut()
+
+            // Assert
             assertEquals(
                 EdifikanaWindowsEvent.NavigateToNavGraph(
                     EdifikanaNavGraphDestination.AuthNavGraphDestination,
@@ -75,10 +79,14 @@ class AccountViewModelTest : CoroutineTest() {
         // Arrange
         assertEquals(false, viewModel.uiState.value.isEditable)
 
-        // Act & Assert
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
             viewModel.navigateBack()
+
+            // Assert
             assertEquals(EdifikanaWindowsEvent.NavigateBack, turbine.awaitItem())
             advanceUntilIdleAndAwaitComplete(turbine)
         }
@@ -238,10 +246,14 @@ class AccountViewModelTest : CoroutineTest() {
         viewModel.updatePhoneNumber("9876543210")
         assertEquals(true, viewModel.uiState.value.isEditable)
 
-        // Act & Assert
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
             viewModel.editOrSave()
+
+            // Assert
             assertEquals(
                 EdifikanaWindowsEvent.ShowSnackbar("Account information updated successfully."),
                 turbine.awaitItem(),
@@ -277,10 +289,14 @@ class AccountViewModelTest : CoroutineTest() {
         viewModel.editOrSave()
         assertEquals(true, viewModel.uiState.value.isEditable)
 
-        // Act & Assert
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
             viewModel.editOrSave()
+
+            // Assert
             assertEquals(
                 EdifikanaWindowsEvent.ShowSnackbar("Failed to update account information. Please try again."),
                 turbine.awaitItem(),

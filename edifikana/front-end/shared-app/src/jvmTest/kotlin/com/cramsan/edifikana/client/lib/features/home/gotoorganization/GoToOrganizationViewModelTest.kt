@@ -61,10 +61,14 @@ class GoToOrganizationViewModelTest : CoroutineTest() {
 
     @Test
     fun `test events`() = runCoroutineTest {
-        // Set up & Act
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
             viewModel.onBackSelected()
+
+            // Assert
             assertEquals(EdifikanaWindowsEvent.NavigateBack, turbine.awaitItem())
             advanceUntilIdleAndAwaitComplete(turbine)
         }

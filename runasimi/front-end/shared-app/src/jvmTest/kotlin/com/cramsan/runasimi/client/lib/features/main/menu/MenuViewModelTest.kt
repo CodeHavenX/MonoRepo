@@ -71,10 +71,14 @@ class MenuViewModelTest : CoroutineTest() {
 
     @Test
     fun `test events`() = runCoroutineTest {
-        // Set up & Act
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
             viewModel.onBackSelected()
+
+            // Assert
             assertEquals(RunasimiWindowsEvent.NavigateBack, turbine.awaitItem())
             advanceUntilIdleAndAwaitComplete(turbine)
         }

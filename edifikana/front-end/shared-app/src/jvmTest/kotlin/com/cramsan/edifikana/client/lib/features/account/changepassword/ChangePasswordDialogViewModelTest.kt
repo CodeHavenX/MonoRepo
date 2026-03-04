@@ -107,11 +107,16 @@ class ChangePasswordDialogViewModelTest : CoroutineTest() {
         coEvery { authManager.changePassword(any(), any()) } returns Result.success(Unit)
 
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
             viewModel.onCurrentPasswordChange("oldPassword1!")
             viewModel.onNewPasswordChange("newPassword1!")
             viewModel.onConfirmPasswordChange("newPassword1!")
+
+            // Act
             viewModel.onSubmitSelected()
+
+            // Assert
             assertInstanceOf<EdifikanaWindowsEvent.ShowSnackbar>(turbine.awaitItem())
             assertEquals(EdifikanaWindowsEvent.NavigateBack, turbine.awaitItem())
             advanceUntilIdleAndAwaitComplete(turbine)

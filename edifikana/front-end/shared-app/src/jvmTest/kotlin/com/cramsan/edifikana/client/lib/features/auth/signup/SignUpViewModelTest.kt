@@ -188,10 +188,14 @@ class SignUpViewModelTest : CoroutineTest() {
         // Arrange
         coEvery { authManager.signUp(any(), any(), any(), any()) } returns Result.success(mockk())
 
-        // Act & Verify
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
             viewModel.navigateBack()
+
+            // Assert
             assertEquals(EdifikanaWindowsEvent.NavigateBack, turbine.awaitItem())
             advanceUntilIdleAndAwaitComplete(turbine)
         }
@@ -220,10 +224,14 @@ class SignUpViewModelTest : CoroutineTest() {
         viewModel.onPhoneNumberValueChange(phoneNumber)
         viewModel.onPolicyChecked(true)
 
-        // Act & Verify
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
             viewModel.signUp()
+
+            // Assert
             coVerify { authManager.signUp(email, phoneNumber, firstName, lastName) }
             assertEquals(
                 EdifikanaWindowsEvent.NavigateToScreen(

@@ -109,7 +109,7 @@ class PropertiesOverviewViewModelTest : CoroutineTest() {
     @Test
     fun `test initialize handles failure and emits snackbar`() = runCoroutineTest {
         turbineScope {
-            // Set up
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
             val error = RuntimeException("Network error")
             coEvery { propertyManager.getPropertyList() } returns Result.failure(error)
@@ -131,10 +131,14 @@ class PropertiesOverviewViewModelTest : CoroutineTest() {
         // Set up
         coEvery { organizationManager.getOrganizations() } returns Result.success(emptyList())
 
-        // Act & Assert
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
             viewModel.onAddPropertySelected()
+
+            // Assert
             assertInstanceOf<EdifikanaWindowsEvent.ShowSnackbar>(turbine.awaitItem())
             advanceUntilIdleAndAwaitComplete(turbine)
         }
@@ -152,7 +156,10 @@ class PropertiesOverviewViewModelTest : CoroutineTest() {
 
         // Act & Assert
         windowEventBus.events.test {
+            // Act
             viewModel.onAddPropertySelected()
+
+            // Assert
             val event = awaitItem()
             assertEquals(true, event is EdifikanaWindowsEvent.NavigateToScreen)
             val navEvent = event as? EdifikanaWindowsEvent.NavigateToScreen

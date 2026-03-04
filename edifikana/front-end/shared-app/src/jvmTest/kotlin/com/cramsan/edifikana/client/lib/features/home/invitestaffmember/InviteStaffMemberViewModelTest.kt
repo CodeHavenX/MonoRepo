@@ -70,8 +70,13 @@ class InviteStaffMemberViewModelTest : CoroutineTest() {
     @Test
     fun `test navigateBack emits NavigateBack event`() = runCoroutineTest {
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
             viewModel.navigateBack()
+
+            // Assert
             assertEquals(EdifikanaWindowsEvent.NavigateBack, turbine.awaitItem())
             advanceUntilIdleAndAwaitComplete(turbine)
         }
@@ -85,8 +90,13 @@ class InviteStaffMemberViewModelTest : CoroutineTest() {
         viewModel.initialize(organizationId)
 
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
             viewModel.sendInvitation("", role)
+
+            // Assert
             assertEquals(EdifikanaWindowsEvent.ShowSnackbar("Email cannot be empty."), turbine.awaitItem())
             advanceUntilIdleAndAwaitComplete(turbine)
         }
@@ -102,8 +112,13 @@ class InviteStaffMemberViewModelTest : CoroutineTest() {
         viewModel.initialize(organizationId)
 
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
             viewModel.sendInvitation("   ", role)
+
+            // Assert
             assertEquals(EdifikanaWindowsEvent.ShowSnackbar("Email cannot be empty."), turbine.awaitItem())
             advanceUntilIdleAndAwaitComplete(turbine)
         }
@@ -119,8 +134,13 @@ class InviteStaffMemberViewModelTest : CoroutineTest() {
         viewModel.initialize(organizationId)
 
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
             viewModel.sendInvitation("invalid-email", role)
+
+            // Assert
             assertEquals(EdifikanaWindowsEvent.ShowSnackbar("Invalid email format."), turbine.awaitItem())
             advanceUntilIdleAndAwaitComplete(turbine)
         }
@@ -136,8 +156,13 @@ class InviteStaffMemberViewModelTest : CoroutineTest() {
         viewModel.initialize(organizationId)
 
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
             viewModel.sendInvitation(email, null)
+
+            // Assert
             assertEquals(EdifikanaWindowsEvent.ShowSnackbar("Please select a role"), turbine.awaitItem())
             advanceUntilIdleAndAwaitComplete(turbine)
         }
@@ -156,8 +181,13 @@ class InviteStaffMemberViewModelTest : CoroutineTest() {
         viewModel.initialize(organizationId)
 
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
             viewModel.sendInvitation(email, role)
+
+            // Assert
             assertEquals(EdifikanaWindowsEvent.ShowSnackbar("Invitation sent to $email"), turbine.awaitItem())
             assertEquals(EdifikanaWindowsEvent.NavigateBack, turbine.awaitItem())
             advanceUntilIdleAndAwaitComplete(turbine)
@@ -180,8 +210,13 @@ class InviteStaffMemberViewModelTest : CoroutineTest() {
         viewModel.initialize(organizationId)
 
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
             viewModel.sendInvitation(email, role)
+
+            // Assert
             assertEquals(EdifikanaWindowsEvent.ShowSnackbar("Failed to send invitation"), turbine.awaitItem())
             advanceUntilIdleAndAwaitComplete(turbine)
         }

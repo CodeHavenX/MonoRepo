@@ -202,8 +202,13 @@ class EmployeeOverviewViewModelTest : CoroutineTest() {
         coEvery { authManager.getInvites(organizationId) } returns Result.success(emptyList())
 
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
             viewModel.setOrgId(organizationId)
+
+            // Assert
             assertEquals(
                 EdifikanaWindowsEvent.ShowSnackbar("Failed to load employees: Network error"),
                 turbine.awaitItem()
@@ -223,8 +228,13 @@ class EmployeeOverviewViewModelTest : CoroutineTest() {
         coEvery { authManager.getInvites(organizationId) } returns Result.failure(Exception("Server error"))
 
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
             viewModel.setOrgId(organizationId)
+
+            // Assert
             assertEquals(
                 EdifikanaWindowsEvent.ShowSnackbar("Failed to load invites: Server error"),
                 turbine.awaitItem()
@@ -244,8 +254,13 @@ class EmployeeOverviewViewModelTest : CoroutineTest() {
         coEvery { authManager.getInvites(organizationId) } returns Result.failure(Exception("Invites error"))
 
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
             viewModel.setOrgId(organizationId)
+
+            // Assert
             assertEquals(
                 EdifikanaWindowsEvent.ShowSnackbar("Failed to load employees: Users error"),
                 turbine.awaitItem()
@@ -277,8 +292,13 @@ class EmployeeOverviewViewModelTest : CoroutineTest() {
         coEvery { authManager.getInvites(organizationId) } returns Result.success(invites)
 
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
             viewModel.setOrgId(organizationId)
+
+            // Assert
             assertEquals(
                 EdifikanaWindowsEvent.ShowSnackbar("Failed to load employees: Network error"),
                 turbine.awaitItem()
@@ -310,8 +330,13 @@ class EmployeeOverviewViewModelTest : CoroutineTest() {
         coEvery { authManager.getInvites(organizationId) } returns Result.failure(Exception("Server error"))
 
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
             viewModel.setOrgId(organizationId)
+
+            // Assert
             assertEquals(
                 EdifikanaWindowsEvent.ShowSnackbar("Failed to load invites: Server error"),
                 turbine.awaitItem()
@@ -336,8 +361,13 @@ class EmployeeOverviewViewModelTest : CoroutineTest() {
         viewModel.setOrgId(organizationId)
 
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
             viewModel.navigateToAddEmployeeScreen()
+
+            // Assert
             assertEquals(
                 EdifikanaWindowsEvent.NavigateToScreen(
                     HomeDestination.InviteStaffMemberDestination(orgId = organizationId)
@@ -351,8 +381,13 @@ class EmployeeOverviewViewModelTest : CoroutineTest() {
     @Test
     fun `test navigateToAddEmployeeScreen without orgId does not emit event`() = runCoroutineTest {
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
             viewModel.navigateToAddEmployeeScreen()
+
+            // Assert
             turbine.expectNoEvents()
             turbine.cancel()
         }

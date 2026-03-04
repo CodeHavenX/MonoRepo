@@ -26,7 +26,6 @@ import com.cramsan.framework.test.CoroutineTest
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.launch
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -108,16 +107,14 @@ class PropertyDetailViewModelTest : CoroutineTest() {
             Exception("Network error")
         )
 
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                val event = awaitItem() as EdifikanaWindowsEvent.ShowSnackbar
-                assertTrue(event.message.contains("Failed to load property"))
-                assertTrue(event.message.contains("Network error"))
-            }
+        turbineScope {
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+            viewModel.initialize(propertyId)
+            val event = turbine.awaitItem() as EdifikanaWindowsEvent.ShowSnackbar
+            assertTrue(event.message.contains("Failed to load property"))
+            assertTrue(event.message.contains("Network error"))
+            advanceUntilIdleAndAwaitComplete(turbine)
         }
-
-        viewModel.initialize(propertyId)
-        verificationJob.join()
 
         assertFalse(viewModel.uiState.value.isLoading)
         coVerify { propertyManager.getProperty(propertyId) }
@@ -125,13 +122,12 @@ class PropertyDetailViewModelTest : CoroutineTest() {
 
     @Test
     fun `test navigateBack emits NavigateBack event`() = runCoroutineTest {
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(EdifikanaWindowsEvent.NavigateBack, awaitItem())
-            }
+        turbineScope {
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+            viewModel.navigateBack()
+            assertEquals(EdifikanaWindowsEvent.NavigateBack, turbine.awaitItem())
+            advanceUntilIdleAndAwaitComplete(turbine)
         }
-        viewModel.navigateBack()
-        verificationJob.join()
     }
 
     @Test
@@ -274,15 +270,13 @@ class PropertyDetailViewModelTest : CoroutineTest() {
         viewModel.initialize(propertyId)
         viewModel.toggleEditMode()
 
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                val event = awaitItem() as EdifikanaWindowsEvent.ShowSnackbar
-                assertTrue(event.message.contains("Failed to update property"))
-            }
+        turbineScope {
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+            viewModel.saveProperty()
+            val event = turbine.awaitItem() as EdifikanaWindowsEvent.ShowSnackbar
+            assertTrue(event.message.contains("Failed to update property"))
+            advanceUntilIdleAndAwaitComplete(turbine)
         }
-
-        viewModel.saveProperty()
-        verificationJob.join()
 
         assertFalse(viewModel.uiState.value.isLoading)
     }
@@ -309,16 +303,14 @@ class PropertyDetailViewModelTest : CoroutineTest() {
 
         viewModel.initialize(propertyId)
 
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                val snackbarEvent = awaitItem() as EdifikanaWindowsEvent.ShowSnackbar
-                assertEquals("Property deleted successfully", snackbarEvent.message)
-                assertEquals(EdifikanaWindowsEvent.NavigateBack, awaitItem())
-            }
+        turbineScope {
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+            viewModel.deleteProperty()
+            val snackbarEvent = turbine.awaitItem() as EdifikanaWindowsEvent.ShowSnackbar
+            assertEquals("Property deleted successfully", snackbarEvent.message)
+            assertEquals(EdifikanaWindowsEvent.NavigateBack, turbine.awaitItem())
+            advanceUntilIdleAndAwaitComplete(turbine)
         }
-
-        viewModel.deleteProperty()
-        verificationJob.join()
 
         coVerify { propertyManager.removeProperty(propertyId) }
         assertTrue(exceptionHandler.exceptions.isEmpty())
@@ -341,16 +333,14 @@ class PropertyDetailViewModelTest : CoroutineTest() {
 
         viewModel.initialize(propertyId)
 
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                val event = awaitItem() as EdifikanaWindowsEvent.ShowSnackbar
-                assertTrue(event.message.contains("Failed to delete property"))
-                assertTrue(event.message.contains("Delete failed"))
-            }
+        turbineScope {
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+            viewModel.deleteProperty()
+            val event = turbine.awaitItem() as EdifikanaWindowsEvent.ShowSnackbar
+            assertTrue(event.message.contains("Failed to delete property"))
+            assertTrue(event.message.contains("Delete failed"))
+            advanceUntilIdleAndAwaitComplete(turbine)
         }
-
-        viewModel.deleteProperty()
-        verificationJob.join()
 
         assertFalse(viewModel.uiState.value.isLoading)
     }

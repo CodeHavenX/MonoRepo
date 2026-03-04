@@ -1,6 +1,6 @@
 package com.cramsan.framework.core.compose
 
-import app.cash.turbine.test
+import app.cash.turbine.turbineScope
 import com.cramsan.framework.assertlib.AssertUtil
 import com.cramsan.framework.assertlib.implementation.NoopAssertUtil
 import com.cramsan.framework.core.UnifiedDispatcherProvider
@@ -10,7 +10,6 @@ import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.test.CoroutineTest
 import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
-import kotlinx.coroutines.launch
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -62,32 +61,24 @@ class BaseViewModelTest : CoroutineTest() {
 
     @Test
     fun `test emitting some numbers`() = runCoroutineTest {
-        val verificationJob = launch {
-            viewModel.events.test {
-                assertEquals(TestableEvent.EmitNumber(1), awaitItem())
-                assertEquals(TestableEvent.EmitNumber(2), awaitItem())
-                assertEquals(TestableEvent.EmitNumber(3), awaitItem())
-                advanceUntilIdleAndAwaitComplete(this)
-            }
+        turbineScope {
+            val turbine = viewModel.events.testIn(backgroundScope)
+            viewModel.emitNumbers()
+            assertEquals(TestableEvent.EmitNumber(1), turbine.awaitItem())
+            assertEquals(TestableEvent.EmitNumber(2), turbine.awaitItem())
+            assertEquals(TestableEvent.EmitNumber(3), turbine.awaitItem())
+            advanceUntilIdleAndAwaitComplete(turbine)
         }
-
-        viewModel.emitNumbers()
-
-        verificationJob.join()
     }
 
     @Test
     fun `test emitting an application event`() = runCoroutineTest {
-        val verificationJob = launch {
-            windowEventReceiver.events.test {
-                assertEquals(TestableApplicationEvent.Signal, awaitItem())
-                advanceUntilIdleAndAwaitComplete(this)
-            }
+        turbineScope {
+            val turbine = windowEventReceiver.events.testIn(backgroundScope)
+            viewModel.emitApplicationEvent()
+            assertEquals(TestableApplicationEvent.Signal, turbine.awaitItem())
+            advanceUntilIdleAndAwaitComplete(turbine)
         }
-
-        viewModel.emitApplicationEvent()
-
-        verificationJob.join()
     }
 
     @Test

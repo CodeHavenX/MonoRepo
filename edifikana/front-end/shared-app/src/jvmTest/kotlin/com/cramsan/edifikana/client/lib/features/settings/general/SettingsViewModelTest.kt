@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.settings.general
 
-import app.cash.turbine.test
+import app.cash.turbine.turbineScope
 import com.cramsan.architecture.client.manager.PreferencesManager
 import com.cramsan.architecture.client.settings.SettingKey
 import com.cramsan.edifikana.client.lib.settings.EdifikanaSettingKey
@@ -85,20 +85,19 @@ class SettingsViewModelTest : CoroutineTest() {
 
     @Test
     fun `navigateBack emits NavigateBack window event`() = runCoroutineTest {
-        // Set up turbine to listen to window events
-        val job = launch {
-            windowEventBus.events.test {
-                assertEquals(com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent.NavigateBack, awaitItem())
-                // ensure collector drains
-                advanceUntilIdleAndAwaitComplete(this)
-            }
+        turbineScope {
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
+            viewModel.navigateBack()
+
+            // Assert
+            assertEquals(
+                com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent.NavigateBack,
+                turbine.awaitItem()
+            )
+            advanceUntilIdleAndAwaitComplete(turbine)
         }
-
-        // Act
-        viewModel.navigateBack()
-
-        // Assert
-        job.join()
     }
 
     @Test

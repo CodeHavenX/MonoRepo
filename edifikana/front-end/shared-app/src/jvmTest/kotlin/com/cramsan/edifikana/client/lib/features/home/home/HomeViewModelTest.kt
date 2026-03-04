@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.home.home
 
-import app.cash.turbine.test
+import app.cash.turbine.turbineScope
+import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
 import com.cramsan.architecture.client.manager.PreferencesManager
 import com.cramsan.edifikana.client.lib.features.account.AccountDestination
 import com.cramsan.edifikana.client.lib.features.home.propertyhome.PropertyHomeViewModel
@@ -26,7 +27,6 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -108,56 +108,44 @@ class HomeViewModelTest : CoroutineTest() {
 
     @Test
     fun `test navigateBack emits NavigateBack event`() = runCoroutineTest {
-        // Act
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(
-                    EdifikanaWindowsEvent.NavigateBack,
-                    awaitItem(),
-                )
-            }
+        // Act & Assert
+        turbineScope {
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+            viewModel.navigateBack()
+            assertEquals(EdifikanaWindowsEvent.NavigateBack, turbine.awaitItem())
+            advanceUntilIdleAndAwaitComplete(turbine)
         }
-        viewModel.navigateBack()
-
-        // Assert
-        verificationJob.join()
     }
 
     @Test
     fun `test navigateToAccount emits NavigateToNavGraph event`() = runCoroutineTest {
-        // Act
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(
-                    EdifikanaWindowsEvent.NavigateToNavGraph(
-                        EdifikanaNavGraphDestination.AccountNavGraphDestination
-                    ),
-                    awaitItem(),
-                )
-            }
+        // Act & Assert
+        turbineScope {
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+            viewModel.navigateToAccount()
+            assertEquals(
+                EdifikanaWindowsEvent.NavigateToNavGraph(
+                    EdifikanaNavGraphDestination.AccountNavGraphDestination
+                ),
+                turbine.awaitItem(),
+            )
+            advanceUntilIdleAndAwaitComplete(turbine)
         }
-        viewModel.navigateToAccount()
-
-        // Assert
-        verificationJob.join()
     }
 
     @Test
     fun `test navigateToNotifications emits NavigateToScreen event`() = runCoroutineTest {
-        // Act
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(
-                    EdifikanaWindowsEvent.NavigateToScreen(
-                        AccountDestination.NotificationsDestination
-                    ),
-                    awaitItem(),
-                )
-            }
+        // Act & Assert
+        turbineScope {
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+            viewModel.navigateToNotifications()
+            assertEquals(
+                EdifikanaWindowsEvent.NavigateToScreen(
+                    AccountDestination.NotificationsDestination
+                ),
+                turbine.awaitItem(),
+            )
+            advanceUntilIdleAndAwaitComplete(turbine)
         }
-        viewModel.navigateToNotifications()
-
-        // Assert
-        verificationJob.join()
     }
 }

@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.auth.onboarding.selectorg
 
-import app.cash.turbine.test
+import app.cash.turbine.turbineScope
+import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
 import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
@@ -22,7 +23,6 @@ import io.mockk.mockk
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlinx.coroutines.launch
 
 /**
  * Unit tests for [SelectOrgViewModel].
@@ -74,19 +74,16 @@ class SelectOrgViewModelTest : CoroutineTest() {
 
     @Test
     fun `test createOrganization emits NavigateToScreen event`() = runCoroutineTest {
-        // Act
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(
-                    EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.CreateNewOrgDestination),
-                    awaitItem()
-                )
-            }
+        // Act & Assert
+        turbineScope {
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+            viewModel.createOrganization()
+            assertEquals(
+                EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.CreateNewOrgDestination),
+                turbine.awaitItem()
+            )
+            advanceUntilIdleAndAwaitComplete(turbine)
         }
-        viewModel.createOrganization()
-
-        // Assert
-        verificationJob.join()
     }
 
     @Test
@@ -97,22 +94,21 @@ class SelectOrgViewModelTest : CoroutineTest() {
 
     @Test
     fun `test confirmSignOut calls signOut and emits NavigateToNavGraph event`() = runCoroutineTest {
-        // Act
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(
-                    EdifikanaWindowsEvent.NavigateToNavGraph(
-                        EdifikanaNavGraphDestination.AuthNavGraphDestination,
-                        clearStack = true,
-                    ),
-                    awaitItem()
-                )
-            }
+        // Act & Assert
+        turbineScope {
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+            viewModel.confirmSignOut()
+            assertEquals(
+                EdifikanaWindowsEvent.NavigateToNavGraph(
+                    EdifikanaNavGraphDestination.AuthNavGraphDestination,
+                    clearStack = true,
+                ),
+                turbine.awaitItem()
+            )
+            advanceUntilIdleAndAwaitComplete(turbine)
         }
-        viewModel.confirmSignOut()
 
         // Assert
         coVerify { authManager.signOut() }
-        verificationJob.join()
     }
 }

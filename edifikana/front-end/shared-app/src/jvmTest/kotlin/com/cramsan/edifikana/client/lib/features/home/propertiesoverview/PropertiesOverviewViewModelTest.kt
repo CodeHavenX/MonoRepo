@@ -2,6 +2,7 @@ package com.cramsan.edifikana.client.lib.features.home.propertiesoverview
 
 import app.cash.turbine.test
 import app.cash.turbine.turbineScope
+import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
 import com.cramsan.edifikana.client.lib.features.home.HomeDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.OrganizationManager
@@ -23,7 +24,6 @@ import com.cramsan.framework.test.CoroutineTest
 import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.launch
 import org.junit.jupiter.api.assertInstanceOf
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -130,17 +130,14 @@ class PropertiesOverviewViewModelTest : CoroutineTest() {
     fun `test onAddPropertySelected with no organizations emits snackbar`() = runCoroutineTest {
         // Set up
         coEvery { organizationManager.getOrganizations() } returns Result.success(emptyList())
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertInstanceOf<EdifikanaWindowsEvent.ShowSnackbar>(awaitItem())
-            }
+
+        // Act & Assert
+        turbineScope {
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+            viewModel.onAddPropertySelected()
+            assertInstanceOf<EdifikanaWindowsEvent.ShowSnackbar>(turbine.awaitItem())
+            advanceUntilIdleAndAwaitComplete(turbine)
         }
-
-        // Act
-        viewModel.onAddPropertySelected()
-
-        // Assert
-        verificationJob.join()
     }
 
     @Test

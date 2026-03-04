@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.account.account
 
-import app.cash.turbine.test
+import app.cash.turbine.turbineScope
+import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
@@ -21,7 +22,6 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlinx.coroutines.launch
 import org.junit.jupiter.api.BeforeEach
 
 class AccountViewModelTest : CoroutineTest() {
@@ -54,24 +54,20 @@ class AccountViewModelTest : CoroutineTest() {
         // Arrange
         coEvery { authManager.signOut() } returns Result.success(Unit)
 
-        // Act
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(
-                    EdifikanaWindowsEvent.NavigateToNavGraph(
-                        EdifikanaNavGraphDestination.AuthNavGraphDestination,
-                        clearStack = true,
-                    ),
-                    awaitItem(),
-                )
-            }
+        // Act & Assert
+        turbineScope {
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+            viewModel.signOut()
+            assertEquals(
+                EdifikanaWindowsEvent.NavigateToNavGraph(
+                    EdifikanaNavGraphDestination.AuthNavGraphDestination,
+                    clearStack = true,
+                ),
+                turbine.awaitItem(),
+            )
+            advanceUntilIdleAndAwaitComplete(turbine)
         }
-
-        viewModel.signOut()
-
-        // Assert
         coVerify { authManager.signOut() }
-        verificationJob.join()
     }
 
     @Test
@@ -79,19 +75,13 @@ class AccountViewModelTest : CoroutineTest() {
         // Arrange
         assertEquals(false, viewModel.uiState.value.isEditable)
 
-        // Act
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(
-                    EdifikanaWindowsEvent.NavigateBack,
-                    awaitItem(),
-                )
-            }
+        // Act & Assert
+        turbineScope {
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+            viewModel.navigateBack()
+            assertEquals(EdifikanaWindowsEvent.NavigateBack, turbine.awaitItem())
+            advanceUntilIdleAndAwaitComplete(turbine)
         }
-        viewModel.navigateBack()
-
-        // Assert
-        verificationJob.join()
     }
 
     @Test
@@ -248,19 +238,16 @@ class AccountViewModelTest : CoroutineTest() {
         viewModel.updatePhoneNumber("9876543210")
         assertEquals(true, viewModel.uiState.value.isEditable)
 
-        // Act
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(
-                    EdifikanaWindowsEvent.ShowSnackbar("Account information updated successfully."),
-                    awaitItem(),
-                )
-            }
+        // Act & Assert
+        turbineScope {
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+            viewModel.editOrSave()
+            assertEquals(
+                EdifikanaWindowsEvent.ShowSnackbar("Account information updated successfully."),
+                turbine.awaitItem(),
+            )
+            advanceUntilIdleAndAwaitComplete(turbine)
         }
-
-        viewModel.editOrSave()
-
-        // Assert
         coVerify {
             authManager.updateUser(
                 firstName = "Jane",
@@ -272,7 +259,6 @@ class AccountViewModelTest : CoroutineTest() {
         val uiState = viewModel.uiState.value
         assertEquals(false, uiState.isLoading)
         assertEquals(false, uiState.isEditable)
-        verificationJob.join()
     }
 
     @Test
@@ -291,22 +277,18 @@ class AccountViewModelTest : CoroutineTest() {
         viewModel.editOrSave()
         assertEquals(true, viewModel.uiState.value.isEditable)
 
-        // Act
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(
-                    EdifikanaWindowsEvent.ShowSnackbar("Failed to update account information. Please try again."),
-                    awaitItem(),
-                )
-            }
+        // Act & Assert
+        turbineScope {
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+            viewModel.editOrSave()
+            assertEquals(
+                EdifikanaWindowsEvent.ShowSnackbar("Failed to update account information. Please try again."),
+                turbine.awaitItem(),
+            )
+            advanceUntilIdleAndAwaitComplete(turbine)
         }
-
-        viewModel.editOrSave()
-
-        // Assert
         val uiState = viewModel.uiState.value
         assertEquals(false, uiState.isLoading)
         assertEquals(true, uiState.isEditable) // Should stay in edit mode on failure
-        verificationJob.join()
     }
 }

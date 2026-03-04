@@ -1,6 +1,6 @@
 package com.cramsan.runasimi.client.lib.features.main.menu
 
-import app.cash.turbine.test
+import app.cash.turbine.turbineScope
 import com.cramsan.architecture.client.manager.PreferencesManager
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
@@ -17,7 +17,6 @@ import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
 import com.cramsan.runasimi.client.lib.features.main.menu.MenuViewModel
 import com.cramsan.runasimi.client.lib.features.window.RunasimiWindowsEvent
 import io.mockk.mockk
-import kotlinx.coroutines.launch
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -72,18 +71,12 @@ class MenuViewModelTest : CoroutineTest() {
 
     @Test
     fun `test events`() = runCoroutineTest {
-        // Set up
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(RunasimiWindowsEvent.NavigateBack, awaitItem())
-                advanceUntilIdleAndAwaitComplete(this)
-            }
+        // Set up & Act
+        turbineScope {
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+            viewModel.onBackSelected()
+            assertEquals(RunasimiWindowsEvent.NavigateBack, turbine.awaitItem())
+            advanceUntilIdleAndAwaitComplete(turbine)
         }
-
-        // Act
-        viewModel.onBackSelected()
-
-        // Assert
-        verificationJob.join()
     }
 }

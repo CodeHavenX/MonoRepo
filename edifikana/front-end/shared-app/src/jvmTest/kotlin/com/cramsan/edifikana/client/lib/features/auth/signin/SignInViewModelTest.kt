@@ -1,6 +1,5 @@
 package com.cramsan.edifikana.client.lib.features.auth.signin
 
-import app.cash.turbine.test
 import app.cash.turbine.turbineScope
 import com.cramsan.architecture.client.manager.PreferencesManager
 import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
@@ -29,7 +28,6 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlinx.coroutines.launch
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
@@ -173,20 +171,16 @@ class SignInViewModelTest : CoroutineTest() {
         viewModel.changeUsernameValue(username)
         viewModel.changePasswordValue(password)
 
-        // Act
-        val verificationJob = launch {
-            viewModel.events.test {
-                advanceUntilIdleAndAwaitComplete(this)
-            }
+        // Act & Assert & Verify
+        turbineScope {
+            val turbine = viewModel.events.testIn(backgroundScope)
+            viewModel.changeUsernameValue(username)
+            viewModel.changePasswordValue(password)
+            viewModel.signInWithPassword()
+            coVerify { authManager.signInWithPassword(username, password) }
+            assertEquals(listOf(errorMessage).toString(), viewModel.uiState.value.errorMessages.toString())
+            advanceUntilIdleAndAwaitComplete(turbine)
         }
-        viewModel.changeUsernameValue(username)
-        viewModel.changePasswordValue(password)
-        viewModel.signInWithPassword()
-
-        // Assert & Verify
-        coVerify { authManager.signInWithPassword(username, password) }
-        assertEquals(listOf(errorMessage).toString(), viewModel.uiState.value.errorMessages.toString())
-        verificationJob.join()
     }
 
     /**
@@ -207,20 +201,16 @@ class SignInViewModelTest : CoroutineTest() {
         } returns Result.failure(mockk<Exception>())
         coEvery { stringProvider.getString(Res.string.error_message_unexpected_error) } returns errorMessage
 
-        // Act
-        val verificationJob = launch {
-            viewModel.events.test {
-                advanceUntilIdleAndAwaitComplete(this)
-            }
+        // Act & Assert & Verify
+        turbineScope {
+            val turbine = viewModel.events.testIn(backgroundScope)
+            viewModel.changeUsernameValue(username)
+            viewModel.changePasswordValue(password)
+            viewModel.signInWithPassword()
+            coVerify { authManager.signInWithPassword(username, password) }
+            assertEquals(listOf(errorMessage).toString(), viewModel.uiState.value.errorMessages.toString())
+            advanceUntilIdleAndAwaitComplete(turbine)
         }
-        viewModel.changeUsernameValue(username)
-        viewModel.changePasswordValue(password)
-        viewModel.signInWithPassword()
-
-        // Assert & Verify
-        coVerify { authManager.signInWithPassword(username, password) }
-        assertEquals(listOf(errorMessage).toString(), viewModel.uiState.value.errorMessages.toString())
-        verificationJob.join()
     }
 
     /**
@@ -231,19 +221,16 @@ class SignInViewModelTest : CoroutineTest() {
         // Arrange
         coEvery { authManager.signInWithPassword(any(), any()) } returns Result.success(mockk())
 
-        // Act
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(
-                    EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.SignUpDestination("")),
-                    awaitItem()
-                )
-            }
+        // Act & Assert & Verify
+        turbineScope {
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+            viewModel.navigateToSignUpPage()
+            assertEquals(
+                EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.SignUpDestination("")),
+                turbine.awaitItem()
+            )
+            advanceUntilIdleAndAwaitComplete(turbine)
         }
-        viewModel.navigateToSignUpPage()
-
-        // Assert & Verify
-        verificationJob.join()
     }
 
     /**
@@ -254,19 +241,16 @@ class SignInViewModelTest : CoroutineTest() {
         // Arrange
         coEvery { authManager.signInWithPassword(any(), any()) } returns Result.success(mockk())
 
-        // Act
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(
-                    EdifikanaWindowsEvent.NavigateToNavGraph(EdifikanaNavGraphDestination.DebugNavGraphDestination),
-                    awaitItem()
-                )
-            }
+        // Act & Assert & Verify
+        turbineScope {
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+            viewModel.navigateToDebugPage()
+            assertEquals(
+                EdifikanaWindowsEvent.NavigateToNavGraph(EdifikanaNavGraphDestination.DebugNavGraphDestination),
+                turbine.awaitItem()
+            )
+            advanceUntilIdleAndAwaitComplete(turbine)
         }
-        viewModel.navigateToDebugPage()
-
-        // Assert & Verify
-        verificationJob.join()
     }
 
     /**
@@ -279,24 +263,21 @@ class SignInViewModelTest : CoroutineTest() {
         viewModel.changeUsernameValue(email)
         coEvery { authManager.checkUserExists(email.trim()) } returns Result.success(true)
 
-        // Act
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(
-                    EdifikanaWindowsEvent.NavigateToScreen(
-                        AuthDestination.ValidationDestination(
-                            email.trim(),
-                            accountCreationFlow = false,
-                        )
-                    ),
-                    awaitItem()
-                )
-            }
+        // Act & Assert
+        turbineScope {
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+            viewModel.signInWithOtp()
+            assertEquals(
+                EdifikanaWindowsEvent.NavigateToScreen(
+                    AuthDestination.ValidationDestination(
+                        email.trim(),
+                        accountCreationFlow = false,
+                    )
+                ),
+                turbine.awaitItem()
+            )
+            advanceUntilIdleAndAwaitComplete(turbine)
         }
-        viewModel.signInWithOtp()
-
-        // Assert
-        verificationJob.join()
     }
 
     @Test
@@ -306,19 +287,16 @@ class SignInViewModelTest : CoroutineTest() {
         viewModel.changeUsernameValue(email)
         coEvery { authManager.checkUserExists(email.trim()) } returns Result.success(false)
 
-        // Act
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(
-                    EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.SignUpDestination(email)),
-                    awaitItem()
-                )
-            }
+        // Act & Assert & Verify
+        turbineScope {
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+            viewModel.signInWithOtp()
+            assertEquals(
+                EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.SignUpDestination(email)),
+                turbine.awaitItem()
+            )
+            advanceUntilIdleAndAwaitComplete(turbine)
         }
-        viewModel.signInWithOtp()
-
-        // Assert & Verify
         coVerify { authManager.checkUserExists(email.trim()) }
-        verificationJob.join()
     }
 }

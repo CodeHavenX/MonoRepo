@@ -13,10 +13,10 @@ import com.cramsan.framework.utils.loginvalidation.validatePassword
 import edifikana_lib.Res
 import edifikana_lib.change_password_dialog_error_confirm_password_empty
 import edifikana_lib.change_password_dialog_error_current_password_empty
-import edifikana_lib.change_password_dialog_error_failed
 import edifikana_lib.change_password_dialog_error_new_password_empty
 import edifikana_lib.change_password_dialog_error_new_password_too_short
 import edifikana_lib.change_password_dialog_error_passwords_do_not_match
+import edifikana_lib.change_password_dialog_error_verify_password_exists
 import edifikana_lib.change_password_dialog_success
 import kotlinx.coroutines.launch
 
@@ -177,9 +177,8 @@ class ChangePasswordDialogViewModel(
                     )
                 }
                 emitWindowEvent(
-                    //TODO Add string to resources and localize
                     EdifikanaWindowsEvent.ShowSnackbar(
-                        "Unable to verify if your account has an existing password. For safety, please enter your current password if you have one."
+                        stringProvider.getString(Res.string.change_password_dialog_error_verify_password_exists)
                     )
                 )
                 return@launch

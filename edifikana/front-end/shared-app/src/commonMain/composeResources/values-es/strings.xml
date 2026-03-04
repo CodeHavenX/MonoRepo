@@ -155,6 +155,7 @@
     <string name="change_password_dialog_error_passwords_do_not_match">Las contraseñas no coinciden</string>
     <string name="change_password_dialog_success">¡Contraseña actualizada!</string>
     <string name="change_password_dialog_error_failed">Error al cambiar la contraseña: %1$s</string>
+    <string name="change_password_dialog_error_verify_password_exists">No se puede verificar si su cuenta tiene una contraseña. Por seguridad, ingrese su contraseña actual si la tiene.</string>
 
     <!-- Join org dialog -->
     <string name="join_org_dialog_title">Unirse a la organización</string>

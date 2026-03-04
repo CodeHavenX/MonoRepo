@@ -158,6 +158,6 @@ class ChangePasswordDialogViewModelTest : CoroutineTest() {
         viewModel.loadUserData()
 
         assertFalse(viewModel.uiState.value.isLoading)
-        assertFalse(viewModel.uiState.value.showCurrentPassword)
+        assertTrue(viewModel.uiState.value.showCurrentPassword)
     }
 }

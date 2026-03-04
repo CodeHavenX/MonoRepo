@@ -51,7 +51,7 @@ class AccountViewModel(
      */
     fun loadUserData() {
         viewModelScope.launch {
-            updateUiState { it.copy(isLoading = true) }
+            updateUiState { it.copy(isLoading = true, isPasswordSet = null) }
             fetchAndApplyUser()
         }
     }
@@ -75,7 +75,7 @@ class AccountViewModel(
      */
     fun cancelEdit() {
         viewModelScope.launch {
-            updateUiState { it.copy(isLoading = true, isEditable = false) }
+            updateUiState { it.copy(isLoading = true, isEditable = false, isPasswordSet = null) }
             fetchAndApplyUser()
         }
     }

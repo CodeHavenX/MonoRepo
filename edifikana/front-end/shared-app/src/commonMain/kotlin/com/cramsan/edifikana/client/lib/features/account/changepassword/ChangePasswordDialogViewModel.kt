@@ -156,7 +156,20 @@ class ChangePasswordDialogViewModel(
             updateUiState { it.copy(isLoading = true) }
             val response = authManager.getUser()
             if (response.isFailure) {
-                updateUiState { it.copy(isLoading = false) }
+                logE(TAG, "Failed to load user data", response.exceptionOrNull())
+                updateUiState {
+                    it.copy(
+                        isLoading = false,
+                        // On failure, show the current password field so the user can still proceed safely.
+                        showCurrentPassword = true,
+                    )
+                }
+                emitWindowEvent(
+                    //TODO Add string to resources and localize
+                    EdifikanaWindowsEvent.ShowSnackbar(
+                        "Unable to verify if your account has an existing password. For safety, please enter your current password if you have one."
+                    )
+                )
                 return@launch
             }
             val user = response.getOrThrow()

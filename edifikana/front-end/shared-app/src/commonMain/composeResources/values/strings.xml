@@ -159,7 +159,7 @@
 
     <!-- Join org dialog -->
     <string name="join_org_dialog_title">Join Organization</string>
-    <string name="join_org_dialog_message">Are you sure you want to join this organization</string>
+    <string name="join_org_dialog_message">Are you sure you want to join this organization?</string>
     <string name="join_org_dialog_confirm_button">Join</string>
 
     <!-- Sign out onboarding dialog -->

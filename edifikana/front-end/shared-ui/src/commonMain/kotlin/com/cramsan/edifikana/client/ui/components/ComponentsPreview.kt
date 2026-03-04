@@ -477,7 +477,6 @@ private fun EdifikanaImageSelectorPreview() {
 
             EdifikanaImageSelector(
                 label = "Property Icon",
-                options = options,
                 selectedOption = selectedOption,
                 onOpenSelectorSelected = {
                     // TODO
@@ -553,7 +552,6 @@ private fun EdifikanaImageSelectorWithUploadPreview() {
 
             EdifikanaImageSelector(
                 label = "Property Icon",
-                options = optionsWithUpload,
                 selectedOption = selectedOption,
                 onOpenSelectorSelected = {
                     // TODO
@@ -620,7 +618,6 @@ private fun EdifikanaImageSelectorWithCustomImagePreview() {
 
             EdifikanaImageSelector(
                 label = "Property Icon",
-                options = optionsWithUpload,
                 selectedOption = selectedOption,
                 onOpenSelectorSelected = {
                     // TODO
@@ -671,7 +668,6 @@ private fun EdifikanaImageSelectorGridOverflowPreview() {
 
             EdifikanaImageSelector(
                 label = "Property Icon",
-                options = options,
                 selectedOption = selectedOption,
                 onOpenSelectorSelected = { },
                 placeholder = "Select a property icon",
@@ -710,7 +706,6 @@ private fun EdifikanaImageSelectorGridEmptyPreview() {
 
             EdifikanaImageSelector(
                 label = "Property Icon",
-                options = emptyList(),
                 selectedOption = null,
                 onOpenSelectorSelected = {},
                 placeholder = "Select a property icon",

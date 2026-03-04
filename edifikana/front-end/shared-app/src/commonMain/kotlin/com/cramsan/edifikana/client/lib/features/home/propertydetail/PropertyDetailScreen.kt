@@ -213,7 +213,6 @@ internal fun PropertyDetailContent(
                     Column(sectionModifier) {
                         EdifikanaImageSelector(
                             label = "Property Icon",
-                            options = PropertyIconOptions.getOptionsWithUpload(),
                             selectedOption = content.selectedIcon,
                             onOpenSelectorSelected = onOpenSelectorSelected,
                             placeholder = if (content.isUploading) "Uploading..." else "Select a property icon",

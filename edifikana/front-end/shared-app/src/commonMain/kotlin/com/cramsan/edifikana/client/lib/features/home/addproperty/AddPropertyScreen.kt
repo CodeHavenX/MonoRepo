@@ -146,7 +146,6 @@ internal fun AddPropertyContent(
                 )
                 EdifikanaImageSelector(
                     label = "Property Icon",
-                    options = PropertyIconOptions.getOptionsWithUpload(),
                     selectedOption = content.selectedIcon,
                     placeholder = if (content.isUploading) "Uploading..." else "Select a property icon",
                     onOpenSelectorSelected = onOpenSelectorSelected,

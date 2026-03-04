@@ -186,12 +186,20 @@ class AddPropertyViewModel(
         }
     }
 
+    /**
+     * Open the image selector bottom sheet.
+     */
     fun openImageSelector() {
         viewModelScope.launch {
             emitEvent(AddPropertyEvent.OpenImageSelector)
         }
     }
 
+    /**
+     * Handle image selection from the image selector bottom sheet.
+     * If "custom_upload" is selected, trigger the photo picker flow.
+     * Otherwise, update the selected icon in the UI state.
+     */
     fun selectPhoto(option: ImageOptionUIModel) {
         viewModelScope.launch {
             if (option.id == "custom_upload") {

@@ -18,7 +18,6 @@ import com.cramsan.ui.theme.Padding
  * containing a grid of selectable images. The bottom sheet adapts to screen size.
  *
  * @param label Label displayed above the component
- * @param options List of image options to display
  * @param selectedOption Currently selected option
  * @param onOpenSelectorSelected Callback when an option is selected
  * @param modifier Modifier for the component
@@ -27,7 +26,6 @@ import com.cramsan.ui.theme.Padding
 @Composable
 fun EdifikanaImageSelector(
     label: String,
-    options: List<ImageOptionUIModel>,
     selectedOption: ImageOptionUIModel?,
     onOpenSelectorSelected: () -> Unit,
     modifier: Modifier = Modifier,

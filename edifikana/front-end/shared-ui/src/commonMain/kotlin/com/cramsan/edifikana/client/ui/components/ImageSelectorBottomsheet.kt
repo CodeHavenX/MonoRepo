@@ -8,6 +8,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.cramsan.ui.theme.Padding
 
+/**
+ * Bottom sheet dialog for selecting an image from a grid of options.
+ *
+ * @param label Title displayed at the top of the sheet
+ * @param options List of image options to display in the grid
+ * @param selectedOption Currently selected option, if any
+ * @param onOptionSelected Callback when an option is selected; the sheet will automatically hide after selection
+ */
 class ImageSelectorBottomsheet(
     private val label: String,
     private val options: List<ImageOptionUIModel>,

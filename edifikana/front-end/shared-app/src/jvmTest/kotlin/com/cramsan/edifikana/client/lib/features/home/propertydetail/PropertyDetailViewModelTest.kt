@@ -156,7 +156,6 @@ class PropertyDetailViewModelTest : CoroutineTest() {
         viewModel.toggleEditMode()
         viewModel.onNameChanged("Modified Name")
         viewModel.onAddressChanged("Modified Address")
-        viewModel.onImageUrlChanged("drawable:CASA")
 
         assertEquals("Modified Name", viewModel.uiState.value.name)
         assertEquals("Modified Address", viewModel.uiState.value.address)
@@ -195,12 +194,6 @@ class PropertyDetailViewModelTest : CoroutineTest() {
     }
 
     @Test
-    fun `test onImageUrlChanged updates imageUrl in UI state`() = runCoroutineTest {
-        viewModel.onImageUrlChanged("drawable:L_DEPA")
-        assertEquals("drawable:L_DEPA", viewModel.uiState.value.imageUrl)
-    }
-
-    @Test
     fun `test saveProperty with success updates property and shows success message`() = runCoroutineTest {
         val propertyId = PropertyId("test-property-id")
         val property = PropertyModel(
@@ -226,7 +219,6 @@ class PropertyDetailViewModelTest : CoroutineTest() {
         viewModel.toggleEditMode()
         viewModel.onNameChanged("Updated Name")
         viewModel.onAddressChanged("Updated Address")
-        viewModel.onImageUrlChanged("drawable:M_DEPA")
 
         val verificationJob = launch {
             windowEventBus.events.test {

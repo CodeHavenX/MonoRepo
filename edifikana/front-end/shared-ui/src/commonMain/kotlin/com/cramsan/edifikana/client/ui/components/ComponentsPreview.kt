@@ -478,9 +478,7 @@ private fun EdifikanaImageSelectorPreview() {
             EdifikanaImageSelector(
                 label = "Property Icon",
                 selectedOption = selectedOption,
-                onOpenSelectorSelected = {
-                    // TODO
-                },
+                onOpenSelectorSelected = { },
                 placeholder = "Select a property icon",
             )
 
@@ -553,9 +551,7 @@ private fun EdifikanaImageSelectorWithUploadPreview() {
             EdifikanaImageSelector(
                 label = "Property Icon",
                 selectedOption = selectedOption,
-                onOpenSelectorSelected = {
-                    // TODO
-                },
+                onOpenSelectorSelected = { },
                 placeholder = "Select a property icon",
             )
 
@@ -619,9 +615,7 @@ private fun EdifikanaImageSelectorWithCustomImagePreview() {
             EdifikanaImageSelector(
                 label = "Property Icon",
                 selectedOption = selectedOption,
-                onOpenSelectorSelected = {
-                    // TODO
-                },
+                onOpenSelectorSelected = { },
                 placeholder = "Select a property icon",
             )
 

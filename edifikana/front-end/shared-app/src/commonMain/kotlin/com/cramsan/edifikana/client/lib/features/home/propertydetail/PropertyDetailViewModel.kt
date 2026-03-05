@@ -121,16 +121,6 @@ class PropertyDetailViewModel(
     }
 
     /**
-     * Update the property image URL.
-     */
-    @TestOnly
-    fun onImageUrlChanged(imageUrl: String?) {
-        viewModelScope.launch {
-            updateUiState { it.copy(imageUrl = imageUrl) }
-        }
-    }
-
-    /**
      * Trigger the photo picker to select a custom image.
      */
     private fun triggerPhotoPicker() {

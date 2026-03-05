@@ -79,7 +79,6 @@ fun PropertyDetailScreen(
                 )
                 dialogController.showDialog(modal)
             }
-             else -> Unit
         }
     }
 

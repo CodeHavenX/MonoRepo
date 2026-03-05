@@ -96,6 +96,7 @@ class PropertyDetailViewModel(
                     updateUiState {
                         it.copy(
                             isLoading = false,
+                            selectedIcon = null,
                             name = property.name,
                             address = property.address,
                             imageUrl = property.imageUrl,
@@ -216,7 +217,10 @@ class PropertyDetailViewModel(
             }
 
             // Use imageUrl from state if no custom upload
-            val imageUrl = if (imageUri == null) state.imageUrl else null
+            val imageUrl = if (imageUri == null)
+                "drawable:${state.selectedIcon?.id}"
+            else
+                null
 
             // Set loading states - isUploading only if we have a custom image
             updateUiState {

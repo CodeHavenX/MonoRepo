@@ -28,8 +28,7 @@ private fun PropertyDetailScreenPreview() = AppTheme {
         onDeleteProperty = {},
         onNameChanged = {},
         onAddressChanged = {},
-        onImageUrlChanged = {},
-        onTriggerPhotoPicker = {},
+        onOpenSelectorSelected = {},
     )
 }
 
@@ -55,8 +54,7 @@ private fun PropertyDetailScreenEditModePreview() = AppTheme {
         onDeleteProperty = {},
         onNameChanged = {},
         onAddressChanged = {},
-        onImageUrlChanged = {},
-        onTriggerPhotoPicker = {},
+        onOpenSelectorSelected = {},
     )
 }
 
@@ -85,8 +83,7 @@ private fun PropertyDetailScreenUploadingPreview() = AppTheme {
         onDeleteProperty = {},
         onNameChanged = {},
         onAddressChanged = {},
-        onImageUrlChanged = {},
-        onTriggerPhotoPicker = {},
+        onOpenSelectorSelected = {},
     )
 }
 
@@ -115,8 +112,7 @@ private fun PropertyDetailScreenWithCustomImagePreview() = AppTheme {
         onDeleteProperty = {},
         onNameChanged = {},
         onAddressChanged = {},
-        onImageUrlChanged = {},
-        onTriggerPhotoPicker = {},
+        onOpenSelectorSelected = {},
     )
 }
 
@@ -145,7 +141,6 @@ private fun PropertyDetailScreenUploadErrorPreview() = AppTheme {
         onDeleteProperty = {},
         onNameChanged = {},
         onAddressChanged = {},
-        onImageUrlChanged = {},
-        onTriggerPhotoPicker = {},
+        onOpenSelectorSelected = {},
     )
 }

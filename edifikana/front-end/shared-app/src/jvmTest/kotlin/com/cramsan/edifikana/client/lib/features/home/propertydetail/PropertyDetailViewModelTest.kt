@@ -1,12 +1,17 @@
 package com.cramsan.edifikana.client.lib.features.home.propertydetail
 
 import app.cash.turbine.test
+import app.cash.turbine.turbineScope
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.managers.StorageManager
 import com.cramsan.edifikana.client.lib.models.PropertyModel
+import com.cramsan.edifikana.client.ui.components.ImageOptionUIModel
+import com.cramsan.edifikana.client.ui.components.ImageSource
+import com.cramsan.edifikana.client.ui.resources.PropertyIcons
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.framework.annotations.TestOnly
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
 import com.cramsan.framework.core.compose.EventBus
@@ -27,7 +32,9 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import org.junit.jupiter.api.assertNull
 
+@OptIn(TestOnly::class)
 class PropertyDetailViewModelTest : CoroutineTest() {
 
     private lateinit var viewModel: PropertyDetailViewModel
@@ -154,17 +161,22 @@ class PropertyDetailViewModelTest : CoroutineTest() {
         viewModel.toggleEditMode()
         viewModel.onNameChanged("Modified Name")
         viewModel.onAddressChanged("Modified Address")
-        viewModel.onImageUrlChanged("drawable:CASA")
+        viewModel.selectPhoto(ImageOptionUIModel(
+            id = "CASA",
+            displayName = "Casa",
+            imageSource = ImageSource.Drawable(PropertyIcons.CASA),
+        ))
 
         assertEquals("Modified Name", viewModel.uiState.value.name)
         assertEquals("Modified Address", viewModel.uiState.value.address)
-        assertEquals("drawable:CASA", viewModel.uiState.value.imageUrl)
+        assertEquals("CASA", viewModel.uiState.value.selectedIcon?.id)
         assertTrue(viewModel.uiState.value.isEditMode)
 
         viewModel.cancelEdit()
 
         assertEquals("Original Name", viewModel.uiState.value.name)
         assertEquals("Original Address", viewModel.uiState.value.address)
+        assertNull(viewModel.uiState.value.selectedIcon)
         assertEquals("drawable:QUINTA", viewModel.uiState.value.imageUrl)
         assertFalse(viewModel.uiState.value.isEditMode)
         assertFalse(viewModel.uiState.value.isLoading)
@@ -193,53 +205,55 @@ class PropertyDetailViewModelTest : CoroutineTest() {
     }
 
     @Test
-    fun `test onImageUrlChanged updates imageUrl in UI state`() = runCoroutineTest {
-        viewModel.onImageUrlChanged("drawable:L_DEPA")
-        assertEquals("drawable:L_DEPA", viewModel.uiState.value.imageUrl)
-    }
-
-    @Test
     fun `test saveProperty with success updates property and shows success message`() = runCoroutineTest {
-        val propertyId = PropertyId("test-property-id")
-        val property = PropertyModel(
-            id = propertyId,
-            name = "Test Property",
-            address = "123 Test Street",
-            organizationId = OrganizationId("org-1"),
-            imageUrl = "drawable:L_DEPA",
-        )
-        val updatedProperty = PropertyModel(
-            id = propertyId,
-            name = "Updated Name",
-            address = "Updated Address",
-            organizationId = OrganizationId("org-1"),
-            imageUrl = "drawable:M_DEPA",
-        )
-        coEvery { propertyManager.getProperty(propertyId) } returns Result.success(property)
-        coEvery {
-            propertyManager.updateProperty(propertyId, "Updated Name", "Updated Address", "drawable:M_DEPA")
-        } returns Result.success(updatedProperty)
+        turbineScope {
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+            val propertyId = PropertyId("test-property-id")
+            val property = PropertyModel(
+                id = propertyId,
+                name = "Test Property",
+                address = "123 Test Street",
+                organizationId = OrganizationId("org-1"),
+                imageUrl = "drawable:L_DEPA",
+            )
+            val updatedProperty = PropertyModel(
+                id = propertyId,
+                name = "Updated Name",
+                address = "Updated Address",
+                organizationId = OrganizationId("org-1"),
+                imageUrl = "drawable:M_DEPA",
+            )
+            coEvery { propertyManager.getProperty(propertyId) } returns Result.success(property)
+            coEvery {
+                propertyManager.updateProperty(propertyId, "Updated Name", "Updated Address", "drawable:M_DEPA")
+            } returns Result.success(updatedProperty)
 
-        viewModel.initialize(propertyId)
-        viewModel.toggleEditMode()
-        viewModel.onNameChanged("Updated Name")
-        viewModel.onAddressChanged("Updated Address")
-        viewModel.onImageUrlChanged("drawable:M_DEPA")
+            viewModel.initialize(propertyId)
+            viewModel.toggleEditMode()
+            viewModel.onNameChanged("Updated Name")
+            viewModel.onAddressChanged("Updated Address")
+            viewModel.selectPhoto(ImageOptionUIModel(
+                id = "M_DEPA",
+                displayName = "Departamento",
+                imageSource = ImageSource.Drawable(PropertyIcons.M_DEPA),
+            ))
 
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                val event = awaitItem() as EdifikanaWindowsEvent.ShowSnackbar
-                assertEquals("Property updated successfully", event.message)
+            viewModel.saveProperty()
+
+            val event = turbine.awaitItem() as EdifikanaWindowsEvent.ShowSnackbar
+            assertEquals("Property updated successfully", event.message)
+            assertFalse(viewModel.uiState.value.isLoading)
+            assertFalse(viewModel.uiState.value.isEditMode)
+            coVerify {
+                propertyManager.updateProperty(
+                    propertyId,
+                    "Updated Name",
+                    "Updated Address",
+                    "drawable:M_DEPA"
+                )
             }
+            assertTrue(exceptionHandler.exceptions.isEmpty())
         }
-
-        viewModel.saveProperty()
-        verificationJob.join()
-
-        assertFalse(viewModel.uiState.value.isLoading)
-        assertFalse(viewModel.uiState.value.isEditMode)
-        coVerify { propertyManager.updateProperty(propertyId, "Updated Name", "Updated Address", "drawable:M_DEPA") }
-        assertTrue(exceptionHandler.exceptions.isEmpty())
     }
 
     @Test

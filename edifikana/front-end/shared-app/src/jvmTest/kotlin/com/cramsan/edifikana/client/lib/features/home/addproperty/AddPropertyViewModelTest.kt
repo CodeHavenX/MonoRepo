@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.home.addproperty
 
 import app.cash.turbine.test
+import app.cash.turbine.turbineScope
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.managers.StorageManager
@@ -244,20 +245,25 @@ class AddPropertyViewModelTest : CoroutineTest() {
      */
     @Test
     fun `test triggerPhotoPicker emits OpenPhotoPicker event`() = runCoroutineTest {
-        // Arrange
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                // Assert
-                assertEquals(
-                    EdifikanaWindowsEvent.OpenPhotoPicker,
-                    awaitItem()
-                )
-            }
-        }
+        turbineScope {
+            // Arrange
+            val turbine = windowEventBus.events.testIn(backgroundScope)
 
-        // Act
-        viewModel.triggerPhotoPicker()
-        verificationJob.join()
+            // Act
+            viewModel.selectPhoto(
+                ImageOptionUIModel(
+                    id = "custom_upload",
+                    displayName = "Custom Image",
+                    imageSource = ImageSource.LocalFile(CoreUri("file:///test.jpg"), "test.jpg")
+                )
+            )
+
+            // Assert
+            assertEquals(
+                EdifikanaWindowsEvent.OpenPhotoPicker,
+                turbine.awaitItem()
+            )
+        }
     }
 
     /**

@@ -1,10 +1,13 @@
 package com.cramsan.edifikana.client.lib.features.home.propertydetail
 
+import com.cramsan.edifikana.client.lib.features.home.shared.PropertyIconOptions
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.managers.StorageManager
+import com.cramsan.edifikana.client.ui.components.ImageOptionUIModel
 import com.cramsan.edifikana.client.ui.components.ImageSource
 import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.framework.annotations.TestOnly
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
@@ -72,7 +75,12 @@ class PropertyDetailViewModel(
      */
     fun toggleEditMode() {
         viewModelScope.launch {
-            updateUiState { it.copy(isEditMode = !it.isEditMode) }
+            updateUiState {
+                it.copy(
+                    isEditMode = !it.isEditMode,
+                    selectedIcon = PropertyIconOptions.fromImageUrl(it.imageUrl),
+                )
+            }
         }
     }
 
@@ -88,6 +96,7 @@ class PropertyDetailViewModel(
                     updateUiState {
                         it.copy(
                             isLoading = false,
+                            selectedIcon = null,
                             name = property.name,
                             address = property.address,
                             imageUrl = property.imageUrl,
@@ -119,18 +128,9 @@ class PropertyDetailViewModel(
     }
 
     /**
-     * Update the property image URL.
-     */
-    fun onImageUrlChanged(imageUrl: String?) {
-        viewModelScope.launch {
-            updateUiState { it.copy(imageUrl = imageUrl) }
-        }
-    }
-
-    /**
      * Trigger the photo picker to select a custom image.
      */
-    fun triggerPhotoPicker() {
+    private fun triggerPhotoPicker() {
         viewModelScope.launch {
             emitWindowEvent(EdifikanaWindowsEvent.OpenPhotoPicker)
         }
@@ -169,6 +169,36 @@ class PropertyDetailViewModel(
     }
 
     /**
+     * Open the image selector bottom sheet.
+     */
+    fun openImageSelector() {
+        viewModelScope.launch {
+            emitEvent(PropertyDetailEvent.OpenImageSelector)
+        }
+    }
+
+
+    /**
+     * Handle image option selection from the bottom sheet.
+     * If "custom_upload" is selected, trigger the photo picker.
+     * Otherwise, update the selected icon in the UI state.
+     */
+    fun selectPhoto(option: ImageOptionUIModel) {
+        viewModelScope.launch {
+            if (option.id == "custom_upload") {
+                triggerPhotoPicker()
+            } else {
+                updateUiState {
+                    it.copy(
+                        selectedIcon = option,
+                        uploadError = null
+                    )
+                }
+            }
+        }
+    }
+
+    /**
      * Save the property changes.
      * Supports both default icons and custom image uploads.
      */
@@ -187,7 +217,10 @@ class PropertyDetailViewModel(
             }
 
             // Use imageUrl from state if no custom upload
-            val imageUrl = if (imageUri == null) state.imageUrl else null
+            val imageUrl = if (imageUri == null)
+                "drawable:${state.selectedIcon?.id}"
+            else
+                null
 
             // Set loading states - isUploading only if we have a custom image
             updateUiState {

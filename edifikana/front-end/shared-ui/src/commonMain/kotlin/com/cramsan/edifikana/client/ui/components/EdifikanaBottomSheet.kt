@@ -23,7 +23,6 @@ import com.cramsan.ui.theme.Size
  * On mobile (width < 600dp), fills the screen width.
  * On tablet/web (width >= 600dp), constrains content to max width and centers horizontally.
  *
- * @param visible Whether the bottom sheet is visible
  * @param onDismissRequest Callback when the sheet is dismissed
  * @param modifier Modifier for the bottom sheet
  * @param sheetState Optional sheet state for controlling the sheet programmatically
@@ -32,42 +31,36 @@ import com.cramsan.ui.theme.Size
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EdifikanaBottomSheet(
-    visible: Boolean,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
     content: @Composable () -> Unit,
 ) {
-    if (visible) {
-        BoxWithConstraints {
-            val isMobile = maxWidth < 600.dp
-            val screenMaxHeight = maxHeight
+    BoxWithConstraints {
+        val isMobile = maxWidth < 600.dp
 
-            ModalBottomSheet(
-                onDismissRequest = onDismissRequest,
-                sheetState = sheetState,
-                modifier = modifier,
-                containerColor = MaterialTheme.colorScheme.surface,
-                contentColor = MaterialTheme.colorScheme.onSurface,
+        ModalBottomSheet(
+            onDismissRequest = onDismissRequest,
+            sheetState = sheetState,
+            modifier = modifier,
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+        ) {
+            // Wrap content in Box to apply width/height constraints on larger screens
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.TopCenter,
             ) {
-                // Wrap content in Box to apply width/height constraints on larger screens
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.TopCenter,
-                ) {
-                    Column(
-                        modifier = if (isMobile) {
-                            Modifier
-                                .fillMaxWidth()
-                                .heightIn(max = screenMaxHeight)
-                        } else {
-                            Modifier
-                                .widthIn(max = Size.COLUMN_MAX_WIDTH)
-                                .heightIn(max = 600.dp)
-                        }
-                    ) {
-                        content()
+                Column(
+                    modifier = if (isMobile) {
+                        Modifier.fillMaxWidth()
+                    } else {
+                        Modifier
+                            .widthIn(max = Size.COLUMN_MAX_WIDTH)
+                            .heightIn(max = 600.dp)
                     }
+                ) {
+                    content()
                 }
             }
         }

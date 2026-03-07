@@ -477,9 +477,8 @@ private fun EdifikanaImageSelectorPreview() {
 
             EdifikanaImageSelector(
                 label = "Property Icon",
-                options = options,
                 selectedOption = selectedOption,
-                onOptionSelected = { selectedOption = it },
+                onOpenSelectorSelected = { },
                 placeholder = "Select a property icon",
             )
 
@@ -551,9 +550,8 @@ private fun EdifikanaImageSelectorWithUploadPreview() {
 
             EdifikanaImageSelector(
                 label = "Property Icon",
-                options = optionsWithUpload,
                 selectedOption = selectedOption,
-                onOptionSelected = { selectedOption = it },
+                onOpenSelectorSelected = { },
                 placeholder = "Select a property icon",
             )
 
@@ -616,9 +614,8 @@ private fun EdifikanaImageSelectorWithCustomImagePreview() {
 
             EdifikanaImageSelector(
                 label = "Property Icon",
-                options = optionsWithUpload,
                 selectedOption = selectedOption,
-                onOptionSelected = { selectedOption = it },
+                onOpenSelectorSelected = { },
                 placeholder = "Select a property icon",
             )
 
@@ -665,9 +662,8 @@ private fun EdifikanaImageSelectorGridOverflowPreview() {
 
             EdifikanaImageSelector(
                 label = "Property Icon",
-                options = options,
                 selectedOption = selectedOption,
-                onOptionSelected = { selectedOption = it },
+                onOpenSelectorSelected = { },
                 placeholder = "Select a property icon",
             )
 
@@ -704,9 +700,8 @@ private fun EdifikanaImageSelectorGridEmptyPreview() {
 
             EdifikanaImageSelector(
                 label = "Property Icon",
-                options = emptyList(),
                 selectedOption = null,
-                onOptionSelected = {},
+                onOpenSelectorSelected = {},
                 placeholder = "Select a property icon",
             )
 

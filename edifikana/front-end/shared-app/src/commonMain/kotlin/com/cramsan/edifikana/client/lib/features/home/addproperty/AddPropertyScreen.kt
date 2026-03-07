@@ -21,7 +21,9 @@ import com.cramsan.edifikana.client.ui.components.EdifikanaPrimaryButton
 import com.cramsan.edifikana.client.ui.components.EdifikanaTextField
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.edifikana.client.ui.components.ImageOptionUIModel
+import com.cramsan.edifikana.client.ui.components.ImageSelectorBottomsheet
 import com.cramsan.framework.core.compose.EventEmitter
+import com.cramsan.framework.core.compose.rememberDialogController
 import com.cramsan.framework.core.compose.ui.ObserveEventEmitterEvents
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
@@ -45,6 +47,8 @@ fun AddPropertyScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    val dialogController = rememberDialogController()
+
     /**
      * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
      */
@@ -60,7 +64,17 @@ fun AddPropertyScreen(
 
     ObserveViewModelEvents(viewModel) { event ->
         when (event) {
-            AddPropertyEvent.Noop -> Unit
+            AddPropertyEvent.OpenImageSelector -> {
+                val modal = ImageSelectorBottomsheet(
+                    label = "Select Property Icon",
+                    options = PropertyIconOptions.getOptionsWithUpload(),
+                    selectedOption = uiState.selectedIcon,
+                    onOptionSelected = { option ->
+                        viewModel.selectPhoto(option)
+                    },
+                )
+                dialogController.showDialog(modal)
+            }
         }
     }
 
@@ -83,8 +97,10 @@ fun AddPropertyScreen(
         onAddPropertySelected = { propertyName, address, selectedIcon ->
             viewModel.addProperty(propertyName, address, selectedIcon)
         },
-        onTriggerPhotoPicker = { viewModel.triggerPhotoPicker() },
+        onOpenSelectorSelected = { viewModel.openImageSelector() },
     )
+
+    dialogController.Render()
 }
 
 /**
@@ -96,20 +112,10 @@ internal fun AddPropertyContent(
     modifier: Modifier = Modifier,
     onBackSelected: () -> Unit,
     onAddPropertySelected: (propertyName: String, address: String, selectedIcon: ImageOptionUIModel?) -> Unit,
-    onTriggerPhotoPicker: () -> Unit,
+    onOpenSelectorSelected: () -> Unit,
 ) {
     var propertyName by remember { mutableStateOf("") }
     var address by remember { mutableStateOf("") }
-
-    // Local state for default icon selection
-    val defaultIcon = remember {
-        PropertyIconOptions.getDefaultOptions().find { it.id == "S_DEPA" }
-            ?: PropertyIconOptions.getDefaultOptions().first()
-    }
-    var localSelectedIcon by remember { mutableStateOf(defaultIcon) }
-
-    // Effective selected icon: uploaded image takes priority over local selection
-    val effectiveSelectedIcon = content.selectedIcon ?: localSelectedIcon
 
     Scaffold(
         modifier = modifier,
@@ -140,16 +146,9 @@ internal fun AddPropertyContent(
                 )
                 EdifikanaImageSelector(
                     label = "Property Icon",
-                    options = PropertyIconOptions.getOptionsWithUpload(),
-                    selectedOption = effectiveSelectedIcon,
-                    onOptionSelected = { option ->
-                        if (option.id == "custom_upload") {
-                            onTriggerPhotoPicker()
-                        } else {
-                            localSelectedIcon = option
-                        }
-                    },
+                    selectedOption = content.selectedIcon,
                     placeholder = if (content.isUploading) "Uploading..." else "Select a property icon",
+                    onOpenSelectorSelected = onOpenSelectorSelected,
                     modifier = sectionModifier,
                 )
             },
@@ -159,7 +158,7 @@ internal fun AddPropertyContent(
                     modifier = buttonModifier,
                     enabled = !content.isUploading,
                     onClick = {
-                        onAddPropertySelected(propertyName, address, effectiveSelectedIcon)
+                        onAddPropertySelected(propertyName, address, content.selectedIcon)
                     },
                 )
             },

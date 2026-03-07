@@ -10,7 +10,7 @@ import com.cramsan.framework.core.compose.ViewModelEvent
  */
 sealed class PropertyDetailEvent : ViewModelEvent {
     /**
-     * No operation
+     * Open the image selector to select a new image for the property.
      */
-    data object Noop : PropertyDetailEvent()
+    data object OpenImageSelector : PropertyDetailEvent()
 }

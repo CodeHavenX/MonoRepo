@@ -23,6 +23,7 @@ import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.test.CoroutineTest
+import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -213,6 +214,7 @@ class PropertyDetailViewModelTest : CoroutineTest() {
     @Test
     fun `test saveProperty with success updates property and shows success message`() = runCoroutineTest {
         turbineScope {
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
             val propertyId = PropertyId("test-property-id")
             val property = PropertyModel(
@@ -244,9 +246,6 @@ class PropertyDetailViewModelTest : CoroutineTest() {
                 imageSource = ImageSource.Drawable(PropertyIcons.M_DEPA),
             ))
 
-        turbineScope {
-            // Arrange
-            val turbine = windowEventBus.events.testIn(backgroundScope)
 
             // Act
             viewModel.saveProperty()

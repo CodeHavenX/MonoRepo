@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.account.notifications
 
-import app.cash.turbine.test
+import app.cash.turbine.turbineScope
+import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.NotificationManager
@@ -21,7 +22,6 @@ import com.cramsan.framework.test.CoroutineTest
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.launch
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -72,19 +72,17 @@ class NotificationsViewModelTest : CoroutineTest() {
      */
     @Test
     fun `test onBackSelected emits NavigateBack event`() = runCoroutineTest {
-        // Act
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(
-                    EdifikanaWindowsEvent.NavigateBack,
-                    awaitItem()
-                )
-            }
-        }
-        viewModel.onBackSelected()
+        turbineScope {
+            // Arrange
+            val turbine = windowEventBus.events.testIn(backgroundScope)
 
-        // Assert
-        verificationJob.join()
+            // Act
+            viewModel.onBackSelected()
+
+            // Assert
+            assertEquals(EdifikanaWindowsEvent.NavigateBack, turbine.awaitItem())
+            advanceUntilIdleAndAwaitComplete(turbine)
+        }
     }
 
     @Test
@@ -126,17 +124,20 @@ class NotificationsViewModelTest : CoroutineTest() {
     fun `test initialize with failure shows error snackbar`() = runCoroutineTest {
         coEvery { notificationManager.getNotifications() } returns Result.failure(Exception("Network error"))
 
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(
-                    EdifikanaWindowsEvent.ShowSnackbar("Failed to load notifications: Network error"),
-                    awaitItem()
-                )
-            }
-        }
+        turbineScope {
+            // Arrange
+            val turbine = windowEventBus.events.testIn(backgroundScope)
 
-        viewModel.initialize()
-        verificationJob.join()
+            // Act
+            viewModel.initialize()
+
+            // Assert
+            assertEquals(
+                EdifikanaWindowsEvent.ShowSnackbar("Failed to load notifications: Network error"),
+                turbine.awaitItem()
+            )
+            advanceUntilIdleAndAwaitComplete(turbine)
+        }
 
         assertEquals(false, viewModel.uiState.value.isLoading)
         assertEquals(emptyList(), viewModel.uiState.value.notifications)
@@ -149,17 +150,20 @@ class NotificationsViewModelTest : CoroutineTest() {
         coEvery { authManager.acceptInvite(inviteId) } returns Result.success(Unit)
         coEvery { notificationManager.getNotifications() } returns Result.success(emptyList())
 
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(
-                    EdifikanaWindowsEvent.ShowSnackbar("Invitation accepted successfully"),
-                    awaitItem()
-                )
-            }
-        }
+        turbineScope {
+            // Arrange
+            val turbine = windowEventBus.events.testIn(backgroundScope)
 
-        viewModel.acceptInvite(inviteId)
-        verificationJob.join()
+            // Act
+            viewModel.acceptInvite(inviteId)
+
+            // Assert
+            assertEquals(
+                EdifikanaWindowsEvent.ShowSnackbar("Invitation accepted successfully"),
+                turbine.awaitItem()
+            )
+            advanceUntilIdleAndAwaitComplete(turbine)
+        }
 
         coVerify { authManager.acceptInvite(inviteId) }
         coVerify(atLeast = 1) { notificationManager.getNotifications() }
@@ -171,17 +175,20 @@ class NotificationsViewModelTest : CoroutineTest() {
 
         coEvery { authManager.acceptInvite(inviteId) } returns Result.failure(Exception("Accept failed"))
 
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(
-                    EdifikanaWindowsEvent.ShowSnackbar("Failed to accept invitation: Accept failed"),
-                    awaitItem()
-                )
-            }
-        }
+        turbineScope {
+            // Arrange
+            val turbine = windowEventBus.events.testIn(backgroundScope)
 
-        viewModel.acceptInvite(inviteId)
-        verificationJob.join()
+            // Act
+            viewModel.acceptInvite(inviteId)
+
+            // Assert
+            assertEquals(
+                EdifikanaWindowsEvent.ShowSnackbar("Failed to accept invitation: Accept failed"),
+                turbine.awaitItem()
+            )
+            advanceUntilIdleAndAwaitComplete(turbine)
+        }
 
         assertEquals(false, viewModel.uiState.value.isLoading)
     }
@@ -193,17 +200,20 @@ class NotificationsViewModelTest : CoroutineTest() {
         coEvery { authManager.declineInvite(inviteId) } returns Result.success(Unit)
         coEvery { notificationManager.getNotifications() } returns Result.success(emptyList())
 
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(
-                    EdifikanaWindowsEvent.ShowSnackbar("Invitation declined"),
-                    awaitItem()
-                )
-            }
-        }
+        turbineScope {
+            // Arrange
+            val turbine = windowEventBus.events.testIn(backgroundScope)
 
-        viewModel.declineInvite(inviteId)
-        verificationJob.join()
+            // Act
+            viewModel.declineInvite(inviteId)
+
+            // Assert
+            assertEquals(
+                EdifikanaWindowsEvent.ShowSnackbar("Invitation declined"),
+                turbine.awaitItem()
+            )
+            advanceUntilIdleAndAwaitComplete(turbine)
+        }
 
         coVerify { authManager.declineInvite(inviteId) }
     }
@@ -214,17 +224,20 @@ class NotificationsViewModelTest : CoroutineTest() {
 
         coEvery { authManager.declineInvite(inviteId) } returns Result.failure(Exception("Decline failed"))
 
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(
-                    EdifikanaWindowsEvent.ShowSnackbar("Failed to decline invitation: Decline failed"),
-                    awaitItem()
-                )
-            }
-        }
+        turbineScope {
+            // Arrange
+            val turbine = windowEventBus.events.testIn(backgroundScope)
 
-        viewModel.declineInvite(inviteId)
-        verificationJob.join()
+            // Act
+            viewModel.declineInvite(inviteId)
+
+            // Assert
+            assertEquals(
+                EdifikanaWindowsEvent.ShowSnackbar("Failed to decline invitation: Decline failed"),
+                turbine.awaitItem()
+            )
+            advanceUntilIdleAndAwaitComplete(turbine)
+        }
 
         assertEquals(false, viewModel.uiState.value.isLoading)
     }

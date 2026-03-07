@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.home.invitestaffmember
 
-import app.cash.turbine.test
+import app.cash.turbine.turbineScope
+import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.lib.model.OrganizationId
@@ -18,7 +19,6 @@ import com.cramsan.framework.test.CoroutineTest
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.launch
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -69,16 +69,17 @@ class InviteStaffMemberViewModelTest : CoroutineTest() {
 
     @Test
     fun `test navigateBack emits NavigateBack event`() = runCoroutineTest {
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(
-                    EdifikanaWindowsEvent.NavigateBack,
-                    awaitItem()
-                )
-            }
+        turbineScope {
+            // Arrange
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
+            viewModel.navigateBack()
+
+            // Assert
+            assertEquals(EdifikanaWindowsEvent.NavigateBack, turbine.awaitItem())
+            advanceUntilIdleAndAwaitComplete(turbine)
         }
-        viewModel.navigateBack()
-        verificationJob.join()
     }
 
     @Test
@@ -88,17 +89,17 @@ class InviteStaffMemberViewModelTest : CoroutineTest() {
 
         viewModel.initialize(organizationId)
 
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(
-                    EdifikanaWindowsEvent.ShowSnackbar("Email cannot be empty."),
-                    awaitItem()
-                )
-            }
-        }
+        turbineScope {
+            // Arrange
+            val turbine = windowEventBus.events.testIn(backgroundScope)
 
-        viewModel.sendInvitation("", role)
-        verificationJob.join()
+            // Act
+            viewModel.sendInvitation("", role)
+
+            // Assert
+            assertEquals(EdifikanaWindowsEvent.ShowSnackbar("Email cannot be empty."), turbine.awaitItem())
+            advanceUntilIdleAndAwaitComplete(turbine)
+        }
 
         coVerify(exactly = 0) { authManager.inviteEmployee(any(), any(), any()) }
     }
@@ -110,17 +111,17 @@ class InviteStaffMemberViewModelTest : CoroutineTest() {
 
         viewModel.initialize(organizationId)
 
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(
-                    EdifikanaWindowsEvent.ShowSnackbar("Email cannot be empty."),
-                    awaitItem()
-                )
-            }
-        }
+        turbineScope {
+            // Arrange
+            val turbine = windowEventBus.events.testIn(backgroundScope)
 
-        viewModel.sendInvitation("   ", role)
-        verificationJob.join()
+            // Act
+            viewModel.sendInvitation("   ", role)
+
+            // Assert
+            assertEquals(EdifikanaWindowsEvent.ShowSnackbar("Email cannot be empty."), turbine.awaitItem())
+            advanceUntilIdleAndAwaitComplete(turbine)
+        }
 
         coVerify(exactly = 0) { authManager.inviteEmployee(any(), any(), any()) }
     }
@@ -132,17 +133,17 @@ class InviteStaffMemberViewModelTest : CoroutineTest() {
 
         viewModel.initialize(organizationId)
 
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(
-                    EdifikanaWindowsEvent.ShowSnackbar("Invalid email format."),
-                    awaitItem()
-                )
-            }
-        }
+        turbineScope {
+            // Arrange
+            val turbine = windowEventBus.events.testIn(backgroundScope)
 
-        viewModel.sendInvitation("invalid-email", role)
-        verificationJob.join()
+            // Act
+            viewModel.sendInvitation("invalid-email", role)
+
+            // Assert
+            assertEquals(EdifikanaWindowsEvent.ShowSnackbar("Invalid email format."), turbine.awaitItem())
+            advanceUntilIdleAndAwaitComplete(turbine)
+        }
 
         coVerify(exactly = 0) { authManager.inviteEmployee(any(), any(), any()) }
     }
@@ -154,17 +155,17 @@ class InviteStaffMemberViewModelTest : CoroutineTest() {
 
         viewModel.initialize(organizationId)
 
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(
-                    EdifikanaWindowsEvent.ShowSnackbar("Please select a role"),
-                    awaitItem()
-                )
-            }
-        }
+        turbineScope {
+            // Arrange
+            val turbine = windowEventBus.events.testIn(backgroundScope)
 
-        viewModel.sendInvitation(email, null)
-        verificationJob.join()
+            // Act
+            viewModel.sendInvitation(email, null)
+
+            // Assert
+            assertEquals(EdifikanaWindowsEvent.ShowSnackbar("Please select a role"), turbine.awaitItem())
+            advanceUntilIdleAndAwaitComplete(turbine)
+        }
 
         coVerify(exactly = 0) { authManager.inviteEmployee(any(), any(), any()) }
     }
@@ -179,18 +180,18 @@ class InviteStaffMemberViewModelTest : CoroutineTest() {
 
         viewModel.initialize(organizationId)
 
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(
-                    EdifikanaWindowsEvent.ShowSnackbar("Invitation sent to $email"),
-                    awaitItem()
-                )
-                assertEquals(EdifikanaWindowsEvent.NavigateBack, awaitItem())
-            }
-        }
+        turbineScope {
+            // Arrange
+            val turbine = windowEventBus.events.testIn(backgroundScope)
 
-        viewModel.sendInvitation(email, role)
-        verificationJob.join()
+            // Act
+            viewModel.sendInvitation(email, role)
+
+            // Assert
+            assertEquals(EdifikanaWindowsEvent.ShowSnackbar("Invitation sent to $email"), turbine.awaitItem())
+            assertEquals(EdifikanaWindowsEvent.NavigateBack, turbine.awaitItem())
+            advanceUntilIdleAndAwaitComplete(turbine)
+        }
 
         coVerify { authManager.inviteEmployee(email, organizationId, UserRole.ADMIN) }
         assertTrue(exceptionHandler.exceptions.isEmpty())
@@ -208,17 +209,17 @@ class InviteStaffMemberViewModelTest : CoroutineTest() {
 
         viewModel.initialize(organizationId)
 
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(
-                    EdifikanaWindowsEvent.ShowSnackbar("Failed to send invitation"),
-                    awaitItem()
-                )
-            }
-        }
+        turbineScope {
+            // Arrange
+            val turbine = windowEventBus.events.testIn(backgroundScope)
 
-        viewModel.sendInvitation(email, role)
-        verificationJob.join()
+            // Act
+            viewModel.sendInvitation(email, role)
+
+            // Assert
+            assertEquals(EdifikanaWindowsEvent.ShowSnackbar("Failed to send invitation"), turbine.awaitItem())
+            advanceUntilIdleAndAwaitComplete(turbine)
+        }
 
         coVerify { authManager.inviteEmployee(email, organizationId, UserRole.ADMIN) }
         assertEquals(false, viewModel.uiState.value.isLoading)

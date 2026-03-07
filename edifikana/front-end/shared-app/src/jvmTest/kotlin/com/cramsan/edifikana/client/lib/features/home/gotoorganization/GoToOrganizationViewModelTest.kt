@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.home.gotoorganization
 
-import app.cash.turbine.test
+import app.cash.turbine.turbineScope
 import com.cramsan.edifikana.client.lib.features.home.gotoorganization.GoToOrganizationViewModel
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.framework.core.UnifiedDispatcherProvider
@@ -16,7 +16,6 @@ import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.test.CoroutineTest
 import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
 import io.mockk.mockk
-import kotlinx.coroutines.launch
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -62,18 +61,16 @@ class GoToOrganizationViewModelTest : CoroutineTest() {
 
     @Test
     fun `test events`() = runCoroutineTest {
-        // Set up
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(EdifikanaWindowsEvent.NavigateBack, awaitItem())
-                advanceUntilIdleAndAwaitComplete(this)
-            }
+        turbineScope {
+            // Arrange
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
+            viewModel.onBackSelected()
+
+            // Assert
+            assertEquals(EdifikanaWindowsEvent.NavigateBack, turbine.awaitItem())
+            advanceUntilIdleAndAwaitComplete(turbine)
         }
-
-        // Act
-        viewModel.onBackSelected()
-
-        // Assert
-        verificationJob.join()
     }
 }

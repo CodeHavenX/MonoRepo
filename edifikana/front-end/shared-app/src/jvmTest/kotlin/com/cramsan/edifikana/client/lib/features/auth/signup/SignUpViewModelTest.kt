@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.auth.signup
 
-import app.cash.turbine.test
+import app.cash.turbine.turbineScope
+import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
 import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
@@ -18,7 +19,6 @@ import com.cramsan.framework.test.CoroutineTest
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.launch
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvFileSource
 import kotlin.test.BeforeTest
@@ -188,18 +188,17 @@ class SignUpViewModelTest : CoroutineTest() {
         // Arrange
         coEvery { authManager.signUp(any(), any(), any(), any()) } returns Result.success(mockk())
 
-        // Act
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(
-                    EdifikanaWindowsEvent.NavigateBack, awaitItem()
-                )
-            }
-        }
-        viewModel.navigateBack()
+        turbineScope {
+            // Arrange
+            val turbine = windowEventBus.events.testIn(backgroundScope)
 
-        // Verify
-        verificationJob.join()
+            // Act
+            viewModel.navigateBack()
+
+            // Assert
+            assertEquals(EdifikanaWindowsEvent.NavigateBack, turbine.awaitItem())
+            advanceUntilIdleAndAwaitComplete(turbine)
+        }
     }
 
     /**
@@ -225,27 +224,27 @@ class SignUpViewModelTest : CoroutineTest() {
         viewModel.onPhoneNumberValueChange(phoneNumber)
         viewModel.onPolicyChecked(true)
 
-        // Act
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(
-                    EdifikanaWindowsEvent.NavigateToScreen(
-                        destination= AuthDestination.ValidationDestination(
-                            userEmail="totalReal@email.com",
-                            accountCreationFlow=true
-                        ),
-                        clearTop=true,
-                        clearStack=false,
-                    ), awaitItem()
-                )
-            }
+        turbineScope {
+            // Arrange
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
+            viewModel.signUp()
+
+            // Assert
+            coVerify { authManager.signUp(email, phoneNumber, firstName, lastName) }
+            assertEquals(
+                EdifikanaWindowsEvent.NavigateToScreen(
+                    destination= AuthDestination.ValidationDestination(
+                        userEmail="totalReal@email.com",
+                        accountCreationFlow=true
+                    ),
+                    clearTop=true,
+                    clearStack=false,
+                ), turbine.awaitItem()
+            )
+            advanceUntilIdleAndAwaitComplete(turbine)
         }
-        viewModel.signUp()
-
-
-        // Verify
-        coVerify { authManager.signUp(email, phoneNumber, firstName, lastName) }
-        verificationJob.join()
         assertTrue(viewModel.uiState.value.isLoading)
     }
 

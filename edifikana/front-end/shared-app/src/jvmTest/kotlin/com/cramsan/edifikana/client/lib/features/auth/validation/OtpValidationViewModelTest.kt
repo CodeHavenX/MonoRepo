@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.auth.validation
 
-import app.cash.turbine.test
+import app.cash.turbine.turbineScope
+import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.framework.core.UnifiedDispatcherProvider
@@ -16,7 +17,6 @@ import com.cramsan.framework.test.CoroutineTest
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.launch
 import org.junit.jupiter.api.Assertions
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -130,18 +130,16 @@ class OtpValidationViewModelTest : CoroutineTest() {
      */
     @Test
     fun `navigateBack should call emitEvent`() = runCoroutineTest {
-        // Act
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(
-                    EdifikanaWindowsEvent.NavigateBack, awaitItem()
-                )
-            }
-        }
-        viewModel.navigateBack()
-        this.testScheduler.advanceUntilIdle()
+        turbineScope {
+            // Arrange
+            val turbine = windowEventBus.events.testIn(backgroundScope)
 
-        // Assert
-        verificationJob.join()
+            // Act
+            viewModel.navigateBack()
+
+            // Assert
+            assertEquals(EdifikanaWindowsEvent.NavigateBack, turbine.awaitItem())
+            advanceUntilIdleAndAwaitComplete(turbine)
+        }
     }
 }

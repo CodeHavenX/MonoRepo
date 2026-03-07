@@ -2,6 +2,7 @@ package com.cramsan.edifikana.client.lib.features.home.propertiesoverview
 
 import app.cash.turbine.test
 import app.cash.turbine.turbineScope
+import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
 import com.cramsan.edifikana.client.lib.features.home.HomeDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.OrganizationManager
@@ -23,7 +24,6 @@ import com.cramsan.framework.test.CoroutineTest
 import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.launch
 import org.junit.jupiter.api.assertInstanceOf
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -109,7 +109,7 @@ class PropertiesOverviewViewModelTest : CoroutineTest() {
     @Test
     fun `test initialize handles failure and emits snackbar`() = runCoroutineTest {
         turbineScope {
-            // Set up
+            // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
             val error = RuntimeException("Network error")
             coEvery { propertyManager.getPropertyList() } returns Result.failure(error)
@@ -130,17 +130,18 @@ class PropertiesOverviewViewModelTest : CoroutineTest() {
     fun `test onAddPropertySelected with no organizations emits snackbar`() = runCoroutineTest {
         // Set up
         coEvery { organizationManager.getOrganizations() } returns Result.success(emptyList())
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertInstanceOf<EdifikanaWindowsEvent.ShowSnackbar>(awaitItem())
-            }
+
+        turbineScope {
+            // Arrange
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
+            viewModel.onAddPropertySelected()
+
+            // Assert
+            assertInstanceOf<EdifikanaWindowsEvent.ShowSnackbar>(turbine.awaitItem())
+            advanceUntilIdleAndAwaitComplete(turbine)
         }
-
-        // Act
-        viewModel.onAddPropertySelected()
-
-        // Assert
-        verificationJob.join()
     }
 
     @Test
@@ -155,7 +156,10 @@ class PropertiesOverviewViewModelTest : CoroutineTest() {
 
         // Act & Assert
         windowEventBus.events.test {
+            // Act
             viewModel.onAddPropertySelected()
+
+            // Assert
             val event = awaitItem()
             assertEquals(true, event is EdifikanaWindowsEvent.NavigateToScreen)
             val navEvent = event as? EdifikanaWindowsEvent.NavigateToScreen

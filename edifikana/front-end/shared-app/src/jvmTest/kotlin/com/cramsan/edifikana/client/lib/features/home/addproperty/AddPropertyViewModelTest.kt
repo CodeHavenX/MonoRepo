@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.home.addproperty
 
-import app.cash.turbine.test
 import app.cash.turbine.turbineScope
+import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.managers.StorageManager
@@ -27,7 +27,6 @@ import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.launch
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -76,20 +75,17 @@ class AddPropertyViewModelTest : CoroutineTest() {
      */
     @Test
     fun `test navigateBack emits NavigateBack event`() = runCoroutineTest {
-        // Arrange
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                // Assert
-                assertEquals(
-                    EdifikanaWindowsEvent.NavigateBack,
-                    awaitItem()
-                )
-            }
-        }
+        turbineScope {
+            // Arrange
+            val turbine = windowEventBus.events.testIn(backgroundScope)
 
-        // Act
-        viewModel.navigateBack()
-        verificationJob.join()
+            // Act
+            viewModel.navigateBack()
+
+            // Assert
+            assertEquals(EdifikanaWindowsEvent.NavigateBack, turbine.awaitItem())
+            advanceUntilIdleAndAwaitComplete(turbine)
+        }
     }
 
     /**
@@ -118,23 +114,22 @@ class AddPropertyViewModelTest : CoroutineTest() {
             newProperty
         )
 
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                // Assert
-                assertEquals(
-                    EdifikanaWindowsEvent.ShowSnackbar(
-                        "Property $propertyName added successfully"
-                    ),
-                    awaitItem()
-                )
-                assertEquals(EdifikanaWindowsEvent.NavigateBack, awaitItem())
-            }
-        }
+        turbineScope {
+            // Arrange
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+            viewModel.initialize(organizationId)
 
-        // Act
-        viewModel.initialize(organizationId)
-        viewModel.addProperty(propertyName, address, selectedIcon)
-        verificationJob.join()
+            // Act
+            viewModel.addProperty(propertyName, address, selectedIcon)
+
+            // Assert
+            assertEquals(
+                EdifikanaWindowsEvent.ShowSnackbar("Property $propertyName added successfully"),
+                turbine.awaitItem()
+            )
+            assertEquals(EdifikanaWindowsEvent.NavigateBack, turbine.awaitItem())
+            advanceUntilIdleAndAwaitComplete(turbine)
+        }
 
         // Assert
         coVerify { propertyManager.addProperty(propertyName, address, organizationId, imageUrl) }
@@ -160,17 +155,19 @@ class AddPropertyViewModelTest : CoroutineTest() {
             propertyManager.addProperty(propertyName, address, organizationId, imageUrl, null)
         } returns Result.failure(Exception("Error"))
 
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                val snackbarEvent = awaitItem() as EdifikanaWindowsEvent.ShowSnackbar
-                assertTrue(snackbarEvent.message.contains("Failed to add property"))
-            }
-        }
+        turbineScope {
+            // Arrange
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+            viewModel.initialize(organizationId)
 
-        // Act
-        viewModel.initialize(organizationId)
-        viewModel.addProperty(propertyName, address, selectedIcon)
-        verificationJob.join()
+            // Act
+            viewModel.addProperty(propertyName, address, selectedIcon)
+
+            // Assert
+            val snackbarEvent = turbine.awaitItem() as EdifikanaWindowsEvent.ShowSnackbar
+            assertTrue(snackbarEvent.message.contains("Failed to add property"))
+            advanceUntilIdleAndAwaitComplete(turbine)
+        }
 
         // Assert
         assertEquals(false, viewModel.uiState.value.isLoading)
@@ -306,23 +303,25 @@ class AddPropertyViewModelTest : CoroutineTest() {
             propertyManager.addProperty(propertyName, address, organizationId, null, imageUri)
         } returns Result.success(newProperty.copy(imageUrl = "storage:$expectedStorageRef"))
 
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                val snackbarEvent = awaitItem() as EdifikanaWindowsEvent.ShowSnackbar
-                assertTrue(snackbarEvent.message.contains("added with custom image"))
-                assertEquals(EdifikanaWindowsEvent.NavigateBack, awaitItem())
-            }
-        }
+        turbineScope {
+            // Arrange
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+            viewModel.initialize(organizationId)
+            val selectedIcon = ImageOptionUIModel(
+                id = "custom_local",
+                displayName = "Custom Image",
+                imageSource = ImageSource.LocalFile(imageUri, "test.jpg")
+            )
 
-        // Act
-        viewModel.initialize(organizationId)
-        val selectedIcon = ImageOptionUIModel(
-            id = "custom_local",
-            displayName = "Custom Image",
-            imageSource = ImageSource.LocalFile(imageUri, "test.jpg")
-        )
-        viewModel.addProperty(propertyName, address, selectedIcon)
-        verificationJob.join()
+            // Act
+            viewModel.addProperty(propertyName, address, selectedIcon)
+
+            // Assert
+            val snackbarEvent = turbine.awaitItem() as EdifikanaWindowsEvent.ShowSnackbar
+            assertTrue(snackbarEvent.message.contains("added with custom image"))
+            assertEquals(EdifikanaWindowsEvent.NavigateBack, turbine.awaitItem())
+            advanceUntilIdleAndAwaitComplete(turbine)
+        }
 
         // Assert
         coVerify(exactly = 1) {
@@ -348,22 +347,24 @@ class AddPropertyViewModelTest : CoroutineTest() {
             propertyManager.addProperty(propertyName, address, organizationId, null, imageUri)
         } returns Result.failure(ClientRequestExceptions.InvalidRequestException("Upload failed"))
 
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                val snackbarEvent = awaitItem() as EdifikanaWindowsEvent.ShowSnackbar
-                assertTrue(snackbarEvent.message.contains("Failed to add property"))
-            }
-        }
+        turbineScope {
+            // Arrange
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+            viewModel.initialize(organizationId)
+            val selectedIcon = ImageOptionUIModel(
+                id = "custom_local",
+                displayName = "Custom Image",
+                imageSource = ImageSource.LocalFile(imageUri, "test.jpg")
+            )
 
-        // Act
-        viewModel.initialize(organizationId)
-        val selectedIcon = ImageOptionUIModel(
-            id = "custom_local",
-            displayName = "Custom Image",
-            imageSource = ImageSource.LocalFile(imageUri, "test.jpg")
-        )
-        viewModel.addProperty(propertyName, address, selectedIcon)
-        verificationJob.join()
+            // Act
+            viewModel.addProperty(propertyName, address, selectedIcon)
+
+            // Assert
+            val snackbarEvent = turbine.awaitItem() as EdifikanaWindowsEvent.ShowSnackbar
+            assertTrue(snackbarEvent.message.contains("Failed to add property"))
+            advanceUntilIdleAndAwaitComplete(turbine)
+        }
 
         // Assert
         coVerify(exactly = 1) {
@@ -387,22 +388,24 @@ class AddPropertyViewModelTest : CoroutineTest() {
             propertyManager.addProperty(propertyName, address, organizationId, null, imageUri)
         } returns Result.failure(Exception("Property creation with image failed"))
 
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                val snackbarEvent = awaitItem() as EdifikanaWindowsEvent.ShowSnackbar
-                assertTrue(snackbarEvent.message.contains("Failed to add property"))
-            }
-        }
+        turbineScope {
+            // Arrange
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+            viewModel.initialize(organizationId)
+            val selectedIcon = ImageOptionUIModel(
+                id = "custom_local",
+                displayName = "Custom Image",
+                imageSource = ImageSource.LocalFile(imageUri, "test.jpg")
+            )
 
-        // Act
-        viewModel.initialize(organizationId)
-        val selectedIcon = ImageOptionUIModel(
-            id = "custom_local",
-            displayName = "Custom Image",
-            imageSource = ImageSource.LocalFile(imageUri, "test.jpg")
-        )
-        viewModel.addProperty(propertyName, address, selectedIcon)
-        verificationJob.join()
+            // Act
+            viewModel.addProperty(propertyName, address, selectedIcon)
+
+            // Assert
+            val snackbarEvent = turbine.awaitItem() as EdifikanaWindowsEvent.ShowSnackbar
+            assertTrue(snackbarEvent.message.contains("Failed to add property"))
+            advanceUntilIdleAndAwaitComplete(turbine)
+        }
 
         // Assert
         coVerify(exactly = 1) {

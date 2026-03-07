@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.home.employeeoverview
 
-import app.cash.turbine.test
+import app.cash.turbine.turbineScope
+import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
 import com.cramsan.edifikana.client.lib.features.home.HomeDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
@@ -24,7 +25,6 @@ import com.cramsan.framework.test.CoroutineTest
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.launch
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -201,17 +201,20 @@ class EmployeeOverviewViewModelTest : CoroutineTest() {
         coEvery { authManager.getUsers(organizationId) } returns Result.failure(Exception("Network error"))
         coEvery { authManager.getInvites(organizationId) } returns Result.success(emptyList())
 
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(
-                    EdifikanaWindowsEvent.ShowSnackbar("Failed to load employees: Network error"),
-                    awaitItem()
-                )
-            }
-        }
+        turbineScope {
+            // Arrange
+            val turbine = windowEventBus.events.testIn(backgroundScope)
 
-        viewModel.setOrgId(organizationId)
-        verificationJob.join()
+            // Act
+            viewModel.setOrgId(organizationId)
+
+            // Assert
+            assertEquals(
+                EdifikanaWindowsEvent.ShowSnackbar("Failed to load employees: Network error"),
+                turbine.awaitItem()
+            )
+            advanceUntilIdleAndAwaitComplete(turbine)
+        }
 
         assertEquals(false, viewModel.uiState.value.isLoading)
         assertEquals(emptyList(), viewModel.uiState.value.employeeList)
@@ -224,17 +227,20 @@ class EmployeeOverviewViewModelTest : CoroutineTest() {
         coEvery { authManager.getUsers(organizationId) } returns Result.success(emptyList())
         coEvery { authManager.getInvites(organizationId) } returns Result.failure(Exception("Server error"))
 
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(
-                    EdifikanaWindowsEvent.ShowSnackbar("Failed to load invites: Server error"),
-                    awaitItem()
-                )
-            }
-        }
+        turbineScope {
+            // Arrange
+            val turbine = windowEventBus.events.testIn(backgroundScope)
 
-        viewModel.setOrgId(organizationId)
-        verificationJob.join()
+            // Act
+            viewModel.setOrgId(organizationId)
+
+            // Assert
+            assertEquals(
+                EdifikanaWindowsEvent.ShowSnackbar("Failed to load invites: Server error"),
+                turbine.awaitItem()
+            )
+            advanceUntilIdleAndAwaitComplete(turbine)
+        }
 
         assertEquals(false, viewModel.uiState.value.isLoading)
         assertEquals(emptyList(), viewModel.uiState.value.employeeList)
@@ -247,21 +253,24 @@ class EmployeeOverviewViewModelTest : CoroutineTest() {
         coEvery { authManager.getUsers(organizationId) } returns Result.failure(Exception("Users error"))
         coEvery { authManager.getInvites(organizationId) } returns Result.failure(Exception("Invites error"))
 
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(
-                    EdifikanaWindowsEvent.ShowSnackbar("Failed to load employees: Users error"),
-                    awaitItem()
-                )
-                assertEquals(
-                    EdifikanaWindowsEvent.ShowSnackbar("Failed to load invites: Invites error"),
-                    awaitItem()
-                )
-            }
-        }
+        turbineScope {
+            // Arrange
+            val turbine = windowEventBus.events.testIn(backgroundScope)
 
-        viewModel.setOrgId(organizationId)
-        verificationJob.join()
+            // Act
+            viewModel.setOrgId(organizationId)
+
+            // Assert
+            assertEquals(
+                EdifikanaWindowsEvent.ShowSnackbar("Failed to load employees: Users error"),
+                turbine.awaitItem()
+            )
+            assertEquals(
+                EdifikanaWindowsEvent.ShowSnackbar("Failed to load invites: Invites error"),
+                turbine.awaitItem()
+            )
+            advanceUntilIdleAndAwaitComplete(turbine)
+        }
 
         assertEquals(false, viewModel.uiState.value.isLoading)
     }
@@ -282,17 +291,20 @@ class EmployeeOverviewViewModelTest : CoroutineTest() {
         coEvery { authManager.getUsers(organizationId) } returns Result.failure(Exception("Network error"))
         coEvery { authManager.getInvites(organizationId) } returns Result.success(invites)
 
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(
-                    EdifikanaWindowsEvent.ShowSnackbar("Failed to load employees: Network error"),
-                    awaitItem()
-                )
-            }
-        }
+        turbineScope {
+            // Arrange
+            val turbine = windowEventBus.events.testIn(backgroundScope)
 
-        viewModel.setOrgId(organizationId)
-        verificationJob.join()
+            // Act
+            viewModel.setOrgId(organizationId)
+
+            // Assert
+            assertEquals(
+                EdifikanaWindowsEvent.ShowSnackbar("Failed to load employees: Network error"),
+                turbine.awaitItem()
+            )
+            advanceUntilIdleAndAwaitComplete(turbine)
+        }
 
         assertEquals(false, viewModel.uiState.value.isLoading)
         assertEquals(1, viewModel.uiState.value.employeeList.size)
@@ -317,17 +329,20 @@ class EmployeeOverviewViewModelTest : CoroutineTest() {
         coEvery { authManager.getUsers(organizationId) } returns Result.success(users)
         coEvery { authManager.getInvites(organizationId) } returns Result.failure(Exception("Server error"))
 
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(
-                    EdifikanaWindowsEvent.ShowSnackbar("Failed to load invites: Server error"),
-                    awaitItem()
-                )
-            }
-        }
+        turbineScope {
+            // Arrange
+            val turbine = windowEventBus.events.testIn(backgroundScope)
 
-        viewModel.setOrgId(organizationId)
-        verificationJob.join()
+            // Act
+            viewModel.setOrgId(organizationId)
+
+            // Assert
+            assertEquals(
+                EdifikanaWindowsEvent.ShowSnackbar("Failed to load invites: Server error"),
+                turbine.awaitItem()
+            )
+            advanceUntilIdleAndAwaitComplete(turbine)
+        }
 
         assertEquals(false, viewModel.uiState.value.isLoading)
         assertEquals(1, viewModel.uiState.value.employeeList.size)
@@ -345,31 +360,37 @@ class EmployeeOverviewViewModelTest : CoroutineTest() {
 
         viewModel.setOrgId(organizationId)
 
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                assertEquals(
-                    EdifikanaWindowsEvent.NavigateToScreen(
-                        HomeDestination.InviteStaffMemberDestination(orgId = organizationId)
-                    ),
-                    awaitItem()
-                )
-            }
-        }
+        turbineScope {
+            // Arrange
+            val turbine = windowEventBus.events.testIn(backgroundScope)
 
-        viewModel.navigateToAddEmployeeScreen()
-        verificationJob.join()
+            // Act
+            viewModel.navigateToAddEmployeeScreen()
+
+            // Assert
+            assertEquals(
+                EdifikanaWindowsEvent.NavigateToScreen(
+                    HomeDestination.InviteStaffMemberDestination(orgId = organizationId)
+                ),
+                turbine.awaitItem()
+            )
+            advanceUntilIdleAndAwaitComplete(turbine)
+        }
     }
 
     @Test
     fun `test navigateToAddEmployeeScreen without orgId does not emit event`() = runCoroutineTest {
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                expectNoEvents()
-            }
-        }
+        turbineScope {
+            // Arrange
+            val turbine = windowEventBus.events.testIn(backgroundScope)
 
-        viewModel.navigateToAddEmployeeScreen()
-        verificationJob.cancel()
+            // Act
+            viewModel.navigateToAddEmployeeScreen()
+
+            // Assert
+            turbine.expectNoEvents()
+            turbine.cancel()
+        }
 
         // No events should be emitted when orgId is null
     }

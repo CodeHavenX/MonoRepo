@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.account.changepassword
 
-import app.cash.turbine.test
+import app.cash.turbine.turbineScope
+import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.models.UserModel
@@ -19,7 +20,6 @@ import com.cramsan.framework.test.CoroutineTest
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.launch
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertInstanceOf
 import kotlin.test.Test
@@ -106,17 +106,21 @@ class ChangePasswordDialogViewModelTest : CoroutineTest() {
     fun `onSubmitSelected success emits NavigateBack`() = runCoroutineTest {
         coEvery { authManager.changePassword(any(), any()) } returns Result.success(Unit)
 
-        val verificationJob = launch {
-            windowEventBus.events.test {
-                viewModel.onCurrentPasswordChange("oldPassword1!")
-                viewModel.onNewPasswordChange("newPassword1!")
-                viewModel.onConfirmPasswordChange("newPassword1!")
-                viewModel.onSubmitSelected()
-                assertInstanceOf<EdifikanaWindowsEvent.ShowSnackbar>(awaitItem())
-                assertEquals(EdifikanaWindowsEvent.NavigateBack, awaitItem())
-            }
+        turbineScope {
+            // Arrange
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+            viewModel.onCurrentPasswordChange("oldPassword1!")
+            viewModel.onNewPasswordChange("newPassword1!")
+            viewModel.onConfirmPasswordChange("newPassword1!")
+
+            // Act
+            viewModel.onSubmitSelected()
+
+            // Assert
+            assertInstanceOf<EdifikanaWindowsEvent.ShowSnackbar>(turbine.awaitItem())
+            assertEquals(EdifikanaWindowsEvent.NavigateBack, turbine.awaitItem())
+            advanceUntilIdleAndAwaitComplete(turbine)
         }
-        verificationJob.join()
         coVerify { authManager.changePassword(any(), any()) }
     }
 

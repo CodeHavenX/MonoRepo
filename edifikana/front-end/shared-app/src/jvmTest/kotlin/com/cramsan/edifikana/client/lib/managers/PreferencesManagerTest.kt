@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.managers
 
-import app.cash.turbine.test
+import app.cash.turbine.turbineScope
+import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
 import com.cramsan.architecture.client.manager.PreferencesManager
 import com.cramsan.architecture.client.settings.FrontEndApplicationSettingKey
 import com.cramsan.architecture.client.settings.SettingsHolder
@@ -18,7 +19,6 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -74,15 +74,19 @@ class PreferencesManagerTest : CoroutineTest() {
 
         coEvery { settingsHolder.saveValue(key, value) } returns Unit
 
-        // collect the first emitted key from the flow using a CompletableDeferred and launch
-        val verificationJob = launch { manager.modifiedKey.test {
-            assertEquals(EdifikanaSettingKey.SupabaseOverrideUrl, awaitItem())
-        } }
+        turbineScope {
+            // Arrange
+            val turbine = manager.modifiedKey.testIn(backgroundScope)
 
-        manager.updatePreference(key, value)
+            // Act
+            manager.updatePreference(key, value)
+
+            // Assert
+            assertEquals(EdifikanaSettingKey.SupabaseOverrideUrl, turbine.awaitItem())
+            advanceUntilIdleAndAwaitComplete(turbine)
+        }
 
         coVerify { settingsHolder.saveValue(key, value) }
-        verificationJob.join()
     }
 
     @Test

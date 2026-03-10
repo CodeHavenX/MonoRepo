@@ -11,6 +11,10 @@ object Hashing {
      * @param data The byte array to hash.
      * @return An integer representing the hash of the input data.
      */
+    @Deprecated(
+        message = "Use Supabase Auth for password management. This hash is not cryptographic.",
+        level = DeprecationLevel.WARNING,
+    )
     @Suppress("MagicNumber")
     fun insecureHash(
         data: ByteArray,

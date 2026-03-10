@@ -142,13 +142,11 @@ class UserService(
     @OptIn(SecureStringAccess::class)
     suspend fun updatePassword(
         userId: UserId,
-        currentHashedPassword: SecureString,
         newPassword: SecureString,
     ): Result<Unit> {
         logD(TAG, "updatePassword")
         return userDatastore.updatePassword(
             id = userId,
-            currentHashedPassword = currentHashedPassword,
             newPassword = newPassword,
         )
     }

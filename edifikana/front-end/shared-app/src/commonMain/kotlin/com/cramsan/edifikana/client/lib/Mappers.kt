@@ -16,10 +16,9 @@ import edifikana_lib.event_type_delivery
 import edifikana_lib.event_type_guest
 import edifikana_lib.event_type_incident
 import edifikana_lib.event_type_maintenance_service
-import edifikana_lib.event_type_other
+import edifikana_lib.edifikana_string_other
 import edifikana_lib.id_type_ce
 import edifikana_lib.id_type_dni
-import edifikana_lib.id_type_other
 import edifikana_lib.id_type_passport
 import edifikana_lib.role_admin
 import edifikana_lib.role_limpieza
@@ -98,7 +97,7 @@ fun IdType.toIdTypeFriendlyName(): String {
         IdType.DNI -> stringResource(Res.string.id_type_dni)
         IdType.PASSPORT -> stringResource(Res.string.id_type_ce)
         IdType.CE -> stringResource(Res.string.id_type_passport)
-        IdType.OTHER -> stringResource(Res.string.id_type_other)
+        IdType.OTHER -> stringResource(Res.string.edifikana_string_other)
     }
 }
 
@@ -113,7 +112,7 @@ suspend fun EventLogEventType?.toFriendlyString(
         EventLogEventType.DELIVERY -> stringProvider.getString(Res.string.event_type_delivery)
         EventLogEventType.INCIDENT -> stringProvider.getString(Res.string.event_type_incident)
         EventLogEventType.MAINTENANCE_SERVICE -> stringProvider.getString(Res.string.event_type_maintenance_service)
-        else -> stringProvider.getString(Res.string.event_type_other)
+        else -> stringProvider.getString(Res.string.edifikana_string_other)
     }
 }
 
@@ -127,7 +126,7 @@ fun EventLogEventType?.toFriendlyStringCompose(): String {
         EventLogEventType.DELIVERY -> stringResource(Res.string.event_type_delivery)
         EventLogEventType.INCIDENT -> stringResource(Res.string.event_type_incident)
         EventLogEventType.MAINTENANCE_SERVICE -> stringResource(Res.string.event_type_maintenance_service)
-        else -> stringResource(Res.string.event_type_other)
+        else -> stringResource(Res.string.edifikana_string_other)
     }
 }
 

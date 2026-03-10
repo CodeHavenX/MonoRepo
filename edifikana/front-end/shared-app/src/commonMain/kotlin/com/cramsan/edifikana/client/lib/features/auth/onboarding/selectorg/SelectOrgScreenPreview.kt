@@ -43,3 +43,36 @@ private fun SelectOrgScreenPreviewWithInvites() = AppTheme {
         )
     )
 }
+
+@Preview(locale = "es")
+@Composable
+private fun SelectOrgScreenPreviewNoInvites_ES() = AppTheme {
+    SelectOrgContent(
+        onCreateWorkspaceClicked = { },
+        onSignOutClicked = { },
+        onJoinOrganizationClicked = { _ -> },
+        uiState = SelectOrgUIState.Default
+    )
+}
+
+@Preview(locale = "es")
+@Composable
+private fun SelectOrgScreenPreviewWithInvites_ES() = AppTheme {
+    SelectOrgContent(
+        onCreateWorkspaceClicked = { },
+        onSignOutClicked = { },
+        onJoinOrganizationClicked = { _ -> },
+        uiState = SelectOrgUIState.Default.copy(
+            inviteList = listOf(
+                InviteItemUIModel(
+                    description = "Has sido invitado a unirte a Acme Corp",
+                    inviteId = InviteId("invite-1"),
+                ),
+                InviteItemUIModel(
+                    description = "Has sido invitado a unirte a Beta LLC",
+                    inviteId = InviteId("invite-2"),
+                )
+            )
+        )
+    )
+}

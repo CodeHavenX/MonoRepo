@@ -5,6 +5,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import com.cramsan.framework.core.compose.Dialog
+import edifikana_lib.Res
+import edifikana_lib.join_org_dialog_confirm_button
+import edifikana_lib.join_org_dialog_message
+import edifikana_lib.join_org_dialog_title
+import edifikana_lib.edifikana_string_cancel
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
@@ -23,8 +29,8 @@ class JoinOrgConfirmationDialog(
                 hide()
                 onDismiss()
             },
-            title = { Text("Join Organization") },
-            text = { Text("Are you sure you want to join this organization") },
+            title = { Text(stringResource(Res.string.join_org_dialog_title)) },
+            text = { Text(stringResource(Res.string.join_org_dialog_message)) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -32,7 +38,7 @@ class JoinOrgConfirmationDialog(
                         onConfirm()
                     }
                 ) {
-                    Text("Join")
+                    Text(stringResource(Res.string.join_org_dialog_confirm_button))
                 }
             },
             dismissButton = {
@@ -42,7 +48,7 @@ class JoinOrgConfirmationDialog(
                         onDismiss()
                     }
                 ) {
-                    Text("Cancel")
+                    Text(stringResource(Res.string.edifikana_string_cancel))
                 }
             }
         )
@@ -51,7 +57,16 @@ class JoinOrgConfirmationDialog(
 
 @Preview
 @Composable
-private fun SignOutConfirmationDialogPreview() {
+private fun JoinOrgConfirmationDialogPreview() {
+    JoinOrgConfirmationDialog(
+        onConfirm = {},
+        onDismiss = {}
+    ).Content()
+}
+
+@Preview(locale = "es")
+@Composable
+private fun JoinOrgConfirmationDialogPreview_ES() {
     JoinOrgConfirmationDialog(
         onConfirm = {},
         onDismiss = {}

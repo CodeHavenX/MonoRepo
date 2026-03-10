@@ -35,11 +35,11 @@ import com.cramsan.ui.components.ScreenLayout
 import com.cramsan.ui.components.themetoggle.SelectedTheme
 import com.cramsan.ui.components.themetoggle.ThemeToggle
 import edifikana_lib.Res
-import edifikana_lib.sign_in_screen_text_email
-import edifikana_lib.sign_in_screen_text_password
+import edifikana_lib.edifikana_string_email
+import edifikana_lib.edifikana_string_password
+import edifikana_lib.edifikana_string_sign_up
 import edifikana_lib.sign_in_screen_text_sign_in
 import edifikana_lib.sign_in_screen_text_sign_in_otp
-import edifikana_lib.sign_in_screen_text_sign_up
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
@@ -134,14 +134,14 @@ internal fun SignInContent(
                         value = uiState.email,
                         onValueChange = { onUsernameValueChange(it) },
                         modifier = modifier,
-                        placeholder = stringResource(Res.string.sign_in_screen_text_email),
+                        placeholder = stringResource(Res.string.edifikana_string_email),
                     )
                     if (uiState.showPassword) {
                         EdifikanaPasswordTextField(
                             value = uiState.password,
                             onValueChange = { onPasswordValueChange(it) },
                             modifier = modifier,
-                            placeholder = stringResource(Res.string.sign_in_screen_text_password),
+                            placeholder = stringResource(Res.string.edifikana_string_password),
                         )
                     }
                 },
@@ -183,7 +183,7 @@ internal fun SignInContent(
             )
 
             EdifikanaTextButton(
-                text = stringResource(Res.string.sign_in_screen_text_sign_up),
+                text = stringResource(Res.string.edifikana_string_sign_up),
                 onClick = onSignUpClicked,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)

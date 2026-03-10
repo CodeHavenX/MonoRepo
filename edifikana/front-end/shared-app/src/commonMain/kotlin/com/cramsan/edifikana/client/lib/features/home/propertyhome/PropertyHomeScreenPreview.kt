@@ -54,3 +54,45 @@ private fun AccountDropDownPreview() {
         )
     }
 }
+
+@Preview(locale = "es")
+@Composable
+private fun PropertyHomeScreenPreview_ES() {
+    AppTheme {
+        PropertyHomeScreenContent(
+            uiState = PropertyHomeUIModel(
+                label = "Cenit, Barranco",
+                availableProperties = listOf(
+                    PropertyUiModel(
+                        propertyId = PropertyId("property-1"),
+                        name = "Cenit",
+                        selected = true,
+                    ),
+                ),
+                selectedTab = Tabs.None,
+                propertyId = PropertyId("property-1"),
+                orgId = OrganizationId("org-1"),
+            ),
+            onAccountButtonClicked = {},
+            onPropertySelected = {},
+            onTabSelected = {},
+            onNotificationsButtonSelected = {},
+            onNavigationIconSelected = {},
+            onSettingsSelected = {},
+        )
+    }
+}
+
+@Composable
+@Preview(locale = "es")
+private fun AccountDropDownPreview_ES() {
+    AppTheme {
+        Box(Modifier.size(200.dp))
+        AccountDropDown(
+            Modifier,
+            {},
+            {},
+            {},
+        )
+    }
+}

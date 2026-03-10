@@ -64,3 +64,52 @@ private fun NotificationsScreenEmptyPreview() = AppTheme {
         onDeleteNotification = {},
     )
 }
+
+@Preview(locale = "es")
+@Composable
+private fun NotificationsScreenPreview_ES() = AppTheme {
+    NotificationsContent(
+        content = NotificationsUIState(
+            title = "Notificaciones",
+            isLoading = false,
+            notifications = listOf(
+                InviteNotificationUIModel(
+                    id = NotificationId("1"),
+                    isRead = false,
+                    createdAt = "2024-01-22",
+                    description = "Has sido invitado a unirte a Acme Corp",
+                    inviteId = InviteId("invite1"),
+                ),
+                SystemNotificationUIModel(
+                    id = NotificationId("2"),
+                    isRead = false,
+                    createdAt = "2024-01-21",
+                    description = "Mantenimiento del sistema programado",
+                    message = "Mantenimiento del sistema programado",
+                ),
+            ),
+        ),
+        onBackSelected = {},
+        onAcceptInvite = {},
+        onDeclineInvite = {},
+        onMarkAsRead = {},
+        onDeleteNotification = {},
+    )
+}
+
+@Preview(locale = "es")
+@Composable
+private fun NotificationsScreenEmptyPreview_ES() = AppTheme {
+    NotificationsContent(
+        content = NotificationsUIState(
+            title = "Notificaciones",
+            isLoading = false,
+            notifications = emptyList(),
+        ),
+        onBackSelected = {},
+        onAcceptInvite = {},
+        onDeclineInvite = {},
+        onMarkAsRead = {},
+        onDeleteNotification = {},
+    )
+}

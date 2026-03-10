@@ -18,6 +18,16 @@ import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
+import edifikana_lib.Res
+import edifikana_lib.create_new_org_screen_create_button
+import edifikana_lib.create_new_org_screen_heading
+import edifikana_lib.create_new_org_screen_org_description_label
+import edifikana_lib.create_new_org_screen_org_description_placeholder
+import edifikana_lib.create_new_org_screen_org_name_label
+import edifikana_lib.create_new_org_screen_org_name_placeholder
+import edifikana_lib.create_new_org_screen_subtitle
+import edifikana_lib.create_new_org_screen_title
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -76,7 +86,7 @@ internal fun CreateNewOrgContent(
         modifier = modifier,
         topBar = {
             EdifikanaTopBar(
-                title = "Get Started",
+                title = stringResource(Res.string.create_new_org_screen_title),
                 onNavigationIconSelected = onBackSelected,
             )
         },
@@ -92,7 +102,7 @@ internal fun CreateNewOrgContent(
             sectionContent = { sectionModifier ->
                 // Title
                 Text(
-                    text = "Create New Organization",
+                    text = stringResource(Res.string.create_new_org_screen_heading),
                     style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.Bold,
                     modifier = sectionModifier,
@@ -100,7 +110,7 @@ internal fun CreateNewOrgContent(
 
                 // Subtitle
                 Text(
-                    text = "Enter the details for your new team workspace.",
+                    text = stringResource(Res.string.create_new_org_screen_subtitle),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = sectionModifier,
@@ -110,8 +120,8 @@ internal fun CreateNewOrgContent(
                 EdifikanaTextField(
                     value = content.organizationName,
                     onValueChange = onOrganizationNameChanged,
-                    label = "Organization Name",
-                    placeholder = "e.g. Acme Properties",
+                    label = stringResource(Res.string.create_new_org_screen_org_name_label),
+                    placeholder = stringResource(Res.string.create_new_org_screen_org_name_placeholder),
                     modifier = sectionModifier,
                 )
 
@@ -119,8 +129,8 @@ internal fun CreateNewOrgContent(
                 EdifikanaTextField(
                     value = content.organizationDescription,
                     onValueChange = onOrganizationDescriptionChanged,
-                    label = "Organization Description",
-                    placeholder = "Briefly describe what this workspace is for...",
+                    label = stringResource(Res.string.create_new_org_screen_org_description_label),
+                    placeholder = stringResource(Res.string.create_new_org_screen_org_description_placeholder),
                     modifier = sectionModifier,
                     minLines = 4,
                     maxLines = 5,
@@ -129,7 +139,7 @@ internal fun CreateNewOrgContent(
             },
             buttonContent = { buttonModifier ->
                 EdifikanaPrimaryButton(
-                    text = "Create Organization",
+                    text = stringResource(Res.string.create_new_org_screen_create_button),
                     onClick = onCreateOrganizationClicked,
                     modifier = buttonModifier,
                     enabled = content.isButtonEnabled,

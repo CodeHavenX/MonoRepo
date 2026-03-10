@@ -84,3 +84,37 @@ private fun AddPropertyScreenUploadErrorPreview() = AppTheme {
         onOpenSelectorSelected = { },
     )
 }
+
+@Preview(locale = "es")
+@Composable
+private fun AddPropertyScreenPreview_ES() = AppTheme {
+    AddPropertyContent(
+        content = AddPropertyUIState(
+            isLoading = false,
+            orgId = null,
+            selectedIcon = null,
+            isUploading = false,
+            uploadError = null,
+        ),
+        onBackSelected = {},
+        onAddPropertySelected = { _, _, _ -> },
+        onOpenSelectorSelected = { },
+    )
+}
+
+@Preview(locale = "es")
+@Composable
+private fun AddPropertyScreenUploadingPreview_ES() = AppTheme {
+    AddPropertyContent(
+        content = AddPropertyUIState(
+            isLoading = false,
+            orgId = null,
+            selectedIcon = null,
+            isUploading = true,
+            uploadError = null,
+        ),
+        onBackSelected = {},
+        onAddPropertySelected = { _, _, _ -> },
+        onOpenSelectorSelected = { },
+    )
+}

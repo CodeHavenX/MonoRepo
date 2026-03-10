@@ -33,3 +33,42 @@ private fun PropertiesOverviewScreenPreview() {
         )
     }
 }
+
+@Preview(locale = "es")
+@Composable
+private fun PropertiesOverviewScreenPreview_Empty_ES() {
+    AppTheme {
+        PropertiesOverviewContent(
+            content = PropertiesOverviewUIState(
+                isLoading = false,
+                propertyList = emptyList(),
+            ),
+        )
+    }
+}
+
+@Preview(locale = "es")
+@Composable
+private fun PropertiesOverviewScreenPreview_ES() {
+    AppTheme {
+        PropertiesOverviewContent(
+            content = PropertiesOverviewUIState(
+                isLoading = false,
+                propertyList = listOf(
+                    PropertyItemUIModel(
+                        id = PropertyId("property-1"),
+                        name = "Departamento soleado",
+                        address = "Av. Principal 123, Lima",
+                        imageUrl = "drawable:M_DEPA",
+                    ),
+                    PropertyItemUIModel(
+                        id = PropertyId("property-2"),
+                        name = "Casa acogedora",
+                        address = "Jr. Los Robles 456, Miraflores",
+                        imageUrl = "drawable:CASA",
+                    ),
+                ),
+            ),
+        )
+    }
+}

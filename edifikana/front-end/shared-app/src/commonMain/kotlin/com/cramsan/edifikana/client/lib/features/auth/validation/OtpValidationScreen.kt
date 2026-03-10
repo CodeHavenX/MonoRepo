@@ -27,6 +27,8 @@ import com.cramsan.ui.components.ScreenLayout
 import com.cramsan.ui.components.otpfield.OtpSection
 import edifikana_lib.Res
 import edifikana_lib.alpacaIcon
+import edifikana_lib.otp_validation_screen_image_description
+import edifikana_lib.otp_validation_screen_login_button
 import edifikana_lib.otp_validation_screen_text
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
@@ -110,7 +112,7 @@ internal fun OtpValidationContent(
                 // Image above the text
                 Image(
                     painter = painterResource(Res.drawable.alpacaIcon),
-                    contentDescription = "Validation Image",
+                    contentDescription = stringResource(Res.string.otp_validation_screen_image_description),
                     modifier = sectionModifier.size(
                         width = 150.dp,
                         height = 150.dp
@@ -160,7 +162,7 @@ internal fun OtpValidationContent(
                         .padding(top = 16.dp)
                         .wrapContentWidth()
                 ) {
-                    Text("Login")
+                    Text(stringResource(Res.string.otp_validation_screen_login_button))
                 }
             },
             contentAlignment = Alignment.Center,

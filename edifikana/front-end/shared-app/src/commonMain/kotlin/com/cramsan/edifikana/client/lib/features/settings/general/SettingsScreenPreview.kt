@@ -16,3 +16,15 @@ private fun SettingsScreenPreview() = AppTheme {
         onBackSelected = { },
     )
 }
+
+@Preview(locale = "es")
+@Composable
+private fun SettingsScreenPreview_ES() = AppTheme {
+    SettingsContent(
+        uiState = SettingsUIState(
+            selectedTheme = SelectedTheme.LIGHT,
+        ),
+        onThemeSelected = {},
+        onBackSelected = { },
+    )
+}

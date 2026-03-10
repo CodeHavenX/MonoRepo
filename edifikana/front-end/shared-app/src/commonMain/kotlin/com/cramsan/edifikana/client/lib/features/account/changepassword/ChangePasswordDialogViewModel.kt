@@ -7,8 +7,17 @@ import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.utils.loginvalidation.validatePassword
+import edifikana_lib.Res
+import edifikana_lib.change_password_dialog_error_confirm_password_empty
+import edifikana_lib.change_password_dialog_error_current_password_empty
+import edifikana_lib.change_password_dialog_error_new_password_empty
+import edifikana_lib.change_password_dialog_error_new_password_too_short
+import edifikana_lib.change_password_dialog_error_passwords_do_not_match
+import edifikana_lib.change_password_dialog_error_verify_password_exists
+import edifikana_lib.change_password_dialog_success
 import kotlinx.coroutines.launch
 
 /**
@@ -19,6 +28,7 @@ import kotlinx.coroutines.launch
  */
 class ChangePasswordDialogViewModel(
     private val authManager: AuthManager,
+    private val stringProvider: StringProvider,
     dependencies: ViewModelDependencies,
 ) : BaseViewModel<AccountEvent, ChangePasswordDialogUIState>(dependencies, ChangePasswordDialogUIState.Initial, TAG) {
 
@@ -33,7 +43,7 @@ class ChangePasswordDialogViewModel(
                 updateUiState {
                     it.copy(
                         currentPasswordInError = true,
-                        currentPasswordMessage = "Current password cannot be empty",
+                        currentPasswordMessage = stringProvider.getString(Res.string.change_password_dialog_error_current_password_empty),
                     )
                 }
             } else {
@@ -57,9 +67,9 @@ class ChangePasswordDialogViewModel(
         viewModelScope.launch {
             updateUiState { it.copy(newPassword = SecureString(password)) }
             if (password.isEmpty()) {
-                updateUiState { it.copy(newPasswordMessage = "New password cannot be empty") }
+                updateUiState { it.copy(newPasswordMessage = stringProvider.getString(Res.string.change_password_dialog_error_new_password_empty)) }
             } else if (password.length < MIN_PASSWORD_LENGTH) {
-                updateUiState { it.copy(newPasswordMessage = "New password must be at least 8 characters") }
+                updateUiState { it.copy(newPasswordMessage = stringProvider.getString(Res.string.change_password_dialog_error_new_password_too_short)) }
             } else {
                 val passwordErrors = validatePassword(password)
 
@@ -82,9 +92,9 @@ class ChangePasswordDialogViewModel(
         viewModelScope.launch {
             updateUiState { it.copy(confirmPassword = SecureString(password)) }
             if (password.isEmpty()) {
-                updateUiState { it.copy(confirmPasswordMessage = "Confirm password cannot be empty") }
+                updateUiState { it.copy(confirmPasswordMessage = stringProvider.getString(Res.string.change_password_dialog_error_confirm_password_empty)) }
             } else if (password != uiState.value.newPassword.reveal()) {
-                updateUiState { it.copy(confirmPasswordMessage = "Passwords do not match") }
+                updateUiState { it.copy(confirmPasswordMessage = stringProvider.getString(Res.string.change_password_dialog_error_passwords_do_not_match)) }
             } else {
                 updateUiState { it.copy(confirmPasswordMessage = null) }
             }
@@ -122,7 +132,7 @@ class ChangePasswordDialogViewModel(
                 newPassword = uiState.value.newPassword,
             ).onSuccess {
                 updateUiState { it.copy(isLoading = false) }
-                emitWindowEvent(EdifikanaWindowsEvent.ShowSnackbar("Password was updated!"))
+                emitWindowEvent(EdifikanaWindowsEvent.ShowSnackbar(stringProvider.getString(Res.string.change_password_dialog_success)))
                 emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
             }.onFailure { error ->
                 logE(TAG, "Failed to change password", error)
@@ -131,6 +141,8 @@ class ChangePasswordDialogViewModel(
                         isLoading = false,
                         currentPasswordInError = true,
                         currentPasswordMessage = "Failed to change password: ${error.message}",
+                        // TODO: Update StringFormatter to support error messages with parameters and use it here instead of hardcoding the message
+//                        currentPasswordMessage = stringProvider.getString(Res.string.change_password_dialog_error_failed).format(error.message),
                     )
                 }
             }
@@ -165,9 +177,8 @@ class ChangePasswordDialogViewModel(
                     )
                 }
                 emitWindowEvent(
-                    //TODO Add string to resources and localize
                     EdifikanaWindowsEvent.ShowSnackbar(
-                        "Unable to verify if your account has an existing password. For safety, please enter your current password if you have one."
+                        stringProvider.getString(Res.string.change_password_dialog_error_verify_password_exists)
                     )
                 )
                 return@launch

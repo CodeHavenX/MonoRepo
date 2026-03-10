@@ -1,130 +1,243 @@
 <resources>
     <string name="app_name">Edifikana</string>
 
-    <string name="sign_out">Cerrar Sesión</string>
+    <!-- Role types -->
     <string name="role_admin">Administrador</string>
     <string name="role_security">Seguridad</string>
     <string name="role_security_cover">Descansero</string>
     <string name="role_limpieza">Limpieza</string>
     <string name="role_unknown">Desconocido</string>
 
+    <!-- Time card event types -->
     <string name="time_card_event_clock_in">Entrada</string>
     <string name="time_card_event_clock_out">Salida</string>
 
+    <!-- ID types -->
     <string name="id_type_dni">DNI</string>
     <string name="id_type_ce">CE</string>
     <string name="id_type_passport">Pasaporte</string>
-    <string name="id_type_other">Otro</string>
 
+    <!-- Event types -->
     <string name="event_type_guest">Invitado</string>
     <string name="event_type_delivery">Cargo/Delivery</string>
     <string name="event_type_incident">Incidente/Seguridad</string>
     <string name="event_type_maintenance_service">Mantenimiento/Servicio</string>
-    <string name="event_type_other">Otro</string>
 
-    <!-- Strings -->
-    <string name="string_id_number">Documento de identidad</string>
-    <string name="string_id_type">Tipo de documento</string>
-    <string name="string_names">Nombres</string>
-    <string name="string_last_names">Apellidos</string>
-    <string name="string_role">Función</string>
-    <string name="string_save">Guardar</string>
-    <string name="string_confirm">Confirmar</string>
-    <string name="string_cancel">Cancelar</string>
+    <!-- Common action strings -->
+    <string name="edifikana_string_save">Guardar</string>
+    <string name="edifikana_string_cancel">Cancelar</string>
+    <string name="edifikana_string_confirm">Confirmar</string>
+    <string name="edifikana_string_add">Agregar</string>
+    <string name="edifikana_string_edit">Editar</string>
+    <string name="edifikana_string_delete">Eliminar</string>
+    <string name="edifikana_string_decline">Rechazar</string>
+    <string name="edifikana_string_share">Compartir</string>
+    <string name="edifikana_string_accept">Aceptar</string>
+    <string name="edifikana_string_upload">Subiendo</string>
+    <string name="edifikana_string_other">Otro</string>
+
+    <!-- Common navigation strings -->
+    <string name="edifikana_string_back_navigation">Atrás</string>
+
+    <!-- Common auth / user field strings -->
+    <string name="edifikana_string_sign_out">Cerrar Sesión</string>
+    <string name="edifikana_string_sign_up">Registrarse</string>
+    <string name="edifikana_string_email">Correo</string>
+    <string name="edifikana_string_password">Contraseña</string>
+    <string name="edifikana_string_phone_number"># Telefónico</string>
+    <string name="edifikana_string_first_name">Nombre</string>
+    <string name="edifikana_string_last_name">Apellido</string>
+    <string name="edifikana_string_role">Función</string>
+    <string name="edifikana_string_id_number">Documento de identidad</string>
+    <string name="edifikana_string_id_type">Tipo de documento</string>
+
+    <!-- Common employee strings -->
+    <string name="edifikana_string_employee">Empleado</string>
+    <string name="edifikana_string_employee_name">Nombre del conserje</string>
+    <string name="edifikana_string_employee_list">Lista de Empleados</string>
+    <string name="edifikana_string_add_employee">Agregar Empleado</string>
+    <string name="edifikana_string_clock_in">Marcar entrada</string>
+    <string name="edifikana_string_clock_out">Marcar salida</string>
+
+    <!-- Common event log strings -->
+    <string name="edifikana_string_event_log">Libro de Ocurrencias</string>
+    <string name="edifikana_string_assistance">Asistencia</string>
+    <string name="edifikana_string_event_type">Tipo de evento</string>
+    <string name="edifikana_string_apartment">Departamento</string>
+    <string name="edifikana_string_simple_description">Descripción simple</string>
+    <string name="edifikana_string_full_description">Descripción detallada</string>
+    <string name="edifikana_string_forms">Formularios</string>
+    <string name="edifikana_string_view_records">Ver Archivos</string>
+    <string name="edifikana_string_field_event">Evento:</string>
+    <string name="edifikana_string_field_date_time">Fecha y hora:</string>
+    <string name="edifikana_string_field_unit">Dpto:</string>
+
+    <!-- Common camera / media strings -->
+    <string name="edifikana_string_camera">Cámara</string>
+    <string name="edifikana_string_gallery">Galería</string>
+    <string name="edifikana_string_take_photo">Tomar foto</string>
+    <string name="edifikana_string_flip_camera">Cambiar cámara</string>
+    <string name="edifikana_string_error_take_photo">Hubo un error cargando la foto</string>
+    <string name="edifikana_string_permissions_camera">Para poder tomar fotos necesitas dar permiso para utilizar la cámara.</string>
+    <string name="edifikana_string_permissions_open_setting">Abrir configuración</string>
+
+    <!-- Common error / status strings -->
+    <string name="edifikana_string_please_complete_fields">Por favor complete todos los campos.</string>
+    <string name="edifikana_string_error_processing_request">Hubo un error procesando la operación.</string>
+
+    <!-- Error messages -->
     <string name="error_message_unexpected_error">Hubo un error inesperado.</string>
-    <string name="string_field_event">Evento:</string>
-    <string name="string_field_date_time">Fecha y hora:</string>
-    <string name="string_field_unit">Dpto:</string>
-    <string name="string_share">Compartir</string>
-    <string name="string_add">Agregar</string>
-    <string name="string_camera">Cámara</string>
-    <string name="string_gallery">Galería</string>
-    <string name="string_event_log_title">Libro de Ocurrencias</string>
-    <string name="string_assistance">Asistencia</string>
-    <string name="string_back_navigation">Atrás</string>
-    <string name="text_input_activation_code">Ingrese el código de activación</string>
-    <string name="text_code">Código</string>
-    <string name="text_accept">Aceptar</string>
-    <string name="text_take_photo">Tomar foto</string>
-    <string name="text_error_take_photo">Hubo un error cargando la foto</string>
-    <string name="string_other">Otro</string>
-    <string name="text_please_complete_fields">Por favor complete todos los campos.</string>
-    <string name="text_there_was_an_error_processing_request">Hubo un error procesando la operación.</string>
-    <string name="text_clock_in">Marcar entrada</string>
-    <string name="text_clock_out">Marcar salida</string>
-    <string name="text_employee">Empleado</string>
-    <string name="text_event_type">Tipo de evento</string>
-    <string name="text_apartment">Departamento</string>
-    <string name="text_simple_desc">Descripción simple</string>
-    <string name="text_full_desc">Descripción detallada</string>
-    <string name="text_add">Agregar</string>
-    <string name="text_flip_camera">Cambiar cámara</string>
-    <string name="text_employee_name">Nombre del conserje</string>
-    <string name="text_forms">Formularios</string>
-    <string name="text_view_records">Ver Archivos</string>
-    <string name="text_upload">Subiendo</string>
+    <string name="error_message_invalid_credentials">El usuario y/o contraseña no coinciden con nuestros registros.</string>
     <string name="error_message_currently_uploading">Procesando… Espere unos segundos…</string>
 
-    <string name="text_permissions_camera">Para poder tomar fotos necesitas dar permiso para utilizar la cámara.</string>
-    <string name="text_permissions_open_setting">Abrir configuración</string>
+    <!-- Sign in screen -->
+    <string name="sign_in_screen_text_sign_in">Usar Contraseña</string>
+    <string name="sign_in_screen_text_sign_in_password">Iniciar Sesión</string>
+    <string name="sign_in_screen_text_sign_in_otp">Iniciar Sesión con OTP</string>
 
-    <string name="title_event_log">Libro de Ocurrencias</string>
+    <!-- Sign up screen -->
+    <string name="sign_up_screen_text_policy">Al crear una cuenta, acepto los Términos de Servicio y la Política de Privacidad de Edifikans.</string>
+
+    <!-- OTP validation screen -->
+    <string name="otp_validation_screen_text">Se enviamos un código OTP a su correo electrónico. Introdúcelo a continuación.</string>
+    <string name="otp_validation_screen_image_description">Imagen de validación</string>
+    <string name="otp_validation_screen_login_button">Iniciar sesión</string>
+
+    <!-- Account screen -->
+    <string name="account_screen_title">Mi Cuenta</string>
+    <string name="account_screen_password_not_set">No configurada</string>
+    <string name="account_screen_save_changes_button">Guardar cambios</string>
+
+    <!-- Home screen -->
+    <string name="home_screen_settings_description">Configuración</string>
+    <string name="home_screen_account_description">Mi Cuenta</string>
+    <string name="home_screen_notifications_description">Notificaciones</string>
+    <string name="home_screen_property_dropdown_description">Propiedades</string>
+    <string name="home_screen_property_dropdown_selected_description">Propiedad Seleccionada</string>
+
+    <!-- Properties screen -->
+    <string name="properties_screen_title">Propiedades</string>
+    <string name="properties_screen_add_button">Agregar propiedad</string>
+    <string name="signup_screen_title">Registrarse</string>
+
+    <!-- Hub screen -->
+    <string name="hub_screen_properties_button_title">Propiedades</string>
+    <string name="hub_screen_employee_button_title">Equipo</string>
+
+    <!-- Event log screens -->
+    <string name="event_log_screen_add_record">Agregar Ocurrencia</string>
+    <string name="view_record_screen_title">Ver Registro</string>
+    <string name="add_record_screen_title">Agregar registro</string>
     <string name="title_event_log_add">Agregar Ocurrencia</string>
     <string name="title_event_log_view">Ver Ocurrencia</string>
+
+    <!-- Form screens -->
     <string name="title_form_list">Lista de Formularios</string>
     <string name="title_form_entry">Entrada de Formulario</string>
     <string name="title_form_record">Registro de Formulario</string>
     <string name="title_form_record_view">Ver Registro de Formulario</string>
+
+    <!-- Timecard screens -->
     <string name="title_timecard">Control de Asistencia</string>
-    <string name="title_timecard_add_employee">Agregar Empleado</string>
     <string name="title_timecard_view_employee">Empleado</string>
-    <string name="title_timecard_employee_list">Lista de Empleados</string>
-
-    <string name="sign_in_screen_text_sign_in">Usar Contraseña</string>
-    <string name="sign_in_screen_text_sign_in_password">Iniciar Sesión</string>
-    <string name="sign_in_screen_text_sign_in_otp">Iniciar Sesión con OTP</string>
-    <string name="sign_in_screen_text_email">Correo</string>
-    <string name="sign_in_screen_text_password">Contraseña</string>
-    <string name="sign_in_screen_text_sign_up">Registrarse</string>
-
-    <string name="sign_up_screen_text_first_name">Nombre</string>
-    <string name="sign_up_screen_text_last_name">Apellido</string>
-    <string name="sign_up_screen_text_email">Correo</string>
-    <string name="sign_up_screen_text_phone_number"># Telefónico</string>
-    <string name="sign_up_screen_text_password">Contraseña</string>
-    <string name="sign_up_screen_text_sign_up">Registrarse</string>
-    <string name="sign_up_screen_text_policy">Al crear una cuenta, acepto los Términos de Servicio y la Política de Privacidad de Edifikans.</string>
-
-    <string name="otp_validation_screen_text">Se enviamos un código OTP a su correo electrónico. Introdúcelo a continuación.</string>
-
-    <string name="account_screen_title">Mi Cuenta</string>
-    <string name="account_screen_edit_button">Editar</string>
-    <string name="account_screen_first_name">Nombre</string>
-    <string name="account_screen_last_name">Apellido</string>
-    <string name="account_screen_email">Correo</string>
-    <string name="account_screen_phone_number"># Telefónico</string>
-    <string name="account_screen_sign_out">Cerrar Sesión</string>
-
-    <string name="properties_screen_title">Propiedades</string>
-    <string name="properties_screen_add_button">Agregar propiedad</string>
-
-    <string name="signup_screen_title">Registrarse</string>
-
-    <string name="home_screen_settings_description">Configuración</string>
-    <string name="home_screen_account_description">Mi Cuenta</string>
-    <string name="home_screen_property_dropdown_description">Propiedades</string>
-    <string name="home_screen_property_dropdown_selected_description">Propiedad Seleccionada</string>
-
-    <string name="event_log_screen_add_record">Agregar Ocurrencia</string>
-
-    <string name="view_record_screen_title">Ver Registro</string>
-
-    <string name="add_record_screen_title">Agregar registro</string>
-
-    <string name="employee_list_screen_title">Lista de empleados</string>
-    <string name="employee_list_screen_add_button_description">Agregar Empleado</string>
-
-    <string name="add_employee_screen_title">Agregar Empleado</string>
-
     <string name="time_card_screen_add_event">Agregar Evento</string>
+
+    <!-- Change password dialog -->
+    <string name="change_password_dialog_title">Cambiar Contraseña</string>
+    <string name="change_password_dialog_current_password">Contraseña actual</string>
+    <string name="change_password_dialog_new_password">Nueva contraseña</string>
+    <string name="change_password_dialog_confirm_password">Confirmar contraseña</string>
+    <string name="change_password_dialog_submit">Enviar</string>
+    <string name="change_password_dialog_error_current_password_empty">La contraseña actual no puede estar vacía</string>
+    <string name="change_password_dialog_error_new_password_empty">La nueva contraseña no puede estar vacía</string>
+    <string name="change_password_dialog_error_new_password_too_short">La nueva contraseña debe tener al menos 8 caracteres</string>
+    <string name="change_password_dialog_error_confirm_password_empty">La confirmación de contraseña no puede estar vacía</string>
+    <string name="change_password_dialog_error_passwords_do_not_match">Las contraseñas no coinciden</string>
+    <string name="change_password_dialog_success">¡Contraseña actualizada!</string>
+    <string name="change_password_dialog_error_failed">Error al cambiar la contraseña: %1$s</string>
+    <string name="change_password_dialog_error_verify_password_exists">No se puede verificar si su cuenta tiene una contraseña. Por seguridad, ingrese su contraseña actual si la tiene.</string>
+
+    <!-- Join org dialog -->
+    <string name="join_org_dialog_title">Unirse a la organización</string>
+    <string name="join_org_dialog_message">¿Estás seguro de que quieres unirte a esta organización?</string>
+    <string name="join_org_dialog_confirm_button">Unirse</string>
+
+    <!-- Sign out onboarding dialog -->
+    <string name="sign_out_onboarding_dialog_message">¿Estás seguro de que quieres cerrar sesión y salir del proceso de registro?</string>
+
+    <!-- Create new org screen -->
+    <string name="create_new_org_screen_title">Comenzar</string>
+    <string name="create_new_org_screen_heading">Crear nueva organización</string>
+    <string name="create_new_org_screen_subtitle">Ingresa los detalles de tu nuevo espacio de trabajo.</string>
+    <string name="create_new_org_screen_org_name_label">Nombre de la organización</string>
+    <string name="create_new_org_screen_org_name_placeholder">ej. Acme Propiedades</string>
+    <string name="create_new_org_screen_org_description_label">Descripción de la organización</string>
+    <string name="create_new_org_screen_org_description_placeholder">Describe brevemente para qué es este espacio...</string>
+    <string name="create_new_org_screen_create_button">Crear organización</string>
+
+    <!-- Select org screen -->
+    <string name="select_org_screen_heading">¿Cómo quieres comenzar?</string>
+    <string name="select_org_screen_subtitle">Elige cómo quieres gestionar tus propiedades.</string>
+    <string name="select_org_screen_join_team_title">Unirse a un equipo existente</string>
+    <string name="select_org_screen_join_team_description">Tengo un código de invitación o quiero buscar mi empresa.</string>
+    <string name="select_org_screen_create_workspace_title">Crear un nuevo espacio de trabajo</string>
+    <string name="select_org_screen_create_workspace_description">Quiero configurar un nuevo portafolio de propiedades para mi equipo.</string>
+
+    <!-- Add property screen -->
+    <string name="add_property_screen_title">Agregar propiedad</string>
+    <string name="add_property_screen_property_name_label">Nombre de la propiedad</string>
+    <string name="add_property_screen_property_name_placeholder">Ingresa el nombre de la propiedad</string>
+    <string name="add_property_screen_address_label">Dirección</string>
+    <string name="add_property_screen_address_placeholder">Ingresa la dirección de la propiedad</string>
+    <string name="add_property_screen_property_icon_label">Ícono de la propiedad</string>
+    <string name="add_property_screen_property_icon_placeholder">Selecciona un ícono de propiedad</string>
+
+    <!-- Employee overview screen -->
+    <string name="employee_overview_add_employee_description">Agregar nuevo empleado</string>
+    <string name="employee_overview_employee_image_description">Imagen de %1$s</string>
+    <string name="employee_overview_no_image_description">No hay imagen disponible para %1$s</string>
+    <string name="employee_overview_pending_invite_description">Invitación pendiente para %1$s</string>
+    <string name="employee_overview_invite_sent">Invitación enviada</string>
+
+    <!-- Event log screen -->
+    <string name="event_log_screen_no_events">No se encontraron eventos</string>
+    <string name="event_log_screen_today_header">Hoy</string>
+    <string name="event_log_screen_reported_by">Reportado por: %1$s</string>
+
+    <!-- Go to org screen -->
+    <string name="go_to_org_screen_no_properties_message">Aún no tienes propiedades. ¡Crea tu primera propiedad para comenzar!</string>
+    <string name="go_to_org_screen_get_started_button">¡Comenzar!</string>
+
+    <!-- Invite staff member screen -->
+    <string name="invite_staff_member_screen_title">Invitar miembro del equipo</string>
+    <string name="invite_staff_member_screen_email_label">Correo electrónico</string>
+    <string name="invite_staff_member_screen_email_placeholder">ej. nombre@ejemplo.com</string>
+    <string name="invite_staff_member_screen_role_placeholder">Selecciona una función</string>
+    <string name="invite_staff_member_screen_send_button">Enviar invitación</string>
+
+    <!-- Notifications screen -->
+    <string name="notifications_screen_no_notifications">Sin notificaciones</string>
+    <string name="notifications_screen_invitation_description">Invitación</string>
+    <string name="notifications_screen_organization_invite_title">Invitación de organización</string>
+    <string name="notifications_screen_system_notification_description">Notificación del sistema</string>
+
+    <!-- Properties overview screen -->
+    <string name="properties_overview_add_property_description">Agregar nueva propiedad</string>
+    <string name="properties_overview_no_properties_message">Aún no hay propiedades. Toca + para agregar tu primera propiedad.</string>
+    <string name="properties_overview_property_image_description">Imagen de la propiedad %1$s</string>
+
+    <!-- Settings screen -->
+    <string name="settings_screen_appearance_title">Apariencia</string>
+    <string name="settings_screen_theme_light">Claro</string>
+    <string name="settings_screen_theme_light_subtitle">Usar colores claros</string>
+    <string name="settings_screen_theme_dark">Oscuro</string>
+    <string name="settings_screen_theme_dark_subtitle">Usar colores oscuros</string>
+    <string name="settings_screen_theme_system_default">Predeterminado del sistema</string>
+    <string name="settings_screen_theme_system_default_subtitle">Seguir la apariencia del sistema</string>
+
+    <!-- Property detail screen -->
+    <string name="property_detail_screen_title">Detalles de la propiedad</string>
+    <string name="property_detail_screen_edit_title">Editar propiedad</string>
+    <string name="property_detail_screen_delete_label">Eliminar propiedad</string>
+    <string name="property_detail_screen_delete_dialog_message">¿Estás seguro de que quieres eliminar esta propiedad? Esta acción no se puede deshacer.</string>
 </resources>

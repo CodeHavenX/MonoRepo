@@ -5,6 +5,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import com.cramsan.framework.core.compose.Dialog
+import edifikana_lib.Res
+import edifikana_lib.edifikana_string_cancel
+import edifikana_lib.edifikana_string_sign_out
+import edifikana_lib.sign_out_onboarding_dialog_message
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
@@ -23,8 +28,8 @@ class SignOutConfirmationDialog(
                 hide()
                 onDismiss()
             },
-            title = { Text("Sign Out") },
-            text = { Text("Are you sure you want to sign out and leave the onboarding process?") },
+            title = { Text(stringResource(Res.string.edifikana_string_sign_out)) },
+            text = { Text(stringResource(Res.string.sign_out_onboarding_dialog_message)) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -32,7 +37,7 @@ class SignOutConfirmationDialog(
                         onConfirm()
                     }
                 ) {
-                    Text("Sign Out")
+                    Text(stringResource(Res.string.edifikana_string_sign_out))
                 }
             },
             dismissButton = {
@@ -42,7 +47,7 @@ class SignOutConfirmationDialog(
                         onDismiss()
                     }
                 ) {
-                    Text("Cancel")
+                    Text(stringResource(Res.string.edifikana_string_cancel))
                 }
             }
         )
@@ -52,6 +57,15 @@ class SignOutConfirmationDialog(
 @Preview
 @Composable
 private fun SignOutConfirmationDialogPreview() {
+    SignOutConfirmationDialog(
+        onConfirm = {},
+        onDismiss = {}
+    ).Content()
+}
+
+@Preview(locale = "es")
+@Composable
+private fun SignOutConfirmationDialogPreview_ES() {
     SignOutConfirmationDialog(
         onConfirm = {},
         onDismiss = {}

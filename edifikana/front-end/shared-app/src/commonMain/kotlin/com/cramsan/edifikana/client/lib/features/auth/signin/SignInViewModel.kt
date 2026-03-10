@@ -17,6 +17,7 @@ import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import com.cramsan.framework.utils.loginvalidation.validateEmail
 import com.cramsan.ui.components.themetoggle.SelectedTheme
 import edifikana_lib.Res
+import edifikana_lib.error_message_invalid_credentials
 import edifikana_lib.error_message_unexpected_error
 import kotlinx.coroutines.launch
 
@@ -133,7 +134,7 @@ class SignInViewModel(
             }
             val result = auth.checkUserExists(email)
             result.onFailure {
-                updateUiState { it.copy(errorMessages = listOf("Oops, something went wrong.")) }
+                updateUiState { it.copy(errorMessages = listOf(stringProvider.getString(Res.string.error_message_unexpected_error))) }
                 return@launch
             }
             val registeredUser = result.getOrNull() ?: false
@@ -206,8 +207,7 @@ class SignInViewModel(
     private suspend fun getErrorMessage(exception: Throwable): String {
         return when (exception) {
             is ClientRequestExceptions.UnauthorizedException ->
-                "Invalid login credentials. Please check your " +
-                    "username and password and try again."
+                stringProvider.getString(Res.string.error_message_invalid_credentials)
 
             else -> stringProvider.getString(Res.string.error_message_unexpected_error)
         }

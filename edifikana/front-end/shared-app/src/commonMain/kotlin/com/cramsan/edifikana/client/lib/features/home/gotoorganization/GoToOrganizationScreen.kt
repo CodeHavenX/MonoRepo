@@ -13,6 +13,10 @@ import com.cramsan.edifikana.client.lib.features.home.drawer.DrawerViewModel
 import com.cramsan.edifikana.client.lib.features.home.drawer.SelectableDrawerItem
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.ScreenLayout
+import edifikana_lib.Res
+import edifikana_lib.go_to_org_screen_get_started_button
+import edifikana_lib.go_to_org_screen_no_properties_message
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -67,14 +71,14 @@ internal fun GoToOrganizationContent(
         ScreenLayout(
             sectionContent = { sectionModifier ->
                 Text(
-                    "You don't have any properties yet. Create your first property to get started!",
+                    stringResource(Res.string.go_to_org_screen_no_properties_message),
                     modifier = sectionModifier,
                 )
                 Button(
                     onClick = onNavigateToOrganizationsClicked,
                     modifier = sectionModifier,
                 ) {
-                    Text("Get Started!")
+                    Text(stringResource(Res.string.go_to_org_screen_get_started_button))
                 }
             },
         )

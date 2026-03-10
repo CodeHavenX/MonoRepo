@@ -15,7 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import edifikana_lib.Res
-import edifikana_lib.string_cancel
+import edifikana_lib.edifikana_string_cancel
 import org.jetbrains.compose.resources.stringResource
 
 /**
@@ -37,7 +37,7 @@ fun PhotoErrorScreen(
                 IconButton(onClick = onCancelClick) {
                     Icon(
                         imageVector = Icons.Sharp.Cancel,
-                        contentDescription = stringResource(Res.string.string_cancel),
+                        contentDescription = stringResource(Res.string.edifikana_string_cancel),
                         tint = Color.White,
                         modifier = Modifier
                             .fillMaxSize()

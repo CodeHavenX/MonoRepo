@@ -18,9 +18,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import edifikana_lib.Res
-import edifikana_lib.string_cancel
-import edifikana_lib.text_permissions_camera
-import edifikana_lib.text_permissions_open_setting
+import edifikana_lib.edifikana_string_cancel
+import edifikana_lib.edifikana_string_permissions_camera
+import edifikana_lib.edifikana_string_permissions_open_setting
 import org.jetbrains.compose.resources.stringResource
 
 /**
@@ -40,11 +40,11 @@ fun PermissionDeniedScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                text = stringResource(Res.string.text_permissions_camera),
+                text = stringResource(Res.string.edifikana_string_permissions_camera),
             )
             Button(onClick = onOpenSettingsClick) {
                 Text(
-                    text = stringResource(Res.string.text_permissions_open_setting),
+                    text = stringResource(Res.string.edifikana_string_permissions_open_setting),
                 )
             }
         }
@@ -54,7 +54,7 @@ fun PermissionDeniedScreen(
                 IconButton(onClick = onCancelClick) {
                     Icon(
                         imageVector = Icons.Sharp.Cancel,
-                        contentDescription = stringResource(Res.string.string_cancel),
+                        contentDescription = stringResource(Res.string.edifikana_string_cancel),
                         tint = Color.White,
                         modifier = Modifier
                             .fillMaxSize()

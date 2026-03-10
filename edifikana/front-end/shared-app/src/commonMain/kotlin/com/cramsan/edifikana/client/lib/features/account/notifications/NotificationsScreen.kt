@@ -41,7 +41,13 @@ import com.cramsan.ui.components.ScreenLayout
 import com.cramsan.ui.theme.Padding
 import com.cramsan.ui.theme.Size
 import edifikana_lib.Res
-import edifikana_lib.string_cancel
+import edifikana_lib.edifikana_string_accept
+import edifikana_lib.edifikana_string_cancel
+import edifikana_lib.edifikana_string_decline
+import edifikana_lib.notifications_screen_invitation_description
+import edifikana_lib.notifications_screen_no_notifications
+import edifikana_lib.notifications_screen_organization_invite_title
+import edifikana_lib.notifications_screen_system_notification_description
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -160,12 +166,12 @@ private fun EmptyNotificationsMessage(
         ) {
             Icon(
                 imageVector = Icons.Default.Notifications,
-                contentDescription = "No notifications",
+                contentDescription = stringResource(Res.string.notifications_screen_no_notifications),
                 modifier = Modifier.size(Size.xx_large),
                 tint = MaterialTheme.colorScheme.outline,
             )
             Text(
-                text = "No notifications",
+                text = stringResource(Res.string.notifications_screen_no_notifications),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.outline,
             )
@@ -197,7 +203,7 @@ private fun InviteNotificationItem(
         ) {
             Icon(
                 imageVector = Icons.Default.Email,
-                contentDescription = "Invitation",
+                contentDescription = stringResource(Res.string.notifications_screen_invitation_description),
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(Size.large),
             )
@@ -206,7 +212,7 @@ private fun InviteNotificationItem(
                 modifier = Modifier.weight(1f),
             ) {
                 Text(
-                    text = "Organization Invite",
+                    text = stringResource(Res.string.notifications_screen_organization_invite_title),
                     style = MaterialTheme.typography.titleMedium,
                 )
                 Text(
@@ -227,12 +233,12 @@ private fun InviteNotificationItem(
             OutlinedButton(
                 onClick = onDecline,
             ) {
-                Text("Decline")
+                Text(stringResource(Res.string.edifikana_string_decline))
             }
             Button(
                 onClick = onAccept,
             ) {
-                Text("Accept")
+                Text(stringResource(Res.string.edifikana_string_accept))
             }
         }
     }
@@ -260,7 +266,7 @@ private fun SystemNotificationItem(
     ) {
         Icon(
             imageVector = Icons.Default.Notifications,
-            contentDescription = "System notification",
+            contentDescription = stringResource(Res.string.notifications_screen_system_notification_description),
             tint = if (notification.isRead) MaterialTheme.colorScheme.outline else MaterialTheme.colorScheme.primary,
             modifier = Modifier.size(Size.large),
         )
@@ -281,7 +287,7 @@ private fun SystemNotificationItem(
         IconButton(onClick = { onDeleteNotification(notification.id) }) {
             Icon(
                 imageVector = Icons.Sharp.Close,
-                contentDescription = stringResource(Res.string.string_cancel),
+                contentDescription = stringResource(Res.string.edifikana_string_cancel),
                 // tint = Color.White,
                 modifier = Modifier.fillMaxSize()
                     .padding(5.dp)

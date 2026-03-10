@@ -41,6 +41,20 @@ import com.cramsan.framework.core.compose.ui.ObserveEventEmitterEvents
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
+import edifikana_lib.Res
+import edifikana_lib.add_property_screen_address_label
+import edifikana_lib.add_property_screen_property_icon_label
+import edifikana_lib.add_property_screen_property_icon_placeholder
+import edifikana_lib.add_property_screen_property_name_label
+import edifikana_lib.edifikana_string_cancel
+import edifikana_lib.edifikana_string_delete
+import edifikana_lib.edifikana_string_save
+import edifikana_lib.property_detail_screen_delete_dialog_message
+import edifikana_lib.property_detail_screen_delete_label
+import edifikana_lib.property_detail_screen_edit_title
+import edifikana_lib.property_detail_screen_title
+import edifikana_lib.edifikana_string_upload
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -132,20 +146,20 @@ internal fun PropertyDetailContent(
         modifier = modifier,
         topBar = {
             EdifikanaTopBar(
-                title = if (content.isEditMode) "Edit Property" else "Property Details",
+                title = if (content.isEditMode) stringResource(Res.string.property_detail_screen_edit_title) else stringResource(Res.string.property_detail_screen_title),
                 onNavigationIconSelected = onBackSelected,
                 content = {
                     if (!content.isEditMode) {
                         IconButton(onClick = onEditSelected) {
                             Icon(
                                 imageVector = Icons.Default.Edit,
-                                contentDescription = "Edit property",
+                                contentDescription = stringResource(Res.string.property_detail_screen_edit_title),
                             )
                         }
                         IconButton(onClick = { showDeleteDialog = true }) {
                             Icon(
                                 imageVector = Icons.Default.Delete,
-                                contentDescription = "Delete property",
+                                contentDescription = stringResource(Res.string.property_detail_screen_delete_label),
                             )
                         }
                     }
@@ -163,7 +177,7 @@ internal fun PropertyDetailContent(
                         modifier = sectionModifier,
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        Text("Property Icon", fontWeight = FontWeight.Bold)
+                        Text(stringResource(Res.string.add_property_screen_property_icon_label), fontWeight = FontWeight.Bold)
                         val iconOption = PropertyIconOptions.fromImageUrl(content.imageUrl)
                             ?: PropertyIconOptions.getDefaultOptions().find { it.id == "S_DEPA" }
                         iconOption?.let { option ->
@@ -182,10 +196,10 @@ internal fun PropertyDetailContent(
                         EdifikanaTextField(
                             value = content.name,
                             onValueChange = onNameChanged,
-                            label = "Property Name",
+                            label = stringResource(Res.string.add_property_screen_property_name_label),
                         )
                     } else {
-                        Text("Property Name", fontWeight = FontWeight.Bold)
+                        Text(stringResource(Res.string.add_property_screen_property_name_label), fontWeight = FontWeight.Bold)
                         Text(
                             text = content.name,
                             modifier = Modifier.padding(vertical = 8.dp),
@@ -197,10 +211,10 @@ internal fun PropertyDetailContent(
                         EdifikanaTextField(
                             value = content.address,
                             onValueChange = onAddressChanged,
-                            label = "Address",
+                            label = stringResource(Res.string.add_property_screen_address_label),
                         )
                     } else {
-                        Text("Address", fontWeight = FontWeight.Bold)
+                        Text(stringResource(Res.string.add_property_screen_address_label), fontWeight = FontWeight.Bold)
                         Text(
                             text = content.address,
                             modifier = Modifier.padding(vertical = 8.dp),
@@ -211,10 +225,10 @@ internal fun PropertyDetailContent(
                 if (content.isEditMode) {
                     Column(sectionModifier) {
                         EdifikanaImageSelector(
-                            label = "Property Icon",
+                            label = stringResource(Res.string.add_property_screen_property_icon_label),
                             selectedOption = content.selectedIcon,
                             onOpenSelectorSelected = onOpenSelectorSelected,
-                            placeholder = if (content.isUploading) "Uploading..." else "Select a property icon",
+                            placeholder = if (content.isUploading) stringResource(Res.string.edifikana_string_upload) else stringResource(Res.string.add_property_screen_property_icon_placeholder),
                         )
 
                         // Show upload error if any
@@ -232,13 +246,13 @@ internal fun PropertyDetailContent(
             buttonContent = if (content.isEditMode) {
                 { buttonModifier ->
                     EdifikanaPrimaryButton(
-                        text = "Save",
+                        text = stringResource(Res.string.edifikana_string_save),
                         modifier = buttonModifier,
                         enabled = !content.isUploading,
                         onClick = onSaveProperty,
                     )
                     EdifikanaSecondaryButton(
-                        text = "Cancel",
+                        text = stringResource(Res.string.edifikana_string_cancel),
                         modifier = buttonModifier,
                         onClick = onCancelEdit,
                     )
@@ -255,8 +269,8 @@ internal fun PropertyDetailContent(
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Delete Property") },
-            text = { Text("Are you sure you want to delete this property? This action cannot be undone.") },
+            title = { Text(stringResource(Res.string.property_detail_screen_delete_label)) },
+            text = { Text(stringResource(Res.string.property_detail_screen_delete_dialog_message)) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -264,12 +278,12 @@ internal fun PropertyDetailContent(
                         onDeleteProperty()
                     }
                 ) {
-                    Text("Delete")
+                    Text(stringResource(Res.string.edifikana_string_delete))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = false }) {
-                    Text("Cancel")
+                    Text(stringResource(Res.string.edifikana_string_cancel))
                 }
             }
         )

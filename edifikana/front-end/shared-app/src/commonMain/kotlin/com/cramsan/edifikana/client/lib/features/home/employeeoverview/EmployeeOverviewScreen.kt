@@ -36,6 +36,13 @@ import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
 import com.cramsan.ui.theme.Padding
 import com.cramsan.ui.theme.Size
+import edifikana_lib.Res
+import edifikana_lib.employee_overview_add_employee_description
+import edifikana_lib.employee_overview_employee_image_description
+import edifikana_lib.employee_overview_invite_sent
+import edifikana_lib.employee_overview_no_image_description
+import edifikana_lib.employee_overview_pending_invite_description
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -101,7 +108,7 @@ internal fun EmployeeOverviewContent(
             ) {
                 Icon(
                     imageVector = Icons.Sharp.Add,
-                    contentDescription = "Add new employee",
+                    contentDescription = stringResource(Res.string.employee_overview_add_employee_description),
                 )
             }
         }
@@ -158,13 +165,13 @@ private fun UserItem(
         if (employee.imageUrl != null) {
             EdifikanaImage(
                 imageSource = ImageSource.Url(employee.imageUrl),
-                contentDescription = "Employee image for ${employee.name}",
+                contentDescription = stringResource(Res.string.employee_overview_employee_image_description, employee.name),
                 modifier = imageModifier,
             )
         } else {
             Icon(
                 imageVector = Icons.Default.Person,
-                contentDescription = "No image available for ${employee.name}",
+                contentDescription = stringResource(Res.string.employee_overview_no_image_description, employee.name),
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = imageModifier.padding(
                     Padding.SMALL
@@ -207,7 +214,7 @@ private fun InviteItem(
             .size(Size.xx_large)
         Icon(
             imageVector = Icons.Default.Person,
-            contentDescription = "Pending invite for ${invite.email}",
+            contentDescription = stringResource(Res.string.employee_overview_pending_invite_description, invite.email),
             tint = MaterialTheme.colorScheme.outline,
             modifier = imageModifier.padding(
                 Padding.SMALL
@@ -222,7 +229,7 @@ private fun InviteItem(
                 style = MaterialTheme.typography.titleMedium,
             )
             Text(
-                "Invite sent",
+                stringResource(Res.string.employee_overview_invite_sent),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.outline,
             )

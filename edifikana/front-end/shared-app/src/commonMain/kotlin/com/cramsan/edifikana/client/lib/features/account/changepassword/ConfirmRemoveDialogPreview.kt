@@ -24,3 +24,23 @@ private fun ChangePasswordDialogPreview() = AppTheme {
         onSubmitSelected = { /* No-op for preview */ },
     )
 }
+
+@OptIn(SecureStringAccess::class)
+@Preview(locale = "es")
+@Composable
+private fun ChangePasswordDialogPreview_ES() = AppTheme {
+    RenderContent(
+        uiState = ChangePasswordDialogUIState(
+            currentPasswordMessage = "Se requiere la contraseña actual",
+            newPasswordMessage = "Debe tener al menos 8 caracteres",
+            confirmPasswordMessage = "Las contraseñas no coinciden",
+            currentPasswordInError = true,
+            showCurrentPassword = true,
+            isLoading = false,
+        ),
+        onCurrentPasswordChange = {},
+        onNewPasswordChange = {},
+        onConfirmPasswordChange = {},
+        onSubmitSelected = { /* No-op for preview */ },
+    )
+}

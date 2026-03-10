@@ -32,12 +32,12 @@ import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
 import com.cramsan.ui.theme.Padding
 import edifikana_lib.Res
-import edifikana_lib.sign_up_screen_text_email
-import edifikana_lib.sign_up_screen_text_first_name
-import edifikana_lib.sign_up_screen_text_last_name
-import edifikana_lib.sign_up_screen_text_phone_number
+import edifikana_lib.edifikana_string_email
+import edifikana_lib.edifikana_string_first_name
+import edifikana_lib.edifikana_string_last_name
+import edifikana_lib.edifikana_string_phone_number
+import edifikana_lib.edifikana_string_sign_up
 import edifikana_lib.sign_up_screen_text_policy
-import edifikana_lib.sign_up_screen_text_sign_up
 import edifikana_lib.signup_screen_title
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -126,7 +126,7 @@ internal fun SignUpContent(
                     value = uiState.firstName,
                     onValueChange = { onFirstNameValueChange(it) },
                     modifier = modifier,
-                    label = stringResource(Res.string.sign_up_screen_text_first_name),
+                    label = stringResource(Res.string.edifikana_string_first_name),
                     maxLines = 1,
                     singleLine = true,
                 )
@@ -135,7 +135,7 @@ internal fun SignUpContent(
                     value = uiState.lastName,
                     onValueChange = { onLastNameValueChange(it) },
                     modifier = modifier,
-                    label = stringResource(Res.string.sign_up_screen_text_last_name),
+                    label = stringResource(Res.string.edifikana_string_last_name),
                     maxLines = 1,
                     singleLine = true,
                 )
@@ -143,7 +143,7 @@ internal fun SignUpContent(
                     value = uiState.email,
                     onValueChange = { onEmailValueChange(it) },
                     modifier = modifier,
-                    label = stringResource(Res.string.sign_up_screen_text_email),
+                    label = stringResource(Res.string.edifikana_string_email),
                     maxLines = 1,
                     singleLine = true,
                 )
@@ -151,7 +151,7 @@ internal fun SignUpContent(
                     value = uiState.phoneNumber,
                     onValueChange = { onPhoneNumberValueChange(it) },
                     modifier = modifier,
-                    label = stringResource(Res.string.sign_up_screen_text_phone_number),
+                    label = stringResource(Res.string.edifikana_string_phone_number),
                     maxLines = 1,
                     singleLine = true,
                 )
@@ -186,7 +186,7 @@ internal fun SignUpContent(
                     enabled = uiState.registerEnabled,
                     onClick = onSignUpClicked,
                 ) {
-                    Text(stringResource(Res.string.sign_up_screen_text_sign_up))
+                    Text(stringResource(Res.string.edifikana_string_sign_up))
                 }
             },
             overlay = {

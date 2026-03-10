@@ -23,6 +23,16 @@ import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.ScreenLayout
 import com.cramsan.ui.components.themetoggle.SelectedTheme
+import edifikana_lib.Res
+import edifikana_lib.home_screen_settings_description
+import edifikana_lib.settings_screen_appearance_title
+import edifikana_lib.settings_screen_theme_dark
+import edifikana_lib.settings_screen_theme_dark_subtitle
+import edifikana_lib.settings_screen_theme_light
+import edifikana_lib.settings_screen_theme_light_subtitle
+import edifikana_lib.settings_screen_theme_system_default
+import edifikana_lib.settings_screen_theme_system_default_subtitle
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -69,7 +79,7 @@ internal fun SettingsContent(
         modifier = modifier,
         topBar = {
             EdifikanaTopBar(
-                title = "Settings",
+                title = stringResource(Res.string.home_screen_settings_description),
                 onNavigationIconSelected = {
                     onBackSelected()
                 },
@@ -86,30 +96,30 @@ internal fun SettingsContent(
                     verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     Text(
-                        text = "Appearance",
+                        text = stringResource(Res.string.settings_screen_appearance_title),
                         style = MaterialTheme.typography.titleMedium,
                     )
 
                     // Light
                     SettingOption(
-                        title = "Light",
-                        subtitle = "Use light colors",
+                        title = stringResource(Res.string.settings_screen_theme_light),
+                        subtitle = stringResource(Res.string.settings_screen_theme_light_subtitle),
                         selected = uiState.selectedTheme == SelectedTheme.LIGHT,
                         onClick = { onThemeSelected(SelectedTheme.LIGHT) },
                     )
 
                     // Dark
                     SettingOption(
-                        title = "Dark",
-                        subtitle = "Use dark colors",
+                        title = stringResource(Res.string.settings_screen_theme_dark),
+                        subtitle = stringResource(Res.string.settings_screen_theme_dark_subtitle),
                         selected = uiState.selectedTheme == SelectedTheme.DARK,
                         onClick = { onThemeSelected(SelectedTheme.DARK) },
                     )
 
                     // System default
                     SettingOption(
-                        title = "System default",
-                        subtitle = "Follow the system appearance",
+                        title = stringResource(Res.string.settings_screen_theme_system_default),
+                        subtitle = stringResource(Res.string.settings_screen_theme_system_default_subtitle),
                         selected = uiState.selectedTheme == SelectedTheme.SYSTEM_DEFAULT,
                         onClick = { onThemeSelected(SelectedTheme.SYSTEM_DEFAULT) },
                     )

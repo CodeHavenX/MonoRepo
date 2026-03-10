@@ -164,9 +164,8 @@ private fun PropertyDetailScreenPreview_ES() = AppTheme {
         onDeleteProperty = {},
         onNameChanged = {},
         onAddressChanged = {},
-        onImageUrlChanged = {},
-        onTriggerPhotoPicker = {},
-    )
+        onOpenSelectorSelected = {},
+        )
 }
 
 @Preview(locale = "es")
@@ -188,7 +187,6 @@ private fun PropertyDetailScreenEditModePreview_ES() = AppTheme {
         onDeleteProperty = {},
         onNameChanged = {},
         onAddressChanged = {},
-        onImageUrlChanged = {},
-        onTriggerPhotoPicker = {},
-    )
+        onOpenSelectorSelected = {},
+        )
 }

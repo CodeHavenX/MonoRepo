@@ -10,7 +10,7 @@ data class AccountUIState(
     val lastName: String?,
     val email: String?,
     val phoneNumber: String?,
-    val isPasswordSet: Boolean,
+    val isPasswordSet: Boolean?,
     val isLoading: Boolean,
     val isEditable: Boolean,
 ) : ViewModelUIState {
@@ -20,8 +20,8 @@ data class AccountUIState(
             lastName = "",
             email = "",
             phoneNumber = "",
-            isPasswordSet = false,
-            isLoading = false,
+            isPasswordSet = null,
+            isLoading = true,
             isEditable = false,
         )
     }

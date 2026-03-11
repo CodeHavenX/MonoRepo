@@ -78,7 +78,6 @@ interface UserDatastore {
     @OptIn(SecureStringAccess::class)
     suspend fun updatePassword(
         id: UserId,
-        currentHashedPassword: SecureString?,
         newPassword: SecureString,
     ): Result<Unit>
 

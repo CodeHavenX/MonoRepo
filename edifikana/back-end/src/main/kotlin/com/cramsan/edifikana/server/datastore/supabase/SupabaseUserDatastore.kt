@@ -3,7 +3,6 @@ package com.cramsan.edifikana.server.datastore.supabase
 import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.lib.utils.requireNotBlank
 import com.cramsan.edifikana.server.datastore.UserDatastore
 import com.cramsan.edifikana.server.datastore.supabase.models.AuthMetadataEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.InviteEntity
@@ -14,12 +13,10 @@ import com.cramsan.edifikana.server.service.models.User
 import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.annotations.SupabaseModel
 import com.cramsan.framework.assertlib.assert
-import com.cramsan.framework.core.Hashing
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
-import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logW
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import com.cramsan.framework.utils.loginvalidation.validatePassword
@@ -99,12 +96,7 @@ class SupabaseUserDatastore(
             lastName = lastName,
             pendingAssociation = createOtpAccount,
             canPasswordAuth = !createOtpAccount,
-            hashedPassword = if (createOtpAccount) {
-                null
-            } else {
-                // We verified above that if the account is not transient, a password is provided
-                SecureString(Hashing.insecureHash(requireNotBlank(password).encodeToByteArray()).toString())
-            }
+            hashedPassword = null,
         )
         val createdUser = createUserEntity(requestEntity)
 
@@ -320,12 +312,11 @@ class SupabaseUserDatastore(
     }
 
     /**
-     * Updates the user's password. Requires current password if one is already set.
+     * Updates the user's password via Supabase Auth.
      */
     @OptIn(SecureStringAccess::class)
     override suspend fun updatePassword(
         id: UserId,
-        currentHashedPassword: SecureString?,
         newPassword: SecureString,
     ): Result<Unit> = runSuspendCatching(TAG) {
         logD(TAG, "Updating password for user: %s", id)
@@ -333,27 +324,6 @@ class SupabaseUserDatastore(
         val user = getUserImpl(id) ?: throw ClientRequestExceptions.NotFoundException(
             message = "Error: User with ID $id not found in our database.",
         )
-
-        // If the user has a password set, we need to check for the hash of the current password
-        if (user.authMetadata.canPasswordAuth) {
-            if (user.authMetadata.hashedPassword == null) {
-                logE(TAG, "User's canPasswordAuth is set to true but hashedPassword is null")
-                error("Illegal password state for $id")
-            }
-
-            if (currentHashedPassword == null) {
-                throw ClientRequestExceptions.InvalidRequestException(
-                    message = "Error: Current password is required for password update.",
-                )
-            }
-
-            val requestCurrentHashedPassword = currentHashedPassword.reveal()
-
-            if (requestCurrentHashedPassword != user.authMetadata.hashedPassword) {
-                logW(TAG, "Current password does not match for user: $id")
-                throw ClientRequestExceptions.UnauthorizedException("Error: Current password is incorrect.")
-            }
-        }
 
         val passwordErrors = validatePassword(newPassword.reveal())
         if (passwordErrors.isNotEmpty()) {
@@ -363,8 +333,6 @@ class SupabaseUserDatastore(
             )
         }
 
-        val newHashedPassword = Hashing.insecureHash(newPassword.reveal().encodeToByteArray()).toString()
-
         adminApi.updateUserById(user.id) {
             password = newPassword.reveal()
         }
@@ -372,7 +340,6 @@ class SupabaseUserDatastore(
         updateUserImpl(
             id,
             authMetadata = user.authMetadata.copy(
-                hashedPassword = newHashedPassword,
                 canPasswordAuth = true,
             )
         )

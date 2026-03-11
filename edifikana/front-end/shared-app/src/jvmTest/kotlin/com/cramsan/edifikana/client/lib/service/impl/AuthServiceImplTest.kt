@@ -525,7 +525,9 @@ class AuthServiceImplTest {
         val currentPassword = SecureString("oldPassword")
         val newPassword = SecureString("newPassword")
         val email = "user@example.com"
-        ktorTestEngine.configure {
+        coEvery { auth.signInWith(any<Email>(), any(), any()) } just Runs
+        coEvery { auth.config } returns mockk { every { defaultRedirectUrl } returns "" }
+       ktorTestEngine.configure {
             coEvery { produceResponse(any()) } returns MockResponseData.Success("")
         }
 

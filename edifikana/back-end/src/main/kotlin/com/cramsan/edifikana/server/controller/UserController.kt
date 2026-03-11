@@ -104,7 +104,6 @@ class UserController(
 
         val result = userService.updatePassword(
             userId = userId,
-            currentHashedPassword = SecureString(updatePasswordRequest.currentPasswordHashed),
             newPassword = SecureString(updatePasswordRequest.newPassword),
         )
 

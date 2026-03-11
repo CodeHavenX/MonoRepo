@@ -4,7 +4,6 @@ import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.service.models.User
 import com.cramsan.edifikana.server.service.models.UserRole
-import com.cramsan.framework.core.Hashing
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
@@ -327,12 +326,9 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
         ).registerUserForDeletion()
         val user = createResult.getOrThrow()
 
-        val currentPasswordHashed = Hashing.insecureHash(oldPassword.encodeToByteArray()).toString()
-
         // Act: Update the user's password
         val updateResult = userDatastore.updatePassword(
             id = UserId(user.id.userId),
-            currentHashedPassword = SecureString(currentPasswordHashed),
             newPassword = SecureString("NewPassword1!"),
         )
 

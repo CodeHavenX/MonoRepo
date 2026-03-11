@@ -16,7 +16,6 @@ import com.cramsan.edifikana.lib.model.network.UpdatePasswordNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UserEmailQueryParam
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.assertlib.assertFalse
-import com.cramsan.framework.core.Hashing
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.framework.core.runSuspendCatching
@@ -25,6 +24,10 @@ import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logW
 import com.cramsan.framework.networkapi.buildRequest
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
+import edifikana_lib.Res
+import edifikana_lib.change_password_dialog_error_wrong_current_password
+import edifikana_lib.error_message_invalid_credentials
+import edifikana_lib.error_message_invalid_otp
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.OtpType
 import io.github.jan.supabase.auth.exception.AuthRestException
@@ -99,7 +102,7 @@ class AuthServiceImpl(
                 }
             } catch (e: AuthRestException) {
                 logE(TAG, "Error signing in", e)
-                throw ClientRequestExceptions.UnauthorizedException("ERROR: Invalid credentials.")
+                throw ClientRequestExceptions.UnauthorizedException("ERROR: " + Res.string.error_message_invalid_credentials)
             }
             getUser().getOrThrow()
         }
@@ -160,7 +163,7 @@ class AuthServiceImpl(
             auth.verifyEmailOtp(OtpType.Email.EMAIL, email, hashToken)
         } catch (e: AuthRestException) {
             logE(TAG, "Error verifying OTP", e)
-            throw ClientRequestExceptions.UnauthorizedException("ERROR: Invalid OTP code.")
+            throw ClientRequestExceptions.UnauthorizedException("ERROR: " + Res.string.error_message_invalid_otp)
         }
 
         if (createUser) {
@@ -214,11 +217,18 @@ class AuthServiceImpl(
         currentPassword: SecureString,
         newPassword: SecureString
     ): Result<Unit> = runSuspendCatching(TAG) {
-        val hashedCurrentPassword = Hashing.insecureHash(currentPassword.reveal().encodeToByteArray()).toString()
+        try {
+            auth.signInWith(Email) {
+                this.email = email
+                this.password = currentPassword.reveal()
+            }
+        } catch (e: AuthRestException) {
+            logE(TAG, "Current password verification failed", e)
+            throw ClientRequestExceptions.UnauthorizedException("ERROR: " + Res.string.change_password_dialog_error_wrong_current_password)
+        }
 
         UserApi.updatePassword.buildRequest(
             UpdatePasswordNetworkRequest(
-                currentPasswordHashed = hashedCurrentPassword,
                 newPassword = newPassword.reveal()
             ),
         ).execute(http)

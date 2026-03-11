@@ -243,13 +243,11 @@ class UserServiceTest {
         // Arrange
         val userId = UserId("id")
         val password = SecureString("newpass")
-        val hashedPassword = SecureString("12345678")
-        coEvery { userDatastore.updatePassword(any(), any(), any()) } returns Result.success(Unit)
+        coEvery { userDatastore.updatePassword(any(), any()) } returns Result.success(Unit)
 
         // Act
         val result = userService.updatePassword(
             userId,
-            hashedPassword,
             password,
         )
 
@@ -258,7 +256,6 @@ class UserServiceTest {
         coVerify {
             userDatastore.updatePassword(
                 userId,
-                hashedPassword,
                 password,
             )
         }

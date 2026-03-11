@@ -10,7 +10,7 @@ data class RentConfigModel(
     val id: RentConfigId,
     val unitId: UnitId,
     val orgId: OrganizationId,
-    val monthlyAmount: Double,
+    val monthlyAmount: Long,
     val dueDay: Int,
     val currency: String,
     val updatedAt: Long,

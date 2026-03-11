@@ -1,5 +1,7 @@
 package com.cramsan.edifikana.lib.model
 
+import kotlinx.datetime.LocalDate
+
 /**
  * Domain model representing a payment record for a unit.
  *
@@ -13,12 +15,12 @@ data class PaymentRecordModel(
     val unitId: UnitId,
     val orgId: OrganizationId,
     val paymentType: PaymentType,
-    val periodMonth: Long,
+    val periodMonth: LocalDate,
     val amountDue: Double?,
     val amountPaid: Double?,
     val status: PaymentStatus,
-    val dueDate: Long?,
-    val paidDate: Long?,
+    val dueDate: LocalDate?,
+    val paidDate: LocalDate?,
     val recordedBy: UserId?,
     val recordedAt: Long,
     val notes: String?,

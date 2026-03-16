@@ -12,11 +12,9 @@ import com.cramsan.edifikana.lib.model.network.CreateUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.GetAllUsersQueryParams
 import com.cramsan.edifikana.lib.model.network.InviteNetworkResponse
 import com.cramsan.edifikana.lib.model.network.InviteUserNetworkRequest
-import com.cramsan.edifikana.lib.model.network.UpdatePasswordNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UserEmailQueryParam
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.assertlib.assertFalse
-import com.cramsan.framework.core.Hashing
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.framework.core.runSuspendCatching
@@ -99,7 +97,7 @@ class AuthServiceImpl(
                 }
             } catch (e: AuthRestException) {
                 logE(TAG, "Error signing in", e)
-                throw ClientRequestExceptions.UnauthorizedException("ERROR: Invalid credentials.")
+                throw ClientRequestExceptions.UnauthorizedException("ERROR: Invalid Credentials")
             }
             getUser().getOrThrow()
         }
@@ -160,7 +158,7 @@ class AuthServiceImpl(
             auth.verifyEmailOtp(OtpType.Email.EMAIL, email, hashToken)
         } catch (e: AuthRestException) {
             logE(TAG, "Error verifying OTP", e)
-            throw ClientRequestExceptions.UnauthorizedException("ERROR: Invalid OTP code.")
+            throw ClientRequestExceptions.UnauthorizedException("ERROR: Invalid OTP")
         }
 
         if (createUser) {
@@ -199,6 +197,9 @@ class AuthServiceImpl(
         ).execute(http).isUserRegistered
     }
 
+    /**
+     * TODO: NEED TO IMPLEMENT THE FUNCTIONALITY FOR ACTUALLY UPDATING THE USER USING SUPABASE API
+     */
     override suspend fun updateUser(
         firstName: String?,
         lastName: String?,
@@ -208,20 +209,30 @@ class AuthServiceImpl(
         TODO()
     }
 
-    @OptIn(NetworkModel::class, SecureStringAccess::class)
+    /**
+     * To change the password, we first need to verify the current password by attempting to sign in with it. If the
+     * sign-in is successful, we can proceed to update the password. If the sign-in fails, we throw an
+     * UnauthorizedException indicating that the current credentials are invalid.
+     */
+    @OptIn(SecureStringAccess::class)
     override suspend fun changePassword(
         email: String,
         currentPassword: SecureString,
         newPassword: SecureString
     ): Result<Unit> = runSuspendCatching(TAG) {
-        val hashedCurrentPassword = Hashing.insecureHash(currentPassword.reveal().encodeToByteArray()).toString()
+        try {
+            auth.signInWith(Email) {
+                this.email = email
+                this.password = currentPassword.reveal()
+            }
+        } catch (e: AuthRestException) {
+            logE(TAG, "Current password verification failed", e)
+            throw ClientRequestExceptions.UnauthorizedException("ERROR: Invalid Credentials")
+        }
 
-        UserApi.updatePassword.buildRequest(
-            UpdatePasswordNetworkRequest(
-                currentPasswordHashed = hashedCurrentPassword,
-                newPassword = newPassword.reveal()
-            ),
-        ).execute(http)
+        auth.updateUser {
+            password = newPassword.reveal()
+        }
     }
 
     @OptIn(NetworkModel::class)

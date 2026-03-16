@@ -6,8 +6,6 @@ import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.service.models.Invite
 import com.cramsan.edifikana.server.service.models.User
 import com.cramsan.edifikana.server.service.models.UserRole
-import com.cramsan.framework.core.SecureString
-import com.cramsan.framework.core.SecureStringAccess
 import kotlin.time.Instant
 
 /**
@@ -71,16 +69,6 @@ interface UserDatastore {
     suspend fun deleteUser(
         id: UserId,
     ): Result<Boolean>
-
-    /**
-     * Updates the password for a user with the given [request]. Returns the [Result] of the operation.
-     */
-    @OptIn(SecureStringAccess::class)
-    suspend fun updatePassword(
-        id: UserId,
-        currentHashedPassword: SecureString?,
-        newPassword: SecureString,
-    ): Result<Unit>
 
     /**
      * Records an invite for a user with the given [email], [organizationId], and [role].

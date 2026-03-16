@@ -23,10 +23,6 @@ import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logW
 import com.cramsan.framework.networkapi.buildRequest
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
-import edifikana_lib.Res
-import edifikana_lib.change_password_dialog_error_wrong_current_password
-import edifikana_lib.error_message_invalid_credentials
-import edifikana_lib.error_message_invalid_otp
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.OtpType
 import io.github.jan.supabase.auth.exception.AuthRestException

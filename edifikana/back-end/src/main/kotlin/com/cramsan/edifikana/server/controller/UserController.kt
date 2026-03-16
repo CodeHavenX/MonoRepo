@@ -20,8 +20,6 @@ import com.cramsan.edifikana.server.service.authorization.RBACService
 import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.NoResponseBody
-import com.cramsan.framework.core.SecureString
-import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
 import com.cramsan.framework.core.ktor.auth.ClientContext

@@ -8,7 +8,6 @@ import com.cramsan.edifikana.lib.model.network.CreateUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.GetAllUsersQueryParams
 import com.cramsan.edifikana.lib.model.network.InviteListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.InviteUserNetworkRequest
-import com.cramsan.edifikana.lib.model.network.UpdatePasswordNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdateUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UserEmailQueryParam
 import com.cramsan.edifikana.lib.model.network.UserListNetworkResponse
@@ -41,16 +40,6 @@ object UserApi : Api("user") {
         UserId,
         UserNetworkResponse
         >(HttpMethod.Get)
-
-    val updatePassword = operation<
-        UpdatePasswordNetworkRequest,
-        NoQueryParam,
-        NoPathParam,
-        NoResponseBody
-        >(
-        HttpMethod.Put,
-        "password",
-    )
 
     val getAllUsers = operation<
         NoRequestBody,

@@ -10,8 +10,6 @@ import com.cramsan.edifikana.server.datastore.UserDatastore
 import com.cramsan.edifikana.server.service.models.Invite
 import com.cramsan.edifikana.server.service.models.User
 import com.cramsan.edifikana.server.service.models.UserRole
-import com.cramsan.framework.core.SecureString
-import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logW
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
@@ -133,21 +131,6 @@ class UserService(
         logD(TAG, "deleteUser")
         return userDatastore.deleteUser(
             id = id,
-        )
-    }
-
-    /**
-     * Updates the password for a user with the provided [userId].
-     */
-    @OptIn(SecureStringAccess::class)
-    suspend fun updatePassword(
-        userId: UserId,
-        newPassword: SecureString,
-    ): Result<Unit> {
-        logD(TAG, "updatePassword")
-        return userDatastore.updatePassword(
-            id = userId,
-            newPassword = newPassword,
         )
     }
 

@@ -9,7 +9,6 @@ import com.cramsan.edifikana.lib.model.network.CreateUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.GetAllUsersQueryParams
 import com.cramsan.edifikana.lib.model.network.InviteListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.InviteUserNetworkRequest
-import com.cramsan.edifikana.lib.model.network.UpdatePasswordNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdateUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UserListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
@@ -84,31 +83,6 @@ class UserController(
         return userService.getUser(
             id = userId,
         ).getOrNull()?.toUserNetworkResponse()
-    }
-
-    /**
-     * Handles the updating of a user's password.
-     * Updates the password for the authenticated user if they have the required role.
-     * Returns [NoResponseBody] to indicate successful update.
-     * Throws [UnauthorizedException] if the user does not have permission.
-     */
-    @OptIn(NetworkModel::class, SecureStringAccess::class)
-    suspend fun updatePassword(
-        authenticatedContext: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
-        updatePasswordRequest: UpdatePasswordNetworkRequest,
-    ): NoResponseBody {
-        val userId = authenticatedContext.payload.userId
-        if (!rbacService.hasRole(authenticatedContext, userId)) {
-            throw UnauthorizedException(unauthorizedMsg)
-        }
-
-        val result = userService.updatePassword(
-            userId = userId,
-            newPassword = SecureString(updatePasswordRequest.newPassword),
-        )
-
-        result.requireSuccess()
-        return NoResponseBody
     }
 
     /**
@@ -341,9 +315,6 @@ class UserController(
             }
             unauthenticatedHandler(api.createUser, contextRetriever) { request ->
                 createUser(request.requestBody)
-            }
-            handler(api.updatePassword, contextRetriever) { request ->
-                updatePassword(request.context, request.requestBody)
             }
             handler(api.getAllUsers, contextRetriever) { request ->
                 getUsers(request.context, request.queryParam)

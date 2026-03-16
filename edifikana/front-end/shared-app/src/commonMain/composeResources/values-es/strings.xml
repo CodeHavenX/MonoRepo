@@ -91,7 +91,6 @@
     <string name="error_message_currently_uploading">Procesando… Espere unos segundos…</string>
     <string name="error_message_invalid_otp">OTP no válido.</string>
 
-
     <!-- Sign in screen -->
     <string name="sign_in_screen_text_sign_in">Usar Contraseña</string>
     <string name="sign_in_screen_text_sign_in_password">Iniciar Sesión</string>

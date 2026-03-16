@@ -310,32 +310,6 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
         assertEquals(createdUser.lastName, associatedUser.lastName)
     }
 
-    @OptIn(SecureStringAccess::class)
-    @Test
-    fun `update password should update the user's password when one is already set`() = runCoroutineTest {
-        // Arrange: Create a user with a password
-        val email = "${test_prefix}@test.com"
-        val oldPassword = "oldPassword1!"
-        val createResult = userDatastore.createUser(
-            email = email,
-            phoneNumber = "123-456-7890",
-            password = oldPassword,
-            firstName = "Associate",
-            lastName = "User",
-            isTransient = false,
-        ).registerUserForDeletion()
-        val user = createResult.getOrThrow()
-
-        // Act: Update the user's password
-        val updateResult = userDatastore.updatePassword(
-            id = UserId(user.id.userId),
-            newPassword = SecureString("NewPassword1!"),
-        )
-
-        // Assert: Check if the password was updated successfully
-        assertTrue(updateResult.isSuccess, "Password update should succeed")
-    }
-
     @Test
     fun `recordInvite with valid data should succeed`() = runCoroutineTest {
         // Arrange

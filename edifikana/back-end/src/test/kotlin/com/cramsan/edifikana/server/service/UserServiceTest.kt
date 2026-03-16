@@ -10,8 +10,6 @@ import com.cramsan.edifikana.server.service.models.Invite
 import com.cramsan.edifikana.server.service.models.Organization
 import com.cramsan.edifikana.server.service.models.User
 import com.cramsan.edifikana.server.service.models.UserRole
-import com.cramsan.framework.core.SecureString
-import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
@@ -232,33 +230,6 @@ class UserServiceTest {
         // Assert
         assertTrue(result.getOrThrow())
         coVerify { userDatastore.deleteUser(userId) }
-    }
-
-    /**
-     * Tests that updatePassword updates a user's password and returns the result.
-     */
-    @OptIn(SecureStringAccess::class)
-    @Test
-    fun `updatePassword should update password and return result`() = runTest {
-        // Arrange
-        val userId = UserId("id")
-        val password = SecureString("newpass")
-        coEvery { userDatastore.updatePassword(any(), any()) } returns Result.success(Unit)
-
-        // Act
-        val result = userService.updatePassword(
-            userId,
-            password,
-        )
-
-        // Assert
-        assertTrue(result.isSuccess)
-        coVerify {
-            userDatastore.updatePassword(
-                userId,
-                password,
-            )
-        }
     }
 
     /**

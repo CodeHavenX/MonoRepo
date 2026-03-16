@@ -13,13 +13,11 @@ import com.cramsan.edifikana.server.service.models.User
 import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.annotations.SupabaseModel
 import com.cramsan.framework.assertlib.assert
-import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logW
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
-import com.cramsan.framework.utils.loginvalidation.validatePassword
 import com.cramsan.framework.utils.uuid.UUID
 import io.github.jan.supabase.auth.admin.AdminApi
 import io.github.jan.supabase.auth.exception.AuthRestException
@@ -309,40 +307,6 @@ class SupabaseUserDatastore(
         }
 
         softDeleted != null
-    }
-
-    /**
-     * Updates the user's password via Supabase Auth.
-     */
-    @OptIn(SecureStringAccess::class)
-    override suspend fun updatePassword(
-        id: UserId,
-        newPassword: SecureString,
-    ): Result<Unit> = runSuspendCatching(TAG) {
-        logD(TAG, "Updating password for user: %s", id)
-
-        val user = getUserImpl(id) ?: throw ClientRequestExceptions.NotFoundException(
-            message = "Error: User with ID $id not found in our database.",
-        )
-
-        val passwordErrors = validatePassword(newPassword.reveal())
-        if (passwordErrors.isNotEmpty()) {
-            logW(TAG, "Password validation failed for user: $id, with ${passwordErrors.size} errors.")
-            throw ClientRequestExceptions.InvalidRequestException(
-                message = "Error: Password validation failed for user $id. "
-            )
-        }
-
-        adminApi.updateUserById(user.id) {
-            password = newPassword.reveal()
-        }
-
-        updateUserImpl(
-            id,
-            authMetadata = user.authMetadata.copy(
-                canPasswordAuth = true,
-            )
-        )
     }
 
     /**

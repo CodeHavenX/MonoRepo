@@ -37,11 +37,6 @@ tasks {
     jvmTest {
         useJUnitPlatform()
         testLogging {
-            showStandardStreams = true
-            showStackTraces = true
-            showCauses = true
-            showExceptions = true
-            exceptionFormat = 'full'
             events "passed", "skipped", "failed"
         }
     }

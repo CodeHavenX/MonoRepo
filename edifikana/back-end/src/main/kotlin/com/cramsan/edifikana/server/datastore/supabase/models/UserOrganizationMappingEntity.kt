@@ -3,6 +3,7 @@ package com.cramsan.edifikana.server.datastore.supabase.models
 import com.cramsan.edifikana.lib.model.OrgMemberStatus
 import com.cramsan.edifikana.lib.model.OrgRole
 import com.cramsan.framework.annotations.SupabaseModel
+import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.time.Instant
@@ -42,9 +43,11 @@ data class UserOrganizationMappingEntity(
         @SerialName("organization_id")
         val organizationId: String,
         val role: OrgRole?,
-        val status: OrgMemberStatus?,
+        @EncodeDefault(EncodeDefault.Mode.NEVER)
+        val status: OrgMemberStatus? = null,
+        @EncodeDefault(EncodeDefault.Mode.NEVER)
         @SerialName("invited_by")
-        val invitedBy: String?,
+        val invitedBy: String? = null,
     )
 
     companion object {

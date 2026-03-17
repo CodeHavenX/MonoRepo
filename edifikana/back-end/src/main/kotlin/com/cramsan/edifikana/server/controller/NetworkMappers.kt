@@ -23,6 +23,8 @@ import com.cramsan.edifikana.server.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.service.models.User
 import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.logging.logE
+import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import kotlin.time.ExperimentalTime
 
 /**

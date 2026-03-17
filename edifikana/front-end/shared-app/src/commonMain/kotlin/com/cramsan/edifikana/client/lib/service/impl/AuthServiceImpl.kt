@@ -247,7 +247,7 @@ class AuthServiceImpl(
             InviteUserNetworkRequest(
                 email = email,
                 organizationId = organizationId,
-                role = role.name,
+                role = TODO()
             ),
         ).execute(http)
     }

@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.server.datastore.supabase
 
 import com.cramsan.edifikana.lib.model.InviteId
+import com.cramsan.edifikana.lib.model.InviteRole
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.service.models.User
 import com.cramsan.edifikana.server.service.models.UserRole
@@ -320,7 +321,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
             email = email,
             organizationId = organizationId,
             expiration = expiration,
-            role = UserRole.USER,
+            role = InviteRole.EMPLOYEE,
         ).registerInviteForDeletion()
 
         // Assert
@@ -328,7 +329,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val invite = result.getOrThrow()
         assertEquals(email, invite.email)
         assertEquals(organizationId, invite.organizationId)
-        assertEquals(UserRole.USER, invite.role)
+        assertEquals(InviteRole.EMPLOYEE, invite.role)
     }
 
     @Test
@@ -343,13 +344,13 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
             email = email,
             organizationId = organizationId,
             expiration = expiration,
-            role = UserRole.MANAGER,
+            role = InviteRole.MANAGER,
         ).registerInviteForDeletion()
 
         // Assert
         assertTrue(result.isSuccess)
         val invite = result.getOrThrow()
-        assertEquals(UserRole.MANAGER, invite.role)
+        assertEquals(InviteRole.MANAGER, invite.role)
     }
 
     @Test
@@ -362,7 +363,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
             email = email,
             organizationId = organizationId,
             expiration = expiration,
-            role = UserRole.USER,
+            role = InviteRole.EMPLOYEE,
         ).registerInviteForDeletion()
 
         // Act
@@ -385,7 +386,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
             email = email,
             organizationId = organizationId,
             expiration = expiration,
-            role = UserRole.USER,
+            role = InviteRole.EMPLOYEE,
         ).registerInviteForDeletion()
 
         // Act
@@ -408,7 +409,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
             email = email,
             organizationId = organizationId,
             expiration = expiration,
-            role = UserRole.MANAGER,
+            role = InviteRole.MANAGER,
         ).registerInviteForDeletion()
         val createdInvite = recordResult.getOrThrow()
 
@@ -422,7 +423,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
         assertEquals(createdInvite.id, invite.id)
         assertEquals(email, invite.email)
         assertEquals(organizationId, invite.organizationId)
-        assertEquals(UserRole.MANAGER, invite.role)
+        assertEquals(InviteRole.MANAGER, invite.role)
     }
 
     @Test
@@ -448,7 +449,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
             email = email,
             organizationId = organizationId,
             expiration = expiration,
-            role = UserRole.USER,
+            role = InviteRole.EMPLOYEE,
         ).registerInviteForDeletion()
 
         // Act
@@ -484,7 +485,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
             email = email,
             organizationId = organizationId,
             expiration = expiration,
-            role = UserRole.USER,
+            role = InviteRole.EMPLOYEE,
         ).registerInviteForDeletion()
 
         // Act: Move time forward past expiration
@@ -506,7 +507,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
             email = email,
             organizationId = organizationId,
             expiration = expiration,
-            role = UserRole.USER,
+            role = InviteRole.EMPLOYEE,
         )
         val createdInvite = recordResult.getOrThrow()
 

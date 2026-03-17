@@ -1,5 +1,7 @@
 package com.cramsan.edifikana.server.datastore.supabase.models
 
+import com.cramsan.edifikana.lib.model.UnitId
+import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.framework.annotations.SupabaseModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -23,6 +25,14 @@ data class InviteEntity(
     val expiration: Instant,
     @SerialName("role")
     val role: String,
+    @SerialName("invite_code")
+    val inviteCode: String,
+    @SerialName("invited_by")
+    val invitedBy: UserId? = null,
+    @SerialName("accepted_at")
+    val acceptedAt: Instant? = null,
+    @SerialName("unit_id")
+    val unitId: UnitId? = null,
     @SerialName("deleted_at")
     val deletedAt: Instant? = null,
 ) {
@@ -43,6 +53,12 @@ data class InviteEntity(
         val expiration: Instant,
         @SerialName("role")
         val role: String,
+        @SerialName("invite_code")
+        val inviteCode: String,
+        @SerialName("invited_by")
+        val invitedBy: UserId? = null,
+        @SerialName("unit_id")
+        val unitId: UnitId? = null,
     )
 
     companion object {

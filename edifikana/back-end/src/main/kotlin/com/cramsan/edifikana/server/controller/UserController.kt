@@ -2,6 +2,7 @@ package com.cramsan.edifikana.server.controller
 
 import com.cramsan.edifikana.api.UserApi
 import com.cramsan.edifikana.lib.model.InviteId
+import com.cramsan.edifikana.lib.model.InviteRole
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.model.network.CheckUserNetworkResponse
@@ -15,6 +16,7 @@ import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
 import com.cramsan.edifikana.lib.utils.requireNotBlank
 import com.cramsan.edifikana.lib.utils.requireSuccess
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
+import com.cramsan.edifikana.server.datastore.supabase.toUserRole
 import com.cramsan.edifikana.server.service.UserService
 import com.cramsan.edifikana.server.service.authorization.RBACService
 import com.cramsan.edifikana.server.service.models.UserRole
@@ -188,7 +190,7 @@ class UserController(
     ): NoResponseBody {
         val email = inviteRequest.email
         val orgId = inviteRequest.organizationId
-        val inviteRole: UserRole = inviteRequest.role.toServiceUserRole()
+        val inviteRole: InviteRole = inviteRequest.role
 
         if (!rbacService.hasRoleOrHigher(context, orgId, UserRole.MANAGER)) {
             throw UnauthorizedException(unauthorizedMsg)
@@ -196,7 +198,7 @@ class UserController(
 
         // Validate that the inviter cannot assign a role higher than their own
         val inviterRole = rbacService.getUserRoleForOrganizationAction(context, orgId)
-        if (inviteRole.level < inviterRole.level) {
+        if (inviteRole.toUserRole().level < inviterRole.level) {
             throw UnauthorizedException("Cannot invite users with higher privileges than your own")
         }
 

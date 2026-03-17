@@ -4,6 +4,7 @@ package com.cramsan.edifikana.server.datastore.supabase
 
 import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EmployeeRole
+import com.cramsan.edifikana.lib.model.InviteRole
 import com.cramsan.edifikana.lib.model.OrgRole
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
@@ -41,21 +42,6 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 /**
- * Maps a [UserRole] to the corresponding [OrgRole] stored in the database.
- *
- * This is a temporary bridge used until [Invite.role] is migrated from [UserRole]
- * to [InviteRole] in a follow-up PR. Only the four roles that have a valid
- * [OrgRole] equivalent are mapped; all others throw [IllegalArgumentException].
- */
-fun UserRole.toOrgRole(): OrgRole = when (this) {
-    UserRole.OWNER -> OrgRole.OWNER
-    UserRole.ADMIN -> OrgRole.ADMIN
-    UserRole.MANAGER -> OrgRole.MANAGER
-    UserRole.EMPLOYEE -> OrgRole.EMPLOYEE
-    else -> throw IllegalArgumentException("UserRole $this has no OrgRole equivalent")
-}
-
-/**
  * Maps an [OrgRole] to the back-end [UserRole] privilege ladder.
  *
  * [OrgRole] represents what is stored in the database for org membership.
@@ -68,6 +54,31 @@ fun OrgRole.toUserRole(): UserRole = when (this) {
     OrgRole.ADMIN -> UserRole.ADMIN
     OrgRole.MANAGER -> UserRole.MANAGER
     OrgRole.EMPLOYEE -> UserRole.EMPLOYEE
+}
+
+/**
+ * Maps an [InviteRole] to the corresponding [OrgRole] for org membership insertion.
+ *
+ * [InviteRole.RESIDENT] does not produce an org membership row and therefore has no
+ * [OrgRole] equivalent. Callers must handle [RESIDENT] before calling this function.
+ */
+fun InviteRole.toOrgRole(): OrgRole = when (this) {
+    InviteRole.ADMIN -> OrgRole.ADMIN
+    InviteRole.MANAGER -> OrgRole.MANAGER
+    InviteRole.EMPLOYEE -> OrgRole.EMPLOYEE
+    InviteRole.RESIDENT -> throw IllegalArgumentException("RESIDENT has no OrgRole equivalent")
+}
+
+/**
+ * Maps an [InviteRole] to the [UserRole] privilege ladder for permission-level comparisons.
+ *
+ * [InviteRole.RESIDENT] maps to [UserRole.USER] (lowest non-UNAUTHORIZED privilege).
+ */
+fun InviteRole.toUserRole(): UserRole = when (this) {
+    InviteRole.ADMIN -> UserRole.ADMIN
+    InviteRole.MANAGER -> UserRole.MANAGER
+    InviteRole.EMPLOYEE -> UserRole.EMPLOYEE
+    InviteRole.RESIDENT -> UserRole.USER
 }
 
 /**
@@ -331,7 +342,11 @@ fun InviteEntity.toInvite(): Invite {
         id = InviteId(this.id),
         email = this.email,
         organizationId = OrganizationId(this.organizationId),
-        role = UserRole.fromString(this.role),
+        role = enumValueOf<InviteRole>(this.role),
         expiration = this.expiration,
+        inviteCode = this.inviteCode,
+        invitedBy = this.invitedBy,
+        acceptedAt = this.acceptedAt,
+        unitId = this.unitId,
     )
 }

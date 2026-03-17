@@ -27,12 +27,12 @@ data class UserOrganizationMappingEntity(
 ) {
 
     /**
-     * Entity used to insert a new user–organization mapping row.
+     * Entity used to insert a new user–organization mapping row for directly-added members.
      *
-     * [status] and [invitedBy] are nullable to allow DB defaults to apply:
-     * status defaults to ACTIVE, invitedBy is NULL for directly-added members.
-     * [joinedAt] is intentionally excluded — it is only set during the invite
-     * acceptance flow and is handled separately.
+     * Only [userId], [organizationId], and [role] are sent — all other columns
+     * ([status], [invitedBy], [joinedAt]) are intentionally omitted so that DB
+     * defaults apply: status defaults to ACTIVE, invitedBy and joinedAt are NULL.
+     * The invite-acceptance flow uses a separate update path to set those columns.
      */
     @Serializable
     @SupabaseModel
@@ -41,10 +41,7 @@ data class UserOrganizationMappingEntity(
         val userId: String,
         @SerialName("organization_id")
         val organizationId: String,
-        val role: OrgRole?,
-        val status: OrgMemberStatus?,
-        @SerialName("invited_by")
-        val invitedBy: String?,
+        val role: OrgRole,
     )
 
     companion object {

@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.lib.model.network
 
+import com.cramsan.edifikana.lib.model.InviteRole
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.RequestBody
@@ -17,5 +18,5 @@ data class InviteUserNetworkRequest(
     @SerialName("organization_id")
     val organizationId: OrganizationId,
     @SerialName("role")
-    val role: String,
+    val role: InviteRole,
 ) : RequestBody

@@ -1,11 +1,11 @@
 package com.cramsan.edifikana.server.datastore
 
 import com.cramsan.edifikana.lib.model.InviteId
+import com.cramsan.edifikana.lib.model.InviteRole
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.service.models.Invite
 import com.cramsan.edifikana.server.service.models.User
-import com.cramsan.edifikana.server.service.models.UserRole
 import kotlin.time.Instant
 
 /**
@@ -78,7 +78,7 @@ interface UserDatastore {
         email: String,
         organizationId: OrganizationId,
         expiration: Instant,
-        role: UserRole,
+        role: InviteRole,
     ): Result<Invite>
 
     /**

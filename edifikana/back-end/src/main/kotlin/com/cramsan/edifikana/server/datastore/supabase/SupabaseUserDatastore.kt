@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.server.datastore.supabase
 
 import com.cramsan.edifikana.lib.model.InviteId
+import com.cramsan.edifikana.lib.model.InviteRole
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.datastore.UserDatastore
@@ -10,7 +11,6 @@ import com.cramsan.edifikana.server.datastore.supabase.models.UserEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.UserOrganizationMappingEntity
 import com.cramsan.edifikana.server.service.models.Invite
 import com.cramsan.edifikana.server.service.models.User
-import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.annotations.SupabaseModel
 import com.cramsan.framework.assertlib.assert
 import com.cramsan.framework.core.SecureStringAccess
@@ -316,16 +316,18 @@ class SupabaseUserDatastore(
         email: String,
         organizationId: OrganizationId,
         expiration: Instant,
-        role: UserRole,
+        role: InviteRole,
     ): Result<Invite> = runSuspendCatching(TAG) {
         logD(TAG, "Recording invite for email: %s with role: %s", email, role)
 
+        val inviteCode = UUID.random().replace("-", "").take(10).uppercase()
         val inviteEntity = InviteEntity.Create(
             email = email,
             organizationId = organizationId.id,
             createdAt = clock.now(),
             expiration = expiration,
             role = role.name,
+            inviteCode = inviteCode,
         )
 
         val data = postgrest.from(InviteEntity.COLLECTION).insert(inviteEntity) {

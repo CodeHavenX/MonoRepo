@@ -9,6 +9,7 @@ import com.cramsan.edifikana.server.datastore.UserDatastore
 import com.cramsan.edifikana.server.service.models.Invite
 import com.cramsan.edifikana.server.service.models.Organization
 import com.cramsan.edifikana.server.service.models.User
+import com.cramsan.edifikana.lib.model.OrgRole
 import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
@@ -362,7 +363,7 @@ class UserServiceTest {
             id = inviteId,
             email = email,
             organizationId = orgId,
-            role = UserRole.USER,
+            role = UserRole.EMPLOYEE,
             expiration = futureTime,
         )
         val user = mockk<User>()
@@ -373,7 +374,7 @@ class UserServiceTest {
 
         coEvery { userDatastore.getInvite(inviteId) } returns Result.success(invite)
         coEvery { userDatastore.getUser(userId) } returns Result.success(user)
-        coEvery { organizationDatastore.addUserToOrganization(userId, orgId, UserRole.USER) } returns Result.success(Unit)
+        coEvery { organizationDatastore.addUserToOrganization(userId, orgId, OrgRole.EMPLOYEE) } returns Result.success(Unit)
         coEvery { notificationDatastore.getNotificationByInvite(inviteId) } returns Result.success(notification)
         coEvery { notificationDatastore.deleteNotification(notificationId) } returns Result.success(true)
         coEvery { userDatastore.removeInvite(inviteId) } returns Result.success(Unit)
@@ -383,7 +384,7 @@ class UserServiceTest {
 
         // Assert
         assertTrue(result.isSuccess)
-        coVerify { organizationDatastore.addUserToOrganization(userId, orgId, UserRole.USER) }
+        coVerify { organizationDatastore.addUserToOrganization(userId, orgId, OrgRole.EMPLOYEE) }
         coVerify { notificationDatastore.deleteNotification(notificationId) }
         coVerify { userDatastore.removeInvite(inviteId) }
     }

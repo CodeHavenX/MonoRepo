@@ -4,6 +4,7 @@ package com.cramsan.edifikana.server.datastore.supabase
 
 import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EmployeeRole
+import com.cramsan.edifikana.lib.model.OrgRole
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.IdType
@@ -38,6 +39,36 @@ import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
+
+/**
+ * Maps a [UserRole] to the corresponding [OrgRole] stored in the database.
+ *
+ * This is a temporary bridge used until [Invite.role] is migrated from [UserRole]
+ * to [InviteRole] in a follow-up PR. Only the four roles that have a valid
+ * [OrgRole] equivalent are mapped; all others throw [IllegalArgumentException].
+ */
+fun UserRole.toOrgRole(): OrgRole = when (this) {
+    UserRole.OWNER -> OrgRole.OWNER
+    UserRole.ADMIN -> OrgRole.ADMIN
+    UserRole.MANAGER -> OrgRole.MANAGER
+    UserRole.EMPLOYEE -> OrgRole.EMPLOYEE
+    else -> throw IllegalArgumentException("UserRole $this has no OrgRole equivalent")
+}
+
+/**
+ * Maps an [OrgRole] to the back-end [UserRole] privilege ladder.
+ *
+ * [OrgRole] represents what is stored in the database for org membership.
+ * [UserRole] is the back-end RBAC type used for privilege-level comparisons.
+ * This bridge allows the RBAC service to continue using [UserRole.level] checks
+ * without being aware of the DB-level role model.
+ */
+fun OrgRole.toUserRole(): UserRole = when (this) {
+    OrgRole.OWNER -> UserRole.OWNER
+    OrgRole.ADMIN -> UserRole.ADMIN
+    OrgRole.MANAGER -> UserRole.MANAGER
+    OrgRole.EMPLOYEE -> UserRole.EMPLOYEE
+}
 
 /**
  * Maps a [UserEntity] to the [User] model.

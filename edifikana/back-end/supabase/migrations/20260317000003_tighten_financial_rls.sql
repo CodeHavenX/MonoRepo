@@ -1,34 +1,57 @@
 -- ============================================================================
 -- Migration: Tighten RLS on financial tables
 -- Issue: https://github.com/CodeHavenX/MonoRepo/issues/418
+-- Overrides policies from: 20260204000001_enable_rls_policies.sql
 -- ============================================================================
--- This migration:
--- 1. Drops the temporary FOR ALL org-scoped policies on rent_config and
---    payment_records (added in 20260311000001_create_financial_tables.sql)
--- 2. Replaces them with granular per-operation policies now that
---    user_organization_mapping has a validated role enum and status column
---    (added in 20260317000001_alter_user_org_mapping.sql)
+-- 1. Write-protects user_organization_mapping (was FOR ALL USING(true))
+-- 2. Adds self-read SELECT on unit_occupants for residents
+-- 3. Replaces temporary FOR ALL policies on rent_config and payment_records
+--    with granular per-operation policies
 --
--- Policy matrix:
---   SELECT  — all active org members + residents (own unit via unit_occupants)
---   INSERT  — OWNER, ADMIN, MANAGER (active) only
---   UPDATE  — OWNER, ADMIN, MANAGER (active) only
---   DELETE  — OWNER, ADMIN, MANAGER (active) only
---   EMPLOYEE role gets read-only access (covered by SELECT policy, no write policy)
+-- Policy matrix (rent_config, payment_records):
+--   SELECT  — active org members + residents (own unit via unit_occupants)
+--   INSERT/UPDATE/DELETE — OWNER, ADMIN, MANAGER (ACTIVE) only
 --
--- All policies use (SELECT auth.uid()) for initPlan caching per Supabase RLS
--- performance best practices.
+-- All policies use (SELECT auth.uid()) for initPlan caching.
 -- ============================================================================
 
 -- ============================================================================
--- PART 1: Drop temporary FOR ALL policies
+-- PART 1: Write-protect user_organization_mapping.
+-- Replaces the permissive FOR ALL USING(true) policy from 20260204000001.
+-- Authenticated users retain SELECT (needed for RBAC subqueries).
+-- INSERT/UPDATE/DELETE are restricted to service role, which bypasses RLS.
+-- ============================================================================
+
+DROP POLICY IF EXISTS "authenticated_all_user_organization_mapping" ON user_organization_mapping;
+
+CREATE POLICY "select_user_organization_mapping" ON user_organization_mapping
+FOR SELECT TO authenticated
+USING (true);
+
+-- ============================================================================
+-- PART 2: Self-read SELECT on unit_occupants for residents.
+-- The existing FOR ALL policy is org-scoped, so residents (not in
+-- user_organization_mapping) cannot read their own row. This policy
+-- enables the resident subqueries in Parts 4 and 9 below.
+-- ============================================================================
+
+CREATE POLICY "select_own_unit_occupant" ON unit_occupants
+FOR SELECT TO authenticated
+USING (
+    user_id = (SELECT auth.uid())
+    AND status = 'ACTIVE'
+    AND deleted_at IS NULL
+);
+
+-- ============================================================================
+-- PART 3: Drop temporary FOR ALL policies on financial tables
 -- ============================================================================
 
 DROP POLICY IF EXISTS "org_scoped_rent_config" ON rent_config;
 DROP POLICY IF EXISTS "org_scoped_payment_records" ON payment_records;
 
 -- ============================================================================
--- PART 2: rent_config — SELECT for active org members
+-- PART 4: rent_config — SELECT for active org members
 -- ============================================================================
 
 CREATE POLICY "select_rent_config" ON rent_config
@@ -42,9 +65,7 @@ USING (
 );
 
 -- ============================================================================
--- PART 3: rent_config — SELECT for residents (own unit only)
--- Residents are not in user_organization_mapping; access is granted via
--- unit_occupants. unit_occupants.status uses OccupancyStatus enum (ACTIVE).
+-- PART 5: rent_config — SELECT for residents (own unit only)
 -- ============================================================================
 
 CREATE POLICY "select_resident_rent_config" ON rent_config
@@ -59,7 +80,7 @@ USING (
 );
 
 -- ============================================================================
--- PART 4: rent_config — INSERT (OWNER/ADMIN/MANAGER only)
+-- PART 6: rent_config — INSERT (OWNER/ADMIN/MANAGER only)
 -- ============================================================================
 
 CREATE POLICY "insert_rent_config" ON rent_config
@@ -74,8 +95,7 @@ WITH CHECK (
 );
 
 -- ============================================================================
--- PART 5: rent_config — UPDATE (OWNER/ADMIN/MANAGER only)
--- USING filters which rows can be targeted; WITH CHECK validates the new values.
+-- PART 7: rent_config — UPDATE (OWNER/ADMIN/MANAGER only)
 -- ============================================================================
 
 CREATE POLICY "update_rent_config" ON rent_config
@@ -98,7 +118,7 @@ WITH CHECK (
 );
 
 -- ============================================================================
--- PART 6: rent_config — DELETE (OWNER/ADMIN/MANAGER only)
+-- PART 8: rent_config — DELETE (OWNER/ADMIN/MANAGER only)
 -- ============================================================================
 
 CREATE POLICY "delete_rent_config" ON rent_config
@@ -113,7 +133,7 @@ USING (
 );
 
 -- ============================================================================
--- PART 7: payment_records — SELECT for active org members
+-- PART 9: payment_records — SELECT for active org members
 -- ============================================================================
 
 CREATE POLICY "select_payment_records" ON payment_records
@@ -127,7 +147,7 @@ USING (
 );
 
 -- ============================================================================
--- PART 8: payment_records — SELECT for residents (own unit only)
+-- PART 10: payment_records — SELECT for residents (own unit only)
 -- ============================================================================
 
 CREATE POLICY "select_resident_payment_records" ON payment_records
@@ -142,7 +162,7 @@ USING (
 );
 
 -- ============================================================================
--- PART 9: payment_records — INSERT (OWNER/ADMIN/MANAGER only)
+-- PART 11: payment_records — INSERT (OWNER/ADMIN/MANAGER only)
 -- ============================================================================
 
 CREATE POLICY "insert_payment_records" ON payment_records
@@ -157,7 +177,7 @@ WITH CHECK (
 );
 
 -- ============================================================================
--- PART 10: payment_records — UPDATE (OWNER/ADMIN/MANAGER only)
+-- PART 12: payment_records — UPDATE (OWNER/ADMIN/MANAGER only)
 -- ============================================================================
 
 CREATE POLICY "update_payment_records" ON payment_records
@@ -180,7 +200,7 @@ WITH CHECK (
 );
 
 -- ============================================================================
--- PART 11: payment_records — DELETE (OWNER/ADMIN/MANAGER only)
+-- PART 13: payment_records — DELETE (OWNER/ADMIN/MANAGER only)
 -- ============================================================================
 
 CREATE POLICY "delete_payment_records" ON payment_records

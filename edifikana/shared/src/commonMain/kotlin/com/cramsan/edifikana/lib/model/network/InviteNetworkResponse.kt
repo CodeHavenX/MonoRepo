@@ -23,4 +23,8 @@ data class InviteNetworkResponse(
     val role: String,
     @SerialName("expires_at")
     val expiresAt: Long,
+    @SerialName("invite_code")
+    val inviteCode: String? = null,
+    @SerialName("created_at")
+    val createdAt: Long? = null,
 ) : ResponseBody

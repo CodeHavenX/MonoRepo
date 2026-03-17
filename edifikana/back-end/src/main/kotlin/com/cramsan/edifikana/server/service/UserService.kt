@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.server.service
 
 import com.cramsan.edifikana.lib.model.InviteId
+import com.cramsan.edifikana.lib.model.InviteRole
 import com.cramsan.edifikana.lib.model.NotificationType
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
@@ -142,7 +143,7 @@ class UserService(
     suspend fun inviteUser(
         email: String,
         organizationId: OrganizationId,
-        role: UserRole,
+        role: InviteRole,
     ): Result<Unit> = runCatching {
         logD(TAG, "inviteUser with role: $role")
         val userId = userDatastore.getUser(email).getOrNull()?.id
@@ -221,7 +222,10 @@ class UserService(
         }
 
         // Add user to organization with the specified role.
-        // TODO(#418): Remove .toOrgRole() once Invite.role is migrated to InviteRole in PR 2.
+        // RESIDENT invites create a unit_occupants row instead of an org membership row.
+        if (invite.role == InviteRole.RESIDENT) {
+            throw ClientRequestExceptions.InvalidRequestException("Resident invite acceptance is not yet supported")
+        }
         organizationDatastore.addUserToOrganization(
             userId = userId,
             organizationId = invite.organizationId,

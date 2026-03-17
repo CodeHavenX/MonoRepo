@@ -3,7 +3,6 @@ package com.cramsan.edifikana.server.datastore.supabase.models
 import com.cramsan.edifikana.lib.model.OrgMemberStatus
 import com.cramsan.edifikana.lib.model.OrgRole
 import com.cramsan.framework.annotations.SupabaseModel
-import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.time.Instant
@@ -28,12 +27,12 @@ data class UserOrganizationMappingEntity(
 ) {
 
     /**
-     * Entity used to insert a new user–organization mapping row.
+     * Entity used to insert a new user–organization mapping row for directly-added members.
      *
-     * [status] and [invitedBy] are nullable to allow DB defaults to apply:
-     * status defaults to ACTIVE, invitedBy is NULL for directly-added members.
-     * [joinedAt] is intentionally excluded — it is only set during the invite
-     * acceptance flow and is handled separately.
+     * Only [userId], [organizationId], and [role] are sent — all other columns
+     * ([status], [invitedBy], [joinedAt]) are intentionally omitted so that DB
+     * defaults apply: status defaults to ACTIVE, invitedBy and joinedAt are NULL.
+     * The invite-acceptance flow uses a separate update path to set those columns.
      */
     @Serializable
     @SupabaseModel
@@ -42,12 +41,7 @@ data class UserOrganizationMappingEntity(
         val userId: String,
         @SerialName("organization_id")
         val organizationId: String,
-        val role: OrgRole?,
-        @EncodeDefault(EncodeDefault.Mode.NEVER)
-        val status: OrgMemberStatus? = null,
-        @EncodeDefault(EncodeDefault.Mode.NEVER)
-        @SerialName("invited_by")
-        val invitedBy: String? = null,
+        val role: OrgRole,
     )
 
     companion object {

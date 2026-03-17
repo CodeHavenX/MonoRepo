@@ -319,8 +319,7 @@ class SupabaseUserDatastore(
         role: InviteRole,
     ): Result<Invite> = runSuspendCatching(TAG) {
         logD(TAG, "Recording invite for email: %s with role: %s", email, role)
-
-        val inviteCode = UUID.random().replace("-", "").take(10).uppercase()
+        val inviteCode = UUID.random().replace("-", "").take(INVITE_CODE_LENGTH).uppercase()
         val inviteEntity = InviteEntity.Create(
             email = email,
             organizationId = organizationId.id,
@@ -480,5 +479,6 @@ class SupabaseUserDatastore(
 
     companion object {
         const val TAG = "SupabaseUserDatastore"
+        const val INVITE_CODE_LENGTH = 10
     }
 }

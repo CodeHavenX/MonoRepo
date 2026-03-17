@@ -140,6 +140,8 @@ class SupabaseOrganizationDatastore(
                 userId = userId.userId,
                 organizationId = organizationId.id,
                 role = role,
+                status = null,
+                invitedBy = null,
             )
             postgrest.from(UserOrganizationMappingEntity.COLLECTION).insert(userOrgMapping) { select() }
                 .decodeSingle<UserOrganizationMappingEntity>()

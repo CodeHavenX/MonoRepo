@@ -190,7 +190,7 @@ class UserController(
     ): NoResponseBody {
         val email = inviteRequest.email
         val orgId = inviteRequest.organizationId
-        val inviteRole: InviteRole = inviteRequest.role.toInviteRole()
+        val inviteRole: InviteRole = inviteRequest.role
 
         if (!rbacService.hasRoleOrHigher(context, orgId, UserRole.MANAGER)) {
             throw UnauthorizedException(unauthorizedMsg)

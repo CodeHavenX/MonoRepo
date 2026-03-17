@@ -12,6 +12,7 @@ import com.cramsan.edifikana.server.datastore.EventLogDatastore
 import com.cramsan.edifikana.server.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.datastore.PropertyDatastore
 import com.cramsan.edifikana.server.datastore.TimeCardDatastore
+import com.cramsan.edifikana.server.datastore.supabase.toUserRole
 import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.core.ktor.auth.ClientContext
 import com.cramsan.framework.logging.logI
@@ -255,7 +256,7 @@ class RBACService(
         val role = orgDataStore.getUserRole(context.payload.userId, org).getOrNull()
         if (role != null) {
             logI(TAG, "User ${context.payload.userId} has role(s) $role in organization $org")
-            return role
+            return role.toUserRole()
         }
         logI(TAG, "User ${context.payload.userId} is NOT authorized to perform action in this organization, $org")
         return unauthorized
@@ -279,7 +280,7 @@ class RBACService(
 
         if (role != null) {
             logI(TAG, "User ${context.payload.userId} has role(s) $role in organization ${property.organizationId}")
-            return role
+            return role.toUserRole()
         }
         logI(TAG, "User ${context.payload.userId} is NOT authorized to perform action for this property.")
         return unauthorized
@@ -308,7 +309,7 @@ class RBACService(
 
         if (role != null) {
             logI(TAG, "User ${context.payload.userId} has role(s) $role in organization ${property.organizationId}")
-            return role
+            return role.toUserRole()
         }
         logI(TAG, "User ${context.payload.userId} is NOT authorized to perform action for this employee.")
         return unauthorized

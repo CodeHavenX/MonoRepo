@@ -41,6 +41,21 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 /**
+ * Maps a [UserRole] to the corresponding [OrgRole] stored in the database.
+ *
+ * This is a temporary bridge used until [Invite.role] is migrated from [UserRole]
+ * to [InviteRole] in a follow-up PR. Only the four roles that have a valid
+ * [OrgRole] equivalent are mapped; all others throw [IllegalArgumentException].
+ */
+fun UserRole.toOrgRole(): OrgRole = when (this) {
+    UserRole.OWNER -> OrgRole.OWNER
+    UserRole.ADMIN -> OrgRole.ADMIN
+    UserRole.MANAGER -> OrgRole.MANAGER
+    UserRole.EMPLOYEE -> OrgRole.EMPLOYEE
+    else -> throw IllegalArgumentException("UserRole $this has no OrgRole equivalent")
+}
+
+/**
  * Maps an [OrgRole] to the back-end [UserRole] privilege ladder.
  *
  * [OrgRole] represents what is stored in the database for org membership.

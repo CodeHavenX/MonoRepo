@@ -3,6 +3,8 @@ package com.cramsan.edifikana.server.service.models
 import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.edifikana.lib.model.InviteRole
 import com.cramsan.edifikana.lib.model.OrganizationId
+import com.cramsan.edifikana.lib.model.UnitId
+import com.cramsan.edifikana.lib.model.UserId
 import kotlin.time.Instant
 
 /**
@@ -15,7 +17,7 @@ data class Invite(
     val role: InviteRole,
     val expiration: Instant,
     val inviteCode: String,
-    val invitedBy: String? = null,
+    val invitedBy: UserId? = null,
     val acceptedAt: Instant? = null,
-    val unitId: String? = null,
+    val unitId: UnitId? = null,
 )

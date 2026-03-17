@@ -24,6 +24,7 @@ import com.cramsan.edifikana.server.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.service.models.User
 import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import kotlin.time.ExperimentalTime
 
 /**
@@ -166,11 +167,19 @@ fun Notification.toNotificationNetworkResponse(): NotificationNetworkResponse {
 /**
  * Converts a string to an [InviteRole] for org invite requests.
  *
- * Throws [IllegalArgumentException] if the value is not a valid [InviteRole].
+ * Throws [ClientRequestExceptions.InvalidRequestException] if the value is not a valid [InviteRole].
  * [InviteRole.RESIDENT] is intentionally included here so the deserializer can
  * reject it at the service layer with a clear error, rather than failing silently.
  */
-fun String.toInviteRole(): InviteRole = enumValueOf<InviteRole>(this)
+fun String.toInviteRole(): InviteRole {
+    return try {
+        enumValueOf<InviteRole>(this)
+    } catch (e: IllegalArgumentException) {
+        throw ClientRequestExceptions.InvalidRequestException(
+            "Invalid invite role. Please select a role from the invite role list."
+        )
+    }
+}
 
 /**
  * Converts a string to a [UserRole].

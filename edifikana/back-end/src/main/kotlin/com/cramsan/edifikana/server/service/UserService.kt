@@ -146,6 +146,11 @@ class UserService(
         role: InviteRole,
     ): Result<Unit> = runCatching {
         logD(TAG, "inviteUser with role: $role")
+        if (role == InviteRole.RESIDENT) {
+            throw ClientRequestExceptions.InvalidRequestException(
+                "Residents must be invited from a unit. Please use the 'Invite Resident' option on the unit page."
+            )
+        }
         val userId = userDatastore.getUser(email).getOrNull()?.id
         val organization = organizationDatastore.getOrganization(organizationId).getOrNull()
             ?: throw ClientRequestExceptions.NotFoundException("Organization not found")
@@ -223,8 +228,11 @@ class UserService(
 
         // Add user to organization with the specified role.
         // RESIDENT invites create a unit_occupants row instead of an org membership row.
+        // Resident invite acceptance is handled via a separate unit-scoped endpoint (see #451).
         if (invite.role == InviteRole.RESIDENT) {
-            throw ClientRequestExceptions.InvalidRequestException("Resident invite acceptance is not yet supported")
+            throw ClientRequestExceptions.InvalidRequestException(
+                "This invite is for a unit. Please use the unit invite link to join as a resident."
+            )
         }
         organizationDatastore.addUserToOrganization(
             userId = userId,

@@ -2,6 +2,7 @@
 
 package com.cramsan.edifikana.server.controller
 
+import com.cramsan.edifikana.lib.model.InviteRole
 import com.cramsan.edifikana.lib.model.network.AssetNetworkResponse
 import com.cramsan.edifikana.lib.model.network.AuthMetadataNetworkResponse
 import com.cramsan.edifikana.lib.model.network.EmployeeNetworkResponse
@@ -161,6 +162,15 @@ fun Notification.toNotificationNetworkResponse(): NotificationNetworkResponse {
         inviteId = inviteId,
     )
 }
+
+/**
+ * Converts a string to an [InviteRole] for org invite requests.
+ *
+ * Throws [IllegalArgumentException] if the value is not a valid [InviteRole].
+ * [InviteRole.RESIDENT] is intentionally included here so the deserializer can
+ * reject it at the service layer with a clear error, rather than failing silently.
+ */
+fun String.toInviteRole(): InviteRole = enumValueOf<InviteRole>(this)
 
 /**
  * Converts a string to a [UserRole].

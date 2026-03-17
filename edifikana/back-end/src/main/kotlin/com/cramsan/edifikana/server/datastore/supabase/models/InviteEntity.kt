@@ -23,6 +23,14 @@ data class InviteEntity(
     val expiration: Instant,
     @SerialName("role")
     val role: String,
+    @SerialName("invite_code")
+    val inviteCode: String,
+    @SerialName("invited_by")
+    val invitedBy: String? = null,
+    @SerialName("accepted_at")
+    val acceptedAt: Instant? = null,
+    @SerialName("unit_id")
+    val unitId: String? = null,
     @SerialName("deleted_at")
     val deletedAt: Instant? = null,
 ) {
@@ -43,6 +51,12 @@ data class InviteEntity(
         val expiration: Instant,
         @SerialName("role")
         val role: String,
+        @SerialName("invite_code")
+        val inviteCode: String,
+        @SerialName("invited_by")
+        val invitedBy: String? = null,
+        @SerialName("unit_id")
+        val unitId: String? = null,
     )
 
     companion object {

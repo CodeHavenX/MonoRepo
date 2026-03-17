@@ -50,7 +50,7 @@ class OrganizationService(
         }
 
         val organization = orgResult.getOrThrow()
-        // Add the user as an admin of the organization
+        // Add the user as an owner of the organization
         organizationDatastore.addUserToOrganization(userId, organization.id, OrgRole.OWNER)
             .onFailure { e ->
                 logD(TAG, "Failed to add user to organization: %s", e.message)

@@ -1,7 +1,9 @@
 package com.cramsan.edifikana.server.service
 
 import com.cramsan.edifikana.lib.model.InviteId
+import com.cramsan.edifikana.lib.model.InviteRole
 import com.cramsan.edifikana.lib.model.OrganizationId
+import com.cramsan.edifikana.lib.model.OrgRole
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.datastore.NotificationDatastore
 import com.cramsan.edifikana.server.datastore.OrganizationDatastore
@@ -9,7 +11,6 @@ import com.cramsan.edifikana.server.datastore.UserDatastore
 import com.cramsan.edifikana.server.service.models.Invite
 import com.cramsan.edifikana.server.service.models.Organization
 import com.cramsan.edifikana.server.service.models.User
-import com.cramsan.edifikana.lib.model.OrgRole
 import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
@@ -243,7 +244,7 @@ class UserServiceTest {
         val orgId = OrganizationId("orgId")
         val userId = UserId("id")
         val user = mockk<User>()
-        val role = UserRole.USER
+        val role = InviteRole.EMPLOYEE
         val inviteId = InviteId("inviteId")
         val invite = mockk<Invite>()
         val organization = Organization(id = orgId, name = "Test Org", description = "Test Description")
@@ -294,7 +295,7 @@ class UserServiceTest {
         val orgId = OrganizationId("orgId")
         val userId = UserId("id")
         val user = mockk<User>()
-        val role = UserRole.USER
+        val role = InviteRole.EMPLOYEE
         val organization = Organization(id = orgId, name = "Test Org", description = "Test Description")
 
         val error = Exception("Failed to record invite")
@@ -363,8 +364,9 @@ class UserServiceTest {
             id = inviteId,
             email = email,
             organizationId = orgId,
-            role = UserRole.EMPLOYEE,
+            role = InviteRole.EMPLOYEE,
             expiration = futureTime,
+            inviteCode = "TESTCODE01",
         )
         val user = mockk<User>()
         every { user.email } returns email
@@ -424,8 +426,9 @@ class UserServiceTest {
             id = inviteId,
             email = email,
             organizationId = orgId,
-            role = UserRole.USER,
+            role = InviteRole.EMPLOYEE,
             expiration = pastTime, // Expired
+            inviteCode = "TESTCODE01",
         )
 
         coEvery { userDatastore.getInvite(inviteId) } returns Result.success(invite)
@@ -455,8 +458,9 @@ class UserServiceTest {
             id = inviteId,
             email = inviteEmail,
             organizationId = orgId,
-            role = UserRole.USER,
+            role = InviteRole.EMPLOYEE,
             expiration = futureTime,
+            inviteCode = "TESTCODE01",
         )
         val user = mockk<User>()
         every { user.email } returns userEmail
@@ -489,8 +493,9 @@ class UserServiceTest {
             id = inviteId,
             email = email,
             organizationId = orgId,
-            role = UserRole.USER,
+            role = InviteRole.EMPLOYEE,
             expiration = futureTime,
+            inviteCode = "TESTCODE01",
         )
         val user = mockk<User>()
         every { user.email } returns email
@@ -549,8 +554,9 @@ class UserServiceTest {
             id = inviteId,
             email = inviteEmail,
             organizationId = orgId,
-            role = UserRole.USER,
+            role = InviteRole.EMPLOYEE,
             expiration = futureTime,
+            inviteCode = "TESTCODE01",
         )
         val user = mockk<User>()
         every { user.email } returns userEmail
@@ -581,8 +587,9 @@ class UserServiceTest {
             id = inviteId,
             email = email,
             organizationId = orgId,
-            role = UserRole.USER,
+            role = InviteRole.EMPLOYEE,
             expiration = futureTime,
+            inviteCode = "TESTCODE01",
         )
 
         coEvery { userDatastore.getInvite(inviteId) } returns Result.success(invite)
@@ -627,8 +634,9 @@ class UserServiceTest {
             id = inviteId,
             email = email,
             organizationId = orgId,
-            role = UserRole.USER,
+            role = InviteRole.EMPLOYEE,
             expiration = futureTime,
+            inviteCode = "TESTCODE01",
         )
 
         coEvery { userDatastore.getInvite(inviteId) } returns Result.success(invite)

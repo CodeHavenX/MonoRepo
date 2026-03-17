@@ -5,7 +5,6 @@ import com.cramsan.edifikana.lib.model.OrgRole
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.server.datastore.supabase.toOrgRole
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.datastore.EmployeeDatastore
 import com.cramsan.edifikana.server.datastore.EventLogDatastore
@@ -180,7 +179,7 @@ class RBACServiceTest {
         val context = ClientContext.AuthenticatedClientContext(SupabaseContextPayload(mockk(), userId))
         coEvery {
             orgDatastore.getUserRole(userId, orgId)
-        } returns Result.success(userRole.toOrgRole())
+        } returns Result.success(OrgRole.valueOf(userRole.name))
 
         // Act & Assert
         val result = rbac.hasRoleOrHigher(context, orgId, requiredRole)
@@ -218,7 +217,7 @@ class RBACServiceTest {
 
         val context = ClientContext.AuthenticatedClientContext(SupabaseContextPayload(mockk(), userId))
         coEvery { propertyDatastore.getProperty(propId) } returns Result.success(property)
-        coEvery { orgDatastore.getUserRole(userId, orgId) } returns Result.success(userRole.toOrgRole())
+        coEvery { orgDatastore.getUserRole(userId, orgId) } returns Result.success(OrgRole.valueOf(userRole.name))
 
         // Act & Assert
         val result = rbac.hasRole(context, propId, requiredRole)
@@ -254,7 +253,7 @@ class RBACServiceTest {
 
         val context = ClientContext.AuthenticatedClientContext(SupabaseContextPayload(mockk(), userId))
         coEvery { propertyDatastore.getProperty(propId) } returns Result.success(property)
-        coEvery { orgDatastore.getUserRole(userId, orgId) } returns Result.success(userRole.toOrgRole())
+        coEvery { orgDatastore.getUserRole(userId, orgId) } returns Result.success(OrgRole.valueOf(userRole.name))
 
         // Act & Assert
         val result = rbac.hasRoleOrHigher(context, propId, requiredRole)
@@ -290,7 +289,7 @@ class RBACServiceTest {
         val context = ClientContext.AuthenticatedClientContext(SupabaseContextPayload(mockk(), userId))
         coEvery { employeeDatastore.getEmployee(empId) } returns Result.success(employee)
         coEvery { propertyDatastore.getProperty(propId) } returns Result.success(property)
-        coEvery { orgDatastore.getUserRole(userId, orgId) } returns Result.success(userRole.toOrgRole())
+        coEvery { orgDatastore.getUserRole(userId, orgId) } returns Result.success(OrgRole.valueOf(userRole.name))
 
         // Act & Assert
         val result = rbac.hasRole(context, empId, requiredRole)
@@ -323,7 +322,7 @@ class RBACServiceTest {
         val context = ClientContext.AuthenticatedClientContext(SupabaseContextPayload(mockk(), userId))
         coEvery { employeeDatastore.getEmployee(empId) } returns Result.success(employee)
         coEvery { propertyDatastore.getProperty(propId) } returns Result.success(property)
-        coEvery { orgDatastore.getUserRole(userId, orgId) } returns Result.success(userRole.toOrgRole())
+        coEvery { orgDatastore.getUserRole(userId, orgId) } returns Result.success(OrgRole.valueOf(userRole.name))
 
         // Act & Assert
         val result = rbac.hasRoleOrHigher(context, empId, requiredRole)

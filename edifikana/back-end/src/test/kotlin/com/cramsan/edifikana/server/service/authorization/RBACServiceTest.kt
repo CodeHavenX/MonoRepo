@@ -139,7 +139,7 @@ class RBACServiceTest {
 
         val user = mockk<User>()
         every { user.id } returns userId
-        every { user.role } returns UserRole.EMPLOYEE
+        every { user.role } returns userRole
 
         val context = ClientContext.AuthenticatedClientContext(SupabaseContextPayload(mockk(), userId))
 

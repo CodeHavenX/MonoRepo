@@ -2,9 +2,9 @@ package com.cramsan.edifikana.server.service
 
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.OrgRole
 import com.cramsan.edifikana.server.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.service.models.Organization
-import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.logging.logD
 
 /**
@@ -51,7 +51,7 @@ class OrganizationService(
 
         val organization = orgResult.getOrThrow()
         // Add the user as an admin of the organization
-        organizationDatastore.addUserToOrganization(userId, organization.id, UserRole.OWNER)
+        organizationDatastore.addUserToOrganization(userId, organization.id, OrgRole.OWNER)
             .onFailure { e ->
                 logD(TAG, "Failed to add user to organization: %s", e.message)
 

@@ -2,8 +2,8 @@ package com.cramsan.edifikana.server.datastore
 
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.OrgRole
 import com.cramsan.edifikana.server.service.models.Organization
-import com.cramsan.edifikana.server.service.models.UserRole
 
 /**
  * Interface for interacting with the organization database.
@@ -64,7 +64,7 @@ interface OrganizationDatastore {
      * @param organizationId The ID of the organization to which the user will be added.
      * @return Unit if successful, or an error.
      */
-    suspend fun addUserToOrganization(userId: UserId, organizationId: OrganizationId, role: UserRole): Result<Unit>
+    suspend fun addUserToOrganization(userId: UserId, organizationId: OrganizationId, role: OrgRole): Result<Unit>
 
     /**
      * Remove a user from an organization.
@@ -82,7 +82,7 @@ interface OrganizationDatastore {
      * @param orgId The ID of the organization.
      * @return The role of the user in the organization, or an error
      */
-    suspend fun getUserRole(userId: UserId, orgId: OrganizationId): Result<UserRole?>
+    suspend fun getUserRole(userId: UserId, orgId: OrganizationId): Result<OrgRole?>
 
     /**
      * Permanently deletes a soft-deleted organization record by ID.

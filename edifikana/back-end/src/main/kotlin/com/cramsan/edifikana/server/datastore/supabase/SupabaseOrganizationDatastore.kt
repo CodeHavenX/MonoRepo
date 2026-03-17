@@ -1,12 +1,12 @@
 package com.cramsan.edifikana.server.datastore.supabase
 
+import com.cramsan.edifikana.lib.model.OrgRole
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.datastore.supabase.models.OrganizationEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.UserOrganizationMappingEntity
 import com.cramsan.edifikana.server.service.models.Organization
-import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.annotations.SupabaseModel
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
@@ -132,7 +132,7 @@ class SupabaseOrganizationDatastore(
     override suspend fun addUserToOrganization(
         userId: UserId,
         organizationId: OrganizationId,
-        role: UserRole
+        role: OrgRole
     ): Result<Unit> {
         return runSuspendCatching(TAG) {
             logD(TAG, "Adding user %s to organization %s", userId, organizationId)
@@ -140,6 +140,8 @@ class SupabaseOrganizationDatastore(
                 userId = userId.userId,
                 organizationId = organizationId.id,
                 role = role,
+                status = null,
+                invitedBy = null,
             )
             postgrest.from(UserOrganizationMappingEntity.COLLECTION).insert(userOrgMapping) { select() }
                 .decodeSingle<UserOrganizationMappingEntity>()
@@ -169,7 +171,7 @@ class SupabaseOrganizationDatastore(
     /**
      * Gets the user's role within an organization. Returns null if not a member.
      */
-    override suspend fun getUserRole(userId: UserId, orgId: OrganizationId): Result<UserRole?> = runSuspendCatching(
+    override suspend fun getUserRole(userId: UserId, orgId: OrganizationId): Result<OrgRole?> = runSuspendCatching(
         TAG
     ) {
         logD(TAG, "Getting role for user in organization: $orgId")

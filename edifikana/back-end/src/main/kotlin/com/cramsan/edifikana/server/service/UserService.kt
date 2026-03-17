@@ -11,7 +11,6 @@ import com.cramsan.edifikana.server.datastore.UserDatastore
 import com.cramsan.edifikana.server.datastore.supabase.toOrgRole
 import com.cramsan.edifikana.server.service.models.Invite
 import com.cramsan.edifikana.server.service.models.User
-import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logW
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions

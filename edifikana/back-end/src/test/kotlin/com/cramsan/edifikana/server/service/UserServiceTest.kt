@@ -11,7 +11,6 @@ import com.cramsan.edifikana.server.datastore.UserDatastore
 import com.cramsan.edifikana.server.service.models.Invite
 import com.cramsan.edifikana.server.service.models.Organization
 import com.cramsan.edifikana.server.service.models.User
-import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate

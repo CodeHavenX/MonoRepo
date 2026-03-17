@@ -2,6 +2,7 @@
 
 package com.cramsan.edifikana.server.controller
 
+import co.touchlab.kermit.Tag
 import com.cramsan.edifikana.lib.model.InviteRole
 import com.cramsan.edifikana.lib.model.network.AssetNetworkResponse
 import com.cramsan.edifikana.lib.model.network.AuthMetadataNetworkResponse
@@ -26,6 +27,7 @@ import com.cramsan.edifikana.server.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.service.models.User
 import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.logging.logE
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import kotlin.time.ExperimentalTime
 
@@ -196,6 +198,7 @@ fun String.toInviteRole(): InviteRole {
     return try {
         enumValueOf<InviteRole>(this)
     } catch (e: IllegalArgumentException) {
+        logE("NetworkMappers", e.localizedMessage)
         throw ClientRequestExceptions.InvalidRequestException(
             "Invalid invite role. Please select a role from the invite role list."
         )

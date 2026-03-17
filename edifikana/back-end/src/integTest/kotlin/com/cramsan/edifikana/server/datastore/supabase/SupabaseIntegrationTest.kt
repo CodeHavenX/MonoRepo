@@ -22,6 +22,7 @@ import com.cramsan.edifikana.server.service.models.Notification
 import com.cramsan.edifikana.server.service.models.Organization
 import com.cramsan.edifikana.server.service.models.Property
 import com.cramsan.edifikana.server.service.models.TimeCardEvent
+import com.cramsan.edifikana.lib.model.InviteRole
 import com.cramsan.edifikana.server.service.models.User
 import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.test.CoroutineTest
@@ -152,7 +153,7 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
         email: String,
         organizationId: OrganizationId,
         expiration: Instant,
-        role: UserRole = UserRole.USER,
+        role: InviteRole = InviteRole.EMPLOYEE,
     ): InviteId {
         val inviteId = runBlocking {
             userDatastore.recordInvite(

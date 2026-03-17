@@ -2,9 +2,9 @@ package com.cramsan.edifikana.server.service
 
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.OrgRole
 import com.cramsan.edifikana.server.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.service.models.Organization
-import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
@@ -76,7 +76,7 @@ class OrganizationServiceTest {
             organizationDatastore.createOrganization(orgName, orgDescription)
         } returns Result.success(organization)
         coEvery {
-            organizationDatastore.addUserToOrganization(userId, orgId, UserRole.OWNER)
+            organizationDatastore.addUserToOrganization(userId, orgId, OrgRole.OWNER)
         } returns Result.success(Unit)
 
         // Act
@@ -86,7 +86,7 @@ class OrganizationServiceTest {
         assertTrue(result.isSuccess)
         assertEquals(organization, result.getOrNull())
         coVerify { organizationDatastore.createOrganization(orgName, orgDescription) }
-        coVerify { organizationDatastore.addUserToOrganization(userId, orgId, UserRole.OWNER) }
+        coVerify { organizationDatastore.addUserToOrganization(userId, orgId, OrgRole.OWNER) }
     }
 
     @Test
@@ -127,7 +127,7 @@ class OrganizationServiceTest {
             organizationDatastore.createOrganization(orgName, orgDescription)
         } returns Result.success(organization)
         coEvery {
-            organizationDatastore.addUserToOrganization(userId, orgId, UserRole.OWNER)
+            organizationDatastore.addUserToOrganization(userId, orgId, OrgRole.OWNER)
         } returns Result.failure(addUserException)
         coEvery {
             organizationDatastore.deleteOrganization(orgId)
@@ -139,7 +139,7 @@ class OrganizationServiceTest {
         // Assert
         assertTrue(result.isFailure)
         coVerify { organizationDatastore.createOrganization(orgName, orgDescription) }
-        coVerify { organizationDatastore.addUserToOrganization(userId, orgId, UserRole.OWNER) }
+        coVerify { organizationDatastore.addUserToOrganization(userId, orgId, OrgRole.OWNER) }
         coVerify { organizationDatastore.deleteOrganization(orgId) }
     }
 

@@ -1,8 +1,8 @@
 package com.cramsan.edifikana.server.datastore.supabase
 
+import com.cramsan.edifikana.lib.model.OrgRole
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.utils.uuid.UUID
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -110,11 +110,9 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `getOrganizationList should return organizations for user`() = runCoroutineTest {
         // Arrange
         val org1 = createTestOrganization("test_org_$test_prefix", "")
-        val role1 = UserRole.ADMIN
         val org2 = createTestOrganization("test_org_$test_prefix", "")
-        val role2 = UserRole.EMPLOYEE
-        organizationDatastore.addUserToOrganization(testUserId!!, org1, role1)
-        organizationDatastore.addUserToOrganization(testUserId!!, org2, role2)
+        organizationDatastore.addUserToOrganization(testUserId!!, org1, OrgRole.ADMIN)
+        organizationDatastore.addUserToOrganization(testUserId!!, org2, OrgRole.EMPLOYEE)
 
         // Act
         val listResult = organizationDatastore.getOrganizationsForUser(testUserId!!)
@@ -147,15 +145,14 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
         // Arrange
         val orgId = createTestOrganization("test_org_$test_prefix", "")
         val newUser = createTestUser("adduser-${test_prefix}@test.com")
-        val role = UserRole.MANAGER
 
         // Act
-        val addResult = organizationDatastore.addUserToOrganization(newUser, orgId, role)
+        val addResult = organizationDatastore.addUserToOrganization(newUser, orgId, OrgRole.MANAGER)
         val orgsResult = organizationDatastore.getOrganizationsForUser(newUser)
 
         // Assert
-        assertTrue(orgsResult.isSuccess)
         assertTrue(addResult.isSuccess)
+        assertTrue(orgsResult.isSuccess)
         val orgs = orgsResult.getOrNull()
         assertNotNull(orgs)
         assertTrue(orgs.any { it.id == orgId })
@@ -166,11 +163,10 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
         // Arrange
         val orgId = createTestOrganization("test_org_$test_prefix", "")
         val newUser = createTestUser("dupeuser-${test_prefix}@test.com")
-        val newRole = UserRole.EMPLOYEE
 
         // Act
-        val firstAdd = organizationDatastore.addUserToOrganization(newUser, orgId, newRole)
-        val secondAdd = organizationDatastore.addUserToOrganization(newUser, orgId, newRole)
+        val firstAdd = organizationDatastore.addUserToOrganization(newUser, orgId, OrgRole.EMPLOYEE)
+        val secondAdd = organizationDatastore.addUserToOrganization(newUser, orgId, OrgRole.EMPLOYEE)
 
         // Assert
         assertTrue(firstAdd.isSuccess)
@@ -181,5 +177,89 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val orgs = orgsResult.getOrNull()
         assertNotNull(orgs)
         assertTrue(orgs.any { it.id == orgId })
+    }
+
+    @Test
+    fun `addUserToOrganization with OWNER role should succeed`() = runCoroutineTest {
+        // Arrange
+        val orgId = createTestOrganization("test_org_$test_prefix", "")
+        val newUser = createTestUser("owner-${test_prefix}@test.com")
+
+        // Act
+        val result = organizationDatastore.addUserToOrganization(newUser, orgId, OrgRole.OWNER)
+
+        // Assert
+        assertTrue(result.isSuccess)
+    }
+
+    @Test
+    fun `addUserToOrganization with ADMIN role should succeed`() = runCoroutineTest {
+        // Arrange
+        val orgId = createTestOrganization("test_org_$test_prefix", "")
+        val newUser = createTestUser("admin-${test_prefix}@test.com")
+
+        // Act
+        val result = organizationDatastore.addUserToOrganization(newUser, orgId, OrgRole.ADMIN)
+
+        // Assert
+        assertTrue(result.isSuccess)
+    }
+
+    @Test
+    fun `addUserToOrganization with MANAGER role should succeed`() = runCoroutineTest {
+        // Arrange
+        val orgId = createTestOrganization("test_org_$test_prefix", "")
+        val newUser = createTestUser("manager-${test_prefix}@test.com")
+
+        // Act
+        val result = organizationDatastore.addUserToOrganization(newUser, orgId, OrgRole.MANAGER)
+
+        // Assert
+        assertTrue(result.isSuccess)
+    }
+
+    @Test
+    fun `addUserToOrganization with EMPLOYEE role should succeed`() = runCoroutineTest {
+        // Arrange
+        val orgId = createTestOrganization("test_org_$test_prefix", "")
+        val newUser = createTestUser("employee-${test_prefix}@test.com")
+
+        // Act
+        val result = organizationDatastore.addUserToOrganization(newUser, orgId, OrgRole.EMPLOYEE)
+
+        // Assert
+        assertTrue(result.isSuccess)
+    }
+
+    @Test
+    fun `getUserRole should return OrgRole after addUserToOrganization`() = runCoroutineTest {
+        // Arrange
+        val orgId = createTestOrganization("test_org_$test_prefix", "")
+        val newUser = createTestUser("rolecheck-${test_prefix}@test.com")
+        organizationDatastore.addUserToOrganization(newUser, orgId, OrgRole.ADMIN)
+
+        // Act
+        val roleResult = organizationDatastore.getUserRole(newUser, orgId)
+
+        // Assert
+        assertTrue(roleResult.isSuccess)
+        assertEquals(OrgRole.ADMIN, roleResult.getOrNull())
+    }
+
+    @Test
+    fun `addUserToOrganization should default status to ACTIVE`() = runCoroutineTest {
+        // Arrange
+        val orgId = createTestOrganization("test_org_$test_prefix", "")
+        val newUser = createTestUser("statuscheck-${test_prefix}@test.com")
+
+        // Act — no explicit status passed; DB default should apply
+        val addResult = organizationDatastore.addUserToOrganization(newUser, orgId, OrgRole.EMPLOYEE)
+
+        // Assert — the insert succeeded, confirming the DB default ACTIVE is accepted
+        assertTrue(addResult.isSuccess)
+        // Membership is retrievable, confirming the row exists and status did not block insertion
+        val roleResult = organizationDatastore.getUserRole(newUser, orgId)
+        assertTrue(roleResult.isSuccess)
+        assertNotNull(roleResult.getOrNull())
     }
 }

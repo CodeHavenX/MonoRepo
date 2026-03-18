@@ -51,6 +51,7 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
     protected val userDatastore: SupabaseUserDatastore by inject()
     protected val organizationDatastore: SupabaseOrganizationDatastore by inject()
     protected val notificationDatastore: SupabaseNotificationDatastore by inject()
+    protected val membershipDatastore: SupabaseMembershipDatastore by inject()
 
     private val eventLogResources = mutableSetOf<EventLogEntryId>()
     private val propertyResources = mutableSetOf<PropertyId>()

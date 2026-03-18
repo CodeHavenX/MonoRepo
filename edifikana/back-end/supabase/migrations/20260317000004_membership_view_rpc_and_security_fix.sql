@@ -49,7 +49,7 @@ CREATE OR REPLACE VIEW public.v_org_members
               uom.organization_id,
               uom.role,
               uom.status,
-              uom.joined_at,
+              EXTRACT(EPOCH FROM uom.joined_at)::BIGINT AS joined_at,
               u.email,
               u.first_name,
               u.last_name

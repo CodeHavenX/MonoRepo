@@ -18,6 +18,8 @@ import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.postgrest.Postgrest
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
 import kotlin.time.Clock
 import kotlin.time.Instant
 
@@ -106,7 +108,8 @@ class SupabaseMembershipDatastore(
             pNewOwnerId = newOwnerId.userId,
             pCallerId = callerId.userId,
         )
-        postgrest.rpc("transfer_ownership", params)
+        val jsonParams = Json.encodeToJsonElement(TransferOwnershipParams.serializer(), params).jsonObject
+        postgrest.rpc("transfer_ownership", jsonParams)
     }
 
     /**
@@ -123,7 +126,6 @@ class SupabaseMembershipDatastore(
                     eq("assignee_id", userId.userId)
                     neq("status", TaskStatus.COMPLETED.name)
                     neq("status", TaskStatus.CANCELLED.name)
-                    isExact("deleted_at", null)
                 }
             }
         }

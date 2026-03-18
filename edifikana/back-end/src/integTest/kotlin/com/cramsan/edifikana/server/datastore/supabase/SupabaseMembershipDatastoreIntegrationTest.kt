@@ -22,8 +22,8 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     private val clock: Clock by inject()
 
     private lateinit var testPrefix: String
-    private lateinit var ownerUserId: UserId
-    private lateinit var orgId: OrganizationId
+    private var ownerUserId: UserId? = null
+    private var orgId: OrganizationId? = null
 
     @BeforeTest
     fun setUp() {
@@ -31,7 +31,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
         ownerUserId = createTestUser("owner-${testPrefix}@test.com")
         orgId = createTestOrganization("test-org-$testPrefix", "")
         runBlocking {
-            organizationDatastore.addUserToOrganization(ownerUserId, orgId, OrgRole.OWNER)
+            organizationDatastore.addUserToOrganization(ownerUserId!!, orgId!!, OrgRole.OWNER)
         }
     }
 
@@ -43,10 +43,10 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `getMembers returns all active members for org`() = runCoroutineTest {
         // Arrange
         val memberId = createTestUser("member-${testPrefix}@test.com")
-        organizationDatastore.addUserToOrganization(memberId, orgId, OrgRole.EMPLOYEE)
+        organizationDatastore.addUserToOrganization(memberId, orgId!!, OrgRole.EMPLOYEE)
 
         // Act
-        val result = membershipDatastore.getMembers(orgId)
+        val result = membershipDatastore.getMembers(orgId!!)
 
         // Assert
         assertTrue(result.isSuccess)
@@ -59,11 +59,11 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `getMembers excludes inactive members`() = runCoroutineTest {
         // Arrange
         val memberId = createTestUser("inactive-${testPrefix}@test.com")
-        organizationDatastore.addUserToOrganization(memberId, orgId, OrgRole.EMPLOYEE)
-        membershipDatastore.removeMember(orgId, memberId)
+        organizationDatastore.addUserToOrganization(memberId, orgId!!, OrgRole.EMPLOYEE)
+        membershipDatastore.removeMember(orgId!!, memberId)
 
         // Act
-        val result = membershipDatastore.getMembers(orgId)
+        val result = membershipDatastore.getMembers(orgId!!)
 
         // Assert
         assertTrue(result.isSuccess)
@@ -78,13 +78,13 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `getMember returns member when found`() = runCoroutineTest {
         // Act
-        val result = membershipDatastore.getMember(orgId, ownerUserId)
+        val result = membershipDatastore.getMember(orgId!!, ownerUserId!!)
 
         // Assert
         assertTrue(result.isSuccess)
         val member = result.getOrThrow()
         assertNotNull(member)
-        assertEquals(ownerUserId, member.userId)
+        assertEquals(ownerUserId!!, member.userId)
         assertEquals(OrgRole.OWNER, member.role)
     }
 
@@ -94,7 +94,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val stranger = createTestUser("stranger-${testPrefix}@test.com")
 
         // Act
-        val result = membershipDatastore.getMember(orgId, stranger)
+        val result = membershipDatastore.getMember(orgId!!, stranger)
 
         // Assert
         assertTrue(result.isSuccess)
@@ -109,14 +109,14 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `updateMemberRole updates role correctly`() = runCoroutineTest {
         // Arrange
         val memberId = createTestUser("roleupdate-${testPrefix}@test.com")
-        organizationDatastore.addUserToOrganization(memberId, orgId, OrgRole.EMPLOYEE)
+        organizationDatastore.addUserToOrganization(memberId, orgId!!, OrgRole.EMPLOYEE)
 
         // Act
-        val result = membershipDatastore.updateMemberRole(orgId, memberId, OrgRole.MANAGER)
+        val result = membershipDatastore.updateMemberRole(orgId!!, memberId, OrgRole.MANAGER)
 
         // Assert
         assertTrue(result.isSuccess)
-        val roleResult = organizationDatastore.getUserRole(memberId, orgId)
+        val roleResult = organizationDatastore.getUserRole(memberId, orgId!!)
         assertEquals(OrgRole.MANAGER, roleResult.getOrThrow())
     }
 
@@ -128,14 +128,14 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `removeMember soft-deletes member by setting status to INACTIVE`() = runCoroutineTest {
         // Arrange
         val memberId = createTestUser("remove-${testPrefix}@test.com")
-        organizationDatastore.addUserToOrganization(memberId, orgId, OrgRole.EMPLOYEE)
+        organizationDatastore.addUserToOrganization(memberId, orgId!!, OrgRole.EMPLOYEE)
 
         // Act
-        val result = membershipDatastore.removeMember(orgId, memberId)
+        val result = membershipDatastore.removeMember(orgId!!, memberId)
 
         // Assert
         assertTrue(result.isSuccess)
-        val memberResult = membershipDatastore.getMember(orgId, memberId)
+        val memberResult = membershipDatastore.getMember(orgId!!, memberId)
         assertTrue(memberResult.isSuccess)
         // v_org_members only shows ACTIVE members, so INACTIVE member should not appear
         assertNull(memberResult.getOrThrow())
@@ -151,13 +151,13 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val futureExpiry = clock.now().plus(kotlin.time.Duration.parse("7d"))
         val inviteId = createTestInvite(
             email = "pending-${testPrefix}@test.com",
-            organizationId = orgId,
+            organizationId = orgId!!,
             expiration = futureExpiry,
             role = InviteRole.EMPLOYEE,
         )
 
         // Act
-        val result = membershipDatastore.listPendingInvites(orgId)
+        val result = membershipDatastore.listPendingInvites(orgId!!)
 
         // Assert
         assertTrue(result.isSuccess)
@@ -171,13 +171,13 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val futureExpiry = clock.now().plus(kotlin.time.Duration.parse("7d"))
         val inviteId = createTestInvite(
             email = "cancelled-${testPrefix}@test.com",
-            organizationId = orgId,
+            organizationId = orgId!!,
             expiration = futureExpiry,
         )
         membershipDatastore.cancelInvite(inviteId)
 
         // Act
-        val result = membershipDatastore.listPendingInvites(orgId)
+        val result = membershipDatastore.listPendingInvites(orgId!!)
 
         // Assert
         assertTrue(result.isSuccess)
@@ -191,12 +191,12 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val pastExpiry = clock.now().minus(kotlin.time.Duration.parse("1d"))
         val inviteId = createTestInvite(
             email = "expired-${testPrefix}@test.com",
-            organizationId = orgId,
+            organizationId = orgId!!,
             expiration = pastExpiry,
         )
 
         // Act
-        val result = membershipDatastore.listPendingInvites(orgId)
+        val result = membershipDatastore.listPendingInvites(orgId!!)
 
         // Assert
         assertTrue(result.isSuccess)
@@ -214,7 +214,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val futureExpiry = clock.now().plus(kotlin.time.Duration.parse("7d"))
         val inviteId = createTestInvite(
             email = "cancel-${testPrefix}@test.com",
-            organizationId = orgId,
+            organizationId = orgId!!,
             expiration = futureExpiry,
         )
 
@@ -223,7 +223,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
 
         // Assert
         assertTrue(result.isSuccess)
-        val pendingResult = membershipDatastore.listPendingInvites(orgId)
+        val pendingResult = membershipDatastore.listPendingInvites(orgId!!)
         assertTrue(pendingResult.isSuccess)
         assertTrue(pendingResult.getOrThrow().none { it.id == inviteId })
     }
@@ -238,7 +238,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val futureExpiry = clock.now().plus(kotlin.time.Duration.parse("7d"))
         val inviteId = createTestInvite(
             email = "resend-${testPrefix}@test.com",
-            organizationId = orgId,
+            organizationId = orgId!!,
             expiration = futureExpiry,
         )
         val originalInvite = userDatastore.getInvite(inviteId).getOrThrow()!!
@@ -266,7 +266,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val futureExpiry = clock.now().plus(kotlin.time.Duration.parse("7d"))
         val inviteId = createTestInvite(
             email = "bycode-${testPrefix}@test.com",
-            organizationId = orgId,
+            organizationId = orgId!!,
             expiration = futureExpiry,
         )
         val invite = userDatastore.getInvite(inviteId).getOrThrow()!!
@@ -299,15 +299,15 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `transferOwnership atomically swaps roles`() = runCoroutineTest {
         // Arrange
         val newOwnerId = createTestUser("newowner-${testPrefix}@test.com")
-        organizationDatastore.addUserToOrganization(newOwnerId, orgId, OrgRole.ADMIN)
+        organizationDatastore.addUserToOrganization(newOwnerId, orgId!!, OrgRole.ADMIN)
 
         // Act
-        val result = membershipDatastore.transferOwnership(orgId, newOwnerId, ownerUserId)
+        val result = membershipDatastore.transferOwnership(orgId!!, newOwnerId, ownerUserId!!)
 
         // Assert
         assertTrue(result.isSuccess)
-        val callerRole = organizationDatastore.getUserRole(ownerUserId, orgId).getOrThrow()
-        val newOwnerRole = organizationDatastore.getUserRole(newOwnerId, orgId).getOrThrow()
+        val callerRole = organizationDatastore.getUserRole(ownerUserId!!, orgId!!).getOrThrow()
+        val newOwnerRole = organizationDatastore.getUserRole(newOwnerId, orgId!!).getOrThrow()
         assertEquals(OrgRole.ADMIN, callerRole)
         assertEquals(OrgRole.OWNER, newOwnerRole)
     }
@@ -320,15 +320,15 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `purgeOrgMember hard-deletes membership row`() = runCoroutineTest {
         // Arrange
         val memberId = createTestUser("purge-${testPrefix}@test.com")
-        organizationDatastore.addUserToOrganization(memberId, orgId, OrgRole.EMPLOYEE)
+        organizationDatastore.addUserToOrganization(memberId, orgId!!, OrgRole.EMPLOYEE)
 
         // Act
-        val result = membershipDatastore.purgeOrgMember(orgId, memberId)
+        val result = membershipDatastore.purgeOrgMember(orgId!!, memberId)
 
         // Assert
         assertTrue(result.isSuccess)
         assertTrue(result.getOrThrow())
-        val roleResult = organizationDatastore.getUserRole(memberId, orgId)
+        val roleResult = organizationDatastore.getUserRole(memberId, orgId!!)
         assertTrue(roleResult.isSuccess)
         assertNull(roleResult.getOrThrow())
     }
@@ -339,7 +339,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val nonMember = createTestUser("nonmember-${testPrefix}@test.com")
 
         // Act
-        val result = membershipDatastore.purgeOrgMember(orgId, nonMember)
+        val result = membershipDatastore.purgeOrgMember(orgId!!, nonMember)
 
         // Assert
         assertTrue(result.isSuccess)

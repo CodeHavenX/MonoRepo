@@ -44,6 +44,7 @@ class MembershipController(
      * Inviter cannot assign a role higher than their own.
      */
     @OptIn(NetworkModel::class)
+    @Suppress("ThrowsCount")
     suspend fun inviteMember(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         orgId: OrganizationId,

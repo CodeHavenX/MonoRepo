@@ -124,6 +124,7 @@ class SupabaseMembershipDatastore(
                 filter {
                     eq("org_id", orgId.id)
                     eq("assignee_id", userId.userId)
+                    exact("deleted_at", null)
                     neq("status", TaskStatus.COMPLETED.name)
                     neq("status", TaskStatus.CANCELLED.name)
                 }
@@ -219,11 +220,14 @@ class SupabaseMembershipDatastore(
                 }
             }.decodeSingle<InviteEntity>().toInvite()
 
-            // Upsert the org membership row
-            val mapping = UserOrganizationMappingEntity.CreateUserOrganizationMappingEntity(
+            // Upsert the org membership row; sets status=ACTIVE and joined_at=now()
+            // so a previously-inactive member is reactivated with the new role.
+            val mapping = UserOrganizationMappingEntity.AcceptInviteEntity(
                 userId = userId.userId,
                 organizationId = invite.organizationId.id,
                 role = invite.role.toOrgRole(),
+                status = OrgMemberStatus.ACTIVE,
+                joinedAt = clock.now(),
             )
             postgrest.from(UserOrganizationMappingEntity.COLLECTION).upsert(mapping) {
                 onConflict = "user_id, organization_id"

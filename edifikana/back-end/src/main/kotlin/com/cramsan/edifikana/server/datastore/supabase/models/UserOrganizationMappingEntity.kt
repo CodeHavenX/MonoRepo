@@ -46,6 +46,26 @@ data class UserOrganizationMappingEntity(
         val role: OrgRole,
     )
 
+    /**
+     * Entity used to upsert a membership row when a user accepts an invite.
+     *
+     * Explicitly sets [status] to ACTIVE and [joinedAt] to the acceptance time.
+     * On conflict (user already has a row for this org), all fields are updated
+     * so a previously-inactive member is reactivated with the new role.
+     */
+    @Serializable
+    @SupabaseModel
+    data class AcceptInviteEntity(
+        @SerialName("user_id")
+        val userId: String,
+        @SerialName("organization_id")
+        val organizationId: String,
+        val role: OrgRole,
+        val status: OrgMemberStatus,
+        @SerialName("joined_at")
+        val joinedAt: Instant,
+    )
+
     companion object {
         const val COLLECTION = "user_organization_mapping"
     }

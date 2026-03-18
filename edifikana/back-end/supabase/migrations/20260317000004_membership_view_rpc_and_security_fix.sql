@@ -55,10 +55,9 @@ CREATE OR REPLACE VIEW public.v_org_members
               u.last_name
        FROM user_organization_mapping uom
        INNER JOIN users u ON uom.user_id = u.id
-       WHERE uom.deleted_at IS NULL
-         AND uom.status = 'ACTIVE';
+       WHERE uom.status = 'ACTIVE'
+         AND u.deleted_at IS NULL;
 
-GRANT SELECT ON public.v_org_members TO authenticated;
 GRANT SELECT ON public.v_org_members TO service_role;
 
 -- ============================================================================
@@ -81,23 +80,24 @@ SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-    -- Demote current owner to ADMIN
+    -- Demote current owner to ADMIN (validates caller is OWNER + ACTIVE)
     UPDATE user_organization_mapping
     SET    role = 'ADMIN'
     WHERE  organization_id = p_org_id
       AND  user_id         = p_caller_id
-      AND  deleted_at      IS NULL;
+      AND  role            = 'OWNER'
+      AND  status          = 'ACTIVE';
 
     IF NOT FOUND THEN
-        RAISE EXCEPTION 'Caller % is not an active member of org %', p_caller_id, p_org_id;
+        RAISE EXCEPTION 'Caller % is not an active OWNER of org %', p_caller_id, p_org_id;
     END IF;
 
-    -- Promote new owner
+    -- Promote new owner (must be an active member)
     UPDATE user_organization_mapping
     SET    role = 'OWNER'
     WHERE  organization_id = p_org_id
       AND  user_id         = p_new_owner_id
-      AND  deleted_at      IS NULL;
+      AND  status          = 'ACTIVE';
 
     IF NOT FOUND THEN
         RAISE EXCEPTION 'Target user % is not an active member of org %', p_new_owner_id, p_org_id;
@@ -124,10 +124,9 @@ CREATE POLICY "owner_insert_user_organization_mapping"
         organization_id IN (
             SELECT organization_id
             FROM   user_organization_mapping
-            WHERE  user_id    = auth.uid()
-              AND  role       = 'OWNER'
-              AND  status     = 'ACTIVE'
-              AND  deleted_at IS NULL
+            WHERE  user_id = (SELECT auth.uid())
+              AND  role    = 'OWNER'
+              AND  status  = 'ACTIVE'
         )
     );
 
@@ -140,20 +139,18 @@ CREATE POLICY "owner_update_user_organization_mapping"
         organization_id IN (
             SELECT organization_id
             FROM   user_organization_mapping
-            WHERE  user_id    = auth.uid()
-              AND  role       = 'OWNER'
-              AND  status     = 'ACTIVE'
-              AND  deleted_at IS NULL
+            WHERE  user_id = (SELECT auth.uid())
+              AND  role    = 'OWNER'
+              AND  status  = 'ACTIVE'
         )
     )
     WITH CHECK (
         organization_id IN (
             SELECT organization_id
             FROM   user_organization_mapping
-            WHERE  user_id    = auth.uid()
-              AND  role       = 'OWNER'
-              AND  status     = 'ACTIVE'
-              AND  deleted_at IS NULL
+            WHERE  user_id = (SELECT auth.uid())
+              AND  role    = 'OWNER'
+              AND  status  = 'ACTIVE'
         )
     );
 
@@ -166,9 +163,8 @@ CREATE POLICY "owner_delete_user_organization_mapping"
         organization_id IN (
             SELECT organization_id
             FROM   user_organization_mapping
-            WHERE  user_id    = auth.uid()
-              AND  role       = 'OWNER'
-              AND  status     = 'ACTIVE'
-              AND  deleted_at IS NULL
+            WHERE  user_id = (SELECT auth.uid())
+              AND  role    = 'OWNER'
+              AND  status  = 'ACTIVE'
         )
     );

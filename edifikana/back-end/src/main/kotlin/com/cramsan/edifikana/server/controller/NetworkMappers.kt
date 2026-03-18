@@ -9,6 +9,7 @@ import com.cramsan.edifikana.lib.model.network.DocumentNetworkResponse
 import com.cramsan.edifikana.lib.model.network.EmployeeNetworkResponse
 import com.cramsan.edifikana.lib.model.network.EventLogEntryNetworkResponse
 import com.cramsan.edifikana.lib.model.network.InviteNetworkResponse
+import com.cramsan.edifikana.lib.model.network.MemberNetworkResponse
 import com.cramsan.edifikana.lib.model.network.NotificationNetworkResponse
 import com.cramsan.edifikana.lib.model.network.OrganizationNetworkResponse
 import com.cramsan.edifikana.lib.model.network.PropertyNetworkResponse
@@ -21,6 +22,7 @@ import com.cramsan.edifikana.server.service.models.EventLogEntry
 import com.cramsan.edifikana.server.service.models.Invite
 import com.cramsan.edifikana.server.service.models.Notification
 import com.cramsan.edifikana.server.service.models.Organization
+import com.cramsan.edifikana.server.service.models.OrgMemberView
 import com.cramsan.edifikana.server.service.models.Property
 import com.cramsan.edifikana.server.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.service.models.User
@@ -134,6 +136,22 @@ fun Organization.toOrganizationNetworkResponse(): OrganizationNetworkResponse {
         id = id,
         name = name,
         description = description,
+    )
+}
+
+/**
+ * Converts an [OrgMemberView] domain model to a [MemberNetworkResponse] network model.
+ */
+@OptIn(NetworkModel::class)
+fun OrgMemberView.toMemberNetworkResponse(): MemberNetworkResponse {
+    return MemberNetworkResponse(
+        userId = userId,
+        orgId = orgId,
+        role = role,
+        status = status,
+        joinedAt = joinedAt,
+        email = email,
+        displayName = "$firstName $lastName".trim(),
     )
 }
 

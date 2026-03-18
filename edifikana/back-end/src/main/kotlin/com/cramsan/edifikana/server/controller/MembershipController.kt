@@ -13,6 +13,7 @@ import com.cramsan.edifikana.lib.model.network.TransferOwnershipNetworkRequest
 import com.cramsan.edifikana.lib.model.network.UpdateRoleNetworkRequest
 import com.cramsan.edifikana.lib.utils.requireSuccess
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
+import com.cramsan.edifikana.server.datastore.supabase.toUserRole
 import com.cramsan.edifikana.server.service.MembershipService
 import com.cramsan.edifikana.server.service.authorization.RBACService
 import com.cramsan.edifikana.server.service.models.UserRole

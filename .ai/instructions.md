@@ -95,3 +95,29 @@ Custom Gradle scripts in `gradle/` configure KMP targets. Apply the appropriate 
 - `kotlin-mpp-target-jvm-compose.gradle` — JVM Compose
 - `kotlin-mpp-target-wasm-compose-application.gradle` — WASM application
 - `release-task.gradle` — provides the `release` validation task for every module
+
+# Commits
+
+When committing changes, use the following format for commit messages to maintain consistency and clarity:
+
+```
+[<MODULE>] <Short description of the change> (#<GitHub issue number>)
+```
+
+Examples of commit messages following our conventional commit style:
+```
+[EDIFIKANA] new tables for rent and payments (#445)
+[DOCS] Expand AI and Copilot instructions with full architecture reference (#251)
+[GRADLE] Reduce verbosity of test runs (NONE)
+[RUNASIMI] Add static translation tables for verb conjugations (#13)
+```
+
+# Branches
+
+**main**: Stable production-ready code. All features must be merged here through the PR process.
+
+Feature branches should follow the naming convention: `<user>/<issue-number>-<short-description>`. For example:
+```
+- alg/383_rentConfig_paymentRecords_models
+- cr/00_migrate_new_turbine_api
+```

@@ -1,1 +1,1 @@
-See .ai/instructions.md for guidelines.
+See .ai/instructions.md for all guidelines.

@@ -2,17 +2,15 @@
 
 ### Back End
 
-**The most up to date information can be found in: https://wikijs-ok0o4wwsow8s80wwsgo40k4s.cramsan.com/en/codehavenx/design-architecture/back-end**
-
 Strict layering: **Controllers → Services → Datastores**
 
 - **Controllers** (example: `edifikana/back-end/.../controller/`): Validate API permissions and extract parameters only.
 - **Services** (example: `edifikana/back-end/.../service/`): All business logic lives here.
 - **Datastores** (example: `edifikana/back-end/.../datastore/`): Optimized data access, minimal business logic.
 
-### Front End
+**For more in-depth information look at: https://wikijs-ok0o4wwsow8s80wwsgo40k4s.cramsan.com/en/Projects/Architecture/back-end**
 
-**The most up to date information can be found in: https://wikijs-ok0o4wwsow8s80wwsgo40k4s.cramsan.com/en/codehavenx/design-architecture/front-end**
+### Front End
 
 Each screen/feature lives in `<projectname>/front-end/shared-app/src/commonMain/.../features/<section>/<featurename>/` and consists of 5 files:
 
@@ -31,6 +29,8 @@ A test file `<Feature>ViewModelTest.kt` belongs in the `jvmTest` source set.
 **Dependency injection:** Uses Koin. Register new ViewModels with `viewModelOf(::FeatureViewModel)` in the appropriate DI module.
 
 **Navigation:** Uses `org.jetbrains.androidx.navigation:navigation-compose`. Each screen declares a `@Serializable data object <Feature>Destination : Destination()` and must be registered as a route in the relevant router.
+
+**For more in-depth information look at: https://wikijs-ok0o4wwsow8s80wwsgo40k4s.cramsan.com/en/Projects/Architecture/front-end**
 
 ## Repository Structure
 
@@ -57,6 +57,8 @@ gradle/             # Custom Gradle plugins/scripts for each KMP target type
 ```
 
 When adding a new module, also add it to `settings.gradle.kts` and the `releaseAll` task in the root `build.gradle.kts`.
+
+**For more in-depth information look at: https://wikijs-ok0o4wwsow8s80wwsgo40k4s.cramsan.com/en/Projects/Architecture/overview**
 
 ## Validating a Change
 

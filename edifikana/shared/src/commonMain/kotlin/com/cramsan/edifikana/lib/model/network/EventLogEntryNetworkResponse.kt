@@ -4,6 +4,7 @@ import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.UnitId
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.ResponseBody
 import kotlinx.serialization.SerialName
@@ -28,5 +29,5 @@ data class EventLogEntryNetworkResponse(
     val timestamp: Long,
     val title: String,
     val description: String?,
-    val unit: String,
+    val unit: UnitId,
 ) : ResponseBody

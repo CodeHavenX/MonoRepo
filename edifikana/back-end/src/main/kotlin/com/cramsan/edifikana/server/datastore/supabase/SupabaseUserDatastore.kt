@@ -322,10 +322,10 @@ class SupabaseUserDatastore(
         val inviteCode = UUID.random().replace("-", "").take(INVITE_CODE_LENGTH).uppercase()
         val inviteEntity = InviteEntity.Create(
             email = email,
-            organizationId = organizationId.id,
+            organizationId = organizationId,
             createdAt = clock.now(),
             expiration = expiration,
-            role = role.name,
+            role = role,
             inviteCode = inviteCode,
         )
 

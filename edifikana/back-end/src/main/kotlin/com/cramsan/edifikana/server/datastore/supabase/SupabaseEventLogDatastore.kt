@@ -4,6 +4,7 @@ import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.UnitId
 import com.cramsan.edifikana.server.datastore.EventLogDatastore
 import com.cramsan.edifikana.server.datastore.supabase.models.EventLogEntryEntity
 import com.cramsan.edifikana.server.service.models.EventLogEntry
@@ -35,7 +36,7 @@ class SupabaseEventLogDatastore(
         timestamp: Instant,
         title: String,
         description: String?,
-        unit: String,
+        unit: UnitId,
     ): Result<EventLogEntry> = runSuspendCatching(TAG) {
         logD(TAG, "Creating event log entry: %s", title)
         val requestEntity: EventLogEntryEntity.CreateEventLogEntryEntity = CreateEventLogEntryEntity(
@@ -103,7 +104,7 @@ class SupabaseEventLogDatastore(
         fallbackEventType: String?,
         title: String?,
         description: String?,
-        unit: String?,
+        unit: UnitId?,
     ): Result<EventLogEntry> = runSuspendCatching(TAG) {
         logD(TAG, "Updating event log entry: %s", id)
 

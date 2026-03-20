@@ -4,6 +4,7 @@ import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.UnitId
 import com.cramsan.edifikana.server.datastore.EventLogDatastore
 import com.cramsan.edifikana.server.service.models.EventLogEntry
 import com.cramsan.framework.logging.EventLogger
@@ -62,7 +63,7 @@ class EventLogServiceTest {
         val timestamp = Instant.parse("2024-06-18T12:00:00Z")
         val title = "Burst Pipe"
         val description = "Pipe burst in apartment 1608 resulting in a minor flooding that has affected..."
-        val unit = "1608"
+        val unit = UnitId("1608")
         val entry = mockk<EventLogEntry>()
         coEvery {
             eventLogDatastore.createEventLogEntry(
@@ -172,7 +173,7 @@ class EventLogServiceTest {
         val fallbackEventType = "guest"
         val title = "Guest for apt 1801"
         val description = "Jenny Hall visiting"
-        val unit = "1801"
+        val unit = UnitId("1801")
         val entry = mockk<EventLogEntry>()
         coEvery {
             eventLogDatastore.updateEventLogEntry(

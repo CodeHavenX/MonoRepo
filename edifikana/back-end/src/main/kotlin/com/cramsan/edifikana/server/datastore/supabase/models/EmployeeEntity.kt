@@ -2,6 +2,7 @@ package com.cramsan.edifikana.server.datastore.supabase.models
 
 import com.cramsan.edifikana.lib.model.EmployeeRole
 import com.cramsan.edifikana.lib.model.IdType
+import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.annotations.SupabaseModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -22,7 +23,7 @@ data class EmployeeEntity(
     val lastName: String,
     val role: EmployeeRole,
     @SerialName("property_id")
-    val propertyId: String,
+    val propertyId: PropertyId,
     @SerialName("deleted_at")
     val deletedAt: Instant? = null,
 ) {
@@ -44,6 +45,6 @@ data class EmployeeEntity(
         val lastName: String,
         val role: EmployeeRole,
         @SerialName("property_id")
-        val propertyId: String,
+        val propertyId: PropertyId,
     )
 }

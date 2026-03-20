@@ -4,6 +4,7 @@ import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.UnitId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.framework.utils.uuid.UUID
 import kotlinx.coroutines.runBlocking
@@ -43,7 +44,7 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val type = EventLogEventType.DELIVERY // Use a valid EventLogEventType
         val fallbackEventType = null // Set as needed
         val timestamp = Clock.System.now()
-        val unit = "TestUnit" // Use a valid unit
+        val unit = UnitId("TestUnit") // Use a valid unit
         // Act
         val result = eventLogDatastore.createEventLogEntry(
             title = title,
@@ -73,7 +74,7 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val type = EventLogEventType.DELIVERY // Use a valid EventLogEventType
         val fallbackEventType = null // Set as needed
         val timestamp = Clock.System.now()
-        val unit = "TestUnit2" // Use a valid unit
+        val unit = UnitId("TestUnit2") // Use a valid unit
 
         // Act
         val createResult = eventLogDatastore.createEventLogEntry(
@@ -116,7 +117,7 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
             type = EventLogEventType.DELIVERY, // Use a valid EventLogEventType
             fallbackEventType = null, // Set as needed
             timestamp = Clock.System.now(),
-            unit = "TestUnitA", // Use a valid unit
+            unit = UnitId("TestUnitA"), // Use a valid unit
 
         ).registerEventLogEntryForDeletion()
         val result2 = eventLogDatastore.createEventLogEntry(
@@ -128,7 +129,7 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
             type = EventLogEventType.DELIVERY, // Use a valid EventLogEventType
             fallbackEventType = null, // Set as needed
             timestamp = Clock.System.now(),
-            unit = "TestUnitB", // Use a valid unit
+            unit = UnitId("TestUnitB"), // Use a valid unit
         ).registerEventLogEntryForDeletion()
         val result3 = eventLogDatastore.createEventLogEntry(
             title = title2,
@@ -139,7 +140,7 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
             type = EventLogEventType.DELIVERY, // Use a valid EventLogEventType
             fallbackEventType = null, // Set as needed
             timestamp = Clock.System.now(),
-            unit = "TestUnitB", // Use a valid unit
+            unit = UnitId("TestUnitB"), // Use a valid unit
         ).registerEventLogEntryForDeletion()
         assertTrue(result1.isSuccess)
         assertTrue(result2.isSuccess)
@@ -171,7 +172,7 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
             type = EventLogEventType.DELIVERY, // Use a valid EventLogEventType
             fallbackEventType = null, // Set as needed
             timestamp = Clock.System.now(),
-            unit = "TestUnitToUpdate", // Use a valid unit
+            unit = UnitId("TestUnitToUpdate"), // Use a valid unit
 
         ).registerEventLogEntryForDeletion()
         assertTrue(createResult.isSuccess)
@@ -183,7 +184,7 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
             description = "${test_prefix}_UpdatedDescription",
             type = EventLogEventType.MAINTENANCE_SERVICE, // Use a valid EventLogEventType
             fallbackEventType = "UpdatedFallbackType", // Set as needed
-            unit = "UpdatedUnit", // Use a valid unit
+            unit = UnitId("UpdatedUnit"), // Use a valid unit
         )
 
         // Assert
@@ -206,7 +207,7 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
             propertyId = propertyId!!,
             fallbackEventType = null, // Set as needed
             timestamp = Clock.System.now(),
-            unit = "TestUnitToDelete", // Use a valid unit
+            unit = UnitId("TestUnitToDelete"), // Use a valid unit
         ).registerEventLogEntryForDeletion()
         assertTrue(createResult.isSuccess)
         val createdEntry = createResult.getOrNull()

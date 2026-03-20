@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.lib.model.network
 
 import com.cramsan.edifikana.lib.model.EventLogEventType
+import com.cramsan.edifikana.lib.model.UnitId
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.RequestBody
 import kotlinx.serialization.SerialName
@@ -17,5 +18,5 @@ data class UpdateEventLogEntryNetworkRequest(
     val fallbackEventType: String?,
     val title: String?,
     val description: String?,
-    val unit: String?,
+    val unit: UnitId?,
 ) : RequestBody

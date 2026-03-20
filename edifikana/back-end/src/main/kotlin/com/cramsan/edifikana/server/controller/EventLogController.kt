@@ -64,7 +64,7 @@ class EventLogController(
             propertyId = createEventLogRequest.propertyId,
             type = createEventLogRequest.type,
             fallbackEventType = createEventLogRequest.fallbackEventType,
-            timestamp = Instant.fromEpochSeconds(createEventLogRequest.timestamp),
+            timestamp = createEventLogRequest.timestamp,
             title = createEventLogRequest.title,
             description = createEventLogRequest.description,
             unit = createEventLogRequest.unit,

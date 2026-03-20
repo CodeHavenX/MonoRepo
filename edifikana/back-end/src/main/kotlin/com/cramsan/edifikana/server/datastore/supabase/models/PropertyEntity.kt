@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.datastore.supabase.models
 
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.framework.annotations.SupabaseModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -15,7 +16,7 @@ data class PropertyEntity(
     val name: String,
     val address: String,
     @SerialName("organization_id")
-    val organizationId: String,
+    val organizationId: OrganizationId,
     @SerialName("image_url")
     val imageUrl: String? = null,
     @SerialName("deleted_at")
@@ -34,7 +35,7 @@ data class PropertyEntity(
         val name: String,
         val address: String,
         @SerialName("organization_id")
-        val organizationId: String,
+        val organizationId: OrganizationId,
         @SerialName("image_url")
         val imageUrl: String? = null,
     )

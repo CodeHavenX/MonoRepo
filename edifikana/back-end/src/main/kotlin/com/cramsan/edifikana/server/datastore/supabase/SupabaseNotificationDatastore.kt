@@ -37,7 +37,7 @@ class SupabaseNotificationDatastore(
         logD(TAG, "Creating notification for user: $recipientUserId, email: $recipientEmail")
 
         val createEntity = NotificationEntity.Create(
-            recipientUserId = recipientUserId?.userId,
+            recipientUserId = recipientUserId,
             recipientEmail = recipientEmail,
             notificationType = notificationType.name,
             description = description,

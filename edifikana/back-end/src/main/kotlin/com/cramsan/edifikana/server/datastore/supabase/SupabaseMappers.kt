@@ -188,7 +188,7 @@ fun CreateEmployeeEntity(
         firstName = firstName,
         lastName = lastName,
         role = role,
-        propertyId = propertyId.propertyId,
+        propertyId = propertyId,
     )
 }
 
@@ -203,7 +203,7 @@ fun EmployeeEntity.toEmployee(): Employee {
         firstName = this.firstName,
         lastName = this.lastName,
         role = this.role,
-        propertyId = PropertyId(this.propertyId),
+        propertyId = this.propertyId,
     )
 }
 
@@ -220,7 +220,7 @@ fun CreatePropertyEntity(
     return PropertyEntity.CreatePropertyEntity(
         name = name,
         address = address,
-        organizationId = organizationId.id,
+        organizationId = organizationId,
         imageUrl = imageUrl,
     )
 }
@@ -234,7 +234,7 @@ fun PropertyEntity.toProperty(): Property {
         id = PropertyId(this.id),
         name = this.name,
         address = this.address,
-        organizationId = OrganizationId(this.organizationId),
+        organizationId = this.organizationId,
         imageUrl = this.imageUrl,
     )
 }
@@ -252,9 +252,9 @@ fun CreateTimeCardEventEntity(
     timestamp: Instant,
 ): TimeCardEventEntity.CreateTimeCardEventEntity {
     return TimeCardEventEntity.CreateTimeCardEventEntity(
-        employeeId = employeeId.empId,
+        employeeId = employeeId,
         fallbackEmployeeName = fallbackEmpName,
-        propertyId = propertyId.propertyId,
+        propertyId = propertyId,
         type = type,
         imageUrl = imageUrl,
         timestamp = timestamp.epochSeconds,
@@ -266,12 +266,12 @@ fun CreateTimeCardEventEntity(
  */
 @OptIn(SupabaseModel::class)
 fun TimeCardEventEntity.toTimeCardEvent(): TimeCardEvent? {
-    val employeeId = this.employeeId?.let { EmployeeId(it) } ?: return null
+    val employeeId = this.employeeId ?: return null
     return TimeCardEvent(
         id = TimeCardEventId(this.id),
         employeeId = employeeId,
         fallbackEmployeeName = this.fallbackEmployeeName,
-        propertyId = PropertyId(this.propertyId),
+        propertyId = this.propertyId,
         type = this.type,
         imageUrl = this.imageUrl,
         timestamp = Instant.fromEpochSeconds(this.timestamp),
@@ -291,12 +291,12 @@ fun CreateEventLogEntryEntity(
     timestamp: Instant,
     title: String,
     description: String?,
-    unit: String,
+    unit: UnitId,
 ): EventLogEntryEntity.CreateEventLogEntryEntity {
     return EventLogEntryEntity.CreateEventLogEntryEntity(
-        employeeId = employeeId?.empId,
+        employeeId = employeeId,
         fallbackEmployeeName = fallbackEmployeeName,
-        propertyId = propertyId.propertyId,
+        propertyId = propertyId,
         type = type,
         fallbackEventType = fallbackEventType,
         timestamp = timestamp.epochSeconds,
@@ -313,9 +313,9 @@ fun CreateEventLogEntryEntity(
 fun EventLogEntryEntity.toEventLogEntry(): EventLogEntry {
     return EventLogEntry(
         id = EventLogEntryId(this.id),
-        employeeId = this.employeeId?.let { EmployeeId(it) },
+        employeeId = this.employeeId,
         fallbackEmployeeName = this.fallbackEmployeeName,
-        propertyId = PropertyId(this.propertyId),
+        propertyId = this.propertyId,
         type = this.type,
         fallbackEventType = this.fallbackEventType,
         timestamp = Instant.fromEpochSeconds(this.timestamp),
@@ -342,7 +342,7 @@ fun OrganizationEntity.toOrganization() = Organization(
 fun NotificationEntity.toNotification(): Notification {
     return Notification(
         id = NotificationId(this.id),
-        recipientUserId = this.recipientUserId?.let { UserId(it) },
+        recipientUserId = this.recipientUserId,
         recipientEmail = this.recipientEmail,
         notificationType = NotificationType.fromString(this.notificationType),
         description = this.description,
@@ -361,8 +361,8 @@ fun InviteEntity.toInvite(): Invite {
     return Invite(
         id = InviteId(this.id),
         email = this.email,
-        organizationId = OrganizationId(this.organizationId),
-        role = enumValueOf<InviteRole>(this.role),
+        organizationId = this.organizationId,
+        role = this.role,
         expiration = this.expiration,
         inviteCode = this.inviteCode,
         invitedBy = this.invitedBy,
@@ -386,14 +386,14 @@ fun CreateDocumentEntity(
     createdBy: UserId?,
 ): DocumentEntity.CreateDocumentEntity {
     return DocumentEntity.CreateDocumentEntity(
-        orgId = orgId.id,
-        propertyId = propertyId?.propertyId,
-        unitId = unitId?.unitId,
+        orgId = orgId,
+        propertyId = propertyId,
+        unitId = unitId,
         filename = filename,
         mimeType = mimeType,
         documentType = documentType.name,
         assetId = assetId,
-        createdBy = createdBy?.userId,
+        createdBy = createdBy,
     )
 }
 
@@ -404,14 +404,14 @@ fun CreateDocumentEntity(
 fun DocumentEntity.toDocument(): Document {
     return Document(
         id = DocumentId(this.documentId),
-        orgId = OrganizationId(this.orgId),
-        propertyId = this.propertyId?.let { PropertyId(it) },
-        unitId = this.unitId?.let { UnitId(it) },
+        orgId = this.orgId,
+        propertyId = this.propertyId,
+        unitId = this.unitId,
         filename = this.filename,
         mimeType = this.mimeType,
         documentType = enumValueOf<DocumentType>(this.documentType),
         assetId = this.assetId,
-        createdBy = this.createdBy?.let { UserId(it) },
+        createdBy = this.createdBy,
         createdAt = this.createdAt,
     )
 }

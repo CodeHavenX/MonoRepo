@@ -4,6 +4,7 @@ import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.UnitId
 import com.cramsan.edifikana.server.datastore.EventLogDatastore
 import com.cramsan.edifikana.server.service.models.EventLogEntry
 import com.cramsan.framework.logging.logD
@@ -30,7 +31,7 @@ class EventLogService(
         timestamp: Instant,
         title: String,
         description: String?,
-        unit: String,
+        unit: UnitId,
     ): EventLogEntry {
         logD(TAG, "createEventLogEntry")
         return eventLogDatastore.createEventLogEntry(
@@ -77,7 +78,7 @@ class EventLogService(
         fallbackEventType: String?,
         title: String?,
         description: String?,
-        unit: String?,
+        unit: UnitId?,
     ): EventLogEntry {
         logD(TAG, "updateEventLogEntry")
         return eventLogDatastore.updateEventLogEntry(

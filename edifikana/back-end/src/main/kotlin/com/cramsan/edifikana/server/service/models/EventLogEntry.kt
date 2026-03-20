@@ -4,6 +4,7 @@ import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.UnitId
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -21,5 +22,5 @@ data class EventLogEntry(
     val timestamp: Instant,
     val title: String,
     val description: String?,
-    val unit: String,
+    val unit: UnitId,
 )

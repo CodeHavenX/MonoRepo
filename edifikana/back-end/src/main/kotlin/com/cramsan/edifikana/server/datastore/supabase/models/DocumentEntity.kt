@@ -1,5 +1,9 @@
 package com.cramsan.edifikana.server.datastore.supabase.models
 
+import com.cramsan.edifikana.lib.model.OrganizationId
+import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.UnitId
+import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.framework.annotations.SupabaseModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -14,11 +18,11 @@ data class DocumentEntity(
     @SerialName("document_id")
     val documentId: String,
     @SerialName("org_id")
-    val orgId: String,
+    val orgId: OrganizationId,
     @SerialName("property_id")
-    val propertyId: String? = null,
+    val propertyId: PropertyId? = null,
     @SerialName("unit_id")
-    val unitId: String? = null,
+    val unitId: UnitId? = null,
     val filename: String,
     @SerialName("mime_type")
     val mimeType: String,
@@ -27,7 +31,7 @@ data class DocumentEntity(
     @SerialName("document_type")
     val documentType: String,
     @SerialName("created_by")
-    val createdBy: String? = null,
+    val createdBy: UserId? = null,
     @SerialName("created_at")
     val createdAt: Instant,
     @SerialName("deleted_at")
@@ -44,11 +48,11 @@ data class DocumentEntity(
     @SupabaseModel
     data class CreateDocumentEntity(
         @SerialName("org_id")
-        val orgId: String,
+        val orgId: OrganizationId,
         @SerialName("property_id")
-        val propertyId: String? = null,
+        val propertyId: PropertyId? = null,
         @SerialName("unit_id")
-        val unitId: String? = null,
+        val unitId: UnitId? = null,
         val filename: String,
         @SerialName("mime_type")
         val mimeType: String,
@@ -57,6 +61,6 @@ data class DocumentEntity(
         @SerialName("document_type")
         val documentType: String,
         @SerialName("created_by")
-        val createdBy: String? = null,
+        val createdBy: UserId? = null,
     )
 }

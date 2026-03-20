@@ -286,7 +286,7 @@ private fun InviteNetworkResponse.toInvite(): Invite {
         id = this.inviteId,
         email = this.email,
         organizationId = this.organizationId,
-        role = UserRole.valueOf(this.role),
-        expiresAt = Instant.fromEpochSeconds(this.expiresAt),
+        role = UserRole.valueOf(this.role.name),
+        expiresAt = this.expiresAt,
     )
 }

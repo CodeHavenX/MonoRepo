@@ -49,7 +49,7 @@ class SupabasePropertyDatastore(
         // Now associate this entry with the user that created it
         postgrest.from(UserPropertyMappingEntity.COLLECTION).insert(
             UserPropertyMappingEntity.CreateUserPropertyMappingEntity(
-                userId = creatorUserId.userId,
+                userId = creatorUserId,
                 propertyId = createdProperty.id,
             )
         ) {

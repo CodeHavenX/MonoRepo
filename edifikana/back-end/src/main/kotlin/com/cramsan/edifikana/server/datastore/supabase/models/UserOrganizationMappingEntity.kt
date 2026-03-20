@@ -2,6 +2,8 @@ package com.cramsan.edifikana.server.datastore.supabase.models
 
 import com.cramsan.edifikana.lib.model.OrgMemberStatus
 import com.cramsan.edifikana.lib.model.OrgRole
+import com.cramsan.edifikana.lib.model.OrganizationId
+import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.framework.annotations.SupabaseModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -15,9 +17,9 @@ import kotlin.time.Instant
 data class UserOrganizationMappingEntity(
     val id: String,
     @SerialName("user_id")
-    val userId: String,
+    val userId: UserId,
     @SerialName("organization_id")
-    val organizationId: String,
+    val organizationId: OrganizationId,
     val role: OrgRole,
     val status: OrgMemberStatus,
     @SerialName("invited_by")
@@ -38,9 +40,9 @@ data class UserOrganizationMappingEntity(
     @SupabaseModel
     data class CreateUserOrganizationMappingEntity(
         @SerialName("user_id")
-        val userId: String,
+        val userId: UserId,
         @SerialName("organization_id")
-        val organizationId: String,
+        val organizationId: OrganizationId ,
         val role: OrgRole,
     )
 

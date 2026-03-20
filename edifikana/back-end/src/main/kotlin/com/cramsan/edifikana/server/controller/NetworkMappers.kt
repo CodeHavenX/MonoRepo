@@ -2,6 +2,7 @@
 
 package com.cramsan.edifikana.server.controller
 
+import com.cramsan.edifikana.lib.model.InviteRole
 import com.cramsan.edifikana.lib.model.network.AssetNetworkResponse
 import com.cramsan.edifikana.lib.model.network.AuthMetadataNetworkResponse
 import com.cramsan.edifikana.lib.model.network.DocumentNetworkResponse
@@ -145,8 +146,8 @@ fun Invite.toInviteNetworkResponse(): InviteNetworkResponse {
         inviteId = id,
         email = email,
         organizationId = organizationId,
-        role = role.name,
-        expiresAt = expiration.epochSeconds,
+        role = role,
+        expiresAt = expiration,
     )
 }
 

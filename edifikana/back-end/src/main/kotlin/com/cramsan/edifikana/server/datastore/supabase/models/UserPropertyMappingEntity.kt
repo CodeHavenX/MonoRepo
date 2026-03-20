@@ -1,5 +1,7 @@
 package com.cramsan.edifikana.server.datastore.supabase.models
 
+import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.framework.annotations.SupabaseModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -12,9 +14,9 @@ import kotlinx.serialization.Serializable
 data class UserPropertyMappingEntity(
     val id: String,
     @SerialName("user_id")
-    val userId: String,
+    val userId: UserId,
     @SerialName("property_id")
-    val propertyId: String,
+    val propertyId: PropertyId,
 ) {
 
     /**
@@ -24,7 +26,7 @@ data class UserPropertyMappingEntity(
     @SupabaseModel
     data class CreateUserPropertyMappingEntity(
         @SerialName("user_id")
-        val userId: String,
+        val userId: UserId,
         @SerialName("property_id")
         val propertyId: String,
     )

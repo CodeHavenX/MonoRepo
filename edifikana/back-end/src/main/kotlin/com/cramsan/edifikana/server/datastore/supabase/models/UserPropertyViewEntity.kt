@@ -2,6 +2,7 @@ package com.cramsan.edifikana.server.datastore.supabase.models
 
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.service.models.Property
 import com.cramsan.framework.annotations.SupabaseModel
 import kotlinx.serialization.SerialName
@@ -18,11 +19,11 @@ data class UserPropertyViewEntity(
     val name: String,
     val address: String,
     @SerialName("organization_id")
-    val organizationId: String,
+    val organizationId: OrganizationId,
     @SerialName("image_url")
     val imageUrl: String? = null,
     @SerialName("user_id")
-    val userId: String,
+    val userId: UserId,
 ) {
     /**
      * Converts this view entity to a Property domain model.
@@ -32,7 +33,7 @@ data class UserPropertyViewEntity(
             id = PropertyId(id),
             name = name,
             address = address,
-            organizationId = OrganizationId(organizationId),
+            organizationId = organizationId,
             imageUrl = imageUrl,
         )
     }

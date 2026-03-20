@@ -1,11 +1,13 @@
 package com.cramsan.edifikana.lib.model.network
 
 import com.cramsan.edifikana.lib.model.InviteId
+import com.cramsan.edifikana.lib.model.InviteRole
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.ResponseBody
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlin.time.Instant
 
 /**
  * Response model for an invite.
@@ -20,11 +22,11 @@ data class InviteNetworkResponse(
     @SerialName("organization_id")
     val organizationId: OrganizationId,
     @SerialName("role")
-    val role: String,
+    val role: InviteRole,
     @SerialName("expires_at")
-    val expiresAt: Long,
+    val expiresAt: Instant,
     @SerialName("invite_code")
     val inviteCode: String? = null,
     @SerialName("created_at")
-    val createdAt: Long? = null,
+    val createdAt: Instant? = null,
 ) : ResponseBody

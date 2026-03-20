@@ -8,6 +8,7 @@ import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.ResponseBody
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlin.time.Instant
 
 /**
  * Response model for a single organization member.
@@ -24,7 +25,7 @@ data class MemberNetworkResponse(
     @SerialName("status")
     val status: OrgMemberStatus,
     @SerialName("joined_at")
-    val joinedAt: Long?,
+    val joinedAt: Instant?,
     @SerialName("email")
     val email: String,
     @SerialName("display_name")

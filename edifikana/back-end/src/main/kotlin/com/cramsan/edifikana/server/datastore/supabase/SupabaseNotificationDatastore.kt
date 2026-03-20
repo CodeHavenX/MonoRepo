@@ -175,7 +175,7 @@ class SupabaseNotificationDatastore(
         // Use count mode to avoid fetching full objects - more efficient
         val result = postgrest.from(NotificationEntity.COLLECTION).update(
             {
-                NotificationEntity::recipientUserId setTo userId.userId
+                NotificationEntity::recipientUserId setTo userId
             }
         ) {
             filter {

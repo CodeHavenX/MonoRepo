@@ -112,6 +112,9 @@ Examples of commit messages following our conventional commit style:
 [RUNASIMI] Add static translation tables for verb conjugations (#13)
 ```
 
+Do not push changes to `main` directly. All changes must go through a pull request (PR) with a descriptive title and linked GitHub issue.
+Avoid pushing changes unless the user explicitly asks you to.
+
 # Branches
 
 **main**: Stable production-ready code. All features must be merged here through the PR process.

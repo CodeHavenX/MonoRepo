@@ -9,6 +9,24 @@
 -- 3. Renames uploaded_by      → created_by
 -- 4. Renames uploaded_at      → created_at
 -- ============================================================================
+-- IDEMPOTENCY NOTE:
+-- Each RENAME is wrapped in a DO block that catches `undefined_column`.
+-- This is intentional: Supabase applies migrations in strict timestamp order
+-- and will stop on any unhandled error. The DO blocks allow this migration to
+-- be re-applied safely (e.g., after a partial failure was manually recovered)
+-- without re-running the entire migration history.
+--
+-- IMPORTANT: Silent success does NOT mean the column exists with the new name.
+-- It only means either (a) the rename succeeded, or (b) the old column was
+-- already gone (renamed by a prior run). To verify the final schema state,
+-- inspect the columns on the documents table directly:
+--   SELECT column_name FROM information_schema.columns
+--   WHERE table_name = 'documents'
+--   ORDER BY ordinal_position;
+--
+-- Expected final columns after this migration:
+--   filename, asset_id, created_by, created_at
+-- ============================================================================
 
 -- ============================================================================
 -- PART 1: Rename columns

@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.service.authorization
 
+import com.cramsan.edifikana.lib.model.DocumentId
 import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.OrganizationId
@@ -7,6 +8,7 @@ import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
+import com.cramsan.edifikana.server.datastore.DocumentDatastore
 import com.cramsan.edifikana.server.datastore.EmployeeDatastore
 import com.cramsan.edifikana.server.datastore.EventLogDatastore
 import com.cramsan.edifikana.server.datastore.OrganizationDatastore
@@ -28,13 +30,14 @@ class RBACService(
     private val employeeDatastore: EmployeeDatastore,
     private val timeCardDatastore: TimeCardDatastore,
     private val eventLogDatastore: EventLogDatastore,
+    private val documentDatastore: DocumentDatastore,
 ) {
 
-    val propertyNotFoundException = "ERROR: PROPERTY NOT FOUND!"
-    val employeeNotFoundException = "ERROR: EMPLOYEE NOT FOUND!"
-    val timecardEventNotFoundException = "ERROR: TIMECARD EVENT NOT FOUND!"
-    val eventLogNotFound = "ERROR: EVENT LOG ENTRY NOT FOUND!"
-    val unauthorized = UserRole.UNAUTHORIZED
+    private val propertyNotFoundException = "ERROR: PROPERTY NOT FOUND!"
+    private val employeeNotFoundException = "ERROR: EMPLOYEE NOT FOUND!"
+    private val timecardEventNotFoundException = "ERROR: TIMECARD EVENT NOT FOUND!"
+    private val eventLogNotFound = "ERROR: EVENT LOG ENTRY NOT FOUND!"
+    private val unauthorized = UserRole.UNAUTHORIZED
 
     /**
      * Checks if the user has the required role to perform actions on the target user.
@@ -208,6 +211,56 @@ class RBACService(
     }
 
     /**
+     * Checks if the user has the required role to perform actions on the target document.
+     *
+     * @param context The authenticated client context containing user information.
+     * @param targetDocumentId The ID of the target document on which the action is to be performed.
+     * @param requiredRole The role required to perform the action.
+     * @return True if the user has the required role, false otherwise.
+     */
+    suspend fun hasRole(
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+        targetDocumentId: DocumentId,
+        requiredRole: UserRole,
+    ): Boolean {
+        val userRole = getUserRoleForDocumentAction(context, targetDocumentId)
+        return userRole == requiredRole
+    }
+
+    /**
+     * Checks if the user has the required role or higher to perform actions on the target document.
+     *
+     * @param context The authenticated client context containing user information.
+     * @param targetDocumentId The ID of the target document on which the action is to be performed.
+     * @param requiredRole The minimum role required to perform the action.
+     * @return True if the user has the required role or higher, false otherwise.
+     */
+    suspend fun hasRoleOrHigher(
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+        targetDocumentId: DocumentId,
+        requiredRole: UserRole,
+    ): Boolean {
+        val userRole = getUserRoleForDocumentAction(context, targetDocumentId)
+        return userRole.level <= requiredRole.level
+    }
+
+    /**
+     * Retrieves the user role for the action being performed on the target document.
+     *
+     * @param context The authenticated client context containing user information.
+     * @param targetDocumentId The ID of the target document on which the action is to be performed.
+     * @return The user role if the action is allowed, or UNAUTHORIZED if not.
+     */
+    private suspend fun getUserRoleForDocumentAction(
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+        targetDocumentId: DocumentId,
+    ): UserRole {
+        val document = documentDatastore.getDocument(targetDocumentId).getOrThrow()
+            ?: return UserRole.UNAUTHORIZED
+        return getUserRoleForOrganizationAction(context, document.orgId)
+    }
+
+    /**
      * Checks if the user has the required role to perform actions on the target employee.
      *
      * @param context The authenticated client context containing user information.
@@ -275,7 +328,7 @@ class RBACService(
     ): UserRole {
         logI(TAG, "Retrieving user role(s) for ${context.payload.userId}")
         val requestedProperty = propertyDatastore.getProperty(targetProperty)
-        val property = requestedProperty.getOrThrow() ?: throw RuntimeException(propertyNotFoundException)
+        val property = requestedProperty.getOrThrow() ?: throw InvalidRequestException(propertyNotFoundException)
         val role = orgDataStore.getUserRole(context.payload.userId, property.organizationId).getOrNull()
 
         if (role != null) {

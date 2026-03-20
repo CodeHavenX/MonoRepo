@@ -75,10 +75,11 @@ class DocumentController(
             ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
             >
     ): DocumentNetworkResponse? {
-        val document = documentService.getDocument(request.pathParam) ?: return null
-        if (!rbacService.hasRoleOrHigher(request.context, document.orgId, UserRole.EMPLOYEE)) {
-            throw UnauthorizedException(unauthorizedMsg)
+        val documentId = request.pathParam
+        if (!rbacService.hasRoleOrHigher(request.context, documentId, UserRole.EMPLOYEE)) {
+            return null
         }
+        val document = documentService.getDocument(request.pathParam) ?: return null
         return document.toDocumentNetworkResponse()
     }
 
@@ -115,9 +116,7 @@ class DocumentController(
             ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
             >
     ): DocumentNetworkResponse {
-        val document = documentService.getDocument(request.pathParam)
-            ?: throw UnauthorizedException(unauthorizedMsg)
-        if (!rbacService.hasRoleOrHigher(request.context, document.orgId, UserRole.MANAGER)) {
+        if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.MANAGER)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
         return documentService.updateDocument(
@@ -138,9 +137,7 @@ class DocumentController(
             ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
             >
     ): NoResponseBody {
-        val document = documentService.getDocument(request.pathParam)
-            ?: throw UnauthorizedException(unauthorizedMsg)
-        if (!rbacService.hasRoleOrHigher(request.context, document.orgId, UserRole.MANAGER)) {
+        if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.MANAGER)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
         documentService.deleteDocument(request.pathParam)

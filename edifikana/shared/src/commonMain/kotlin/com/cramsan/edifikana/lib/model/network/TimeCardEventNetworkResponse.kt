@@ -8,6 +8,7 @@ import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.ResponseBody
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlin.time.Instant
 
 /**
  * Model representing a time card event.
@@ -26,5 +27,5 @@ data class TimeCardEventNetworkResponse(
     val type: TimeCardEventType,
     @SerialName("image_url")
     val imageUrl: String?,
-    val timestamp: Long,
+    val timestamp: Instant,
 ) : ResponseBody

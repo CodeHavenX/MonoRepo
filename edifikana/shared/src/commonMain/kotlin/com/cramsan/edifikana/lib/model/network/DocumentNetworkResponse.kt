@@ -10,6 +10,7 @@ import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.ResponseBody
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlin.time.Instant
 
 /**
  * Network response for a single document.
@@ -26,5 +27,5 @@ data class DocumentNetworkResponse(
     @SerialName("document_type") val documentType: DocumentType,
     @SerialName("asset_id") val assetId: String,
     @SerialName("created_by") val createdBy: UserId?,
-    @SerialName("created_at") val createdAt: Long,
+    @SerialName("created_at") val createdAt: Instant,
 ) : ResponseBody

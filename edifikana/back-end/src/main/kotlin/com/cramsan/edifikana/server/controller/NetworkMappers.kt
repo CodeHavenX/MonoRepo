@@ -77,7 +77,7 @@ fun EventLogEntry.toEventLogEntryNetworkResponse(): EventLogEntryNetworkResponse
         propertyId = propertyId,
         type = type,
         fallbackEventType = fallbackEventType,
-        timestamp = timestamp.epochSeconds,
+        timestamp = timestamp,
         description = description,
         unit = unit,
     )
@@ -109,7 +109,7 @@ fun TimeCardEvent.toTimeCardEventNetworkResponse(): TimeCardEventNetworkResponse
         propertyId = propertyId,
         type = type,
         imageUrl = imageUrl,
-        timestamp = timestamp.epochSeconds,
+        timestamp = timestamp,
     )
 }
 
@@ -161,8 +161,8 @@ fun Notification.toNotificationNetworkResponse(): NotificationNetworkResponse {
         notificationType = notificationType,
         description = description,
         isRead = isRead,
-        createdAt = createdAt.epochSeconds,
-        readAt = readAt?.epochSeconds,
+        createdAt = createdAt,
+        readAt = readAt,
         inviteId = inviteId,
     )
 }
@@ -182,7 +182,7 @@ fun Document.toDocumentNetworkResponse(): DocumentNetworkResponse {
         documentType = documentType,
         assetId = assetId,
         createdBy = createdBy,
-        createdAt = createdAt.epochSeconds,
+        createdAt = createdAt,
     )
 }
 

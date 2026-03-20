@@ -73,7 +73,7 @@ class NetworkMapperTest {
             notificationType = NotificationType.INVITE,
             description = "You have been invited to join Test Org",
             isRead = false,
-            createdAt = createdAt.epochSeconds,
+            createdAt = createdAt,
             readAt = null,
             inviteId = InviteId("invite123"),
         )
@@ -110,8 +110,8 @@ class NetworkMapperTest {
             notificationType = NotificationType.SYSTEM,
             description = "System maintenance scheduled",
             isRead = true,
-            createdAt = createdAt.epochSeconds,
-            readAt = readAt.epochSeconds,
+            createdAt = createdAt,
+            readAt = readAt,
             inviteId = null,
         )
 

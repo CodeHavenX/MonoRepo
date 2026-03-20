@@ -32,6 +32,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.datetime.parse
 import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
 import org.koin.test.get
@@ -81,7 +82,7 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
                 propertyId = PropertyId("property789"),
                 type = EventLogEventType.MAINTENANCE_SERVICE,
                 fallbackEventType = "General Maintenance",
-                timestamp = Instant.fromEpochSeconds(1727702654),
+                timestamp = Instant.parse("2024-01-01T00:00:00Z"),
                 title = "Routine Check",
                 description = "Performed routine maintenance check.",
                 unit = UnitId("Unit 101"),
@@ -94,7 +95,7 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
                 propertyId = PropertyId("property789"),
                 type = EventLogEventType.MAINTENANCE_SERVICE,
                 fallbackEventType = "General Maintenance",
-                timestamp = Instant.fromEpochSeconds(1727702654),
+                timestamp = Instant.fromEpochMilliseconds(1727702654),
                 title = "Routine Check",
                 description = "Performed routine maintenance check.",
                 unit = UnitId("Unit 101"),
@@ -147,7 +148,7 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
                 propertyId = PropertyId("property789"),
                 type = EventLogEventType.MAINTENANCE_SERVICE,
                 fallbackEventType = "General Maintenance",
-                timestamp = Instant.fromEpochSeconds(1727702654),
+                timestamp = Instant.parse("2024-01-01T00:00:00Z"),
                 title = "Routine Check",
                 description = "Performed routine maintenance check.",
                 unit = UnitId("Unit 101"),
@@ -198,7 +199,7 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
                     propertyId = PropertyId("property789"),
                     type = EventLogEventType.MAINTENANCE_SERVICE,
                     fallbackEventType = "General Maintenance",
-                    timestamp = Instant.fromEpochSeconds(1727702654),
+                    timestamp = Instant.parse("2024-01-01T00:00:00Z"),
                     title = "Routine Check",
                     description = "Performed routine maintenance check.",
                     unit = UnitId("Unit 101"),
@@ -210,7 +211,7 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
                     propertyId = PropertyId("property101"),
                     type = EventLogEventType.MAINTENANCE_SERVICE,
                     fallbackEventType = "General Maintenance",
-                    timestamp = Instant.fromEpochSeconds(1727702654),
+                    timestamp = Instant.parse("2024-02-01T00:00:00Z"),
                     title = "Routine Check",
                     description = "Performed routine maintenance check.",
                     unit = UnitId("Unit 101"),
@@ -262,7 +263,7 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
                 propertyId = PropertyId("property789"),
                 type = EventLogEventType.INCIDENT,
                 fallbackEventType = "Inspection",
-                timestamp = Instant.fromEpochSeconds(1727702654),
+                timestamp = Instant.parse("2024-02-01T00:00:00Z"),
                 title = "Monthly check",
                 description = "Performed monthly inspection.",
                 unit = UnitId("Unit 202"),

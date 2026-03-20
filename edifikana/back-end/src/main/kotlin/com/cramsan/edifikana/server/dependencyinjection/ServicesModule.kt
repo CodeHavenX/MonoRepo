@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.dependencyinjection
 
+import com.cramsan.edifikana.server.service.DocumentService
 import com.cramsan.edifikana.server.service.EmployeeService
 import com.cramsan.edifikana.server.service.EventLogService
 import com.cramsan.edifikana.server.service.NotificationService
@@ -25,4 +26,5 @@ internal val ServicesModule = module {
     singleOf(::StorageService)
     singleOf(::OrganizationService)
     singleOf(::RBACService)
+    singleOf(::DocumentService)
 }

@@ -2,6 +2,8 @@
 
 package com.cramsan.edifikana.server.datastore.supabase
 
+import com.cramsan.edifikana.lib.model.DocumentId
+import com.cramsan.edifikana.lib.model.DocumentType
 import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EmployeeRole
 import com.cramsan.edifikana.lib.model.InviteRole
@@ -16,8 +18,10 @@ import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
+import com.cramsan.edifikana.lib.model.UnitId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.datastore.supabase.models.AuthMetadataEntity
+import com.cramsan.edifikana.server.datastore.supabase.models.DocumentEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.EmployeeEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.EventLogEntryEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.InviteEntity
@@ -26,6 +30,7 @@ import com.cramsan.edifikana.server.datastore.supabase.models.OrganizationEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.PropertyEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.TimeCardEventEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.UserEntity
+import com.cramsan.edifikana.server.service.models.Document
 import com.cramsan.edifikana.server.service.models.Employee
 import com.cramsan.edifikana.server.service.models.EventLogEntry
 import com.cramsan.edifikana.server.service.models.Invite
@@ -348,5 +353,50 @@ fun InviteEntity.toInvite(): Invite {
         invitedBy = this.invitedBy,
         acceptedAt = this.acceptedAt,
         unitId = this.unitId,
+    )
+}
+
+/**
+ * Creates a [DocumentEntity.CreateDocumentEntity] from the provided parameters.
+ */
+@OptIn(SupabaseModel::class)
+fun CreateDocumentEntity(
+    orgId: OrganizationId,
+    propertyId: PropertyId?,
+    unitId: UnitId?,
+    filename: String,
+    mimeType: String,
+    documentType: DocumentType,
+    assetId: String,
+    createdBy: UserId?,
+): DocumentEntity.CreateDocumentEntity {
+    return DocumentEntity.CreateDocumentEntity(
+        orgId = orgId.id,
+        propertyId = propertyId?.propertyId,
+        unitId = unitId?.unitId,
+        filename = filename,
+        mimeType = mimeType,
+        documentType = documentType.name,
+        assetId = assetId,
+        createdBy = createdBy?.userId,
+    )
+}
+
+/**
+ * Maps a [DocumentEntity] to the [Document] service model.
+ */
+@OptIn(SupabaseModel::class)
+fun DocumentEntity.toDocument(): Document {
+    return Document(
+        id = DocumentId(this.documentId),
+        orgId = OrganizationId(this.orgId),
+        propertyId = this.propertyId?.let { PropertyId(it) },
+        unitId = this.unitId?.let { UnitId(it) },
+        filename = this.filename,
+        mimeType = this.mimeType,
+        documentType = enumValueOf<DocumentType>(this.documentType),
+        assetId = this.assetId,
+        createdBy = this.createdBy?.let { UserId(it) },
+        createdAt = this.createdAt,
     )
 }

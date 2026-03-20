@@ -4,6 +4,7 @@ package com.cramsan.edifikana.server.controller
 
 import com.cramsan.edifikana.lib.model.network.AssetNetworkResponse
 import com.cramsan.edifikana.lib.model.network.AuthMetadataNetworkResponse
+import com.cramsan.edifikana.lib.model.network.DocumentNetworkResponse
 import com.cramsan.edifikana.lib.model.network.EmployeeNetworkResponse
 import com.cramsan.edifikana.lib.model.network.EventLogEntryNetworkResponse
 import com.cramsan.edifikana.lib.model.network.InviteNetworkResponse
@@ -13,6 +14,7 @@ import com.cramsan.edifikana.lib.model.network.PropertyNetworkResponse
 import com.cramsan.edifikana.lib.model.network.TimeCardEventNetworkResponse
 import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
 import com.cramsan.edifikana.server.service.models.Asset
+import com.cramsan.edifikana.server.service.models.Document
 import com.cramsan.edifikana.server.service.models.Employee
 import com.cramsan.edifikana.server.service.models.EventLogEntry
 import com.cramsan.edifikana.server.service.models.Invite
@@ -161,6 +163,25 @@ fun Notification.toNotificationNetworkResponse(): NotificationNetworkResponse {
         createdAt = createdAt.epochSeconds,
         readAt = readAt?.epochSeconds,
         inviteId = inviteId,
+    )
+}
+
+/**
+ * Converts a [Document] domain model to a [DocumentNetworkResponse] network model.
+ */
+@OptIn(NetworkModel::class)
+fun Document.toDocumentNetworkResponse(): DocumentNetworkResponse {
+    return DocumentNetworkResponse(
+        documentId = id,
+        orgId = orgId,
+        propertyId = propertyId,
+        unitId = unitId,
+        filename = filename,
+        mimeType = mimeType,
+        documentType = documentType,
+        assetId = assetId,
+        createdBy = createdBy,
+        createdAt = createdAt.epochSeconds,
     )
 }
 

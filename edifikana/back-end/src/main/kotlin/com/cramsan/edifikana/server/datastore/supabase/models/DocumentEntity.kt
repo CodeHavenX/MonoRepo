@@ -19,17 +19,17 @@ data class DocumentEntity(
     val propertyId: String? = null,
     @SerialName("unit_id")
     val unitId: String? = null,
-    val title: String,
-    @SerialName("file_storage_key")
-    val fileStorageKey: String,
+    val filename: String,
     @SerialName("mime_type")
     val mimeType: String,
+    @SerialName("asset_id")
+    val assetId: String,
     @SerialName("document_type")
     val documentType: String,
-    @SerialName("uploaded_by")
-    val uploadedBy: String? = null,
-    @SerialName("uploaded_at")
-    val uploadedAt: Instant,
+    @SerialName("created_by")
+    val createdBy: String? = null,
+    @SerialName("created_at")
+    val createdAt: Instant,
     @SerialName("deleted_at")
     val deletedAt: Instant? = null,
 ) {
@@ -49,14 +49,14 @@ data class DocumentEntity(
         val propertyId: String? = null,
         @SerialName("unit_id")
         val unitId: String? = null,
-        val title: String,
-        @SerialName("file_storage_key")
-        val fileStorageKey: String,
+        val filename: String,
         @SerialName("mime_type")
         val mimeType: String,
+        @SerialName("asset_id")
+        val assetId: String,
         @SerialName("document_type")
         val documentType: String,
-        @SerialName("uploaded_by")
-        val uploadedBy: String? = null,
+        @SerialName("created_by")
+        val createdBy: String? = null,
     )
 }

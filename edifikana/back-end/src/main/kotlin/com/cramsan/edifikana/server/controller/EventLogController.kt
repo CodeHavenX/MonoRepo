@@ -2,6 +2,7 @@ package com.cramsan.edifikana.server.controller
 
 import com.cramsan.edifikana.api.EventLogApi
 import com.cramsan.edifikana.lib.model.EventLogEntryId
+import com.cramsan.edifikana.lib.model.UnitId
 import com.cramsan.edifikana.lib.model.network.CreateEventLogEntryNetworkRequest
 import com.cramsan.edifikana.lib.model.network.EventLogEntryListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.EventLogEntryNetworkResponse
@@ -25,7 +26,6 @@ import com.cramsan.framework.core.ktor.handler
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.UnauthorizedException
 import io.ktor.server.routing.Routing
 import kotlin.time.ExperimentalTime
-import kotlin.time.Instant
 
 /**
  * Controller for event log related operations.
@@ -103,7 +103,6 @@ class EventLogController(
      * Handles the retrieval of all event log entries. This function is currently not implemented.
      * Intended to fetch and return a list of all event log entries as a network response.
      */
-    @Suppress("UnusedParameter")
     @OptIn(NetworkModel::class)
     suspend fun getEventLogEntries(
         request: OperationRequest<

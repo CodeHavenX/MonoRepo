@@ -34,7 +34,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlin.time.ExperimentalTime
-import kotlin.time.Instant
 
 /**
  * Default implementation for the [AuthService].

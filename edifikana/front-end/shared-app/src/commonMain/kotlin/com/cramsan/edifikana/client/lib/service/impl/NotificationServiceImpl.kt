@@ -63,8 +63,8 @@ private fun NotificationNetworkResponse.toNotification(): Notification {
         type = this.notificationType,
         description = this.description,
         isRead = this.isRead,
-        createdAt = Instant.fromEpochSeconds(this.createdAt),
-        readAt = this.readAt?.let { Instant.fromEpochSeconds(it) },
+        createdAt = this.createdAt,
+        readAt = this.readAt,
         inviteId = this.inviteId,
     )
 }

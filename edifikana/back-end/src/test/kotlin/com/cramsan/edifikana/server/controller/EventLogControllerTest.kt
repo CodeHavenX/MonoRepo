@@ -95,7 +95,7 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
                 propertyId = PropertyId("property789"),
                 type = EventLogEventType.MAINTENANCE_SERVICE,
                 fallbackEventType = "General Maintenance",
-                timestamp = Instant.fromEpochMilliseconds(1727702654),
+                timestamp = Instant.parse("2024-01-01T00:00:00Z"),
                 title = "Routine Check",
                 description = "Performed routine maintenance check.",
                 unit = UnitId("Unit 101"),

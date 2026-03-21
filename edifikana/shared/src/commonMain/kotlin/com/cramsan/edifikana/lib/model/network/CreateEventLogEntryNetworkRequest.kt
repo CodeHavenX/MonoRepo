@@ -28,5 +28,5 @@ data class CreateEventLogEntryNetworkRequest(
     val timestamp: Instant,
     val title: String,
     val description: String?,
-    val unit: UnitId,
+    val unit: UnitId?,
 ) : RequestBody

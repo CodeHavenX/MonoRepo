@@ -5,6 +5,7 @@ import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.PropertyId
+import kotlin.time.Instant
 
 /**
  * Convert an event log record model to an entity.
@@ -13,14 +14,14 @@ fun EventLogRecordModel.toEntity(): EventLogRecordEntity {
     return EventLogRecordEntity(
         requireNotNull(entityId),
         employeePk?.empId,
-        timeRecorded,
+        timeRecorded.toEpochMilliseconds(),
         unit,
         eventType.name,
         fallbackEmployeeName,
         fallbackEventType,
         title,
         description,
-        propertyId = propertyId.propertyId,
+        propertyId = propertyId,
     )
 }
 
@@ -32,14 +33,14 @@ fun EventLogRecordEntity.toDomainModel(): EventLogRecordModel {
         id = null,
         entityId = id,
         employeePk = employeeDocumentId?.let { EmployeeId(it) },
-        timeRecorded = timeRecorded ?: TODO("Time recorded cannot be null"),
-        unit = unit.orEmpty(),
+        timeRecorded = timeRecorded?.let { Instant.fromEpochMilliseconds(it) } ?: TODO("Time recorded cannot be null"),
+        unit = unit,
         eventType = EventLogEventType.fromString(eventType),
         fallbackEmployeeName = fallbackEmployeeName,
         fallbackEventType = fallbackEventType,
         title = title.orEmpty(),
         description = description.orEmpty(),
         attachments = emptyList(),
-        propertyId = PropertyId(propertyId),
+        propertyId = propertyId,
     )
 }

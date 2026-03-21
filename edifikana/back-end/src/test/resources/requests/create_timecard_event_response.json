@@ -5,5 +5,5 @@
     "property_id": "property123",
     "type": "CLOCK_OUT",
     "image_url": "http://example.com/image.jpg",
-    "timestamp": 1727702654
+    "timestamp": "2024-01-01T00:00:00Z"
 }

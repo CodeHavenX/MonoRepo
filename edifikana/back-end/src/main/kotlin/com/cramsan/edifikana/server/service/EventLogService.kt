@@ -31,7 +31,7 @@ class EventLogService(
         timestamp: Instant,
         title: String,
         description: String?,
-        unit: UnitId,
+        unit: UnitId?,
     ): EventLogEntry {
         logD(TAG, "createEventLogEntry")
         return eventLogDatastore.createEventLogEntry(

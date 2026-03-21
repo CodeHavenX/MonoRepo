@@ -24,6 +24,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlin.time.Instant
 
 class TimeCardServiceImplTest {
     private lateinit var ktorTestEngine: KtorTestEngine
@@ -58,7 +59,7 @@ class TimeCardServiceImplTest {
                 type = TimeCardEventType.CLOCK_IN,
                 imageUrl = "http://example.com/image1.jpg",
                 fallbackEmployeeName = "John Doe",
-                timestamp = 311324800L,
+                timestamp = Instant.parse("2024-01-01T00:00:00Z"),
             ),
             TimeCardEventNetworkResponse(
                 id = TimeCardEventId("tc-2"),
@@ -67,7 +68,7 @@ class TimeCardServiceImplTest {
                 type = TimeCardEventType.CLOCK_OUT,
                 imageUrl = "http://example.com/image2.jpg",
                 fallbackEmployeeName = "Jane Smith",
-                timestamp = 311328000L,
+                timestamp = Instant.parse("2024-01-01T00:00:00Z"),
             )
         ))
         ktorTestEngine.configure {
@@ -99,7 +100,7 @@ class TimeCardServiceImplTest {
                 type = TimeCardEventType.CLOCK_IN,
                 imageUrl = "http://example.com/image3.jpg",
                 fallbackEmployeeName = "Alice Johnson",
-                timestamp = 411324800L,
+                timestamp = Instant.parse("2024-01-01T00:00:00Z"),
             )
         ))
         ktorTestEngine.configure {
@@ -130,7 +131,7 @@ class TimeCardServiceImplTest {
             type = TimeCardEventType.CLOCK_IN,
             imageUrl = "http://example.com/image1.jpg",
             fallbackEmployeeName = "John Doe",
-            timestamp = 1610000000L,
+            timestamp = Instant.parse("2024-01-01T00:00:00Z"),
         )
         ktorTestEngine.configure {
             coEvery { produceResponse(any()) } returns MockResponseData.Success(
@@ -158,7 +159,7 @@ class TimeCardServiceImplTest {
             entityId = null,
             eventType = TimeCardEventType.CLOCK_OUT,
             imageUrl = null,
-            eventTime = 1610033600L,
+            eventTime = Instant.parse("2024-01-01T00:00:00Z"),
             imageRef = null,
         )
         val networkResponse = TimeCardEventNetworkResponse(
@@ -168,7 +169,7 @@ class TimeCardServiceImplTest {
             type = TimeCardEventType.CLOCK_OUT,
             imageUrl = null,
             fallbackEmployeeName = null,
-            timestamp = 1610033600L,
+            timestamp = Instant.parse("2024-01-01T00:00:00Z"),
         )
         ktorTestEngine.configure {
             coEvery { produceResponse(any()) } returns MockResponseData.Success(

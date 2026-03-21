@@ -5,6 +5,7 @@ import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.UnitId
 import com.cramsan.edifikana.lib.model.network.EventLogEntryListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.EventLogEntryNetworkResponse
 import com.cramsan.edifikana.lib.serialization.createJson
@@ -24,6 +25,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlin.time.Instant
 
 /**
  * Test class for [EventLogServiceImpl].
@@ -68,10 +70,10 @@ class EventLogServiceImplTest {
             type = EventLogEventType.MAINTENANCE_SERVICE,
             description = "Event 1 description",
             fallbackEventType = "Maintenance Service",
-            timestamp = 2342341234L,
+            timestamp = Instant.parse("2025-03-10T00:00:00Z"),
             title = "Event 1",
-            unit = "Unit 1",
-        )
+            unit = UnitId("Unit 1"),
+            )
         ktorTestEngine.configure {
             coEvery { produceResponse(any()) } returns MockResponseData.Success(
                 json.encodeToString(networkResponse)
@@ -102,9 +104,9 @@ class EventLogServiceImplTest {
                 type = EventLogEventType.MAINTENANCE_SERVICE,
                 description = "Event 1 description",
                 fallbackEventType = "Maintenance Service",
-                timestamp = 2342341234L,
+                timestamp = Instant.parse("2025-02-01T00:00:00Z"),
                 title = "Event 1",
-                unit = "Unit 1",
+                unit = UnitId("Unit 1"),
             ),
         ))
         ktorTestEngine.configure {
@@ -134,13 +136,13 @@ class EventLogServiceImplTest {
             propertyId = PropertyId("property-1"),
             eventType = EventLogEventType.MAINTENANCE_SERVICE,
             description = "Event 1 description",
-            timeRecorded = 2342341234L,
+            timeRecorded = Instant.parse("2025-03-01T00:00:00Z"),
             title = "Event 1",
             fallbackEmployeeName = "John Doe",
             fallbackEventType = "Maintenance Service",
             attachments = emptyList(),
             entityId = null,
-            unit = "Unit 1",
+            unit = UnitId("Unit 1"),
         )
         val networkResponse = EventLogEntryNetworkResponse(
             id = EventLogEntryId("event-1"),
@@ -150,9 +152,9 @@ class EventLogServiceImplTest {
             type = EventLogEventType.MAINTENANCE_SERVICE,
             description = "Event 1 description",
             fallbackEventType = "Maintenance Service",
-            timestamp = 2342341234L,
+            timestamp = Instant.parse("2025-03-08T00:00:00Z"),
             title = "Event 1",
-            unit = "Unit 1",
+            unit = UnitId("Unit 1"),
         )
         ktorTestEngine.configure {
             coEvery { produceResponse(any()) } returns MockResponseData.Success(
@@ -180,13 +182,13 @@ class EventLogServiceImplTest {
             propertyId = PropertyId("property-1"),
             eventType = EventLogEventType.MAINTENANCE_SERVICE,
             description = "Updated Event 1 description",
-            timeRecorded = 2342341234L,
+            timeRecorded = Instant.parse("2025-03-20T00:00:00Z"),
             title = "Updated Event 1",
             fallbackEmployeeName = "John Doe",
             fallbackEventType = "Maintenance Service",
             attachments = emptyList(),
             entityId = null,
-            unit = "Unit 1",
+            unit = UnitId("Unit 1"),
         )
         val networkResponse = EventLogEntryNetworkResponse(
             id = EventLogEntryId("event-1"),
@@ -196,9 +198,9 @@ class EventLogServiceImplTest {
             type = EventLogEventType.MAINTENANCE_SERVICE,
             description = "Updated Event 1 description",
             fallbackEventType = "Maintenance Service",
-            timestamp = 2342341234L,
+            timestamp = Instant.parse("2025-04-20T00:00:00Z"),
             title = "Updated Event 1",
-            unit = "Unit 1",
+            unit = UnitId("Unit 1"),
         )
         ktorTestEngine.configure {
             coEvery { produceResponse(any()) } returns MockResponseData.Success(
@@ -213,4 +215,3 @@ class EventLogServiceImplTest {
         assertTrue(result.isSuccess)
     }
 }
-

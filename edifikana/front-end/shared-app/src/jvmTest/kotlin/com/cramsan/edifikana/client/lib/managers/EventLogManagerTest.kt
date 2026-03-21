@@ -6,6 +6,7 @@ import com.cramsan.edifikana.client.lib.service.EventLogService
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.UnitId
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.logging.EventLogger
@@ -21,6 +22,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlinx.coroutines.test.runTest
+import kotlin.time.Instant
 
 /**
  * Unit tests for the EventLogManager class.
@@ -90,23 +92,23 @@ class EventLogManagerTest : CoroutineTest() {
         entityId = "entity1",
         employeePk = null,
         propertyId = PropertyId("Cenit"),
-        timeRecorded = 1000L,
-        unit = "unit1",
-        eventType = EventLogEventType.INCIDENT,
-        fallbackEmployeeName = null,
-        fallbackEventType = null,
-        title = "Major Incident",
-        description = "Description for test event 1",
-        attachments = emptyList()
-    )
+        timeRecorded = Instant.parse("2025-01-01T00:00:00Z"),
+        unit = UnitId("unit1"),
+            eventType = EventLogEventType.INCIDENT,
+            fallbackEmployeeName = null,
+            fallbackEventType = null,
+            title = "Major Incident",
+            description = "Description for test event 1",
+            attachments = emptyList()
+        )
 
     val eventTest2: EventLogRecordModel = EventLogRecordModel(
         id = EventLogEntryId("maintenance1"),
         entityId = "entity2",
         employeePk = null,
         propertyId = PropertyId("Cenit"),
-        timeRecorded = 2000L,
-        unit = "unit2",
+        timeRecorded = Instant.parse("2025-02-01T00:00:00Z"),
+        unit = UnitId("unit2"),
         eventType = EventLogEventType.MAINTENANCE_SERVICE,
         fallbackEmployeeName = null,
         fallbackEventType = null,
@@ -120,8 +122,8 @@ class EventLogManagerTest : CoroutineTest() {
         entityId = "entity3",
         employeePk = null,
         propertyId = PropertyId("Cenit"),
-        timeRecorded = 3000L,
-        unit = "unit3",
+        timeRecorded = Instant.parse("2025-03-01T00:00:00Z"),
+        unit = UnitId("unit3"),
         eventType = EventLogEventType.INCIDENT,
         fallbackEmployeeName = null,
         fallbackEventType = null,

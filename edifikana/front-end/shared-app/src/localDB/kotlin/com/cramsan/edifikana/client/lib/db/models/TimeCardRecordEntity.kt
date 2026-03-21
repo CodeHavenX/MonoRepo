@@ -2,6 +2,7 @@ package com.cramsan.edifikana.client.lib.db.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlin.time.Instant
 
 /**
  * Database model for representing a [TimeCardRecordModel]

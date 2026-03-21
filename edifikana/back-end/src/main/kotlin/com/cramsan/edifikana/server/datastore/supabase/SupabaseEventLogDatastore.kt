@@ -36,7 +36,7 @@ class SupabaseEventLogDatastore(
         timestamp: Instant,
         title: String,
         description: String?,
-        unit: UnitId,
+        unit: UnitId?,
     ): Result<EventLogEntry> = runSuspendCatching(TAG) {
         logD(TAG, "Creating event log entry: %s", title)
         val requestEntity: EventLogEntryEntity.CreateEventLogEntryEntity = CreateEventLogEntryEntity(

@@ -4,7 +4,9 @@ import androidx.compose.runtime.Composable
 import com.cramsan.edifikana.client.ui.theme.AppTheme
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
+import com.cramsan.edifikana.lib.model.UnitId
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import kotlin.time.Instant
 
 @Preview
 @Composable
@@ -43,7 +45,7 @@ private fun EventLogScreenPreview_WithEvents() = AppTheme {
                     description = "Water leak found in the basement near the main pipe.",
                     eventType = EventLogEventType.INCIDENT,
                     fallbackEventType = null,
-                    unit = "Basement",
+                    unit = UnitId("Basement"),
                     timeRecorded = "Dec 15, 2025 10:30 AM",
                     employeeName = "Juan Perez",
                 ),
@@ -53,7 +55,7 @@ private fun EventLogScreenPreview_WithEvents() = AppTheme {
                     description = "Guest arrived for apartment 301.",
                     eventType = EventLogEventType.GUEST,
                     fallbackEventType = null,
-                    unit = "Apt 301",
+                    unit = UnitId("Apt 301"),
                     timeRecorded = "Dec 15, 2025 09:15 AM",
                     employeeName = "Maria Garcia",
                 ),
@@ -63,7 +65,7 @@ private fun EventLogScreenPreview_WithEvents() = AppTheme {
                     description = "",
                     eventType = EventLogEventType.DELIVERY,
                     fallbackEventType = null,
-                    unit = "Lobby",
+                    unit = UnitId("Lobby"),
                     timeRecorded = "Dec 14, 2025 04:45 PM",
                     employeeName = null,
                 ),
@@ -73,7 +75,7 @@ private fun EventLogScreenPreview_WithEvents() = AppTheme {
                     description = "AC unit not working properly, needs inspection.",
                     eventType = EventLogEventType.MAINTENANCE_SERVICE,
                     fallbackEventType = "HVAC Issue",
-                    unit = "Apt 505",
+                    unit = UnitId("Apt 505"),
                     timeRecorded = "Dec 14, 2025 02:00 PM",
                     employeeName = "Carlos Rodriguez",
                 ),
@@ -108,7 +110,7 @@ private fun EventLogScreenPreview_WithEvents_ES() = AppTheme {
                     description = "Fuga de agua encontrada en el sótano cerca de la tubería principal.",
                     eventType = EventLogEventType.INCIDENT,
                     fallbackEventType = null,
-                    unit = "Sótano",
+                    unit = UnitId("Sótano"),
                     timeRecorded = "15 dic. 2025 10:30",
                     employeeName = "Juan Pérez",
                 ),
@@ -118,7 +120,7 @@ private fun EventLogScreenPreview_WithEvents_ES() = AppTheme {
                     description = "Visita llegó al departamento 301.",
                     eventType = EventLogEventType.GUEST,
                     fallbackEventType = null,
-                    unit = "Dpto 301",
+                    unit = UnitId("Dpto 301"),
                     timeRecorded = "15 dic. 2025 09:15",
                     employeeName = null,
                 ),
@@ -141,7 +143,7 @@ private fun EventLogScreenPreview_SingleEvent() = AppTheme {
                     description = "Unauthorized access attempt at the main gate.",
                     eventType = EventLogEventType.INCIDENT,
                     fallbackEventType = null,
-                    unit = "Main Gate",
+                    unit = UnitId("Main Gate"),
                     timeRecorded = "Dec 15, 2025 11:45 AM",
                     employeeName = "Pedro Sanchez",
                 ),

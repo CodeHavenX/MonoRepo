@@ -16,7 +16,7 @@ data class EventLogRecordModel(
     val employeePk: EmployeeId?,
     val propertyId: PropertyId,
     val timeRecorded: Instant,
-    val unit: UnitId,
+    val unit: UnitId?,
     val eventType: EventLogEventType,
     val fallbackEmployeeName: String?,
     val fallbackEventType: String?,

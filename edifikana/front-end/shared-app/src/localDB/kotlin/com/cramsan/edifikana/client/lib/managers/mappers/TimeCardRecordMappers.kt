@@ -6,6 +6,7 @@ import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.framework.core.CoreUri
+import kotlin.time.Instant
 
 /**
  * Maps a time card record model to a time card record entity.
@@ -16,7 +17,7 @@ fun TimeCardRecordModel.toEntity(cachedImageUrl: CoreUri): TimeCardRecordEntity 
         employeePk.empId,
         propertyId.propertyId,
         eventType.name,
-        eventTime,
+        eventTime.toEpochMilliseconds(),
         cachedImageUrl.toString(),
     )
 }
@@ -31,7 +32,7 @@ fun TimeCardRecordEntity.toDomainModel(): TimeCardRecordModel {
         EmployeeId(employeeDocumentId ?: TODO("Employee document ID cannot be null")),
         PropertyId(propertyId ?: TODO("Property ID cannot be null")),
         TimeCardEventType.fromString(eventType),
-        eventTime ?: TODO("Event time cannot be null"),
+        eventTime?.let { Instant.fromEpochMilliseconds(it) } ?: TODO("Time recorded cannot be null") ,
         cachedImageUrl,
         null,
     )

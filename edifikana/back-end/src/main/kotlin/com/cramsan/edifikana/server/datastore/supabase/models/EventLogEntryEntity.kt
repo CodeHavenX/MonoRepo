@@ -54,6 +54,6 @@ data class EventLogEntryEntity(
         val timestamp: Long,
         val title: String,
         val description: String?,
-        val unit: UnitId,
+        val unit: UnitId?,
     )
 }

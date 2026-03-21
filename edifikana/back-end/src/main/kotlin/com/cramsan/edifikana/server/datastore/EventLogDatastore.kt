@@ -25,7 +25,7 @@ interface EventLogDatastore {
         timestamp: Instant,
         title: String,
         description: String?,
-        unit: UnitId,
+        unit: UnitId?,
     ): Result<EventLogEntry>
 
     /**

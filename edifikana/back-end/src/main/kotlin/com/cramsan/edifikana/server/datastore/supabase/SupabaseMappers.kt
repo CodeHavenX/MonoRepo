@@ -291,7 +291,7 @@ fun CreateEventLogEntryEntity(
     timestamp: Instant,
     title: String,
     description: String?,
-    unit: UnitId,
+    unit: UnitId?,
 ): EventLogEntryEntity.CreateEventLogEntryEntity {
     return EventLogEntryEntity.CreateEventLogEntryEntity(
         employeeId = employeeId,

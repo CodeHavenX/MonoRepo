@@ -15,6 +15,8 @@ import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EmployeeRole
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
+import com.cramsan.edifikana.lib.model.UnitId
+import kotlin.time.Instant
 
 val PROPERTY_1 = PropertyModel(
     id = PropertyId("property_id_1"),
@@ -73,10 +75,10 @@ val EVENT_LOG_ENTRY_EMPLOYEE_1_1 = EventLogRecordModel(
     propertyId = PROPERTY_1.id,
     eventType = EventLogEventType.MAINTENANCE_SERVICE,
     fallbackEventType = null,
-    timeRecorded = 1727702654,
+    timeRecorded = Instant.parse("2024-01-01T00:00:00Z"),
     title = "Routine Check",
     description = "Performed routine maintenance check.",
-    unit = "Unit 101",
+    unit = UnitId("Unit 101"),
     entityId = null,
     attachments = emptyList(),
 )
@@ -88,10 +90,10 @@ val EVENT_LOG_ENTRY_EMPLOYEE_1_2 = EventLogRecordModel(
     propertyId = PROPERTY_1.id,
     eventType = EventLogEventType.INCIDENT,
     fallbackEventType = "Inspection",
-    timeRecorded = 1727702655,
+    timeRecorded = Instant.parse("2024-01-02T00:00:00Z"),
     title = "Monthly Inspection",
     description = "Performed monthly inspection.",
-    unit = "Unit 202",
+    unit = UnitId("Unit 202"),
     entityId = null,
     attachments = emptyList(),
 )
@@ -103,10 +105,10 @@ val EVENT_LOG_ENTRY_EMPLOYEE_2_1 = EventLogRecordModel(
     propertyId = PROPERTY_1.id,
     eventType = EventLogEventType.MAINTENANCE_SERVICE,
     fallbackEventType = "General Maintenance",
-    timeRecorded = 1727702656,
+    timeRecorded = Instant.parse("2024-01-03T00:00:00Z"),
     title = "Routine Check",
     description = "Performed routine maintenance check.",
-    unit = "Unit 101",
+    unit = UnitId("Unit 101"),
     entityId = null,
     attachments = emptyList(),
 )
@@ -118,10 +120,10 @@ val EVENT_LOG_ENTRY_EMPLOYEE_3_1 = EventLogRecordModel(
     propertyId = PROPERTY_1.id,
     eventType = EventLogEventType.INCIDENT,
     fallbackEventType = "Inspection",
-    timeRecorded = 1727702657,
+    timeRecorded = Instant.parse("2024-01-04T00:00:00Z"),
     title = "Monthly Inspection",
     description = "Performed monthly inspection.",
-    unit = "Unit 202",
+    unit = UnitId("Unit 202"),
     entityId = null,
     attachments = emptyList(),
 )
@@ -133,10 +135,10 @@ val EVENT_LOG_ENTRY_EMPLOYEE_4_1 = EventLogRecordModel(
     propertyId = PROPERTY_1.id,
     eventType = EventLogEventType.MAINTENANCE_SERVICE,
     fallbackEventType = "General Maintenance",
-    timeRecorded = 1727702658,
+    timeRecorded = Instant.parse("2024-01-05T00:00:00Z"),
     title = "Routine Check",
     description = "Performed routine maintenance check.",
-    unit = "Unit 101",
+    unit = UnitId("Unit 101"),
     entityId = null,
     attachments = emptyList(),
 )
@@ -147,7 +149,7 @@ val TIME_CARD_EVENT_1 = TimeCardRecordModel(
     propertyId = PROPERTY_1.id,
     eventType = TimeCardEventType.CLOCK_IN,
     imageUrl = "http://example.com/image1.jpg",
-    eventTime = 1727702654,
+    eventTime = Instant.parse("2024-01-06T08:00:00Z"),
     entityId = null,
     imageRef = null,
 )
@@ -158,7 +160,7 @@ val TIME_CARD_EVENT_2 = TimeCardRecordModel(
     propertyId = PROPERTY_1.id,
     eventType = TimeCardEventType.CLOCK_OUT,
     imageUrl = "http://example.com/image2.jpg",
-    eventTime = 1727702655,
+    eventTime = Instant.parse("2024-01-07T08:00:00Z"),
     entityId = null,
     imageRef = null,
 )
@@ -169,7 +171,7 @@ val TIME_CARD_EVENT_3 = TimeCardRecordModel(
     propertyId = PROPERTY_1.id,
     eventType = TimeCardEventType.CLOCK_IN,
     imageUrl = "http://example.com/image3.jpg",
-    eventTime = 1727702656,
+    eventTime = Instant.parse( "2024-01-08T08:00:00Z"),
     entityId = null,
     imageRef = null,
 )
@@ -180,7 +182,7 @@ val TIME_CARD_EVENT_4 = TimeCardRecordModel(
     propertyId = PROPERTY_1.id,
     eventType = TimeCardEventType.CLOCK_OUT,
     imageUrl = "http://example.com/image4.jpg",
-    eventTime = 1727702657,
+    eventTime = Instant.parse( "2024-01-09T08:00:00Z"),
     entityId = null,
     imageRef = null,
 )
@@ -191,7 +193,7 @@ val TIME_CARD_EVENT_5 = TimeCardRecordModel(
     propertyId = PROPERTY_1.id,
     eventType = TimeCardEventType.CLOCK_OUT,
     imageUrl = "http://example.com/image2.jpg",
-    eventTime = 1727712654,
+    eventTime = Instant.parse( "2024-01-09T08:00:00Z"),
     entityId = null,
     imageRef = null,
 )

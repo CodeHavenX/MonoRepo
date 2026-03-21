@@ -8,9 +8,6 @@ apply plugin: "org.jetbrains.kotlin.plugin.compose"
 
 apply from: "$rootDir/gradle/kotlin-mpp-target-wasm.gradle"
 
-compose.experimental {
-    web.application {}
-}
 
 if (!hasProperty('wasmModuleName') || !wasmModuleName || wasmModuleName.toString().trim().isEmpty()) {
     throw new GradleException(

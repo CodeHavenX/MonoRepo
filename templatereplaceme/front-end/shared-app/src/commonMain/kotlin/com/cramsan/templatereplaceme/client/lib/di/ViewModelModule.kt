@@ -6,6 +6,8 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 internal val ViewModelModule = module {
-    viewModelOf(::MainMenuViewModel)
-    viewModelOf(::SplashViewModel)
+    scope<String> {
+        viewModelOf(::MainMenuViewModel)
+        viewModelOf(::SplashViewModel)
+    }
 }

@@ -35,14 +35,14 @@ internal val ApplicationModule = module {
             bind<EventEmitter<EdifikanaWindowDelegatedEvent>>()
             bind<EventReceiver<EdifikanaWindowDelegatedEvent>>()
         }
-    }
 
-    viewModel {
-        EdifikanaWindowViewModel(
-            get(),
-            get(named(WindowIdentifier.EVENT_BUS)),
-            get(named(WindowIdentifier.DELEGATED_EVENT_BUS)),
-        )
+        viewModel {
+            EdifikanaWindowViewModel(
+                get(),
+                get(named(WindowIdentifier.EVENT_BUS)),
+                get(named(WindowIdentifier.DELEGATED_EVENT_BUS)),
+            )
+        }
     }
 
     single {

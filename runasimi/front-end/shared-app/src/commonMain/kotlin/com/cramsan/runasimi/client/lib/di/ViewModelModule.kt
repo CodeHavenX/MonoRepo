@@ -8,8 +8,10 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 internal val ViewModelModule = module {
-    viewModelOf(::VerbsViewModel)
-    viewModelOf(::MenuViewModel)
-    viewModelOf(::YupayViewModel)
-    viewModelOf(::QuestionsViewModel)
+    scope<String> {
+        viewModelOf(::VerbsViewModel)
+        viewModelOf(::MenuViewModel)
+        viewModelOf(::YupayViewModel)
+        viewModelOf(::QuestionsViewModel)
+    }
 }

@@ -30,14 +30,14 @@ internal val ApplicationModule = module {
             bind<EventEmitter<RunasimiWindowDelegatedEvent>>()
             bind<EventReceiver<RunasimiWindowDelegatedEvent>>()
         }
-    }
 
-    viewModel {
-        RunasimiWindowViewModel(
-            get(),
-            get(named(WindowIdentifier.EVENT_BUS)),
-            get(named(WindowIdentifier.DELEGATED_EVENT_BUS)),
-        )
+        viewModel {
+            RunasimiWindowViewModel(
+                get(),
+                get(named(WindowIdentifier.EVENT_BUS)),
+                get(named(WindowIdentifier.DELEGATED_EVENT_BUS)),
+            )
+        }
     }
 
     single {

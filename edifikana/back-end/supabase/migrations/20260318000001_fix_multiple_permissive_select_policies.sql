@@ -35,6 +35,7 @@ USING (
     org_id IN (
         SELECT organization_id FROM user_organization_mapping
         WHERE user_id = (SELECT auth.uid())
+        AND status = 'ACTIVE'
     )
     OR
     -- Residents can read their own active occupant row
@@ -52,6 +53,7 @@ WITH CHECK (
     org_id IN (
         SELECT organization_id FROM user_organization_mapping
         WHERE user_id = (SELECT auth.uid())
+        AND status = 'ACTIVE'
     )
 );
 
@@ -62,12 +64,14 @@ USING (
     org_id IN (
         SELECT organization_id FROM user_organization_mapping
         WHERE user_id = (SELECT auth.uid())
+        AND status = 'ACTIVE'
     )
 )
 WITH CHECK (
     org_id IN (
         SELECT organization_id FROM user_organization_mapping
         WHERE user_id = (SELECT auth.uid())
+        AND status = 'ACTIVE'
     )
 );
 

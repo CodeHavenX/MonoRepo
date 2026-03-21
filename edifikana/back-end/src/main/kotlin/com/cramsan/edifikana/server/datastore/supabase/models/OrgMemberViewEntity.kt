@@ -7,6 +7,7 @@ import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.framework.annotations.SupabaseModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlin.time.Instant
 
 /**
  * Supabase entity representing a row from the v_org_members view.
@@ -23,7 +24,7 @@ data class OrgMemberViewEntity(
     val role: OrgRole,
     val status: OrgMemberStatus,
     @SerialName("joined_at")
-    val joinedAt: Long?,
+    val joinedAt: Instant?,
     val email: String,
     @SerialName("first_name")
     val firstName: String,

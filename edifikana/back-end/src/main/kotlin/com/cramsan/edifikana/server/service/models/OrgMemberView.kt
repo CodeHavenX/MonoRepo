@@ -4,6 +4,8 @@ import com.cramsan.edifikana.lib.model.OrgMemberStatus
 import com.cramsan.edifikana.lib.model.OrgRole
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
+import kotlin.time.Instant
+
 /**
  * Domain model representing a member of an organization, including user profile data.
  * Sourced from the v_org_members database view.
@@ -13,7 +15,7 @@ data class OrgMemberView(
     val orgId: OrganizationId,
     val role: OrgRole,
     val status: OrgMemberStatus,
-    val joinedAt: Long?,
+    val joinedAt: Instant?,
     val email: String,
     val firstName: String,
     val lastName: String,

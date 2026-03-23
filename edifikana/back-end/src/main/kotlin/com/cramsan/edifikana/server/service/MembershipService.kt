@@ -10,7 +10,10 @@ import com.cramsan.edifikana.server.datastore.UserDatastore
 import com.cramsan.edifikana.server.service.models.Invite
 import com.cramsan.edifikana.server.service.models.OrgMemberView
 import com.cramsan.framework.logging.logD
-import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
+import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.ConflictException
+import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.ForbiddenException
+import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.InvalidRequestException
+import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.NotFoundException
 import com.cramsan.framework.utils.uuid.UUID
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.days
@@ -75,7 +78,7 @@ class MembershipService(
     ): Result<Unit> = runCatching {
         logD(TAG, "removeMember: org=%s, target=%s", orgId, targetUserId)
         if (isSoleOwner(orgId, targetUserId)) {
-            throw ClientRequestExceptions.InvalidRequestException(
+            throw InvalidRequestException(
                 "Cannot remove the sole owner of an organization"
             )
         }
@@ -93,7 +96,7 @@ class MembershipService(
     ): Result<Unit> = runCatching {
         logD(TAG, "leaveOrganization: caller=%s, org=%s", callerId, orgId)
         if (isSoleOwner(orgId, callerId)) {
-            throw ClientRequestExceptions.InvalidRequestException(
+            throw InvalidRequestException(
                 "Cannot leave an organization you are the sole owner of. Transfer ownership first."
             )
         }
@@ -112,12 +115,12 @@ class MembershipService(
     ): Result<Unit> = runCatching {
         logD(TAG, "transferOwnership: caller=%s, org=%s, newOwner=%s", callerId, orgId, newOwnerId)
         if (callerId == newOwnerId) {
-            throw ClientRequestExceptions.InvalidRequestException(
+            throw InvalidRequestException(
                 "New owner cannot be the same as the current owner"
             )
         }
         membershipDatastore.getMember(orgId, newOwnerId).getOrThrow()
-            ?: throw ClientRequestExceptions.NotFoundException(
+            ?: throw NotFoundException(
                 "Target user is not an active member of this organization"
             )
         membershipDatastore.transferOwnership(orgId, newOwnerId, callerId).getOrThrow()
@@ -139,7 +142,7 @@ class MembershipService(
         logD(TAG, "getInviteOrganization: invite=%s", inviteId)
         membershipDatastore.getInviteById(inviteId).getOrThrow()
             ?.organizationId
-            ?: throw ClientRequestExceptions.NotFoundException("Invite not found")
+            ?: throw NotFoundException("Invite not found")
     }
 
     /**
@@ -156,6 +159,14 @@ class MembershipService(
      */
     suspend fun resendInvite(inviteId: InviteId): Result<Invite> = runCatching {
         logD(TAG, "resendInvite: invite=%s", inviteId)
+        val invite = membershipDatastore.getInviteById(inviteId).getOrThrow()
+            ?: throw NotFoundException("Invite not found")
+        if (invite.acceptedAt != null) {
+            throw ConflictException("Invite has already been accepted")
+        }
+        if (invite.expiration < clock.now()) {
+            throw InvalidRequestException("Invite has expired")
+        }
         val newCode = generateInviteCode()
         val newExpiry = clock.now() + 7.days
         membershipDatastore.resendInvite(inviteId, newCode, newExpiry).getOrThrow()
@@ -168,11 +179,11 @@ class MembershipService(
     suspend fun joinViaCode(callerId: UserId, inviteCode: String): Result<Unit> = runCatching {
         logD(TAG, "joinViaCode: caller=%s", callerId)
         val invite = membershipDatastore.getInviteByCode(inviteCode).getOrThrow()
-            ?: throw ClientRequestExceptions.NotFoundException("Invalid or expired invite code")
+            ?: throw NotFoundException("Invalid or expired invite code")
         val user = userDatastore.getUser(callerId).getOrThrow()
-            ?: throw ClientRequestExceptions.NotFoundException("User not found")
+            ?: throw NotFoundException("User not found")
         if (user.email != invite.email) {
-            throw ClientRequestExceptions.ForbiddenException(
+            throw ForbiddenException(
                 "This invite is not for your email address"
             )
         }

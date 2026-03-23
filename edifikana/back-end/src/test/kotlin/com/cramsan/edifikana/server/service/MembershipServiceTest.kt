@@ -410,6 +410,15 @@ class MembershipServiceTest {
         val inviteId = InviteId("invite123")
         val expectedExpiry = clock.now() + 7.days
         val updatedInvite = mockk<Invite>()
+        val pendingInvite = Invite(
+            id = inviteId,
+            email = "invite@example.com",
+            organizationId = OrganizationId("org123"),
+            role = InviteRole.EMPLOYEE,
+            expiration = clock.now() + 14.days,
+            inviteCode = "CODE123456AB",
+        )
+        coEvery { membershipDatastore.getInviteById(inviteId) } returns Result.success(pendingInvite)
         coEvery {
             membershipDatastore.resendInvite(inviteId, any(), expectedExpiry)
         } returns Result.success(updatedInvite)
@@ -426,6 +435,74 @@ class MembershipServiceTest {
                 expectedExpiry,
             )
         }
+    }
+
+    /**
+     * Tests that resendInvite fails when the invite is not found.
+     */
+    @Test
+    fun `resendInvite should fail when invite not found`() = runTest {
+        // Arrange
+        val inviteId = InviteId("invite123")
+        coEvery { membershipDatastore.getInviteById(inviteId) } returns Result.success(null)
+
+        // Act
+        val result = membershipService.resendInvite(inviteId)
+
+        // Assert
+        assertTrue(result.isFailure)
+        coVerify(exactly = 0) { membershipDatastore.resendInvite(any(), any(), any()) }
+    }
+
+    /**
+     * Tests that resendInvite fails when the invite has already been accepted.
+     */
+    @Test
+    fun `resendInvite should fail when invite is already accepted`() = runTest {
+        // Arrange
+        val inviteId = InviteId("invite123")
+        val acceptedInvite = Invite(
+            id = inviteId,
+            email = "invite@example.com",
+            organizationId = OrganizationId("org123"),
+            role = InviteRole.EMPLOYEE,
+            expiration = clock.now() + 14.days,
+            inviteCode = "CODE123456AB",
+            acceptedAt = clock.now(),
+        )
+        coEvery { membershipDatastore.getInviteById(inviteId) } returns Result.success(acceptedInvite)
+
+        // Act
+        val result = membershipService.resendInvite(inviteId)
+
+        // Assert
+        assertTrue(result.isFailure)
+        coVerify(exactly = 0) { membershipDatastore.resendInvite(any(), any(), any()) }
+    }
+
+    /**
+     * Tests that resendInvite fails when the invite is expired.
+     */
+    @Test
+    fun `resendInvite should fail when invite is expired`() = runTest {
+        // Arrange
+        val inviteId = InviteId("invite123")
+        val expiredInvite = Invite(
+            id = inviteId,
+            email = "invite@example.com",
+            organizationId = OrganizationId("org123"),
+            role = InviteRole.EMPLOYEE,
+            expiration = clock.now() - 1.days,
+            inviteCode = "CODE123456AB",
+        )
+        coEvery { membershipDatastore.getInviteById(inviteId) } returns Result.success(expiredInvite)
+
+        // Act
+        val result = membershipService.resendInvite(inviteId)
+
+        // Assert
+        assertTrue(result.isFailure)
+        coVerify(exactly = 0) { membershipDatastore.resendInvite(any(), any(), any()) }
     }
 
     // -------------------------------------------------------------------------

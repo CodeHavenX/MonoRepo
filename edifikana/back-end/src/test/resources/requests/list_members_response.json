@@ -1,0 +1,13 @@
+{
+    "content": [
+        {
+            "user_id": "user123",
+            "org_id": "org123",
+            "role": "EMPLOYEE",
+            "status": "ACTIVE",
+            "joined_at": "2024-01-01T00:00:00Z",
+            "email": "member@example.com",
+            "display_name": "John Doe"
+        }
+    ]
+}

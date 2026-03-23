@@ -5,10 +5,10 @@ import com.cramsan.edifikana.lib.model.InviteRole
 import com.cramsan.edifikana.lib.model.NotificationType
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.server.datastore.MembershipDatastore
 import com.cramsan.edifikana.server.datastore.NotificationDatastore
 import com.cramsan.edifikana.server.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.datastore.UserDatastore
-import com.cramsan.edifikana.server.datastore.supabase.toOrgRole
 import com.cramsan.edifikana.server.service.models.Invite
 import com.cramsan.edifikana.server.service.models.User
 import com.cramsan.framework.logging.logD
@@ -24,6 +24,7 @@ class UserService(
     private val userDatastore: UserDatastore,
     private val notificationDatastore: NotificationDatastore,
     private val organizationDatastore: OrganizationDatastore,
+    private val membershipDatastore: MembershipDatastore,
     private val clock: Clock,
 ) {
 
@@ -154,7 +155,7 @@ class UserService(
         val organization = organizationDatastore.getOrganization(organizationId).getOrNull()
             ?: throw ClientRequestExceptions.NotFoundException("Organization not found")
 
-        val invite = userDatastore.recordInvite(
+        val invite = membershipDatastore.createInvite(
             email,
             organizationId,
             expiration = clock.now() + 14.days,
@@ -183,7 +184,7 @@ class UserService(
         organizationId: OrganizationId,
     ): Result<List<Invite>> {
         logD(TAG, "getInvites")
-        return userDatastore.getInvites(organizationId)
+        return membershipDatastore.listPendingInvites(organizationId)
     }
 
     /**
@@ -207,7 +208,7 @@ class UserService(
         logD(TAG, "acceptInvite: $inviteId for user: $userId")
 
         // Get the invite
-        val invite = userDatastore.getInvite(inviteId).getOrThrow()
+        val invite = membershipDatastore.getInviteById(inviteId).getOrThrow()
             ?: throw ClientRequestExceptions.NotFoundException("Invite not found")
 
         // Verify invite is not expired
@@ -233,20 +234,13 @@ class UserService(
                 "This invite is for a unit. Please use the unit invite link to join as a resident."
             )
         }
-        organizationDatastore.addUserToOrganization(
-            userId = userId,
-            organizationId = invite.organizationId,
-            role = invite.role.toOrgRole(),
-        ).getOrThrow()
+        membershipDatastore.acceptInviteByCode(inviteId, userId).getOrThrow()
 
         val notification = notificationDatastore.getNotificationByInvite(inviteId).getOrThrow()
             ?: throw ClientRequestExceptions.NotFoundException("Invite notification not found")
 
         // Delete the notification for the invited user
         notificationDatastore.deleteNotification(notification.id).getOrThrow()
-
-        // Remove the invite after successful acceptance
-        userDatastore.removeInvite(inviteId).getOrThrow()
 
         logD(TAG, "User $userId successfully joined organization ${invite.organizationId}")
     }
@@ -263,7 +257,7 @@ class UserService(
         logD(TAG, "declineInvite: $inviteId for user: $userId")
 
         // Get the invite to verify ownership
-        val invite = userDatastore.getInvite(inviteId).getOrThrow()
+        val invite = membershipDatastore.getInviteById(inviteId).getOrThrow()
             ?: throw ClientRequestExceptions.NotFoundException("Invite not found")
 
         // Verify the user email matches the invite email
@@ -282,8 +276,8 @@ class UserService(
         // Delete the notification for the invited user
         notificationDatastore.deleteNotification(notification.id).getOrThrow()
 
-        // Remove the invite
-        userDatastore.removeInvite(inviteId).getOrThrow()
+        // Cancel the invite
+        membershipDatastore.cancelInvite(inviteId).getOrThrow()
 
         logD(TAG, "User $userId declined invite $inviteId")
     }
@@ -298,7 +292,7 @@ class UserService(
     ): Result<OrganizationId> = runCatching {
         logD(TAG, "getInviteOrganization: $inviteId")
 
-        val invite = userDatastore.getInvite(inviteId).getOrThrow()
+        val invite = membershipDatastore.getInviteById(inviteId).getOrThrow()
             ?: throw ClientRequestExceptions.NotFoundException("Invite not found")
 
         invite.organizationId
@@ -314,11 +308,11 @@ class UserService(
         logD(TAG, "cancelInvite: $inviteId")
 
         // Verify the invite exists
-        val invite = userDatastore.getInvite(inviteId).getOrThrow()
+        val invite = membershipDatastore.getInviteById(inviteId).getOrThrow()
             ?: throw ClientRequestExceptions.NotFoundException("Invite not found")
 
-        // Remove the invite
-        userDatastore.removeInvite(inviteId).getOrThrow()
+        // Cancel the invite
+        membershipDatastore.cancelInvite(inviteId).getOrThrow()
 
         logD(TAG, "Invite $inviteId cancelled for organization ${invite.organizationId}")
     }

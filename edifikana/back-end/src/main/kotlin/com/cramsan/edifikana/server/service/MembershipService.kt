@@ -34,7 +34,7 @@ class MembershipService(
         role: InviteRole,
     ): Result<Unit> = runCatching {
         logD(TAG, "inviteMember: org=%s, email=%s, role=%s", orgId, email, role)
-        userDatastore.recordInvite(
+        membershipDatastore.createInvite(
             email = email,
             organizationId = orgId,
             expiration = clock.now() + 14.days,
@@ -136,7 +136,7 @@ class MembershipService(
      */
     suspend fun getInviteOrganization(inviteId: InviteId): Result<OrganizationId> = runCatching {
         logD(TAG, "getInviteOrganization: invite=%s", inviteId)
-        userDatastore.getInvite(inviteId).getOrThrow()
+        membershipDatastore.getInviteById(inviteId).getOrThrow()
             ?.organizationId
             ?: throw ClientRequestExceptions.NotFoundException("Invite not found")
     }

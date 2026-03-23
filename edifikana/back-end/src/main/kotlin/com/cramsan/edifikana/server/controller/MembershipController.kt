@@ -24,6 +24,7 @@ import com.cramsan.framework.core.ktor.OperationHandler.register
 import com.cramsan.framework.core.ktor.auth.ClientContext
 import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.core.ktor.handler
+import com.cramsan.framework.utils.exceptions.InvalidRequestException
 import com.cramsan.framework.utils.exceptions.UnauthorizedException
 import io.ktor.server.routing.Routing
 
@@ -51,7 +52,8 @@ class MembershipController(
         request: InviteMemberNetworkRequest,
     ): NoResponseBody {
         if (request.role == InviteRole.RESIDENT) {
-            throw UnauthorizedException("Residents must be invited from a unit.")
+            throw InvalidRequestException(
+                "Residents must be invited from a unit. Please invite residents via their unit instead of the organization.")
         }
         if (!rbacService.hasRoleOrHigher(context, orgId, UserRole.MANAGER)) {
             throw UnauthorizedException(unauthorizedMsg)

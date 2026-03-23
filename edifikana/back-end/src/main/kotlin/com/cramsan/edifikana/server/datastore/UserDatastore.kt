@@ -1,12 +1,8 @@
 package com.cramsan.edifikana.server.datastore
 
-import com.cramsan.edifikana.lib.model.InviteId
-import com.cramsan.edifikana.lib.model.InviteRole
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.server.service.models.Invite
 import com.cramsan.edifikana.server.service.models.User
-import kotlin.time.Instant
 
 /**
  * Interface for interacting with the user database.
@@ -71,48 +67,6 @@ interface UserDatastore {
     ): Result<Boolean>
 
     /**
-     * Records an invite for a user with the given [email], [organizationId], and [role].
-     * Returns the [Result] of the operation with the created [Invite].
-     */
-    suspend fun recordInvite(
-        email: String,
-        organizationId: OrganizationId,
-        expiration: Instant,
-        role: InviteRole,
-    ): Result<Invite>
-
-    /**
-     * Retrieves an invite with the given [inviteId].
-     * Returns the [Result] of the operation with the [Invite] if found.
-     */
-    suspend fun getInvite(
-        inviteId: InviteId,
-    ): Result<Invite?>
-
-    /**
-     * Removes an invite with the given [inviteId]. Returns the [Result] of the operation.
-     */
-    suspend fun removeInvite(
-        inviteId: InviteId,
-    ): Result<Unit>
-
-    /**
-     * Retrieves all pending invites for the given [organizationId].
-     * Returns the [Result] of the operation with a list of [Invite].
-     */
-    suspend fun getInvites(
-        organizationId: OrganizationId,
-    ): Result<List<Invite>>
-
-    /**
-     * Retrieves all pending invites for the given [email].
-     * Returns the [Result] of the operation with a list of [Invite].
-     */
-    suspend fun getInvitesByEmail(
-        email: String,
-    ): Result<List<Invite>>
-
-    /**
      * Permanently deletes a soft-deleted user record by ID.
      * Only purges if the record is already soft-deleted.
      * This is intended for testing and maintenance purposes only.
@@ -120,15 +74,5 @@ interface UserDatastore {
      */
     suspend fun purgeUser(
         id: UserId,
-    ): Result<Boolean>
-
-    /**
-     * Permanently deletes a soft-deleted invite record by ID.
-     * Only purges if the record is already soft-deleted.
-     * This is intended for testing and maintenance purposes only.
-     * Returns the [Result] of the operation with a [Boolean] indicating if the record was purged.
-     */
-    suspend fun purgeInvite(
-        id: InviteId,
     ): Result<Boolean>
 }

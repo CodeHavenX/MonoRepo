@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.server.datastore
 
 import com.cramsan.edifikana.lib.model.InviteId
+import com.cramsan.edifikana.lib.model.InviteRole
 import com.cramsan.edifikana.lib.model.OrgRole
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
@@ -85,4 +86,28 @@ interface MembershipDatastore {
      * Hard-deletes a membership row for test cleanup. Only for testing.
      */
     suspend fun purgeOrgMember(orgId: OrganizationId, userId: UserId): Result<Boolean>
+
+    /**
+     * Creates an invite for [email] to join [organizationId] with [role].
+     * Returns the [Result] of the operation with the created [Invite].
+     */
+    suspend fun createInvite(
+        email: String,
+        organizationId: OrganizationId,
+        expiration: Instant,
+        role: InviteRole,
+    ): Result<Invite>
+
+    /**
+     * Retrieves an invite by [inviteId], or null if not found / soft-deleted.
+     */
+    suspend fun getInviteById(inviteId: InviteId): Result<Invite?>
+
+    /**
+     * Permanently deletes a soft-deleted invite record by ID.
+     * Only purges if the record is already soft-deleted.
+     * Intended for testing and maintenance purposes only.
+     * Returns the [Result] of the operation with a [Boolean] indicating if the record was purged.
+     */
+    suspend fun purgeInvite(inviteId: InviteId): Result<Boolean>
 }

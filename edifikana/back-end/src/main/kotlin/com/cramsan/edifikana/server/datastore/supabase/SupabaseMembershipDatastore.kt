@@ -1,11 +1,13 @@
 package com.cramsan.edifikana.server.datastore.supabase
 
 import com.cramsan.edifikana.lib.model.InviteId
+import com.cramsan.edifikana.lib.model.InviteRole
 import com.cramsan.edifikana.lib.model.OrgMemberStatus
 import com.cramsan.edifikana.lib.model.OrgRole
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.TaskStatus
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.framework.utils.uuid.UUID
 import com.cramsan.edifikana.server.datastore.MembershipDatastore
 import com.cramsan.edifikana.server.datastore.supabase.models.InviteEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.OrgMemberViewEntity
@@ -258,6 +260,71 @@ class SupabaseMembershipDatastore(
             true
         }
 
+    /**
+     * Creates an invite for [email] to join [organizationId] with [role].
+     */
+    override suspend fun createInvite(
+        email: String,
+        organizationId: OrganizationId,
+        expiration: Instant,
+        role: InviteRole,
+    ): Result<Invite> = runSuspendCatching(TAG) {
+        logD(TAG, "Creating invite for email: %s with role: %s", email, role)
+        val inviteCode = UUID.random().replace("-", "").take(INVITE_CODE_LENGTH).uppercase()
+        val inviteEntity = InviteEntity.Create(
+            email = email,
+            organizationId = organizationId,
+            createdAt = clock.now(),
+            expiration = expiration,
+            role = role,
+            inviteCode = inviteCode,
+        )
+
+        val data = postgrest.from(InviteEntity.COLLECTION).insert(inviteEntity) {
+            select()
+        }
+        data.decodeSingle<InviteEntity>().toInvite()
+    }
+
+    /**
+     * Retrieves an invite by [inviteId], or null if not found / soft-deleted.
+     */
+    override suspend fun getInviteById(inviteId: InviteId): Result<Invite?> = runSuspendCatching(TAG) {
+        logD(TAG, "Getting invite by ID: %s", inviteId)
+
+        postgrest.from(InviteEntity.COLLECTION).select {
+            filter {
+                InviteEntity::id eq inviteId.id
+                InviteEntity::deletedAt isExact null
+            }
+        }.decodeSingleOrNull<InviteEntity>()?.toInvite()
+    }
+
+    /**
+     * Permanently deletes a soft-deleted invite by [inviteId]. Returns true if successful.
+     * Only purges records that are already soft-deleted (deletedAt is not null).
+     */
+    override suspend fun purgeInvite(inviteId: InviteId): Result<Boolean> = runSuspendCatching(TAG) {
+        logD(TAG, "Purging soft-deleted invite: %s", inviteId)
+
+        val entity = postgrest.from(InviteEntity.COLLECTION).select {
+            filter {
+                InviteEntity::id eq inviteId.id
+            }
+        }.decodeSingleOrNull<InviteEntity>()
+
+        if (entity?.deletedAt == null) {
+            return@runSuspendCatching false
+        }
+
+        postgrest.from(InviteEntity.COLLECTION).delete {
+            filter {
+                InviteEntity::id eq inviteId.id
+            }
+        }
+        true
+    }
+
     @Serializable
     private data class TransferOwnershipParams(
         @SerialName("p_org_id") val pOrgId: String,
@@ -268,5 +335,6 @@ class SupabaseMembershipDatastore(
     companion object {
         private const val TAG = "SupabaseMembershipDatastore"
         private const val TASKS_COLLECTION = "tasks"
+        private const val INVITE_CODE_LENGTH = 12
     }
 }

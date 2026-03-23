@@ -205,24 +205,6 @@ fun Document.toDocumentNetworkResponse(): DocumentNetworkResponse {
 }
 
 /**
- * Converts a string to an [InviteRole] for org invite requests.
- *
- * Throws [ClientRequestExceptions.InvalidRequestException] if the value is not a valid [InviteRole].
- * [InviteRole.RESIDENT] is intentionally included here so the deserializer can
- * reject it at the service layer with a clear error, rather than failing silently.
- */
-fun String.toInviteRole(): InviteRole {
-    return try {
-        enumValueOf<InviteRole>(this)
-    } catch (e: IllegalArgumentException) {
-        logE("NetworkMappers", e.localizedMessage)
-        throw ClientRequestExceptions.InvalidRequestException(
-            "Invalid invite role. Please select a role from the invite role list."
-        )
-    }
-}
-
-/**
  * Converts a string to a [UserRole].
  */
 fun String.toServiceUserRole(): UserRole {

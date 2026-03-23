@@ -24,9 +24,9 @@ import com.cramsan.edifikana.server.service.models.Property
 import com.cramsan.edifikana.server.service.models.TimeCardEvent
 import com.cramsan.edifikana.lib.model.InviteRole
 import com.cramsan.edifikana.server.service.models.User
-import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.test.CoroutineTest
 import com.cramsan.framework.utils.password.generateRandomPassword
+import com.cramsan.framework.utils.uuid.UUID
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import kotlin.test.AfterTest
@@ -51,6 +51,7 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
     protected val userDatastore: SupabaseUserDatastore by inject()
     protected val organizationDatastore: SupabaseOrganizationDatastore by inject()
     protected val notificationDatastore: SupabaseNotificationDatastore by inject()
+    protected val membershipDatastore: SupabaseMembershipDatastore by inject()
 
     private val eventLogResources = mutableSetOf<EventLogEntryId>()
     private val propertyResources = mutableSetOf<PropertyId>()
@@ -156,11 +157,12 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
         role: InviteRole = InviteRole.EMPLOYEE,
     ): InviteId {
         val inviteId = runBlocking {
-            userDatastore.recordInvite(
+            membershipDatastore.createInvite(
                 email = email,
                 organizationId = organizationId,
                 expiration = expiration,
                 role = role,
+                inviteCode = UUID.random().replace("-", "").take(12).uppercase(),
             ).getOrThrow().id
         }
         registerInviteForDeletion(inviteId)
@@ -254,8 +256,8 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
                     results += notificationDatastore.purgeNotification(it)
                 }
                 invitationResources.forEach {
-                    results += userDatastore.removeInvite(it)
-                    results += userDatastore.purgeInvite(it)
+                    results += membershipDatastore.cancelInvite(it)
+                    results += membershipDatastore.purgeInvite(it)
                 }
                 eventLogResources.forEach {
                     results += eventLogDatastore.deleteEventLogEntry(it)

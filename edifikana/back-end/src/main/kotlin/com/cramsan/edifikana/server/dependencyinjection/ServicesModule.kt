@@ -3,6 +3,7 @@ package com.cramsan.edifikana.server.dependencyinjection
 import com.cramsan.edifikana.server.service.DocumentService
 import com.cramsan.edifikana.server.service.EmployeeService
 import com.cramsan.edifikana.server.service.EventLogService
+import com.cramsan.edifikana.server.service.MembershipService
 import com.cramsan.edifikana.server.service.NotificationService
 import com.cramsan.edifikana.server.service.OrganizationService
 import com.cramsan.edifikana.server.service.PropertyService
@@ -19,6 +20,7 @@ import org.koin.dsl.module
 internal val ServicesModule = module {
     singleOf(::NotificationService)
     singleOf(::UserService)
+    singleOf(::MembershipService)
     singleOf(::EventLogService)
     singleOf(::PropertyService)
     singleOf(::EmployeeService)

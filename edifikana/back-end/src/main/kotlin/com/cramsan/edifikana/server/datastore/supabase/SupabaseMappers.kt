@@ -26,6 +26,7 @@ import com.cramsan.edifikana.server.datastore.supabase.models.EmployeeEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.EventLogEntryEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.InviteEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.NotificationEntity
+import com.cramsan.edifikana.server.datastore.supabase.models.OrgMemberViewEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.OrganizationEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.PropertyEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.TimeCardEventEntity
@@ -35,6 +36,7 @@ import com.cramsan.edifikana.server.service.models.Employee
 import com.cramsan.edifikana.server.service.models.EventLogEntry
 import com.cramsan.edifikana.server.service.models.Invite
 import com.cramsan.edifikana.server.service.models.Notification
+import com.cramsan.edifikana.server.service.models.OrgMemberView
 import com.cramsan.edifikana.server.service.models.Organization
 import com.cramsan.edifikana.server.service.models.Property
 import com.cramsan.edifikana.server.service.models.TimeCardEvent
@@ -413,5 +415,22 @@ fun DocumentEntity.toDocument(): Document {
         assetId = this.assetId,
         createdBy = this.createdBy,
         createdAt = this.createdAt,
+    )
+}
+
+/**
+ * Maps an [OrgMemberViewEntity] to the [OrgMemberView] domain model.
+ */
+@OptIn(SupabaseModel::class)
+fun OrgMemberViewEntity.toOrgMemberView(): OrgMemberView {
+    return OrgMemberView(
+        userId = this.userId,
+        orgId = this.organizationId,
+        role = this.role,
+        status = this.status,
+        joinedAt = this.joinedAt,
+        email = this.email,
+        firstName = this.firstName,
+        lastName = this.lastName,
     )
 }

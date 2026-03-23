@@ -4,6 +4,7 @@ import com.cramsan.edifikana.server.controller.DocumentController
 import com.cramsan.edifikana.server.controller.EmployeeController
 import com.cramsan.edifikana.server.controller.EventLogController
 import com.cramsan.edifikana.server.controller.HealthCheckController
+import com.cramsan.edifikana.server.controller.MembershipController
 import com.cramsan.edifikana.server.controller.NotificationController
 import com.cramsan.edifikana.server.controller.OrganizationController
 import com.cramsan.edifikana.server.controller.PropertyController
@@ -21,6 +22,7 @@ import org.koin.dsl.module
  */
 internal val ControllerModule = module {
     singleOf(::UserController) { bind<Controller>() }
+    singleOf(::MembershipController) { bind<Controller>() }
     singleOf(::EventLogController) { bind<Controller>() }
     singleOf(::HealthCheckController) { bind<Controller>() }
     singleOf(::PropertyController) { bind<Controller>() }

@@ -412,4 +412,20 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
         assertTrue(result.isSuccess)
         assertEquals(false, result.getOrThrow())
     }
+
+    // TODO: Need to flesh this out when we complete Tasks implementation. For now just verify that it completes
+    //  successfully for an existing member, since the main point is to ensure it doesn't fail if there are any
+    //  tasks to unassign.
+    @Test
+    fun `unassignTasksForMember returns completed for existing member`() = runCoroutineTest {
+        // Arrange
+        val memberId = createTestUser("purge-${testPrefix}@test.com")
+        organizationDatastore.addUserToOrganization(memberId, orgId!!, OrgRole.EMPLOYEE)
+
+        // Act
+        val result = membershipDatastore.unassignTasksForMember(orgId!!, memberId)
+
+        // Assert
+        assertTrue(result.isSuccess)
+    }
 }

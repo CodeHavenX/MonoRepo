@@ -7,7 +7,6 @@ import com.cramsan.edifikana.lib.model.OrgRole
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.TaskStatus
 import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.framework.utils.uuid.UUID
 import com.cramsan.edifikana.server.datastore.MembershipDatastore
 import com.cramsan.edifikana.server.datastore.supabase.models.InviteEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.OrgMemberViewEntity
@@ -164,9 +163,9 @@ class SupabaseMembershipDatastore(
         organizationId: OrganizationId,
         expiration: Instant,
         role: InviteRole,
+        inviteCode: String,
     ): Result<Invite> = runSuspendCatching(TAG) {
         logD(TAG, "Creating invite for email: %s with role: %s", email, role)
-        val inviteCode = UUID.random().replace("-", "").take(INVITE_CODE_LENGTH).uppercase()
         val inviteEntity = InviteEntity.Create(
             email = email,
             organizationId = organizationId,
@@ -335,6 +334,5 @@ class SupabaseMembershipDatastore(
     companion object {
         private const val TAG = "SupabaseMembershipDatastore"
         private const val TASKS_COLLECTION = "tasks"
-        private const val INVITE_CODE_LENGTH = 12
     }
 }

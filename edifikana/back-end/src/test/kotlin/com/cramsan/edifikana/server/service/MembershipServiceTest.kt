@@ -83,7 +83,7 @@ class MembershipServiceTest {
         val expectedExpiry = clock.now() + 14.days
         val invite = mockk<Invite>()
         coEvery {
-            membershipDatastore.createInvite(email, orgId, expectedExpiry, role)
+            membershipDatastore.createInvite(email, orgId, expectedExpiry, role, any())
         } returns Result.success(invite)
 
         // Act
@@ -91,7 +91,15 @@ class MembershipServiceTest {
 
         // Assert
         assertTrue(result.isSuccess)
-        coVerify { membershipDatastore.createInvite(email, orgId, expectedExpiry, role) }
+        coVerify {
+            membershipDatastore.createInvite(
+                email,
+                orgId,
+                expectedExpiry,
+                role,
+                match { it.length == 12 && it == it.uppercase() && !it.contains("-") },
+            )
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -411,7 +419,13 @@ class MembershipServiceTest {
 
         // Assert
         assertTrue(result.isSuccess)
-        coVerify { membershipDatastore.resendInvite(inviteId, any(), expectedExpiry) }
+        coVerify {
+            membershipDatastore.resendInvite(
+                inviteId,
+                match { it.length == 12 && it == it.uppercase() && !it.contains("-") },
+                expectedExpiry,
+            )
+        }
     }
 
     // -------------------------------------------------------------------------

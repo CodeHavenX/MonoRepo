@@ -162,12 +162,15 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val email = "create-${testPrefix}@test.com"
         val futureExpiry = clock.now().plus(kotlin.time.Duration.parse("7d"))
 
+        val inviteCode = UUID.random().replace("-", "").take(12).uppercase()
+
         // Act
         val result = membershipDatastore.createInvite(
             email = email,
             organizationId = orgId!!,
             expiration = futureExpiry,
             role = InviteRole.EMPLOYEE,
+            inviteCode = inviteCode,
         )
 
         // Assert
@@ -176,7 +179,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
         assertEquals(email, invite.email)
         assertEquals(orgId!!, invite.organizationId)
         assertEquals(InviteRole.EMPLOYEE, invite.role)
-        assertTrue(invite.inviteCode.isNotBlank())
+        assertEquals(inviteCode, invite.inviteCode)
 
         // Register for cleanup
         membershipDatastore.cancelInvite(invite.id)
@@ -320,7 +323,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
             expiration = futureExpiry,
         )
         val originalInvite = membershipDatastore.getInviteById(inviteId).getOrThrow()!!
-        val newCode = UUID.random()
+        val newCode = UUID.random().replace("-", "").take(12).uppercase()
         val newExpiry = clock.now().plus(kotlin.time.Duration.parse("14d"))
 
         // Act

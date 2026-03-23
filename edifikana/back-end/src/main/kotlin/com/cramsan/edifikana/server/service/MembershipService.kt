@@ -39,6 +39,7 @@ class MembershipService(
             organizationId = orgId,
             expiration = clock.now() + 14.days,
             role = role,
+            inviteCode = generateInviteCode(),
         ).getOrThrow()
         Unit
     }
@@ -155,7 +156,7 @@ class MembershipService(
      */
     suspend fun resendInvite(inviteId: InviteId): Result<Invite> = runCatching {
         logD(TAG, "resendInvite: invite=%s", inviteId)
-        val newCode = UUID.random()
+        val newCode = generateInviteCode()
         val newExpiry = clock.now() + 7.days
         membershipDatastore.resendInvite(inviteId, newCode, newExpiry).getOrThrow()
     }
@@ -182,6 +183,9 @@ class MembershipService(
     // Private helpers
     // -------------------------------------------------------------------------
 
+    private fun generateInviteCode(): String =
+        UUID.random().replace("-", "").take(INVITE_CODE_LENGTH).uppercase()
+
     private suspend fun isSoleOwner(orgId: OrganizationId, userId: UserId): Boolean {
         val owners = membershipDatastore.getMembers(orgId).getOrThrow()
             .filter { it.role == OrgRole.OWNER }
@@ -190,5 +194,6 @@ class MembershipService(
 
     companion object {
         private const val TAG = "MembershipService"
+        private const val INVITE_CODE_LENGTH = 12
     }
 }

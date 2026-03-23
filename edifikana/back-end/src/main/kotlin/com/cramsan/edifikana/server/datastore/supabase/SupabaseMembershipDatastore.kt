@@ -151,8 +151,7 @@ class SupabaseMembershipDatastore(
                     eq("org_id", orgId.id)
                     eq("assignee_id", userId.userId)
                     exact("deleted_at", null)
-                    neq("status", TaskStatus.COMPLETED.name)
-                    neq("status", TaskStatus.CANCELLED.name)
+                    isIn("status", listOf(TaskStatus.OPEN.name, TaskStatus.IN_PROGRESS.name))
                 }
             }
         }

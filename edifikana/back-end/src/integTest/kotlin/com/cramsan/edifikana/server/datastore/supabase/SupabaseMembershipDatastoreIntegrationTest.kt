@@ -11,6 +11,7 @@ import com.cramsan.framework.utils.uuid.UUID
 import io.github.jan.supabase.postgrest.Postgrest
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -22,7 +23,7 @@ import kotlin.time.ExperimentalTime
 import kotlinx.coroutines.runBlocking
 import org.koin.test.inject
 
-@OptIn(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class, SupabaseModel::class)
 class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
 
     private val clock: Clock by inject()
@@ -32,6 +33,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     private var ownerUserId: UserId? = null
     private var orgId: OrganizationId? = null
     private var propertyId: PropertyId? = null
+    private val taskIds = mutableListOf<String>()
 
     @BeforeTest
     fun setUp() {
@@ -538,6 +540,23 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
         assertTrue(result.isSuccess)
     }
 
+    /**
+     * Purges all tasks created during the test before the base class tearDown runs.
+     * Required because purgeProperty triggers ON DELETE SET NULL on tasks.property_id,
+     * which would violate the at_least_one_location check constraint if tasks still exist.
+     * JUnit 5 runs subclass @AfterTest before superclass @AfterTest.
+     */
+    @AfterTest
+    fun tearDownMembership() {
+        if (taskIds.isEmpty()) return
+        runBlocking {
+            postgrest.from(TASKS_COLLECTION).delete {
+                filter { isIn("id", taskIds) }
+            }
+        }
+        taskIds.clear()
+    }
+
     // -------------------------------------------------------------------------
     // Private helpers
     // -------------------------------------------------------------------------
@@ -553,7 +572,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
         assigneeId: UserId? = null,
         status: TaskStatus = TaskStatus.OPEN,
     ): String {
-        return postgrest.from(TASKS_COLLECTION).insert(
+        val taskId = postgrest.from(TASKS_COLLECTION).insert(
             TaskInsertEntity(
                 orgId = orgId.id,
                 propertyId = propertyId.propertyId,
@@ -563,6 +582,8 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
                 assigneeId = assigneeId?.userId,
             )
         ) { select() }.decodeSingle<TaskRowEntity>().id
+        taskIds.add(taskId)
+        return taskId
     }
 
     /**

@@ -15,6 +15,7 @@ import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logW
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import com.cramsan.framework.utils.uuid.UUID
+import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.admin.AdminApi
 import io.github.jan.supabase.auth.exception.AuthRestException
 import io.github.jan.supabase.postgrest.Postgrest
@@ -30,6 +31,7 @@ class SupabaseUserDatastore(
     private val adminApi: AdminApi,
     private val postgrest: Postgrest,
     private val clock: Clock,
+    private val auth: Auth,
 ) : UserDatastore {
 
     /**
@@ -344,6 +346,15 @@ class SupabaseUserDatastore(
         }
         true
     }
+
+    /**
+     * Sends a password reset email to [email] via Supabase Auth.
+     */
+    override suspend fun requestPasswordReset(email: String): Result<Unit> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "Requesting password reset for email: %s", email)
+            auth.resetPasswordForEmail(email)
+        }
 
     companion object {
         const val TAG = "SupabaseUserDatastore"

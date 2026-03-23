@@ -75,4 +75,10 @@ interface UserDatastore {
     suspend fun purgeUser(
         id: UserId,
     ): Result<Boolean>
+
+    /**
+     * Sends a password reset email to the given [email] via Supabase Auth.
+     * Returns success regardless of whether the email exists in the system.
+     */
+    suspend fun requestPasswordReset(email: String): Result<Unit>
 }

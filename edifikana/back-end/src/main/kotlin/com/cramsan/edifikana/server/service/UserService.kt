@@ -319,6 +319,18 @@ class UserService(
         logD(TAG, "Invite $inviteId cancelled for organization ${invite.organizationId}")
     }
 
+    /**
+     * Requests a password reset email for the given [email].
+     * Always returns success to prevent email enumeration.
+     */
+    suspend fun requestPasswordReset(email: String): Result<Unit> {
+        logD(TAG, "requestPasswordReset")
+        userDatastore.requestPasswordReset(email).onFailure { e ->
+            logW(TAG, "Password reset request failed (suppressed)", e)
+        }
+        return Result.success(Unit)
+    }
+
     companion object {
         private const val TAG = "UserService"
         private const val INVITE_CODE_LENGTH = 12

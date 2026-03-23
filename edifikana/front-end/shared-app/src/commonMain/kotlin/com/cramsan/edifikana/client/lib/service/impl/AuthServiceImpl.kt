@@ -9,6 +9,7 @@ import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.model.UserRole
 import com.cramsan.edifikana.lib.model.network.CreateUserNetworkRequest
+import com.cramsan.edifikana.lib.model.network.PasswordResetNetworkRequest
 import com.cramsan.edifikana.lib.model.network.GetAllUsersQueryParams
 import com.cramsan.edifikana.lib.model.network.InviteNetworkResponse
 import com.cramsan.edifikana.lib.model.network.InviteUserNetworkRequest
@@ -171,8 +172,12 @@ class AuthServiceImpl(
         getUser().getOrThrow()
     }
 
+    @OptIn(NetworkModel::class)
     override suspend fun passwordReset(email: String?, phoneNumber: String?): Result<Unit> = runSuspendCatching(TAG) {
-        TODO("Implement functionality to reset password and authenticate user.")
+        requireNotNull(email) { "Email is required for password reset" }
+        UserApi.requestPasswordReset.buildRequest(
+            PasswordResetNetworkRequest(email = email)
+        ).execute(http)
     }
 
     override suspend fun verifyPermissions(): Result<Boolean> {

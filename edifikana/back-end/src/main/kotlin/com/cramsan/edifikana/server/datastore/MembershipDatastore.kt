@@ -96,6 +96,7 @@ interface MembershipDatastore {
         organizationId: OrganizationId,
         expiration: Instant,
         role: InviteRole,
+        inviteCode: String,
     ): Result<Invite>
 
     /**

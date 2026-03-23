@@ -258,7 +258,7 @@ class UserServiceTest {
         every { invite.id } returns inviteId
         coEvery { userDatastore.getUser(email) } returns Result.success(user)
         coEvery { organizationDatastore.getOrganization(orgId) } returns Result.success(organization)
-        coEvery { membershipDatastore.createInvite(email, orgId, any(), role) } returns Result.success(invite)
+        coEvery { membershipDatastore.createInvite(email, orgId, any(), role, any()) } returns Result.success(invite)
         coEvery {
             notificationDatastore.createNotification(
                 recipientUserId = any(),
@@ -274,7 +274,15 @@ class UserServiceTest {
 
         // Assert
         assertTrue(result.isSuccess)
-        coVerify { membershipDatastore.createInvite(email, orgId, any(), role) }
+        coVerify {
+            membershipDatastore.createInvite(
+                email,
+                orgId,
+                any(),
+                role,
+                match { it.length == 12 && it == it.uppercase() && !it.contains("-") },
+            )
+        }
         coVerify {
             notificationDatastore.createNotification(
                 recipientUserId = any(),
@@ -300,7 +308,7 @@ class UserServiceTest {
         val organization = Organization(id = orgId, name = "Test Org", description = "Test Description")
 
         val error = Exception("Failed to record invite")
-        coEvery { membershipDatastore.createInvite(email, orgId, any(), role) } returns Result.failure(error)
+        coEvery { membershipDatastore.createInvite(email, orgId, any(), role, any()) } returns Result.failure(error)
         coEvery { user.id } returns userId
         coEvery { userDatastore.getUser(email) } returns Result.success(user)
         coEvery { organizationDatastore.getOrganization(orgId) } returns Result.success(organization)
@@ -310,7 +318,7 @@ class UserServiceTest {
 
         // Assert
         assertTrue(result.isFailure)
-        coVerify { membershipDatastore.createInvite(email, orgId, any(), role) }
+        coVerify { membershipDatastore.createInvite(email, orgId, any(), role, any()) }
     }
 
     /**

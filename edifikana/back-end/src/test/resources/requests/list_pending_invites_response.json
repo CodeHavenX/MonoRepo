@@ -1,0 +1,11 @@
+{
+    "content": [
+        {
+            "invite_id": "invite123",
+            "email": "invite@example.com",
+            "organization_id": "org123",
+            "role": "EMPLOYEE",
+            "expires_at": "2024-01-15T00:00:00Z"
+        }
+    ]
+}

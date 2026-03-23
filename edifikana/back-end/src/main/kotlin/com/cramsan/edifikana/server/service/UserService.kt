@@ -14,6 +14,7 @@ import com.cramsan.edifikana.server.service.models.User
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logW
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
+import com.cramsan.framework.utils.uuid.UUID
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.days
 
@@ -160,6 +161,7 @@ class UserService(
             organizationId,
             expiration = clock.now() + 14.days,
             role = role,
+            inviteCode = UUID.random().replace("-", "").take(INVITE_CODE_LENGTH).uppercase(),
         ).getOrThrow()
 
         // Create a notification for the invited user
@@ -319,5 +321,6 @@ class UserService(
 
     companion object {
         private const val TAG = "UserService"
+        private const val INVITE_CODE_LENGTH = 12
     }
 }

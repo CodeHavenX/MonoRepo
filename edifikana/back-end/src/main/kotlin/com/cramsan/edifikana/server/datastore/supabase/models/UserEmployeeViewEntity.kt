@@ -4,6 +4,7 @@ import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EmployeeRole
 import com.cramsan.edifikana.lib.model.IdType
 import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.service.models.Employee
 import com.cramsan.framework.annotations.SupabaseModel
 import kotlinx.serialization.SerialName
@@ -25,9 +26,9 @@ data class UserEmployeeViewEntity(
     val lastName: String,
     val role: EmployeeRole,
     @SerialName("property_id")
-    val propertyId: String,
+    val propertyId: PropertyId,
     @SerialName("user_id")
-    val userId: String,
+    val userId: UserId,
 ) {
     /**
      * Converts this view entity to an Employee domain model.
@@ -39,7 +40,7 @@ data class UserEmployeeViewEntity(
             firstName = firstName,
             lastName = lastName,
             role = role,
-            propertyId = PropertyId(propertyId),
+            propertyId = propertyId,
         )
     }
 }

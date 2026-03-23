@@ -7,7 +7,7 @@
             "property_id": "property789",
             "type": "MAINTENANCE_SERVICE",
             "fallback_type": "General Maintenance",
-            "timestamp": 1727702654,
+            "timestamp": "2024-01-01T00:00:00Z",
             "title": "Routine Check",
             "description": "Performed routine maintenance check.",
             "unit": "Unit 101"
@@ -19,7 +19,7 @@
             "property_id": "property101",
             "type": "MAINTENANCE_SERVICE",
             "fallback_type": "General Maintenance",
-            "timestamp": 1727702654,
+            "timestamp": "2024-02-01T00:00:00Z",
             "title": "Routine Check",
             "description": "Performed routine maintenance check.",
             "unit": "Unit 101"

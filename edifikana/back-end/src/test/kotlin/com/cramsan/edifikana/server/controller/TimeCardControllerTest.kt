@@ -81,7 +81,7 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
                 propertyId = PropertyId("property123"),
                 type = TimeCardEventType.CLOCK_OUT,
                 imageUrl = "http://example.com/image.jpg",
-                timestamp = Instant.fromEpochSeconds(1727702654),
+                timestamp = Instant.parse("2024-01-01T00:00:00Z"),
             )
         }
         val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
@@ -129,7 +129,7 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
                 propertyId = PropertyId("property123"),
                 type = TimeCardEventType.CLOCK_IN,
                 imageUrl = "http://example.com/image.jpg",
-                timestamp = Instant.fromEpochSeconds(1727702654),
+                timestamp = Instant.parse("2024-01-01T00:00:00Z"),
             )
         }
         val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
@@ -175,7 +175,7 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
                     propertyId = PropertyId("property123"),
                     type = TimeCardEventType.CLOCK_IN,
                     imageUrl = "http://example.com/image.jpg",
-                    timestamp = Instant.fromEpochSeconds(1727702654),
+                    timestamp = Instant.parse("2024-01-01T00:00:00Z"),
                 ),
                 TimeCardEvent(
                     id = TimeCardEventId("timecard456"),
@@ -184,7 +184,7 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
                     propertyId = PropertyId("property123"),
                     type = TimeCardEventType.CLOCK_IN,
                     imageUrl = "http://example.com/image2.jpg",
-                    timestamp = Instant.fromEpochSeconds(1727702654),
+                    timestamp = Instant.parse("2024-01-01T00:00:00Z"),
                 )
             )
         }

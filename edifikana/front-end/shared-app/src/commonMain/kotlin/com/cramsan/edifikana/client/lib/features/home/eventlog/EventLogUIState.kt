@@ -2,7 +2,9 @@ package com.cramsan.edifikana.client.lib.features.home.eventlog
 
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
+import com.cramsan.edifikana.lib.model.UnitId
 import com.cramsan.framework.core.compose.ViewModelUIState
+import kotlin.time.Instant
 
 /**
  * UI state of the EventLog feature.
@@ -30,7 +32,7 @@ data class EventLogUIModel(
     val description: String,
     val eventType: EventLogEventType,
     val fallbackEventType: String?,
-    val unit: String,
+    val unit: UnitId?,
     val timeRecorded: String,
     val employeeName: String?,
 )

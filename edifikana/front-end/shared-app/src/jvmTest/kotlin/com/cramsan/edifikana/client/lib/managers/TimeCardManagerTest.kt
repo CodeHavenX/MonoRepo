@@ -25,6 +25,7 @@ import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlin.time.Instant
 
 /**
  * Unit tests for the TimeCardManager class.
@@ -167,7 +168,7 @@ class TimeCardManagerTest : CoroutineTest() {
         employeeIdTest,
         PropertyId("Muralla"),
         TimeCardEventType.CLOCK_IN,
-        100,
+        Instant.parse("2025-12-01T00:00:00Z"),
         "test-image-url",
         "test-image-ref"
     )
@@ -177,7 +178,7 @@ class TimeCardManagerTest : CoroutineTest() {
         employeeIdTest,
         PropertyId("Muralla"),
         TimeCardEventType.CLOCK_OUT,
-        400,
+        Instant.parse("2025-12-05T00:00:00Z"),
         "test-image-url",
         "test-image-ref")
 
@@ -187,7 +188,7 @@ class TimeCardManagerTest : CoroutineTest() {
         employeeIdTest,
         PropertyId("Muralla"),
         TimeCardEventType.CLOCK_IN,
-        500,
+        Instant.parse("2025-12-10T00:00:00Z"),
         "test-image-url",
         "test-image-ref")
 
@@ -197,8 +198,7 @@ class TimeCardManagerTest : CoroutineTest() {
         employeeIdTest,
         PropertyId("Muralla"),
         TimeCardEventType.CLOCK_OUT,
-        800,
+        Instant.parse("2025-12-15T00:00:00Z"),
         "test-image-url",
         "test-image-ref")
 }
-

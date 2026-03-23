@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.datastore.supabase.models
 
+import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.framework.annotations.SupabaseModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -14,7 +15,7 @@ data class NotificationEntity(
     @SerialName("id")
     val id: String,
     @SerialName("recipient_user_id")
-    val recipientUserId: String?,
+    val recipientUserId: UserId?,
     @SerialName("recipient_email")
     val recipientEmail: String?,
     @SerialName("notification_type")
@@ -39,7 +40,7 @@ data class NotificationEntity(
     @SupabaseModel
     data class Create(
         @SerialName("recipient_user_id")
-        val recipientUserId: String?,
+        val recipientUserId: UserId?,
         @SerialName("recipient_email")
         val recipientEmail: String?,
         @SerialName("notification_type")

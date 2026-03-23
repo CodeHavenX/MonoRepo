@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.service.impl
 
 import com.cramsan.edifikana.lib.model.InviteId
+import com.cramsan.edifikana.lib.model.InviteRole
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.model.UserRole
@@ -44,6 +45,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import kotlin.time.Instant
 
 /**
  * Test class for [AuthServiceImpl].
@@ -579,15 +581,15 @@ class AuthServiceImplTest {
             inviteId = InviteId("invite-1"),
             email = "user1@example.com",
             organizationId = organizationId,
-            role = "EMPLOYEE",
-            expiresAt = 1234567890L,
+            role = InviteRole.EMPLOYEE,
+            expiresAt = Instant.fromEpochMilliseconds(1234567890L),
         )
         val inviteResponse2 = InviteNetworkResponse(
             inviteId = InviteId("invite-2"),
             email = "user2@example.com",
             organizationId = organizationId,
-            role = "MANAGER",
-            expiresAt = 1234567891L,
+            role = InviteRole.MANAGER,
+            expiresAt =  Instant.fromEpochMilliseconds(1234567891L),
         )
         ktorTestEngine.configure {
             coEvery { produceResponse(any()) } returns MockResponseData.Success(

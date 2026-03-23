@@ -6,6 +6,7 @@ import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.UnitId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.serialization.createJson
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
@@ -31,6 +32,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.datetime.parse
 import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
 import org.koin.test.get
@@ -80,10 +82,10 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
                 propertyId = PropertyId("property789"),
                 type = EventLogEventType.MAINTENANCE_SERVICE,
                 fallbackEventType = "General Maintenance",
-                timestamp = Instant.fromEpochSeconds(1727702654),
+                timestamp = Instant.parse("2024-01-01T00:00:00Z"),
                 title = "Routine Check",
                 description = "Performed routine maintenance check.",
-                unit = "Unit 101",
+                unit = UnitId("Unit 101"),
             )
         }.answers {
             EventLogEntry(
@@ -93,10 +95,10 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
                 propertyId = PropertyId("property789"),
                 type = EventLogEventType.MAINTENANCE_SERVICE,
                 fallbackEventType = "General Maintenance",
-                timestamp = Instant.fromEpochSeconds(1727702654),
+                timestamp = Instant.parse("2024-01-01T00:00:00Z"),
                 title = "Routine Check",
                 description = "Performed routine maintenance check.",
-                unit = "Unit 101",
+                unit = UnitId("Unit 101"),
             )
         }
         val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
@@ -146,10 +148,10 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
                 propertyId = PropertyId("property789"),
                 type = EventLogEventType.MAINTENANCE_SERVICE,
                 fallbackEventType = "General Maintenance",
-                timestamp = Instant.fromEpochSeconds(1727702654),
+                timestamp = Instant.parse("2024-01-01T00:00:00Z"),
                 title = "Routine Check",
                 description = "Performed routine maintenance check.",
-                unit = "Unit 101",
+                unit = UnitId("Unit 101"),
             )
         }
         val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
@@ -197,10 +199,10 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
                     propertyId = PropertyId("property789"),
                     type = EventLogEventType.MAINTENANCE_SERVICE,
                     fallbackEventType = "General Maintenance",
-                    timestamp = Instant.fromEpochSeconds(1727702654),
+                    timestamp = Instant.parse("2024-01-01T00:00:00Z"),
                     title = "Routine Check",
                     description = "Performed routine maintenance check.",
-                    unit = "Unit 101",
+                    unit = UnitId("Unit 101"),
                 ),
                 EventLogEntry(
                     id = EventLogEntryId("event456"),
@@ -209,10 +211,10 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
                     propertyId = PropertyId("property101"),
                     type = EventLogEventType.MAINTENANCE_SERVICE,
                     fallbackEventType = "General Maintenance",
-                    timestamp = Instant.fromEpochSeconds(1727702654),
+                    timestamp = Instant.parse("2024-02-01T00:00:00Z"),
                     title = "Routine Check",
                     description = "Performed routine maintenance check.",
-                    unit = "Unit 101",
+                    unit = UnitId("Unit 101"),
                 ),
             )
         }
@@ -251,7 +253,7 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
                 fallbackEventType = "Inspection",
                 title = "Monthly check",
                 description = "Performed monthly inspection.",
-                unit = "Unit 202",
+                unit = UnitId("Unit 202"),
             )
         }.answers {
             EventLogEntry(
@@ -261,10 +263,10 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
                 propertyId = PropertyId("property789"),
                 type = EventLogEventType.INCIDENT,
                 fallbackEventType = "Inspection",
-                timestamp = Instant.fromEpochSeconds(1727702654),
+                timestamp = Instant.parse("2024-02-01T00:00:00Z"),
                 title = "Monthly check",
                 description = "Performed monthly inspection.",
-                unit = "Unit 202",
+                unit = UnitId("Unit 202"),
             )
         }
         val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()

@@ -68,7 +68,7 @@ class EventLogViewModel(
  * Convert an EventLogRecordModel to an EventLogUIModel.
  */
 private fun EventLogRecordModel.toUIModel(): EventLogUIModel {
-    val formattedTime = formatTimestamp(timeRecorded)
+    val formattedTime = formatTimestamp(timeRecorded.toEpochMilliseconds())
     return EventLogUIModel(
         id = id,
         title = title,

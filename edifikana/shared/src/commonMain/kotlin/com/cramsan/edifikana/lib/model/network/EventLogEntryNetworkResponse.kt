@@ -4,10 +4,12 @@ import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.UnitId
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.ResponseBody
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlin.time.Instant
 
 /**
  * Model representing an event log entry.
@@ -25,8 +27,8 @@ data class EventLogEntryNetworkResponse(
     val type: EventLogEventType,
     @SerialName("fallback_type")
     val fallbackEventType: String?,
-    val timestamp: Long,
+    val timestamp: Instant,
     val title: String,
     val description: String?,
-    val unit: String,
+    val unit: UnitId,
 ) : ResponseBody

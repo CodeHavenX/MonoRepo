@@ -13,6 +13,7 @@ import com.cramsan.edifikana.lib.model.EmployeeRole
 
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
+import com.cramsan.edifikana.lib.model.UnitId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.model.network.AuthMetadataNetworkResponse
 import com.cramsan.edifikana.lib.model.network.EventLogEntryNetworkResponse
@@ -23,6 +24,7 @@ import com.cramsan.framework.annotations.NetworkModel
 import io.mockk.mockk
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.time.Instant
 
 /**
  * Unit tests for the NetworkMappers that convert network responses to domain models.
@@ -40,7 +42,7 @@ class NetworkMappersTest {
             employeeId = EmployeeId("emp-456"),
             propertyId = PropertyId("property-789"),
             type = TimeCardEventType.CLOCK_IN,
-            timestamp = 1720000000L,
+            timestamp = Instant.parse("2025-01-01T00:00:00Z"),
             imageUrl = "http://image.url",
             fallbackEmployeeName = "Jenny"
         )
@@ -53,7 +55,7 @@ class NetworkMappersTest {
         assertEquals(EmployeeId("emp-456"), model.employeePk)
         assertEquals(PropertyId("property-789"), model.propertyId)
         assertEquals(TimeCardEventType.CLOCK_IN, model.eventType)
-        assertEquals(1720000000L, model.eventTime)
+        assertEquals(Instant.parse("2025-01-01T00:00:00Z"), model.eventTime)
         assertEquals("http://image.url", model.imageUrl)
         assertEquals(null, model.entityId)
         assertEquals(null, model.imageRef)
@@ -100,8 +102,8 @@ class NetworkMappersTest {
             id = EventLogEntryId("eventlog-1"),
             employeeId = EmployeeId("emp-1"),
             propertyId = PropertyId("property-1"),
-            timestamp = 123456789L,
-            unit = "unit-1",
+            timestamp = Instant.parse("2025-02-01T00:00:00Z"),
+            unit = UnitId("unit-1"),
             type = EventLogEventType.INCIDENT,
             fallbackEventType = "fallbackType",
             fallbackEmployeeName = "fallbackName",
@@ -116,8 +118,8 @@ class NetworkMappersTest {
         assertEquals(EventLogEntryId("eventlog-1"), model.id)
         assertEquals(EmployeeId("emp-1"), model.employeePk)
         assertEquals(PropertyId("property-1"), model.propertyId)
-        assertEquals(123456789L, model.timeRecorded)
-        assertEquals("unit-1", model.unit)
+        assertEquals(Instant.parse("2025-02-01T00:00:00Z"), model.timeRecorded)
+        assertEquals(UnitId("unit-1"), model.unit)
         assertEquals(EventLogEventType.INCIDENT, model.eventType)
         assertEquals("fallbackType", model.fallbackEmployeeName)
         assertEquals("fallbackName", model.fallbackEventType)
@@ -137,8 +139,8 @@ class NetworkMappersTest {
             entityId = null,
             employeePk = EmployeeId("emp-2"),
             propertyId = PropertyId("property-2"),
-            timeRecorded = 987654321L,
-            unit = "unit-2",
+            timeRecorded = Instant.parse("2025-03-10T00:00:00Z"),
+            unit = UnitId("unit-2"),
             eventType = EventLogEventType.MAINTENANCE_SERVICE,
             fallbackEmployeeName = "fallbackName2",
             fallbackEventType = "fallbackType2",
@@ -156,10 +158,10 @@ class NetworkMappersTest {
         assertEquals("property-2", request.propertyId.propertyId)
         assertEquals(EventLogEventType.MAINTENANCE_SERVICE, request.type)
         assertEquals("fallbackType2", request.fallbackEventType)
-        assertEquals(987654321L, request.timestamp)
+        assertEquals(Instant.parse("2025-03-10T00:00:00Z"), request.timestamp)
         assertEquals("Title2", request.title)
         assertEquals("Description2", request.description)
-        assertEquals("unit-2", request.unit)
+        assertEquals(UnitId("unit-2"), request.unit)
     }
 
     /**
@@ -174,8 +176,8 @@ class NetworkMappersTest {
             entityId = null,
             employeePk = EmployeeId("emp-3"),
             propertyId = PropertyId("property-3"),
-            timeRecorded = 123123123L,
-            unit = "unit-3",
+            timeRecorded = Instant.parse("2025-03-15T00:00:00Z"),
+            unit = UnitId("unit-3"),
             eventType = EventLogEventType.DELIVERY,
             fallbackEmployeeName = "fallbackName3",
             fallbackEventType = "fallbackType3",
@@ -192,7 +194,7 @@ class NetworkMappersTest {
         assertEquals("fallbackType3", request.fallbackEventType)
         assertEquals("Title3", request.title)
         assertEquals("Description3", request.description)
-        assertEquals("unit-3", request.unit)
+        assertEquals(UnitId("unit-3"), request.unit)
     }
 
     /**
@@ -262,7 +264,7 @@ class NetworkMappersTest {
             employeePk = EmployeeId("emp-6"),
             propertyId = PropertyId("property-6"),
             eventType = TimeCardEventType.CLOCK_OUT,
-            eventTime = 0L,
+            eventTime = Instant.parse("0000-01-01T00:00:00Z"),
             imageUrl = "http://image.url/6",
             imageRef = null
         )

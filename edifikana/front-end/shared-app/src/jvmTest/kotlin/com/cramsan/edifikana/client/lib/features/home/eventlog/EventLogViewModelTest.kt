@@ -5,6 +5,7 @@ import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.UnitId
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
 import com.cramsan.framework.core.compose.EventBus
@@ -23,6 +24,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import kotlin.time.Instant
 
 /**
  * Unit tests for [EventLogViewModel].
@@ -91,7 +93,7 @@ class EventLogViewModelTest : CoroutineTest() {
         assertEquals(2, state.events.size)
         assertEquals("Test Event 1", state.events[0].title)
         assertEquals("Description 1", state.events[0].description)
-        assertEquals("Unit A", state.events[0].unit)
+        assertEquals("Unit A", state.events[0].unit?.unitId)
         assertEquals("Test Event 2", state.events[1].title)
         coVerify { eventLogManager.getRecords(propertyId) }
         assertTrue(exceptionHandler.exceptions.isEmpty())
@@ -155,7 +157,7 @@ class EventLogViewModelTest : CoroutineTest() {
         assertEquals(EventLogEntryId("event-1"), uiModel.id)
         assertEquals("Water Leak", uiModel.title)
         assertEquals("Leak in basement", uiModel.description)
-        assertEquals("Basement", uiModel.unit)
+        assertEquals("Basement", uiModel.unit?.unitId)
         assertEquals(EventLogEventType.INCIDENT, uiModel.eventType)
         assertEquals("Custom Type", uiModel.fallbackEventType)
         assertEquals("John Doe", uiModel.employeeName)
@@ -222,8 +224,8 @@ class EventLogViewModelTest : CoroutineTest() {
             entityId = id.eventLogEntryId,
             employeePk = null,
             propertyId = propertyId,
-            timeRecorded = timeRecorded,
-            unit = unit,
+            timeRecorded = Instant.fromEpochMilliseconds(timeRecorded),
+            unit = UnitId(unit),
             eventType = eventType,
             fallbackEmployeeName = fallbackEmployeeName,
             fallbackEventType = fallbackEventType,
@@ -233,4 +235,3 @@ class EventLogViewModelTest : CoroutineTest() {
         )
     }
 }
-

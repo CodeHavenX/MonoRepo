@@ -3,8 +3,8 @@ package com.cramsan.edifikana.server.service
 import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.edifikana.lib.model.InviteRole
 import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.OrgRole
 import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.server.datastore.MembershipDatastore
 import com.cramsan.edifikana.server.datastore.NotificationDatastore
 import com.cramsan.edifikana.server.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.datastore.UserDatastore
@@ -40,6 +40,7 @@ class UserServiceTest {
     private lateinit var userService: UserService
     private lateinit var notificationDatastore: NotificationDatastore
     private lateinit var organizationDatastore: OrganizationDatastore
+    private lateinit var membershipDatastore: MembershipDatastore
     private lateinit var testTimeSource: TestTimeSource
     private lateinit var clock: Clock
 
@@ -52,9 +53,10 @@ class UserServiceTest {
         userDatastore = mockk()
         notificationDatastore = mockk()
         organizationDatastore = mockk()
+        membershipDatastore = mockk()
         testTimeSource = TestTimeSource()
         clock = testTimeSource.asClock(2024, 1, 1, 0, 0)
-        userService = UserService(userDatastore, notificationDatastore, organizationDatastore, clock)
+        userService = UserService(userDatastore, notificationDatastore, organizationDatastore, membershipDatastore, clock)
     }
 
     /**
@@ -256,7 +258,7 @@ class UserServiceTest {
         every { invite.id } returns inviteId
         coEvery { userDatastore.getUser(email) } returns Result.success(user)
         coEvery { organizationDatastore.getOrganization(orgId) } returns Result.success(organization)
-        coEvery { userDatastore.recordInvite(email, orgId, any(), role) } returns Result.success(invite)
+        coEvery { membershipDatastore.createInvite(email, orgId, any(), role, any()) } returns Result.success(invite)
         coEvery {
             notificationDatastore.createNotification(
                 recipientUserId = any(),
@@ -272,7 +274,15 @@ class UserServiceTest {
 
         // Assert
         assertTrue(result.isSuccess)
-        coVerify { userDatastore.recordInvite(email, orgId, any(), role) }
+        coVerify {
+            membershipDatastore.createInvite(
+                email,
+                orgId,
+                any(),
+                role,
+                match { it.length == 12 && it == it.uppercase() && !it.contains("-") },
+            )
+        }
         coVerify {
             notificationDatastore.createNotification(
                 recipientUserId = any(),
@@ -298,7 +308,7 @@ class UserServiceTest {
         val organization = Organization(id = orgId, name = "Test Org", description = "Test Description")
 
         val error = Exception("Failed to record invite")
-        coEvery { userDatastore.recordInvite(email, orgId, any(), role) } returns Result.failure(error)
+        coEvery { membershipDatastore.createInvite(email, orgId, any(), role, any()) } returns Result.failure(error)
         coEvery { user.id } returns userId
         coEvery { userDatastore.getUser(email) } returns Result.success(user)
         coEvery { organizationDatastore.getOrganization(orgId) } returns Result.success(organization)
@@ -308,7 +318,7 @@ class UserServiceTest {
 
         // Assert
         assertTrue(result.isFailure)
-        coVerify { userDatastore.recordInvite(email, orgId, any(), role) }
+        coVerify { membershipDatastore.createInvite(email, orgId, any(), role, any()) }
     }
 
     /**
@@ -373,21 +383,19 @@ class UserServiceTest {
         val notification = mockk<com.cramsan.edifikana.server.service.models.Notification>()
         every { notification.id } returns notificationId
 
-        coEvery { userDatastore.getInvite(inviteId) } returns Result.success(invite)
+        coEvery { membershipDatastore.getInviteById(inviteId) } returns Result.success(invite)
         coEvery { userDatastore.getUser(userId) } returns Result.success(user)
-        coEvery { organizationDatastore.addUserToOrganization(userId, orgId, OrgRole.EMPLOYEE) } returns Result.success(Unit)
+        coEvery { membershipDatastore.acceptInviteByCode(inviteId, userId) } returns Result.success(Unit)
         coEvery { notificationDatastore.getNotificationByInvite(inviteId) } returns Result.success(notification)
         coEvery { notificationDatastore.deleteNotification(notificationId) } returns Result.success(true)
-        coEvery { userDatastore.removeInvite(inviteId) } returns Result.success(Unit)
 
         // Act
         val result = userService.acceptInvite(userId, inviteId)
 
         // Assert
         assertTrue(result.isSuccess)
-        coVerify { organizationDatastore.addUserToOrganization(userId, orgId, OrgRole.EMPLOYEE) }
+        coVerify { membershipDatastore.acceptInviteByCode(inviteId, userId) }
         coVerify { notificationDatastore.deleteNotification(notificationId) }
-        coVerify { userDatastore.removeInvite(inviteId) }
     }
 
     /**
@@ -399,14 +407,14 @@ class UserServiceTest {
         val userId = UserId("user123")
         val inviteId = InviteId("invite123")
 
-        coEvery { userDatastore.getInvite(inviteId) } returns Result.success(null)
+        coEvery { membershipDatastore.getInviteById(inviteId) } returns Result.success(null)
 
         // Act
         val result = userService.acceptInvite(userId, inviteId)
 
         // Assert
         assertTrue(result.isFailure)
-        coVerify(exactly = 0) { organizationDatastore.addUserToOrganization(any(), any(), any()) }
+        coVerify(exactly = 0) { membershipDatastore.acceptInviteByCode(any(), any()) }
     }
 
     /**
@@ -430,14 +438,14 @@ class UserServiceTest {
             inviteCode = "TESTCODE01",
         )
 
-        coEvery { userDatastore.getInvite(inviteId) } returns Result.success(invite)
+        coEvery { membershipDatastore.getInviteById(inviteId) } returns Result.success(invite)
 
         // Act
         val result = userService.acceptInvite(userId, inviteId)
 
         // Assert
         assertTrue(result.isFailure)
-        coVerify(exactly = 0) { organizationDatastore.addUserToOrganization(any(), any(), any()) }
+        coVerify(exactly = 0) { membershipDatastore.acceptInviteByCode(any(), any()) }
     }
 
     /**
@@ -464,7 +472,7 @@ class UserServiceTest {
         val user = mockk<User>()
         every { user.email } returns userEmail
 
-        coEvery { userDatastore.getInvite(inviteId) } returns Result.success(invite)
+        coEvery { membershipDatastore.getInviteById(inviteId) } returns Result.success(invite)
         coEvery { userDatastore.getUser(userId) } returns Result.success(user)
 
         // Act
@@ -472,7 +480,7 @@ class UserServiceTest {
 
         // Assert
         assertTrue(result.isFailure)
-        coVerify(exactly = 0) { organizationDatastore.addUserToOrganization(any(), any(), any()) }
+        coVerify(exactly = 0) { membershipDatastore.acceptInviteByCode(any(), any()) }
     }
 
     /**
@@ -502,11 +510,11 @@ class UserServiceTest {
         val notification = mockk<com.cramsan.edifikana.server.service.models.Notification>()
         every { notification.id } returns notificationId
 
-        coEvery { userDatastore.getInvite(inviteId) } returns Result.success(invite)
+        coEvery { membershipDatastore.getInviteById(inviteId) } returns Result.success(invite)
         coEvery { userDatastore.getUser(userId) } returns Result.success(user)
         coEvery { notificationDatastore.getNotificationByInvite(inviteId) } returns Result.success(notification)
         coEvery { notificationDatastore.deleteNotification(notificationId) } returns Result.success(true)
-        coEvery { userDatastore.removeInvite(inviteId) } returns Result.success(Unit)
+        coEvery { membershipDatastore.cancelInvite(inviteId) } returns Result.success(Unit)
 
         // Act
         val result = userService.declineInvite(userId, inviteId)
@@ -514,7 +522,7 @@ class UserServiceTest {
         // Assert
         assertTrue(result.isSuccess)
         coVerify { notificationDatastore.deleteNotification(notificationId) }
-        coVerify { userDatastore.removeInvite(inviteId) }
+        coVerify { membershipDatastore.cancelInvite(inviteId) }
     }
 
     /**
@@ -526,14 +534,14 @@ class UserServiceTest {
         val userId = UserId("user123")
         val inviteId = InviteId("invite123")
 
-        coEvery { userDatastore.getInvite(inviteId) } returns Result.success(null)
+        coEvery { membershipDatastore.getInviteById(inviteId) } returns Result.success(null)
 
         // Act
         val result = userService.declineInvite(userId, inviteId)
 
         // Assert
         assertTrue(result.isFailure)
-        coVerify(exactly = 0) { userDatastore.removeInvite(any()) }
+        coVerify(exactly = 0) { membershipDatastore.cancelInvite(any()) }
     }
 
     /**
@@ -560,7 +568,7 @@ class UserServiceTest {
         val user = mockk<User>()
         every { user.email } returns userEmail
 
-        coEvery { userDatastore.getInvite(inviteId) } returns Result.success(invite)
+        coEvery { membershipDatastore.getInviteById(inviteId) } returns Result.success(invite)
         coEvery { userDatastore.getUser(userId) } returns Result.success(user)
 
         // Act
@@ -568,7 +576,7 @@ class UserServiceTest {
 
         // Assert
         assertTrue(result.isFailure)
-        coVerify(exactly = 0) { userDatastore.removeInvite(any()) }
+        coVerify(exactly = 0) { membershipDatastore.cancelInvite(any()) }
     }
 
     /**
@@ -591,7 +599,7 @@ class UserServiceTest {
             inviteCode = "TESTCODE01",
         )
 
-        coEvery { userDatastore.getInvite(inviteId) } returns Result.success(invite)
+        coEvery { membershipDatastore.getInviteById(inviteId) } returns Result.success(invite)
 
         // Act
         val result = userService.getInviteOrganization(inviteId)
@@ -609,7 +617,7 @@ class UserServiceTest {
         // Arrange
         val inviteId = InviteId("invite123")
 
-        coEvery { userDatastore.getInvite(inviteId) } returns Result.success(null)
+        coEvery { membershipDatastore.getInviteById(inviteId) } returns Result.success(null)
 
         // Act
         val result = userService.getInviteOrganization(inviteId)
@@ -638,15 +646,15 @@ class UserServiceTest {
             inviteCode = "TESTCODE01",
         )
 
-        coEvery { userDatastore.getInvite(inviteId) } returns Result.success(invite)
-        coEvery { userDatastore.removeInvite(inviteId) } returns Result.success(Unit)
+        coEvery { membershipDatastore.getInviteById(inviteId) } returns Result.success(invite)
+        coEvery { membershipDatastore.cancelInvite(inviteId) } returns Result.success(Unit)
 
         // Act
         val result = userService.cancelInvite(inviteId)
 
         // Assert
         assertTrue(result.isSuccess)
-        coVerify { userDatastore.removeInvite(inviteId) }
+        coVerify { membershipDatastore.cancelInvite(inviteId) }
     }
 
     /**
@@ -657,13 +665,13 @@ class UserServiceTest {
         // Arrange
         val inviteId = InviteId("invite123")
 
-        coEvery { userDatastore.getInvite(inviteId) } returns Result.success(null)
+        coEvery { membershipDatastore.getInviteById(inviteId) } returns Result.success(null)
 
         // Act
         val result = userService.cancelInvite(inviteId)
 
         // Assert
         assertTrue(result.isFailure)
-        coVerify(exactly = 0) { userDatastore.removeInvite(any()) }
+        coVerify(exactly = 0) { membershipDatastore.cancelInvite(any()) }
     }
 }

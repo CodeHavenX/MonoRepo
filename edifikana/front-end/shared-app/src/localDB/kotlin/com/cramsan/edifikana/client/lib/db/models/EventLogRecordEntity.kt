@@ -2,6 +2,9 @@ package com.cramsan.edifikana.client.lib.db.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.UnitId
+import kotlin.time.Instant
 
 /**
  * Database model for representing a [EventLogRecord]
@@ -12,11 +15,11 @@ data class EventLogRecordEntity(
     val id: String,
     val employeeDocumentId: String?,
     val timeRecorded: Long? = null,
-    val unit: String? = null,
+    val unit: UnitId? = null,
     val eventType: String? = null,
     val fallbackEmployeeName: String? = null,
     val fallbackEventType: String? = null,
     val title: String? = null,
     val description: String? = null,
-    val propertyId: String,
+    val propertyId: PropertyId,
 )

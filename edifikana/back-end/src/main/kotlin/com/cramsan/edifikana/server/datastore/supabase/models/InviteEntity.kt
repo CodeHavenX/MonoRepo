@@ -1,5 +1,7 @@
 package com.cramsan.edifikana.server.datastore.supabase.models
 
+import com.cramsan.edifikana.lib.model.InviteRole
+import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UnitId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.framework.annotations.SupabaseModel
@@ -18,13 +20,13 @@ data class InviteEntity(
     @SerialName("email")
     val email: String,
     @SerialName("organization_id")
-    val organizationId: String,
+    val organizationId: OrganizationId,
     @SerialName("created_at")
     val createdAt: Instant,
     @SerialName("expiration")
     val expiration: Instant,
     @SerialName("role")
-    val role: String,
+    val role: InviteRole,
     @SerialName("invite_code")
     val inviteCode: String,
     @SerialName("invited_by")
@@ -46,13 +48,13 @@ data class InviteEntity(
         @SerialName("email")
         val email: String,
         @SerialName("organization_id")
-        val organizationId: String,
+        val organizationId: OrganizationId,
         @SerialName("created_at")
         val createdAt: Instant,
         @SerialName("expiration")
         val expiration: Instant,
         @SerialName("role")
-        val role: String,
+        val role: InviteRole,
         @SerialName("invite_code")
         val inviteCode: String,
         @SerialName("invited_by")

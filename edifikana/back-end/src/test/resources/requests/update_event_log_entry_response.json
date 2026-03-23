@@ -5,7 +5,7 @@
     "property_id": "property789",
     "type": "INCIDENT",
     "fallback_type": "Inspection",
-    "timestamp": 1727702654,
+    "timestamp": "2024-02-01T00:00:00Z",
     "title": "Monthly check",
     "description": "Performed monthly inspection.",
     "unit": "Unit 202"

@@ -13,6 +13,7 @@ import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
+import com.cramsan.edifikana.lib.model.UnitId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.service.models.Asset
 import com.cramsan.edifikana.server.service.models.Employee
@@ -127,7 +128,7 @@ val EVENT_LOG_ENTRY_EMPLOYEE_1_1 = EventLogEntry(
     timestamp = Instant.fromEpochSeconds(1727702654),
     title = "Routine Check",
     description = "Performed routine maintenance check.",
-    unit = "Unit 101",
+    unit = UnitId("Unit 101"),
 )
 
 val EVENT_LOG_ENTRY_EMPLOYEE_1_2 = EventLogEntry(
@@ -140,7 +141,7 @@ val EVENT_LOG_ENTRY_EMPLOYEE_1_2 = EventLogEntry(
     timestamp = Instant.fromEpochSeconds(1727702655),
     title = "Monthly Inspection",
     description = "Performed monthly inspection.",
-    unit = "Unit 202",
+    unit = UnitId("Unit 202"),
 )
 
 val EVENT_LOG_ENTRY_EMPLOYEE_2_1 = EventLogEntry(
@@ -153,7 +154,7 @@ val EVENT_LOG_ENTRY_EMPLOYEE_2_1 = EventLogEntry(
     timestamp = Instant.fromEpochSeconds(1727702656),
     title = "Routine Check",
     description = "Performed routine maintenance check.",
-    unit = "Unit 101",
+    unit = UnitId("Unit 101"),
 )
 
 val EVENT_LOG_ENTRY_EMPLOYEE_3_1 = EventLogEntry(
@@ -166,7 +167,7 @@ val EVENT_LOG_ENTRY_EMPLOYEE_3_1 = EventLogEntry(
     timestamp = Instant.fromEpochSeconds(1727702657),
     title = "Monthly Inspection",
     description = "Performed monthly inspection.",
-    unit = "Unit 202",
+    unit = UnitId("Unit 202"),
 )
 
 val EVENT_LOG_ENTRY_EMPLOYEE_4_1 = EventLogEntry(
@@ -179,7 +180,7 @@ val EVENT_LOG_ENTRY_EMPLOYEE_4_1 = EventLogEntry(
     timestamp = Instant.fromEpochSeconds(1727702658),
     title = "Routine Check",
     description = "Performed routine maintenance check.",
-    unit = "Unit 101",
+    unit = UnitId("Unit 101"),
 )
 
 val TIME_CARD_EVENT_1 = TimeCardEvent(

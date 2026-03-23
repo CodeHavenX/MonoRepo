@@ -4,6 +4,8 @@ import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.EventLogEventType
 import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.UnitId
+import kotlin.time.Instant
 
 /**
  * Model for an event log record.
@@ -13,8 +15,8 @@ data class EventLogRecordModel(
     val entityId: String?,
     val employeePk: EmployeeId?,
     val propertyId: PropertyId,
-    val timeRecorded: Long,
-    val unit: String,
+    val timeRecorded: Instant,
+    val unit: UnitId?,
     val eventType: EventLogEventType,
     val fallbackEmployeeName: String?,
     val fallbackEventType: String?,
@@ -30,9 +32,9 @@ data class EventLogRecordModel(
          */
         fun createTemporary(
             employeePk: EmployeeId?,
-            timeRecorded: Long,
+            timeRecorded: Instant,
             propertyId: PropertyId,
-            unit: String,
+            unit: UnitId,
             eventType: EventLogEventType?,
             fallbackEmployeeName: String?,
             fallbackEventType: String?,
@@ -45,7 +47,7 @@ data class EventLogRecordModel(
                 entityId = "${employeePk?.empId}_$timeRecorded",
                 employeePk = employeePk,
                 timeRecorded = timeRecorded,
-                unit = unit.trim(),
+                unit = unit,
                 eventType = eventType ?: EventLogEventType.INCIDENT,
                 fallbackEmployeeName = fallbackEmployeeName?.trim(),
                 fallbackEventType = fallbackEventType?.trim(),

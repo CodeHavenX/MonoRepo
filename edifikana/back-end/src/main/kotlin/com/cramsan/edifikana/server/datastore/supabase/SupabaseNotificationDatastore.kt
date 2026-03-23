@@ -37,7 +37,7 @@ class SupabaseNotificationDatastore(
         logD(TAG, "Creating notification for user: $recipientUserId, email: $recipientEmail")
 
         val createEntity = NotificationEntity.Create(
-            recipientUserId = recipientUserId?.userId,
+            recipientUserId = recipientUserId,
             recipientEmail = recipientEmail,
             notificationType = notificationType.name,
             description = description,
@@ -175,7 +175,7 @@ class SupabaseNotificationDatastore(
         // Use count mode to avoid fetching full objects - more efficient
         val result = postgrest.from(NotificationEntity.COLLECTION).update(
             {
-                NotificationEntity::recipientUserId setTo userId.userId
+                NotificationEntity::recipientUserId setTo userId
             }
         ) {
             filter {

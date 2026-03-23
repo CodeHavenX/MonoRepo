@@ -8,6 +8,7 @@ import com.cramsan.edifikana.lib.model.network.DocumentNetworkResponse
 import com.cramsan.edifikana.lib.model.network.EmployeeNetworkResponse
 import com.cramsan.edifikana.lib.model.network.EventLogEntryNetworkResponse
 import com.cramsan.edifikana.lib.model.network.InviteNetworkResponse
+import com.cramsan.edifikana.lib.model.network.MemberNetworkResponse
 import com.cramsan.edifikana.lib.model.network.NotificationNetworkResponse
 import com.cramsan.edifikana.lib.model.network.OrganizationNetworkResponse
 import com.cramsan.edifikana.lib.model.network.PropertyNetworkResponse
@@ -20,13 +21,11 @@ import com.cramsan.edifikana.server.service.models.EventLogEntry
 import com.cramsan.edifikana.server.service.models.Invite
 import com.cramsan.edifikana.server.service.models.Notification
 import com.cramsan.edifikana.server.service.models.Organization
+import com.cramsan.edifikana.server.service.models.OrgMemberView
 import com.cramsan.edifikana.server.service.models.Property
 import com.cramsan.edifikana.server.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.service.models.User
-import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.annotations.NetworkModel
-import com.cramsan.framework.logging.logE
-import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import kotlin.time.ExperimentalTime
 
 /**
@@ -76,7 +75,7 @@ fun EventLogEntry.toEventLogEntryNetworkResponse(): EventLogEntryNetworkResponse
         propertyId = propertyId,
         type = type,
         fallbackEventType = fallbackEventType,
-        timestamp = timestamp.epochSeconds,
+        timestamp = timestamp,
         description = description,
         unit = unit,
     )
@@ -108,7 +107,7 @@ fun TimeCardEvent.toTimeCardEventNetworkResponse(): TimeCardEventNetworkResponse
         propertyId = propertyId,
         type = type,
         imageUrl = imageUrl,
-        timestamp = timestamp.epochSeconds,
+        timestamp = timestamp,
     )
 }
 
@@ -137,6 +136,22 @@ fun Organization.toOrganizationNetworkResponse(): OrganizationNetworkResponse {
 }
 
 /**
+ * Converts an [OrgMemberView] domain model to a [MemberNetworkResponse] network model.
+ */
+@OptIn(NetworkModel::class)
+fun OrgMemberView.toMemberNetworkResponse(): MemberNetworkResponse {
+    return MemberNetworkResponse(
+        userId = userId,
+        orgId = orgId,
+        role = role,
+        status = status,
+        joinedAt = joinedAt,
+        email = email,
+        displayName = "$firstName $lastName".trim(),
+    )
+}
+
+/**
  * Converts an [Invite] domain model to an [InviteNetworkResponse] network model.
  */
 @OptIn(NetworkModel::class)
@@ -145,8 +160,8 @@ fun Invite.toInviteNetworkResponse(): InviteNetworkResponse {
         inviteId = id,
         email = email,
         organizationId = organizationId,
-        role = role.name,
-        expiresAt = expiration.epochSeconds,
+        role = role,
+        expiresAt = expiration,
     )
 }
 
@@ -160,8 +175,8 @@ fun Notification.toNotificationNetworkResponse(): NotificationNetworkResponse {
         notificationType = notificationType,
         description = description,
         isRead = isRead,
-        createdAt = createdAt.epochSeconds,
-        readAt = readAt?.epochSeconds,
+        createdAt = createdAt,
+        readAt = readAt,
         inviteId = inviteId,
     )
 }
@@ -181,22 +196,6 @@ fun Document.toDocumentNetworkResponse(): DocumentNetworkResponse {
         documentType = documentType,
         assetId = assetId,
         createdBy = createdBy,
-        createdAt = createdAt.epochSeconds,
+        createdAt = createdAt,
     )
-}
-
-/**
- * Converts a string to a [UserRole].
- */
-fun String.toServiceUserRole(): UserRole {
-    return when (this) {
-        "SUPERUSER" -> UserRole.SUPERUSER
-        "OWNER" -> UserRole.OWNER
-        "ADMIN" -> UserRole.ADMIN
-        "MANAGER" -> UserRole.MANAGER
-        "EMPLOYEE" -> UserRole.EMPLOYEE
-        "USER" -> UserRole.USER
-        "UNAUTHORIZED" -> UserRole.UNAUTHORIZED
-        else -> throw IllegalArgumentException("Invalid UserRole value: $this")
-    }
 }

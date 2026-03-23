@@ -137,8 +137,8 @@ class SupabaseOrganizationDatastore(
         return runSuspendCatching(TAG) {
             logD(TAG, "Adding user %s to organization %s", userId, organizationId)
             val userOrgMapping = UserOrganizationMappingEntity.CreateUserOrganizationMappingEntity(
-                userId = userId.userId,
-                organizationId = organizationId.id,
+                userId = userId,
+                organizationId = organizationId,
                 role = role,
             )
             postgrest.from(UserOrganizationMappingEntity.COLLECTION).insert(userOrgMapping) { select() }

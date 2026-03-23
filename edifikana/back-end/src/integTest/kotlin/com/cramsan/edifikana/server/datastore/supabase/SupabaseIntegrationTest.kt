@@ -157,7 +157,7 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
         role: InviteRole = InviteRole.EMPLOYEE,
     ): InviteId {
         val inviteId = runBlocking {
-            userDatastore.recordInvite(
+            membershipDatastore.createInvite(
                 email = email,
                 organizationId = organizationId,
                 expiration = expiration,
@@ -255,8 +255,8 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
                     results += notificationDatastore.purgeNotification(it)
                 }
                 invitationResources.forEach {
-                    results += userDatastore.removeInvite(it)
-                    results += userDatastore.purgeInvite(it)
+                    results += membershipDatastore.cancelInvite(it)
+                    results += membershipDatastore.purgeInvite(it)
                 }
                 eventLogResources.forEach {
                     results += eventLogDatastore.deleteEventLogEntry(it)

@@ -142,6 +142,73 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     // -------------------------------------------------------------------------
+    // createInvite
+    // -------------------------------------------------------------------------
+
+    @Test
+    fun `createInvite should succeed and return invite`() = runCoroutineTest {
+        // Arrange
+        val email = "create-${testPrefix}@test.com"
+        val futureExpiry = clock.now().plus(kotlin.time.Duration.parse("7d"))
+
+        // Act
+        val result = membershipDatastore.createInvite(
+            email = email,
+            organizationId = orgId!!,
+            expiration = futureExpiry,
+            role = InviteRole.EMPLOYEE,
+        )
+
+        // Assert
+        assertTrue(result.isSuccess)
+        val invite = result.getOrThrow()
+        assertEquals(email, invite.email)
+        assertEquals(orgId!!, invite.organizationId)
+        assertEquals(InviteRole.EMPLOYEE, invite.role)
+        assertTrue(invite.inviteCode.isNotBlank())
+
+        // Register for cleanup
+        membershipDatastore.cancelInvite(invite.id)
+        membershipDatastore.purgeInvite(invite.id)
+    }
+
+    // -------------------------------------------------------------------------
+    // getInviteById
+    // -------------------------------------------------------------------------
+
+    @Test
+    fun `getInviteById should return invite by ID`() = runCoroutineTest {
+        // Arrange
+        val futureExpiry = clock.now().plus(kotlin.time.Duration.parse("7d"))
+        val inviteId = createTestInvite(
+            email = "byid-${testPrefix}@test.com",
+            organizationId = orgId!!,
+            expiration = futureExpiry,
+        )
+
+        // Act
+        val result = membershipDatastore.getInviteById(inviteId)
+
+        // Assert
+        assertTrue(result.isSuccess)
+        val invite = result.getOrThrow()
+        assertNotNull(invite)
+        assertEquals(inviteId, invite.id)
+    }
+
+    @Test
+    fun `getInviteById should return null for non-existent ID`() = runCoroutineTest {
+        // Act
+        val result = membershipDatastore.getInviteById(
+            com.cramsan.edifikana.lib.model.InviteId("00000000-0000-0000-0000-000000000000")
+        )
+
+        // Assert
+        assertTrue(result.isSuccess)
+        assertNull(result.getOrThrow())
+    }
+
+    // -------------------------------------------------------------------------
     // listPendingInvites
     // -------------------------------------------------------------------------
 
@@ -241,7 +308,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
             organizationId = orgId!!,
             expiration = futureExpiry,
         )
-        val originalInvite = userDatastore.getInvite(inviteId).getOrThrow()!!
+        val originalInvite = membershipDatastore.getInviteById(inviteId).getOrThrow()!!
         val newCode = UUID.random()
         val newExpiry = clock.now().plus(kotlin.time.Duration.parse("14d"))
 
@@ -269,7 +336,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
             organizationId = orgId!!,
             expiration = futureExpiry,
         )
-        val invite = userDatastore.getInvite(inviteId).getOrThrow()!!
+        val invite = membershipDatastore.getInviteById(inviteId).getOrThrow()!!
 
         // Act
         val result = membershipDatastore.getInviteByCode(invite.inviteCode)

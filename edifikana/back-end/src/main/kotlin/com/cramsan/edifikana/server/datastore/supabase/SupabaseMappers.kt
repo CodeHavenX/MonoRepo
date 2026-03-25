@@ -37,6 +37,7 @@ import com.cramsan.edifikana.server.datastore.supabase.models.OrganizationEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.TaskEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.PropertyEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.TimeCardEventEntity
+import com.cramsan.edifikana.server.datastore.supabase.models.UnitEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.UserEntity
 import com.cramsan.edifikana.server.service.models.CommonArea
 import com.cramsan.edifikana.server.service.models.Document
@@ -49,6 +50,7 @@ import com.cramsan.edifikana.server.service.models.OrgMemberView
 import com.cramsan.edifikana.server.service.models.Organization
 import com.cramsan.edifikana.server.service.models.Property
 import com.cramsan.edifikana.server.service.models.TimeCardEvent
+import com.cramsan.edifikana.server.service.models.Unit
 import com.cramsan.edifikana.server.service.models.User
 import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.annotations.SupabaseModel
@@ -480,5 +482,50 @@ fun TaskEntity.toTask(): Task {
         createdAt = createdAt,
         completedAt = completedAt,
         statusChangedAt = statusChangedAt,
+    )
+}
+
+/**
+ * Creates a [UnitEntity.CreateUnitEntity] from the provided parameters.
+ */
+@OptIn(SupabaseModel::class)
+fun CreateUnitEntity(
+    propertyId: PropertyId,
+    orgId: OrganizationId,
+    unitNumber: String,
+    bedrooms: Int?,
+    bathrooms: Int?,
+    sqFt: Int?,
+    floor: Int?,
+    notes: String?,
+): UnitEntity.CreateUnitEntity {
+    return UnitEntity.CreateUnitEntity(
+        propertyId = propertyId,
+        orgId = orgId,
+        unitNumber = unitNumber,
+        bedrooms = bedrooms,
+        bathrooms = bathrooms,
+        sqFt = sqFt,
+        floor = floor,
+        notes = notes,
+    )
+}
+
+/**
+ * Maps a [UnitEntity] to the [Unit] service model.
+ */
+@OptIn(SupabaseModel::class)
+fun UnitEntity.toUnit(): Unit {
+    return Unit(
+        id = UnitId(this.unitId),
+        propertyId = this.propertyId,
+        orgId = this.orgId,
+        unitNumber = this.unitNumber,
+        bedrooms = this.bedrooms,
+        bathrooms = this.bathrooms,
+        sqFt = this.sqFt,
+        floor = this.floor,
+        notes = this.notes,
+        createdAt = this.createdAt,
     )
 }

@@ -4,6 +4,7 @@ package com.cramsan.edifikana.server.controller
 
 import com.cramsan.edifikana.lib.model.network.AssetNetworkResponse
 import com.cramsan.edifikana.lib.model.network.AuthMetadataNetworkResponse
+import com.cramsan.edifikana.lib.model.network.CommonAreaNetworkResponse
 import com.cramsan.edifikana.lib.model.network.DocumentNetworkResponse
 import com.cramsan.edifikana.lib.model.network.EmployeeNetworkResponse
 import com.cramsan.edifikana.lib.model.network.EventLogEntryNetworkResponse
@@ -15,6 +16,7 @@ import com.cramsan.edifikana.lib.model.network.PropertyNetworkResponse
 import com.cramsan.edifikana.lib.model.network.TimeCardEventNetworkResponse
 import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
 import com.cramsan.edifikana.server.service.models.Asset
+import com.cramsan.edifikana.server.service.models.CommonArea
 import com.cramsan.edifikana.server.service.models.Document
 import com.cramsan.edifikana.server.service.models.Employee
 import com.cramsan.edifikana.server.service.models.EventLogEntry
@@ -197,5 +199,20 @@ fun Document.toDocumentNetworkResponse(): DocumentNetworkResponse {
         assetId = assetId,
         createdBy = createdBy,
         createdAt = createdAt,
+    )
+}
+
+/**
+ * Converts a [CommonArea] domain model to a [CommonAreaNetworkResponse] network model.
+ */
+@NetworkModel
+fun CommonArea.toCommonAreaNetworkResponse(): CommonAreaNetworkResponse {
+    return CommonAreaNetworkResponse(
+        commonAreaId = id,
+        propertyId = propertyId,
+        orgId = orgId,
+        name = name,
+        type = type,
+        description = description,
     )
 }

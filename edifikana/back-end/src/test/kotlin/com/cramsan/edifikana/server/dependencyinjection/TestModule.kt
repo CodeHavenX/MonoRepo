@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.dependencyinjection
 
+import com.cramsan.edifikana.server.controller.CommonAreaController
 import com.cramsan.edifikana.server.controller.EmployeeController
 import com.cramsan.edifikana.server.controller.EventLogController
 import com.cramsan.edifikana.server.controller.HealthCheckController
@@ -10,6 +11,7 @@ import com.cramsan.edifikana.server.controller.PropertyController
 import com.cramsan.edifikana.server.controller.StorageController
 import com.cramsan.edifikana.server.controller.TimeCardController
 import com.cramsan.edifikana.server.controller.UserController
+import com.cramsan.edifikana.server.service.CommonAreaService
 import com.cramsan.edifikana.server.service.EmployeeService
 import com.cramsan.edifikana.server.service.EventLogService
 import com.cramsan.edifikana.server.service.MembershipService
@@ -42,6 +44,7 @@ internal val TestControllerModule = module {
     singleOf(::OrganizationController) { bind<Controller>() }
     singleOf(::NotificationController) { bind<Controller>() }
     singleOf(::MembershipController) { bind<Controller>() }
+    singleOf(::CommonAreaController) { bind<Controller>() }
 }
 
 /**
@@ -58,6 +61,7 @@ internal val TestServiceModule = module {
     single<RBACService> { mockk() }
     single<NotificationService> { mockk() }
     single<MembershipService> { mockk() }
+    single<CommonAreaService> { mockk() }
 }
 
 internal fun testApplicationModule(json: Json) = module {

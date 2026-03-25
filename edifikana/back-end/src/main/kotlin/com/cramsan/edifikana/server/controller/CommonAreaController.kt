@@ -22,6 +22,7 @@ import com.cramsan.framework.core.ktor.OperationRequest
 import com.cramsan.framework.core.ktor.auth.ClientContext
 import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.core.ktor.handler
+import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.NotFoundException
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.UnauthorizedException
 import io.ktor.server.routing.Routing
 
@@ -63,6 +64,7 @@ class CommonAreaController(
 
     /**
      * Retrieves a single common area by its [CommonAreaId]. Requires MANAGER role or higher.
+     * Returns 404 if the area does not exist or the caller is not authorized (to avoid leaking existence).
      */
     suspend fun getCommonArea(
         request: OperationRequest<
@@ -71,11 +73,12 @@ class CommonAreaController(
             CommonAreaId,
             ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
             >
-    ): CommonAreaNetworkResponse? {
+    ): CommonAreaNetworkResponse {
         if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.MANAGER)) {
-            return null
+            throw NotFoundException("Common area not found.")
         }
         return commonAreaService.getCommonArea(request.pathParam)?.toCommonAreaNetworkResponse()
+            ?: throw NotFoundException("Common area not found.")
     }
 
     /**

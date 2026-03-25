@@ -7,7 +7,6 @@ import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.server.datastore.CommonAreaDatastore
 import com.cramsan.edifikana.server.datastore.supabase.models.CommonAreaEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.CommonAreaEntity.CreateCommonAreaEntity
-import com.cramsan.edifikana.server.datastore.supabase.models.toCommonArea
 import com.cramsan.edifikana.server.service.models.CommonArea
 import com.cramsan.framework.annotations.SupabaseModel
 import com.cramsan.framework.core.runSuspendCatching

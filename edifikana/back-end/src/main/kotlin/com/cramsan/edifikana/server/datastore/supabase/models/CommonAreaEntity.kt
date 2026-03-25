@@ -1,10 +1,7 @@
 package com.cramsan.edifikana.server.datastore.supabase.models
 
-import com.cramsan.edifikana.lib.model.CommonAreaId
-import com.cramsan.edifikana.lib.model.CommonAreaType
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.server.service.models.CommonArea
 import com.cramsan.framework.annotations.SupabaseModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -52,16 +49,3 @@ data class CommonAreaEntity(
     )
 }
 
-/**
- * Maps a [CommonAreaEntity] to the [CommonArea] domain model.
- */
-@OptIn(ExperimentalTime::class)
-fun CommonAreaEntity.toCommonArea() = CommonArea(
-    id = CommonAreaId(commonAreaId),
-    propertyId = propertyId,
-    orgId = orgId,
-    name = name,
-    type = CommonAreaType.fromString(type),
-    description = description,
-    createdAt = createdAt,
-)

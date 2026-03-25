@@ -24,6 +24,7 @@ import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logW
 import com.cramsan.framework.networkapi.buildRequest
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
+import com.cramsan.framework.utils.exceptions.requireAtLeastOne
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.OtpType
 import io.github.jan.supabase.auth.exception.AuthRestException
@@ -174,9 +175,13 @@ class AuthServiceImpl(
 
     @OptIn(NetworkModel::class)
     override suspend fun passwordReset(email: String?, phoneNumber: String?): Result<Unit> = runSuspendCatching(TAG) {
-        requireNotNull(email) { "Email is required for password reset" }
+        requireAtLeastOne(
+            "Either email or phone number is required for password reset",
+            email,
+            phoneNumber
+        )
         UserApi.requestPasswordReset.buildRequest(
-            PasswordResetNetworkRequest(email = email)
+            PasswordResetNetworkRequest(email = email, phoneNumber = phoneNumber)
         ).execute(http)
     }
 

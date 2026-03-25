@@ -681,14 +681,14 @@ class UserServiceTest {
     @Test
     fun `requestPasswordReset should return success when datastore succeeds`() = runTest {
         // Arrange
-        coEvery { userDatastore.requestPasswordReset(any()) } returns Result.success(Unit)
+        coEvery { userDatastore.requestPasswordReset(any(), any()) } returns Result.success(Unit)
 
         // Act
-        val result = userService.requestPasswordReset("user@example.com")
+        val result = userService.requestPasswordReset("user@example.com", null)
 
         // Assert
         assertTrue(result.isSuccess)
-        coVerify(exactly = 1) { userDatastore.requestPasswordReset("user@example.com") }
+        coVerify(exactly = 1) { userDatastore.requestPasswordReset("user@example.com", null) }
     }
 
     /**
@@ -698,15 +698,15 @@ class UserServiceTest {
     @Test
     fun `requestPasswordReset should return success even when datastore fails`() = runTest {
         // Arrange
-        coEvery { userDatastore.requestPasswordReset(any()) } returns Result.failure(
+        coEvery { userDatastore.requestPasswordReset(any(), any()) } returns Result.failure(
             RuntimeException("Not found")
         )
 
         // Act
-        val result = userService.requestPasswordReset("nonexistent@example.com")
+        val result = userService.requestPasswordReset("nonexistent@example.com", null)
 
         // Assert
         assertTrue(result.isSuccess)
-        coVerify(exactly = 1) { userDatastore.requestPasswordReset("nonexistent@example.com") }
+        coVerify(exactly = 1) { userDatastore.requestPasswordReset("nonexistent@example.com", null) }
     }
 }

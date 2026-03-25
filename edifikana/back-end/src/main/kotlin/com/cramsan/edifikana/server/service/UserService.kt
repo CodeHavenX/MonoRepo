@@ -320,12 +320,15 @@ class UserService(
     }
 
     /**
-     * Requests a password reset email for the given [email].
-     * Always returns success to prevent email enumeration.
+     * Requests a password reset for the given [email] or [phoneNumber]. At least one must be non-null.
+     * Always returns success to prevent enumeration attacks.
      */
-    suspend fun requestPasswordReset(email: String): Result<Unit> {
+    suspend fun requestPasswordReset(email: String?, phoneNumber: String?): Result<Unit> {
         logD(TAG, "requestPasswordReset")
-        userDatastore.requestPasswordReset(email).onFailure { e ->
+        require(email != null || phoneNumber != null) {
+            "Either email or phone number is required for password reset"
+        }
+        userDatastore.requestPasswordReset(email, phoneNumber).onFailure { e ->
             logW(TAG, "Password reset request failed (suppressed)", e)
         }
         return Result.success(Unit)

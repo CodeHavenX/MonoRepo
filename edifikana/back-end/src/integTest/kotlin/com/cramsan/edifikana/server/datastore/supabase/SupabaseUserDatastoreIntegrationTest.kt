@@ -280,7 +280,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
         ).registerUserForDeletion()
 
         // Act
-        val result = userDatastore.requestPasswordReset(email)
+        val result = userDatastore.requestPasswordReset(email, null)
 
         // Assert
         assertTrue(result.isSuccess)
@@ -296,7 +296,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val email = "${test_prefix}_nonexist@test.com"
 
         // Act
-        val result = userDatastore.requestPasswordReset(email)
+        val result = userDatastore.requestPasswordReset(email, null)
 
         // Assert
         assertTrue(result.isSuccess)

@@ -77,8 +77,8 @@ interface UserDatastore {
     ): Result<Boolean>
 
     /**
-     * Sends a password reset email to the given [email] via Supabase Auth.
-     * Returns success regardless of whether the email exists in the system.
+     * Sends a password reset notification to the given [email] or [phoneNumber] via Supabase Auth.
+     * Returns success regardless of whether the identifier exists in the system.
      */
-    suspend fun requestPasswordReset(email: String): Result<Unit>
+    suspend fun requestPasswordReset(email: String?, phoneNumber: String?): Result<Unit>
 }

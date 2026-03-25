@@ -306,12 +306,12 @@ class UserController(
     }
 
     /**
-     * Handles a password reset request. Always returns 200 regardless of email existence
-     * to prevent email enumeration. No authentication required.
+     * Handles a password reset request. Always returns 200 regardless of email or phone number existence
+     * to prevent enumeration. No authentication required.
      */
     @OptIn(NetworkModel::class)
     suspend fun requestPasswordReset(request: PasswordResetNetworkRequest): NoResponseBody {
-        userService.requestPasswordReset(request.email)
+        userService.requestPasswordReset(request.email, request.phoneNumber)
         return NoResponseBody
     }
 

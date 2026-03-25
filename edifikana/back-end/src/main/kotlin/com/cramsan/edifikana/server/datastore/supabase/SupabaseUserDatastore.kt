@@ -348,12 +348,18 @@ class SupabaseUserDatastore(
     }
 
     /**
-     * Sends a password reset email to [email] via Supabase Auth.
+     * Sends a password reset notification via Supabase Auth.
+     * Email-based reset is supported. Phone-based reset is not yet implemented.
      */
-    override suspend fun requestPasswordReset(email: String): Result<Unit> =
+    override suspend fun requestPasswordReset(email: String?, phoneNumber: String?): Result<Unit> =
         runSuspendCatching(TAG) {
-            logD(TAG, "Requesting password reset for email: %s", email)
-            auth.resetPasswordForEmail(email)
+            if (email != null) {
+                logD(TAG, "Requesting password reset for email: %s", email)
+                auth.resetPasswordForEmail(email)
+            } else {
+                // TODO: Implement phone-based password reset when Supabase phone auth is fully supported
+                throw NotImplementedError("Phone-based password reset is not yet supported")
+            }
         }
 
     companion object {

@@ -233,7 +233,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `deleteProperty should fail for non-existent property`() = runCoroutineTest {
         // Arrange
-        val fakeId = PropertyId("fake-${test_prefix}")
+        val fakeId = PropertyId(UUID.random())
 
         // Act
         val deleteResult = propertyDatastore.deleteProperty(fakeId)

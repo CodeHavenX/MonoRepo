@@ -163,7 +163,7 @@ class SupabaseEmployeeDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `deleteEmployee should fail for non-existent employee`() = runCoroutineTest {
         // Arrange
-        val fakeId = EmployeeId("fake-$test_prefix")
+        val fakeId = EmployeeId(UUID.random())
 
         // Act
         val deleteResult = employeeDatastore.deleteEmployee(fakeId)

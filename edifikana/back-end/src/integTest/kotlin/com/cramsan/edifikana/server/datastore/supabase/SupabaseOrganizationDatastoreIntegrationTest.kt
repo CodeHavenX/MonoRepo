@@ -97,7 +97,9 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `deleteOrganization should fail for non-existent organization`() = runCoroutineTest {
         // Arrange
-        val fakeId = OrganizationId("fake-${test_prefix}")
+        val fakeId = OrganizationId(UUID.random())
+
+
 
         // Act
         val deleteResult = organizationDatastore.deleteOrganization(fakeId)

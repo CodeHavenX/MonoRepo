@@ -9,6 +9,14 @@ import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.task.TaskId
 import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventId
 import com.cramsan.edifikana.lib.model.user.UserId
+import com.cramsan.edifikana.lib.model.DocumentId
+import com.cramsan.edifikana.lib.model.EmployeeId
+import com.cramsan.edifikana.lib.model.EventLogEntryId
+import com.cramsan.edifikana.lib.model.OrganizationId
+import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.TimeCardEventId
+import com.cramsan.edifikana.lib.model.UnitId
+import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.datastore.CommonAreaDatastore
 import com.cramsan.edifikana.server.datastore.DocumentDatastore
@@ -18,6 +26,7 @@ import com.cramsan.edifikana.server.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.datastore.PropertyDatastore
 import com.cramsan.edifikana.server.datastore.TaskDatastore
 import com.cramsan.edifikana.server.datastore.TimeCardDatastore
+import com.cramsan.edifikana.server.datastore.UnitDatastore
 import com.cramsan.edifikana.server.datastore.supabase.toUserRole
 import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.core.ktor.auth.ClientContext
@@ -37,6 +46,7 @@ class RBACService(
     private val documentDatastore: DocumentDatastore,
     private val commonAreaDatastore: CommonAreaDatastore,
     private val taskDatastore: TaskDatastore,
+    private val unitDatastore: UnitDatastore,
 ) {
 
     private val propertyNotFoundException = "ERROR: PROPERTY NOT FOUND!"
@@ -311,6 +321,56 @@ class RBACService(
         val commonArea = commonAreaDatastore.getCommonArea(targetCommonAreaId).getOrThrow()
             ?: return UserRole.UNAUTHORIZED
         return getUserRoleForPropertyAction(context, commonArea.propertyId)
+    }
+
+    /**
+     * Checks if the user has the required role to perform actions on the target unit.
+     *
+     * @param context The authenticated client context containing user information.
+     * @param targetUnitId The ID of the target unit on which the action is to be performed.
+     * @param requiredRole The role required to perform the action.
+     * @return True if the user has the required role, false otherwise.
+     */
+    suspend fun hasRole(
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+        targetUnitId: UnitId,
+        requiredRole: UserRole,
+    ): Boolean {
+        val userRole = getUserRoleForUnitAction(context, targetUnitId)
+        return userRole == requiredRole
+    }
+
+    /**
+     * Checks if the user has the required role or higher to perform actions on the target unit.
+     *
+     * @param context The authenticated client context containing user information.
+     * @param targetUnitId The ID of the target unit on which the action is to be performed.
+     * @param requiredRole The minimum role required to perform the action.
+     * @return True if the user has the required role or higher, false otherwise.
+     */
+    suspend fun hasRoleOrHigher(
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+        targetUnitId: UnitId,
+        requiredRole: UserRole,
+    ): Boolean {
+        val userRole = getUserRoleForUnitAction(context, targetUnitId)
+        return userRole.level <= requiredRole.level
+    }
+
+    /**
+     * Retrieves the user role for the action being performed on the target unit.
+     *
+     * @param context The authenticated client context containing user information.
+     * @param targetUnitId The ID of the target unit on which the action is to be performed.
+     * @return The user role if the action is allowed, or UNAUTHORIZED if not.
+     */
+    private suspend fun getUserRoleForUnitAction(
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+        targetUnitId: UnitId,
+    ): UserRole {
+        val unit = unitDatastore.getUnit(targetUnitId).getOrThrow()
+            ?: return UserRole.UNAUTHORIZED
+        return getUserRoleForOrganizationAction(context, unit.orgId)
     }
 
     /**

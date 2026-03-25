@@ -12,6 +12,7 @@ import com.cramsan.edifikana.server.datastore.PropertyDatastore
 import com.cramsan.edifikana.server.datastore.StorageDatastore
 import com.cramsan.edifikana.server.datastore.TaskDatastore
 import com.cramsan.edifikana.server.datastore.TimeCardDatastore
+import com.cramsan.edifikana.server.datastore.UnitDatastore
 import com.cramsan.edifikana.server.datastore.UserDatastore
 import com.cramsan.edifikana.server.datastore.supabase.SupabaseCommonAreaDatastore
 import com.cramsan.edifikana.server.datastore.supabase.SupabaseDocumentDatastore
@@ -24,6 +25,7 @@ import com.cramsan.edifikana.server.datastore.supabase.SupabasePropertyDatastore
 import com.cramsan.edifikana.server.datastore.supabase.SupabaseStorageDatastore
 import com.cramsan.edifikana.server.datastore.supabase.SupabaseTaskDatastore
 import com.cramsan.edifikana.server.datastore.supabase.SupabaseTimeCardDatastore
+import com.cramsan.edifikana.server.datastore.supabase.SupabaseUnitDatastore
 import com.cramsan.edifikana.server.datastore.supabase.SupabaseUserDatastore
 import com.cramsan.edifikana.server.settings.EdifikanaSettingKey
 import io.github.jan.supabase.SupabaseClient
@@ -125,5 +127,8 @@ val DatastoreModule = module {
     }
     singleOf(::SupabaseTaskDatastore) {
         bind<TaskDatastore>()
+    }
+    singleOf(::SupabaseUnitDatastore) {
+        bind<UnitDatastore>()
     }
 }

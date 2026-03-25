@@ -16,6 +16,19 @@ import com.cramsan.edifikana.lib.model.network.organization.OrganizationNetworkR
 import com.cramsan.edifikana.lib.model.network.property.PropertyNetworkResponse
 import com.cramsan.edifikana.lib.model.network.timeCard.TimeCardEventNetworkResponse
 import com.cramsan.edifikana.lib.model.network.user.UserNetworkResponse
+import com.cramsan.edifikana.lib.model.network.AssetNetworkResponse
+import com.cramsan.edifikana.lib.model.network.AuthMetadataNetworkResponse
+import com.cramsan.edifikana.lib.model.network.DocumentNetworkResponse
+import com.cramsan.edifikana.lib.model.network.EmployeeNetworkResponse
+import com.cramsan.edifikana.lib.model.network.EventLogEntryNetworkResponse
+import com.cramsan.edifikana.lib.model.network.InviteNetworkResponse
+import com.cramsan.edifikana.lib.model.network.MemberNetworkResponse
+import com.cramsan.edifikana.lib.model.network.NotificationNetworkResponse
+import com.cramsan.edifikana.lib.model.network.OrganizationNetworkResponse
+import com.cramsan.edifikana.lib.model.network.PropertyNetworkResponse
+import com.cramsan.edifikana.lib.model.network.TimeCardEventNetworkResponse
+import com.cramsan.edifikana.lib.model.network.UnitNetworkResponse
+import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
 import com.cramsan.edifikana.server.service.models.Asset
 import com.cramsan.edifikana.server.service.models.CommonArea
 import com.cramsan.edifikana.server.service.models.Document
@@ -28,6 +41,7 @@ import com.cramsan.edifikana.server.service.models.Organization
 import com.cramsan.edifikana.server.service.models.OrgMemberView
 import com.cramsan.edifikana.server.service.models.Property
 import com.cramsan.edifikana.server.service.models.TimeCardEvent
+import com.cramsan.edifikana.server.service.models.Unit
 import com.cramsan.edifikana.server.service.models.User
 import com.cramsan.framework.annotations.NetworkModel
 import kotlin.time.ExperimentalTime
@@ -239,5 +253,23 @@ fun Task.toTaskNetworkResponse(): TaskNetworkResponse {
         createdAt = createdAt,
         completedAt = completedAt,
         statusChangedAt = statusChangedAt,
+    )
+}
+
+/**
+ * Converts a [Unit] domain model to a [UnitNetworkResponse] network model.
+ */
+@OptIn(NetworkModel::class)
+fun Unit.toUnitNetworkResponse(): UnitNetworkResponse {
+    return UnitNetworkResponse(
+        unitId = id,
+        propertyId = propertyId,
+        orgId = orgId,
+        unitNumber = unitNumber,
+        bedrooms = bedrooms,
+        bathrooms = bathrooms,
+        sqFt = sqFt,
+        floor = floor,
+        notes = notes,
     )
 }

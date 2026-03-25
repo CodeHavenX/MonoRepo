@@ -789,6 +789,98 @@ class UserControllerTest : CoroutineTest(), KoinTest {
     }
 
     /**
+     * Test that requestPasswordReset returns HTTP 200 when called with an email.
+     * The endpoint is unauthenticated and always returns 200 to prevent enumeration.
+     */
+    @Test
+    fun `test requestPasswordReset returns 200 when called with email`() = testBackEndApplication {
+        // Arrange
+        val userService = get<UserService>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+        coEvery {
+            userService.requestPasswordReset("user@example.com", null)
+        }.answers {
+            Result.success(Unit)
+        }
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            ClientContext.UnauthenticatedClientContext()
+        }
+
+        // Act
+        val response = client.post("user/request-password-reset") {
+            setBody("""{"email":"user@example.com","phone_number":null}""")
+            contentType(ContentType.Application.Json)
+        }
+
+        // Assert
+        assertEquals(HttpStatusCode.OK, response.status)
+        coVerify(exactly = 1) { userService.requestPasswordReset("user@example.com", null) }
+    }
+
+    /**
+     * Test that requestPasswordReset returns HTTP 200 when called with a phone number.
+     * The endpoint is unauthenticated and always returns 200 to prevent enumeration.
+     */
+    @Test
+    fun `test requestPasswordReset returns 200 when called with phone number`() = testBackEndApplication {
+        // Arrange
+        val userService = get<UserService>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+        coEvery {
+            userService.requestPasswordReset(null, "5051352468")
+        }.answers {
+            Result.success(Unit)
+        }
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            ClientContext.UnauthenticatedClientContext()
+        }
+
+        // Act
+        val response = client.post("user/request-password-reset") {
+            setBody("""{"email":null,"phone_number":"5051352468"}""")
+            contentType(ContentType.Application.Json)
+        }
+
+        // Assert
+        assertEquals(HttpStatusCode.OK, response.status)
+        coVerify(exactly = 1) { userService.requestPasswordReset(null, "5051352468") }
+    }
+
+    /**
+     * Test that requestPasswordReset returns HTTP 200 even when the service fails.
+     * This prevents enumeration attacks — the client must never learn whether the identifier exists.
+     */
+    @Test
+    fun `test requestPasswordReset returns 200 even when service fails`() = testBackEndApplication {
+        // Arrange
+        val userService = get<UserService>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+        coEvery {
+            userService.requestPasswordReset("unknown@example.com", null)
+        }.answers {
+            Result.success(Unit)
+        }
+        coEvery {
+            contextRetriever.getContext(any())
+        }.answers {
+            ClientContext.UnauthenticatedClientContext()
+        }
+
+        // Act
+        val response = client.post("user/request-password-reset") {
+            setBody("""{"email":"unknown@example.com","phone_number":null}""")
+            contentType(ContentType.Application.Json)
+        }
+
+        // Assert
+        assertEquals(HttpStatusCode.OK, response.status)
+    }
+
+    /**
      * Test that cancelInvite fails when user does not have manager role.
      */
     @Test

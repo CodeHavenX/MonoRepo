@@ -10,6 +10,7 @@ import com.cramsan.edifikana.server.controller.OrganizationController
 import com.cramsan.edifikana.server.controller.PropertyController
 import com.cramsan.edifikana.server.controller.StorageController
 import com.cramsan.edifikana.server.controller.TimeCardController
+import com.cramsan.edifikana.server.controller.UnitController
 import com.cramsan.edifikana.server.controller.UserController
 import com.cramsan.framework.core.ktor.Controller
 import org.koin.core.module.dsl.bind
@@ -32,4 +33,5 @@ internal val ControllerModule = module {
     singleOf(::OrganizationController) { bind<Controller>() }
     singleOf(::NotificationController) { bind<Controller>() }
     singleOf(::DocumentController) { bind<Controller>() }
+    singleOf(::UnitController) { bind<Controller>() }
 }

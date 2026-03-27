@@ -1,7 +1,6 @@
 {
     "common_area_id": "area123",
     "property_id": "property123",
-    "org_id": "org123",
     "name": "Updated Lobby",
     "type": "LOBBY"
 }

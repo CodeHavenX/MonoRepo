@@ -210,7 +210,6 @@ fun CommonArea.toCommonAreaNetworkResponse(): CommonAreaNetworkResponse {
     return CommonAreaNetworkResponse(
         commonAreaId = id,
         propertyId = propertyId,
-        orgId = orgId,
         name = name,
         type = type,
         description = description,

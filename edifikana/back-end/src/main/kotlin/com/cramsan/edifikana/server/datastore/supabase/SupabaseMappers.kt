@@ -447,7 +447,6 @@ fun CommonAreaEntity.toCommonArea(): CommonArea {
     return CommonArea(
         id = CommonAreaId(commonAreaId),
         propertyId = propertyId,
-        orgId = orgId,
         name = name,
         type = CommonAreaType.fromString(type),
         description = description,

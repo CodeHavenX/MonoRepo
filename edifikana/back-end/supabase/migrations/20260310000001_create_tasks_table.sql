@@ -1,4 +1,4 @@
--- ============================================================================
+    -- ============================================================================
 -- Migration: Create tasks table (Phase 0, DB-04)
 -- Issue: https://github.com/CodeHavenX/MonoRepo/issues/439
 -- Depends on: 20260309000001_create_units_and_common_areas.sql

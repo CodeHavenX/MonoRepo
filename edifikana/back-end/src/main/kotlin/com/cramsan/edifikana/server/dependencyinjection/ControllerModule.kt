@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.dependencyinjection
 
+import com.cramsan.edifikana.server.controller.CommonAreaController
 import com.cramsan.edifikana.server.controller.DocumentController
 import com.cramsan.edifikana.server.controller.EmployeeController
 import com.cramsan.edifikana.server.controller.EventLogController
@@ -32,4 +33,5 @@ internal val ControllerModule = module {
     singleOf(::OrganizationController) { bind<Controller>() }
     singleOf(::NotificationController) { bind<Controller>() }
     singleOf(::DocumentController) { bind<Controller>() }
+    singleOf(::CommonAreaController) { bind<Controller>() }
 }

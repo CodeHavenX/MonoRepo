@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.lib.model.network
 
+import com.cramsan.edifikana.lib.model.CommonAreaType
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.annotations.NetworkModel
@@ -15,12 +16,10 @@ import kotlinx.serialization.Serializable
 data class CreateCommonAreaNetworkRequest(
     @SerialName("property_id")
     val propertyId: PropertyId,
-    @SerialName("org_id")
-    val orgId: OrganizationId,
     @SerialName("name")
     val name: String,
     @SerialName("type")
-    val type: String,
+    val type: CommonAreaType,
     @SerialName("description")
     val description: String? = null,
 ) : RequestBody

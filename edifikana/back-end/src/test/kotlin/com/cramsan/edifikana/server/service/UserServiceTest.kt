@@ -674,4 +674,39 @@ class UserServiceTest {
         assertTrue(result.isFailure)
         coVerify(exactly = 0) { membershipDatastore.cancelInvite(any()) }
     }
+
+    /**
+     * Tests that requestPasswordReset returns success when the datastore succeeds.
+     */
+    @Test
+    fun `requestPasswordReset should return success when datastore succeeds`() = runTest {
+        // Arrange
+        coEvery { userDatastore.requestPasswordReset(any(), any()) } returns Result.success(Unit)
+
+        // Act
+        val result = userService.requestPasswordReset("user@example.com", null)
+
+        // Assert
+        assertTrue(result.isSuccess)
+        coVerify(exactly = 1) { userDatastore.requestPasswordReset("user@example.com", null) }
+    }
+
+    /**
+     * Tests that requestPasswordReset always returns success even when the datastore fails
+     * (prevents email enumeration).
+     */
+    @Test
+    fun `requestPasswordReset should return success even when datastore fails`() = runTest {
+        // Arrange
+        coEvery { userDatastore.requestPasswordReset(any(), any()) } returns Result.failure(
+            RuntimeException("Not found")
+        )
+
+        // Act
+        val result = userService.requestPasswordReset("nonexistent@example.com", null)
+
+        // Assert
+        assertTrue(result.isSuccess)
+        coVerify(exactly = 1) { userDatastore.requestPasswordReset("nonexistent@example.com", null) }
+    }
 }

@@ -5,6 +5,7 @@ import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.model.network.CheckUserNetworkResponse
 import com.cramsan.edifikana.lib.model.network.CreateUserNetworkRequest
+import com.cramsan.edifikana.lib.model.network.PasswordResetNetworkRequest
 import com.cramsan.edifikana.lib.model.network.GetAllUsersQueryParams
 import com.cramsan.edifikana.lib.model.network.InviteListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.InviteUserNetworkRequest
@@ -139,4 +140,16 @@ object UserApi : Api("user") {
         HttpMethod.Get,
         "checkUser"
     )
+
+    /**
+     * Request a password reset email for the given email address.
+     * Route: POST /user/request-password-reset
+     * Always returns 200 regardless of whether the email exists.
+     */
+    val requestPasswordReset = operation<
+        PasswordResetNetworkRequest,
+        NoQueryParam,
+        NoPathParam,
+        NoResponseBody
+        >(HttpMethod.Post, "request-password-reset")
 }

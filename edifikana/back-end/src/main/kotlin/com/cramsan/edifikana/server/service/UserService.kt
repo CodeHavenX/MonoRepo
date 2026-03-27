@@ -319,6 +319,21 @@ class UserService(
         logD(TAG, "Invite $inviteId cancelled for organization ${invite.organizationId}")
     }
 
+    /**
+     * Requests a password reset for the given [email] or [phoneNumber]. At least one must be non-null.
+     * Always returns success to prevent enumeration attacks.
+     */
+    suspend fun requestPasswordReset(email: String?, phoneNumber: String?): Result<Unit> {
+        logD(TAG, "requestPasswordReset")
+        require(email != null || phoneNumber != null) {
+            "Either email or phone number is required for password reset"
+        }
+        userDatastore.requestPasswordReset(email, phoneNumber).onFailure { e ->
+            logW(TAG, "Password reset request failed (suppressed)", e)
+        }
+        return Result.success(Unit)
+    }
+
     companion object {
         private const val TAG = "UserService"
         private const val INVITE_CODE_LENGTH = 12

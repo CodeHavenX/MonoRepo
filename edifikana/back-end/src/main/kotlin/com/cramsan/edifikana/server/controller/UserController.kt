@@ -7,6 +7,7 @@ import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.model.network.CheckUserNetworkResponse
 import com.cramsan.edifikana.lib.model.network.CreateUserNetworkRequest
+import com.cramsan.edifikana.lib.model.network.PasswordResetNetworkRequest
 import com.cramsan.edifikana.lib.model.network.GetAllUsersQueryParams
 import com.cramsan.edifikana.lib.model.network.InviteListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.InviteUserNetworkRequest
@@ -305,6 +306,16 @@ class UserController(
     }
 
     /**
+     * Handles a password reset request. Always returns 200 regardless of email or phone number existence
+     * to prevent enumeration. No authentication required.
+     */
+    @OptIn(NetworkModel::class)
+    suspend fun requestPasswordReset(request: PasswordResetNetworkRequest): NoResponseBody {
+        userService.requestPasswordReset(request.email, request.phoneNumber)
+        return NoResponseBody
+    }
+
+    /**
      * Registers the routes for the user controller. The [route] parameter is the root path for the controller.
      */
     @OptIn(NetworkModel::class)
@@ -345,6 +356,9 @@ class UserController(
             }
             unauthenticatedHandler(api.checkUserExists, contextRetriever) { request ->
                 checkUserIsRegistered(request.queryParam.email)
+            }
+            unauthenticatedHandler(api.requestPasswordReset, contextRetriever) { request ->
+                requestPasswordReset(request.requestBody)
             }
         }
     }

@@ -262,6 +262,46 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
         assertInstanceOf<ClientRequestExceptions.NotFoundException>(associateResult.exceptionOrNull())
     }
 
+    /**
+     * Tests that requestPasswordReset succeeds for a registered user's email.
+     * Supabase will silently trigger the reset flow without throwing.
+     */
+    @Test
+    fun `requestPasswordReset should succeed for registered email`() = runCoroutineTest {
+        // Arrange
+        val email = "${test_prefix}_pwreset@test.com"
+        userDatastore.createUser(
+            email = email,
+            phoneNumber = "123-456-7890",
+            password = "Password1!",
+            firstName = "Reset",
+            lastName = "User",
+            isTransient = false,
+        ).registerUserForDeletion()
+
+        // Act
+        val result = userDatastore.requestPasswordReset(email, null)
+
+        // Assert
+        assertTrue(result.isSuccess)
+    }
+
+    /**
+     * Tests that requestPasswordReset succeeds even for an unregistered email.
+     * Supabase never reveals whether the email exists to prevent enumeration.
+     */
+    @Test
+    fun `requestPasswordReset should succeed for unregistered email`() = runCoroutineTest {
+        // Arrange — no user created
+        val email = "${test_prefix}_nonexist@test.com"
+
+        // Act
+        val result = userDatastore.requestPasswordReset(email, null)
+
+        // Assert
+        assertTrue(result.isSuccess)
+    }
+
     // We cannot test this in the integration test because it requires a Supabase user to be created first.
     // Right now we can create the user but we are not able to retrieve the user ID from Supabase Auth.
     @Ignore

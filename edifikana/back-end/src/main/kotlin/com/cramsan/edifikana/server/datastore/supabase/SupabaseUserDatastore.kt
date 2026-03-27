@@ -15,6 +15,7 @@ import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logW
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import com.cramsan.framework.utils.uuid.UUID
+import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.admin.AdminApi
 import io.github.jan.supabase.auth.exception.AuthRestException
 import io.github.jan.supabase.postgrest.Postgrest
@@ -30,6 +31,7 @@ class SupabaseUserDatastore(
     private val adminApi: AdminApi,
     private val postgrest: Postgrest,
     private val clock: Clock,
+    private val auth: Auth,
 ) : UserDatastore {
 
     /**
@@ -344,6 +346,21 @@ class SupabaseUserDatastore(
         }
         true
     }
+
+    /**
+     * Sends a password reset notification via Supabase Auth.
+     * Email-based reset is supported. Phone-based reset is not yet implemented.
+     */
+    override suspend fun requestPasswordReset(email: String?, phoneNumber: String?): Result<Unit> =
+        runSuspendCatching(TAG) {
+            if (email != null) {
+                logD(TAG, "Requesting password reset for email: %s", email)
+                auth.resetPasswordForEmail(email)
+            } else {
+                // TODO: Implement phone-based password reset when Supabase phone auth is fully supported
+                throw NotImplementedError("Phone-based password reset is not yet supported")
+            }
+        }
 
     companion object {
         const val TAG = "SupabaseUserDatastore"

@@ -1,6 +1,5 @@
 package com.cramsan.edifikana.server.datastore.supabase.models
 
-import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.framework.annotations.SupabaseModel
 import kotlinx.serialization.SerialName
@@ -19,8 +18,6 @@ data class CommonAreaEntity(
     val commonAreaId: String,
     @SerialName("property_id")
     val propertyId: PropertyId,
-    @SerialName("org_id")
-    val orgId: OrganizationId,
     val name: String,
     val type: String,
     val description: String? = null,
@@ -41,11 +38,8 @@ data class CommonAreaEntity(
     data class CreateCommonAreaEntity(
         @SerialName("property_id")
         val propertyId: PropertyId,
-        @SerialName("org_id")
-        val orgId: OrganizationId,
         val name: String,
         val type: String,
         val description: String? = null,
     )
 }
-

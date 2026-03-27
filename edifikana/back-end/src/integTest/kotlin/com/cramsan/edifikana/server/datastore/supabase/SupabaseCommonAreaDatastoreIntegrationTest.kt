@@ -37,7 +37,6 @@ class SupabaseCommonAreaDatastoreIntegrationTest : SupabaseIntegrationTest() {
 
         // Act
         val result = commonAreaDatastore.createCommonArea(
-            orgId = orgId!!,
             propertyId = propertyId!!,
             name = "${testPrefix}_Lobby",
             type = CommonAreaType.LOBBY,
@@ -52,14 +51,12 @@ class SupabaseCommonAreaDatastoreIntegrationTest : SupabaseIntegrationTest() {
         assertEquals(CommonAreaType.LOBBY, area.type)
         assertEquals("Main entrance", area.description)
         assertEquals(propertyId, area.propertyId)
-        assertEquals(orgId, area.orgId)
     }
 
     @Test
     fun `getCommonArea should return created common area`() = runCoroutineTest {
         // Arrange
         val createResult = commonAreaDatastore.createCommonArea(
-            orgId = orgId!!,
             propertyId = propertyId!!,
             name = "${testPrefix}_GetLobby",
             type = CommonAreaType.LOBBY,
@@ -98,14 +95,12 @@ class SupabaseCommonAreaDatastoreIntegrationTest : SupabaseIntegrationTest() {
 
         // Act
         val result1 = commonAreaDatastore.createCommonArea(
-            orgId = orgId!!,
             propertyId = propertyId!!,
             name = "${testPrefix}_Pool",
             type = CommonAreaType.POOL,
             description = null,
         ).registerCommonAreaForDeletion()
         val result2 = commonAreaDatastore.createCommonArea(
-            orgId = orgId!!,
             propertyId = propertyId!!,
             name = "${testPrefix}_Gym",
             type = CommonAreaType.GYM,
@@ -128,7 +123,6 @@ class SupabaseCommonAreaDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `getCommonAreasForProperty should not return deleted areas`() = runCoroutineTest {
         // Arrange
         val createResult = commonAreaDatastore.createCommonArea(
-            orgId = orgId!!,
             propertyId = propertyId!!,
             name = "${testPrefix}_Rooftop",
             type = CommonAreaType.ROOFTOP,
@@ -152,7 +146,6 @@ class SupabaseCommonAreaDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `updateCommonArea should update name and type`() = runCoroutineTest {
         // Arrange
         val createResult = commonAreaDatastore.createCommonArea(
-            orgId = orgId!!,
             propertyId = propertyId!!,
             name = "${testPrefix}_OldName",
             type = CommonAreaType.LOBBY,
@@ -181,7 +174,6 @@ class SupabaseCommonAreaDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `deleteCommonArea should soft delete and make area invisible`() = runCoroutineTest {
         // Arrange
         val createResult = commonAreaDatastore.createCommonArea(
-            orgId = orgId!!,
             propertyId = propertyId!!,
             name = "${testPrefix}_ToDelete",
             type = CommonAreaType.PARKING,
@@ -205,7 +197,6 @@ class SupabaseCommonAreaDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `purgeCommonArea should hard delete the area`() = runCoroutineTest {
         // Arrange
         val createResult = commonAreaDatastore.createCommonArea(
-            orgId = orgId!!,
             propertyId = propertyId!!,
             name = "${testPrefix}_ToPurge",
             type = CommonAreaType.LAUNDRY,

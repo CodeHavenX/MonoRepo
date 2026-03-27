@@ -18,7 +18,8 @@ import io.ktor.http.HttpMethod
  * API definition for common area operations within a property.
  *
  * Common areas are shared spaces (e.g. Lobby, Pool, Gym) that belong to a single property.
- * All operations require MANAGER role or higher in the property's organization.
+ * All operations require MANAGER role or higher in the property's organization, depending on
+ * the operation. In some cases it will be ADMIN+, in others it will be MANAGER+
  */
 @OptIn(NetworkModel::class)
 object CommonAreaApi : Api("common-area") {

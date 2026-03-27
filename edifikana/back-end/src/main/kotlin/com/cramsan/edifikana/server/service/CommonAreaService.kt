@@ -19,7 +19,6 @@ class CommonAreaService(
      * Creates a new common area record.
      */
     suspend fun createCommonArea(
-        orgId: OrganizationId,
         propertyId: PropertyId,
         name: String,
         type: CommonAreaType,
@@ -27,7 +26,6 @@ class CommonAreaService(
     ): CommonArea {
         logD(TAG, "createCommonArea")
         return commonAreaDatastore.createCommonArea(
-            orgId = orgId,
             propertyId = propertyId,
             name = name,
             type = type,

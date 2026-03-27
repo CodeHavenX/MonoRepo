@@ -16,8 +16,6 @@ import kotlinx.serialization.Serializable
 data class CreateCommonAreaNetworkRequest(
     @SerialName("property_id")
     val propertyId: PropertyId,
-    @SerialName("org_id")
-    val orgId: OrganizationId,
     @SerialName("name")
     val name: String,
     @SerialName("type")

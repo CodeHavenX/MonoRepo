@@ -62,22 +62,21 @@ class CommonAreaServiceTest {
     @Test
     fun `createCommonArea should delegate to datastore and return created area`() = runTest {
         // Arrange
-        val orgId = OrganizationId("org123")
         val propertyId = PropertyId("property123")
         val name = "Main Lobby"
         val type = CommonAreaType.LOBBY
         val description = "Main entrance lobby"
-        val commonArea = commonArea(CommonAreaId("area123"), propertyId, orgId)
+        val commonArea = commonArea(CommonAreaId("area123"), propertyId)
         coEvery {
-            commonAreaDatastore.createCommonArea(orgId, propertyId, name, type, description)
+            commonAreaDatastore.createCommonArea(propertyId, name, type, description)
         } returns Result.success(commonArea)
 
         // Act
-        val result = commonAreaService.createCommonArea(orgId, propertyId, name, type, description)
+        val result = commonAreaService.createCommonArea(propertyId, name, type, description)
 
         // Assert
         assertEquals(commonArea, result)
-        coVerify { commonAreaDatastore.createCommonArea(orgId, propertyId, name, type, description) }
+        coVerify { commonAreaDatastore.createCommonArea(propertyId, name, type, description) }
     }
 
     // -------------------------------------------------------------------------
@@ -91,7 +90,7 @@ class CommonAreaServiceTest {
     fun `getCommonArea should return area when found`() = runTest {
         // Arrange
         val commonAreaId = CommonAreaId("area123")
-        val commonArea = commonArea(commonAreaId, PropertyId("property123"), OrganizationId("org123"))
+        val commonArea = commonArea(commonAreaId, PropertyId("property123"))
         coEvery { commonAreaDatastore.getCommonArea(commonAreaId) } returns Result.success(commonArea)
 
         // Act
@@ -130,8 +129,8 @@ class CommonAreaServiceTest {
         val propertyId = PropertyId("property123")
         val orgId = OrganizationId("org123")
         val areas = listOf(
-            commonArea(CommonAreaId("area123"), propertyId, orgId),
-            commonArea(CommonAreaId("area456"), propertyId, orgId),
+            commonArea(CommonAreaId("area123"), propertyId),
+            commonArea(CommonAreaId("area456"), propertyId),
         )
         coEvery { commonAreaDatastore.getCommonAreasForProperty(propertyId) } returns Result.success(areas)
 
@@ -156,7 +155,7 @@ class CommonAreaServiceTest {
         val name = "Updated Lobby"
         val type = CommonAreaType.LOBBY
         val description: String? = null
-        val updatedArea = commonArea(commonAreaId, PropertyId("property123"), OrganizationId("org123"), name = name)
+        val updatedArea = commonArea(commonAreaId, PropertyId("property123"), name = name)
         coEvery {
             commonAreaDatastore.updateCommonArea(commonAreaId, name, type, description)
         } returns Result.success(updatedArea)
@@ -213,14 +212,12 @@ class CommonAreaServiceTest {
     private fun commonArea(
         id: CommonAreaId,
         propertyId: PropertyId,
-        orgId: OrganizationId,
         name: String = "Main Lobby",
         type: CommonAreaType = CommonAreaType.LOBBY,
         description: String? = "Main entrance lobby",
     ) = CommonArea(
         id = id,
         propertyId = propertyId,
-        orgId = orgId,
         name = name,
         type = type,
         description = description,

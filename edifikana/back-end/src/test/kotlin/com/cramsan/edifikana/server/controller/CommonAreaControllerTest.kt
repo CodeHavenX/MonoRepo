@@ -4,7 +4,6 @@ import com.cramsan.architecture.server.test.startTestKoin
 import com.cramsan.architecture.server.test.testBackEndApplication
 import com.cramsan.edifikana.lib.model.CommonAreaId
 import com.cramsan.edifikana.lib.model.CommonAreaType
-import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.serialization.createJson
@@ -73,14 +72,13 @@ class CommonAreaControllerTest : CoroutineTest(), KoinTest {
         val rbacService = get<RBACService>()
         coEvery {
             commonAreaService.createCommonArea(
-                orgId = OrganizationId("org123"),
                 propertyId = PropertyId("property123"),
                 name = "Main Lobby",
                 type = CommonAreaType.LOBBY,
                 description = "Main entrance lobby",
             )
         }.answers {
-            commonArea(CommonAreaId("area123"), PropertyId("property123"), OrganizationId("org123"))
+            commonArea(CommonAreaId("area123"), PropertyId("property123"))
         }
         val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
         val context = ClientContext.AuthenticatedClientContext(
@@ -144,7 +142,7 @@ class CommonAreaControllerTest : CoroutineTest(), KoinTest {
         val rbacService = get<RBACService>()
         val areaId = CommonAreaId("area123")
         coEvery { commonAreaService.getCommonArea(areaId) }.answers {
-            commonArea(areaId, PropertyId("property123"), OrganizationId("org123"))
+            commonArea(areaId, PropertyId("property123"))
         }
         val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
         val context = ClientContext.AuthenticatedClientContext(
@@ -224,7 +222,7 @@ class CommonAreaControllerTest : CoroutineTest(), KoinTest {
         val rbacService = get<RBACService>()
         val propertyId = PropertyId("property123")
         coEvery { commonAreaService.getCommonAreasForProperty(propertyId) }.answers {
-            listOf(commonArea(CommonAreaId("area123"), propertyId, OrganizationId("org123")))
+            listOf(commonArea(CommonAreaId("area123"), propertyId))
         }
         val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
         val context = ClientContext.AuthenticatedClientContext(
@@ -290,7 +288,7 @@ class CommonAreaControllerTest : CoroutineTest(), KoinTest {
                 description = null,
             )
         }.answers {
-            commonArea(areaId, PropertyId("property123"), OrganizationId("org123"), name = "Updated Lobby", description = null)
+            commonArea(areaId, PropertyId("property123"), name = "Updated Lobby", description = null)
         }
         val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
         val context = ClientContext.AuthenticatedClientContext(
@@ -404,14 +402,12 @@ class CommonAreaControllerTest : CoroutineTest(), KoinTest {
     private fun commonArea(
         id: CommonAreaId,
         propertyId: PropertyId,
-        orgId: OrganizationId,
         name: String = "Main Lobby",
         type: CommonAreaType = CommonAreaType.LOBBY,
         description: String? = "Main entrance lobby",
     ) = CommonArea(
         id = id,
         propertyId = propertyId,
-        orgId = orgId,
         name = name,
         type = type,
         description = description,

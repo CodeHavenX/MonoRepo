@@ -15,7 +15,6 @@ interface CommonAreaDatastore {
      * Creates a new common area record. Returns the [Result] with the created [CommonArea].
      */
     suspend fun createCommonArea(
-        orgId: OrganizationId,
         propertyId: PropertyId,
         name: String,
         type: CommonAreaType,
@@ -49,6 +48,12 @@ interface CommonAreaDatastore {
 
     /**
      * Hard-deletes the common area with the given [commonAreaId]. For integration test cleanup only.
+     * Implementations SHOULD only purge records that have previously been soft-deleted via [deleteCommonArea].
+     *
+     * The returned [Result] will be:
+     * - `Result.success(true)` if a matching, soft-deleted record existed and was hard-deleted.
+     * - `Result.success(false)` if no matching soft-deleted record exists (including when the record does not exist
+     *   at all, or exists but has not been soft-deleted).
      */
     suspend fun purgeCommonArea(commonAreaId: CommonAreaId): Result<Boolean>
 }

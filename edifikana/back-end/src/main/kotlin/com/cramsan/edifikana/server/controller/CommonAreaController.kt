@@ -54,7 +54,6 @@ class CommonAreaController(
             throw UnauthorizedException(unauthorizedMsg)
         }
         return commonAreaService.createCommonArea(
-            orgId = request.requestBody.orgId,
             propertyId = request.requestBody.propertyId,
             name = request.requestBody.name,
             type = request.requestBody.type,

@@ -27,7 +27,6 @@ class SupabaseCommonAreaDatastore(
      */
     @OptIn(SupabaseModel::class)
     override suspend fun createCommonArea(
-        orgId: OrganizationId,
         propertyId: PropertyId,
         name: String,
         type: CommonAreaType,
@@ -36,7 +35,6 @@ class SupabaseCommonAreaDatastore(
         logD(TAG, "Creating common area: %s", name)
         val entity = CreateCommonAreaEntity(
             propertyId = propertyId,
-            orgId = orgId,
             name = name,
             type = type.name,
             description = description,
@@ -123,11 +121,11 @@ class SupabaseCommonAreaDatastore(
     override suspend fun purgeCommonArea(commonAreaId: CommonAreaId): Result<Boolean> = runSuspendCatching(TAG) {
         logD(TAG, "Purging common area: %s", commonAreaId)
         postgrest.from(CommonAreaEntity.COLLECTION).delete {
+            select()
             filter {
                 CommonAreaEntity::commonAreaId eq commonAreaId.commonAreaId
             }
-        }
-        true
+        }.decodeSingleOrNull<CommonAreaEntity>() != null
     }
 
     companion object {

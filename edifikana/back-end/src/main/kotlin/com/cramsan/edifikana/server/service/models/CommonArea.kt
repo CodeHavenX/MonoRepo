@@ -14,7 +14,6 @@ import kotlin.time.Instant
 data class CommonArea(
     val id: CommonAreaId,
     val propertyId: PropertyId,
-    val orgId: OrganizationId,
     val name: String,
     val type: CommonAreaType,
     val description: String?,

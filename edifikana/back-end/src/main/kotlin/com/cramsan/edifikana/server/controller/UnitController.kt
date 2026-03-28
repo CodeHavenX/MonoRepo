@@ -22,6 +22,7 @@ import com.cramsan.framework.core.ktor.OperationRequest
 import com.cramsan.framework.core.ktor.auth.ClientContext
 import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.core.ktor.handler
+import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.NotFoundException
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.UnauthorizedException
 import io.ktor.server.routing.Routing
 
@@ -73,12 +74,13 @@ class UnitController(
             UnitId,
             ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
             >
-    ): UnitNetworkResponse? {
+    ): UnitNetworkResponse {
         val unitId = request.pathParam
         if (!rbacService.hasRoleOrHigher(request.context, unitId, UserRole.EMPLOYEE)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
         return unitService.getUnit(unitId)?.toUnitNetworkResponse()
+            ?: throw NotFoundException("Unit not found: $unitId")
     }
 
     /**

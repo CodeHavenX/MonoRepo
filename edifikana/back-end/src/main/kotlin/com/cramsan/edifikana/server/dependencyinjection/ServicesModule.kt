@@ -6,7 +6,9 @@ import com.cramsan.edifikana.server.service.EventLogService
 import com.cramsan.edifikana.server.service.MembershipService
 import com.cramsan.edifikana.server.service.NotificationService
 import com.cramsan.edifikana.server.service.OrganizationService
+import com.cramsan.edifikana.server.service.PaymentRecordService
 import com.cramsan.edifikana.server.service.PropertyService
+import com.cramsan.edifikana.server.service.RentConfigService
 import com.cramsan.edifikana.server.service.StorageService
 import com.cramsan.edifikana.server.service.TimeCardService
 import com.cramsan.edifikana.server.service.UserService
@@ -29,4 +31,6 @@ internal val ServicesModule = module {
     singleOf(::OrganizationService)
     singleOf(::RBACService)
     singleOf(::DocumentService)
+    singleOf(::PaymentRecordService)
+    singleOf(::RentConfigService)
 }

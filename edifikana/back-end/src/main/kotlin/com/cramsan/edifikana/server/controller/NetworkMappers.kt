@@ -11,7 +11,9 @@ import com.cramsan.edifikana.lib.model.network.InviteNetworkResponse
 import com.cramsan.edifikana.lib.model.network.MemberNetworkResponse
 import com.cramsan.edifikana.lib.model.network.NotificationNetworkResponse
 import com.cramsan.edifikana.lib.model.network.OrganizationNetworkResponse
+import com.cramsan.edifikana.lib.model.network.PaymentRecordNetworkResponse
 import com.cramsan.edifikana.lib.model.network.PropertyNetworkResponse
+import com.cramsan.edifikana.lib.model.network.RentConfigNetworkResponse
 import com.cramsan.edifikana.lib.model.network.TimeCardEventNetworkResponse
 import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
 import com.cramsan.edifikana.server.service.models.Asset
@@ -22,7 +24,9 @@ import com.cramsan.edifikana.server.service.models.Invite
 import com.cramsan.edifikana.server.service.models.Notification
 import com.cramsan.edifikana.server.service.models.Organization
 import com.cramsan.edifikana.server.service.models.OrgMemberView
+import com.cramsan.edifikana.server.service.models.PaymentRecord
 import com.cramsan.edifikana.server.service.models.Property
+import com.cramsan.edifikana.server.service.models.RentConfig
 import com.cramsan.edifikana.server.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.service.models.User
 import com.cramsan.framework.annotations.NetworkModel
@@ -196,6 +200,46 @@ fun Document.toDocumentNetworkResponse(): DocumentNetworkResponse {
         documentType = documentType,
         assetId = assetId,
         createdBy = createdBy,
+        createdAt = createdAt,
+    )
+}
+
+/**
+ * Converts a [PaymentRecord] domain model to a [PaymentRecordNetworkResponse] network model.
+ */
+@OptIn(NetworkModel::class)
+fun PaymentRecord.toPaymentRecordNetworkResponse(): PaymentRecordNetworkResponse {
+    return PaymentRecordNetworkResponse(
+        paymentRecordId = id,
+        unitId = unitId,
+        orgId = orgId,
+        paymentType = paymentType,
+        periodMonth = periodMonth,
+        amountDue = amountDue,
+        amountPaid = amountPaid,
+        status = status,
+        dueDate = dueDate,
+        paidDate = paidDate,
+        recordedBy = recordedBy,
+        recordedAt = recordedAt,
+        notes = notes,
+    )
+}
+
+/**
+ * Converts a [RentConfig] domain model to a [RentConfigNetworkResponse] network model.
+ */
+@OptIn(NetworkModel::class)
+fun RentConfig.toRentConfigNetworkResponse(): RentConfigNetworkResponse {
+    return RentConfigNetworkResponse(
+        rentConfigId = id,
+        unitId = unitId,
+        orgId = orgId,
+        monthlyAmount = monthlyAmount,
+        dueDay = dueDay,
+        currency = currency,
+        updatedAt = updatedAt,
+        updatedBy = updatedBy,
         createdAt = createdAt,
     )
 }

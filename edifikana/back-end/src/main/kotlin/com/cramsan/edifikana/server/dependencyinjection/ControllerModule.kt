@@ -7,7 +7,9 @@ import com.cramsan.edifikana.server.controller.HealthCheckController
 import com.cramsan.edifikana.server.controller.MembershipController
 import com.cramsan.edifikana.server.controller.NotificationController
 import com.cramsan.edifikana.server.controller.OrganizationController
+import com.cramsan.edifikana.server.controller.PaymentRecordController
 import com.cramsan.edifikana.server.controller.PropertyController
+import com.cramsan.edifikana.server.controller.RentConfigController
 import com.cramsan.edifikana.server.controller.StorageController
 import com.cramsan.edifikana.server.controller.TimeCardController
 import com.cramsan.edifikana.server.controller.UserController
@@ -32,4 +34,6 @@ internal val ControllerModule = module {
     singleOf(::OrganizationController) { bind<Controller>() }
     singleOf(::NotificationController) { bind<Controller>() }
     singleOf(::DocumentController) { bind<Controller>() }
+    singleOf(::PaymentRecordController) { bind<Controller>() }
+    singleOf(::RentConfigController) { bind<Controller>() }
 }

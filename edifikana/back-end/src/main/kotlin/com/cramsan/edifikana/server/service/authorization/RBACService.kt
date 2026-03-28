@@ -4,6 +4,7 @@ import com.cramsan.edifikana.lib.model.DocumentId
 import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.OrganizationId
+import com.cramsan.edifikana.lib.model.PaymentRecordId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.UserId
@@ -12,6 +13,7 @@ import com.cramsan.edifikana.server.datastore.DocumentDatastore
 import com.cramsan.edifikana.server.datastore.EmployeeDatastore
 import com.cramsan.edifikana.server.datastore.EventLogDatastore
 import com.cramsan.edifikana.server.datastore.OrganizationDatastore
+import com.cramsan.edifikana.server.datastore.PaymentRecordDatastore
 import com.cramsan.edifikana.server.datastore.PropertyDatastore
 import com.cramsan.edifikana.server.datastore.TimeCardDatastore
 import com.cramsan.edifikana.server.datastore.supabase.toUserRole
@@ -31,12 +33,14 @@ class RBACService(
     private val timeCardDatastore: TimeCardDatastore,
     private val eventLogDatastore: EventLogDatastore,
     private val documentDatastore: DocumentDatastore,
+    private val paymentRecordDatastore: PaymentRecordDatastore,
 ) {
 
     private val propertyNotFoundException = "ERROR: PROPERTY NOT FOUND!"
     private val employeeNotFoundException = "ERROR: EMPLOYEE NOT FOUND!"
     private val timecardEventNotFoundException = "ERROR: TIMECARD EVENT NOT FOUND!"
     private val eventLogNotFound = "ERROR: EVENT LOG ENTRY NOT FOUND!"
+    private val paymentRecordNotFound = "ERROR: PAYMENT RECORD NOT FOUND!"
     private val unauthorized = UserRole.UNAUTHORIZED
 
     /**
@@ -258,6 +262,39 @@ class RBACService(
         val document = documentDatastore.getDocument(targetDocumentId).getOrThrow()
             ?: return UserRole.UNAUTHORIZED
         return getUserRoleForOrganizationAction(context, document.orgId)
+    }
+
+    /**
+     * Checks if the user has the required role or higher to perform actions on the target payment record.
+     *
+     * @param context The authenticated client context containing user information.
+     * @param targetPaymentRecordId The ID of the target payment record on which the action is to be performed.
+     * @param requiredRole The minimum role required to perform the action.
+     * @return True if the user has the required role or higher, false otherwise.
+     */
+    suspend fun hasRoleOrHigher(
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+        targetPaymentRecordId: PaymentRecordId,
+        requiredRole: UserRole,
+    ): Boolean {
+        val userRole = getUserRoleForPaymentRecordAction(context, targetPaymentRecordId)
+        return userRole.level <= requiredRole.level
+    }
+
+    /**
+     * Retrieves the user role for the action being performed on the target payment record.
+     *
+     * @param context The authenticated client context containing user information.
+     * @param targetPaymentRecordId The ID of the target payment record on which the action is to be performed.
+     * @return The user role if the action is allowed, or UNAUTHORIZED if not.
+     */
+    private suspend fun getUserRoleForPaymentRecordAction(
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+        targetPaymentRecordId: PaymentRecordId,
+    ): UserRole {
+        val paymentRecord = paymentRecordDatastore.getPaymentRecord(targetPaymentRecordId).getOrThrow()
+            ?: throw InvalidRequestException(paymentRecordNotFound)
+        return getUserRoleForOrganizationAction(context, paymentRecord.orgId)
     }
 
     /**

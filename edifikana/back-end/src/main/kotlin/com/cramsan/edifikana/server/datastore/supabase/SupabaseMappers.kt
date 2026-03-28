@@ -15,7 +15,11 @@ import com.cramsan.edifikana.lib.model.InviteId
 import com.cramsan.edifikana.lib.model.NotificationId
 import com.cramsan.edifikana.lib.model.NotificationType
 import com.cramsan.edifikana.lib.model.OrganizationId
+import com.cramsan.edifikana.lib.model.PaymentRecordId
+import com.cramsan.edifikana.lib.model.PaymentStatus
+import com.cramsan.edifikana.lib.model.PaymentType
 import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.RentConfigId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.TimeCardEventType
 import com.cramsan.edifikana.lib.model.UnitId
@@ -28,7 +32,9 @@ import com.cramsan.edifikana.server.datastore.supabase.models.InviteEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.NotificationEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.OrgMemberViewEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.OrganizationEntity
+import com.cramsan.edifikana.server.datastore.supabase.models.PaymentRecordEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.PropertyEntity
+import com.cramsan.edifikana.server.datastore.supabase.models.RentConfigEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.TimeCardEventEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.UserEntity
 import com.cramsan.edifikana.server.service.models.Document
@@ -38,7 +44,9 @@ import com.cramsan.edifikana.server.service.models.Invite
 import com.cramsan.edifikana.server.service.models.Notification
 import com.cramsan.edifikana.server.service.models.OrgMemberView
 import com.cramsan.edifikana.server.service.models.Organization
+import com.cramsan.edifikana.server.service.models.PaymentRecord
 import com.cramsan.edifikana.server.service.models.Property
+import com.cramsan.edifikana.server.service.models.RentConfig
 import com.cramsan.edifikana.server.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.service.models.User
 import com.cramsan.edifikana.server.service.models.UserRole
@@ -432,5 +440,45 @@ fun OrgMemberViewEntity.toOrgMemberView(): OrgMemberView {
         email = this.email,
         firstName = this.firstName,
         lastName = this.lastName,
+    )
+}
+
+/**
+ * Maps a [PaymentRecordEntity] to the [PaymentRecord] service model.
+ */
+@OptIn(SupabaseModel::class)
+fun PaymentRecordEntity.toPaymentRecord(): PaymentRecord {
+    return PaymentRecord(
+        id = PaymentRecordId(this.paymentRecordId),
+        unitId = this.unitId,
+        orgId = this.orgId,
+        paymentType = enumValueOf<PaymentType>(this.paymentType),
+        periodMonth = this.periodMonth,
+        amountDue = this.amountDue?.toLong(),
+        amountPaid = this.amountPaid?.toLong(),
+        status = enumValueOf<PaymentStatus>(this.status),
+        dueDate = this.dueDate,
+        paidDate = this.paidDate,
+        recordedBy = this.recordedBy,
+        recordedAt = this.recordedAt.epochSeconds,
+        notes = this.notes,
+    )
+}
+
+/**
+ * Maps a [RentConfigEntity] to the [RentConfig] service model.
+ */
+@OptIn(SupabaseModel::class)
+fun RentConfigEntity.toRentConfig(): RentConfig {
+    return RentConfig(
+        id = RentConfigId(this.rentConfigId),
+        unitId = this.unitId,
+        orgId = this.orgId,
+        monthlyAmount = this.monthlyAmount.toLong(),
+        dueDay = this.dueDay,
+        currency = this.currency,
+        updatedAt = this.updatedAt.epochSeconds,
+        updatedBy = this.updatedBy,
+        createdAt = this.createdAt.epochSeconds,
     )
 }

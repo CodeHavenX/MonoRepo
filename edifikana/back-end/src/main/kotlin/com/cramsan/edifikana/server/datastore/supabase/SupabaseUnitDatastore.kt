@@ -86,6 +86,11 @@ class SupabaseUnitDatastore(
 
     /**
      * Updates the fields of an existing unit. Returns the updated [Unit].
+     *
+     * Null parameters are treated as "no change" — passing null for a field leaves the existing
+     * database value intact. This means it is not possible to explicitly clear a nullable field
+     * (e.g. set [notes] back to null) through this method. Callers that need to clear a field
+     * must use a dedicated operation.
      */
     @OptIn(SupabaseModel::class)
     override suspend fun updateUnit(
@@ -129,6 +134,32 @@ class SupabaseUnitDatastore(
                 UnitEntity::deletedAt isExact null
             }
         }.decodeSingleOrNull<UnitEntity>() != null
+    }
+
+    /**
+     * Permanently deletes a soft-deleted unit by [unitId]. Returns true if the record was purged.
+     * Only purges records that are already soft-deleted (deletedAt is not null).
+     */
+    @OptIn(SupabaseModel::class)
+    override suspend fun purgeUnit(unitId: UnitId): Result<Boolean> = runSuspendCatching(TAG) {
+        logD(TAG, "Purging soft-deleted unit: %s", unitId)
+
+        val entity = postgrest.from(UnitEntity.COLLECTION).select {
+            filter {
+                UnitEntity::unitId eq unitId.unitId
+            }
+        }.decodeSingleOrNull<UnitEntity>()
+
+        if (entity?.deletedAt == null) {
+            return@runSuspendCatching false
+        }
+
+        postgrest.from(UnitEntity.COLLECTION).delete {
+            filter {
+                UnitEntity::unitId eq unitId.unitId
+            }
+        }
+        true
     }
 
     companion object {

@@ -179,6 +179,29 @@ class UnitControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
+    fun `test getUnit returns not found when unit does not exist`() = testBackEndApplication {
+        // Arrange
+        val unitService = get<UnitService>()
+        val rbacService = get<RBACService>()
+        val unitId = UnitId("unit123")
+        coEvery { unitService.getUnit(unitId) }.answers { null }
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+        val context = ClientContext.AuthenticatedClientContext(
+            SupabaseContextPayload(userInfo = mockk(), userId = UserId("user123"))
+        )
+        coEvery { contextRetriever.getContext(any()) }.answers { context }
+        coEvery {
+            rbacService.hasRoleOrHigher(context, unitId, UserRole.EMPLOYEE)
+        }.answers { true }
+
+        // Act
+        val response = client.get("unit/unit123")
+
+        // Assert
+        assertEquals(HttpStatusCode.NotFound, response.status)
+    }
+
+    @Test
     fun `test getUnit fails when user lacks required role`() = testBackEndApplication {
         // Arrange
         val unitService = get<UnitService>()

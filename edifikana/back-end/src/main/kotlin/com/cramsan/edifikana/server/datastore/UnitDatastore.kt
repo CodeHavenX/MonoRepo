@@ -54,4 +54,12 @@ interface UnitDatastore {
      * Soft-deletes the unit with the given [unitId]. Returns true if the record was deleted.
      */
     suspend fun deleteUnit(unitId: UnitId): Result<Boolean>
+
+    /**
+     * Permanently deletes a soft-deleted unit record by [unitId].
+     * Only purges if the record is already soft-deleted.
+     * This is intended for testing and maintenance purposes only.
+     * Returns the [Result] of the operation with a [Boolean] indicating if the record was purged.
+     */
+    suspend fun purgeUnit(unitId: UnitId): Result<Boolean>
 }

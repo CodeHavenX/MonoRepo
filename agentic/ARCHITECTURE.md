@@ -14,6 +14,12 @@ Agentic is an autonomous orchestration system that takes human-authored process 
                                                                  [Merged or Rejected]
 ```
 
+### Design Principles
+
+**Filesystem as source of truth.** The system stores no runtime state in memory beyond what is needed for the current process tick. All durable state is expressed as files on disk or as VCS artifacts (branches, PRs). Task status is derived on demand by inspecting these artifacts — never read from a stored snapshot. This makes every aspect of a run human-readable, trivially debuggable, and automatically crash-resilient: the system can be killed at any point and resume correctly by re-deriving state from what is already on disk.
+
+**Keep it simple.** Prefer a polling loop over event-driven plumbing. Prefer a marker file over a structured state machine. The right amount of mechanism is the least that works.
+
 ---
 
 ## Layer 1 — Input Layer

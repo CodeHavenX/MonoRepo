@@ -116,24 +116,18 @@ data class ValidationReport(
 
 ### 4.2 Tasks
 
+`Task` is a pure definition — it carries no runtime state. Status, PR info, and worktree path are all derived from durable artifacts at query time (see `StateDeriver`, §5.2).
+
 ```kotlin
 @Serializable
 data class Task(
     val id: String,
     val title: String,
     val description: String,
-    val dependencies: List<String>,         // task IDs
-    val status: TaskStatus,
-    val worktreePath: String? = null,       // .agentic/worktrees/{task-id}/
-    val prUrl: String? = null,
-    val prId: String? = null,               // provider-assigned identifier
-    val assignedAtEpochMs: Long? = null,
-    val completedAtEpochMs: Long? = null,
-    val failureReason: String? = null,
+    val dependencies: List<String>,   // task IDs
     val timeoutSeconds: Long = 3600L,
 )
 
-@Serializable
 enum class TaskStatus {
     PENDING,
     IN_PROGRESS,
@@ -146,43 +140,7 @@ enum class TaskStatus {
 
 ### 4.3 Amendments
 
-```kotlin
-@Serializable
-data class Amendment(
-    val id: String,
-    val proposedByTaskId: String,
-    val targetDocumentId: String,
-    val description: String,
-    val isCritical: Boolean,
-    val prUrl: String? = null,
-    val prId: String? = null,               // provider-assigned identifier
-    val status: AmendmentStatus,
-)
-
-@Serializable
-enum class AmendmentStatus { PROPOSED, OPEN, MERGED, REJECTED }
-```
-
-### 4.4 Orchestrator State
-
-```kotlin
-@Serializable
-data class OrchestratorState(
-    val runId: String,
-    val startedAtEpochMs: Long,
-    val agentPoolSize: Int,
-    val tasks: List<Task>,
-    val amendments: List<Amendment>,
-    val activeAssignments: List<AgentAssignment>,
-)
-
-@Serializable
-data class AgentAssignment(
-    val agentId: String,
-    val taskId: String,
-    val assignedAtEpochMs: Long,
-)
-```
+Amendments are not tracked as data models. An amendment is a VCS pull request — its lifecycle (open, merged, rejected) is read directly from the VCS provider. The agent writes a marker file (see §6) while waiting for a critical amendment; no in-process state is maintained.
 
 ---
 
@@ -223,44 +181,49 @@ interface ValidationService {
 ### 5.2 Coordination Layer
 
 ```kotlin
-/** Parses tasks from the validated TASK_LIST document. */
-interface TaskParser {
-    fun parse(taskListPath: Path): List<Task>
-}
-
-/** Persistent access to tasks. State is written to disk on every mutation. */
+/** Parses task definitions from the validated TASK_LIST document. Read-only. */
 interface TaskStore {
     fun getAll(): List<Task>
     fun get(id: String): Task
-    fun update(task: Task)
-    fun updateStatus(id: String, status: TaskStatus)
 }
 
-/** Immutable view of the dependency graph. Rebuilt when tasks change. */
+/**
+ * Derives the current status of any task entirely from durable artifacts —
+ * VCS PR state, worktree presence, and per-task marker files.
+ * No in-memory state is consulted; safe to call after a crash and restart.
+ *
+ * Derivation order:
+ *   1. Merged PR for branch `agentic/{task-id}` → DONE
+ *   2. failed.txt marker exists                 → FAILED
+ *   3. Open PR + changes requested              → IN_PROGRESS (needs agent re-run)
+ *   4. Open PR                                  → IN_REVIEW
+ *   5. Worktree exists                          → IN_PROGRESS
+ *   6. All dependencies DONE                    → PENDING
+ *   7. Otherwise                                → BLOCKED
+ */
+interface StateDeriver {
+    suspend fun statusOf(task: Task): TaskStatus
+}
+
+/** Scores tasks by downstream dependency count for critical-path assignment. */
 interface DependencyGraph {
-    /** Tasks whose dependencies are all DONE. */
-    fun readyTasks(): List<Task>
-    /** Tasks that are blocked by at least one non-DONE dependency. */
-    fun blockedTasks(): List<Task>
-    /** Number of tasks (direct + transitive) that depend on this task. */
     fun downstreamCount(taskId: String): Int
-    /** True if no task is PENDING or IN_PROGRESS and some tasks are still BLOCKED or FAILED. */
-    fun isDeadlocked(): Boolean
 }
 
-/** Top-level coordinator: owns the run loop and agent pool. */
+/**
+ * Top-level coordinator. [run] starts or resumes a run — the distinction is
+ * irrelevant because state is always re-derived from disk on startup.
+ * Blocks until all tasks are DONE or the run deadlocks.
+ */
 interface Orchestrator {
-    /** Start a fresh run. Blocks until done, deadlocked, or interrupted. */
-    suspend fun start(config: OrchestratorConfig)
-    /** Resume an interrupted run. Reconstructs state from PRs + worktrees. */
-    suspend fun resume(config: OrchestratorConfig)
-    /** Current snapshot of the run. */
-    fun currentState(): OrchestratorState
+    suspend fun run(config: OrchestratorConfig)
+    /** Derives and returns the current status of every task. */
+    suspend fun status(): Map<Task, TaskStatus>
 }
 
 data class OrchestratorConfig(
     val agentPoolSize: Int,
-    val defaultTaskTimeoutSeconds: Long,
+    val pollIntervalSeconds: Long = 30L,
     val baseBranch: String,
     val claudeModel: String,
     val vcsProvider: VcsProviderConfig,
@@ -278,16 +241,15 @@ sealed class VcsProviderConfig {
 /**
  * Manages git worktrees under .agentic/worktrees/.
  *
- * Worktrees are created lazily — [create] is called only when an agent is assigned
- * a task, not at run start. [delete] is called immediately when a task reaches
- * [TaskStatus.DONE] or [TaskStatus.FAILED].
+ * Worktrees are created lazily — [getOrCreate] is called only when an agent is
+ * assigned a task. [delete] is called immediately when a task reaches DONE or FAILED.
  */
 interface WorktreeManager {
-    /** Creates a new worktree for the given task. Throws if one already exists. */
-    fun create(taskId: String): Worktree
-    /** Returns the existing worktree for a task, or null if it has not been created yet. */
+    /** Returns the existing worktree, or creates one if it does not yet exist. */
+    fun getOrCreate(taskId: String): Worktree
+    /** Returns the existing worktree, or null if it has not been created. */
     fun get(taskId: String): Worktree?
-    /** Lists all worktrees currently on disk. Used during resume to reconstruct state. */
+    /** Lists all worktrees currently on disk. Used by StateDeriver. */
     fun listAll(): List<Worktree>
     /** Deletes the worktree. Called on task DONE or FAILED. */
     fun delete(taskId: String)
@@ -299,18 +261,20 @@ data class Worktree(
     val branchName: String,
 )
 
-/** Runs an agent against a task. Returns when the agent reaches a terminal state. */
+/**
+ * Runs an agent against a task. Returns when the agent opens a PR or gives up.
+ * Critical amendment waits are handled internally — the agent polls VCS itself
+ * and writes/clears the awaiting-amendment.txt marker file. No external coordination needed.
+ */
 interface AgentRunner {
     suspend fun run(task: Task, worktree: Worktree): AgentResult
 }
 
 sealed class AgentResult {
-    /** Agent opened a PR and is awaiting review. */
+    /** Agent opened or updated a PR; task is now IN_REVIEW. */
     data class PrOpened(val prId: String, val prUrl: String) : AgentResult()
-    /** Agent could not complete the task. */
+    /** Agent could not complete the task; failed.txt has been written. */
     data class Failed(val reason: String) : AgentResult()
-    /** Agent proposed a critical amendment and is waiting for it to be merged. */
-    data class AwaitingAmendment(val amendmentPrId: String) : AgentResult()
 }
 ```
 
@@ -432,27 +396,43 @@ interface AgentSession {
 
 ## 6. Persistence
 
-All runtime state lives under `.agentic/` in the repository root.
+All durable state lives under `.agentic/` in the repository root. There is no single state snapshot file — task status is derived from the files that exist, not from a stored value.
 
 ```
 .agentic/
   config.json               # OrchestratorConfig (written by `agentic init`)
-  state.json                # OrchestratorState snapshot (updated on every mutation)
   docs/
     goals-scope.md
     architecture-design.md
     standards.md
     task-list.md
     validation-report.md    # Generated; updated after each validation pass
+  tasks/
+    {task-id}/
+      failed.txt            # Present only when FAILED; contains the human-readable reason
+      awaiting-amendment.txt# Present only while agent is paused for a critical amendment;
+                            # contains the amendment PR ID
   worktrees/
-    {task-id}/              # Git worktree — created on agent assignment, deleted on DONE or FAILED
+    {task-id}/              # Git worktree; presence signals IN_PROGRESS or IN_REVIEW
 ```
 
-**State durability:** `state.json` is written atomically (write to temp file, rename) after every status change. The orchestrator never holds exclusive state in memory — it can be killed at any point and resume cleanly.
+**How status is encoded in files:**
 
-**Worktree naming:** Branch names follow the pattern `agentic/{task-id}`. The worktree path `.agentic/worktrees/{task-id}` is derived from the task ID alone, making the mapping implicit and filesystem-recoverable.
+| What exists | Derived status |
+|-------------|---------------|
+| Merged PR for `agentic/{task-id}` | DONE |
+| `failed.txt` | FAILED |
+| Open PR with changes requested | IN_PROGRESS |
+| Open PR | IN_REVIEW |
+| Worktree directory | IN_PROGRESS |
+| No worktree, all deps DONE | PENDING |
+| No worktree, a dep not DONE | BLOCKED |
 
-**`.agentic/` in `.gitignore`:** The `.agentic/` directory is excluded from version control. Docs authored by the human live in a human-managed location (e.g., `agentic-docs/`) and are referenced by path in `config.json`.
+**Marker files are human-readable plain text.** `failed.txt` contains the failure reason as a sentence; `awaiting-amendment.txt` contains one line: the amendment PR URL.
+
+**Worktree naming:** Branch names follow the pattern `agentic/{task-id}`. The path `.agentic/worktrees/{task-id}` is implicit — derived from the task ID alone.
+
+**`.agentic/` in `.gitignore`:** The entire directory is excluded from version control. Docs authored by the human live in a separate human-managed location (e.g., `agentic-docs/`) referenced by path in `config.json`.
 
 ---
 
@@ -612,21 +592,59 @@ The Anthropic API key is read from the environment variable named in `anthropicA
 
 ## 10. Concurrency Model
 
+The orchestrator is a poll loop. On every tick it re-derives all task statuses from disk and VCS, launches agents for tasks that need one, and checks whether the run is finished. No events, no channels, no stored state.
+
+The only in-memory state is `activeTaskIds: Set<String>` — the set of task IDs that have a running agent coroutine right now. This is intentionally not persisted: on restart it is empty, and the poll loop re-derives which tasks need an agent from the filesystem.
+
 ```
-main coroutine (Orchestrator)
-    │
-    ├── Dispatcher.IO: VCS provider polling loop (PR status checks, every 60s)
-    │
-    ├── Agent coroutine 1  ─── Dispatcher.IO: shell commands inside agent
-    ├── Agent coroutine 2
-    └── Agent coroutine N   (pool size bounded by config)
+suspend fun run(config: OrchestratorConfig) {
+    val tasks = taskStore.getAll()
+    val activeTaskIds = mutableSetOf<String>()
+
+    while (true) {
+        // 1. Derive current status of every task from filesystem + VCS
+        val statuses: Map<Task, TaskStatus> = tasks.associateWith { stateDeriver.statusOf(it) }
+
+        // 2. Check termination
+        when {
+            statuses.values.all { it == DONE } -> {
+                notifier.notify(RunCompleted(tasks))
+                return
+            }
+            statuses.values.none { it == IN_PROGRESS || it == PENDING } -> {
+                notifier.notify(RunDeadlocked(...))
+                return
+            }
+        }
+
+        // 3. Launch agents for tasks that need one
+        val freeSlots = config.agentPoolSize - activeTaskIds.size
+        statuses.entries
+            .filter { (task, status) ->
+                (status == PENDING || status == IN_PROGRESS) && task.id !in activeTaskIds
+            }
+            .sortedByDescending { (task, _) -> dependencyGraph.downstreamCount(task.id) }
+            .take(freeSlots)
+            .forEach { (task, _) ->
+                val worktree = worktreeManager.getOrCreate(task.id)
+                activeTaskIds += task.id
+                launch(Dispatchers.IO) {
+                    try { agentRunner.run(task, worktree) }
+                    finally { activeTaskIds -= task.id }
+                }
+            }
+
+        // 4. Wait before next tick
+        delay(config.pollIntervalSeconds * 1_000)
+    }
+}
 ```
 
-- The orchestrator loop runs on the main dispatcher and drives the assignment loop.
-- Each agent runs in its own coroutine (`launch`). The pool is bounded by a `Semaphore(agentPoolSize)`.
-- VCS provider polling is a separate periodic coroutine on `Dispatcher.IO`.
-- All shared state (`TaskStore`, `OrchestratorState`) is protected by a `Mutex`. Disk writes happen inside the lock.
-- A stalled-agent watchdog runs as a separate coroutine, checking `assignedAtEpochMs` against `timeoutSeconds` every 60 seconds.
+**Why this works after a crash:** on restart `activeTaskIds` is empty. `StateDeriver` sees existing worktrees and open PRs and returns the correct statuses. The poll loop launches agents for any IN_PROGRESS task without a running coroutine, and the agent picks up from the existing worktree state.
+
+**IN_REVIEW tasks** do not occupy an agent slot. The agent coroutine exits after opening a PR. If the reviewer requests changes, `StateDeriver` returns IN_PROGRESS on the next tick (open PR + changes requested) and a new agent is launched against the same worktree.
+
+**Timeouts** are enforced inside `AgentRunner`. If the agent exceeds `task.timeoutSeconds`, the runner writes `failed.txt` and returns `AgentResult.Failed`. The poll loop sees FAILED on the next tick and calls `notifier.notify(TaskFailed)`.
 
 ---
 
@@ -634,13 +652,13 @@ main coroutine (Orchestrator)
 
 | Failure | Handling |
 |---------|---------|
-| Agent signals `task_failed` | Task → FAILED; dependents → BLOCKED; `Notifier.notify(TaskFailed)` called |
-| Agent exceeds timeout | Orchestrator kills the coroutine; task → FAILED; `Notifier.notify(TaskFailed)` called |
-| VCS provider call fails | Retry up to 3 times with exponential backoff; if still failing, surface as task FAILED |
-| Claude API returns error | Retry transient errors (5xx, 429); surface persistent errors as task FAILED |
-| Deadlock detected | Orchestrator halts; `Notifier.notify(RunDeadlocked)` called; prints blocked tasks to console |
-| `state.json` corrupt on resume | Log the corruption; treat all tasks as PENDING and reconstruct from PRs + worktrees |
-| Worktree in inconsistent state | Agent attempts autonomous recovery; if it can't, marks task FAILED |
+| Agent signals `task_failed` | `AgentRunner` writes `failed.txt`; next poll tick derives FAILED; `Notifier.notify(TaskFailed)` called |
+| Agent exceeds timeout | `AgentRunner` enforces timeout, writes `failed.txt`, returns `Failed`; same as above |
+| VCS provider call fails | Retry up to 3 times with exponential backoff; if still failing, `AgentRunner` writes `failed.txt` |
+| Claude API returns error | Retry transient errors (5xx, 429); persistent errors cause `AgentRunner` to write `failed.txt` |
+| Deadlock detected | Poll loop detects no PENDING or IN_PROGRESS tasks; `Notifier.notify(RunDeadlocked)` called; orchestrator exits |
+| Process crash mid-run | No recovery needed — next `agentic run` re-derives state from filesystem and resumes |
+| Worktree in inconsistent state | Agent attempts autonomous recovery on resume; if not feasible, writes `failed.txt` |
 
 All errors are logged at `error` level with the task ID, error type, and message. The orchestrator never exits silently.
 

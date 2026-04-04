@@ -12,14 +12,14 @@ class AgenticConfigTest {
     private val json = Json { prettyPrint = false }
 
     @Test
-    fun `AgenticConfig round-trips through JSON`() {
+    fun `AgenticConfig round-trips through JSON with claude-api provider`() {
         val original = AgenticConfig(
             agentPoolSize = 4,
             defaultTaskTimeoutSeconds = 3600L,
             baseBranch = "main",
             claudeModel = "claude-opus-4-6",
             docsDir = ".ai/docs",
-            anthropicApiKeyEnvVar = "ANTHROPIC_API_KEY",
+            aiProvider = AiProviderConfig.ClaudeApi(anthropicApiKeyEnvVar = "ANTHROPIC_API_KEY"),
             vcsProvider = VcsProviderConfig.GitHub(owner = "cramsan", repo = "MonoRepo"),
         )
 
@@ -27,6 +27,24 @@ class AgenticConfigTest {
         val decoded = json.decodeFromString<AgenticConfig>(encoded)
 
         assertEquals(original, decoded)
+    }
+
+    @Test
+    fun `AgenticConfig round-trips through JSON with claude-cli provider`() {
+        val original = AgenticConfig(
+            agentPoolSize = 2,
+            baseBranch = "main",
+            docsDir = "docs",
+            aiProvider = AiProviderConfig.ClaudeCli(cliPath = "/usr/local/bin/claude"),
+            vcsProvider = VcsProviderConfig.GitHub(owner = "owner", repo = "repo"),
+        )
+
+        val encoded = json.encodeToString(original)
+        val decoded = json.decodeFromString<AgenticConfig>(encoded)
+
+        assertEquals(original, decoded)
+        assertIs<AiProviderConfig.ClaudeCli>(decoded.aiProvider)
+        assertEquals("/usr/local/bin/claude", (decoded.aiProvider as AiProviderConfig.ClaudeCli).cliPath)
     }
 
     @Test
@@ -53,6 +71,30 @@ class AgenticConfigTest {
     }
 
     @Test
+    fun `AiProviderConfig ClaudeApi serializes with claude-api discriminator`() {
+        val provider: AiProviderConfig = AiProviderConfig.ClaudeApi()
+
+        val encoded = json.encodeToString(provider)
+
+        assertTrue(
+            encoded.contains("\"type\":\"claude-api\""),
+            "Expected discriminator 'type':'claude-api' but got: $encoded",
+        )
+    }
+
+    @Test
+    fun `AiProviderConfig ClaudeCli serializes with claude-cli discriminator`() {
+        val provider: AiProviderConfig = AiProviderConfig.ClaudeCli()
+
+        val encoded = json.encodeToString(provider)
+
+        assertTrue(
+            encoded.contains("\"type\":\"claude-cli\""),
+            "Expected discriminator 'type':'claude-cli' but got: $encoded",
+        )
+    }
+
+    @Test
     fun `AgenticConfig default values are applied correctly`() {
         val config = AgenticConfig(
             agentPoolSize = 2,
@@ -63,6 +105,19 @@ class AgenticConfigTest {
 
         assertEquals(3600L, config.defaultTaskTimeoutSeconds)
         assertEquals("claude-opus-4-6", config.claudeModel)
+        assertIs<AiProviderConfig.ClaudeApi>(config.aiProvider)
+        assertEquals("ANTHROPIC_API_KEY", (config.aiProvider as AiProviderConfig.ClaudeApi).anthropicApiKeyEnvVar)
+    }
+
+    @Test
+    fun `AiProviderConfig ClaudeApi default anthropicApiKeyEnvVar is ANTHROPIC_API_KEY`() {
+        val config = AiProviderConfig.ClaudeApi()
         assertEquals("ANTHROPIC_API_KEY", config.anthropicApiKeyEnvVar)
+    }
+
+    @Test
+    fun `AiProviderConfig ClaudeCli default cliPath is claude`() {
+        val config = AiProviderConfig.ClaudeCli()
+        assertEquals("claude", config.cliPath)
     }
 }

@@ -2,6 +2,7 @@ package com.cramsan.agentic.app
 
 import com.cramsan.agentic.ai.AiProvider
 import com.cramsan.agentic.ai.claude.ClaudeAiProvider
+import com.cramsan.agentic.ai.claude.ClaudeCliAiProvider
 import com.cramsan.agentic.claude.DefaultAgentSession
 import com.cramsan.agentic.coordination.DefaultDependencyGraph
 import com.cramsan.agentic.coordination.DefaultOrchestrator
@@ -12,6 +13,7 @@ import com.cramsan.agentic.coordination.Orchestrator
 import com.cramsan.agentic.coordination.StateDeriver
 import com.cramsan.agentic.coordination.TaskStore
 import com.cramsan.agentic.core.AgenticConfig
+import com.cramsan.agentic.core.AiProviderConfig
 import com.cramsan.agentic.core.VcsProviderConfig
 import com.cramsan.agentic.execution.AgentRunner
 import com.cramsan.agentic.execution.AgentSession
@@ -102,9 +104,16 @@ fun agenticModule(
 
     single<AiProvider> {
         val config = get<AgenticConfig>()
-        val apiKey = System.getenv(config.anthropicApiKeyEnvVar)
-            ?: error("API key env var '${config.anthropicApiKeyEnvVar}' is not set")
-        ClaudeAiProvider(get(), apiKey, get())
+        when (val aiConfig = config.aiProvider) {
+            is AiProviderConfig.ClaudeApi -> {
+                val apiKey = System.getenv(aiConfig.anthropicApiKeyEnvVar)
+                    ?: error("API key env var '${aiConfig.anthropicApiKeyEnvVar}' is not set")
+                ClaudeAiProvider(get(), apiKey, get())
+            }
+            is AiProviderConfig.ClaudeCli -> {
+                ClaudeCliAiProvider(get(), aiConfig.cliPath)
+            }
+        }
     }
 
     single<ReviewerAgent> {

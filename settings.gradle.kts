@@ -100,3 +100,5 @@ include("templatereplaceme:front-end:shared-app")
 include("templatereplaceme:front-end:app-android")
 include("templatereplaceme:front-end:app-jvm")
 include("templatereplaceme:front-end:app-wasm")
+
+include("agentic")

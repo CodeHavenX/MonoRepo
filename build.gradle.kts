@@ -104,4 +104,6 @@ tasks.register("releaseAll") {
     dependsOn("templatereplaceme:front-end:app-wasm:release")
     dependsOn("templatereplaceme:front-end:app-android:release")
     dependsOn("templatereplaceme:front-end:app-jvm:release")
+
+    dependsOn("agentic:release")
 }

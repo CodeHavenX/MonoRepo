@@ -47,6 +47,9 @@ agentic/
       notification/       # Notifier interface + AgenticEvent models
         vcs/              # VCS comment implementation
         fake/             # No-op implementation for tests
+      reviewer/           # ReviewerLoader, ReviewerAgent interface + models
+        claude/           # Claude-backed implementation
+        fake/             # In-memory implementation for tests
       claude/             # Claude API client and agent prompts
       app/                # CLI entry point, command definitions
     test/kotlin/com/cramsan/agentic/
@@ -138,7 +141,30 @@ enum class TaskStatus {
 }
 ```
 
-### 4.3 Amendments
+### 4.3 Reviewer Agents
+
+```kotlin
+/**
+ * Loaded from a single file in the reviewers directory.
+ * The file name (without extension) becomes the reviewer's display name.
+ * The file content becomes its system prompt verbatim.
+ */
+data class ReviewerDefinition(
+    val name: String,
+    val systemPrompt: String,
+)
+
+/**
+ * The complete output from one reviewer for one review pass.
+ * [content] is free-form markdown produced by the reviewer agent.
+ */
+data class ReviewerFeedback(
+    val reviewerName: String,
+    val content: String,
+)
+```
+
+### 4.4 Amendments
 
 Amendments are not tracked as data models. An amendment is a VCS pull request — its lifecycle (open, merged, rejected) is read directly from the VCS provider. The agent writes a marker file (see §6) while waiting for a critical amendment; no in-process state is maintained.
 
@@ -149,7 +175,12 @@ Amendments are not tracked as data models. An amendment is a VCS pull request �
 ### 5.1 Input Layer
 
 ```kotlin
-/** Generates the starter document set under .agentic/docs/. */
+/**
+ * Generates the starter document set under the docs directory.
+ * Also creates two template reviewer definitions:
+ *   - reviewers/security.md
+ *   - reviewers/design-patterns.md
+ */
 interface Scaffolder {
     fun scaffold(outputDir: Path)
 }
@@ -369,7 +400,60 @@ sealed class AgenticEvent {
 
 The active implementation is injected via DI. Multiple notifiers can be composed with a `CompositeNotifier` if more than one channel is needed in the future.
 
-### 5.6 Claude Integration
+### 5.6 Reviewer Agents
+
+```kotlin
+/** Loads all reviewer definitions from the reviewers directory. Returns empty list if none exist. */
+interface ReviewerLoader {
+    fun loadAll(): List<ReviewerDefinition>
+}
+
+/**
+ * Runs a reviewer agent against an artifact and returns its findings.
+ *
+ * Each call is stateless — the reviewer receives only its system prompt and
+ * the artifact. No prior conversation history or run context is provided.
+ * This is intentional: reviewers must form independent judgements.
+ */
+interface ReviewerAgent {
+    /** Review the input documents. Used during Layer 1 validation. */
+    suspend fun reviewDocuments(
+        reviewer: ReviewerDefinition,
+        documents: List<AgenticDocument>,
+    ): ReviewerFeedback
+
+    /** Review a code diff. Used after a PR is opened in Layer 3. */
+    suspend fun reviewCode(
+        reviewer: ReviewerDefinition,
+        task: Task,
+        diff: String,
+    ): ReviewerFeedback
+}
+```
+
+**Bundled implementations:**
+
+| Class | Package | Description |
+|-------|---------|-------------|
+| `ClaudeReviewerAgent` | `reviewer/claude/` | Sends a single-turn Claude API request with no tools |
+| `FakeReviewerAgent` | `reviewer/fake/` | Returns a configurable canned response; used in tests |
+
+**Document review flow (Layer 1):**
+
+All reviewer agents run in parallel after the main validation pass completes. Their output is printed to console as clearly labelled sections, separate from the main validation output. Reviewer findings never affect document status — they are advisory only.
+
+**Code review flow (Layer 3):**
+
+After the main agent opens or updates a PR, all reviewer agents run in parallel against the PR diff. Each reviewer's `ReviewerFeedback.content` is posted as a PR comment via `VcsProvider.addPullRequestComment`. Comments use a stable marker so they can be identified and replaced on subsequent review rounds:
+
+```
+<!-- agentic-reviewer: {reviewer.name} -->
+**{reviewer.name} — Automated Review**
+
+{feedback.content}
+```
+
+### 5.7 Claude Integration
 
 ```kotlin
 /** Sends a conversation to the Claude API. */
@@ -407,6 +491,10 @@ All durable state lives under `.agentic/` in the repository root. There is no si
     standards.md
     task-list.md
     validation-report.md    # Generated; updated after each validation pass
+    reviewers/
+      security.md           # Template — scaffolded by `agentic init`
+      design-patterns.md    # Template — scaffolded by `agentic init`
+      (user adds more)      # Each file = one reviewer; filename = reviewer name
   tasks/
     {task-id}/
       failed.txt            # Present only when FAILED; contains the human-readable reason
@@ -495,6 +583,8 @@ PR labels (`agentic-code`, `agentic-document`) distinguish code PRs from documen
 ```
 
 The `<!-- agentic-notification -->` HTML comment acts as a stable marker so the system can detect whether a notification has already been posted (avoiding duplicates on resume).
+
+Reviewer feedback comments (§5.6) use the same VCS comment mechanism but with a per-reviewer marker (`<!-- agentic-reviewer: {name} -->`), allowing them to be identified and replaced when the PR is updated.
 
 ### 7.3 Claude API
 

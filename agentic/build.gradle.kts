@@ -40,7 +40,19 @@ tasks.register<Test>("integTest") {
     testClassesDirs = sourceSets["integTest"].output.classesDirs
     classpath = sourceSets["integTest"].runtimeClasspath
     shouldRunAfter("test")
-    useJUnitPlatform()
+    useJUnitPlatform {
+        excludeTags("E2E")
+    }
+}
+
+tasks.register<Test>("e2eTest") {
+    description = "Runs E2E tests (requires ANTHROPIC_API_KEY and GITHUB_TOKEN)."
+    group = "verification"
+    testClassesDirs = sourceSets["integTest"].output.classesDirs
+    classpath = sourceSets["integTest"].runtimeClasspath
+    useJUnitPlatform {
+        includeTags("E2E")
+    }
 }
 
 tasks.getByName("release") {

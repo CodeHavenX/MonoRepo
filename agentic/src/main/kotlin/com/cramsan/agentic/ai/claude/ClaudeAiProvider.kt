@@ -1,5 +1,12 @@
-package com.cramsan.agentic.claude
+package com.cramsan.agentic.ai.claude
 
+import com.cramsan.agentic.ai.AiContentBlock
+import com.cramsan.agentic.ai.AiMessage
+import com.cramsan.agentic.ai.AiProvider
+import com.cramsan.agentic.ai.AiProviderException
+import com.cramsan.agentic.ai.AiResponse
+import com.cramsan.agentic.ai.AiTool
+import com.cramsan.agentic.core.ClaudeContentBlock
 import com.cramsan.agentic.core.ClaudeMessage
 import com.cramsan.agentic.core.ClaudeResponse
 import com.cramsan.agentic.core.ClaudeTool
@@ -21,28 +28,28 @@ private const val ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages"
 private const val ANTHROPIC_VERSION = "2023-06-01"
 private const val MAX_TOKENS = 8192
 
-class ClaudeApiException(val statusCode: Int, val responseBody: String) :
-    Exception("Claude API error $statusCode: $responseBody")
-
-class KtorClaudeClient(
+class ClaudeAiProvider(
     private val httpClient: HttpClient,
     private val apiKey: String,
     private val json: Json,
-) : ClaudeClient {
+) : AiProvider {
 
     override suspend fun chat(
         model: String,
         systemPrompt: String,
-        messages: List<ClaudeMessage>,
-        tools: List<ClaudeTool>,
-    ): ClaudeResponse {
+        messages: List<AiMessage>,
+        tools: List<AiTool>,
+    ): AiResponse {
+        val claudeMessages = messages.map { ClaudeMessage(it.role, it.content) }
+        val claudeTools = tools.map { ClaudeTool(it.name, it.description, it.inputSchema) }
+
         val requestBody = buildJsonObject {
             put("model", model)
             put("system", systemPrompt)
             put("max_tokens", MAX_TOKENS)
-            put("messages", json.encodeToJsonElement(messages))
-            if (tools.isNotEmpty()) {
-                put("tools", json.encodeToJsonElement(tools))
+            put("messages", json.encodeToJsonElement(claudeMessages))
+            if (claudeTools.isNotEmpty()) {
+                put("tools", json.encodeToJsonElement(claudeTools))
             }
         }
 
@@ -62,22 +69,23 @@ class KtorClaudeClient(
 
                 when {
                     response.status == HttpStatusCode.OK -> {
-                        return json.decodeFromString<ClaudeResponse>(response.bodyAsText())
+                        val claudeResponse = json.decodeFromString<ClaudeResponse>(response.bodyAsText())
+                        return claudeResponse.toAiResponse()
                     }
                     response.status.value == 429 || response.status.value >= 500 -> {
                         val body = response.bodyAsText()
-                        lastException = ClaudeApiException(response.status.value, body)
+                        lastException = AiProviderException("Claude API error ${response.status.value}: $body", response.status.value)
                         if (attempt < 3) {
                             delay(retryDelays[attempt])
                         }
                     }
                     else -> {
                         val body = response.bodyAsText()
-                        throw ClaudeApiException(response.status.value, body)
+                        throw AiProviderException("Claude API error ${response.status.value}: $body", response.status.value)
                     }
                 }
-            } catch (e: ClaudeApiException) {
-                throw e // non-retryable errors re-thrown immediately
+            } catch (e: AiProviderException) {
+                throw e
             } catch (e: Exception) {
                 lastException = e
                 if (attempt < 3) {
@@ -86,6 +94,17 @@ class KtorClaudeClient(
             }
         }
 
-        throw lastException ?: ClaudeApiException(0, "Unknown error after retries")
+        throw lastException ?: AiProviderException("Unknown error after retries")
     }
+
+    private fun ClaudeResponse.toAiResponse(): AiResponse = AiResponse(
+        id = id,
+        content = content.map { block ->
+            when (block) {
+                is ClaudeContentBlock.Text -> AiContentBlock.Text(block.text)
+                is ClaudeContentBlock.ToolUse -> AiContentBlock.ToolCall(block.id, block.name, block.input)
+            }
+        },
+        stopReason = stopReason,
+    )
 }

@@ -1,7 +1,8 @@
-package com.cramsan.agentic.claude
+package com.cramsan.agentic.ai.claude
 
-import com.cramsan.agentic.core.ClaudeContentBlock
-import com.cramsan.agentic.core.ClaudeMessage
+import com.cramsan.agentic.ai.AiContentBlock
+import com.cramsan.agentic.ai.AiMessage
+import com.cramsan.agentic.ai.AiProviderException
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
@@ -19,7 +20,7 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
-class KtorClaudeClientTest {
+class ClaudeAiProviderTest {
 
     private val json = Json { ignoreUnknownKeys = true; isLenient = true }
 
@@ -36,36 +37,36 @@ class KtorClaudeClientTest {
         }
     """.trimIndent()
 
-    private fun makeClient(engine: MockEngine): KtorClaudeClient {
+    private fun makeProvider(engine: MockEngine): ClaudeAiProvider {
         val httpClient = HttpClient(engine) {
             install(ContentNegotiation) { json(json) }
         }
-        return KtorClaudeClient(httpClient, "test-api-key", json)
+        return ClaudeAiProvider(httpClient, "test-api-key", json)
     }
 
     @Test
-    fun `successful request returns deserialized ClaudeResponse`() = runTest {
-        val engine = MockEngine { request ->
+    fun `successful request returns AiResponse with mapped content`() = runTest {
+        val engine = MockEngine { _ ->
             respond(
                 content = successResponse,
                 status = HttpStatusCode.OK,
                 headers = headersOf(HttpHeaders.ContentType, "application/json"),
             )
         }
-        val client = makeClient(engine)
+        val provider = makeProvider(engine)
 
-        val response = client.chat(
+        val response = provider.chat(
             model = "claude-opus-4-6",
             systemPrompt = "You are helpful",
-            messages = listOf(ClaudeMessage("user", "Hello")),
+            messages = listOf(AiMessage("user", "Hello")),
             tools = emptyList(),
         )
 
         assertEquals("msg-001", response.id)
         assertEquals("end_turn", response.stopReason)
         assertEquals(1, response.content.size)
-        assertIs<ClaudeContentBlock.Text>(response.content[0])
-        assertEquals("Hello, World!", (response.content[0] as ClaudeContentBlock.Text).text)
+        assertIs<AiContentBlock.Text>(response.content[0])
+        assertEquals("Hello, World!", (response.content[0] as AiContentBlock.Text).text)
     }
 
     @Test
@@ -77,9 +78,9 @@ class KtorClaudeClientTest {
             capturedVersion = request.headers["anthropic-version"]
             respond(successResponse, HttpStatusCode.OK, headersOf(HttpHeaders.ContentType, "application/json"))
         }
-        val client = makeClient(engine)
+        val provider = makeProvider(engine)
 
-        client.chat("claude-opus-4-6", "sys", listOf(ClaudeMessage("user", "hi")), emptyList())
+        provider.chat("claude-opus-4-6", "sys", listOf(AiMessage("user", "hi")), emptyList())
 
         assertEquals("test-api-key", capturedApiKey)
         assertEquals("2023-06-01", capturedVersion)
@@ -92,9 +93,9 @@ class KtorClaudeClientTest {
             capturedBody = request.body.toByteArray().decodeToString()
             respond(successResponse, HttpStatusCode.OK, headersOf(HttpHeaders.ContentType, "application/json"))
         }
-        val client = makeClient(engine)
+        val provider = makeProvider(engine)
 
-        client.chat("claude-opus-4-6", "my system prompt", listOf(ClaudeMessage("user", "msg")), emptyList())
+        provider.chat("claude-opus-4-6", "my system prompt", listOf(AiMessage("user", "msg")), emptyList())
 
         assertTrue(capturedBody!!.contains("\"model\""))
         assertTrue(capturedBody!!.contains("\"system\""))
@@ -104,7 +105,7 @@ class KtorClaudeClientTest {
     @Test
     fun `429 retry - succeeds after two failures`() = runTest {
         var callCount = 0
-        val engine = MockEngine { request ->
+        val engine = MockEngine { _ ->
             callCount++
             if (callCount < 3) {
                 respond("Rate limited", HttpStatusCode.TooManyRequests, headersOf(HttpHeaders.ContentType, "text/plain"))
@@ -112,23 +113,23 @@ class KtorClaudeClientTest {
                 respond(successResponse, HttpStatusCode.OK, headersOf(HttpHeaders.ContentType, "application/json"))
             }
         }
-        val client = makeClient(engine)
+        val provider = makeProvider(engine)
 
-        val response = client.chat("claude-opus-4-6", "sys", listOf(ClaudeMessage("user", "hi")), emptyList())
+        val response = provider.chat("claude-opus-4-6", "sys", listOf(AiMessage("user", "hi")), emptyList())
 
         assertEquals("msg-001", response.id)
         assertEquals(3, callCount)
     }
 
     @Test
-    fun `persistent 500 throws ClaudeApiException after retries`() = runTest {
+    fun `persistent 500 throws AiProviderException after retries`() = runTest {
         val engine = MockEngine { _ ->
             respond("Server Error", HttpStatusCode.InternalServerError, headersOf(HttpHeaders.ContentType, "text/plain"))
         }
-        val client = makeClient(engine)
+        val provider = makeProvider(engine)
 
-        assertFailsWith<ClaudeApiException> {
-            client.chat("claude-opus-4-6", "sys", listOf(ClaudeMessage("user", "hi")), emptyList())
+        assertFailsWith<AiProviderException> {
+            provider.chat("claude-opus-4-6", "sys", listOf(AiMessage("user", "hi")), emptyList())
         }
     }
 }

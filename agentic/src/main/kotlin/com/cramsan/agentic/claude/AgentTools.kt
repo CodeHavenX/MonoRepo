@@ -1,6 +1,6 @@
 package com.cramsan.agentic.claude
 
-import com.cramsan.agentic.core.ClaudeTool
+import com.cramsan.agentic.ai.AiTool
 import kotlinx.serialization.json.JsonObjectBuilder
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonArray
@@ -28,7 +28,7 @@ private fun toolSchema(vararg required: String, block: JsonObjectBuilder.() -> U
     }
 }
 
-val READ_FILE_TOOL = ClaudeTool(
+val READ_FILE_TOOL = AiTool(
     name = "read_file",
     description = "Read the contents of a file at the given path within the worktree.",
     inputSchema = toolSchema("path") {
@@ -36,7 +36,7 @@ val READ_FILE_TOOL = ClaudeTool(
     },
 )
 
-val WRITE_FILE_TOOL = ClaudeTool(
+val WRITE_FILE_TOOL = AiTool(
     name = "write_file",
     description = "Write content to a file at the given path within the worktree. Creates parent directories if needed.",
     inputSchema = toolSchema("path", "content") {
@@ -45,7 +45,7 @@ val WRITE_FILE_TOOL = ClaudeTool(
     },
 )
 
-val DELETE_FILE_TOOL = ClaudeTool(
+val DELETE_FILE_TOOL = AiTool(
     name = "delete_file",
     description = "Delete a file at the given path within the worktree.",
     inputSchema = toolSchema("path") {
@@ -53,7 +53,7 @@ val DELETE_FILE_TOOL = ClaudeTool(
     },
 )
 
-val RUN_COMMAND_TOOL = ClaudeTool(
+val RUN_COMMAND_TOOL = AiTool(
     name = "run_command",
     description = "Run a shell command in the worktree directory. Returns stdout and stderr.",
     inputSchema = toolSchema("command") {
@@ -62,7 +62,7 @@ val RUN_COMMAND_TOOL = ClaudeTool(
     },
 )
 
-val LIST_FILES_TOOL = ClaudeTool(
+val LIST_FILES_TOOL = AiTool(
     name = "list_files",
     description = "List files matching a glob pattern within the worktree.",
     inputSchema = toolSchema("glob") {
@@ -70,7 +70,7 @@ val LIST_FILES_TOOL = ClaudeTool(
     },
 )
 
-val TASK_COMPLETE_TOOL = ClaudeTool(
+val TASK_COMPLETE_TOOL = AiTool(
     name = "task_complete",
     description = "Signal that the task is complete and ready for review. Opens a pull request.",
     inputSchema = toolSchema("prTitle", "prBody") {
@@ -79,7 +79,7 @@ val TASK_COMPLETE_TOOL = ClaudeTool(
     },
 )
 
-val TASK_FAILED_TOOL = ClaudeTool(
+val TASK_FAILED_TOOL = AiTool(
     name = "task_failed",
     description = "Signal that the task cannot be completed. Marks the task as failed.",
     inputSchema = toolSchema("reason") {
@@ -87,7 +87,7 @@ val TASK_FAILED_TOOL = ClaudeTool(
     },
 )
 
-val PROPOSE_AMENDMENT_TOOL = ClaudeTool(
+val PROPOSE_AMENDMENT_TOOL = AiTool(
     name = "propose_amendment",
     description = "Propose a change to an input document. Creates a Document PR.",
     inputSchema = toolSchema("documentType", "proposedChange", "isCritical") {
@@ -97,7 +97,7 @@ val PROPOSE_AMENDMENT_TOOL = ClaudeTool(
     },
 )
 
-val SPLIT_TASK_TOOL = ClaudeTool(
+val SPLIT_TASK_TOOL = AiTool(
     name = "split_task",
     description = "Split the current task: open a Code PR for work completed so far, and propose a new Document PR for remaining work.",
     inputSchema = toolSchema("currentPrTitle", "currentPrBody", "newTaskTitle", "newTaskDescription") {
@@ -108,7 +108,7 @@ val SPLIT_TASK_TOOL = ClaudeTool(
     },
 )
 
-val ALL_AGENT_TOOLS: List<ClaudeTool> = listOf(
+val ALL_AGENT_TOOLS: List<AiTool> = listOf(
     READ_FILE_TOOL,
     WRITE_FILE_TOOL,
     DELETE_FILE_TOOL,

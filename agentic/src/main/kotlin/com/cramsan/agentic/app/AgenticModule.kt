@@ -1,8 +1,8 @@
 package com.cramsan.agentic.app
 
-import com.cramsan.agentic.claude.ClaudeClient
+import com.cramsan.agentic.ai.AiProvider
+import com.cramsan.agentic.ai.claude.ClaudeAiProvider
 import com.cramsan.agentic.claude.DefaultAgentSession
-import com.cramsan.agentic.claude.KtorClaudeClient
 import com.cramsan.agentic.coordination.DefaultDependencyGraph
 import com.cramsan.agentic.coordination.DefaultOrchestrator
 import com.cramsan.agentic.coordination.DefaultStateDeriver
@@ -100,16 +100,16 @@ fun agenticModule(
         FileSystemReviewerLoader(agenticDir.resolve("docs/reviewers"))
     }
 
-    single<ReviewerAgent> {
-        val config = get<AgenticConfig>()
-        ClaudeReviewerAgent(get(), config.claudeModel)
-    }
-
-    single<ClaudeClient> {
+    single<AiProvider> {
         val config = get<AgenticConfig>()
         val apiKey = System.getenv(config.anthropicApiKeyEnvVar)
             ?: error("API key env var '${config.anthropicApiKeyEnvVar}' is not set")
-        KtorClaudeClient(get(), apiKey, get())
+        ClaudeAiProvider(get(), apiKey, get())
+    }
+
+    single<ReviewerAgent> {
+        val config = get<AgenticConfig>()
+        ClaudeReviewerAgent(get(), config.claudeModel)
     }
 
     single<AgentSession> {

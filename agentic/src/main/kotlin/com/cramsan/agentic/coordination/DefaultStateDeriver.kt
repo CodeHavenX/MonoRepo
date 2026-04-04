@@ -49,6 +49,15 @@ class DefaultStateDeriver(
         val allDepsDone = task.dependencies.all { depId ->
             resolvedDependencies[depId] == TaskStatus.DONE
         }
-        return if (allDepsDone) TaskStatus.PENDING else TaskStatus.BLOCKED
+        if (allDepsDone) return TaskStatus.PENDING
+
+        // Check for manual unblock marker
+        val unblockedFile = agenticDir.resolve("tasks/${task.id}/unblocked.txt")
+        if (Files.exists(unblockedFile)) {
+            Files.delete(unblockedFile) // one-shot: delete after use
+            return TaskStatus.PENDING
+        }
+
+        return TaskStatus.BLOCKED
     }
 }

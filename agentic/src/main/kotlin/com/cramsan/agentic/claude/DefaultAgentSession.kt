@@ -1,7 +1,8 @@
 package com.cramsan.agentic.claude
 
-import com.cramsan.agentic.core.ClaudeContentBlock
-import com.cramsan.agentic.core.ClaudeMessage
+import com.cramsan.agentic.ai.AiContentBlock
+import com.cramsan.agentic.ai.AiMessage
+import com.cramsan.agentic.ai.AiProvider
 import com.cramsan.agentic.core.Task
 import com.cramsan.agentic.execution.AgentResult
 import com.cramsan.agentic.execution.AgentSession
@@ -19,7 +20,7 @@ import java.nio.file.Path
 private const val TAG = "DefaultAgentSession"
 
 class DefaultAgentSession(
-    private val claudeClient: ClaudeClient,
+    private val aiProvider: AiProvider,
     private val vcsProvider: VcsProvider,
     private val shell: ShellRunner,
     private val model: String,
@@ -30,43 +31,38 @@ class DefaultAgentSession(
     override suspend fun execute(task: Task, worktree: Worktree): AgentResult {
         logI(TAG, "Starting agent session for task ${task.id}")
 
-        // Determine context milestone
         val (systemPrompt, initialMessages) = buildInitialContext(task, worktree)
 
         val messages = initialMessages.toMutableList()
 
-        // Agent loop
         while (true) {
-            val response = claudeClient.chat(model, systemPrompt, messages, ALL_AGENT_TOOLS)
+            val response = aiProvider.chat(model, systemPrompt, messages, ALL_AGENT_TOOLS)
             logI(TAG, "Got response with stopReason=${response.stopReason}, ${response.content.size} content blocks")
 
-            // Add assistant response to message history
             val assistantContent = buildString {
                 response.content.forEach { block ->
                     when (block) {
-                        is ClaudeContentBlock.Text -> appendLine(block.text)
-                        is ClaudeContentBlock.ToolUse -> appendLine("[Tool call: ${block.name}(${block.input})]")
+                        is AiContentBlock.Text -> appendLine(block.text)
+                        is AiContentBlock.ToolCall -> appendLine("[Tool call: ${block.name}(${block.input})]")
                     }
                 }
             }.trim()
             if (assistantContent.isNotBlank()) {
-                messages.add(ClaudeMessage("assistant", assistantContent))
+                messages.add(AiMessage("assistant", assistantContent))
             }
 
-            // Process tool uses
-            val toolUses = response.content.filterIsInstance<ClaudeContentBlock.ToolUse>()
-            for (toolUse in toolUses) {
-                logI(TAG, "Agent invoked tool: ${toolUse.name}")
-                val toolResult = dispatchTool(toolUse, task, worktree)
+            val toolCalls = response.content.filterIsInstance<AiContentBlock.ToolCall>()
+            for (toolCall in toolCalls) {
+                logI(TAG, "Agent invoked tool: ${toolCall.name}")
+                val toolResult = dispatchTool(toolCall, task, worktree)
                 if (toolResult is ToolResult.Terminal) {
                     return toolResult.agentResult
                 }
-                messages.add(ClaudeMessage("user", "Tool result for ${toolUse.name}: ${(toolResult as ToolResult.Success).content}"))
+                messages.add(AiMessage("user", "Tool result for ${toolCall.name}: ${(toolResult as ToolResult.Success).content}"))
             }
 
-            // If no tool uses and end_turn, prompt for continuation
-            if (toolUses.isEmpty() && response.stopReason == "end_turn") {
-                messages.add(ClaudeMessage("user", "Please continue working on the task. Use the available tools to make progress, then call task_complete when done."))
+            if (toolCalls.isEmpty() && response.stopReason == "end_turn") {
+                messages.add(AiMessage("user", "Please continue working on the task. Use the available tools to make progress, then call task_complete when done."))
             }
         }
     }
@@ -77,13 +73,13 @@ class DefaultAgentSession(
     }
 
     private suspend fun dispatchTool(
-        toolUse: ClaudeContentBlock.ToolUse,
+        toolCall: AiContentBlock.ToolCall,
         task: Task,
         worktree: Worktree,
     ): ToolResult {
-        return when (toolUse.name) {
+        return when (toolCall.name) {
             "read_file" -> {
-                val path = toolUse.input["path"]?.jsonPrimitive?.content ?: return ToolResult.Success("Error: missing path")
+                val path = toolCall.input["path"]?.jsonPrimitive?.content ?: return ToolResult.Success("Error: missing path")
                 try {
                     val fullPath = worktree.path.resolve(path)
                     val content = Files.readString(fullPath)
@@ -93,8 +89,8 @@ class DefaultAgentSession(
                 }
             }
             "write_file" -> {
-                val path = toolUse.input["path"]?.jsonPrimitive?.content ?: return ToolResult.Success("Error: missing path")
-                val content = toolUse.input["content"]?.jsonPrimitive?.content ?: ""
+                val path = toolCall.input["path"]?.jsonPrimitive?.content ?: return ToolResult.Success("Error: missing path")
+                val content = toolCall.input["content"]?.jsonPrimitive?.content ?: ""
                 try {
                     val fullPath = worktree.path.resolve(path)
                     Files.createDirectories(fullPath.parent)
@@ -105,7 +101,7 @@ class DefaultAgentSession(
                 }
             }
             "delete_file" -> {
-                val path = toolUse.input["path"]?.jsonPrimitive?.content ?: return ToolResult.Success("Error: missing path")
+                val path = toolCall.input["path"]?.jsonPrimitive?.content ?: return ToolResult.Success("Error: missing path")
                 try {
                     Files.deleteIfExists(worktree.path.resolve(path))
                     ToolResult.Success("File deleted: $path")
@@ -114,9 +110,9 @@ class DefaultAgentSession(
                 }
             }
             "run_command" -> {
-                val command = toolUse.input["command"]?.jsonPrimitive?.content ?: return ToolResult.Success("Error: missing command")
+                val command = toolCall.input["command"]?.jsonPrimitive?.content ?: return ToolResult.Success("Error: missing command")
                 try {
-                    val workingDirOverride = toolUse.input["workingDir"]?.jsonPrimitive?.content
+                    val workingDirOverride = toolCall.input["workingDir"]?.jsonPrimitive?.content
                     val resolvedWorkingDir = if (workingDirOverride != null) {
                         worktree.path.resolve(workingDirOverride).toString()
                     } else {
@@ -134,7 +130,7 @@ class DefaultAgentSession(
                 }
             }
             "list_files" -> {
-                val glob = toolUse.input["glob"]?.jsonPrimitive?.content ?: "**/*"
+                val glob = toolCall.input["glob"]?.jsonPrimitive?.content ?: "**/*"
                 try {
                     val matcher = worktree.path.fileSystem.getPathMatcher("glob:$glob")
                     val files = Files.walk(worktree.path)
@@ -147,8 +143,8 @@ class DefaultAgentSession(
                 }
             }
             "task_complete" -> {
-                val prTitle = toolUse.input["prTitle"]?.jsonPrimitive?.content ?: "Task ${task.id}: ${task.title}"
-                val prBody = toolUse.input["prBody"]?.jsonPrimitive?.content ?: ""
+                val prTitle = toolCall.input["prTitle"]?.jsonPrimitive?.content ?: "Task ${task.id}: ${task.title}"
+                val prBody = toolCall.input["prBody"]?.jsonPrimitive?.content ?: ""
                 try {
                     val pr = vcsProvider.createPullRequest(
                         sourceBranch = "agentic/${task.id}",
@@ -164,13 +160,13 @@ class DefaultAgentSession(
                 }
             }
             "task_failed" -> {
-                val reason = toolUse.input["reason"]?.jsonPrimitive?.content ?: "Unknown reason"
+                val reason = toolCall.input["reason"]?.jsonPrimitive?.content ?: "Unknown reason"
                 ToolResult.Terminal(AgentResult.Failed(reason))
             }
             "propose_amendment" -> {
-                val documentType = toolUse.input["documentType"]?.jsonPrimitive?.content ?: ""
-                val proposedChange = toolUse.input["proposedChange"]?.jsonPrimitive?.content ?: ""
-                val isCritical = toolUse.input["isCritical"]?.jsonPrimitive?.content?.toBooleanStrictOrNull() ?: false
+                val documentType = toolCall.input["documentType"]?.jsonPrimitive?.content ?: ""
+                val proposedChange = toolCall.input["proposedChange"]?.jsonPrimitive?.content ?: ""
+                val isCritical = toolCall.input["isCritical"]?.jsonPrimitive?.content?.toBooleanStrictOrNull() ?: false
                 try {
                     val pr = vcsProvider.createPullRequest(
                         sourceBranch = "agentic/${task.id}/amendment",
@@ -204,10 +200,10 @@ class DefaultAgentSession(
                 }
             }
             "split_task" -> {
-                val currentPrTitle = toolUse.input["currentPrTitle"]?.jsonPrimitive?.content ?: "Task ${task.id}: ${task.title}"
-                val currentPrBody = toolUse.input["currentPrBody"]?.jsonPrimitive?.content ?: ""
-                val newTaskTitle = toolUse.input["newTaskTitle"]?.jsonPrimitive?.content ?: "Follow-up task"
-                val newTaskDescription = toolUse.input["newTaskDescription"]?.jsonPrimitive?.content ?: ""
+                val currentPrTitle = toolCall.input["currentPrTitle"]?.jsonPrimitive?.content ?: "Task ${task.id}: ${task.title}"
+                val currentPrBody = toolCall.input["currentPrBody"]?.jsonPrimitive?.content ?: ""
+                val newTaskTitle = toolCall.input["newTaskTitle"]?.jsonPrimitive?.content ?: "Follow-up task"
+                val newTaskDescription = toolCall.input["newTaskDescription"]?.jsonPrimitive?.content ?: ""
                 try {
                     val codePr = vcsProvider.createPullRequest(
                         sourceBranch = "agentic/${task.id}",
@@ -229,8 +225,8 @@ class DefaultAgentSession(
                 }
             }
             else -> {
-                logW(TAG, "Unknown tool: ${toolUse.name}")
-                ToolResult.Success("Unknown tool: ${toolUse.name}")
+                logW(TAG, "Unknown tool: ${toolCall.name}")
+                ToolResult.Success("Unknown tool: ${toolCall.name}")
             }
         }
     }
@@ -248,8 +244,7 @@ class DefaultAgentSession(
     private suspend fun buildInitialContext(
         task: Task,
         worktree: Worktree,
-    ): Pair<String, List<ClaudeMessage>> {
-        // Check for open PR with changes requested
+    ): Pair<String, List<AiMessage>> {
         val openPrs = try {
             vcsProvider.listOpenPullRequests(labels = listOf("agentic-code"))
         } catch (e: Exception) {
@@ -271,22 +266,20 @@ class DefaultAgentSession(
                 }
                 val diff = getGitDiff(worktree)
                 val prompt = buildChangesRequestedPrompt(task, diff, comments)
-                return prompt to listOf(ClaudeMessage("user", "Begin addressing the review feedback."))
+                return prompt to listOf(AiMessage("user", "Begin addressing the review feedback."))
             } else {
                 val diff = getGitDiff(worktree)
                 val prompt = buildPrOpenedPrompt(task, diff, taskPr.title)
-                return prompt to listOf(ClaudeMessage("user", "The PR is open. Stand by."))
+                return prompt to listOf(AiMessage("user", "The PR is open. Stand by."))
             }
         }
 
-        // Check for existing work in worktree
         val diff = getGitDiff(worktree)
         if (diff.isNotBlank()) {
             val prompt = buildResumeFromWorktreePrompt(task, diff)
-            return prompt to listOf(ClaudeMessage("user", "Resume the task from where you left off."))
+            return prompt to listOf(AiMessage("user", "Resume the task from where you left off."))
         }
 
-        // Fresh start
         val documents = try {
             documentStore.getAll().map { doc ->
                 val content = try {
@@ -300,7 +293,7 @@ class DefaultAgentSession(
             emptyList()
         }
         val prompt = buildTaskStartPrompt(task, documents)
-        return prompt to listOf(ClaudeMessage("user", "Begin working on the task."))
+        return prompt to listOf(AiMessage("user", "Begin working on the task."))
     }
 
     private suspend fun getGitDiff(worktree: Worktree): String {

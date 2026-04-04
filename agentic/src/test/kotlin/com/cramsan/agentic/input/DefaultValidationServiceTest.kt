@@ -1,9 +1,9 @@
 package com.cramsan.agentic.input
 
-import com.cramsan.agentic.claude.ClaudeClient
+import com.cramsan.agentic.ai.AiContentBlock
+import com.cramsan.agentic.ai.AiProvider
+import com.cramsan.agentic.ai.AiResponse
 import com.cramsan.agentic.core.AgenticDocument
-import com.cramsan.agentic.core.ClaudeContentBlock
-import com.cramsan.agentic.core.ClaudeResponse
 import com.cramsan.agentic.core.DocumentStatus
 import com.cramsan.agentic.core.DocumentType
 import com.cramsan.agentic.core.IssueSeverity
@@ -34,7 +34,7 @@ class DefaultValidationServiceTest {
     private val json = Json { ignoreUnknownKeys = true }
 
     private lateinit var documentStore: DocumentStore
-    private lateinit var claudeClient: ClaudeClient
+    private lateinit var aiProvider: AiProvider
     private lateinit var reviewerAgent: ReviewerAgent
     private lateinit var reviewerLoader: ReviewerLoader
     private lateinit var service: DefaultValidationService
@@ -52,13 +52,13 @@ class DefaultValidationServiceTest {
     @BeforeEach
     fun setUp() {
         documentStore = mockk(relaxed = true)
-        claudeClient = mockk()
+        aiProvider = mockk()
         reviewerAgent = mockk()
         reviewerLoader = mockk()
 
         service = DefaultValidationService(
             documentStore = documentStore,
-            claudeClient = claudeClient,
+            aiProvider = aiProvider,
             model = model,
             reviewerAgents = listOf(reviewerAgent),
             reviewerLoader = reviewerLoader,
@@ -66,7 +66,6 @@ class DefaultValidationServiceTest {
             docsDir = tempDir,
         )
 
-        // Write doc files to tempDir so readString works
         Files.writeString(tempDir.resolve("goals-scope.md"), "# Goals & Scope\nContent here.")
         Files.writeString(tempDir.resolve("architecture-design.md"), "# Architecture\nContent here.")
         Files.writeString(tempDir.resolve("standards.md"), "# Standards\nContent here.")
@@ -78,22 +77,22 @@ class DefaultValidationServiceTest {
         val doc = makeDocument("goals-scope", DocumentType.GOALS_SCOPE, "goals-scope.md")
 
         coEvery {
-            claudeClient.chat(
+            aiProvider.chat(
                 model = model,
                 systemPrompt = any(),
                 messages = any(),
                 tools = any(),
             )
-        } returns ClaudeResponse(
+        } returns AiResponse(
             id = "resp-1",
             stopReason = "end_turn",
-            content = listOf(ClaudeContentBlock.Text("[]")),
+            content = listOf(AiContentBlock.Text("[]")),
         )
 
         val issues = service.reviewDocument(doc)
 
         assertEquals(0, issues.size)
-        coVerify { claudeClient.chat(model = model, systemPrompt = any(), messages = any(), tools = any()) }
+        coVerify { aiProvider.chat(model = model, systemPrompt = any(), messages = any(), tools = any()) }
         verify { documentStore.updateStatus("goals-scope", DocumentStatus.VALIDATED) }
     }
 
@@ -106,16 +105,16 @@ class DefaultValidationServiceTest {
         """.trimIndent()
 
         coEvery {
-            claudeClient.chat(
+            aiProvider.chat(
                 model = model,
                 systemPrompt = any(),
                 messages = any(),
                 tools = any(),
             )
-        } returns ClaudeResponse(
+        } returns AiResponse(
             id = "resp-1",
             stopReason = "end_turn",
-            content = listOf(ClaudeContentBlock.Text(blockingIssueJson)),
+            content = listOf(AiContentBlock.Text(blockingIssueJson)),
         )
 
         val issues = service.reviewDocument(doc)
@@ -137,16 +136,16 @@ class DefaultValidationServiceTest {
         every { documentStore.getAll() } returns docs
 
         coEvery {
-            claudeClient.chat(
+            aiProvider.chat(
                 model = model,
                 systemPrompt = any(),
                 messages = any(),
                 tools = any(),
             )
-        } returns ClaudeResponse(
+        } returns AiResponse(
             id = "resp-1",
             stopReason = "end_turn",
-            content = listOf(ClaudeContentBlock.Text("[]")),
+            content = listOf(AiContentBlock.Text("[]")),
         )
 
         val reviewerDef = ReviewerDefinition(name = "security", systemPrompt = "You are a security reviewer.")
@@ -161,18 +160,14 @@ class DefaultValidationServiceTest {
         assertNotNull(report)
         assertNotNull(report.runId)
 
-        // Verify updateStatus was called with IN_REVIEW for all docs
         verify(exactly = 4) { documentStore.updateStatus(any(), DocumentStatus.IN_REVIEW) }
 
-        // Verify claudeClient.chat was called once per document
         coVerify(exactly = 4) {
-            claudeClient.chat(model = model, systemPrompt = any(), messages = any(), tools = any())
+            aiProvider.chat(model = model, systemPrompt = any(), messages = any(), tools = any())
         }
 
-        // Verify reviewer agent was invoked
         coVerify { reviewerAgent.reviewDocuments(reviewerDef, docs) }
 
-        // Verify validation report file was written
         assert(Files.exists(tempDir.resolve("validation-report.md")))
     }
 }

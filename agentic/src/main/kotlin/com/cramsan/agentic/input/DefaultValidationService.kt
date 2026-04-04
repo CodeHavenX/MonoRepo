@@ -1,9 +1,9 @@
 package com.cramsan.agentic.input
 
-import com.cramsan.agentic.claude.ClaudeClient
+import com.cramsan.agentic.ai.AiContentBlock
+import com.cramsan.agentic.ai.AiMessage
+import com.cramsan.agentic.ai.AiProvider
 import com.cramsan.agentic.core.AgenticDocument
-import com.cramsan.agentic.core.ClaudeContentBlock
-import com.cramsan.agentic.core.ClaudeMessage
 import com.cramsan.agentic.core.DocumentStatus
 import com.cramsan.agentic.core.IssueSeverity
 import com.cramsan.agentic.core.ValidationIssue
@@ -19,7 +19,7 @@ import java.nio.file.Path
 
 class DefaultValidationService(
     private val documentStore: DocumentStore,
-    private val claudeClient: ClaudeClient,
+    private val aiProvider: AiProvider,
     private val model: String,
     private val reviewerAgents: List<ReviewerAgent>,
     private val reviewerLoader: ReviewerLoader,
@@ -36,14 +36,14 @@ class DefaultValidationService(
             Return only a valid JSON array. If there are no issues, return an empty array [].
         """.trimIndent()
 
-        val response = claudeClient.chat(
+        val response = aiProvider.chat(
             model = model,
             systemPrompt = systemPrompt,
-            messages = listOf(ClaudeMessage("user", fileContent)),
+            messages = listOf(AiMessage("user", fileContent)),
             tools = emptyList(),
         )
 
-        val textContent = response.content.filterIsInstance<ClaudeContentBlock.Text>().firstOrNull()
+        val textContent = response.content.filterIsInstance<AiContentBlock.Text>().firstOrNull()
         val issues: List<ValidationIssue> = if (textContent != null) {
             json.decodeFromString(textContent.text)
         } else {

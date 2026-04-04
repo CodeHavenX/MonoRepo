@@ -1,5 +1,6 @@
 package com.cramsan.agentic.claude
 
+import com.cramsan.agentic.ai.AiMessage
 import com.cramsan.agentic.core.PullRequestComment
 import com.cramsan.agentic.core.Task
 

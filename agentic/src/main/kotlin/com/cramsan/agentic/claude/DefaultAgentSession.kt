@@ -41,10 +41,16 @@ class DefaultAgentSession(
             logI(TAG, "Got response with stopReason=${response.stopReason}, ${response.content.size} content blocks")
 
             // Add assistant response to message history
-            val assistantText = response.content.filterIsInstance<ClaudeContentBlock.Text>()
-                .joinToString("\n") { it.text }
-            if (assistantText.isNotBlank()) {
-                messages.add(ClaudeMessage("assistant", assistantText))
+            val assistantContent = buildString {
+                response.content.forEach { block ->
+                    when (block) {
+                        is ClaudeContentBlock.Text -> appendLine(block.text)
+                        is ClaudeContentBlock.ToolUse -> appendLine("[Tool call: ${block.name}(${block.input})]")
+                    }
+                }
+            }.trim()
+            if (assistantContent.isNotBlank()) {
+                messages.add(ClaudeMessage("assistant", assistantContent))
             }
 
             // Process tool uses
@@ -110,7 +116,13 @@ class DefaultAgentSession(
             "run_command" -> {
                 val command = toolUse.input["command"]?.jsonPrimitive?.content ?: return ToolResult.Success("Error: missing command")
                 try {
-                    val result = shell.run("sh", "-c", command)
+                    val workingDirOverride = toolUse.input["workingDir"]?.jsonPrimitive?.content
+                    val resolvedWorkingDir = if (workingDirOverride != null) {
+                        worktree.path.resolve(workingDirOverride).toString()
+                    } else {
+                        worktree.path.toString()
+                    }
+                    val result = shell.run("sh", "-c", command, workingDir = resolvedWorkingDir)
                     val output = buildString {
                         if (result.stdout.isNotBlank()) append("stdout:\n${result.stdout}")
                         if (result.stderr.isNotBlank()) append("\nstderr:\n${result.stderr}")
@@ -169,10 +181,21 @@ class DefaultAgentSession(
                     )
                     logI(TAG, "Proposed amendment PR ${pr.id} for task ${task.id}")
                     if (isCritical) {
+                        writeAmendmentMarker(worktree, pr.id)
                         logI(TAG, "Critical amendment — waiting for PR ${pr.id} to be merged")
-                        while (!vcsProvider.isPullRequestMerged(pr.id)) {
-                            delay(30_000L)
+                        var merged = false
+                        while (!merged) {
+                            merged = vcsProvider.isPullRequestMerged(pr.id)
+                            if (!merged) {
+                                val stillOpen = vcsProvider.listOpenPullRequests().any { it.id == pr.id }
+                                if (!stillOpen) {
+                                    clearAmendmentMarker(worktree)
+                                    return ToolResult.Success("Critical amendment PR ${pr.id} was closed without merging. Cannot continue. Use task_failed if the task cannot proceed without this change.")
+                                }
+                                delay(30_000L)
+                            }
                         }
+                        clearAmendmentMarker(worktree)
                         logI(TAG, "Amendment PR ${pr.id} merged, continuing task ${task.id}")
                     }
                     ToolResult.Success("Amendment PR created: ${pr.url}" + if (isCritical) " (merged)" else " (non-critical, continuing)")
@@ -210,6 +233,16 @@ class DefaultAgentSession(
                 ToolResult.Success("Unknown tool: ${toolUse.name}")
             }
         }
+    }
+
+    private fun writeAmendmentMarker(worktree: Worktree, prId: String) {
+        val marker = worktree.path.resolve(".agentic-awaiting-amendment.txt")
+        Files.writeString(marker, "awaiting-amendment:$prId")
+    }
+
+    private fun clearAmendmentMarker(worktree: Worktree) {
+        val marker = worktree.path.resolve(".agentic-awaiting-amendment.txt")
+        Files.deleteIfExists(marker)
     }
 
     private suspend fun buildInitialContext(

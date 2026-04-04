@@ -215,7 +215,9 @@ When an agent reports a task as `failed`, the orchestrator:
 3. Marks all tasks that depend on it as `blocked`
 4. Notifies the human
 
-No automatic retry occurs. The human must review the failure reason, take corrective action (amend input docs, rewrite the task, etc.), and manually re-queue the task. This ensures failures are understood before more resources are spent.
+No automatic retry occurs. The human must review the failure reason, take corrective action (amend input docs, rewrite the task, etc.), and manually re-queue the task via `agentic task retry <id>`. This ensures failures are understood before more resources are spent.
+
+Similarly, tasks stuck in `blocked` due to a dependency failure can be manually unblocked via `agentic task unblock <id>`, which writes an `unblocked.txt` marker file that overrides the BLOCKED status to PENDING. The marker is deleted automatically when the agent picks up the task.
 
 ### 2.5 Stalled Agent Detection
 

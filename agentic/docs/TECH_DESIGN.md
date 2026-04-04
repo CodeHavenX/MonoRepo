@@ -223,6 +223,10 @@ interface TaskStore {
  * VCS PR state, worktree presence, and per-task marker files.
  * No in-memory state is consulted; safe to call after a crash and restart.
  *
+ * [resolvedDependencies] lets the orchestrator pass already-derived statuses for
+ * dependency tasks, avoiding redundant VCS calls during a topological traversal.
+ * If omitted, the deriver re-derives each dependency independently.
+ *
  * Derivation order:
  *   1. Merged PR for branch `agentic/{task-id}` → DONE
  *   2. failed.txt marker exists                 → FAILED
@@ -230,10 +234,14 @@ interface TaskStore {
  *   4. Open PR                                  → IN_REVIEW
  *   5. Worktree exists                          → IN_PROGRESS
  *   6. All dependencies DONE                    → PENDING
- *   7. Otherwise                                → BLOCKED
+ *   7. unblocked.txt marker exists              → PENDING (human override)
+ *   8. Otherwise                                → BLOCKED
  */
 interface StateDeriver {
-    suspend fun statusOf(task: Task): TaskStatus
+    suspend fun statusOf(
+        task: Task,
+        resolvedDependencies: Map<String, TaskStatus> = emptyMap(),
+    ): TaskStatus
 }
 
 /** Scores tasks by downstream dependency count for critical-path assignment. */
@@ -455,6 +463,10 @@ After the main agent opens or updates a PR, all reviewer agents run in parallel 
 
 ### 5.7 Claude Integration
 
+> **Note:** `ClaudeClient` below is the initial implementation. It is superseded by the
+> `AiProvider` abstraction defined in `AMENDMENT_AI_PROVIDER_ABSTRACTION.md`, which replaces
+> the provider-specific types with generic ones and adds support for multiple backends.
+
 ```kotlin
 /** Sends a conversation to the Claude API. */
 interface ClaudeClient {
@@ -500,6 +512,8 @@ All durable state lives under `.agentic/` in the repository root. There is no si
       failed.txt            # Present only when FAILED; contains the human-readable reason
       awaiting-amendment.txt# Present only while agent is paused for a critical amendment;
                             # contains the amendment PR ID
+      unblocked.txt         # Written by `agentic task unblock <id>`; overrides BLOCKED → PENDING;
+                            # deleted automatically when the agent picks up the task
   worktrees/
     {task-id}/              # Git worktree; presence signals IN_PROGRESS or IN_REVIEW
 ```
@@ -514,6 +528,7 @@ All durable state lives under `.agentic/` in the repository root. There is no si
 | Open PR | IN_REVIEW |
 | Worktree directory | IN_PROGRESS |
 | No worktree, all deps DONE | PENDING |
+| `unblocked.txt` (human override) | PENDING |
 | No worktree, a dep not DONE | BLOCKED |
 
 **Marker files are human-readable plain text.** `failed.txt` contains the failure reason as a sentence; `awaiting-amendment.txt` contains one line: the amendment PR URL.
@@ -701,7 +716,10 @@ suspend fun run(config: OrchestratorConfig) {
                 notifier.notify(RunCompleted(tasks))
                 return
             }
-            statuses.values.none { it == IN_PROGRESS || it == PENDING } -> {
+            statuses.values.none { it == IN_PROGRESS || it == PENDING }
+                    && activeTaskIds.isEmpty() -> {
+                // Only declare deadlock when no coroutines are running either —
+                // an active agent may still transition tasks before the next tick.
                 notifier.notify(RunDeadlocked(...))
                 return
             }

@@ -56,7 +56,7 @@ interface AiProvider {
 
 Implements `AiProvider` using the Anthropic Messages API (Ktor HTTP). Internally maps between the generic types above and Claude's wire format (`ClaudeMessage`, `ClaudeTool`, `ClaudeResponse`, `ClaudeContentBlock` from `core/`). Those `@Serializable` core models are retained as internal serialization details — they are no longer part of any public interface.
 
-Carries over the retry logic from `KtorClaudeClient` (up to 4 attempts, exponential backoff on 429/5xx).
+Carries over the retry logic from `KtorClaudeClient` (up to 3 retries = 4 total attempts, exponential backoff on 429/5xx). This is consistent with the "retry up to 3 times" wording in TECH_DESIGN.md §11.
 
 ---
 

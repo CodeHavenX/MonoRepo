@@ -27,10 +27,29 @@ Lives alongside `ClaudeAiProvider` in the same sub-package.
 Uses `ShellRunner` to invoke the `claude` CLI in non-interactive print mode:
 
 ```bash
-claude --print --model <model> [--system-prompt <system>] "<user message>"
+claude --print --model <model> "<collapsed prompt>"
 ```
 
-The provider builds the full conversation as a single formatted prompt passed via stdin (or a temp file) and captures stdout as the response text.
+The provider collapses the full conversation history into a single plain-text prompt that is
+passed as the final positional argument. For multi-turn conversations, each turn is
+rendered as a labelled section so the model retains role attribution:
+
+```
+[System]
+<system prompt text>
+
+[User]
+<turn 1 user content>
+
+[Assistant]
+<turn 1 assistant content>
+
+[User]
+<turn 2 user content>
+```
+
+The collapsed string is passed directly as the CLI argument (quoted). The provider captures
+stdout as the response text and discards stderr unless the exit code is non-zero.
 
 ### Capabilities and Limitations
 
@@ -88,6 +107,59 @@ sealed class AiProviderConfig {
 ```
 
 `AgenticConfig` gains an `aiProvider: AiProviderConfig` field (replacing the top-level `anthropicApiKeyEnvVar`).
+
+---
+
+## Configuration Migration
+
+`AgenticConfig` previously had a top-level `anthropicApiKeyEnvVar: String` field.
+This amendment replaces it with `aiProvider: AiProviderConfig`.
+
+**Existing `config.json` files must be migrated before upgrading.** Replace:
+
+```json
+{
+  "anthropicApiKeyEnvVar": "ANTHROPIC_API_KEY",
+  ...
+}
+```
+
+with the equivalent provider block:
+
+```json
+{
+  "aiProvider": {
+    "type": "claude-api",
+    "anthropicApiKeyEnvVar": "ANTHROPIC_API_KEY"
+  },
+  ...
+}
+```
+
+There is no automatic migration. The CLI will fail at config-load time if
+`anthropicApiKeyEnvVar` is present at the top level; the error message directs
+the user to update the configuration manually.
+
+---
+
+## Startup Validation
+
+When the orchestrator or any command that requires an `AiProvider` starts, it
+validates that the configured provider is available **before** doing any other work:
+
+- **`claude-api`** — checks that the environment variable named in
+  `anthropicApiKeyEnvVar` is set and non-empty.
+- **`claude-cli`** — shells out to `<cliPath> --version` and verifies the exit
+  code is zero.
+
+If validation fails, the CLI prints a clear error and exits with code 1. No
+tasks are started and no state is modified.
+
+Additionally, the `start` and `resume` commands check provider compatibility against
+the registered component types. If the resolved `AiProvider` is `ClaudeCliAiProvider`
+(which does not support tool use), the commands verify that no agent-session components
+that require tool use are bound. If an incompatible component is found, the CLI exits
+with a descriptive error before launching any agents.
 
 ---
 

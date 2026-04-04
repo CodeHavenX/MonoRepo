@@ -203,9 +203,11 @@ The orchestrator continuously monitors for:
 - **Stalled agents** — an agent has exceeded its time threshold (see §2.5)
 - **Queue exhaustion** — all tasks are `done`; the run is complete
 
+When a deadlock or queue exhaustion is detected, the orchestrator emits a notification (see §2.8).
+
 ### 2.7 Resumability
 
-The system supports worktree-based resumability. The agent's worktree is its persistent workspace for the entire lifetime of a task — from initial claim through PR review and merge. It is never discarded until the task reaches `done` or `failed`.
+The system supports worktree-based resumability. A worktree is created lazily — at the moment an agent is assigned a task, not at run start. Once created, it is the agent's persistent workspace for the remainder of that task's lifetime, through PR review and merge. It is deleted as soon as the task reaches `done` (PR merged) or `failed`.
 
 On restart after any interruption, the orchestrator recovers state from two sources:
 
@@ -233,7 +235,21 @@ Tasks not found in either scan are treated as `pending` or `blocked` based on th
 
 **Partial corruption** — if a crash left the worktree in an inconsistent state, the agent attempts autonomous recovery by reasoning about what it finds. If recovery is not feasible, the task follows the standard failure flow and human intervention is required.
 
-Worktrees are retained for the entire lifetime of a task — from initial claim through PR review and merge. A worktree is only cleaned up once its task reaches `done` or `failed`.
+Worktrees are allocated lazily on agent assignment and held for the full duration of the task — through PR review and merge. Cleanup is immediate once the task reaches `done` (PR merged) or `failed`.
+
+### 2.8 Notifications
+
+The orchestrator sends notifications to the human through a notification abstraction. The abstraction decouples the orchestrator from any specific delivery channel.
+
+Events that trigger a notification:
+
+| Event | Trigger |
+|-------|---------|
+| **Task failed** | An agent marks a task `failed` (§2.4) |
+| **Run deadlocked** | Health monitor detects no forward progress is possible (§2.6) |
+| **Run completed** | All tasks reach `done` (§2.6) |
+
+The default notification channel posts a comment on the relevant VCS pull request. Additional channels may be added without changing the orchestrator.
 
 ---
 
@@ -340,6 +356,16 @@ Every PR maps 1-to-1 with a single task. This is a hard constraint.
 | **Document PR** | Agent amendment proposal | Changes to one or more input docs |
 
 Both PR types go through the same human review process. The difference is in content and intent, not mechanism.
+
+### 3.9 VCS Provider Abstraction
+
+All pull request operations — creating PRs, reading review comments, polling merge status — are mediated through a provider-agnostic interface. The system does not depend directly on any specific VCS host.
+
+This serves two purposes:
+- **Testability** — a fake in-memory provider can be injected in tests without requiring real credentials or network access.
+- **Portability** — additional providers (e.g. GitLab) can be added without touching the orchestrator or agent code.
+
+The default bundled provider targets GitHub. Operators select a provider in configuration; no other part of the system is aware of which provider is active.
 
 ---
 

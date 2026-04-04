@@ -25,7 +25,7 @@ $docsSection
 1. Read the existing code to understand the codebase.
 2. Implement the required changes in your worktree.
 3. Run verification (tests, build) to ensure your changes are correct.
-4. When all checks pass, use the `task_complete` tool to open a Pull Request.
+4. When all checks pass, stage and commit your changes (`git add -A && git commit -m "..."`) and push the branch (`git push -u origin HEAD`), then use the `task_complete` tool to open a Pull Request.
 5. If you encounter a blocker you cannot resolve, use `task_failed` to report it.
 6. If you need to propose changes to the input documents, use `propose_amendment`.
 7. If the task is larger than expected, use `split_task` to deliver partial value and queue remaining work.
@@ -73,7 +73,7 @@ $commentsSection
 
 1. Address all reviewer feedback in your worktree.
 2. Run verification (tests, build) to ensure changes are correct.
-3. When ready, use `task_complete` to push your updated changes.
+3. When ready, stage and commit your changes (`git add -A && git commit -m "..."`), push the branch (`git push`), then use `task_complete` to update the Pull Request.
 
 Work autonomously. Address each comment thoughtfully.
 """.trimIndent()

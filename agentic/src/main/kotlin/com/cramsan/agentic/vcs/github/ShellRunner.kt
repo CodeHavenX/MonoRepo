@@ -11,13 +11,16 @@ data class ShellResult(
 )
 
 class ShellRunner {
-    suspend fun run(vararg args: String): ShellResult = withContext(Dispatchers.IO) {
+    suspend fun run(vararg args: String, workingDir: String? = null): ShellResult = withContext(Dispatchers.IO) {
         var lastResult: ShellResult? = null
         val delays = listOf(1000L, 2000L, 4000L)
 
         for (attempt in 0..3) {
             val process = ProcessBuilder(*args)
-                .also { it.redirectErrorStream(false) }
+                .also { pb ->
+                    pb.redirectErrorStream(false)
+                    if (workingDir != null) pb.directory(java.io.File(workingDir))
+                }
                 .start()
 
             val stdout = process.inputStream.bufferedReader().readText()

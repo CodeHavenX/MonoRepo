@@ -8,6 +8,7 @@ import com.cramsan.agentic.execution.WorktreeManager
 import com.cramsan.agentic.notification.AgenticEvent
 import com.cramsan.agentic.notification.Notifier
 import com.cramsan.framework.logging.logI
+import com.cramsan.framework.logging.logW
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
@@ -25,6 +26,8 @@ class DefaultOrchestrator(
     private val notifier: Notifier,
 ) : Orchestrator {
 
+    private val cleanedUpTaskIds: MutableSet<String> = mutableSetOf()
+
     override suspend fun run(config: OrchestratorConfig) {
         val tasks = taskStore.getAll()
         val activeTaskIds: MutableSet<String> = ConcurrentHashMap.newKeySet()
@@ -32,6 +35,21 @@ class DefaultOrchestrator(
         coroutineScope {
             while (true) {
                 val statuses = deriveMemoized(tasks)
+
+                // Clean up worktrees for completed/failed tasks
+                statuses.entries
+                    .filter { (task, status) ->
+                        (status == TaskStatus.DONE || status == TaskStatus.FAILED) &&
+                            task.id !in cleanedUpTaskIds
+                    }
+                    .forEach { (task, _) ->
+                        try {
+                            worktreeManager.delete(task.id)
+                            cleanedUpTaskIds += task.id
+                        } catch (e: Exception) {
+                            logW(TAG, "Failed to clean up worktree for task ${task.id}: ${e.message}")
+                        }
+                    }
 
                 // Termination: all done
                 if (statuses.values.all { it == TaskStatus.DONE }) {
@@ -103,7 +121,12 @@ class DefaultOrchestrator(
                 val task = iter.next()
                 if (task.dependencies.all { it in resolved }) {
                     val depStatuses = task.dependencies.associateWith { resolved[it]!! }
-                    val status = stateDeriver.statusOf(task, depStatuses)
+                    val status = try {
+                        stateDeriver.statusOf(task, depStatuses)
+                    } catch (e: Exception) {
+                        logW(TAG, "Failed to derive status for task ${task.id}: ${e.message}. Treating as current status or PENDING.")
+                        resolved[task.id] ?: TaskStatus.PENDING
+                    }
                     resolved[task.id] = status
                     result[task] = status
                     iter.remove()
@@ -113,7 +136,12 @@ class DefaultOrchestrator(
 
         // Any remaining tasks (circular deps, shouldn't happen after validation) — just evaluate them
         for (task in remaining) {
-            val status = stateDeriver.statusOf(task)
+            val status = try {
+                stateDeriver.statusOf(task)
+            } catch (e: Exception) {
+                logW(TAG, "Failed to derive status for task ${task.id}: ${e.message}. Treating as current status or PENDING.")
+                resolved[task.id] ?: TaskStatus.PENDING
+            }
             result[task] = status
         }
 

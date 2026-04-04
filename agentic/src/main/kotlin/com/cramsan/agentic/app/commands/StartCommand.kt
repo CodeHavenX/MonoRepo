@@ -51,6 +51,10 @@ class StartCommand : CliktCommand(name = "start", help = "Start the agentic orch
                     }
             } else {
                 echo("Starting agentic orchestrator with ${orchConfig.agentPoolSize} agent(s)...")
+                // TODO: When AiProviderConfig is implemented (see AMENDMENT_CLAUDE_CLI_PROVIDER.md),
+                // validate here that if the configured provider does not support tool use (e.g., claude-cli),
+                // the user is warned that agent task execution requires a tool-use-capable provider.
+                // Reviewer and validation workloads work with any provider.
                 runBlocking { orchestrator.run(orchConfig) }
                 echo("Orchestrator run completed.")
             }

@@ -27,7 +27,7 @@ Agentic is an autonomous orchestration system that takes human-authored process 
 The input layer is the authoritative contract between the human and the system. It owns three responsibilities:
 
 ### 1.1 Scaffolding
-On demand, the system generates a complete starter document set. This gives new users a concrete starting point and makes the expected input format self-evident. The scaffolded documents include placeholder content illustrating what each section requires.
+On demand, the system generates a complete starter document set. This gives new users a concrete starting point and makes the expected input format self-evident. The scaffolded documents include placeholder content illustrating what each section requires. The scaffold also creates two template reviewer agent definitions (see §1.6) that the user can customise or use as examples for writing their own.
 
 ### 1.2 Semantic Validation
 
@@ -134,6 +134,26 @@ If an agent determines mid-execution that a task is larger than planned and cann
 2. Opens a **Document PR** proposing a new task (or tasks) to cover the remaining work
 
 The agent does not abandon the task — it delivers partial value immediately and signals that more work is needed through the standard amendment channel.
+
+### 1.6 Reviewer Agents
+
+Reviewer agents are optional, user-defined sub-agents that provide focused, independent feedback at key review points. Each reviewer is defined by a single file whose content becomes that reviewer's system prompt. The user creates as many reviewers as needed; the system provides two templates as a starting point.
+
+**Examples of reviewer specialisations:**
+- Security — identifies vulnerabilities, unsafe patterns, insecure defaults
+- Design patterns — flags violations of established patterns, suggests improvements
+- Performance — identifies bottlenecks and inefficient constructs
+
+**Key property: fresh context.** Reviewer agents receive only their system prompt and the artifact being reviewed. They have no knowledge of how the work was done, which conversations took place, or what decisions were made. This deliberate isolation ensures the review is independent and unbiased.
+
+**Reviewer agents are advisory.** Their output is never a blocking gate. The human decides how to act on findings.
+
+Reviewer agents participate at two points in the process:
+
+| Phase | Artifact reviewed | How output is surfaced |
+|-------|-------------------|----------------------|
+| Layer 1 — Validation | Input documents | Printed to console as a separate labeled section per reviewer |
+| Layer 3 — Code review | PR diff | Posted as a PR comment per reviewer |
 
 ---
 
@@ -363,7 +383,15 @@ Every PR maps 1-to-1 with a single task. This is a hard constraint.
 
 Both PR types go through the same human review process. The difference is in content and intent, not mechanism.
 
-### 3.9 VCS Provider Abstraction
+### 3.9 Reviewer Agent Code Review
+
+After the main agent opens a Code PR, reviewer agents run concurrently against the PR diff. Each reviewer receives only its system prompt and the diff — no other context. The findings from each reviewer are posted as a separate PR comment, clearly labelled with the reviewer's name, so the human can read them alongside the regular review.
+
+Reviewer comments do not block the merge. They are informational input to the human reviewer.
+
+If the human requests changes and the main agent pushes an update, reviewer agents re-run against the new diff and post updated comments.
+
+### 3.10 VCS Provider Abstraction
 
 All pull request operations — creating PRs, reading review comments, polling merge status — are mediated through a provider-agnostic interface. The system does not depend directly on any specific VCS host.
 

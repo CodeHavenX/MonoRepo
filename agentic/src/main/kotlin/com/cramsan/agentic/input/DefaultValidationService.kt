@@ -59,7 +59,13 @@ class DefaultValidationService(
         }
 
         val issues: List<ValidationIssue> = if (textContent != null) {
-            json.decodeFromString(textContent.text)
+            val rawJson = textContent.text
+                .trimIndent()
+                .removePrefix("```json")
+                .removePrefix("```")
+                .removeSuffix("```")
+                .trim()
+            json.decodeFromString(rawJson)
         } else {
             emptyList()
         }

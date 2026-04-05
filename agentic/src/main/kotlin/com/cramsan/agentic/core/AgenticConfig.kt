@@ -10,7 +10,7 @@ data class AgenticConfig(
     val baseBranch: String,
     val claudeModel: String = "claude-opus-4-6",
     val docsDir: String,
-    val aiProvider: AiProviderConfig = AiProviderConfig.ClaudeApi(),
+    val aiProvider: AiProviderConfig = AiProviderConfig.ClaudeCli(),
     val vcsProvider: VcsProviderConfig,
 )
 

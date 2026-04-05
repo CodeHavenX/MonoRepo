@@ -20,10 +20,12 @@ import com.cramsan.agentic.execution.AgentSession
 import com.cramsan.agentic.execution.DefaultAgentRunner
 import com.cramsan.agentic.execution.DefaultWorktreeManager
 import com.cramsan.agentic.execution.WorktreeManager
+import com.cramsan.agentic.input.DefaultPlanningService
 import com.cramsan.agentic.input.DefaultScaffolder
 import com.cramsan.agentic.input.DefaultValidationService
 import com.cramsan.agentic.input.DocumentStore
 import com.cramsan.agentic.input.FileSystemDocumentStore
+import com.cramsan.agentic.input.PlanningService
 import com.cramsan.agentic.input.Scaffolder
 import com.cramsan.agentic.input.ValidationService
 import com.cramsan.agentic.notification.Notifier
@@ -149,5 +151,10 @@ fun agenticModule(
     single<ValidationService> {
         val config = get<AgenticConfig>()
         DefaultValidationService(get(), get(), config.claudeModel, listOf(get()), get(), get(), agenticDir.resolve("docs"))
+    }
+
+    single<PlanningService> {
+        val config = get<AgenticConfig>()
+        DefaultPlanningService(get(), get(), config.claudeModel, agenticDir.resolve("docs"))
     }
 }

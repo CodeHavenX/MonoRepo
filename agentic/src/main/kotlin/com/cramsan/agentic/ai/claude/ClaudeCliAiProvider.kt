@@ -7,6 +7,12 @@ import com.cramsan.agentic.ai.AiProviderException
 import com.cramsan.agentic.ai.AiResponse
 import com.cramsan.agentic.ai.AiTool
 import com.cramsan.agentic.vcs.github.ShellRunner
+import com.cramsan.framework.logging.logD
+import com.cramsan.framework.logging.logE
+import com.cramsan.framework.logging.logI
+import com.cramsan.framework.logging.logW
+
+private const val TAG = "ClaudeCliAiProvider"
 
 /**
  * [AiProvider] implementation that shells out to the `claude` CLI in non-interactive
@@ -28,7 +34,9 @@ class ClaudeCliAiProvider(
         messages: List<AiMessage>,
         tools: List<AiTool>,
     ): AiResponse {
+        logD(TAG, "chat() called: model=$model, messageCount=${messages.size}, toolCount=${tools.size}")
         if (tools.isNotEmpty()) {
+            logW(TAG, "Tool use requested but not supported by ClaudeCliAiProvider: toolCount=${tools.size}")
             throw UnsupportedOperationException(
                 "ClaudeCliAiProvider does not support tool use. " +
                     "Use ClaudeAiProvider (HTTP API) for agent sessions that require tools.",
@@ -36,19 +44,27 @@ class ClaudeCliAiProvider(
         }
 
         val collapsedPrompt = collapseConversation(systemPrompt, messages)
+        logD(TAG, "Collapsed conversation prompt: length=${collapsedPrompt.length} chars")
 
+        logI(TAG, "Invoking claude CLI: cliPath=$cliPath, model=$model")
         val result = shell.run(cliPath, "--print", "--model", model, collapsedPrompt)
 
+        logD(TAG, "CLI exited with code=${result.exitCode}")
         if (result.exitCode != 0) {
+            val errorDetail = result.stderr.ifBlank { result.stdout }
+            logE(TAG, "claude CLI returned non-zero exit code=${result.exitCode}: $errorDetail")
             throw AiProviderException(
-                "claude CLI exited with code ${result.exitCode}: ${result.stderr.ifBlank { result.stdout }}",
+                "claude CLI exited with code ${result.exitCode}: $errorDetail",
                 result.exitCode,
             )
         }
 
+        val responseText = result.stdout.trim()
+        logI(TAG, "claude CLI returned successfully: responseLength=${responseText.length} chars")
+        logD(TAG, "chat() returning CLI response")
         return AiResponse(
             id = "cli-${System.currentTimeMillis()}",
-            content = listOf(AiContentBlock.Text(result.stdout.trim())),
+            content = listOf(AiContentBlock.Text(responseText)),
             stopReason = "end_turn",
         )
     }

@@ -7,6 +7,7 @@ import com.cramsan.agentic.core.AiProviderConfig
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
+import com.cramsan.framework.logging.logI
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.flag
@@ -16,6 +17,8 @@ import kotlinx.coroutines.runBlocking
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import java.nio.file.Path
+
+private const val TAG = "ResumeCommand"
 
 // Per spec: start and resume are functionally identical (state is always re-derived from filesystem)
 class ResumeCommand : CliktCommand(name = "resume", help = "Resume the agentic orchestrator (same as start)") {
@@ -66,6 +69,13 @@ class ResumeCommand : CliktCommand(name = "resume", help = "Resume the agentic o
                 claudeModel = agenticConfig.claudeModel,
             )
 
+            logI(
+                TAG,
+                "Resume config summary — provider: ${agenticConfig.aiProvider::class.simpleName}, " +
+                    "poolSize: ${orchConfig.agentPoolSize}, baseBranch: ${orchConfig.baseBranch}, " +
+                    "model: ${orchConfig.claudeModel}",
+            )
+
             if (dryRun) {
                 val statuses = runBlocking { orchestrator.status() }
                 echo("=== Task Status (dry run) ===")
@@ -77,6 +87,7 @@ class ResumeCommand : CliktCommand(name = "resume", help = "Resume the agentic o
             } else {
                 echo("Resuming agentic orchestrator with ${orchConfig.agentPoolSize} agent(s)...")
                 runBlocking { orchestrator.run(orchConfig) }
+                logI(TAG, "Orchestrator finished.")
                 echo("Orchestrator run completed.")
             }
         } finally {

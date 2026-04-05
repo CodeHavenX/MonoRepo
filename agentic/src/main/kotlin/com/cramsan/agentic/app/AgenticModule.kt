@@ -35,6 +35,8 @@ import com.cramsan.agentic.reviewer.claude.ClaudeReviewerAgent
 import com.cramsan.agentic.vcs.VcsProvider
 import com.cramsan.agentic.vcs.github.GitHubVcsProvider
 import com.cramsan.agentic.vcs.github.ShellRunner
+import com.cramsan.framework.logging.logD
+import com.cramsan.framework.logging.logI
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -42,6 +44,8 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.dsl.module
 import java.nio.file.Path
+
+private const val TAG = "AgenticModule"
 
 fun agenticModule(
     agenticDir: Path,
@@ -69,7 +73,10 @@ fun agenticModule(
     single<VcsProvider> {
         val config = get<AgenticConfig>()
         when (val vcs = config.vcsProvider) {
-            is VcsProviderConfig.GitHub -> GitHubVcsProvider(vcs.owner, vcs.repo, get(), get())
+            is VcsProviderConfig.GitHub -> {
+                logI(TAG, "Configuring VCS provider: GitHub (owner=${vcs.owner}, repo=${vcs.repo})")
+                GitHubVcsProvider(vcs.owner, vcs.repo, get(), get())
+            }
         }
     }
 
@@ -106,11 +113,14 @@ fun agenticModule(
         val config = get<AgenticConfig>()
         when (val aiConfig = config.aiProvider) {
             is AiProviderConfig.ClaudeApi -> {
+                logI(TAG, "Configuring AI provider: ClaudeApi (apiKeyEnvVar=${aiConfig.anthropicApiKeyEnvVar})")
                 val apiKey = System.getenv(aiConfig.anthropicApiKeyEnvVar)
                     ?: error("API key env var '${aiConfig.anthropicApiKeyEnvVar}' is not set")
+                logD(TAG, "ClaudeApi API key resolved from env var: ${aiConfig.anthropicApiKeyEnvVar}")
                 ClaudeAiProvider(get(), apiKey, get())
             }
             is AiProviderConfig.ClaudeCli -> {
+                logI(TAG, "Configuring AI provider: ClaudeCli (cliPath=${aiConfig.cliPath})")
                 ClaudeCliAiProvider(get(), aiConfig.cliPath)
             }
         }

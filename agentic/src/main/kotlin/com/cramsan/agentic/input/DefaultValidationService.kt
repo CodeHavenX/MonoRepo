@@ -10,12 +10,17 @@ import com.cramsan.agentic.core.ValidationIssue
 import com.cramsan.agentic.core.ValidationReport
 import com.cramsan.agentic.reviewer.ReviewerAgent
 import com.cramsan.agentic.reviewer.ReviewerLoader
+import com.cramsan.framework.logging.logD
+import com.cramsan.framework.logging.logI
+import com.cramsan.framework.logging.logW
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.serialization.json.Json
 import java.nio.file.Files
 import java.nio.file.Path
+
+private const val TAG = "DefaultValidationService"
 
 class DefaultValidationService(
     private val documentStore: DocumentStore,
@@ -28,7 +33,9 @@ class DefaultValidationService(
 ) : ValidationService {
 
     override suspend fun reviewDocument(document: AgenticDocument): List<ValidationIssue> {
+        logI(TAG, "Starting review for document id=${document.id}, path=${document.relativePath}, type=${document.type}")
         val fileContent = Files.readString(docsDir.resolve(document.relativePath))
+        logD(TAG, "Document ${document.id} content length: ${fileContent.length} chars")
 
         val systemPrompt = """
             You are a document reviewer. Review the provided document and return a JSON array of ValidationIssue objects.
@@ -36,6 +43,7 @@ class DefaultValidationService(
             Return only a valid JSON array. If there are no issues, return an empty array [].
         """.trimIndent()
 
+        logD(TAG, "Invoking AI reviewer for document ${document.id} using model=$model")
         val response = aiProvider.chat(
             model = model,
             systemPrompt = systemPrompt,
@@ -44,14 +52,25 @@ class DefaultValidationService(
         )
 
         val textContent = response.content.filterIsInstance<AiContentBlock.Text>().firstOrNull()
+        if (textContent == null) {
+            logW(TAG, "AI response for document ${document.id} contained no text content; returning empty issue list")
+        } else {
+            logD(TAG, "AI response for document ${document.id} text length: ${textContent.text.length} chars")
+        }
+
         val issues: List<ValidationIssue> = if (textContent != null) {
             json.decodeFromString(textContent.text)
         } else {
             emptyList()
         }
 
-        val hasBlockingIssues = issues.any { it.severity == IssueSeverity.BLOCKING }
+        val blockingCount = issues.count { it.severity == IssueSeverity.BLOCKING }
+        val advisoryCount = issues.count { it.severity == IssueSeverity.ADVISORY }
+        logI(TAG, "Document ${document.id} review complete: ${issues.size} issues (blocking=$blockingCount, advisory=$advisoryCount)")
+
+        val hasBlockingIssues = blockingCount > 0
         val newStatus = if (hasBlockingIssues) DocumentStatus.NEEDS_REVISION else DocumentStatus.VALIDATED
+        logI(TAG, "Document ${document.id} status transition: ${document.status} → $newStatus")
         documentStore.updateStatus(document.id, newStatus)
 
         return issues
@@ -59,25 +78,34 @@ class DefaultValidationService(
 
     override suspend fun runValidationPass(): ValidationReport {
         val docs = documentStore.getAll()
+        logI(TAG, "Starting validation pass for ${docs.size} documents")
+
         for (doc in docs) {
+            logD(TAG, "Marking document ${doc.id} as IN_REVIEW")
             documentStore.updateStatus(doc.id, DocumentStatus.IN_REVIEW)
         }
 
         val allIssues = mutableListOf<ValidationIssue>()
         for (doc in docs) {
+            logD(TAG, "Reviewing document: ${doc.id}")
             val issues = reviewDocument(doc)
             allIssues.addAll(issues)
         }
+        logI(TAG, "Per-document review complete: ${allIssues.size} total issues across ${docs.size} documents")
 
         val reviewerDefinitions = reviewerLoader.loadAll()
+        logI(TAG, "Loaded ${reviewerDefinitions.size} reviewer definitions; ${reviewerAgents.size} reviewer agent(s) available")
         if (reviewerDefinitions.isNotEmpty()) {
+            logD(TAG, "Dispatching ${reviewerDefinitions.size * reviewerAgents.size} async reviewer agent invocations")
             coroutineScope {
                 reviewerDefinitions.map { reviewerDef ->
                     reviewerAgents.map { agent ->
+                        logD(TAG, "Invoking reviewer agent ${agent::class.simpleName} with reviewer '${reviewerDef.name}'")
                         async { agent.reviewDocuments(reviewerDef, docs) }
                     }
                 }.flatten().awaitAll()
             }.forEach { feedback ->
+                logI(TAG, "Reviewer '${feedback.reviewerName}' feedback length: ${feedback.content.length} chars")
                 println("=== Reviewer: ${feedback.reviewerName} ===\n${feedback.content}")
             }
         }
@@ -87,6 +115,7 @@ class DefaultValidationService(
             timestampEpochMs = System.currentTimeMillis(),
             issues = allIssues,
         )
+        logI(TAG, "Validation report created: runId=${report.runId}, totalIssues=${report.issues.size}")
 
         val reportContent = buildString {
             appendLine("# Validation Report")
@@ -100,7 +129,9 @@ class DefaultValidationService(
             appendLine("```")
         }
 
-        Files.writeString(docsDir.resolve("validation-report.md"), reportContent)
+        val reportPath = docsDir.resolve("validation-report.md")
+        Files.writeString(reportPath, reportContent)
+        logI(TAG, "Validation report written to: $reportPath")
 
         return report
     }

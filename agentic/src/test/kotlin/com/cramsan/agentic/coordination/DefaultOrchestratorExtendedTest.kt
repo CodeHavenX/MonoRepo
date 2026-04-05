@@ -258,9 +258,15 @@ class DefaultOrchestratorExtendedTest {
         coEvery { stateDeriver.statusOf(upstream, any()) } answers {
             if (upstreamTick++ == 0) TaskStatus.PENDING else TaskStatus.DONE
         }
+        // downstream transitions: BLOCKED → PENDING (once upstream done) → DONE (once agent ran)
+        var downstreamTick = 0
         coEvery { stateDeriver.statusOf(downstream, any()) } answers { call ->
             val deps = call.invocation.args[1] as Map<*, *>
-            if (deps["upstream"] == TaskStatus.DONE) TaskStatus.PENDING else TaskStatus.BLOCKED
+            when {
+                deps["upstream"] != TaskStatus.DONE -> TaskStatus.BLOCKED
+                downstreamTick++ == 0 -> TaskStatus.PENDING
+                else -> TaskStatus.DONE
+            }
         }
         coEvery { dependencyGraph.downstreamCount("upstream") } returns 1
         coEvery { dependencyGraph.downstreamCount("downstream") } returns 0

@@ -181,7 +181,9 @@ class DefaultWorktreeManagerExtendedTest {
         val manager = makeManager()
         val created = manager.getOrCreate("task-xyz")
 
-        // Now the directory exists (created by getOrCreate)
+        // Simulate what git worktree add would have done: create the directory on disk
+        Files.createDirectories(created.path)
+
         val retrieved = manager.get("task-xyz")
 
         assertNotNull(retrieved)

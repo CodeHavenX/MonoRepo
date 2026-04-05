@@ -1,5 +1,9 @@
 package com.cramsan.agentic.coordination
 
+import com.cramsan.framework.logging.EventLogger
+import com.cramsan.framework.logging.implementation.PassthroughEventLogger
+import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.nio.file.Files
@@ -16,6 +20,11 @@ class FileSystemTaskStoreExtendedTest {
 
     @TempDir
     lateinit var tempDir: Path
+
+    @BeforeEach
+    fun setup() {
+        EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
+    }
 
     private fun writeTaskList(content: String): FileSystemTaskStore {
         val file = tempDir.resolve("task-list.md")

@@ -4,6 +4,7 @@ import com.cramsan.agentic.ai.claude.ClaudeCliAiProvider
 import com.cramsan.agentic.app.agenticModule
 import com.cramsan.agentic.coordination.OrchestratorConfig
 import com.cramsan.agentic.core.AiProviderConfig
+import java.nio.file.Files
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
@@ -37,6 +38,16 @@ class StartCommand : CliktCommand(name = "start", help = "Start the agentic orch
         }.koin
 
         try {
+            val taskListApproved = agenticDir.resolve("docs/task-list.approved")
+            if (!Files.exists(taskListApproved)) {
+                echo(
+                    "ERROR: Planning phase is not complete. " +
+                        "Run 'agentic plan generate' and approve each stage before starting.",
+                    err = true,
+                )
+                throw com.github.ajalt.clikt.core.ProgramResult(1)
+            }
+
             val agenticConfig = koin.get<com.cramsan.agentic.core.AgenticConfig>()
             val aiProvider = koin.get<com.cramsan.agentic.ai.AiProvider>()
             val orchestrator = koin.get<com.cramsan.agentic.coordination.Orchestrator>()

@@ -23,14 +23,13 @@ class FileSystemDocumentStoreTest {
         Files.writeString(tempDir.resolve("goals-scope.md"), "# Goals & Scope\nSome content")
         Files.writeString(tempDir.resolve("architecture-design.md"), "# Architecture\nSome content")
         Files.writeString(tempDir.resolve("standards.md"), "# Standards\nSome content")
-        Files.writeString(tempDir.resolve("task-list.md"), "# Task List\n## Task: task-001\nTitle: Example\nDescription: desc\nDependencies: none\nTimeout: 3600")
     }
 
     @Test
-    fun `getAll returns 4 documents when all 4 files are present`() {
+    fun `getAll returns 3 documents when all 3 input files are present`() {
         val store = FileSystemDocumentStore(tempDir, json)
         val docs = store.getAll()
-        assertEquals(4, docs.size, "Should return 4 documents")
+        assertEquals(3, docs.size, "Should return 3 documents")
     }
 
     @Test
@@ -68,11 +67,10 @@ class FileSystemDocumentStoreTest {
         assertFalse(store.allValidated(), "Should not be fully validated with only 1 validated")
 
         store.updateStatus("architecture-design", DocumentStatus.VALIDATED)
-        store.updateStatus("standards", DocumentStatus.VALIDATED)
-        assertFalse(store.allValidated(), "Should not be fully validated with 3 out of 4 validated")
+        assertFalse(store.allValidated(), "Should not be fully validated with 2 out of 3 validated")
 
-        store.updateStatus("task-list", DocumentStatus.VALIDATED)
-        assertTrue(store.allValidated(), "Should be fully validated when all 4 docs are VALIDATED")
+        store.updateStatus("standards", DocumentStatus.VALIDATED)
+        assertTrue(store.allValidated(), "Should be fully validated when all 3 docs are VALIDATED")
     }
 
     @Test

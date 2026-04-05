@@ -17,6 +17,8 @@ enum class DocumentType {
     ARCHITECTURE_DESIGN,
     STANDARDS,
     TASK_LIST,
+    HIGH_LEVEL_PLAN,
+    LOW_LEVEL_PLAN,
 }
 
 @Serializable

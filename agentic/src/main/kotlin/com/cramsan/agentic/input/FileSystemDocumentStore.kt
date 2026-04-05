@@ -137,7 +137,6 @@ class FileSystemDocumentStore(
             "goals-scope.md" to DocumentType.GOALS_SCOPE,
             "architecture-design.md" to DocumentType.ARCHITECTURE_DESIGN,
             "standards.md" to DocumentType.STANDARDS,
-            "task-list.md" to DocumentType.TASK_LIST,
         )
     }
 }

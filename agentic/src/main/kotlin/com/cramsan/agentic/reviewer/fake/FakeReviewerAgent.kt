@@ -5,6 +5,9 @@ import com.cramsan.agentic.core.ReviewerDefinition
 import com.cramsan.agentic.core.ReviewerFeedback
 import com.cramsan.agentic.core.Task
 import com.cramsan.agentic.reviewer.ReviewerAgent
+import com.cramsan.framework.logging.logD
+
+private const val TAG = "FakeReviewerAgent"
 
 class FakeReviewerAgent(
     private val documentFeedback: String = "No issues found.",
@@ -15,6 +18,8 @@ class FakeReviewerAgent(
         reviewer: ReviewerDefinition,
         documents: List<AgenticDocument>,
     ): ReviewerFeedback {
+        logD(TAG, "reviewDocuments called: reviewer='${reviewer.name}', documentCount=${documents.size}")
+        logD(TAG, "Returning canned document feedback: '$documentFeedback'")
         return ReviewerFeedback(reviewerName = reviewer.name, content = documentFeedback)
     }
 
@@ -23,6 +28,8 @@ class FakeReviewerAgent(
         task: Task,
         diff: String,
     ): ReviewerFeedback {
+        logD(TAG, "reviewCode called: reviewer='${reviewer.name}', taskId=${task.id}, diffLength=${diff.length}")
+        logD(TAG, "Returning canned code feedback: '$codeFeedback'")
         return ReviewerFeedback(reviewerName = reviewer.name, content = codeFeedback)
     }
 }

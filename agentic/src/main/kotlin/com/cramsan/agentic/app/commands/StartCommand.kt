@@ -7,6 +7,7 @@ import com.cramsan.agentic.core.AiProviderConfig
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
+import com.cramsan.framework.logging.logI
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.flag
@@ -16,6 +17,8 @@ import kotlinx.coroutines.runBlocking
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import java.nio.file.Path
+
+private const val TAG = "StartCommand"
 
 class StartCommand : CliktCommand(name = "start", help = "Start the agentic orchestrator") {
 
@@ -66,6 +69,13 @@ class StartCommand : CliktCommand(name = "start", help = "Start the agentic orch
                 claudeModel = agenticConfig.claudeModel,
             )
 
+            logI(
+                TAG,
+                "Startup config summary — provider: ${agenticConfig.aiProvider::class.simpleName}, " +
+                    "poolSize: ${orchConfig.agentPoolSize}, baseBranch: ${orchConfig.baseBranch}, " +
+                    "model: ${orchConfig.claudeModel}",
+            )
+
             if (dryRun) {
                 val statuses = runBlocking { orchestrator.status() }
                 echo("=== Task Status (dry run) ===")
@@ -77,6 +87,7 @@ class StartCommand : CliktCommand(name = "start", help = "Start the agentic orch
             } else {
                 echo("Starting agentic orchestrator with ${orchConfig.agentPoolSize} agent(s)...")
                 runBlocking { orchestrator.run(orchConfig) }
+                logI(TAG, "Orchestrator finished.")
                 echo("Orchestrator run completed.")
             }
         } finally {

@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>UnnecessaryNotNullOperator:ClaudeAiProviderTest.kt:ClaudeAiProviderTest$capturedBody!!</ID>
+    <ID>UnusedPrivateProperty:DefaultStateDeriverExtendedTest.kt:DefaultStateDeriverExtendedTest$private val depTask = Task(id = "dep-task", title = "Dep", description = "Dep", dependencies = emptyList())</ID>
+    <ID>UnusedVariable:DefaultAgentSessionExtendedTest.kt:DefaultAgentSessionExtendedTest$val result = session.execute(task, worktree)</ID>
+    <ID>UnusedVariable:DefaultAgentSessionNegativeTest.kt:DefaultAgentSessionNegativeTest$val sensitiveFile = worktreePath.parent.resolve("outside-file.txt")</ID>
+    <ID>UnusedVariable:DefaultScaffolderTest.kt:DefaultScaffolderTest$val originalGoalsContent = Files.readString(tempDir.resolve("goals-scope.md"))</ID>
+    <ID>UseOrEmpty:ClaudeCliAiProviderContractTest.kt:ClaudeCliAiProviderContractTest$ex.message ?: ""</ID>
+  </CurrentIssues>
+</SmellBaseline>

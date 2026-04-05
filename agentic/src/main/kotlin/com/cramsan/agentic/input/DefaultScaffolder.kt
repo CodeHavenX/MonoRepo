@@ -70,19 +70,6 @@ class DefaultScaffolder : Scaffolder {
         )
 
         writeFile(
-            outputDir.resolve("task-list.md"),
-            """
-            # Task List
-
-            ## Task: task-001
-            Title: Example Task
-            Description: This is an example task to demonstrate the task list format.
-            Dependencies: none
-            Timeout: 3600
-            """.trimIndent(),
-        )
-
-        writeFile(
             outputDir.resolve("reviewers/security.md"),
             """
             # Security Reviewer

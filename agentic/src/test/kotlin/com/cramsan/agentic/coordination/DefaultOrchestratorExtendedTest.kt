@@ -13,6 +13,7 @@ import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import io.mockk.coEvery
 import io.mockk.coVerify
+import kotlinx.coroutines.delay
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
@@ -238,7 +239,12 @@ class DefaultOrchestratorExtendedTest {
         }
         coEvery { dependencyGraph.downstreamCount(any()) } returns 0
         coEvery { worktreeManager.getOrCreate("task-1") } returns worktree("task-1")
-        coEvery { agentRunner.run(task, any()) } returns AgentResult.PrOpened("pr-1", "url")
+        // Agent blocks for 2 poll intervals so it stays in activeTaskIds during the PENDING ticks,
+        // ensuring the second PENDING tick does not re-launch a second agent.
+        coEvery { agentRunner.run(task, any()) } coAnswers {
+            delay(config.pollIntervalSeconds * 2_000L)
+            AgentResult.PrOpened("pr-1", "url")
+        }
 
         makeOrchestrator().run(config)
 

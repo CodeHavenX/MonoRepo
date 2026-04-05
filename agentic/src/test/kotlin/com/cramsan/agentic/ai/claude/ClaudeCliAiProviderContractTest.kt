@@ -8,8 +8,12 @@ import com.cramsan.agentic.vcs.github.ShellRunner
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import com.cramsan.framework.logging.EventLogger
+import com.cramsan.framework.logging.implementation.PassthroughEventLogger
+import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.buildJsonObject
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -23,6 +27,11 @@ class ClaudeCliAiProviderContractTest {
 
     private val shell = mockk<ShellRunner>()
     private val provider = ClaudeCliAiProvider(shell, cliPath = "claude")
+
+    @BeforeEach
+    fun setup() {
+        EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
+    }
 
     // ── CLI invocation correctness ────────────────────────────────────────────
 

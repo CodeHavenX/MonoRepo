@@ -44,6 +44,15 @@ tasks.shadowJar {
     }
 }
 
+// The application plugin's distribution tasks reference the same jar path as shadowJar.
+// Declare explicit dependencies so Gradle knows the correct execution order.
+tasks.named("startScripts") { dependsOn(tasks.shadowJar) }
+tasks.named("startShadowScripts") { dependsOn(tasks.jar) }
+tasks.named("distTar") { dependsOn(tasks.shadowJar) }
+tasks.named("distZip") { dependsOn(tasks.shadowJar) }
+tasks.named("shadowDistTar") { dependsOn(tasks.shadowJar) }
+tasks.named("shadowDistZip") { dependsOn(tasks.shadowJar) }
+
 tasks.withType<Test> {
     jvmArgs("-Xmx1g")
     maxParallelForks = 1

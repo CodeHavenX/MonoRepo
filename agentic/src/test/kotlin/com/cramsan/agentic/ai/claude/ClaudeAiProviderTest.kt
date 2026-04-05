@@ -12,8 +12,12 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 import io.ktor.serialization.kotlinx.json.json
+import com.cramsan.framework.logging.EventLogger
+import com.cramsan.framework.logging.implementation.PassthroughEventLogger
+import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -21,6 +25,11 @@ import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
 class ClaudeAiProviderTest {
+
+    @BeforeEach
+    fun setup() {
+        EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
+    }
 
     private val json = Json { ignoreUnknownKeys = true; isLenient = true }
 

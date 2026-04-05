@@ -105,8 +105,8 @@ class AgenticConfigTest {
 
         assertEquals(3600L, config.defaultTaskTimeoutSeconds)
         assertEquals("claude-opus-4-6", config.claudeModel)
-        assertIs<AiProviderConfig.ClaudeApi>(config.aiProvider)
-        assertEquals("ANTHROPIC_API_KEY", (config.aiProvider as AiProviderConfig.ClaudeApi).anthropicApiKeyEnvVar)
+        assertIs<AiProviderConfig.ClaudeCli>(config.aiProvider)
+        assertEquals("claude", (config.aiProvider as AiProviderConfig.ClaudeCli).cliPath)
     }
 
     @Test

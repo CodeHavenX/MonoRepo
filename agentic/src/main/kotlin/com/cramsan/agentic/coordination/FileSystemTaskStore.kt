@@ -27,8 +27,7 @@ class FileSystemTaskStore(private val taskListPath: Path) : TaskStore {
             """## Task:\s*(\S+)\s*\n""" +
             """Title:\s*(.+)\n""" +
             """Description:\s*(.+)\n""" +
-            """Dependencies:\s*(.+)\n""" +
-            """Timeout:\s*(\d+)""",
+            """Dependencies:\s*(.+)(?:\nTimeout:\s*(\d+))?""",
             RegexOption.MULTILINE
         )
 

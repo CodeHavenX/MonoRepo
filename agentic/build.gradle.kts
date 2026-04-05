@@ -34,6 +34,11 @@ configurations {
     getByName("integTestRuntimeOnly") { extendsFrom(configurations["testRuntimeOnly"]) }
 }
 
+tasks.withType<Test> {
+    jvmArgs("-Xmx1g")
+    maxParallelForks = 1
+}
+
 tasks.register<Test>("integTest") {
     description = "Runs integration tests."
     group = "verification"

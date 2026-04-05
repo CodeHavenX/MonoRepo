@@ -164,18 +164,8 @@ class DefaultAgentSessionExtendedTest {
 
         val listInput = buildJsonObject { put("glob", "*.kt") }
 
-        val capturedMessages = mutableListOf<List<AiMessage>>()
-        var callCount = 0
-        coEvery { aiProvider.chat(any(), any(), capture(object : io.mockk.CapturingSlot<List<AiMessage>>() {}), any()) } answers { call ->
-            // fallback
-            if (callCount++ == 0) {
-                AiResponse("r1", listOf(AiContentBlock.ToolCall("t1", "list_files", listInput)), "tool_use")
-            } else taskCompleteResponse()
-        }
-
-        // Simpler approach: verify via second chat call messages contain the file listing
         var secondCallMessages: List<AiMessage>? = null
-        callCount = 0
+        var callCount = 0
         coEvery { aiProvider.chat(any(), any(), any(), any()) } answers {
             callCount++
             if (callCount == 1) {
@@ -539,12 +529,9 @@ class DefaultAgentSessionExtendedTest {
     @Test
     fun `run_command executes in worktree working directory by default`() = runTest {
         val runInput = buildJsonObject { put("command", "pwd") }
-        var capturedWorkingDir: String? = null
 
-        coEvery { shell.run("sh", "-c", "pwd", workingDir = any()) } answers {
-            capturedWorkingDir = arg(3) as? String
+        coEvery { shell.run(any(), any(), any(), workingDir = any()) } returns
             ShellResult(worktreePath.toString(), 0, "")
-        }
 
         var callCount = 0
         coEvery { aiProvider.chat(any(), any(), any(), any()) } answers {
@@ -555,7 +542,9 @@ class DefaultAgentSessionExtendedTest {
 
         session.execute(task, worktree)
 
-        assertEquals(worktreePath.toString(), capturedWorkingDir)
+        coVerify {
+            shell.run("sh", "-c", "pwd", workingDir = worktreePath.toString())
+        }
     }
 
     @Test

@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
+    id("com.github.johnrengelman.shadow")
 }
 
 val mainClassTarget by extra("com.cramsan.agentic.app.MainKt")
@@ -32,6 +33,15 @@ sourceSets {
 configurations {
     getByName("integTestImplementation") { extendsFrom(configurations["testImplementation"]) }
     getByName("integTestRuntimeOnly") { extendsFrom(configurations["testRuntimeOnly"]) }
+}
+
+tasks.shadowJar {
+    archiveBaseName.set("agentic")
+    archiveClassifier.set("")
+    archiveVersion.set("")
+    manifest {
+        attributes("Main-Class" to "com.cramsan.agentic.app.MainKt")
+    }
 }
 
 tasks.withType<Test> {

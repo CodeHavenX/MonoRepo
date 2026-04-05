@@ -1,5 +1,9 @@
 package com.cramsan.agentic.input
 
+import com.cramsan.framework.logging.EventLogger
+import com.cramsan.framework.logging.implementation.PassthroughEventLogger
+import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.nio.file.Files
@@ -14,16 +18,26 @@ class DefaultScaffolderTest {
 
     private val scaffolder = DefaultScaffolder()
 
+    @BeforeEach
+    fun setUp() {
+        EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
+    }
+
     @Test
-    fun `scaffold creates all 6 expected files`() {
+    fun `scaffold creates all 5 expected files`() {
         scaffolder.scaffold(tempDir)
 
         assertTrue(Files.exists(tempDir.resolve("goals-scope.md")), "goals-scope.md should exist")
         assertTrue(Files.exists(tempDir.resolve("architecture-design.md")), "architecture-design.md should exist")
         assertTrue(Files.exists(tempDir.resolve("standards.md")), "standards.md should exist")
-        assertTrue(Files.exists(tempDir.resolve("task-list.md")), "task-list.md should exist")
         assertTrue(Files.exists(tempDir.resolve("reviewers/security.md")), "reviewers/security.md should exist")
         assertTrue(Files.exists(tempDir.resolve("reviewers/design-patterns.md")), "reviewers/design-patterns.md should exist")
+    }
+
+    @Test
+    fun `scaffold does not create task-list md`() {
+        scaffolder.scaffold(tempDir)
+        assertTrue(!Files.exists(tempDir.resolve("task-list.md")), "task-list.md should not be scaffolded (it is AI-generated)")
     }
 
     @Test
@@ -41,10 +55,6 @@ class DefaultScaffolderTest {
         val standardsContent = Files.readString(tempDir.resolve("standards.md"))
         assertTrue(standardsContent.isNotEmpty(), "standards.md should be non-empty")
         assertTrue(standardsContent.contains("## Standards"), "standards.md should contain '## Standards'")
-
-        val taskListContent = Files.readString(tempDir.resolve("task-list.md"))
-        assertTrue(taskListContent.isNotEmpty(), "task-list.md should be non-empty")
-        assertTrue(taskListContent.contains("## Task:"), "task-list.md should contain '## Task:' formatted task block")
 
         val securityContent = Files.readString(tempDir.resolve("reviewers/security.md"))
         assertTrue(securityContent.isNotEmpty(), "reviewers/security.md should be non-empty")

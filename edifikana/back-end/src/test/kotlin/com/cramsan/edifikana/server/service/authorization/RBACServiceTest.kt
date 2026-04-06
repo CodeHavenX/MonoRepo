@@ -6,6 +6,7 @@ import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
+import com.cramsan.edifikana.server.datastore.CommonAreaDatastore
 import com.cramsan.edifikana.server.datastore.DocumentDatastore
 import com.cramsan.edifikana.server.datastore.EmployeeDatastore
 import com.cramsan.edifikana.server.datastore.EventLogDatastore
@@ -44,6 +45,7 @@ class RBACServiceTest {
     private lateinit var timeCardDatastore: TimeCardDatastore
     private lateinit var eventLogDatastore: EventLogDatastore
     private lateinit var documentDatastore: DocumentDatastore
+    private lateinit var commonAreaDatastore: CommonAreaDatastore
     private lateinit var rbac: RBACService
 
     @BeforeEach
@@ -55,6 +57,7 @@ class RBACServiceTest {
         timeCardDatastore = mockk()
         eventLogDatastore = mockk()
         documentDatastore = mockk()
+        commonAreaDatastore = mockk()
         rbac = RBACService(
             propertyDatastore,
             orgDatastore,
@@ -62,6 +65,7 @@ class RBACServiceTest {
             timeCardDatastore,
             eventLogDatastore,
             documentDatastore,
+            commonAreaDatastore,
         )
     }
 

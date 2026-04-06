@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.service.authorization
 
+import com.cramsan.edifikana.lib.model.CommonAreaId
 import com.cramsan.edifikana.lib.model.DocumentId
 import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EventLogEntryId
@@ -8,6 +9,7 @@ import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
+import com.cramsan.edifikana.server.datastore.CommonAreaDatastore
 import com.cramsan.edifikana.server.datastore.DocumentDatastore
 import com.cramsan.edifikana.server.datastore.EmployeeDatastore
 import com.cramsan.edifikana.server.datastore.EventLogDatastore
@@ -31,6 +33,7 @@ class RBACService(
     private val timeCardDatastore: TimeCardDatastore,
     private val eventLogDatastore: EventLogDatastore,
     private val documentDatastore: DocumentDatastore,
+    private val commonAreaDatastore: CommonAreaDatastore,
 ) {
 
     private val propertyNotFoundException = "ERROR: PROPERTY NOT FOUND!"
@@ -258,6 +261,53 @@ class RBACService(
         val document = documentDatastore.getDocument(targetDocumentId).getOrThrow()
             ?: return UserRole.UNAUTHORIZED
         return getUserRoleForOrganizationAction(context, document.orgId)
+    }
+
+    /**
+     * Checks if the user has the required role to perform actions on the target common area.
+     *
+     * @param context The authenticated client context containing user information.
+     * @param targetCommonAreaId The ID of the target common area on which the action is to be performed.
+     * @param requiredRole The role required to perform the action.
+     * @return True if the user has the required role, false otherwise.
+     */
+    suspend fun hasRole(
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+        targetCommonAreaId: CommonAreaId,
+        requiredRole: UserRole,
+    ): Boolean {
+        val userRole = getUserRoleForCommonAreaAction(context, targetCommonAreaId)
+        return userRole == requiredRole
+    }
+
+    /**
+     * Checks if the user has the required role or higher to perform actions on the target common area.
+     *
+     * @param context The authenticated client context containing user information.
+     * @param targetCommonAreaId The ID of the target common area on which the action is to be performed.
+     * @param requiredRole The minimum role required to perform the action.
+     * @return True if the user has the required role or higher, false otherwise.
+     */
+    suspend fun hasRoleOrHigher(
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+        targetCommonAreaId: CommonAreaId,
+        requiredRole: UserRole,
+    ): Boolean {
+        val userRole = getUserRoleForCommonAreaAction(context, targetCommonAreaId)
+        return userRole.level <= requiredRole.level
+    }
+
+    /**
+     * Retrieves the user role for the action being performed on the target common area.
+     * Resolves through the common area's property, since common areas are property-level resources.
+     */
+    private suspend fun getUserRoleForCommonAreaAction(
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+        targetCommonAreaId: CommonAreaId,
+    ): UserRole {
+        val commonArea = commonAreaDatastore.getCommonArea(targetCommonAreaId).getOrThrow()
+            ?: return UserRole.UNAUTHORIZED
+        return getUserRoleForPropertyAction(context, commonArea.propertyId)
     }
 
     /**

@@ -27,10 +27,14 @@ import com.cramsan.edifikana.server.datastore.supabase.models.EventLogEntryEntit
 import com.cramsan.edifikana.server.datastore.supabase.models.InviteEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.NotificationEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.OrgMemberViewEntity
+import com.cramsan.edifikana.lib.model.CommonAreaId
+import com.cramsan.edifikana.lib.model.CommonAreaType
+import com.cramsan.edifikana.server.datastore.supabase.models.CommonAreaEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.OrganizationEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.PropertyEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.TimeCardEventEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.UserEntity
+import com.cramsan.edifikana.server.service.models.CommonArea
 import com.cramsan.edifikana.server.service.models.Document
 import com.cramsan.edifikana.server.service.models.Employee
 import com.cramsan.edifikana.server.service.models.EventLogEntry
@@ -432,5 +436,20 @@ fun OrgMemberViewEntity.toOrgMemberView(): OrgMemberView {
         email = this.email,
         firstName = this.firstName,
         lastName = this.lastName,
+    )
+}
+
+/**
+ * Maps a [CommonAreaEntity] to the [CommonArea] domain model.
+ */
+@OptIn(SupabaseModel::class)
+fun CommonAreaEntity.toCommonArea(): CommonArea {
+    return CommonArea(
+        id = CommonAreaId(commonAreaId),
+        propertyId = propertyId,
+        name = name,
+        type = CommonAreaType.fromString(type),
+        description = description,
+        createdAt = createdAt,
     )
 }

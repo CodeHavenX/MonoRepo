@@ -99,7 +99,7 @@ class SupabaseEmployeeDatastoreIntegrationTest : SupabaseIntegrationTest() {
         assertTrue(getAllResult.isSuccess)
         val employees = getAllResult.getOrNull()
         assertNotNull(employees)
-        val firstNames = employees!!.map { it.firstName }
+        val firstNames = employees.map { it.firstName }
         assertTrue(firstNames.contains("${test_prefix}_EmployeeA"))
         assertTrue(firstNames.contains("${test_prefix}_EmployeeB"))
     }

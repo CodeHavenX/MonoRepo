@@ -1,0 +1,10 @@
+{
+  "property_id": "property123",
+  "unit_id": "unit123",
+  "common_area_id": null,
+  "assignee_id": null,
+  "title": "Fix leaky faucet",
+  "description": "Dripping in unit 4B",
+  "priority": "HIGH",
+  "due_date": null
+}

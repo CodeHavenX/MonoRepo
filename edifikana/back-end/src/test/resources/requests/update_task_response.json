@@ -1,0 +1,17 @@
+{
+    "id": "task123",
+    "property_id": "property123",
+    "unit_id": "unit123",
+    "common_area_id": null,
+    "assignee_id": null,
+    "created_by": "user123",
+    "status_changed_by": "user123",
+    "title": "Fix leaky faucet (urgent)",
+    "description": "Dripping in unit 4B",
+    "priority": "HIGH",
+    "status": "IN_PROGRESS",
+    "due_date": null,
+    "created_at": "1970-01-01T00:00:00Z",
+    "completed_at": null,
+    "status_changed_at": "1970-01-01T00:00:01Z"
+}

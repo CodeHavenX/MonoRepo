@@ -7,23 +7,9 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 enum class NotificationType {
-    /**
-     * Notification for an organization invite.
-     */
+    // Notification for an organization invite.
     INVITE,
-
-    /**
-     * System notification.
-     */
+    // System notification.
     SYSTEM,
     ;
-
-    companion object {
-        /**
-         * Converts a string to a NotificationType.
-         */
-        fun fromString(value: String): NotificationType {
-            return entries.find { it.name == value } ?: SYSTEM
-        }
-    }
 }

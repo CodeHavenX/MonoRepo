@@ -24,7 +24,7 @@ data class TimeCardEventEntity(
     val type: TimeCardEventType,
     @SerialName("image_url")
     val imageUrl: String?,
-    val timestamp: Long,
+    val timestamp: Instant,
     @SerialName("deleted_at")
     val deletedAt: Instant? = null,
 ) {
@@ -47,6 +47,6 @@ data class TimeCardEventEntity(
         val type: TimeCardEventType,
         @SerialName("image_url")
         val imageUrl: String?,
-        val timestamp: Long,
+        val timestamp: Instant,
     )
 }

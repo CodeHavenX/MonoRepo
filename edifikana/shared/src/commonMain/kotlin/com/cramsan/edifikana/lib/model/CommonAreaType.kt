@@ -23,22 +23,4 @@ enum class CommonAreaType {
     @SerialName("OTHER")
     OTHER,
     ;
-
-    companion object {
-        /**
-         * Converts a string value to a CommonAreaType.
-         */
-        fun fromString(value: String?): CommonAreaType {
-            return when (value) {
-                "LOBBY" -> LOBBY
-                "POOL" -> POOL
-                "GYM" -> GYM
-                "PARKING" -> PARKING
-                "LAUNDRY" -> LAUNDRY
-                "ROOFTOP" -> ROOFTOP
-                "OTHER" -> OTHER
-                else -> throw IllegalArgumentException("Invalid CommonAreaType value: $value")
-            }
-        }
-    }
 }

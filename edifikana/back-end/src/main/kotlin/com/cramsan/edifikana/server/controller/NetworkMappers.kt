@@ -20,6 +20,7 @@ import com.cramsan.edifikana.lib.model.network.user.UserNetworkResponse
 import com.cramsan.edifikana.server.service.models.Asset
 import com.cramsan.edifikana.server.service.models.CommonArea
 import com.cramsan.edifikana.server.service.models.Document
+import com.cramsan.edifikana.server.service.models.Task
 import com.cramsan.edifikana.server.service.models.Employee
 import com.cramsan.edifikana.server.service.models.EventLogEntry
 import com.cramsan.edifikana.server.service.models.Invite

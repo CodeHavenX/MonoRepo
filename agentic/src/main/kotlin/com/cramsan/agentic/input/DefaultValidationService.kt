@@ -38,9 +38,17 @@ class DefaultValidationService(
         logD(TAG, "Document ${document.id} content length: ${fileContent.length} chars")
 
         val systemPrompt = """
-            You are a document reviewer. Review the provided document and return a JSON array of ValidationIssue objects.
-            Each issue should have these fields: id (string), documentId (string), description (string), severity ("BLOCKING" or "ADVISORY"), status ("OPEN").
-            Return only a valid JSON array. If there are no issues, return an empty array [].
+            You are a document reviewer. Your response must be a raw JSON array and nothing else.
+            Do not include any explanation, preamble, or markdown formatting.
+            Review the provided document and return a JSON array of ValidationIssue objects.
+            Each object must have exactly these fields:
+              - id: a unique string identifier for the issue
+              - documentId: the document identifier (use "${document.id}")
+              - description: a clear description of the issue
+              - severity: either "BLOCKING" or "ADVISORY"
+              - status: always "OPEN"
+            If there are no issues, return an empty JSON array: []
+            Your entire response must start with '[' and end with ']'. No other text is allowed.
         """.trimIndent()
 
         logD(TAG, "Invoking AI reviewer for document ${document.id} using model=$model")
@@ -59,13 +67,21 @@ class DefaultValidationService(
         }
 
         val issues: List<ValidationIssue> = if (textContent != null) {
-            val rawJson = textContent.text
-                .trimIndent()
-                .removePrefix("```json")
-                .removePrefix("```")
-                .removeSuffix("```")
-                .trim()
-            json.decodeFromString(rawJson)
+            val rawText = textContent.text.trim()
+            val startIdx = rawText.indexOf('[')
+            val endIdx = rawText.lastIndexOf(']')
+            if (startIdx == -1 || endIdx == -1 || startIdx > endIdx) {
+                logW(TAG, "AI response for document ${document.id} did not contain a JSON array; returning empty issue list. Response: ${rawText.take(200)}")
+                emptyList()
+            } else {
+                val rawJson = rawText.substring(startIdx, endIdx + 1)
+                try {
+                    json.decodeFromString(rawJson)
+                } catch (e: Exception) {
+                    logW(TAG, "Failed to parse AI response as JSON for document ${document.id}: ${e.message}. Raw JSON: ${rawJson.take(200)}")
+                    emptyList()
+                }
+            }
         } else {
             emptyList()
         }

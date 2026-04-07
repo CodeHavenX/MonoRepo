@@ -29,13 +29,18 @@ import com.cramsan.edifikana.server.datastore.supabase.models.NotificationEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.OrgMemberViewEntity
 import com.cramsan.edifikana.lib.model.CommonAreaId
 import com.cramsan.edifikana.lib.model.CommonAreaType
+import com.cramsan.edifikana.lib.model.TaskId
+import com.cramsan.edifikana.lib.model.TaskPriority
+import com.cramsan.edifikana.lib.model.TaskStatus
 import com.cramsan.edifikana.server.datastore.supabase.models.CommonAreaEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.OrganizationEntity
+import com.cramsan.edifikana.server.datastore.supabase.models.TaskEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.PropertyEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.TimeCardEventEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.UserEntity
 import com.cramsan.edifikana.server.service.models.CommonArea
 import com.cramsan.edifikana.server.service.models.Document
+import com.cramsan.edifikana.server.service.models.Task
 import com.cramsan.edifikana.server.service.models.Employee
 import com.cramsan.edifikana.server.service.models.EventLogEntry
 import com.cramsan.edifikana.server.service.models.Invite
@@ -263,7 +268,7 @@ fun CreateTimeCardEventEntity(
         propertyId = propertyId,
         type = type,
         imageUrl = imageUrl,
-        timestamp = timestamp.epochSeconds,
+        timestamp = timestamp,
     )
 }
 
@@ -280,7 +285,7 @@ fun TimeCardEventEntity.toTimeCardEvent(): TimeCardEvent? {
         propertyId = this.propertyId,
         type = this.type,
         imageUrl = this.imageUrl,
-        timestamp = Instant.fromEpochSeconds(this.timestamp),
+        timestamp = this.timestamp,
     )
 }
 
@@ -305,7 +310,7 @@ fun CreateEventLogEntryEntity(
         propertyId = propertyId,
         type = type,
         fallbackEventType = fallbackEventType,
-        timestamp = timestamp.epochSeconds,
+        timestamp = timestamp,
         title = title,
         description = description,
         unit = unit,
@@ -324,7 +329,7 @@ fun EventLogEntryEntity.toEventLogEntry(): EventLogEntry {
         propertyId = this.propertyId,
         type = this.type,
         fallbackEventType = this.fallbackEventType,
-        timestamp = Instant.fromEpochSeconds(this.timestamp),
+        timestamp = this.timestamp,
         title = this.title,
         description = this.description,
         unit = this.unit,
@@ -350,7 +355,7 @@ fun NotificationEntity.toNotification(): Notification {
         id = NotificationId(this.id),
         recipientUserId = this.recipientUserId,
         recipientEmail = this.recipientEmail,
-        notificationType = NotificationType.fromString(this.notificationType),
+        notificationType = enumValueOf<NotificationType>(this.notificationType),
         description = this.description,
         isRead = this.isRead,
         createdAt = this.createdAt,
@@ -448,8 +453,32 @@ fun CommonAreaEntity.toCommonArea(): CommonArea {
         id = CommonAreaId(commonAreaId),
         propertyId = propertyId,
         name = name,
-        type = CommonAreaType.fromString(type),
+        type = enumValueOf<CommonAreaType>(type),
         description = description,
         createdAt = createdAt,
+    )
+}
+
+/**
+ * Maps a [TaskEntity] to the [Task] domain model.
+ */
+@OptIn(SupabaseModel::class)
+fun TaskEntity.toTask(): Task {
+    return Task(
+        id = TaskId(id),
+        propertyId = propertyId,
+        unitId = unitId,
+        commonAreaId = commonAreaId,
+        assigneeId = assigneeId,
+        createdBy = createdBy,
+        statusChangedBy = statusChangedBy,
+        title = title,
+        description = description,
+        priority = enumValueOf<TaskPriority>(priority),
+        status = enumValueOf<TaskStatus>(status),
+        dueDate = dueDate,
+        createdAt = createdAt,
+        completedAt = completedAt,
+        statusChangedAt = statusChangedAt,
     )
 }

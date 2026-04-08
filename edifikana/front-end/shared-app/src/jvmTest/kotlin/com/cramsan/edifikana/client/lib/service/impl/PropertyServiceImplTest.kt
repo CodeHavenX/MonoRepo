@@ -1,9 +1,9 @@
 package com.cramsan.edifikana.client.lib.service.impl
 
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.network.PropertyListNetworkResponse
-import com.cramsan.edifikana.lib.model.network.PropertyNetworkResponse
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.edifikana.lib.model.network.property.PropertyListNetworkResponse
+import com.cramsan.edifikana.lib.model.network.property.PropertyNetworkResponse
 import com.cramsan.edifikana.lib.serialization.createJson
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.assertlib.AssertUtil
@@ -11,13 +11,10 @@ import com.cramsan.framework.assertlib.implementation.NoopAssertUtil
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
-import com.cramsan.framework.preferences.Preferences
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
 import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import kotlin.test.BeforeTest

@@ -3,7 +3,7 @@ package com.cramsan.edifikana.client.lib.features.home.employeeoverview
 import com.cramsan.edifikana.client.lib.features.home.HomeDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
-import com.cramsan.edifikana.lib.model.OrganizationId
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import kotlinx.coroutines.launch

@@ -1,10 +1,10 @@
 package com.cramsan.edifikana.api
 
-import com.cramsan.edifikana.lib.model.EmployeeId
-import com.cramsan.edifikana.lib.model.network.CreateEmployeeNetworkRequest
-import com.cramsan.edifikana.lib.model.network.EmployeeListNetworkResponse
-import com.cramsan.edifikana.lib.model.network.EmployeeNetworkResponse
-import com.cramsan.edifikana.lib.model.network.UpdateEmployeeNetworkRequest
+import com.cramsan.edifikana.lib.model.employee.EmployeeId
+import com.cramsan.edifikana.lib.model.network.employee.CreateEmployeeNetworkRequest
+import com.cramsan.edifikana.lib.model.network.employee.EmployeeListNetworkResponse
+import com.cramsan.edifikana.lib.model.network.employee.EmployeeNetworkResponse
+import com.cramsan.edifikana.lib.model.network.employee.UpdateEmployeeNetworkRequest
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam

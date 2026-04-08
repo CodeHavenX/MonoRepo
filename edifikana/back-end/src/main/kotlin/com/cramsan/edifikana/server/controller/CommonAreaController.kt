@@ -1,12 +1,12 @@
 package com.cramsan.edifikana.server.controller
 
 import com.cramsan.edifikana.api.CommonAreaApi
-import com.cramsan.edifikana.lib.model.CommonAreaId
-import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.network.CommonAreaListNetworkResponse
-import com.cramsan.edifikana.lib.model.network.CommonAreaNetworkResponse
-import com.cramsan.edifikana.lib.model.network.CreateCommonAreaNetworkRequest
-import com.cramsan.edifikana.lib.model.network.UpdateCommonAreaNetworkRequest
+import com.cramsan.edifikana.lib.model.commonArea.CommonAreaId
+import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.edifikana.lib.model.network.commonArea.CommonAreaListNetworkResponse
+import com.cramsan.edifikana.lib.model.network.commonArea.CommonAreaNetworkResponse
+import com.cramsan.edifikana.lib.model.network.commonArea.CreateCommonAreaNetworkRequest
+import com.cramsan.edifikana.lib.model.network.commonArea.UpdateCommonAreaNetworkRequest
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.service.CommonAreaService
 import com.cramsan.edifikana.server.service.authorization.RBACService

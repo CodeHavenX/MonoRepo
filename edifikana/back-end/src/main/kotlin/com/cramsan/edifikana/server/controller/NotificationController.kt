@@ -1,9 +1,9 @@
 package com.cramsan.edifikana.server.controller
 
 import com.cramsan.edifikana.api.NotificationApi
-import com.cramsan.edifikana.lib.model.NotificationId
-import com.cramsan.edifikana.lib.model.network.NotificationListNetworkResponse
-import com.cramsan.edifikana.lib.model.network.NotificationNetworkResponse
+import com.cramsan.edifikana.lib.model.notification.NotificationId
+import com.cramsan.edifikana.lib.model.network.notification.NotificationListNetworkResponse
+import com.cramsan.edifikana.lib.model.network.notification.NotificationNetworkResponse
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.service.NotificationService
 import com.cramsan.framework.annotations.NetworkModel

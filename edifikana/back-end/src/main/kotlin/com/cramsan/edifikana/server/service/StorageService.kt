@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.server.service
 
-import com.cramsan.edifikana.lib.model.AssetId
+import com.cramsan.edifikana.lib.model.asset.AssetId
 import com.cramsan.edifikana.server.datastore.StorageDatastore
 import com.cramsan.edifikana.server.service.models.Asset
 import com.cramsan.framework.logging.logD

@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.db
 
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
-import com.cramsan.edifikana.lib.model.EmployeeId
+import com.cramsan.edifikana.lib.model.employee.EmployeeId
 import com.cramsan.framework.core.CoreUri
 
 /**

@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.api
 
-import com.cramsan.edifikana.lib.model.network.HealthCheckNetworkResponse
+import com.cramsan.edifikana.lib.model.network.health.HealthCheckNetworkResponse
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam

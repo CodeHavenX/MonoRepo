@@ -3,8 +3,8 @@ package com.cramsan.edifikana.client.lib.service.impl
 import com.cramsan.edifikana.api.OrganizationApi
 import com.cramsan.edifikana.client.lib.models.Organization
 import com.cramsan.edifikana.client.lib.service.OrganizationService
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.network.CreateOrganizationNetworkRequest
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.network.organization.CreateOrganizationNetworkRequest
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.networkapi.buildRequest

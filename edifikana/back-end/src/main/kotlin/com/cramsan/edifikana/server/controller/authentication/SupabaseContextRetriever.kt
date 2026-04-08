@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.server.controller.authentication
 
-import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.lib.serialization.HEADER_TOKEN_AUTH
 import com.cramsan.framework.assertlib.assertNull
 import com.cramsan.framework.core.ktor.auth.ClientContext

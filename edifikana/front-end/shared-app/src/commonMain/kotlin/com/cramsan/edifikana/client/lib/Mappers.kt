@@ -4,10 +4,10 @@ package com.cramsan.edifikana.client.lib
 
 import androidx.compose.runtime.Composable
 import com.cramsan.edifikana.client.lib.models.Theme
-import com.cramsan.edifikana.lib.model.EmployeeRole
-import com.cramsan.edifikana.lib.model.EventLogEventType
-import com.cramsan.edifikana.lib.model.IdType
-import com.cramsan.edifikana.lib.model.TimeCardEventType
+import com.cramsan.edifikana.lib.model.employee.EmployeeRole
+import com.cramsan.edifikana.lib.model.eventLog.EventLogEventType
+import com.cramsan.edifikana.lib.model.identification.IdType
+import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventType
 import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.utils.time.Chronos
 import com.cramsan.ui.components.themetoggle.SelectedTheme

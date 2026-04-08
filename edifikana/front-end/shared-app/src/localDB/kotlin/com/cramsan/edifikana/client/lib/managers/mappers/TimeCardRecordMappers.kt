@@ -2,9 +2,9 @@ package com.cramsan.edifikana.client.lib.managers.mappers
 
 import com.cramsan.edifikana.client.lib.db.models.TimeCardRecordEntity
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
-import com.cramsan.edifikana.lib.model.EmployeeId
-import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.TimeCardEventType
+import com.cramsan.edifikana.lib.model.employee.EmployeeId
+import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventType
 import com.cramsan.framework.core.CoreUri
 import kotlin.time.Instant
 

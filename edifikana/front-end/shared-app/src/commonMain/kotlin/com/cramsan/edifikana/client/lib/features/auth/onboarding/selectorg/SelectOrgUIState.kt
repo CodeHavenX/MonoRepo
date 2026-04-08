@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.auth.onboarding.selectorg
 
-import com.cramsan.edifikana.lib.model.InviteId
+import com.cramsan.edifikana.lib.model.invite.InviteId
 import com.cramsan.framework.core.compose.ViewModelUIState
 
 /**

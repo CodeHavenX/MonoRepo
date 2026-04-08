@@ -1,9 +1,9 @@
 package com.cramsan.edifikana.server.service.models
 
-import com.cramsan.edifikana.lib.model.InviteId
-import com.cramsan.edifikana.lib.model.NotificationId
-import com.cramsan.edifikana.lib.model.NotificationType
-import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.invite.InviteId
+import com.cramsan.edifikana.lib.model.notification.NotificationId
+import com.cramsan.edifikana.lib.model.notification.NotificationType
+import com.cramsan.edifikana.lib.model.user.UserId
 import kotlin.time.Instant
 
 /**

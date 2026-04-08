@@ -2,7 +2,7 @@ package com.cramsan.edifikana.server.controller
 
 import com.cramsan.architecture.server.test.startTestKoin
 import com.cramsan.architecture.server.test.testBackEndApplication
-import com.cramsan.edifikana.lib.model.network.CreateAssetNetworkRequest
+import com.cramsan.edifikana.lib.model.network.asset.CreateAssetNetworkRequest
 import com.cramsan.edifikana.lib.serialization.createJson
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.dependencyinjection.TestControllerModule

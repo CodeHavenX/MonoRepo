@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.service
 
 import com.cramsan.edifikana.client.lib.models.Notification
-import com.cramsan.edifikana.lib.model.NotificationId
+import com.cramsan.edifikana.lib.model.notification.NotificationId
 
 /**
  * Service for managing notifications.

@@ -1,11 +1,11 @@
 package com.cramsan.edifikana.server.controller
 
 import com.cramsan.edifikana.api.OrganizationApi
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.network.CreateOrganizationNetworkRequest
-import com.cramsan.edifikana.lib.model.network.OrganizationNetworkListNetworkResponse
-import com.cramsan.edifikana.lib.model.network.OrganizationNetworkResponse
-import com.cramsan.edifikana.lib.model.network.UpdateOrganizationNetworkRequest
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.network.organization.CreateOrganizationNetworkRequest
+import com.cramsan.edifikana.lib.model.network.organization.OrganizationNetworkListNetworkResponse
+import com.cramsan.edifikana.lib.model.network.organization.OrganizationNetworkResponse
+import com.cramsan.edifikana.lib.model.network.organization.UpdateOrganizationNetworkRequest
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.service.OrganizationService
 import com.cramsan.edifikana.server.service.authorization.RBACService

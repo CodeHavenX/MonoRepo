@@ -1,12 +1,12 @@
 package com.cramsan.edifikana.server.controller
 
 import com.cramsan.edifikana.api.DocumentApi
-import com.cramsan.edifikana.lib.model.DocumentId
-import com.cramsan.edifikana.lib.model.network.CreateDocumentNetworkRequest
-import com.cramsan.edifikana.lib.model.network.DocumentListNetworkResponse
-import com.cramsan.edifikana.lib.model.network.DocumentNetworkResponse
-import com.cramsan.edifikana.lib.model.network.GetDocumentsQueryParams
-import com.cramsan.edifikana.lib.model.network.UpdateDocumentNetworkRequest
+import com.cramsan.edifikana.lib.model.document.DocumentId
+import com.cramsan.edifikana.lib.model.network.document.CreateDocumentNetworkRequest
+import com.cramsan.edifikana.lib.model.network.document.DocumentListNetworkResponse
+import com.cramsan.edifikana.lib.model.network.document.DocumentNetworkResponse
+import com.cramsan.edifikana.lib.model.network.document.GetDocumentsQueryParams
+import com.cramsan.edifikana.lib.model.network.document.UpdateDocumentNetworkRequest
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.service.DocumentService
 import com.cramsan.edifikana.server.service.authorization.RBACService

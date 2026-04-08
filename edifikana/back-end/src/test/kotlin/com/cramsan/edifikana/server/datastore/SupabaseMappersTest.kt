@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.server.datastore
 
-import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.datastore.supabase.models.AuthMetadataEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.UserEntity
 import com.cramsan.edifikana.server.datastore.supabase.toUser

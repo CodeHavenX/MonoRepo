@@ -1,8 +1,8 @@
 package com.cramsan.edifikana.server.controller
 
 import com.cramsan.edifikana.api.StorageApi
-import com.cramsan.edifikana.lib.model.network.AssetNetworkResponse
-import com.cramsan.edifikana.lib.model.network.CreateAssetQueryParams
+import com.cramsan.edifikana.lib.model.network.asset.AssetNetworkResponse
+import com.cramsan.edifikana.lib.model.network.asset.CreateAssetQueryParams
 import com.cramsan.edifikana.lib.utils.requireNotBlank
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.service.StorageService

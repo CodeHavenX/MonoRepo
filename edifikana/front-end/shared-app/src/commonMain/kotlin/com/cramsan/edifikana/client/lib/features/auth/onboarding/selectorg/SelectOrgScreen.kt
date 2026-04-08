@@ -18,7 +18,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.edifikana.client.ui.components.OptionCard
-import com.cramsan.edifikana.lib.model.InviteId
+import com.cramsan.edifikana.lib.model.invite.InviteId
 import com.cramsan.framework.core.compose.rememberDialogController
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay

@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.server.controller.authentication
 
-import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.user.UserId
 import io.github.jan.supabase.auth.user.UserInfo
 
 /**

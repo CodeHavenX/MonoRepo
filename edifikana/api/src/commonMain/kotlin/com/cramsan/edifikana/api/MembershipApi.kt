@@ -1,14 +1,14 @@
 package com.cramsan.edifikana.api
 
-import com.cramsan.edifikana.lib.model.InviteId
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.network.InviteListNetworkResponse
-import com.cramsan.edifikana.lib.model.network.InviteMemberNetworkRequest
-import com.cramsan.edifikana.lib.model.network.JoinViaCodeNetworkRequest
-import com.cramsan.edifikana.lib.model.network.MemberListNetworkResponse
-import com.cramsan.edifikana.lib.model.network.RemoveMemberNetworkRequest
-import com.cramsan.edifikana.lib.model.network.TransferOwnershipNetworkRequest
-import com.cramsan.edifikana.lib.model.network.UpdateRoleNetworkRequest
+import com.cramsan.edifikana.lib.model.invite.InviteId
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.network.invite.InviteListNetworkResponse
+import com.cramsan.edifikana.lib.model.network.invite.InviteMemberNetworkRequest
+import com.cramsan.edifikana.lib.model.network.invite.JoinViaCodeNetworkRequest
+import com.cramsan.edifikana.lib.model.network.organization.MemberListNetworkResponse
+import com.cramsan.edifikana.lib.model.network.organization.RemoveMemberNetworkRequest
+import com.cramsan.edifikana.lib.model.network.organization.TransferOwnershipNetworkRequest
+import com.cramsan.edifikana.lib.model.network.organization.UpdateRoleNetworkRequest
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam

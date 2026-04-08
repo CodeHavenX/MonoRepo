@@ -2,10 +2,10 @@ package com.cramsan.edifikana.server.controller
 
 import com.cramsan.architecture.server.test.startTestKoin
 import com.cramsan.architecture.server.test.testBackEndApplication
-import com.cramsan.edifikana.lib.model.InviteId
-import com.cramsan.edifikana.lib.model.NotificationId
-import com.cramsan.edifikana.lib.model.NotificationType
-import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.invite.InviteId
+import com.cramsan.edifikana.lib.model.notification.NotificationId
+import com.cramsan.edifikana.lib.model.notification.NotificationType
+import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.lib.serialization.createJson
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.dependencyinjection.TestControllerModule

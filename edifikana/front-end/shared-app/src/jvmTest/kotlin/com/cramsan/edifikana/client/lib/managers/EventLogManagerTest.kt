@@ -3,10 +3,10 @@ package com.cramsan.edifikana.client.lib.managers
 import com.cramsan.edifikana.client.lib.db.EventLogCache
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.client.lib.service.EventLogService
-import com.cramsan.edifikana.lib.model.EventLogEntryId
-import com.cramsan.edifikana.lib.model.EventLogEventType
-import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.UnitId
+import com.cramsan.edifikana.lib.model.eventLog.EventLogEntryId
+import com.cramsan.edifikana.lib.model.eventLog.EventLogEventType
+import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.logging.EventLogger

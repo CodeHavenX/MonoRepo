@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.server.service.models
 
-import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.user.UserId
 
 /**
  * Domain model representing a user.

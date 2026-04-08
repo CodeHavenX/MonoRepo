@@ -1,9 +1,9 @@
 package com.cramsan.edifikana.server.service
 
-import com.cramsan.edifikana.lib.model.EmployeeId
-import com.cramsan.edifikana.lib.model.EmployeeRole
-import com.cramsan.edifikana.lib.model.IdType
-import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.employee.EmployeeId
+import com.cramsan.edifikana.lib.model.employee.EmployeeRole
+import com.cramsan.edifikana.lib.model.identification.IdType
+import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.datastore.EmployeeDatastore
 import com.cramsan.edifikana.server.service.models.Employee

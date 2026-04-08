@@ -30,7 +30,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.ui.components.EdifikanaImage
 import com.cramsan.edifikana.client.ui.components.ImageSource
-import com.cramsan.edifikana.lib.model.OrganizationId
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout

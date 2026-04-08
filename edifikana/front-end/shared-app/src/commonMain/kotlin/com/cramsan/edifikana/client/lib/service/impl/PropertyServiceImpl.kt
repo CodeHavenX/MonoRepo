@@ -3,11 +3,11 @@ package com.cramsan.edifikana.client.lib.service.impl
 import com.cramsan.edifikana.api.PropertyApi
 import com.cramsan.edifikana.client.lib.models.PropertyModel
 import com.cramsan.edifikana.client.lib.service.PropertyService
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.network.CreatePropertyNetworkRequest
-import com.cramsan.edifikana.lib.model.network.PropertyNetworkResponse
-import com.cramsan.edifikana.lib.model.network.UpdatePropertyNetworkRequest
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.edifikana.lib.model.network.property.CreatePropertyNetworkRequest
+import com.cramsan.edifikana.lib.model.network.property.PropertyNetworkResponse
+import com.cramsan.edifikana.lib.model.network.property.UpdatePropertyNetworkRequest
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.networkapi.buildRequest

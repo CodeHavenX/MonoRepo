@@ -2,7 +2,7 @@ package com.cramsan.edifikana.client.lib.managers
 
 import com.cramsan.edifikana.client.lib.models.Organization
 import com.cramsan.edifikana.client.lib.service.OrganizationService
-import com.cramsan.edifikana.lib.model.OrganizationId
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.logging.EventLogger

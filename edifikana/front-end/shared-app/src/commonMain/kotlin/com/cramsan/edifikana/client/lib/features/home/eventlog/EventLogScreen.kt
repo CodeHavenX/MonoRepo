@@ -34,8 +34,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
-import com.cramsan.edifikana.lib.model.EventLogEventType
-import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.eventLog.EventLogEventType
+import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.theme.Padding

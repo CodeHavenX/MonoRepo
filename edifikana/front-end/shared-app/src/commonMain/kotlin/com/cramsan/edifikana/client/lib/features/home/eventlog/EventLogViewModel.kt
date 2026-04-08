@@ -2,7 +2,7 @@ package com.cramsan.edifikana.client.lib.features.home.eventlog
 
 import com.cramsan.edifikana.client.lib.managers.EventLogManager
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
-import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logE

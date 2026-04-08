@@ -7,9 +7,9 @@ import com.cramsan.edifikana.client.lib.utils.IODependencies
 import com.cramsan.edifikana.client.lib.utils.getFilename
 import com.cramsan.edifikana.client.lib.utils.processImageData
 import com.cramsan.edifikana.client.lib.utils.readBytes
-import com.cramsan.edifikana.lib.model.EmployeeId
-import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.TimeCardEventId
+import com.cramsan.edifikana.lib.model.employee.EmployeeId
+import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventId
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.getOrCatch

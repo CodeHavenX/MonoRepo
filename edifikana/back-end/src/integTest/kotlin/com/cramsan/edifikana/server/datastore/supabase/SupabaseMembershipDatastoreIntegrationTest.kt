@@ -1,11 +1,12 @@
 package com.cramsan.edifikana.server.datastore.supabase
 
-import com.cramsan.edifikana.lib.model.InviteRole
-import com.cramsan.edifikana.lib.model.OrgRole
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.TaskStatus
-import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.invite.InviteRole
+import com.cramsan.edifikana.lib.model.organization.OrgRole
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.edifikana.lib.model.task.TaskStatus
+import com.cramsan.edifikana.lib.model.user.UserId
+import com.cramsan.edifikana.lib.model.invite.InviteId
 import com.cramsan.framework.annotations.SupabaseModel
 import com.cramsan.framework.utils.uuid.UUID
 import io.github.jan.supabase.postgrest.Postgrest
@@ -214,7 +215,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `getInviteById should return null for non-existent ID`() = runCoroutineTest {
         // Act
         val result = membershipDatastore.getInviteById(
-            com.cramsan.edifikana.lib.model.InviteId("00000000-0000-0000-0000-000000000000")
+            InviteId("00000000-0000-0000-0000-000000000000")
         )
 
         // Assert

@@ -5,7 +5,7 @@ import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.models.UserModel
-import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent

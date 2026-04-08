@@ -2,10 +2,10 @@ package com.cramsan.edifikana.client.lib.service
 
 import com.cramsan.edifikana.client.lib.models.Invite
 import com.cramsan.edifikana.client.lib.models.UserModel
-import com.cramsan.edifikana.lib.model.InviteId
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.lib.model.UserRole
+import com.cramsan.edifikana.lib.model.invite.InviteId
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.user.UserId
+import com.cramsan.edifikana.lib.model.user.UserRole
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
 import kotlinx.coroutines.flow.StateFlow

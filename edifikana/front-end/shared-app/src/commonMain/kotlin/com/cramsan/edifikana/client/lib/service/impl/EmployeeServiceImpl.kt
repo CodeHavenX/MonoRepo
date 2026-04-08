@@ -3,7 +3,7 @@ package com.cramsan.edifikana.client.lib.service.impl
 import com.cramsan.edifikana.api.EmployeeApi
 import com.cramsan.edifikana.client.lib.models.EmployeeModel
 import com.cramsan.edifikana.client.lib.service.EmployeeService
-import com.cramsan.edifikana.lib.model.EmployeeId
+import com.cramsan.edifikana.lib.model.employee.EmployeeId
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.networkapi.buildRequest

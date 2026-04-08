@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.server.datastore.supabase
 
-import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.service.models.User
 import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions

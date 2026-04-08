@@ -11,7 +11,6 @@ import com.cramsan.agentic.core.WorkflowConfigErrorType
 import com.cramsan.agentic.core.WorkflowPromptConfig
 import com.cramsan.agentic.core.WorkflowStageConfig
 import com.cramsan.agentic.core.WorkflowStatus
-import com.cramsan.agentic.core.defaultWorkflowStages
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
@@ -53,6 +52,37 @@ class DefaultWorkflowServiceTest {
         lastModifiedEpochMs = 1_000_000L,
     )
 
+    /**
+     * Test workflow stages using inline prompts (not file-based) to avoid
+     * needing resources in the test environment.
+     */
+    private fun testWorkflowStages(): List<WorkflowStageConfig> = listOf(
+        WorkflowStageConfig(
+            id = "stage1",
+            name = "High-Level Plan",
+            outputFile = "high-level-plan.md",
+            requiresApproval = true,
+            inputDependencies = emptyList(),
+            prompt = WorkflowPromptConfig.Inline(systemPrompt = "Produce a high-level plan."),
+        ),
+        WorkflowStageConfig(
+            id = "stage2",
+            name = "Low-Level Plan",
+            outputFile = "low-level-plan.md",
+            requiresApproval = true,
+            inputDependencies = listOf("stage1"),
+            prompt = WorkflowPromptConfig.Inline(systemPrompt = "Produce a low-level plan."),
+        ),
+        WorkflowStageConfig(
+            id = "stage3",
+            name = "Task List",
+            outputFile = "task-list.md",
+            requiresApproval = true,
+            inputDependencies = listOf("stage2"),
+            prompt = WorkflowPromptConfig.Inline(systemPrompt = "Produce a task list."),
+        ),
+    )
+
     @BeforeEach
     fun setup() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
@@ -60,7 +90,7 @@ class DefaultWorkflowServiceTest {
             documentStore,
             aiProvider,
             docsDir,
-            WorkflowConfig(defaultWorkflowStages()),
+            WorkflowConfig(testWorkflowStages()),
         )
     }
 

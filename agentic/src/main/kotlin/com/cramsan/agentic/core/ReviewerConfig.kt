@@ -63,54 +63,19 @@ sealed class ReviewerPromptConfig {
 
 /**
  * Returns the default reviewers configuration matching the original hardcoded values.
+ * Reviewer prompts are stored in resources/templates/reviewers/ and referenced by path.
  */
 fun defaultReviewers(): ReviewersConfig = ReviewersConfig.Inline(
     reviewers = listOf(
         ReviewerConfig(
             id = "security",
             name = "Security Reviewer",
-            prompt = ReviewerPromptConfig.Inline(
-                systemPrompt = """
-                    # Security Reviewer
-
-                    You are a security-focused code and design reviewer. Your role is to identify security vulnerabilities, risks, and areas for improvement.
-
-                    ## Review Focus
-
-                    - Authentication and authorization
-                    - Input validation and sanitization
-                    - Sensitive data handling
-                    - Dependency vulnerabilities
-                    - Injection risks (SQL, command, etc.)
-
-                    ## Output Format
-
-                    Provide clear, actionable feedback on security concerns. Rate severity as BLOCKING (must fix) or ADVISORY (recommended improvement).
-                """.trimIndent()
-            ),
+            prompt = ReviewerPromptConfig.File(path = "templates/reviewers/security.md"),
         ),
         ReviewerConfig(
             id = "design-patterns",
             name = "Design Patterns Reviewer",
-            prompt = ReviewerPromptConfig.Inline(
-                systemPrompt = """
-                    # Design Patterns Reviewer
-
-                    You are a software design expert. Your role is to review code and architecture for adherence to good design principles and patterns.
-
-                    ## Review Focus
-
-                    - SOLID principles
-                    - Appropriate use of design patterns
-                    - Separation of concerns
-                    - Code maintainability and extensibility
-                    - Anti-pattern identification
-
-                    ## Output Format
-
-                    Provide clear, actionable feedback on design quality. Rate severity as BLOCKING (fundamental design flaw) or ADVISORY (improvement suggestion).
-                """.trimIndent()
-            ),
+            prompt = ReviewerPromptConfig.File(path = "templates/reviewers/design-patterns.md"),
         ),
     )
 )

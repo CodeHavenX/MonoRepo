@@ -6,6 +6,7 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.cramsan.agentic.core.AgenticConfig
 import com.cramsan.agentic.core.PlanningConfig
 import com.cramsan.agentic.core.VcsProviderConfig
+import com.cramsan.agentic.core.WorkflowConfig
 import com.cramsan.agentic.core.defaultInputDocuments
 import com.cramsan.agentic.core.defaultReviewers
 import com.cramsan.agentic.input.DefaultScaffolder
@@ -34,7 +35,8 @@ class InitCommand : CliktCommand(name = "init", help = "Scaffold input docs and 
         Files.createDirectories(docsDir)
 
         logI(TAG, "Scaffolding default documents into: $docsDir")
-        val scaffolder = DefaultScaffolder(defaultInputDocuments(), defaultReviewers())
+        val defaultWorkflow = WorkflowConfig()
+        val scaffolder = DefaultScaffolder(defaultInputDocuments(), defaultReviewers(), defaultWorkflow.stages)
         scaffolder.scaffold(docsDir)
 
         val json = Json { prettyPrint = true; encodeDefaults = true }

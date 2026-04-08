@@ -2,7 +2,6 @@ package com.cramsan.edifikana.lib.model.rent
 
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
-import com.cramsan.edifikana.lib.model.organization.OrganizationId
 
 /**
  * Domain model representing a rent configuration for a unit.
@@ -13,7 +12,6 @@ import com.cramsan.edifikana.lib.model.organization.OrganizationId
 data class RentConfigModel(
     val id: RentConfigId,
     val unitId: UnitId,
-    val orgId: OrganizationId,
     val monthlyAmount: Long,
     val dueDay: Int,
     val currency: String,

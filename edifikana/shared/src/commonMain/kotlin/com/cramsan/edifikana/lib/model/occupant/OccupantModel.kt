@@ -1,6 +1,5 @@
 package com.cramsan.edifikana.lib.model.occupant
 
-import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
 import kotlinx.datetime.LocalDate
@@ -14,7 +13,6 @@ import kotlinx.datetime.LocalDate
 data class OccupantModel(
     val id: OccupantId,
     val unitId: UnitId,
-    val orgId: OrganizationId,
     val userId: UserId?,
     val addedBy: UserId?,
     val occupantType: OccupantType,

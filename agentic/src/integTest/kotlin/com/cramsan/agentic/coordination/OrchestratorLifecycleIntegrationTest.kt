@@ -107,7 +107,6 @@ Timeout: ${task.timeoutSeconds}"""
             agentPoolSize = 2,
             pollIntervalSeconds = 0L,
             baseBranch = "main",
-            claudeModel = "claude-opus-4-6",
         )
 
         orchestrator.run(config)
@@ -145,7 +144,6 @@ Timeout: ${task.timeoutSeconds}"""
             agentPoolSize = 2,
             pollIntervalSeconds = 0L,
             baseBranch = "main",
-            claudeModel = "claude-opus-4-6",
         )
 
         orchestrator.run(config)

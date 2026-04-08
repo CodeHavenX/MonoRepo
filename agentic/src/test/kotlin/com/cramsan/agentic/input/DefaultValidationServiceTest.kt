@@ -41,6 +41,7 @@ class DefaultValidationServiceTest {
 
     private fun makeDocument(id: String, type: DocumentType, relativePath: String) = AgenticDocument(
         id = id,
+        typeId = id,
         type = type,
         relativePath = relativePath,
         status = DocumentStatus.UNREVIEWED,

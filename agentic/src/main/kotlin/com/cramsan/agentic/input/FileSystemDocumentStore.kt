@@ -2,7 +2,8 @@ package com.cramsan.agentic.input
 
 import com.cramsan.agentic.core.AgenticDocument
 import com.cramsan.agentic.core.DocumentStatus
-import com.cramsan.agentic.core.DocumentType
+import com.cramsan.agentic.core.InputDocumentConfig
+import com.cramsan.agentic.core.resolvePath
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logI
 import com.cramsan.framework.logging.logW
@@ -17,6 +18,7 @@ private const val TAG = "FileSystemDocumentStore"
 class FileSystemDocumentStore(
     private val docsDir: Path,
     private val json: Json,
+    private val inputDocuments: List<InputDocumentConfig>,
 ) : DocumentStore {
 
     @Serializable
@@ -49,7 +51,7 @@ class FileSystemDocumentStore(
 
         // Compute content hash when validating
         val contentHash = if (status == DocumentStatus.VALIDATED) {
-            val filePath = docsDir.resolve(existing.relativePath)
+            val filePath = resolvePath(docsDir, existing.relativePath)
             val content = Files.readString(filePath)
             computeContentHash(content).also {
                 logD(TAG, "Computed content hash for $id: $it")
@@ -81,15 +83,15 @@ class FileSystemDocumentStore(
     private fun loadFromDisk(): MutableMap<String, AgenticDocument> {
         logI(TAG, "Loading documents from disk: docsDir=$docsDir")
         val result = mutableMapOf<String, AgenticDocument>()
-        for ((filename, type) in FILE_MAP) {
-            val filePath = docsDir.resolve(filename)
-            logD(TAG, "Checking for document file: $filePath (type=$type)")
+        for (docConfig in inputDocuments) {
+            val filePath = resolvePath(docsDir, docConfig.filename)
+            logD(TAG, "Checking for document file: $filePath (id=${docConfig.id})")
             if (!Files.exists(filePath)) {
                 logD(TAG, "Document file not found, skipping: $filePath")
                 continue
             }
 
-            val id = filename.removeSuffix(".md")
+            val id = docConfig.id
             val lastModified = Files.getLastModifiedTime(filePath).toMillis()
 
             val sidecar = readSidecar(id)
@@ -107,7 +109,13 @@ class FileSystemDocumentStore(
                     logD(TAG, "Expected hash: ${sidecar.contentHash.take(16)}..., actual: ${currentHash.take(16)}...")
                     status = DocumentStatus.UNREVIEWED
                     // Update the sidecar to reflect the reset status
-                    val resetDoc = AgenticDocument(id, type, filename, status, lastModified)
+                    val resetDoc = AgenticDocument(
+                        id = id,
+                        typeId = docConfig.id,
+                        relativePath = docConfig.filename,
+                        status = status,
+                        lastModifiedEpochMs = lastModified,
+                    )
                     writeSidecar(resetDoc, null)
                 } else {
                     logD(TAG, "Document $id hash verified, status remains VALIDATED")
@@ -116,13 +124,13 @@ class FileSystemDocumentStore(
 
             val doc = AgenticDocument(
                 id = id,
-                type = type,
-                relativePath = filename,
+                typeId = docConfig.id,
+                relativePath = docConfig.filename,
                 status = status,
                 lastModifiedEpochMs = lastModified,
             )
             result[id] = doc
-            logI(TAG, "Loaded document: id=$id, type=$type, status=$status, lastModified=$lastModified")
+            logI(TAG, "Loaded document: id=$id, typeId=${docConfig.id}, status=$status, lastModified=$lastModified")
         }
         logI(TAG, "Document loading complete: ${result.size} document(s) loaded from $docsDir")
         return result
@@ -168,11 +176,4 @@ class FileSystemDocumentStore(
         return hashBytes.joinToString("") { "%02x".format(it) }
     }
 
-    companion object {
-        private val FILE_MAP = linkedMapOf(
-            "goals-scope.md" to DocumentType.GOALS_SCOPE,
-            "architecture-design.md" to DocumentType.ARCHITECTURE_DESIGN,
-            "standards.md" to DocumentType.STANDARDS,
-        )
-    }
 }

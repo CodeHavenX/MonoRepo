@@ -44,6 +44,7 @@ class ClaudeReviewerAgentNegativeTest {
 
     private val sampleDoc = AgenticDocument(
         id = "goals-scope",
+        typeId = "goals-scope",
         type = DocumentType.GOALS_SCOPE,
         relativePath = "goals-scope.md",
         status = DocumentStatus.VALIDATED,

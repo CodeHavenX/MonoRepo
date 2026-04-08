@@ -43,7 +43,7 @@ class DefaultValidationServiceExtendedTest {
     private lateinit var service: DefaultValidationService
 
     private fun makeDoc(id: String, type: DocumentType, file: String) = AgenticDocument(
-        id = id, type = type, relativePath = file,
+        id = id, typeId = id, type = type, relativePath = file,
         status = DocumentStatus.UNREVIEWED, lastModifiedEpochMs = 0L,
     )
 

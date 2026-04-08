@@ -13,6 +13,7 @@ class AgenticDocumentTest {
     fun `AgenticDocument round-trips through JSON`() {
         val original = AgenticDocument(
             id = "doc-001",
+            typeId = "architecture-design",
             type = DocumentType.ARCHITECTURE_DESIGN,
             relativePath = "docs/architecture.md",
             status = DocumentStatus.UNREVIEWED,
@@ -52,6 +53,7 @@ class AgenticDocumentTest {
             for (status in statuses) {
                 val doc = AgenticDocument(
                     id = "doc-$type-$status",
+                    typeId = type.name.lowercase().replace('_', '-'),
                     type = type,
                     relativePath = "docs/test.md",
                     status = status,

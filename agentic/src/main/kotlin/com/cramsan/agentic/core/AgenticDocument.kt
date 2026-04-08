@@ -5,7 +5,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class AgenticDocument(
     val id: String,
-    val type: DocumentType,
+    val typeId: String,
+    @Deprecated("Use typeId instead. Kept for backwards compatibility.")
+    val type: DocumentType? = null,
     val relativePath: String,
     val status: DocumentStatus,
     val lastModifiedEpochMs: Long,

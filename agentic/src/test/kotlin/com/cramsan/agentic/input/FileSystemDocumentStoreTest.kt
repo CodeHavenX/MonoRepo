@@ -1,6 +1,7 @@
 package com.cramsan.agentic.input
 
 import com.cramsan.agentic.core.DocumentStatus
+import com.cramsan.agentic.core.defaultInputDocuments
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -27,25 +28,25 @@ class FileSystemDocumentStoreTest {
 
     @Test
     fun `getAll returns 3 documents when all 3 input files are present`() {
-        val store = FileSystemDocumentStore(tempDir, json)
+        val store = FileSystemDocumentStore(tempDir, json, defaultInputDocuments())
         val docs = store.getAll()
         assertEquals(3, docs.size, "Should return 3 documents")
     }
 
     @Test
     fun `updateStatus persists new status and is readable after fresh construction`() {
-        val store = FileSystemDocumentStore(tempDir, json)
+        val store = FileSystemDocumentStore(tempDir, json, defaultInputDocuments())
         store.updateStatus("goals-scope", DocumentStatus.VALIDATED)
 
         // Simulate restart by creating a new store instance
-        val freshStore = FileSystemDocumentStore(tempDir, json)
+        val freshStore = FileSystemDocumentStore(tempDir, json, defaultInputDocuments())
         val doc = freshStore.get("goals-scope")
         assertEquals(DocumentStatus.VALIDATED, doc.status, "Status should be persisted and readable after restart")
     }
 
     @Test
     fun `onDocumentChanged resets all statuses to UNREVIEWED`() {
-        val store = FileSystemDocumentStore(tempDir, json)
+        val store = FileSystemDocumentStore(tempDir, json, defaultInputDocuments())
         store.updateStatus("goals-scope", DocumentStatus.VALIDATED)
         store.updateStatus("architecture-design", DocumentStatus.NEEDS_REVISION)
         store.updateStatus("standards", DocumentStatus.IN_REVIEW)
@@ -59,7 +60,7 @@ class FileSystemDocumentStoreTest {
 
     @Test
     fun `allValidated returns false until all docs are VALIDATED then returns true`() {
-        val store = FileSystemDocumentStore(tempDir, json)
+        val store = FileSystemDocumentStore(tempDir, json, defaultInputDocuments())
 
         assertFalse(store.allValidated(), "Should not be fully validated initially")
 
@@ -75,11 +76,11 @@ class FileSystemDocumentStoreTest {
 
     @Test
     fun `onDocumentChanged persists reset to disk so fresh store also sees UNREVIEWED`() {
-        val store = FileSystemDocumentStore(tempDir, json)
+        val store = FileSystemDocumentStore(tempDir, json, defaultInputDocuments())
         store.updateStatus("goals-scope", DocumentStatus.VALIDATED)
         store.onDocumentChanged()
 
-        val freshStore = FileSystemDocumentStore(tempDir, json)
+        val freshStore = FileSystemDocumentStore(tempDir, json, defaultInputDocuments())
         val doc = freshStore.get("goals-scope")
         assertEquals(DocumentStatus.UNREVIEWED, doc.status, "Reset should be persisted to disk")
     }

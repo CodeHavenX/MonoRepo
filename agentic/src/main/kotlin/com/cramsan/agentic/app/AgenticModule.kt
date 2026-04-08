@@ -15,6 +15,7 @@ import com.cramsan.agentic.coordination.StateDeriver
 import com.cramsan.agentic.coordination.TaskStore
 import com.cramsan.agentic.core.AgenticConfig
 import com.cramsan.agentic.core.AiProviderConfig
+import com.cramsan.agentic.core.PlanningConfig
 import com.cramsan.agentic.core.VcsProviderConfig
 import com.cramsan.agentic.execution.AgentRunner
 import com.cramsan.agentic.execution.AgentSession
@@ -54,6 +55,7 @@ fun agenticModule(
     agenticDir: Path,
     repoRoot: Path,
     configPath: Path = agenticDir.resolve("config.json"),
+    planningPath: Path = agenticDir.resolve("planning.json"),
 ) = module {
 
     single<Json> {
@@ -71,6 +73,11 @@ fun agenticModule(
     single<AgenticConfig> {
         val json = get<Json>()
         json.decodeFromString(java.nio.file.Files.readString(configPath))
+    }
+
+    single<PlanningConfig> {
+        val json = get<Json>()
+        json.decodeFromString(java.nio.file.Files.readString(planningPath))
     }
 
     single<VcsProvider> {
@@ -93,8 +100,8 @@ fun agenticModule(
     }
 
     single<DocumentStore> {
-        val config = get<AgenticConfig>()
-        FileSystemDocumentStore(agenticDir.resolve("docs"), get(), config.inputDocuments)
+        val planningConfig = get<PlanningConfig>()
+        FileSystemDocumentStore(agenticDir.resolve("docs"), get(), planningConfig.inputDocuments)
     }
 
     single<DependencyGraph> {
@@ -110,8 +117,8 @@ fun agenticModule(
     }
 
     single<ReviewerLoader> {
-        val config = get<AgenticConfig>()
-        ConfigurableReviewerLoader(config.reviewers, agenticDir.resolve("docs"))
+        val planningConfig = get<PlanningConfig>()
+        ConfigurableReviewerLoader(planningConfig.reviewers, agenticDir.resolve("docs"))
     }
 
     single<AiProvider> {
@@ -159,8 +166,8 @@ fun agenticModule(
     }
 
     single<Scaffolder> {
-        val config = get<AgenticConfig>()
-        DefaultScaffolder(config.inputDocuments, config.reviewers)
+        val planningConfig = get<PlanningConfig>()
+        DefaultScaffolder(planningConfig.inputDocuments, planningConfig.reviewers)
     }
 
     single<ValidationService> {
@@ -168,7 +175,7 @@ fun agenticModule(
     }
 
     single<WorkflowService> {
-        val config = get<AgenticConfig>()
-        DefaultWorkflowService(get(), get(), agenticDir.resolve("docs"), config.workflow)
+        val planningConfig = get<PlanningConfig>()
+        DefaultWorkflowService(get(), get(), agenticDir.resolve("docs"), planningConfig.workflow)
     }
 }

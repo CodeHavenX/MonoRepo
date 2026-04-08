@@ -1,115 +1,70 @@
 package com.cramsan.agentic.input
 
+import com.cramsan.agentic.core.DocumentTemplateConfig
+import com.cramsan.agentic.core.InputDocumentConfig
+import com.cramsan.agentic.core.ReviewerConfig
+import com.cramsan.agentic.core.ReviewerPromptConfig
+import com.cramsan.agentic.core.ReviewersConfig
+import com.cramsan.agentic.core.resolvePath
 import com.cramsan.framework.logging.logI
 import com.cramsan.framework.logging.logW
 import java.nio.file.Files
 import java.nio.file.Path
 
-class DefaultScaffolder : Scaffolder {
+class DefaultScaffolder(
+    private val inputDocuments: List<InputDocumentConfig>,
+    private val reviewersConfig: ReviewersConfig,
+) : Scaffolder {
 
     override fun scaffold(outputDir: Path) {
-        writeFile(
-            outputDir.resolve("goals-scope.md"),
-            """
-            # Goals & Scope
+        // Scaffold input documents
+        for (docConfig in inputDocuments) {
+            val content = resolveTemplate(outputDir, docConfig.template)
+            val filePath = resolvePath(outputDir, docConfig.filename)
+            writeFile(filePath, content)
+        }
 
-            ## Goals & Scope
+        // Scaffold reviewers based on configuration
+        when (reviewersConfig) {
+            is ReviewersConfig.Inline -> scaffoldInlineReviewers(outputDir, reviewersConfig.reviewers)
+            is ReviewersConfig.Directory -> {
+                // Create the reviewers directory if it doesn't exist
+                val reviewersDir = resolvePath(outputDir, reviewersConfig.path)
+                if (!Files.exists(reviewersDir)) {
+                    Files.createDirectories(reviewersDir)
+                    logI(TAG, "Created reviewers directory: $reviewersDir")
+                }
+            }
+        }
+    }
 
-            Describe the high-level goals and scope of this project.
+    private fun scaffoldInlineReviewers(outputDir: Path, reviewers: List<ReviewerConfig>) {
+        val reviewersDir = outputDir.resolve("reviewers")
+        for (reviewer in reviewers) {
+            val content = resolvePrompt(outputDir, reviewer.prompt)
+            val filePath = reviewersDir.resolve("${reviewer.id}.md")
+            writeFile(filePath, content)
+        }
+    }
 
-            ### Goals
+    private fun resolveTemplate(baseDir: Path, template: DocumentTemplateConfig): String {
+        return when (template) {
+            is DocumentTemplateConfig.Inline -> template.content
+            is DocumentTemplateConfig.File -> {
+                val templatePath = resolvePath(baseDir, template.path)
+                Files.readString(templatePath)
+            }
+        }
+    }
 
-            - Goal 1: ...
-            - Goal 2: ...
-
-            ### Out of Scope
-
-            - Item 1: ...
-            """.trimIndent(),
-        )
-
-        writeFile(
-            outputDir.resolve("architecture-design.md"),
-            """
-            # Architecture & Design
-
-            ## Architecture & Design
-
-            Describe the system architecture and key design decisions.
-
-            ### Components
-
-            - Component 1: ...
-            - Component 2: ...
-
-            ### Data Flow
-
-            Describe how data flows through the system.
-            """.trimIndent(),
-        )
-
-        writeFile(
-            outputDir.resolve("standards.md"),
-            """
-            # Standards
-
-            ## Standards
-
-            Define the coding standards, conventions, and best practices for this project.
-
-            ### Coding Style
-
-            - Use meaningful names
-            - Write self-documenting code
-
-            ### Testing
-
-            - Unit tests required for all business logic
-            - Integration tests for external dependencies
-            """.trimIndent(),
-        )
-
-        writeFile(
-            outputDir.resolve("reviewers/security.md"),
-            """
-            # Security Reviewer
-
-            You are a security-focused code and design reviewer. Your role is to identify security vulnerabilities, risks, and areas for improvement.
-
-            ## Review Focus
-
-            - Authentication and authorization
-            - Input validation and sanitization
-            - Sensitive data handling
-            - Dependency vulnerabilities
-            - Injection risks (SQL, command, etc.)
-
-            ## Output Format
-
-            Provide clear, actionable feedback on security concerns. Rate severity as BLOCKING (must fix) or ADVISORY (recommended improvement).
-            """.trimIndent(),
-        )
-
-        writeFile(
-            outputDir.resolve("reviewers/design-patterns.md"),
-            """
-            # Design Patterns Reviewer
-
-            You are a software design expert. Your role is to review code and architecture for adherence to good design principles and patterns.
-
-            ## Review Focus
-
-            - SOLID principles
-            - Appropriate use of design patterns
-            - Separation of concerns
-            - Code maintainability and extensibility
-            - Anti-pattern identification
-
-            ## Output Format
-
-            Provide clear, actionable feedback on design quality. Rate severity as BLOCKING (fundamental design flaw) or ADVISORY (improvement suggestion).
-            """.trimIndent(),
-        )
+    private fun resolvePrompt(baseDir: Path, prompt: ReviewerPromptConfig): String {
+        return when (prompt) {
+            is ReviewerPromptConfig.Inline -> prompt.systemPrompt
+            is ReviewerPromptConfig.File -> {
+                val promptPath = resolvePath(baseDir, prompt.path)
+                Files.readString(promptPath)
+            }
+        }
     }
 
     private fun writeFile(path: Path, content: String) {

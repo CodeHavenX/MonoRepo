@@ -8,6 +8,7 @@ import com.cramsan.agentic.core.DocumentStatus
 import com.cramsan.agentic.core.IssueSeverity
 import com.cramsan.agentic.core.ValidationIssue
 import com.cramsan.agentic.core.ValidationReport
+import com.cramsan.agentic.core.resolvePath
 import com.cramsan.agentic.reviewer.ReviewerAgent
 import com.cramsan.agentic.reviewer.ReviewerLoader
 import com.cramsan.framework.logging.logD
@@ -32,8 +33,8 @@ class DefaultValidationService(
 ) : ValidationService {
 
     override suspend fun reviewDocument(document: AgenticDocument): List<ValidationIssue> {
-        logI(TAG, "Starting review for document id=${document.id}, path=${document.relativePath}, type=${document.type}")
-        val fileContent = Files.readString(docsDir.resolve(document.relativePath))
+        logI(TAG, "Starting review for document id=${document.id}, path=${document.relativePath}, typeId=${document.typeId}")
+        val fileContent = Files.readString(resolvePath(docsDir, document.relativePath))
         logD(TAG, "Document ${document.id} content length: ${fileContent.length} chars")
 
         val systemPrompt = """

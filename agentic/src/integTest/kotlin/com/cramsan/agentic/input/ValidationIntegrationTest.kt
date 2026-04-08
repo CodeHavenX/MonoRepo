@@ -8,6 +8,8 @@ import com.cramsan.agentic.core.IssueSeverity
 import com.cramsan.agentic.core.IssueStatus
 import com.cramsan.agentic.core.ReviewerDefinition
 import com.cramsan.agentic.core.ValidationIssue
+import com.cramsan.agentic.core.defaultInputDocuments
+import com.cramsan.agentic.core.defaultReviewers
 import com.cramsan.agentic.reviewer.fake.FakeReviewerAgent
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
@@ -66,15 +68,15 @@ class ValidationIntegrationTest {
         aiProvider = mockk()
 
         // Scaffold documents into tempDir
-        DefaultScaffolder().scaffold(tempDir)
+        DefaultScaffolder(defaultInputDocuments(), defaultReviewers()).scaffold(tempDir)
 
         // Construct document store over the temp dir
-        documentStore = FileSystemDocumentStore(tempDir, json)
+        documentStore = FileSystemDocumentStore(tempDir, json, defaultInputDocuments())
     }
 
     @Test
     fun `happy path - no blocking issues - allValidated returns true`() = runTest {
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } returns noIssuesResponse
+        coEvery { aiProvider.chat(any(), any(), any()) } returns noIssuesResponse
 
         val reviewerLoader = mockk<com.cramsan.agentic.reviewer.ReviewerLoader>()
         coEvery { reviewerLoader.loadAll() } returns emptyList()
@@ -82,7 +84,6 @@ class ValidationIntegrationTest {
         val service = DefaultValidationService(
             documentStore = documentStore,
             aiProvider = aiProvider,
-            model = "claude-opus-4-6",
             reviewerAgents = emptyList(),
             reviewerLoader = reviewerLoader,
             json = json,
@@ -99,7 +100,7 @@ class ValidationIntegrationTest {
 
     @Test
     fun `blocking issue - at least one document has NEEDS_REVISION status`() = runTest {
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } returnsMany listOf(
+        coEvery { aiProvider.chat(any(), any(), any()) } returnsMany listOf(
             blockingIssueResponse, noIssuesResponse, noIssuesResponse, noIssuesResponse
         )
 
@@ -109,7 +110,6 @@ class ValidationIntegrationTest {
         val service = DefaultValidationService(
             documentStore = documentStore,
             aiProvider = aiProvider,
-            model = "claude-opus-4-6",
             reviewerAgents = emptyList(),
             reviewerLoader = reviewerLoader,
             json = json,
@@ -129,7 +129,7 @@ class ValidationIntegrationTest {
 
     @Test
     fun `onDocumentChanged resets all statuses to UNREVIEWED`() = runTest {
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } returns noIssuesResponse
+        coEvery { aiProvider.chat(any(), any(), any()) } returns noIssuesResponse
 
         val reviewerLoader = mockk<com.cramsan.agentic.reviewer.ReviewerLoader>()
         coEvery { reviewerLoader.loadAll() } returns emptyList()
@@ -137,7 +137,6 @@ class ValidationIntegrationTest {
         val service = DefaultValidationService(
             documentStore = documentStore,
             aiProvider = aiProvider,
-            model = "claude-opus-4-6",
             reviewerAgents = emptyList(),
             reviewerLoader = reviewerLoader,
             json = json,
@@ -161,7 +160,7 @@ class ValidationIntegrationTest {
 
     @Test
     fun `reviewer agents run and produce feedback`() = runTest {
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } returns noIssuesResponse
+        coEvery { aiProvider.chat(any(), any(), any()) } returns noIssuesResponse
 
         val reviewerDef1 = ReviewerDefinition("security", "You are a security reviewer")
         val reviewerDef2 = ReviewerDefinition("performance", "You check performance")
@@ -175,7 +174,6 @@ class ValidationIntegrationTest {
         val service = DefaultValidationService(
             documentStore = documentStore,
             aiProvider = aiProvider,
-            model = "claude-opus-4-6",
             reviewerAgents = listOf(fakeAgent1, fakeAgent2),
             reviewerLoader = reviewerLoader,
             json = json,

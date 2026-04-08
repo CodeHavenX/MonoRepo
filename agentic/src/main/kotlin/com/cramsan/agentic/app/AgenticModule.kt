@@ -31,7 +31,7 @@ import com.cramsan.agentic.input.ValidationService
 import com.cramsan.agentic.input.WorkflowService
 import com.cramsan.agentic.notification.Notifier
 import com.cramsan.agentic.notification.vcs.VcsCommentNotifier
-import com.cramsan.agentic.reviewer.FileSystemReviewerLoader
+import com.cramsan.agentic.reviewer.ConfigurableReviewerLoader
 import com.cramsan.agentic.reviewer.ReviewerAgent
 import com.cramsan.agentic.reviewer.ReviewerLoader
 import com.cramsan.agentic.reviewer.claude.ClaudeReviewerAgent
@@ -93,7 +93,8 @@ fun agenticModule(
     }
 
     single<DocumentStore> {
-        FileSystemDocumentStore(agenticDir.resolve("docs"), get())
+        val config = get<AgenticConfig>()
+        FileSystemDocumentStore(agenticDir.resolve("docs"), get(), config.inputDocuments)
     }
 
     single<DependencyGraph> {
@@ -109,7 +110,8 @@ fun agenticModule(
     }
 
     single<ReviewerLoader> {
-        FileSystemReviewerLoader(agenticDir.resolve("docs/reviewers"))
+        val config = get<AgenticConfig>()
+        ConfigurableReviewerLoader(config.reviewers, agenticDir.resolve("docs"))
     }
 
     single<AiProvider> {
@@ -156,7 +158,10 @@ fun agenticModule(
         DefaultOrchestrator(get(), get(), get(), get(), get(), get())
     }
 
-    single<Scaffolder> { DefaultScaffolder() }
+    single<Scaffolder> {
+        val config = get<AgenticConfig>()
+        DefaultScaffolder(config.inputDocuments, config.reviewers)
+    }
 
     single<ValidationService> {
         DefaultValidationService(get(), get(), listOf(get()), get(), get(), agenticDir.resolve("docs"))

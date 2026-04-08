@@ -13,11 +13,17 @@ data class WorkflowStageConfig(
     val id: String,
     val name: String,
     val outputFile: String,
-    val approvalMarkerFile: String,
     val requiresApproval: Boolean = true,
     val inputDependencies: List<String> = emptyList(),
     val prompt: WorkflowPromptConfig,
-)
+) {
+    /**
+     * Approval marker file path, derived from the stage ID.
+     * Internal implementation detail - not exposed in user configuration.
+     */
+    val approvalMarkerFile: String
+        get() = "${id}.approved"
+}
 
 @Serializable
 sealed class WorkflowPromptConfig {
@@ -35,7 +41,6 @@ fun defaultWorkflowStages(): List<WorkflowStageConfig> = listOf(
         id = "stage1",
         name = "High-Level Plan",
         outputFile = "high-level-plan.md",
-        approvalMarkerFile = "high-level-plan.approved",
         requiresApproval = true,
         inputDependencies = emptyList(),
         prompt = WorkflowPromptConfig.Inline(
@@ -59,7 +64,6 @@ fun defaultWorkflowStages(): List<WorkflowStageConfig> = listOf(
         id = "stage2",
         name = "Low-Level Plan",
         outputFile = "low-level-plan.md",
-        approvalMarkerFile = "low-level-plan.approved",
         requiresApproval = true,
         inputDependencies = listOf("stage1"),
         prompt = WorkflowPromptConfig.Inline(
@@ -83,7 +87,6 @@ fun defaultWorkflowStages(): List<WorkflowStageConfig> = listOf(
         id = "stage3",
         name = "Task List",
         outputFile = "task-list.md",
-        approvalMarkerFile = "task-list.approved",
         requiresApproval = true,
         inputDependencies = listOf("stage2"),
         prompt = WorkflowPromptConfig.Inline(

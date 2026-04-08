@@ -12,6 +12,8 @@ data class AgenticConfig(
     val aiProvider: AiProviderConfig = AiProviderConfig.ClaudeCli(),
     val vcsProvider: VcsProviderConfig,
     val workflow: WorkflowConfig = WorkflowConfig(),
+    val inputDocuments: List<InputDocumentConfig> = defaultInputDocuments(),
+    val reviewers: ReviewersConfig = defaultReviewers(),
 )
 
 @Serializable

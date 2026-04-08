@@ -12,6 +12,7 @@ import com.cramsan.agentic.core.WorkflowPromptConfig
 import com.cramsan.agentic.core.WorkflowStageConfig
 import com.cramsan.agentic.core.WorkflowState
 import com.cramsan.agentic.core.WorkflowStatus
+import com.cramsan.agentic.core.resolvePath
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logI
 import java.nio.file.Files
@@ -293,10 +294,10 @@ class DefaultWorkflowService(
         val docs = documentStore.getAll()
         return buildString {
             docs.forEach { doc ->
-                val filePath = docsDir.resolve(doc.relativePath)
+                val filePath = resolvePath(docsDir, doc.relativePath)
                 if (Files.exists(filePath)) {
                     appendLine("---")
-                    appendLine("## ${doc.type.name.replace('_', ' ').lowercase().replaceFirstChar { it.uppercase() }}")
+                    appendLine("## ${doc.typeId.replace('-', ' ').replaceFirstChar { it.uppercase() }}")
                     appendLine()
                     appendLine(Files.readString(filePath))
                     appendLine()

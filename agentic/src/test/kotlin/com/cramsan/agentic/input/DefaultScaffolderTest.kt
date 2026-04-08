@@ -1,5 +1,7 @@
 package com.cramsan.agentic.input
 
+import com.cramsan.agentic.core.defaultInputDocuments
+import com.cramsan.agentic.core.defaultReviewers
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
@@ -16,7 +18,7 @@ class DefaultScaffolderTest {
     @TempDir
     lateinit var tempDir: Path
 
-    private val scaffolder = DefaultScaffolder()
+    private val scaffolder = DefaultScaffolder(defaultInputDocuments(), defaultReviewers())
 
     @BeforeEach
     fun setUp() {

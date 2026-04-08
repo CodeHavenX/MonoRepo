@@ -20,14 +20,14 @@ import com.cramsan.agentic.execution.AgentSession
 import com.cramsan.agentic.execution.DefaultAgentRunner
 import com.cramsan.agentic.execution.DefaultWorktreeManager
 import com.cramsan.agentic.execution.WorktreeManager
-import com.cramsan.agentic.input.DefaultPlanningService
 import com.cramsan.agentic.input.DefaultScaffolder
 import com.cramsan.agentic.input.DefaultValidationService
+import com.cramsan.agentic.input.DefaultWorkflowService
 import com.cramsan.agentic.input.DocumentStore
 import com.cramsan.agentic.input.FileSystemDocumentStore
-import com.cramsan.agentic.input.PlanningService
 import com.cramsan.agentic.input.Scaffolder
 import com.cramsan.agentic.input.ValidationService
+import com.cramsan.agentic.input.WorkflowService
 import com.cramsan.agentic.notification.Notifier
 import com.cramsan.agentic.notification.vcs.VcsCommentNotifier
 import com.cramsan.agentic.reviewer.FileSystemReviewerLoader
@@ -153,8 +153,8 @@ fun agenticModule(
         DefaultValidationService(get(), get(), config.claudeModel, listOf(get()), get(), get(), agenticDir.resolve("docs"))
     }
 
-    single<PlanningService> {
+    single<WorkflowService> {
         val config = get<AgenticConfig>()
-        DefaultPlanningService(get(), get(), config.claudeModel, agenticDir.resolve("docs"))
+        DefaultWorkflowService(get(), get(), config.claudeModel, agenticDir.resolve("docs"), config.workflow)
     }
 }

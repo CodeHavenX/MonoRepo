@@ -12,6 +12,7 @@ data class AgenticConfig(
     val docsDir: String,
     val aiProvider: AiProviderConfig = AiProviderConfig.ClaudeCli(),
     val vcsProvider: VcsProviderConfig,
+    val workflow: WorkflowConfig = WorkflowConfig(),
 )
 
 @Serializable

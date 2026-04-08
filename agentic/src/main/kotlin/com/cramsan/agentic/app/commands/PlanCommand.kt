@@ -3,10 +3,9 @@ package com.cramsan.agentic.app.commands
 import com.cramsan.agentic.app.agenticModule
 import com.cramsan.agentic.core.IssueSeverity
 import com.cramsan.agentic.core.IssueStatus
-import com.cramsan.agentic.core.PlanningStage
-import com.cramsan.agentic.core.PlanningStatus
-import com.cramsan.agentic.input.PlanningService
+import com.cramsan.agentic.core.WorkflowStatus
 import com.cramsan.agentic.input.ValidationService
+import com.cramsan.agentic.input.WorkflowService
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
@@ -14,7 +13,7 @@ import com.cramsan.framework.logging.logW
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.subcommands
 import com.github.ajalt.clikt.parameters.arguments.argument
-import com.github.ajalt.clikt.parameters.arguments.convert
+import com.github.ajalt.clikt.parameters.arguments.optional
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
 import kotlinx.coroutines.runBlocking
@@ -30,9 +29,10 @@ class PlanCommand : CliktCommand(name = "plan", help = "Planning phase commands"
         subcommands(
             PlanValidateSubcommand(),
             PlanStatusSubcommand(),
-            PlanGenerateSubcommand(),
+            PlanStartSubcommand(),
             PlanApproveSubcommand(),
             PlanReviseSubcommand(),
+            PlanStagesSubcommand(),
         )
     }
 }
@@ -71,7 +71,7 @@ private class PlanValidateSubcommand : CliktCommand(
                 exitProcess(1)
             } else {
                 echo("\nValidation PASSED. All documents are ready.")
-                echo("Next step: run 'agentic plan generate' to begin planning.")
+                echo("Next step: run 'agentic plan start' to begin planning.")
             }
         } finally {
             stopKoin()
@@ -92,34 +92,43 @@ private class PlanStatusSubcommand : CliktCommand(
         val koin = startKoin { modules(agenticModule(agenticDir, Path.of("."))) }.koin
 
         try {
-            val planningService = koin.get<PlanningService>()
-            val currentStatus = planningService.status()
+            val workflowService = koin.get<WorkflowService>()
+            val state = workflowService.getState()
 
-            echo("Planning status: ${currentStatus.name}")
-            echo(nextActionMessage(currentStatus))
+            echo("Workflow status: ${formatStatus(state.status)}")
+            if (state.completedStages.isNotEmpty()) {
+                echo("Completed stages: ${state.completedStages.joinToString(", ")}")
+            }
+            state.currentStage?.let { echo("Current stage: ${it.name} (${it.id})") }
+            echo(nextActionMessage(state.status, state.currentStage?.id))
         } finally {
             stopKoin()
         }
     }
 
-    private fun nextActionMessage(status: PlanningStatus): String = when (status) {
-        PlanningStatus.NOT_STARTED -> "Next: provide input documents and run 'agentic plan validate'."
-        PlanningStatus.AWAITING_DOCUMENT_VALIDATION -> "Next: run 'agentic plan validate' to validate input documents."
-        PlanningStatus.STAGE_1_IN_PROGRESS -> "Next: run 'agentic plan generate' to produce the high-level plan."
-        PlanningStatus.STAGE_1_PENDING_APPROVAL -> "Next: review high-level-plan.md, then run 'agentic plan approve stage1' or 'agentic plan revise stage1'."
-        PlanningStatus.STAGE_2_IN_PROGRESS -> "Next: run 'agentic plan generate' to produce the low-level plan."
-        PlanningStatus.STAGE_2_PENDING_APPROVAL -> "Next: review low-level-plan.md, then run 'agentic plan approve stage2' or 'agentic plan revise stage2'."
-        PlanningStatus.STAGE_3_IN_PROGRESS -> "Next: run 'agentic plan generate' to produce the task list."
-        PlanningStatus.STAGE_3_PENDING_APPROVAL -> "Next: review task-list.md, then run 'agentic plan approve stage3' or 'agentic plan revise stage3'."
-        PlanningStatus.COMPLETE -> "Planning is complete. Run 'agentic start' to begin execution."
+    private fun formatStatus(status: WorkflowStatus): String = when (status) {
+        WorkflowStatus.NotStarted -> "NOT_STARTED"
+        WorkflowStatus.AwaitingDocumentValidation -> "AWAITING_DOCUMENT_VALIDATION"
+        is WorkflowStatus.StageInProgress -> "STAGE_IN_PROGRESS (${status.stageId})"
+        is WorkflowStatus.StagePendingApproval -> "STAGE_PENDING_APPROVAL (${status.stageId})"
+        WorkflowStatus.Complete -> "COMPLETE"
+    }
+
+    private fun nextActionMessage(status: WorkflowStatus, stageId: String?): String = when (status) {
+        WorkflowStatus.NotStarted -> "Next: provide input documents and run 'agentic plan validate'."
+        WorkflowStatus.AwaitingDocumentValidation -> "Next: run 'agentic plan validate' to validate input documents."
+        is WorkflowStatus.StageInProgress -> "Next: run 'agentic plan start' to produce the ${stageId ?: "next"} output."
+        is WorkflowStatus.StagePendingApproval -> "Next: review output, then run 'agentic plan approve $stageId' or 'agentic plan revise $stageId'."
+        WorkflowStatus.Complete -> "Planning is complete. Run 'agentic start' to begin execution."
     }
 }
 
-private class PlanGenerateSubcommand : CliktCommand(
-    name = "generate",
-    help = "Advance to and run the next planning stage",
+private class PlanStartSubcommand : CliktCommand(
+    name = "start",
+    help = "Start a planning stage (auto-advances if no stage ID provided)",
 ) {
     private val configPath by option("--config", help = "Path to config.json").default(".agentic/config.json")
+    private val stageId by argument(help = "Stage ID to start (optional, auto-advances if omitted)").optional()
 
     override fun run() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
@@ -128,43 +137,48 @@ private class PlanGenerateSubcommand : CliktCommand(
         val koin = startKoin { modules(agenticModule(agenticDir, Path.of("."))) }.koin
 
         try {
-            val planningService = koin.get<PlanningService>()
+            val workflowService = koin.get<WorkflowService>()
 
-            when (planningService.status()) {
-                PlanningStatus.STAGE_1_IN_PROGRESS -> {
-                    echo("Generating high-level plan...")
-                    val doc = runBlocking { planningService.generateHighLevelPlan() }
-                    echo("High-level plan written to ${doc.path}")
-                    echo("Review the plan and run 'agentic plan approve stage1' or 'agentic plan revise stage1'.")
-                }
-                PlanningStatus.STAGE_2_IN_PROGRESS -> {
-                    echo("Generating low-level plan...")
-                    val doc = runBlocking { planningService.generateLowLevelPlan() }
-                    echo("Low-level plan written to ${doc.path}")
-                    echo("Review the plan and run 'agentic plan approve stage2' or 'agentic plan revise stage2'.")
-                }
-                PlanningStatus.STAGE_3_IN_PROGRESS -> {
-                    echo("Generating task list...")
-                    val doc = runBlocking { planningService.generateTaskList() }
-                    echo("Task list written to ${doc.path}")
-                    echo("Review the task list and run 'agentic plan approve stage3' or 'agentic plan revise stage3'.")
-                }
-                PlanningStatus.NOT_STARTED,
-                PlanningStatus.AWAITING_DOCUMENT_VALIDATION -> {
-                    echo("Cannot generate plan: documents are not yet validated.")
+            // Validate workflow config first
+            val errors = workflowService.validateWorkflowConfig()
+            if (errors.isNotEmpty()) {
+                echo("Workflow configuration errors:")
+                errors.forEach { echo("  - ${it.message}") }
+                exitProcess(1)
+            }
+
+            val state = workflowService.getState()
+
+            when (state.status) {
+                WorkflowStatus.NotStarted,
+                WorkflowStatus.AwaitingDocumentValidation -> {
+                    echo("Cannot start planning: documents are not yet validated.")
                     echo("Run 'agentic plan validate' first.")
                     exitProcess(1)
                 }
-                PlanningStatus.STAGE_1_PENDING_APPROVAL,
-                PlanningStatus.STAGE_2_PENDING_APPROVAL,
-                PlanningStatus.STAGE_3_PENDING_APPROVAL -> {
-                    echo("Current stage output is awaiting approval.")
-                    echo("Run 'agentic plan approve <stage>' or 'agentic plan revise <stage>'.")
+                is WorkflowStatus.StagePendingApproval -> {
+                    val pendingStageId = state.status.stageId
+                    echo("Stage '$pendingStageId' is awaiting approval.")
+                    echo("Run 'agentic plan approve $pendingStageId' or 'agentic plan revise $pendingStageId'.")
                     exitProcess(1)
                 }
-                PlanningStatus.COMPLETE -> {
+                WorkflowStatus.Complete -> {
                     echo("Planning is already complete. Run 'agentic start' to begin execution.")
                     exitProcess(1)
+                }
+                is WorkflowStatus.StageInProgress -> {
+                    val targetStageId = stageId ?: state.status.stageId
+                    val stage = workflowService.getStageConfig(targetStageId)
+                        ?: run {
+                            echo("Unknown stage: $targetStageId")
+                            echo("Run 'agentic plan stages' to see available stages.")
+                            exitProcess(1)
+                        }
+
+                    echo("Starting stage: ${stage.name} ($targetStageId)...")
+                    val doc = runBlocking { workflowService.startStage(targetStageId) }
+                    echo("Output written to ${doc.path}")
+                    echo("Review the output and run 'agentic plan approve $targetStageId' or 'agentic plan revise $targetStageId'.")
                 }
             }
         } finally {
@@ -175,23 +189,32 @@ private class PlanGenerateSubcommand : CliktCommand(
 
 private class PlanApproveSubcommand : CliktCommand(
     name = "approve",
-    help = "Approve a planning stage output (stage1 | stage2 | stage3)",
+    help = "Approve a planning stage output",
 ) {
     private val configPath by option("--config", help = "Path to config.json").default(".agentic/config.json")
-    private val stage by argument().convert { parseStage(it) }
+    private val stageId by argument(help = "Stage ID to approve")
 
     override fun run() {
         val agenticDir = Path.of(configPath).parent ?: Path.of(".")
         val koin = startKoin { modules(agenticModule(agenticDir, Path.of("."))) }.koin
 
         try {
-            val planningService = koin.get<PlanningService>()
-            planningService.approve(stage)
-            echo("Stage ${stage.label} approved.")
-            if (stage == PlanningStage.TASK_LIST) {
+            val workflowService = koin.get<WorkflowService>()
+            val stage = workflowService.getStageConfig(stageId)
+                ?: run {
+                    echo("Unknown stage: $stageId")
+                    echo("Run 'agentic plan stages' to see available stages.")
+                    exitProcess(1)
+                }
+
+            workflowService.approveStage(stageId)
+            echo("Stage '${stage.name}' ($stageId) approved.")
+
+            val newState = workflowService.getState()
+            if (newState.status == WorkflowStatus.Complete) {
                 echo("Planning complete. Run 'agentic start' to begin execution.")
             } else {
-                echo("Run 'agentic plan generate' to proceed to the next stage.")
+                echo("Run 'agentic plan start' to proceed to the next stage.")
             }
         } finally {
             stopKoin()
@@ -201,10 +224,10 @@ private class PlanApproveSubcommand : CliktCommand(
 
 private class PlanReviseSubcommand : CliktCommand(
     name = "revise",
-    help = "Re-run a planning stage after annotating the document with feedback (stage1 | stage2 | stage3)",
+    help = "Re-run a planning stage after annotating the document with feedback",
 ) {
     private val configPath by option("--config", help = "Path to config.json").default(".agentic/config.json")
-    private val stage by argument().convert { parseStage(it) }
+    private val stageId by argument(help = "Stage ID to revise")
 
     override fun run() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
@@ -213,17 +236,61 @@ private class PlanReviseSubcommand : CliktCommand(
         val koin = startKoin { modules(agenticModule(agenticDir, Path.of("."))) }.koin
 
         try {
-            val planningService = koin.get<PlanningService>()
-            echo("Revising ${stage.label}...")
-            val doc = runBlocking { planningService.revise(stage) }
+            val workflowService = koin.get<WorkflowService>()
+            val stage = workflowService.getStageConfig(stageId)
+                ?: run {
+                    echo("Unknown stage: $stageId")
+                    echo("Run 'agentic plan stages' to see available stages.")
+                    exitProcess(1)
+                }
+
+            echo("Revising stage: ${stage.name} ($stageId)...")
+            val doc = runBlocking { workflowService.reviseStage(stageId) }
             echo("Revised document written to ${doc.path}")
-            echo("Review and run 'agentic plan approve ${stage.label}' or re-annotate and revise again.")
+            echo("Review and run 'agentic plan approve $stageId' or re-annotate and revise again.")
         } finally {
             stopKoin()
         }
     }
 }
 
-private fun parseStage(value: String): PlanningStage =
-    PlanningStage.entries.firstOrNull { it.label == value }
-        ?: throw IllegalArgumentException("Unknown stage '$value'. Use: stage1, stage2, or stage3.")
+private class PlanStagesSubcommand : CliktCommand(
+    name = "stages",
+    help = "List all configured workflow stages",
+) {
+    private val configPath by option("--config", help = "Path to config.json").default(".agentic/config.json")
+
+    override fun run() {
+        EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
+
+        val agenticDir = Path.of(configPath).parent ?: Path.of(".")
+        val koin = startKoin { modules(agenticModule(agenticDir, Path.of("."))) }.koin
+
+        try {
+            val workflowService = koin.get<WorkflowService>()
+            val state = workflowService.getState()
+            val stages = workflowService.getAllStages()
+
+            echo("Configured Workflow Stages:")
+            echo("-".repeat(60))
+
+            for (stage in stages) {
+                val status = when {
+                    stage.id in state.completedStages -> "[APPROVED]"
+                    state.currentStage?.id == stage.id -> {
+                        if (state.status is WorkflowStatus.StagePendingApproval) "[PENDING APPROVAL]"
+                        else "[IN PROGRESS]"
+                    }
+                    else -> "[NOT STARTED]"
+                }
+                echo("  ${stage.id}: ${stage.name} $status")
+                echo("    Output: ${stage.outputFile}")
+                if (stage.inputDependencies.isNotEmpty()) {
+                    echo("    Depends on: ${stage.inputDependencies.joinToString(", ")}")
+                }
+            }
+        } finally {
+            stopKoin()
+        }
+    }
+}

@@ -1,10 +1,10 @@
 package com.cramsan.edifikana.server.service
 
-import com.cramsan.edifikana.lib.model.InviteId
-import com.cramsan.edifikana.lib.model.InviteRole
-import com.cramsan.edifikana.lib.model.OrgRole
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.invite.InviteId
+import com.cramsan.edifikana.lib.model.invite.InviteRole
+import com.cramsan.edifikana.lib.model.organization.OrgRole
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.datastore.MembershipDatastore
 import com.cramsan.edifikana.server.datastore.UserDatastore
 import com.cramsan.edifikana.server.service.models.Invite

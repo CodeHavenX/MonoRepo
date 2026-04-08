@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.home.employeeoverview
 
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.framework.core.compose.ViewModelUIState
 
 /**

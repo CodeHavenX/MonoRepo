@@ -1,9 +1,8 @@
 package com.cramsan.edifikana.server.datastore.supabase
 
-import com.cramsan.edifikana.lib.model.CommonAreaId
-import com.cramsan.edifikana.lib.model.CommonAreaType
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.commonArea.CommonAreaId
+import com.cramsan.edifikana.lib.model.commonArea.CommonAreaType
+import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.server.datastore.CommonAreaDatastore
 import com.cramsan.edifikana.server.datastore.supabase.models.CommonAreaEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.CommonAreaEntity.CreateCommonAreaEntity

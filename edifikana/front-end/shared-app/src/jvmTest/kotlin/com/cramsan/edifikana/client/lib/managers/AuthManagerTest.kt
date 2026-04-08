@@ -1,15 +1,13 @@
 package com.cramsan.edifikana.client.lib.managers
 
-import com.cramsan.edifikana.client.lib.models.Organization
 import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.client.lib.service.AuthService
 import com.cramsan.edifikana.client.lib.service.OrganizationService
-import com.cramsan.edifikana.client.lib.service.PropertyService
-import com.cramsan.edifikana.lib.model.InviteId
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.lib.model.UserRole
+import com.cramsan.edifikana.lib.model.invite.InviteId
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.edifikana.lib.model.user.UserId
+import com.cramsan.edifikana.lib.model.user.UserRole
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.logging.EventLogger

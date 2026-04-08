@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.client.lib.models
 
-import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.user.UserId
 
 /**
  * Model for a user.

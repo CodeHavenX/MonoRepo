@@ -1,10 +1,10 @@
 package com.cramsan.edifikana.api
 
-import com.cramsan.edifikana.lib.model.TimeCardEventId
-import com.cramsan.edifikana.lib.model.network.CreateTimeCardEventNetworkRequest
-import com.cramsan.edifikana.lib.model.network.GetTimeCardEventsQueryParams
-import com.cramsan.edifikana.lib.model.network.TimeCardEventListNetworkResponse
-import com.cramsan.edifikana.lib.model.network.TimeCardEventNetworkResponse
+import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventId
+import com.cramsan.edifikana.lib.model.network.timeCard.CreateTimeCardEventNetworkRequest
+import com.cramsan.edifikana.lib.model.network.timeCard.GetTimeCardEventsQueryParams
+import com.cramsan.edifikana.lib.model.network.timeCard.TimeCardEventListNetworkResponse
+import com.cramsan.edifikana.lib.model.network.timeCard.TimeCardEventNetworkResponse
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam

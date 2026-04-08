@@ -1,9 +1,10 @@
 package com.cramsan.edifikana.server.service
 
-import com.cramsan.edifikana.lib.model.InviteId
-import com.cramsan.edifikana.lib.model.InviteRole
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.invite.InviteId
+import com.cramsan.edifikana.lib.model.invite.InviteRole
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.user.UserId
+import com.cramsan.edifikana.lib.model.notification.NotificationId
 import com.cramsan.edifikana.server.datastore.MembershipDatastore
 import com.cramsan.edifikana.server.datastore.NotificationDatastore
 import com.cramsan.edifikana.server.datastore.OrganizationDatastore
@@ -250,7 +251,7 @@ class UserServiceTest {
         val invite = mockk<Invite>()
         val organization = Organization(id = orgId, name = "Test Org", description = "Test Description")
 
-        val notificationId = com.cramsan.edifikana.lib.model.NotificationId("notifId")
+        val notificationId = NotificationId("notifId")
         val createdNotification = mockk<com.cramsan.edifikana.server.service.models.Notification>()
         every { createdNotification.id } returns notificationId
 
@@ -367,7 +368,7 @@ class UserServiceTest {
         val orgId = OrganizationId("org123")
         val email = "test@example.com"
         val futureTime = clock.now() + 7.days
-        val notificationId = com.cramsan.edifikana.lib.model.NotificationId("notif123")
+        val notificationId = NotificationId("notif123")
 
         val invite = Invite(
             id = inviteId,
@@ -494,7 +495,7 @@ class UserServiceTest {
         val orgId = OrganizationId("org123")
         val email = "test@example.com"
         val futureTime = clock.now() + 7.days
-        val notificationId = com.cramsan.edifikana.lib.model.NotificationId("notif123")
+        val notificationId = NotificationId("notif123")
 
         val invite = Invite(
             id = inviteId,

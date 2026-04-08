@@ -1,13 +1,13 @@
 package com.cramsan.edifikana.client.lib.service.impl
 
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
-import com.cramsan.edifikana.lib.model.EmployeeId
-import com.cramsan.edifikana.lib.model.EventLogEntryId
-import com.cramsan.edifikana.lib.model.EventLogEventType
-import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.UnitId
-import com.cramsan.edifikana.lib.model.network.EventLogEntryListNetworkResponse
-import com.cramsan.edifikana.lib.model.network.EventLogEntryNetworkResponse
+import com.cramsan.edifikana.lib.model.employee.EmployeeId
+import com.cramsan.edifikana.lib.model.eventLog.EventLogEntryId
+import com.cramsan.edifikana.lib.model.eventLog.EventLogEventType
+import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.edifikana.lib.model.unit.UnitId
+import com.cramsan.edifikana.lib.model.network.eventLog.EventLogEntryListNetworkResponse
+import com.cramsan.edifikana.lib.model.network.eventLog.EventLogEntryNetworkResponse
 import com.cramsan.edifikana.lib.serialization.createJson
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.assertlib.AssertUtil

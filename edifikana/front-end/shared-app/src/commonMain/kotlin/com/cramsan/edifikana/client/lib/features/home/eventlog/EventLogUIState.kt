@@ -1,10 +1,9 @@
 package com.cramsan.edifikana.client.lib.features.home.eventlog
 
-import com.cramsan.edifikana.lib.model.EventLogEntryId
-import com.cramsan.edifikana.lib.model.EventLogEventType
-import com.cramsan.edifikana.lib.model.UnitId
+import com.cramsan.edifikana.lib.model.eventLog.EventLogEntryId
+import com.cramsan.edifikana.lib.model.eventLog.EventLogEventType
+import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.framework.core.compose.ViewModelUIState
-import kotlin.time.Instant
 
 /**
  * UI state of the EventLog feature.

@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.models
 
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.property.PropertyId
 
 /**
  * Model to represent a property.

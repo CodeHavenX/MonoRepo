@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.home.propertiesoverview
 
 import com.cramsan.edifikana.client.lib.models.PropertyModel
-import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.framework.core.compose.ViewModelUIState
 
 /**

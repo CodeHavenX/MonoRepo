@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.server.service.models
 
-import com.cramsan.edifikana.lib.model.AssetId
+import com.cramsan.edifikana.lib.model.asset.AssetId
 
 /**
  * Domain model representing a file [Asset].

@@ -1,9 +1,8 @@
 package com.cramsan.edifikana.server.service
 
-import com.cramsan.edifikana.lib.model.CommonAreaId
-import com.cramsan.edifikana.lib.model.CommonAreaType
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.commonArea.CommonAreaId
+import com.cramsan.edifikana.lib.model.commonArea.CommonAreaType
+import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.server.datastore.CommonAreaDatastore
 import com.cramsan.edifikana.server.service.models.CommonArea
 import com.cramsan.framework.logging.logD

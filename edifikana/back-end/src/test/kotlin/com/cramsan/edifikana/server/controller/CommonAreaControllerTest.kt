@@ -2,10 +2,10 @@ package com.cramsan.edifikana.server.controller
 
 import com.cramsan.architecture.server.test.startTestKoin
 import com.cramsan.architecture.server.test.testBackEndApplication
-import com.cramsan.edifikana.lib.model.CommonAreaId
-import com.cramsan.edifikana.lib.model.CommonAreaType
-import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.commonArea.CommonAreaId
+import com.cramsan.edifikana.lib.model.commonArea.CommonAreaType
+import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.lib.serialization.createJson
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.dependencyinjection.TestControllerModule

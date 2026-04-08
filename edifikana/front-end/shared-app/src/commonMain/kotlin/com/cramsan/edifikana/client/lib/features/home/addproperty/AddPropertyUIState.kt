@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.home.addproperty
 
 import com.cramsan.edifikana.client.ui.components.ImageOptionUIModel
-import com.cramsan.edifikana.lib.model.OrganizationId
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.framework.core.compose.ViewModelUIState
 
 /**

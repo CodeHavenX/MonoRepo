@@ -1,11 +1,11 @@
 package com.cramsan.edifikana.server.datastore.supabase
 
-import com.cramsan.edifikana.lib.model.EmployeeId
-import com.cramsan.edifikana.lib.model.EmployeeRole
-import com.cramsan.edifikana.lib.model.IdType
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.employee.EmployeeId
+import com.cramsan.edifikana.lib.model.employee.EmployeeRole
+import com.cramsan.edifikana.lib.model.identification.IdType
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.framework.utils.uuid.UUID
 import kotlinx.coroutines.runBlocking
 import kotlin.test.BeforeTest

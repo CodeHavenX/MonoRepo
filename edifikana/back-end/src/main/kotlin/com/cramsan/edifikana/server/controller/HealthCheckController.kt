@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.server.controller
 
 import com.cramsan.edifikana.api.HealthApi
-import com.cramsan.edifikana.lib.model.network.HealthCheckNetworkResponse
+import com.cramsan.edifikana.lib.model.network.health.HealthCheckNetworkResponse
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.core.ktor.Controller

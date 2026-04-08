@@ -2,11 +2,10 @@ package com.cramsan.edifikana.client.lib.features.home.eventlog
 
 import androidx.compose.runtime.Composable
 import com.cramsan.edifikana.client.ui.theme.AppTheme
-import com.cramsan.edifikana.lib.model.EventLogEntryId
-import com.cramsan.edifikana.lib.model.EventLogEventType
-import com.cramsan.edifikana.lib.model.UnitId
+import com.cramsan.edifikana.lib.model.eventLog.EventLogEntryId
+import com.cramsan.edifikana.lib.model.eventLog.EventLogEventType
+import com.cramsan.edifikana.lib.model.unit.UnitId
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import kotlin.time.Instant
 
 @Preview
 @Composable

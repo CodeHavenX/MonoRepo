@@ -4,11 +4,11 @@ import androidx.navigation.NavType
 import androidx.savedstate.SavedState
 import androidx.savedstate.read
 import androidx.savedstate.write
-import com.cramsan.edifikana.lib.model.EmployeeId
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.TimeCardEventId
-import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.employee.EmployeeId
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventId
+import com.cramsan.edifikana.lib.model.user.UserId
 
 /**
  * Custom NavType for PropertyId, allowing it to be passed as a navigation argument.
@@ -101,7 +101,7 @@ class EmployeeIdNavType : NavType<EmployeeId>(isNullableAllowed = false) {
     override fun put(
         bundle: SavedState,
         key: String,
-        value: com.cramsan.edifikana.lib.model.EmployeeId
+        value: EmployeeId
     ) {
         bundle.write {
             this.putString(key, value.empId)

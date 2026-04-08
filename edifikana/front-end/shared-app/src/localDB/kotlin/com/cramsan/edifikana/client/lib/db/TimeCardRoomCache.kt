@@ -4,7 +4,7 @@ import com.cramsan.edifikana.client.lib.db.models.TimeCardRecordDao
 import com.cramsan.edifikana.client.lib.managers.mappers.toDomainModel
 import com.cramsan.edifikana.client.lib.managers.mappers.toEntity
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
-import com.cramsan.edifikana.lib.model.EmployeeId
+import com.cramsan.edifikana.lib.model.employee.EmployeeId
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.logging.logI
 

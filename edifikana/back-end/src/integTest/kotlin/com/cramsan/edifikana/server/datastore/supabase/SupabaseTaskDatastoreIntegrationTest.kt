@@ -1,11 +1,11 @@
 package com.cramsan.edifikana.server.datastore.supabase
 
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.TaskId
-import com.cramsan.edifikana.lib.model.TaskPriority
-import com.cramsan.edifikana.lib.model.TaskStatus
-import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.edifikana.lib.model.task.TaskId
+import com.cramsan.edifikana.lib.model.task.TaskPriority
+import com.cramsan.edifikana.lib.model.task.TaskStatus
+import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.framework.utils.uuid.UUID
 import kotlinx.coroutines.runBlocking
 import kotlin.time.Clock

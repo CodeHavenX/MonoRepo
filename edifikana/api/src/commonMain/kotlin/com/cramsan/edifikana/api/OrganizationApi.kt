@@ -1,10 +1,10 @@
 package com.cramsan.edifikana.api
 
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.network.CreateOrganizationNetworkRequest
-import com.cramsan.edifikana.lib.model.network.OrganizationNetworkListNetworkResponse
-import com.cramsan.edifikana.lib.model.network.OrganizationNetworkResponse
-import com.cramsan.edifikana.lib.model.network.UpdateOrganizationNetworkRequest
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.network.organization.CreateOrganizationNetworkRequest
+import com.cramsan.edifikana.lib.model.network.organization.OrganizationNetworkListNetworkResponse
+import com.cramsan.edifikana.lib.model.network.organization.OrganizationNetworkResponse
+import com.cramsan.edifikana.lib.model.network.organization.UpdateOrganizationNetworkRequest
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam

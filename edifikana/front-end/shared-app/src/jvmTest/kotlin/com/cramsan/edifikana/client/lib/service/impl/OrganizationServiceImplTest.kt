@@ -1,8 +1,8 @@
 package com.cramsan.edifikana.client.lib.service.impl
 
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.network.OrganizationNetworkListNetworkResponse
-import com.cramsan.edifikana.lib.model.network.OrganizationNetworkResponse
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.network.organization.OrganizationNetworkListNetworkResponse
+import com.cramsan.edifikana.lib.model.network.organization.OrganizationNetworkResponse
 import com.cramsan.edifikana.lib.serialization.createJson
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.assertlib.AssertUtil

@@ -1,13 +1,12 @@
 package com.cramsan.edifikana.server.controller
 
 import com.cramsan.edifikana.api.EventLogApi
-import com.cramsan.edifikana.lib.model.EventLogEntryId
-import com.cramsan.edifikana.lib.model.UnitId
-import com.cramsan.edifikana.lib.model.network.CreateEventLogEntryNetworkRequest
-import com.cramsan.edifikana.lib.model.network.EventLogEntryListNetworkResponse
-import com.cramsan.edifikana.lib.model.network.EventLogEntryNetworkResponse
-import com.cramsan.edifikana.lib.model.network.GetEventLogEntriesQueryParams
-import com.cramsan.edifikana.lib.model.network.UpdateEventLogEntryNetworkRequest
+import com.cramsan.edifikana.lib.model.eventLog.EventLogEntryId
+import com.cramsan.edifikana.lib.model.network.eventLog.CreateEventLogEntryNetworkRequest
+import com.cramsan.edifikana.lib.model.network.eventLog.EventLogEntryListNetworkResponse
+import com.cramsan.edifikana.lib.model.network.eventLog.EventLogEntryNetworkResponse
+import com.cramsan.edifikana.lib.model.network.eventLog.GetEventLogEntriesQueryParams
+import com.cramsan.edifikana.lib.model.network.eventLog.UpdateEventLogEntryNetworkRequest
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.service.EventLogService
 import com.cramsan.edifikana.server.service.authorization.RBACService

@@ -1,12 +1,12 @@
 package com.cramsan.edifikana.server
 
-import com.cramsan.edifikana.lib.model.InviteId
-import com.cramsan.edifikana.lib.model.NotificationId
-import com.cramsan.edifikana.lib.model.NotificationType
-import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.lib.model.network.AuthMetadataNetworkResponse
-import com.cramsan.edifikana.lib.model.network.NotificationNetworkResponse
-import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
+import com.cramsan.edifikana.lib.model.invite.InviteId
+import com.cramsan.edifikana.lib.model.notification.NotificationId
+import com.cramsan.edifikana.lib.model.notification.NotificationType
+import com.cramsan.edifikana.lib.model.user.UserId
+import com.cramsan.edifikana.lib.model.network.user.AuthMetadataNetworkResponse
+import com.cramsan.edifikana.lib.model.network.notification.NotificationNetworkResponse
+import com.cramsan.edifikana.lib.model.network.user.UserNetworkResponse
 import com.cramsan.edifikana.server.controller.toNotificationNetworkResponse
 import com.cramsan.edifikana.server.controller.toUserNetworkResponse
 import com.cramsan.edifikana.server.service.models.Notification

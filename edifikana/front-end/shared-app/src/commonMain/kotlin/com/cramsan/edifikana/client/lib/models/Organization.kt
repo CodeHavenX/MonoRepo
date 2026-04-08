@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.client.lib.models
 
-import com.cramsan.edifikana.lib.model.OrganizationId
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
 
 /**
  * Represents an organization in the system.

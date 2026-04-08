@@ -1,15 +1,15 @@
 package com.cramsan.edifikana.client.lib.service.impl
 
-import com.cramsan.edifikana.lib.model.InviteId
-import com.cramsan.edifikana.lib.model.InviteRole
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.lib.model.UserRole
-import com.cramsan.edifikana.lib.model.network.CheckUserNetworkResponse
-import com.cramsan.edifikana.lib.model.network.InviteListNetworkResponse
-import com.cramsan.edifikana.lib.model.network.InviteNetworkResponse
-import com.cramsan.edifikana.lib.model.network.UserListNetworkResponse
-import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
+import com.cramsan.edifikana.lib.model.invite.InviteId
+import com.cramsan.edifikana.lib.model.invite.InviteRole
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.user.UserId
+import com.cramsan.edifikana.lib.model.user.UserRole
+import com.cramsan.edifikana.lib.model.network.user.CheckUserNetworkResponse
+import com.cramsan.edifikana.lib.model.network.invite.InviteListNetworkResponse
+import com.cramsan.edifikana.lib.model.network.invite.InviteNetworkResponse
+import com.cramsan.edifikana.lib.model.network.user.UserListNetworkResponse
+import com.cramsan.edifikana.lib.model.network.user.UserNetworkResponse
 import com.cramsan.edifikana.lib.serialization.createJson
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.assertlib.AssertUtil

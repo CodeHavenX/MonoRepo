@@ -1,11 +1,11 @@
 package com.cramsan.edifikana.server.controller
 
 import com.cramsan.edifikana.api.PropertyApi
-import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.network.CreatePropertyNetworkRequest
-import com.cramsan.edifikana.lib.model.network.PropertyListNetworkResponse
-import com.cramsan.edifikana.lib.model.network.PropertyNetworkResponse
-import com.cramsan.edifikana.lib.model.network.UpdatePropertyNetworkRequest
+import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.edifikana.lib.model.network.property.CreatePropertyNetworkRequest
+import com.cramsan.edifikana.lib.model.network.property.PropertyListNetworkResponse
+import com.cramsan.edifikana.lib.model.network.property.PropertyNetworkResponse
+import com.cramsan.edifikana.lib.model.network.property.UpdatePropertyNetworkRequest
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.service.PropertyService
 import com.cramsan.edifikana.server.service.authorization.RBACService

@@ -5,6 +5,7 @@ import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
 import com.cramsan.agentic.core.AgenticConfig
 import com.cramsan.agentic.core.VcsProviderConfig
+import com.cramsan.agentic.core.WorkflowConfig
 import com.cramsan.agentic.input.DefaultScaffolder
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logI
@@ -40,8 +41,9 @@ class InitCommand : CliktCommand(name = "init", help = "Scaffold input docs and 
             baseBranch = "main",
             docsDir = docsDir.toString(),
             vcsProvider = VcsProviderConfig.GitHub(owner = "your-org", repo = "your-repo"),
+            workflow = WorkflowConfig(),
         )
-        val json = Json { prettyPrint = true }
+        val json = Json { prettyPrint = true; encodeDefaults = true }
         val configJson = json.encodeToString(config)
         val configPath = dir.resolve("config.json")
         logI(TAG, "Writing config to: $configPath")

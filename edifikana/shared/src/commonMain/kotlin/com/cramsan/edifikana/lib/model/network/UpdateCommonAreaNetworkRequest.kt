@@ -13,9 +13,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class UpdateCommonAreaNetworkRequest(
     @SerialName("name")
-    val name: String? = null,
+    val name: String?,
     @SerialName("type")
-    val type: CommonAreaType? = null,
+    val type: CommonAreaType?,
     @SerialName("description")
-    val description: String? = null,
+    val description: String?,
 ) : RequestBody

@@ -565,8 +565,8 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     // -------------------------------------------------------------------------
 
     /**
-     * Inserts a task row directly into the tasks table for test setup.
-     * Tasks are cascade-deleted when their organization is deleted in tearDown.
+     * Created task IDs are tracked in `taskIds` and explicitly deleted by
+     * `tearDownMembership()` before superclass teardown runs.
      */
     private suspend fun createTestTask(
         createdBy: UserId,

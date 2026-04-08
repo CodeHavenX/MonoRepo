@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.lib.model
 
+import kotlinx.datetime.LocalDate
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -22,7 +23,7 @@ data class TaskModel(
     val description: String?,
     val priority: TaskPriority,
     val status: TaskStatus,
-    val dueDate: Instant?,
+    val dueDate: LocalDate?,
     val createdAt: Instant,
     val completedAt: Instant?,
     val statusChangedAt: Instant?,

@@ -24,5 +24,5 @@ data class CommonAreaNetworkResponse(
     @SerialName("type")
     val type: CommonAreaType,
     @SerialName("description")
-    val description: String? = null,
+    val description: String?,
 ) : ResponseBody

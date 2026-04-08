@@ -7,6 +7,7 @@ import com.cramsan.edifikana.lib.model.TaskPriority
 import com.cramsan.edifikana.lib.model.TaskStatus
 import com.cramsan.edifikana.lib.model.UnitId
 import com.cramsan.edifikana.lib.model.UserId
+import kotlinx.datetime.LocalDate
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -29,7 +30,7 @@ data class Task(
     val description: String?,
     val priority: TaskPriority,
     val status: TaskStatus,
-    val dueDate: Instant?,
+    val dueDate: LocalDate?,
     val createdAt: Instant,
     val completedAt: Instant?,
     val statusChangedAt: Instant?,

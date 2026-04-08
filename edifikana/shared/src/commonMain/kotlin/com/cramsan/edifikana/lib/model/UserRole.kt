@@ -1,12 +1,9 @@
 package com.cramsan.edifikana.lib.model
 
 import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-
 /**
  * Enum representing a user's role in an organization for network transport.
  */
-@Serializable
 enum class UserRole {
     @SerialName("SUPERUSER")
     SUPERUSER,

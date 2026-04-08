@@ -15,6 +15,7 @@ import com.cramsan.framework.annotations.SupabaseModel
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.postgrest.Postgrest
+import kotlinx.datetime.LocalDate
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -41,7 +42,7 @@ class SupabaseTaskDatastore(
         title: String,
         description: String?,
         priority: TaskPriority,
-        dueDate: Instant?,
+        dueDate: LocalDate?,
     ): Result<Task> = runSuspendCatching(TAG) {
         logD(TAG, "Creating task: %s", title)
         val entity = CreateTaskEntity(
@@ -109,7 +110,7 @@ class SupabaseTaskDatastore(
         priority: TaskPriority?,
         status: TaskStatus?,
         assigneeId: UserId?,
-        dueDate: Instant?,
+        dueDate: LocalDate?,
         statusChangedBy: UserId?,
         completedAt: Instant?,
         statusChangedAt: Instant?,

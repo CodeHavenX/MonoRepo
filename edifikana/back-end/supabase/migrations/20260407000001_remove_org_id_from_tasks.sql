@@ -24,6 +24,13 @@ ALTER TABLE tasks DROP CONSTRAINT IF EXISTS at_least_one_location;
 -- Make property_id NOT NULL (tasks are always scoped to a property)
 ALTER TABLE tasks ALTER COLUMN property_id SET NOT NULL;
 
+-- The original FK was defined with ON DELETE SET NULL, which is incompatible
+-- with a NOT NULL column. Drop it and recreate with ON DELETE CASCADE so that
+-- deleting a property removes all of its tasks.
+ALTER TABLE tasks DROP CONSTRAINT IF EXISTS tasks_property_id_fkey;
+ALTER TABLE tasks ADD CONSTRAINT tasks_property_id_fkey
+    FOREIGN KEY (property_id) REFERENCES properties(id) ON DELETE CASCADE;
+
 -- Remove the org_id column
 ALTER TABLE tasks DROP COLUMN IF EXISTS org_id;
 

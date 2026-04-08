@@ -11,6 +11,8 @@ import com.cramsan.edifikana.server.datastore.TaskDatastore
 import com.cramsan.edifikana.server.service.models.Task
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.InvalidRequestException
+import com.cramsan.framework.utils.exceptions.NotFoundException
+import kotlinx.datetime.LocalDate
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -39,11 +41,16 @@ class TaskService(
         title: String,
         description: String?,
         priority: TaskPriority,
-        dueDate: Instant?,
+        dueDate: LocalDate?,
     ): Task {
         logD(TAG, "createTask")
+        // Tasks require at least a unit or common area ID for successful creation
+        val invalidRequest = "A task must be associated with either a unit or a common area."
         if (unitId == null && commonAreaId == null) {
-            throw InvalidRequestException("A task must be associated with either a unit or a common area.")
+            throw InvalidRequestException(invalidRequest)
+        }
+        if (unitId != null && commonAreaId != null) {
+            throw InvalidRequestException(invalidRequest)
         }
         return taskDatastore.createTask(
             propertyId = propertyId,
@@ -97,12 +104,12 @@ class TaskService(
         priority: TaskPriority?,
         status: TaskStatus?,
         assigneeId: UserId?,
-        dueDate: Instant?,
+        dueDate: LocalDate?,
         callerUserId: UserId,
     ): Task {
         logD(TAG, "updateTask")
         val current = taskDatastore.getTask(taskId).getOrThrow()
-            ?: throw InvalidRequestException("Task not found: $taskId")
+            ?: throw NotFoundException("Task not found: $taskId")
 
         var completedAt: Instant? = null
         var statusChangedAt: Instant? = null

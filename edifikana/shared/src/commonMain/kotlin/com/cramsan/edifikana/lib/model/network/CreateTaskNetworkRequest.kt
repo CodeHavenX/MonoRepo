@@ -7,27 +7,25 @@ import com.cramsan.edifikana.lib.model.UnitId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.RequestBody
+import kotlinx.datetime.LocalDate
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlin.time.ExperimentalTime
-import kotlin.time.Instant
 
 /**
  * Network request to create a new task.
  *
- * Tasks are property-scoped: [propertyId] is required. [unitId] and [commonAreaId]
- * are optional sub-scoping fields within the property.
+ * Tasks are property-scoped: [propertyId] is required. Either [unitId] or [commonAreaId]
+ * is required for sub-scoping fields within the property.
  */
 @NetworkModel
 @Serializable
-@OptIn(ExperimentalTime::class)
 data class CreateTaskNetworkRequest(
     @SerialName("property_id") val propertyId: PropertyId,
-    @SerialName("unit_id") val unitId: UnitId? = null,
-    @SerialName("common_area_id") val commonAreaId: CommonAreaId? = null,
-    @SerialName("assignee_id") val assigneeId: UserId? = null,
+    @SerialName("unit_id") val unitId: UnitId?,
+    @SerialName("common_area_id") val commonAreaId: CommonAreaId?,
+    @SerialName("assignee_id") val assigneeId: UserId?,
     val title: String,
-    val description: String? = null,
+    val description: String?,
     val priority: TaskPriority,
-    @SerialName("due_date") val dueDate: Instant? = null,
+    @SerialName("due_date") val dueDate: LocalDate?,
 ) : RequestBody

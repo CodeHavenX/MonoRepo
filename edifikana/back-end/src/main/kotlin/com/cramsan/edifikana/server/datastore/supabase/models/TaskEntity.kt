@@ -5,6 +5,7 @@ import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.UnitId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.framework.annotations.SupabaseModel
+import kotlinx.datetime.LocalDate
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.time.ExperimentalTime
@@ -24,29 +25,29 @@ data class TaskEntity(
     @SerialName("property_id")
     val propertyId: PropertyId,
     @SerialName("unit_id")
-    val unitId: UnitId? = null,
+    val unitId: UnitId?,
     @SerialName("common_area_id")
-    val commonAreaId: CommonAreaId? = null,
+    val commonAreaId: CommonAreaId?,
     @SerialName("assignee_id")
-    val assigneeId: UserId? = null,
+    val assigneeId: UserId?,
     @SerialName("created_by")
     val createdBy: UserId,
     @SerialName("status_changed_by")
-    val statusChangedBy: UserId? = null,
+    val statusChangedBy: UserId?,
     val title: String,
-    val description: String? = null,
+    val description: String?,
     val priority: String,
     val status: String,
     @SerialName("due_date")
-    val dueDate: Instant? = null,
+    val dueDate: LocalDate?,
     @SerialName("created_at")
     val createdAt: Instant,
     @SerialName("completed_at")
-    val completedAt: Instant? = null,
+    val completedAt: Instant?,
     @SerialName("status_changed_at")
-    val statusChangedAt: Instant? = null,
+    val statusChangedAt: Instant?,
     @SerialName("deleted_at")
-    val deletedAt: Instant? = null,
+    val deletedAt: Instant?,
 ) {
     companion object {
         const val COLLECTION = "tasks"
@@ -63,17 +64,17 @@ data class TaskEntity(
         @SerialName("property_id")
         val propertyId: PropertyId,
         @SerialName("unit_id")
-        val unitId: UnitId? = null,
+        val unitId: UnitId?,
         @SerialName("common_area_id")
-        val commonAreaId: CommonAreaId? = null,
+        val commonAreaId: CommonAreaId?,
         @SerialName("assignee_id")
-        val assigneeId: UserId? = null,
+        val assigneeId: UserId?,
         @SerialName("created_by")
         val createdBy: UserId,
         val title: String,
-        val description: String? = null,
+        val description: String?,
         val priority: String,
         @SerialName("due_date")
-        val dueDate: Instant? = null,
+        val dueDate: LocalDate?,
     )
 }

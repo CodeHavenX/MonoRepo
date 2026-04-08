@@ -8,6 +8,7 @@ import com.cramsan.edifikana.lib.model.TaskStatus
 import com.cramsan.edifikana.lib.model.UnitId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.service.models.Task
+import kotlinx.datetime.LocalDate
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -29,7 +30,7 @@ interface TaskDatastore {
         title: String,
         description: String?,
         priority: TaskPriority,
-        dueDate: Instant?,
+        dueDate: LocalDate?,
     ): Result<Task>
 
     /**
@@ -60,7 +61,7 @@ interface TaskDatastore {
         priority: TaskPriority?,
         status: TaskStatus?,
         assigneeId: UserId?,
-        dueDate: Instant?,
+        dueDate: LocalDate?,
         statusChangedBy: UserId?,
         completedAt: Instant?,
         statusChangedAt: Instant?,

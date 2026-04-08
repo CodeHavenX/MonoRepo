@@ -9,6 +9,7 @@ import com.cramsan.edifikana.lib.model.UnitId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.ResponseBody
+import kotlinx.datetime.LocalDate
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.time.ExperimentalTime
@@ -35,7 +36,7 @@ data class TaskNetworkResponse(
     val description: String?,
     val priority: TaskPriority,
     val status: TaskStatus,
-    @SerialName("due_date") val dueDate: Instant?,
+    @SerialName("due_date") val dueDate: LocalDate?,
     @SerialName("created_at") val createdAt: Instant,
     @SerialName("completed_at") val completedAt: Instant?,
     @SerialName("status_changed_at") val statusChangedAt: Instant?,

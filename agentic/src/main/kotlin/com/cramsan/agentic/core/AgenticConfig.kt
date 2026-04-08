@@ -28,6 +28,23 @@ sealed class AiProviderConfig {
     data class ClaudeCli(
         val cliPath: String = "claude",
     ) : AiProviderConfig()
+
+    @Serializable
+    @SerialName("fake")
+    data class Fake(
+        val mode: FakeMode = FakeMode.TEST,
+        val delayMs: Long = 0L,
+        val autoCompleteAfterTurns: Int = 5,
+        val defaultTextResponse: String = "I understand. Let me continue working on this task.",
+    ) : AiProviderConfig()
+}
+
+@Serializable
+enum class FakeMode {
+    @SerialName("test")
+    TEST,
+    @SerialName("demo")
+    DEMO,
 }
 
 @Serializable

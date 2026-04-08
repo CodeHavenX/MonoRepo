@@ -3,6 +3,7 @@ package com.cramsan.agentic.app
 import com.cramsan.agentic.ai.AiProvider
 import com.cramsan.agentic.ai.claude.ClaudeAiProvider
 import com.cramsan.agentic.ai.claude.ClaudeCliAiProvider
+import com.cramsan.agentic.ai.fake.FakeAiProvider
 import com.cramsan.agentic.claude.DefaultAgentSession
 import com.cramsan.agentic.coordination.DefaultDependencyGraph
 import com.cramsan.agentic.coordination.DefaultOrchestrator
@@ -124,6 +125,15 @@ fun agenticModule(
             is AiProviderConfig.ClaudeCli -> {
                 logI(TAG, "Configuring AI provider: ClaudeCli (cliPath=${aiConfig.cliPath})")
                 ClaudeCliAiProvider(get(), aiConfig.cliPath)
+            }
+            is AiProviderConfig.Fake -> {
+                logI(TAG, "Configuring AI provider: Fake (mode=${aiConfig.mode})")
+                FakeAiProvider(
+                    mode = aiConfig.mode,
+                    delayMs = aiConfig.delayMs,
+                    autoCompleteAfterTurns = aiConfig.autoCompleteAfterTurns,
+                    defaultTextResponse = aiConfig.defaultTextResponse,
+                )
             }
         }
     }

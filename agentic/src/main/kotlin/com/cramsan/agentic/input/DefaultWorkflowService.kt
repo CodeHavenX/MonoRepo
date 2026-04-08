@@ -22,7 +22,6 @@ private const val TAG = "DefaultWorkflowService"
 class DefaultWorkflowService(
     private val documentStore: DocumentStore,
     private val aiProvider: AiProvider,
-    private val model: String,
     private val docsDir: Path,
     private val workflowConfig: WorkflowConfig,
 ) : WorkflowService {
@@ -308,7 +307,6 @@ class DefaultWorkflowService(
 
     private suspend fun callAi(systemPrompt: String, userContent: String): String {
         val response = aiProvider.chat(
-            model = model,
             systemPrompt = systemPrompt,
             messages = listOf(AiMessage("user", userContent)),
             tools = emptyList(),

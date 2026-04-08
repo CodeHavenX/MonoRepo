@@ -28,7 +28,7 @@ import kotlin.test.assertFailsWith
 class ClaudeReviewerAgentNegativeTest {
 
     private val aiProvider = mockk<AiProvider>()
-    private val reviewerAgent = ClaudeReviewerAgent(aiProvider, "claude-opus-4-6")
+    private val reviewerAgent = ClaudeReviewerAgent(aiProvider)
 
     private val reviewer = ReviewerDefinition(
         name = "security",
@@ -59,7 +59,7 @@ class ClaudeReviewerAgentNegativeTest {
 
     @Test
     fun `reviewDocuments propagates AiProviderException from AI provider`() = runTest {
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } throws AiProviderException("API error", exitCode = 1)
+        coEvery { aiProvider.chat(any(), any(), any()) } throws AiProviderException("API error", exitCode = 1)
 
         assertFailsWith<AiProviderException> {
             reviewerAgent.reviewDocuments(reviewer, listOf(sampleDoc))
@@ -68,7 +68,7 @@ class ClaudeReviewerAgentNegativeTest {
 
     @Test
     fun `reviewDocuments propagates generic RuntimeException from AI provider`() = runTest {
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } throws RuntimeException("Connection refused")
+        coEvery { aiProvider.chat(any(), any(), any()) } throws RuntimeException("Connection refused")
 
         assertFailsWith<RuntimeException> {
             reviewerAgent.reviewDocuments(reviewer, listOf(sampleDoc))
@@ -79,7 +79,7 @@ class ClaudeReviewerAgentNegativeTest {
 
     @Test
     fun `reviewDocuments returns fallback text when AI response has no content blocks`() = runTest {
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } returns AiResponse(
+        coEvery { aiProvider.chat(any(), any(), any()) } returns AiResponse(
             id = "r1",
             content = emptyList(),
             stopReason = "end_turn",
@@ -93,7 +93,7 @@ class ClaudeReviewerAgentNegativeTest {
 
     @Test
     fun `reviewDocuments returns fallback text when AI response contains only ToolCall blocks`() = runTest {
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } returns AiResponse(
+        coEvery { aiProvider.chat(any(), any(), any()) } returns AiResponse(
             id = "r1",
             content = listOf(
                 AiContentBlock.ToolCall("call-1", "some_tool", buildJsonObject {}),
@@ -110,7 +110,7 @@ class ClaudeReviewerAgentNegativeTest {
 
     @Test
     fun `reviewDocuments with empty document list still calls AI provider`() = runTest {
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } returns AiResponse(
+        coEvery { aiProvider.chat(any(), any(), any()) } returns AiResponse(
             id = "r1",
             content = listOf(AiContentBlock.Text("Nothing to review")),
             stopReason = "end_turn",
@@ -126,7 +126,7 @@ class ClaudeReviewerAgentNegativeTest {
     @Test
     fun `reviewDocuments with empty reviewer name still returns feedback with that empty name`() = runTest {
         val emptyNameReviewer = ReviewerDefinition(name = "", systemPrompt = "Some prompt")
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } returns AiResponse(
+        coEvery { aiProvider.chat(any(), any(), any()) } returns AiResponse(
             id = "r1",
             content = listOf(AiContentBlock.Text("Feedback")),
             stopReason = "end_turn",
@@ -141,7 +141,7 @@ class ClaudeReviewerAgentNegativeTest {
 
     @Test
     fun `reviewCode propagates AiProviderException from AI provider`() = runTest {
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } throws AiProviderException("Quota exceeded", exitCode = 429)
+        coEvery { aiProvider.chat(any(), any(), any()) } throws AiProviderException("Quota exceeded", exitCode = 429)
 
         assertFailsWith<AiProviderException> {
             reviewerAgent.reviewCode(reviewer, task, "diff content")
@@ -150,7 +150,7 @@ class ClaudeReviewerAgentNegativeTest {
 
     @Test
     fun `reviewCode propagates generic RuntimeException from AI provider`() = runTest {
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } throws RuntimeException("Timeout")
+        coEvery { aiProvider.chat(any(), any(), any()) } throws RuntimeException("Timeout")
 
         assertFailsWith<RuntimeException> {
             reviewerAgent.reviewCode(reviewer, task, "diff content")
@@ -161,7 +161,7 @@ class ClaudeReviewerAgentNegativeTest {
 
     @Test
     fun `reviewCode returns fallback text when AI response has no content blocks`() = runTest {
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } returns AiResponse(
+        coEvery { aiProvider.chat(any(), any(), any()) } returns AiResponse(
             id = "r1",
             content = emptyList(),
             stopReason = "end_turn",
@@ -175,7 +175,7 @@ class ClaudeReviewerAgentNegativeTest {
 
     @Test
     fun `reviewCode returns fallback text when AI response contains only ToolCall blocks`() = runTest {
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } returns AiResponse(
+        coEvery { aiProvider.chat(any(), any(), any()) } returns AiResponse(
             id = "r1",
             content = listOf(
                 AiContentBlock.ToolCall("call-1", "some_tool", buildJsonObject {}),
@@ -192,7 +192,7 @@ class ClaudeReviewerAgentNegativeTest {
 
     @Test
     fun `reviewCode with empty diff still calls AI provider and returns feedback`() = runTest {
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } returns AiResponse(
+        coEvery { aiProvider.chat(any(), any(), any()) } returns AiResponse(
             id = "r1",
             content = listOf(AiContentBlock.Text("No changes detected")),
             stopReason = "end_turn",

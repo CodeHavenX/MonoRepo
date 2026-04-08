@@ -56,7 +56,7 @@ class DefaultAgentSessionNegativeTest {
     fun setup() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         worktree = Worktree("task-001", worktreePath, "agentic/task-001")
-        session = DefaultAgentSession(aiProvider, vcsProvider, shell, "claude-opus-4-6", "main", documentStore)
+        session = DefaultAgentSession(aiProvider, vcsProvider, shell, "main", documentStore)
 
         coEvery { vcsProvider.listOpenPullRequests(any()) } returns emptyList()
         coEvery { shell.run(*anyVararg()) } returns ShellResult("", 0, "")
@@ -95,7 +95,7 @@ class DefaultAgentSessionNegativeTest {
             content = listOf(AiContentBlock.ToolCall("t1", "read_file", buildJsonObject {})),
             stopReason = "tool_use",
         )
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } returnsMany listOf(
+        coEvery { aiProvider.chat(any(), any(), any()) } returnsMany listOf(
             readNoPath,
             taskCompleteResponse(),
         )
@@ -113,7 +113,7 @@ class DefaultAgentSessionNegativeTest {
         // The tool result message sent back to AI should mention the error
         coVerify {
             aiProvider.chat(
-                any(), any(),
+                any(),
                 match { msgs -> msgs.any { it.content.contains("missing path") } },
                 any(),
             )
@@ -134,7 +134,7 @@ class DefaultAgentSessionNegativeTest {
             ),
             stopReason = "tool_use",
         )
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } returnsMany listOf(
+        coEvery { aiProvider.chat(any(), any(), any()) } returnsMany listOf(
             writeNoPath,
             taskCompleteResponse(),
         )
@@ -150,7 +150,7 @@ class DefaultAgentSessionNegativeTest {
         assertIs<AgentResult>(result)
         coVerify {
             aiProvider.chat(
-                any(), any(),
+                any(),
                 match { msgs -> msgs.any { it.content.contains("missing path") } },
                 any(),
             )
@@ -166,7 +166,7 @@ class DefaultAgentSessionNegativeTest {
             content = listOf(AiContentBlock.ToolCall("t1", "run_command", buildJsonObject {})),
             stopReason = "tool_use",
         )
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } returnsMany listOf(
+        coEvery { aiProvider.chat(any(), any(), any()) } returnsMany listOf(
             runNoCmd,
             taskCompleteResponse(),
         )
@@ -182,7 +182,7 @@ class DefaultAgentSessionNegativeTest {
         assertIs<AgentResult>(result)
         coVerify {
             aiProvider.chat(
-                any(), any(),
+                any(),
                 match { msgs -> msgs.any { it.content.contains("missing command") } },
                 any(),
             )
@@ -195,7 +195,7 @@ class DefaultAgentSessionNegativeTest {
     fun `read_file with path traversal resolves inside worktree and fails gracefully`() = runTest {
         // Attempt to read outside worktree via "../../../etc/passwd"
         val traversalResponse = toolCallResponse("read_file", "path" to "../../../etc/passwd")
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } returnsMany listOf(
+        coEvery { aiProvider.chat(any(), any(), any()) } returnsMany listOf(
             traversalResponse,
             taskCompleteResponse(),
         )
@@ -223,7 +223,7 @@ class DefaultAgentSessionNegativeTest {
             "path" to "../outside-file.txt",
             "content" to "malicious",
         )
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } returnsMany listOf(
+        coEvery { aiProvider.chat(any(), any(), any()) } returnsMany listOf(
             traversalWrite,
             taskCompleteResponse(),
         )
@@ -253,7 +253,7 @@ class DefaultAgentSessionNegativeTest {
             content = listOf(AiContentBlock.ToolCall("t1", "task_failed", buildJsonObject {})),
             stopReason = "tool_use",
         )
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } returns failedNoReason
+        coEvery { aiProvider.chat(any(), any(), any()) } returns failedNoReason
 
         val result = session.execute(task, worktree)
 
@@ -273,7 +273,7 @@ class DefaultAgentSessionNegativeTest {
         // First call: task_complete → VCS throws. Second call: task_failed as follow-up.
         coEvery { vcsProvider.createPullRequest(any(), any(), any(), any(), any()) } throws
             RuntimeException("VCS unavailable")
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } returnsMany listOf(
+        coEvery { aiProvider.chat(any(), any(), any()) } returnsMany listOf(
             completeCall,
             AiResponse(
                 id = "r2",
@@ -294,7 +294,7 @@ class DefaultAgentSessionNegativeTest {
         // The tool result message must mention the error
         coVerify {
             aiProvider.chat(
-                any(), any(),
+                any(),
                 match { msgs -> msgs.any { it.content.contains("Error creating PR") } },
                 any(),
             )
@@ -307,7 +307,7 @@ class DefaultAgentSessionNegativeTest {
     fun `run_command non-zero exit code is included in tool result`() = runTest {
         val runCmd = toolCallResponse("run_command", "command" to "false")
         coEvery { shell.run(*anyVararg(), workingDir = any()) } returns ShellResult("", 1, "command not found")
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } returnsMany listOf(
+        coEvery { aiProvider.chat(any(), any(), any()) } returnsMany listOf(
             runCmd,
             taskCompleteResponse(),
         )
@@ -323,7 +323,7 @@ class DefaultAgentSessionNegativeTest {
         // The AI must receive the non-zero exit code in the tool result message
         coVerify {
             aiProvider.chat(
-                any(), any(),
+                any(),
                 match { msgs -> msgs.any { it.content.contains("exit code: 1") } },
                 any(),
             )
@@ -335,7 +335,7 @@ class DefaultAgentSessionNegativeTest {
     @Test
     fun `delete_file on non-existent file returns success without crashing`() = runTest {
         val deleteGhost = toolCallResponse("delete_file", "path" to "ghost.txt")
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } returnsMany listOf(
+        coEvery { aiProvider.chat(any(), any(), any()) } returnsMany listOf(
             deleteGhost,
             taskCompleteResponse(),
         )
@@ -352,7 +352,7 @@ class DefaultAgentSessionNegativeTest {
         // Confirm the delete result was reported back as success
         coVerify {
             aiProvider.chat(
-                any(), any(),
+                any(),
                 match { msgs -> msgs.any { it.content.contains("File deleted") } },
                 any(),
             )
@@ -364,7 +364,7 @@ class DefaultAgentSessionNegativeTest {
     @Test
     fun `read_file on non-existent file returns error message without crashing`() = runTest {
         val readMissing = toolCallResponse("read_file", "path" to "does-not-exist.txt")
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } returnsMany listOf(
+        coEvery { aiProvider.chat(any(), any(), any()) } returnsMany listOf(
             readMissing,
             taskCompleteResponse(),
         )
@@ -380,7 +380,7 @@ class DefaultAgentSessionNegativeTest {
         assertIs<AgentResult.PrOpened>(result)
         coVerify {
             aiProvider.chat(
-                any(), any(),
+                any(),
                 match { msgs -> msgs.any { it.content.contains("Error reading file") } },
                 any(),
             )

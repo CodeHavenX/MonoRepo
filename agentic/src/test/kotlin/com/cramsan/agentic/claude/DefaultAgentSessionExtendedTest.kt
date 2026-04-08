@@ -69,7 +69,7 @@ class DefaultAgentSessionExtendedTest {
     fun setup() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         worktree = Worktree("task-001", worktreePath, "agentic/task-001")
-        session = DefaultAgentSession(aiProvider, vcsProvider, shell, "claude-opus-4-6", "main", documentStore)
+        session = DefaultAgentSession(aiProvider, vcsProvider, shell, "main", documentStore)
 
         coEvery { vcsProvider.listOpenPullRequests(any()) } returns emptyList()
         coEvery { shell.run(*anyVararg()) } returns ShellResult("", 0, "")
@@ -86,7 +86,7 @@ class DefaultAgentSessionExtendedTest {
             put("content", "package test")
         }
         var callCount = 0
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } answers {
+        coEvery { aiProvider.chat(any(), any(), any()) } answers {
             if (callCount++ == 0) {
                 AiResponse("r1", listOf(AiContentBlock.ToolCall("t1", "write_file", writeInput)), "tool_use")
             } else {
@@ -108,7 +108,7 @@ class DefaultAgentSessionExtendedTest {
 
         val writeInput = buildJsonObject { put("path", "existing.txt"); put("content", "new content") }
         var callCount = 0
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } answers {
+        coEvery { aiProvider.chat(any(), any(), any()) } answers {
             if (callCount++ == 0) {
                 AiResponse("r1", listOf(AiContentBlock.ToolCall("t1", "write_file", writeInput)), "tool_use")
             } else taskCompleteResponse()
@@ -128,7 +128,7 @@ class DefaultAgentSessionExtendedTest {
 
         val deleteInput = buildJsonObject { put("path", "to-delete.txt") }
         var callCount = 0
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } answers {
+        coEvery { aiProvider.chat(any(), any(), any()) } answers {
             if (callCount++ == 0) {
                 AiResponse("r1", listOf(AiContentBlock.ToolCall("t1", "delete_file", deleteInput)), "tool_use")
             } else taskCompleteResponse()
@@ -143,7 +143,7 @@ class DefaultAgentSessionExtendedTest {
     fun `delete_file on non-existent file returns success without error`() = runTest {
         val deleteInput = buildJsonObject { put("path", "does-not-exist.txt") }
         var callCount = 0
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } answers {
+        coEvery { aiProvider.chat(any(), any(), any()) } answers {
             if (callCount++ == 0) {
                 AiResponse("r1", listOf(AiContentBlock.ToolCall("t1", "delete_file", deleteInput)), "tool_use")
             } else taskCompleteResponse()
@@ -166,12 +166,12 @@ class DefaultAgentSessionExtendedTest {
 
         var secondCallMessages: List<AiMessage>? = null
         var callCount = 0
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } answers {
+        coEvery { aiProvider.chat(any(), any(), any()) } answers {
             callCount++
             if (callCount == 1) {
                 AiResponse("r1", listOf(AiContentBlock.ToolCall("t1", "list_files", listInput)), "tool_use")
             } else {
-                secondCallMessages = arg(2)
+                secondCallMessages = arg(1)
                 taskCompleteResponse()
             }
         }
@@ -195,7 +195,7 @@ class DefaultAgentSessionExtendedTest {
         val amendPr = openPr(sourceBranch = "agentic/task-001/amendment", id = "amend-pr-1")
 
         var callCount = 0
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } answers {
+        coEvery { aiProvider.chat(any(), any(), any()) } answers {
             when (callCount++) {
                 0 -> AiResponse("r1", listOf(AiContentBlock.ToolCall("t1", "propose_amendment", amendInput)), "tool_use")
                 else -> taskCompleteResponse()
@@ -252,7 +252,7 @@ class DefaultAgentSessionExtendedTest {
         coEvery { vcsProvider.isPullRequestMerged("amend-pr-1") } returns true
 
         var callCount = 0
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } answers {
+        coEvery { aiProvider.chat(any(), any(), any()) } answers {
             when (callCount++) {
                 0 -> AiResponse("r1", listOf(AiContentBlock.ToolCall("t1", "propose_amendment", amendInput)), "tool_use")
                 else -> taskCompleteResponse()
@@ -287,7 +287,7 @@ class DefaultAgentSessionExtendedTest {
         coEvery { vcsProvider.isPullRequestMerged("amend-pr-1") } returns true
 
         var callCount = 0
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } answers {
+        coEvery { aiProvider.chat(any(), any(), any()) } answers {
             when (callCount++) {
                 0 -> AiResponse("r1", listOf(AiContentBlock.ToolCall("t1", "propose_amendment", amendInput)), "tool_use")
                 else -> taskCompleteResponse()
@@ -327,7 +327,7 @@ class DefaultAgentSessionExtendedTest {
 
         val taskFailedInput = buildJsonObject { put("reason", "amendment rejected") }
         var callCount = 0
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } answers {
+        coEvery { aiProvider.chat(any(), any(), any()) } answers {
             when (callCount++) {
                 0 -> AiResponse("r1", listOf(AiContentBlock.ToolCall("t1", "propose_amendment", amendInput)), "tool_use")
                 // After receiving the closed-PR error message the agent calls task_failed
@@ -368,7 +368,7 @@ class DefaultAgentSessionExtendedTest {
             )
         } returns docPr
 
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } returns
+        coEvery { aiProvider.chat(any(), any(), any()) } returns
             AiResponse("r1", listOf(AiContentBlock.ToolCall("t1", "split_task", splitInput)), "tool_use")
 
         val result = session.execute(task, worktree)
@@ -399,7 +399,7 @@ class DefaultAgentSessionExtendedTest {
     fun `unknown tool returns error message to agent without crashing`() = runTest {
         val unknownInput = buildJsonObject { put("param", "value") }
         var callCount = 0
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } answers {
+        coEvery { aiProvider.chat(any(), any(), any()) } answers {
             when (callCount++) {
                 0 -> AiResponse("r1", listOf(AiContentBlock.ToolCall("t1", "nonexistent_tool", unknownInput)), "tool_use")
                 else -> taskCompleteResponse()
@@ -417,12 +417,12 @@ class DefaultAgentSessionExtendedTest {
         val unknownInput = buildJsonObject {}
         var capturedMessages: List<AiMessage>? = null
         var callCount = 0
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } answers {
+        coEvery { aiProvider.chat(any(), any(), any()) } answers {
             callCount++
             if (callCount == 1) {
                 AiResponse("r1", listOf(AiContentBlock.ToolCall("t1", "unknown_tool_xyz", unknownInput)), "tool_use")
             } else {
-                capturedMessages = arg(2)
+                capturedMessages = arg(1)
                 taskCompleteResponse()
             }
         }
@@ -439,7 +439,7 @@ class DefaultAgentSessionExtendedTest {
     @Test
     fun `no tool calls with end_turn prompts agent to continue making another chat call`() = runTest {
         var callCount = 0
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } answers {
+        coEvery { aiProvider.chat(any(), any(), any()) } answers {
             when (callCount++) {
                 0 -> AiResponse("r1", listOf(AiContentBlock.Text("Let me think...")), "end_turn")
                 else -> taskCompleteResponse()
@@ -449,7 +449,7 @@ class DefaultAgentSessionExtendedTest {
         session.execute(task, worktree)
 
         // chat() should be called at least twice — once for initial response, once after continuation prompt
-        coVerify(atLeast = 2) { aiProvider.chat(any(), any(), any(), any()) }
+        coVerify(atLeast = 2) { aiProvider.chat(any(), any(), any()) }
     }
 
     // ── Context reset: initial context selection ─────────────────────────────
@@ -457,7 +457,7 @@ class DefaultAgentSessionExtendedTest {
     @Test
     fun `fresh start uses task start prompt containing task id and title`() = runTest {
         val capturedSystemPrompt = slot<String>()
-        coEvery { aiProvider.chat(any(), capture(capturedSystemPrompt), any(), any()) } returns taskCompleteResponse()
+        coEvery { aiProvider.chat(capture(capturedSystemPrompt), any(), any()) } returns taskCompleteResponse()
 
         session.execute(task, worktree)
 
@@ -473,7 +473,7 @@ class DefaultAgentSessionExtendedTest {
         coEvery { shell.run("git", "diff", "main", "--", any()) } returns ShellResult("- old\n+ new", 0, "")
 
         val capturedSystemPrompt = slot<String>()
-        coEvery { aiProvider.chat(any(), capture(capturedSystemPrompt), any(), any()) } returns taskCompleteResponse()
+        coEvery { aiProvider.chat(capture(capturedSystemPrompt), any(), any()) } returns taskCompleteResponse()
 
         session.execute(task, worktree)
 
@@ -494,7 +494,7 @@ class DefaultAgentSessionExtendedTest {
         coEvery { shell.run("git", "diff", "main", "--", any()) } returns ShellResult("+ new code", 0, "")
 
         val capturedSystemPrompt = slot<String>()
-        coEvery { aiProvider.chat(any(), capture(capturedSystemPrompt), any(), any()) } returns taskCompleteResponse()
+        coEvery { aiProvider.chat(capture(capturedSystemPrompt), any(), any()) } returns taskCompleteResponse()
 
         session.execute(task, worktree)
 
@@ -512,7 +512,7 @@ class DefaultAgentSessionExtendedTest {
         coEvery { shell.run("git", "diff", "main", "--", any()) } returns ShellResult("+ some existing change", 0, "")
 
         val capturedSystemPrompt = slot<String>()
-        coEvery { aiProvider.chat(any(), capture(capturedSystemPrompt), any(), any()) } returns taskCompleteResponse()
+        coEvery { aiProvider.chat(capture(capturedSystemPrompt), any(), any()) } returns taskCompleteResponse()
 
         session.execute(task, worktree)
 
@@ -534,7 +534,7 @@ class DefaultAgentSessionExtendedTest {
             ShellResult(worktreePath.toString(), 0, "")
 
         var callCount = 0
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } answers {
+        coEvery { aiProvider.chat(any(), any(), any()) } answers {
             if (callCount++ == 0) {
                 AiResponse("r1", listOf(AiContentBlock.ToolCall("t1", "run_command", runInput)), "tool_use")
             } else taskCompleteResponse()
@@ -554,12 +554,12 @@ class DefaultAgentSessionExtendedTest {
         val runInput = buildJsonObject { put("command", "echo hello") }
         var secondCallMessages: List<AiMessage>? = null
         var callCount = 0
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } answers {
+        coEvery { aiProvider.chat(any(), any(), any()) } answers {
             callCount++
             if (callCount == 1) {
                 AiResponse("r1", listOf(AiContentBlock.ToolCall("t1", "run_command", runInput)), "tool_use")
             } else {
-                secondCallMessages = arg(2)
+                secondCallMessages = arg(1)
                 taskCompleteResponse()
             }
         }

@@ -17,9 +17,8 @@ class AgenticConfigTest {
             agentPoolSize = 4,
             defaultTaskTimeoutSeconds = 3600L,
             baseBranch = "main",
-            claudeModel = "claude-opus-4-6",
             docsDir = ".ai/docs",
-            aiProvider = AiProviderConfig.ClaudeApi(anthropicApiKeyEnvVar = "ANTHROPIC_API_KEY"),
+            aiProvider = AiProviderConfig.ClaudeApi(model = "claude-opus-4-6", anthropicApiKeyEnvVar = "ANTHROPIC_API_KEY"),
             vcsProvider = VcsProviderConfig.GitHub(owner = "cramsan", repo = "MonoRepo"),
         )
 
@@ -104,8 +103,8 @@ class AgenticConfigTest {
         )
 
         assertEquals(3600L, config.defaultTaskTimeoutSeconds)
-        assertEquals("claude-opus-4-6", config.claudeModel)
         assertIs<AiProviderConfig.ClaudeCli>(config.aiProvider)
+        assertEquals("claude-opus-4-6", config.aiProvider.model)
         assertEquals("claude", (config.aiProvider as AiProviderConfig.ClaudeCli).cliPath)
     }
 

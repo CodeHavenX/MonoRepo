@@ -28,7 +28,7 @@ class ClaudeCliAiProviderTest {
     }
 
     private val shell = mockk<ShellRunner>()
-    private val provider = ClaudeCliAiProvider(shell, cliPath = "claude")
+    private val provider = ClaudeCliAiProvider(shell, cliPath = "claude", model = "claude-opus-4-6")
 
     @Test
     fun `successful response is wrapped in AiResponse with Text block`() = runTest {
@@ -39,7 +39,6 @@ class ClaudeCliAiProviderTest {
         )
 
         val response = provider.chat(
-            model = "claude-opus-4-6",
             systemPrompt = "You are helpful",
             messages = listOf(AiMessage("user", "Hello")),
             tools = emptyList(),
@@ -62,7 +61,6 @@ class ClaudeCliAiProviderTest {
 
         val ex = assertFailsWith<AiProviderException> {
             provider.chat(
-                model = "claude-opus-4-6",
                 systemPrompt = "sys",
                 messages = listOf(AiMessage("user", "hi")),
                 tools = emptyList(),
@@ -79,7 +77,6 @@ class ClaudeCliAiProviderTest {
 
         assertFailsWith<UnsupportedOperationException> {
             provider.chat(
-                model = "claude-opus-4-6",
                 systemPrompt = "sys",
                 messages = listOf(AiMessage("user", "hi")),
                 tools = listOf(dummyTool),
@@ -127,7 +124,7 @@ class ClaudeCliAiProviderTest {
         )
 
         val ex = assertFailsWith<AiProviderException> {
-            provider.chat("claude-opus-4-6", "sys", listOf(AiMessage("user", "hi")), emptyList())
+            provider.chat("sys", listOf(AiMessage("user", "hi")), emptyList())
         }
 
         assertEquals(127, ex.exitCode)

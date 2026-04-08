@@ -116,19 +116,20 @@ fun agenticModule(
         val config = get<AgenticConfig>()
         when (val aiConfig = config.aiProvider) {
             is AiProviderConfig.ClaudeApi -> {
-                logI(TAG, "Configuring AI provider: ClaudeApi (apiKeyEnvVar=${aiConfig.anthropicApiKeyEnvVar})")
+                logI(TAG, "Configuring AI provider: ClaudeApi (model=${aiConfig.model}, apiKeyEnvVar=${aiConfig.anthropicApiKeyEnvVar})")
                 val apiKey = System.getenv(aiConfig.anthropicApiKeyEnvVar)
                     ?: error("API key env var '${aiConfig.anthropicApiKeyEnvVar}' is not set")
                 logD(TAG, "ClaudeApi API key resolved from env var: ${aiConfig.anthropicApiKeyEnvVar}")
-                ClaudeAiProvider(get(), apiKey, get())
+                ClaudeAiProvider(get(), apiKey, get(), aiConfig.model)
             }
             is AiProviderConfig.ClaudeCli -> {
-                logI(TAG, "Configuring AI provider: ClaudeCli (cliPath=${aiConfig.cliPath})")
-                ClaudeCliAiProvider(get(), aiConfig.cliPath)
+                logI(TAG, "Configuring AI provider: ClaudeCli (model=${aiConfig.model}, cliPath=${aiConfig.cliPath})")
+                ClaudeCliAiProvider(get(), aiConfig.cliPath, aiConfig.model)
             }
             is AiProviderConfig.Fake -> {
-                logI(TAG, "Configuring AI provider: Fake (mode=${aiConfig.mode})")
+                logI(TAG, "Configuring AI provider: Fake (model=${aiConfig.model}, mode=${aiConfig.mode})")
                 FakeAiProvider(
+                    model = aiConfig.model,
                     mode = aiConfig.mode,
                     delayMs = aiConfig.delayMs,
                     autoCompleteAfterTurns = aiConfig.autoCompleteAfterTurns,
@@ -139,13 +140,12 @@ fun agenticModule(
     }
 
     single<ReviewerAgent> {
-        val config = get<AgenticConfig>()
-        ClaudeReviewerAgent(get(), config.claudeModel)
+        ClaudeReviewerAgent(get())
     }
 
     single<AgentSession> {
         val config = get<AgenticConfig>()
-        DefaultAgentSession(get(), get(), get(), config.claudeModel, config.baseBranch, get())
+        DefaultAgentSession(get(), get(), get(), config.baseBranch, get())
     }
 
     single<AgentRunner> {
@@ -159,12 +159,11 @@ fun agenticModule(
     single<Scaffolder> { DefaultScaffolder() }
 
     single<ValidationService> {
-        val config = get<AgenticConfig>()
-        DefaultValidationService(get(), get(), config.claudeModel, listOf(get()), get(), get(), agenticDir.resolve("docs"))
+        DefaultValidationService(get(), get(), listOf(get()), get(), get(), agenticDir.resolve("docs"))
     }
 
     single<WorkflowService> {
         val config = get<AgenticConfig>()
-        DefaultWorkflowService(get(), get(), config.claudeModel, agenticDir.resolve("docs"), config.workflow)
+        DefaultWorkflowService(get(), get(), agenticDir.resolve("docs"), config.workflow)
     }
 }

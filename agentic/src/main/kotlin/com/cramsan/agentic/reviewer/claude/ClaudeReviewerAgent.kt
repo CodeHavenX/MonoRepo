@@ -16,7 +16,6 @@ private const val TAG = "ClaudeReviewerAgent"
 
 class ClaudeReviewerAgent(
     private val aiProvider: AiProvider,
-    private val model: String,
 ) : ReviewerAgent {
 
     override suspend fun reviewDocuments(
@@ -39,7 +38,6 @@ class ClaudeReviewerAgent(
         logI(TAG, "Reviewer '${reviewer.name}' reviewing ${documents.size} documents")
 
         val response = aiProvider.chat(
-            model = model,
             systemPrompt = reviewer.systemPrompt,
             messages = listOf(userMessage),
             tools = emptyList(),
@@ -70,7 +68,6 @@ class ClaudeReviewerAgent(
         logI(TAG, "Reviewer '${reviewer.name}' reviewing code for task ${task.id}")
 
         val response = aiProvider.chat(
-            model = model,
             systemPrompt = reviewer.systemPrompt,
             messages = listOf(userMessage),
             tools = emptyList(),

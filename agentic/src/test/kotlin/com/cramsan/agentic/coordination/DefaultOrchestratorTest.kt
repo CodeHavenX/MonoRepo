@@ -46,7 +46,6 @@ class DefaultOrchestratorTest {
         agentPoolSize = 2,
         pollIntervalSeconds = 0L, // no delay in tests
         baseBranch = "main",
-        claudeModel = "claude-opus-4-6",
     )
 
     @Test

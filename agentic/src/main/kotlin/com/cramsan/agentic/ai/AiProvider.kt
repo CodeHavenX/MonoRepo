@@ -21,7 +21,6 @@ class AiProviderException(message: String, val exitCode: Int = -1) : Exception(m
 
 interface AiProvider {
     suspend fun chat(
-        model: String,
         systemPrompt: String,
         messages: List<AiMessage>,
         tools: List<AiTool>,

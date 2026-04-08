@@ -23,7 +23,6 @@ class DefaultAgentSession(
     private val aiProvider: AiProvider,
     private val vcsProvider: VcsProvider,
     private val shell: ShellRunner,
-    private val model: String,
     private val baseBranch: String,
     private val documentStore: DocumentStore,
 ) : AgentSession {
@@ -36,7 +35,7 @@ class DefaultAgentSession(
         val messages = initialMessages.toMutableList()
 
         while (true) {
-            val response = aiProvider.chat(model, systemPrompt, messages, ALL_AGENT_TOOLS)
+            val response = aiProvider.chat(systemPrompt, messages, ALL_AGENT_TOOLS)
             logI(TAG, "Got response with stopReason=${response.stopReason}, ${response.content.size} content blocks")
 
             val assistantContent = buildString {

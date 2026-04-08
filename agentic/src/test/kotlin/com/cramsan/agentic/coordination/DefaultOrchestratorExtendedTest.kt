@@ -47,7 +47,6 @@ class DefaultOrchestratorExtendedTest {
         agentPoolSize = 3,
         pollIntervalSeconds = 0L,
         baseBranch = "main",
-        claudeModel = "claude-opus-4-6",
     )
 
     private fun makeOrchestrator() =

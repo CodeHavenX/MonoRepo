@@ -39,7 +39,7 @@ class FakeAiProviderTest {
         )
         provider.enqueueResponse(expectedResponse)
 
-        val result = provider.chat("model", "system", emptyList(), emptyList())
+        val result = provider.chat("system", emptyList(), emptyList())
 
         assertEquals(expectedResponse, result)
     }
@@ -49,7 +49,7 @@ class FakeAiProviderTest {
         val provider = FakeAiProvider(mode = FakeMode.TEST)
 
         assertFailsWith<IllegalStateException> {
-            provider.chat("model", "system", emptyList(), emptyList())
+            provider.chat("system", emptyList(), emptyList())
         }
     }
 
@@ -59,8 +59,8 @@ class FakeAiProviderTest {
         val first = provider.enqueueTextResponse("First")
         val second = provider.enqueueTextResponse("Second")
 
-        val result1 = provider.chat("model", "system", emptyList(), emptyList())
-        val result2 = provider.chat("model", "system", emptyList(), emptyList())
+        val result1 = provider.chat("system", emptyList(), emptyList())
+        val result2 = provider.chat("system", emptyList(), emptyList())
 
         assertEquals(first.content, result1.content)
         assertEquals(second.content, result2.content)
@@ -73,11 +73,10 @@ class FakeAiProviderTest {
         val messages = listOf(AiMessage("user", "Hi"))
         val tools = listOf(AiTool("test_tool", "A test tool", buildJsonObject {}))
 
-        provider.chat("claude-opus", "Be helpful", messages, tools)
+        provider.chat("Be helpful", messages, tools)
 
         val captured = provider.getLastRequest()
         assertNotNull(captured)
-        assertEquals("claude-opus", captured.model)
         assertEquals("Be helpful", captured.systemPrompt)
         assertEquals(messages, captured.messages)
         assertEquals(tools, captured.tools)
@@ -89,7 +88,7 @@ class FakeAiProviderTest {
     fun `DEMO mode generates response when queue empty`() = runTest {
         val provider = FakeAiProvider(mode = FakeMode.DEMO)
 
-        val result = provider.chat("model", "system", listOf(AiMessage("user", "Hello")), emptyList())
+        val result = provider.chat("system", listOf(AiMessage("user", "Hello")), emptyList())
 
         assertNotNull(result)
         assertTrue(result.content.isNotEmpty())
@@ -101,7 +100,7 @@ class FakeAiProviderTest {
         val provider = FakeAiProvider(mode = FakeMode.DEMO)
         val queued = provider.enqueueTextResponse("Queued!")
 
-        val result = provider.chat("model", "system", emptyList(), emptyList())
+        val result = provider.chat("system", emptyList(), emptyList())
 
         assertEquals(queued.content, result.content)
     }
@@ -117,11 +116,11 @@ class FakeAiProviderTest {
         val tools = listOf(taskCompleteTool)
 
         // First two calls should not auto-complete
-        provider.chat("model", "system", listOf(AiMessage("user", "Continue")), tools)
-        provider.chat("model", "system", listOf(AiMessage("user", "Continue")), tools)
+        provider.chat("system", listOf(AiMessage("user", "Continue")), tools)
+        provider.chat("system", listOf(AiMessage("user", "Continue")), tools)
 
         // Third call should auto-complete
-        val thirdResponse = provider.chat("model", "system", listOf(AiMessage("user", "Continue")), tools)
+        val thirdResponse = provider.chat("system", listOf(AiMessage("user", "Continue")), tools)
         val toolCall = thirdResponse.content.filterIsInstance<AiContentBlock.ToolCall>().firstOrNull()
 
         assertNotNull(toolCall)
@@ -133,7 +132,7 @@ class FakeAiProviderTest {
         val provider = FakeAiProvider(mode = FakeMode.DEMO, autoCompleteAfterTurns = 1)
 
         // No task_complete tool provided
-        val result = provider.chat("model", "system", listOf(AiMessage("user", "Continue")), emptyList())
+        val result = provider.chat("system", listOf(AiMessage("user", "Continue")), emptyList())
 
         // Should return text response, not tool call
         val textContent = result.content.filterIsInstance<AiContentBlock.Text>().firstOrNull()
@@ -145,7 +144,7 @@ class FakeAiProviderTest {
         val customDefault = "Custom default response"
         val provider = FakeAiProvider(mode = FakeMode.DEMO, defaultTextResponse = customDefault)
 
-        val result = provider.chat("model", "system", listOf(AiMessage("user", "Hello")), emptyList())
+        val result = provider.chat("system", listOf(AiMessage("user", "Hello")), emptyList())
 
         val textContent = result.content.filterIsInstance<AiContentBlock.Text>().firstOrNull()
         assertEquals(customDefault, textContent?.text)
@@ -159,7 +158,6 @@ class FakeAiProviderTest {
         val listFilesTool = AiTool("list_files", "List files", buildJsonObject {})
 
         val result = provider.chat(
-            "model",
             "system",
             listOf(AiMessage("user", "Begin working on this task")),
             listOf(listFilesTool),
@@ -176,7 +174,6 @@ class FakeAiProviderTest {
         val readFileTool = AiTool("read_file", "Read a file", buildJsonObject {})
 
         val result = provider.chat(
-            "model",
             "system",
             listOf(AiMessage("user", "Please read the configuration file")),
             listOf(readFileTool),
@@ -195,7 +192,7 @@ class FakeAiProviderTest {
         val input = buildJsonObject { put("path", "test.txt") }
         provider.enqueueToolCallResponse("read_file", input)
 
-        val result = provider.chat("model", "system", emptyList(), emptyList())
+        val result = provider.chat("system", emptyList(), emptyList())
 
         val toolCall = result.content.filterIsInstance<AiContentBlock.ToolCall>().first()
         assertEquals("read_file", toolCall.name)
@@ -208,7 +205,7 @@ class FakeAiProviderTest {
         val provider = FakeAiProvider(mode = FakeMode.TEST)
         val response = provider.enqueueTextResponse("Hello world", "stop")
 
-        val result = provider.chat("model", "system", emptyList(), emptyList())
+        val result = provider.chat("system", emptyList(), emptyList())
 
         assertEquals("Hello world", (result.content.first() as AiContentBlock.Text).text)
         assertEquals("stop", result.stopReason)
@@ -221,7 +218,7 @@ class FakeAiProviderTest {
     fun `reset clears all state`() = runTest {
         val provider = FakeAiProvider(mode = FakeMode.DEMO)
         provider.enqueueTextResponse("queued")
-        provider.chat("model", "system", emptyList(), emptyList())
+        provider.chat("system", emptyList(), emptyList())
 
         provider.reset()
 
@@ -234,7 +231,7 @@ class FakeAiProviderTest {
         val provider = FakeAiProvider(mode = FakeMode.DEMO)
         provider.enqueueTextResponse("queued1")
         provider.enqueueTextResponse("queued2")
-        provider.chat("model", "system", emptyList(), emptyList())
+        provider.chat("system", emptyList(), emptyList())
 
         provider.clearQueue()
 
@@ -246,7 +243,7 @@ class FakeAiProviderTest {
     fun `clearCapturedRequests only clears requests not queue`() = runTest {
         val provider = FakeAiProvider(mode = FakeMode.DEMO)
         provider.enqueueTextResponse("queued")
-        provider.chat("model", "system", emptyList(), emptyList())
+        provider.chat("system", emptyList(), emptyList())
         provider.enqueueTextResponse("another")
 
         provider.clearCapturedRequests()
@@ -288,7 +285,7 @@ class FakeAiProviderTest {
         // and completes without error.
         val provider = FakeAiProvider(mode = FakeMode.DEMO, delayMs = 1000)
 
-        val result = provider.chat("model", "system", emptyList(), emptyList())
+        val result = provider.chat("system", emptyList(), emptyList())
 
         assertNotNull(result)
     }
@@ -299,8 +296,8 @@ class FakeAiProviderTest {
     fun `response IDs are unique and prefixed with fake-`() = runTest {
         val provider = FakeAiProvider(mode = FakeMode.DEMO)
 
-        val response1 = provider.chat("model", "system", listOf(AiMessage("user", "1")), emptyList())
-        val response2 = provider.chat("model", "system", listOf(AiMessage("user", "2")), emptyList())
+        val response1 = provider.chat("system", listOf(AiMessage("user", "1")), emptyList())
+        val response2 = provider.chat("system", listOf(AiMessage("user", "2")), emptyList())
 
         assertTrue(response1.id.startsWith("fake-"))
         assertTrue(response2.id.startsWith("fake-"))

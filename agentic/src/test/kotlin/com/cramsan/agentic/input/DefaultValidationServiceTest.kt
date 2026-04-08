@@ -39,8 +39,6 @@ class DefaultValidationServiceTest {
     private lateinit var reviewerLoader: ReviewerLoader
     private lateinit var service: DefaultValidationService
 
-    private val model = "claude-3-5-sonnet"
-
     private fun makeDocument(id: String, type: DocumentType, relativePath: String) = AgenticDocument(
         id = id,
         type = type,
@@ -59,7 +57,6 @@ class DefaultValidationServiceTest {
         service = DefaultValidationService(
             documentStore = documentStore,
             aiProvider = aiProvider,
-            model = model,
             reviewerAgents = listOf(reviewerAgent),
             reviewerLoader = reviewerLoader,
             json = json,
@@ -78,7 +75,6 @@ class DefaultValidationServiceTest {
 
         coEvery {
             aiProvider.chat(
-                model = model,
                 systemPrompt = any(),
                 messages = any(),
                 tools = any(),
@@ -92,7 +88,7 @@ class DefaultValidationServiceTest {
         val issues = service.reviewDocument(doc)
 
         assertEquals(0, issues.size)
-        coVerify { aiProvider.chat(model = model, systemPrompt = any(), messages = any(), tools = any()) }
+        coVerify { aiProvider.chat(systemPrompt = any(), messages = any(), tools = any()) }
         verify { documentStore.updateStatus("goals-scope", DocumentStatus.VALIDATED) }
     }
 
@@ -106,7 +102,6 @@ class DefaultValidationServiceTest {
 
         coEvery {
             aiProvider.chat(
-                model = model,
                 systemPrompt = any(),
                 messages = any(),
                 tools = any(),
@@ -137,7 +132,6 @@ class DefaultValidationServiceTest {
 
         coEvery {
             aiProvider.chat(
-                model = model,
                 systemPrompt = any(),
                 messages = any(),
                 tools = any(),
@@ -163,7 +157,7 @@ class DefaultValidationServiceTest {
         verify(exactly = 4) { documentStore.updateStatus(any(), DocumentStatus.IN_REVIEW) }
 
         coVerify(exactly = 4) {
-            aiProvider.chat(model = model, systemPrompt = any(), messages = any(), tools = any())
+            aiProvider.chat(systemPrompt = any(), messages = any(), tools = any())
         }
 
         coVerify { reviewerAgent.reviewDocuments(reviewerDef, docs) }

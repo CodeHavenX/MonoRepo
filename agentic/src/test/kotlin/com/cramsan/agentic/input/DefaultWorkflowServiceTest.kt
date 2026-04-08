@@ -58,7 +58,6 @@ class DefaultWorkflowServiceTest {
         service = DefaultWorkflowService(
             documentStore,
             aiProvider,
-            "claude-opus-4-6",
             docsDir,
             WorkflowConfig(defaultWorkflowStages()),
         )
@@ -180,7 +179,7 @@ class DefaultWorkflowServiceTest {
     @Test
     fun `startStage writes AI response to output file`() = runTest {
         every { documentStore.getAll() } returns emptyList()
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } returns AiResponse(
+        coEvery { aiProvider.chat(any(), any(), any()) } returns AiResponse(
             id = "r1",
             content = listOf(AiContentBlock.Text("# High-Level Plan\nStuff")),
             stopReason = "end_turn",
@@ -199,7 +198,7 @@ class DefaultWorkflowServiceTest {
         Files.writeString(docsDir.resolve("goals-scope.md"), "Project goals go here")
         every { documentStore.getAll() } returns listOf(sampleDoc)
         val capturedMessages = slot<List<com.cramsan.agentic.ai.AiMessage>>()
-        coEvery { aiProvider.chat(any(), any(), capture(capturedMessages), any()) } returns AiResponse(
+        coEvery { aiProvider.chat(any(), capture(capturedMessages), any()) } returns AiResponse(
             id = "r1",
             content = listOf(AiContentBlock.Text("# High-Level Plan")),
             stopReason = "end_turn",
@@ -213,7 +212,7 @@ class DefaultWorkflowServiceTest {
     @Test
     fun `startStage throws when AI returns no text content`() = runTest {
         every { documentStore.getAll() } returns emptyList()
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } returns AiResponse(
+        coEvery { aiProvider.chat(any(), any(), any()) } returns AiResponse(
             id = "r1",
             content = emptyList(),
             stopReason = "end_turn",
@@ -245,7 +244,7 @@ class DefaultWorkflowServiceTest {
         Files.writeString(docsDir.resolve("high-level-plan.approved"), "approved at 0")
         every { documentStore.getAll() } returns emptyList()
         val capturedMessages = slot<List<com.cramsan.agentic.ai.AiMessage>>()
-        coEvery { aiProvider.chat(any(), any(), capture(capturedMessages), any()) } returns AiResponse(
+        coEvery { aiProvider.chat(any(), capture(capturedMessages), any()) } returns AiResponse(
             id = "r1",
             content = listOf(AiContentBlock.Text("# Low-Level Plan")),
             stopReason = "end_turn",
@@ -294,7 +293,7 @@ class DefaultWorkflowServiceTest {
     @Test
     fun `reviseStage overwrites file with AI-revised content`() = runTest {
         Files.writeString(docsDir.resolve("high-level-plan.md"), "# Original with [REVIEWER: fix this]")
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } returns AiResponse(
+        coEvery { aiProvider.chat(any(), any(), any()) } returns AiResponse(
             id = "r1",
             content = listOf(AiContentBlock.Text("# Revised and Clean")),
             stopReason = "end_turn",
@@ -312,7 +311,7 @@ class DefaultWorkflowServiceTest {
         val annotated = "# High-Level Plan\n[REVIEWER: please expand section 2]"
         Files.writeString(docsDir.resolve("high-level-plan.md"), annotated)
         val capturedMessages = slot<List<com.cramsan.agentic.ai.AiMessage>>()
-        coEvery { aiProvider.chat(any(), any(), capture(capturedMessages), any()) } returns AiResponse(
+        coEvery { aiProvider.chat(any(), capture(capturedMessages), any()) } returns AiResponse(
             id = "r1",
             content = listOf(AiContentBlock.Text("# Revised")),
             stopReason = "end_turn",
@@ -389,7 +388,6 @@ class DefaultWorkflowServiceTest {
         val serviceWithDuplicates = DefaultWorkflowService(
             documentStore,
             aiProvider,
-            "claude-opus-4-6",
             docsDir,
             WorkflowConfig(duplicateStages),
         )
@@ -414,7 +412,6 @@ class DefaultWorkflowServiceTest {
         val serviceWithMissingDep = DefaultWorkflowService(
             documentStore,
             aiProvider,
-            "claude-opus-4-6",
             docsDir,
             WorkflowConfig(stagesWithMissingDep),
         )
@@ -447,7 +444,6 @@ class DefaultWorkflowServiceTest {
         val serviceWithCircularDep = DefaultWorkflowService(
             documentStore,
             aiProvider,
-            "claude-opus-4-6",
             docsDir,
             WorkflowConfig(circularStages),
         )

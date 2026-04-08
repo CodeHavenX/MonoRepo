@@ -12,5 +12,4 @@ data class OrchestratorConfig(
     val agentPoolSize: Int,
     val pollIntervalSeconds: Long = 30L,
     val baseBranch: String,
-    val claudeModel: String,
 )

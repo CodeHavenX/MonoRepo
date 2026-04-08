@@ -52,7 +52,7 @@ class DefaultAgentSessionTest {
     fun setup() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         worktree = Worktree("task-001", worktreePath, "agentic/task-001")
-        session = DefaultAgentSession(aiProvider, vcsProvider, shell, "claude-opus-4-6", "main", documentStore)
+        session = DefaultAgentSession(aiProvider, vcsProvider, shell, "main", documentStore)
 
         coEvery { vcsProvider.listOpenPullRequests(any()) } returns emptyList()
         coEvery { shell.run(*anyVararg()) } returns ShellResult("", 0, "")
@@ -62,7 +62,7 @@ class DefaultAgentSessionTest {
     @Test
     fun `task_complete tool response returns AgentResult_PrOpened`() = runTest {
         val taskCompleteInput = buildJsonObject { put("prTitle", "My PR"); put("prBody", "Body") }
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } returns AiResponse(
+        coEvery { aiProvider.chat(any(), any(), any()) } returns AiResponse(
             id = "resp-1",
             content = listOf(AiContentBlock.ToolCall("tool-1", "task_complete", taskCompleteInput)),
             stopReason = "tool_use",
@@ -81,7 +81,7 @@ class DefaultAgentSessionTest {
     @Test
     fun `task_failed tool response returns AgentResult_Failed`() = runTest {
         val taskFailedInput = buildJsonObject { put("reason", "Cannot proceed") }
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } returns AiResponse(
+        coEvery { aiProvider.chat(any(), any(), any()) } returns AiResponse(
             id = "resp-1",
             content = listOf(AiContentBlock.ToolCall("tool-1", "task_failed", taskFailedInput)),
             stopReason = "tool_use",
@@ -100,7 +100,7 @@ class DefaultAgentSessionTest {
         val taskCompleteInput = buildJsonObject { put("prTitle", "PR"); put("prBody", "") }
 
         var callCount = 0
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } answers {
+        coEvery { aiProvider.chat(any(), any(), any()) } answers {
             callCount++
             if (callCount == 1) {
                 AiResponse(
@@ -136,7 +136,7 @@ class DefaultAgentSessionTest {
         val taskCompleteInput = buildJsonObject { put("prTitle", "PR"); put("prBody", "") }
 
         var callCount = 0
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } answers {
+        coEvery { aiProvider.chat(any(), any(), any()) } answers {
             callCount++
             if (callCount == 1) {
                 AiResponse(

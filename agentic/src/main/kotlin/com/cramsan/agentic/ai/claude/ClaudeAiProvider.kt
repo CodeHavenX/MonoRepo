@@ -37,10 +37,10 @@ class ClaudeAiProvider(
     private val httpClient: HttpClient,
     private val apiKey: String,
     private val json: Json,
+    private val model: String,
 ) : AiProvider {
 
     override suspend fun chat(
-        model: String,
         systemPrompt: String,
         messages: List<AiMessage>,
         tools: List<AiTool>,

@@ -167,7 +167,11 @@ fun agenticModule(
 
     single<Scaffolder> {
         val planningConfig = get<PlanningConfig>()
-        DefaultScaffolder(planningConfig.inputDocuments, planningConfig.reviewers)
+        DefaultScaffolder(
+            planningConfig.inputDocuments,
+            planningConfig.reviewers,
+            planningConfig.workflow.stages,
+        )
     }
 
     single<ValidationService> {

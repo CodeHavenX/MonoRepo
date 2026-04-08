@@ -1,12 +1,10 @@
 package com.cramsan.edifikana.lib.model
 
 import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 
 /**
- * Represents the type of a common area within a property.
+ * Represents the type of common area within a property.
  */
-@Serializable
 enum class CommonAreaType {
     @SerialName("LOBBY")
     LOBBY,

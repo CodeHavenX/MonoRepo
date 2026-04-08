@@ -1,7 +1,6 @@
 package com.cramsan.edifikana.lib.model.network.occupant
 
 import com.cramsan.edifikana.lib.model.occupant.OccupantType
-import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.framework.annotations.NetworkModel
@@ -18,7 +17,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class CreateOccupantNetworkRequest(
     @SerialName("unit_id") val unitId: UnitId,
-    @SerialName("org_id") val orgId: OrganizationId,
     @SerialName("user_id") val userId: UserId?,
     @SerialName("occupant_type") val occupantType: OccupantType,
     @SerialName("is_primary") val isPrimary: Boolean,

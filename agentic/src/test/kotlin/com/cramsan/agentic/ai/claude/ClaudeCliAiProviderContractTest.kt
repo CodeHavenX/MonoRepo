@@ -26,7 +26,7 @@ import kotlin.test.assertTrue
 class ClaudeCliAiProviderContractTest {
 
     private val shell = mockk<ShellRunner>()
-    private val provider = ClaudeCliAiProvider(shell, cliPath = "claude")
+    private val provider = ClaudeCliAiProvider(shell, cliPath = "claude", model = "claude-opus-4-6")
 
     @BeforeEach
     fun setup() {
@@ -39,7 +39,7 @@ class ClaudeCliAiProviderContractTest {
     fun `chat invokes claude CLI with --print and --model flags`() = runTest {
         coEvery { shell.run(*anyVararg()) } returns ShellResult("response text", 0, "")
 
-        provider.chat("claude-opus-4-6", "sys", listOf(AiMessage("user", "hi")), emptyList())
+        provider.chat("sys", listOf(AiMessage("user", "hi")), emptyList())
 
         coVerify {
             shell.run(
@@ -53,10 +53,10 @@ class ClaudeCliAiProviderContractTest {
 
     @Test
     fun `chat uses the configured cliPath binary`() = runTest {
-        val customCli = ClaudeCliAiProvider(shell, cliPath = "/opt/homebrew/bin/claude")
+        val customCli = ClaudeCliAiProvider(shell, cliPath = "/opt/homebrew/bin/claude", model = "claude-opus-4-6")
         coEvery { shell.run(*anyVararg()) } returns ShellResult("ok", 0, "")
 
-        customCli.chat("claude-opus-4-6", "sys", listOf(AiMessage("user", "hi")), emptyList())
+        customCli.chat("sys", listOf(AiMessage("user", "hi")), emptyList())
 
         coVerify { shell.run("/opt/homebrew/bin/claude", any(), any(), any(), any()) }
     }
@@ -114,7 +114,6 @@ class ClaudeCliAiProviderContractTest {
         coEvery { shell.run(*anyVararg()) } returns ShellResult("answer", 0, "")
 
         provider.chat(
-            model = "claude-opus-4-6",
             systemPrompt = "You are helpful",
             messages = listOf(AiMessage("user", "Unique marker 12345")),
             tools = emptyList(),
@@ -135,7 +134,7 @@ class ClaudeCliAiProviderContractTest {
     fun `chat with single tool throws UnsupportedOperationException`() = runTest {
         val tool = AiTool("read_file", "Reads a file", buildJsonObject {})
         assertFailsWith<UnsupportedOperationException> {
-            provider.chat("claude-opus-4-6", "sys", listOf(AiMessage("user", "hi")), listOf(tool))
+            provider.chat("sys", listOf(AiMessage("user", "hi")), listOf(tool))
         }
     }
 
@@ -146,7 +145,7 @@ class ClaudeCliAiProviderContractTest {
             AiTool("write_file", "Writes", buildJsonObject {}),
         )
         assertFailsWith<UnsupportedOperationException> {
-            provider.chat("claude-opus-4-6", "sys", listOf(AiMessage("user", "hi")), tools)
+            provider.chat("sys", listOf(AiMessage("user", "hi")), tools)
         }
     }
 
@@ -154,7 +153,7 @@ class ClaudeCliAiProviderContractTest {
     fun `UnsupportedOperationException message explains the limitation`() = runTest {
         val tool = AiTool("task_complete", "Completes task", buildJsonObject {})
         val ex = runCatching {
-            provider.chat("model", "sys", listOf(AiMessage("user", "hi")), listOf(tool))
+            provider.chat("sys", listOf(AiMessage("user", "hi")), listOf(tool))
         }.exceptionOrNull()
         assertTrue(ex is UnsupportedOperationException)
         val msg = ex.message ?: ""
@@ -171,7 +170,7 @@ class ClaudeCliAiProviderContractTest {
         coEvery { shell.run(*anyVararg()) } returns ShellResult("", 1, "auth failure")
 
         val ex = assertFailsWith<AiProviderException> {
-            provider.chat("claude-opus-4-6", "sys", listOf(AiMessage("user", "hi")), emptyList())
+            provider.chat("sys", listOf(AiMessage("user", "hi")), emptyList())
         }
         assertEquals(1, ex.exitCode)
     }
@@ -181,7 +180,7 @@ class ClaudeCliAiProviderContractTest {
         coEvery { shell.run(*anyVararg()) } returns ShellResult("claude: command not found", 127, "")
 
         val ex = assertFailsWith<AiProviderException> {
-            provider.chat("claude-opus-4-6", "sys", listOf(AiMessage("user", "hi")), emptyList())
+            provider.chat("sys", listOf(AiMessage("user", "hi")), emptyList())
         }
         assertEquals(127, ex.exitCode)
     }
@@ -191,7 +190,7 @@ class ClaudeCliAiProviderContractTest {
         coEvery { shell.run(*anyVararg()) } returns ShellResult("", 1, "rate limit exceeded")
 
         val ex = assertFailsWith<AiProviderException> {
-            provider.chat("claude-opus-4-6", "sys", listOf(AiMessage("user", "hi")), emptyList())
+            provider.chat("sys", listOf(AiMessage("user", "hi")), emptyList())
         }
         assertTrue(ex.message!!.contains("rate limit exceeded"))
     }
@@ -200,7 +199,7 @@ class ClaudeCliAiProviderContractTest {
     fun `stdout is trimmed before wrapping in AiResponse`() = runTest {
         coEvery { shell.run(*anyVararg()) } returns ShellResult("  response with whitespace  \n", 0, "")
 
-        val response = provider.chat("model", "sys", listOf(AiMessage("user", "hi")), emptyList())
+        val response = provider.chat("sys", listOf(AiMessage("user", "hi")), emptyList())
 
         val textBlock = response.content.filterIsInstance<com.cramsan.agentic.ai.AiContentBlock.Text>().first()
         assertEquals("response with whitespace", textBlock.text)

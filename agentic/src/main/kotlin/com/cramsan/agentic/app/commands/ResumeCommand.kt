@@ -66,14 +66,13 @@ class ResumeCommand : CliktCommand(name = "resume", help = "Resume the agentic o
             val orchConfig = OrchestratorConfig(
                 agentPoolSize = agentPoolSizeOverride ?: agenticConfig.agentPoolSize,
                 baseBranch = agenticConfig.baseBranch,
-                claudeModel = agenticConfig.claudeModel,
             )
 
             logI(
                 TAG,
                 "Resume config summary — provider: ${agenticConfig.aiProvider::class.simpleName}, " +
-                    "poolSize: ${orchConfig.agentPoolSize}, baseBranch: ${orchConfig.baseBranch}, " +
-                    "model: ${orchConfig.claudeModel}",
+                    "model: ${agenticConfig.aiProvider.model}, " +
+                    "poolSize: ${orchConfig.agentPoolSize}, baseBranch: ${orchConfig.baseBranch}",
             )
 
             if (dryRun) {

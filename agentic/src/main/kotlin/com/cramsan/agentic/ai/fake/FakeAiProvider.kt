@@ -29,6 +29,7 @@ private const val TAG = "FakeAiProvider"
  * - Default text response as fallback
  */
 class FakeAiProvider(
+    private val model: String = "fake-model",
     private val mode: FakeMode = FakeMode.TEST,
     private val delayMs: Long = 0L,
     private val autoCompleteAfterTurns: Int = 5,
@@ -44,14 +45,12 @@ class FakeAiProvider(
      * A captured request for test inspection.
      */
     data class CapturedRequest(
-        val model: String,
         val systemPrompt: String,
         val messages: List<AiMessage>,
         val tools: List<AiTool>,
     )
 
     override suspend fun chat(
-        model: String,
         systemPrompt: String,
         messages: List<AiMessage>,
         tools: List<AiTool>,
@@ -60,7 +59,7 @@ class FakeAiProvider(
 
         // Capture request for test inspection
         synchronized(capturedRequests) {
-            capturedRequests.add(CapturedRequest(model, systemPrompt, messages, tools))
+            capturedRequests.add(CapturedRequest(systemPrompt, messages, tools))
         }
         logD(TAG, "Request captured (total captured: ${capturedRequests.size})")
 

@@ -25,7 +25,6 @@ private const val TAG = "DefaultValidationService"
 class DefaultValidationService(
     private val documentStore: DocumentStore,
     private val aiProvider: AiProvider,
-    private val model: String,
     private val reviewerAgents: List<ReviewerAgent>,
     private val reviewerLoader: ReviewerLoader,
     private val json: Json,
@@ -51,9 +50,8 @@ class DefaultValidationService(
             Your entire response must start with '[' and end with ']'. No other text is allowed.
         """.trimIndent()
 
-        logD(TAG, "Invoking AI reviewer for document ${document.id} using model=$model")
+        logD(TAG, "Invoking AI reviewer for document ${document.id}")
         val response = aiProvider.chat(
-            model = model,
             systemPrompt = systemPrompt,
             messages = listOf(AiMessage("user", fileContent)),
             tools = emptyList(),

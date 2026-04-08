@@ -41,7 +41,6 @@ class DefaultValidationServiceExtendedTest {
     private lateinit var reviewerAgent: ReviewerAgent
     private lateinit var reviewerLoader: ReviewerLoader
     private lateinit var service: DefaultValidationService
-    private val model = "claude-opus-4-6"
 
     private fun makeDoc(id: String, type: DocumentType, file: String) = AgenticDocument(
         id = id, type = type, relativePath = file,
@@ -57,7 +56,6 @@ class DefaultValidationServiceExtendedTest {
         service = DefaultValidationService(
             documentStore = documentStore,
             aiProvider = aiProvider,
-            model = model,
             reviewerAgents = listOf(reviewerAgent),
             reviewerLoader = reviewerLoader,
             json = json,
@@ -78,7 +76,7 @@ class DefaultValidationServiceExtendedTest {
             [{"id":"i1","documentId":"goals-scope","description":"Minor clarity issue","severity":"ADVISORY","status":"OPEN"}]
         """.trimIndent()
 
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } returns AiResponse(
+        coEvery { aiProvider.chat(any(), any(), any()) } returns AiResponse(
             id = "r1", stopReason = "end_turn", content = listOf(AiContentBlock.Text(advisoryJson)),
         )
 
@@ -99,7 +97,7 @@ class DefaultValidationServiceExtendedTest {
             ]
         """.trimIndent()
 
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } returns AiResponse(
+        coEvery { aiProvider.chat(any(), any(), any()) } returns AiResponse(
             id = "r1", stopReason = "end_turn", content = listOf(AiContentBlock.Text(mixedJson)),
         )
 
@@ -113,7 +111,7 @@ class DefaultValidationServiceExtendedTest {
     @Test
     fun `empty JSON array response returns zero issues and marks VALIDATED`() = runTest {
         val doc = makeDoc("standards", DocumentType.STANDARDS, "standards.md")
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } returns AiResponse(
+        coEvery { aiProvider.chat(any(), any(), any()) } returns AiResponse(
             id = "r1", stopReason = "end_turn", content = listOf(AiContentBlock.Text("[]")),
         )
 
@@ -127,7 +125,7 @@ class DefaultValidationServiceExtendedTest {
     fun `response with no Text content block returns zero issues`() = runTest {
         val doc = makeDoc("standards", DocumentType.STANDARDS, "standards.md")
         // Response has no Text block at all
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } returns AiResponse(
+        coEvery { aiProvider.chat(any(), any(), any()) } returns AiResponse(
             id = "r1", stopReason = "end_turn", content = emptyList(),
         )
 
@@ -145,7 +143,7 @@ class DefaultValidationServiceExtendedTest {
             makeDoc("standards", DocumentType.STANDARDS, "standards.md"),
         )
         every { documentStore.getAll() } returns docs
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } returns AiResponse(
+        coEvery { aiProvider.chat(any(), any(), any()) } returns AiResponse(
             id = "r1", stopReason = "end_turn", content = listOf(AiContentBlock.Text("[]")),
         )
         every { reviewerLoader.loadAll() } returns emptyList()
@@ -162,7 +160,7 @@ class DefaultValidationServiceExtendedTest {
     fun `reviewer agents do not change document status`() = runTest {
         val docs = listOf(makeDoc("goals-scope", DocumentType.GOALS_SCOPE, "goals-scope.md"))
         every { documentStore.getAll() } returns docs
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } returns AiResponse(
+        coEvery { aiProvider.chat(any(), any(), any()) } returns AiResponse(
             id = "r1", stopReason = "end_turn", content = listOf(AiContentBlock.Text("[]")),
         )
         val reviewerDef = ReviewerDefinition("security", "You are a security reviewer")
@@ -186,7 +184,7 @@ class DefaultValidationServiceExtendedTest {
         val docs = listOf(makeDoc("goals-scope", DocumentType.GOALS_SCOPE, "goals-scope.md"))
         every { documentStore.getAll() } returns docs
         val blockingIssue = """[{"id":"i1","documentId":"goals-scope","description":"Gap","severity":"BLOCKING","status":"OPEN"}]"""
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } returns AiResponse(
+        coEvery { aiProvider.chat(any(), any(), any()) } returns AiResponse(
             id = "r1", stopReason = "end_turn", content = listOf(AiContentBlock.Text(blockingIssue)),
         )
         every { reviewerLoader.loadAll() } returns emptyList()
@@ -209,7 +207,7 @@ class DefaultValidationServiceExtendedTest {
         Files.writeString(tempDir.resolve("goals-scope.md"), fileContent)
         val doc = makeDoc("goals-scope", DocumentType.GOALS_SCOPE, "goals-scope.md")
 
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } returns AiResponse(
+        coEvery { aiProvider.chat(any(), any(), any()) } returns AiResponse(
             id = "r1", stopReason = "end_turn", content = listOf(AiContentBlock.Text("[]")),
         )
 
@@ -217,7 +215,6 @@ class DefaultValidationServiceExtendedTest {
 
         coVerify {
             aiProvider.chat(
-                model = model,
                 systemPrompt = any(),
                 messages = match { msgs -> msgs.any { it.content.contains("build a rocket") } },
                 tools = emptyList(),
@@ -228,12 +225,12 @@ class DefaultValidationServiceExtendedTest {
     @Test
     fun `reviewDocument uses empty tools list — no tool use in validation`() = runTest {
         val doc = makeDoc("standards", DocumentType.STANDARDS, "standards.md")
-        coEvery { aiProvider.chat(any(), any(), any(), any()) } returns AiResponse(
+        coEvery { aiProvider.chat(any(), any(), any()) } returns AiResponse(
             id = "r1", stopReason = "end_turn", content = listOf(AiContentBlock.Text("[]")),
         )
 
         service.reviewDocument(doc)
 
-        coVerify { aiProvider.chat(any(), any(), any(), tools = emptyList()) }
+        coVerify { aiProvider.chat(any(), any(), tools = emptyList()) }
     }
 }

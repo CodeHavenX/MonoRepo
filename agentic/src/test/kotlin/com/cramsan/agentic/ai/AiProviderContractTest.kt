@@ -92,7 +92,6 @@ class AiProviderContractTest {
 
         assertFailsWith<UnsupportedOperationException> {
             provider.chat(
-                model = "claude-opus-4-6",
                 systemPrompt = "sys",
                 messages = listOf(AiMessage("user", "hi")),
                 tools = listOf(anyTool),
@@ -106,7 +105,6 @@ class AiProviderContractTest {
         coEvery { shell.run(*anyVararg()) } returns ShellResult("plain text response", 0, "")
 
         val response = provider.chat(
-            model = "claude-opus-4-6",
             systemPrompt = "sys",
             messages = listOf(AiMessage("user", "hi")),
             tools = emptyList(),
@@ -123,7 +121,7 @@ class AiProviderContractTest {
         val provider = ClaudeCliAiProvider(shell)
         coEvery { shell.run(*anyVararg()) } returns ShellResult("output", 0, "")
 
-        val response = provider.chat("model", "sys", listOf(AiMessage("user", "q")), emptyList())
+        val response = provider.chat("sys", listOf(AiMessage("user", "q")), emptyList())
 
         assertTrue(response.id.startsWith("cli-"), "CLI provider id must start with 'cli-'. Got: ${response.id}")
     }
@@ -133,7 +131,7 @@ class AiProviderContractTest {
         val provider = ClaudeCliAiProvider(shell)
         coEvery { shell.run(*anyVararg()) } returns ShellResult("output", 0, "")
 
-        val response = provider.chat("model", "sys", listOf(AiMessage("user", "q")), emptyList())
+        val response = provider.chat("sys", listOf(AiMessage("user", "q")), emptyList())
 
         assert(response.stopReason == "end_turn")
     }

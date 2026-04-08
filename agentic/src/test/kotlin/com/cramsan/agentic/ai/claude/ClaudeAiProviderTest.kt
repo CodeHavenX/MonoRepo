@@ -46,11 +46,11 @@ class ClaudeAiProviderTest {
         }
     """.trimIndent()
 
-    private fun makeProvider(engine: MockEngine): ClaudeAiProvider {
+    private fun makeProvider(engine: MockEngine, model: String = "claude-opus-4-6"): ClaudeAiProvider {
         val httpClient = HttpClient(engine) {
             install(ContentNegotiation) { json(json) }
         }
-        return ClaudeAiProvider(httpClient, "test-api-key", json)
+        return ClaudeAiProvider(httpClient, "test-api-key", json, model)
     }
 
     @Test
@@ -65,7 +65,6 @@ class ClaudeAiProviderTest {
         val provider = makeProvider(engine)
 
         val response = provider.chat(
-            model = "claude-opus-4-6",
             systemPrompt = "You are helpful",
             messages = listOf(AiMessage("user", "Hello")),
             tools = emptyList(),
@@ -89,7 +88,7 @@ class ClaudeAiProviderTest {
         }
         val provider = makeProvider(engine)
 
-        provider.chat("claude-opus-4-6", "sys", listOf(AiMessage("user", "hi")), emptyList())
+        provider.chat("sys", listOf(AiMessage("user", "hi")), emptyList())
 
         assertEquals("test-api-key", capturedApiKey)
         assertEquals("2023-06-01", capturedVersion)
@@ -104,7 +103,7 @@ class ClaudeAiProviderTest {
         }
         val provider = makeProvider(engine)
 
-        provider.chat("claude-opus-4-6", "my system prompt", listOf(AiMessage("user", "msg")), emptyList())
+        provider.chat("my system prompt", listOf(AiMessage("user", "msg")), emptyList())
 
         assertTrue(capturedBody!!.contains("\"model\""))
         assertTrue(capturedBody!!.contains("\"system\""))
@@ -124,7 +123,7 @@ class ClaudeAiProviderTest {
         }
         val provider = makeProvider(engine)
 
-        val response = provider.chat("claude-opus-4-6", "sys", listOf(AiMessage("user", "hi")), emptyList())
+        val response = provider.chat("sys", listOf(AiMessage("user", "hi")), emptyList())
 
         assertEquals("msg-001", response.id)
         assertEquals(3, callCount)
@@ -138,7 +137,7 @@ class ClaudeAiProviderTest {
         val provider = makeProvider(engine)
 
         assertFailsWith<AiProviderException> {
-            provider.chat("claude-opus-4-6", "sys", listOf(AiMessage("user", "hi")), emptyList())
+            provider.chat("sys", listOf(AiMessage("user", "hi")), emptyList())
         }
     }
 }

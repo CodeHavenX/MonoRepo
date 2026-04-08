@@ -26,10 +26,10 @@ private const val TAG = "ClaudeCliAiProvider"
 class ClaudeCliAiProvider(
     private val shell: ShellRunner,
     private val cliPath: String = "claude",
+    private val model: String = "claude-opus-4-6",
 ) : AiProvider {
 
     override suspend fun chat(
-        model: String,
         systemPrompt: String,
         messages: List<AiMessage>,
         tools: List<AiTool>,

@@ -3,6 +3,10 @@ package com.cramsan.agentic.core
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+/**
+ * Application configuration - controls system settings like pool size,
+ * timeouts, and provider configurations.
+ */
 @Serializable
 data class AgenticConfig(
     val agentPoolSize: Int,
@@ -11,9 +15,6 @@ data class AgenticConfig(
     val docsDir: String,
     val aiProvider: AiProviderConfig = AiProviderConfig.ClaudeCli(),
     val vcsProvider: VcsProviderConfig,
-    val workflow: WorkflowConfig = WorkflowConfig(),
-    val inputDocuments: List<InputDocumentConfig> = defaultInputDocuments(),
-    val reviewers: ReviewersConfig = defaultReviewers(),
 )
 
 @Serializable

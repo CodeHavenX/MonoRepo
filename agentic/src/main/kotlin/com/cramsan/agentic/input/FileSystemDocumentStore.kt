@@ -10,6 +10,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.nio.file.Files
 import java.nio.file.Path
+import java.security.MessageDigest
 
 private const val TAG = "FileSystemDocumentStore"
 
@@ -23,6 +24,7 @@ class FileSystemDocumentStore(
         val id: String,
         val status: DocumentStatus,
         val lastModifiedEpochMs: Long,
+        val contentHash: String? = null,
     )
 
     private val documents: MutableMap<String, AgenticDocument> by lazy { loadFromDisk() }
@@ -44,7 +46,18 @@ class FileSystemDocumentStore(
         logI(TAG, "Document $id status: ${existing.status} → $status")
         val updated = existing.copy(status = status)
         documents[id] = updated
-        writeSidecar(updated)
+
+        // Compute content hash when validating
+        val contentHash = if (status == DocumentStatus.VALIDATED) {
+            val filePath = docsDir.resolve(existing.relativePath)
+            val content = Files.readString(filePath)
+            computeContentHash(content).also {
+                logD(TAG, "Computed content hash for $id: $it")
+            }
+        } else {
+            null
+        }
+        writeSidecar(updated, contentHash)
     }
 
     override fun onDocumentChanged() {
@@ -80,9 +93,25 @@ class FileSystemDocumentStore(
             val lastModified = Files.getLastModifiedTime(filePath).toMillis()
 
             val sidecar = readSidecar(id)
-            val status = sidecar?.status ?: DocumentStatus.UNREVIEWED
+            var status = sidecar?.status ?: DocumentStatus.UNREVIEWED
             if (sidecar == null) {
                 logD(TAG, "No sidecar found for document $id; defaulting status to UNREVIEWED")
+            }
+
+            // Check if validated document has been modified
+            if (status == DocumentStatus.VALIDATED && sidecar?.contentHash != null) {
+                val currentContent = Files.readString(filePath)
+                val currentHash = computeContentHash(currentContent)
+                if (currentHash != sidecar.contentHash) {
+                    logW(TAG, "Document $id content changed since validation (hash mismatch). Resetting to UNREVIEWED.")
+                    logD(TAG, "Expected hash: ${sidecar.contentHash.take(16)}..., actual: ${currentHash.take(16)}...")
+                    status = DocumentStatus.UNREVIEWED
+                    // Update the sidecar to reflect the reset status
+                    val resetDoc = AgenticDocument(id, type, filename, status, lastModified)
+                    writeSidecar(resetDoc, null)
+                } else {
+                    logD(TAG, "Document $id hash verified, status remains VALIDATED")
+                }
             }
 
             val doc = AgenticDocument(
@@ -119,7 +148,7 @@ class FileSystemDocumentStore(
         }
     }
 
-    private fun writeSidecar(document: AgenticDocument) {
+    private fun writeSidecar(document: AgenticDocument, contentHash: String? = null) {
         val path = sidecarPath(document.id)
         logD(TAG, "Writing sidecar for document ${document.id} to $path")
         Files.createDirectories(path.parent)
@@ -127,9 +156,16 @@ class FileSystemDocumentStore(
             id = document.id,
             status = document.status,
             lastModifiedEpochMs = document.lastModifiedEpochMs,
+            contentHash = contentHash,
         )
         Files.writeString(path, json.encodeToString(DocumentMeta.serializer(), meta))
-        logD(TAG, "Sidecar written for document ${document.id}: status=${document.status}")
+        logD(TAG, "Sidecar written for document ${document.id}: status=${document.status}, hash=${contentHash?.take(8)}...")
+    }
+
+    private fun computeContentHash(content: String): String {
+        val digest = MessageDigest.getInstance("SHA-256")
+        val hashBytes = digest.digest(content.toByteArray(Charsets.UTF_8))
+        return hashBytes.joinToString("") { "%02x".format(it) }
     }
 
     companion object {

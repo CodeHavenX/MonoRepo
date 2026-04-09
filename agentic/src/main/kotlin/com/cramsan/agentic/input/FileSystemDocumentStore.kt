@@ -137,7 +137,7 @@ class FileSystemDocumentStore(
     }
 
     private fun sidecarPath(id: String): Path =
-        docsDir.resolve(".agentic-meta").resolve("$id.json")
+        docsDir.resolve(".agentic-meta").resolve("doc.$id.json")
 
     private fun readSidecar(id: String): DocumentMeta? {
         val path = sidecarPath(id)

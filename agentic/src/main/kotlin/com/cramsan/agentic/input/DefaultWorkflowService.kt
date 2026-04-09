@@ -4,6 +4,8 @@ import com.cramsan.agentic.ai.AiContentBlock
 import com.cramsan.agentic.ai.AiMessage
 import com.cramsan.agentic.ai.AiProvider
 import com.cramsan.agentic.core.REVISION_SYSTEM_PROMPT
+import com.cramsan.agentic.core.StageApprovalRecord
+import com.cramsan.agentic.core.StageApprovalWarning
 import com.cramsan.agentic.core.StageDocument
 import com.cramsan.agentic.core.WorkflowConfig
 import com.cramsan.agentic.core.WorkflowConfigError
@@ -15,8 +17,11 @@ import com.cramsan.agentic.core.WorkflowStatus
 import com.cramsan.agentic.core.resolvePath
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logI
+import com.cramsan.framework.logging.logW
+import kotlinx.serialization.json.Json
 import java.nio.file.Files
 import java.nio.file.Path
+import java.security.MessageDigest
 
 private const val TAG = "DefaultWorkflowService"
 
@@ -24,6 +29,7 @@ class DefaultWorkflowService(
     private val documentStore: DocumentStore,
     private val aiProvider: AiProvider,
     private val docsDir: Path,
+    private val json: Json,
     private val workflowConfig: WorkflowConfig,
 ) : WorkflowService {
 
@@ -42,10 +48,12 @@ class DefaultWorkflowService(
             )
         }
         val completedStages = mutableListOf<String>()
+        val approvalWarnings = mutableListOf<StageApprovalWarning>()
         for (stage in stages) {
-            val approvalFile = docsDir.resolve(stage.approvalMarkerFile)
+            val approvalFile = docsDir.resolve(stage.approvalRecordFile)
             if (Files.exists(approvalFile)) {
                 completedStages.add(stage.id)
+                checkApprovalDrift(stage, approvalFile)?.let { approvalWarnings.add(it) }
             } else {
                 val outputFile = docsDir.resolve(stage.outputFile)
                 val nextStage = stages.getOrNull(stages.indexOf(stage) + 1)
@@ -56,6 +64,7 @@ class DefaultWorkflowService(
                         completedStages = completedStages.toList(),
                         currentStage = stage,
                         nextStage = nextStage,
+                        approvalWarnings = approvalWarnings.toList(),
                     )
                 } else {
                     logD(TAG, "getState: stage ${stage.id} in progress")
@@ -64,6 +73,7 @@ class DefaultWorkflowService(
                         completedStages = completedStages.toList(),
                         currentStage = stage,
                         nextStage = null,
+                        approvalWarnings = approvalWarnings.toList(),
                     )
                 }
             }
@@ -75,6 +85,7 @@ class DefaultWorkflowService(
             completedStages = completedStages.toList(),
             currentStage = null,
             nextStage = null,
+            approvalWarnings = approvalWarnings.toList(),
         )
     }
 
@@ -92,7 +103,7 @@ class DefaultWorkflowService(
         for (depId in stage.inputDependencies) {
             val depStage = stageById[depId]
                 ?: throw IllegalStateException("Stage '$stageId' depends on unknown stage '$depId'")
-            val approvalFile = docsDir.resolve(depStage.approvalMarkerFile)
+            val approvalFile = docsDir.resolve(depStage.approvalRecordFile)
             require(Files.exists(approvalFile)) {
                 "Dependency '${depStage.name}' ($depId) must be approved before starting '$stageId'"
             }
@@ -158,9 +169,55 @@ class DefaultWorkflowService(
         val stage = stageById[stageId]
             ?: throw IllegalArgumentException("Unknown stage: $stageId")
 
-        val markerFile = docsDir.resolve(stage.approvalMarkerFile)
-        Files.writeString(markerFile, "approved at ${System.currentTimeMillis()}")
-        logI(TAG, "Approval marker written: $markerFile")
+        val record = StageApprovalRecord(
+            stageId = stageId,
+            approvedAtEpochMs = System.currentTimeMillis(),
+            inputHashes = computeInputHashes(stage),
+        )
+        val recordFile = docsDir.resolve(stage.approvalRecordFile)
+        Files.createDirectories(recordFile.parent)
+        Files.writeString(recordFile, json.encodeToString(record))
+        logI(TAG, "Approval record written: $recordFile")
+    }
+
+    private fun checkApprovalDrift(stage: WorkflowStageConfig, approvalFile: Path): StageApprovalWarning? {
+        return try {
+            val record = json.decodeFromString<StageApprovalRecord>(Files.readString(approvalFile))
+            val currentHashes = computeInputHashes(stage)
+            val changedInputs = record.inputHashes.entries
+                .filter { (file, hash) -> currentHashes[file] != hash }
+                .map { it.key } +
+                currentHashes.keys.filter { it !in record.inputHashes }
+            if (changedInputs.isEmpty()) null
+            else StageApprovalWarning(stage.id, stage.name, changedInputs)
+        } catch (e: Exception) {
+            logW(TAG, "Failed to check approval drift for stage ${stage.id}", e)
+            null
+        }
+    }
+
+    private fun computeInputHashes(stage: WorkflowStageConfig): Map<String, String> {
+        val hashes = mutableMapOf<String, String>()
+        documentStore.getAll().forEach { doc ->
+            val filePath = resolvePath(docsDir, doc.relativePath)
+            if (Files.exists(filePath)) {
+                hashes[doc.relativePath] = computeFileHash(filePath)
+            }
+        }
+        for (depId in stage.inputDependencies) {
+            val depStage = stageById[depId] ?: continue
+            val depFile = docsDir.resolve(depStage.outputFile)
+            if (Files.exists(depFile)) {
+                hashes[depStage.outputFile] = computeFileHash(depFile)
+            }
+        }
+        return hashes
+    }
+
+    private fun computeFileHash(path: Path): String {
+        val digest = MessageDigest.getInstance("SHA-256")
+        val hashBytes = digest.digest(Files.readAllBytes(path))
+        return hashBytes.joinToString("") { "%02x".format(it) }
     }
 
     override fun validateWorkflowConfig(): List<WorkflowConfigError> {

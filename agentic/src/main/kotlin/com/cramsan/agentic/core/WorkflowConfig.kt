@@ -18,11 +18,11 @@ data class WorkflowStageConfig(
     val prompt: WorkflowPromptConfig,
 ) {
     /**
-     * Approval marker file path, derived from the stage ID.
+     * Approval record file path within .agentic-meta/, derived from the stage ID.
      * Internal implementation detail - not exposed in user configuration.
      */
-    val approvalMarkerFile: String
-        get() = "${id}.approved"
+    val approvalRecordFile: String
+        get() = ".agentic-meta/stage.$id.json"
 }
 
 @Serializable

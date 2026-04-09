@@ -6,11 +6,13 @@ import com.cramsan.agentic.ai.AiResponse
 import com.cramsan.agentic.core.AgenticDocument
 import com.cramsan.agentic.core.DocumentStatus
 import com.cramsan.agentic.core.DocumentType
+import com.cramsan.agentic.core.StageApprovalRecord
 import com.cramsan.agentic.core.WorkflowConfig
 import com.cramsan.agentic.core.WorkflowConfigErrorType
 import com.cramsan.agentic.core.WorkflowPromptConfig
 import com.cramsan.agentic.core.WorkflowStageConfig
 import com.cramsan.agentic.core.WorkflowStatus
+import kotlinx.serialization.json.Json
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
@@ -40,6 +42,7 @@ class DefaultWorkflowServiceTest {
 
     private val documentStore = mockk<DocumentStore>()
     private val aiProvider = mockk<AiProvider>()
+    private val json = Json { ignoreUnknownKeys = true }
 
     private lateinit var service: DefaultWorkflowService
 
@@ -90,8 +93,20 @@ class DefaultWorkflowServiceTest {
             documentStore,
             aiProvider,
             docsDir,
+            json,
             WorkflowConfig(testWorkflowStages()),
         )
+    }
+
+    private fun writeApprovalRecord(stageId: String) {
+        val metaDir = docsDir.resolve(".agentic-meta")
+        Files.createDirectories(metaDir)
+        val record = StageApprovalRecord(
+            stageId = stageId,
+            approvedAtEpochMs = 0L,
+            inputHashes = emptyMap(),
+        )
+        Files.writeString(metaDir.resolve("stage.$stageId.json"), json.encodeToString(record))
     }
 
     // ── getState() derivation ───────────────────────────────────────────────────
@@ -132,7 +147,7 @@ class DefaultWorkflowServiceTest {
         every { documentStore.getAll() } returns listOf(sampleDoc)
 
         Files.writeString(docsDir.resolve("high-level-plan.md"), "# High-Level Plan")
-        Files.writeString(docsDir.resolve("stage1.approved"), "approved at 0")
+        writeApprovalRecord("stage1")
 
         val state = service.getState()
         assertEquals(WorkflowStatus.StageInProgress("stage2"), state.status)
@@ -144,7 +159,7 @@ class DefaultWorkflowServiceTest {
         every { documentStore.getAll() } returns listOf(sampleDoc)
 
         Files.writeString(docsDir.resolve("high-level-plan.md"), "# High-Level Plan")
-        Files.writeString(docsDir.resolve("stage1.approved"), "approved at 0")
+        writeApprovalRecord("stage1")
         Files.writeString(docsDir.resolve("low-level-plan.md"), "# Low-Level Plan")
 
         val state = service.getState()
@@ -156,9 +171,9 @@ class DefaultWorkflowServiceTest {
         every { documentStore.getAll() } returns listOf(sampleDoc)
 
         Files.writeString(docsDir.resolve("high-level-plan.md"), "# High-Level Plan")
-        Files.writeString(docsDir.resolve("stage1.approved"), "approved at 0")
+        writeApprovalRecord("stage1")
         Files.writeString(docsDir.resolve("low-level-plan.md"), "# Low-Level Plan")
-        Files.writeString(docsDir.resolve("stage2.approved"), "approved at 0")
+        writeApprovalRecord("stage2")
 
         val state = service.getState()
         assertEquals(WorkflowStatus.StageInProgress("stage3"), state.status)
@@ -170,9 +185,9 @@ class DefaultWorkflowServiceTest {
         every { documentStore.getAll() } returns listOf(sampleDoc)
 
         Files.writeString(docsDir.resolve("high-level-plan.md"), "# High-Level Plan")
-        Files.writeString(docsDir.resolve("stage1.approved"), "approved at 0")
+        writeApprovalRecord("stage1")
         Files.writeString(docsDir.resolve("low-level-plan.md"), "# Low-Level Plan")
-        Files.writeString(docsDir.resolve("stage2.approved"), "approved at 0")
+        writeApprovalRecord("stage2")
         Files.writeString(docsDir.resolve("task-list.md"), "# Task List")
 
         val state = service.getState()
@@ -184,11 +199,11 @@ class DefaultWorkflowServiceTest {
         every { documentStore.getAll() } returns listOf(sampleDoc)
 
         Files.writeString(docsDir.resolve("high-level-plan.md"), "# High-Level Plan")
-        Files.writeString(docsDir.resolve("stage1.approved"), "approved at 0")
+        writeApprovalRecord("stage1")
         Files.writeString(docsDir.resolve("low-level-plan.md"), "# Low-Level Plan")
-        Files.writeString(docsDir.resolve("stage2.approved"), "approved at 0")
+        writeApprovalRecord("stage2")
         Files.writeString(docsDir.resolve("task-list.md"), "# Task List")
-        Files.writeString(docsDir.resolve("stage3.approved"), "approved at 0")
+        writeApprovalRecord("stage3")
 
         val state = service.getState()
         assertEquals(WorkflowStatus.Complete, state.status)
@@ -262,7 +277,7 @@ class DefaultWorkflowServiceTest {
     @Test
     fun `startStage includes dependency output in AI prompt`() = runTest {
         Files.writeString(docsDir.resolve("high-level-plan.md"), "# High-Level Plan\nApproved content")
-        Files.writeString(docsDir.resolve("stage1.approved"), "approved at 0")
+        writeApprovalRecord("stage1")
         every { documentStore.getAll() } returns emptyList()
         val capturedMessages = slot<List<com.cramsan.agentic.ai.AiMessage>>()
         coEvery { aiProvider.chat(any(), capture(capturedMessages), any()) } returns AiResponse(
@@ -292,11 +307,11 @@ class DefaultWorkflowServiceTest {
         every { documentStore.getAll() } returns listOf(sampleDoc)
 
         Files.writeString(docsDir.resolve("high-level-plan.md"), "# High-Level Plan")
-        Files.writeString(docsDir.resolve("stage1.approved"), "approved at 0")
+        writeApprovalRecord("stage1")
         Files.writeString(docsDir.resolve("low-level-plan.md"), "# Low-Level Plan")
-        Files.writeString(docsDir.resolve("stage2.approved"), "approved at 0")
+        writeApprovalRecord("stage2")
         Files.writeString(docsDir.resolve("task-list.md"), "# Task List")
-        Files.writeString(docsDir.resolve("stage3.approved"), "approved at 0")
+        writeApprovalRecord("stage3")
 
         val result = service.startNextStage()
         assertNull(result)
@@ -346,17 +361,21 @@ class DefaultWorkflowServiceTest {
     // ── approveStage() ─────────────────────────────────────────────────────────
 
     @Test
-    fun `approveStage creates approval marker file`() {
+    fun `approveStage creates approval record file`() {
+        every { documentStore.getAll() } returns emptyList()
+
         service.approveStage("stage1")
 
-        assertTrue(Files.exists(docsDir.resolve("stage1.approved")))
+        assertTrue(Files.exists(docsDir.resolve(".agentic-meta/stage.stage1.json")))
     }
 
     @Test
-    fun `approveStage writes non-empty content to marker file`() {
+    fun `approveStage writes non-empty content to record file`() {
+        every { documentStore.getAll() } returns emptyList()
+
         service.approveStage("stage1")
 
-        val content = Files.readString(docsDir.resolve("stage1.approved"))
+        val content = Files.readString(docsDir.resolve(".agentic-meta/stage.stage1.json"))
         assertTrue(content.isNotBlank())
     }
 
@@ -370,7 +389,7 @@ class DefaultWorkflowServiceTest {
     @Test
     fun `approveStage then getState reflects approval correctly`() {
         every { documentStore.getAll() } returns listOf(sampleDoc)
-
+        Files.writeString(docsDir.resolve("goals-scope.md"), "Project goals go here")
         Files.writeString(docsDir.resolve("high-level-plan.md"), "# High-Level Plan")
 
         assertEquals(WorkflowStatus.StagePendingApproval("stage1"), service.getState().status)

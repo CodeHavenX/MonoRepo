@@ -1,6 +1,7 @@
 package com.cramsan.agentic.app.commands
 
 import com.cramsan.agentic.app.agenticModule
+import com.cramsan.agentic.core.WorkflowState
 import com.cramsan.agentic.core.WorkflowStatus
 import com.cramsan.agentic.input.WorkflowService
 import com.cramsan.framework.logging.EventLogger
@@ -54,6 +55,7 @@ private class PlanStatusSubcommand : CliktCommand(
             }
             state.currentStage?.let { echo("Current stage: ${it.name} (${it.id})") }
             echo(nextActionMessage(state.status, state.currentStage?.id))
+            printApprovalWarnings(state)
         } finally {
             stopKoin()
         }
@@ -99,6 +101,7 @@ private class PlanStartSubcommand : CliktCommand(
             }
 
             val state = workflowService.getState()
+            printApprovalWarnings(state)
 
             when (state.status) {
                 WorkflowStatus.NotStarted -> {
@@ -160,6 +163,7 @@ private class PlanApproveSubcommand : CliktCommand(
             echo("Stage '${stage.name}' ($stageId) approved.")
 
             val newState = workflowService.getState()
+            printApprovalWarnings(newState)
             if (newState.status == WorkflowStatus.Complete) {
                 echo("Planning complete. Run 'agentic start' to begin execution.")
             } else {
@@ -238,8 +242,19 @@ private class PlanStagesSubcommand : CliktCommand(
                     echo("    Depends on: ${stage.inputDependencies.joinToString(", ")}")
                 }
             }
+            printApprovalWarnings(state)
         } finally {
             stopKoin()
         }
     }
+}
+
+private fun com.github.ajalt.clikt.core.CliktCommand.printApprovalWarnings(state: WorkflowState) {
+    if (state.approvalWarnings.isEmpty()) return
+    echo("")
+    echo("WARNING: Input files have changed since approval for the following stages:")
+    for (warning in state.approvalWarnings) {
+        echo("  Stage \"${warning.stageName}\" → ${warning.changedInputs.joinToString(", ")}")
+    }
+    echo("  These stages may not reflect the current state of your inputs.")
 }

@@ -180,6 +180,6 @@ fun agenticModule(
 
     single<WorkflowService> {
         val planningConfig = get<PlanningConfig>()
-        DefaultWorkflowService(get(), get(), agenticDir.resolve("docs"), planningConfig.workflow)
+        DefaultWorkflowService(get(), get(), agenticDir.resolve("docs"), get(), planningConfig.workflow)
     }
 }

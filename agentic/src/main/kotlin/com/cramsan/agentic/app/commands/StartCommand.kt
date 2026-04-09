@@ -38,7 +38,7 @@ class StartCommand : CliktCommand(name = "start", help = "Start the agentic orch
         }.koin
 
         try {
-            val taskListApproved = agenticDir.resolve("docs/task-list.approved")
+            val taskListApproved = agenticDir.resolve("docs/.agentic-meta/stage.stage3.json")
             if (!Files.exists(taskListApproved)) {
                 echo(
                     "ERROR: Planning phase is not complete. " +

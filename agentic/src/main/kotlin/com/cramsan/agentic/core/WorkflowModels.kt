@@ -23,11 +23,18 @@ sealed class WorkflowStatus {
     data object Complete : WorkflowStatus()
 }
 
+data class StageApprovalWarning(
+    val stageId: String,
+    val stageName: String,
+    val changedInputs: List<String>,
+)
+
 data class WorkflowState(
     val status: WorkflowStatus,
     val completedStages: List<String>,
     val currentStage: WorkflowStageConfig?,
     val nextStage: WorkflowStageConfig?,
+    val approvalWarnings: List<StageApprovalWarning> = emptyList(),
 )
 
 data class StageDocument(

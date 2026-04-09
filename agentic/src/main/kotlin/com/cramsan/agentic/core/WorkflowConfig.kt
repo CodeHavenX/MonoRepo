@@ -42,11 +42,19 @@ sealed class WorkflowPromptConfig {
  */
 fun defaultWorkflowStages(): List<WorkflowStageConfig> = listOf(
     WorkflowStageConfig(
+        id = "stage0",
+        name = "Document Review",
+        outputFile = "document-review-report.md",
+        requiresApproval = true,
+        inputDependencies = emptyList(),
+        prompt = WorkflowPromptConfig.File(path = "templates/workflow/stage0-document-review.md"),
+    ),
+    WorkflowStageConfig(
         id = "stage1",
         name = "High-Level Plan",
         outputFile = "high-level-plan.md",
         requiresApproval = true,
-        inputDependencies = emptyList(),
+        inputDependencies = listOf("stage0"),
         prompt = WorkflowPromptConfig.File(path = "templates/workflow/stage1-high-level-plan.md"),
     ),
     WorkflowStageConfig(

@@ -107,18 +107,8 @@ class DefaultWorkflowServiceTest {
     }
 
     @Test
-    fun `getState is AwaitingDocumentValidation when not all docs are validated`() {
+    fun `getState is StageInProgress for stage1 when docs exist but no plan files exist`() {
         every { documentStore.getAll() } returns listOf(sampleDoc)
-        every { documentStore.allValidated() } returns false
-
-        val state = service.getState()
-        assertEquals(WorkflowStatus.AwaitingDocumentValidation, state.status)
-    }
-
-    @Test
-    fun `getState is StageInProgress for stage1 when docs validated but no plan files exist`() {
-        every { documentStore.getAll() } returns listOf(sampleDoc)
-        every { documentStore.allValidated() } returns true
         // No files written to docsDir
 
         val state = service.getState()
@@ -129,7 +119,7 @@ class DefaultWorkflowServiceTest {
     @Test
     fun `getState is StagePendingApproval for stage1 when high-level-plan exists but not approved`() {
         every { documentStore.getAll() } returns listOf(sampleDoc)
-        every { documentStore.allValidated() } returns true
+
         Files.writeString(docsDir.resolve("high-level-plan.md"), "# High-Level Plan")
 
         val state = service.getState()
@@ -140,7 +130,7 @@ class DefaultWorkflowServiceTest {
     @Test
     fun `getState is StageInProgress for stage2 when high-level-plan is approved`() {
         every { documentStore.getAll() } returns listOf(sampleDoc)
-        every { documentStore.allValidated() } returns true
+
         Files.writeString(docsDir.resolve("high-level-plan.md"), "# High-Level Plan")
         Files.writeString(docsDir.resolve("stage1.approved"), "approved at 0")
 
@@ -152,7 +142,7 @@ class DefaultWorkflowServiceTest {
     @Test
     fun `getState is StagePendingApproval for stage2 when low-level-plan exists but not approved`() {
         every { documentStore.getAll() } returns listOf(sampleDoc)
-        every { documentStore.allValidated() } returns true
+
         Files.writeString(docsDir.resolve("high-level-plan.md"), "# High-Level Plan")
         Files.writeString(docsDir.resolve("stage1.approved"), "approved at 0")
         Files.writeString(docsDir.resolve("low-level-plan.md"), "# Low-Level Plan")
@@ -164,7 +154,7 @@ class DefaultWorkflowServiceTest {
     @Test
     fun `getState is StageInProgress for stage3 when low-level-plan is approved`() {
         every { documentStore.getAll() } returns listOf(sampleDoc)
-        every { documentStore.allValidated() } returns true
+
         Files.writeString(docsDir.resolve("high-level-plan.md"), "# High-Level Plan")
         Files.writeString(docsDir.resolve("stage1.approved"), "approved at 0")
         Files.writeString(docsDir.resolve("low-level-plan.md"), "# Low-Level Plan")
@@ -178,7 +168,7 @@ class DefaultWorkflowServiceTest {
     @Test
     fun `getState is StagePendingApproval for stage3 when task-list exists but not approved`() {
         every { documentStore.getAll() } returns listOf(sampleDoc)
-        every { documentStore.allValidated() } returns true
+
         Files.writeString(docsDir.resolve("high-level-plan.md"), "# High-Level Plan")
         Files.writeString(docsDir.resolve("stage1.approved"), "approved at 0")
         Files.writeString(docsDir.resolve("low-level-plan.md"), "# Low-Level Plan")
@@ -192,7 +182,7 @@ class DefaultWorkflowServiceTest {
     @Test
     fun `getState is Complete when task-list is approved`() {
         every { documentStore.getAll() } returns listOf(sampleDoc)
-        every { documentStore.allValidated() } returns true
+
         Files.writeString(docsDir.resolve("high-level-plan.md"), "# High-Level Plan")
         Files.writeString(docsDir.resolve("stage1.approved"), "approved at 0")
         Files.writeString(docsDir.resolve("low-level-plan.md"), "# Low-Level Plan")
@@ -300,7 +290,7 @@ class DefaultWorkflowServiceTest {
     @Test
     fun `startNextStage returns null when workflow is complete`() = runTest {
         every { documentStore.getAll() } returns listOf(sampleDoc)
-        every { documentStore.allValidated() } returns true
+
         Files.writeString(docsDir.resolve("high-level-plan.md"), "# High-Level Plan")
         Files.writeString(docsDir.resolve("stage1.approved"), "approved at 0")
         Files.writeString(docsDir.resolve("low-level-plan.md"), "# Low-Level Plan")
@@ -380,7 +370,7 @@ class DefaultWorkflowServiceTest {
     @Test
     fun `approveStage then getState reflects approval correctly`() {
         every { documentStore.getAll() } returns listOf(sampleDoc)
-        every { documentStore.allValidated() } returns true
+
         Files.writeString(docsDir.resolve("high-level-plan.md"), "# High-Level Plan")
 
         assertEquals(WorkflowStatus.StagePendingApproval("stage1"), service.getState().status)

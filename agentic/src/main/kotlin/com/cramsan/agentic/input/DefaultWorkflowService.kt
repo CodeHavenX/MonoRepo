@@ -41,16 +41,6 @@ class DefaultWorkflowService(
                 nextStage = stages.firstOrNull(),
             )
         }
-        if (!documentStore.allValidated()) {
-            logD(TAG, "getState: not all documents validated -> AwaitingDocumentValidation")
-            return WorkflowState(
-                status = WorkflowStatus.AwaitingDocumentValidation,
-                completedStages = emptyList(),
-                currentStage = null,
-                nextStage = null,
-            )
-        }
-
         val completedStages = mutableListOf<String>()
         for (stage in stages) {
             val approvalFile = docsDir.resolve(stage.approvalMarkerFile)
@@ -141,10 +131,6 @@ class DefaultWorkflowService(
             }
             WorkflowStatus.NotStarted -> {
                 stages.firstOrNull()?.let { startStage(it.id) }
-            }
-            WorkflowStatus.AwaitingDocumentValidation -> {
-                logI(TAG, "startNextStage: documents not validated, cannot start")
-                null
             }
         }
     }

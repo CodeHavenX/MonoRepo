@@ -1,15 +1,11 @@
 package com.cramsan.agentic.app.commands
 
 import com.cramsan.agentic.app.agenticModule
-import com.cramsan.agentic.core.IssueSeverity
-import com.cramsan.agentic.core.IssueStatus
 import com.cramsan.agentic.core.WorkflowStatus
-import com.cramsan.agentic.input.ValidationService
 import com.cramsan.agentic.input.WorkflowService
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
-import com.cramsan.framework.logging.logW
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.subcommands
 import com.github.ajalt.clikt.parameters.arguments.argument
@@ -27,55 +23,12 @@ class PlanCommand : CliktCommand(name = "plan", help = "Planning phase commands"
 
     init {
         subcommands(
-            PlanValidateSubcommand(),
             PlanStatusSubcommand(),
             PlanStartSubcommand(),
             PlanApproveSubcommand(),
             PlanReviseSubcommand(),
             PlanStagesSubcommand(),
         )
-    }
-}
-
-private class PlanValidateSubcommand : CliktCommand(
-    name = "validate",
-    help = "Run a document validation pass and exit (non-zero if blocking issues remain)",
-) {
-    private val configPath by option("--config", help = "Path to config.json").default(".agentic/config.json")
-
-    override fun run() {
-        EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
-
-        val agenticDir = Path.of(configPath).parent ?: Path.of(".")
-        val koin = startKoin { modules(agenticModule(agenticDir, Path.of("."))) }.koin
-
-        try {
-            val validationService = koin.get<ValidationService>()
-            val report = runBlocking { validationService.runValidationPass() }
-
-            val blockingIssues = report.issues.filter {
-                it.severity == IssueSeverity.BLOCKING && it.status == IssueStatus.OPEN
-            }
-
-            echo("\n=== Validation Report ===")
-            echo("Total issues: ${report.issues.size}")
-            echo("Blocking issues: ${blockingIssues.size}")
-
-            if (blockingIssues.isNotEmpty()) {
-                logW("PlanValidateSubcommand", "Validation FAILED: ${blockingIssues.size} blocking issue(s) found")
-                echo("\nBlocking issues:")
-                blockingIssues.forEach { issue ->
-                    echo("  [${issue.id}] ${issue.documentId}: ${issue.description}")
-                }
-                echo("\nValidation FAILED: ${blockingIssues.size} blocking issue(s) must be resolved.")
-                exitProcess(1)
-            } else {
-                echo("\nValidation PASSED. All documents are ready.")
-                echo("Next step: run 'agentic plan start' to begin planning.")
-            }
-        } finally {
-            stopKoin()
-        }
     }
 }
 
@@ -108,15 +61,13 @@ private class PlanStatusSubcommand : CliktCommand(
 
     private fun formatStatus(status: WorkflowStatus): String = when (status) {
         WorkflowStatus.NotStarted -> "NOT_STARTED"
-        WorkflowStatus.AwaitingDocumentValidation -> "AWAITING_DOCUMENT_VALIDATION"
         is WorkflowStatus.StageInProgress -> "STAGE_IN_PROGRESS (${status.stageId})"
         is WorkflowStatus.StagePendingApproval -> "STAGE_PENDING_APPROVAL (${status.stageId})"
         WorkflowStatus.Complete -> "COMPLETE"
     }
 
     private fun nextActionMessage(status: WorkflowStatus, stageId: String?): String = when (status) {
-        WorkflowStatus.NotStarted -> "Next: provide input documents and run 'agentic plan validate'."
-        WorkflowStatus.AwaitingDocumentValidation -> "Next: run 'agentic plan validate' to validate input documents."
+        WorkflowStatus.NotStarted -> "Next: provide input documents and run 'agentic plan start'."
         is WorkflowStatus.StageInProgress -> "Next: run 'agentic plan start' to produce the ${stageId ?: "next"} output."
         is WorkflowStatus.StagePendingApproval -> "Next: review output, then run 'agentic plan approve $stageId' or 'agentic plan revise $stageId'."
         WorkflowStatus.Complete -> "Planning is complete. Run 'agentic start' to begin execution."
@@ -150,10 +101,8 @@ private class PlanStartSubcommand : CliktCommand(
             val state = workflowService.getState()
 
             when (state.status) {
-                WorkflowStatus.NotStarted,
-                WorkflowStatus.AwaitingDocumentValidation -> {
-                    echo("Cannot start planning: documents are not yet validated.")
-                    echo("Run 'agentic plan validate' first.")
+                WorkflowStatus.NotStarted -> {
+                    echo("Cannot start planning: no input documents found.")
                     exitProcess(1)
                 }
                 is WorkflowStatus.StagePendingApproval -> {

@@ -11,10 +11,6 @@ sealed class WorkflowStatus {
     data object NotStarted : WorkflowStatus()
 
     @Serializable
-    @SerialName("awaiting_document_validation")
-    data object AwaitingDocumentValidation : WorkflowStatus()
-
-    @Serializable
     @SerialName("stage_in_progress")
     data class StageInProgress(val stageId: String) : WorkflowStatus()
 

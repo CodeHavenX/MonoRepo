@@ -4,9 +4,6 @@ import com.cramsan.agentic.app.agenticModule
 import com.cramsan.agentic.core.WorkflowState
 import com.cramsan.agentic.core.WorkflowStatus
 import com.cramsan.agentic.input.WorkflowService
-import com.cramsan.framework.logging.EventLogger
-import com.cramsan.framework.logging.implementation.PassthroughEventLogger
-import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.subcommands
 import com.github.ajalt.clikt.parameters.arguments.argument
@@ -40,8 +37,6 @@ private class PlanStatusSubcommand : CliktCommand(
     private val configPath by option("--config", help = "Path to config.json").default(".agentic/config.json")
 
     override fun run() {
-        EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
-
         val agenticDir = Path.of(configPath).parent ?: Path.of(".")
         val koin = startKoin { modules(agenticModule(agenticDir, Path.of("."))) }.koin
 
@@ -84,8 +79,6 @@ private class PlanStartSubcommand : CliktCommand(
     private val stageId by argument(help = "Stage ID to start (optional, auto-advances if omitted)").optional()
 
     override fun run() {
-        EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
-
         val agenticDir = Path.of(configPath).parent ?: Path.of(".")
         val koin = startKoin { modules(agenticModule(agenticDir, Path.of("."))) }.koin
 
@@ -183,8 +176,6 @@ private class PlanReviseSubcommand : CliktCommand(
     private val stageId by argument(help = "Stage ID to revise")
 
     override fun run() {
-        EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
-
         val agenticDir = Path.of(configPath).parent ?: Path.of(".")
         val koin = startKoin { modules(agenticModule(agenticDir, Path.of("."))) }.koin
 
@@ -214,8 +205,6 @@ private class PlanStagesSubcommand : CliktCommand(
     private val configPath by option("--config", help = "Path to config.json").default(".agentic/config.json")
 
     override fun run() {
-        EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
-
         val agenticDir = Path.of(configPath).parent ?: Path.of(".")
         val koin = startKoin { modules(agenticModule(agenticDir, Path.of("."))) }.koin
 

@@ -5,9 +5,6 @@ import com.cramsan.agentic.app.agenticModule
 import com.cramsan.agentic.coordination.OrchestratorConfig
 import com.cramsan.agentic.core.AiProviderConfig
 import java.nio.file.Files
-import com.cramsan.framework.logging.EventLogger
-import com.cramsan.framework.logging.implementation.PassthroughEventLogger
-import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.logging.logI
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.default
@@ -28,8 +25,6 @@ class StartCommand : CliktCommand(name = "start", help = "Start the agentic orch
     private val dryRun by option("--dry-run", help = "Print task order without running agents").flag()
 
     override fun run() {
-        EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
-
         val agenticDir = Path.of(configPath).parent ?: Path.of(".")
         val repoRoot = Path.of(".")
 
@@ -53,13 +48,14 @@ class StartCommand : CliktCommand(name = "start", help = "Start the agentic orch
             val orchestrator = koin.get<com.cramsan.agentic.coordination.Orchestrator>()
 
             // Startup validation: agent task execution requires tool-use support.
-            // ClaudeCliAiProvider does not support tools — fail fast with a clear message.
+            // ClaudeCliAiProvider (fullAccess=false) does not support tools — fail fast with a
+            // clear message. ClaudeCliFullAiProvider (fullAccess=true) is allowed here.
             if (aiProvider is ClaudeCliAiProvider) {
                 echo(
                     "ERROR: The configured AI provider (claude-cli) does not support tool use, " +
                         "which is required for agent task execution. " +
-                        "Use 'claude-api' in config.json for start/resume, or use 'claude-cli' " +
-                        "only for validate (which does not use tools).",
+                        "Set \"fullAccess\": true in the claude-cli provider block in config.json " +
+                        "to enable autonomous agent mode, or switch to 'claude-api'.",
                     err = true,
                 )
                 throw com.github.ajalt.clikt.core.ProgramResult(1)

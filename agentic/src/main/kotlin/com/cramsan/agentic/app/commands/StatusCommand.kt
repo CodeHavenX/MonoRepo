@@ -4,9 +4,6 @@ import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
 import com.cramsan.agentic.app.agenticModule
-import com.cramsan.framework.logging.EventLogger
-import com.cramsan.framework.logging.implementation.PassthroughEventLogger
-import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import kotlinx.coroutines.runBlocking
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -17,8 +14,6 @@ class StatusCommand : CliktCommand(name = "status", help = "Show current task st
     private val configPath by option("--config", help = "Path to config.json").default(".agentic/config.json")
 
     override fun run() {
-        EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
-
         val agenticDir = Path.of(configPath).parent ?: Path.of(".")
         val repoRoot = Path.of(".")
 

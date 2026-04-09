@@ -2,10 +2,7 @@ package com.cramsan.agentic.app
 
 import com.cramsan.agentic.app.commands.InitCommand
 import com.cramsan.agentic.app.commands.PlanCommand
-import com.cramsan.agentic.app.commands.ResumeCommand
-import com.cramsan.agentic.app.commands.StartCommand
-import com.cramsan.agentic.app.commands.StatusCommand
-import com.cramsan.agentic.app.commands.TaskCommand
+import com.cramsan.agentic.app.commands.RunCommand
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
@@ -21,10 +18,7 @@ class AgenticCli : CliktCommand(name = "agentic", invokeWithoutSubcommand = fals
         subcommands(
             InitCommand(),
             PlanCommand(),
-            StartCommand(),
-            ResumeCommand(),
-            StatusCommand(),
-            TaskCommand(),
+            RunCommand(),
         )
     }
 }

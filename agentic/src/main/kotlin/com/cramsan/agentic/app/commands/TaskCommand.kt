@@ -90,7 +90,7 @@ private class TaskRetrySubcommand : CliktCommand(name = "retry", help = "Retry a
     }
 }
 
-private class TaskUnblockSubcommand : CliktCommand(name = "unblock", help = "Force unblock a task for one poll cycle") {
+private class TaskUnblockSubcommand : CliktCommand(name = "force-unblock", help = "Force unblock a task for one poll cycle") {
     private val configPath by option("--config").default(".agentic/config.json")
     private val taskId by argument()
 

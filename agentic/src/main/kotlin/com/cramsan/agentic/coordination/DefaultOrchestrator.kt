@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap
 private const val TAG = "DefaultOrchestrator"
 
 class DefaultOrchestrator(
-    private val taskStore: TaskStore,
+    private val taskListProvider: TaskListProvider,
     private val stateDeriver: StateDeriver,
     private val dependencyGraph: DependencyGraph,
     private val worktreeManager: WorktreeManager,
@@ -29,7 +29,7 @@ class DefaultOrchestrator(
     private val cleanedUpTaskIds: MutableSet<String> = mutableSetOf()
 
     override suspend fun run(config: OrchestratorConfig) {
-        val tasks = taskStore.getAll()
+        val tasks = taskListProvider.provide()
         val activeTaskIds: MutableSet<String> = ConcurrentHashMap.newKeySet()
 
         coroutineScope {
@@ -101,7 +101,7 @@ class DefaultOrchestrator(
     }
 
     override suspend fun status(): Map<Task, TaskStatus> {
-        return deriveMemoized(taskStore.getAll())
+        return deriveMemoized(taskListProvider.provide())
     }
 
     private suspend fun deriveMemoized(tasks: List<Task>): Map<Task, TaskStatus> {

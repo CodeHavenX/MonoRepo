@@ -3,19 +3,22 @@ package com.cramsan.agentic.app
 import com.cramsan.agentic.ai.AiProvider
 import com.cramsan.agentic.ai.claude.ClaudeAiProvider
 import com.cramsan.agentic.ai.claude.ClaudeCliAiProvider
+import com.cramsan.agentic.ai.claude.ClaudeCliFullAiProvider
 import com.cramsan.agentic.ai.fake.FakeAiProvider
 import com.cramsan.agentic.claude.DefaultAgentSession
 import com.cramsan.agentic.coordination.DefaultDependencyGraph
 import com.cramsan.agentic.coordination.DefaultOrchestrator
 import com.cramsan.agentic.coordination.DefaultStateDeriver
 import com.cramsan.agentic.coordination.DependencyGraph
-import com.cramsan.agentic.coordination.FileSystemTaskStore
+import com.cramsan.agentic.coordination.DocumentTaskListProvider
 import com.cramsan.agentic.coordination.Orchestrator
 import com.cramsan.agentic.coordination.StateDeriver
-import com.cramsan.agentic.coordination.TaskStore
+import com.cramsan.agentic.coordination.TaskListProvider
+import com.cramsan.agentic.coordination.fake.FakeTaskListProvider
 import com.cramsan.agentic.core.AgenticConfig
 import com.cramsan.agentic.core.AiProviderConfig
 import com.cramsan.agentic.core.PlanningConfig
+import com.cramsan.agentic.core.TaskListProviderConfig
 import com.cramsan.agentic.core.VcsProviderConfig
 import com.cramsan.agentic.execution.AgentRunner
 import com.cramsan.agentic.execution.AgentSession
@@ -45,6 +48,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import org.koin.dsl.module
 import java.nio.file.Path
@@ -95,8 +99,22 @@ fun agenticModule(
         DefaultWorktreeManager(repoRoot, agenticDir, config.baseBranch, get())
     }
 
-    single<TaskStore> {
-        FileSystemTaskStore(agenticDir.resolve("docs/task-list.md"))
+    single<TaskListProvider> {
+        val config = get<AgenticConfig>()
+        when (val tlConfig = config.taskListProvider) {
+            is TaskListProviderConfig.Document -> {
+                logI(TAG, "Configuring TaskListProvider: Document (documentPath=${tlConfig.documentPath})")
+                DocumentTaskListProvider(
+                    documentPath = agenticDir.resolve(tlConfig.documentPath),
+                    tasksDir = agenticDir.resolve(tlConfig.tasksOutputDir),
+                    json = get(),
+                )
+            }
+            is TaskListProviderConfig.Fake -> {
+                logI(TAG, "Configuring TaskListProvider: Fake")
+                FakeTaskListProvider()
+            }
+        }
     }
 
     single<DocumentStore> {
@@ -105,7 +123,8 @@ fun agenticModule(
     }
 
     single<DependencyGraph> {
-        DefaultDependencyGraph(get<TaskStore>().getAll())
+        val tasks = runBlocking { get<TaskListProvider>().provide() }
+        DefaultDependencyGraph(tasks)
     }
 
     single<StateDeriver> {
@@ -132,8 +151,13 @@ fun agenticModule(
                 ClaudeAiProvider(get(), apiKey, get(), aiConfig.model)
             }
             is AiProviderConfig.ClaudeCli -> {
-                logI(TAG, "Configuring AI provider: ClaudeCli (model=${aiConfig.model}, cliPath=${aiConfig.cliPath})")
-                ClaudeCliAiProvider(get(), aiConfig.cliPath, aiConfig.model)
+                if (aiConfig.fullAccess) {
+                    logI(TAG, "Configuring AI provider: ClaudeCliFull (model=${aiConfig.model}, cliPath=${aiConfig.cliPath})")
+                    ClaudeCliFullAiProvider(get(), aiConfig.cliPath, aiConfig.model, get())
+                } else {
+                    logI(TAG, "Configuring AI provider: ClaudeCli (model=${aiConfig.model}, cliPath=${aiConfig.cliPath})")
+                    ClaudeCliAiProvider(get(), aiConfig.cliPath, aiConfig.model)
+                }
             }
             is AiProviderConfig.Fake -> {
                 logI(TAG, "Configuring AI provider: Fake (model=${aiConfig.model}, mode=${aiConfig.mode})")

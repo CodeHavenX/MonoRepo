@@ -76,7 +76,8 @@ class SupabaseRentConfigDatastore(
             updatedAt = clock.now(),
             updatedBy = updatedBy,
         )
-        postgrest.from(RentConfigEntity.COLLECTION).upsert(entity, onConflict = "unit_id") {
+        postgrest.from(RentConfigEntity.COLLECTION).upsert(entity) {
+            onConflict = "unit_id"
             select()
         }.decodeSingle<RentConfigEntity>().toRentConfig()
     }

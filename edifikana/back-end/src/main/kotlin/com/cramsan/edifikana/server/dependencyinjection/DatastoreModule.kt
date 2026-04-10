@@ -3,6 +3,8 @@ package com.cramsan.edifikana.server.dependencyinjection
 import com.cramsan.architecture.server.settings.SettingsHolder
 import com.cramsan.edifikana.server.datastore.CommonAreaDatastore
 import com.cramsan.edifikana.server.datastore.DocumentDatastore
+import com.cramsan.edifikana.server.datastore.PaymentRecordDatastore
+import com.cramsan.edifikana.server.datastore.RentConfigDatastore
 import com.cramsan.edifikana.server.datastore.EmployeeDatastore
 import com.cramsan.edifikana.server.datastore.EventLogDatastore
 import com.cramsan.edifikana.server.datastore.MembershipDatastore
@@ -16,6 +18,8 @@ import com.cramsan.edifikana.server.datastore.UnitDatastore
 import com.cramsan.edifikana.server.datastore.UserDatastore
 import com.cramsan.edifikana.server.datastore.supabase.SupabaseCommonAreaDatastore
 import com.cramsan.edifikana.server.datastore.supabase.SupabaseDocumentDatastore
+import com.cramsan.edifikana.server.datastore.supabase.SupabasePaymentRecordDatastore
+import com.cramsan.edifikana.server.datastore.supabase.SupabaseRentConfigDatastore
 import com.cramsan.edifikana.server.datastore.supabase.SupabaseEmployeeDatastore
 import com.cramsan.edifikana.server.datastore.supabase.SupabaseEventLogDatastore
 import com.cramsan.edifikana.server.datastore.supabase.SupabaseMembershipDatastore
@@ -130,5 +134,11 @@ val DatastoreModule = module {
     }
     singleOf(::SupabaseUnitDatastore) {
         bind<UnitDatastore>()
+    }
+    singleOf(::SupabasePaymentRecordDatastore) {
+        bind<PaymentRecordDatastore>()
+    }
+    singleOf(::SupabaseRentConfigDatastore) {
+        bind<RentConfigDatastore>()
     }
 }

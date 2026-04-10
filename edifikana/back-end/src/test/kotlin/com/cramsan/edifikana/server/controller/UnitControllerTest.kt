@@ -4,10 +4,10 @@ package com.cramsan.edifikana.server.controller
 
 import com.cramsan.architecture.server.test.startTestKoin
 import com.cramsan.architecture.server.test.testBackEndApplication
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.UnitId
-import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.edifikana.lib.model.unit.UnitId
+import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.lib.serialization.createJson
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.dependencyinjection.TestControllerModule
@@ -70,7 +70,6 @@ class UnitControllerTest : CoroutineTest(), KoinTest {
         coEvery {
             unitService.createUnit(
                 propertyId = PropertyId("property123"),
-                orgId = OrganizationId("org123"),
                 unitNumber = "101A",
                 bedrooms = 2,
                 bathrooms = 1,
@@ -98,7 +97,7 @@ class UnitControllerTest : CoroutineTest(), KoinTest {
         )
         coEvery { contextRetriever.getContext(any()) }.answers { context }
         coEvery {
-            rbacService.hasRoleOrHigher(context, OrganizationId("org123"), UserRole.MANAGER)
+            rbacService.hasRoleOrHigher(context, PropertyId("property123"), UserRole.MANAGER)
         }.answers { true }
 
         // Act
@@ -125,7 +124,7 @@ class UnitControllerTest : CoroutineTest(), KoinTest {
         )
         coEvery { contextRetriever.getContext(any()) }.answers { context }
         coEvery {
-            rbacService.hasRoleOrHigher(context, OrganizationId("org123"), UserRole.MANAGER)
+            rbacService.hasRoleOrHigher(context, PropertyId("property123"), UserRole.MANAGER)
         }.answers { false }
 
         // Act
@@ -233,7 +232,7 @@ class UnitControllerTest : CoroutineTest(), KoinTest {
         val unitService = get<UnitService>()
         val rbacService = get<RBACService>()
         coEvery {
-            unitService.getUnits(OrganizationId("org123"), PropertyId("property123"))
+            unitService.getUnits(PropertyId("property123"))
         }.answers {
             listOf(
                 Unit(
@@ -268,11 +267,11 @@ class UnitControllerTest : CoroutineTest(), KoinTest {
         )
         coEvery { contextRetriever.getContext(any()) }.answers { context }
         coEvery {
-            rbacService.hasRoleOrHigher(context, OrganizationId("org123"), UserRole.EMPLOYEE)
+            rbacService.hasRoleOrHigher(context, PropertyId("property123"), UserRole.EMPLOYEE)
         }.answers { true }
 
         // Act
-        val response = client.get("unit?org_id=org123&property_id=property123")
+        val response = client.get("unit?property_id=property123")
 
         // Assert
         assertEquals(HttpStatusCode.OK, response.status)
@@ -295,7 +294,7 @@ class UnitControllerTest : CoroutineTest(), KoinTest {
         }.answers { false }
 
         // Act
-        val response = client.get("unit?org_id=org123&property_id=property123")
+        val response = client.get("unit?org_id=org123")
 
         // Assert
         coVerify { unitService wasNot Called }

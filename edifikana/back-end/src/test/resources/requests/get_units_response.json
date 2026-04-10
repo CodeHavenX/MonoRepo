@@ -3,17 +3,16 @@
         {
             "unit_id": "unit123",
             "property_id": "property123",
-            "org_id": "org123",
             "unit_number": "101A",
             "bedrooms": 2,
             "bathrooms": 1,
             "sq_ft": 750,
-            "floor": 1
+            "floor": 1,
+            "notes": null
         },
         {
             "unit_id": "unit456",
             "property_id": "property123",
-            "org_id": "org123",
             "unit_number": "202B",
             "bedrooms": 3,
             "bathrooms": 2,

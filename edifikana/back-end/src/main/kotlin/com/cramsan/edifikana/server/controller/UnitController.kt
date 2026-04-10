@@ -1,12 +1,12 @@
 package com.cramsan.edifikana.server.controller
 
 import com.cramsan.edifikana.api.UnitApi
-import com.cramsan.edifikana.lib.model.UnitId
-import com.cramsan.edifikana.lib.model.network.CreateUnitNetworkRequest
 import com.cramsan.edifikana.lib.model.network.GetUnitsQueryParams
-import com.cramsan.edifikana.lib.model.network.UnitListNetworkResponse
-import com.cramsan.edifikana.lib.model.network.UnitNetworkResponse
-import com.cramsan.edifikana.lib.model.network.UpdateUnitNetworkRequest
+import com.cramsan.edifikana.lib.model.network.unit.CreateUnitNetworkRequest
+import com.cramsan.edifikana.lib.model.network.unit.UnitListNetworkResponse
+import com.cramsan.edifikana.lib.model.network.unit.UnitNetworkResponse
+import com.cramsan.edifikana.lib.model.network.unit.UpdateUnitNetworkRequest
+import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.service.UnitService
 import com.cramsan.edifikana.server.service.authorization.RBACService
@@ -22,6 +22,7 @@ import com.cramsan.framework.core.ktor.OperationRequest
 import com.cramsan.framework.core.ktor.auth.ClientContext
 import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.core.ktor.handler
+import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.NotFoundException
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.UnauthorizedException
 import io.ktor.server.routing.Routing
@@ -49,12 +50,11 @@ class UnitController(
             ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
             >
     ): UnitNetworkResponse {
-        if (!rbacService.hasRoleOrHigher(request.context, request.requestBody.orgId, UserRole.MANAGER)) {
+        if (!rbacService.hasRoleOrHigher(request.context, request.requestBody.propertyId, UserRole.MANAGER)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
         return unitService.createUnit(
             propertyId = request.requestBody.propertyId,
-            orgId = request.requestBody.orgId,
             unitNumber = request.requestBody.unitNumber,
             bedrooms = request.requestBody.bedrooms,
             bathrooms = request.requestBody.bathrooms,
@@ -94,14 +94,36 @@ class UnitController(
             ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
             >
     ): UnitListNetworkResponse {
-        if (!rbacService.hasRoleOrHigher(request.context, request.queryParam.orgId, UserRole.EMPLOYEE)) {
-            throw UnauthorizedException(unauthorizedMsg)
+        val orgId = request.queryParam.orgId
+        val propertyId = request.queryParam.propertyId
+        if (orgId == null && propertyId == null) {
+            throw UnauthorizedException("You need to and orgId or propertyId.")
         }
-        val units = unitService.getUnits(
-            orgId = request.queryParam.orgId,
-            propertyId = request.queryParam.propertyId,
-        ).map { it.toUnitNetworkResponse() }
-        return UnitListNetworkResponse(units)
+        if (orgId != null && propertyId != null) {
+            throw UnauthorizedException("Only provide one of orgId or propertyId.")
+        }
+
+        when {
+            orgId != null -> {
+                if (!rbacService.hasRoleOrHigher(request.context, orgId, UserRole.EMPLOYEE)) {
+                    throw UnauthorizedException(unauthorizedMsg)
+                }
+                val units = unitService.getUnits(
+                    orgId = orgId,
+                ).map { it.toUnitNetworkResponse() }
+                return UnitListNetworkResponse(units)
+            }
+            propertyId != null -> {
+                if (!rbacService.hasRoleOrHigher(request.context, propertyId, UserRole.EMPLOYEE)) {
+                    throw UnauthorizedException(unauthorizedMsg)
+                }
+                val units = unitService.getUnits(
+                    propertyId = propertyId,
+                ).map { it.toUnitNetworkResponse() }
+                return UnitListNetworkResponse(units)
+            }
+        }
+        throw ClientRequestExceptions.InvalidRequestException("You are not authorized to perform this action in your organization.")
     }
 
     /**

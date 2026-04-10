@@ -4,42 +4,31 @@ import com.cramsan.architecture.server.test.dependencyinjection.TestArchitecture
 import com.cramsan.architecture.server.test.dependencyinjection.integTestFrameworkModule
 import com.cramsan.edifikana.lib.model.commonArea.CommonAreaId
 import com.cramsan.edifikana.lib.model.employee.EmployeeId
-import com.cramsan.edifikana.lib.model.task.TaskId
 import com.cramsan.edifikana.lib.model.employee.EmployeeRole
 import com.cramsan.edifikana.lib.model.eventLog.EventLogEntryId
 import com.cramsan.edifikana.lib.model.identification.IdType
 import com.cramsan.edifikana.lib.model.invite.InviteId
+import com.cramsan.edifikana.lib.model.invite.InviteRole
 import com.cramsan.edifikana.lib.model.notification.NotificationId
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.edifikana.lib.model.task.TaskId
 import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventId
+import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
-import com.cramsan.edifikana.lib.model.EmployeeId
-import com.cramsan.edifikana.lib.model.EmployeeRole
-import com.cramsan.edifikana.lib.model.EventLogEntryId
-import com.cramsan.edifikana.lib.model.IdType
-import com.cramsan.edifikana.lib.model.InviteId
-import com.cramsan.edifikana.lib.model.NotificationId
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.TimeCardEventId
-import com.cramsan.edifikana.lib.model.UnitId
-import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.lib.utils.requireSuccess
 import com.cramsan.edifikana.server.dependencyinjection.DatastoreModule
 import com.cramsan.edifikana.server.dependencyinjection.IntegTestApplicationModule
 import com.cramsan.edifikana.server.service.models.CommonArea
 import com.cramsan.edifikana.server.service.models.Employee
-import com.cramsan.edifikana.server.service.models.Task
 import com.cramsan.edifikana.server.service.models.EventLogEntry
 import com.cramsan.edifikana.server.service.models.Invite
 import com.cramsan.edifikana.server.service.models.Notification
 import com.cramsan.edifikana.server.service.models.Organization
 import com.cramsan.edifikana.server.service.models.Property
+import com.cramsan.edifikana.server.service.models.Task
 import com.cramsan.edifikana.server.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.service.models.Unit
-import com.cramsan.edifikana.lib.model.InviteRole
-import com.cramsan.edifikana.lib.model.invite.InviteRole
 import com.cramsan.edifikana.server.service.models.User
 import com.cramsan.framework.test.CoroutineTest
 import com.cramsan.framework.utils.password.generateRandomPassword
@@ -180,7 +169,6 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
         val unitId = runBlocking {
             unitDatastore.createUnit(
                 propertyId = propertyId,
-                orgId = orgId,
                 unitNumber = unitNumber,
                 bedrooms = null,
                 bathrooms = null,

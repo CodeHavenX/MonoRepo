@@ -1,15 +1,21 @@
 package com.cramsan.edifikana.server.datastore.supabase
 
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.UnitId
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.server.datastore.UnitDatastore
+import com.cramsan.edifikana.server.datastore.supabase.models.OrganizationEntity
+import com.cramsan.edifikana.server.datastore.supabase.models.PropertyEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.UnitEntity
+import com.cramsan.edifikana.server.datastore.supabase.models.UserEntity
+import com.cramsan.edifikana.server.datastore.supabase.models.UserOrganizationMappingEntity
 import com.cramsan.edifikana.server.service.models.Unit
 import com.cramsan.framework.annotations.SupabaseModel
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
+import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import io.github.jan.supabase.postgrest.Postgrest
+import io.github.jan.supabase.postgrest.query.Columns
 import kotlin.time.Clock
 
 /**
@@ -26,7 +32,6 @@ class SupabaseUnitDatastore(
     @OptIn(SupabaseModel::class)
     override suspend fun createUnit(
         propertyId: PropertyId,
-        orgId: OrganizationId,
         unitNumber: String,
         bedrooms: Int?,
         bathrooms: Int?,
@@ -35,9 +40,17 @@ class SupabaseUnitDatastore(
         notes: String?,
     ): Result<Unit> = runSuspendCatching(TAG) {
         logD(TAG, "Creating unit: %s", unitNumber)
+        val propertyEntity = postgrest.from(PropertyEntity.COLLECTION).select {
+            filter {
+                PropertyEntity::id eq propertyId.propertyId
+                PropertyEntity::deletedAt isExact null
+            }
+        }.decodeSingleOrNull<PropertyEntity>() ?: throw ClientRequestExceptions.NotFoundException(
+            "No property with id $propertyId found in database"
+        )
+
         val requestEntity = CreateUnitEntity(
             propertyId = propertyId,
-            orgId = orgId,
             unitNumber = unitNumber,
             bedrooms = bedrooms,
             bathrooms = bathrooms,
@@ -49,7 +62,7 @@ class SupabaseUnitDatastore(
             select()
         }.decodeSingle<UnitEntity>()
         logD(TAG, "Unit created: %s", created.unitId)
-        created.toUnit()
+        created.toUnit(propertyEntity.organizationId)
     }
 
     /**
@@ -58,30 +71,72 @@ class SupabaseUnitDatastore(
     @OptIn(SupabaseModel::class)
     override suspend fun getUnit(unitId: UnitId): Result<Unit?> = runSuspendCatching(TAG) {
         logD(TAG, "Getting unit: %s", unitId)
-        postgrest.from(UnitEntity.COLLECTION).select {
+        val unitEntity = postgrest.from(UnitEntity.COLLECTION).select {
             filter {
                 UnitEntity::unitId eq unitId.unitId
                 UnitEntity::deletedAt isExact null
             }
-        }.decodeSingleOrNull<UnitEntity>()?.toUnit()
+        }.decodeSingleOrNull<UnitEntity>() ?: throw ClientRequestExceptions.NotFoundException(
+            "No unit with id $unitId found in database"
+        )
+
+        val propertyEntity = postgrest.from(PropertyEntity.COLLECTION).select {
+            filter {
+                PropertyEntity::id eq unitEntity.propertyId
+                PropertyEntity::deletedAt isExact null
+            }
+        }.decodeSingleOrNull<PropertyEntity>() ?: throw ClientRequestExceptions.NotFoundException(
+            "No property with propertyId $ found in database"
+        )
+
+        unitEntity.toUnit(propertyEntity.organizationId)
     }
 
     /**
-     * Lists all non-deleted units for [orgId], with an optional [propertyId] filter.
+     * Lists all non-deleted units for [propertyId].
+     */
+    @OptIn(SupabaseModel::class)
+    override suspend fun getUnits(
+        propertyId: PropertyId,
+    ): Result<List<Unit>> = runSuspendCatching(TAG) {
+        val propertyEntity = postgrest.from(PropertyEntity.COLLECTION).select {
+            filter {
+                PropertyEntity::id eq propertyId.propertyId
+                PropertyEntity::deletedAt isExact null
+            }
+        }.decodeSingleOrNull<PropertyEntity>() ?: throw ClientRequestExceptions.NotFoundException(
+            "No property with id $propertyId found in database"
+        )
+
+        postgrest.from(UnitEntity.COLLECTION).select {
+            filter {
+                UnitEntity::propertyId eq propertyId
+            }
+        }.decodeList<UnitEntity>().map{ it.toUnit(propertyEntity.organizationId) }
+    }
+
+    /**
+     * Lists all non-deleted units for [orgId].
      */
     @OptIn(SupabaseModel::class)
     override suspend fun getUnits(
         orgId: OrganizationId,
-        propertyId: PropertyId?,
     ): Result<List<Unit>> = runSuspendCatching(TAG) {
         logD(TAG, "Getting units for org: %s", orgId)
-        postgrest.from(UnitEntity.COLLECTION).select {
+
+        val units = postgrest.from(PropertyEntity.COLLECTION).select(
+            // HINT: Here we are using the POSTgREST feature to select related rows and spread them into the result.
+            // https://supabase.com/blog/postgrest-11-prerelease
+            Columns.list("...${UnitEntity.COLLECTION}(*)")
+        ) {
             filter {
-                UnitEntity::orgId eq orgId.id
-                UnitEntity::deletedAt isExact null
-                propertyId?.let { UnitEntity::propertyId eq it.propertyId }
+                PropertyEntity::organizationId eq orgId
+                PropertyEntity::deletedAt isExact null
             }
-        }.decodeList<UnitEntity>().map { it.toUnit() }
+        }
+
+        units.decodeList<UnitEntity>().map { it.toUnit(orgId) }
+
     }
 
     /**
@@ -103,6 +158,25 @@ class SupabaseUnitDatastore(
         notes: String?,
     ): Result<Unit> = runSuspendCatching(TAG) {
         logD(TAG, "Updating unit: %s", unitId)
+
+        val unitEntity = postgrest.from(UnitEntity.COLLECTION).select {
+            filter {
+                UnitEntity::unitId eq unitId.unitId
+                UnitEntity::deletedAt isExact null
+            }
+        }.decodeSingleOrNull<UnitEntity>() ?: throw ClientRequestExceptions.NotFoundException(
+            "No unit with id $unitId found in database"
+        )
+
+        val propertyEntity = postgrest.from(PropertyEntity.COLLECTION).select {
+            filter {
+                PropertyEntity::id eq unitEntity.propertyId
+                PropertyEntity::deletedAt isExact null
+            }
+        }.decodeSingleOrNull<PropertyEntity>() ?: throw ClientRequestExceptions.NotFoundException(
+            "No property with propertyId $ found in database"
+        )
+
         postgrest.from(UnitEntity.COLLECTION).update({
             unitNumber?.let { value -> UnitEntity::unitNumber setTo value }
             bedrooms?.let { value -> UnitEntity::bedrooms setTo value }
@@ -116,7 +190,7 @@ class SupabaseUnitDatastore(
                 UnitEntity::unitId eq unitId.unitId
                 UnitEntity::deletedAt isExact null
             }
-        }.decodeSingle<UnitEntity>().toUnit()
+        }.decodeSingle<UnitEntity>().toUnit(propertyEntity.organizationId)
     }
 
     /**

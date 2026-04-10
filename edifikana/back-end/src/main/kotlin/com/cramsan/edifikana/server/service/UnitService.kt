@@ -1,8 +1,8 @@
 package com.cramsan.edifikana.server.service
 
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.UnitId
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.server.datastore.UnitDatastore
 import com.cramsan.edifikana.server.service.models.Unit
 import com.cramsan.framework.logging.logD
@@ -19,7 +19,6 @@ class UnitService(
      */
     suspend fun createUnit(
         propertyId: PropertyId,
-        orgId: OrganizationId,
         unitNumber: String,
         bedrooms: Int?,
         bathrooms: Int?,
@@ -30,7 +29,6 @@ class UnitService(
         logD(TAG, "createUnit")
         return unitDatastore.createUnit(
             propertyId = propertyId,
-            orgId = orgId,
             unitNumber = unitNumber,
             bedrooms = bedrooms,
             bathrooms = bathrooms,
@@ -49,15 +47,25 @@ class UnitService(
     }
 
     /**
-     * Lists all units for [orgId], optionally filtered by [propertyId].
+     * Lists all units for [orgId].
      */
     suspend fun getUnits(
         orgId: OrganizationId,
-        propertyId: PropertyId?,
     ): List<Unit> {
-        logD(TAG, "getUnits")
+        logD(TAG, "getUnits by orgId")
         return unitDatastore.getUnits(
             orgId = orgId,
+        ).getOrThrow()
+    }
+
+    /**
+     * List all units for [propertyId]
+     */
+    suspend fun getUnits(
+        propertyId: PropertyId,
+    ): List<Unit> {
+        logD(TAG, "getUnits by propertyId")
+        return unitDatastore.getUnits(
             propertyId = propertyId,
         ).getOrThrow()
     }

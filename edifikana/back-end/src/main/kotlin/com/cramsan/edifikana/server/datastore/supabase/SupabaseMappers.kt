@@ -244,7 +244,7 @@ fun CreatePropertyEntity(
 @OptIn(SupabaseModel::class)
 fun PropertyEntity.toProperty(): Property {
     return Property(
-        id = PropertyId(this.id),
+        id = this.id,
         name = this.name,
         address = this.address,
         organizationId = this.organizationId,
@@ -343,7 +343,7 @@ fun EventLogEntryEntity.toEventLogEntry(): EventLogEntry {
  */
 @OptIn(SupabaseModel::class)
 fun OrganizationEntity.toOrganization() = Organization(
-    id = OrganizationId(this.id),
+    id = this.id,
     name = this.name,
     description = this.description,
 )
@@ -491,7 +491,6 @@ fun TaskEntity.toTask(): Task {
 @OptIn(SupabaseModel::class)
 fun CreateUnitEntity(
     propertyId: PropertyId,
-    orgId: OrganizationId,
     unitNumber: String,
     bedrooms: Int?,
     bathrooms: Int?,
@@ -501,7 +500,6 @@ fun CreateUnitEntity(
 ): UnitEntity.CreateUnitEntity {
     return UnitEntity.CreateUnitEntity(
         propertyId = propertyId,
-        orgId = orgId,
         unitNumber = unitNumber,
         bedrooms = bedrooms,
         bathrooms = bathrooms,
@@ -515,11 +513,11 @@ fun CreateUnitEntity(
  * Maps a [UnitEntity] to the [Unit] service model.
  */
 @OptIn(SupabaseModel::class)
-fun UnitEntity.toUnit(): Unit {
+fun UnitEntity.toUnit(orgId: OrganizationId): Unit {
     return Unit(
         id = UnitId(this.unitId),
         propertyId = this.propertyId,
-        orgId = this.orgId,
+        orgId = orgId,
         unitNumber = this.unitNumber,
         bedrooms = this.bedrooms,
         bathrooms = this.bathrooms,

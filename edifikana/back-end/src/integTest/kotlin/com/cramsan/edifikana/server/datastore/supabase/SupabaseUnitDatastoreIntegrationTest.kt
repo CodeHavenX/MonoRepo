@@ -1,10 +1,9 @@
 package com.cramsan.edifikana.server.datastore.supabase
 
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.UnitId
-import com.cramsan.edifikana.lib.model.UserId
-import com.cramsan.edifikana.server.service.models.Unit
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.edifikana.lib.model.unit.UnitId
+import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.framework.utils.uuid.UUID
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -32,7 +31,6 @@ class SupabaseUnitDatastoreIntegrationTest : SupabaseIntegrationTest() {
         // Act
         val result = unitDatastore.createUnit(
             propertyId = testProperty!!,
-            orgId = testOrg!!,
             unitNumber = "${test_prefix}_101",
             bedrooms = 2,
             bathrooms = 1,
@@ -60,7 +58,6 @@ class SupabaseUnitDatastoreIntegrationTest : SupabaseIntegrationTest() {
         // Arrange
         val createResult = unitDatastore.createUnit(
             propertyId = testProperty!!,
-            orgId = testOrg!!,
             unitNumber = "${test_prefix}_102",
             bedrooms = 3,
             bathrooms = 2,
@@ -104,7 +101,6 @@ class SupabaseUnitDatastoreIntegrationTest : SupabaseIntegrationTest() {
         // Arrange
         val result1 = unitDatastore.createUnit(
             propertyId = testProperty!!,
-            orgId = testOrg!!,
             unitNumber = "${test_prefix}_201",
             bedrooms = null,
             bathrooms = null,
@@ -114,7 +110,6 @@ class SupabaseUnitDatastoreIntegrationTest : SupabaseIntegrationTest() {
         ).registerUnitForDeletion()
         val result2 = unitDatastore.createUnit(
             propertyId = testProperty!!,
-            orgId = testOrg!!,
             unitNumber = "${test_prefix}_202",
             bedrooms = null,
             bathrooms = null,
@@ -126,7 +121,7 @@ class SupabaseUnitDatastoreIntegrationTest : SupabaseIntegrationTest() {
         assertTrue(result2.isSuccess)
 
         // Act
-        val listResult = unitDatastore.getUnits(orgId = testOrg!!, propertyId = null)
+        val listResult = unitDatastore.getUnits(orgId = testOrg!!)
 
         // Assert
         assertTrue(listResult.isSuccess)
@@ -143,7 +138,6 @@ class SupabaseUnitDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val otherProperty = createTestProperty("other-property-${test_prefix}", testUserId!!, testOrg!!)
         val result1 = unitDatastore.createUnit(
             propertyId = testProperty!!,
-            orgId = testOrg!!,
             unitNumber = "${test_prefix}_target",
             bedrooms = null,
             bathrooms = null,
@@ -153,7 +147,6 @@ class SupabaseUnitDatastoreIntegrationTest : SupabaseIntegrationTest() {
         ).registerUnitForDeletion()
         val result2 = unitDatastore.createUnit(
             propertyId = otherProperty,
-            orgId = testOrg!!,
             unitNumber = "${test_prefix}_other",
             bedrooms = null,
             bathrooms = null,
@@ -165,7 +158,7 @@ class SupabaseUnitDatastoreIntegrationTest : SupabaseIntegrationTest() {
         assertTrue(result2.isSuccess)
 
         // Act
-        val listResult = unitDatastore.getUnits(orgId = testOrg!!, propertyId = testProperty!!)
+        val listResult = unitDatastore.getUnits(propertyId = testProperty!!)
 
         // Assert
         assertTrue(listResult.isSuccess)
@@ -179,7 +172,6 @@ class SupabaseUnitDatastoreIntegrationTest : SupabaseIntegrationTest() {
         // Arrange
         val createResult = unitDatastore.createUnit(
             propertyId = testProperty!!,
-            orgId = testOrg!!,
             unitNumber = "${test_prefix}_301",
             bedrooms = 1,
             bathrooms = 1,
@@ -218,7 +210,6 @@ class SupabaseUnitDatastoreIntegrationTest : SupabaseIntegrationTest() {
         // Arrange
         val createResult = unitDatastore.createUnit(
             propertyId = testProperty!!,
-            orgId = testOrg!!,
             unitNumber = "${test_prefix}_401",
             bedrooms = null,
             bathrooms = null,

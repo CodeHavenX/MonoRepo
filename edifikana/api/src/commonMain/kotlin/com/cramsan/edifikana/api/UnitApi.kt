@@ -1,11 +1,11 @@
 package com.cramsan.edifikana.api
 
-import com.cramsan.edifikana.lib.model.UnitId
-import com.cramsan.edifikana.lib.model.network.CreateUnitNetworkRequest
 import com.cramsan.edifikana.lib.model.network.GetUnitsQueryParams
-import com.cramsan.edifikana.lib.model.network.UnitListNetworkResponse
-import com.cramsan.edifikana.lib.model.network.UnitNetworkResponse
-import com.cramsan.edifikana.lib.model.network.UpdateUnitNetworkRequest
+import com.cramsan.edifikana.lib.model.network.unit.CreateUnitNetworkRequest
+import com.cramsan.edifikana.lib.model.network.unit.UnitListNetworkResponse
+import com.cramsan.edifikana.lib.model.network.unit.UnitNetworkResponse
+import com.cramsan.edifikana.lib.model.network.unit.UpdateUnitNetworkRequest
+import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
@@ -38,7 +38,7 @@ object UnitApi : Api("unit") {
         NoRequestBody,
         GetUnitsQueryParams,
         NoPathParam,
-        UnitListNetworkResponse
+        UnitListNetworkResponse,
         >(HttpMethod.Get)
 
     val updateUnit = operation<

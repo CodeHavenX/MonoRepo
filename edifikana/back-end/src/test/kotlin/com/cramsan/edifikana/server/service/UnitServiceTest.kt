@@ -1,8 +1,8 @@
 package com.cramsan.edifikana.server.service
 
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.UnitId
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.server.datastore.UnitDatastore
 import com.cramsan.edifikana.server.service.models.Unit
 import com.cramsan.framework.logging.EventLogger
@@ -46,13 +46,12 @@ class UnitServiceTest {
         // Arrange
         val unit = mockk<Unit>()
         coEvery {
-            unitDatastore.createUnit(any(), any(), any(), any(), any(), any(), any(), any())
+            unitDatastore.createUnit(any(), any(), any(), any(), any(), any(), any())
         } returns Result.success(unit)
 
         // Act
         val result = unitService.createUnit(
             propertyId = PropertyId("prop1"),
-            orgId = OrganizationId("org1"),
             unitNumber = "101",
             bedrooms = 2,
             bathrooms = 1,
@@ -66,7 +65,6 @@ class UnitServiceTest {
         coVerify {
             unitDatastore.createUnit(
                 propertyId = PropertyId("prop1"),
-                orgId = OrganizationId("org1"),
                 unitNumber = "101",
                 bedrooms = 2,
                 bathrooms = 1,
@@ -135,17 +133,16 @@ class UnitServiceTest {
     @Test
     fun `getUnits should call unitDatastore with propertyId filter and return list`() = runTest {
         // Arrange
-        val orgId = OrganizationId("org1")
         val propertyId = PropertyId("prop1")
         val units = listOf(mockk<Unit>(), mockk<Unit>())
-        coEvery { unitDatastore.getUnits(orgId, propertyId) } returns Result.success(units)
+        coEvery { unitDatastore.getUnits(propertyId) } returns Result.success(units)
 
         // Act
-        val result = unitService.getUnits(orgId, propertyId)
+        val result = unitService.getUnits(propertyId)
 
         // Assert
         assertEquals(units, result)
-        coVerify { unitDatastore.getUnits(orgId, propertyId) }
+        coVerify { unitDatastore.getUnits(propertyId) }
     }
 
     /**
@@ -156,14 +153,14 @@ class UnitServiceTest {
         // Arrange
         val orgId = OrganizationId("org1")
         val units = listOf(mockk<Unit>())
-        coEvery { unitDatastore.getUnits(orgId, null) } returns Result.success(units)
+        coEvery { unitDatastore.getUnits(orgId) } returns Result.success(units)
 
         // Act
-        val result = unitService.getUnits(orgId, null)
+        val result = unitService.getUnits(orgId)
 
         // Assert
         assertEquals(units, result)
-        coVerify { unitDatastore.getUnits(orgId, null) }
+        coVerify { unitDatastore.getUnits(orgId) }
     }
 
     /**

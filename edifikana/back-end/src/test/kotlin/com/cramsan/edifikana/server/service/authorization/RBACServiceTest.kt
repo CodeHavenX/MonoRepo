@@ -71,9 +71,9 @@ class RBACServiceTest {
             timeCardDatastore,
             eventLogDatastore,
             documentDatastore,
-            unitDatastore,
             commonAreaDatastore,
             taskDatastore,
+            unitDatastore,
         )
     }
 

@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.server.dependencyinjection
 
 import com.cramsan.edifikana.server.service.CommonAreaService
+import com.cramsan.edifikana.server.service.TaskService
 import com.cramsan.edifikana.server.service.DocumentService
 import com.cramsan.edifikana.server.service.EmployeeService
 import com.cramsan.edifikana.server.service.EventLogService
@@ -31,4 +32,5 @@ internal val ServicesModule = module {
     singleOf(::RBACService)
     singleOf(::DocumentService)
     singleOf(::CommonAreaService)
+    singleOf(::TaskService)
 }

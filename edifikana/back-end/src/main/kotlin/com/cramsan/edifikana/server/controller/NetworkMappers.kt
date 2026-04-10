@@ -5,6 +5,7 @@ package com.cramsan.edifikana.server.controller
 import com.cramsan.edifikana.lib.model.network.AssetNetworkResponse
 import com.cramsan.edifikana.lib.model.network.AuthMetadataNetworkResponse
 import com.cramsan.edifikana.lib.model.network.CommonAreaNetworkResponse
+import com.cramsan.edifikana.lib.model.network.TaskNetworkResponse
 import com.cramsan.edifikana.lib.model.network.DocumentNetworkResponse
 import com.cramsan.edifikana.lib.model.network.EmployeeNetworkResponse
 import com.cramsan.edifikana.lib.model.network.EventLogEntryNetworkResponse
@@ -18,6 +19,7 @@ import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
 import com.cramsan.edifikana.server.service.models.Asset
 import com.cramsan.edifikana.server.service.models.CommonArea
 import com.cramsan.edifikana.server.service.models.Document
+import com.cramsan.edifikana.server.service.models.Task
 import com.cramsan.edifikana.server.service.models.Employee
 import com.cramsan.edifikana.server.service.models.EventLogEntry
 import com.cramsan.edifikana.server.service.models.Invite
@@ -213,5 +215,29 @@ fun CommonArea.toCommonAreaNetworkResponse(): CommonAreaNetworkResponse {
         name = name,
         type = type,
         description = description,
+    )
+}
+
+/**
+ * Converts a [Task] domain model to a [TaskNetworkResponse] network model.
+ */
+@NetworkModel
+fun Task.toTaskNetworkResponse(): TaskNetworkResponse {
+    return TaskNetworkResponse(
+        id = id,
+        propertyId = propertyId,
+        unitId = unitId,
+        commonAreaId = commonAreaId,
+        assigneeId = assigneeId,
+        createdBy = createdBy,
+        statusChangedBy = statusChangedBy,
+        title = title,
+        description = description,
+        priority = priority,
+        status = status,
+        dueDate = dueDate,
+        createdAt = createdAt,
+        completedAt = completedAt,
+        statusChangedAt = statusChangedAt,
     )
 }

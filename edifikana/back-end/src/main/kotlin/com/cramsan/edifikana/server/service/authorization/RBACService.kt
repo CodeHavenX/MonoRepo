@@ -6,6 +6,7 @@ import com.cramsan.edifikana.lib.model.EmployeeId
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.TaskId
 import com.cramsan.edifikana.lib.model.TimeCardEventId
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
@@ -15,6 +16,7 @@ import com.cramsan.edifikana.server.datastore.EmployeeDatastore
 import com.cramsan.edifikana.server.datastore.EventLogDatastore
 import com.cramsan.edifikana.server.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.datastore.PropertyDatastore
+import com.cramsan.edifikana.server.datastore.TaskDatastore
 import com.cramsan.edifikana.server.datastore.TimeCardDatastore
 import com.cramsan.edifikana.server.datastore.supabase.toUserRole
 import com.cramsan.edifikana.server.service.models.UserRole
@@ -34,6 +36,7 @@ class RBACService(
     private val eventLogDatastore: EventLogDatastore,
     private val documentDatastore: DocumentDatastore,
     private val commonAreaDatastore: CommonAreaDatastore,
+    private val taskDatastore: TaskDatastore,
 ) {
 
     private val propertyNotFoundException = "ERROR: PROPERTY NOT FOUND!"
@@ -433,6 +436,53 @@ class RBACService(
         val timeCardEvent = timeCardDatastore.getTimeCardEvent(targetTimecardId).getOrThrow()
             ?: throw InvalidRequestException(timecardEventNotFoundException)
         return getUserRoleForPropertyAction(context, timeCardEvent.propertyId)
+    }
+
+    /**
+     * Checks if the user has the required role to perform actions on the target task.
+     *
+     * @param context The authenticated client context containing user information.
+     * @param targetTaskId The ID of the target task on which the action is to be performed.
+     * @param requiredRole The role required to perform the action.
+     * @return True if the user has the required role, false otherwise.
+     */
+    suspend fun hasRole(
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+        targetTaskId: TaskId,
+        requiredRole: UserRole,
+    ): Boolean {
+        val userRole = getUserRoleForTaskAction(context, targetTaskId)
+        return userRole == requiredRole
+    }
+
+    /**
+     * Checks if the user has the required role or higher to perform actions on the target task.
+     *
+     * @param context The authenticated client context containing user information.
+     * @param targetTaskId The ID of the target task on which the action is to be performed.
+     * @param requiredRole The minimum role required to perform the action.
+     * @return True if the user has the required role or higher, false otherwise.
+     */
+    suspend fun hasRoleOrHigher(
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+        targetTaskId: TaskId,
+        requiredRole: UserRole,
+    ): Boolean {
+        val userRole = getUserRoleForTaskAction(context, targetTaskId)
+        return userRole.level <= requiredRole.level
+    }
+
+    /**
+     * Retrieves the user role for the action being performed on the target task.
+     * Resolves through the task's property, since tasks are property-level resources.
+     */
+    private suspend fun getUserRoleForTaskAction(
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+        targetTaskId: TaskId,
+    ): UserRole {
+        val task = taskDatastore.getTask(targetTaskId).getOrThrow()
+            ?: return UserRole.UNAUTHORIZED
+        return getUserRoleForPropertyAction(context, task.propertyId)
     }
 
     companion object {

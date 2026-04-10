@@ -25,7 +25,7 @@ data class EventLogEntryEntity(
     val type: EventLogEventType,
     @SerialName("fallback_event_type")
     val fallbackEventType: String?,
-    val timestamp: Long,
+    val timestamp: Instant,
     val title: String,
     val description: String?,
     val unit: UnitId,
@@ -51,7 +51,7 @@ data class EventLogEntryEntity(
         val type: EventLogEventType,
         @SerialName("fallback_event_type")
         val fallbackEventType: String?,
-        val timestamp: Long,
+        val timestamp: Instant,
         val title: String,
         val description: String?,
         val unit: UnitId?,

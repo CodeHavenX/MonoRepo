@@ -1,6 +1,5 @@
 package com.cramsan.edifikana.lib.model.network
 
-import com.cramsan.edifikana.lib.model.OrganizationId
 import com.cramsan.edifikana.lib.model.PropertyId
 import com.cramsan.edifikana.lib.model.TaskPriority
 import com.cramsan.edifikana.lib.model.TaskStatus
@@ -13,12 +12,14 @@ import kotlinx.serialization.Serializable
 
 /**
  * Query parameters for getting tasks.
+ *
+ * [propertyId] is required — all tasks are property-scoped. The remaining
+ * parameters are optional filters applied server-side.
  */
 @NetworkModel
 @Serializable
 data class GetTasksQueryParams(
-    @SerialName("org_id") val orgId: OrganizationId,
-    @SerialName("property_id") val propertyId: PropertyId? = null,
+    @SerialName("property_id") val propertyId: PropertyId,
     @SerialName("unit_id") val unitId: UnitId? = null,
     val status: TaskStatus? = null,
     @SerialName("assignee_id") val assigneeId: UserId? = null,

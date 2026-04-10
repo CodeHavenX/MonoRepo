@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.lib.model
 
+
 /**
  * Represents the lifecycle status of a task.
  */

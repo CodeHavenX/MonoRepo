@@ -12,6 +12,7 @@ import kotlin.test.assertTrue
 /**
  * Perform some basic coroutine tests on an Android ViewModel.
  */
+@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 class AndroidViewModelTests : CoroutineTest() {
 
     lateinit var viewModel: AndroidViewModel

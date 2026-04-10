@@ -12,7 +12,7 @@ import kotlin.time.Instant
 /**
  * Supabase entity representing a row from the v_org_members view.
  * Combines user_organization_mapping columns with user profile data (email, first_name, last_name).
- * joined_at is returned as epoch seconds (BIGINT) from the view.
+ * joined_at is returned as TIMESTAMPTZ from the view.
  */
 @Serializable
 @SupabaseModel

@@ -5,6 +5,7 @@ import com.cramsan.edifikana.lib.model.TaskStatus
 import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.RequestBody
+import kotlinx.datetime.LocalDate
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -19,5 +20,5 @@ data class UpdateTaskNetworkRequest(
     val priority: TaskPriority?,
     val status: TaskStatus?,
     @SerialName("assignee_id") val assigneeId: UserId?,
-    @SerialName("due_date") val dueDate: Long?,
+    @SerialName("due_date") val dueDate: LocalDate?,
 ) : RequestBody

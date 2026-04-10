@@ -108,7 +108,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
         assertTrue(getAllResult.isSuccess)
         val properties = getAllResult.getOrNull()
         assertNotNull(properties)
-        val names = properties!!.map { it.name }
+        val names = properties.map { it.name }
         assertTrue(names.contains( "${test_prefix}_PropertyA"))
         assertTrue(names.contains( "${test_prefix}_PropertyB"))
     }

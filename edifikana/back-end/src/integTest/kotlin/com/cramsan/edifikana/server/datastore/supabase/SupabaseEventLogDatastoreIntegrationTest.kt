@@ -153,7 +153,7 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val entries = getAllResult.getOrNull()
         assertNotNull(entries)
         // At least the two we just created should be present
-        val titles = entries!!.map { it.title }
+        val titles = entries.map { it.title }
         assertTrue(titles.contains(title1))
         assertTrue(titles.contains(title2))
     }
@@ -179,7 +179,7 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val createdEntry = createResult.getOrNull()
         assertNotNull(createdEntry)
         val updateResult = eventLogDatastore.updateEventLogEntry(
-            id = createdEntry!!.id,
+            id = createdEntry.id,
             title = "${test_prefix}_UpdatedTitle",
             description = "${test_prefix}_UpdatedDescription",
             type = EventLogEventType.MAINTENANCE_SERVICE, // Use a valid EventLogEventType
@@ -191,7 +191,7 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
         assertTrue(updateResult.isSuccess)
         val updatedEntry = updateResult.getOrNull()
         assertNotNull(updatedEntry)
-        assertTrue(updatedEntry!!.title == "${test_prefix}_UpdatedTitle")
+        assertTrue(updatedEntry.title == "${test_prefix}_UpdatedTitle")
         assertTrue(updatedEntry.description == "${test_prefix}_UpdatedDescription")
     }
 
@@ -215,7 +215,7 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
 
         // Act
         val deleteResult = eventLogDatastore.deleteEventLogEntry(
-            id = EventLogEntryId(eventLogEntryId = createdEntry!!.id.eventLogEntryId)
+            id = EventLogEntryId(eventLogEntryId = createdEntry.id.eventLogEntryId)
         )
 
         // Assert

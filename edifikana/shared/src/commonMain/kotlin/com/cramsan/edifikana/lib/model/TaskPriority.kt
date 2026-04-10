@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.lib.model
 
+
 /**
  * Represents the priority level of a task.
  */

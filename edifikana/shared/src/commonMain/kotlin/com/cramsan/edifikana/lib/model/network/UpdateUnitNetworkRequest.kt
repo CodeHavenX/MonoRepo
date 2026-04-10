@@ -12,15 +12,15 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class UpdateUnitNetworkRequest(
     @SerialName("unit_number")
-    val unitNumber: String? = null,
+    val unitNumber: String?,
     @SerialName("bedrooms")
-    val bedrooms: Int? = null,
+    val bedrooms: Int?,
     @SerialName("bathrooms")
-    val bathrooms: Int? = null,
+    val bathrooms: Int?,
     @SerialName("sq_ft")
-    val sqFt: Int? = null,
+    val sqFt: Int?,
     @SerialName("floor")
-    val floor: Int? = null,
+    val floor: Int?,
     @SerialName("notes")
-    val notes: String? = null,
+    val notes: String?,
 ) : RequestBody

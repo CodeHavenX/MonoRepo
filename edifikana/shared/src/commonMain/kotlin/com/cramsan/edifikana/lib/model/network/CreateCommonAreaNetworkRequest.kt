@@ -21,5 +21,5 @@ data class CreateCommonAreaNetworkRequest(
     @SerialName("type")
     val type: CommonAreaType,
     @SerialName("description")
-    val description: String? = null,
+    val description: String?,
 ) : RequestBody

@@ -436,7 +436,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
         // Arrange
         val memberId = createTestUser("unassign-open-${testPrefix}@test.com")
         organizationDatastore.addUserToOrganization(memberId, orgId!!, OrgRole.EMPLOYEE)
-        val taskId = createTestTask(orgId!!, ownerUserId!!, propertyId!!, assigneeId = memberId, status = TaskStatus.OPEN)
+        val taskId = createTestTask(ownerUserId!!, propertyId!!, assigneeId = memberId, status = TaskStatus.OPEN)
 
         // Act
         val result = membershipDatastore.unassignTasksForMember(orgId!!, memberId)
@@ -451,7 +451,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
         // Arrange
         val memberId = createTestUser("unassign-ip-${testPrefix}@test.com")
         organizationDatastore.addUserToOrganization(memberId, orgId!!, OrgRole.EMPLOYEE)
-        val taskId = createTestTask(orgId!!, ownerUserId!!, propertyId!!, assigneeId = memberId, status = TaskStatus.IN_PROGRESS)
+        val taskId = createTestTask(ownerUserId!!, propertyId!!, assigneeId = memberId, status = TaskStatus.IN_PROGRESS)
 
         // Act
         val result = membershipDatastore.unassignTasksForMember(orgId!!, memberId)
@@ -466,7 +466,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
         // Arrange
         val memberId = createTestUser("unassign-completed-${testPrefix}@test.com")
         organizationDatastore.addUserToOrganization(memberId, orgId!!, OrgRole.EMPLOYEE)
-        val taskId = createTestTask(orgId!!, ownerUserId!!, propertyId!!, assigneeId = memberId, status = TaskStatus.COMPLETED)
+        val taskId = createTestTask(ownerUserId!!, propertyId!!, assigneeId = memberId, status = TaskStatus.COMPLETED)
 
         // Act
         val result = membershipDatastore.unassignTasksForMember(orgId!!, memberId)
@@ -481,7 +481,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
         // Arrange
         val memberId = createTestUser("unassign-cancelled-${testPrefix}@test.com")
         organizationDatastore.addUserToOrganization(memberId, orgId!!, OrgRole.EMPLOYEE)
-        val taskId = createTestTask(orgId!!, ownerUserId!!, propertyId!!, assigneeId = memberId, status = TaskStatus.CANCELLED)
+        val taskId = createTestTask(ownerUserId!!, propertyId!!, assigneeId = memberId, status = TaskStatus.CANCELLED)
 
         // Act
         val result = membershipDatastore.unassignTasksForMember(orgId!!, memberId)
@@ -498,7 +498,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val otherMember = createTestUser("unassign-other-${testPrefix}@test.com")
         organizationDatastore.addUserToOrganization(targetMember, orgId!!, OrgRole.EMPLOYEE)
         organizationDatastore.addUserToOrganization(otherMember, orgId!!, OrgRole.EMPLOYEE)
-        val otherTaskId = createTestTask(orgId!!, ownerUserId!!, propertyId!!, assigneeId = otherMember, status = TaskStatus.OPEN)
+        val otherTaskId = createTestTask(ownerUserId!!, propertyId!!, assigneeId = otherMember, status = TaskStatus.OPEN)
 
         // Act — unassign targetMember who has no tasks; otherMember's task should be unchanged
         val result = membershipDatastore.unassignTasksForMember(orgId!!, targetMember)
@@ -520,7 +520,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
         organizationDatastore.addUserToOrganization(memberId, otherOrgId, OrgRole.EMPLOYEE)
 
         // Task lives in otherOrg
-        val taskId = createTestTask(otherOrgId, ownerUserId!!, otherPropertyId, assigneeId = memberId, status = TaskStatus.OPEN)
+        val taskId = createTestTask(ownerUserId!!, otherPropertyId, assigneeId = memberId, status = TaskStatus.OPEN)
 
         // Act — unassign for orgId, not otherOrgId
         val result = membershipDatastore.unassignTasksForMember(orgId!!, memberId)
@@ -565,11 +565,10 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     // -------------------------------------------------------------------------
 
     /**
-     * Inserts a task row directly into the tasks table for test setup.
-     * Tasks are cascade-deleted when their organization is deleted in tearDown.
+     * Created task IDs are tracked in `taskIds` and explicitly deleted by
+     * `tearDownMembership()` before superclass teardown runs.
      */
     private suspend fun createTestTask(
-        orgId: OrganizationId,
         createdBy: UserId,
         propertyId: PropertyId,
         assigneeId: UserId? = null,
@@ -577,7 +576,6 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     ): String {
         val taskId = postgrest.from(TASKS_COLLECTION).insert(
             TaskInsertEntity(
-                orgId = orgId.id,
                 propertyId = propertyId.propertyId,
                 createdBy = createdBy.userId,
                 title = "Test Task $testPrefix",
@@ -604,7 +602,6 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Serializable
     @SupabaseModel
     private data class TaskInsertEntity(
-        @SerialName("org_id") val orgId: String,
         @SerialName("property_id") val propertyId: String,
         @SerialName("created_by") val createdBy: String,
         val title: String,

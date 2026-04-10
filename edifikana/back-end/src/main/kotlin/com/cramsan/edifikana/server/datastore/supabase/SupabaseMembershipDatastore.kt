@@ -139,15 +139,26 @@ class SupabaseMembershipDatastore(
 
     /**
      * Sets assignee_id = NULL on all non-terminal tasks in [orgId] assigned to [userId].
+     * Tasks are property-scoped; we resolve the org by fetching all property IDs for [orgId]
+     * first, then filtering tasks by those property IDs.
      */
     override suspend fun unassignTasksForMember(orgId: OrganizationId, userId: UserId): Result<Unit> =
         runSuspendCatching(TAG) {
             logD(TAG, "Unassigning tasks for member %s in org %s", userId, orgId)
+            val propertyIds = postgrest.from(PROPERTIES_COLLECTION).select {
+                filter {
+                    eq("organization_id", orgId.id)
+                    exact("deleted_at", null)
+                }
+            }.decodeList<PropertyIdEntity>().map { it.id }
+
+            if (propertyIds.isEmpty()) return@runSuspendCatching
+
             postgrest.from(TASKS_COLLECTION).update({
                 set("assignee_id", null as String?)
             }) {
                 filter {
-                    eq("org_id", orgId.id)
+                    isIn("property_id", propertyIds)
                     eq("assignee_id", userId.userId)
                     exact("deleted_at", null)
                     isIn("status", listOf(TaskStatus.OPEN.name, TaskStatus.IN_PROGRESS.name))
@@ -331,8 +342,12 @@ class SupabaseMembershipDatastore(
         @SerialName("p_caller_id") val pCallerId: String,
     )
 
+    @Serializable
+    private data class PropertyIdEntity(val id: String)
+
     companion object {
         private const val TAG = "SupabaseMembershipDatastore"
         private const val TASKS_COLLECTION = "tasks"
+        private const val PROPERTIES_COLLECTION = "properties"
     }
 }

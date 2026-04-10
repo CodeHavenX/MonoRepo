@@ -4,6 +4,7 @@ import com.cramsan.architecture.server.test.dependencyinjection.TestArchitecture
 import com.cramsan.architecture.server.test.dependencyinjection.integTestFrameworkModule
 import com.cramsan.edifikana.lib.model.CommonAreaId
 import com.cramsan.edifikana.lib.model.EmployeeId
+import com.cramsan.edifikana.lib.model.TaskId
 import com.cramsan.edifikana.lib.model.EmployeeRole
 import com.cramsan.edifikana.lib.model.EventLogEntryId
 import com.cramsan.edifikana.lib.model.IdType
@@ -18,6 +19,7 @@ import com.cramsan.edifikana.server.dependencyinjection.DatastoreModule
 import com.cramsan.edifikana.server.dependencyinjection.IntegTestApplicationModule
 import com.cramsan.edifikana.server.service.models.CommonArea
 import com.cramsan.edifikana.server.service.models.Employee
+import com.cramsan.edifikana.server.service.models.Task
 import com.cramsan.edifikana.server.service.models.EventLogEntry
 import com.cramsan.edifikana.server.service.models.Invite
 import com.cramsan.edifikana.server.service.models.Notification
@@ -55,9 +57,11 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
     protected val notificationDatastore: SupabaseNotificationDatastore by inject()
     protected val membershipDatastore: SupabaseMembershipDatastore by inject()
     protected val commonAreaDatastore: SupabaseCommonAreaDatastore by inject()
+    protected val taskDatastore: SupabaseTaskDatastore by inject()
 
     private val eventLogResources = mutableSetOf<EventLogEntryId>()
     private val commonAreaResources = mutableSetOf<CommonAreaId>()
+    private val taskResources = mutableSetOf<TaskId>()
     private val propertyResources = mutableSetOf<PropertyId>()
     private val employeeResources = mutableSetOf<EmployeeId>()
     private val timeCardResources = mutableSetOf<TimeCardEventId>()
@@ -114,6 +118,10 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
 
     private fun registerCommonAreaForDeletion(commonAreaId: CommonAreaId) {
         commonAreaResources.add(commonAreaId)
+    }
+
+    private fun registerTaskForDeletion(taskId: TaskId) {
+        taskResources.add(taskId)
     }
 
     protected fun createTestUser(email: String): UserId {
@@ -231,6 +239,12 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
         }
     }
 
+    fun Result<Task>.registerTaskForDeletion(): Result<Task> {
+        return this.onSuccess { task ->
+            registerTaskForDeletion(task.id)
+        }
+    }
+
     fun registerSupabaseUserForDeletion(userId: String) {
         supabaseUsers.add(userId)
     }
@@ -289,6 +303,10 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
                     results += commonAreaDatastore.deleteCommonArea(it)
                     results += commonAreaDatastore.purgeCommonArea(it)
                 }
+                taskResources.forEach {
+                    results += taskDatastore.deleteTask(it)
+                    results += taskDatastore.purgeTask(it)
+                }
                 propertyResources.forEach {
                     results += propertyDatastore.deleteProperty(it)
                     results += propertyDatastore.purgeProperty(it)
@@ -312,6 +330,7 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
             timeCardResources.clear()
             employeeResources.clear()
             commonAreaResources.clear()
+            taskResources.clear()
             propertyResources.clear()
             userResources.clear()
             organizationResources.clear()

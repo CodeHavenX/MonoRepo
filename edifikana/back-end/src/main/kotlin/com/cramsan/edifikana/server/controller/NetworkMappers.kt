@@ -3,18 +3,19 @@
 package com.cramsan.edifikana.server.controller
 
 import com.cramsan.edifikana.lib.model.network.asset.AssetNetworkResponse
-import com.cramsan.edifikana.lib.model.network.user.AuthMetadataNetworkResponse
 import com.cramsan.edifikana.lib.model.network.commonArea.CommonAreaNetworkResponse
-import com.cramsan.edifikana.lib.model.network.task.TaskNetworkResponse
 import com.cramsan.edifikana.lib.model.network.document.DocumentNetworkResponse
 import com.cramsan.edifikana.lib.model.network.employee.EmployeeNetworkResponse
 import com.cramsan.edifikana.lib.model.network.eventLog.EventLogEntryNetworkResponse
 import com.cramsan.edifikana.lib.model.network.invite.InviteNetworkResponse
-import com.cramsan.edifikana.lib.model.network.organization.MemberNetworkResponse
 import com.cramsan.edifikana.lib.model.network.notification.NotificationNetworkResponse
+import com.cramsan.edifikana.lib.model.network.organization.MemberNetworkResponse
 import com.cramsan.edifikana.lib.model.network.organization.OrganizationNetworkResponse
 import com.cramsan.edifikana.lib.model.network.property.PropertyNetworkResponse
+import com.cramsan.edifikana.lib.model.network.task.TaskNetworkResponse
 import com.cramsan.edifikana.lib.model.network.timeCard.TimeCardEventNetworkResponse
+import com.cramsan.edifikana.lib.model.network.unit.UnitNetworkResponse
+import com.cramsan.edifikana.lib.model.network.user.AuthMetadataNetworkResponse
 import com.cramsan.edifikana.lib.model.network.user.UserNetworkResponse
 import com.cramsan.edifikana.server.service.models.Asset
 import com.cramsan.edifikana.server.service.models.CommonArea
@@ -24,10 +25,12 @@ import com.cramsan.edifikana.server.service.models.Employee
 import com.cramsan.edifikana.server.service.models.EventLogEntry
 import com.cramsan.edifikana.server.service.models.Invite
 import com.cramsan.edifikana.server.service.models.Notification
-import com.cramsan.edifikana.server.service.models.Organization
 import com.cramsan.edifikana.server.service.models.OrgMemberView
+import com.cramsan.edifikana.server.service.models.Organization
 import com.cramsan.edifikana.server.service.models.Property
+import com.cramsan.edifikana.server.service.models.Task
 import com.cramsan.edifikana.server.service.models.TimeCardEvent
+import com.cramsan.edifikana.server.service.models.Unit
 import com.cramsan.edifikana.server.service.models.User
 import com.cramsan.framework.annotations.NetworkModel
 import kotlin.time.ExperimentalTime
@@ -239,5 +242,22 @@ fun Task.toTaskNetworkResponse(): TaskNetworkResponse {
         createdAt = createdAt,
         completedAt = completedAt,
         statusChangedAt = statusChangedAt,
+    )
+}
+
+/**
+ * Converts a [Unit] domain model to a [UnitNetworkResponse] network model.
+ */
+@OptIn(NetworkModel::class)
+fun Unit.toUnitNetworkResponse(): UnitNetworkResponse {
+    return UnitNetworkResponse(
+        unitId = id,
+        propertyId = propertyId,
+        unitNumber = unitNumber,
+        bedrooms = bedrooms,
+        bathrooms = bathrooms,
+        sqFt = sqFt,
+        floor = floor,
+        notes = notes,
     )
 }

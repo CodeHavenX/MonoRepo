@@ -5,7 +5,9 @@ import com.cramsan.edifikana.lib.model.document.DocumentId
 import com.cramsan.edifikana.lib.model.employee.EmployeeId
 import com.cramsan.edifikana.lib.model.eventLog.EventLogEntryId
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.payment.PaymentRecordId
 import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.edifikana.lib.model.rent.RentConfigId
 import com.cramsan.edifikana.lib.model.task.TaskId
 import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventId
 import com.cramsan.edifikana.lib.model.unit.UnitId
@@ -16,7 +18,9 @@ import com.cramsan.edifikana.server.datastore.DocumentDatastore
 import com.cramsan.edifikana.server.datastore.EmployeeDatastore
 import com.cramsan.edifikana.server.datastore.EventLogDatastore
 import com.cramsan.edifikana.server.datastore.OrganizationDatastore
+import com.cramsan.edifikana.server.datastore.PaymentRecordDatastore
 import com.cramsan.edifikana.server.datastore.PropertyDatastore
+import com.cramsan.edifikana.server.datastore.RentConfigDatastore
 import com.cramsan.edifikana.server.datastore.TaskDatastore
 import com.cramsan.edifikana.server.datastore.TimeCardDatastore
 import com.cramsan.edifikana.server.datastore.UnitDatastore
@@ -40,6 +44,8 @@ class RBACService(
     private val commonAreaDatastore: CommonAreaDatastore,
     private val taskDatastore: TaskDatastore,
     private val unitDatastore: UnitDatastore,
+    private val paymentRecordDatastore: PaymentRecordDatastore,
+    private val rentConfigDatastore: RentConfigDatastore,
 ) {
 
     private val propertyNotFoundException = "ERROR: PROPERTY NOT FOUND!"
@@ -489,6 +495,100 @@ class RBACService(
         val timeCardEvent = timeCardDatastore.getTimeCardEvent(targetTimecardId).getOrThrow()
             ?: throw InvalidRequestException(timecardEventNotFoundException)
         return getUserRoleForPropertyAction(context, timeCardEvent.propertyId)
+    }
+
+    /**
+     * Checks if the user has the required role to perform actions on the target payment record.
+     *
+     * @param context The authenticated client context containing user information.
+     * @param targetPaymentRecordId The ID of the target payment record on which the action is to be performed.
+     * @param requiredRole The role required to perform the action.
+     * @return True if the user has the required role, false otherwise.
+     */
+    suspend fun hasRole(
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+        targetPaymentRecordId: PaymentRecordId,
+        requiredRole: UserRole,
+    ): Boolean {
+        val userRole = getUserRoleForPaymentRecordAction(context, targetPaymentRecordId)
+        return userRole == requiredRole
+    }
+
+    /**
+     * Checks if the user has the required role or higher to perform actions on the target payment record.
+     *
+     * @param context The authenticated client context containing user information.
+     * @param targetPaymentRecordId The ID of the target payment record on which the action is to be performed.
+     * @param requiredRole The minimum role required to perform the action.
+     * @return True if the user has the required role or higher, false otherwise.
+     */
+    suspend fun hasRoleOrHigher(
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+        targetPaymentRecordId: PaymentRecordId,
+        requiredRole: UserRole,
+    ): Boolean {
+        val userRole = getUserRoleForPaymentRecordAction(context, targetPaymentRecordId)
+        return userRole.level <= requiredRole.level
+    }
+
+    /**
+     * Retrieves the user role for the action being performed on the target payment record.
+     * Resolves through payment record → unit → org.
+     */
+    private suspend fun getUserRoleForPaymentRecordAction(
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+        targetPaymentRecordId: PaymentRecordId,
+    ): UserRole {
+        val paymentRecord = paymentRecordDatastore.getPaymentRecord(targetPaymentRecordId).getOrThrow()
+            ?: return UserRole.UNAUTHORIZED
+        return getUserRoleForUnitAction(context, paymentRecord.unitId)
+    }
+
+    /**
+     * Checks if the user has the required role to perform actions on the target rent configuration.
+     *
+     * @param context The authenticated client context containing user information.
+     * @param targetRentConfigId The ID of the target rent configuration on which the action is to be performed.
+     * @param requiredRole The role required to perform the action.
+     * @return True if the user has the required role, false otherwise.
+     */
+    suspend fun hasRole(
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+        targetRentConfigId: RentConfigId,
+        requiredRole: UserRole,
+    ): Boolean {
+        val userRole = getUserRoleForRentConfigAction(context, targetRentConfigId)
+        return userRole == requiredRole
+    }
+
+    /**
+     * Checks if the user has the required role or higher to perform actions on the target rent configuration.
+     *
+     * @param context The authenticated client context containing user information.
+     * @param targetRentConfigId The ID of the target rent configuration on which the action is to be performed.
+     * @param requiredRole The minimum role required to perform the action.
+     * @return True if the user has the required role or higher, false otherwise.
+     */
+    suspend fun hasRoleOrHigher(
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+        targetRentConfigId: RentConfigId,
+        requiredRole: UserRole,
+    ): Boolean {
+        val userRole = getUserRoleForRentConfigAction(context, targetRentConfigId)
+        return userRole.level <= requiredRole.level
+    }
+
+    /**
+     * Retrieves the user role for the action being performed on the target rent configuration.
+     * Resolves through rent config → unit → org.
+     */
+    private suspend fun getUserRoleForRentConfigAction(
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+        targetRentConfigId: RentConfigId,
+    ): UserRole {
+        val rentConfig = rentConfigDatastore.getRentConfigById(targetRentConfigId).getOrThrow()
+            ?: return UserRole.UNAUTHORIZED
+        return getUserRoleForUnitAction(context, rentConfig.unitId)
     }
 
     /**

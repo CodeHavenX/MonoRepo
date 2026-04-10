@@ -41,6 +41,21 @@ class SupabaseRentConfigDatastore(
     }
 
     /**
+     * Retrieves the active rent configuration by [rentConfigId]. Returns null if not found or soft-deleted.
+     */
+    @OptIn(SupabaseModel::class)
+    override suspend fun getRentConfigById(rentConfigId: RentConfigId): Result<RentConfig?> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "Getting rent config by id: %s", rentConfigId)
+            postgrest.from(RentConfigEntity.COLLECTION).select {
+                filter {
+                    RentConfigEntity::rentConfigId eq rentConfigId.rentConfigId
+                    RentConfigEntity::deletedAt isExact null
+                }
+            }.decodeSingleOrNull<RentConfigEntity>()?.toRentConfig()
+        }
+
+    /**
      * Creates or updates the rent configuration for [unitId] (upsert on unit_id).
      * Returns the created or updated [RentConfig].
      */

@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.lib.model.network
 
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.QueryParam
 import kotlinx.serialization.SerialName
@@ -13,6 +13,6 @@ import kotlinx.serialization.Serializable
 @NetworkModel
 @Serializable
 data class GetUnitsQueryParams(
-    @SerialName("org_id") val orgId: OrganizationId,
+    @SerialName("org_id") val orgId: OrganizationId? = null,
     @SerialName("property_id") val propertyId: PropertyId? = null,
 ) : QueryParam

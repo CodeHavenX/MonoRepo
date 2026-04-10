@@ -28,7 +28,7 @@ data class UserPropertyMappingEntity(
         @SerialName("user_id")
         val userId: UserId,
         @SerialName("property_id")
-        val propertyId: String,
+        val propertyId: PropertyId,
     )
 
     companion object {

@@ -1,8 +1,8 @@
 package com.cramsan.edifikana.server.datastore
 
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.UnitId
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.server.service.models.Unit
 
 /**
@@ -15,7 +15,6 @@ interface UnitDatastore {
      */
     suspend fun createUnit(
         propertyId: PropertyId,
-        orgId: OrganizationId,
         unitNumber: String,
         bedrooms: Int?,
         bathrooms: Int?,
@@ -30,11 +29,17 @@ interface UnitDatastore {
     suspend fun getUnit(unitId: UnitId): Result<Unit?>
 
     /**
-     * Retrieves all non-deleted units for [orgId], optionally filtered by [propertyId].
+     * Retrieves all non-deleted units for [orgId].
      */
     suspend fun getUnits(
         orgId: OrganizationId,
-        propertyId: PropertyId?,
+    ): Result<List<Unit>>
+
+    /**
+     * Retrieves all non-deleted units for [propertyId].
+     */
+    suspend fun getUnits(
+        propertyId: PropertyId,
     ): Result<List<Unit>>
 
     /**

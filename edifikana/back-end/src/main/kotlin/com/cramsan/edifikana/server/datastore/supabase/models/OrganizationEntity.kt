@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.datastore.supabase.models
 
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.framework.annotations.SupabaseModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -11,7 +12,7 @@ import kotlin.time.Instant
 @Serializable
 @SupabaseModel
 data class OrganizationEntity(
-    val id: String,
+    val id: OrganizationId,
     val name: String,
     val description: String,
     @SerialName("deleted_at")

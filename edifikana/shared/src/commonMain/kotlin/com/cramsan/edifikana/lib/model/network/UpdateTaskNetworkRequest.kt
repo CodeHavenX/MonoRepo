@@ -1,4 +1,4 @@
-package com.cramsan.edifikana.lib.model.network.task
+package com.cramsan.edifikana.lib.model.network
 
 import com.cramsan.edifikana.lib.model.task.TaskPriority
 import com.cramsan.edifikana.lib.model.task.TaskStatus
@@ -8,15 +8,12 @@ import com.cramsan.framework.annotations.api.RequestBody
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlin.time.ExperimentalTime
-import kotlin.time.Instant
 
 /**
  * Network request to update an existing task. Only provided (non-null) fields are updated.
  */
 @NetworkModel
 @Serializable
-@OptIn(ExperimentalTime::class)
 data class UpdateTaskNetworkRequest(
     val title: String?,
     val description: String?,

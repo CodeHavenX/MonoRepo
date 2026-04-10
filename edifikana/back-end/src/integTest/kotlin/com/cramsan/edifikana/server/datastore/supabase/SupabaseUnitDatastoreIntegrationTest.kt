@@ -97,42 +97,6 @@ class SupabaseUnitDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getUnits should return all units for org`() = runCoroutineTest {
-        // Arrange
-        val result1 = unitDatastore.createUnit(
-            propertyId = testProperty!!,
-            unitNumber = "${test_prefix}_201",
-            bedrooms = null,
-            bathrooms = null,
-            sqFt = null,
-            floor = null,
-            notes = null,
-        ).registerUnitForDeletion()
-        val result2 = unitDatastore.createUnit(
-            propertyId = testProperty!!,
-            unitNumber = "${test_prefix}_202",
-            bedrooms = null,
-            bathrooms = null,
-            sqFt = null,
-            floor = null,
-            notes = null,
-        ).registerUnitForDeletion()
-        assertTrue(result1.isSuccess)
-        assertTrue(result2.isSuccess)
-
-        // Act
-        val listResult = unitDatastore.getUnits(orgId = testOrg!!)
-
-        // Assert
-        assertTrue(listResult.isSuccess)
-        val units = listResult.getOrNull()
-        assertNotNull(units)
-        val unitNumbers = units.map { it.unitNumber }
-        assertTrue(unitNumbers.contains("${test_prefix}_201"))
-        assertTrue(unitNumbers.contains("${test_prefix}_202"))
-    }
-
-    @Test
     fun `getUnits should filter by propertyId`() = runCoroutineTest {
         // Arrange — create a second property with its own unit
         val otherProperty = createTestProperty("other-property-${test_prefix}", testUserId!!, testOrg!!)

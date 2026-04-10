@@ -1,6 +1,5 @@
 package com.cramsan.edifikana.server.service
 
-import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.server.datastore.UnitDatastore
@@ -44,18 +43,6 @@ class UnitService(
     suspend fun getUnit(unitId: UnitId): Unit? {
         logD(TAG, "getUnit")
         return unitDatastore.getUnit(unitId).getOrNull()
-    }
-
-    /**
-     * Lists all units for [orgId].
-     */
-    suspend fun getUnits(
-        orgId: OrganizationId,
-    ): List<Unit> {
-        logD(TAG, "getUnits by orgId")
-        return unitDatastore.getUnits(
-            orgId = orgId,
-        ).getOrThrow()
     }
 
     /**

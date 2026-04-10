@@ -94,36 +94,14 @@ class UnitController(
             ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
             >
     ): UnitListNetworkResponse {
-        val orgId = request.queryParam.orgId
         val propertyId = request.queryParam.propertyId
-        if (orgId == null && propertyId == null) {
-            throw UnauthorizedException("You need to and orgId or propertyId.")
+        if (!rbacService.hasRoleOrHigher(request.context, propertyId, UserRole.EMPLOYEE)) {
+            throw UnauthorizedException(unauthorizedMsg)
         }
-        if (orgId != null && propertyId != null) {
-            throw UnauthorizedException("Only provide one of orgId or propertyId.")
-        }
-
-        when {
-            orgId != null -> {
-                if (!rbacService.hasRoleOrHigher(request.context, orgId, UserRole.EMPLOYEE)) {
-                    throw UnauthorizedException(unauthorizedMsg)
-                }
-                val units = unitService.getUnits(
-                    orgId = orgId,
-                ).map { it.toUnitNetworkResponse() }
-                return UnitListNetworkResponse(units)
-            }
-            propertyId != null -> {
-                if (!rbacService.hasRoleOrHigher(request.context, propertyId, UserRole.EMPLOYEE)) {
-                    throw UnauthorizedException(unauthorizedMsg)
-                }
-                val units = unitService.getUnits(
-                    propertyId = propertyId,
-                ).map { it.toUnitNetworkResponse() }
-                return UnitListNetworkResponse(units)
-            }
-        }
-        throw ClientRequestExceptions.InvalidRequestException("You are not authorized to perform this action in your organization.")
+        val units = unitService.getUnits(
+            propertyId = propertyId,
+        ).map { it.toUnitNetworkResponse() }
+        return UnitListNetworkResponse(units)
     }
 
     /**

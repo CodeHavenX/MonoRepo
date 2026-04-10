@@ -1,8 +1,8 @@
 package com.cramsan.edifikana.api
 
-import com.cramsan.edifikana.lib.model.NotificationId
-import com.cramsan.edifikana.lib.model.network.NotificationListNetworkResponse
-import com.cramsan.edifikana.lib.model.network.NotificationNetworkResponse
+import com.cramsan.edifikana.lib.model.notification.NotificationId
+import com.cramsan.edifikana.lib.model.network.notification.NotificationListNetworkResponse
+import com.cramsan.edifikana.lib.model.network.notification.NotificationNetworkResponse
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam

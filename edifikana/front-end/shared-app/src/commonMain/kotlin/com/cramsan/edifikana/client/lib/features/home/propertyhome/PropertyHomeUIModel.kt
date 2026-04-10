@@ -1,8 +1,8 @@
 package com.cramsan.edifikana.client.lib.features.home.propertyhome
 
 import com.cramsan.edifikana.client.lib.models.PropertyModel
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.framework.core.compose.ViewModelUIState
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource

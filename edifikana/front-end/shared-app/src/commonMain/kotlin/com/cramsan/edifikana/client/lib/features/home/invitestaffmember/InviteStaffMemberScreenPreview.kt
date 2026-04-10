@@ -2,7 +2,7 @@ package com.cramsan.edifikana.client.lib.features.home.invitestaffmember
 
 import androidx.compose.runtime.Composable
 import com.cramsan.edifikana.client.ui.theme.AppTheme
-import com.cramsan.edifikana.lib.model.UserRole
+import com.cramsan.edifikana.lib.model.user.UserRole
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**

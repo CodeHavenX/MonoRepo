@@ -1,10 +1,10 @@
 package com.cramsan.edifikana.server.datastore.supabase
 
-import com.cramsan.edifikana.lib.model.EmployeeId
-import com.cramsan.edifikana.lib.model.EventLogEntryId
-import com.cramsan.edifikana.lib.model.EventLogEventType
-import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.UnitId
+import com.cramsan.edifikana.lib.model.employee.EmployeeId
+import com.cramsan.edifikana.lib.model.eventLog.EventLogEntryId
+import com.cramsan.edifikana.lib.model.eventLog.EventLogEventType
+import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.server.datastore.EventLogDatastore
 import com.cramsan.edifikana.server.datastore.supabase.models.EventLogEntryEntity
 import com.cramsan.edifikana.server.service.models.EventLogEntry

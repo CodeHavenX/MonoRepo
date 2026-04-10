@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.server.service.models
 
-import com.cramsan.edifikana.lib.model.OrganizationId
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
 
 /**
  * Domain model representing an organization.

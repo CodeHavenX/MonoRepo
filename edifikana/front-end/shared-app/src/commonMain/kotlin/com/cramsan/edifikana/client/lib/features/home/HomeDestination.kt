@@ -2,10 +2,10 @@
 
 package com.cramsan.edifikana.client.lib.features.home
 
-import com.cramsan.edifikana.lib.model.EmployeeId
-import com.cramsan.edifikana.lib.model.EventLogEntryId
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.employee.EmployeeId
+import com.cramsan.edifikana.lib.model.eventLog.EventLogEntryId
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.framework.core.compose.navigation.Destination
 import kotlinx.serialization.Serializable
 

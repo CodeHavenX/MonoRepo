@@ -38,7 +38,7 @@ import com.cramsan.edifikana.client.lib.features.home.drawer.DrawerViewModel
 import com.cramsan.edifikana.client.lib.features.home.eventlog.EventLogScreen
 import com.cramsan.edifikana.client.lib.features.home.gotoorganization.GoToOrganizationScreen
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
-import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.theme.Padding
 import edifikana_lib.Res

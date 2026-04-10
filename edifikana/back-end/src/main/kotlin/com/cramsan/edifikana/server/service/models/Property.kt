@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.server.service.models
 
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.property.PropertyId
 
 /**
  * Domain model representing a property.

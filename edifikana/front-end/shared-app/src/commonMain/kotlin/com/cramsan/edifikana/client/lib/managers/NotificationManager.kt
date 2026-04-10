@@ -2,7 +2,7 @@ package com.cramsan.edifikana.client.lib.managers
 
 import com.cramsan.edifikana.client.lib.models.Notification
 import com.cramsan.edifikana.client.lib.service.NotificationService
-import com.cramsan.edifikana.lib.model.NotificationId
+import com.cramsan.edifikana.lib.model.notification.NotificationId
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.getOrCatch
 import com.cramsan.framework.logging.logI

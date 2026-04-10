@@ -1,8 +1,8 @@
 package com.cramsan.edifikana.client.lib.settings
 
 import com.cramsan.architecture.client.manager.PreferencesManager
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.PropertyId
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.property.PropertyId
 
 /**
  * Utility functions to get and set specific preferences related to Edifikana.

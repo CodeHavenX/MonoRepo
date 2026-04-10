@@ -1,8 +1,8 @@
 package com.cramsan.edifikana.server.datastore.supabase
 
-import com.cramsan.edifikana.lib.model.OrgRole
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.organization.OrgRole
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.framework.utils.uuid.UUID
 import kotlin.test.BeforeTest
 import kotlin.test.Test

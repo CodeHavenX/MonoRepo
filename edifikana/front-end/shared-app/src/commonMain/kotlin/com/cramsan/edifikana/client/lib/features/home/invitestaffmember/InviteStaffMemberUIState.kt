@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.home.invitestaffmember
 
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.UserRole
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.user.UserRole
 import com.cramsan.framework.core.compose.ViewModelUIState
 
 /**

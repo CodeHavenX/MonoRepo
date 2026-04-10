@@ -3,14 +3,13 @@ package com.cramsan.edifikana.client.lib.service.impl
 import com.cramsan.edifikana.api.NotificationApi
 import com.cramsan.edifikana.client.lib.models.Notification
 import com.cramsan.edifikana.client.lib.service.NotificationService
-import com.cramsan.edifikana.lib.model.NotificationId
-import com.cramsan.edifikana.lib.model.network.NotificationNetworkResponse
+import com.cramsan.edifikana.lib.model.notification.NotificationId
+import com.cramsan.edifikana.lib.model.network.notification.NotificationNetworkResponse
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.networkapi.buildRequest
 import io.ktor.client.HttpClient
 import kotlin.time.ExperimentalTime
-import kotlin.time.Instant
 
 /**
  * Default implementation for the [NotificationService].

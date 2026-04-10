@@ -2,7 +2,7 @@ package com.cramsan.edifikana.client.lib.features.home.organizationhome
 
 import androidx.compose.runtime.Composable
 import com.cramsan.edifikana.client.ui.theme.AppTheme
-import com.cramsan.edifikana.lib.model.OrganizationId
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable

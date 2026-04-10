@@ -1,12 +1,12 @@
 package com.cramsan.edifikana.client.lib.service.impl
 
 import com.cramsan.edifikana.client.lib.models.EmployeeModel
-import com.cramsan.edifikana.lib.model.EmployeeId
-import com.cramsan.edifikana.lib.model.EmployeeRole
-import com.cramsan.edifikana.lib.model.IdType
-import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.network.EmployeeListNetworkResponse
-import com.cramsan.edifikana.lib.model.network.EmployeeNetworkResponse
+import com.cramsan.edifikana.lib.model.employee.EmployeeId
+import com.cramsan.edifikana.lib.model.employee.EmployeeRole
+import com.cramsan.edifikana.lib.model.identification.IdType
+import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.edifikana.lib.model.network.employee.EmployeeListNetworkResponse
+import com.cramsan.edifikana.lib.model.network.employee.EmployeeNetworkResponse
 import com.cramsan.edifikana.lib.serialization.createJson
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.assertlib.AssertUtil

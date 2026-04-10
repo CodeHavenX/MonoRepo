@@ -1,8 +1,8 @@
 package com.cramsan.edifikana.client.lib.models
 
-import com.cramsan.edifikana.lib.model.InviteId
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.UserRole
+import com.cramsan.edifikana.lib.model.invite.InviteId
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.user.UserRole
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 

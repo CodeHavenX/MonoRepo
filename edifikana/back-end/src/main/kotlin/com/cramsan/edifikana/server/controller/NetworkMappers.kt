@@ -2,20 +2,20 @@
 
 package com.cramsan.edifikana.server.controller
 
-import com.cramsan.edifikana.lib.model.network.AssetNetworkResponse
-import com.cramsan.edifikana.lib.model.network.AuthMetadataNetworkResponse
-import com.cramsan.edifikana.lib.model.network.CommonAreaNetworkResponse
-import com.cramsan.edifikana.lib.model.network.TaskNetworkResponse
-import com.cramsan.edifikana.lib.model.network.DocumentNetworkResponse
-import com.cramsan.edifikana.lib.model.network.EmployeeNetworkResponse
-import com.cramsan.edifikana.lib.model.network.EventLogEntryNetworkResponse
-import com.cramsan.edifikana.lib.model.network.InviteNetworkResponse
-import com.cramsan.edifikana.lib.model.network.MemberNetworkResponse
-import com.cramsan.edifikana.lib.model.network.NotificationNetworkResponse
-import com.cramsan.edifikana.lib.model.network.OrganizationNetworkResponse
-import com.cramsan.edifikana.lib.model.network.PropertyNetworkResponse
-import com.cramsan.edifikana.lib.model.network.TimeCardEventNetworkResponse
-import com.cramsan.edifikana.lib.model.network.UserNetworkResponse
+import com.cramsan.edifikana.lib.model.network.asset.AssetNetworkResponse
+import com.cramsan.edifikana.lib.model.network.user.AuthMetadataNetworkResponse
+import com.cramsan.edifikana.lib.model.network.commonArea.CommonAreaNetworkResponse
+import com.cramsan.edifikana.lib.model.network.task.TaskNetworkResponse
+import com.cramsan.edifikana.lib.model.network.document.DocumentNetworkResponse
+import com.cramsan.edifikana.lib.model.network.employee.EmployeeNetworkResponse
+import com.cramsan.edifikana.lib.model.network.eventLog.EventLogEntryNetworkResponse
+import com.cramsan.edifikana.lib.model.network.invite.InviteNetworkResponse
+import com.cramsan.edifikana.lib.model.network.organization.MemberNetworkResponse
+import com.cramsan.edifikana.lib.model.network.notification.NotificationNetworkResponse
+import com.cramsan.edifikana.lib.model.network.organization.OrganizationNetworkResponse
+import com.cramsan.edifikana.lib.model.network.property.PropertyNetworkResponse
+import com.cramsan.edifikana.lib.model.network.timeCard.TimeCardEventNetworkResponse
+import com.cramsan.edifikana.lib.model.network.user.UserNetworkResponse
 import com.cramsan.edifikana.server.service.models.Asset
 import com.cramsan.edifikana.server.service.models.CommonArea
 import com.cramsan.edifikana.server.service.models.Document

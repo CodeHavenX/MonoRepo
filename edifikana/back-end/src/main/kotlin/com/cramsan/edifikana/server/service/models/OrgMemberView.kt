@@ -1,9 +1,9 @@
 package com.cramsan.edifikana.server.service.models
 
-import com.cramsan.edifikana.lib.model.OrgMemberStatus
-import com.cramsan.edifikana.lib.model.OrgRole
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.organization.OrgMemberStatus
+import com.cramsan.edifikana.lib.model.organization.OrgRole
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.user.UserId
 import kotlin.time.Instant
 
 /**

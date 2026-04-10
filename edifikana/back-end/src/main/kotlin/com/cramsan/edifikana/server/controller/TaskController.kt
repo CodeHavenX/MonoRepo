@@ -1,12 +1,12 @@
 package com.cramsan.edifikana.server.controller
 
 import com.cramsan.edifikana.api.TaskApi
-import com.cramsan.edifikana.lib.model.TaskId
-import com.cramsan.edifikana.lib.model.network.CreateTaskNetworkRequest
-import com.cramsan.edifikana.lib.model.network.GetTasksQueryParams
-import com.cramsan.edifikana.lib.model.network.TaskListNetworkResponse
-import com.cramsan.edifikana.lib.model.network.TaskNetworkResponse
-import com.cramsan.edifikana.lib.model.network.UpdateTaskNetworkRequest
+import com.cramsan.edifikana.lib.model.task.TaskId
+import com.cramsan.edifikana.lib.model.network.task.CreateTaskNetworkRequest
+import com.cramsan.edifikana.lib.model.network.task.GetTasksQueryParams
+import com.cramsan.edifikana.lib.model.network.task.TaskListNetworkResponse
+import com.cramsan.edifikana.lib.model.network.task.TaskNetworkResponse
+import com.cramsan.edifikana.lib.model.network.task.UpdateTaskNetworkRequest
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.service.TaskService
 import com.cramsan.edifikana.server.service.authorization.RBACService

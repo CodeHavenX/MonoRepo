@@ -1,7 +1,8 @@
 package com.cramsan.edifikana.server.datastore.supabase
 
-import com.cramsan.edifikana.lib.model.NotificationId
-import com.cramsan.edifikana.lib.model.NotificationType
+import com.cramsan.edifikana.lib.model.notification.NotificationId
+import com.cramsan.edifikana.lib.model.notification.NotificationType
+import com.cramsan.edifikana.lib.model.invite.InviteId
 import com.cramsan.framework.utils.uuid.UUID
 import org.koin.test.inject
 import kotlin.test.BeforeTest
@@ -377,7 +378,7 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `getNotificationByInvite should return null for non-existent invite`() = runCoroutineTest {
         // Arrange
-        val fakeInviteId = com.cramsan.edifikana.lib.model.InviteId("00000000-0000-0000-0000-000000000000")
+        val fakeInviteId = InviteId("00000000-0000-0000-0000-000000000000")
 
         // Act
         val result = notificationDatastore.getNotificationByInvite(fakeInviteId)

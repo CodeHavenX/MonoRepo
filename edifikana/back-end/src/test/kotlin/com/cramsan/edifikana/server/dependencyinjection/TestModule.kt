@@ -11,6 +11,7 @@ import com.cramsan.edifikana.server.controller.OrganizationController
 import com.cramsan.edifikana.server.controller.PropertyController
 import com.cramsan.edifikana.server.controller.StorageController
 import com.cramsan.edifikana.server.controller.TimeCardController
+import com.cramsan.edifikana.server.controller.UnitController
 import com.cramsan.edifikana.server.controller.UserController
 import com.cramsan.edifikana.server.service.CommonAreaService
 import com.cramsan.edifikana.server.service.TaskService
@@ -22,6 +23,7 @@ import com.cramsan.edifikana.server.service.OrganizationService
 import com.cramsan.edifikana.server.service.PropertyService
 import com.cramsan.edifikana.server.service.StorageService
 import com.cramsan.edifikana.server.service.TimeCardService
+import com.cramsan.edifikana.server.service.UnitService
 import com.cramsan.edifikana.server.service.UserService
 import com.cramsan.edifikana.server.service.authorization.RBACService
 import com.cramsan.framework.core.ktor.Controller
@@ -48,6 +50,7 @@ internal val TestControllerModule = module {
     singleOf(::MembershipController) { bind<Controller>() }
     singleOf(::CommonAreaController) { bind<Controller>() }
     singleOf(::TaskController) { bind<Controller>() }
+    singleOf(::UnitController) { bind<Controller>() }
 }
 
 /**
@@ -64,6 +67,7 @@ internal val TestServiceModule = module {
     single<RBACService> { mockk() }
     single<NotificationService> { mockk() }
     single<MembershipService> { mockk() }
+    single<UnitService> { mockk() }
     single<CommonAreaService> { mockk() }
     single<TaskService> { mockk() }
 }

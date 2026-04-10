@@ -1,6 +1,8 @@
 package com.cramsan.edifikana.server.dependencyinjection
 
 import com.cramsan.edifikana.server.service.CommonAreaService
+import com.cramsan.edifikana.server.service.PaymentRecordService
+import com.cramsan.edifikana.server.service.RentConfigService
 import com.cramsan.edifikana.server.service.TaskService
 import com.cramsan.edifikana.server.service.DocumentService
 import com.cramsan.edifikana.server.service.EmployeeService
@@ -11,6 +13,7 @@ import com.cramsan.edifikana.server.service.OrganizationService
 import com.cramsan.edifikana.server.service.PropertyService
 import com.cramsan.edifikana.server.service.StorageService
 import com.cramsan.edifikana.server.service.TimeCardService
+import com.cramsan.edifikana.server.service.UnitService
 import com.cramsan.edifikana.server.service.UserService
 import com.cramsan.edifikana.server.service.authorization.RBACService
 import org.koin.core.module.dsl.singleOf
@@ -31,6 +34,9 @@ internal val ServicesModule = module {
     singleOf(::OrganizationService)
     singleOf(::RBACService)
     singleOf(::DocumentService)
+    singleOf(::UnitService)
     singleOf(::CommonAreaService)
     singleOf(::TaskService)
+    singleOf(::PaymentRecordService)
+    singleOf(::RentConfigService)
 }

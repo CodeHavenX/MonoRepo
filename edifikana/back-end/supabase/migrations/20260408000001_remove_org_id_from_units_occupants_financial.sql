@@ -50,7 +50,6 @@ ALTER TABLE payment_records ADD CONSTRAINT payment_records_unit_id_fkey
 -- ============================================================================
 
 DROP INDEX IF EXISTS idx_unit_occupants_one_active_per_user;
-
 -- ============================================================================
 -- STEP 4: Drop the composite unique constraint on units
 -- This constraint existed solely to support composite FK references from

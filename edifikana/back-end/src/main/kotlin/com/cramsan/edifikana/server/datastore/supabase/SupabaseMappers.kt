@@ -29,17 +29,24 @@ import com.cramsan.edifikana.server.datastore.supabase.models.NotificationEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.OrgMemberViewEntity
 import com.cramsan.edifikana.lib.model.commonArea.CommonAreaId
 import com.cramsan.edifikana.lib.model.commonArea.CommonAreaType
+import com.cramsan.edifikana.lib.model.payment.PaymentStatus
+import com.cramsan.edifikana.lib.model.payment.PaymentType
 import com.cramsan.edifikana.lib.model.task.TaskId
 import com.cramsan.edifikana.lib.model.task.TaskPriority
 import com.cramsan.edifikana.lib.model.task.TaskStatus
 import com.cramsan.edifikana.server.datastore.supabase.models.CommonAreaEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.OrganizationEntity
+import com.cramsan.edifikana.server.datastore.supabase.models.PaymentRecordEntity
+import com.cramsan.edifikana.server.datastore.supabase.models.RentConfigEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.TaskEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.PropertyEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.TimeCardEventEntity
+import com.cramsan.edifikana.server.datastore.supabase.models.UnitEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.UserEntity
 import com.cramsan.edifikana.server.service.models.CommonArea
 import com.cramsan.edifikana.server.service.models.Document
+import com.cramsan.edifikana.server.service.models.PaymentRecord
+import com.cramsan.edifikana.server.service.models.RentConfig
 import com.cramsan.edifikana.server.service.models.Task
 import com.cramsan.edifikana.server.service.models.Employee
 import com.cramsan.edifikana.server.service.models.EventLogEntry
@@ -49,6 +56,7 @@ import com.cramsan.edifikana.server.service.models.OrgMemberView
 import com.cramsan.edifikana.server.service.models.Organization
 import com.cramsan.edifikana.server.service.models.Property
 import com.cramsan.edifikana.server.service.models.TimeCardEvent
+import com.cramsan.edifikana.server.service.models.Unit
 import com.cramsan.edifikana.server.service.models.User
 import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.annotations.SupabaseModel
@@ -242,7 +250,7 @@ fun CreatePropertyEntity(
 @OptIn(SupabaseModel::class)
 fun PropertyEntity.toProperty(): Property {
     return Property(
-        id = PropertyId(this.id),
+        id = this.id,
         name = this.name,
         address = this.address,
         organizationId = this.organizationId,
@@ -341,7 +349,7 @@ fun EventLogEntryEntity.toEventLogEntry(): EventLogEntry {
  */
 @OptIn(SupabaseModel::class)
 fun OrganizationEntity.toOrganization() = Organization(
-    id = OrganizationId(this.id),
+    id = this.id,
     name = this.name,
     description = this.description,
 )
@@ -480,5 +488,86 @@ fun TaskEntity.toTask(): Task {
         createdAt = createdAt,
         completedAt = completedAt,
         statusChangedAt = statusChangedAt,
+    )
+}
+
+/**
+ * Creates a [UnitEntity.CreateUnitEntity] from the provided parameters.
+ */
+@OptIn(SupabaseModel::class)
+fun CreateUnitEntity(
+    propertyId: PropertyId,
+    unitNumber: String,
+    bedrooms: Int?,
+    bathrooms: Int?,
+    sqFt: Int?,
+    floor: Int?,
+    notes: String?,
+): UnitEntity.CreateUnitEntity {
+    return UnitEntity.CreateUnitEntity(
+        propertyId = propertyId,
+        unitNumber = unitNumber,
+        bedrooms = bedrooms,
+        bathrooms = bathrooms,
+        sqFt = sqFt,
+        floor = floor,
+        notes = notes,
+    )
+}
+
+/**
+ * Maps a [UnitEntity] to the [Unit] service model.
+ */
+@OptIn(SupabaseModel::class)
+fun UnitEntity.toUnit(orgId: OrganizationId): Unit {
+    return Unit(
+        id = UnitId(this.unitId),
+        propertyId = this.propertyId,
+        orgId = orgId,
+        unitNumber = this.unitNumber,
+        bedrooms = this.bedrooms,
+        bathrooms = this.bathrooms,
+        sqFt = this.sqFt,
+        floor = this.floor,
+        notes = this.notes,
+        createdAt = this.createdAt,
+    )
+}
+
+/**
+ * Maps a [PaymentRecordEntity] to the [PaymentRecord] service model.
+ */
+@OptIn(SupabaseModel::class)
+fun PaymentRecordEntity.toPaymentRecord(): PaymentRecord {
+    return PaymentRecord(
+        id = this.paymentRecordId,
+        unitId = this.unitId,
+        paymentType = enumValueOf<PaymentType>(this.paymentType),
+        periodMonth = this.periodMonth,
+        amountDue = this.amountDue,
+        amountPaid = this.amountPaid,
+        status = enumValueOf<PaymentStatus>(this.status),
+        dueDate = this.dueDate,
+        paidDate = this.paidDate,
+        recordedBy = this.recordedBy,
+        recordedAt = this.recordedAt,
+        notes = this.notes,
+    )
+}
+
+/**
+ * Maps a [RentConfigEntity] to the [RentConfig] service model.
+ */
+@OptIn(SupabaseModel::class)
+fun RentConfigEntity.toRentConfig(): RentConfig {
+    return RentConfig(
+        id = this.rentConfigId,
+        unitId = this.unitId,
+        monthlyAmount = this.monthlyAmount,
+        dueDay = this.dueDay,
+        currency = this.currency,
+        updatedAt = this.updatedAt,
+        updatedBy = this.updatedBy,
+        createdAt = this.createdAt,
     )
 }

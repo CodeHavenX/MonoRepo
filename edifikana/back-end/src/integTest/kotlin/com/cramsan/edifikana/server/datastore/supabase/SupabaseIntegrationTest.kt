@@ -4,29 +4,35 @@ import com.cramsan.architecture.server.test.dependencyinjection.TestArchitecture
 import com.cramsan.architecture.server.test.dependencyinjection.integTestFrameworkModule
 import com.cramsan.edifikana.lib.model.commonArea.CommonAreaId
 import com.cramsan.edifikana.lib.model.employee.EmployeeId
-import com.cramsan.edifikana.lib.model.task.TaskId
 import com.cramsan.edifikana.lib.model.employee.EmployeeRole
 import com.cramsan.edifikana.lib.model.eventLog.EventLogEntryId
 import com.cramsan.edifikana.lib.model.identification.IdType
 import com.cramsan.edifikana.lib.model.invite.InviteId
+import com.cramsan.edifikana.lib.model.invite.InviteRole
 import com.cramsan.edifikana.lib.model.notification.NotificationId
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.payment.PaymentRecordId
 import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.edifikana.lib.model.rent.RentConfigId
+import com.cramsan.edifikana.lib.model.task.TaskId
 import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventId
+import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.lib.utils.requireSuccess
 import com.cramsan.edifikana.server.dependencyinjection.DatastoreModule
 import com.cramsan.edifikana.server.dependencyinjection.IntegTestApplicationModule
 import com.cramsan.edifikana.server.service.models.CommonArea
 import com.cramsan.edifikana.server.service.models.Employee
-import com.cramsan.edifikana.server.service.models.Task
 import com.cramsan.edifikana.server.service.models.EventLogEntry
 import com.cramsan.edifikana.server.service.models.Invite
 import com.cramsan.edifikana.server.service.models.Notification
 import com.cramsan.edifikana.server.service.models.Organization
+import com.cramsan.edifikana.server.service.models.PaymentRecord
 import com.cramsan.edifikana.server.service.models.Property
+import com.cramsan.edifikana.server.service.models.RentConfig
+import com.cramsan.edifikana.server.service.models.Task
 import com.cramsan.edifikana.server.service.models.TimeCardEvent
-import com.cramsan.edifikana.lib.model.invite.InviteRole
+import com.cramsan.edifikana.server.service.models.Unit
 import com.cramsan.edifikana.server.service.models.User
 import com.cramsan.framework.test.CoroutineTest
 import com.cramsan.framework.utils.password.generateRandomPassword
@@ -58,6 +64,9 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
     protected val membershipDatastore: SupabaseMembershipDatastore by inject()
     protected val commonAreaDatastore: SupabaseCommonAreaDatastore by inject()
     protected val taskDatastore: SupabaseTaskDatastore by inject()
+    protected val unitDatastore: SupabaseUnitDatastore by inject()
+    protected val paymentRecordDatastore: SupabasePaymentRecordDatastore by inject()
+    protected val rentConfigDatastore: SupabaseRentConfigDatastore by inject()
 
     private val eventLogResources = mutableSetOf<EventLogEntryId>()
     private val commonAreaResources = mutableSetOf<CommonAreaId>()
@@ -70,6 +79,9 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
     private val organizationResources = mutableSetOf<OrganizationId>()
     private val invitationResources = mutableSetOf<InviteId>()
     private val notificationResources = mutableSetOf<NotificationId>()
+    private val unitResources = mutableSetOf<UnitId>()
+    private val paymentRecordResources = mutableSetOf<PaymentRecordId>()
+    private val rentConfigResources = mutableSetOf<RentConfigId>()
 
     @BeforeEach
     fun supabaseSetup() {
@@ -124,6 +136,18 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
         taskResources.add(taskId)
     }
 
+    private fun registerUnitForDeletion(unitId: UnitId) {
+        unitResources.add(unitId)
+    }
+
+    private fun registerPaymentRecordForDeletion(paymentRecordId: PaymentRecordId) {
+        paymentRecordResources.add(paymentRecordId)
+    }
+
+    private fun registerRentConfigForDeletion(rentConfigId: RentConfigId) {
+        rentConfigResources.add(rentConfigId)
+    }
+
     protected fun createTestUser(email: String): UserId {
         val userId = runBlocking {
             userDatastore.createUser(
@@ -151,6 +175,25 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
         }
         registerOrganizationForDeletion(organizationId)
         return organizationId
+    }
+
+    protected fun createTestUnit(
+        propertyId: PropertyId,
+        unitNumber: String,
+    ): UnitId {
+        val unitId = runBlocking {
+            unitDatastore.createUnit(
+                propertyId = propertyId,
+                unitNumber = unitNumber,
+                bedrooms = null,
+                bathrooms = null,
+                sqFt = null,
+                floor = null,
+                notes = null,
+            ).getOrThrow().id
+        }
+        registerUnitForDeletion(unitId)
+        return unitId
     }
 
     protected fun createTestProperty(name: String, userId: UserId, organizationId: OrganizationId): PropertyId {
@@ -245,6 +288,24 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
         }
     }
 
+    fun Result<Unit>.registerUnitForDeletion(): Result<Unit> {
+        return this.onSuccess { unit ->
+            registerUnitForDeletion(unit.id)
+        }
+    }
+
+    fun Result<PaymentRecord>.registerPaymentRecordForDeletion(): Result<PaymentRecord> {
+        return this.onSuccess { record ->
+            registerPaymentRecordForDeletion(record.id)
+        }
+    }
+
+    fun Result<RentConfig>.registerRentConfigForDeletion(): Result<RentConfig> {
+        return this.onSuccess { config ->
+            registerRentConfigForDeletion(config.id)
+        }
+    }
+
     fun registerSupabaseUserForDeletion(userId: String) {
         supabaseUsers.add(userId)
     }
@@ -307,6 +368,17 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
                     results += taskDatastore.deleteTask(it)
                     results += taskDatastore.purgeTask(it)
                 }
+                paymentRecordResources.forEach {
+                    results += paymentRecordDatastore.deletePaymentRecord(it)
+                    results += paymentRecordDatastore.purgePaymentRecord(it)
+                }
+                rentConfigResources.forEach {
+                    results += rentConfigDatastore.purgeRentConfig(it)
+                }
+                unitResources.forEach {
+                    results += unitDatastore.deleteUnit(it)
+                    results += unitDatastore.purgeUnit(it)
+                }
                 propertyResources.forEach {
                     results += propertyDatastore.deleteProperty(it)
                     results += propertyDatastore.purgeProperty(it)
@@ -329,6 +401,9 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
             eventLogResources.clear()
             timeCardResources.clear()
             employeeResources.clear()
+            unitResources.clear()
+            paymentRecordResources.clear()
+            rentConfigResources.clear()
             commonAreaResources.clear()
             taskResources.clear()
             propertyResources.clear()

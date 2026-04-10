@@ -13,7 +13,7 @@ import kotlinx.serialization.Serializable
 @NetworkModel
 @Serializable
 data class UpdatePaymentRecordNetworkRequest(
-    @SerialName("amount_paid") val amountPaid: Long?,
+    @SerialName("amount_paid") val amountPaid: Double?,
     @SerialName("paid_date") val paidDate: LocalDate?,
     val status: PaymentStatus?,
     val notes: String?,

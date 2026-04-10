@@ -11,7 +11,7 @@ import kotlinx.serialization.Serializable
 @NetworkModel
 @Serializable
 data class RentConfigNetworkRequest(
-    @SerialName("monthly_amount") val monthlyAmount: Long,
+    @SerialName("monthly_amount") val monthlyAmount: Double,
     @SerialName("due_day") val dueDay: Int,
     val currency: String,
 ) : RequestBody

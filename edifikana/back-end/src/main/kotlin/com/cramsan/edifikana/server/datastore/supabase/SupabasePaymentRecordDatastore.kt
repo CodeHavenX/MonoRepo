@@ -34,7 +34,7 @@ class SupabasePaymentRecordDatastore(
         unitId: UnitId,
         paymentType: PaymentType,
         periodMonth: LocalDate,
-        amountDue: Long?,
+        amountDue: Double?,
         dueDate: LocalDate?,
         recordedBy: UserId?,
         notes: String?,
@@ -85,7 +85,7 @@ class SupabasePaymentRecordDatastore(
             filter {
                 PaymentRecordEntity::unitId eq unitId.unitId
                 PaymentRecordEntity::deletedAt isExact null
-                periodMonth?.let { like("period_month", "$it%") }
+                periodMonth?.let { PaymentRecordEntity::periodMonth eq LocalDate.parse("$it-01") }
             }
         }.decodeList<PaymentRecordEntity>().map { it.toPaymentRecord() }
     }
@@ -96,7 +96,7 @@ class SupabasePaymentRecordDatastore(
     @OptIn(SupabaseModel::class)
     override suspend fun updatePaymentRecord(
         paymentRecordId: PaymentRecordId,
-        amountPaid: Long?,
+        amountPaid: Double?,
         paidDate: LocalDate?,
         status: PaymentStatus?,
         notes: String?,

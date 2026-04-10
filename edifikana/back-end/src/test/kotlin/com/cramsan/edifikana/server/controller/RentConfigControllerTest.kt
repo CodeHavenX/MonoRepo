@@ -150,7 +150,7 @@ class RentConfigControllerTest : CoroutineTest(), KoinTest {
         coEvery {
             rentConfigService.setRentConfig(
                 unitId = unitId,
-                monthlyAmount = 120000L,
+                monthlyAmount = 120000.0,
                 dueDay = 1,
                 currency = "USD",
                 updatedBy = UserId("user123"),
@@ -205,7 +205,7 @@ class RentConfigControllerTest : CoroutineTest(), KoinTest {
     ) = RentConfig(
         id = id,
         unitId = unitId,
-        monthlyAmount = 120000L,
+        monthlyAmount = 120000.0,
         dueDay = 1,
         currency = "USD",
         updatedAt = Instant.fromEpochMilliseconds(0),

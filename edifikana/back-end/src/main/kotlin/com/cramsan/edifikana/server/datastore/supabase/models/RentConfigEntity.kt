@@ -24,7 +24,7 @@ data class RentConfigEntity(
     @SerialName("unit_id")
     val unitId: UnitId,
     @SerialName("monthly_amount")
-    val monthlyAmount: Long,
+    val monthlyAmount: Double,
     @SerialName("due_day")
     val dueDay: Int,
     val currency: String,
@@ -51,7 +51,7 @@ data class RentConfigEntity(
         @SerialName("unit_id")
         val unitId: UnitId,
         @SerialName("monthly_amount")
-        val monthlyAmount: Long,
+        val monthlyAmount: Double,
         @SerialName("due_day")
         val dueDay: Int,
         val currency: String,

@@ -16,8 +16,7 @@ import kotlin.time.Instant
 data class RentConfig(
     val id: RentConfigId,
     val unitId: UnitId,
-    /** Monthly rent amount in the smallest currency unit (e.g. cents for USD). */
-    val monthlyAmount: Long,
+    val monthlyAmount: Double,
     /** Day of the month (1–28) on which rent is due. */
     val dueDay: Int,
     val currency: String,

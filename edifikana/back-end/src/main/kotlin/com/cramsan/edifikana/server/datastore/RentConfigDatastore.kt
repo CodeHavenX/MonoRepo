@@ -26,7 +26,7 @@ interface RentConfigDatastore {
      */
     suspend fun setRentConfig(
         unitId: UnitId,
-        monthlyAmount: Long,
+        monthlyAmount: Double,
         dueDay: Int,
         currency: String,
         updatedBy: UserId?,

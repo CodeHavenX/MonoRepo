@@ -1,7 +1,7 @@
 {
     "rent_config_id": "rc123",
     "unit_id": "unit123",
-    "monthly_amount": 120000,
+    "monthly_amount": 120000.0,
     "due_day": 1,
     "currency": "USD",
     "updated_at": "1970-01-01T00:00:00Z",

@@ -97,7 +97,7 @@ class RentConfigServiceTest {
         coEvery {
             rentConfigDatastore.setRentConfig(
                 unitId = unitId,
-                monthlyAmount = 120000L,
+                monthlyAmount = 120000.0,
                 dueDay = 1,
                 currency = "USD",
                 updatedBy = updatedBy,
@@ -107,7 +107,7 @@ class RentConfigServiceTest {
         // Act
         val result = rentConfigService.setRentConfig(
             unitId = unitId,
-            monthlyAmount = 120000L,
+            monthlyAmount = 120000.0,
             dueDay = 1,
             currency = "USD",
             updatedBy = updatedBy,
@@ -118,7 +118,7 @@ class RentConfigServiceTest {
         coVerify {
             rentConfigDatastore.setRentConfig(
                 unitId = unitId,
-                monthlyAmount = 120000L,
+                monthlyAmount = 120000.0,
                 dueDay = 1,
                 currency = "USD",
                 updatedBy = updatedBy,
@@ -136,7 +136,7 @@ class RentConfigServiceTest {
     ) = RentConfig(
         id = id,
         unitId = unitId,
-        monthlyAmount = 120000L,
+        monthlyAmount = 120000.0,
         dueDay = 1,
         currency = "USD",
         updatedAt = Instant.fromEpochMilliseconds(0),

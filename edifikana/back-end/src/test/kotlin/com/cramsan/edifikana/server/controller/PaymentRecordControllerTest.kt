@@ -85,7 +85,7 @@ class PaymentRecordControllerTest : CoroutineTest(), KoinTest {
                 unitId = unitId,
                 paymentType = PaymentType.RENT,
                 periodMonth = LocalDate(2026, 3, 1),
-                amountDue = 120000L,
+                amountDue = 120000.0,
                 dueDate = null,
                 recordedBy = UserId("user123"),
                 notes = null,
@@ -274,13 +274,13 @@ class PaymentRecordControllerTest : CoroutineTest(), KoinTest {
         coEvery {
             paymentRecordService.updatePaymentRecord(
                 paymentRecordId = id,
-                amountPaid = 120000L,
+                amountPaid = 120000.0,
                 paidDate = LocalDate(2026, 3, 15),
                 status = PaymentStatus.PAID,
                 notes = null,
             )
         }.answers {
-            paymentRecord(id, UnitId("unit123"), status = PaymentStatus.PAID, amountPaid = 120000L, paidDate = LocalDate(2026, 3, 15))
+            paymentRecord(id, UnitId("unit123"), status = PaymentStatus.PAID, amountPaid = 120000.0, paidDate = LocalDate(2026, 3, 15))
         }
 
         // Act
@@ -329,14 +329,14 @@ class PaymentRecordControllerTest : CoroutineTest(), KoinTest {
         id: PaymentRecordId,
         unitId: UnitId,
         status: PaymentStatus = PaymentStatus.PENDING,
-        amountPaid: Long? = null,
+        amountPaid: Double? = null,
         paidDate: LocalDate? = null,
     ) = PaymentRecord(
         id = id,
         unitId = unitId,
         paymentType = PaymentType.RENT,
         periodMonth = LocalDate(2026, 3, 1),
-        amountDue = 120000L,
+        amountDue = 120000.0,
         amountPaid = amountPaid,
         status = status,
         dueDate = null,

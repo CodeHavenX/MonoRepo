@@ -65,7 +65,7 @@ class PaymentRecordServiceTest {
                 unitId = unitId,
                 paymentType = PaymentType.RENT,
                 periodMonth = periodMonth,
-                amountDue = 120000L,
+                amountDue = 120000.0,
                 dueDate = null,
                 recordedBy = null,
                 notes = null,
@@ -77,7 +77,7 @@ class PaymentRecordServiceTest {
             unitId = unitId,
             paymentType = PaymentType.RENT,
             periodMonth = periodMonth,
-            amountDue = 120000L,
+            amountDue = 120000.0,
             dueDate = null,
             recordedBy = null,
             notes = null,
@@ -90,7 +90,7 @@ class PaymentRecordServiceTest {
                 unitId = unitId,
                 paymentType = PaymentType.RENT,
                 periodMonth = periodMonth,
-                amountDue = 120000L,
+                amountDue = 120000.0,
                 dueDate = null,
                 recordedBy = null,
                 notes = null,
@@ -193,7 +193,7 @@ class PaymentRecordServiceTest {
     fun `updatePaymentRecord should delegate to datastore and return updated record`() = runTest {
         // Arrange
         val id = PaymentRecordId("pr123")
-        val amountPaid = 120000L
+        val amountPaid = 120000.0
         val paidDate = LocalDate(2026, 3, 15)
         val status = PaymentStatus.PAID
         val updatedRecord = paymentRecord(id, UnitId("unit123"), status = PaymentStatus.PAID, amountPaid = amountPaid)
@@ -217,13 +217,13 @@ class PaymentRecordServiceTest {
         id: PaymentRecordId,
         unitId: UnitId,
         status: PaymentStatus = PaymentStatus.PENDING,
-        amountPaid: Long? = null,
+        amountPaid: Double? = null,
     ) = PaymentRecord(
         id = id,
         unitId = unitId,
         paymentType = PaymentType.RENT,
         periodMonth = LocalDate(2026, 3, 1),
-        amountDue = 120000L,
+        amountDue = 120000.0,
         amountPaid = amountPaid,
         status = status,
         dueDate = null,

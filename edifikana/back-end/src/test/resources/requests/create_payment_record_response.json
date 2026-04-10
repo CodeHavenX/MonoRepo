@@ -3,7 +3,7 @@
     "unit_id": "unit123",
     "payment_type": "RENT",
     "period_month": "2026-03-01",
-    "amount_due": 120000,
+    "amount_due": 120000.0,
     "amount_paid": null,
     "status": "PENDING",
     "due_date": null,

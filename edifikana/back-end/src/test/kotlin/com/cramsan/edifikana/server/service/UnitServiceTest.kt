@@ -146,24 +146,6 @@ class UnitServiceTest {
     }
 
     /**
-     * Tests that getUnits returns all org units when propertyId is null.
-     */
-    @Test
-    fun `getUnits should call unitDatastore without property filter when null`() = runTest {
-        // Arrange
-        val orgId = OrganizationId("org1")
-        val units = listOf(mockk<Unit>())
-        coEvery { unitDatastore.getUnits(orgId) } returns Result.success(units)
-
-        // Act
-        val result = unitService.getUnits(orgId)
-
-        // Assert
-        assertEquals(units, result)
-        coVerify { unitDatastore.getUnits(orgId) }
-    }
-
-    /**
      * Tests that updateUnit calls the datastore with all provided parameters and returns the result.
      */
     @Test

@@ -290,11 +290,11 @@ class UnitControllerTest : CoroutineTest(), KoinTest {
         )
         coEvery { contextRetriever.getContext(any()) }.answers { context }
         coEvery {
-            rbacService.hasRoleOrHigher(context, OrganizationId("org123"), UserRole.EMPLOYEE)
+            rbacService.hasRoleOrHigher(context, PropertyId("property123"), UserRole.EMPLOYEE)
         }.answers { false }
 
         // Act
-        val response = client.get("unit?org_id=org123")
+        val response = client.get("unit?property_id=property123")
 
         // Assert
         coVerify { unitService wasNot Called }

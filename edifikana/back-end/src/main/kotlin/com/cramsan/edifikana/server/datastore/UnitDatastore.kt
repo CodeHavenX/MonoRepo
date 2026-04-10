@@ -29,13 +29,6 @@ interface UnitDatastore {
     suspend fun getUnit(unitId: UnitId): Result<Unit?>
 
     /**
-     * Retrieves all non-deleted units for [orgId].
-     */
-    suspend fun getUnits(
-        orgId: OrganizationId,
-    ): Result<List<Unit>>
-
-    /**
      * Retrieves all non-deleted units for [propertyId].
      */
     suspend fun getUnits(

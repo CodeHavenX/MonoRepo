@@ -11,7 +11,9 @@ import com.cramsan.edifikana.lib.model.invite.InviteId
 import com.cramsan.edifikana.lib.model.invite.InviteRole
 import com.cramsan.edifikana.lib.model.notification.NotificationId
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.payment.PaymentRecordId
 import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.edifikana.lib.model.rent.RentConfigId
 import com.cramsan.edifikana.lib.model.task.TaskId
 import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventId
 import com.cramsan.edifikana.lib.model.unit.UnitId
@@ -25,7 +27,9 @@ import com.cramsan.edifikana.server.service.models.EventLogEntry
 import com.cramsan.edifikana.server.service.models.Invite
 import com.cramsan.edifikana.server.service.models.Notification
 import com.cramsan.edifikana.server.service.models.Organization
+import com.cramsan.edifikana.server.service.models.PaymentRecord
 import com.cramsan.edifikana.server.service.models.Property
+import com.cramsan.edifikana.server.service.models.RentConfig
 import com.cramsan.edifikana.server.service.models.Task
 import com.cramsan.edifikana.server.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.service.models.Unit
@@ -61,6 +65,8 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
     protected val commonAreaDatastore: SupabaseCommonAreaDatastore by inject()
     protected val taskDatastore: SupabaseTaskDatastore by inject()
     protected val unitDatastore: SupabaseUnitDatastore by inject()
+    protected val paymentRecordDatastore: SupabasePaymentRecordDatastore by inject()
+    protected val rentConfigDatastore: SupabaseRentConfigDatastore by inject()
 
     private val eventLogResources = mutableSetOf<EventLogEntryId>()
     private val commonAreaResources = mutableSetOf<CommonAreaId>()
@@ -74,6 +80,8 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
     private val invitationResources = mutableSetOf<InviteId>()
     private val notificationResources = mutableSetOf<NotificationId>()
     private val unitResources = mutableSetOf<UnitId>()
+    private val paymentRecordResources = mutableSetOf<PaymentRecordId>()
+    private val rentConfigResources = mutableSetOf<RentConfigId>()
 
     @BeforeEach
     fun supabaseSetup() {
@@ -130,6 +138,14 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
 
     private fun registerUnitForDeletion(unitId: UnitId) {
         unitResources.add(unitId)
+    }
+
+    private fun registerPaymentRecordForDeletion(paymentRecordId: PaymentRecordId) {
+        paymentRecordResources.add(paymentRecordId)
+    }
+
+    private fun registerRentConfigForDeletion(rentConfigId: RentConfigId) {
+        rentConfigResources.add(rentConfigId)
     }
 
     protected fun createTestUser(email: String): UserId {
@@ -279,6 +295,18 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
         }
     }
 
+    fun Result<PaymentRecord>.registerPaymentRecordForDeletion(): Result<PaymentRecord> {
+        return this.onSuccess { record ->
+            registerPaymentRecordForDeletion(record.id)
+        }
+    }
+
+    fun Result<RentConfig>.registerRentConfigForDeletion(): Result<RentConfig> {
+        return this.onSuccess { config ->
+            registerRentConfigForDeletion(config.id)
+        }
+    }
+
     fun registerSupabaseUserForDeletion(userId: String) {
         supabaseUsers.add(userId)
     }
@@ -341,6 +369,13 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
                     results += taskDatastore.deleteTask(it)
                     results += taskDatastore.purgeTask(it)
                 }
+                paymentRecordResources.forEach {
+                    results += paymentRecordDatastore.deletePaymentRecord(it)
+                    results += paymentRecordDatastore.purgePaymentRecord(it)
+                }
+                rentConfigResources.forEach {
+                    results += rentConfigDatastore.purgeRentConfig(it)
+                }
                 unitResources.forEach {
                     results += unitDatastore.deleteUnit(it)
                     results += unitDatastore.purgeUnit(it)
@@ -368,6 +403,8 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
             timeCardResources.clear()
             employeeResources.clear()
             unitResources.clear()
+            paymentRecordResources.clear()
+            rentConfigResources.clear()
             commonAreaResources.clear()
             taskResources.clear()
             propertyResources.clear()

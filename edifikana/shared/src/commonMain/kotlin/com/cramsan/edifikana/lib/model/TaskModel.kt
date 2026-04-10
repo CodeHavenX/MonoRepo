@@ -1,5 +1,12 @@
 package com.cramsan.edifikana.lib.model
 
+import com.cramsan.edifikana.lib.model.commonArea.CommonAreaId
+import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.edifikana.lib.model.task.TaskId
+import com.cramsan.edifikana.lib.model.task.TaskPriority
+import com.cramsan.edifikana.lib.model.task.TaskStatus
+import com.cramsan.edifikana.lib.model.unit.UnitId
+import com.cramsan.edifikana.lib.model.user.UserId
 import kotlinx.datetime.LocalDate
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant

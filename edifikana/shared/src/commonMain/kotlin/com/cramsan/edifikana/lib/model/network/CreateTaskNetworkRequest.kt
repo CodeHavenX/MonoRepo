@@ -1,10 +1,11 @@
 package com.cramsan.edifikana.lib.model.network
 
-import com.cramsan.edifikana.lib.model.CommonAreaId
-import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.TaskPriority
-import com.cramsan.edifikana.lib.model.UnitId
-import com.cramsan.edifikana.lib.model.UserId
+
+import com.cramsan.edifikana.lib.model.commonArea.CommonAreaId
+import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.edifikana.lib.model.task.TaskPriority
+import com.cramsan.edifikana.lib.model.unit.UnitId
+import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.RequestBody
 import kotlinx.datetime.LocalDate

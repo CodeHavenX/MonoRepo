@@ -1,12 +1,12 @@
 package com.cramsan.edifikana.lib.model.network
 
-import com.cramsan.edifikana.lib.model.CommonAreaId
-import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.TaskId
-import com.cramsan.edifikana.lib.model.TaskPriority
-import com.cramsan.edifikana.lib.model.TaskStatus
-import com.cramsan.edifikana.lib.model.UnitId
-import com.cramsan.edifikana.lib.model.UserId
+import com.cramsan.edifikana.lib.model.commonArea.CommonAreaId
+import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.edifikana.lib.model.task.TaskId
+import com.cramsan.edifikana.lib.model.task.TaskPriority
+import com.cramsan.edifikana.lib.model.task.TaskStatus
+import com.cramsan.edifikana.lib.model.unit.UnitId
+import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.ResponseBody
 import kotlinx.datetime.LocalDate
@@ -28,7 +28,7 @@ data class TaskNetworkResponse(
     val id: TaskId,
     @SerialName("property_id") val propertyId: PropertyId,
     @SerialName("unit_id") val unitId: UnitId?,
-    @SerialName("common_area_id") val commonAreaId: CommonAreaId?,
+    @SerialName("common_area_id") val cmmonAreaId: CommonAreaId?,
     @SerialName("assignee_id") val assigneeId: UserId?,
     @SerialName("created_by") val createdBy: UserId,
     @SerialName("status_changed_by") val statusChangedBy: UserId?,

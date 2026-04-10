@@ -39,17 +39,17 @@ ALTER TABLE payment_records ADD CONSTRAINT payment_records_unit_id_fkey
     FOREIGN KEY (unit_id) REFERENCES units(unit_id) ON DELETE CASCADE;
 
 -- ============================================================================
--- STEP 3: Recreate the active-occupancy uniqueness index without org_id
--- The old index (unit_id, org_id) is replaced by (user_id) alone:
--- one ACTIVE occupancy per user across all orgs is sufficient since we
--- now resolve org context through property_id.
+-- STEP 3: Drop the active-occupancy-per-user uniqueness index
+-- The old index constrained one ACTIVE occupancy per (user_id, org_id).
+-- Without org_id, a global (user_id) constraint would incorrectly block a
+-- user from having active occupancies in multiple units across different
+-- properties or orgs. There is no meaningful uniqueness to enforce here:
+-- a user may legitimately occupy units in multiple properties and orgs.
+-- The per-(unit_id, user_id) index (idx_unit_occupants_active_unit_user)
+-- already prevents duplicate active records for the same unit+user pair.
 -- ============================================================================
 
 DROP INDEX IF EXISTS idx_unit_occupants_one_active_per_user;
-
-CREATE UNIQUE INDEX IF NOT EXISTS idx_unit_occupants_one_active_per_user
-    ON unit_occupants(user_id)
-    WHERE status = 'ACTIVE' AND user_id IS NOT NULL AND deleted_at IS NULL;
 
 -- ============================================================================
 -- STEP 4: Drop the composite unique constraint on units

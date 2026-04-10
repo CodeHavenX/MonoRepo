@@ -16,6 +16,11 @@ interface RentConfigDatastore {
     suspend fun getRentConfig(unitId: UnitId): Result<RentConfig?>
 
     /**
+     * Retrieves the active rent configuration by [rentConfigId]. Returns null if not found or soft-deleted.
+     */
+    suspend fun getRentConfigById(rentConfigId: RentConfigId): Result<RentConfig?>
+
+    /**
      * Creates or updates the rent configuration for [unitId] (upsert semantics).
      * Returns the [Result] with the created or updated [RentConfig].
      */

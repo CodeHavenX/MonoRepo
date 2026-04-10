@@ -22,10 +22,8 @@ data class PaymentRecord(
     val unitId: UnitId,
     val paymentType: PaymentType,
     val periodMonth: LocalDate,
-    /** Amount due in the smallest currency unit (e.g. cents for USD). */
-    val amountDue: Long?,
-    /** Amount paid in the smallest currency unit (e.g. cents for USD). */
-    val amountPaid: Long?,
+    val amountDue: Double?,
+    val amountPaid: Double?,
     val status: PaymentStatus,
     val dueDate: LocalDate?,
     val paidDate: LocalDate?,

@@ -1,5 +1,5 @@
 {
-  "monthly_amount": 120000,
+  "monthly_amount": 120000.0,
   "due_day": 1,
   "currency": "USD"
 }

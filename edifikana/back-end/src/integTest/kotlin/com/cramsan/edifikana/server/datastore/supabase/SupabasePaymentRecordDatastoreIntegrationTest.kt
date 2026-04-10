@@ -33,7 +33,7 @@ class SupabasePaymentRecordDatastoreIntegrationTest : SupabaseIntegrationTest() 
             testUserId = createTestUser("user-${testPrefix}@test.com")
             orgId = createTestOrganization("org_$testPrefix", "")
             propertyId = createTestProperty("${testPrefix}_Property", testUserId!!, orgId!!)
-            unitId = createTestUnit(propertyId!!, orgId!!, "${testPrefix}_101")
+            unitId = createTestUnit(propertyId!!, "${testPrefix}_101")
         }
     }
 
@@ -47,7 +47,7 @@ class SupabasePaymentRecordDatastoreIntegrationTest : SupabaseIntegrationTest() 
             unitId = unitId!!,
             paymentType = PaymentType.RENT,
             periodMonth = periodMonth,
-            amountDue = 120000L,
+            amountDue = 120000.0,
             dueDate = null,
             recordedBy = testUserId,
             notes = null,
@@ -60,7 +60,7 @@ class SupabasePaymentRecordDatastoreIntegrationTest : SupabaseIntegrationTest() 
         assertEquals(unitId, record.unitId)
         assertEquals(PaymentType.RENT, record.paymentType)
         assertEquals(periodMonth, record.periodMonth)
-        assertEquals(120000L, record.amountDue)
+        assertEquals(120000.0, record.amountDue)
         assertEquals(PaymentStatus.PENDING, record.status)
     }
 
@@ -71,7 +71,7 @@ class SupabasePaymentRecordDatastoreIntegrationTest : SupabaseIntegrationTest() 
             unitId = unitId!!,
             paymentType = PaymentType.RENT,
             periodMonth = LocalDate(2026, 3, 1),
-            amountDue = 120000L,
+            amountDue = 120000.0,
             dueDate = null,
             recordedBy = testUserId,
             notes = null,
@@ -112,7 +112,7 @@ class SupabasePaymentRecordDatastoreIntegrationTest : SupabaseIntegrationTest() 
             unitId = unitId!!,
             paymentType = PaymentType.RENT,
             periodMonth = LocalDate(2026, 3, 1),
-            amountDue = 120000L,
+            amountDue = 120000.0,
             dueDate = null,
             recordedBy = testUserId,
             notes = null,
@@ -121,7 +121,7 @@ class SupabasePaymentRecordDatastoreIntegrationTest : SupabaseIntegrationTest() 
             unitId = unitId!!,
             paymentType = PaymentType.RENT,
             periodMonth = LocalDate(2026, 4, 1),
-            amountDue = 120000L,
+            amountDue = 120000.0,
             dueDate = null,
             recordedBy = testUserId,
             notes = null,
@@ -146,7 +146,7 @@ class SupabasePaymentRecordDatastoreIntegrationTest : SupabaseIntegrationTest() 
             unitId = unitId!!,
             paymentType = PaymentType.RENT,
             periodMonth = LocalDate(2026, 3, 1),
-            amountDue = 120000L,
+            amountDue = 120000.0,
             dueDate = null,
             recordedBy = testUserId,
             notes = "${testPrefix}_march",
@@ -155,7 +155,7 @@ class SupabasePaymentRecordDatastoreIntegrationTest : SupabaseIntegrationTest() 
             unitId = unitId!!,
             paymentType = PaymentType.RENT,
             periodMonth = LocalDate(2026, 4, 1),
-            amountDue = 120000L,
+            amountDue = 120000.0,
             dueDate = null,
             recordedBy = testUserId,
             notes = "${testPrefix}_april",
@@ -180,7 +180,7 @@ class SupabasePaymentRecordDatastoreIntegrationTest : SupabaseIntegrationTest() 
             unitId = unitId!!,
             paymentType = PaymentType.RENT,
             periodMonth = LocalDate(2026, 3, 1),
-            amountDue = 120000L,
+            amountDue = 120000.0,
             dueDate = null,
             recordedBy = testUserId,
             notes = null,
@@ -191,7 +191,7 @@ class SupabasePaymentRecordDatastoreIntegrationTest : SupabaseIntegrationTest() 
         // Act
         val updateResult = paymentRecordDatastore.updatePaymentRecord(
             paymentRecordId = record.id,
-            amountPaid = 120000L,
+            amountPaid = 120000.0,
             paidDate = LocalDate(2026, 3, 15),
             status = PaymentStatus.PAID,
             notes = null,
@@ -201,7 +201,7 @@ class SupabasePaymentRecordDatastoreIntegrationTest : SupabaseIntegrationTest() 
         assertTrue(updateResult.isSuccess)
         val updated = updateResult.getOrNull()
         assertNotNull(updated)
-        assertEquals(120000L, updated.amountPaid)
+        assertEquals(120000.0, updated.amountPaid)
         assertEquals(PaymentStatus.PAID, updated.status)
         assertEquals(LocalDate(2026, 3, 15), updated.paidDate)
     }
@@ -213,7 +213,7 @@ class SupabasePaymentRecordDatastoreIntegrationTest : SupabaseIntegrationTest() 
             unitId = unitId!!,
             paymentType = PaymentType.RENT,
             periodMonth = LocalDate(2026, 5, 1),
-            amountDue = 120000L,
+            amountDue = 120000.0,
             dueDate = null,
             recordedBy = testUserId,
             notes = null,
@@ -239,7 +239,7 @@ class SupabasePaymentRecordDatastoreIntegrationTest : SupabaseIntegrationTest() 
             unitId = unitId!!,
             paymentType = PaymentType.RENT,
             periodMonth = LocalDate(2026, 6, 1),
-            amountDue = 120000L,
+            amountDue = 120000.0,
             dueDate = null,
             recordedBy = testUserId,
             notes = null,

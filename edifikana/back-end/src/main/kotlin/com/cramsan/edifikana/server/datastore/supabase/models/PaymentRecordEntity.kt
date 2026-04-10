@@ -29,9 +29,9 @@ data class PaymentRecordEntity(
     @SerialName("period_month")
     val periodMonth: LocalDate,
     @SerialName("amount_due")
-    val amountDue: Long?,
+    val amountDue: Double?,
     @SerialName("amount_paid")
-    val amountPaid: Long?,
+    val amountPaid: Double?,
     val status: String,
     @SerialName("due_date")
     val dueDate: LocalDate?,
@@ -63,7 +63,7 @@ data class PaymentRecordEntity(
         @SerialName("period_month")
         val periodMonth: LocalDate,
         @SerialName("amount_due")
-        val amountDue: Long?,
+        val amountDue: Double?,
         @SerialName("due_date")
         val dueDate: LocalDate?,
         @SerialName("recorded_by")

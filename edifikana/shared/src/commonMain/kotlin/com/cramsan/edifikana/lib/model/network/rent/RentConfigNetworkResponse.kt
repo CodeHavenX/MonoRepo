@@ -20,7 +20,7 @@ import kotlin.time.Instant
 data class RentConfigNetworkResponse(
     @SerialName("rent_config_id") val rentConfigId: RentConfigId,
     @SerialName("unit_id") val unitId: UnitId,
-    @SerialName("monthly_amount") val monthlyAmount: Long,
+    @SerialName("monthly_amount") val monthlyAmount: Double,
     @SerialName("due_day") val dueDay: Int,
     val currency: String,
     @SerialName("updated_at") val updatedAt: Instant,

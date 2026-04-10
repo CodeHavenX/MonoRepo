@@ -17,7 +17,7 @@ data class CreatePaymentRecordNetworkRequest(
     @SerialName("unit_id") val unitId: UnitId,
     @SerialName("payment_type") val paymentType: PaymentType,
     @SerialName("period_month") val periodMonth: LocalDate,
-    @SerialName("amount_due") val amountDue: Long?,
+    @SerialName("amount_due") val amountDue: Double?,
     @SerialName("due_date") val dueDate: LocalDate?,
     val notes: String?,
 ) : RequestBody

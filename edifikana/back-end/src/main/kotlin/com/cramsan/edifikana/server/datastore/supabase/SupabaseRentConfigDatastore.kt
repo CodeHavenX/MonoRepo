@@ -56,28 +56,46 @@ class SupabaseRentConfigDatastore(
         }
 
     /**
-     * Creates or updates the rent configuration for [unitId] (upsert on unit_id).
+     * Creates or updates the rent configuration for [unitId].
+     * Updates the existing active config if one exists; otherwise inserts a new one.
+     * This avoids relying on ON CONFLICT since the unique index on unit_id is partial
+     * (WHERE deleted_at IS NULL) and PostgREST cannot match partial indexes for upsert.
      * Returns the created or updated [RentConfig].
      */
     @OptIn(SupabaseModel::class)
     override suspend fun setRentConfig(
         unitId: UnitId,
-        monthlyAmount: Long,
+        monthlyAmount: Double,
         dueDay: Int,
         currency: String,
         updatedBy: UserId?,
     ): Result<RentConfig> = runSuspendCatching(TAG) {
         logD(TAG, "Setting rent config for unit: %s", unitId)
-        val entity = UpsertRentConfigEntity(
-            unitId = unitId,
-            monthlyAmount = monthlyAmount,
-            dueDay = dueDay,
-            currency = currency,
-            updatedAt = clock.now(),
-            updatedBy = updatedBy,
-        )
-        postgrest.from(RentConfigEntity.COLLECTION).upsert(entity) {
-            onConflict = "unit_id"
+        val now = clock.now()
+        val updated = postgrest.from(RentConfigEntity.COLLECTION).update({
+            RentConfigEntity::monthlyAmount setTo monthlyAmount
+            RentConfigEntity::dueDay setTo dueDay
+            RentConfigEntity::currency setTo currency
+            RentConfigEntity::updatedAt setTo now
+            RentConfigEntity::updatedBy setTo updatedBy
+        }) {
+            select()
+            filter {
+                RentConfigEntity::unitId eq unitId.unitId
+                RentConfigEntity::deletedAt isExact null
+            }
+        }.decodeSingleOrNull<RentConfigEntity>()
+
+        updated?.toRentConfig() ?: postgrest.from(RentConfigEntity.COLLECTION).insert(
+            UpsertRentConfigEntity(
+                unitId = unitId,
+                monthlyAmount = monthlyAmount,
+                dueDay = dueDay,
+                currency = currency,
+                updatedAt = now,
+                updatedBy = updatedBy,
+            )
+        ) {
             select()
         }.decodeSingle<RentConfigEntity>().toRentConfig()
     }

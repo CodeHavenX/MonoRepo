@@ -24,7 +24,7 @@ class PaymentRecordService(
         unitId: UnitId,
         paymentType: PaymentType,
         periodMonth: LocalDate,
-        amountDue: Long?,
+        amountDue: Double?,
         dueDate: LocalDate?,
         recordedBy: UserId?,
         notes: String?,
@@ -70,7 +70,7 @@ class PaymentRecordService(
      */
     suspend fun updatePaymentRecord(
         paymentRecordId: PaymentRecordId,
-        amountPaid: Long?,
+        amountPaid: Double?,
         paidDate: LocalDate?,
         status: PaymentStatus?,
         notes: String?,

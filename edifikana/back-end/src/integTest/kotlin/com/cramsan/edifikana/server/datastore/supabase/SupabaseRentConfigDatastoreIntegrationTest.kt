@@ -28,7 +28,7 @@ class SupabaseRentConfigDatastoreIntegrationTest : SupabaseIntegrationTest() {
             testUserId = createTestUser("user-${testPrefix}@test.com")
             orgId = createTestOrganization("org_$testPrefix", "")
             propertyId = createTestProperty("${testPrefix}_Property", testUserId!!, orgId!!)
-            unitId = createTestUnit(propertyId!!, orgId!!, "${testPrefix}_101")
+            unitId = createTestUnit(propertyId!!, "${testPrefix}_101")
         }
     }
 
@@ -47,7 +47,7 @@ class SupabaseRentConfigDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `setRentConfig should insert a new config when none exists`() = runCoroutineTest {
         // Arrange
-        val monthlyAmount = 150000L
+        val monthlyAmount = 1500.00
         val dueDay = 5
         val currency = "USD"
 
@@ -75,7 +75,7 @@ class SupabaseRentConfigDatastoreIntegrationTest : SupabaseIntegrationTest() {
         // Arrange
         val initial = rentConfigDatastore.setRentConfig(
             unitId = unitId!!,
-            monthlyAmount = 100000L,
+            monthlyAmount = 1000.00,
             dueDay = 1,
             currency = "USD",
             updatedBy = testUserId,
@@ -86,7 +86,7 @@ class SupabaseRentConfigDatastoreIntegrationTest : SupabaseIntegrationTest() {
         // Act
         val updated = rentConfigDatastore.setRentConfig(
             unitId = unitId!!,
-            monthlyAmount = 120000L,
+            monthlyAmount = 120000.0,
             dueDay = 10,
             currency = "USD",
             updatedBy = testUserId,
@@ -97,7 +97,7 @@ class SupabaseRentConfigDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val config = updated.getOrNull()
         assertNotNull(config)
         assertEquals(originalId, config.id)
-        assertEquals(120000L, config.monthlyAmount)
+        assertEquals(120000.0, config.monthlyAmount)
         assertEquals(10, config.dueDay)
     }
 
@@ -106,7 +106,7 @@ class SupabaseRentConfigDatastoreIntegrationTest : SupabaseIntegrationTest() {
         // Arrange
         val setResult = rentConfigDatastore.setRentConfig(
             unitId = unitId!!,
-            monthlyAmount = 200000L,
+            monthlyAmount = 2000.00,
             dueDay = 15,
             currency = "PEN",
             updatedBy = testUserId,
@@ -121,7 +121,7 @@ class SupabaseRentConfigDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val config = getResult.getOrNull()
         assertNotNull(config)
         assertEquals(unitId, config.unitId)
-        assertEquals(200000L, config.monthlyAmount)
+        assertEquals(2000.00, config.monthlyAmount)
         assertEquals("PEN", config.currency)
     }
 
@@ -130,7 +130,7 @@ class SupabaseRentConfigDatastoreIntegrationTest : SupabaseIntegrationTest() {
         // Arrange
         val setResult = rentConfigDatastore.setRentConfig(
             unitId = unitId!!,
-            monthlyAmount = 100000L,
+            monthlyAmount = 1000.00,
             dueDay = 1,
             currency = "USD",
             updatedBy = testUserId,
@@ -153,7 +153,7 @@ class SupabaseRentConfigDatastoreIntegrationTest : SupabaseIntegrationTest() {
         // Arrange
         val setResult = rentConfigDatastore.setRentConfig(
             unitId = unitId!!,
-            monthlyAmount = 100000L,
+            monthlyAmount = 1000.00,
             dueDay = 1,
             currency = "USD",
             updatedBy = testUserId,

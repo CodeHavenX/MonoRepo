@@ -1,5 +1,9 @@
 package com.cramsan.edifikana.lib.model
 
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.edifikana.lib.model.unit.UnitId
+
 /**
  * Domain model representing a property unit.
  */

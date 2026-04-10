@@ -10,14 +10,6 @@ import com.cramsan.edifikana.lib.model.task.TaskId
 import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventId
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
-import com.cramsan.edifikana.lib.model.DocumentId
-import com.cramsan.edifikana.lib.model.EmployeeId
-import com.cramsan.edifikana.lib.model.EventLogEntryId
-import com.cramsan.edifikana.lib.model.OrganizationId
-import com.cramsan.edifikana.lib.model.PropertyId
-import com.cramsan.edifikana.lib.model.TimeCardEventId
-import com.cramsan.edifikana.lib.model.UnitId
-import com.cramsan.edifikana.lib.model.UserId
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.datastore.CommonAreaDatastore
 import com.cramsan.edifikana.server.datastore.DocumentDatastore

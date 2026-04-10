@@ -13,6 +13,5 @@ import kotlinx.serialization.Serializable
 @NetworkModel
 @Serializable
 data class GetUnitsQueryParams(
-    @SerialName("org_id") val orgId: OrganizationId? = null,
-    @SerialName("property_id") val propertyId: PropertyId? = null,
+    @SerialName("property_id") val propertyId: PropertyId,
 ) : QueryParam

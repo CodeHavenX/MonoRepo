@@ -88,7 +88,7 @@ internal fun ScreenSelectorContent(
                     onSelection = {
                         onScreenSelected(
                             AuthDestination.ValidationDestination(
-                                "test@test.com",
+                                "test@gmail.com",
                                 accountCreationFlow = true,
                             )
                         )

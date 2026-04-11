@@ -71,14 +71,14 @@ class SignUpViewModelTest : CoroutineTest() {
     fun `test initializePage has expected UI state`() = runCoroutineTest {
         // Arrange
         val destination = AuthDestination.SignUpDestination(
-            userEmail = "user@test.com"
+            userEmail = "user@gmail.com"
         )
 
         // Act
         viewModel.initializePage(destination)
 
         // Assert
-        assertEquals("user@test.com", viewModel.uiState.value.email)
+        assertEquals("user@gmail.com", viewModel.uiState.value.email)
         assertEquals("", viewModel.uiState.value.firstName)
         assertEquals("", viewModel.uiState.value.lastName)
         assertEquals("", viewModel.uiState.value.phoneNumber)

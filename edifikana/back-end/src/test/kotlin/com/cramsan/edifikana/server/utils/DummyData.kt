@@ -27,7 +27,7 @@ import kotlin.time.Instant
 
 val USER_1 = User(
     id = UserId("user_id_1"),
-    email = "user1@test.com",
+    email = "user1@gmail.com",
     phoneNumber = "1234567890",
     firstName = "John",
     lastName = "Doe",
@@ -37,7 +37,7 @@ val USER_1 = User(
 
 val USER_2 = User(
     id = UserId("user_id_2"),
-    email = "user2@test.com",
+    email = "user2@gmail.com",
     phoneNumber = "0987654321",
     firstName = "Jane",
     lastName = "Smith",
@@ -48,7 +48,7 @@ val USER_2 = User(
 
 val USER_3 = User(
     id = UserId("user_id_3"),
-    email = "user3@test.com",
+    email = "user3@gmail.com",
     phoneNumber = "1122334455",
     firstName = "Alice",
     lastName = "Johnson",
@@ -59,7 +59,7 @@ val USER_3 = User(
 
 val USER_4 = User(
     id = UserId("user_id_4"),
-    email = "user4@test.com",
+    email = "user4@gmail.com",
     phoneNumber = "5566778899",
     firstName = "Bob",
     lastName = "Brown",

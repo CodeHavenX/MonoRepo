@@ -18,7 +18,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @BeforeTest
     fun setUp() {
         test_prefix = UUID.random()
-        testUserId = createTestUser("user-${test_prefix}@test.com")
+        testUserId = createTestUser("user-${test_prefix}@gmail.com")
     }
 
     @Test
@@ -130,7 +130,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `getOrganizationsForUser should return empty list for user with no organizations`() = runCoroutineTest {
         // Arrange
-        val newUser = createTestUser("nouser-${test_prefix}@test.com")
+        val newUser = createTestUser("nouser-${test_prefix}@gmail.com")
 
         // Act
         val result = organizationDatastore.getOrganizationsForUser(newUser)
@@ -146,7 +146,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `addUserToOrganization should add user to organization and getOrganizationsForUser should reflect this`() = runCoroutineTest {
         // Arrange
         val orgId = createTestOrganization("test_org_$test_prefix", "")
-        val newUser = createTestUser("adduser-${test_prefix}@test.com")
+        val newUser = createTestUser("adduser-${test_prefix}@gmail.com")
 
         // Act
         val addResult = organizationDatastore.addUserToOrganization(newUser, orgId, OrgRole.MANAGER)
@@ -164,7 +164,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `addUserToOrganization should handle adding same user twice gracefully`() = runCoroutineTest {
         // Arrange
         val orgId = createTestOrganization("test_org_$test_prefix", "")
-        val newUser = createTestUser("dupeuser-${test_prefix}@test.com")
+        val newUser = createTestUser("dupeuser-${test_prefix}@gmail.com")
 
         // Act
         val firstAdd = organizationDatastore.addUserToOrganization(newUser, orgId, OrgRole.EMPLOYEE)
@@ -185,7 +185,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `addUserToOrganization with OWNER role should succeed`() = runCoroutineTest {
         // Arrange
         val orgId = createTestOrganization("test_org_$test_prefix", "")
-        val newUser = createTestUser("owner-${test_prefix}@test.com")
+        val newUser = createTestUser("owner-${test_prefix}@gmail.com")
 
         // Act
         val result = organizationDatastore.addUserToOrganization(newUser, orgId, OrgRole.OWNER)
@@ -198,7 +198,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `addUserToOrganization with ADMIN role should succeed`() = runCoroutineTest {
         // Arrange
         val orgId = createTestOrganization("test_org_$test_prefix", "")
-        val newUser = createTestUser("admin-${test_prefix}@test.com")
+        val newUser = createTestUser("admin-${test_prefix}@gmail.com")
 
         // Act
         val result = organizationDatastore.addUserToOrganization(newUser, orgId, OrgRole.ADMIN)
@@ -211,7 +211,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `addUserToOrganization with MANAGER role should succeed`() = runCoroutineTest {
         // Arrange
         val orgId = createTestOrganization("test_org_$test_prefix", "")
-        val newUser = createTestUser("manager-${test_prefix}@test.com")
+        val newUser = createTestUser("manager-${test_prefix}@gmail.com")
 
         // Act
         val result = organizationDatastore.addUserToOrganization(newUser, orgId, OrgRole.MANAGER)
@@ -224,7 +224,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `addUserToOrganization with EMPLOYEE role should succeed`() = runCoroutineTest {
         // Arrange
         val orgId = createTestOrganization("test_org_$test_prefix", "")
-        val newUser = createTestUser("employee-${test_prefix}@test.com")
+        val newUser = createTestUser("employee-${test_prefix}@gmail.com")
 
         // Act
         val result = organizationDatastore.addUserToOrganization(newUser, orgId, OrgRole.EMPLOYEE)
@@ -237,7 +237,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `getUserRole should return OrgRole after addUserToOrganization`() = runCoroutineTest {
         // Arrange
         val orgId = createTestOrganization("test_org_$test_prefix", "")
-        val newUser = createTestUser("rolecheck-${test_prefix}@test.com")
+        val newUser = createTestUser("rolecheck-${test_prefix}@gmail.com")
         organizationDatastore.addUserToOrganization(newUser, orgId, OrgRole.ADMIN)
 
         // Act
@@ -252,7 +252,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `addUserToOrganization should default status to ACTIVE`() = runCoroutineTest {
         // Arrange
         val orgId = createTestOrganization("test_org_$test_prefix", "")
-        val newUser = createTestUser("statuscheck-${test_prefix}@test.com")
+        val newUser = createTestUser("statuscheck-${test_prefix}@gmail.com")
 
         // Act — no explicit status passed; DB default should apply
         val addResult = organizationDatastore.addUserToOrganization(newUser, orgId, OrgRole.EMPLOYEE)

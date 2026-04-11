@@ -34,7 +34,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
 
         // Act
         val result = userDatastore.createUser(
-            email = "${test_prefix}_user@test.com",
+            email = "${test_prefix}_user@gmail.com",
             phoneNumber = "123-456-7890",
             password = "Password1!",
             firstName = "${test_prefix}_First",
@@ -46,7 +46,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
         assertEquals(
             User(
                 id = result.getOrThrow().id,
-                email = "${test_prefix}_user@test.com",
+                email = "${test_prefix}_user@gmail.com",
                 phoneNumber = "123-456-7890",
                 firstName = "${test_prefix}_First",
                 lastName = "${test_prefix}_Last",
@@ -63,7 +63,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
 
         // Act
         val result = userDatastore.createUser(
-            email = "${test_prefix}_user@test.com",
+            email = "${test_prefix}_user@gmail.com",
             phoneNumber = "123-456-7890",
             password = null, // No password provided
             firstName = "${test_prefix}_First",
@@ -77,7 +77,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
         assertEquals(
             User(
                 id = user.id,
-                email = "${test_prefix}_user@test.com",
+                email = "${test_prefix}_user@gmail.com",
                 phoneNumber = "123-456-7890",
                 firstName = "${test_prefix}_First",
                 lastName = "${test_prefix}_Last",
@@ -94,7 +94,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
 
         // Act
         val first = userDatastore.createUser(
-            email = "${test_prefix}_dupe@test.com",
+            email = "${test_prefix}_dupe@gmail.com",
             phoneNumber = "123-456-7890",
             password = "password",
             firstName = "${test_prefix}_First",
@@ -103,7 +103,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
         ).registerUserForDeletion()
         assertTrue(first.isSuccess)
         val second = userDatastore.createUser(
-            email = "${test_prefix}_dupe@test.com",
+            email = "${test_prefix}_dupe@gmail.com",
             phoneNumber = "123-456-7890",
             password = "password",
             firstName = "${test_prefix}_First",
@@ -141,7 +141,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
 
         // Act
         val createResult = userDatastore.createUser(
-            email = "${test_prefix}_getuser@test.com",
+            email = "${test_prefix}_getuser@gmail.com",
             phoneNumber = "123-456-7890",
             password = "password",
             firstName = "Get",
@@ -155,7 +155,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
         // Assert
         assertTrue(getResult.isSuccess)
         val fetched = getResult.getOrNull()
-        assertTrue(fetched != null && fetched.email == "${test_prefix}_getuser@test.com")
+        assertTrue(fetched != null && fetched.email == "${test_prefix}_getuser@gmail.com")
     }
 
     /**
@@ -164,7 +164,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `getUser by email should return created user`() = runCoroutineTest {
         // Arrange
-        val email = "${test_prefix}_byemail@test.com"
+        val email = "${test_prefix}_byemail@gmail.com"
 
         // Act
         val createResult = userDatastore.createUser(
@@ -197,7 +197,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `getUser by email should return null when not found`() = runCoroutineTest {
         // Arrange
-        val email = "${test_prefix}_noexist@test.com"
+        val email = "${test_prefix}_noexist@gmail.com"
 
         // Act
         val fetchResult = userDatastore.getUser(email)
@@ -213,7 +213,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
 
         // Act
         val createResult = userDatastore.createUser(
-            email = "${test_prefix}_delete@test.com",
+            email = "${test_prefix}_delete@gmail.com",
             phoneNumber = "123-456-7890",
             password = "password",
             firstName = "Delete",
@@ -254,7 +254,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
         // Act
         val associateResult = userDatastore.associateUser(
             userId = UserId(test_prefix),
-            email = "${test_prefix}_notfound@test.com",
+            email = "${test_prefix}_notfound@gmail.com",
         )
 
         // Assert
@@ -269,7 +269,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `requestPasswordReset should succeed for registered email`() = runCoroutineTest {
         // Arrange
-        val email = "${test_prefix}_pwreset@test.com"
+        val email = "${test_prefix}_pwreset@gmail.com"
         userDatastore.createUser(
             email = email,
             phoneNumber = "123-456-7890",
@@ -293,7 +293,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `requestPasswordReset should succeed for unregistered email`() = runCoroutineTest {
         // Arrange — no user created
-        val email = "${test_prefix}_nonexist@test.com"
+        val email = "${test_prefix}_nonexist@gmail.com"
 
         // Act
         val result = userDatastore.requestPasswordReset(email, null)
@@ -308,7 +308,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @Test
     fun `associateUser should associate a pending user with a Supabase user`() = runCoroutineTest {
         // Arrange: Create a user with a password (Supabase user)
-        val email = "${test_prefix}@test.com"
+        val email = "${test_prefix}@gmail.com"
         val createResult = userDatastore.createUser(
             email = email,
             phoneNumber = "123-456-7890",

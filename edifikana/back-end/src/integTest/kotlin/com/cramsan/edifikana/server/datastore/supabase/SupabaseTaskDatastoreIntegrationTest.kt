@@ -29,7 +29,7 @@ class SupabaseTaskDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun setup() {
         testPrefix = UUID.random()
         runBlocking {
-            testUserId = createTestUser("user-${testPrefix}@test.com")
+            testUserId = createTestUser("user-${testPrefix}@gmail.com")
             orgId = createTestOrganization("org_$testPrefix", "")
             propertyId = createTestProperty("${testPrefix}_Property", testUserId!!, orgId!!)
         }

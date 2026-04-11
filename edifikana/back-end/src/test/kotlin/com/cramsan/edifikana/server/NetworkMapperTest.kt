@@ -27,7 +27,7 @@ class NetworkMapperTest {
         // Arrange
         val user = User(
             id = UserId("123"),
-            email = "test@test.com",
+            email = "test@gmail.com",
             phoneNumber = "1234567890",
             firstName = "Test",
             lastName = "User",
@@ -36,7 +36,7 @@ class NetworkMapperTest {
         )
         val expectedResponse = UserNetworkResponse(
             id = "123",
-            email = "test@test.com",
+            email = "test@gmail.com",
             phoneNumber = "1234567890",
             firstName = "Test",
             lastName = "User",

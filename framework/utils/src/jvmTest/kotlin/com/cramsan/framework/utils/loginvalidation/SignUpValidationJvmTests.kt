@@ -30,7 +30,7 @@ class SignUpValidationJvmTests {
     @ParameterizedTest
     @CsvSource(
         "test@gmail.com",
-        "another787@test.com",
+        "another787@gmail.com",
         "test-1234@hotmail.com",
         "random@me.com",
         "fir.las323@random.com"

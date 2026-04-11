@@ -31,7 +31,7 @@ private fun EmployeeOverviewScreenPreview() {
                         imageUrl = null,
                     ),
                     InviteItemUIModel(
-                        email = "another.user@test.com",
+                        email = "another.user@gmail.com",
                     )
                 ),
             ),
@@ -61,7 +61,7 @@ private fun EmployeeOverviewScreenPreview_ES() {
                         imageUrl = null,
                     ),
                     InviteItemUIModel(
-                        email = "otro.usuario@test.com",
+                        email = "otro.usuario@gmail.com",
                     )
                 ),
             ),

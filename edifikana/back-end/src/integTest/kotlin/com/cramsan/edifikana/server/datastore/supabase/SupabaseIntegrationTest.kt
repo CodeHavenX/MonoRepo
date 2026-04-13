@@ -163,7 +163,6 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
 
     protected fun createTestUnit(
         propertyId: PropertyId,
-        orgId: OrganizationId,
         unitNumber: String,
     ): UnitId {
         val unitId = runBlocking {

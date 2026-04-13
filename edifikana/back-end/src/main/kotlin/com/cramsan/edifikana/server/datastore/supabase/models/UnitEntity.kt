@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.server.datastore.supabase.models
 
 import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.framework.annotations.SupabaseModel
 import kotlin.time.Instant
 import kotlinx.serialization.SerialName
@@ -13,7 +14,7 @@ import kotlinx.serialization.Serializable
 @SupabaseModel
 data class UnitEntity(
     @SerialName("unit_id")
-    val unitId: String,
+    val unitId: UnitId,
     @SerialName("property_id")
     val propertyId: PropertyId,
     @SerialName("unit_number")

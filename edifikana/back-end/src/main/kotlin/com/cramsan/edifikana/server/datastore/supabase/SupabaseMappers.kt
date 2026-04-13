@@ -515,7 +515,7 @@ fun CreateUnitEntity(
 @OptIn(SupabaseModel::class)
 fun UnitEntity.toUnit(orgId: OrganizationId): Unit {
     return Unit(
-        id = UnitId(this.unitId),
+        id = this.unitId,
         propertyId = this.propertyId,
         orgId = orgId,
         unitNumber = this.unitNumber,

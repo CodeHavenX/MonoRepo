@@ -25,7 +25,7 @@ class SupabaseCommonAreaDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun setup() {
         testPrefix = UUID.random()
         runBlocking {
-            testUserId = createTestUser("user-${testPrefix}@gmail.com")
+            testUserId = createTestUser("user-${testPrefix}@example.com")
             orgId = createTestOrganization("org_$testPrefix", "")
             propertyId = createTestProperty("${testPrefix}_Property", testUserId!!, orgId!!)
         }

@@ -21,7 +21,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
     @BeforeTest
     fun setup() {
         test_prefix = UUID.random()
-        testUserId = createTestUser("user-${test_prefix}@gmail.com")
+        testUserId = createTestUser("user-${test_prefix}@example.com")
         testOrg = createTestOrganization("org-${test_prefix}","")
     }
 

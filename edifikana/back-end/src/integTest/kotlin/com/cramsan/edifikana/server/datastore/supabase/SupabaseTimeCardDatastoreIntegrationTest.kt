@@ -28,7 +28,7 @@ class SupabaseTimeCardDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun setup() {
         test_prefix = UUID.random()
         runBlocking {
-            testUserId = createTestUser("user-${test_prefix}@gmail.com")
+            testUserId = createTestUser("user-${test_prefix}@example.com")
             orgId = createTestOrganization("org_$test_prefix", "")
             propertyId = createTestProperty("${test_prefix}_Property", testUserId!!, orgId!!)
             employeeId = createTestEmployee(

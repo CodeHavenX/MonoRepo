@@ -9,6 +9,7 @@ yarn.lock
 node_modules/
 .caching
 .kotlin/
+.agentic/
 
 # Application runtime configuations
 config.properties*

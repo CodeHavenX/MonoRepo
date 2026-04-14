@@ -43,6 +43,7 @@ import com.cramsan.agentic.reviewer.claude.ClaudeReviewerAgent
 import com.cramsan.agentic.vcs.VcsProvider
 import com.cramsan.agentic.vcs.github.GitHubVcsProvider
 import com.cramsan.agentic.vcs.github.ShellRunner
+import com.cramsan.agentic.vcs.local.LocalVcsProvider
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logI
 import io.ktor.client.HttpClient
@@ -91,6 +92,16 @@ fun agenticModule(
             is VcsProviderConfig.GitHub -> {
                 logI(TAG, "Configuring VCS provider: GitHub (owner=${vcs.owner}, repo=${vcs.repo})")
                 GitHubVcsProvider(vcs.owner, vcs.repo, get(), get())
+            }
+            is VcsProviderConfig.Local -> {
+                logI(TAG, "Configuring VCS provider: Local (stateFile=${vcs.stateFile}, autoMerge=${vcs.autoMerge})")
+                LocalVcsProvider(
+                    stateFile = agenticDir.resolve(vcs.stateFile),
+                    autoMerge = vcs.autoMerge,
+                    repoRoot = repoRoot,
+                    shell = get(),
+                    json = get(),
+                )
             }
         }
     }

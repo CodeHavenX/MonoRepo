@@ -67,6 +67,13 @@ sealed class VcsProviderConfig {
     @Serializable
     @SerialName("github")
     data class GitHub(val owner: String, val repo: String) : VcsProviderConfig()
+
+    @Serializable
+    @SerialName("local")
+    data class Local(
+        val stateFile: String = ".agentic/local_prs.json",
+        val autoMerge: Boolean = false,
+    ) : VcsProviderConfig()
 }
 
 @Serializable

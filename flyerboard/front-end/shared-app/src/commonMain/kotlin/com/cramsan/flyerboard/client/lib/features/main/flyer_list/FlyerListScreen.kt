@@ -3,6 +3,7 @@ package com.cramsan.flyerboard.client.lib.features.main.flyer_list
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -105,7 +106,7 @@ internal fun FlyerListContent(
                 else -> {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
-                        contentPadding = androidx.compose.foundation.layout.PaddingValues(Padding.MEDIUM),
+                        contentPadding = PaddingValues(Padding.MEDIUM),
                         verticalArrangement = Arrangement.spacedBy(Padding.SMALL),
                     ) {
                         items(uiState.flyers, key = { it.id.flyerId }) { flyer ->
@@ -124,6 +125,7 @@ internal fun FlyerListContent(
 /**
  * A card representing a single flyer in the list.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun FlyerCard(
     flyer: FlyerModel,

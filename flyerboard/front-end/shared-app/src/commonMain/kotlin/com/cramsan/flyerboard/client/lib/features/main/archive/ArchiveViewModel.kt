@@ -1,30 +1,30 @@
-package com.cramsan.flyerboard.client.lib.features.main.flyer_list
+package com.cramsan.flyerboard.client.lib.features.main.archive
 
 import com.cramsan.flyerboard.client.lib.features.main.MainDestination
+import com.cramsan.flyerboard.client.lib.features.window.FlyerBoardWindowsEvent
 import com.cramsan.flyerboard.client.lib.managers.FlyerManager
 import com.cramsan.flyerboard.lib.model.FlyerId
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logI
-import com.cramsan.flyerboard.client.lib.features.window.FlyerBoardWindowsEvent
 import kotlinx.coroutines.launch
 
 /**
- * ViewModel for the Flyer List screen.
+ * ViewModel for the Archive screen.
  */
-class FlyerListViewModel(
+class ArchiveViewModel(
     dependencies: ViewModelDependencies,
     private val flyerManager: FlyerManager,
-) : BaseViewModel<FlyerListEvent, FlyerListUIState>(dependencies, FlyerListUIState.Initial, TAG) {
+) : BaseViewModel<ArchiveEvent, ArchiveUIState>(dependencies, ArchiveUIState.Initial, TAG) {
 
     /**
-     * Load the initial page of public flyers.
+     * Load the archived flyers.
      */
     fun loadFlyers() {
         logI(TAG, "loadFlyers")
         viewModelScope.launch {
             updateUiState { it.copy(isLoading = true, errorMessage = null) }
-            flyerManager.listFlyers()
+            flyerManager.listArchived()
                 .onSuccess { paginated ->
                     updateUiState {
                         it.copy(
@@ -37,7 +37,7 @@ class FlyerListViewModel(
                     updateUiState { it.copy(isLoading = false, errorMessage = error.message) }
                     emitWindowEvent(
                         FlyerBoardWindowsEvent.ShowSnackbar(
-                            message = "Failed to load flyers: ${error.message}",
+                            message = "Failed to load archive: ${error.message}",
                         ),
                     )
                 }
@@ -45,7 +45,7 @@ class FlyerListViewModel(
     }
 
     /**
-     * Reload the flyer list from the beginning.
+     * Reload the archive list from the beginning.
      */
     fun refresh() {
         logI(TAG, "refresh")
@@ -66,7 +66,17 @@ class FlyerListViewModel(
         }
     }
 
+    /**
+     * Navigate back.
+     */
+    fun navigateBack() {
+        logI(TAG, "navigateBack")
+        viewModelScope.launch {
+            emitWindowEvent(FlyerBoardWindowsEvent.NavigateBack)
+        }
+    }
+
     companion object {
-        private const val TAG = "FlyerListViewModel"
+        private const val TAG = "ArchiveViewModel"
     }
 }

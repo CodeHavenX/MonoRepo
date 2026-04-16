@@ -20,7 +20,7 @@ class FlyerDetailViewModel(
      * Load the flyer identified by [flyerIdValue].
      */
     fun loadFlyer(flyerIdValue: String) {
-        logI(TAG, "loadFlyer: %s", flyerIdValue)
+        logI(TAG, "loadFlyer: $flyerIdValue")
         viewModelScope.launch {
             updateUiState { it.copy(isLoading = true) }
             flyerManager.getFlyer(FlyerId(flyerIdValue))

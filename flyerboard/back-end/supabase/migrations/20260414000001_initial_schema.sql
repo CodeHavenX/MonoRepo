@@ -20,7 +20,7 @@ CREATE TABLE user_profiles (
 CREATE TABLE flyers (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     title TEXT NOT NULL,
-    description TEXT,
+    description TEXT NOT NULL DEFAULT '',
     file_path TEXT NOT NULL,
     status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected', 'archived')),
     expires_at TIMESTAMPTZ,

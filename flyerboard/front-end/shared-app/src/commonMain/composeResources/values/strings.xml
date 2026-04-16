@@ -17,4 +17,20 @@
     <string name="flyer_detail_screen_navigate_back">Navigate back</string>
     <string name="flyer_detail_screen_expires_label">Expires:</string>
     <string name="flyer_detail_screen_not_found">Flyer not found.</string>
+    <string name="my_flyers_screen_title">My Flyers</string>
+    <string name="my_flyers_screen_empty_message">You haven\'t posted any flyers yet.</string>
+    <string name="my_flyers_screen_button_edit">Edit</string>
+    <string name="my_flyers_screen_navigate_back">Navigate back</string>
+    <string name="archive_screen_title">Archive</string>
+    <string name="archive_screen_empty_message">No archived flyers.</string>
+    <string name="archive_screen_navigate_back">Navigate back</string>
+    <string name="moderation_queue_screen_title">Moderation Queue</string>
+    <string name="moderation_queue_screen_empty_message">No flyers pending moderation.</string>
+    <string name="moderation_queue_screen_button_approve">Approve</string>
+    <string name="moderation_queue_screen_button_reject">Reject</string>
+    <string name="moderation_queue_screen_navigate_back">Navigate back</string>
+    <string name="flyer_status_pending">Pending</string>
+    <string name="flyer_status_approved">Approved</string>
+    <string name="flyer_status_rejected">Rejected</string>
+    <string name="flyer_status_archived">Archived</string>
 </resources>

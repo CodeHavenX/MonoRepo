@@ -17,6 +17,7 @@ import com.cramsan.flyerboard.lib.model.network.PaginationParams
 import com.cramsan.flyerboard.lib.serialization.HEADER_TOKEN_AUTH
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.core.runSuspendCatching
+import com.cramsan.framework.logging.logW
 import com.cramsan.framework.networkapi.buildRequest
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import io.ktor.client.HttpClient
@@ -61,6 +62,7 @@ class FlyerServiceImpl(
         try {
             FlyerApi.getFlyer.buildRequest(flyerId).execute(http).toFlyerModel()
         } catch (e: ClientRequestExceptions.NotFoundException) {
+            logW(TAG, "Flyer not found: ${flyerId.flyerId}", e)
             null
         }
     }

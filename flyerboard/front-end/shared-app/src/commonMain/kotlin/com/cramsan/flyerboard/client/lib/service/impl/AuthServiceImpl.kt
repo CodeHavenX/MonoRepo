@@ -34,7 +34,7 @@ class AuthServiceImpl(
                 _activeUser.value = auth.currentUserOrNull()?.id?.let { UserId(it) }
             } catch (e: AuthRestException) {
                 logE(TAG, "Error signing up", e)
-                throw ClientRequestExceptions.UnauthorizedException("Sign-up failed: ${e.message}")
+                throw ClientRequestExceptions.UnauthorizedException("Sign-up failed: ${e.message}", e)
             }
         }
 
@@ -49,7 +49,7 @@ class AuthServiceImpl(
                 _activeUser.value = auth.currentUserOrNull()?.id?.let { UserId(it) }
             } catch (e: AuthRestException) {
                 logE(TAG, "Error signing in", e)
-                throw ClientRequestExceptions.UnauthorizedException("Invalid credentials")
+                throw ClientRequestExceptions.UnauthorizedException("Invalid credentials", e)
             }
         }
 

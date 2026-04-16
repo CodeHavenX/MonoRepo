@@ -1,9 +1,10 @@
 package com.cramsan.flyerboard.server.dependencyinjection
 
 import com.cramsan.architecture.server.dependencyinjection.NamedDependency
-import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.flyerboard.lib.serialization.createJson
-import com.cramsan.flyerboard.server.controller.authentication.ContextRetrieverImpl
+import com.cramsan.flyerboard.server.controller.authentication.FlyerBoardContextPayload
+import com.cramsan.flyerboard.server.controller.authentication.FlyerBoardContextRetriever
+import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import kotlinx.serialization.json.Json
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
@@ -23,7 +24,7 @@ internal val ApplicationModule = module {
         createJson()
     }
 
-    singleOf(::ContextRetrieverImpl) {
-        bind<ContextRetriever<Unit>>()
+    singleOf(::FlyerBoardContextRetriever) {
+        bind<ContextRetriever<FlyerBoardContextPayload>>()
     }
 }

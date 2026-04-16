@@ -66,6 +66,8 @@ kotlin {
             implementation("io.ktor:ktor-client-content-negotiation:_")
             implementation("io.ktor:ktor-serialization-kotlinx-json:_")
 
+            implementation("io.github.jan-tennert.supabase:auth-kt:_")
+
             implementation("io.coil-kt.coil3:coil:")
             implementation("io.coil-kt.coil3:coil-compose:_")
             implementation("io.coil-kt.coil3:coil-network-ktor3:_")

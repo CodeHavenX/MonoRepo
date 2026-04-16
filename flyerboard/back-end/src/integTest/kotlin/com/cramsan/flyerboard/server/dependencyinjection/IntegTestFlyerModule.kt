@@ -5,41 +5,30 @@ import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.flyerboard.server.controller.FlyerController
 import com.cramsan.flyerboard.server.controller.HealthController
 import com.cramsan.flyerboard.server.controller.ModerationController
-import com.cramsan.flyerboard.server.controller.UserController
+import com.cramsan.flyerboard.server.controller.authentication.FlyerBoardContextPayload
 import com.cramsan.flyerboard.server.service.FlyerService
 import com.cramsan.flyerboard.server.service.ModerationService
-import com.cramsan.flyerboard.server.service.UserService
+import com.cramsan.flyerboard.lib.serialization.createJson
 import io.mockk.mockk
 import kotlinx.serialization.json.Json
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-internal fun testApplicationModule(json: Json) = module {
-    single<Json> { json }
-
-    single<ContextRetriever<*>> { mockk() }
-
-    // Add additional test bindings if necessary
+/**
+ * Application-level DI module for integration tests.
+ *
+ * Provides mocked [ContextRetriever] and [Json] for the Ktor test server.
+ */
+fun integTestFlyerApplicationModule() = module {
+    single<Json> { createJson() }
+    single<ContextRetriever<FlyerBoardContextPayload>> { mockk() }
 }
 
 /**
- * Produce a Ktor module for testing.
+ * Controller DI module for integration tests covering flyer, moderation, and health endpoints.
  */
-internal val TestControllerModule = module {
-    singleOf(::UserController) {
-        bind<Controller>()
-    }
-}
-
-internal val TestServiceModule = module {
-    single<UserService> { mockk() }
-}
-
-/**
- * Ktor module for testing FlyerController, ModerationController, and HealthController.
- */
-internal val TestFlyerControllerModule = module {
+val IntegTestFlyerControllerModule = module {
     singleOf(::FlyerController) {
         bind<Controller>()
     }
@@ -52,9 +41,9 @@ internal val TestFlyerControllerModule = module {
 }
 
 /**
- * Service mocks for FlyerController and ModerationController tests.
+ * Service mocks for flyer integration tests.
  */
-internal val TestFlyerServiceModule = module {
+val IntegTestFlyerServiceModule = module {
     single<FlyerService> { mockk() }
     single<ModerationService> { mockk() }
 }

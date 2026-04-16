@@ -17,6 +17,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.flyerboard.client.lib.features.application.FlyerBoardApplicationMainScreenEventHandler
+import com.cramsan.flyerboard.client.lib.features.auth.authNavGraphNavigation
 import com.cramsan.flyerboard.client.lib.features.main.mainNavGraphNavigation
 import com.cramsan.flyerboard.client.lib.features.splash.SplashScreen
 import com.cramsan.flyerboard.client.ui.theme.AppTheme
@@ -181,6 +182,7 @@ private fun WindowNavigationHost(
         composable(FlyerBoardWindowNavGraphDestination.SplashNavGraphDestination::class) {
             SplashScreen()
         }
+        authNavGraphNavigation(typeMap)
         mainNavGraphNavigation(typeMap)
     }
 }

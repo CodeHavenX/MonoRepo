@@ -3,4 +3,12 @@
     <string name="main_menu_screen_text_first_name">First Name</string>
     <string name="main_menu_screen_text_last_name">Last Name</string>
     <string name="main_menu_screen_text_create_account">Create Account</string>
+    <string name="sign_in_screen_label_email">Email</string>
+    <string name="sign_in_screen_label_password">Password</string>
+    <string name="sign_in_screen_button_sign_in">Sign In</string>
+    <string name="sign_in_screen_button_sign_up">Don\'t have an account? Sign Up</string>
+    <string name="sign_up_screen_label_email">Email</string>
+    <string name="sign_up_screen_label_password">Password</string>
+    <string name="sign_up_screen_button_sign_up">Create Account</string>
+    <string name="sign_up_screen_button_sign_in">Already have an account? Sign In</string>
 </resources>

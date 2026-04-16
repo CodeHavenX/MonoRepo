@@ -22,4 +22,10 @@ sealed class FlyerBoardWindowNavGraphDestination : NavigationGraphDestination {
      */
     @Serializable
     data object AuthNavGraphDestination : FlyerBoardWindowNavGraphDestination()
+
+    /**
+     * Main navigation graph destination (post-authentication).
+     */
+    @Serializable
+    data object MainNavGraphDestination : FlyerBoardWindowNavGraphDestination()
 }

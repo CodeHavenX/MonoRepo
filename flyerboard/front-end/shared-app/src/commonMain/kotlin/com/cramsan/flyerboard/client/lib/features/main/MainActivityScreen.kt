@@ -16,7 +16,7 @@ fun NavGraphBuilder.mainNavGraphNavigation(
     typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> = emptyMap(),
 ) {
     navigationGraph(
-        graphDestination = FlyerBoardWindowNavGraphDestination.AuthNavGraphDestination::class,
+        graphDestination = FlyerBoardWindowNavGraphDestination.MainNavGraphDestination::class,
         startDestination = MainDestination.MenuDestination,
         typeMap = typeMap,
     ) {

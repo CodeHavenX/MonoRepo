@@ -19,7 +19,7 @@ import org.koin.dsl.module
 
 internal val ApplicationModule = module {
 
-    single<String>(named(NamedDependency.DOMAIN_KEY)) { "TEMPLATE_REPLACE_ME" }
+    single<String>(named(NamedDependency.DOMAIN_KEY)) { "flyerboard" }
 
     single {
         Initializer()

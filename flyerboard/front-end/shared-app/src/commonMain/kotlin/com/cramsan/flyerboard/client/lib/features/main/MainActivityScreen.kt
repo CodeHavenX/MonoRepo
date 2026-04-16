@@ -3,7 +3,9 @@ package com.cramsan.flyerboard.client.lib.features.main
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import com.cramsan.framework.core.compose.navigation.navigationGraph
+import com.cramsan.flyerboard.client.lib.features.main.flyer_detail.FlyerDetailScreen
 import com.cramsan.flyerboard.client.lib.features.main.flyer_list.FlyerListScreen
 import com.cramsan.flyerboard.client.lib.features.main.menu.MainMenuScreen
 import com.cramsan.flyerboard.client.lib.features.window.FlyerBoardWindowNavGraphDestination
@@ -26,6 +28,12 @@ fun NavGraphBuilder.mainNavGraphNavigation(
             typeMap = typeMap,
         ) {
             FlyerListScreen()
+        }
+        composable(
+            MainDestination.FlyerDetailDestination::class,
+            typeMap = typeMap,
+        ) {
+            FlyerDetailScreen(destination = it.toRoute())
         }
         composable(
             MainDestination.MenuDestination::class,

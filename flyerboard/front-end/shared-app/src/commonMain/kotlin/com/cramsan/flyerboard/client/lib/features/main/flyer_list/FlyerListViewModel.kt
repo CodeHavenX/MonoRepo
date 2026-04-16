@@ -1,5 +1,6 @@
 package com.cramsan.flyerboard.client.lib.features.main.flyer_list
 
+import com.cramsan.flyerboard.client.lib.features.main.MainDestination
 import com.cramsan.flyerboard.client.lib.managers.FlyerManager
 import com.cramsan.flyerboard.lib.model.FlyerId
 import com.cramsan.framework.core.compose.BaseViewModel
@@ -53,11 +54,16 @@ class FlyerListViewModel(
 
     /**
      * Navigate to the detail screen for [flyerId].
-     * Wired to TASK-023 (flyer detail screen).
      */
     fun onFlyerSelected(flyerId: FlyerId) {
         logI(TAG, "onFlyerSelected: %s", flyerId.flyerId)
-        // Navigation to detail screen will be added in TASK-023.
+        viewModelScope.launch {
+            emitWindowEvent(
+                FlyerBoardWindowsEvent.NavigateToScreen(
+                    MainDestination.FlyerDetailDestination(flyerId.flyerId),
+                ),
+            )
+        }
     }
 
     companion object {

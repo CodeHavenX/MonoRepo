@@ -13,4 +13,8 @@
     <string name="sign_up_screen_button_sign_in">Already have an account? Sign In</string>
     <string name="flyer_list_screen_title">Flyers</string>
     <string name="flyer_list_screen_empty_message">No flyers yet. Check back soon!</string>
+    <string name="flyer_detail_screen_title">Flyer Details</string>
+    <string name="flyer_detail_screen_navigate_back">Navigate back</string>
+    <string name="flyer_detail_screen_expires_label">Expires:</string>
+    <string name="flyer_detail_screen_not_found">Flyer not found.</string>
 </resources>

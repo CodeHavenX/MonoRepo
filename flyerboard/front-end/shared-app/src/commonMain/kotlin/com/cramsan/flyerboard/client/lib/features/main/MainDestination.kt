@@ -17,6 +17,12 @@ sealed class MainDestination : Destination {
     data object FlyerListDestination : MainDestination()
 
     /**
+     * Flyer detail screen destination. [flyerId] is the raw string value of [FlyerId].
+     */
+    @Serializable
+    data class FlyerDetailDestination(val flyerId: String) : MainDestination()
+
+    /**
      * Dev/debug menu screen destination.
      */
     @Serializable

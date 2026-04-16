@@ -11,4 +11,6 @@
     <string name="sign_up_screen_label_password">Password</string>
     <string name="sign_up_screen_button_sign_up">Create Account</string>
     <string name="sign_up_screen_button_sign_in">Already have an account? Sign In</string>
+    <string name="flyer_list_screen_title">Flyers</string>
+    <string name="flyer_list_screen_empty_message">No flyers yet. Check back soon!</string>
 </resources>

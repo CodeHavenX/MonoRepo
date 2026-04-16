@@ -4,6 +4,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import com.cramsan.framework.core.compose.navigation.navigationGraph
+import com.cramsan.flyerboard.client.lib.features.main.flyer_list.FlyerListScreen
 import com.cramsan.flyerboard.client.lib.features.main.menu.MainMenuScreen
 import com.cramsan.flyerboard.client.lib.features.window.FlyerBoardWindowNavGraphDestination
 import kotlin.jvm.JvmSuppressWildcards
@@ -17,9 +18,15 @@ fun NavGraphBuilder.mainNavGraphNavigation(
 ) {
     navigationGraph(
         graphDestination = FlyerBoardWindowNavGraphDestination.MainNavGraphDestination::class,
-        startDestination = MainDestination.MenuDestination,
+        startDestination = MainDestination.FlyerListDestination,
         typeMap = typeMap,
     ) {
+        composable(
+            MainDestination.FlyerListDestination::class,
+            typeMap = typeMap,
+        ) {
+            FlyerListScreen()
+        }
         composable(
             MainDestination.MenuDestination::class,
             typeMap = typeMap,

@@ -15,7 +15,7 @@ interface FlyerService {
      */
     suspend fun listFlyers(
         offset: Int = 0,
-        limit: Int = 20,
+        limit: Int = DEFAULT_PAGE_SIZE,
         status: FlyerStatus? = null,
         query: String? = null,
     ): Result<PaginatedFlyerModel>
@@ -57,7 +57,7 @@ interface FlyerService {
      */
     suspend fun listArchived(
         offset: Int = 0,
-        limit: Int = 20,
+        limit: Int = DEFAULT_PAGE_SIZE,
     ): Result<PaginatedFlyerModel>
 
     /**
@@ -65,7 +65,7 @@ interface FlyerService {
      */
     suspend fun listMyFlyers(
         offset: Int = 0,
-        limit: Int = 20,
+        limit: Int = DEFAULT_PAGE_SIZE,
     ): Result<PaginatedFlyerModel>
 
     /**
@@ -73,7 +73,7 @@ interface FlyerService {
      */
     suspend fun listPendingFlyers(
         offset: Int = 0,
-        limit: Int = 20,
+        limit: Int = DEFAULT_PAGE_SIZE,
     ): Result<PaginatedFlyerModel>
 
     /**
@@ -81,4 +81,9 @@ interface FlyerService {
      * Requires admin authentication.
      */
     suspend fun moderate(flyerId: FlyerId, action: String): Result<FlyerModel>
+
+    companion object {
+        /** Default page size for paginated flyer requests. */
+        const val DEFAULT_PAGE_SIZE = 20
+    }
 }

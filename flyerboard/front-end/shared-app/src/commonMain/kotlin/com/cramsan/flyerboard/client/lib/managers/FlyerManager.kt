@@ -3,6 +3,7 @@ package com.cramsan.flyerboard.client.lib.managers
 import com.cramsan.flyerboard.client.lib.models.FlyerModel
 import com.cramsan.flyerboard.client.lib.models.PaginatedFlyerModel
 import com.cramsan.flyerboard.client.lib.service.FlyerService
+import com.cramsan.flyerboard.client.lib.service.FlyerService.Companion.DEFAULT_PAGE_SIZE
 import com.cramsan.flyerboard.lib.model.FlyerId
 import com.cramsan.flyerboard.lib.model.FlyerStatus
 import com.cramsan.framework.core.ManagerDependencies
@@ -22,7 +23,7 @@ class FlyerManager(
      */
     suspend fun listFlyers(
         offset: Int = 0,
-        limit: Int = 20,
+        limit: Int = DEFAULT_PAGE_SIZE,
         status: FlyerStatus? = null,
         query: String? = null,
     ): Result<PaginatedFlyerModel> = dependencies.getOrCatch(TAG) {
@@ -75,7 +76,7 @@ class FlyerManager(
      */
     suspend fun listArchived(
         offset: Int = 0,
-        limit: Int = 20,
+        limit: Int = DEFAULT_PAGE_SIZE,
     ): Result<PaginatedFlyerModel> = dependencies.getOrCatch(TAG) {
         logI(TAG, "listArchived")
         flyerService.listArchived(offset, limit).getOrThrow()
@@ -86,7 +87,7 @@ class FlyerManager(
      */
     suspend fun listMyFlyers(
         offset: Int = 0,
-        limit: Int = 20,
+        limit: Int = DEFAULT_PAGE_SIZE,
     ): Result<PaginatedFlyerModel> = dependencies.getOrCatch(TAG) {
         logI(TAG, "listMyFlyers")
         flyerService.listMyFlyers(offset, limit).getOrThrow()
@@ -97,7 +98,7 @@ class FlyerManager(
      */
     suspend fun listPendingFlyers(
         offset: Int = 0,
-        limit: Int = 20,
+        limit: Int = DEFAULT_PAGE_SIZE,
     ): Result<PaginatedFlyerModel> = dependencies.getOrCatch(TAG) {
         logI(TAG, "listPendingFlyers")
         flyerService.listPendingFlyers(offset, limit).getOrThrow()

@@ -2,8 +2,10 @@ package com.cramsan.flyerboard.client.lib.di
 
 import com.cramsan.architecture.client.settings.SettingsHolder
 import com.cramsan.flyerboard.client.lib.service.AuthService
+import com.cramsan.flyerboard.client.lib.service.FlyerService
 import com.cramsan.flyerboard.client.lib.service.UserService
 import com.cramsan.flyerboard.client.lib.service.impl.AuthServiceImpl
+import com.cramsan.flyerboard.client.lib.service.impl.FlyerServiceImpl
 import com.cramsan.flyerboard.client.lib.service.impl.UserServiceImpl
 import com.cramsan.flyerboard.client.lib.settings.FlyerBoardSettingKey
 import io.github.jan.supabase.SupabaseClient
@@ -42,5 +44,9 @@ internal val ServiceModule = module {
 
     singleOf(::UserServiceImpl) {
         bind<UserService>()
+    }
+
+    singleOf(::FlyerServiceImpl) {
+        bind<FlyerService>()
     }
 }

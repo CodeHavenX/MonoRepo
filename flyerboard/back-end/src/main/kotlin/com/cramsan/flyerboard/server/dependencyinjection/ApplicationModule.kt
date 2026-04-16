@@ -10,15 +10,13 @@ import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import kotlin.time.ExperimentalTime
 
 /**
  * Class to initialize all the application level components.
  */
-@OptIn(ExperimentalTime::class)
 internal val ApplicationModule = module {
 
-    single<String>(named(NamedDependency.DOMAIN_KEY)) { "TEMPLATE_REPLACE_ME" }
+    single<String>(named(NamedDependency.DOMAIN_KEY)) { "FLYERBOARD" }
 
     single<Json> {
         createJson()

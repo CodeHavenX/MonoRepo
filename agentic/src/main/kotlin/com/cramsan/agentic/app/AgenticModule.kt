@@ -1,6 +1,7 @@
 package com.cramsan.agentic.app
 
 import com.cramsan.agentic.ai.AiProvider
+import com.cramsan.agentic.ai.RetryingAiProvider
 import com.cramsan.agentic.ai.claude.ClaudeAiProvider
 import com.cramsan.agentic.ai.claude.ClaudeCliAiProvider
 import com.cramsan.agentic.ai.claude.ClaudeCliFullAiProvider
@@ -148,15 +149,15 @@ fun agenticModule(
                 val apiKey = System.getenv(aiConfig.anthropicApiKeyEnvVar)
                     ?: error("API key env var '${aiConfig.anthropicApiKeyEnvVar}' is not set")
                 logD(TAG, "ClaudeApi API key resolved from env var: ${aiConfig.anthropicApiKeyEnvVar}")
-                ClaudeAiProvider(get(), apiKey, get(), aiConfig.model)
+                RetryingAiProvider(ClaudeAiProvider(get(), apiKey, get(), aiConfig.model))
             }
             is AiProviderConfig.ClaudeCli -> {
                 if (aiConfig.fullAccess) {
                     logI(TAG, "Configuring AI provider: ClaudeCliFull (model=${aiConfig.model}, cliPath=${aiConfig.cliPath})")
-                    ClaudeCliFullAiProvider(get(), aiConfig.cliPath, aiConfig.model, get())
+                    RetryingAiProvider(ClaudeCliFullAiProvider(get(), aiConfig.cliPath, aiConfig.model, get()))
                 } else {
                     logI(TAG, "Configuring AI provider: ClaudeCli (model=${aiConfig.model}, cliPath=${aiConfig.cliPath})")
-                    ClaudeCliAiProvider(get(), aiConfig.cliPath, aiConfig.model)
+                    RetryingAiProvider(ClaudeCliAiProvider(get(), aiConfig.cliPath, aiConfig.model))
                 }
             }
             is AiProviderConfig.Fake -> {

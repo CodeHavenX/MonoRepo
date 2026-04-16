@@ -19,6 +19,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -31,6 +32,8 @@ import com.cramsan.flyerboard.client.lib.models.FlyerModel
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.theme.Padding
 import flyerboard_lib.Res
+import flyerboard_lib.app_bar_action_sign_in
+import flyerboard_lib.app_bar_action_sign_out
 import flyerboard_lib.flyer_list_screen_empty_message
 import flyerboard_lib.flyer_list_screen_title
 import org.jetbrains.compose.resources.stringResource
@@ -42,6 +45,9 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun FlyerListScreen(
     modifier: Modifier = Modifier,
+    isAuthenticated: Boolean = false,
+    onSignIn: () -> Unit = {},
+    onSignOut: () -> Unit = {},
     viewModel: FlyerListViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -59,6 +65,9 @@ fun FlyerListScreen(
     FlyerListContent(
         uiState = uiState,
         modifier = modifier,
+        isAuthenticated = isAuthenticated,
+        onSignIn = onSignIn,
+        onSignOut = onSignOut,
         onRefresh = { viewModel.refresh() },
         onFlyerSelected = { viewModel.onFlyerSelected(it.id) },
     )
@@ -72,6 +81,9 @@ fun FlyerListScreen(
 internal fun FlyerListContent(
     uiState: FlyerListUIState,
     modifier: Modifier = Modifier,
+    isAuthenticated: Boolean = false,
+    onSignIn: () -> Unit = {},
+    onSignOut: () -> Unit = {},
     onRefresh: () -> Unit,
     onFlyerSelected: (FlyerModel) -> Unit,
 ) {
@@ -81,6 +93,15 @@ internal fun FlyerListContent(
             TopAppBar(
                 title = { Text(stringResource(Res.string.flyer_list_screen_title)) },
                 actions = {
+                    if (isAuthenticated) {
+                        TextButton(onClick = onSignOut) {
+                            Text(stringResource(Res.string.app_bar_action_sign_out))
+                        }
+                    } else {
+                        TextButton(onClick = onSignIn) {
+                            Text(stringResource(Res.string.app_bar_action_sign_in))
+                        }
+                    }
                     IconButton(onClick = onRefresh) {
                         Icon(
                             imageVector = Icons.Default.Refresh,

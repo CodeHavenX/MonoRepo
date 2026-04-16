@@ -33,4 +33,10 @@
     <string name="flyer_status_approved">Approved</string>
     <string name="flyer_status_rejected">Rejected</string>
     <string name="flyer_status_archived">Archived</string>
+    <string name="nav_browse">Browse</string>
+    <string name="nav_archive">Archive</string>
+    <string name="nav_my_flyers">My Flyers</string>
+    <string name="nav_moderation">Moderation</string>
+    <string name="app_bar_action_sign_in">Sign In</string>
+    <string name="app_bar_action_sign_out">Sign Out</string>
 </resources>

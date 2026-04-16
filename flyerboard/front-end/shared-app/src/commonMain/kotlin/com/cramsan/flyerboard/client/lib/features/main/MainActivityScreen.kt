@@ -20,6 +20,9 @@ import kotlin.reflect.KType
  */
 fun NavGraphBuilder.mainNavGraphNavigation(
     typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> = emptyMap(),
+    isAuthenticated: Boolean = false,
+    onSignIn: () -> Unit = {},
+    onSignOut: () -> Unit = {},
 ) {
     navigationGraph(
         graphDestination = FlyerBoardWindowNavGraphDestination.MainNavGraphDestination::class,
@@ -30,7 +33,11 @@ fun NavGraphBuilder.mainNavGraphNavigation(
             MainDestination.FlyerListDestination::class,
             typeMap = typeMap,
         ) {
-            FlyerListScreen()
+            FlyerListScreen(
+                isAuthenticated = isAuthenticated,
+                onSignIn = onSignIn,
+                onSignOut = onSignOut,
+            )
         }
         composable(
             MainDestination.FlyerDetailDestination::class,
@@ -42,19 +49,29 @@ fun NavGraphBuilder.mainNavGraphNavigation(
             MainDestination.MyFlyersDestination::class,
             typeMap = typeMap,
         ) {
-            MyFlyersScreen()
+            MyFlyersScreen(
+                isAuthenticated = isAuthenticated,
+                onSignOut = onSignOut,
+            )
         }
         composable(
             MainDestination.ArchiveDestination::class,
             typeMap = typeMap,
         ) {
-            ArchiveScreen()
+            ArchiveScreen(
+                isAuthenticated = isAuthenticated,
+                onSignIn = onSignIn,
+                onSignOut = onSignOut,
+            )
         }
         composable(
             MainDestination.ModerationQueueDestination::class,
             typeMap = typeMap,
         ) {
-            ModerationQueueScreen()
+            ModerationQueueScreen(
+                isAuthenticated = isAuthenticated,
+                onSignOut = onSignOut,
+            )
         }
         composable(
             MainDestination.MenuDestination::class,

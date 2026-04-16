@@ -24,6 +24,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -36,6 +37,7 @@ import com.cramsan.flyerboard.client.lib.models.FlyerModel
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.theme.Padding
 import flyerboard_lib.Res
+import flyerboard_lib.app_bar_action_sign_out
 import flyerboard_lib.moderation_queue_screen_button_approve
 import flyerboard_lib.moderation_queue_screen_button_reject
 import flyerboard_lib.moderation_queue_screen_empty_message
@@ -50,6 +52,8 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun ModerationQueueScreen(
     modifier: Modifier = Modifier,
+    isAuthenticated: Boolean = false,
+    onSignOut: () -> Unit = {},
     viewModel: ModerationQueueViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -67,6 +71,8 @@ fun ModerationQueueScreen(
     ModerationQueueContent(
         uiState = uiState,
         modifier = modifier,
+        isAuthenticated = isAuthenticated,
+        onSignOut = onSignOut,
         onNavigateBack = { viewModel.navigateBack() },
         onRefresh = { viewModel.refresh() },
         onApprove = { viewModel.approveFlyer(it.id) },
@@ -82,6 +88,8 @@ fun ModerationQueueScreen(
 internal fun ModerationQueueContent(
     uiState: ModerationQueueUIState,
     modifier: Modifier = Modifier,
+    isAuthenticated: Boolean = false,
+    onSignOut: () -> Unit = {},
     onNavigateBack: () -> Unit,
     onRefresh: () -> Unit,
     onApprove: (FlyerModel) -> Unit,
@@ -101,6 +109,11 @@ internal fun ModerationQueueContent(
                     }
                 },
                 actions = {
+                    if (isAuthenticated) {
+                        TextButton(onClick = onSignOut) {
+                            Text(stringResource(Res.string.app_bar_action_sign_out))
+                        }
+                    }
                     IconButton(onClick = onRefresh) {
                         Icon(
                             imageVector = Icons.Default.Refresh,

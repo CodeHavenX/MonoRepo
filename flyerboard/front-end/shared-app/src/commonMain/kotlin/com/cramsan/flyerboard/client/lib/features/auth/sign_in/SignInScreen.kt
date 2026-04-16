@@ -17,8 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
@@ -39,10 +37,6 @@ fun SignInScreen(
     viewModel: SignInViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
-
-    LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
-        // No-op on create
-    }
 
     ObserveViewModelEvents(viewModel) { event ->
         when (event) {

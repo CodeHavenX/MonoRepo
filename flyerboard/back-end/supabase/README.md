@@ -36,9 +36,10 @@ Replace `<user-uuid>` with the user's UUID from `auth.users`.
 
 ## Environment Variables
 
-The backend requires the following environment variables (see `env.example`):
+The backend requires the following environment variables (see `deploy/env.example`).
+Variable names use the `FLYERBOARD_` prefix applied by `EnvironmentConfiguration`:
 
-| Variable | Description |
-|----------|-------------|
-| `SUPABASE_URL` | Your Supabase project URL |
-| `SUPABASE_KEY` | Supabase service role key (not anon key) |
+| Variable                     | Description                                     |
+|------------------------------|-------------------------------------------------|
+| `FLYERBOARD_SUPABASE_URL`    | Your Supabase project URL                       |
+| `FLYERBOARD_SUPABASE_KEY`    | Supabase service role key (not the anon key)    |

@@ -116,7 +116,9 @@ class DefaultWorkflowService(
         val systemPrompt = resolvePrompt(stage.prompt)
 
         // Call AI
+        logI(TAG, "[PLAN] Writing document for stage '${stage.name}' ($stageId)...")
         val content = callAi(systemPrompt, inputContent)
+        logI(TAG, "[PLAN] Document for stage '${stage.name}' ($stageId) complete.")
 
         // Write output
         val outputPath = docsDir.resolve(stage.outputFile)
@@ -158,7 +160,9 @@ class DefaultWorkflowService(
         }
 
         val annotatedContent = Files.readString(outputFile)
+        logI(TAG, "[PLAN] Revising document for stage '${stage.name}' ($stageId)...")
         val content = callAi(REVISION_SYSTEM_PROMPT.trimIndent(), annotatedContent)
+        logI(TAG, "[PLAN] Revision of stage '${stage.name}' ($stageId) complete.")
         Files.writeString(outputFile, content)
         logI(TAG, "Revised ${outputFile.fileName} written")
 

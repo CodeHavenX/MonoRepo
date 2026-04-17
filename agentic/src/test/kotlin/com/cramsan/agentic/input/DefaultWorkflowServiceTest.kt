@@ -427,6 +427,7 @@ class DefaultWorkflowServiceTest {
             documentStore,
             aiProvider,
             docsDir,
+            json,
             WorkflowConfig(duplicateStages),
         )
 
@@ -450,6 +451,7 @@ class DefaultWorkflowServiceTest {
             documentStore,
             aiProvider,
             docsDir,
+            json,
             WorkflowConfig(stagesWithMissingDep),
         )
 
@@ -480,6 +482,7 @@ class DefaultWorkflowServiceTest {
             documentStore,
             aiProvider,
             docsDir,
+            json,
             WorkflowConfig(circularStages),
         )
 

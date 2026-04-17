@@ -18,7 +18,7 @@ class AgenticCli : CliktCommand(name = "agentic", invokeWithoutSubcommand = fals
     private val logLevel by option(
         "--log-level", "-l",
         help = "Logging verbosity: VERBOSE, DEBUG, INFO, WARNING, ERROR, DISABLED (default)",
-    ).enum<Severity>(ignoreCase = true).default(Severity.DISABLED)
+    ).enum<Severity>(ignoreCase = true).default(Severity.INFO)
 
     override fun run() {
         EventLogger.setInstance(EventLoggerImpl(logLevel, null, StdOutEventLoggerDelegate()))

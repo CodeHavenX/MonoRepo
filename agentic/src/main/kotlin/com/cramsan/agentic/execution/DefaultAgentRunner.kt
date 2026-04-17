@@ -74,10 +74,12 @@ class DefaultAgentRunner(
                 reviewerAgents.map { agent ->
                     async {
                         try {
+                            logI(TAG, "[REVIEW] Reviewer '${definition.name}' started review for task '${task.id}'.")
                             val feedback = agent.reviewCode(definition, task, diff)
                             val comment = formatReviewerComment(feedback)
                             vcsProvider.addPullRequestComment(prId, comment)
                             logI(TAG, "Posted reviewer feedback from ${definition.name} on PR $prId")
+                            logI(TAG, "[REVIEW] Reviewer '${definition.name}' completed review for task '${task.id}'.")
                         } catch (e: Exception) {
                             logW(TAG, "Reviewer agent ${definition.name} failed: ${e.message}")
                         }

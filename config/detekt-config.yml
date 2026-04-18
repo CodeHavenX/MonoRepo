@@ -68,6 +68,9 @@ style:
   UnusedPrivateProperty:
     ignoreAnnotated: [ 'Preview' ]
     active: true
+  ThrowsCount:
+    active: true
+    max: 10
 
 coroutines:
   excludes:

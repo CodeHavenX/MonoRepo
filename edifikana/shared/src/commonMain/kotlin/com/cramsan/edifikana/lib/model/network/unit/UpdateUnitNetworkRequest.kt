@@ -7,6 +7,10 @@ import kotlinx.serialization.Serializable
 
 /**
  * Request to update an existing unit.
+ *
+ * All fields are optional. A null value means "leave unchanged" — the existing database value
+ * is preserved. It is not possible to explicitly clear a nullable field (e.g. reset [notes] to
+ * null) through this request.
  */
 @NetworkModel
 @Serializable

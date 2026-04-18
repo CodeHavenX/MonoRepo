@@ -37,6 +37,7 @@ import com.cramsan.edifikana.server.datastore.supabase.models.OrganizationEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.TaskEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.PropertyEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.TimeCardEventEntity
+import com.cramsan.edifikana.server.datastore.supabase.models.UnitEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.UserEntity
 import com.cramsan.edifikana.server.service.models.CommonArea
 import com.cramsan.edifikana.server.service.models.Document
@@ -49,6 +50,7 @@ import com.cramsan.edifikana.server.service.models.OrgMemberView
 import com.cramsan.edifikana.server.service.models.Organization
 import com.cramsan.edifikana.server.service.models.Property
 import com.cramsan.edifikana.server.service.models.TimeCardEvent
+import com.cramsan.edifikana.server.service.models.Unit
 import com.cramsan.edifikana.server.service.models.User
 import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.annotations.SupabaseModel
@@ -242,7 +244,7 @@ fun CreatePropertyEntity(
 @OptIn(SupabaseModel::class)
 fun PropertyEntity.toProperty(): Property {
     return Property(
-        id = PropertyId(this.id),
+        id = this.id,
         name = this.name,
         address = this.address,
         organizationId = this.organizationId,
@@ -341,7 +343,7 @@ fun EventLogEntryEntity.toEventLogEntry(): EventLogEntry {
  */
 @OptIn(SupabaseModel::class)
 fun OrganizationEntity.toOrganization() = Organization(
-    id = OrganizationId(this.id),
+    id = this.id,
     name = this.name,
     description = this.description,
 )
@@ -480,5 +482,48 @@ fun TaskEntity.toTask(): Task {
         createdAt = createdAt,
         completedAt = completedAt,
         statusChangedAt = statusChangedAt,
+    )
+}
+
+/**
+ * Creates a [UnitEntity.CreateUnitEntity] from the provided parameters.
+ */
+@OptIn(SupabaseModel::class)
+fun CreateUnitEntity(
+    propertyId: PropertyId,
+    unitNumber: String,
+    bedrooms: Int?,
+    bathrooms: Int?,
+    sqFt: Int?,
+    floor: Int?,
+    notes: String?,
+): UnitEntity.CreateUnitEntity {
+    return UnitEntity.CreateUnitEntity(
+        propertyId = propertyId,
+        unitNumber = unitNumber,
+        bedrooms = bedrooms,
+        bathrooms = bathrooms,
+        sqFt = sqFt,
+        floor = floor,
+        notes = notes,
+    )
+}
+
+/**
+ * Maps a [UnitEntity] to the [Unit] service model.
+ */
+@OptIn(SupabaseModel::class)
+fun UnitEntity.toUnit(orgId: OrganizationId): Unit {
+    return Unit(
+        id = this.unitId,
+        propertyId = this.propertyId,
+        orgId = orgId,
+        unitNumber = this.unitNumber,
+        bedrooms = this.bedrooms,
+        bathrooms = this.bathrooms,
+        sqFt = this.sqFt,
+        floor = this.floor,
+        notes = this.notes,
+        createdAt = this.createdAt,
     )
 }

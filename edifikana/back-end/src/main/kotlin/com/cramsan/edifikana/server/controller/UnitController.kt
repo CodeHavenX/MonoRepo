@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.server.controller
 
 import com.cramsan.edifikana.api.UnitApi
-import com.cramsan.edifikana.lib.model.network.GetUnitsQueryParams
+import com.cramsan.edifikana.lib.model.network.unit.GetUnitsQueryParams
 import com.cramsan.edifikana.lib.model.network.unit.CreateUnitNetworkRequest
 import com.cramsan.edifikana.lib.model.network.unit.UnitListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.unit.UnitNetworkResponse
@@ -22,7 +22,6 @@ import com.cramsan.framework.core.ktor.OperationRequest
 import com.cramsan.framework.core.ktor.auth.ClientContext
 import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.core.ktor.handler
-import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.NotFoundException
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.UnauthorizedException
 import io.ktor.server.routing.Routing

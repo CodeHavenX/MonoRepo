@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.api
 
-import com.cramsan.edifikana.lib.model.network.GetUnitsQueryParams
+import com.cramsan.edifikana.lib.model.network.unit.GetUnitsQueryParams
 import com.cramsan.edifikana.lib.model.network.unit.CreateUnitNetworkRequest
 import com.cramsan.edifikana.lib.model.network.unit.UnitListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.unit.UnitNetworkResponse

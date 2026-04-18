@@ -1,6 +1,5 @@
-package com.cramsan.edifikana.lib.model.network
+package com.cramsan.edifikana.lib.model.network.unit
 
-import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.QueryParam

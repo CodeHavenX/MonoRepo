@@ -8,7 +8,6 @@ import com.cramsan.framework.core.ktor.unauthenticatedHandler
 import com.cramsan.flyerboard.api.UserApi
 import com.cramsan.flyerboard.lib.model.network.CreateUserNetworkRequest
 import com.cramsan.flyerboard.lib.model.network.UserNetworkResponse
-import com.cramsan.flyerboard.server.controller.authentication.FlyerBoardContextPayload
 import com.cramsan.flyerboard.server.service.UserService
 import io.ktor.server.routing.Routing
 
@@ -17,7 +16,7 @@ import io.ktor.server.routing.Routing
  */
 class UserController(
     private val userService: UserService,
-    private val contextRetriever: ContextRetriever<FlyerBoardContextPayload>,
+    private val contextRetriever: ContextRetriever<Unit>,
 ) : Controller {
 
     /**

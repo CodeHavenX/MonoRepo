@@ -21,8 +21,6 @@ class SplashViewModel(
 
     /**
      * Navigate to the Main Screen after splash.
-     * The app allows unauthenticated browsing, so we always go to the main graph.
-     * Sign-in is accessible from the main nav bar for auth-required features.
      */
     fun navigateToMainScreen() {
         logI(TAG, "Navigating to Main Screen")
@@ -31,8 +29,7 @@ class SplashViewModel(
             delay(1000) // Simulate loading time
             emitWindowEvent(
                 FlyerBoardWindowsEvent.NavigateToNavGraph(
-                    FlyerBoardWindowNavGraphDestination.MainNavGraphDestination,
-                    clearStack = true,
+                    FlyerBoardWindowNavGraphDestination.AuthNavGraphDestination
                 )
             )
         }

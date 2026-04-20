@@ -89,10 +89,6 @@ dependencies {
     implementation("io.ktor:ktor-server-call-logging:_")
     implementation("io.ktor:ktor-client-cio:_")
 
-    implementation("io.github.jan-tennert.supabase:postgrest-kt:_")
-    implementation("io.github.jan-tennert.supabase:storage-kt:_")
-    implementation("io.github.jan-tennert.supabase:auth-kt:_")
-
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:_")
 
     testImplementation("io.ktor:ktor-server-test-host:_")

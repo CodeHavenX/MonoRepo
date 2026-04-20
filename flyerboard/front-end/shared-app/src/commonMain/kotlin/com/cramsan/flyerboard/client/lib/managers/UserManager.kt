@@ -11,7 +11,7 @@ import com.cramsan.flyerboard.client.lib.service.UserService
  */
 class UserManager(
     private val dependencies: ManagerDependencies,
-    private val userService: UserService,
+    private val authService: UserService,
 ) {
 
     /**
@@ -22,7 +22,7 @@ class UserManager(
         lastName: String,
     ): Result<UserModel> = dependencies.getOrCatch(TAG) {
         logI(TAG, "signing in with OTP code")
-        userService.createUser(firstName, lastName).getOrThrow()
+        authService.createUser(firstName, lastName).getOrThrow()
     }
 
     companion object {

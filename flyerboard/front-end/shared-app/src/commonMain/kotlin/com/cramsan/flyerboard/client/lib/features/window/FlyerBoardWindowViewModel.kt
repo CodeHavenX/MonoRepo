@@ -1,7 +1,6 @@
 package com.cramsan.flyerboard.client.lib.features.window
 
 import androidx.compose.material3.SnackbarResult
-import com.cramsan.flyerboard.client.lib.managers.AuthManager
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.EventEmitter
 import com.cramsan.framework.core.compose.EventReceiver
@@ -17,10 +16,9 @@ class FlyerBoardWindowViewModel(
     dependencies: ViewModelDependencies,
     private val windowEventEmitter: EventEmitter<WindowEvent>,
     private val delegatedEvents: EventReceiver<FlyerBoardWindowDelegatedEvent>,
-    private val authManager: AuthManager,
 ) : BaseViewModel<FlyerBoardWindowViewModelEvent, FlyerBoardWindowUIState>(
     dependencies,
-    FlyerBoardWindowUIState.Initial,
+    FlyerBoardWindowUIState,
     TAG
 ) {
 
@@ -34,30 +32,6 @@ class FlyerBoardWindowViewModel(
                     )
                 )
             }
-        }
-        viewModelScope.launch {
-            authManager.activeUser().collect { userId ->
-                logI(TAG, "Auth state changed: ${if (userId != null) "authenticated" else "unauthenticated"}")
-                updateUiState { it.copy(isAuthenticated = userId != null) }
-            }
-        }
-    }
-
-    /**
-     * Sign out the current user and navigate to the main nav graph (public browse).
-     */
-    fun signOut() {
-        viewModelScope.launch {
-            logI(TAG, "signOut")
-            authManager.signOut()
-            emitEvent(
-                FlyerBoardWindowViewModelEvent.FlyerBoardWindowEventWrapper(
-                    FlyerBoardWindowsEvent.NavigateToNavGraph(
-                        destination = FlyerBoardWindowNavGraphDestination.MainNavGraphDestination,
-                        clearStack = true,
-                    )
-                )
-            )
         }
     }
 

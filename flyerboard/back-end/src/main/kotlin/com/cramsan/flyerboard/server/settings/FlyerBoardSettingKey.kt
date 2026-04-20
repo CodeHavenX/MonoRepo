@@ -7,7 +7,4 @@ import com.cramsan.architecture.server.settings.SettingKey
  */
 object FlyerBoardSettingKey {
     val LogAccountCreated = SettingKey.boolean("logging.account_created")
-    val MaxFileSizeBytes = SettingKey.long("flyer.max_file_size_bytes")
-    val SupabaseUrl = SettingKey.string("supabase.url")
-    val SupabaseKey = SettingKey.string("supabase.key")
 }

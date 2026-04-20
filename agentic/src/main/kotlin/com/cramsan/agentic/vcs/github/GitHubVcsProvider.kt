@@ -8,6 +8,7 @@ import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logI
 import com.cramsan.framework.logging.logW
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -26,6 +27,7 @@ class GitHubVcsProvider(
     private val shell: ShellRunner,
     private val json: Json,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    private val delayDuration: Duration = 2.seconds,
 ) : VcsProvider {
 
     override suspend fun createPullRequest(
@@ -49,7 +51,7 @@ class GitHubVcsProvider(
             args.add("--label")
             args.add(label)
         }
-        delay(5.seconds)
+        delay(delayDuration)
         val result = shell.run(*args.toTypedArray())
         if (result.exitCode != 0) {
             logE(TAG, "createPullRequest failed: exitCode=${result.exitCode}, stderr=${result.stderr}")
@@ -73,7 +75,7 @@ class GitHubVcsProvider(
                 args.add("--label")
                 args.add(labels.joinToString(","))
             }
-            delay(5.seconds)
+            delay(delayDuration)
             val result = shell.run(*args.toTypedArray())
             if (result.exitCode != 0) {
                 logE(TAG, "listOpenPullRequests failed: exitCode=${result.exitCode}, stderr=${result.stderr}")
@@ -98,7 +100,7 @@ class GitHubVcsProvider(
                 args.add("--label")
                 args.add(labels.joinToString(","))
             }
-            delay(5.seconds)
+            delay(delayDuration)
             val result = shell.run(*args.toTypedArray())
             if (result.exitCode != 0) {
                 logE(TAG, "listMergedPullRequests failed: exitCode=${result.exitCode}, stderr=${result.stderr}")
@@ -113,7 +115,7 @@ class GitHubVcsProvider(
     override suspend fun getPullRequestComments(prId: String): List<PullRequestComment> =
         withContext(ioDispatcher) {
             logI(TAG, "getPullRequestComments: repo=$owner/$repo, prId=$prId")
-            delay(5.seconds)
+            delay(delayDuration)
             val result = shell.run(
                 "gh", "pr", "view", prId,
                 "--repo", "$owner/$repo",
@@ -143,7 +145,7 @@ class GitHubVcsProvider(
     override suspend fun addPullRequestComment(prId: String, body: String) {
         logI(TAG, "addPullRequestComment: repo=$owner/$repo, prId=$prId, bodyLength=${body.length}")
         withContext(ioDispatcher) {
-            delay(5.seconds)
+            delay(delayDuration)
             val result = shell.run(
                 "gh", "pr", "comment", prId,
                 "--repo", "$owner/$repo",
@@ -160,7 +162,7 @@ class GitHubVcsProvider(
     override suspend fun isPullRequestMerged(prId: String): Boolean =
         withContext(ioDispatcher) {
             logI(TAG, "isPullRequestMerged: repo=$owner/$repo, prId=$prId")
-            delay(5.seconds)
+            delay(delayDuration)
             val result = shell.run(
                 "gh", "pr", "view", prId,
                 "--repo", "$owner/$repo",
@@ -180,7 +182,7 @@ class GitHubVcsProvider(
     override suspend fun pullRequestHasRequestedChanges(prId: String): Boolean =
         withContext(ioDispatcher) {
             logI(TAG, "pullRequestHasRequestedChanges: repo=$owner/$repo, prId=$prId")
-            delay(5.seconds)
+            delay(delayDuration)
             val result = shell.run(
                 "gh", "pr", "view", prId,
                 "--repo", "$owner/$repo",

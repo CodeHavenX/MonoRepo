@@ -45,7 +45,7 @@ class DefaultWorktreeManagerExtendedTest {
 
     @Test
     fun `getOrCreate uses branch name agentic-taskId`() = runTest {
-        coEvery { shell.run(*anyVararg()) } returns ShellResult("", 0, "")
+        coEvery { shell.run(*anyVararg(), workingDir = any()) } returns ShellResult("", 0, "")
 
         val manager = makeManager()
         val worktree = manager.getOrCreate("task-123")
@@ -55,7 +55,7 @@ class DefaultWorktreeManagerExtendedTest {
 
     @Test
     fun `getOrCreate stores worktree under agenticDir-worktrees-taskId`() = runTest {
-        coEvery { shell.run(*anyVararg()) } returns ShellResult("", 0, "")
+        coEvery { shell.run(*anyVararg(), workingDir = any()) } returns ShellResult("", 0, "")
 
         val manager = makeManager()
         val worktree = manager.getOrCreate("task-abc")
@@ -103,7 +103,7 @@ class DefaultWorktreeManagerExtendedTest {
 
     @Test
     fun `getOrCreate calls git worktree add when worktree does not exist`() = runTest {
-        coEvery { shell.run(*anyVararg()) } returns ShellResult("", 0, "")
+        coEvery { shell.run(*anyVararg(), workingDir = any()) } returns ShellResult("", 0, "")
 
         val manager = makeManager()
         manager.getOrCreate("new-task")
@@ -115,6 +115,7 @@ class DefaultWorktreeManagerExtendedTest {
                 any(), // -b or HEAD
                 any(), // branch name or base branch
                 *anyVararg(),
+                workingDir = any(),
             )
         }
     }
@@ -161,14 +162,21 @@ class DefaultWorktreeManagerExtendedTest {
 
     @Test
     fun `delete invokes git worktree remove`() = runTest {
-        coEvery { shell.run(*anyVararg()) } returns ShellResult("", 0, "")
+        coEvery { shell.run(*anyVararg(), workingDir = any()) } returns ShellResult("", 0, "")
         Files.createDirectories(agenticDir.resolve("worktrees/task-to-delete"))
 
         val manager = makeManager()
         manager.delete("task-to-delete")
 
         coVerify {
-            shell.run("git", "worktree", "remove", any(), *anyVararg())
+            shell.run(
+                "git",
+                "worktree",
+                "remove",
+                any(),
+                *anyVararg(),
+                workingDir = any(),
+            )
         }
     }
 
@@ -176,7 +184,7 @@ class DefaultWorktreeManagerExtendedTest {
 
     @Test
     fun `worktree path returned by getOrCreate matches path returned by get`() = runTest {
-        coEvery { shell.run(*anyVararg()) } returns ShellResult("", 0, "")
+        coEvery { shell.run(*anyVararg(), workingDir = any()) } returns ShellResult("", 0, "")
 
         val manager = makeManager()
         val created = manager.getOrCreate("task-xyz")

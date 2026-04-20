@@ -36,7 +36,7 @@ class DefaultWorktreeManagerTest {
 
     @Test
     fun `getOrCreate calls git worktree add when directory does not exist`() {
-        coEvery { shell.run(*anyVararg()) } returns ShellResult("", 0, "")
+        coEvery { shell.run(*anyVararg(), workingDir = any()) } returns ShellResult("", 0, "")
 
         val worktree = manager.getOrCreate("task-001")
 
@@ -48,6 +48,7 @@ class DefaultWorktreeManagerTest {
                 "-b", "agentic/task-001",
                 any(), // path
                 "main",
+                workingDir = any(),
             )
         }
     }
@@ -91,12 +92,12 @@ class DefaultWorktreeManagerTest {
     fun `delete calls git worktree remove`() {
         val worktreePath = agenticDir.resolve("worktrees/task-001")
         Files.createDirectories(worktreePath)
-        coEvery { shell.run(*anyVararg()) } returns ShellResult("", 0, "")
+        coEvery { shell.run(*anyVararg(), workingDir = any()) } returns ShellResult("", 0, "")
 
         manager.delete("task-001")
 
         coVerify {
-            shell.run("git", "worktree", "remove", "--force", any())
+            shell.run("git", "worktree", "remove", "--force", any(), workingDir = any())
         }
     }
 }

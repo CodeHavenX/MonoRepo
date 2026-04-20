@@ -1,0 +1,1 @@
+{"id":"TASK-009","title":"Implement UserProfileDatastore","description":"Create the user profile datastore interface and Supabase implementation for reading and managing user profiles (role lookups, profile creation). This is used for authentication context and admin role verification.","dependencies":["TASK-002","TASK-003"]}

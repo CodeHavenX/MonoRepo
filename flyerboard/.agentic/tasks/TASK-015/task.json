@@ -1,0 +1,1 @@
+{"id":"TASK-015","title":"Implement FlyerController routes","description":"Create the HTTP route controller for flyer CRUD endpoints. Handles both JSON and multipart form data (for file uploads), wraps responses in the standard JSON envelope, and enforces authentication on protected endpoints.","dependencies":["TASK-010","TASK-013","TASK-005"]}

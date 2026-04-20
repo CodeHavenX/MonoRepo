@@ -1,0 +1,1 @@
+{"id":"TASK-007","title":"Implement Supabase entity models and FlyerDatastore","description":"Create the Supabase entity models (data classes mapping to database rows) and the FlyerDatastore interface + Supabase implementation for CRUD operations on the flyers table. This is the data access layer for flyer records.","dependencies":["TASK-002","TASK-003"]}

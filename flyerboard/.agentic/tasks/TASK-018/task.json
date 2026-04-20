@@ -1,0 +1,1 @@
+{"id":"TASK-018","title":"Implement frontend Supabase Auth integration","description":"Set up the Supabase client and authentication manager in the frontend. Handles sign-up, sign-in, sign-out, session persistence, and access token retrieval for API calls.","dependencies":["TASK-001"]}

@@ -1,0 +1,1 @@
+{"id":"TASK-006","title":"Create Supabase migration SQL files","description":"Write versioned SQL migration files for the initial database schema (user_profiles and flyers tables, indexes) and Row Level Security policies. These are committed to source control and applied manually via Supabase.","dependencies":[]}

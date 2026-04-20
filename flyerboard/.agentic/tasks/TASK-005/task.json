@@ -1,0 +1,1 @@
+{"id":"TASK-005","title":"Define API contract objects in flyerboard api module","description":"Define API operation objects that declare the REST endpoint structure for flyers, moderation, and health. These contracts are used by both frontend (to make requests) and backend (to register routes).","dependencies":["TASK-004"]}

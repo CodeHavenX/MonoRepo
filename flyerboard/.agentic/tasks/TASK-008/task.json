@@ -1,0 +1,1 @@
+{"id":"TASK-008","title":"Implement FileDatastore for Supabase Storage","description":"Create the file storage datastore interface and Supabase Storage implementation for uploading flyer files, generating signed URLs, and deleting files. Files are stored in a private `flyer-files` bucket.","dependencies":["TASK-002"]}

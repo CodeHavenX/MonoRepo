@@ -1,0 +1,1 @@
+{"id":"TASK-016","title":"Implement ModerationController and HealthController","description":"Create route controllers for admin moderation actions and the health check endpoint. Moderation endpoints require admin role verification.","dependencies":["TASK-011","TASK-013","TASK-005"]}

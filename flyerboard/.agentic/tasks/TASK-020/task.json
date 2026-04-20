@@ -1,0 +1,1 @@
+{"id":"TASK-020","title":"Implement SignIn and SignUp screens","description":"Create authentication screens following the 5-file feature pattern. SignIn allows existing users to log in; SignUp allows new user registration with password confirmation.","dependencies":["TASK-018"]}

@@ -1,0 +1,1 @@
+{"id":"TASK-024","title":"Wire navigation graph and app shell","description":"Connect all frontend screens into a unified navigation graph with app shell (bottom nav or side menu), auth state handling, and admin-conditional navigation items.","dependencies":["TASK-020","TASK-021","TASK-022","TASK-023"]}

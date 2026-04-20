@@ -1,0 +1,1 @@
+{"id":"TASK-004","title":"Create network DTOs in flyerboard shared module","description":"Define serializable request/response data transfer objects for the REST API in the shared module. These DTOs define the JSON contract between frontend and backend.","dependencies":["TASK-003"]}

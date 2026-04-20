@@ -1,0 +1,22 @@
+{
+    "agentPoolSize": 1,
+    "defaultTaskTimeoutSeconds": 7200,
+    "baseBranch": "cramsan/test_flyerboard_impl",
+    "docsDir": ".agentic/docs",
+    "aiProvider": {
+        "type": "claude-cli",
+        "model": "sonnet",
+        "cliPath": "claude",
+        "fullAccess": true
+    },
+    "vcsProvider": {
+        "type": "github",
+        "owner": "CodeHavenX",
+        "repo": "MonoRepo"
+    },
+    "taskListProvider": {
+        "type": "document",
+        "documentPath": "docs/task-list.md",
+        "tasksOutputDir": "tasks/"
+    }
+}

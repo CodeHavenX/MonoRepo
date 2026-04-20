@@ -1,0 +1,1 @@
+{"id":"TASK-014","title":"Implement input sanitization utility","description":"Create a server-side input sanitization utility that strips HTML tags, trims whitespace, and enforces maximum lengths on user-supplied text. Used by FlyerService for title and description fields.","dependencies":["TASK-001"]}

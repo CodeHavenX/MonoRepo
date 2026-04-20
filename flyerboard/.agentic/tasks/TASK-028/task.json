@@ -1,0 +1,1 @@
+{"id":"TASK-028","title":"Create deployment configuration and documentation","description":"Create Nginx configuration, systemd service file, environment variable documentation, and deployment guide. Ensures the application can be deployed on a VPS with proper process management and TLS termination.","dependencies":["TASK-017","TASK-024"]}

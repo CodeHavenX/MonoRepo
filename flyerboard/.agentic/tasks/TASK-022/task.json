@@ -1,0 +1,1 @@
+{"id":"TASK-022","title":"Implement FlyerUpload and FlyerEdit screens","description":"Create screens for uploading new flyers and editing existing ones. Both require a file picker (via JS interop for WASM) and multipart form submission. Edits reset flyer status to pending.","dependencies":["TASK-019","TASK-020","TASK-021"]}

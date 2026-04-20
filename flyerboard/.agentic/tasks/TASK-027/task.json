@@ -1,0 +1,1 @@
+{"id":"TASK-027","title":"Write frontend ViewModel tests","description":"Create unit tests for all frontend ViewModels verifying UIState transitions, event emissions, error handling, and service interactions.","dependencies":["TASK-020","TASK-021","TASK-022","TASK-023"]}

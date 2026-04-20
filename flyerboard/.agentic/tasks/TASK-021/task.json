@@ -1,0 +1,1 @@
+{"id":"TASK-021","title":"Implement FlyerList and FlyerDetail screens","description":"Create the public flyer browsing screen (grid/list of approved flyers with pagination) and the detail screen (full-size image or PDF iframe display). These are the primary public-facing screens.","dependencies":["TASK-019"]}

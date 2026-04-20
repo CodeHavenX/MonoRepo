@@ -1,0 +1,1 @@
+{"id":"TASK-026","title":"Write backend integration tests","description":"Create integration tests covering full request/response cycles using Ktor's test engine. Tests verify the complete stack from HTTP request through controller, service, and datastore layers.","dependencies":["TASK-017"]}

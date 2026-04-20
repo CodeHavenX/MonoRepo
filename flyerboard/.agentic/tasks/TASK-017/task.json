@@ -1,0 +1,1 @@
+{"id":"TASK-017","title":"Wire backend dependency injection modules","description":"Connect all backend components (datastores, services, controllers, auth) via Koin DI modules. Configure the Supabase client, settings keys, and application module.","dependencies":["TASK-015","TASK-016","TASK-012"]}

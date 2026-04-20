@@ -1,0 +1,1 @@
+{"id":"TASK-011","title":"Implement ModerationService","description":"Create the moderation service for admin approval/rejection of flyers. Enforces admin role verification before allowing status transitions.","dependencies":["TASK-007","TASK-009"]}

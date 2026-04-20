@@ -1,0 +1,1 @@
+{"id":"TASK-019","title":"Implement frontend FlyerService API client","description":"Create the frontend service layer that communicates with the backend REST API. Handles JSON parsing, auth token attachment, multipart file uploads, and model mapping.","dependencies":["TASK-018","TASK-004"]}

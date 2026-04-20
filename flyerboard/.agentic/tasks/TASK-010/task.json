@@ -1,0 +1,1 @@
+{"id":"TASK-010","title":"Implement FlyerService business logic","description":"Create the core business logic service for flyer operations: create, read, update, list with pagination, and ownership enforcement. This service validates inputs, orchestrates datastore calls, and enforces business rules like status transitions.","dependencies":["TASK-007","TASK-008"]}

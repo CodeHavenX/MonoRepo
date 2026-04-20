@@ -1,0 +1,1 @@
+{"id":"TASK-003","title":"Create domain models in flyerboard shared module","description":"Define core domain value types and enums used by both frontend and backend: `FlyerId`, `UserId`, `FlyerStatus`, and `UserRole`. These live in the shared KMP module so both sides share the same type definitions.","dependencies":["TASK-001"]}

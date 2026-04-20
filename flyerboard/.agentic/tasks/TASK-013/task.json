@@ -1,0 +1,1 @@
+{"id":"TASK-013","title":"Implement FlyerBoard authentication context retriever","description":"Create the Supabase JWT authentication context retriever that extracts user identity and role from request headers. This enables controllers to access the authenticated user's ID and admin status.","dependencies":["TASK-009","TASK-002"]}

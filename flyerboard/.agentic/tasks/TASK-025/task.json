@@ -1,0 +1,1 @@
+{"id":"TASK-025","title":"Write backend service unit tests","description":"Create comprehensive unit tests for all backend services: FlyerService, ModerationService, ExpiryService, and InputSanitizer. Tests use mocked datastores to verify business logic in isolation.","dependencies":["TASK-010","TASK-011","TASK-012","TASK-014"]}

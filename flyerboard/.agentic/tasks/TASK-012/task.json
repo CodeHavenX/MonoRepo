@@ -1,0 +1,1 @@
+{"id":"TASK-012","title":"Implement ExpiryService coroutine scheduler","description":"Create an in-process coroutine-based scheduler that runs hourly to transition expired flyers from APPROVED to ARCHIVED status. This replaces the need for an external cron job.","dependencies":["TASK-007"]}

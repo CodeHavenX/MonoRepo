@@ -1,0 +1,106 @@
+{
+    "inputDocuments": [
+        {
+            "id": "goals-scope",
+            "filename": "goals-scope.md",
+            "displayName": "Goals & Scope",
+            "template": {
+                "type": "file",
+                "path": "templates/documents/goals-scope.md"
+            }
+        },
+        {
+            "id": "architecture-design",
+            "filename": "architecture-design.md",
+            "displayName": "Architecture & Design",
+            "template": {
+                "type": "file",
+                "path": "templates/documents/architecture-design.md"
+            }
+        },
+        {
+            "id": "standards",
+            "filename": "standards.md",
+            "displayName": "Standards",
+            "template": {
+                "type": "file",
+                "path": "templates/documents/standards.md"
+            }
+        }
+    ],
+    "workflow": {
+        "stages": [
+            {
+                "id": "stage0",
+                "name": "Document Review",
+                "outputFile": "document-review-report.md",
+                "requiresApproval": true,
+                "inputDependencies": [],
+                "prompt": {
+                    "type": "file",
+                    "path": "templates/workflow/stage0-document-review.md"
+                }
+            },
+            {
+                "id": "stage1",
+                "name": "High-Level Plan",
+                "outputFile": "high-level-plan.md",
+                "requiresApproval": true,
+                "inputDependencies": [
+                    "stage0"
+                ],
+                "prompt": {
+                    "type": "file",
+                    "path": "templates/workflow/stage1-high-level-plan.md"
+                }
+            },
+            {
+                "id": "stage2",
+                "name": "Low-Level Plan",
+                "outputFile": "low-level-plan.md",
+                "requiresApproval": true,
+                "inputDependencies": [
+                    "stage1"
+                ],
+                "prompt": {
+                    "type": "file",
+                    "path": "templates/workflow/stage2-low-level-plan.md"
+                }
+            },
+            {
+                "id": "stage3",
+                "name": "Task List",
+                "outputFile": "task-list.md",
+                "requiresApproval": true,
+                "inputDependencies": [
+                    "stage2"
+                ],
+                "prompt": {
+                    "type": "file",
+                    "path": "templates/workflow/stage3-task-list.md"
+                }
+            }
+        ]
+    },
+    "reviewers": {
+        "type": "inline",
+        "reviewers": [
+            {
+                "id": "security",
+                "name": "Security Reviewer",
+                "prompt": {
+                    "type": "file",
+                    "path": "templates/reviewers/security.md"
+                }
+            },
+            {
+                "id": "design-patterns",
+                "name": "Design Patterns Reviewer",
+                "prompt": {
+                    "type": "file",
+                    "path": "templates/reviewers/design-patterns.md"
+                }
+            }
+        ]
+    }
+}

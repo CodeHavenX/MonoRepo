@@ -43,11 +43,14 @@ class DefaultStateDeriverExtendedTest {
         sourceBranch = sourceBranch, targetBranch = "main", labels = listOf("agentic-code"),
     )
 
+    private fun makeContext(
+        merged: List<PullRequest> = emptyList(),
+        open: List<PullRequest> = emptyList(),
+    ) = PrContext(mergedPrs = merged, openPrs = open)
+
     @BeforeEach
     fun setup() {
         deriver = DefaultStateDeriver(vcsProvider, worktreeManager, agenticDir)
-        coEvery { vcsProvider.listMergedPullRequests(any()) } returns emptyList()
-        coEvery { vcsProvider.listOpenPullRequests(any()) } returns emptyList()
         coEvery { worktreeManager.get(any()) } returns null
     }
 
@@ -55,30 +58,30 @@ class DefaultStateDeriverExtendedTest {
 
     @Test
     fun `merged PR beats failed_txt — DONE takes priority`() = runTest {
-        // Both a merged PR AND a failed.txt exist: DONE must win (PR merged = task done)
         val failedFile = agenticDir.resolve("tasks/task-001/failed.txt")
         Files.createDirectories(failedFile.parent)
         Files.writeString(failedFile, "previous failure before merge")
-        coEvery { vcsProvider.listMergedPullRequests(any()) } returns listOf(makeMergedPr("agentic/task-001"))
+        val ctx = makeContext(merged = listOf(makeMergedPr("agentic/task-001")))
 
-        assertEquals(TaskStatus.DONE, deriver.statusOf(task))
+        assertEquals(TaskStatus.DONE, deriver.statusOf(task, prContext = ctx))
     }
 
     @Test
     fun `merged PR beats open PR — DONE takes priority`() = runTest {
-        // Both merged and open PRs exist for the same branch: DONE must win
-        coEvery { vcsProvider.listMergedPullRequests(any()) } returns listOf(makeMergedPr("agentic/task-001"))
-        coEvery { vcsProvider.listOpenPullRequests(any()) } returns listOf(makeOpenPr("agentic/task-001"))
         coEvery { vcsProvider.pullRequestHasRequestedChanges(any()) } returns false
+        val ctx = makeContext(
+            merged = listOf(makeMergedPr("agentic/task-001")),
+            open = listOf(makeOpenPr("agentic/task-001")),
+        )
 
-        assertEquals(TaskStatus.DONE, deriver.statusOf(task))
+        assertEquals(TaskStatus.DONE, deriver.statusOf(task, prContext = ctx))
     }
 
     @Test
     fun `merged PR for different branch does not return DONE`() = runTest {
-        coEvery { vcsProvider.listMergedPullRequests(any()) } returns listOf(makeMergedPr("agentic/other-task"))
+        val ctx = makeContext(merged = listOf(makeMergedPr("agentic/other-task")))
 
-        assertEquals(TaskStatus.PENDING, deriver.statusOf(task))
+        assertEquals(TaskStatus.PENDING, deriver.statusOf(task, prContext = ctx))
     }
 
     // ── failed.txt beats open PR ─────────────────────────────────────────────
@@ -88,10 +91,10 @@ class DefaultStateDeriverExtendedTest {
         val failedFile = agenticDir.resolve("tasks/task-001/failed.txt")
         Files.createDirectories(failedFile.parent)
         Files.writeString(failedFile, "ran out of tokens")
-        coEvery { vcsProvider.listOpenPullRequests(any()) } returns listOf(makeOpenPr("agentic/task-001"))
         coEvery { vcsProvider.pullRequestHasRequestedChanges(any()) } returns false
+        val ctx = makeContext(open = listOf(makeOpenPr("agentic/task-001")))
 
-        assertEquals(TaskStatus.FAILED, deriver.statusOf(task))
+        assertEquals(TaskStatus.FAILED, deriver.statusOf(task, prContext = ctx))
     }
 
     @Test
@@ -101,7 +104,7 @@ class DefaultStateDeriverExtendedTest {
         Files.writeString(failedFile, "reason")
         coEvery { worktreeManager.get("task-001") } returns Worktree("task-001", Path.of("/tmp/wt"), "agentic/task-001")
 
-        assertEquals(TaskStatus.FAILED, deriver.statusOf(task))
+        assertEquals(TaskStatus.FAILED, deriver.statusOf(task, prContext = makeContext()))
     }
 
     // ── unblocked.txt: human override ────────────────────────────────────────
@@ -113,7 +116,7 @@ class DefaultStateDeriverExtendedTest {
         Files.createDirectories(unblockedFile.parent)
         Files.writeString(unblockedFile, "manually unblocked by operator")
 
-        val result = deriver.statusOf(taskWithDeps, mapOf("dep-task" to TaskStatus.IN_REVIEW))
+        val result = deriver.statusOf(taskWithDeps, mapOf("dep-task" to TaskStatus.IN_REVIEW), makeContext())
 
         assertEquals(TaskStatus.PENDING, result)
     }
@@ -125,10 +128,8 @@ class DefaultStateDeriverExtendedTest {
         Files.createDirectories(unblockedFile.parent)
         Files.writeString(unblockedFile, "manually unblocked")
 
-        // First call: should return PENDING and delete the file
-        deriver.statusOf(taskWithDeps, mapOf("dep-task" to TaskStatus.IN_REVIEW))
+        deriver.statusOf(taskWithDeps, mapOf("dep-task" to TaskStatus.IN_REVIEW), makeContext())
 
-        // File must be gone
         assertEquals(false, Files.exists(unblockedFile))
     }
 
@@ -139,24 +140,20 @@ class DefaultStateDeriverExtendedTest {
         Files.createDirectories(unblockedFile.parent)
         Files.writeString(unblockedFile, "manually unblocked")
 
-        // First call consumes the marker
-        deriver.statusOf(taskWithDeps, mapOf("dep-task" to TaskStatus.IN_REVIEW))
+        deriver.statusOf(taskWithDeps, mapOf("dep-task" to TaskStatus.IN_REVIEW), makeContext())
 
-        // Second call: file is gone → must return BLOCKED
-        val result = deriver.statusOf(taskWithDeps, mapOf("dep-task" to TaskStatus.IN_REVIEW))
+        val result = deriver.statusOf(taskWithDeps, mapOf("dep-task" to TaskStatus.IN_REVIEW), makeContext())
         assertEquals(TaskStatus.BLOCKED, result)
     }
 
     @Test
     fun `unblocked_txt does not affect task that is already PENDING`() = runTest {
-        // Task has no deps → normally PENDING; unblocked.txt should be irrelevant
         val unblockedFile = agenticDir.resolve("tasks/task-001/unblocked.txt")
         Files.createDirectories(unblockedFile.parent)
         Files.writeString(unblockedFile, "should not be read for PENDING task")
 
-        val result = deriver.statusOf(task)
+        val result = deriver.statusOf(task, prContext = makeContext())
 
-        // The task is PENDING from step 6 (no deps); unblocked.txt plays no role
         assertEquals(TaskStatus.PENDING, result)
     }
 
@@ -167,32 +164,31 @@ class DefaultStateDeriverExtendedTest {
         val taskWithDeps = task.copy(dependencies = listOf("dep-a", "dep-b"))
         val resolved = mapOf("dep-a" to TaskStatus.DONE, "dep-b" to TaskStatus.DONE)
 
-        assertEquals(TaskStatus.PENDING, deriver.statusOf(taskWithDeps, resolved))
+        assertEquals(TaskStatus.PENDING, deriver.statusOf(taskWithDeps, resolved, makeContext()))
     }
 
     @Test
     fun `task with dep IN_REVIEW returns BLOCKED — IN_REVIEW is not DONE`() = runTest {
-        // Architecture requirement: dependency must be DONE (merged), not just IN_REVIEW
         val taskWithDeps = task.copy(dependencies = listOf("dep-a"))
-        assertEquals(TaskStatus.BLOCKED, deriver.statusOf(taskWithDeps, mapOf("dep-a" to TaskStatus.IN_REVIEW)))
+        assertEquals(TaskStatus.BLOCKED, deriver.statusOf(taskWithDeps, mapOf("dep-a" to TaskStatus.IN_REVIEW), makeContext()))
     }
 
     @Test
     fun `task with dep IN_PROGRESS returns BLOCKED`() = runTest {
         val taskWithDeps = task.copy(dependencies = listOf("dep-a"))
-        assertEquals(TaskStatus.BLOCKED, deriver.statusOf(taskWithDeps, mapOf("dep-a" to TaskStatus.IN_PROGRESS)))
+        assertEquals(TaskStatus.BLOCKED, deriver.statusOf(taskWithDeps, mapOf("dep-a" to TaskStatus.IN_PROGRESS), makeContext()))
     }
 
     @Test
     fun `task with dep FAILED returns BLOCKED`() = runTest {
         val taskWithDeps = task.copy(dependencies = listOf("dep-a"))
-        assertEquals(TaskStatus.BLOCKED, deriver.statusOf(taskWithDeps, mapOf("dep-a" to TaskStatus.FAILED)))
+        assertEquals(TaskStatus.BLOCKED, deriver.statusOf(taskWithDeps, mapOf("dep-a" to TaskStatus.FAILED), makeContext()))
     }
 
     @Test
     fun `task with dep BLOCKED returns BLOCKED`() = runTest {
         val taskWithDeps = task.copy(dependencies = listOf("dep-a"))
-        assertEquals(TaskStatus.BLOCKED, deriver.statusOf(taskWithDeps, mapOf("dep-a" to TaskStatus.BLOCKED)))
+        assertEquals(TaskStatus.BLOCKED, deriver.statusOf(taskWithDeps, mapOf("dep-a" to TaskStatus.BLOCKED), makeContext()))
     }
 
     @Test
@@ -200,25 +196,24 @@ class DefaultStateDeriverExtendedTest {
         val taskWithDeps = task.copy(dependencies = listOf("dep-a", "dep-b"))
         assertEquals(
             TaskStatus.BLOCKED,
-            deriver.statusOf(taskWithDeps, mapOf("dep-a" to TaskStatus.DONE, "dep-b" to TaskStatus.PENDING)),
+            deriver.statusOf(taskWithDeps, mapOf("dep-a" to TaskStatus.DONE, "dep-b" to TaskStatus.PENDING), makeContext()),
         )
     }
 
     @Test
     fun `task with empty resolvedDependencies falls back to BLOCKED`() = runTest {
         val taskWithDeps = task.copy(dependencies = listOf("dep-a"))
-        // No resolved deps provided → dep-a missing → BLOCKED
-        assertEquals(TaskStatus.BLOCKED, deriver.statusOf(taskWithDeps, emptyMap()))
+        assertEquals(TaskStatus.BLOCKED, deriver.statusOf(taskWithDeps, emptyMap(), makeContext()))
     }
 
     // ── PR branch name matching ───────────────────────────────────────────────
 
     @Test
     fun `open PR for different task does not affect this task`() = runTest {
-        coEvery { vcsProvider.listOpenPullRequests(any()) } returns listOf(makeOpenPr("agentic/other-task"))
         coEvery { vcsProvider.pullRequestHasRequestedChanges(any()) } returns false
+        val ctx = makeContext(open = listOf(makeOpenPr("agentic/other-task")))
 
-        assertEquals(TaskStatus.PENDING, deriver.statusOf(task))
+        assertEquals(TaskStatus.PENDING, deriver.statusOf(task, prContext = ctx))
     }
 
     @Test
@@ -226,6 +221,6 @@ class DefaultStateDeriverExtendedTest {
         coEvery { worktreeManager.get("task-001") } returns null
         coEvery { worktreeManager.get("other-task") } returns Worktree("other-task", Path.of("/tmp/wt"), "agentic/other-task")
 
-        assertEquals(TaskStatus.PENDING, deriver.statusOf(task))
+        assertEquals(TaskStatus.PENDING, deriver.statusOf(task, prContext = makeContext()))
     }
 }

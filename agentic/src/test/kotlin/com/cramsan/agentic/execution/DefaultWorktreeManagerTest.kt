@@ -8,6 +8,7 @@ import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -35,7 +36,7 @@ class DefaultWorktreeManagerTest {
     }
 
     @Test
-    fun `getOrCreate calls git worktree add when directory does not exist`() {
+    fun `getOrCreate calls git worktree add when directory does not exist`() = runTest {
         coEvery { shell.run(*anyVararg(), workingDir = any()) } returns ShellResult("", 0, "")
 
         val worktree = manager.getOrCreate("task-001")
@@ -54,7 +55,7 @@ class DefaultWorktreeManagerTest {
     }
 
     @Test
-    fun `getOrCreate does not call git worktree add when directory already exists`() {
+    fun `getOrCreate does not call git worktree add when directory already exists`() = runTest {
         val worktreePath = agenticDir.resolve("worktrees/task-001")
         Files.createDirectories(worktreePath)
 
@@ -89,7 +90,7 @@ class DefaultWorktreeManagerTest {
     }
 
     @Test
-    fun `delete calls git worktree remove`() {
+    fun `delete calls git worktree remove`() = runTest {
         val worktreePath = agenticDir.resolve("worktrees/task-001")
         Files.createDirectories(worktreePath)
         coEvery { shell.run(*anyVararg(), workingDir = any()) } returns ShellResult("", 0, "")

@@ -15,31 +15,26 @@ class DefaultWorktreeManager(
     private val shell: ShellRunner,
 ) : WorktreeManager {
 
-    private val tempWorktreesDir: Path = Path.of(System.getProperty("java.io.tmpdir")).resolve("agentic/worktrees")
+    private val worktreesDir: Path = agenticDir.resolve("worktrees")
 
-    private fun worktreePath(taskId: String): Path = tempWorktreesDir.resolve(taskId)
+    private fun worktreePath(taskId: String): Path = worktreesDir.resolve(taskId)
 
-    override fun getOrCreate(taskId: String): Worktree {
+    override suspend fun getOrCreate(taskId: String): Worktree {
         val path = worktreePath(taskId)
         if (Files.isDirectory(path)) {
             logI(TAG, "Reusing existing worktree for task $taskId at $path")
             return Worktree(taskId = taskId, path = path, branchName = "agentic/$taskId")
         }
         logI(TAG, "Creating new worktree for task $taskId at $path")
-        // Note: ShellRunner.run is suspend, so we need to call it from a coroutine context
-        // WorktreeManager.getOrCreate is NOT suspend per the interface spec.
-        // We use kotlinx.coroutines.runBlocking here because this is a blocking infrastructure call.
-        kotlinx.coroutines.runBlocking {
-            val result = shell.run(
-                "git", "worktree", "add",
-                "-b", "agentic/$taskId",
-                path.toString(),
-                baseBranch,
-                workingDir = repoRoot.toString(),
-            )
-            if (result.exitCode != 0) {
-                throw IllegalStateException("Failed to create worktree for $taskId: ${result.stderr}")
-            }
+        val result = shell.run(
+            "git", "worktree", "add",
+            "-b", "agentic/$taskId",
+            path.toString(),
+            baseBranch,
+            workingDir = repoRoot.toString(),
+        )
+        if (result.exitCode != 0) {
+            throw IllegalStateException("Failed to create worktree for $taskId: ${result.stderr}")
         }
         return Worktree(taskId = taskId, path = path, branchName = "agentic/$taskId")
     }
@@ -54,7 +49,6 @@ class DefaultWorktreeManager(
     }
 
     override fun listAll(): List<Worktree> {
-        val worktreesDir = tempWorktreesDir
         if (!Files.isDirectory(worktreesDir)) return emptyList()
         return Files.list(worktreesDir).use { stream ->
             stream
@@ -67,28 +61,25 @@ class DefaultWorktreeManager(
         }
     }
 
-    override fun delete(taskId: String) {
+    override suspend fun delete(taskId: String) {
         val path = worktreePath(taskId)
         logI(TAG, "Deleting worktree for task $taskId at $path")
-        kotlinx.coroutines.runBlocking {
-            val removeResult = shell.run(
-                "git", "worktree", "remove",
-                "--force",
-                path.toString(),
-                workingDir = repoRoot.toString(),
-            )
-            if (removeResult.exitCode != 0) {
-                logW(TAG, "git worktree remove failed for $taskId: ${removeResult.stderr}")
-            }
-            val branchResult = shell.run(
-                "git", "branch", "-D", "agentic/$taskId",
-                workingDir = repoRoot.toString(),
-            )
-            if (branchResult.exitCode != 0) {
-                logW(TAG, "git branch -D failed for $taskId: ${branchResult.stderr}")
-            }
+        val removeResult = shell.run(
+            "git", "worktree", "remove",
+            "--force",
+            path.toString(),
+            workingDir = repoRoot.toString(),
+        )
+        if (removeResult.exitCode != 0) {
+            logW(TAG, "git worktree remove failed for $taskId: ${removeResult.stderr}")
         }
-        // Clean up directory if it still exists
+        val branchResult = shell.run(
+            "git", "branch", "-D", "agentic/$taskId",
+            workingDir = repoRoot.toString(),
+        )
+        if (branchResult.exitCode != 0) {
+            logW(TAG, "git branch -D failed for $taskId: ${branchResult.stderr}")
+        }
         if (Files.isDirectory(path)) {
             path.toFile().deleteRecursively()
         }

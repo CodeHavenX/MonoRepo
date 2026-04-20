@@ -4,7 +4,6 @@ import com.cramsan.agentic.ai.AiProvider
 import com.cramsan.agentic.ai.RetryingAiProvider
 import com.cramsan.agentic.ai.claude.ClaudeAiProvider
 import com.cramsan.agentic.ai.claude.ClaudeCliAiProvider
-import com.cramsan.agentic.ai.claude.ClaudeCliFullAiProvider
 import com.cramsan.agentic.ai.fake.FakeAiProvider
 import com.cramsan.agentic.claude.DefaultAgentSession
 import com.cramsan.agentic.coordination.DefaultDependencyGraph
@@ -163,13 +162,16 @@ fun agenticModule(
                 RetryingAiProvider(ClaudeAiProvider(get(), apiKey, get(), aiConfig.model))
             }
             is AiProviderConfig.ClaudeCli -> {
-                if (aiConfig.fullAccess) {
-                    logI(TAG, "Configuring AI provider: ClaudeCliFull (model=${aiConfig.model}, cliPath=${aiConfig.cliPath})")
-                    RetryingAiProvider(ClaudeCliFullAiProvider(get(), aiConfig.cliPath, aiConfig.model, get()))
-                } else {
-                    logI(TAG, "Configuring AI provider: ClaudeCli (model=${aiConfig.model}, cliPath=${aiConfig.cliPath})")
-                    RetryingAiProvider(ClaudeCliAiProvider(get(), aiConfig.cliPath, aiConfig.model))
-                }
+                logI(TAG, "Configuring AI provider: ClaudeCli (model=${aiConfig.model}, cliPath=${aiConfig.cliPath}, fullAccess=${aiConfig.fullAccess})")
+                RetryingAiProvider(
+                    ClaudeCliAiProvider(
+                        shell = get(),
+                        cliPath = aiConfig.cliPath,
+                        model = aiConfig.model,
+                        fullAccess = aiConfig.fullAccess,
+                        json = if (aiConfig.fullAccess) get() else null,
+                    )
+                )
             }
             is AiProviderConfig.Fake -> {
                 logI(TAG, "Configuring AI provider: Fake (model=${aiConfig.model}, mode=${aiConfig.mode})")

@@ -9,8 +9,8 @@ data class Worktree(
 )
 
 interface WorktreeManager {
-    fun getOrCreate(taskId: String): Worktree
+    suspend fun getOrCreate(taskId: String): Worktree
     fun get(taskId: String): Worktree?
     fun listAll(): List<Worktree>
-    fun delete(taskId: String)
+    suspend fun delete(taskId: String)
 }

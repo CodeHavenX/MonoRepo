@@ -4,5 +4,11 @@ import com.cramsan.agentic.core.Task
 import com.cramsan.agentic.core.TaskStatus
 
 interface StateDeriver {
-    suspend fun statusOf(task: Task, resolvedDependencies: Map<String, TaskStatus> = emptyMap()): TaskStatus
+    suspend fun fetchPrContext(): PrContext
+
+    suspend fun statusOf(
+        task: Task,
+        resolvedDependencies: Map<String, TaskStatus> = emptyMap(),
+        prContext: PrContext,
+    ): TaskStatus
 }

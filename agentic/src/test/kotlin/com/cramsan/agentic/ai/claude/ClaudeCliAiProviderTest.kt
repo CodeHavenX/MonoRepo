@@ -7,11 +7,13 @@ import com.cramsan.agentic.ai.AiTool
 import com.cramsan.agentic.vcs.github.ShellResult
 import com.cramsan.agentic.vcs.github.ShellRunner
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.buildJsonObject
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -129,5 +131,87 @@ class ClaudeCliAiProviderTest {
 
         assertEquals(127, ex.exitCode)
         assertTrue(ex.message!!.contains("command not found"))
+    }
+
+    // ── fullAccess=true mode ──────────────────────────────────────────────────
+
+    private val jsonSerializer = Json { ignoreUnknownKeys = true }
+    private val fullProvider = ClaudeCliAiProvider(
+        shell = shell,
+        cliPath = "claude",
+        model = "claude-opus-4-6",
+        fullAccess = true,
+        json = jsonSerializer,
+    )
+
+    @Test
+    fun `fullAccess=true invokes CLI with --dangerously-skip-permissions and --output-format json`() = runTest {
+        coEvery { shell.run(*anyVararg()) } returns ShellResult(
+            stdout = """{"type":"result","subtype":"success","is_error":false,"result":"Done"}""",
+            exitCode = 0,
+            stderr = "",
+        )
+
+        fullProvider.chat("sys", listOf(AiMessage("user", "hi")), emptyList())
+
+        coVerify {
+            shell.run(
+                "claude",
+                "--print",
+                "--output-format", "json",
+                "--dangerously-skip-permissions",
+                "--model", "claude-opus-4-6",
+                any(),
+            )
+        }
+    }
+
+    @Test
+    fun `fullAccess=true parses result field from JSON output`() = runTest {
+        coEvery { shell.run(*anyVararg()) } returns ShellResult(
+            stdout = """{"type":"result","subtype":"success","is_error":false,"result":"Task complete"}""",
+            exitCode = 0,
+            stderr = "",
+        )
+
+        val response = fullProvider.chat("sys", listOf(AiMessage("user", "go")), emptyList())
+
+        val text = (response.content[0] as AiContentBlock.Text).text
+        assertEquals("Task complete", text)
+    }
+
+    @Test
+    fun `fullAccess=true is_error=true throws AiProviderException`() = runTest {
+        coEvery { shell.run(*anyVararg()) } returns ShellResult(
+            stdout = """{"type":"result","subtype":"error","is_error":true,"result":"out of context"}""",
+            exitCode = 0,
+            stderr = "",
+        )
+
+        assertFailsWith<AiProviderException> {
+            fullProvider.chat("sys", listOf(AiMessage("user", "go")), emptyList())
+        }
+    }
+
+    @Test
+    fun `fullAccess=true collapseConversationWithTools includes Available Tools section`() {
+        val tool = AiTool("bash_run", "Runs bash commands", buildJsonObject {})
+        val collapsed = fullProvider.collapseConversationWithTools("sys", listOf(AiMessage("user", "hi")), listOf(tool))
+
+        assertTrue(collapsed.contains("[Available Tools]"))
+        assertTrue(collapsed.contains("bash_run"))
+        assertTrue(collapsed.contains("Runs bash commands"))
+    }
+
+    @Test
+    fun `fullAccess=true does not throw on non-empty tools`() = runTest {
+        coEvery { shell.run(*anyVararg()) } returns ShellResult(
+            stdout = """{"type":"result","is_error":false,"result":"ok"}""",
+            exitCode = 0,
+            stderr = "",
+        )
+        val tool = AiTool("write_file", "Writes a file", buildJsonObject {})
+
+        fullProvider.chat("sys", listOf(AiMessage("user", "do it")), listOf(tool))
     }
 }

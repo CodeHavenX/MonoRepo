@@ -25,6 +25,7 @@ class DefaultOrchestratorTest {
     @BeforeEach
     fun setup() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
+        coEvery { stateDeriver.fetchPrContext() } returns PrContext(emptyList(), emptyList())
     }
 
     private val stateDeriver = mockk<StateDeriver>()
@@ -53,8 +54,9 @@ class DefaultOrchestratorTest {
     fun `all tasks DONE on first tick triggers RunCompleted`() = runTest {
         val task = makeTask("task-1")
         coEvery { taskListProvider.provide() } returns listOf(task)
-        coEvery { stateDeriver.statusOf(task, any()) } returns TaskStatus.DONE
+        coEvery { stateDeriver.statusOf(task, any(), any()) } returns TaskStatus.DONE
         coEvery { dependencyGraph.downstreamCount(any()) } returns 0
+        coEvery { dependencyGraph.dependentsOf(any()) } returns emptySet()
 
         makeOrchestrator().run(config)
 
@@ -65,8 +67,9 @@ class DefaultOrchestratorTest {
     fun `no progress triggers RunDeadlocked`() = runTest {
         val task = makeTask("task-1")
         coEvery { taskListProvider.provide() } returns listOf(task)
-        coEvery { stateDeriver.statusOf(task, any()) } returns TaskStatus.FAILED
+        coEvery { stateDeriver.statusOf(task, any(), any()) } returns TaskStatus.FAILED
         coEvery { dependencyGraph.downstreamCount(any()) } returns 0
+        coEvery { dependencyGraph.dependentsOf(any()) } returns emptySet()
 
         makeOrchestrator().run(config)
 
@@ -79,10 +82,11 @@ class DefaultOrchestratorTest {
         coEvery { taskListProvider.provide() } returns listOf(task)
         // First tick: PENDING, second tick: DONE (after agent ran)
         var callCount = 0
-        coEvery { stateDeriver.statusOf(task, any()) } answers {
+        coEvery { stateDeriver.statusOf(task, any(), any()) } answers {
             if (callCount++ == 0) TaskStatus.PENDING else TaskStatus.DONE
         }
         coEvery { dependencyGraph.downstreamCount("task-1") } returns 0
+        coEvery { dependencyGraph.dependentsOf("task-1") } returns emptySet()
         coEvery { worktreeManager.getOrCreate("task-1") } returns fakeWorktree
         coEvery { agentRunner.run(task, fakeWorktree) } returns AgentResult.PrOpened("pr-1", "url")
 
@@ -101,12 +105,13 @@ class DefaultOrchestratorTest {
         coEvery { taskListProvider.provide() } returns tasks
 
         var tickCount = 0
-        coEvery { stateDeriver.statusOf(any(), any()) } answers {
+        coEvery { stateDeriver.statusOf(any(), any(), any()) } answers {
             if (tickCount < 3) TaskStatus.PENDING else TaskStatus.DONE
         }
         tickCount = 0 // reset
 
         coEvery { dependencyGraph.downstreamCount(any()) } returns 0
+        coEvery { dependencyGraph.dependentsOf(any()) } returns emptySet()
         coEvery { worktreeManager.getOrCreate(any()) } returns fakeWorktree
         coEvery { agentRunner.run(any(), any()) } coAnswers {
             tickCount++
@@ -114,9 +119,6 @@ class DefaultOrchestratorTest {
         }
 
         val configWith2Pool = config.copy(agentPoolSize = 2)
-        // The exact pool sizing test is complex with coroutines, so we just verify it doesn't throw
-        // and eventually completes
-        // Let's just test a simpler invariant: all 3 agents eventually run
         makeOrchestrator().run(configWith2Pool)
 
         coVerify(atLeast = 1) { agentRunner.run(any(), any()) }
@@ -130,11 +132,12 @@ class DefaultOrchestratorTest {
 
         var firstAssigned: String? = null
         var callCount = 0
-        coEvery { stateDeriver.statusOf(any(), any()) } answers {
+        coEvery { stateDeriver.statusOf(any(), any(), any()) } answers {
             if (callCount++ < 2) TaskStatus.PENDING else TaskStatus.DONE
         }
         coEvery { dependencyGraph.downstreamCount("task-A") } returns 2
         coEvery { dependencyGraph.downstreamCount("task-B") } returns 0
+        coEvery { dependencyGraph.dependentsOf(any()) } returns emptySet()
 
         coEvery { worktreeManager.getOrCreate(any()) } answers {
             val taskId = firstArg<String>()
@@ -154,10 +157,11 @@ class DefaultOrchestratorTest {
         coEvery { taskListProvider.provide() } returns listOf(task)
 
         var callCount = 0
-        coEvery { stateDeriver.statusOf(task, any()) } answers {
+        coEvery { stateDeriver.statusOf(task, any(), any()) } answers {
             if (callCount++ == 0) TaskStatus.PENDING else TaskStatus.FAILED
         }
         coEvery { dependencyGraph.downstreamCount(any()) } returns 0
+        coEvery { dependencyGraph.dependentsOf(any()) } returns emptySet()
         coEvery { worktreeManager.getOrCreate(any()) } returns fakeWorktree
         coEvery { agentRunner.run(task, fakeWorktree) } returns AgentResult.Failed("Out of memory")
 

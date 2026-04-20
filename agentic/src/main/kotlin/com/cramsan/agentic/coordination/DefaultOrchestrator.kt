@@ -53,7 +53,11 @@ class DefaultOrchestrator(
 
                 // Termination: all done
                 if (statuses.values.all { it == TaskStatus.DONE }) {
-                    notifier.notify(AgenticEvent.RunCompleted(tasks))
+                    try {
+                        notifier.notify(AgenticEvent.RunCompleted(tasks))
+                    } catch (e: Exception) {
+                        logW(TAG, "Notifier failed during RunCompleted: ${e.message}")
+                    }
                     return@coroutineScope
                 }
 
@@ -64,7 +68,11 @@ class DefaultOrchestrator(
                 if (!hasMakingProgress) {
                     val blocked = tasks.filter { statuses[it] == TaskStatus.BLOCKED }
                     val failed = tasks.filter { statuses[it] == TaskStatus.FAILED }
-                    notifier.notify(AgenticEvent.RunDeadlocked(blocked, failed))
+                    try {
+                        notifier.notify(AgenticEvent.RunDeadlocked(blocked, failed))
+                    } catch (e: Exception) {
+                        logW(TAG, "Notifier failed during RunDeadlocked: ${e.message}")
+                    }
                     return@coroutineScope
                 }
 
@@ -86,7 +94,11 @@ class DefaultOrchestrator(
                                 try {
                                     val result = agentRunner.run(task, worktree)
                                     if (result is AgentResult.Failed) {
-                                        notifier.notify(AgenticEvent.TaskFailed(task, result.reason))
+                                        try {
+                                            notifier.notify(AgenticEvent.TaskFailed(task, result.reason))
+                                        } catch (e: Exception) {
+                                            logW(TAG, "Notifier failed during TaskFailed for ${task.id}: ${e.message}")
+                                        }
                                     }
                                 } finally {
                                     activeTaskIds -= task.id
@@ -105,44 +117,48 @@ class DefaultOrchestrator(
     }
 
     private suspend fun deriveMemoized(tasks: List<Task>): Map<Task, TaskStatus> {
-        // Build statuses in topological order (tasks with no dependencies first)
-        // so dependency statuses are available when evaluating downstream tasks
-        val resolved = mutableMapOf<String, TaskStatus>()
-        val result = mutableMapOf<Task, TaskStatus>()
+        val prContext = stateDeriver.fetchPrContext()
+        val taskById = tasks.associateBy { it.id }
 
-        // Simple topological sort: repeatedly process tasks whose dependencies are all resolved
-        val remaining = tasks.toMutableList()
-        val maxIterations = tasks.size + 1
-        var iteration = 0
-        while (remaining.isNotEmpty() && iteration < maxIterations) {
-            iteration++
-            val iter = remaining.iterator()
-            while (iter.hasNext()) {
-                val task = iter.next()
-                if (task.dependencies.all { it in resolved }) {
-                    val depStatuses = task.dependencies.associateWith { resolved[it]!! }
-                    val status = try {
-                        stateDeriver.statusOf(task, depStatuses)
-                    } catch (e: Exception) {
-                        logW(TAG, "Failed to derive status for task ${task.id}: ${e.message}. Treating as current status or PENDING.")
-                        resolved[task.id] ?: TaskStatus.PENDING
-                    }
-                    resolved[task.id] = status
-                    result[task] = status
-                    iter.remove()
+        // Kahn's algorithm: process tasks in topological order so each task's
+        // dependency statuses are already resolved before it is evaluated.
+        val inDegree = tasks.associate { it.id to it.dependencies.size }.toMutableMap()
+        val queue = ArrayDeque(tasks.filter { it.dependencies.isEmpty() })
+        val resolved = mutableMapOf<String, TaskStatus>()
+        val result = LinkedHashMap<Task, TaskStatus>()
+
+        while (queue.isNotEmpty()) {
+            val task = queue.removeFirst()
+            val depStatuses = task.dependencies.associateWith { resolved[it]!! }
+            val status = try {
+                stateDeriver.statusOf(task, depStatuses, prContext)
+            } catch (e: Exception) {
+                logW(TAG, "Failed to derive status for task ${task.id}: ${e.message}. Treating as PENDING.")
+                TaskStatus.PENDING
+            }
+            resolved[task.id] = status
+            result[task] = status
+
+            for (dependentId in dependencyGraph.dependentsOf(task.id)) {
+                if ((inDegree.merge(dependentId, -1, Int::plus) ?: 0) == 0) {
+                    taskById[dependentId]?.let { queue += it }
                 }
             }
         }
 
-        // Any remaining tasks (circular deps, shouldn't happen after validation) — just evaluate them
-        for (task in remaining) {
-            val status = try {
-                stateDeriver.statusOf(task)
-            } catch (e: Exception) {
-                logW(TAG, "Failed to derive status for task ${task.id}: ${e.message}. Treating as current status or PENDING.")
-                resolved[task.id] ?: TaskStatus.PENDING
+        // Any tasks not reached have a dependency cycle — evaluate without resolved deps.
+        if (result.size < tasks.size) {
+            val cyclic = tasks.filter { it.id !in resolved }
+            logW(TAG, "Dependency cycle detected among tasks: ${cyclic.map { it.id }}. Evaluating without dependency context.")
+            for (task in cyclic) {
+                val status = try {
+                    stateDeriver.statusOf(task, prContext = prContext)
+                } catch (e: Exception) {
+                    logW(TAG, "Failed to derive status for task ${task.id}: ${e.message}. Treating as PENDING.")
+                    TaskStatus.PENDING
+                }
+                result[task] = status
             }
-            result[task] = status
         }
 
         return result

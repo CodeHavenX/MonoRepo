@@ -1,6 +1,5 @@
 package com.cramsan.agentic.app.commands
 
-import com.cramsan.agentic.ai.claude.ClaudeCliAiProvider
 import com.cramsan.agentic.app.agenticModule
 import com.cramsan.agentic.coordination.OrchestratorConfig
 import com.cramsan.agentic.core.AiProviderConfig
@@ -44,13 +43,12 @@ class StartCommand : CliktCommand(name = "start", help = "Start the agentic orch
             }
 
             val agenticConfig = koin.get<com.cramsan.agentic.core.AgenticConfig>()
-            val aiProvider = koin.get<com.cramsan.agentic.ai.AiProvider>()
             val orchestrator = koin.get<com.cramsan.agentic.coordination.Orchestrator>()
 
-            // Startup validation: agent task execution requires tool-use support.
-            // ClaudeCliAiProvider (fullAccess=false) does not support tools — fail fast with a
-            // clear message. ClaudeCliFullAiProvider (fullAccess=true) is allowed here.
-            if (aiProvider is ClaudeCliAiProvider) {
+            // Startup validation: claude-cli without fullAccess does not support tool use.
+            if (agenticConfig.aiProvider is AiProviderConfig.ClaudeCli &&
+                !(agenticConfig.aiProvider as AiProviderConfig.ClaudeCli).fullAccess
+            ) {
                 echo(
                     "ERROR: The configured AI provider (claude-cli) does not support tool use, " +
                         "which is required for agent task execution. " +

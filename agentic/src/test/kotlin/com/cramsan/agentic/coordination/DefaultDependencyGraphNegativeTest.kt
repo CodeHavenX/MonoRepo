@@ -1,6 +1,10 @@
 package com.cramsan.agentic.coordination
 
 import com.cramsan.agentic.core.Task
+import com.cramsan.framework.logging.EventLogger
+import com.cramsan.framework.logging.implementation.PassthroughEventLogger
+import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -10,6 +14,11 @@ import kotlin.test.assertTrue
  * circular dependencies, duplicate IDs, and dangling dependency references.
  */
 class DefaultDependencyGraphNegativeTest {
+
+    @BeforeEach
+    fun setup() {
+        EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
+    }
 
     private fun makeTask(id: String, vararg deps: String) = Task(
         id = id, title = id, description = id, dependencies = deps.toList()

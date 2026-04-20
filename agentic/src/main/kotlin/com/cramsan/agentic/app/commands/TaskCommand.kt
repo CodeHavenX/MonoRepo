@@ -48,9 +48,11 @@ private class TaskShowSubcommand : CliktCommand(name = "show", help = "Show task
         val agenticDir = Path.of(configPath).parent ?: Path.of(".")
         val koin = startKoin { modules(com.cramsan.agentic.app.agenticModule(agenticDir, Path.of("."))) }.koin
         try {
-            val taskStore = koin.get<com.cramsan.agentic.coordination.TaskStore>()
+            val taskListProvider = koin.get<com.cramsan.agentic.coordination.TaskListProvider>()
             val orchestrator = koin.get<com.cramsan.agentic.coordination.Orchestrator>()
-            val task = taskStore.get(taskId)
+            val tasks = runBlocking { taskListProvider.provide() }
+            val task = tasks.firstOrNull { it.id == taskId }
+                ?: run { echo("Task '$taskId' not found."); return }
             val statuses = runBlocking { orchestrator.status() }
             val status = statuses.entries.firstOrNull { it.key.id == taskId }?.value
 

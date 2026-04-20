@@ -15,7 +15,9 @@ class DefaultWorktreeManager(
     private val shell: ShellRunner,
 ) : WorktreeManager {
 
-    private fun worktreePath(taskId: String): Path = agenticDir.resolve("worktrees/$taskId")
+    private val tempWorktreesDir: Path = Path.of(System.getProperty("java.io.tmpdir")).resolve("agentic/worktrees")
+
+    private fun worktreePath(taskId: String): Path = tempWorktreesDir.resolve(taskId)
 
     override fun getOrCreate(taskId: String): Worktree {
         val path = worktreePath(taskId)
@@ -52,7 +54,7 @@ class DefaultWorktreeManager(
     }
 
     override fun listAll(): List<Worktree> {
-        val worktreesDir = agenticDir.resolve("worktrees")
+        val worktreesDir = tempWorktreesDir
         if (!Files.isDirectory(worktreesDir)) return emptyList()
         return Files.list(worktreesDir).use { stream ->
             stream

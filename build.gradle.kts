@@ -106,12 +106,5 @@ tasks.register("releaseAll") {
     dependsOn("templatereplaceme:front-end:app-android:release")
     dependsOn("templatereplaceme:front-end:app-jvm:release")
 
-    dependsOn("flyerboard:back-end:release")
-    dependsOn("flyerboard:shared:release")
-    dependsOn("flyerboard:api:release")
-    dependsOn("flyerboard:front-end:shared-ui:release")
-    dependsOn("flyerboard:front-end:shared-app:release")
-    dependsOn("flyerboard:front-end:app-wasm:release")
-
     dependsOn("agentic:release")
 }

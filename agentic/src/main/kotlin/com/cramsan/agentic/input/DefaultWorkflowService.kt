@@ -129,6 +129,10 @@ class DefaultWorkflowService(
     }
 
     override suspend fun startNextStage(): StageDocument? {
+        if (!documentStore.allValidated()) {
+            logI(TAG, "startNextStage: documents not yet validated, cannot start")
+            return null
+        }
         val state = getState()
         return when (val status = state.status) {
             is WorkflowStatus.StageInProgress -> {

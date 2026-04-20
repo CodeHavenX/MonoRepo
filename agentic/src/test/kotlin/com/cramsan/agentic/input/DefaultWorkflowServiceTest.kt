@@ -89,6 +89,7 @@ class DefaultWorkflowServiceTest {
     @BeforeEach
     fun setup() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
+        every { documentStore.allValidated() } returns true
         service = DefaultWorkflowService(
             documentStore,
             aiProvider,

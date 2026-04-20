@@ -27,17 +27,18 @@ class DefaultOrchestratorTest {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
     }
 
-    private val taskStore = mockk<TaskStore>()
     private val stateDeriver = mockk<StateDeriver>()
     private val dependencyGraph = mockk<DependencyGraph>()
     private val worktreeManager = mockk<WorktreeManager>()
     private val agentRunner = mockk<AgentRunner>()
     private val notifier = mockk<Notifier>(relaxed = true)
+    private val taskListProvider = mockk<TaskListProvider>()
+
 
     private val fakeWorktree = Worktree("task-1", Path.of("/tmp/wt"), "agentic/task-1")
 
     private fun makeOrchestrator() = DefaultOrchestrator(
-        taskStore, stateDeriver, dependencyGraph, worktreeManager, agentRunner, notifier
+        taskListProvider, stateDeriver, dependencyGraph, worktreeManager, agentRunner, notifier
     )
 
     private fun makeTask(id: String) = Task(id = id, title = id, description = id, dependencies = emptyList())
@@ -51,7 +52,7 @@ class DefaultOrchestratorTest {
     @Test
     fun `all tasks DONE on first tick triggers RunCompleted`() = runTest {
         val task = makeTask("task-1")
-        coEvery { taskStore.getAll() } returns listOf(task)
+        coEvery { taskListProvider.provide() } returns listOf(task)
         coEvery { stateDeriver.statusOf(task, any()) } returns TaskStatus.DONE
         coEvery { dependencyGraph.downstreamCount(any()) } returns 0
 
@@ -63,7 +64,7 @@ class DefaultOrchestratorTest {
     @Test
     fun `no progress triggers RunDeadlocked`() = runTest {
         val task = makeTask("task-1")
-        coEvery { taskStore.getAll() } returns listOf(task)
+        coEvery { taskListProvider.provide() } returns listOf(task)
         coEvery { stateDeriver.statusOf(task, any()) } returns TaskStatus.FAILED
         coEvery { dependencyGraph.downstreamCount(any()) } returns 0
 
@@ -75,7 +76,7 @@ class DefaultOrchestratorTest {
     @Test
     fun `PENDING task causes agent launch and getOrCreate is called`() = runTest {
         val task = makeTask("task-1")
-        coEvery { taskStore.getAll() } returns listOf(task)
+        coEvery { taskListProvider.provide() } returns listOf(task)
         // First tick: PENDING, second tick: DONE (after agent ran)
         var callCount = 0
         coEvery { stateDeriver.statusOf(task, any()) } answers {
@@ -97,7 +98,7 @@ class DefaultOrchestratorTest {
         val task2 = makeTask("task-2")
         val task3 = makeTask("task-3")
         val tasks = listOf(task1, task2, task3)
-        coEvery { taskStore.getAll() } returns tasks
+        coEvery { taskListProvider.provide() } returns tasks
 
         var tickCount = 0
         coEvery { stateDeriver.statusOf(any(), any()) } answers {
@@ -125,7 +126,7 @@ class DefaultOrchestratorTest {
     fun `priority ordering - task with higher downstreamCount is assigned first`() = runTest {
         val taskA = makeTask("task-A")
         val taskB = makeTask("task-B")
-        coEvery { taskStore.getAll() } returns listOf(taskA, taskB)
+        coEvery { taskListProvider.provide() } returns listOf(taskA, taskB)
 
         var firstAssigned: String? = null
         var callCount = 0
@@ -150,7 +151,8 @@ class DefaultOrchestratorTest {
     @Test
     fun `AgentResult_Failed causes TaskFailed notification`() = runTest {
         val task = makeTask("task-1")
-        coEvery { taskStore.getAll() } returns listOf(task)
+        coEvery { taskListProvider.provide() } returns listOf(task)
+
         var callCount = 0
         coEvery { stateDeriver.statusOf(task, any()) } answers {
             if (callCount++ == 0) TaskStatus.PENDING else TaskStatus.FAILED

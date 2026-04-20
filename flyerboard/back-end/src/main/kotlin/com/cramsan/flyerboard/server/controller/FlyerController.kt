@@ -15,8 +15,10 @@ import com.cramsan.framework.core.ktor.unauthenticatedHandler
 import com.cramsan.framework.core.ktor.validateClientError
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.content.MultiPartData
 import io.ktor.http.content.PartData
 import io.ktor.http.content.forEachPart
+import io.ktor.server.application.ApplicationCall
 import io.ktor.server.request.receiveMultipart
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Routing
@@ -40,8 +42,6 @@ class FlyerController(
 
     override fun registerRoutes(route: Routing) {
         FlyerApi.register(route) {
-
-            // GET /api/v1/flyers — list publicly visible flyers
             unauthenticatedHandler(api.listFlyers, contextRetriever) { request ->
                 flyerService.listFlyers(
                     status = request.queryParam.status,
@@ -51,12 +51,10 @@ class FlyerController(
                 ).getOrThrow().toFlyerListNetworkResponse()
             }
 
-            // GET /api/v1/flyers/{param} — get a single flyer by ID
             unauthenticatedHandler(api.getFlyer, contextRetriever) { request ->
                 flyerService.getFlyer(request.pathParam).getOrThrow()?.toFlyerNetworkResponse()
             }
 
-            // GET /api/v1/flyers/archive — list archived flyers
             unauthenticatedHandler(api.listArchived, contextRetriever) { request ->
                 flyerService.listFlyers(
                     status = FlyerStatus.ARCHIVED,
@@ -66,7 +64,6 @@ class FlyerController(
                 ).getOrThrow().toFlyerListNetworkResponse()
             }
 
-            // GET /api/v1/flyers/mine — list the authenticated user's own flyers
             handler(api.listMyFlyers, contextRetriever) { request ->
                 val userId = request.context.payload.userId
                 flyerService.listFlyersByUploader(
@@ -76,133 +73,104 @@ class FlyerController(
                 ).getOrThrow().toFlyerListNetworkResponse()
             }
 
-            // POST /api/v1/flyers — create a new flyer (multipart/form-data)
-            this.route.route("", HttpMethod.Post) {
-                handle {
-                    val context = contextRetriever.getContext(call)
-                    if (context !is ClientContext.AuthenticatedClientContext) {
-                        call.respond(HttpStatusCode.Unauthorized, "Unauthorized")
-                        return@handle
-                    }
-                    val userId = context.payload.userId
-
-                    val multipart = call.receiveMultipart()
-                    var title: String? = null
-                    var description: String? = null
-                    var expiresAtStr: String? = null
-                    var fileContent: ByteArray? = null
-                    var fileName: String? = null
-                    var mimeType: String? = null
-
-                    multipart.forEachPart { part ->
-                        when (part) {
-                            is PartData.FormItem -> when (part.name) {
-                                "title" -> title = part.value
-                                "description" -> description = part.value
-                                "expires_at" -> expiresAtStr = part.value
-                            }
-                            is PartData.FileItem -> {
-                                fileName = part.originalFileName
-                                mimeType = part.contentType?.toString()
-                                fileContent = part.provider().toByteArray()
-                            }
-                            else -> {}
-                        }
-                        part.dispose()
-                    }
-
-                    val expiresAt = runCatching { expiresAtStr?.let { Instant.parse(it) } }
-                        .getOrElse {
-                            call.respond(HttpStatusCode.BadRequest, "Invalid expires_at format")
-                            return@handle
-                        }
-
-                    val result = flyerService.createFlyer(
-                        uploaderId = userId,
-                        title = title ?: "",
-                        description = description ?: "",
-                        expiresAt = expiresAt,
-                        fileContent = fileContent ?: ByteArray(0),
-                        fileName = fileName ?: "",
-                        mimeType = mimeType ?: "",
-                    ).map { it.toFlyerNetworkResponse() }
-
-                    if (result.isSuccess) {
-                        call.respond(HttpStatusCode.OK, result.getOrThrow())
-                    } else {
-                        call.validateClientError(TAG, result)
-                    }
-                }
-            }
-
-            // PUT /api/v1/flyers/{param} — update an existing flyer (multipart/form-data)
-            this.route.route("{param}", HttpMethod.Put) {
-                handle {
-                    val context = contextRetriever.getContext(call)
-                    if (context !is ClientContext.AuthenticatedClientContext) {
-                        call.respond(HttpStatusCode.Unauthorized, "Unauthorized")
-                        return@handle
-                    }
-                    val userId = context.payload.userId
-
-                    val flyerIdStr = call.parameters["param"]
-                        ?: run {
-                            call.respond(HttpStatusCode.BadRequest, "Missing flyer ID")
-                            return@handle
-                        }
-                    val flyerId = FlyerId(flyerIdStr)
-
-                    val multipart = call.receiveMultipart()
-                    var title: String? = null
-                    var description: String? = null
-                    var expiresAtStr: String? = null
-                    var fileContent: ByteArray? = null
-                    var fileName: String? = null
-                    var mimeType: String? = null
-
-                    multipart.forEachPart { part ->
-                        when (part) {
-                            is PartData.FormItem -> when (part.name) {
-                                "title" -> title = part.value
-                                "description" -> description = part.value
-                                "expires_at" -> expiresAtStr = part.value
-                            }
-                            is PartData.FileItem -> {
-                                fileName = part.originalFileName
-                                mimeType = part.contentType?.toString()
-                                fileContent = part.provider().toByteArray()
-                            }
-                            else -> {}
-                        }
-                        part.dispose()
-                    }
-
-                    val expiresAt = runCatching { expiresAtStr?.let { Instant.parse(it) } }
-                        .getOrElse {
-                            call.respond(HttpStatusCode.BadRequest, "Invalid expires_at format")
-                            return@handle
-                        }
-
-                    val result = flyerService.updateFlyer(
-                        flyerId = flyerId,
-                        requesterId = userId,
-                        title = title,
-                        description = description,
-                        expiresAt = expiresAt,
-                        fileContent = fileContent,
-                        fileName = fileName,
-                        mimeType = mimeType,
-                    ).map { it.toFlyerNetworkResponse() }
-
-                    if (result.isSuccess) {
-                        call.respond(HttpStatusCode.OK, result.getOrThrow())
-                    } else {
-                        call.validateClientError(TAG, result)
-                    }
-                }
-            }
+            this.route.route("", HttpMethod.Post) { handle { handleCreateFlyer(call) } }
+            this.route.route("{param}", HttpMethod.Put) { handle { handleUpdateFlyer(call) } }
         }
     }
+
+    private suspend fun handleCreateFlyer(call: ApplicationCall) {
+        val context = contextRetriever.getContext(call)
+        if (context !is ClientContext.AuthenticatedClientContext) {
+            call.respond(HttpStatusCode.Unauthorized, "Unauthorized")
+            return
+        }
+        val userId = context.payload.userId
+        val parts = parseMultipart(call.receiveMultipart())
+        val expiresAt = runCatching { parts.expiresAtStr?.let { Instant.parse(it) } }
+            .getOrElse {
+                call.respond(HttpStatusCode.BadRequest, "Invalid expires_at format")
+                return
+            }
+        val result = flyerService.createFlyer(
+            uploaderId = userId,
+            title = parts.title.orEmpty(),
+            description = parts.description.orEmpty(),
+            expiresAt = expiresAt,
+            fileContent = parts.fileContent ?: ByteArray(0),
+            fileName = parts.fileName.orEmpty(),
+            mimeType = parts.mimeType.orEmpty(),
+        ).map { it.toFlyerNetworkResponse() }
+        if (result.isSuccess) call.respond(HttpStatusCode.OK, result.getOrThrow())
+        else call.validateClientError(TAG, result)
+    }
+
+    private suspend fun handleUpdateFlyer(call: ApplicationCall) {
+        val context = contextRetriever.getContext(call)
+        if (context !is ClientContext.AuthenticatedClientContext) {
+            call.respond(HttpStatusCode.Unauthorized, "Unauthorized")
+            return
+        }
+        val userId = context.payload.userId
+        val flyerIdStr = call.parameters["param"]
+            ?: run {
+                call.respond(HttpStatusCode.BadRequest, "Missing flyer ID")
+                return
+            }
+        val flyerId = FlyerId(flyerIdStr)
+        val parts = parseMultipart(call.receiveMultipart())
+        val expiresAt = runCatching { parts.expiresAtStr?.let { Instant.parse(it) } }
+            .getOrElse {
+                call.respond(HttpStatusCode.BadRequest, "Invalid expires_at format")
+                return
+            }
+        val result = flyerService.updateFlyer(
+            flyerId = flyerId,
+            requesterId = userId,
+            title = parts.title,
+            description = parts.description,
+            expiresAt = expiresAt,
+            fileContent = parts.fileContent,
+            fileName = parts.fileName,
+            mimeType = parts.mimeType,
+        ).map { it.toFlyerNetworkResponse() }
+        if (result.isSuccess) call.respond(HttpStatusCode.OK, result.getOrThrow())
+        else call.validateClientError(TAG, result)
+    }
+
+    private suspend fun parseMultipart(multipart: MultiPartData): MultipartFields {
+        var title: String? = null
+        var description: String? = null
+        var expiresAtStr: String? = null
+        var fileContent: ByteArray? = null
+        var fileName: String? = null
+        var mimeType: String? = null
+        multipart.forEachPart { part ->
+            when (part) {
+                is PartData.FormItem -> when (part.name) {
+                    "title" -> title = part.value
+                    "description" -> description = part.value
+                    "expires_at" -> expiresAtStr = part.value
+                }
+                is PartData.FileItem -> {
+                    fileName = part.originalFileName
+                    mimeType = part.contentType?.toString()
+                    fileContent = part.provider().toByteArray()
+                }
+                else -> {}
+            }
+            part.dispose()
+        }
+        return MultipartFields(title, description, expiresAtStr, fileContent, fileName, mimeType)
+    }
+
+    private data class MultipartFields(
+        val title: String?,
+        val description: String?,
+        val expiresAtStr: String?,
+        val fileContent: ByteArray?,
+        val fileName: String?,
+        val mimeType: String?,
+    )
 
     companion object {
         private const val TAG = "FlyerController"

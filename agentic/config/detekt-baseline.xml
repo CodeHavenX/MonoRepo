@@ -1,14 +1,15 @@
-<?xml version="1.0" ?>
+<?xml version='1.0' encoding='UTF-8'?>
 <SmellBaseline>
   <ManuallySuppressedIssues/>
   <CurrentIssues>
     <ID>CyclomaticComplexMethod:DefaultAgentSession.kt:DefaultAgentSession$private suspend fun dispatchTool: ToolResult</ID>
     <ID>CyclomaticComplexMethod:DefaultOrchestrator.kt:DefaultOrchestrator$override suspend fun run</ID>
+    <ID>CyclomaticComplexMethod:DefaultScaffolder.kt:DefaultScaffolder$private fun copyTemplatesFromResources</ID>
+    <ID>CyclomaticComplexMethod:FakeAiProvider.kt:FakeAiProvider$private fun selectToolBasedOnContext: AiResponse?</ID>
     <ID>LongMethod:AgenticModule.kt:fun agenticModule</ID>
     <ID>LongMethod:ClaudeAiProvider.kt:ClaudeAiProvider$override suspend fun chat: AiResponse</ID>
     <ID>LongMethod:DefaultAgentSession.kt:DefaultAgentSession$private suspend fun dispatchTool: ToolResult</ID>
     <ID>LongMethod:DefaultOrchestrator.kt:DefaultOrchestrator$override suspend fun run</ID>
-    <ID>LongMethod:DefaultScaffolder.kt:DefaultScaffolder$override fun scaffold</ID>
     <ID>LongMethod:StartCommand.kt:StartCommand$override fun run</ID>
     <ID>MagicNumber:ClaudeAiProvider.kt:ClaudeAiProvider$1000L</ID>
     <ID>MagicNumber:ClaudeAiProvider.kt:ClaudeAiProvider$2000L</ID>
@@ -19,10 +20,18 @@
     <ID>MagicNumber:DefaultAgentRunner.kt:DefaultAgentRunner$1_000L</ID>
     <ID>MagicNumber:DefaultAgentSession.kt:DefaultAgentSession$30_000L</ID>
     <ID>MagicNumber:DefaultOrchestrator.kt:DefaultOrchestrator$1_000L</ID>
+    <ID>MagicNumber:DefaultValidationService.kt:DefaultValidationService$200</ID>
+    <ID>MagicNumber:DocumentTaskListProvider.kt:DocumentTaskListProvider$3</ID>
+    <ID>MagicNumber:DocumentTaskListProvider.kt:DocumentTaskListProvider$3600L</ID>
+    <ID>MagicNumber:DocumentTaskListProvider.kt:DocumentTaskListProvider$4</ID>
+    <ID>MagicNumber:DocumentTaskListProvider.kt:DocumentTaskListProvider$5</ID>
+    <ID>MagicNumber:FileSystemDocumentStore.kt:FileSystemDocumentStore$16</ID>
+    <ID>MagicNumber:FileSystemDocumentStore.kt:FileSystemDocumentStore$8</ID>
     <ID>MagicNumber:FileSystemTaskStore.kt:FileSystemTaskStore$3</ID>
     <ID>MagicNumber:FileSystemTaskStore.kt:FileSystemTaskStore$3600L</ID>
     <ID>MagicNumber:FileSystemTaskStore.kt:FileSystemTaskStore$4</ID>
     <ID>MagicNumber:FileSystemTaskStore.kt:FileSystemTaskStore$5</ID>
+    <ID>MagicNumber:PlanCommand.kt:PlanStagesSubcommand$60</ID>
     <ID>MagicNumber:ShellRunner.kt:ShellRunner$1000L</ID>
     <ID>MagicNumber:ShellRunner.kt:ShellRunner$2000L</ID>
     <ID>MagicNumber:ShellRunner.kt:ShellRunner$3</ID>
@@ -39,12 +48,15 @@
     <ID>UndocumentedPublicClass:AgentRunner.kt:AgentRunner</ID>
     <ID>UndocumentedPublicClass:AgentSession.kt:AgentSession</ID>
     <ID>UndocumentedPublicClass:AgenticCli.kt:AgenticCli : CliktCommand</ID>
-    <ID>UndocumentedPublicClass:AgenticConfig.kt:AgenticConfig</ID>
     <ID>UndocumentedPublicClass:AgenticConfig.kt:AiProviderConfig</ID>
     <ID>UndocumentedPublicClass:AgenticConfig.kt:AiProviderConfig$ClaudeApi : AiProviderConfig</ID>
     <ID>UndocumentedPublicClass:AgenticConfig.kt:AiProviderConfig$ClaudeCli : AiProviderConfig</ID>
+    <ID>UndocumentedPublicClass:AgenticConfig.kt:AiProviderConfig$Fake : AiProviderConfig</ID>
+    <ID>UndocumentedPublicClass:AgenticConfig.kt:FakeMode</ID>
+    <ID>UndocumentedPublicClass:AgenticConfig.kt:TaskListProviderConfig</ID>
     <ID>UndocumentedPublicClass:AgenticConfig.kt:VcsProviderConfig</ID>
     <ID>UndocumentedPublicClass:AgenticConfig.kt:VcsProviderConfig$GitHub : VcsProviderConfig</ID>
+    <ID>UndocumentedPublicClass:AgenticConfig.kt:VcsProviderConfig$Local : VcsProviderConfig</ID>
     <ID>UndocumentedPublicClass:AgenticDocument.kt:AgenticDocument</ID>
     <ID>UndocumentedPublicClass:AgenticDocument.kt:DocumentStatus</ID>
     <ID>UndocumentedPublicClass:AgenticDocument.kt:DocumentType</ID>
@@ -72,10 +84,10 @@
     <ID>UndocumentedPublicClass:DefaultAgentSession.kt:DefaultAgentSession : AgentSession</ID>
     <ID>UndocumentedPublicClass:DefaultDependencyGraph.kt:DefaultDependencyGraph : DependencyGraph</ID>
     <ID>UndocumentedPublicClass:DefaultOrchestrator.kt:DefaultOrchestrator : Orchestrator</ID>
-    <ID>UndocumentedPublicClass:DefaultPlanningService.kt:DefaultPlanningService : PlanningService</ID>
     <ID>UndocumentedPublicClass:DefaultScaffolder.kt:DefaultScaffolder : Scaffolder</ID>
     <ID>UndocumentedPublicClass:DefaultStateDeriver.kt:DefaultStateDeriver : StateDeriver</ID>
     <ID>UndocumentedPublicClass:DefaultValidationService.kt:DefaultValidationService : ValidationService</ID>
+    <ID>UndocumentedPublicClass:DefaultWorkflowService.kt:DefaultWorkflowService : WorkflowService</ID>
     <ID>UndocumentedPublicClass:DefaultWorktreeManager.kt:DefaultWorktreeManager : WorktreeManager</ID>
     <ID>UndocumentedPublicClass:DependencyGraph.kt:DependencyGraph</ID>
     <ID>UndocumentedPublicClass:DocumentStore.kt:DocumentStore</ID>
@@ -87,22 +99,23 @@
     <ID>UndocumentedPublicClass:FileSystemTaskStore.kt:FileSystemTaskStore : TaskStore</ID>
     <ID>UndocumentedPublicClass:GitHubVcsProvider.kt:GitHubVcsProvider : VcsProvider</ID>
     <ID>UndocumentedPublicClass:InitCommand.kt:InitCommand : CliktCommand</ID>
+    <ID>UndocumentedPublicClass:LocalVcsProvider.kt:LocalVcsProvider : VcsProvider</ID>
+    <ID>UndocumentedPublicClass:LocalVcsState.kt:LocalComment</ID>
+    <ID>UndocumentedPublicClass:LocalVcsState.kt:LocalPr</ID>
+    <ID>UndocumentedPublicClass:LocalVcsState.kt:LocalPrState</ID>
     <ID>UndocumentedPublicClass:Notifier.kt:Notifier</ID>
     <ID>UndocumentedPublicClass:Orchestrator.kt:Orchestrator</ID>
     <ID>UndocumentedPublicClass:Orchestrator.kt:OrchestratorConfig</ID>
     <ID>UndocumentedPublicClass:PlanCommand.kt:PlanCommand : CliktCommand</ID>
-    <ID>UndocumentedPublicClass:PlanningModels.kt:PlanDocument</ID>
-    <ID>UndocumentedPublicClass:PlanningModels.kt:PlanningStage</ID>
-    <ID>UndocumentedPublicClass:PlanningModels.kt:PlanningStatus</ID>
-    <ID>UndocumentedPublicClass:PlanningService.kt:PlanningService</ID>
-    <ID>UndocumentedPublicClass:ResumeCommand.kt:ResumeCommand : CliktCommand</ID>
     <ID>UndocumentedPublicClass:ReviewerAgent.kt:ReviewerAgent</ID>
     <ID>UndocumentedPublicClass:ReviewerLoader.kt:ReviewerLoader</ID>
     <ID>UndocumentedPublicClass:ReviewerModels.kt:ReviewerDefinition</ID>
     <ID>UndocumentedPublicClass:ReviewerModels.kt:ReviewerFeedback</ID>
+    <ID>UndocumentedPublicClass:RunCommand.kt:RunCommand : CliktCommand</ID>
     <ID>UndocumentedPublicClass:Scaffolder.kt:Scaffolder</ID>
     <ID>UndocumentedPublicClass:ShellRunner.kt:ShellResult</ID>
     <ID>UndocumentedPublicClass:ShellRunner.kt:ShellRunner</ID>
+    <ID>UndocumentedPublicClass:StageApprovalRecord.kt:StageApprovalRecord</ID>
     <ID>UndocumentedPublicClass:StartCommand.kt:StartCommand : CliktCommand</ID>
     <ID>UndocumentedPublicClass:StateDeriver.kt:StateDeriver</ID>
     <ID>UndocumentedPublicClass:StatusCommand.kt:StatusCommand : CliktCommand</ID>
@@ -121,6 +134,22 @@
     <ID>UndocumentedPublicClass:VcsModels.kt:PullRequestState</ID>
     <ID>UndocumentedPublicClass:VcsProvider.kt:VcsProvider</ID>
     <ID>UndocumentedPublicClass:VcsProviderException.kt:VcsProviderException : Exception</ID>
+    <ID>UndocumentedPublicClass:WorkflowConfig.kt:WorkflowConfig</ID>
+    <ID>UndocumentedPublicClass:WorkflowConfig.kt:WorkflowPromptConfig</ID>
+    <ID>UndocumentedPublicClass:WorkflowConfig.kt:WorkflowPromptConfig$File : WorkflowPromptConfig</ID>
+    <ID>UndocumentedPublicClass:WorkflowConfig.kt:WorkflowPromptConfig$Inline : WorkflowPromptConfig</ID>
+    <ID>UndocumentedPublicClass:WorkflowConfig.kt:WorkflowStageConfig</ID>
+    <ID>UndocumentedPublicClass:WorkflowModels.kt:StageApprovalWarning</ID>
+    <ID>UndocumentedPublicClass:WorkflowModels.kt:StageDocument</ID>
+    <ID>UndocumentedPublicClass:WorkflowModels.kt:WorkflowConfigError</ID>
+    <ID>UndocumentedPublicClass:WorkflowModels.kt:WorkflowConfigErrorType</ID>
+    <ID>UndocumentedPublicClass:WorkflowModels.kt:WorkflowState</ID>
+    <ID>UndocumentedPublicClass:WorkflowModels.kt:WorkflowStatus</ID>
+    <ID>UndocumentedPublicClass:WorkflowModels.kt:WorkflowStatus$Complete : WorkflowStatus</ID>
+    <ID>UndocumentedPublicClass:WorkflowModels.kt:WorkflowStatus$NotStarted : WorkflowStatus</ID>
+    <ID>UndocumentedPublicClass:WorkflowModels.kt:WorkflowStatus$StageInProgress : WorkflowStatus</ID>
+    <ID>UndocumentedPublicClass:WorkflowModels.kt:WorkflowStatus$StagePendingApproval : WorkflowStatus</ID>
+    <ID>UndocumentedPublicClass:WorkflowService.kt:WorkflowService</ID>
     <ID>UndocumentedPublicClass:WorktreeManager.kt:Worktree</ID>
     <ID>UndocumentedPublicClass:WorktreeManager.kt:WorktreeManager</ID>
     <ID>UndocumentedPublicFunction:AgentPrompts.kt:fun buildChangesRequestedPrompt: String</ID>
@@ -134,7 +163,7 @@
     <ID>UndocumentedPublicFunction:DependencyGraph.kt:DependencyGraph$fun downstreamCount: Int</ID>
     <ID>UndocumentedPublicFunction:DocumentStore.kt:DocumentStore$fun allValidated: Boolean</ID>
     <ID>UndocumentedPublicFunction:DocumentStore.kt:DocumentStore$fun get: AgenticDocument</ID>
-    <ID>UndocumentedPublicFunction:DocumentStore.kt:DocumentStore$fun getAll: List&lt;AgenticDocument&gt;</ID>
+    <ID>UndocumentedPublicFunction:DocumentStore.kt:DocumentStore$fun getAll: List&lt;AgenticDocument></ID>
     <ID>UndocumentedPublicFunction:DocumentStore.kt:DocumentStore$fun onDocumentChanged</ID>
     <ID>UndocumentedPublicFunction:DocumentStore.kt:DocumentStore$fun updateStatus</ID>
     <ID>UndocumentedPublicFunction:FakeNotifier.kt:FakeNotifier$fun clear</ID>
@@ -143,33 +172,27 @@
     <ID>UndocumentedPublicFunction:Main.kt:fun main</ID>
     <ID>UndocumentedPublicFunction:Notifier.kt:Notifier$suspend fun notify</ID>
     <ID>UndocumentedPublicFunction:Orchestrator.kt:Orchestrator$suspend fun run</ID>
-    <ID>UndocumentedPublicFunction:Orchestrator.kt:Orchestrator$suspend fun status: Map&lt;Task, TaskStatus&gt;</ID>
-    <ID>UndocumentedPublicFunction:PlanningService.kt:PlanningService$fun approve</ID>
-    <ID>UndocumentedPublicFunction:PlanningService.kt:PlanningService$fun status: PlanningStatus</ID>
-    <ID>UndocumentedPublicFunction:PlanningService.kt:PlanningService$suspend fun generateHighLevelPlan: PlanDocument</ID>
-    <ID>UndocumentedPublicFunction:PlanningService.kt:PlanningService$suspend fun generateLowLevelPlan: PlanDocument</ID>
-    <ID>UndocumentedPublicFunction:PlanningService.kt:PlanningService$suspend fun generateTaskList: PlanDocument</ID>
-    <ID>UndocumentedPublicFunction:PlanningService.kt:PlanningService$suspend fun revise: PlanDocument</ID>
+    <ID>UndocumentedPublicFunction:Orchestrator.kt:Orchestrator$suspend fun status: Map&lt;Task, TaskStatus></ID>
     <ID>UndocumentedPublicFunction:ReviewerAgent.kt:ReviewerAgent$suspend fun reviewCode: ReviewerFeedback</ID>
     <ID>UndocumentedPublicFunction:ReviewerAgent.kt:ReviewerAgent$suspend fun reviewDocuments: ReviewerFeedback</ID>
-    <ID>UndocumentedPublicFunction:ReviewerLoader.kt:ReviewerLoader$fun loadAll: List&lt;ReviewerDefinition&gt;</ID>
+    <ID>UndocumentedPublicFunction:ReviewerLoader.kt:ReviewerLoader$fun loadAll: List&lt;ReviewerDefinition></ID>
     <ID>UndocumentedPublicFunction:Scaffolder.kt:Scaffolder$fun scaffold</ID>
     <ID>UndocumentedPublicFunction:ShellRunner.kt:ShellRunner$suspend fun run: ShellResult</ID>
     <ID>UndocumentedPublicFunction:StateDeriver.kt:StateDeriver$suspend fun statusOf: TaskStatus</ID>
     <ID>UndocumentedPublicFunction:TaskStore.kt:TaskStore$fun get: Task</ID>
-    <ID>UndocumentedPublicFunction:TaskStore.kt:TaskStore$fun getAll: List&lt;Task&gt;</ID>
-    <ID>UndocumentedPublicFunction:ValidationService.kt:ValidationService$suspend fun reviewDocument: List&lt;ValidationIssue&gt;</ID>
+    <ID>UndocumentedPublicFunction:TaskStore.kt:TaskStore$fun getAll: List&lt;Task></ID>
+    <ID>UndocumentedPublicFunction:ValidationService.kt:ValidationService$suspend fun reviewDocument: List&lt;ValidationIssue></ID>
     <ID>UndocumentedPublicFunction:ValidationService.kt:ValidationService$suspend fun runValidationPass: ValidationReport</ID>
     <ID>UndocumentedPublicFunction:VcsProvider.kt:VcsProvider$suspend fun addPullRequestComment</ID>
     <ID>UndocumentedPublicFunction:VcsProvider.kt:VcsProvider$suspend fun createPullRequest: PullRequest</ID>
-    <ID>UndocumentedPublicFunction:VcsProvider.kt:VcsProvider$suspend fun getPullRequestComments: List&lt;PullRequestComment&gt;</ID>
+    <ID>UndocumentedPublicFunction:VcsProvider.kt:VcsProvider$suspend fun getPullRequestComments: List&lt;PullRequestComment></ID>
     <ID>UndocumentedPublicFunction:VcsProvider.kt:VcsProvider$suspend fun isPullRequestMerged: Boolean</ID>
-    <ID>UndocumentedPublicFunction:VcsProvider.kt:VcsProvider$suspend fun listMergedPullRequests: List&lt;PullRequest&gt;</ID>
-    <ID>UndocumentedPublicFunction:VcsProvider.kt:VcsProvider$suspend fun listOpenPullRequests: List&lt;PullRequest&gt;</ID>
+    <ID>UndocumentedPublicFunction:VcsProvider.kt:VcsProvider$suspend fun listMergedPullRequests: List&lt;PullRequest></ID>
+    <ID>UndocumentedPublicFunction:VcsProvider.kt:VcsProvider$suspend fun listOpenPullRequests: List&lt;PullRequest></ID>
     <ID>UndocumentedPublicFunction:VcsProvider.kt:VcsProvider$suspend fun pullRequestHasRequestedChanges: Boolean</ID>
     <ID>UndocumentedPublicFunction:WorktreeManager.kt:WorktreeManager$fun delete</ID>
     <ID>UndocumentedPublicFunction:WorktreeManager.kt:WorktreeManager$fun get: Worktree?</ID>
     <ID>UndocumentedPublicFunction:WorktreeManager.kt:WorktreeManager$fun getOrCreate: Worktree</ID>
-    <ID>UndocumentedPublicFunction:WorktreeManager.kt:WorktreeManager$fun listAll: List&lt;Worktree&gt;</ID>
+    <ID>UndocumentedPublicFunction:WorktreeManager.kt:WorktreeManager$fun listAll: List&lt;Worktree></ID>
   </CurrentIssues>
 </SmellBaseline>

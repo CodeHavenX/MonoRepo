@@ -2,6 +2,7 @@ package com.cramsan.agentic.coordination
 
 import com.cramsan.agentic.core.Task
 import com.cramsan.agentic.core.TaskStatus
+import com.cramsan.agentic.coordination.fake.FakeTaskListProvider
 import com.cramsan.agentic.execution.AgentResult
 import com.cramsan.agentic.execution.AgentRunner
 import com.cramsan.agentic.execution.DefaultWorktreeManager
@@ -48,13 +49,6 @@ class OrchestratorLifecycleIntegrationTest {
         worktreeManager = DefaultWorktreeManager(repoRoot, agenticDir, "main", shell)
     }
 
-    private fun makeTaskStore(tasks: List<Task>): TaskStore {
-        return object : TaskStore {
-            override fun getAll() = tasks
-            override fun get(id: String) = tasks.first { it.id == id }
-        }
-    }
-
     private fun makeTask(id: String, vararg deps: String) = Task(
         id = id, title = "Task $id", description = "Description for $id",
         dependencies = deps.toList(), timeoutSeconds = 60L,
@@ -79,7 +73,7 @@ Timeout: ${task.timeoutSeconds}"""
         val taskB = makeTask("task-b", "task-a")
         val tasks = listOf(taskA, taskB)
 
-        val taskStore = makeTaskStore(tasks)
+        val taskListProvider = FakeTaskListProvider(tasks)
         val dependencyGraph = DefaultDependencyGraph(tasks)
         val stateDeriver = DefaultStateDeriver(fakeVcsProvider, worktreeManager, agenticDir)
 
@@ -100,7 +94,7 @@ Timeout: ${task.timeoutSeconds}"""
         }
 
         val orchestrator = DefaultOrchestrator(
-            taskStore, stateDeriver, dependencyGraph, worktreeManager, agentRunner, fakeNotifier
+            taskListProvider, stateDeriver, dependencyGraph, worktreeManager, agentRunner, fakeNotifier
         )
 
         val config = OrchestratorConfig(
@@ -123,7 +117,7 @@ Timeout: ${task.timeoutSeconds}"""
         val taskB = makeTask("task-b", "task-a")
         val tasks = listOf(taskA, taskB)
 
-        val taskStore = makeTaskStore(tasks)
+        val taskListProvider = FakeTaskListProvider(tasks)
         val dependencyGraph = DefaultDependencyGraph(tasks)
         val stateDeriver = DefaultStateDeriver(fakeVcsProvider, worktreeManager, agenticDir)
 
@@ -137,7 +131,7 @@ Timeout: ${task.timeoutSeconds}"""
         // task-B should never run since task-A is blocked
 
         val orchestrator = DefaultOrchestrator(
-            taskStore, stateDeriver, dependencyGraph, worktreeManager, agentRunner, fakeNotifier
+            taskListProvider, stateDeriver, dependencyGraph, worktreeManager, agentRunner, fakeNotifier
         )
 
         val config = OrchestratorConfig(

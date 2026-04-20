@@ -32,12 +32,13 @@ class DefaultOrchestratorExtendedTest {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
     }
 
-    private val taskStore = mockk<TaskStore>()
     private val stateDeriver = mockk<StateDeriver>()
     private val dependencyGraph = mockk<DependencyGraph>()
     private val worktreeManager = mockk<WorktreeManager>(relaxed = true)
     private val agentRunner = mockk<AgentRunner>()
     private val notifier = mockk<Notifier>(relaxed = true)
+
+    private val taskListProvider = mockk<TaskListProvider>()
 
     private fun worktree(id: String) = Worktree(id, Path.of("/tmp/$id"), "agentic/$id")
     private fun makeTask(id: String, vararg deps: String) =
@@ -50,14 +51,14 @@ class DefaultOrchestratorExtendedTest {
     )
 
     private fun makeOrchestrator() =
-        DefaultOrchestrator(taskStore, stateDeriver, dependencyGraph, worktreeManager, agentRunner, notifier)
+        DefaultOrchestrator(taskListProvider, stateDeriver, dependencyGraph, worktreeManager, agentRunner, notifier)
 
     // ── Worktree cleanup requirements ────────────────────────────────────────
 
     @Test
     fun `worktree is deleted when task transitions to DONE`() = runTest {
         val task = makeTask("task-1")
-        coEvery { taskStore.getAll() } returns listOf(task)
+        coEvery { taskListProvider.provide() } returns listOf(task)
         var tick = 0
         coEvery { stateDeriver.statusOf(task, any()) } answers { if (tick++ == 0) TaskStatus.PENDING else TaskStatus.DONE }
         coEvery { dependencyGraph.downstreamCount(any()) } returns 0
@@ -72,7 +73,7 @@ class DefaultOrchestratorExtendedTest {
     @Test
     fun `worktree is deleted when task transitions to FAILED`() = runTest {
         val task = makeTask("task-1")
-        coEvery { taskStore.getAll() } returns listOf(task)
+        coEvery { taskListProvider.provide() } returns listOf(task)
         var tick = 0
         coEvery { stateDeriver.statusOf(task, any()) } answers { if (tick++ == 0) TaskStatus.PENDING else TaskStatus.FAILED }
         coEvery { dependencyGraph.downstreamCount(any()) } returns 0
@@ -87,7 +88,7 @@ class DefaultOrchestratorExtendedTest {
     @Test
     fun `worktree cleanup does not happen twice for the same task`() = runTest {
         val task = makeTask("task-1")
-        coEvery { taskStore.getAll() } returns listOf(task)
+        coEvery { taskListProvider.provide() } returns listOf(task)
         // Stays DONE on tick 2 and 3 to ensure multiple poll ticks
         var tick = 0
         coEvery { stateDeriver.statusOf(task, any()) } answers {
@@ -108,7 +109,7 @@ class DefaultOrchestratorExtendedTest {
     fun `IN_REVIEW task does not launch agent — agent slot stays free for PENDING tasks`() = runTest {
         val inReviewTask = makeTask("in-review")
         val pendingTask = makeTask("pending")
-        coEvery { taskStore.getAll() } returns listOf(inReviewTask, pendingTask)
+        coEvery { taskListProvider.provide() } returns listOf(inReviewTask, pendingTask)
         coEvery { stateDeriver.statusOf(inReviewTask, any()) } returns TaskStatus.IN_REVIEW
         var pendingTick = 0
         coEvery { stateDeriver.statusOf(pendingTask, any()) } answers {
@@ -130,7 +131,7 @@ class DefaultOrchestratorExtendedTest {
     @Test
     fun `all tasks BLOCKED or FAILED but deadlock not declared because active agents still running`() = runTest {
         val task = makeTask("task-1")
-        coEvery { taskStore.getAll() } returns listOf(task)
+        coEvery { taskListProvider.provide() } returns listOf(task)
 
         // Tick 1: PENDING → agent launched
         // Tick 2+: FAILED from state deriver perspective, but agent coroutine still running
@@ -157,7 +158,7 @@ class DefaultOrchestratorExtendedTest {
     fun `RunCompleted event includes all completed tasks`() = runTest {
         val task1 = makeTask("task-1")
         val task2 = makeTask("task-2")
-        coEvery { taskStore.getAll() } returns listOf(task1, task2)
+        coEvery { taskListProvider.provide() } returns listOf(task1, task2)
         coEvery { stateDeriver.statusOf(any(), any()) } returns TaskStatus.DONE
         coEvery { dependencyGraph.downstreamCount(any()) } returns 0
 
@@ -178,7 +179,7 @@ class DefaultOrchestratorExtendedTest {
     fun `RunDeadlocked event contains blocked and failed tasks`() = runTest {
         val blockedTask = makeTask("blocked")
         val failedTask = makeTask("failed")
-        coEvery { taskStore.getAll() } returns listOf(blockedTask, failedTask)
+        coEvery { taskListProvider.provide() } returns listOf(blockedTask, failedTask)
         coEvery { stateDeriver.statusOf(blockedTask, any()) } returns TaskStatus.BLOCKED
         coEvery { stateDeriver.statusOf(failedTask, any()) } returns TaskStatus.FAILED
         coEvery { dependencyGraph.downstreamCount(any()) } returns 0
@@ -201,8 +202,7 @@ class DefaultOrchestratorExtendedTest {
     @Test
     fun `only agentPoolSize agents launched per tick`() = runTest {
         val tasks = (1..5).map { makeTask("task-$it") }
-        coEvery { taskStore.getAll() } returns tasks
-
+        coEvery { taskListProvider.provide() } returns tasks
         val launchedIds = mutableListOf<String>()
         coEvery { stateDeriver.statusOf(any(), any()) } answers {
             val task = firstArg<Task>()
@@ -231,7 +231,7 @@ class DefaultOrchestratorExtendedTest {
     @Test
     fun `agent is not re-launched for task already in activeTaskIds`() = runTest {
         val task = makeTask("task-1")
-        coEvery { taskStore.getAll() } returns listOf(task)
+        coEvery { taskListProvider.provide() } returns listOf(task)
         var tick = 0
         coEvery { stateDeriver.statusOf(task, any()) } answers {
             if (tick++ < 2) TaskStatus.PENDING else TaskStatus.DONE
@@ -257,7 +257,7 @@ class DefaultOrchestratorExtendedTest {
     fun `dependent task is not assigned before its dependency is done`() = runTest {
         val upstream = makeTask("upstream")
         val downstream = makeTask("downstream", "upstream")
-        coEvery { taskStore.getAll() } returns listOf(upstream, downstream)
+        coEvery { taskListProvider.provide() } returns listOf(upstream, downstream)
 
         var upstreamTick = 0
         coEvery { stateDeriver.statusOf(upstream, any()) } answers {

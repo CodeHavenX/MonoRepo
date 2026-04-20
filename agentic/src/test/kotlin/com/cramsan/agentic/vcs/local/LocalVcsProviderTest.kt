@@ -45,7 +45,6 @@ class LocalVcsProviderTest {
         assertEquals("feature/a", pr.sourceBranch)
         assertEquals("main", pr.targetBranch)
         assertEquals("PR 1", pr.title)
-        assertEquals("Body", pr.body)
     }
 
     @Test

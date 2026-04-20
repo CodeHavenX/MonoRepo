@@ -1,6 +1,10 @@
 package com.cramsan.agentic.vcs.github
 
 import com.cramsan.agentic.core.PullRequestState
+import com.cramsan.framework.logging.EventLogger
+import com.cramsan.framework.logging.implementation.PassthroughEventLogger
+import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
+import com.cramsan.framework.test.CoroutineTest
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -11,15 +15,21 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import org.junit.jupiter.api.BeforeEach
 
-class GitHubVcsProviderTest {
+class GitHubVcsProviderTest : CoroutineTest() {
 
     private val json = Json { ignoreUnknownKeys = true }
     private val shell = mockk<ShellRunner>()
-    private val provider = GitHubVcsProvider("owner", "repo", shell, json)
+    private val provider by lazy { GitHubVcsProvider("owner", "repo", shell, json, testCoroutineDispatcher) }
+
+    @BeforeEach
+    fun setUp() {
+        EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
+    }
 
     @Test
-    fun `createPullRequest assembles correct gh command and maps response`() = runTest {
+    fun `createPullRequest assembles correct gh command and maps response`() = runCoroutineTest {
         val cannedResponse = """
             {
                 "number": "42",
@@ -54,7 +64,7 @@ class GitHubVcsProviderTest {
     }
 
     @Test
-    fun `getPullRequestComments maps JSON comment array correctly`() = runTest {
+    fun `getPullRequestComments maps JSON comment array correctly`() = runCoroutineTest {
         val cannedResponse = """
             {
                 "comments": [
@@ -72,7 +82,7 @@ class GitHubVcsProviderTest {
     }
 
     @Test
-    fun `pullRequestHasRequestedChanges returns true when CHANGES_REQUESTED`() = runTest {
+    fun `pullRequestHasRequestedChanges returns true when CHANGES_REQUESTED`() = runCoroutineTest {
         coEvery { shell.run(*anyVararg()) } returns ShellResult(
             """{"reviewDecision": "CHANGES_REQUESTED"}""", 0, ""
         )
@@ -80,7 +90,7 @@ class GitHubVcsProviderTest {
     }
 
     @Test
-    fun `pullRequestHasRequestedChanges returns false when APPROVED`() = runTest {
+    fun `pullRequestHasRequestedChanges returns false when APPROVED`() = runCoroutineTest {
         coEvery { shell.run(*anyVararg()) } returns ShellResult(
             """{"reviewDecision": "APPROVED"}""", 0, ""
         )
@@ -88,7 +98,7 @@ class GitHubVcsProviderTest {
     }
 
     @Test
-    fun `createPullRequest throws VcsProviderException on non-zero exit code`() = runTest {
+    fun `createPullRequest throws VcsProviderException on non-zero exit code`() = runCoroutineTest {
         coEvery { shell.run(*anyVararg()) } returns ShellResult("", 1, "error: repository not found")
 
         assertFailsWith<VcsProviderException> {

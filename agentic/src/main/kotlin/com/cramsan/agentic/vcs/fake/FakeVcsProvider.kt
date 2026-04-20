@@ -5,14 +5,19 @@ import com.cramsan.agentic.core.PullRequestComment
 import com.cramsan.agentic.core.PullRequestState
 import com.cramsan.agentic.vcs.VcsProvider
 import com.cramsan.framework.logging.logD
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.CopyOnWriteArrayList
+import java.util.concurrent.atomic.AtomicInteger
 
 private const val TAG = "FakeVcsProvider"
 
-class FakeVcsProvider : VcsProvider {
-    val pullRequests: MutableList<PullRequest> = mutableListOf()
-    val comments: MutableMap<String, MutableList<PullRequestComment>> = mutableMapOf()
-    val requestedChangesForPr: MutableSet<String> = mutableSetOf()
-    private var nextPrId = 1
+class FakeVcsProvider(
+    private val autoMergeOnCreate: Boolean = false,
+) : VcsProvider {
+    val pullRequests: MutableList<PullRequest> = CopyOnWriteArrayList()
+    val comments: MutableMap<String, MutableList<PullRequestComment>> = ConcurrentHashMap()
+    val requestedChangesForPr: MutableSet<String> = ConcurrentHashMap.newKeySet()
+    private val nextPrId = AtomicInteger(1)
 
     override suspend fun createPullRequest(
         sourceBranch: String,
@@ -22,11 +27,13 @@ class FakeVcsProvider : VcsProvider {
         labels: List<String>,
     ): PullRequest {
         logD(TAG, "createPullRequest: sourceBranch=$sourceBranch, targetBranch=$targetBranch, title='$title', labels=$labels")
+        val id = nextPrId.getAndIncrement()
+        val autoMerge = autoMergeOnCreate && "agentic-code" in labels
         val pr = PullRequest(
-            id = nextPrId++.toString(),
-            url = "https://github.com/fake/repo/pull/${nextPrId - 1}",
+            id = id.toString(),
+            url = "https://github.com/fake/repo/pull/$id",
             title = title,
-            state = PullRequestState.OPEN,
+            state = if (autoMerge) PullRequestState.MERGED else PullRequestState.OPEN,
             sourceBranch = sourceBranch,
             targetBranch = targetBranch,
             labels = labels,
@@ -65,7 +72,7 @@ class FakeVcsProvider : VcsProvider {
 
     override suspend fun addPullRequestComment(prId: String, body: String) {
         logD(TAG, "addPullRequestComment: prId=$prId, bodyLength=${body.length}")
-        comments.getOrPut(prId) { mutableListOf() }.add(
+        comments.getOrPut(prId) { CopyOnWriteArrayList() }.add(
             PullRequestComment(
                 author = "agentic-bot",
                 body = body,

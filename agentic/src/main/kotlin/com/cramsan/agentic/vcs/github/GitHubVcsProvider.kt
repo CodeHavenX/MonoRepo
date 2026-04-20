@@ -9,6 +9,7 @@ import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logI
 import com.cramsan.framework.logging.logW
 import kotlin.time.Duration.Companion.seconds
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -24,6 +25,7 @@ class GitHubVcsProvider(
     private val repo: String,
     private val shell: ShellRunner,
     private val json: Json,
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : VcsProvider {
 
     override suspend fun createPullRequest(
@@ -32,7 +34,7 @@ class GitHubVcsProvider(
         title: String,
         body: String,
         labels: List<String>,
-    ): PullRequest = withContext(Dispatchers.IO) {
+    ): PullRequest = withContext(ioDispatcher) {
         logI(TAG, "createPullRequest: repo=$owner/$repo, sourceBranch=$sourceBranch, targetBranch=$targetBranch, title='$title', labels=$labels")
         val args = mutableListOf(
             "gh", "pr", "create",
@@ -59,7 +61,7 @@ class GitHubVcsProvider(
     }
 
     override suspend fun listOpenPullRequests(labels: List<String>): List<PullRequest> =
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             logI(TAG, "listOpenPullRequests: repo=$owner/$repo, labels=$labels")
             val args = mutableListOf(
                 "gh", "pr", "list",
@@ -84,7 +86,7 @@ class GitHubVcsProvider(
         }
 
     override suspend fun listMergedPullRequests(labels: List<String>): List<PullRequest> =
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             logI(TAG, "listMergedPullRequests: repo=$owner/$repo, labels=$labels")
             val args = mutableListOf(
                 "gh", "pr", "list",
@@ -109,7 +111,7 @@ class GitHubVcsProvider(
         }
 
     override suspend fun getPullRequestComments(prId: String): List<PullRequestComment> =
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             logI(TAG, "getPullRequestComments: repo=$owner/$repo, prId=$prId")
             delay(5.seconds)
             val result = shell.run(
@@ -140,7 +142,7 @@ class GitHubVcsProvider(
 
     override suspend fun addPullRequestComment(prId: String, body: String) {
         logI(TAG, "addPullRequestComment: repo=$owner/$repo, prId=$prId, bodyLength=${body.length}")
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             delay(5.seconds)
             val result = shell.run(
                 "gh", "pr", "comment", prId,
@@ -156,7 +158,7 @@ class GitHubVcsProvider(
     }
 
     override suspend fun isPullRequestMerged(prId: String): Boolean =
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             logI(TAG, "isPullRequestMerged: repo=$owner/$repo, prId=$prId")
             delay(5.seconds)
             val result = shell.run(
@@ -176,7 +178,7 @@ class GitHubVcsProvider(
         }
 
     override suspend fun pullRequestHasRequestedChanges(prId: String): Boolean =
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             logI(TAG, "pullRequestHasRequestedChanges: repo=$owner/$repo, prId=$prId")
             delay(5.seconds)
             val result = shell.run(

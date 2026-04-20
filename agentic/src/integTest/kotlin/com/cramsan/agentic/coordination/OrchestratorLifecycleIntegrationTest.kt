@@ -76,6 +76,7 @@ Timeout: ${task.timeoutSeconds}"""
         val taskListProvider = FakeTaskListProvider(tasks)
         val dependencyGraph = DefaultDependencyGraph(tasks)
         val stateDeriver = DefaultStateDeriver(fakeVcsProvider, worktreeManager, agenticDir)
+        coEvery { shell.run(*anyVararg(), workingDir = any()) } returns ShellResult("", 0, "")
 
         val agentRunner = mockk<AgentRunner>()
         coEvery { agentRunner.run(any(), any()) } coAnswers {
@@ -120,6 +121,7 @@ Timeout: ${task.timeoutSeconds}"""
         val taskListProvider = FakeTaskListProvider(tasks)
         val dependencyGraph = DefaultDependencyGraph(tasks)
         val stateDeriver = DefaultStateDeriver(fakeVcsProvider, worktreeManager, agenticDir)
+        coEvery { shell.run(*anyVararg(), workingDir = any()) } returns ShellResult("", 0, "")
 
         val agentRunner = mockk<AgentRunner>()
         coEvery { agentRunner.run(taskA, any()) } coAnswers {

@@ -31,7 +31,7 @@ class WorktreeManagerIntegrationTest {
             EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
             val shell = ShellRunner()
             runBlocking {
-                shell.run("git", "init", repoRoot.toString())
+                shell.run("git", "init", "--initial-branch", "main", repoRoot.toString())
                 shell.run("git", "-C", repoRoot.toString(), "config", "user.email", "test@test.com")
                 shell.run("git", "-C", repoRoot.toString(), "config", "user.name", "Test User")
                 shell.run("git", "-C", repoRoot.toString(), "commit", "--allow-empty", "-m", "init")

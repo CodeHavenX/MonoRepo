@@ -133,6 +133,7 @@ class BranchingDependencyIntegrationTest {
         val tasks = listOf(task("A"), task("B", "A"), task("C", "B"))
         val vcs = FakeVcsProvider(autoMergeOnCreate = true)
         val orchestrator = buildFullStackOrchestrator(tasks, vcs)
+        coEvery { shell.run(*anyVararg(), workingDir = any()) } returns ShellResult("", 0, "")
 
         orchestrator.run(baseConfig)
 
@@ -161,6 +162,7 @@ class BranchingDependencyIntegrationTest {
         val completionOrder = CopyOnWriteArrayList<String>()
         // autoMergeOnCreate so createPullRequest atomically sets MERGED — no open-PR window
         val vcs = FakeVcsProvider(autoMergeOnCreate = true)
+        coEvery { shell.run(*anyVararg(), workingDir = any()) } returns ShellResult("", 0, "")
 
         val orchestrator = buildMockedOrchestrator(tasks, vcs) { t ->
             val pr = vcs.createPullRequest(
@@ -217,6 +219,7 @@ class BranchingDependencyIntegrationTest {
             )
             val vcs = FakeVcsProvider(autoMergeOnCreate = true)
             val orchestrator = buildFullStackOrchestrator(tasks, vcs, poolSize = 4)
+            coEvery { shell.run(*anyVararg(), workingDir = any()) } returns ShellResult("", 0, "")
 
             orchestrator.run(baseConfig)
 
@@ -236,6 +239,7 @@ class BranchingDependencyIntegrationTest {
     fun `orchestrator - task A fails - dependent B is blocked - RunDeadlocked fires`() = runTest(timeout = kotlin.time.Duration.INFINITE) {
         val tasks = listOf(task("A"), task("B", "A"))
         val vcs = FakeVcsProvider(autoMergeOnCreate = true)
+        coEvery { shell.run(*anyVararg(), workingDir = any()) } returns ShellResult("", 0, "")
 
         val orchestrator = buildMockedOrchestrator(tasks, vcs) { t ->
             if (t.id == "A") {
@@ -287,6 +291,7 @@ class BranchingDependencyIntegrationTest {
         val concurrentPeak = AtomicInteger(0)
         val currentConcurrent = AtomicInteger(0)
         val vcs = FakeVcsProvider(autoMergeOnCreate = true)
+        coEvery { shell.run(*anyVararg(), workingDir = any()) } returns ShellResult("", 0, "")
 
         val orchestrator = buildMockedOrchestrator(tasks, vcs, poolSize = 2) { t ->
             val peak = currentConcurrent.incrementAndGet()

@@ -33,6 +33,7 @@ class DefaultWorktreeManager(
                 "-b", "agentic/$taskId",
                 path.toString(),
                 baseBranch,
+                workingDir = repoRoot.toString(),
             )
             if (result.exitCode != 0) {
                 throw IllegalStateException("Failed to create worktree for $taskId: ${result.stderr}")
@@ -68,13 +69,21 @@ class DefaultWorktreeManager(
         val path = worktreePath(taskId)
         logI(TAG, "Deleting worktree for task $taskId at $path")
         kotlinx.coroutines.runBlocking {
-            val result = shell.run(
+            val removeResult = shell.run(
                 "git", "worktree", "remove",
                 "--force",
                 path.toString(),
+                workingDir = repoRoot.toString(),
             )
-            if (result.exitCode != 0) {
-                logW(TAG, "git worktree remove failed for $taskId: ${result.stderr}")
+            if (removeResult.exitCode != 0) {
+                logW(TAG, "git worktree remove failed for $taskId: ${removeResult.stderr}")
+            }
+            val branchResult = shell.run(
+                "git", "branch", "-D", "agentic/$taskId",
+                workingDir = repoRoot.toString(),
+            )
+            if (branchResult.exitCode != 0) {
+                logW(TAG, "git branch -D failed for $taskId: ${branchResult.stderr}")
             }
         }
         // Clean up directory if it still exists

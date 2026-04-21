@@ -1,0 +1,31 @@
+package com.cramsan.flyerboard.client.lib.managers
+
+import com.cramsan.framework.core.ManagerDependencies
+import com.cramsan.framework.core.getOrCatch
+import com.cramsan.framework.logging.logI
+import com.cramsan.flyerboard.client.lib.models.UserModel
+import com.cramsan.flyerboard.client.lib.service.UserService
+
+/**
+ * Manager to handle user operations.
+ */
+class UserManager(
+    private val dependencies: ManagerDependencies,
+    private val userService: UserService,
+) {
+
+    /**
+     * Create a new user.
+     */
+    suspend fun createUser(
+        firstName: String,
+        lastName: String,
+    ): Result<UserModel> = dependencies.getOrCatch(TAG) {
+        logI(TAG, "signing in with OTP code")
+        userService.createUser(firstName, lastName).getOrThrow()
+    }
+
+    companion object {
+        private const val TAG = "UserManager"
+    }
+}

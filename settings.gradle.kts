@@ -101,4 +101,11 @@ include("templatereplaceme:front-end:app-android")
 include("templatereplaceme:front-end:app-jvm")
 include("templatereplaceme:front-end:app-wasm")
 
+include("flyerboard:back-end")
+include("flyerboard:shared")
+include("flyerboard:api")
+include("flyerboard:front-end:shared-ui")
+include("flyerboard:front-end:shared-app")
+include("flyerboard:front-end:app-wasm")
+
 include("agentic")

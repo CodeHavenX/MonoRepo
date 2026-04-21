@@ -79,10 +79,6 @@ kotlin {
             }
         }
 
-        val noDB by creating {
-            dependsOn(commonMain.get())
-        }
-
         jvmMain {
             dependsOn(localDB)
 
@@ -117,7 +113,7 @@ kotlin {
         }
 
         wasmJsMain {
-            dependsOn(noDB)
+            dependsOn(localDB)
 
             dependencies {
                 implementation("io.ktor:ktor-client-js:_")
@@ -182,7 +178,6 @@ room {
 
 tasks.getByName("release") {
     dependsOn("detektLocalDBSourceSet")
-    dependsOn("detektNoDBSourceSet")
 }
 
 roborazzi {

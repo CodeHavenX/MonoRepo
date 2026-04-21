@@ -83,10 +83,6 @@ kotlin {
             }
         }
 
-        val noDB by creating {
-            dependsOn(commonMain.get())
-        }
-
         jvmMain {
             dependsOn(localDB)
 
@@ -121,10 +117,11 @@ kotlin {
         }
 
         wasmJsMain {
-            dependsOn(noDB)
+            dependsOn(localDB)
 
             dependencies {
                 implementation("io.ktor:ktor-client-js:_")
+                implementation("androidx.sqlite:sqlite-webworker:_")
             }
         }
     }
@@ -164,6 +161,7 @@ dependencies {
     add("kspCommonMainMetadata", "androidx.room:room-compiler:_")
     add("kspAndroid", "androidx.room:room-compiler:_")
     add("kspJvm", "androidx.room:room-compiler:_")
+    add("kspWasmJs", "androidx.room:room-compiler:_")
 
     implementation("androidx.appcompat:appcompat:_")
     implementation("androidx.core:core-ktx:_")
@@ -195,7 +193,6 @@ room {
 
 tasks.getByName("release") {
     dependsOn("detektLocalDBSourceSet")
-    dependsOn("detektNoDBSourceSet")
 }
 
 roborazzi {

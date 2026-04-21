@@ -8,6 +8,23 @@ import java.nio.file.Path
 
 private const val TAG = "DefaultWorktreeManager"
 
+/**
+ * Production [WorktreeManager] that manages git worktrees under `.agentic/worktrees/`.
+ *
+ * **Branch naming**: every worktree uses branch `agentic/{taskId}`. If a branch of that name
+ * already exists when [getOrCreate] is called, `git worktree add -b` will fail. This is
+ * intentional: the branch is only deleted in [delete], so a surviving branch indicates a
+ * worktree that was not properly cleaned up (e.g. after a crash).
+ * // TODO: handle the "branch already exists" case in getOrCreate by checking for and reusing
+ * the branch rather than failing, to improve crash recovery.
+ *
+ * **[get] is filesystem-only**: it checks `Files.isDirectory` without running any git commands.
+ * This makes it fast enough to call on every orchestrator poll tick.
+ *
+ * **[delete] is best-effort**: errors from both `git worktree remove` and `git branch -D` are
+ * logged but not thrown. If the worktree directory still exists after the git commands, it is
+ * removed recursively as a fallback. Callers should not assume the branch is gone after [delete].
+ */
 class DefaultWorktreeManager(
     private val repoRoot: Path,
     private val agenticDir: Path,
@@ -33,9 +50,7 @@ class DefaultWorktreeManager(
             baseBranch,
             workingDir = repoRoot.toString(),
         )
-        if (result.exitCode != 0) {
-            throw IllegalStateException("Failed to create worktree for $taskId: ${result.stderr}")
-        }
+        check(result.exitCode == 0) { "Failed to create worktree for $taskId: ${result.stderr}" }
         return Worktree(taskId = taskId, path = path, branchName = "agentic/$taskId")
     }
 

@@ -23,6 +23,23 @@ import java.nio.file.Path
 
 private const val TAG = "DefaultValidationService"
 
+/**
+ * Production [ValidationService] that uses an AI model to evaluate planning documents for
+ * quality and completeness during the `agentic plan` phase.
+ *
+ * **AI response parsing**: the AI is prompted to return a JSON array of issues. The response
+ * is parsed leniently — text before the first `[` and after the last `]` is stripped to handle
+ * models that add explanatory prose around the JSON. Parse failures fall back to an empty
+ * issue list with a warning log rather than throwing.
+ *
+ * **Reviewer pipeline**: after the primary validation pass, all [ReviewerAgent]s are invoked
+ * in parallel for each [com.cramsan.agentic.core.ReviewerDefinition] returned by [ReviewerLoader].
+ * Reviewer feedback is printed to the console but does not affect document status or the
+ * validation report — it is purely advisory output.
+ *
+ * **Report persistence**: the [com.cramsan.agentic.core.ValidationReport] is serialised as JSON
+ * and written to `docs/validation-report.md`. A new run overwrites the previous report.
+ */
 class DefaultValidationService(
     private val documentStore: DocumentStore,
     private val aiProvider: AiProvider,
@@ -32,6 +49,7 @@ class DefaultValidationService(
     private val docsDir: Path,
 ) : ValidationService {
 
+    @Suppress("MagicNumber")
     override suspend fun reviewDocument(document: AgenticDocument): List<ValidationIssue> {
         logI(TAG, "Starting review for document id=${document.id}, path=${document.relativePath}, typeId=${document.typeId}")
         val fileContent = Files.readString(resolvePath(docsDir, document.relativePath))

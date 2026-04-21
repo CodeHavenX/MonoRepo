@@ -11,6 +11,19 @@ import java.util.concurrent.atomic.AtomicInteger
 
 private const val TAG = "FakeVcsProvider"
 
+/**
+ * Thread-safe in-memory [com.cramsan.agentic.vcs.VcsProvider] for integration tests and
+ * local development. All state is held in concurrent collections and survives for the
+ * lifetime of the instance.
+ *
+ * When [autoMergeOnCreate] is `true`, every PR created via [createPullRequest] is immediately
+ * recorded as [com.cramsan.agentic.core.PullRequestState.MERGED]. This simulates a human
+ * instantly approving and merging every PR, enabling fully automated test scenarios.
+ *
+ * **Test helpers**: [mergePullRequest] and [requestChanges] allow tests to simulate human
+ * reviewer actions (merging a PR or requesting changes) without going through the full VCS
+ * interface. These methods are intentionally public for test use.
+ */
 class FakeVcsProvider(
     private val autoMergeOnCreate: Boolean = false,
 ) : VcsProvider {
@@ -65,7 +78,7 @@ class FakeVcsProvider(
 
     override suspend fun getPullRequestComments(prId: String): List<PullRequestComment> {
         logD(TAG, "getPullRequestComments: prId=$prId")
-        val result = comments[prId] ?: emptyList()
+        val result = comments[prId].orEmpty()
         logD(TAG, "getPullRequestComments: prId=$prId, returning ${result.size} comments")
         return result
     }
@@ -97,6 +110,8 @@ class FakeVcsProvider(
     }
 
     // Test helpers
+
+    /** Transitions the PR with [prId] to [com.cramsan.agentic.core.PullRequestState.MERGED]. No-op if not found. */
     fun mergePullRequest(prId: String) {
         logD(TAG, "mergePullRequest (test helper): prId=$prId")
         val index = pullRequests.indexOfFirst { it.id == prId }
@@ -108,6 +123,7 @@ class FakeVcsProvider(
         }
     }
 
+    /** Marks [prId] as having changes requested, so [pullRequestHasRequestedChanges] returns `true`. */
     fun requestChanges(prId: String) {
         logD(TAG, "requestChanges (test helper): prId=$prId")
         requestedChangesForPr.add(prId)

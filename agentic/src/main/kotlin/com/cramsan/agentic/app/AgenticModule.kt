@@ -53,9 +53,28 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import org.koin.dsl.module
 import java.nio.file.Path
+import kotlinx.coroutines.Dispatchers
 
 private const val TAG = "AgenticModule"
 
+/**
+ * Koin dependency-injection module that wires the entire agentic system from configuration.
+ *
+ * Called once at CLI startup by each subcommand that requires runtime components (e.g.
+ * `StartCommand`, `TaskCommand`). The module reads `config.json` and `planning.json` from
+ * [agenticDir] and selects concrete implementations based on the config values.
+ *
+ * **Startup cost**: [DependencyGraph] construction calls `runBlocking { taskListProvider.provide() }`
+ * synchronously, which parses the task-list document on the calling thread. This is acceptable
+ * for CLI startup but would be inappropriate in a server context.
+ *
+ * **Config path**: [configPath] defaults to `{agenticDir}/config.json`. Override for testing
+ * or to support non-standard layouts.
+ *
+ * All singletons are scoped to the Koin instance — a fresh call to `startKoin` creates a
+ * new set of instances. Subcommands call `stopKoin()` in a `finally` block to release resources.
+ */
+@Suppress("LongMethod")
 fun agenticModule(
     agenticDir: Path,
     repoRoot: Path,
@@ -67,7 +86,10 @@ fun agenticModule(
         Json { ignoreUnknownKeys = true; isLenient = true }
     }
 
-    single<ShellRunner> { ShellRunner() }
+    single<ShellRunner> { ShellRunner(get()) }
+
+    @Suppress("InjectDispatcher")
+    single { Dispatchers.IO }
 
     single<HttpClient> {
         HttpClient(CIO) {
@@ -100,6 +122,7 @@ fun agenticModule(
                     repoRoot = repoRoot,
                     shell = get(),
                     json = get(),
+                    dispatcher = get(),
                 )
             }
         }
@@ -196,11 +219,11 @@ fun agenticModule(
     }
 
     single<AgentRunner> {
-        DefaultAgentRunner(get(), get(), listOf(get()), get(), get(), agenticDir)
+        DefaultAgentRunner(get(), get(), listOf(get()), get(), agenticDir)
     }
 
     single<Orchestrator> {
-        DefaultOrchestrator(get(), get(), get(), get(), get(), get())
+        DefaultOrchestrator(get(), get(), get(), get(), get(), get(), get())
     }
 
     single<Scaffolder> {

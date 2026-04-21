@@ -16,6 +16,20 @@ import org.koin.core.context.stopKoin
 import java.nio.file.Path
 import kotlin.system.exitProcess
 
+/**
+ * CLI command group for the human-in-the-loop planning phase. Stages progress linearly:
+ * each stage must be started (AI generates output), optionally revised (AI incorporates
+ * human annotations), and approved (human confirms) before the next stage can begin.
+ *
+ * Default workflow stages (configured in `planning.json`):
+ * - `stage0`: Document Review
+ * - `stage1`: High-Level Plan
+ * - `stage2`: Low-Level Plan
+ * - `stage3`: Task List (approval of this stage enables `agentic run start`)
+ *
+ * The final stage approval writes `.agentic-meta/stage.stage3.json`, which `StartCommand`
+ * checks as a prerequisite before launching the orchestrator.
+ */
 class PlanCommand : CliktCommand(name = "plan", help = "Planning phase commands", invokeWithoutSubcommand = false) {
     override fun run() = Unit
 
@@ -214,7 +228,7 @@ private class PlanStagesSubcommand : CliktCommand(
             val stages = workflowService.getAllStages()
 
             echo("Configured Workflow Stages:")
-            echo("-".repeat(60))
+            echo("-".repeat(WIDTH))
 
             for (stage in stages) {
                 val status = when {
@@ -238,7 +252,7 @@ private class PlanStagesSubcommand : CliktCommand(
     }
 }
 
-private fun com.github.ajalt.clikt.core.CliktCommand.printApprovalWarnings(state: WorkflowState) {
+private fun CliktCommand.printApprovalWarnings(state: WorkflowState) {
     if (state.approvalWarnings.isEmpty()) return
     echo("")
     echo("WARNING: Input files have changed since approval for the following stages:")
@@ -247,3 +261,5 @@ private fun com.github.ajalt.clikt.core.CliktCommand.printApprovalWarnings(state
     }
     echo("  These stages may not reflect the current state of your inputs.")
 }
+
+private const val WIDTH = 60

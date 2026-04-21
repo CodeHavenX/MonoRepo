@@ -9,6 +9,17 @@ import java.nio.file.Path
 
 private const val TAG = "FileSystemReviewerLoader"
 
+/**
+ * [ReviewerLoader] that scans a directory for `.md` files and treats each file as a reviewer
+ * definition. The file stem (name without extension) becomes the reviewer name; the full file
+ * content becomes the system prompt.
+ *
+ * If [reviewersDir] does not exist or is not a directory, [loadAll] returns an empty list
+ * rather than throwing, so the system works correctly when no custom reviewers are configured.
+ *
+ * File order is determined by the filesystem (typically alphabetical on Linux); reviewer agents
+ * are invoked in that order. There is no guaranteed ordering across platforms.
+ */
 class FileSystemReviewerLoader(private val reviewersDir: Path) : ReviewerLoader {
 
     override fun loadAll(): List<ReviewerDefinition> {

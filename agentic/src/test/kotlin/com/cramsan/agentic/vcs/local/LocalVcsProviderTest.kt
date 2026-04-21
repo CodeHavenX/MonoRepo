@@ -2,8 +2,8 @@ package com.cramsan.agentic.vcs.local
 
 import com.cramsan.agentic.core.PullRequestState
 import com.cramsan.agentic.vcs.github.ShellRunner
+import com.cramsan.framework.test.CoroutineTest
 import io.mockk.mockk
-import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -13,7 +13,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class LocalVcsProviderTest {
+class LocalVcsProviderTest : CoroutineTest() {
 
     @TempDir
     lateinit var tempDir: Path
@@ -34,11 +34,12 @@ class LocalVcsProviderTest {
             repoRoot = tempDir,
             shell = shell,
             json = json,
+            dispatcher = testCoroutineDispatcher,
         )
     }
 
     @Test
-    fun `createPullRequest returns PR with state OPEN when autoMerge is false`() = runTest {
+    fun `createPullRequest returns PR with state OPEN when autoMerge is false`() = runCoroutineTest {
         val pr = provider.createPullRequest("feature/a", "main", "PR 1", "Body")
 
         assertEquals(PullRequestState.OPEN, pr.state)
@@ -48,7 +49,7 @@ class LocalVcsProviderTest {
     }
 
     @Test
-    fun `createPullRequest assigns sequential IDs`() = runTest {
+    fun `createPullRequest assigns sequential IDs`() = runCoroutineTest {
         val pr1 = provider.createPullRequest("feature/a", "main", "PR 1", "Body 1")
         val pr2 = provider.createPullRequest("feature/b", "main", "PR 2", "Body 2")
 
@@ -56,14 +57,14 @@ class LocalVcsProviderTest {
     }
 
     @Test
-    fun `createPullRequest sets labels on returned PR`() = runTest {
+    fun `createPullRequest sets labels on returned PR`() = runCoroutineTest {
         val pr = provider.createPullRequest("feature/a", "main", "PR 1", "Body", listOf("agentic-code"))
 
         assertEquals(listOf("agentic-code"), pr.labels)
     }
 
     @Test
-    fun `listOpenPullRequests returns all OPEN PRs`() = runTest {
+    fun `listOpenPullRequests returns all OPEN PRs`() = runCoroutineTest {
         provider.createPullRequest("feature/a", "main", "PR 1", "Body")
         provider.createPullRequest("feature/b", "main", "PR 2", "Body")
 
@@ -74,7 +75,7 @@ class LocalVcsProviderTest {
     }
 
     @Test
-    fun `listMergedPullRequests returns empty when no PRs are merged`() = runTest {
+    fun `listMergedPullRequests returns empty when no PRs are merged`() = runCoroutineTest {
         provider.createPullRequest("feature/a", "main", "PR 1", "Body")
 
         val merged = provider.listMergedPullRequests()
@@ -83,7 +84,7 @@ class LocalVcsProviderTest {
     }
 
     @Test
-    fun `listOpenPullRequests filters by labels`() = runTest {
+    fun `listOpenPullRequests filters by labels`() = runCoroutineTest {
         provider.createPullRequest("feature/a", "main", "PR 1", "Body", listOf("agentic-code"))
         provider.createPullRequest("feature/b", "main", "PR 2", "Body", listOf("agentic-document"))
 
@@ -94,7 +95,7 @@ class LocalVcsProviderTest {
     }
 
     @Test
-    fun `listOpenPullRequests with empty labels returns all OPEN PRs`() = runTest {
+    fun `listOpenPullRequests with empty labels returns all OPEN PRs`() = runCoroutineTest {
         provider.createPullRequest("feature/a", "main", "PR 1", "Body", listOf("agentic-code"))
         provider.createPullRequest("feature/b", "main", "PR 2", "Body", listOf("agentic-document"))
 
@@ -104,7 +105,7 @@ class LocalVcsProviderTest {
     }
 
     @Test
-    fun `listMergedPullRequests filters by labels`() = runTest {
+    fun `listMergedPullRequests filters by labels`() = runCoroutineTest {
         provider.createPullRequest("feature/a", "main", "PR 1", "Body", listOf("agentic-code"))
         provider.createPullRequest("feature/b", "main", "PR 2", "Body", listOf("agentic-document"))
         // Directly manipulate the state file to mark one PR as MERGED
@@ -119,7 +120,7 @@ class LocalVcsProviderTest {
     }
 
     @Test
-    fun `addPullRequestComment is reflected in getPullRequestComments`() = runTest {
+    fun `addPullRequestComment is reflected in getPullRequestComments`() = runCoroutineTest {
         val pr = provider.createPullRequest("feature/a", "main", "PR 1", "Body")
         provider.addPullRequestComment(pr.id, "LGTM!")
 
@@ -131,7 +132,7 @@ class LocalVcsProviderTest {
     }
 
     @Test
-    fun `multiple comments accumulate on the same PR`() = runTest {
+    fun `multiple comments accumulate on the same PR`() = runCoroutineTest {
         val pr = provider.createPullRequest("feature/a", "main", "PR 1", "Body")
         provider.addPullRequestComment(pr.id, "First comment")
         provider.addPullRequestComment(pr.id, "Second comment")
@@ -144,14 +145,14 @@ class LocalVcsProviderTest {
     }
 
     @Test
-    fun `pullRequestHasRequestedChanges returns false by default`() = runTest {
+    fun `pullRequestHasRequestedChanges returns false by default`() = runCoroutineTest {
         val pr = provider.createPullRequest("feature/a", "main", "PR 1", "Body")
 
         assertFalse(provider.pullRequestHasRequestedChanges(pr.id))
     }
 
     @Test
-    fun `state file is created when it does not exist`() = runTest {
+    fun `state file is created when it does not exist`() = runCoroutineTest {
         assertFalse(stateFile.toFile().exists())
 
         provider.createPullRequest("feature/a", "main", "PR 1", "Body")
@@ -160,7 +161,7 @@ class LocalVcsProviderTest {
     }
 
     @Test
-    fun `state file is created inside a nested directory`() = runTest {
+    fun `state file is created inside a nested directory`() = runCoroutineTest {
         val nestedStateFile = tempDir.resolve("nested/dir/local_prs.json")
         val nestedProvider = LocalVcsProvider(
             stateFile = nestedStateFile,
@@ -168,6 +169,7 @@ class LocalVcsProviderTest {
             repoRoot = tempDir,
             shell = shell,
             json = json,
+            dispatcher = testCoroutineDispatcher,
         )
 
         nestedProvider.createPullRequest("feature/a", "main", "PR 1", "Body")

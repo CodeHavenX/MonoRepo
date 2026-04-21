@@ -11,6 +11,16 @@ import org.koin.core.context.stopKoin
 import java.nio.file.Files
 import java.nio.file.Path
 
+/**
+ * CLI command group for inspecting and managing individual tasks during a run.
+ *
+ * Subcommands:
+ * - `list` — show all tasks and their current derived status
+ * - `show` — display full details for a single task, including failure reason if applicable
+ * - `retry` — clear the `failed.txt` marker for a task so it will be re-evaluated
+ * - `force-unblock` — write an `unblocked.txt` marker so a BLOCKED task is treated as
+ *   PENDING for one orchestrator tick, bypassing normal dependency checking
+ */
 class TaskCommand : CliktCommand(name = "task", help = "Task management commands", invokeWithoutSubcommand = false) {
     override fun run() = Unit
 

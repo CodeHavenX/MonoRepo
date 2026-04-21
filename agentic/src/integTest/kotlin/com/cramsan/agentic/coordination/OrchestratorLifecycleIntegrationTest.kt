@@ -24,6 +24,7 @@ import org.junit.jupiter.api.io.TempDir
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.test.assertTrue
+import kotlinx.coroutines.Dispatchers
 
 class OrchestratorLifecycleIntegrationTest {
 
@@ -95,7 +96,7 @@ Timeout: ${task.timeoutSeconds}"""
         }
 
         val orchestrator = DefaultOrchestrator(
-            taskListProvider, stateDeriver, dependencyGraph, worktreeManager, agentRunner, fakeNotifier
+            taskListProvider, stateDeriver, dependencyGraph, worktreeManager, agentRunner, fakeNotifier, Dispatchers.Default,
         )
 
         val config = OrchestratorConfig(
@@ -133,7 +134,7 @@ Timeout: ${task.timeoutSeconds}"""
         // task-B should never run since task-A is blocked
 
         val orchestrator = DefaultOrchestrator(
-            taskListProvider, stateDeriver, dependencyGraph, worktreeManager, agentRunner, fakeNotifier
+            taskListProvider, stateDeriver, dependencyGraph, worktreeManager, agentRunner, fakeNotifier, Dispatchers.Default,
         )
 
         val config = OrchestratorConfig(

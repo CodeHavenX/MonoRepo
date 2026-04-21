@@ -6,6 +6,23 @@ import com.cramsan.framework.logging.logI
 
 private const val TAG = "DefaultDependencyGraph"
 
+/**
+ * Precomputes and caches dependency relationships at construction time for efficient runtime queries.
+ *
+ * **Precomputed data**:
+ * - `dependents`: maps each task ID to the set of task IDs that directly depend on it.
+ *   Built in O(E) where E is the number of dependency edges.
+ * - `downstreamCounts`: maps each task ID to the total number of tasks transitively downstream
+ *   of it (BFS from each node). Used by [com.cramsan.agentic.coordination.DefaultOrchestrator]
+ *   to prioritise critical-path tasks (higher count = assigned first).
+ *
+ * **Immutability**: both maps are fully built in the constructor and never modified afterwards,
+ * making this class safe to access from multiple coroutines without synchronisation.
+ *
+ * **Stale state**: this graph is constructed once at startup from the initial task list. If tasks
+ * are added or modified at runtime (currently not supported), the graph would be stale.
+ * // TODO: add a factory method that accepts live TaskListProvider to rebuild if the task list changes.
+ */
 class DefaultDependencyGraph(private val tasks: List<Task>) : DependencyGraph {
 
     // dependents[taskId] = set of task IDs that directly depend on taskId
@@ -19,7 +36,7 @@ class DefaultDependencyGraph(private val tasks: List<Task>) : DependencyGraph {
     }
 
     override fun dependentsOf(taskId: String): Set<String> {
-        return dependents[taskId] ?: emptySet()
+        return dependents[taskId].orEmpty()
     }
 
     private fun buildDependentsMap(): Map<String, Set<String>> {
@@ -50,7 +67,7 @@ class DefaultDependencyGraph(private val tasks: List<Task>) : DependencyGraph {
             queue.add(id)
             while (queue.isNotEmpty()) {
                 val current = queue.removeFirst()
-                val deps = dependents[current] ?: emptySet()
+                val deps = dependents[current].orEmpty()
                 for (dep in deps) {
                     if (dep !in visited) {
                         visited.add(dep)

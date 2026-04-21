@@ -16,15 +16,33 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import java.nio.file.Files
 import java.nio.file.Path
+import kotlinx.coroutines.CoroutineDispatcher
 
 private const val TAG = "LocalVcsProvider"
 
+/**
+ * File-backed [com.cramsan.agentic.vcs.VcsProvider] for local development and integration
+ * testing where a real GitHub repository is not available.
+ *
+ * All state is persisted as JSON to [stateFile], which is read on every operation (no in-memory
+ * cache). A [kotlinx.coroutines.sync.Mutex] serialises concurrent access so that multiple agent
+ * coroutines can safely call this provider simultaneously.
+ *
+ * When [autoMerge] is `true`, every newly created PR is immediately merged via `git merge --no-ff`
+ * and recorded with state [com.cramsan.agentic.core.PullRequestState.MERGED]. This removes the
+ * human review step and is useful for fully-automated end-to-end tests.
+ *
+ * When [autoMerge] is `false`, [isPullRequestMerged] checks the real git merge history via
+ * `git branch --merged`; this requires the calling process to have a valid git repository at
+ * [repoRoot] and can be slow if many branches are present.
+ */
 class LocalVcsProvider(
     private val stateFile: Path,
     private val autoMerge: Boolean,
     private val repoRoot: Path,
     private val shell: ShellRunner,
     private val json: Json,
+    private val dispatcher: CoroutineDispatcher,
 ) : VcsProvider {
 
     private val mutex = Mutex()
@@ -35,17 +53,15 @@ class LocalVcsProvider(
         title: String,
         body: String,
         labels: List<String>,
-    ): PullRequest = withContext(Dispatchers.IO) {
+    ): PullRequest = withContext(dispatcher) {
         logI(TAG, "createPullRequest: sourceBranch=$sourceBranch, targetBranch=$targetBranch, title='$title', labels=$labels, autoMerge=$autoMerge")
         mutex.withLock {
             val state = readState()
             val existing = state.prs.find {
                 it.sourceBranch == sourceBranch && it.state == PullRequestState.OPEN
             }
-            if (existing != null) {
-                throw IllegalStateException(
-                    "An open PR already exists for branch '$sourceBranch' (prId=${existing.id})"
-                )
+            check(existing == null) {
+                "An open PR already exists for branch '$sourceBranch' (prId=${existing?.id})"
             }
             val prId = state.nextPrId.toString()
             state.nextPrId++
@@ -83,7 +99,7 @@ class LocalVcsProvider(
     }
 
     override suspend fun listOpenPullRequests(labels: List<String>): List<PullRequest> =
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             logI(TAG, "listOpenPullRequests: labels=$labels")
             val result = mutex.withLock { readState() }.prs
                 .filter { pr ->
@@ -96,7 +112,7 @@ class LocalVcsProvider(
         }
 
     override suspend fun listMergedPullRequests(labels: List<String>): List<PullRequest> =
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             logI(TAG, "listMergedPullRequests: labels=$labels")
             val result = mutex.withLock { readState() }.prs
                 .filter { pr ->
@@ -109,7 +125,7 @@ class LocalVcsProvider(
         }
 
     override suspend fun getPullRequestComments(prId: String): List<PullRequestComment> =
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             logI(TAG, "getPullRequestComments: prId=$prId")
             val pr = mutex.withLock { readState() }.prs.find { it.id == prId }
                 ?: throw IllegalArgumentException("PR not found: prId=$prId")
@@ -125,7 +141,7 @@ class LocalVcsProvider(
         }
 
     override suspend fun addPullRequestComment(prId: String, body: String) {
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             logI(TAG, "addPullRequestComment: prId=$prId, bodyLength=${body.length}")
             mutex.withLock {
                 val state = readState()
@@ -145,7 +161,7 @@ class LocalVcsProvider(
     }
 
     override suspend fun isPullRequestMerged(prId: String): Boolean =
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             logI(TAG, "isPullRequestMerged: prId=$prId, autoMerge=$autoMerge")
             mutex.withLock {
                 val state = readState()
@@ -187,7 +203,7 @@ class LocalVcsProvider(
         }
 
     override suspend fun pullRequestHasRequestedChanges(prId: String): Boolean =
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             logI(TAG, "pullRequestHasRequestedChanges: prId=$prId")
             val pr = mutex.withLock { readState() }.prs.find { it.id == prId }
                 ?: throw IllegalArgumentException("PR not found: prId=$prId")

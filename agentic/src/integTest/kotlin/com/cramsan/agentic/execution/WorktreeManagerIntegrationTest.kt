@@ -5,6 +5,7 @@ import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Tag
@@ -16,6 +17,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
+import kotlinx.coroutines.Dispatchers
 
 @Tag("requires-git")
 class WorktreeManagerIntegrationTest {
@@ -29,7 +31,7 @@ class WorktreeManagerIntegrationTest {
         @JvmStatic
         fun initGitRepo() {
             EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
-            val shell = ShellRunner()
+            val shell = ShellRunner(Dispatchers.Default)
             runBlocking {
                 shell.run("git", "init", "--initial-branch", "main", repoRoot.toString())
                 shell.run("git", "-C", repoRoot.toString(), "config", "user.email", "test@test.com")
@@ -46,11 +48,11 @@ class WorktreeManagerIntegrationTest {
 
     @BeforeEach
     fun setup() {
-        manager = DefaultWorktreeManager(repoRoot, agenticDir, "main", ShellRunner())
+        manager = DefaultWorktreeManager(repoRoot, agenticDir, "main", ShellRunner(Dispatchers.Default))
     }
 
     @Test
-    fun `getOrCreate creates a git worktree directory at expected path`() {
+    fun `getOrCreate creates a git worktree directory at expected path`() = runTest {
         val worktree = manager.getOrCreate("task-001")
 
         assertNotNull(worktree)
@@ -60,7 +62,7 @@ class WorktreeManagerIntegrationTest {
     }
 
     @Test
-    fun `getOrCreate is idempotent - second call does not fail`() {
+    fun `getOrCreate is idempotent - second call does not fail`() = runTest {
         manager.getOrCreate("task-002")
         val second = manager.getOrCreate("task-002") // should not throw
 
@@ -68,7 +70,7 @@ class WorktreeManagerIntegrationTest {
     }
 
     @Test
-    fun `listAll returns the correct number of worktrees`() {
+    fun `listAll returns the correct number of worktrees`() = runTest {
         manager.getOrCreate("task-003")
         manager.getOrCreate("task-004")
 
@@ -77,7 +79,7 @@ class WorktreeManagerIntegrationTest {
     }
 
     @Test
-    fun `delete removes worktree directory`() {
+    fun `delete removes worktree directory`() = runTest {
         manager.getOrCreate("task-005")
         assertTrue(Files.isDirectory(agenticDir.resolve("worktrees/task-005")))
 

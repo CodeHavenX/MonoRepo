@@ -14,9 +14,34 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.time.Duration.Companion.seconds
+import kotlinx.coroutines.CoroutineDispatcher
 
 private const val TAG = "DefaultOrchestrator"
 
+/**
+ * Production [Orchestrator] implementation. Runs a coroutine-based polling loop that derives
+ * task statuses from durable artifacts and assigns work to a bounded pool of agent coroutines.
+ *
+ * **Concurrency model**: the outer polling loop runs on the caller's coroutine context.
+ * Each agent is launched via [kotlinx.coroutines.launch] on [kotlinx.coroutines.Dispatchers.IO],
+ * which means agents run on real background threads and can block. [activeTaskIds] is a
+ * [java.util.concurrent.ConcurrentHashMap]-backed set to allow safe concurrent reads/writes
+ * from both the polling loop and agent coroutines.
+ *
+ * **Worktree cleanup**: the [cleanedUpTaskIds] set prevents redundant delete calls for tasks
+ * that have already been cleaned up. Cleanup is attempted once when a task first reaches
+ * [com.cramsan.agentic.core.TaskStatus.DONE] or [com.cramsan.agentic.core.TaskStatus.FAILED];
+ * subsequent ticks skip that task ID. Errors during deletion are logged and swallowed.
+ *
+ * **Deadlock detection**: a deadlock is declared when no task is PENDING or IN_PROGRESS AND
+ * no agent coroutine is still running. This prevents false deadlock signals while an agent
+ * is actively executing even if derived statuses temporarily show no progress.
+ *
+ * **Dependency ordering**: [deriveMemoized] uses Kahn's topological sort so each task's
+ * dependency statuses are already resolved before that task is evaluated. Circular dependencies
+ * are detected and handled gracefully with a warning log.
+ */
 class DefaultOrchestrator(
     private val taskListProvider: TaskListProvider,
     private val stateDeriver: StateDeriver,
@@ -24,10 +49,12 @@ class DefaultOrchestrator(
     private val worktreeManager: WorktreeManager,
     private val agentRunner: AgentRunner,
     private val notifier: Notifier,
+    private val dispatcher: CoroutineDispatcher,
 ) : Orchestrator {
 
     private val cleanedUpTaskIds: MutableSet<String> = mutableSetOf()
 
+    @Suppress("LongMethod", "CyclomaticComplexMethod")
     override suspend fun run(config: OrchestratorConfig) {
         val tasks = taskListProvider.provide()
         val activeTaskIds: MutableSet<String> = ConcurrentHashMap.newKeySet()
@@ -90,7 +117,7 @@ class DefaultOrchestrator(
                             val worktree = worktreeManager.getOrCreate(task.id)
                             activeTaskIds += task.id
                             logI(TAG, "Launching agent for task ${task.id}")
-                            launch(Dispatchers.IO) {
+                            launch(dispatcher) {
                                 try {
                                     val result = agentRunner.run(task, worktree)
                                     if (result is AgentResult.Failed) {
@@ -107,7 +134,7 @@ class DefaultOrchestrator(
                         }
                 }
 
-                delay(config.pollIntervalSeconds * 1_000L)
+                delay(config.pollIntervalSeconds.seconds)
             }
         }
     }
@@ -129,7 +156,9 @@ class DefaultOrchestrator(
 
         while (queue.isNotEmpty()) {
             val task = queue.removeFirst()
-            val depStatuses = task.dependencies.associateWith { resolved[it]!! }
+            val depStatuses = task.dependencies.associateWith { depId ->
+                checkNotNull(resolved[depId]) { "Kahn's invariant violated: $depId not resolved before ${task.id}" }
+            }
             val status = try {
                 stateDeriver.statusOf(task, depStatuses, prContext)
             } catch (e: Exception) {
@@ -140,7 +169,9 @@ class DefaultOrchestrator(
             result[task] = status
 
             for (dependentId in dependencyGraph.dependentsOf(task.id)) {
-                if ((inDegree.merge(dependentId, -1, Int::plus) ?: 0) == 0) {
+                val newDegree = inDegree.getOrDefault(dependentId, 0).dec()
+                inDegree[dependentId] = newDegree
+                if (newDegree == 0) {
                     taskById[dependentId]?.let { queue += it }
                 }
             }

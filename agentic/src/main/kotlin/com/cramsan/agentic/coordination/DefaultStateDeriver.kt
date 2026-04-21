@@ -12,6 +12,27 @@ import java.nio.file.Path
 
 private const val TAG = "DefaultStateDeriver"
 
+/**
+ * Production [StateDeriver] that reads from [vcsProvider], [worktreeManager], and the
+ * filesystem to determine a task's current status.
+ *
+ * **Status priority order** (first match wins):
+ * 1. Merged PR for `agentic/{taskId}` → [com.cramsan.agentic.core.TaskStatus.DONE]
+ * 2. `tasks/{taskId}/failed.txt` exists → [com.cramsan.agentic.core.TaskStatus.FAILED]
+ * 3. Open PR with "changes requested" → [com.cramsan.agentic.core.TaskStatus.IN_PROGRESS]
+ * 4. Open PR without changes requested → [com.cramsan.agentic.core.TaskStatus.IN_REVIEW]
+ * 5. Worktree directory exists → [com.cramsan.agentic.core.TaskStatus.IN_PROGRESS]
+ * 6. No dependencies → [com.cramsan.agentic.core.TaskStatus.PENDING]
+ * 7. All dependencies DONE → [com.cramsan.agentic.core.TaskStatus.PENDING]
+ * 8. `tasks/{taskId}/unblocked.txt` exists → [com.cramsan.agentic.core.TaskStatus.PENDING] (one-shot override, file deleted)
+ * 9. Otherwise → [com.cramsan.agentic.core.TaskStatus.BLOCKED]
+ *
+ * **Side effect**: [statusOf] **deletes** `unblocked.txt` when it is found (step 8). This makes
+ * the manual unblock a one-shot operation that does not persist across ticks.
+ *
+ * **[pullRequestHasRequestedChanges]** makes an additional VCS query per open PR, so it is only
+ * called when an open PR is actually found for the task.
+ */
 class DefaultStateDeriver(
     private val vcsProvider: VcsProvider,
     private val worktreeManager: WorktreeManager,

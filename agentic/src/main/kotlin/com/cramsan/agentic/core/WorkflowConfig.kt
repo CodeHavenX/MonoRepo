@@ -3,11 +3,24 @@ package com.cramsan.agentic.core
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+/**
+ * Top-level planning workflow configuration stored in `planning.json`. Defines the ordered
+ * sequence of stages the AI executes during `agentic plan`. Defaults to the four built-in
+ * stages (document review → high-level plan → low-level plan → task list).
+ */
 @Serializable
 data class WorkflowConfig(
     val stages: List<WorkflowStageConfig> = defaultWorkflowStages(),
 )
 
+/**
+ * Configuration for a single planning workflow stage. Stages are executed in list order;
+ * [inputDependencies] lists the IDs of other stages that must be approved before this one can start.
+ *
+ * [outputFile] is relative to the docs directory. [approvalRecordFile] is derived from [id]
+ * and written to `.agentic-meta/` when the stage is approved via
+ * [com.cramsan.agentic.input.WorkflowService.approveStage].
+ */
 @Serializable
 data class WorkflowStageConfig(
     val id: String,
@@ -25,12 +38,18 @@ data class WorkflowStageConfig(
         get() = ".agentic-meta/stage.$id.json"
 }
 
+/**
+ * Source of the system prompt for a [WorkflowStageConfig]. Either an inline string or
+ * a reference to a classpath resource file.
+ */
 @Serializable
 sealed class WorkflowPromptConfig {
+    /** System prompt embedded directly in the configuration. */
     @Serializable
     @SerialName("inline")
     data class Inline(val systemPrompt: String) : WorkflowPromptConfig()
 
+    /** System prompt loaded from a classpath resource at the given [path]. */
     @Serializable
     @SerialName("file")
     data class File(val path: String) : WorkflowPromptConfig()

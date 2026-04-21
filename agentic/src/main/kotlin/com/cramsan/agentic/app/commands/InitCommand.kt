@@ -19,6 +19,15 @@ import java.nio.file.Path
 
 private const val TAG = "InitCommand"
 
+/**
+ * CLI command that initialises a new agentic workspace. Creates the `.agentic/` directory
+ * structure, writes default `config.json` and `planning.json`, and scaffolds starter
+ * planning documents in `.agentic/docs/`.
+ *
+ * Safe to run on an already-initialised directory: existing files are not overwritten.
+ * After running `init`, the user should edit `config.json` (VCS settings, agent pool size)
+ * and the docs in `.agentic/docs/` before proceeding to `agentic plan`.
+ */
 class InitCommand : CliktCommand(name = "init", help = "Scaffold input docs and write default config.json") {
 
     private val outputDir by option("--dir", help = "Output directory for docs").default(".agentic")

@@ -55,7 +55,7 @@ class DefaultAgentRunnerTest {
     fun setup() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         runner = DefaultAgentRunner(
-            agentSession, vcsProvider, listOf(reviewerAgent), reviewerLoader, worktreeManager, agenticDir
+            agentSession, vcsProvider, listOf(reviewerAgent), reviewerLoader, agenticDir
         )
     }
 

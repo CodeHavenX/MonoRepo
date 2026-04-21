@@ -17,12 +17,27 @@ import java.nio.file.Path
 
 private const val TAG = "StartCommand"
 
+/**
+ * CLI command that starts the autonomous agent orchestrator. Blocks until all tasks complete
+ * (RunCompleted) or the run deadlocks (RunDeadlocked).
+ *
+ * **Prerequisites**: the planning phase must be complete (`.agentic-meta/stage.stage3.json`
+ * must exist) and the AI provider must support tool use (ClaudeCli requires `fullAccess: true`).
+ * Both are validated at startup before the orchestrator is started.
+ *
+ * **`--dry-run`**: derives and prints task statuses without launching any agents. Useful for
+ * verifying configuration and dependency ordering before a real run.
+ *
+ * **`--agents`**: overrides [com.cramsan.agentic.core.AgenticConfig.agentPoolSize] for this
+ * invocation without modifying `config.json`.
+ */
 class StartCommand : CliktCommand(name = "start", help = "Start the agentic orchestrator") {
 
     private val configPath by option("--config", help = "Path to config.json").default(".agentic/config.json")
     private val agentPoolSizeOverride by option("--agents", help = "Number of concurrent agents").int()
     private val dryRun by option("--dry-run", help = "Print task order without running agents").flag()
 
+    @Suppress("LongMethod")
     override fun run() {
         val agenticDir = Path.of(configPath).parent ?: Path.of(".")
         val repoRoot = Path.of(".")

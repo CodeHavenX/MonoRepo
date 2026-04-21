@@ -32,6 +32,8 @@ import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 
 /**
  * Integration tests covering multi-task orchestration scenarios:
@@ -86,6 +88,7 @@ class BranchingDependencyIntegrationTest {
         tasks: List<Task>,
         vcs: FakeVcsProvider,
         poolSize: Int = 4,
+        dispatcher: CoroutineDispatcher,
     ): DefaultOrchestrator {
         val documentStore = mockk<DocumentStore>()
         val reviewerLoader = mockk<ReviewerLoader>()
@@ -95,12 +98,12 @@ class BranchingDependencyIntegrationTest {
         val worktreeManager = DefaultWorktreeManager(repoRoot, agenticDir, "main", shell)
         val aiProvider = FakeAiProvider(mode = FakeMode.DEMO, autoCompleteAfterTurns = 1)
         val agentSession = DefaultAgentSession(aiProvider, vcs, shell, "main", documentStore)
-        val agentRunner = DefaultAgentRunner(agentSession, vcs, emptyList(), reviewerLoader, worktreeManager, agenticDir)
+        val agentRunner = DefaultAgentRunner(agentSession, vcs, emptyList(), reviewerLoader, agenticDir)
         val stateDeriver = DefaultStateDeriver(vcs, worktreeManager, agenticDir)
         val taskListProvider = FakeTaskListProvider(tasks)
         val dependencyGraph = DefaultDependencyGraph(tasks)
         return DefaultOrchestrator(
-            taskListProvider, stateDeriver, dependencyGraph, worktreeManager, agentRunner, fakeNotifier,
+            taskListProvider, stateDeriver, dependencyGraph, worktreeManager, agentRunner, fakeNotifier, dispatcher,
         )
     }
 
@@ -122,7 +125,7 @@ class BranchingDependencyIntegrationTest {
         val taskListProvider = FakeTaskListProvider(tasks)
         val dependencyGraph = DefaultDependencyGraph(tasks)
         return DefaultOrchestrator(
-            taskListProvider, stateDeriver, dependencyGraph, worktreeManager, agentRunner, fakeNotifier,
+            taskListProvider, stateDeriver, dependencyGraph, worktreeManager, agentRunner, fakeNotifier, Dispatchers.Default,
         )
     }
 
@@ -132,7 +135,7 @@ class BranchingDependencyIntegrationTest {
     fun `fullStack - linear chain A-B-C - all 3 tasks complete`() = runTest(timeout = kotlin.time.Duration.INFINITE) {
         val tasks = listOf(task("A"), task("B", "A"), task("C", "B"))
         val vcs = FakeVcsProvider(autoMergeOnCreate = true)
-        val orchestrator = buildFullStackOrchestrator(tasks, vcs)
+        val orchestrator = buildFullStackOrchestrator(tasks, vcs, dispatcher = Dispatchers.Default,)
         coEvery { shell.run(*anyVararg(), workingDir = any()) } returns ShellResult("", 0, "")
 
         orchestrator.run(baseConfig)
@@ -218,7 +221,7 @@ class BranchingDependencyIntegrationTest {
                 task("H", "G"),
             )
             val vcs = FakeVcsProvider(autoMergeOnCreate = true)
-            val orchestrator = buildFullStackOrchestrator(tasks, vcs, poolSize = 4)
+            val orchestrator = buildFullStackOrchestrator(tasks, vcs, poolSize = 4, Dispatchers.Default,)
             coEvery { shell.run(*anyVararg(), workingDir = any()) } returns ShellResult("", 0, "")
 
             orchestrator.run(baseConfig)

@@ -12,21 +12,39 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withTimeout
 import java.nio.file.Files
 import java.nio.file.Path
+import kotlin.time.Duration.Companion.seconds
 
 private const val TAG = "DefaultAgentRunner"
 
+/**
+ * Production [AgentRunner] that wraps [AgentSession] with timeout enforcement, failure
+ * persistence, and post-PR reviewer orchestration.
+ *
+ * **Reviewer agents**: after a successful PR is opened, all [reviewerAgents] are run in parallel
+ * against all loaded [ReviewerLoader] definitions. Each combination of reviewer × agent produces
+ * one [com.cramsan.agentic.core.ReviewerFeedback] posted as a PR comment. Reviewer failures are
+ * swallowed with a warning log — they must not block the overall task result.
+ *
+ * **Diff content**: the "diff" passed to reviewer agents is currently just the PR title and number,
+ * not an actual git diff. This means code reviewers cannot perform line-level analysis.
+ * // TODO: fetch a real diff via `gh pr diff <prId>` and pass it to reviewCode for meaningful review.
+ *
+ * **Failure persistence**: `failed.txt` is written on timeout, unexpected exception, or agent
+ * self-reported failure ([AgentResult.Failed]). This file is the only persistent record of failure
+ * reason; the orchestrator checks its existence to derive [com.cramsan.agentic.core.TaskStatus.FAILED].
+ */
 class DefaultAgentRunner(
     private val agentSession: AgentSession,
     private val vcsProvider: VcsProvider,
     private val reviewerAgents: List<ReviewerAgent>,
     private val reviewerLoader: ReviewerLoader,
-    private val worktreeManager: WorktreeManager,
     private val agenticDir: Path,
 ) : AgentRunner {
 
+    @Suppress("SwallowedException")
     override suspend fun run(task: Task, worktree: Worktree): AgentResult {
         return try {
-            val result = withTimeout(task.timeoutSeconds * 1_000L) {
+            val result = withTimeout(task.timeoutSeconds.seconds) {
                 agentSession.execute(task, worktree)
             }
 

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.io.TempDir
 import java.nio.file.Files
 import java.nio.file.Path
+import kotlinx.coroutines.Dispatchers
 
 abstract class E2ETestBase {
 
@@ -38,7 +39,7 @@ abstract class E2ETestBase {
     }
 
     protected fun initGitRepo(dir: Path) {
-        val shell = com.cramsan.agentic.vcs.github.ShellRunner()
+        val shell = com.cramsan.agentic.vcs.github.ShellRunner(Dispatchers.Default)
         kotlinx.coroutines.runBlocking {
             shell.run("git", "init", dir.toString())
             shell.run("git", "-C", dir.toString(), "config", "user.email", "e2e-test@agentic.dev")

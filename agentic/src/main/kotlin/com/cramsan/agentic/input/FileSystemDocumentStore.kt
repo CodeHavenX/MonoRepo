@@ -15,6 +15,25 @@ import java.security.MessageDigest
 
 private const val TAG = "FileSystemDocumentStore"
 
+/**
+ * Filesystem-backed [DocumentStore] that persists document metadata as JSON sidecar files
+ * alongside the actual document content in [docsDir].
+ *
+ * **Lazy loading**: document metadata is loaded from disk on the first call to [getAll] or [get]
+ * and cached in memory for the lifetime of the instance. Subsequent calls use the in-memory
+ * cache. This means external modifications to sidecar files after the first access are not
+ * reflected without restarting the process.
+ *
+ * **Change detection**: [onDocumentChanged] resets all in-memory statuses to
+ * [com.cramsan.agentic.core.DocumentStatus.UNREVIEWED] and persists the reset to disk. It does
+ * not scan for new files — only the documents listed in [inputDocuments] at construction time
+ * are tracked.
+ *
+ * **Content hashing**: document content is SHA-256 hashed when [updateStatus] transitions a
+ * document to [com.cramsan.agentic.core.DocumentStatus.VALIDATED], and the hash is stored in the
+ * sidecar. This hash is later used by [com.cramsan.agentic.input.DefaultWorkflowService] to
+ * detect approval drift.
+ */
 class FileSystemDocumentStore(
     private val docsDir: Path,
     private val json: Json,
@@ -106,7 +125,7 @@ class FileSystemDocumentStore(
                 val currentHash = computeContentHash(currentContent)
                 if (currentHash != sidecar.contentHash) {
                     logW(TAG, "Document $id content changed since validation (hash mismatch). Resetting to UNREVIEWED.")
-                    logD(TAG, "Expected hash: ${sidecar.contentHash.take(16)}..., actual: ${currentHash.take(16)}...")
+                    logD(TAG, "Expected hash: ${sidecar.contentHash.take(RADIX)}..., actual: ${currentHash.take(RADIX)}...")
                     status = DocumentStatus.UNREVIEWED
                     // Update the sidecar to reflect the reset status
                     val resetDoc = AgenticDocument(
@@ -156,6 +175,7 @@ class FileSystemDocumentStore(
         }
     }
 
+    @Suppress("MagicNumber")
     private fun writeSidecar(document: AgenticDocument, contentHash: String? = null) {
         val path = sidecarPath(document.id)
         logD(TAG, "Writing sidecar for document ${document.id} to $path")
@@ -170,10 +190,12 @@ class FileSystemDocumentStore(
         logD(TAG, "Sidecar written for document ${document.id}: status=${document.status}, hash=${contentHash?.take(8)}...")
     }
 
+    @Suppress("MagicNumber")
     private fun computeContentHash(content: String): String {
         val digest = MessageDigest.getInstance("SHA-256")
         val hashBytes = digest.digest(content.toByteArray(Charsets.UTF_8))
-        return hashBytes.joinToString("") { "%02x".format(it) }
+        return hashBytes.joinToString("") { (it.toInt() and 0xFF).toString(RADIX).padStart(2, '0') }
     }
 
 }
+private const val RADIX = 16

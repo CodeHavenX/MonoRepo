@@ -54,6 +54,7 @@ class DocumentTaskListProvider(
         }
     }
 
+    @Suppress("MagicNumber")
     private fun parseDocument(): List<Task> {
         require(Files.exists(documentPath)) {
             "Task list document not found at $documentPath"
@@ -97,9 +98,7 @@ class DocumentTaskListProvider(
             )
         }
 
-        if (parsedTasks.isEmpty()) {
-            throw IllegalStateException("No tasks found in task list document at $documentPath")
-        }
+        check(parsedTasks.isNotEmpty()) { "No tasks found in task list document at $documentPath" }
 
         logI(TAG, "Parsed ${parsedTasks.size} tasks from $documentPath")
         return parsedTasks
@@ -129,9 +128,8 @@ class DocumentTaskListProvider(
                         null
                     }
                 }
-                .filter { it != null }
-                .map { it!! }
                 .toList()
+                .filterNotNull()
         }
     }
 }

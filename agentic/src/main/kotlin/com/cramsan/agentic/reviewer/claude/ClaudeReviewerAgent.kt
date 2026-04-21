@@ -14,6 +14,22 @@ import com.cramsan.framework.logging.logW
 
 private const val TAG = "ClaudeReviewerAgent"
 
+/**
+ * [com.cramsan.agentic.reviewer.ReviewerAgent] that delegates to [AiProvider] with no tools
+ * (text-only mode). Each review is a single-turn conversation: reviewer system prompt + one
+ * user message describing the artifact.
+ *
+ * **Document review limitation**: [reviewDocuments] sends only document metadata (id, path,
+ * status) in the user message — the actual document content is not loaded or transmitted.
+ * This means the reviewer can only comment on high-level structure, not the content itself.
+ * // TODO: load document content from disk and include it in the review prompt.
+ *
+ * **Code review limitation**: the [diff] parameter passed to [reviewCode] is currently just the
+ * PR title (see [com.cramsan.agentic.execution.DefaultAgentRunner.runReviewerAgents]). Meaningful
+ * line-level review is not possible until a real git diff is supplied.
+ *
+ * This class is safe to call from multiple coroutines simultaneously — it holds no mutable state.
+ */
 class ClaudeReviewerAgent(
     private val aiProvider: AiProvider,
 ) : ReviewerAgent {

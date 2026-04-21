@@ -9,6 +9,12 @@ import com.cramsan.framework.logging.logD
 
 private const val TAG = "FakeReviewerAgent"
 
+/**
+ * In-memory [com.cramsan.agentic.reviewer.ReviewerAgent] for tests. Returns [documentFeedback]
+ * for all [reviewDocuments] calls and [codeFeedback] for all [reviewCode] calls, regardless of
+ * the input content. The [com.cramsan.agentic.core.ReviewerDefinition.name] from the reviewer
+ * definition is echoed back as [com.cramsan.agentic.core.ReviewerFeedback.reviewerName].
+ */
 class FakeReviewerAgent(
     private val documentFeedback: String = "No issues found.",
     private val codeFeedback: String = "LGTM.",

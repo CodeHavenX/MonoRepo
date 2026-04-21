@@ -14,6 +14,20 @@ import com.cramsan.framework.logging.logW
 import java.nio.file.Files
 import java.nio.file.Path
 
+/**
+ * Production [Scaffolder] that generates starter planning documents from embedded classpath
+ * templates. Called once during `agentic init`.
+ *
+ * **Template resolution**: document templates are loaded from the JAR's `resources/templates/`
+ * directory via [resolvePath]. Each [InputDocumentConfig] can reference a template file or
+ * use an inline template string.
+ *
+ * **Idempotency**: if an output file already exists, it is not overwritten. This prevents
+ * destroying user edits when `init` is run more than once.
+ *
+ * Reviewer templates are scaffolded into `docs/reviewers/` using [ReviewerConfig] definitions.
+ * Workflow stage prompt files are copied to `docs/templates/workflow/`.
+ */
 class DefaultScaffolder(
     private val inputDocuments: List<InputDocumentConfig>,
     private val reviewersConfig: ReviewersConfig,
@@ -45,6 +59,7 @@ class DefaultScaffolder(
         }
     }
 
+    @Suppress("CyclomaticComplexMethod")
     private fun copyTemplatesFromResources(outputDir: Path) {
         // Collect all template paths referenced in configs
         val templatePaths = mutableSetOf<String>()

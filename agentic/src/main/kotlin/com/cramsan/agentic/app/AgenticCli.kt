@@ -13,6 +13,18 @@ import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.enum
 
+/**
+ * Root CLI command for the agentic tool. Sets up the [com.cramsan.framework.logging.EventLogger]
+ * before any subcommand runs via [run], which Clikt always calls before delegating to a subcommand.
+ *
+ * The `--log-level` flag is available on all subcommands because it is declared here on the root.
+ * Default level is [com.cramsan.framework.logging.Severity.INFO].
+ *
+ * Subcommand structure:
+ * - `init` — scaffold config and docs directory
+ * - `plan` — multi-stage AI planning pipeline (human-in-the-loop)
+ * - `run` → `start` / `status` / `task` — autonomous agent execution
+ */
 class AgenticCli : CliktCommand(name = "agentic", invokeWithoutSubcommand = false) {
 
     private val logLevel by option(

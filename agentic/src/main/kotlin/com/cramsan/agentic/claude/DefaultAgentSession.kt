@@ -16,9 +16,37 @@ import kotlinx.coroutines.delay
 import kotlinx.serialization.json.jsonPrimitive
 import java.nio.file.Files
 import java.nio.file.Path
+import kotlin.time.Duration.Companion.seconds
 
 private const val TAG = "DefaultAgentSession"
 
+/**
+ * Production [AgentSession] that drives the Claude-based agentic loop for a single task.
+ *
+ * **Session startup logic**: before entering the main loop, [buildInitialContext] examines the
+ * current state of the worktree and VCS to select the appropriate system prompt:
+ * 1. Open PR with changes requested → [buildChangesRequestedPrompt] (address reviewer feedback)
+ * 2. Open PR without changes requested → [buildPrOpenedPrompt] (PR is in review, stand by)
+ * 3. Worktree has uncommitted diff → [buildResumeFromWorktreePrompt] (resume interrupted work)
+ * 4. Fresh start → [buildTaskStartPrompt] (new task, begin from scratch)
+ *
+ * **Tool loop**: the agent loop calls [aiProvider] with accumulated [messages] and dispatches
+ * any [com.cramsan.agentic.ai.AiContentBlock.ToolCall]s via [dispatchTool]. Non-terminal tools
+ * append their result to [messages] and loop. Terminal tools (`task_complete`, `task_failed`)
+ * return an [AgentResult] and exit the loop.
+ *
+ * **Critical amendments**: the `propose_amendment` tool with `isCritical=true` blocks the loop
+ * by polling [vcsProvider.isPullRequestMerged] every 30 seconds. This is the only blocking
+ * wait within the session; it prevents the agent from proceeding until the blocking change
+ * is reviewed and merged. The wait is unbounded — if the amendment PR is never merged, the
+ * session will block until the task timeout fires in [com.cramsan.agentic.execution.DefaultAgentRunner].
+ *
+ * **Document content loading**: planning documents are read from [documentStore] using
+ * [com.cramsan.agentic.core.AgenticDocument.relativePath] directly. If the path is not
+ * absolute and the working directory differs, content loading may silently fail with an error
+ * string embedded in the prompt.
+ * // TODO: resolve document paths relative to agenticDir rather than the JVM working directory.
+ */
 class DefaultAgentSession(
     private val aiProvider: AiProvider,
     private val vcsProvider: VcsProvider,
@@ -71,6 +99,7 @@ class DefaultAgentSession(
         data class Terminal(val agentResult: AgentResult) : ToolResult()
     }
 
+    @Suppress("LongMethod", "CyclomaticComplexMethod", "NestedBlockDepth")
     private suspend fun dispatchTool(
         toolCall: AiContentBlock.ToolCall,
         task: Task,
@@ -89,7 +118,7 @@ class DefaultAgentSession(
             }
             "write_file" -> {
                 val path = toolCall.input["path"]?.jsonPrimitive?.content ?: return ToolResult.Success("Error: missing path")
-                val content = toolCall.input["content"]?.jsonPrimitive?.content ?: ""
+                val content = toolCall.input["content"]?.jsonPrimitive?.content .orEmpty()
                 try {
                     val fullPath = worktree.path.resolve(path)
                     Files.createDirectories(fullPath.parent)
@@ -143,7 +172,7 @@ class DefaultAgentSession(
             }
             "task_complete" -> {
                 val prTitle = toolCall.input["prTitle"]?.jsonPrimitive?.content ?: "Task ${task.id}: ${task.title}"
-                val prBody = toolCall.input["prBody"]?.jsonPrimitive?.content ?: ""
+                val prBody = toolCall.input["prBody"]?.jsonPrimitive?.content .orEmpty()
                 try {
                     val pr = vcsProvider.createPullRequest(
                         sourceBranch = "agentic/${task.id}",
@@ -163,8 +192,8 @@ class DefaultAgentSession(
                 ToolResult.Terminal(AgentResult.Failed(reason))
             }
             "propose_amendment" -> {
-                val documentType = toolCall.input["documentType"]?.jsonPrimitive?.content ?: ""
-                val proposedChange = toolCall.input["proposedChange"]?.jsonPrimitive?.content ?: ""
+                val documentType = toolCall.input["documentType"]?.jsonPrimitive?.content .orEmpty()
+                val proposedChange = toolCall.input["proposedChange"]?.jsonPrimitive?.content .orEmpty()
                 val isCritical = toolCall.input["isCritical"]?.jsonPrimitive?.content?.toBooleanStrictOrNull() ?: false
                 try {
                     val pr = vcsProvider.createPullRequest(
@@ -187,7 +216,7 @@ class DefaultAgentSession(
                                     clearAmendmentMarker(worktree)
                                     return ToolResult.Success("Critical amendment PR ${pr.id} was closed without merging. Cannot continue. Use task_failed if the task cannot proceed without this change.")
                                 }
-                                delay(30_000L)
+                                delay(30.seconds)
                             }
                         }
                         clearAmendmentMarker(worktree)
@@ -200,9 +229,9 @@ class DefaultAgentSession(
             }
             "split_task" -> {
                 val currentPrTitle = toolCall.input["currentPrTitle"]?.jsonPrimitive?.content ?: "Task ${task.id}: ${task.title}"
-                val currentPrBody = toolCall.input["currentPrBody"]?.jsonPrimitive?.content ?: ""
+                val currentPrBody = toolCall.input["currentPrBody"]?.jsonPrimitive?.content .orEmpty()
                 val newTaskTitle = toolCall.input["newTaskTitle"]?.jsonPrimitive?.content ?: "Follow-up task"
-                val newTaskDescription = toolCall.input["newTaskDescription"]?.jsonPrimitive?.content ?: ""
+                val newTaskDescription = toolCall.input["newTaskDescription"]?.jsonPrimitive?.content .orEmpty()
                 try {
                     val codePr = vcsProvider.createPullRequest(
                         sourceBranch = "agentic/${task.id}",
@@ -240,6 +269,7 @@ class DefaultAgentSession(
         Files.deleteIfExists(marker)
     }
 
+    @Suppress("SwallowedException")
     private suspend fun buildInitialContext(
         task: Task,
         worktree: Worktree,
@@ -295,6 +325,7 @@ class DefaultAgentSession(
         return prompt to listOf(AiMessage("user", "Begin working on the task."))
     }
 
+    @Suppress("SwallowedException")
     private suspend fun getGitDiff(worktree: Worktree): String {
         return try {
             val result = shell.run("git", "diff", baseBranch, "--", worktree.path.toString())

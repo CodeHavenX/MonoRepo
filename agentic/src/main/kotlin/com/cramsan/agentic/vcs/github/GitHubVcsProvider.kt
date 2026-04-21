@@ -21,6 +21,22 @@ import kotlinx.serialization.json.jsonPrimitive
 
 private const val TAG = "GitHubVcsProvider"
 
+/**
+ * [com.cramsan.agentic.vcs.VcsProvider] implementation that delegates every operation to the
+ * `gh` GitHub CLI. Requires `gh` to be installed and authenticated before the orchestrator starts.
+ *
+ * **Rate limiting**: a [delayDuration] (default 2 s) is introduced before each CLI call to
+ * reduce the chance of hitting the GitHub API rate limit. Combined with the retry loop in
+ * [ShellRunner], this makes the provider fairly tolerant of transient network issues, but also
+ * means a single orchestrator tick with many tasks can take tens of seconds just for VCS queries.
+ * // TODO: batch listOpenPullRequests / listMergedPullRequests into a single `gh pr list` call
+ * instead of one per task to reduce API round-trips.
+ *
+ * **createdAtEpochMs**: [getPullRequestComments] always sets this field to `0` because the `gh`
+ * JSON response does not include a parsed timestamp. See [com.cramsan.agentic.core.PullRequestComment].
+ *
+ * [ioDispatcher] and [delayDuration] are injectable for testing without real network calls.
+ */
 class GitHubVcsProvider(
     private val owner: String,
     private val repo: String,
@@ -30,6 +46,7 @@ class GitHubVcsProvider(
     private val delayDuration: Duration = 2.seconds,
 ) : VcsProvider {
 
+    @Suppress("SpreadOperator")
     override suspend fun createPullRequest(
         sourceBranch: String,
         targetBranch: String,
@@ -62,6 +79,7 @@ class GitHubVcsProvider(
         pr
     }
 
+    @Suppress("SpreadOperator")
     override suspend fun listOpenPullRequests(labels: List<String>): List<PullRequest> =
         withContext(ioDispatcher) {
             logI(TAG, "listOpenPullRequests: repo=$owner/$repo, labels=$labels")
@@ -87,6 +105,7 @@ class GitHubVcsProvider(
             prs
         }
 
+    @Suppress("SpreadOperator")
     override suspend fun listMergedPullRequests(labels: List<String>): List<PullRequest> =
         withContext(ioDispatcher) {
             logI(TAG, "listMergedPullRequests: repo=$owner/$repo, labels=$labels")
@@ -133,8 +152,8 @@ class GitHubVcsProvider(
             val comments = commentsArray.map { element ->
                 val commentObj = element.jsonObject
                 PullRequestComment(
-                    author = commentObj["author"]?.jsonObject?.get("login")?.jsonPrimitive?.content ?: "",
-                    body = commentObj["body"]?.jsonPrimitive?.content ?: "",
+                    author = commentObj["author"]?.jsonObject?.get("login")?.jsonPrimitive?.content .orEmpty(),
+                    body = commentObj["body"]?.jsonPrimitive?.content .orEmpty(),
                     createdAtEpochMs = 0L,
                 )
             }
@@ -203,13 +222,13 @@ class GitHubVcsProvider(
         logD(TAG, "parsePullRequest: parsing JSON response")
         val obj = json.parseToJsonElement(jsonStr).jsonObject
         return PullRequest(
-            id = obj["number"]?.jsonPrimitive?.content ?: "",
-            url = obj["url"]?.jsonPrimitive?.content ?: "",
-            title = obj["title"]?.jsonPrimitive?.content ?: "",
-            state = parseState(obj["state"]?.jsonPrimitive?.content ?: ""),
-            sourceBranch = obj["headRefName"]?.jsonPrimitive?.content ?: "",
-            targetBranch = obj["baseRefName"]?.jsonPrimitive?.content ?: "",
-            labels = obj["labels"]?.jsonArray?.map { it.jsonObject["name"]?.jsonPrimitive?.content ?: "" } ?: emptyList(),
+            id = obj["number"]?.jsonPrimitive?.content .orEmpty(),
+            url = obj["url"]?.jsonPrimitive?.content .orEmpty(),
+            title = obj["title"]?.jsonPrimitive?.content .orEmpty(),
+            state = parseState(obj["state"]?.jsonPrimitive?.content .orEmpty()),
+            sourceBranch = obj["headRefName"]?.jsonPrimitive?.content .orEmpty(),
+            targetBranch = obj["baseRefName"]?.jsonPrimitive?.content .orEmpty(),
+            labels = obj["labels"]?.jsonArray?.map { it.jsonObject["name"]?.jsonPrimitive?.content .orEmpty() } .orEmpty(),
         )
     }
 
@@ -219,13 +238,13 @@ class GitHubVcsProvider(
         return array.map { element ->
             val obj = element.jsonObject
             PullRequest(
-                id = obj["number"]?.jsonPrimitive?.content ?: "",
-                url = obj["url"]?.jsonPrimitive?.content ?: "",
-                title = obj["title"]?.jsonPrimitive?.content ?: "",
-                state = parseState(obj["state"]?.jsonPrimitive?.content ?: ""),
-                sourceBranch = obj["headRefName"]?.jsonPrimitive?.content ?: "",
-                targetBranch = obj["baseRefName"]?.jsonPrimitive?.content ?: "",
-                labels = obj["labels"]?.jsonArray?.map { it.jsonObject["name"]?.jsonPrimitive?.content ?: "" } ?: emptyList(),
+                id = obj["number"]?.jsonPrimitive?.content .orEmpty(),
+                url = obj["url"]?.jsonPrimitive?.content .orEmpty(),
+                title = obj["title"]?.jsonPrimitive?.content .orEmpty(),
+                state = parseState(obj["state"]?.jsonPrimitive?.content .orEmpty()),
+                sourceBranch = obj["headRefName"]?.jsonPrimitive?.content .orEmpty(),
+                targetBranch = obj["baseRefName"]?.jsonPrimitive?.content .orEmpty(),
+                labels = obj["labels"]?.jsonArray?.map { it.jsonObject["name"]?.jsonPrimitive?.content .orEmpty() } .orEmpty(),
             )
         }
     }

@@ -4,6 +4,11 @@ import com.cramsan.agentic.ai.AiMessage
 import com.cramsan.agentic.core.PullRequestComment
 import com.cramsan.agentic.core.Task
 
+/**
+ * Builds the system prompt for a fresh task start. Includes the task description and
+ * all planning documents as reference material. This prompt sets the agent's persona,
+ * goal, and available tool usage instructions for the duration of the session.
+ */
 fun buildTaskStartPrompt(task: Task, documents: List<Pair<String, String>>): String {
     val docsSection = documents.joinToString("\n\n") { (name, content) ->
         "## Document: $name\n\n$content"
@@ -35,6 +40,10 @@ Work autonomously. Do not ask for clarification — make reasonable decisions an
 """.trimIndent()
 }
 
+/**
+ * Builds the system prompt when the agent resumes a session where a PR is already open
+ * but has no reviewer feedback yet. The agent is informed of the PR state and told to stand by.
+ */
 fun buildPrOpenedPrompt(task: Task, gitDiff: String, prDescription: String): String {
     return """
 You previously completed task **${task.id}: ${task.title}** and opened a Pull Request.
@@ -53,6 +62,11 @@ The PR is awaiting review. Stand by for feedback.
 """.trimIndent()
 }
 
+/**
+ * Builds the system prompt when a human reviewer has requested changes on the task's PR.
+ * Includes the current diff and all reviewer comments so the agent can address feedback
+ * in context.
+ */
 fun buildChangesRequestedPrompt(task: Task, gitDiff: String, reviewComments: List<PullRequestComment>): String {
     val commentsSection = reviewComments.joinToString("\n\n") { comment ->
         "**${comment.author}** (${comment.createdAtEpochMs}):\n${comment.body}"
@@ -80,6 +94,11 @@ Work autonomously. Address each comment thoughtfully.
 """.trimIndent()
 }
 
+/**
+ * Builds the system prompt for resuming an interrupted session where a worktree exists with
+ * uncommitted or committed-but-not-PR'd changes. The diff provides context on prior progress
+ * so the agent can continue without starting from scratch.
+ */
 fun buildResumeFromWorktreePrompt(task: Task, gitDiff: String): String {
     return """
 You are resuming work on task **${task.id}: ${task.title}**.

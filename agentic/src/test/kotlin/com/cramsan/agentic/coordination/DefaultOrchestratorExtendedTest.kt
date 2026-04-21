@@ -11,6 +11,7 @@ import com.cramsan.agentic.notification.Notifier
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
+import com.cramsan.framework.test.CoroutineTest
 import io.mockk.coEvery
 import io.mockk.coVerify
 import kotlinx.coroutines.delay
@@ -21,11 +22,13 @@ import org.junit.jupiter.api.Test
 import java.nio.file.Path
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
+import kotlin.time.Duration.Companion.seconds
+import kotlinx.coroutines.CoroutineDispatcher
 
 /**
  * Extended orchestrator tests enforcing requirements from TECH_DESIGN.md §10 and ARCHITECTURE.md §2.
  */
-class DefaultOrchestratorExtendedTest {
+class DefaultOrchestratorExtendedTest : CoroutineTest() {
 
     @BeforeEach
     fun setup() {
@@ -51,13 +54,13 @@ class DefaultOrchestratorExtendedTest {
         baseBranch = "main",
     )
 
-    private fun makeOrchestrator() =
-        DefaultOrchestrator(taskListProvider, stateDeriver, dependencyGraph, worktreeManager, agentRunner, notifier)
+    private fun makeOrchestrator(dispatcher: CoroutineDispatcher) =
+        DefaultOrchestrator(taskListProvider, stateDeriver, dependencyGraph, worktreeManager, agentRunner, notifier, dispatcher)
 
     // ── Worktree cleanup requirements ────────────────────────────────────────
 
     @Test
-    fun `worktree is deleted when task transitions to DONE`() = runTest {
+    fun `worktree is deleted when task transitions to DONE`() = runCoroutineTest {
         val task = makeTask("task-1")
         coEvery { taskListProvider.provide() } returns listOf(task)
         var tick = 0
@@ -67,13 +70,13 @@ class DefaultOrchestratorExtendedTest {
         coEvery { worktreeManager.getOrCreate("task-1") } returns worktree("task-1")
         coEvery { agentRunner.run(task, any()) } returns AgentResult.PrOpened("pr-1", "url")
 
-        makeOrchestrator().run(config)
+        makeOrchestrator(testCoroutineDispatcher).run(config)
 
         coVerify { worktreeManager.delete("task-1") }
     }
 
     @Test
-    fun `worktree is deleted when task transitions to FAILED`() = runTest {
+    fun `worktree is deleted when task transitions to FAILED`() = runCoroutineTest {
         val task = makeTask("task-1")
         coEvery { taskListProvider.provide() } returns listOf(task)
         var tick = 0
@@ -83,13 +86,13 @@ class DefaultOrchestratorExtendedTest {
         coEvery { worktreeManager.getOrCreate("task-1") } returns worktree("task-1")
         coEvery { agentRunner.run(task, any()) } returns AgentResult.Failed("out of tokens")
 
-        makeOrchestrator().run(config)
+        makeOrchestrator(testCoroutineDispatcher).run(config)
 
         coVerify { worktreeManager.delete("task-1") }
     }
 
     @Test
-    fun `worktree cleanup does not happen twice for the same task`() = runTest {
+    fun `worktree cleanup does not happen twice for the same task`() = runCoroutineTest {
         val task = makeTask("task-1")
         coEvery { taskListProvider.provide() } returns listOf(task)
         var tick = 0
@@ -101,7 +104,7 @@ class DefaultOrchestratorExtendedTest {
         coEvery { worktreeManager.getOrCreate("task-1") } returns worktree("task-1")
         coEvery { agentRunner.run(task, any()) } returns AgentResult.PrOpened("pr-1", "url")
 
-        makeOrchestrator().run(config)
+        makeOrchestrator(testCoroutineDispatcher).run(config)
 
         coVerify(exactly = 1) { worktreeManager.delete("task-1") }
     }
@@ -109,7 +112,7 @@ class DefaultOrchestratorExtendedTest {
     // ── IN_REVIEW tasks must not consume an agent slot ────────────────────────
 
     @Test
-    fun `IN_REVIEW task does not launch agent — agent slot stays free for PENDING tasks`() = runTest {
+    fun `IN_REVIEW task does not launch agent — agent slot stays free for PENDING tasks`() = runCoroutineTest {
         val inReviewTask = makeTask("in-review")
         val pendingTask = makeTask("pending")
         coEvery { taskListProvider.provide() } returns listOf(inReviewTask, pendingTask)
@@ -123,7 +126,7 @@ class DefaultOrchestratorExtendedTest {
         coEvery { worktreeManager.getOrCreate("pending") } returns worktree("pending")
         coEvery { agentRunner.run(pendingTask, any()) } returns AgentResult.PrOpened("pr-1", "url")
 
-        makeOrchestrator().run(config.copy(agentPoolSize = 1))
+        makeOrchestrator(testCoroutineDispatcher).run(config.copy(agentPoolSize = 1))
 
         coVerify(exactly = 0) { worktreeManager.getOrCreate("in-review") }
         coVerify(exactly = 1) { worktreeManager.getOrCreate("pending") }
@@ -132,7 +135,7 @@ class DefaultOrchestratorExtendedTest {
     // ── Deadlock must NOT be declared while agents are still running ──────────
 
     @Test
-    fun `all tasks BLOCKED or FAILED but deadlock not declared because active agents still running`() = runTest {
+    fun `all tasks BLOCKED or FAILED but deadlock not declared because active agents still running`() = runCoroutineTest {
         val task = makeTask("task-1")
         coEvery { taskListProvider.provide() } returns listOf(task)
 
@@ -145,7 +148,7 @@ class DefaultOrchestratorExtendedTest {
         coEvery { worktreeManager.getOrCreate("task-1") } returns worktree("task-1")
         coEvery { agentRunner.run(task, any()) } returns AgentResult.Failed("reason")
 
-        makeOrchestrator().run(config)
+        makeOrchestrator(testCoroutineDispatcher).run(config)
 
         coVerify(atLeast = 1) { notifier.notify(any()) }
     }
@@ -153,7 +156,7 @@ class DefaultOrchestratorExtendedTest {
     // ── RunCompleted notification content ────────────────────────────────────
 
     @Test
-    fun `RunCompleted event includes all completed tasks`() = runTest {
+    fun `RunCompleted event includes all completed tasks`() = runCoroutineTest {
         val task1 = makeTask("task-1")
         val task2 = makeTask("task-2")
         coEvery { taskListProvider.provide() } returns listOf(task1, task2)
@@ -161,7 +164,7 @@ class DefaultOrchestratorExtendedTest {
         coEvery { dependencyGraph.downstreamCount(any()) } returns 0
         coEvery { dependencyGraph.dependentsOf(any()) } returns emptySet()
 
-        makeOrchestrator().run(config)
+        makeOrchestrator(testCoroutineDispatcher).run(config)
 
         coVerify {
             notifier.notify(
@@ -175,7 +178,7 @@ class DefaultOrchestratorExtendedTest {
     // ── RunDeadlocked notification content ───────────────────────────────────
 
     @Test
-    fun `RunDeadlocked event contains blocked and failed tasks`() = runTest {
+    fun `RunDeadlocked event contains blocked and failed tasks`() = runCoroutineTest {
         val blockedTask = makeTask("blocked")
         val failedTask = makeTask("failed")
         coEvery { taskListProvider.provide() } returns listOf(blockedTask, failedTask)
@@ -184,7 +187,7 @@ class DefaultOrchestratorExtendedTest {
         coEvery { dependencyGraph.downstreamCount(any()) } returns 0
         coEvery { dependencyGraph.dependentsOf(any()) } returns emptySet()
 
-        makeOrchestrator().run(config)
+        makeOrchestrator(testCoroutineDispatcher).run(config)
 
         coVerify {
             notifier.notify(
@@ -200,7 +203,7 @@ class DefaultOrchestratorExtendedTest {
     // ── Agent pool sizing ────────────────────────────────────────────────────
 
     @Test
-    fun `only agentPoolSize agents launched per tick`() = runTest {
+    fun `only agentPoolSize agents launched per tick`() = runCoroutineTest {
         val tasks = (1..5).map { makeTask("task-$it") }
         coEvery { taskListProvider.provide() } returns tasks
         val launchedIds = mutableListOf<String>()
@@ -220,7 +223,7 @@ class DefaultOrchestratorExtendedTest {
             AgentResult.PrOpened("pr-${task.id}", "url")
         }
 
-        makeOrchestrator().run(config.copy(agentPoolSize = 2))
+        makeOrchestrator(testCoroutineDispatcher).run(config.copy(agentPoolSize = 2))
 
         assertEquals(5, tasks.size)
     }
@@ -228,7 +231,7 @@ class DefaultOrchestratorExtendedTest {
     // ── Task assignment must not re-launch in-flight agents ──────────────────
 
     @Test
-    fun `agent is not re-launched for task already in activeTaskIds`() = runTest {
+    fun `agent is not re-launched for task already in activeTaskIds`() = runCoroutineTest {
         val task = makeTask("task-1")
         coEvery { taskListProvider.provide() } returns listOf(task)
         var tick = 0
@@ -239,11 +242,14 @@ class DefaultOrchestratorExtendedTest {
         coEvery { dependencyGraph.dependentsOf(any()) } returns emptySet()
         coEvery { worktreeManager.getOrCreate("task-1") } returns worktree("task-1")
         coEvery { agentRunner.run(task, any()) } coAnswers {
-            delay(config.pollIntervalSeconds * 2_000L)
+            // Use a non-zero virtual delay so the agent stays in activeTaskIds across at least
+            // one poll cycle. delay(0) completes synchronously on UnconfinedTestDispatcher and
+            // would allow the orchestrator to re-launch the agent before it finishes.
+            delay(1.seconds)
             AgentResult.PrOpened("pr-1", "url")
         }
 
-        makeOrchestrator().run(config)
+        makeOrchestrator(testCoroutineDispatcher).run(config)
 
         coVerify(exactly = 1) { agentRunner.run(task, any()) }
     }
@@ -251,7 +257,7 @@ class DefaultOrchestratorExtendedTest {
     // ── Topological ordering ─────────────────────────────────────────────────
 
     @Test
-    fun `dependent task is not assigned before its dependency is done`() = runTest {
+    fun `dependent task is not assigned before its dependency is done`() = runCoroutineTest {
         val upstream = makeTask("upstream")
         val downstream = makeTask("downstream", "upstream")
         coEvery { taskListProvider.provide() } returns listOf(upstream, downstream)
@@ -277,7 +283,7 @@ class DefaultOrchestratorExtendedTest {
         coEvery { agentRunner.run(upstream, any()) } returns AgentResult.PrOpened("pr-1", "url")
         coEvery { agentRunner.run(downstream, any()) } returns AgentResult.PrOpened("pr-2", "url")
 
-        makeOrchestrator().run(config.copy(agentPoolSize = 1))
+        makeOrchestrator(testCoroutineDispatcher).run(config.copy(agentPoolSize = 1))
 
         coVerify { agentRunner.run(upstream, any()) }
     }

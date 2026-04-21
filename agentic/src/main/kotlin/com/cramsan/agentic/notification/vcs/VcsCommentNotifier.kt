@@ -10,6 +10,24 @@ import com.cramsan.framework.logging.logW
 private const val TAG = "VcsCommentNotifier"
 private const val NOTIFICATION_MARKER = "<!-- agentic-notification -->"
 
+/**
+ * [com.cramsan.agentic.notification.Notifier] that posts operator alerts as PR comments via
+ * [com.cramsan.agentic.vcs.VcsProvider].
+ *
+ * **Routing**:
+ * - [com.cramsan.agentic.notification.AgenticEvent.TaskFailed]: posted on the failing task's own PR.
+ *   If no open PR exists for the task, the notification is silently dropped.
+ * - [com.cramsan.agentic.notification.AgenticEvent.RunDeadlocked]: posted on the most recently
+ *   created open PR (highest ID). If no open PRs exist, the notification is silently dropped.
+ * - [com.cramsan.agentic.notification.AgenticEvent.RunCompleted]: only logged to stdout.
+ *   No VCS comment is posted on success to avoid cluttering merged PRs.
+ *   // TODO: consider posting a summary comment on the last merged PR for RunCompleted.
+ *
+ * **Duplicate prevention**: a stable HTML marker ([NOTIFICATION_MARKER]) is embedded in every
+ * comment. Before posting, [postCommentIfNotDuplicate] fetches existing comments and skips
+ * posting if the marker is already present. This prevents duplicate alerts if the orchestrator
+ * is restarted after a failure event was already delivered.
+ */
 class VcsCommentNotifier(private val vcsProvider: VcsProvider) : Notifier {
 
     override suspend fun notify(event: AgenticEvent) {

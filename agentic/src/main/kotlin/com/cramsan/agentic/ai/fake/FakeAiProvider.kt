@@ -79,9 +79,7 @@ class FakeAiProvider(
         // In TEST mode, fail if no response queued
         if (mode == FakeMode.TEST) {
             logD(TAG, "TEST mode: no queued response, throwing exception")
-            throw IllegalStateException(
-                "FakeAiProvider in TEST mode: no response queued. Use enqueueResponse() to set up expected responses."
-            )
+            error("FakeAiProvider in TEST mode: no response queued. Use enqueueResponse() to set up expected responses.")
         }
 
         // DEMO mode: generate response based on context
@@ -198,7 +196,7 @@ class FakeAiProvider(
         val turns = interactionCount.incrementAndGet()
         logD(TAG, "Generating demo response for turn $turns (autoComplete after $autoCompleteAfterTurns)")
 
-        val lastUserMessage = messages.lastOrNull { it.role == "user" }?.content ?: ""
+        val lastUserMessage = messages.lastOrNull { it.role == "user" }?.content.orEmpty()
 
         // Check if we should auto-complete
         if (turns >= autoCompleteAfterTurns && tools.any { it.name == "task_complete" }) {
@@ -221,6 +219,7 @@ class FakeAiProvider(
         )
     }
 
+    @Suppress("CyclomaticComplexMethod")
     private fun selectToolBasedOnContext(
         lastMessage: String,
         tools: List<AiTool>,

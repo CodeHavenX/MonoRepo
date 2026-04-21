@@ -22,6 +22,7 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.delay
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.buildJsonObject
@@ -33,6 +34,22 @@ private const val ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages"
 private const val ANTHROPIC_VERSION = "2023-06-01"
 private const val MAX_TOKENS = 8192
 
+/**
+ * [com.cramsan.agentic.ai.AiProvider] implementation that calls the Anthropic Messages API
+ * directly over HTTP using Ktor.
+ *
+ * **Retry behavior**: this class has its own 4-attempt exponential-backoff loop for HTTP 429
+ * and 5xx responses (delays: 1s, 2s, 4s). In production it is additionally wrapped in
+ * [com.cramsan.agentic.ai.RetryingAiProvider] which adds long-duration retries (up to 65×5min)
+ * for sustained usage-limit errors. The two layers target different failure modes: this class
+ * handles transient server hiccups; the outer wrapper handles quota exhaustion.
+ * // TODO: consider consolidating both retry strategies into RetryingAiProvider to avoid
+ * duplicating retry logic at two levels.
+ *
+ * **Token limit**: all requests use a fixed [MAX_TOKENS] ceiling of 8192. Tasks that generate
+ * very long responses (e.g. large file writes) may be truncated.
+ * // TODO: make MAX_TOKENS configurable via AgenticConfig to support models with larger context.
+ */
 class ClaudeAiProvider(
     private val httpClient: HttpClient,
     private val apiKey: String,
@@ -40,6 +57,7 @@ class ClaudeAiProvider(
     private val model: String,
 ) : AiProvider {
 
+    @Suppress("LongMethod")
     override suspend fun chat(
         systemPrompt: String,
         messages: List<AiMessage>,
@@ -59,10 +77,10 @@ class ClaudeAiProvider(
             }
         }
 
-        val retryDelays = listOf(1000L, 2000L, 4000L)
+        val retryDelays = listOf(1.seconds, 2.seconds, 4.seconds)
         var lastException: Exception? = null
 
-        for (attempt in 0..3) {
+        repeat(retryDelays.size + 1) { attempt ->
             logI(TAG, "Sending HTTP request to Anthropic API: model=$model, messageCount=${messages.size}, attempt=${attempt + 1}")
             try {
                 val response = httpClient.post(ANTHROPIC_API_URL) {
@@ -83,21 +101,21 @@ class ClaudeAiProvider(
                         logD(TAG, "chat() returning response id=${claudeResponse.id}")
                         return claudeResponse.toAiResponse()
                     }
-                    response.status.value == 429 -> {
+                    response.status.value == HttpStatusCode.TooManyRequests.value -> {
                         val body = response.bodyAsText()
                         logW(TAG, "Rate limit hit (429) on attempt ${attempt + 1}: $body")
                         lastException = AiProviderException("Claude API error ${response.status.value}: $body", response.status.value)
-                        if (attempt < 3) {
+                        if (attempt < retryDelays.size) {
                             val delayMs = retryDelays[attempt]
                             logI(TAG, "Retrying after rate-limit: attempt=${attempt + 1}, delayMs=$delayMs")
                             delay(delayMs)
                         }
                     }
-                    response.status.value >= 500 -> {
+                    response.status.value >= HttpStatusCode.InternalServerError.value -> {
                         val body = response.bodyAsText()
                         logW(TAG, "Server error (${response.status.value}) on attempt ${attempt + 1}: $body")
                         lastException = AiProviderException("Claude API error ${response.status.value}: $body", response.status.value)
-                        if (attempt < 3) {
+                        if (attempt < retryDelays.size) {
                             val delayMs = retryDelays[attempt]
                             logI(TAG, "Retrying after server error: attempt=${attempt + 1}, delayMs=$delayMs")
                             delay(delayMs)
@@ -114,7 +132,7 @@ class ClaudeAiProvider(
             } catch (e: Exception) {
                 logW(TAG, "Unexpected exception on attempt ${attempt + 1}", e)
                 lastException = e
-                if (attempt < 3) {
+                if (attempt < retryDelays.size) {
                     val delayMs = retryDelays[attempt]
                     logI(TAG, "Retrying after exception: attempt=${attempt + 1}, delayMs=$delayMs")
                     delay(delayMs)

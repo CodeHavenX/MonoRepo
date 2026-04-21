@@ -11,16 +11,17 @@ import com.cramsan.agentic.notification.Notifier
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
+import com.cramsan.framework.test.CoroutineTest
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.nio.file.Path
 import kotlin.test.assertEquals
+import kotlinx.coroutines.CoroutineDispatcher
 
-class DefaultOrchestratorTest {
+class DefaultOrchestratorTest : CoroutineTest() {
 
     @BeforeEach
     fun setup() {
@@ -38,8 +39,8 @@ class DefaultOrchestratorTest {
 
     private val fakeWorktree = Worktree("task-1", Path.of("/tmp/wt"), "agentic/task-1")
 
-    private fun makeOrchestrator() = DefaultOrchestrator(
-        taskListProvider, stateDeriver, dependencyGraph, worktreeManager, agentRunner, notifier
+    private fun makeOrchestrator(dispatcher: CoroutineDispatcher) = DefaultOrchestrator(
+        taskListProvider, stateDeriver, dependencyGraph, worktreeManager, agentRunner, notifier, dispatcher
     )
 
     private fun makeTask(id: String) = Task(id = id, title = id, description = id, dependencies = emptyList())
@@ -51,33 +52,33 @@ class DefaultOrchestratorTest {
     )
 
     @Test
-    fun `all tasks DONE on first tick triggers RunCompleted`() = runTest {
+    fun `all tasks DONE on first tick triggers RunCompleted`() = runCoroutineTest {
         val task = makeTask("task-1")
         coEvery { taskListProvider.provide() } returns listOf(task)
         coEvery { stateDeriver.statusOf(task, any(), any()) } returns TaskStatus.DONE
         coEvery { dependencyGraph.downstreamCount(any()) } returns 0
         coEvery { dependencyGraph.dependentsOf(any()) } returns emptySet()
 
-        makeOrchestrator().run(config)
+        makeOrchestrator(testCoroutineDispatcher).run(config)
 
         coVerify { notifier.notify(match { it is AgenticEvent.RunCompleted }) }
     }
 
     @Test
-    fun `no progress triggers RunDeadlocked`() = runTest {
+    fun `no progress triggers RunDeadlocked`() = runCoroutineTest {
         val task = makeTask("task-1")
         coEvery { taskListProvider.provide() } returns listOf(task)
         coEvery { stateDeriver.statusOf(task, any(), any()) } returns TaskStatus.FAILED
         coEvery { dependencyGraph.downstreamCount(any()) } returns 0
         coEvery { dependencyGraph.dependentsOf(any()) } returns emptySet()
 
-        makeOrchestrator().run(config)
+        makeOrchestrator(testCoroutineDispatcher).run(config)
 
         coVerify { notifier.notify(match { it is AgenticEvent.RunDeadlocked }) }
     }
 
     @Test
-    fun `PENDING task causes agent launch and getOrCreate is called`() = runTest {
+    fun `PENDING task causes agent launch and getOrCreate is called`() = runCoroutineTest {
         val task = makeTask("task-1")
         coEvery { taskListProvider.provide() } returns listOf(task)
         // First tick: PENDING, second tick: DONE (after agent ran)
@@ -90,14 +91,14 @@ class DefaultOrchestratorTest {
         coEvery { worktreeManager.getOrCreate("task-1") } returns fakeWorktree
         coEvery { agentRunner.run(task, fakeWorktree) } returns AgentResult.PrOpened("pr-1", "url")
 
-        makeOrchestrator().run(config)
+        makeOrchestrator(testCoroutineDispatcher).run(config)
 
         coVerify { worktreeManager.getOrCreate("task-1") }
         coVerify { agentRunner.run(task, fakeWorktree) }
     }
 
     @Test
-    fun `pool sizing limits concurrent agents to agentPoolSize`() = runTest {
+    fun `pool sizing limits concurrent agents to agentPoolSize`() = runCoroutineTest {
         val task1 = makeTask("task-1")
         val task2 = makeTask("task-2")
         val task3 = makeTask("task-3")
@@ -119,13 +120,13 @@ class DefaultOrchestratorTest {
         }
 
         val configWith2Pool = config.copy(agentPoolSize = 2)
-        makeOrchestrator().run(configWith2Pool)
+        makeOrchestrator(testCoroutineDispatcher).run(configWith2Pool)
 
         coVerify(atLeast = 1) { agentRunner.run(any(), any()) }
     }
 
     @Test
-    fun `priority ordering - task with higher downstreamCount is assigned first`() = runTest {
+    fun `priority ordering - task with higher downstreamCount is assigned first`() = runCoroutineTest {
         val taskA = makeTask("task-A")
         val taskB = makeTask("task-B")
         coEvery { taskListProvider.provide() } returns listOf(taskA, taskB)
@@ -146,13 +147,13 @@ class DefaultOrchestratorTest {
         }
         coEvery { agentRunner.run(any(), any()) } returns AgentResult.PrOpened("pr-1", "url")
 
-        makeOrchestrator().run(config.copy(agentPoolSize = 1))
+        makeOrchestrator(testCoroutineDispatcher).run(config.copy(agentPoolSize = 1))
 
         assertEquals("task-A", firstAssigned)
     }
 
     @Test
-    fun `AgentResult_Failed causes TaskFailed notification`() = runTest {
+    fun `AgentResult_Failed causes TaskFailed notification`() = runCoroutineTest {
         val task = makeTask("task-1")
         coEvery { taskListProvider.provide() } returns listOf(task)
 
@@ -165,7 +166,7 @@ class DefaultOrchestratorTest {
         coEvery { worktreeManager.getOrCreate(any()) } returns fakeWorktree
         coEvery { agentRunner.run(task, fakeWorktree) } returns AgentResult.Failed("Out of memory")
 
-        makeOrchestrator().run(config)
+        makeOrchestrator(testCoroutineDispatcher).run(config)
 
         coVerify { notifier.notify(match { it is AgenticEvent.TaskFailed }) }
     }

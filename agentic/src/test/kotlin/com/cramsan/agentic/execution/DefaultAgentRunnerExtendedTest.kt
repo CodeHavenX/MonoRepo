@@ -52,7 +52,7 @@ class DefaultAgentRunnerExtendedTest {
     }
 
     private fun makeRunner(vararg agents: ReviewerAgent) = DefaultAgentRunner(
-        agentSession, vcsProvider, agents.toList(), reviewerLoader, worktreeManager, agenticDir,
+        agentSession, vcsProvider, agents.toList(), reviewerLoader, agenticDir,
     )
 
     // ── Reviewer comment format (stable marker for replacement) ─────────────

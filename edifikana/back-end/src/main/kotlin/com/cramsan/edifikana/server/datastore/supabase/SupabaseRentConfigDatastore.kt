@@ -5,20 +5,26 @@ import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.datastore.RentConfigDatastore
 import com.cramsan.edifikana.server.datastore.supabase.models.RentConfigEntity
-import com.cramsan.edifikana.server.datastore.supabase.models.RentConfigEntity.UpsertRentConfigEntity
 import com.cramsan.edifikana.server.service.models.RentConfig
 import com.cramsan.framework.annotations.SupabaseModel
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.postgrest.Postgrest
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 /**
  * Supabase implementation of [RentConfigDatastore].
  *
- * [setRentConfig] uses upsert with `onConflict = "unit_id"` to create or update the rent
- * configuration for a unit atomically.
+ * [setRentConfig] delegates to the `upsert_rent_config` Postgres function, which uses
+ * `INSERT ... ON CONFLICT (unit_id) WHERE deleted_at IS NULL DO UPDATE` to atomically
+ * create or update the active rent configuration for a unit. This eliminates the TOCTOU
+ * race that existed with the previous UPDATE-then-INSERT pattern.
  */
 @OptIn(ExperimentalTime::class)
 class SupabaseRentConfigDatastore(
@@ -56,11 +62,10 @@ class SupabaseRentConfigDatastore(
         }
 
     /**
-     * Creates or updates the rent configuration for [unitId].
-     * Updates the existing active config if one exists; otherwise inserts a new one.
-     * This avoids relying on ON CONFLICT since the unique index on unit_id is partial
-     * (WHERE deleted_at IS NULL) and PostgREST cannot match partial indexes for upsert.
-     * Returns the created or updated [RentConfig].
+     * Atomically creates or updates the rent configuration for [unitId] via the
+     * `upsert_rent_config` Postgres RPC function. The function uses
+     * `INSERT ... ON CONFLICT (unit_id) WHERE deleted_at IS NULL DO UPDATE`,
+     * which is safe under concurrent calls. Returns the created or updated [RentConfig].
      */
     @OptIn(SupabaseModel::class)
     override suspend fun setRentConfig(
@@ -71,33 +76,16 @@ class SupabaseRentConfigDatastore(
         updatedBy: UserId?,
     ): Result<RentConfig> = runSuspendCatching(TAG) {
         logD(TAG, "Setting rent config for unit: %s", unitId)
-        val now = clock.now()
-        val updated = postgrest.from(RentConfigEntity.COLLECTION).update({
-            RentConfigEntity::monthlyAmount setTo monthlyAmount
-            RentConfigEntity::dueDay setTo dueDay
-            RentConfigEntity::currency setTo currency
-            RentConfigEntity::updatedAt setTo now
-            RentConfigEntity::updatedBy setTo updatedBy
-        }) {
-            select()
-            filter {
-                RentConfigEntity::unitId eq unitId.unitId
-                RentConfigEntity::deletedAt isExact null
-            }
-        }.decodeSingleOrNull<RentConfigEntity>()
-
-        updated?.toRentConfig() ?: postgrest.from(RentConfigEntity.COLLECTION).insert(
-            UpsertRentConfigEntity(
-                unitId = unitId,
-                monthlyAmount = monthlyAmount,
-                dueDay = dueDay,
-                currency = currency,
-                updatedAt = now,
-                updatedBy = updatedBy,
-            )
-        ) {
-            select()
-        }.decodeSingle<RentConfigEntity>().toRentConfig()
+        val params = UpsertRentConfigRpcParams(
+            pUnitId = unitId.unitId,
+            pMonthlyAmount = monthlyAmount,
+            pDueDay = dueDay,
+            pCurrency = currency,
+            pUpdatedAt = clock.now(),
+            pUpdatedBy = updatedBy?.userId,
+        )
+        val jsonParams = Json.encodeToJsonElement(UpsertRentConfigRpcParams.serializer(), params).jsonObject
+        postgrest.rpc("upsert_rent_config", jsonParams).decodeSingle<RentConfigEntity>().toRentConfig()
     }
 
     /**
@@ -130,6 +118,16 @@ class SupabaseRentConfigDatastore(
             }
         }.decodeSingleOrNull<RentConfigEntity>() != null
     }
+
+    @Serializable
+    private data class UpsertRentConfigRpcParams(
+        @SerialName("p_unit_id") val pUnitId: String,
+        @SerialName("p_monthly_amount") val pMonthlyAmount: Double,
+        @SerialName("p_due_day") val pDueDay: Int,
+        @SerialName("p_currency") val pCurrency: String,
+        @SerialName("p_updated_at") val pUpdatedAt: Instant,
+        @SerialName("p_updated_by") val pUpdatedBy: String?,
+    )
 
     companion object {
         const val TAG = "SupabaseRentConfigDatastore"

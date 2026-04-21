@@ -40,24 +40,4 @@ data class RentConfigEntity(
     companion object {
         const val COLLECTION = "rent_config"
     }
-
-    /**
-     * Entity used when upserting a rent configuration. Omits auto-generated fields
-     * (rent_config_id, created_at, deleted_at).
-     */
-    @Serializable
-    @SupabaseModel
-    data class UpsertRentConfigEntity(
-        @SerialName("unit_id")
-        val unitId: UnitId,
-        @SerialName("monthly_amount")
-        val monthlyAmount: Double,
-        @SerialName("due_day")
-        val dueDay: Int,
-        val currency: String,
-        @SerialName("updated_at")
-        val updatedAt: Instant,
-        @SerialName("updated_by")
-        val updatedBy: UserId?,
-    )
 }

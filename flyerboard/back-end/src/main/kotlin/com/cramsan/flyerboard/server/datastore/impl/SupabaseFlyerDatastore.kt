@@ -64,7 +64,7 @@ class SupabaseFlyerDatastore(
             count(Count.EXACT)
             filter {
                 status?.let { FlyerEntity::status eq it.name.lowercase() }
-                query?.let { q ->
+                query?.takeIf { it.isNotBlank() }?.let { q ->
                     or {
                         FlyerEntity::title ilike "%$q%"
                         FlyerEntity::description ilike "%$q%"

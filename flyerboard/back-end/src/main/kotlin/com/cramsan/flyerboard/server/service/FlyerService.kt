@@ -10,6 +10,7 @@ import com.cramsan.flyerboard.server.service.models.Flyer
 import com.cramsan.flyerboard.server.service.models.PaginatedList
 import com.cramsan.flyerboard.server.settings.FlyerBoardSettingKey
 import com.cramsan.framework.logging.logD
+import com.cramsan.framework.logging.logE
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import kotlin.time.Instant
 
@@ -57,7 +58,9 @@ class FlyerService(
             uploaderId = uploaderId,
             expiresAt = expiresAt,
         ).map { flyer ->
-            val fileUrl = fileDatastore.getSignedUrl(flyer.filePath).getOrNull()
+            val fileUrl = fileDatastore.getSignedUrl(flyer.filePath)
+                .onFailure { logE(TAG, "Failed to get signed URL for ${flyer.filePath}", it) }
+                .getOrNull()
             flyer.copy(fileUrl = fileUrl)
         }
     }
@@ -70,7 +73,9 @@ class FlyerService(
         logD(TAG, "getFlyer: %s", flyerId)
         return flyerDatastore.getFlyer(flyerId).map { flyer ->
             if (flyer == null) return@map null
-            val fileUrl = fileDatastore.getSignedUrl(flyer.filePath).getOrNull()
+            val fileUrl = fileDatastore.getSignedUrl(flyer.filePath)
+                .onFailure { logE(TAG, "Failed to get signed URL for ${flyer.filePath}", it) }
+                .getOrNull()
             flyer.copy(fileUrl = fileUrl)
         }
     }
@@ -89,7 +94,9 @@ class FlyerService(
         logD(TAG, "listFlyers status=%s query=%s offset=%d limit=%d", status, query, offset, limit)
         return flyerDatastore.listFlyers(status, query, offset, limit).map { page ->
             val withUrls = page.items.map { flyer ->
-                val fileUrl = fileDatastore.getSignedUrl(flyer.filePath).getOrNull()
+                val fileUrl = fileDatastore.getSignedUrl(flyer.filePath)
+                    .onFailure { logE(TAG, "Failed to get signed URL for ${flyer.filePath}", it) }
+                    .getOrNull()
                 flyer.copy(fileUrl = fileUrl)
             }
             PaginatedList(items = withUrls, total = page.total.toInt(), offset = offset, limit = limit)
@@ -135,6 +142,8 @@ class FlyerService(
             validateFileSize(fileContent.size.toLong()).getOrElse { return Result.failure(it) }
             newFilePath = fileDatastore.uploadFile(fileName, fileContent)
                 .getOrElse { return Result.failure(it) }
+            fileDatastore.deleteFile(existing.filePath)
+                .onFailure { logE(TAG, "Failed to delete old file ${existing.filePath} for flyer ${flyerId.flyerId}", it) }
         }
 
         val sanitizedTitle = title?.let { InputSanitizer.sanitizeText(it, maxLength = TITLE_MAX_LENGTH) }
@@ -149,7 +158,9 @@ class FlyerService(
             status = FlyerStatus.PENDING,
             expiresAt = expiresAt,
         ).map { flyer ->
-            val fileUrl = fileDatastore.getSignedUrl(flyer.filePath).getOrNull()
+            val fileUrl = fileDatastore.getSignedUrl(flyer.filePath)
+                .onFailure { logE(TAG, "Failed to get signed URL for ${flyer.filePath}", it) }
+                .getOrNull()
             flyer.copy(fileUrl = fileUrl)
         }
     }
@@ -165,7 +176,9 @@ class FlyerService(
         logD(TAG, "listFlyersByUploader: %s offset=%d limit=%d", uploaderId, offset, limit)
         return flyerDatastore.listFlyersByUploader(uploaderId, offset, limit).map { page ->
             val withUrls = page.items.map { flyer ->
-                val fileUrl = fileDatastore.getSignedUrl(flyer.filePath).getOrNull()
+                val fileUrl = fileDatastore.getSignedUrl(flyer.filePath)
+                    .onFailure { logE(TAG, "Failed to get signed URL for ${flyer.filePath}", it) }
+                    .getOrNull()
                 flyer.copy(fileUrl = fileUrl)
             }
             PaginatedList(items = withUrls, total = page.total.toInt(), offset = offset, limit = limit)

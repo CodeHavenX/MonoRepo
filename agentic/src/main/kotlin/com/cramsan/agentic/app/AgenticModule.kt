@@ -99,6 +99,7 @@ private fun infraModule() = module {
     single<Json> {
         Json { ignoreUnknownKeys = true; isLenient = true }
     }
+    @Suppress("InjectDispatcher")
     single<CoroutineDispatcher>(ioDispatcherQualifier) { Dispatchers.IO }
     single<ShellRunner> { ShellRunner(get(ioDispatcherQualifier)) }
     single<HttpClient> {

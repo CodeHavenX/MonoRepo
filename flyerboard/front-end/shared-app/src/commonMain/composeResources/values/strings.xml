@@ -39,4 +39,11 @@
     <string name="nav_moderation">Moderation</string>
     <string name="app_bar_action_sign_in">Sign In</string>
     <string name="app_bar_action_sign_out">Sign Out</string>
+    <string name="flyer_edit_screen_title">Edit Flyer</string>
+    <string name="flyer_edit_screen_navigate_back">Navigate back</string>
+    <string name="flyer_edit_screen_label_title">Title</string>
+    <string name="flyer_edit_screen_label_description">Description</string>
+    <string name="flyer_edit_screen_label_expires_at">Expires At (optional)</string>
+    <string name="flyer_edit_screen_button_save">Save</string>
+    <string name="flyer_edit_screen_not_found">Flyer not found.</string>
 </resources>

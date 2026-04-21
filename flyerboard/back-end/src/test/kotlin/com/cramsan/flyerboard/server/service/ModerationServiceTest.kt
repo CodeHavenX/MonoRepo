@@ -163,6 +163,7 @@ class ModerationServiceTest {
         coEvery { flyerDatastore.getFlyer(flyerId) } returns Result.success(pendingFlyer)
         coEvery { flyerDatastore.updateFlyer(any(), any(), any(), any(), any(), any()) } returns Result.success(rejectedFlyer)
         coEvery { fileDatastore.getSignedUrl(any()) } returns Result.success("https://signed.example.com/file.png")
+        coEvery { fileDatastore.deleteFile(any()) } returns Result.success(Unit)
 
         val result = moderationService.rejectFlyer(flyerId, adminId)
 

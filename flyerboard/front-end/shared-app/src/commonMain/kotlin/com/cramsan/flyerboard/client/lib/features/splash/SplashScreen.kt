@@ -47,7 +47,7 @@ fun SplashScreen(
 }
 
 /**
- * Content of the AccountEdit screen.
+ * Content of the Splash screen.
  */
 @Composable
 internal fun SplashContent(

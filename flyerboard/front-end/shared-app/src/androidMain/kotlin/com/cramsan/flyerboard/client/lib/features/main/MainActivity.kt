@@ -16,7 +16,6 @@ import org.koin.core.annotation.KoinExperimentalAPI
 class MainActivity : ComponentActivity(), FlyerBoardApplicationMainScreenEventHandler {
 
     @OptIn(KoinExperimentalAPI::class)
-    @Suppress("LongMethod")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

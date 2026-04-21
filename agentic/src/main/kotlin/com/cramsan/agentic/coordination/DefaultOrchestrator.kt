@@ -67,7 +67,7 @@ class DefaultOrchestrator(
                 if (checkAllDone(statuses, tasks)) return@coroutineScope
                 if (checkDeadlock(statuses, tasks, activeTaskIds)) return@coroutineScope
 
-                launchPendingAgents(statuses, tasks, activeTaskIds, config)
+                launchPendingAgents(statuses, activeTaskIds, config)
 
                 delay(config.pollIntervalSeconds.seconds)
             }
@@ -122,7 +122,6 @@ class DefaultOrchestrator(
 
     private fun kotlinx.coroutines.CoroutineScope.launchPendingAgents(
         statuses: Map<Task, TaskStatus>,
-        tasks: List<Task>,
         activeTaskIds: MutableSet<String>,
         config: OrchestratorConfig,
     ) {

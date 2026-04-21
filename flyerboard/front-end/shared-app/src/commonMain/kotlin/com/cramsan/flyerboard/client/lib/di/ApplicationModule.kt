@@ -17,6 +17,9 @@ import org.koin.core.module.dsl.withOptions
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
+/**
+ * Koin module that initializes application-level components such as event buses and top-level ViewModels.
+ */
 internal val ApplicationModule = module {
 
     single<String>(named(NamedDependency.DOMAIN_KEY)) { "flyerboard" }

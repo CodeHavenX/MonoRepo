@@ -27,8 +27,7 @@ class SplashViewModel(
     fun navigateToMainScreen() {
         logI(TAG, "Navigating to Main Screen")
         viewModelScope.launch {
-            @Suppress("MagicNumber")
-            delay(1000) // Simulate loading time
+            delay(SPLASH_DELAY_MS)
             emitWindowEvent(
                 FlyerBoardWindowsEvent.NavigateToNavGraph(
                     FlyerBoardWindowNavGraphDestination.MainNavGraphDestination,
@@ -40,5 +39,6 @@ class SplashViewModel(
 
     companion object {
         private const val TAG = "SplashViewModel"
+        private const val SPLASH_DELAY_MS = 1000L
     }
 }

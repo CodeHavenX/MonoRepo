@@ -17,8 +17,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.flyerboard.client.lib.features.application.FlyerBoardApplicationViewModel
 import com.cramsan.ui.components.LoadingAnimationOverlay
@@ -32,7 +30,7 @@ import flyerboard_lib.main_menu_screen_text_first_name
 import flyerboard_lib.main_menu_screen_text_last_name
 
 /**
- * Sign In screen
+ * Main Menu screen.
  */
 @Composable
 fun MainMenuScreen(
@@ -42,10 +40,6 @@ fun MainMenuScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     val appUiState by applicationViewModel.uiState.collectAsState()
-
-    LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
-        //
-    }
 
     ObserveViewModelEvents(viewModel) { event ->
         when (event) {

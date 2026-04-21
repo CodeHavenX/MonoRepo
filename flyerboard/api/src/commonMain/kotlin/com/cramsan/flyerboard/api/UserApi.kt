@@ -9,11 +9,12 @@ import com.cramsan.flyerboard.lib.model.network.UserNetworkResponse
 import io.ktor.http.HttpMethod
 
 /**
- * Singleton object representing an example API.
+ * API definition for user-related endpoints.
  */
 @OptIn(NetworkModel::class)
 object UserApi : Api("user") {
 
+    /** Operation to create a new user. */
     val createUser =
         operation<
             CreateUserNetworkRequest,

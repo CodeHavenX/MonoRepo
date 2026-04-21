@@ -7,6 +7,7 @@ import androidx.navigation.toRoute
 import com.cramsan.framework.core.compose.navigation.navigationGraph
 import com.cramsan.flyerboard.client.lib.features.main.archive.ArchiveScreen
 import com.cramsan.flyerboard.client.lib.features.main.flyer_detail.FlyerDetailScreen
+import com.cramsan.flyerboard.client.lib.features.main.flyer_edit.FlyerEditScreen
 import com.cramsan.flyerboard.client.lib.features.main.flyer_list.FlyerListScreen
 import com.cramsan.flyerboard.client.lib.features.main.menu.MainMenuScreen
 import com.cramsan.flyerboard.client.lib.features.main.moderation_queue.ModerationQueueScreen
@@ -18,6 +19,7 @@ import kotlin.reflect.KType
 /**
  * Main Nav Graph Route.
  */
+@Suppress("LongMethod")
 fun NavGraphBuilder.mainNavGraphNavigation(
     typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> = emptyMap(),
     isAuthenticated: Boolean = false,
@@ -72,6 +74,12 @@ fun NavGraphBuilder.mainNavGraphNavigation(
                 isAuthenticated = isAuthenticated,
                 onSignOut = onSignOut,
             )
+        }
+        composable(
+            MainDestination.FlyerEditDestination::class,
+            typeMap = typeMap,
+        ) {
+            FlyerEditScreen(destination = it.toRoute())
         }
         composable(
             MainDestination.MenuDestination::class,

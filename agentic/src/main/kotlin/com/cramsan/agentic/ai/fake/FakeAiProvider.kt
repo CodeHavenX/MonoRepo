@@ -248,17 +248,15 @@ class FakeAiProvider(
         if (messageLower.contains("read") && "read_file" in toolNames) {
             return "read_file" to buildJsonObject { put("path", "README.md") }
         }
-        if ((messageLower.contains("write") || messageLower.contains("fix") || messageLower.contains("create")) &&
-            "write_file" in toolNames
-        ) {
+        val isWriteIntent = messageLower.contains("write") || messageLower.contains("fix") || messageLower.contains("create")
+        if (isWriteIntent && "write_file" in toolNames) {
             return "write_file" to buildJsonObject {
                 put("path", "output.txt")
                 put("content", "Generated content")
             }
         }
-        if ((messageLower.contains("run") || messageLower.contains("execute") || messageLower.contains("command")) &&
-            "run_command" in toolNames
-        ) {
+        val isRunIntent = messageLower.contains("run") || messageLower.contains("execute") || messageLower.contains("command")
+        if (isRunIntent && "run_command" in toolNames) {
             return "run_command" to buildJsonObject { put("command", "echo 'Done'") }
         }
         return null

@@ -6,8 +6,6 @@ import com.cramsan.framework.core.ktor.OperationHandler.register
 import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.core.ktor.unauthenticatedHandler
 import com.cramsan.flyerboard.api.UserApi
-import com.cramsan.flyerboard.lib.model.network.CreateUserNetworkRequest
-import com.cramsan.flyerboard.lib.model.network.UserNetworkResponse
 import com.cramsan.flyerboard.server.controller.authentication.FlyerBoardContextPayload
 import com.cramsan.flyerboard.server.service.UserService
 import io.ktor.server.routing.Routing
@@ -20,27 +18,14 @@ class UserController(
     private val contextRetriever: ContextRetriever<FlyerBoardContextPayload>,
 ) : Controller {
 
-    /**
-     * Creates a new user.
-     *
-     * @param createUserRequest The request containing user details.
-     * @return The created user's network response.
-     */
-    @OptIn(NetworkModel::class)
-    suspend fun createUser(createUserRequest: CreateUserNetworkRequest): UserNetworkResponse {
-        val newUserResult = userService.createUser(
-            firstName = createUserRequest.firstName,
-            lastName = createUserRequest.lastName,
-        )
-
-        return newUserResult.getOrThrow().toUserNetworkResponse()
-    }
-
     @OptIn(NetworkModel::class)
     override fun registerRoutes(route: Routing) {
         UserApi.register(route) {
             unauthenticatedHandler(api.createUser, contextRetriever) { request ->
-                createUser(request.requestBody)
+                userService.createUser(
+                    firstName = request.requestBody.firstName,
+                    lastName = request.requestBody.lastName,
+                ).getOrThrow().toUserNetworkResponse()
             }
         }
     }

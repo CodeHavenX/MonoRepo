@@ -17,6 +17,9 @@ import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
+/**
+ * Koin module that initializes the Supabase client and binds all service components.
+ */
 internal val ServiceModule = module {
 
     single {

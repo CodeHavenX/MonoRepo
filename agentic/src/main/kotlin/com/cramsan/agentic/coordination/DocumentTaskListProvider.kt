@@ -11,6 +11,11 @@ import java.nio.file.Path
 private const val TAG = "DocumentTaskListProvider"
 private const val TASK_FILE_NAME = "task.json"
 private const val DEFAULT_TASK_TIMEOUT_SECONDS = 3600L
+private const val GROUP_ID = 1
+private const val GROUP_TITLE = 2
+private const val GROUP_DESCRIPTION = 3
+private const val GROUP_DEPENDENCIES = 4
+private const val GROUP_TIMEOUT = 5
 
 /**
  * A [TaskListProvider] that reads task definitions from a markdown document
@@ -75,11 +80,11 @@ class DocumentTaskListProvider(
         )
 
         for (match in taskPattern.findAll(content)) {
-            val id = match.groupValues[1].trim()
-            val title = match.groupValues[2].trim()
-            val description = match.groupValues[3].trim()
-            val depsRaw = match.groupValues[4].trim()
-            val timeout = match.groupValues[5].trim().toLongOrNull() ?: DEFAULT_TASK_TIMEOUT_SECONDS
+            val id = match.groupValues[GROUP_ID].trim()
+            val title = match.groupValues[GROUP_TITLE].trim()
+            val description = match.groupValues[GROUP_DESCRIPTION].trim()
+            val depsRaw = match.groupValues[GROUP_DEPENDENCIES].trim()
+            val timeout = match.groupValues[GROUP_TIMEOUT].trim().toLongOrNull() ?: DEFAULT_TASK_TIMEOUT_SECONDS
 
             val dependencies = if (depsRaw.equals("none", ignoreCase = true) || depsRaw.isBlank()) {
                 emptyList()

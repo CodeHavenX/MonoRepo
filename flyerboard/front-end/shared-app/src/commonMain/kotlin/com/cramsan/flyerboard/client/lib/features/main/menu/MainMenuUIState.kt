@@ -3,7 +3,7 @@ package com.cramsan.flyerboard.client.lib.features.main.menu
 import com.cramsan.framework.core.compose.ViewModelUIState
 
 /**
- * Sign in UI state.
+ * UI state for the Main Menu screen.
  */
 data class MainMenuUIState(
     val isLoading: Boolean,

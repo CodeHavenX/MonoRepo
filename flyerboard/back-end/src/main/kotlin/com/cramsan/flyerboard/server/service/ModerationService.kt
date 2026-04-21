@@ -10,6 +10,7 @@ import com.cramsan.flyerboard.server.datastore.UserProfileDatastore
 import com.cramsan.flyerboard.server.service.models.Flyer
 import com.cramsan.flyerboard.server.service.models.PaginatedList
 import com.cramsan.framework.logging.logD
+import com.cramsan.framework.logging.logE
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 
 /**
@@ -31,7 +32,9 @@ class ModerationService(
         logD(TAG, "listPendingFlyers offset=%d limit=%d", offset, limit)
         return flyerDatastore.listFlyers(FlyerStatus.PENDING, query = null, offset, limit).map { page ->
             val withUrls = page.items.map { flyer ->
-                val fileUrl = fileDatastore.getSignedUrl(flyer.filePath).getOrNull()
+                val fileUrl = fileDatastore.getSignedUrl(flyer.filePath)
+                    .onFailure { logE(TAG, "Failed to get signed URL for ${flyer.filePath}", it) }
+                    .getOrNull()
                 flyer.copy(fileUrl = fileUrl)
             }
             PaginatedList(items = withUrls, total = page.total.toInt(), offset = offset, limit = limit)
@@ -50,14 +53,25 @@ class ModerationService(
     }
 
     /**
-     * Transitions a flyer from [PENDING][FlyerStatus.PENDING] to [REJECTED][FlyerStatus.REJECTED].
+     * Transitions a flyer from [PENDING][FlyerStatus.PENDING] to [REJECTED][FlyerStatus.REJECTED]
+     * and deletes its associated file from storage.
      *
      * Requires [adminUserId] to hold the [ADMIN][UserRole.ADMIN] role.
      */
     suspend fun rejectFlyer(flyerId: FlyerId, adminUserId: UserId): Result<Flyer> {
         logD(TAG, "rejectFlyer: %s by admin=%s", flyerId, adminUserId)
         verifyAdmin(adminUserId).getOrElse { return Result.failure(it) }
-        return moderateFlyer(flyerId, FlyerStatus.REJECTED)
+        val existing = flyerDatastore.getFlyer(flyerId)
+            .getOrElse { return Result.failure(it) }
+            ?: return Result.failure(
+                ClientRequestExceptions.NotFoundException("Flyer not found: ${flyerId.flyerId}")
+            )
+        return moderateFlyer(flyerId, FlyerStatus.REJECTED).also { result ->
+            if (result.isSuccess) {
+                fileDatastore.deleteFile(existing.filePath)
+                    .onFailure { logE(TAG, "Failed to delete file ${existing.filePath} for rejected flyer ${flyerId.flyerId}", it) }
+            }
+        }
     }
 
     // ── Private helpers ───────────────────────────────────────────────────────
@@ -106,7 +120,9 @@ class ModerationService(
             status = newStatus,
             expiresAt = null,
         ).map { flyer ->
-            val fileUrl = fileDatastore.getSignedUrl(flyer.filePath).getOrNull()
+            val fileUrl = fileDatastore.getSignedUrl(flyer.filePath)
+                .onFailure { logE(TAG, "Failed to get signed URL for ${flyer.filePath}", it) }
+                .getOrNull()
             flyer.copy(fileUrl = fileUrl)
         }
     }

@@ -8,9 +8,6 @@ import kotlin.time.Instant
 
 /**
  * Domain model representing the rent configuration for a unit.
- *
- * [monthlyAmount] is stored in the smallest currency unit (e.g. cents for USD: $1200.00 → 120000).
- * The display layer is responsible for formatting this value with the appropriate decimal precision.
  */
 @OptIn(ExperimentalTime::class)
 data class RentConfig(

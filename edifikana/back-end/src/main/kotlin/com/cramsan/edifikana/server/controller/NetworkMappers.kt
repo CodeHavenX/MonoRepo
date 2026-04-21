@@ -41,7 +41,7 @@ import kotlin.time.ExperimentalTime
 /**
  * Converts a [User] domain model to a [UserNetworkResponse] network model.
  */
-@NetworkModel
+@OptIn(NetworkModel::class)
 fun User.toUserNetworkResponse(): UserNetworkResponse {
     return UserNetworkResponse(
         id = id.userId,
@@ -213,7 +213,7 @@ fun Document.toDocumentNetworkResponse(): DocumentNetworkResponse {
 /**
  * Converts a [CommonArea] domain model to a [CommonAreaNetworkResponse] network model.
  */
-@NetworkModel
+@OptIn(NetworkModel::class)
 fun CommonArea.toCommonAreaNetworkResponse(): CommonAreaNetworkResponse {
     return CommonAreaNetworkResponse(
         commonAreaId = id,
@@ -227,7 +227,7 @@ fun CommonArea.toCommonAreaNetworkResponse(): CommonAreaNetworkResponse {
 /**
  * Converts a [Task] domain model to a [TaskNetworkResponse] network model.
  */
-@NetworkModel
+@OptIn(NetworkModel::class)
 fun Task.toTaskNetworkResponse(): TaskNetworkResponse {
     return TaskNetworkResponse(
         id = id,
@@ -268,7 +268,7 @@ fun Unit.toUnitNetworkResponse(): UnitNetworkResponse {
 /**
  * Converts a [PaymentRecord] domain model to a [PaymentRecordNetworkResponse] network model.
  */
-@NetworkModel
+@OptIn(NetworkModel::class)
 fun PaymentRecord.toPaymentRecordNetworkResponse(): PaymentRecordNetworkResponse {
     return PaymentRecordNetworkResponse(
         paymentRecordId = id,
@@ -289,7 +289,7 @@ fun PaymentRecord.toPaymentRecordNetworkResponse(): PaymentRecordNetworkResponse
 /**
  * Converts a [RentConfig] domain model to a [RentConfigNetworkResponse] network model.
  */
-@NetworkModel
+@OptIn(NetworkModel::class)
 fun RentConfig.toRentConfigNetworkResponse(): RentConfigNetworkResponse {
     return RentConfigNetworkResponse(
         rentConfigId = id,

@@ -11,10 +11,6 @@ import kotlin.time.Instant
 
 /**
  * Domain model representing a payment record for a unit.
- *
- * Monetary amounts ([amountDue], [amountPaid]) are stored in the smallest currency unit
- * (e.g. cents for USD: $12.34 → 1234). The display layer is responsible for formatting
- * these values with the appropriate decimal precision.
  */
 @OptIn(ExperimentalTime::class)
 data class PaymentRecord(

@@ -12,6 +12,7 @@ import com.cramsan.edifikana.server.service.models.PaymentRecord
 import com.cramsan.framework.annotations.SupabaseModel
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
+import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import io.github.jan.supabase.postgrest.Postgrest
 import kotlinx.datetime.LocalDate
 import kotlin.time.Clock
@@ -81,11 +82,19 @@ class SupabasePaymentRecordDatastore(
         periodMonth: String?,
     ): Result<List<PaymentRecord>> = runSuspendCatching(TAG) {
         logD(TAG, "Listing payment records for unit: %s, period: %s", unitId, periodMonth)
+        val parsedPeriodMonth = periodMonth?.let { value ->
+            if (!Regex("""^\d{4}-(0[1-9]|1[0-2])$""").matches(value)) {
+                throw ClientRequestExceptions.InvalidRequestException(
+                    "periodMonth must be in YYYY-MM format",
+                )
+            }
+            LocalDate.parse("$value-01")
+        }
         postgrest.from(PaymentRecordEntity.COLLECTION).select {
             filter {
                 PaymentRecordEntity::unitId eq unitId.unitId
                 PaymentRecordEntity::deletedAt isExact null
-                periodMonth?.let { PaymentRecordEntity::periodMonth eq LocalDate.parse("$it-01") }
+                periodMonth?.let { PaymentRecordEntity::periodMonth eq it }
             }
         }.decodeList<PaymentRecordEntity>().map { it.toPaymentRecord() }
     }

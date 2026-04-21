@@ -8,7 +8,8 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
- * Request to update an existing payment record. Only provided (non-null) fields are updated.
+ * Request to update an existing payment record. Only provided (non-null) fields are updated. It is not possible to explicitly clear a nullable field (e.g. reset [notes] to
+ * null) through this request.
  */
 @NetworkModel
 @Serializable

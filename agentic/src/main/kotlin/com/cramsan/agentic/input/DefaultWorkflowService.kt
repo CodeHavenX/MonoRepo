@@ -24,6 +24,9 @@ import java.nio.file.Path
 import java.security.MessageDigest
 
 private const val TAG = "DefaultWorkflowService"
+private const val HEX_MASK = 0xFF
+private const val HEX_RADIX = 16
+private const val HEX_PAD_WIDTH = 2
 
 /**
  * Production [WorkflowService] that drives the multi-stage AI planning pipeline for
@@ -244,11 +247,10 @@ class DefaultWorkflowService(
         return hashes
     }
 
-    @Suppress("MagicNumber")
     private fun computeFileHash(path: Path): String {
         val digest = MessageDigest.getInstance("SHA-256")
         val hashBytes = digest.digest(Files.readAllBytes(path))
-        return hashBytes.joinToString("") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }
+        return hashBytes.joinToString("") { (it.toInt() and HEX_MASK).toString(HEX_RADIX).padStart(HEX_PAD_WIDTH, '0') }
     }
 
     override fun validateWorkflowConfig(): List<WorkflowConfigError> {

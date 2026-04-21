@@ -49,13 +49,18 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import java.nio.file.Path
-import kotlinx.coroutines.Dispatchers
 
 private const val TAG = "AgenticModule"
+
+/** Koin qualifier for the IO-bound [CoroutineDispatcher]. */
+val ioDispatcherQualifier = named("io")
 
 /**
  * Koin dependency-injection module that wires the entire agentic system from configuration.
@@ -74,45 +79,53 @@ private const val TAG = "AgenticModule"
  * All singletons are scoped to the Koin instance — a fresh call to `startKoin` creates a
  * new set of instances. Subcommands call `stopKoin()` in a `finally` block to release resources.
  */
-@Suppress("LongMethod")
 fun agenticModule(
     agenticDir: Path,
     repoRoot: Path,
     configPath: Path = agenticDir.resolve("config.json"),
     planningPath: Path = agenticDir.resolve("planning.json"),
 ) = module {
+    includes(
+        infraModule(),
+        configModule(configPath, planningPath),
+        vcsModule(agenticDir, repoRoot),
+        aiProviderModule(),
+        coordinationModule(agenticDir),
+        workflowModule(agenticDir),
+    )
+}
 
+private fun infraModule() = module {
     single<Json> {
         Json { ignoreUnknownKeys = true; isLenient = true }
     }
-
-    single<ShellRunner> { ShellRunner(get()) }
-
-    @Suppress("InjectDispatcher")
-    single { Dispatchers.IO }
-
+    single<CoroutineDispatcher>(ioDispatcherQualifier) { Dispatchers.IO }
+    single<ShellRunner> { ShellRunner(get(ioDispatcherQualifier)) }
     single<HttpClient> {
         HttpClient(CIO) {
             install(ContentNegotiation) { json(get()) }
         }
     }
+}
 
+private fun configModule(configPath: Path, planningPath: Path) = module {
     single<AgenticConfig> {
         val json = get<Json>()
         json.decodeFromString(java.nio.file.Files.readString(configPath))
     }
-
     single<PlanningConfig> {
         val json = get<Json>()
         json.decodeFromString(java.nio.file.Files.readString(planningPath))
     }
+}
 
+private fun vcsModule(agenticDir: Path, repoRoot: Path) = module {
     single<VcsProvider> {
         val config = get<AgenticConfig>()
         when (val vcs = config.vcsProvider) {
             is VcsProviderConfig.GitHub -> {
                 logI(TAG, "Configuring VCS provider: GitHub (owner=${vcs.owner}, repo=${vcs.repo})")
-                GitHubVcsProvider(vcs.owner, vcs.repo, get(), get())
+                GitHubVcsProvider(vcs.owner, vcs.repo, get(), get(), get(ioDispatcherQualifier))
             }
             is VcsProviderConfig.Local -> {
                 logI(TAG, "Configuring VCS provider: Local (stateFile=${vcs.stateFile}, autoMerge=${vcs.autoMerge})")
@@ -122,58 +135,18 @@ fun agenticModule(
                     repoRoot = repoRoot,
                     shell = get(),
                     json = get(),
-                    dispatcher = get(),
+                    dispatcher = get(ioDispatcherQualifier),
                 )
             }
         }
     }
-
     single<WorktreeManager> {
         val config = get<AgenticConfig>()
         DefaultWorktreeManager(repoRoot, agenticDir, config.baseBranch, get())
     }
+}
 
-    single<TaskListProvider> {
-        val config = get<AgenticConfig>()
-        when (val tlConfig = config.taskListProvider) {
-            is TaskListProviderConfig.Document -> {
-                logI(TAG, "Configuring TaskListProvider: Document (documentPath=${tlConfig.documentPath})")
-                DocumentTaskListProvider(
-                    documentPath = agenticDir.resolve(tlConfig.documentPath),
-                    tasksDir = agenticDir.resolve(tlConfig.tasksOutputDir),
-                    json = get(),
-                )
-            }
-            is TaskListProviderConfig.Fake -> {
-                logI(TAG, "Configuring TaskListProvider: Fake")
-                FakeTaskListProvider()
-            }
-        }
-    }
-
-    single<DocumentStore> {
-        val planningConfig = get<PlanningConfig>()
-        FileSystemDocumentStore(agenticDir.resolve("docs"), get(), planningConfig.inputDocuments)
-    }
-
-    single<DependencyGraph> {
-        val tasks = runBlocking { get<TaskListProvider>().provide() }
-        DefaultDependencyGraph(tasks)
-    }
-
-    single<StateDeriver> {
-        DefaultStateDeriver(get(), get(), agenticDir)
-    }
-
-    single<Notifier> {
-        VcsCommentNotifier(get())
-    }
-
-    single<ReviewerLoader> {
-        val planningConfig = get<PlanningConfig>()
-        ConfigurableReviewerLoader(planningConfig.reviewers, agenticDir.resolve("docs"))
-    }
-
+private fun aiProviderModule() = module {
     single<AiProvider> {
         val config = get<AgenticConfig>()
         when (val aiConfig = config.aiProvider) {
@@ -208,24 +181,50 @@ fun agenticModule(
             }
         }
     }
+    single<ReviewerAgent> { ClaudeReviewerAgent(get()) }
+}
 
-    single<ReviewerAgent> {
-        ClaudeReviewerAgent(get())
+private fun coordinationModule(agenticDir: Path) = module {
+    single<TaskListProvider> {
+        val config = get<AgenticConfig>()
+        when (val tlConfig = config.taskListProvider) {
+            is TaskListProviderConfig.Document -> {
+                logI(TAG, "Configuring TaskListProvider: Document (documentPath=${tlConfig.documentPath})")
+                DocumentTaskListProvider(
+                    documentPath = agenticDir.resolve(tlConfig.documentPath),
+                    tasksDir = agenticDir.resolve(tlConfig.tasksOutputDir),
+                    json = get(),
+                )
+            }
+            is TaskListProviderConfig.Fake -> {
+                logI(TAG, "Configuring TaskListProvider: Fake")
+                FakeTaskListProvider()
+            }
+        }
     }
-
+    single<DependencyGraph> {
+        val tasks = runBlocking { get<TaskListProvider>().provide() }
+        DefaultDependencyGraph(tasks)
+    }
+    single<StateDeriver> { DefaultStateDeriver(get(), get(), agenticDir) }
+    single<Notifier> { VcsCommentNotifier(get()) }
+    single<ReviewerLoader> {
+        val planningConfig = get<PlanningConfig>()
+        ConfigurableReviewerLoader(planningConfig.reviewers, agenticDir.resolve("docs"))
+    }
     single<AgentSession> {
         val config = get<AgenticConfig>()
         DefaultAgentSession(get(), get(), get(), config.baseBranch, get())
     }
+    single<AgentRunner> { DefaultAgentRunner(get(), get(), listOf(get()), get(), agenticDir) }
+    single<Orchestrator> { DefaultOrchestrator(get(), get(), get(), get(), get(), get(), get(ioDispatcherQualifier)) }
+}
 
-    single<AgentRunner> {
-        DefaultAgentRunner(get(), get(), listOf(get()), get(), agenticDir)
+private fun workflowModule(agenticDir: Path) = module {
+    single<DocumentStore> {
+        val planningConfig = get<PlanningConfig>()
+        FileSystemDocumentStore(agenticDir.resolve("docs"), get(), planningConfig.inputDocuments)
     }
-
-    single<Orchestrator> {
-        DefaultOrchestrator(get(), get(), get(), get(), get(), get(), get())
-    }
-
     single<Scaffolder> {
         val planningConfig = get<PlanningConfig>()
         DefaultScaffolder(
@@ -234,11 +233,9 @@ fun agenticModule(
             planningConfig.workflow.stages,
         )
     }
-
     single<ValidationService> {
         DefaultValidationService(get(), get(), listOf(get()), get(), get(), agenticDir.resolve("docs"))
     }
-
     single<WorkflowService> {
         val planningConfig = get<PlanningConfig>()
         DefaultWorkflowService(get(), get(), agenticDir.resolve("docs"), get(), planningConfig.workflow)

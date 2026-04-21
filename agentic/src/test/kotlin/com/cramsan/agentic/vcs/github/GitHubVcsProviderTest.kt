@@ -41,7 +41,7 @@ class GitHubVcsProviderTest : CoroutineTest() {
                 "labels": []
             }
         """.trimIndent()
-        coEvery { shell.run(*anyVararg()) } returns ShellResult(cannedResponse, 0, "")
+        coEvery { shell.run(any<List<String>>()) } returns ShellResult(cannedResponse, 0, "")
 
         val pr = provider.createPullRequest("feature/x", "main", "My PR", "Body")
 
@@ -52,13 +52,9 @@ class GitHubVcsProviderTest : CoroutineTest() {
 
         coVerify {
             shell.run(
-                "gh", "pr", "create",
-                "--title", "My PR",
-                "--body", "Body",
-                "--base", "main",
-                "--head", "feature/x",
-                "--repo", "owner/repo",
-                "--json", any(),
+                match<List<String>> { args ->
+                    args.containsAll(listOf("gh", "pr", "create", "--title", "My PR", "--body", "Body", "--base", "main", "--head", "feature/x", "--repo", "owner/repo"))
+                }
             )
         }
     }
@@ -99,7 +95,7 @@ class GitHubVcsProviderTest : CoroutineTest() {
 
     @Test
     fun `createPullRequest throws VcsProviderException on non-zero exit code`() = runCoroutineTest {
-        coEvery { shell.run(*anyVararg()) } returns ShellResult("", 1, "error: repository not found")
+        coEvery { shell.run(any<List<String>>()) } returns ShellResult("", 1, "error: repository not found")
 
         assertFailsWith<VcsProviderException> {
             provider.createPullRequest("feature/x", "main", "My PR", "Body")

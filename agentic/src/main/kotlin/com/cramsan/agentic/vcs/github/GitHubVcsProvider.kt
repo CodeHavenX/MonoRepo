@@ -46,7 +46,6 @@ class GitHubVcsProvider(
     private val delayDuration: Duration = 2.seconds,
 ) : VcsProvider {
 
-    @Suppress("SpreadOperator")
     override suspend fun createPullRequest(
         sourceBranch: String,
         targetBranch: String,
@@ -69,7 +68,7 @@ class GitHubVcsProvider(
             args.add(label)
         }
         delay(delayDuration)
-        val result = shell.run(*args.toTypedArray())
+        val result = shell.run(args)
         if (result.exitCode != 0) {
             logE(TAG, "createPullRequest failed: exitCode=${result.exitCode}, stderr=${result.stderr}")
             throw VcsProviderException("Failed to create PR: ${result.stderr}", result.exitCode)
@@ -79,7 +78,6 @@ class GitHubVcsProvider(
         pr
     }
 
-    @Suppress("SpreadOperator")
     override suspend fun listOpenPullRequests(labels: List<String>): List<PullRequest> =
         withContext(ioDispatcher) {
             logI(TAG, "listOpenPullRequests: repo=$owner/$repo, labels=$labels")
@@ -94,7 +92,7 @@ class GitHubVcsProvider(
                 args.add(labels.joinToString(","))
             }
             delay(delayDuration)
-            val result = shell.run(*args.toTypedArray())
+            val result = shell.run(args)
             if (result.exitCode != 0) {
                 logE(TAG, "listOpenPullRequests failed: exitCode=${result.exitCode}, stderr=${result.stderr}")
                 throw VcsProviderException("Failed to list PRs: ${result.stderr}", result.exitCode)
@@ -105,7 +103,6 @@ class GitHubVcsProvider(
             prs
         }
 
-    @Suppress("SpreadOperator")
     override suspend fun listMergedPullRequests(labels: List<String>): List<PullRequest> =
         withContext(ioDispatcher) {
             logI(TAG, "listMergedPullRequests: repo=$owner/$repo, labels=$labels")
@@ -120,7 +117,7 @@ class GitHubVcsProvider(
                 args.add(labels.joinToString(","))
             }
             delay(delayDuration)
-            val result = shell.run(*args.toTypedArray())
+            val result = shell.run(args)
             if (result.exitCode != 0) {
                 logE(TAG, "listMergedPullRequests failed: exitCode=${result.exitCode}, stderr=${result.stderr}")
                 throw VcsProviderException("Failed to list merged PRs: ${result.stderr}", result.exitCode)

@@ -59,55 +59,48 @@ class DefaultScaffolder(
         }
     }
 
-    @Suppress("CyclomaticComplexMethod")
     private fun copyTemplatesFromResources(outputDir: Path) {
-        // Collect all template paths referenced in configs
-        val templatePaths = mutableSetOf<String>()
+        val templatePaths = collectDocumentTemplatePaths() +
+            collectReviewerTemplatePaths() +
+            collectWorkflowTemplatePaths()
 
-        for (doc in inputDocuments) {
-            when (val template = doc.template) {
-                is DocumentTemplateConfig.File -> templatePaths.add(template.path)
-                is DocumentTemplateConfig.Inline -> { /* no file to copy */ }
-            }
-        }
-
-        when (reviewersConfig) {
-            is ReviewersConfig.Inline -> {
-                for (reviewer in reviewersConfig.reviewers) {
-                    when (val prompt = reviewer.prompt) {
-                        is ReviewerPromptConfig.File -> templatePaths.add(prompt.path)
-                        is ReviewerPromptConfig.Inline -> { /* no file to copy */ }
-                    }
-                }
-            }
-            is ReviewersConfig.Directory -> { /* no files to copy */ }
-        }
-
-        for (stage in workflowStages) {
-            when (val prompt = stage.prompt) {
-                is WorkflowPromptConfig.File -> templatePaths.add(prompt.path)
-                is WorkflowPromptConfig.Inline -> { /* no file to copy */ }
-            }
-        }
-
-        // Copy each template from resources if it exists
         for (templatePath in templatePaths) {
-            val targetPath = resolvePath(outputDir, templatePath)
-            if (Files.exists(targetPath)) {
-                logD(TAG, "Template already exists, skipping: $targetPath")
-                continue
-            }
+            copyTemplateIfMissing(outputDir, templatePath)
+        }
+    }
 
-            val resourceStream = javaClass.classLoader.getResourceAsStream(templatePath)
-            if (resourceStream != null) {
-                resourceStream.use { stream ->
-                    Files.createDirectories(targetPath.parent)
-                    Files.copy(stream, targetPath)
-                    logI(TAG, "Copied template from resources: $templatePath -> $targetPath")
-                }
-            } else {
-                logW(TAG, "Template not found in resources: $templatePath")
+    private fun collectDocumentTemplatePaths(): Set<String> =
+        inputDocuments.mapNotNull { doc ->
+            (doc.template as? DocumentTemplateConfig.File)?.path
+        }.toSet()
+
+    private fun collectReviewerTemplatePaths(): Set<String> {
+        val inline = reviewersConfig as? ReviewersConfig.Inline ?: return emptySet()
+        return inline.reviewers.mapNotNull { reviewer ->
+            (reviewer.prompt as? ReviewerPromptConfig.File)?.path
+        }.toSet()
+    }
+
+    private fun collectWorkflowTemplatePaths(): Set<String> =
+        workflowStages.mapNotNull { stage ->
+            (stage.prompt as? WorkflowPromptConfig.File)?.path
+        }.toSet()
+
+    private fun copyTemplateIfMissing(outputDir: Path, templatePath: String) {
+        val targetPath = resolvePath(outputDir, templatePath)
+        if (Files.exists(targetPath)) {
+            logD(TAG, "Template already exists, skipping: $targetPath")
+            return
+        }
+        val resourceStream = javaClass.classLoader.getResourceAsStream(templatePath)
+        if (resourceStream != null) {
+            resourceStream.use { stream ->
+                Files.createDirectories(targetPath.parent)
+                Files.copy(stream, targetPath)
+                logI(TAG, "Copied template from resources: $templatePath -> $targetPath")
             }
+        } else {
+            logW(TAG, "Template not found in resources: $templatePath")
         }
     }
 

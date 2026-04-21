@@ -37,7 +37,6 @@ class StartCommand : CliktCommand(name = "start", help = "Start the agentic orch
     private val agentPoolSizeOverride by option("--agents", help = "Number of concurrent agents").int()
     private val dryRun by option("--dry-run", help = "Print task order without running agents").flag()
 
-    @Suppress("LongMethod")
     override fun run() {
         val agenticDir = Path.of(configPath).parent ?: Path.of(".")
         val repoRoot = Path.of(".")
@@ -47,41 +46,12 @@ class StartCommand : CliktCommand(name = "start", help = "Start the agentic orch
         }.koin
 
         try {
-            val taskListApproved = agenticDir.resolve("docs/.agentic-meta/stage.stage3.json")
-            if (!Files.exists(taskListApproved)) {
-                echo(
-                    "ERROR: Planning phase is not complete. " +
-                        "Run 'agentic plan generate' and approve each stage before starting.",
-                    err = true,
-                )
-                throw com.github.ajalt.clikt.core.ProgramResult(1)
-            }
+            validatePlanningComplete(agenticDir)
 
             val agenticConfig = koin.get<com.cramsan.agentic.core.AgenticConfig>()
             val orchestrator = koin.get<com.cramsan.agentic.coordination.Orchestrator>()
 
-            // Startup validation: claude-cli without fullAccess does not support tool use.
-            if (agenticConfig.aiProvider is AiProviderConfig.ClaudeCli &&
-                !(agenticConfig.aiProvider as AiProviderConfig.ClaudeCli).fullAccess
-            ) {
-                echo(
-                    "ERROR: The configured AI provider (claude-cli) does not support tool use, " +
-                        "which is required for agent task execution. " +
-                        "Set \"fullAccess\": true in the claude-cli provider block in config.json " +
-                        "to enable autonomous agent mode, or switch to 'claude-api'.",
-                    err = true,
-                )
-                throw com.github.ajalt.clikt.core.ProgramResult(1)
-            }
-
-            // Startup validation: verify the claude-api key is accessible.
-            if (agenticConfig.aiProvider is AiProviderConfig.ClaudeApi) {
-                val keyVar = (agenticConfig.aiProvider as AiProviderConfig.ClaudeApi).anthropicApiKeyEnvVar
-                if (System.getenv(keyVar).isNullOrBlank()) {
-                    echo("ERROR: Environment variable '$keyVar' is not set or empty.", err = true)
-                    throw com.github.ajalt.clikt.core.ProgramResult(1)
-                }
-            }
+            validateAiProvider(agenticConfig)
 
             val orchConfig = OrchestratorConfig(
                 agentPoolSize = agentPoolSizeOverride ?: agenticConfig.agentPoolSize,
@@ -96,13 +66,7 @@ class StartCommand : CliktCommand(name = "start", help = "Start the agentic orch
             )
 
             if (dryRun) {
-                val statuses = runBlocking { orchestrator.status() }
-                echo("=== Task Status (dry run) ===")
-                statuses.entries
-                    .sortedBy { it.key.id }
-                    .forEach { (task, status) ->
-                        echo("  [${status.name}] ${task.id}: ${task.title}")
-                    }
+                printDryRunStatus(orchestrator)
             } else {
                 echo("Starting agentic orchestrator with ${orchConfig.agentPoolSize} agent(s)...")
                 runBlocking { orchestrator.run(orchConfig) }
@@ -112,5 +76,48 @@ class StartCommand : CliktCommand(name = "start", help = "Start the agentic orch
         } finally {
             stopKoin()
         }
+    }
+
+    private fun validatePlanningComplete(agenticDir: Path) {
+        val taskListApproved = agenticDir.resolve("docs/.agentic-meta/stage.stage3.json")
+        if (!Files.exists(taskListApproved)) {
+            echo(
+                "ERROR: Planning phase is not complete. " +
+                    "Run 'agentic plan generate' and approve each stage before starting.",
+                err = true,
+            )
+            throw com.github.ajalt.clikt.core.ProgramResult(1)
+        }
+    }
+
+    private fun validateAiProvider(agenticConfig: com.cramsan.agentic.core.AgenticConfig) {
+        val provider = agenticConfig.aiProvider
+        if (provider is AiProviderConfig.ClaudeCli && !provider.fullAccess) {
+            echo(
+                "ERROR: The configured AI provider (claude-cli) does not support tool use, " +
+                    "which is required for agent task execution. " +
+                    "Set \"fullAccess\": true in the claude-cli provider block in config.json " +
+                    "to enable autonomous agent mode, or switch to 'claude-api'.",
+                err = true,
+            )
+            throw com.github.ajalt.clikt.core.ProgramResult(1)
+        }
+        if (provider is AiProviderConfig.ClaudeApi) {
+            val keyVar = provider.anthropicApiKeyEnvVar
+            if (System.getenv(keyVar).isNullOrBlank()) {
+                echo("ERROR: Environment variable '$keyVar' is not set or empty.", err = true)
+                throw com.github.ajalt.clikt.core.ProgramResult(1)
+            }
+        }
+    }
+
+    private fun printDryRunStatus(orchestrator: com.cramsan.agentic.coordination.Orchestrator) {
+        val statuses = runBlocking { orchestrator.status() }
+        echo("=== Task Status (dry run) ===")
+        statuses.entries
+            .sortedBy { it.key.id }
+            .forEach { (task, status) ->
+                echo("  [${status.name}] ${task.id}: ${task.title}")
+            }
     }
 }

@@ -54,7 +54,6 @@ class DefaultOrchestrator(
 
     private val cleanedUpTaskIds: MutableSet<String> = mutableSetOf()
 
-    @Suppress("LongMethod", "CyclomaticComplexMethod")
     override suspend fun run(config: OrchestratorConfig) {
         val tasks = taskListProvider.provide()
         val activeTaskIds: MutableSet<String> = ConcurrentHashMap.newKeySet()
@@ -63,80 +62,99 @@ class DefaultOrchestrator(
             while (true) {
                 val statuses = deriveMemoized(tasks)
 
-                // Clean up worktrees for completed/failed tasks
-                statuses.entries
-                    .filter { (task, status) ->
-                        (status == TaskStatus.DONE || status == TaskStatus.FAILED) &&
-                            task.id !in cleanedUpTaskIds
-                    }
-                    .forEach { (task, _) ->
-                        try {
-                            worktreeManager.delete(task.id)
-                            cleanedUpTaskIds += task.id
-                        } catch (e: Exception) {
-                            logW(TAG, "Failed to clean up worktree for task ${task.id}: ${e.message}")
-                        }
-                    }
+                cleanupCompletedTasks(statuses)
 
-                // Termination: all done
-                if (statuses.values.all { it == TaskStatus.DONE }) {
-                    try {
-                        notifier.notify(AgenticEvent.RunCompleted(tasks))
-                    } catch (e: Exception) {
-                        logW(TAG, "Notifier failed during RunCompleted: ${e.message}")
-                    }
-                    return@coroutineScope
-                }
+                if (checkAllDone(statuses, tasks)) return@coroutineScope
+                if (checkDeadlock(statuses, tasks, activeTaskIds)) return@coroutineScope
 
-                // Termination: deadlock
-                val hasMakingProgress = statuses.values.any {
-                    it == TaskStatus.IN_PROGRESS || it == TaskStatus.PENDING
-                } || activeTaskIds.isNotEmpty()
-                if (!hasMakingProgress) {
-                    val blocked = tasks.filter { statuses[it] == TaskStatus.BLOCKED }
-                    val failed = tasks.filter { statuses[it] == TaskStatus.FAILED }
-                    try {
-                        notifier.notify(AgenticEvent.RunDeadlocked(blocked, failed))
-                    } catch (e: Exception) {
-                        logW(TAG, "Notifier failed during RunDeadlocked: ${e.message}")
-                    }
-                    return@coroutineScope
-                }
-
-                // Launch agents
-                val freeSlots = config.agentPoolSize - activeTaskIds.size
-                if (freeSlots > 0) {
-                    statuses.entries
-                        .filter { (task, status) ->
-                            (status == TaskStatus.PENDING || status == TaskStatus.IN_PROGRESS) &&
-                                task.id !in activeTaskIds
-                        }
-                        .sortedByDescending { (task, _) -> dependencyGraph.downstreamCount(task.id) }
-                        .take(freeSlots)
-                        .forEach { (task, _) ->
-                            val worktree = worktreeManager.getOrCreate(task.id)
-                            activeTaskIds += task.id
-                            logI(TAG, "Launching agent for task ${task.id}")
-                            launch(dispatcher) {
-                                try {
-                                    val result = agentRunner.run(task, worktree)
-                                    if (result is AgentResult.Failed) {
-                                        try {
-                                            notifier.notify(AgenticEvent.TaskFailed(task, result.reason))
-                                        } catch (e: Exception) {
-                                            logW(TAG, "Notifier failed during TaskFailed for ${task.id}: ${e.message}")
-                                        }
-                                    }
-                                } finally {
-                                    activeTaskIds -= task.id
-                                }
-                            }
-                        }
-                }
+                launchPendingAgents(statuses, tasks, activeTaskIds, config)
 
                 delay(config.pollIntervalSeconds.seconds)
             }
         }
+    }
+
+    private suspend fun cleanupCompletedTasks(statuses: Map<Task, TaskStatus>) {
+        statuses.entries
+            .filter { (task, status) ->
+                (status == TaskStatus.DONE || status == TaskStatus.FAILED) &&
+                    task.id !in cleanedUpTaskIds
+            }
+            .forEach { (task, _) ->
+                try {
+                    worktreeManager.delete(task.id)
+                    cleanedUpTaskIds += task.id
+                } catch (e: Exception) {
+                    logW(TAG, "Failed to clean up worktree for task ${task.id}: ${e.message}")
+                }
+            }
+    }
+
+    private suspend fun checkAllDone(statuses: Map<Task, TaskStatus>, tasks: List<Task>): Boolean {
+        if (!statuses.values.all { it == TaskStatus.DONE }) return false
+        try {
+            notifier.notify(AgenticEvent.RunCompleted(tasks))
+        } catch (e: Exception) {
+            logW(TAG, "Notifier failed during RunCompleted: ${e.message}")
+        }
+        return true
+    }
+
+    private suspend fun checkDeadlock(
+        statuses: Map<Task, TaskStatus>,
+        tasks: List<Task>,
+        activeTaskIds: Set<String>,
+    ): Boolean {
+        val hasMakingProgress = statuses.values.any {
+            it == TaskStatus.IN_PROGRESS || it == TaskStatus.PENDING
+        } || activeTaskIds.isNotEmpty()
+        if (hasMakingProgress) return false
+
+        val blocked = tasks.filter { statuses[it] == TaskStatus.BLOCKED }
+        val failed = tasks.filter { statuses[it] == TaskStatus.FAILED }
+        try {
+            notifier.notify(AgenticEvent.RunDeadlocked(blocked, failed))
+        } catch (e: Exception) {
+            logW(TAG, "Notifier failed during RunDeadlocked: ${e.message}")
+        }
+        return true
+    }
+
+    private fun kotlinx.coroutines.CoroutineScope.launchPendingAgents(
+        statuses: Map<Task, TaskStatus>,
+        tasks: List<Task>,
+        activeTaskIds: MutableSet<String>,
+        config: OrchestratorConfig,
+    ) {
+        val freeSlots = config.agentPoolSize - activeTaskIds.size
+        if (freeSlots <= 0) return
+
+        statuses.entries
+            .filter { (task, status) ->
+                (status == TaskStatus.PENDING || status == TaskStatus.IN_PROGRESS) &&
+                    task.id !in activeTaskIds
+            }
+            .sortedByDescending { (task, _) -> dependencyGraph.downstreamCount(task.id) }
+            .take(freeSlots)
+            .forEach { (task, _) ->
+                activeTaskIds += task.id
+                logI(TAG, "Launching agent for task ${task.id}")
+                launch(dispatcher) {
+                    try {
+                        val worktree = worktreeManager.getOrCreate(task.id)
+                        val result = agentRunner.run(task, worktree)
+                        if (result is AgentResult.Failed) {
+                            try {
+                                notifier.notify(AgenticEvent.TaskFailed(task, result.reason))
+                            } catch (e: Exception) {
+                                logW(TAG, "Notifier failed during TaskFailed for ${task.id}: ${e.message}")
+                            }
+                        }
+                    } finally {
+                        activeTaskIds -= task.id
+                    }
+                }
+            }
     }
 
     override suspend fun status(): Map<Task, TaskStatus> {

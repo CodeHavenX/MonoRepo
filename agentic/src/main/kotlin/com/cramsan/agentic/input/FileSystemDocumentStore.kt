@@ -125,7 +125,7 @@ class FileSystemDocumentStore(
                 val currentHash = computeContentHash(currentContent)
                 if (currentHash != sidecar.contentHash) {
                     logW(TAG, "Document $id content changed since validation (hash mismatch). Resetting to UNREVIEWED.")
-                    logD(TAG, "Expected hash: ${sidecar.contentHash.take(RADIX)}..., actual: ${currentHash.take(RADIX)}...")
+                    logD(TAG, "Expected hash: ${sidecar.contentHash.take(HASH_PREVIEW_LENGTH)}..., actual: ${currentHash.take(HASH_PREVIEW_LENGTH)}...")
                     status = DocumentStatus.UNREVIEWED
                     // Update the sidecar to reflect the reset status
                     val resetDoc = AgenticDocument(
@@ -175,7 +175,6 @@ class FileSystemDocumentStore(
         }
     }
 
-    @Suppress("MagicNumber")
     private fun writeSidecar(document: AgenticDocument, contentHash: String? = null) {
         val path = sidecarPath(document.id)
         logD(TAG, "Writing sidecar for document ${document.id} to $path")
@@ -187,15 +186,17 @@ class FileSystemDocumentStore(
             contentHash = contentHash,
         )
         Files.writeString(path, json.encodeToString(DocumentMeta.serializer(), meta))
-        logD(TAG, "Sidecar written for document ${document.id}: status=${document.status}, hash=${contentHash?.take(8)}...")
+        logD(TAG, "Sidecar written for document ${document.id}: status=${document.status}, hash=${contentHash?.take(HASH_PREVIEW_LENGTH)}...")
     }
 
-    @Suppress("MagicNumber")
     private fun computeContentHash(content: String): String {
         val digest = MessageDigest.getInstance("SHA-256")
         val hashBytes = digest.digest(content.toByteArray(Charsets.UTF_8))
-        return hashBytes.joinToString("") { (it.toInt() and 0xFF).toString(RADIX).padStart(2, '0') }
+        return hashBytes.joinToString("") { (it.toInt() and HEX_MASK).toString(HEX_RADIX).padStart(HEX_PAD_WIDTH, '0') }
     }
-
 }
-private const val RADIX = 16
+
+private const val HEX_MASK = 0xFF
+private const val HEX_RADIX = 16
+private const val HEX_PAD_WIDTH = 2
+private const val HASH_PREVIEW_LENGTH = 8

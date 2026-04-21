@@ -40,7 +40,7 @@ class ShellRunner(
      * with combined stdout, stderr, and exit code after all retry attempts are exhausted.
      * A non-zero exit code is always returned as a value — never thrown as an exception.
      */
-    suspend fun run(vararg args: String, workingDir: String? = null): ShellResult = withContext(dispatcher) {
+    suspend fun run(args: List<String>, workingDir: String? = null): ShellResult = withContext(dispatcher) {
         val commandStr = args.joinToString(" ")
         logD(TAG, "Running command: $commandStr")
         if (workingDir != null) {
@@ -54,7 +54,7 @@ class ShellRunner(
             if (attempt > 0) {
                 logD(TAG, "Retrying command (attempt ${attempt + 1}): $commandStr")
             }
-            val process = ProcessBuilder(*args)
+            val process = ProcessBuilder(args)
                 .also { pb ->
                     pb.redirectErrorStream(false)
                     if (workingDir != null) pb.directory(java.io.File(workingDir))
@@ -87,6 +87,10 @@ class ShellRunner(
         logW(TAG, "Command exhausted all retry attempts with exitCode=${lastResult?.exitCode}: $commandStr")
         requireNotNull(lastResult) { "No result captured after retry loop — this is a bug" }
     }
+
+    /** Convenience overload for ad-hoc call sites with a known number of arguments. */
+    suspend fun run(vararg args: String, workingDir: String? = null): ShellResult =
+        run(args.toList(), workingDir)
 }
 
 const val MAX_ATTEMPTS = 4

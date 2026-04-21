@@ -41,7 +41,6 @@ class DefaultAgentRunner(
     private val agenticDir: Path,
 ) : AgentRunner {
 
-    @Suppress("SwallowedException")
     override suspend fun run(task: Task, worktree: Worktree): AgentResult {
         return try {
             val result = withTimeout(task.timeoutSeconds.seconds) {
@@ -60,7 +59,7 @@ class DefaultAgentRunner(
             }
         } catch (e: kotlinx.coroutines.TimeoutCancellationException) {
             val reason = "Agent exceeded timeout of ${task.timeoutSeconds}s"
-            logW(TAG, reason)
+            logW(TAG, reason, e)
             writeFailedMarker(task.id, reason)
             AgentResult.Failed(reason)
         } catch (e: Exception) {

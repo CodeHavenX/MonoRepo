@@ -57,26 +57,36 @@ class ClaudeAiProvider(
     private val model: String,
 ) : AiProvider {
 
-    @Suppress("LongMethod")
     override suspend fun chat(
         systemPrompt: String,
         messages: List<AiMessage>,
         tools: List<AiTool>,
     ): AiResponse {
         logD(TAG, "chat() called: model=$model, messageCount=${messages.size}, toolCount=${tools.size}")
+        val requestBody = buildRequestBody(systemPrompt, messages, tools)
+        return executeWithRetry(messages, requestBody)
+    }
+
+    private fun buildRequestBody(
+        systemPrompt: String,
+        messages: List<AiMessage>,
+        tools: List<AiTool>,
+    ) = buildJsonObject {
         val claudeMessages = messages.map { ClaudeMessage(it.role, it.content) }
         val claudeTools = tools.map { ClaudeTool(it.name, it.description, it.inputSchema) }
-
-        val requestBody = buildJsonObject {
-            put("model", model)
-            put("system", systemPrompt)
-            put("max_tokens", MAX_TOKENS)
-            put("messages", json.encodeToJsonElement(claudeMessages))
-            if (claudeTools.isNotEmpty()) {
-                put("tools", json.encodeToJsonElement(claudeTools))
-            }
+        put("model", model)
+        put("system", systemPrompt)
+        put("max_tokens", MAX_TOKENS)
+        put("messages", json.encodeToJsonElement(claudeMessages))
+        if (claudeTools.isNotEmpty()) {
+            put("tools", json.encodeToJsonElement(claudeTools))
         }
+    }
 
+    private suspend fun executeWithRetry(
+        messages: List<AiMessage>,
+        requestBody: kotlinx.serialization.json.JsonObject,
+    ): AiResponse {
         val retryDelays = listOf(1.seconds, 2.seconds, 4.seconds)
         var lastException: Exception? = null
 
@@ -98,28 +108,19 @@ class ClaudeAiProvider(
                         val bodyText = response.bodyAsText()
                         val claudeResponse = json.decodeFromString<ClaudeResponse>(bodyText)
                         logI(TAG, "Successful response: id=${claudeResponse.id}, stopReason=${claudeResponse.stopReason}, contentBlockCount=${claudeResponse.content.size}")
-                        logD(TAG, "chat() returning response id=${claudeResponse.id}")
                         return claudeResponse.toAiResponse()
                     }
                     response.status.value == HttpStatusCode.TooManyRequests.value -> {
                         val body = response.bodyAsText()
                         logW(TAG, "Rate limit hit (429) on attempt ${attempt + 1}: $body")
                         lastException = AiProviderException("Claude API error ${response.status.value}: $body", response.status.value)
-                        if (attempt < retryDelays.size) {
-                            val delayMs = retryDelays[attempt]
-                            logI(TAG, "Retrying after rate-limit: attempt=${attempt + 1}, delayMs=$delayMs")
-                            delay(delayMs)
-                        }
+                        if (attempt < retryDelays.size) delay(retryDelays[attempt])
                     }
                     response.status.value >= HttpStatusCode.InternalServerError.value -> {
                         val body = response.bodyAsText()
                         logW(TAG, "Server error (${response.status.value}) on attempt ${attempt + 1}: $body")
                         lastException = AiProviderException("Claude API error ${response.status.value}: $body", response.status.value)
-                        if (attempt < retryDelays.size) {
-                            val delayMs = retryDelays[attempt]
-                            logI(TAG, "Retrying after server error: attempt=${attempt + 1}, delayMs=$delayMs")
-                            delay(delayMs)
-                        }
+                        if (attempt < retryDelays.size) delay(retryDelays[attempt])
                     }
                     else -> {
                         val body = response.bodyAsText()
@@ -132,11 +133,7 @@ class ClaudeAiProvider(
             } catch (e: Exception) {
                 logW(TAG, "Unexpected exception on attempt ${attempt + 1}", e)
                 lastException = e
-                if (attempt < retryDelays.size) {
-                    val delayMs = retryDelays[attempt]
-                    logI(TAG, "Retrying after exception: attempt=${attempt + 1}, delayMs=$delayMs")
-                    delay(delayMs)
-                }
+                if (attempt < retryDelays.size) delay(retryDelays[attempt])
             }
         }
 

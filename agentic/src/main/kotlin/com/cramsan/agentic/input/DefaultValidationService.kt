@@ -22,6 +22,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 
 private const val TAG = "DefaultValidationService"
+private const val MAX_LOG_PREVIEW_LENGTH = 200
 
 /**
  * Production [ValidationService] that uses an AI model to evaluate planning documents for
@@ -49,7 +50,6 @@ class DefaultValidationService(
     private val docsDir: Path,
 ) : ValidationService {
 
-    @Suppress("MagicNumber")
     override suspend fun reviewDocument(document: AgenticDocument): List<ValidationIssue> {
         logI(TAG, "Starting review for document id=${document.id}, path=${document.relativePath}, typeId=${document.typeId}")
         val fileContent = Files.readString(resolvePath(docsDir, document.relativePath))
@@ -88,14 +88,14 @@ class DefaultValidationService(
             val startIdx = rawText.indexOf('[')
             val endIdx = rawText.lastIndexOf(']')
             if (startIdx == -1 || endIdx == -1 || startIdx > endIdx) {
-                logW(TAG, "AI response for document ${document.id} did not contain a JSON array; returning empty issue list. Response: ${rawText.take(200)}")
+                logW(TAG, "AI response for document ${document.id} did not contain a JSON array; returning empty issue list. Response: ${rawText.take(MAX_LOG_PREVIEW_LENGTH)}")
                 emptyList()
             } else {
                 val rawJson = rawText.substring(startIdx, endIdx + 1)
                 try {
                     json.decodeFromString(rawJson)
                 } catch (e: Exception) {
-                    logW(TAG, "Failed to parse AI response as JSON for document ${document.id}: ${e.message}. Raw JSON: ${rawJson.take(200)}")
+                    logW(TAG, "Failed to parse AI response as JSON for document ${document.id}: ${e.message}. Raw JSON: ${rawJson.take(MAX_LOG_PREVIEW_LENGTH)}")
                     emptyList()
                 }
             }

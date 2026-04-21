@@ -219,57 +219,48 @@ class FakeAiProvider(
         )
     }
 
-    @Suppress("CyclomaticComplexMethod")
     private fun selectToolBasedOnContext(
         lastMessage: String,
         tools: List<AiTool>,
     ): AiResponse? {
         val messageLower = lastMessage.lowercase()
         val toolNames = tools.map { it.name }.toSet()
+        val toolSelection = matchToolForMessage(messageLower, toolNames) ?: return null
+        val (toolName, toolInput) = toolSelection
+        logD(TAG, "Pattern matched: selecting tool '$toolName'")
+        return AiResponse(
+            id = "fake-${nextId.getAndIncrement()}",
+            content = listOf(
+                AiContentBlock.ToolCall(
+                    id = "tool-${nextId.getAndIncrement()}",
+                    name = toolName,
+                    input = toolInput,
+                )
+            ),
+            stopReason = "tool_use",
+        )
+    }
 
-        // Look for patterns that suggest tool usage
-        val toolSelection: Pair<String, JsonObject>? = when {
-            // Starting work - list files first
-            (messageLower.contains("begin") || messageLower.contains("start")) &&
-                "list_files" in toolNames -> {
-                "list_files" to buildJsonObject { put("glob", "**/*.kt") }
-            }
-            // Read file requests
-            messageLower.contains("read") && "read_file" in toolNames -> {
-                "read_file" to buildJsonObject { put("path", "README.md") }
-            }
-            // Write/fix requests
-            (messageLower.contains("write") || messageLower.contains("fix") ||
-                messageLower.contains("create")) && "write_file" in toolNames -> {
-                "write_file" to buildJsonObject {
-                    put("path", "output.txt")
-                    put("content", "Generated content")
-                }
-            }
-            // Run command requests
-            (messageLower.contains("run") || messageLower.contains("execute") ||
-                messageLower.contains("command")) && "run_command" in toolNames -> {
-                "run_command" to buildJsonObject { put("command", "echo 'Done'") }
-            }
-            else -> null
+    private fun matchToolForMessage(messageLower: String, toolNames: Set<String>): Pair<String, JsonObject>? {
+        if ((messageLower.contains("begin") || messageLower.contains("start")) && "list_files" in toolNames) {
+            return "list_files" to buildJsonObject { put("glob", "**/*.kt") }
         }
-
-        if (toolSelection != null) {
-            val (toolName, toolInput) = toolSelection
-            logD(TAG, "Pattern matched: selecting tool '$toolName'")
-            return AiResponse(
-                id = "fake-${nextId.getAndIncrement()}",
-                content = listOf(
-                    AiContentBlock.ToolCall(
-                        id = "tool-${nextId.getAndIncrement()}",
-                        name = toolName,
-                        input = toolInput,
-                    )
-                ),
-                stopReason = "tool_use",
-            )
+        if (messageLower.contains("read") && "read_file" in toolNames) {
+            return "read_file" to buildJsonObject { put("path", "README.md") }
         }
-
+        if ((messageLower.contains("write") || messageLower.contains("fix") || messageLower.contains("create")) &&
+            "write_file" in toolNames
+        ) {
+            return "write_file" to buildJsonObject {
+                put("path", "output.txt")
+                put("content", "Generated content")
+            }
+        }
+        if ((messageLower.contains("run") || messageLower.contains("execute") || messageLower.contains("command")) &&
+            "run_command" in toolNames
+        ) {
+            return "run_command" to buildJsonObject { put("command", "echo 'Done'") }
+        }
         return null
     }
 

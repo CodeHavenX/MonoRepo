@@ -9,7 +9,8 @@ import java.nio.file.Files
 import java.nio.file.Path
 
 private const val TAG = "DocumentTaskListProvider"
-        private const val TASK_FILE_NAME = "task.json"
+private const val TASK_FILE_NAME = "task.json"
+private const val DEFAULT_TASK_TIMEOUT_SECONDS = 3600L
 
 /**
  * A [TaskListProvider] that reads task definitions from a markdown document
@@ -54,7 +55,6 @@ class DocumentTaskListProvider(
         }
     }
 
-    @Suppress("MagicNumber")
     private fun parseDocument(): List<Task> {
         require(Files.exists(documentPath)) {
             "Task list document not found at $documentPath"
@@ -79,7 +79,7 @@ class DocumentTaskListProvider(
             val title = match.groupValues[2].trim()
             val description = match.groupValues[3].trim()
             val depsRaw = match.groupValues[4].trim()
-            val timeout = match.groupValues[5].trim().toLongOrNull() ?: 3600L
+            val timeout = match.groupValues[5].trim().toLongOrNull() ?: DEFAULT_TASK_TIMEOUT_SECONDS
 
             val dependencies = if (depsRaw.equals("none", ignoreCase = true) || depsRaw.isBlank()) {
                 emptyList()

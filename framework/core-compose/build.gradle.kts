@@ -46,9 +46,9 @@ kotlin {
 
 dependencies {
     // To use Kotlin Symbol Processing (KSP)
-    add("kspCommonMainMetadata", "androidx.room:room-compiler:_")
-    add("kspAndroid", "androidx.room:room-compiler:_")
-    add("kspJvm", "androidx.room:room-compiler:_")
+    add("kspCommonMainMetadata", "androidx.room3:room3-compiler:_")
+    add("kspAndroid", "androidx.room3:room3-compiler:_")
+    add("kspJvm", "androidx.room3:room3-compiler:_")
 }
 
 compose.resources {

@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.client.lib.di
 
-import androidx.room.Room
+import androidx.room3.Room
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.cramsan.edifikana.client.lib.db.AppDatabase
 import kotlinx.coroutines.Dispatchers

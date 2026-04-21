@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.client.lib.db
 
-import androidx.room.TypeConverter
+import androidx.room3.TypeConverter
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 

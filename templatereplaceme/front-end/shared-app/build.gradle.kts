@@ -9,7 +9,7 @@ plugins {
     id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.android.library")
-    id("androidx.room")
+    id("androidx.room3")
     id("com.google.devtools.ksp")
     id("io.github.takahirom.roborazzi")
 }
@@ -75,7 +75,7 @@ kotlin {
             dependsOn(commonMain.get())
 
             dependencies {
-                implementation("androidx.room:room-runtime:_")
+                implementation("androidx.room3:room3-runtime:_")
             }
         }
 
@@ -90,7 +90,7 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:_")
 
                 // Room
-                implementation("androidx.room:room-runtime:_")
+                implementation("androidx.room3:room3-runtime:_")
                 implementation("androidx.sqlite:sqlite-bundled-jvm:_")
             }
         }
@@ -150,9 +150,9 @@ compose.resources {
 
 dependencies {
     // To use Kotlin Symbol Processing (KSP)
-    add("kspCommonMainMetadata", "androidx.room:room-compiler:_")
-    add("kspAndroid", "androidx.room:room-compiler:_")
-    add("kspJvm", "androidx.room:room-compiler:_")
+    add("kspCommonMainMetadata", "androidx.room3:room3-compiler:_")
+    add("kspAndroid", "androidx.room3:room3-compiler:_")
+    add("kspJvm", "androidx.room3:room3-compiler:_")
 
     implementation("androidx.appcompat:appcompat:_")
     implementation("androidx.core:core-ktx:_")
@@ -164,15 +164,14 @@ dependencies {
 
     implementation("io.ktor:ktor-client-cio:_")
 
-    implementation("androidx.room:room-runtime:_")
-    implementation("androidx.room:room-ktx:_")
+    implementation("androidx.room3:room3-runtime:_")
 
     implementation("io.insert-koin:koin-core:_")
     implementation("io.insert-koin:koin-android:_")
     implementation("io.insert-koin:koin-androidx-compose:_")
 }
 
-room {
+room3 {
     schemaDirectory("$projectDir/schemas")
 }
 

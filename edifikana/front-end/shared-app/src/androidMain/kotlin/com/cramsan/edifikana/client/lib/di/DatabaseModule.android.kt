@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.client.lib.di
 
-import androidx.room.Room
+import androidx.room3.Room
 import com.cramsan.edifikana.client.lib.db.AppDatabase
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module

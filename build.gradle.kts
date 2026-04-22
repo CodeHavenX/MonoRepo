@@ -19,6 +19,8 @@ plugins {
     id("com.cramsan.kotlin-jvm-lib-compose") apply false
     id("com.cramsan.kotlin-jvm-application") apply false
     id("com.cramsan.kotlin-jvm-ktor") apply false
+    id("com.cramsan.kotlin-mpp-common") apply false
+    id("com.cramsan.kotlin-mpp-common-compose") apply false
 }
 
 subprojects {

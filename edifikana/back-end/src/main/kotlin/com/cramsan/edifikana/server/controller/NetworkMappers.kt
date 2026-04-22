@@ -41,7 +41,7 @@ import kotlin.time.ExperimentalTime
 /**
  * Converts a [User] domain model to a [UserNetworkResponse] network model.
  */
-@OptIn(NetworkModel::class)
+@NetworkModel
 fun User.toUserNetworkResponse(): UserNetworkResponse {
     return UserNetworkResponse(
         id = id.userId,
@@ -60,7 +60,7 @@ fun User.toUserNetworkResponse(): UserNetworkResponse {
 /**
  * Converts a [Employee] domain model to a [EmployeeNetworkResponse] network model.
  */
-@OptIn(NetworkModel::class)
+@NetworkModel
 fun Employee.toEmployeeNetworkResponse(): EmployeeNetworkResponse {
     return EmployeeNetworkResponse(
         id = id,
@@ -75,7 +75,7 @@ fun Employee.toEmployeeNetworkResponse(): EmployeeNetworkResponse {
 /**
  * Converts a [EventLogEntry] domain model to a [EventLogEntryNetworkResponse] network model.
  */
-@OptIn(NetworkModel::class)
+@NetworkModel
 fun EventLogEntry.toEventLogEntryNetworkResponse(): EventLogEntryNetworkResponse {
     return EventLogEntryNetworkResponse(
         id = id,
@@ -94,7 +94,7 @@ fun EventLogEntry.toEventLogEntryNetworkResponse(): EventLogEntryNetworkResponse
 /**
  * Converts a [Property] domain model to a [PropertyNetworkResponse] network model.
  */
-@OptIn(NetworkModel::class)
+@NetworkModel
 fun Property.toPropertyNetworkResponse(): PropertyNetworkResponse {
     return PropertyNetworkResponse(
         id = id,
@@ -108,7 +108,7 @@ fun Property.toPropertyNetworkResponse(): PropertyNetworkResponse {
 /**
  * Converts a [TimeCardEvent] domain model to a [TimeCardEventNetworkResponse] network model.
  */
-@OptIn(NetworkModel::class)
+@NetworkModel
 fun TimeCardEvent.toTimeCardEventNetworkResponse(): TimeCardEventNetworkResponse {
     return TimeCardEventNetworkResponse(
         id = id,
@@ -124,7 +124,7 @@ fun TimeCardEvent.toTimeCardEventNetworkResponse(): TimeCardEventNetworkResponse
 /**
  * Converts an [Asset] domain model to a [AssetNetworkResponse] network model.
  */
-@OptIn(NetworkModel::class)
+@NetworkModel
 fun Asset.toAssetNetworkResponse(): AssetNetworkResponse {
     return AssetNetworkResponse(
         id = id,
@@ -136,7 +136,7 @@ fun Asset.toAssetNetworkResponse(): AssetNetworkResponse {
 /**
  * Converts an [Organization] domain model to an [OrganizationNetworkResponse] network model.
  */
-@OptIn(NetworkModel::class)
+@NetworkModel
 fun Organization.toOrganizationNetworkResponse(): OrganizationNetworkResponse {
     return OrganizationNetworkResponse(
         id = id,
@@ -148,7 +148,7 @@ fun Organization.toOrganizationNetworkResponse(): OrganizationNetworkResponse {
 /**
  * Converts an [OrgMemberView] domain model to a [MemberNetworkResponse] network model.
  */
-@OptIn(NetworkModel::class)
+@NetworkModel
 fun OrgMemberView.toMemberNetworkResponse(): MemberNetworkResponse {
     return MemberNetworkResponse(
         userId = userId,
@@ -164,7 +164,7 @@ fun OrgMemberView.toMemberNetworkResponse(): MemberNetworkResponse {
 /**
  * Converts an [Invite] domain model to an [InviteNetworkResponse] network model.
  */
-@OptIn(NetworkModel::class)
+@NetworkModel
 fun Invite.toInviteNetworkResponse(): InviteNetworkResponse {
     return InviteNetworkResponse(
         inviteId = id,
@@ -178,7 +178,7 @@ fun Invite.toInviteNetworkResponse(): InviteNetworkResponse {
 /**
  * Converts a [Notification] domain model to a [NotificationNetworkResponse] network model.
  */
-@OptIn(NetworkModel::class)
+@NetworkModel
 fun Notification.toNotificationNetworkResponse(): NotificationNetworkResponse {
     return NotificationNetworkResponse(
         id = id,
@@ -194,7 +194,7 @@ fun Notification.toNotificationNetworkResponse(): NotificationNetworkResponse {
 /**
  * Converts a [Document] domain model to a [DocumentNetworkResponse] network model.
  */
-@OptIn(NetworkModel::class)
+@NetworkModel
 fun Document.toDocumentNetworkResponse(): DocumentNetworkResponse {
     return DocumentNetworkResponse(
         documentId = id,
@@ -213,7 +213,7 @@ fun Document.toDocumentNetworkResponse(): DocumentNetworkResponse {
 /**
  * Converts a [CommonArea] domain model to a [CommonAreaNetworkResponse] network model.
  */
-@OptIn(NetworkModel::class)
+@NetworkModel
 fun CommonArea.toCommonAreaNetworkResponse(): CommonAreaNetworkResponse {
     return CommonAreaNetworkResponse(
         commonAreaId = id,
@@ -227,7 +227,7 @@ fun CommonArea.toCommonAreaNetworkResponse(): CommonAreaNetworkResponse {
 /**
  * Converts a [Task] domain model to a [TaskNetworkResponse] network model.
  */
-@OptIn(NetworkModel::class)
+@NetworkModel
 fun Task.toTaskNetworkResponse(): TaskNetworkResponse {
     return TaskNetworkResponse(
         id = id,
@@ -251,7 +251,7 @@ fun Task.toTaskNetworkResponse(): TaskNetworkResponse {
 /**
  * Converts a [Unit] domain model to a [UnitNetworkResponse] network model.
  */
-@OptIn(NetworkModel::class)
+@NetworkModel
 fun Unit.toUnitNetworkResponse(): UnitNetworkResponse {
     return UnitNetworkResponse(
         unitId = id,
@@ -268,7 +268,7 @@ fun Unit.toUnitNetworkResponse(): UnitNetworkResponse {
 /**
  * Converts a [PaymentRecord] domain model to a [PaymentRecordNetworkResponse] network model.
  */
-@OptIn(NetworkModel::class)
+@NetworkModel
 fun PaymentRecord.toPaymentRecordNetworkResponse(): PaymentRecordNetworkResponse {
     return PaymentRecordNetworkResponse(
         paymentRecordId = id,
@@ -289,7 +289,7 @@ fun PaymentRecord.toPaymentRecordNetworkResponse(): PaymentRecordNetworkResponse
 /**
  * Converts a [RentConfig] domain model to a [RentConfigNetworkResponse] network model.
  */
-@OptIn(NetworkModel::class)
+@NetworkModel
 fun RentConfig.toRentConfigNetworkResponse(): RentConfigNetworkResponse {
     return RentConfigNetworkResponse(
         rentConfigId = id,

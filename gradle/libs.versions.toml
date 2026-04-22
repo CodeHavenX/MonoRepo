@@ -1,0 +1,48 @@
+# Version catalog used by the build-logic included build.
+# Plugin versions here match the versions in versions.properties.
+# When updating a plugin version, update both files.
+#
+# Dependency versions are intentionally minimal here — convention plugins use
+# the "_" placeholder for most dependencies so refreshVersions (versions.properties)
+# remains the single source of truth. Only deps that cannot use "_" are pinned here.
+
+[versions]
+android-agp = "8.10.0"
+detekt = "2.0.0-alpha.2"
+detekt-rules-ktlint-wrapper = "2.0.0-alpha.2"
+hilt = "2.58"
+composable-preview-scanner = "0.8.1"
+kotlin = "2.3.20"
+compose-multiplatform = "1.10.3"
+ksp = "2.3.6"
+ktor-plugin = "3.4.1"
+roborazzi = "1.59.0"
+
+[libraries]
+# Plugin artifacts — used in build-logic/build.gradle.kts as classpath dependencies.
+build-android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "android-agp" }
+build-compose-gradle-plugin = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "compose-multiplatform" }
+build-detekt-gradle-plugin = { module = "dev.detekt:detekt-gradle-plugin", version.ref = "detekt" }
+build-hilt-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hilt" }
+build-kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+build-ksp-gradle-plugin = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin", version.ref = "ksp" }
+build-ktor-gradle-plugin = { module = "io.ktor.plugin:io.ktor.plugin.gradle.plugin", version.ref = "ktor-plugin" }
+build-roborazzi-gradle-plugin = { module = "io.github.takahirom.roborazzi:roborazzi-gradle-plugin", version.ref = "roborazzi" }
+
+# These two cannot use "_" from refreshVersions — explicit versions required.
+detekt-rules-ktlint-wrapper = { module = "dev.detekt:detekt-rules-ktlint-wrapper", version.ref = "detekt-rules-ktlint-wrapper" }
+composable-preview-scanner-android = { module = "io.github.sergio-sastre.ComposablePreviewScanner:android", version.ref = "composable-preview-scanner" }
+composable-preview-scanner-jvm = { module = "io.github.sergio-sastre.ComposablePreviewScanner:jvm", version.ref = "composable-preview-scanner" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "android-agp" }
+android-library = { id = "com.android.library", version.ref = "android-agp" }
+compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
+detekt = { id = "dev.detekt", version.ref = "detekt" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+ktor-plugin = { id = "io.ktor.plugin", version.ref = "ktor-plugin" }
+roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }

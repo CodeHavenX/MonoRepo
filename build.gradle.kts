@@ -13,10 +13,11 @@ plugins {
     id("com.gradleup.shadow") apply false
     id("dev.detekt") apply false
     id("io.github.takahirom.roborazzi") apply false
+    id("com.cramsan.detekt") apply false
 }
 
 subprojects {
-    apply(from = "$rootDir/gradle/detekt.gradle")
+    apply(plugin = "com.cramsan.detekt")
 
     // Configure Java toolchain to use JDK 21 for all subprojects
     pluginManager.withPlugin("java") {

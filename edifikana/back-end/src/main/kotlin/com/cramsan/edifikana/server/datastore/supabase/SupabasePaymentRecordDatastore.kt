@@ -12,7 +12,6 @@ import com.cramsan.edifikana.server.service.models.PaymentRecord
 import com.cramsan.framework.annotations.SupabaseModel
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
-import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import io.github.jan.supabase.postgrest.Postgrest
 import kotlinx.datetime.LocalDate
 import kotlin.time.Clock

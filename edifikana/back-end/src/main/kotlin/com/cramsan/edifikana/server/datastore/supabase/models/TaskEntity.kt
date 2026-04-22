@@ -64,6 +64,7 @@ data class TaskEntity(
         @SerialName("property_id")
         val propertyId: PropertyId,
         @SerialName("unit_id")
+        val unitId: UnitId?,
         @SerialName("common_area_id")
         val commonAreaId: CommonAreaId?,
         @SerialName("assignee_id")

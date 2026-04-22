@@ -85,7 +85,7 @@ class SupabaseRentConfigDatastore(
             pUpdatedBy = updatedBy?.userId,
         )
         val jsonParams = Json.encodeToJsonElement(UpsertRentConfigRpcParams.serializer(), params).jsonObject
-        postgrest.rpc("upsert_rent_config", jsonParams).decodeSingle<RentConfigEntity>().toRentConfig()
+        postgrest.rpc("upsert_rent_config", jsonParams).decodeAs<RentConfigEntity>().toRentConfig()
     }
 
     /**

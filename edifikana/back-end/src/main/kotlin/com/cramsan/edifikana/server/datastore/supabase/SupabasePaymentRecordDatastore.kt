@@ -82,19 +82,11 @@ class SupabasePaymentRecordDatastore(
         periodMonth: String?,
     ): Result<List<PaymentRecord>> = runSuspendCatching(TAG) {
         logD(TAG, "Listing payment records for unit: %s, period: %s", unitId, periodMonth)
-        val parsedPeriodMonth = periodMonth?.let { value ->
-            if (!Regex("""^\d{4}-(0[1-9]|1[0-2])$""").matches(value)) {
-                throw ClientRequestExceptions.InvalidRequestException(
-                    "periodMonth must be in YYYY-MM format",
-                )
-            }
-            LocalDate.parse("$value-01")
-        }
         postgrest.from(PaymentRecordEntity.COLLECTION).select {
             filter {
                 PaymentRecordEntity::unitId eq unitId.unitId
                 PaymentRecordEntity::deletedAt isExact null
-                periodMonth?.let { PaymentRecordEntity::periodMonth eq it }
+                periodMonth?.let { PaymentRecordEntity::periodMonth eq LocalDate.parse("$it-01") }
             }
         }.decodeList<PaymentRecordEntity>().map { it.toPaymentRecord() }
     }

@@ -13,6 +13,7 @@ plugins {
     id("com.gradleup.shadow") apply false
     id("dev.detekt") apply false
     id("io.github.takahirom.roborazzi") apply false
+    // Internal gradle plugins
     id("com.cramsan.detekt") apply false
     id("com.cramsan.release-task") apply false
     id("com.cramsan.kotlin-jvm-lib") apply false

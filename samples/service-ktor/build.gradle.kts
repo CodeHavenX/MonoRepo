@@ -2,13 +2,12 @@ plugins {
     kotlin("plugin.serialization")
     kotlin("jvm")
     id("io.ktor.plugin")
+    // Configures default settings for the JVM/Ktor project
+    id("com.cramsan.kotlin-jvm-ktor")
 }
 
 val mainClassTarget by extra("io.ktor.server.netty.EngineMain")
 val jarNameTarget by extra("sample-service-ktor")
-
-// Configures default settings for the JVM/Ktor project
-apply(from = "$rootDir/gradle/kotlin-jvm-target-ktor.gradle")
 
 dependencies {
     implementation("io.ktor:ktor-server-core-jvm:_")

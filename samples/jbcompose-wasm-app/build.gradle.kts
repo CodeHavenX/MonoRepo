@@ -7,12 +7,11 @@ plugins {
     kotlin("multiplatform")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.compose")
+    id("com.cramsan.kotlin-mpp-common-compose")
+    id("com.cramsan.kotlin-mpp-wasm-compose-app")
 }
 
 val wasmModuleName by extra("SamplesWasmApp")
-
-apply(from = "$rootDir/gradle/kotlin-mpp-target-common-compose.gradle")
-apply(from = "$rootDir/gradle/kotlin-mpp-target-wasm-compose-application.gradle")
 
 kotlin {
     wasmJs {

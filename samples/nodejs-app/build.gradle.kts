@@ -1,10 +1,9 @@
 
 plugins {
     kotlin("multiplatform")
+    id("com.cramsan.kotlin-mpp-common")
+    id("com.cramsan.kotlin-mpp-js")
 }
-
-apply(from = "$rootDir/gradle/kotlin-mpp-target-common.gradle")
-apply(from = "$rootDir/gradle/kotlin-mpp-target-js.gradle")
 
 kotlin {
     js(IR) {

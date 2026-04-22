@@ -4,9 +4,8 @@ plugins {
     kotlin("jvm")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.compose")
+    id("com.cramsan.kotlin-jvm-lib-compose")
 }
-
-apply(from = "$rootDir/gradle/kotlin-jvm-target-lib-compose.gradle")
 
 dependencies {
     implementation(project(":framework:core"))

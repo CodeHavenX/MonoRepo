@@ -3,9 +3,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
+    id("com.cramsan.kotlin-jvm-lib")
 }
-
-apply(from = "$rootDir/gradle/kotlin-jvm-target-lib.gradle")
 
 tasks.named<KotlinCompilationTask<*>>("compileKotlin").configure {
     compilerOptions.optIn.add("kotlin.time.ExperimentalTime")

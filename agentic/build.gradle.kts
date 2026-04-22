@@ -4,12 +4,11 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
     id("com.gradleup.shadow")
+    id("com.cramsan.kotlin-jvm-application")
 }
 
 val mainClassTarget by extra("com.cramsan.agentic.app.MainKt")
 val jarNameTarget by extra("agentic")
-
-apply(from = "$rootDir/gradle/kotlin-jvm-target-application.gradle")
 
 sourceSets {
     val integTest by creating {

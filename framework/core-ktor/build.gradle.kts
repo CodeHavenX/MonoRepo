@@ -1,9 +1,8 @@
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
+    id("com.cramsan.kotlin-jvm-lib")
 }
-
-apply(from = "$rootDir/gradle/kotlin-jvm-target-lib.gradle")
 
 dependencies {
     implementation(project(":framework:interfacelib"))

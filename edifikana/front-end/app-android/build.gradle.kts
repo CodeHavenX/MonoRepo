@@ -3,9 +3,8 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.compose")
+    id("com.cramsan.kotlin-mpp-android-app")
 }
-
-apply(from = "$rootDir/gradle/kotlin-mpp-target-android-app.gradle")
 
 private val ENV_STORE_PASSWORD = "EDIFIKANA_STORE_PASSWORD"
 private val ENV_KEY_ALIAS = "EDIFIKANA_KEY_ALIAS"

@@ -1,2 +1,0 @@
-// Shim: delegates to Kotlin convention plugin
-apply plugin: "com.cramsan.kotlin-mpp-common-compose"

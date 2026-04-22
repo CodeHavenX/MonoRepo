@@ -1,9 +1,8 @@
 plugins {
     id("com.android.library")
+    id("com.cramsan.kotlin-mpp-common")
+    id("com.cramsan.kotlin-mpp-android-lib")
 }
-
-apply(from = "$rootDir/gradle/kotlin-mpp-target-common.gradle")
-apply(from = "$rootDir/gradle/kotlin-mpp-target-android-lib.gradle")
 
 android {
     namespace = "com.cramsan.samples.android.lib"

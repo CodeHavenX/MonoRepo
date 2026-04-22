@@ -3,14 +3,13 @@ import de.fayard.refreshVersions.core.versionFor
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
+    id("com.cramsan.kotlin-mpp-common")
+    id("com.cramsan.kotlin-mpp-android-lib-compose")
 }
 
 // https://github.com/takahirom/roborazzi/issues/753
 // Due to an incompatibility with roborazzi, we cannot use the "_" notation from refreshVersions for this dependency
 val composablePreviewScannerVersion = versionFor("version.io.github.sergio-sastre.ComposablePreviewScanner..android")
-
-apply(from = "$rootDir/gradle/kotlin-mpp-target-common.gradle")
-apply(from = "$rootDir/gradle/kotlin-mpp-target-android-lib-compose.gradle")
 
 android {
     namespace = "com.cramsan.framework.test.roborazzi"

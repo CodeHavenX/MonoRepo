@@ -4,13 +4,12 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
     id("io.ktor.plugin")
+    // Configures default settings for JVM/Ktor project
+    id("com.cramsan.kotlin-jvm-ktor")
 }
 
 val mainClassTarget by extra("io.ktor.server.netty.EngineMain")
 val jarNameTarget by extra("flyerboard-back-end")
-
-// Configures default settings for JVM/Ktor project
-apply(from = "$rootDir/gradle/kotlin-jvm-target-ktor.gradle")
 
 sourceSets {
     val integTest by creating {

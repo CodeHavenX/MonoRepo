@@ -1,1 +1,3 @@
-apply(from = "$rootDir/gradle/kotlin-jvm-target-lib.gradle")
+plugins {
+    id("com.cramsan.kotlin-jvm-lib")
+}

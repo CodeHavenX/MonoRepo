@@ -10,13 +10,12 @@ plugins {
     id("com.android.library")
     id("com.google.devtools.ksp")
     id("io.github.takahirom.roborazzi")
+    id("com.cramsan.kotlin-mpp-common-compose")
+    id("com.cramsan.kotlin-mpp-android-lib-compose")
+    id("com.cramsan.kotlin-mpp-ios")
+    id("com.cramsan.kotlin-mpp-jvm-compose")
+    id("com.cramsan.kotlin-mpp-wasm")
 }
-
-apply(from = "$rootDir/gradle/kotlin-mpp-target-common-compose.gradle")
-apply(from = "$rootDir/gradle/kotlin-mpp-target-android-lib-compose.gradle")
-apply(from = "$rootDir/gradle/kotlin-mpp-target-ios.gradle")
-apply(from = "$rootDir/gradle/kotlin-mpp-target-jvm-compose.gradle")
-apply(from = "$rootDir/gradle/kotlin-mpp-target-wasm.gradle")
 
 kotlin {
     wasmJs {

@@ -3,9 +3,8 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.compose")
     id("com.android.application")
+    id("com.cramsan.kotlin-mpp-android-app")
 }
-
-apply(from = "$rootDir/gradle/kotlin-mpp-target-android-app.gradle")
 
 android {
     namespace = "com.cramsan.samples.android.app"

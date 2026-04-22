@@ -5,14 +5,13 @@ import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
+    id("com.cramsan.kotlin-mpp-common")
+    id("com.cramsan.kotlin-mpp-android-lib")
+    id("com.cramsan.kotlin-mpp-ios")
+    id("com.cramsan.kotlin-mpp-js")
+    id("com.cramsan.kotlin-mpp-jvm")
+    id("com.cramsan.kotlin-mpp-wasm")
 }
-
-apply(from = "$rootDir/gradle/kotlin-mpp-target-common.gradle")
-apply(from = "$rootDir/gradle/kotlin-mpp-target-android-lib.gradle")
-apply(from = "$rootDir/gradle/kotlin-mpp-target-ios.gradle")
-apply(from = "$rootDir/gradle/kotlin-mpp-target-js.gradle")
-apply(from = "$rootDir/gradle/kotlin-mpp-target-jvm.gradle")
-apply(from = "$rootDir/gradle/kotlin-mpp-target-wasm.gradle")
 
 android {
     namespace = "com.cramsan.framework.interfacelib.test"

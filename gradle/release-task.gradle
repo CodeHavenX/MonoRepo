@@ -1,7 +1,2 @@
-/**
- * Dummy plugin to create an empty release task.
- */
-
-tasks.register("release") {
-    group = 'release'
-}
+// Shim: delegates to Kotlin convention plugin
+apply plugin: "com.cramsan.release-task"

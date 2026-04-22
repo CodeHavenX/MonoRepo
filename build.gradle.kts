@@ -14,6 +14,11 @@ plugins {
     id("dev.detekt") apply false
     id("io.github.takahirom.roborazzi") apply false
     id("com.cramsan.detekt") apply false
+    id("com.cramsan.release-task") apply false
+    id("com.cramsan.kotlin-jvm-lib") apply false
+    id("com.cramsan.kotlin-jvm-lib-compose") apply false
+    id("com.cramsan.kotlin-jvm-application") apply false
+    id("com.cramsan.kotlin-jvm-ktor") apply false
 }
 
 subprojects {

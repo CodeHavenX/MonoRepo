@@ -1,19 +1,2 @@
-/**
- * Plugin to configure an application using kotlin-jvm.
- * This plugin expects that the project sets the value for mainClassTarget.
- * For example: ext.mainClassTarget = "com.cramsan.awslib.editor.LoginApp"
- */
-apply plugin: "application" // Enable this application to run as an application.
-apply plugin: "io.ktor.plugin"
-
-apply from: "$rootDir/gradle/kotlin-jvm-target-application.gradle"
-
-ktor {
-    fatJar {
-        archiveFileName.set("${jarNameTarget}-all.jar")
-    }
-}
-
-// To list the produced artifacts into the release page, add the path to your file
-// in the github actions workflow file at .github/workflows/buildRelease-main.yml
-releaseJvm.dependsOn("buildFatJar")
+// Shim: delegates to Kotlin convention plugin
+apply plugin: "com.cramsan.kotlin-jvm-ktor"

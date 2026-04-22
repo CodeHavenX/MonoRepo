@@ -15,6 +15,7 @@ dependencies {
     implementation(libs.build.detekt.gradle.plugin)
     implementation(libs.build.hilt.gradle.plugin)
     implementation(libs.build.kotlin.gradle.plugin)
+    implementation(libs.build.kotlin.compose.compiler.plugin)
     implementation(libs.build.ksp.gradle.plugin)
     implementation(libs.build.ktor.gradle.plugin)
     implementation(libs.build.roborazzi.gradle.plugin)

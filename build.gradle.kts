@@ -21,6 +21,15 @@ plugins {
     id("com.cramsan.kotlin-jvm-ktor") apply false
     id("com.cramsan.kotlin-mpp-common") apply false
     id("com.cramsan.kotlin-mpp-common-compose") apply false
+    id("com.cramsan.kotlin-mpp-android-lib") apply false
+    id("com.cramsan.kotlin-mpp-android-lib-compose") apply false
+    id("com.cramsan.kotlin-mpp-android-app") apply false
+    id("com.cramsan.kotlin-mpp-jvm") apply false
+    id("com.cramsan.kotlin-mpp-jvm-compose") apply false
+    id("com.cramsan.kotlin-mpp-ios") apply false
+    id("com.cramsan.kotlin-mpp-js") apply false
+    id("com.cramsan.kotlin-mpp-wasm") apply false
+    id("com.cramsan.kotlin-mpp-wasm-compose-app") apply false
 }
 
 subprojects {

@@ -1,0 +1,88 @@
+package com.cramsan
+
+plugins {
+    id("com.android.library")
+    id("org.jetbrains.kotlin.multiplatform")
+}
+
+kotlin {
+    androidTarget { }
+    jvmToolchain(21)
+}
+
+android {
+    compileSdk = project.property("compileSdkVersion").toString().toInt()
+
+    defaultConfig {
+        minSdk = project.property("minSdkVersion").toString().toInt()
+        targetSdk = project.property("targetSdkVersion").toString().toInt()
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
+
+    packaging {
+        resources {
+            excludes += "/META-INF/**"
+        }
+    }
+
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+            all { test ->
+                test.testLogging {
+                    events("passed", "skipped", "failed")
+                }
+            }
+        }
+    }
+}
+
+dependencies {
+    "implementation"("org.jetbrains.kotlin:kotlin-stdlib-jdk8:_")
+    "implementation"("org.jetbrains.kotlinx:kotlinx-coroutines-core:_")
+    "implementation"("org.jetbrains.kotlinx:kotlinx-coroutines-android:_")
+
+    "testImplementation"("androidx.test:core:_")
+    "testImplementation"("androidx.test.ext:junit:_")
+    "testImplementation"("androidx.test.ext:junit-ktx:_")
+    "testImplementation"("androidx.arch.core:core-common:_")
+    "testImplementation"("androidx.arch.core:core-runtime:_")
+    "testImplementation"("androidx.arch.core:core-testing:_")
+    "testImplementation"("org.jetbrains.kotlinx:kotlinx-coroutines-test:_")
+    "testImplementation"("junit:junit:_")
+    "testImplementation"("org.jetbrains.kotlin:kotlin-test:_")
+    "testImplementation"("org.jetbrains.kotlin:kotlin-test-junit:_")
+    "testImplementation"("io.mockk:mockk:_")
+    "testImplementation"("io.mockk:mockk-android:_")
+
+    "androidTestImplementation"("androidx.test.ext:junit:_")
+    "androidTestImplementation"("androidx.test.ext:junit-ktx:_")
+    "androidTestImplementation"("androidx.test:core:_")
+    "androidTestImplementation"("androidx.test:rules:_")
+    "androidTestImplementation"("org.jetbrains.kotlinx:kotlinx-coroutines-test:_")
+    "androidTestImplementation"("junit:junit:_")
+    "androidTestImplementation"("org.jetbrains.kotlin:kotlin-test:_")
+    "androidTestImplementation"("org.jetbrains.kotlin:kotlin-test-junit:_")
+    "androidTestImplementation"("io.mockk:mockk-android:_")
+    "androidTestImplementation"("org.robolectric:robolectric:_")
+}
+
+tasks.register("releaseAndroid") {
+    group = "release"
+    description = "Run all the steps to build a releaseAndroid artifact"
+    dependsOn("assembleDebug")
+    dependsOn("assembleRelease")
+    dependsOn("detektCommonMainSourceSet")
+    dependsOn("detektAndroidDebugSourceSet")
+    dependsOn("testDebugUnitTest")
+    dependsOn("testReleaseUnitTest")
+}
+
+tasks.named("release") {
+    dependsOn("releaseAndroid")
+}

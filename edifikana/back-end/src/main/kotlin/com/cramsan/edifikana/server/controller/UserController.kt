@@ -17,13 +17,11 @@ import com.cramsan.edifikana.lib.model.network.user.UserNetworkResponse
 import com.cramsan.edifikana.lib.utils.requireNotBlank
 import com.cramsan.edifikana.lib.utils.requireSuccess
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
-import com.cramsan.edifikana.server.datastore.supabase.models.UserEntity
 import com.cramsan.edifikana.server.datastore.supabase.toUserRole
 import com.cramsan.edifikana.server.service.UserService
 import com.cramsan.edifikana.server.service.authorization.RBACService
 import com.cramsan.edifikana.server.service.models.UserRole
 import com.cramsan.framework.annotations.NetworkModel
-import com.cramsan.framework.annotations.SupabaseModel
 import com.cramsan.framework.annotations.api.NoResponseBody
 import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register

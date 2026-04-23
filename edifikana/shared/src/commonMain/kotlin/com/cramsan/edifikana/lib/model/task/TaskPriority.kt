@@ -2,6 +2,7 @@ package com.cramsan.edifikana.lib.model.task
 
 
 
+
 /**
  * Represents the priority level of a task.
  */

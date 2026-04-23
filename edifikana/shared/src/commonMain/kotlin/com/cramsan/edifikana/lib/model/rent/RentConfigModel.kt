@@ -12,7 +12,7 @@ import com.cramsan.edifikana.lib.model.user.UserId
 data class RentConfigModel(
     val id: RentConfigId,
     val unitId: UnitId,
-    val monthlyAmount: Long,
+    val monthlyAmount: Double,
     val dueDay: Int,
     val currency: String,
     val updatedAt: Long,

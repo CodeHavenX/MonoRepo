@@ -109,6 +109,7 @@ class SupabaseUnitDatastore(
         postgrest.from(UnitEntity.COLLECTION).select {
             filter {
                 UnitEntity::propertyId eq propertyId
+                UnitEntity::deletedAt isExact null
             }
         }.decodeList<UnitEntity>().map{ it.toUnit(propertyEntity.organizationId) }
     }
@@ -152,7 +153,7 @@ class SupabaseUnitDatastore(
                 PropertyEntity::deletedAt isExact null
             }
         }.decodeSingleOrNull<PropertyEntity>() ?: throw ClientRequestExceptions.NotFoundException(
-            "No property with propertyId $ found in database"
+            "No property with id ${unitEntity.propertyId} found in database"
         )
 
         postgrest.from(UnitEntity.COLLECTION).update({

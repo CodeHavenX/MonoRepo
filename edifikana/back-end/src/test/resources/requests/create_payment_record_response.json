@@ -1,0 +1,14 @@
+{
+    "payment_record_id": "pr123",
+    "unit_id": "unit123",
+    "payment_type": "RENT",
+    "period_month": "2026-03-01",
+    "amount_due": 120000.0,
+    "amount_paid": null,
+    "status": "PENDING",
+    "due_date": null,
+    "paid_date": null,
+    "recorded_by": "user123",
+    "recorded_at": "1970-01-01T00:00:00Z",
+    "notes": null
+}

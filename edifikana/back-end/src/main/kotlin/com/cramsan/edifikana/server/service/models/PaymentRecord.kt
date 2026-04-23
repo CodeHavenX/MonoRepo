@@ -1,18 +1,19 @@
-package com.cramsan.edifikana.lib.model.payment
+package com.cramsan.edifikana.server.service.models
 
+import com.cramsan.edifikana.lib.model.payment.PaymentRecordId
+import com.cramsan.edifikana.lib.model.payment.PaymentStatus
+import com.cramsan.edifikana.lib.model.payment.PaymentType
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
 import kotlinx.datetime.LocalDate
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 /**
  * Domain model representing a payment record for a unit.
- *
- * Timestamp fields are represented as epoch seconds (Long) to avoid exposing
- * the experimental [kotlin.time.Instant] type in the public API.
- * Date fields (periodMonth, dueDate, paidDate) are represented as epoch seconds (Long)
- * truncated to day precision (midnight UTC).
  */
-data class PaymentRecordModel(
+@OptIn(ExperimentalTime::class)
+data class PaymentRecord(
     val id: PaymentRecordId,
     val unitId: UnitId,
     val paymentType: PaymentType,
@@ -23,6 +24,6 @@ data class PaymentRecordModel(
     val dueDate: LocalDate?,
     val paidDate: LocalDate?,
     val recordedBy: UserId?,
-    val recordedAt: Long,
+    val recordedAt: Instant,
     val notes: String?,
 )

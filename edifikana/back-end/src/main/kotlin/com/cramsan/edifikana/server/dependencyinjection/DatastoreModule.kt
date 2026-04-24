@@ -2,6 +2,7 @@ package com.cramsan.edifikana.server.dependencyinjection
 
 import com.cramsan.architecture.server.settings.SettingsHolder
 import com.cramsan.edifikana.server.datastore.CommonAreaDatastore
+import com.cramsan.edifikana.server.datastore.OccupantDatastore
 import com.cramsan.edifikana.server.datastore.DocumentDatastore
 import com.cramsan.edifikana.server.datastore.PaymentRecordDatastore
 import com.cramsan.edifikana.server.datastore.RentConfigDatastore
@@ -17,6 +18,7 @@ import com.cramsan.edifikana.server.datastore.TimeCardDatastore
 import com.cramsan.edifikana.server.datastore.UnitDatastore
 import com.cramsan.edifikana.server.datastore.UserDatastore
 import com.cramsan.edifikana.server.datastore.supabase.SupabaseCommonAreaDatastore
+import com.cramsan.edifikana.server.datastore.supabase.SupabaseOccupantDatastore
 import com.cramsan.edifikana.server.datastore.supabase.SupabaseDocumentDatastore
 import com.cramsan.edifikana.server.datastore.supabase.SupabasePaymentRecordDatastore
 import com.cramsan.edifikana.server.datastore.supabase.SupabaseRentConfigDatastore
@@ -140,5 +142,8 @@ val DatastoreModule = module {
     }
     singleOf(::SupabaseRentConfigDatastore) {
         bind<RentConfigDatastore>()
+    }
+    singleOf(::SupabaseOccupantDatastore) {
+        bind<OccupantDatastore>()
     }
 }

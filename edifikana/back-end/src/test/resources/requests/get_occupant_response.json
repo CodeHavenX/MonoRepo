@@ -1,0 +1,12 @@
+{
+    "occupant_id": "occupant123",
+    "unit_id": "unit123",
+    "user_id": "user123",
+    "added_by": "user123",
+    "occupant_type": "TENANT",
+    "is_primary": true,
+    "start_date": "2026-01-01",
+    "end_date": null,
+    "status": "ACTIVE",
+    "added_at": 0
+}

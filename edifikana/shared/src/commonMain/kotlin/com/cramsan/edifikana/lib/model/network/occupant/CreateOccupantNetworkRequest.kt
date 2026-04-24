@@ -18,6 +18,8 @@ import kotlinx.serialization.Serializable
 data class CreateOccupantNetworkRequest(
     @SerialName("unit_id") val unitId: UnitId,
     @SerialName("user_id") val userId: UserId?,
+    val name: String,
+    val email: String?,
     @SerialName("occupant_type") val occupantType: OccupantType,
     @SerialName("is_primary") val isPrimary: Boolean,
     @SerialName("start_date") val startDate: String,

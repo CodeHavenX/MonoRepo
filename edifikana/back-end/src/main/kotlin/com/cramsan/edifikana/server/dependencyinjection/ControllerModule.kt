@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.server.dependencyinjection
 
 import com.cramsan.edifikana.server.controller.CommonAreaController
+import com.cramsan.edifikana.server.controller.OccupantController
 import com.cramsan.edifikana.server.controller.PaymentRecordController
 import com.cramsan.edifikana.server.controller.RentConfigController
 import com.cramsan.edifikana.server.controller.TaskController
@@ -42,4 +43,5 @@ internal val ControllerModule = module {
     singleOf(::TaskController) { bind<Controller>() }
     singleOf(::PaymentRecordController) { bind<Controller>() }
     singleOf(::RentConfigController) { bind<Controller>() }
+    singleOf(::OccupantController) { bind<Controller>() }
 }

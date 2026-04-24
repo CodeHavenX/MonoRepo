@@ -11,6 +11,7 @@ import com.cramsan.edifikana.lib.model.network.employee.EmployeeNetworkResponse
 import com.cramsan.edifikana.lib.model.network.eventLog.EventLogEntryNetworkResponse
 import com.cramsan.edifikana.lib.model.network.invite.InviteNetworkResponse
 import com.cramsan.edifikana.lib.model.network.notification.NotificationNetworkResponse
+import com.cramsan.edifikana.lib.model.network.occupant.OccupantNetworkResponse
 import com.cramsan.edifikana.lib.model.network.organization.MemberNetworkResponse
 import com.cramsan.edifikana.lib.model.network.organization.OrganizationNetworkResponse
 import com.cramsan.edifikana.lib.model.network.property.PropertyNetworkResponse
@@ -28,6 +29,7 @@ import com.cramsan.edifikana.server.service.models.Employee
 import com.cramsan.edifikana.server.service.models.EventLogEntry
 import com.cramsan.edifikana.server.service.models.Invite
 import com.cramsan.edifikana.server.service.models.Notification
+import com.cramsan.edifikana.server.service.models.Occupant
 import com.cramsan.edifikana.server.service.models.OrgMemberView
 import com.cramsan.edifikana.server.service.models.Organization
 import com.cramsan.edifikana.server.service.models.Property
@@ -300,5 +302,24 @@ fun RentConfig.toRentConfigNetworkResponse(): RentConfigNetworkResponse {
         updatedAt = updatedAt,
         updatedBy = updatedBy,
         createdAt = createdAt,
+    )
+}
+
+/**
+ * Converts an [Occupant] domain model to an [OccupantNetworkResponse] network model.
+ */
+@NetworkModel
+fun Occupant.toOccupantNetworkResponse(): OccupantNetworkResponse {
+    return OccupantNetworkResponse(
+        id = id,
+        unitId = unitId,
+        userId = userId,
+        addedBy = addedBy,
+        occupantType = occupantType,
+        isPrimary = isPrimary,
+        startDate = startDate.toString(),
+        endDate = endDate?.toString(),
+        status = status,
+        addedAt = addedAt.epochSeconds,
     )
 }

@@ -11,6 +11,9 @@ import com.cramsan.edifikana.lib.model.invite.InviteId
 import com.cramsan.edifikana.lib.model.invite.InviteRole
 import com.cramsan.edifikana.lib.model.notification.NotificationId
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.occupant.OccupancyStatus
+import com.cramsan.edifikana.lib.model.occupant.OccupantId
+import com.cramsan.edifikana.lib.model.occupant.OccupantType
 import com.cramsan.edifikana.lib.model.payment.PaymentRecordId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.rent.RentConfigId
@@ -27,6 +30,7 @@ import com.cramsan.edifikana.server.service.models.EventLogEntry
 import com.cramsan.edifikana.server.service.models.Invite
 import com.cramsan.edifikana.server.service.models.Notification
 import com.cramsan.edifikana.server.service.models.Organization
+import com.cramsan.edifikana.server.service.models.Occupant
 import com.cramsan.edifikana.server.service.models.PaymentRecord
 import com.cramsan.edifikana.server.service.models.Property
 import com.cramsan.edifikana.server.service.models.RentConfig
@@ -67,6 +71,7 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
     protected val unitDatastore: SupabaseUnitDatastore by inject()
     protected val paymentRecordDatastore: SupabasePaymentRecordDatastore by inject()
     protected val rentConfigDatastore: SupabaseRentConfigDatastore by inject()
+    protected val occupantDatastore: SupabaseOccupantDatastore by inject()
 
     private val eventLogResources = mutableSetOf<EventLogEntryId>()
     private val commonAreaResources = mutableSetOf<CommonAreaId>()
@@ -82,6 +87,7 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
     private val unitResources = mutableSetOf<UnitId>()
     private val paymentRecordResources = mutableSetOf<PaymentRecordId>()
     private val rentConfigResources = mutableSetOf<RentConfigId>()
+    private val occupantResources = mutableSetOf<OccupantId>()
 
     @BeforeEach
     fun supabaseSetup() {
@@ -146,6 +152,10 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
 
     private fun registerRentConfigForDeletion(rentConfigId: RentConfigId) {
         rentConfigResources.add(rentConfigId)
+    }
+
+    private fun registerOccupantForDeletion(occupantId: OccupantId) {
+        occupantResources.add(occupantId)
     }
 
     protected fun createTestUser(email: String): UserId {
@@ -306,6 +316,12 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
         }
     }
 
+    fun Result<Occupant>.registerOccupantForDeletion(): Result<Occupant> {
+        return this.onSuccess { occupant ->
+            registerOccupantForDeletion(occupant.id)
+        }
+    }
+
     fun registerSupabaseUserForDeletion(userId: String) {
         supabaseUsers.add(userId)
     }
@@ -326,6 +342,35 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
         }
         registerEmployeeForDeletion(empId)
         return empId
+    }
+
+    protected fun createTestOccupant(
+        unitId: UnitId,
+        orgId: OrganizationId,
+        userId: UserId? = null,
+        addedBy: UserId? = null,
+        name: String = "Test Occupant",
+        email: String? = null,
+        occupantType: OccupantType = OccupantType.TENANT,
+        isPrimary: Boolean = false,
+        startDate: kotlinx.datetime.LocalDate = kotlinx.datetime.LocalDate(2026, 1, 1),
+    ): OccupantId {
+        val occupantId = runBlocking {
+            occupantDatastore.createOccupant(
+                unitId = unitId,
+                orgId = orgId,
+                userId = userId,
+                addedBy = addedBy,
+                name = name,
+                email = email,
+                occupantType = occupantType,
+                isPrimary = isPrimary,
+                startDate = startDate,
+                endDate = null,
+            ).getOrThrow().id
+        }
+        registerOccupantForDeletion(occupantId)
+        return occupantId
     }
 
     @AfterTest
@@ -375,6 +420,9 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
                 rentConfigResources.forEach {
                     results += rentConfigDatastore.purgeRentConfig(it)
                 }
+                occupantResources.forEach {
+                    results += occupantDatastore.purgeOccupant(it)
+                }
                 unitResources.forEach {
                     results += unitDatastore.deleteUnit(it)
                     results += unitDatastore.purgeUnit(it)
@@ -404,6 +452,7 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
             unitResources.clear()
             paymentRecordResources.clear()
             rentConfigResources.clear()
+            occupantResources.clear()
             commonAreaResources.clear()
             taskResources.clear()
             propertyResources.clear()

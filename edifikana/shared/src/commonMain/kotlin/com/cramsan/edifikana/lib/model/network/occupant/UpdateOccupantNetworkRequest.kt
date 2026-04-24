@@ -15,6 +15,8 @@ import kotlinx.serialization.Serializable
 @NetworkModel
 @Serializable
 data class UpdateOccupantNetworkRequest(
+    val name: String?,
+    val email: String?,
     @SerialName("occupant_type") val occupantType: OccupantType?,
     @SerialName("is_primary") val isPrimary: Boolean?,
     @SerialName("end_date") val endDate: String?,

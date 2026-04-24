@@ -26,7 +26,7 @@ import kotlin.time.Instant
 /**
  * Unit tests for [ExpiryService].
  */
-@OptIn(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class, kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 class ExpiryServiceTest {
 
     private lateinit var flyerDatastore: FlyerDatastore

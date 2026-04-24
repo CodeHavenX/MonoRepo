@@ -258,7 +258,7 @@ class DefaultAgentSessionNegativeTest {
         val result = session.execute(task, worktree)
 
         assertIs<AgentResult.Failed>(result)
-        assertTrue((result as AgentResult.Failed).reason.isNotBlank())
+        assertTrue(result.reason.isNotBlank())
     }
 
     // ── task_complete: VCS createPullRequest failure ──────────────────────────

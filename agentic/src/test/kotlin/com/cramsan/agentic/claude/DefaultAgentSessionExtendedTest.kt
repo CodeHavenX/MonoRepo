@@ -374,7 +374,7 @@ class DefaultAgentSessionExtendedTest {
         val result = session.execute(task, worktree)
 
         assertIs<AgentResult.PrOpened>(result)
-        assertEquals("code-pr-1", (result as AgentResult.PrOpened).prId)
+        assertEquals("code-pr-1", result.prId)
 
         // Both PRs must have been created
         coVerify {

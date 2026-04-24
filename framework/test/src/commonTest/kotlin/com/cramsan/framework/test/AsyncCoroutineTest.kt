@@ -6,6 +6,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.minutes
 
+@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 class AsyncCoroutineTest : CoroutineTest() {
 
     lateinit var viewModel: SimpleViewModel

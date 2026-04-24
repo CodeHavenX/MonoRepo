@@ -43,7 +43,7 @@ class AgenticConfigTest {
 
         assertEquals(original, decoded)
         assertIs<AiProviderConfig.ClaudeCli>(decoded.aiProvider)
-        assertEquals("/usr/local/bin/claude", (decoded.aiProvider as AiProviderConfig.ClaudeCli).cliPath)
+        assertEquals("/usr/local/bin/claude", decoded.aiProvider.cliPath)
     }
 
     @Test
@@ -105,7 +105,7 @@ class AgenticConfigTest {
         assertEquals(3600L, config.defaultTaskTimeoutSeconds)
         assertIs<AiProviderConfig.ClaudeCli>(config.aiProvider)
         assertEquals("claude-opus-4-6", config.aiProvider.model)
-        assertEquals("claude", (config.aiProvider as AiProviderConfig.ClaudeCli).cliPath)
+        assertEquals("claude", config.aiProvider.cliPath)
     }
 
     @Test

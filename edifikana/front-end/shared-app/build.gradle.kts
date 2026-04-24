@@ -1,6 +1,7 @@
 @file:OptIn(ExperimentalWasmDsl::class, ExperimentalRoborazziApi::class)
 
 import com.github.takahirom.roborazzi.ExperimentalRoborazziApi
+import java.util.Properties
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
@@ -16,6 +17,7 @@ plugins {
     id("com.cramsan.kotlin-mpp-android-lib-compose")
     id("com.cramsan.kotlin-mpp-jvm-compose")
     id("com.cramsan.kotlin-mpp-wasm")
+    id("com.github.gmazzo.buildconfig")
 }
 
 kotlin {
@@ -129,12 +131,6 @@ kotlin {
     }
 }
 
-private val ENV_EDIFIKANA_SUPABASE_URL = "EDIFIKANA_SUPABASE_URL"
-private val ENV_EDIFIKANA_SUPABASE_KEY = "EDIFIKANA_SUPABASE_KEY"
-
-val edifikanaSupabaseUrl = "http://10.0.2.2:54321" // System.getenv(ENV_EDIFIKANA_SUPABASE_URL).orEmpty()
-val edifikanaSupabaseKey = System.getenv(ENV_EDIFIKANA_SUPABASE_KEY).orEmpty()
-
 android {
     namespace = "com.cramsan.edifikana.client.lib"
 
@@ -143,14 +139,7 @@ android {
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
     buildFeatures {
-        buildConfig = true
-    }
-
-    buildTypes {
-        all {
-            buildConfigField("String", ENV_EDIFIKANA_SUPABASE_URL, "\"${edifikanaSupabaseUrl}\"")
-            buildConfigField("String", ENV_EDIFIKANA_SUPABASE_KEY, "\"${edifikanaSupabaseKey}\"")
-        }
+        buildConfig = false
     }
 }
 
@@ -202,4 +191,32 @@ roborazzi {
         enable = true
         packages = listOf("com.cramsan.edifikana.client.lib")
     }
+}
+
+buildConfig {
+    packageName("com.cramsan.edifikana.client.lib")
+
+    val configProps = Properties().apply {
+        val file = rootProject.file("config.properties")
+        if (file.exists()) load(file.inputStream())
+    }
+
+    val gradleAppVersion = properties["app.version"]?.toString() ?: "0.0.0"
+
+    buildConfigField<String>(
+        "DEFAULT_API_URL",
+        configProps.getProperty("DEFAULT_API_URL", "http://0.0.0.0:9292")
+    )
+    buildConfigField<String>(
+        "GOOGLE_OAUTH_CLIENT_ID",
+        configProps.getProperty("GOOGLE_OAUTH_CLIENT_ID", "")
+    )
+    buildConfigField<String>(
+        "APP_VERSION",
+        configProps.getProperty("APP_VERSION", gradleAppVersion)
+    )
+    buildConfigField<String>(
+        "BUILD_TYPE",
+        configProps.getProperty("BUILD_TYPE", "debug")
+    )
 }

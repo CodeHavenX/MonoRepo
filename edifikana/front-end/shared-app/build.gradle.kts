@@ -197,7 +197,7 @@ buildConfig {
     packageName("com.cramsan.edifikana.client.lib")
 
     val configProps = Properties().apply {
-        val file = rootProject.file("config.properties")
+        val file = rootProject.file("edifikana/front-end/config.properties")
         if (file.exists()) load(file.inputStream())
     }
 

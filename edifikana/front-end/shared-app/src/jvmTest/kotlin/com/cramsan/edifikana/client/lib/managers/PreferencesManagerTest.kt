@@ -5,7 +5,6 @@ import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
 import com.cramsan.architecture.client.manager.PreferencesManager
 import com.cramsan.architecture.client.settings.FrontEndApplicationSettingKey
 import com.cramsan.architecture.client.settings.SettingsHolder
-import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.settings.EdifikanaSettingKey
 import com.cramsan.framework.configuration.PropertyValue
 import com.cramsan.framework.core.ManagerDependencies
@@ -18,8 +17,6 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

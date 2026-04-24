@@ -105,11 +105,11 @@ class PreferencesManagerTest : CoroutineTest() {
 
     @Test
     fun `edifikana backend urls and flags return stored values or defaults`() = runCoroutineTest {
-        coEvery { settingsHolder.getString(EdifikanaSettingKey.EdifikanaBeUrl) } returns "https://be"
+        coEvery { settingsHolder.getString(FrontEndApplicationSettingKey.BackEndUrl) } returns "https://be"
         coEvery { settingsHolder.getBoolean(EdifikanaSettingKey.OpenDebugWindow) } returns true
         coEvery { settingsHolder.getString(FrontEndApplicationSettingKey.LoggingLevel) } returns "DEBUG"
 
-        val be = manager.getStringPreference(EdifikanaSettingKey.EdifikanaBeUrl)
+        val be = manager.getStringPreference(FrontEndApplicationSettingKey.BackEndUrl)
         val debug = manager.getBooleanPreference(EdifikanaSettingKey.OpenDebugWindow)
         val logging = manager.getStringPreference(FrontEndApplicationSettingKey.LoggingLevel)
 
@@ -137,11 +137,11 @@ class PreferencesManagerTest : CoroutineTest() {
 
     @Test
     fun `edifikana backend and logging defaults when not set`() = runCoroutineTest {
-        coEvery { settingsHolder.getString(EdifikanaSettingKey.EdifikanaBeUrl) } returns null
+        coEvery { settingsHolder.getString(FrontEndApplicationSettingKey.BackEndUrl) } returns null
         coEvery { settingsHolder.getBoolean(EdifikanaSettingKey.OpenDebugWindow) } returns null
         coEvery { settingsHolder.getString(FrontEndApplicationSettingKey.LoggingLevel) } returns null
 
-        val be = manager.getStringPreference(EdifikanaSettingKey.EdifikanaBeUrl)
+        val be = manager.getStringPreference(FrontEndApplicationSettingKey.BackEndUrl)
         val debug = manager.getBooleanPreference(EdifikanaSettingKey.OpenDebugWindow)
         val logging = manager.getStringPreference(FrontEndApplicationSettingKey.LoggingLevel)
 

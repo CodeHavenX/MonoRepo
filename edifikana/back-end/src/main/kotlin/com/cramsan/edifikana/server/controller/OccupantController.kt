@@ -24,7 +24,6 @@ import com.cramsan.framework.core.ktor.handler
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.NotFoundException
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.UnauthorizedException
 import io.ktor.server.routing.Routing
-import kotlinx.datetime.LocalDate
 
 /**
  * Controller for occupant operations.
@@ -66,8 +65,8 @@ class OccupantController(
             email = request.requestBody.email,
             occupantType = request.requestBody.occupantType,
             isPrimary = request.requestBody.isPrimary,
-            startDate = LocalDate.parse(request.requestBody.startDate),
-            endDate = request.requestBody.endDate?.let { LocalDate.parse(it) },
+            startDate = request.requestBody.startDate,
+            endDate = request.requestBody.endDate,
         ).toOccupantNetworkResponse()
     }
 
@@ -137,7 +136,7 @@ class OccupantController(
                 occupantId = request.pathParam,
                 occupantType = request.requestBody.occupantType,
                 isPrimary = request.requestBody.isPrimary,
-                endDate = request.requestBody.endDate?.let { LocalDate.parse(it) },
+                endDate = request.requestBody.endDate,
                 status = request.requestBody.status,
             ).toOccupantNetworkResponse()
         } catch (e: NoSuchElementException) {

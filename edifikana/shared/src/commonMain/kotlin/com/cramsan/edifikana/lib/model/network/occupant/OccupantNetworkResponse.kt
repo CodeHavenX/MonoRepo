@@ -7,15 +7,16 @@ import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.ResponseBody
+import kotlinx.datetime.LocalDate
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 /**
  * Network response for a unit occupant record.
- *
- * Date fields (startDate, endDate) are ISO 8601 strings ("YYYY-MM-DD") as returned by PostgREST.
- * Timestamp fields (addedAt) are epoch seconds (Long).
  */
+@OptIn(ExperimentalTime::class)
 @NetworkModel
 @Serializable
 data class OccupantNetworkResponse(
@@ -25,8 +26,8 @@ data class OccupantNetworkResponse(
     @SerialName("added_by") val addedBy: UserId?,
     @SerialName("occupant_type") val occupantType: OccupantType,
     @SerialName("is_primary") val isPrimary: Boolean,
-    @SerialName("start_date") val startDate: String,
-    @SerialName("end_date") val endDate: String?,
+    @SerialName("start_date") val startDate: LocalDate,
+    @SerialName("end_date") val endDate: LocalDate?,
     val status: OccupancyStatus,
-    @SerialName("added_at") val addedAt: Long,
+    @SerialName("added_at") val addedAt: Instant,
 ) : ResponseBody

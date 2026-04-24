@@ -317,9 +317,9 @@ fun Occupant.toOccupantNetworkResponse(): OccupantNetworkResponse {
         addedBy = addedBy,
         occupantType = occupantType,
         isPrimary = isPrimary,
-        startDate = startDate.toString(),
-        endDate = endDate?.toString(),
+        startDate = startDate,
+        endDate = endDate,
         status = status,
-        addedAt = addedAt.epochSeconds,
+        addedAt = addedAt,
     )
 }

@@ -3,13 +3,13 @@ package com.cramsan.edifikana.lib.model.occupant
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
 import kotlinx.datetime.LocalDate
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 /**
  * Domain model representing a unit occupancy record.
- *
- * Timestamp fields (addedAt) are epoch seconds (Long).
- * Date fields (startDate, endDate) use [LocalDate] (date-only, no time component).
  */
+@OptIn(ExperimentalTime::class)
 data class OccupantModel(
     val id: OccupantId,
     val unitId: UnitId,
@@ -20,5 +20,5 @@ data class OccupantModel(
     val startDate: LocalDate,
     val endDate: LocalDate?,
     val status: OccupancyStatus,
-    val addedAt: Long,
+    val addedAt: Instant,
 )

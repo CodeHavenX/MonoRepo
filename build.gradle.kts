@@ -11,6 +11,7 @@ plugins {
     id("androidx.navigation.safeargs.kotlin") apply false
     id("com.squareup.sqldelight") apply false
     id("com.gradleup.shadow") apply false
+    id("com.github.gmazzo.buildconfig") apply false
     id("dev.detekt") apply false
     id("io.github.takahirom.roborazzi") apply false
     // Internal gradle plugins

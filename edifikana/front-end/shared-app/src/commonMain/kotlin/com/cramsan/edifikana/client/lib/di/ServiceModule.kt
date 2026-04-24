@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.di
 
 import com.cramsan.architecture.client.settings.SettingsHolder
+import com.cramsan.edifikana.client.lib.BuildConfig
 import com.cramsan.edifikana.client.lib.service.AuthService
 import com.cramsan.edifikana.client.lib.service.EmployeeService
 import com.cramsan.edifikana.client.lib.service.EventLogService
@@ -56,7 +57,7 @@ internal val ServiceModule = module {
             }
             install(ComposeAuth) {
                 googleNativeLogin(
-                    serverClientId = "225276838088-9pqht0mn9panaukdn8tpig8v6q1qfds0.apps.googleusercontent.com"
+                    serverClientId = BuildConfig.GOOGLE_OAUTH_CLIENT_ID
                 )
                 appleNativeLogin()
             }

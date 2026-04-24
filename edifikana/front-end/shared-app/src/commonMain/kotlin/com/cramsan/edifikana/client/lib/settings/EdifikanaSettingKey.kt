@@ -12,7 +12,6 @@ object EdifikanaSettingKey {
     val SupabaseOverrideUrl = SettingKey.string("KEY_SUPABASE_OVERRIDE_URL")
     val SupabaseOverrideKey = SettingKey.string("KEY_SUPABASE_OVERRIDE_KEY")
     val OpenDebugWindow = SettingKey.boolean("KEY_OPEN_DEBUG_WINDOW")
-    val EdifikanaBeUrl = SettingKey.string("KEY_EDIFIKANA_BE_URL")
     val SelectedTheme = SettingKey.string("KEY_SELECTED_THEME")
     val lastSelectedProperty = SettingKey.string("KEY_LAST_SELECTED_PROPERTY")
     val lastSelectedOrganization = SettingKey.string("KEY_LAST_SELECTED_ORGANIZATION")

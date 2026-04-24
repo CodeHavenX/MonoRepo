@@ -1,6 +1,7 @@
 package com.cramsan.framework.test
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -15,7 +16,7 @@ import org.junit.jupiter.api.extension.ExtensionContext
  * JVM/Android source sets so we can keep a single file. For now please do not modify this file and
  * instead update the Android one and then copy-paste that file here.
  */
-@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 class TestCoroutineRule : AfterEachCallback, BeforeEachCallback {
 
     val testCoroutineDispatcher = UnconfinedTestDispatcher()

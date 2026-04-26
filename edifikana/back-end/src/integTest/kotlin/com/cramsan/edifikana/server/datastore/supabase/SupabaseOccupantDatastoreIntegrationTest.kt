@@ -42,7 +42,6 @@ class SupabaseOccupantDatastoreIntegrationTest : SupabaseIntegrationTest() {
 
         val result = occupantDatastore.createOccupant(
             unitId = unitId!!,
-            orgId = orgId!!,
             userId = testUserId,
             addedBy = testUserId,
             name = "Jane Doe",
@@ -58,6 +57,8 @@ class SupabaseOccupantDatastoreIntegrationTest : SupabaseIntegrationTest() {
         assertNotNull(occupant)
         assertEquals(unitId, occupant.unitId)
         assertEquals(testUserId, occupant.userId)
+        assertEquals("Jane Doe", occupant.name)
+        assertEquals("jane@example.com", occupant.email)
         assertEquals(OccupantType.TENANT, occupant.occupantType)
         assertTrue(occupant.isPrimary)
         assertEquals(startDate, occupant.startDate)
@@ -69,7 +70,6 @@ class SupabaseOccupantDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `getOccupant should return the created record`() = runCoroutineTest {
         val createResult = occupantDatastore.createOccupant(
             unitId = unitId!!,
-            orgId = orgId!!,
             userId = testUserId,
             addedBy = testUserId,
             name = "John Smith",
@@ -97,7 +97,6 @@ class SupabaseOccupantDatastoreIntegrationTest : SupabaseIntegrationTest() {
 
         val active1 = occupantDatastore.createOccupant(
             unitId = unit2Id,
-            orgId = orgId!!,
             userId = null,
             addedBy = testUserId,
             name = "Alice",
@@ -110,7 +109,6 @@ class SupabaseOccupantDatastoreIntegrationTest : SupabaseIntegrationTest() {
 
         val active2 = occupantDatastore.createOccupant(
             unitId = unit2Id,
-            orgId = orgId!!,
             userId = null,
             addedBy = testUserId,
             name = "Bob",
@@ -134,12 +132,98 @@ class SupabaseOccupantDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
+    fun `listOccupantsForProperty should aggregate occupants across all units and respect includeInactive`() =
+        runCoroutineTest {
+            val unitA = createTestUnit(propertyId!!, "${testPrefix}_PA")
+            val unitB = createTestUnit(propertyId!!, "${testPrefix}_PB")
+
+            // Occupant in another property to confirm cross-property isolation
+            val otherOrgId = createTestOrganization("occ_org_other_$testPrefix", "")
+            val otherPropertyId = createTestProperty("${testPrefix}_OtherProp", testUserId!!, otherOrgId)
+            val otherUnitId = createTestUnit(otherPropertyId, "${testPrefix}_OU1")
+            val otherOccupant = occupantDatastore.createOccupant(
+                unitId = otherUnitId,
+                userId = null,
+                addedBy = testUserId,
+                name = "Outsider",
+                email = null,
+                occupantType = OccupantType.TENANT,
+                isPrimary = true,
+                startDate = LocalDate(2026, 1, 1),
+                endDate = null,
+            ).registerOccupantForDeletion().getOrThrow()
+
+            val activeA = occupantDatastore.createOccupant(
+                unitId = unitA,
+                userId = null,
+                addedBy = testUserId,
+                name = "Frank",
+                email = null,
+                occupantType = OccupantType.TENANT,
+                isPrimary = true,
+                startDate = LocalDate(2026, 1, 1),
+                endDate = null,
+            ).registerOccupantForDeletion().getOrThrow()
+
+            val activeB = occupantDatastore.createOccupant(
+                unitId = unitB,
+                userId = null,
+                addedBy = testUserId,
+                name = "Grace",
+                email = null,
+                occupantType = OccupantType.RESIDENT,
+                isPrimary = false,
+                startDate = LocalDate(2026, 2, 1),
+                endDate = null,
+            ).registerOccupantForDeletion().getOrThrow()
+
+            val toDeactivate = occupantDatastore.createOccupant(
+                unitId = unitB,
+                userId = null,
+                addedBy = testUserId,
+                name = "Henry",
+                email = null,
+                occupantType = OccupantType.TENANT,
+                isPrimary = false,
+                startDate = LocalDate(2026, 1, 1),
+                endDate = null,
+            ).registerOccupantForDeletion().getOrThrow()
+
+            occupantDatastore.softRemoveOccupant(toDeactivate.id, LocalDate(2026, 3, 1)).getOrThrow()
+
+            val activeOnly = occupantDatastore
+                .listOccupantsForProperty(propertyId!!, includeInactive = false)
+                .getOrThrow()
+            val allOccupants = occupantDatastore
+                .listOccupantsForProperty(propertyId!!, includeInactive = true)
+                .getOrThrow()
+
+            val activeOnlyIds = activeOnly.map { it.id }.toSet()
+            assertEquals(setOf(activeA.id, activeB.id), activeOnlyIds)
+            assertFalse(activeOnlyIds.contains(otherOccupant.id))
+
+            val allIds = allOccupants.map { it.id }.toSet()
+            assertEquals(setOf(activeA.id, activeB.id, toDeactivate.id), allIds)
+            assertFalse(allIds.contains(otherOccupant.id))
+        }
+
+    @Test
+    fun `listOccupantsForProperty should return empty list when property has no units`() = runCoroutineTest {
+        val emptyOrgId = createTestOrganization("occ_org_empty_$testPrefix", "")
+        val emptyPropertyId = createTestProperty("${testPrefix}_EmptyProp", testUserId!!, emptyOrgId)
+
+        val result = occupantDatastore.listOccupantsForProperty(emptyPropertyId, includeInactive = false)
+
+        assertTrue(result.isSuccess)
+        assertTrue(result.getOrThrow().isEmpty())
+    }
+
+    @Test
     fun `clearPrimaryForUnit should unset is_primary on all active occupants`() = runCoroutineTest {
         val unit3Id = createTestUnit(propertyId!!, "${testPrefix}_U3")
 
         occupantDatastore.createOccupant(
             unitId = unit3Id,
-            orgId = orgId!!,
             userId = null,
             addedBy = testUserId,
             name = "Carol",
@@ -160,7 +244,6 @@ class SupabaseOccupantDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `softRemoveOccupant should set status to INACTIVE without deleting the row`() = runCoroutineTest {
         val createResult = occupantDatastore.createOccupant(
             unitId = unitId!!,
-            orgId = orgId!!,
             userId = null,
             addedBy = testUserId,
             name = "Dave",
@@ -191,7 +274,6 @@ class SupabaseOccupantDatastoreIntegrationTest : SupabaseIntegrationTest() {
     fun `updateOccupant should apply only provided fields`() = runCoroutineTest {
         val created = occupantDatastore.createOccupant(
             unitId = unitId!!,
-            orgId = orgId!!,
             userId = null,
             addedBy = testUserId,
             name = "Eve",
@@ -204,12 +286,16 @@ class SupabaseOccupantDatastoreIntegrationTest : SupabaseIntegrationTest() {
 
         val updated = occupantDatastore.updateOccupant(
             occupantId = created.id,
+            name = "Eve Updated",
+            email = "eve@example.com",
             occupantType = OccupantType.RESIDENT,
             isPrimary = null,
             endDate = null,
             status = null,
         ).getOrThrow()
 
+        assertEquals("Eve Updated", updated.name)
+        assertEquals("eve@example.com", updated.email)
         assertEquals(OccupantType.RESIDENT, updated.occupantType)
         assertFalse(updated.isPrimary)
         assertEquals(OccupancyStatus.ACTIVE, updated.status)

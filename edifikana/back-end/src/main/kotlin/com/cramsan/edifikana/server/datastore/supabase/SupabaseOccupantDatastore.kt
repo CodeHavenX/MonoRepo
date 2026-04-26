@@ -4,11 +4,13 @@ import com.cramsan.edifikana.lib.model.occupant.OccupancyStatus
 import com.cramsan.edifikana.lib.model.occupant.OccupantId
 import com.cramsan.edifikana.lib.model.occupant.OccupantType
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.datastore.OccupantDatastore
 import com.cramsan.edifikana.server.datastore.supabase.models.OccupantEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.OccupantEntity.CreateOccupantEntity
+import com.cramsan.edifikana.server.datastore.supabase.models.UnitEntity
 import com.cramsan.edifikana.server.service.models.Occupant
 import com.cramsan.framework.annotations.SupabaseModel
 import com.cramsan.framework.core.runSuspendCatching
@@ -20,7 +22,7 @@ import kotlin.time.ExperimentalTime
 /**
  * Supabase implementation of [OccupantDatastore].
  */
-@OptIn(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class, SupabaseModel::class)
 class SupabaseOccupantDatastore(
     private val postgrest: Postgrest,
 ) : OccupantDatastore {
@@ -28,10 +30,8 @@ class SupabaseOccupantDatastore(
     /**
      * Inserts a new occupant row and returns the created [Occupant].
      */
-    @OptIn(SupabaseModel::class)
     override suspend fun createOccupant(
         unitId: UnitId,
-        orgId: OrganizationId,
         userId: UserId?,
         addedBy: UserId?,
         name: String,
@@ -46,6 +46,8 @@ class SupabaseOccupantDatastore(
             unitId = unitId,
             userId = userId,
             addedBy = addedBy,
+            name = name,
+            email = email,
             occupantType = occupantType.name,
             isPrimary = isPrimary,
             startDate = startDate,
@@ -59,7 +61,6 @@ class SupabaseOccupantDatastore(
     /**
      * Retrieves a single occupant by [occupantId]. Returns null if not found or soft-deleted.
      */
-    @OptIn(SupabaseModel::class)
     override suspend fun getOccupant(occupantId: OccupantId): Result<Occupant?> =
         runSuspendCatching(TAG) {
             logD(TAG, "Getting occupant: %s", occupantId)
@@ -74,7 +75,6 @@ class SupabaseOccupantDatastore(
     /**
      * Lists occupants for [unitId]. Filters to ACTIVE status unless [includeInactive] is true.
      */
-    @OptIn(SupabaseModel::class)
     override suspend fun listOccupantsForUnit(
         unitId: UnitId,
         includeInactive: Boolean,
@@ -92,9 +92,37 @@ class SupabaseOccupantDatastore(
     }
 
     /**
+     * Lists occupants across every non-deleted unit in [propertyId].
+     * Filters to ACTIVE status unless [includeInactive] is true.
+     */
+    override suspend fun listOccupantsForProperty(
+        propertyId: PropertyId,
+        includeInactive: Boolean,
+    ): Result<List<Occupant>> = runSuspendCatching(TAG) {
+        logD(TAG, "Listing occupants for property: %s, includeInactive: %s", propertyId, includeInactive)
+        val unitIds = postgrest.from(UnitEntity.COLLECTION).select {
+            filter {
+                UnitEntity::propertyId eq propertyId.propertyId
+                UnitEntity::deletedAt isExact null
+            }
+        }.decodeList<UnitEntity>().map { it.unitId.unitId }
+
+        if (unitIds.isEmpty()) return@runSuspendCatching emptyList()
+
+        postgrest.from(OccupantEntity.COLLECTION).select {
+            filter {
+                isIn("unit_id", unitIds)
+                OccupantEntity::deletedAt isExact null
+                if (!includeInactive) {
+                    OccupantEntity::status eq OccupancyStatus.ACTIVE.name
+                }
+            }
+        }.decodeList<OccupantEntity>().map { it.toOccupant() }
+    }
+
+    /**
      * Sets [is_primary]=false on all active, non-deleted occupants for [unitId].
      */
-    @OptIn(SupabaseModel::class)
     override suspend fun clearPrimaryForUnit(unitId: UnitId): Result<kotlin.Unit> =
         runSuspendCatching(TAG) {
             logD(TAG, "Clearing primary for unit: %s", unitId)
@@ -113,9 +141,10 @@ class SupabaseOccupantDatastore(
     /**
      * Updates an existing occupant. Only non-null parameters are applied. Returns the updated [Occupant].
      */
-    @OptIn(SupabaseModel::class)
     override suspend fun updateOccupant(
         occupantId: OccupantId,
+        name: String?,
+        email: String?,
         occupantType: OccupantType?,
         isPrimary: Boolean?,
         endDate: LocalDate?,
@@ -123,6 +152,8 @@ class SupabaseOccupantDatastore(
     ): Result<Occupant> = runSuspendCatching(TAG) {
         logD(TAG, "Updating occupant: %s", occupantId)
         postgrest.from(OccupantEntity.COLLECTION).update({
+            name?.let { value -> OccupantEntity::name setTo value }
+            email?.let { value -> OccupantEntity::email setTo value }
             occupantType?.let { value -> OccupantEntity::occupantType setTo value.name }
             isPrimary?.let { value -> OccupantEntity::isPrimary setTo value }
             endDate?.let { value -> OccupantEntity::endDate setTo value }
@@ -140,7 +171,6 @@ class SupabaseOccupantDatastore(
      * Soft-removes an occupant: sets [status]=INACTIVE and [end_date]=[today].
      * Does not hard-delete the row. Returns the updated [Occupant].
      */
-    @OptIn(SupabaseModel::class)
     override suspend fun softRemoveOccupant(
         occupantId: OccupantId,
         today: LocalDate,
@@ -161,7 +191,6 @@ class SupabaseOccupantDatastore(
     /**
      * Hard-deletes an occupant row. For integration test cleanup only.
      */
-    @OptIn(SupabaseModel::class)
     override suspend fun purgeOccupant(occupantId: OccupantId): Result<Boolean> =
         runSuspendCatching(TAG) {
             logD(TAG, "Purging occupant: %s", occupantId)

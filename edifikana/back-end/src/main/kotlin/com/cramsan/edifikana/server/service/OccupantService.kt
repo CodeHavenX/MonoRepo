@@ -22,7 +22,6 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalTime::class)
 class OccupantService(
     private val occupantDatastore: OccupantDatastore,
-    private val unitDatastore: UnitDatastore,
     private val clock: Clock,
 ) {
 
@@ -44,14 +43,11 @@ class OccupantService(
         endDate: LocalDate?,
     ): Occupant {
         logD(TAG, "addOccupant")
-        val unit = unitDatastore.getUnit(unitId).getOrThrow()
-            ?: throw NoSuchElementException("Unit not found: $unitId")
         if (isPrimary) {
             occupantDatastore.clearPrimaryForUnit(unitId).getOrThrow()
         }
         return occupantDatastore.createOccupant(
             unitId = unitId,
-            orgId = unit.orgId,
             userId = userId,
             addedBy = addedBy,
             name = name,
@@ -90,6 +86,8 @@ class OccupantService(
      */
     suspend fun updateOccupant(
         occupantId: OccupantId,
+        name: String?,
+        email: String?,
         occupantType: OccupantType?,
         isPrimary: Boolean?,
         endDate: LocalDate?,
@@ -115,6 +113,8 @@ class OccupantService(
 
         return occupantDatastore.updateOccupant(
             occupantId = occupantId,
+            name = name,
+            email = email,
             occupantType = occupantType,
             isPrimary = isPrimary,
             endDate = endDate,

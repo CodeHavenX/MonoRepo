@@ -4,6 +4,7 @@ import com.cramsan.edifikana.lib.model.occupant.OccupancyStatus
 import com.cramsan.edifikana.lib.model.occupant.OccupantId
 import com.cramsan.edifikana.lib.model.occupant.OccupantType
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.service.models.Occupant
@@ -19,7 +20,6 @@ interface OccupantDatastore {
      */
     suspend fun createOccupant(
         unitId: UnitId,
-        orgId: OrganizationId,
         userId: UserId?,
         addedBy: UserId?,
         name: String,
@@ -44,6 +44,15 @@ interface OccupantDatastore {
     ): Result<List<Occupant>>
 
     /**
+     * Lists occupants for [propertyId]. Returns active occupants only unless [includeInactive] is true.
+     */
+    suspend fun listOccupantsForProperty(
+        propertyId: PropertyId,
+        includeInactive: Boolean,
+    ): Result<List<Occupant>>
+
+
+    /**
      * Sets isPrimary to false on all active occupants for [unitId].
      * Called before inserting or updating an occupant with [isPrimary]=true.
      */
@@ -54,6 +63,8 @@ interface OccupantDatastore {
      */
     suspend fun updateOccupant(
         occupantId: OccupantId,
+        name: String?,
+        email: String?,
         occupantType: OccupantType?,
         isPrimary: Boolean?,
         endDate: LocalDate?,

@@ -583,6 +583,8 @@ fun OccupantEntity.toOccupant(): com.cramsan.edifikana.server.service.models.Occ
         unitId = this.unitId,
         userId = this.userId,
         addedBy = this.addedBy,
+        name = this.name,
+        email = this.email,
         occupantType = enumValueOf(this.occupantType),
         isPrimary = this.isPrimary,
         startDate = this.startDate,

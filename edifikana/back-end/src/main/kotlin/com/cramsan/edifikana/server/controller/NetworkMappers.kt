@@ -315,6 +315,8 @@ fun Occupant.toOccupantNetworkResponse(): OccupantNetworkResponse {
         unitId = unitId,
         userId = userId,
         addedBy = addedBy,
+        name = name,
+        email = email,
         occupantType = occupantType,
         isPrimary = isPrimary,
         startDate = startDate,

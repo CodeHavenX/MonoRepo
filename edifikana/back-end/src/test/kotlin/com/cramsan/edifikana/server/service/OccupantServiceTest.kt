@@ -8,7 +8,6 @@ import com.cramsan.edifikana.lib.model.occupant.OccupantType
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.server.datastore.OccupantDatastore
-import com.cramsan.edifikana.server.datastore.UnitDatastore
 import com.cramsan.edifikana.server.service.models.Occupant
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
@@ -33,7 +32,6 @@ import kotlin.time.Instant
 class OccupantServiceTest {
 
     private lateinit var occupantDatastore: OccupantDatastore
-    private lateinit var unitDatastore: UnitDatastore
     private lateinit var clock: Clock
     private lateinit var occupantService: OccupantService
 
@@ -45,10 +43,9 @@ class OccupantServiceTest {
     fun setUp() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         occupantDatastore = mockk()
-        unitDatastore = mockk()
         clock = mockk()
         every { clock.now() } returns Instant.fromEpochSeconds(1_700_000_000)
-        occupantService = OccupantService(occupantDatastore, unitDatastore, clock)
+        occupantService = OccupantService(occupantDatastore, clock)
     }
 
     @AfterTest
@@ -65,6 +62,8 @@ class OccupantServiceTest {
         unitId = unitId,
         userId = null,
         addedBy = null,
+        name = "Test Occupant",
+        email = null,
         occupantType = OccupantType.TENANT,
         isPrimary = isPrimary,
         startDate = LocalDate(2026, 1, 1),
@@ -140,6 +139,8 @@ class OccupantServiceTest {
         assertFailsWith<ConflictException> {
             occupantService.updateOccupant(
                 occupantId = occupantId,
+                name = null,
+                email = null,
                 occupantType = null,
                 isPrimary = false,
                 endDate = null,
@@ -159,11 +160,13 @@ class OccupantServiceTest {
             occupantDatastore.listOccupantsForUnit(unitId, includeInactive = false)
         } returns Result.success(listOf(existing, other))
         coEvery {
-            occupantDatastore.updateOccupant(occupantId, null, false, null, null)
+            occupantDatastore.updateOccupant(occupantId, null, null, null, false, null, null)
         } returns Result.success(updated)
 
         val result = occupantService.updateOccupant(
             occupantId = occupantId,
+            name = null,
+            email = null,
             occupantType = null,
             isPrimary = false,
             endDate = null,
@@ -180,11 +183,13 @@ class OccupantServiceTest {
         coEvery { occupantDatastore.getOccupant(occupantId) } returns Result.success(existing)
         coEvery { occupantDatastore.clearPrimaryForUnit(unitId) } returns Result.success(Unit)
         coEvery {
-            occupantDatastore.updateOccupant(occupantId, null, true, null, null)
+            occupantDatastore.updateOccupant(occupantId, null, null, null, true, null, null)
         } returns Result.success(updated)
 
         val result = occupantService.updateOccupant(
             occupantId = occupantId,
+            name = null,
+            email = null,
             occupantType = null,
             isPrimary = true,
             endDate = null,

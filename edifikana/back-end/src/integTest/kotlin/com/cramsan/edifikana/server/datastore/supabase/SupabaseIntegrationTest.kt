@@ -346,7 +346,6 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
 
     protected fun createTestOccupant(
         unitId: UnitId,
-        orgId: OrganizationId,
         userId: UserId? = null,
         addedBy: UserId? = null,
         name: String = "Test Occupant",
@@ -358,7 +357,6 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
         val occupantId = runBlocking {
             occupantDatastore.createOccupant(
                 unitId = unitId,
-                orgId = orgId,
                 userId = userId,
                 addedBy = addedBy,
                 name = name,

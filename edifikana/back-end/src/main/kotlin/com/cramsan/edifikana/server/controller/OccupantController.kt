@@ -134,6 +134,8 @@ class OccupantController(
         return try {
             occupantService.updateOccupant(
                 occupantId = request.pathParam,
+                name = request.requestBody.name,
+                email = request.requestBody.email,
                 occupantType = request.requestBody.occupantType,
                 isPrimary = request.requestBody.isPrimary,
                 endDate = request.requestBody.endDate,

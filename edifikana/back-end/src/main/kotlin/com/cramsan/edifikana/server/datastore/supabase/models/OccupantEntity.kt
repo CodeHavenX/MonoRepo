@@ -29,6 +29,8 @@ data class OccupantEntity(
     val userId: UserId?,
     @SerialName("added_by")
     val addedBy: UserId?,
+    val name: String,
+    val email: String?,
     @SerialName("occupant_type")
     val occupantType: String,
     @SerialName("is_primary")
@@ -60,6 +62,8 @@ data class OccupantEntity(
         val userId: UserId?,
         @SerialName("added_by")
         val addedBy: UserId?,
+        val name: String,
+        val email: String?,
         @SerialName("occupant_type")
         val occupantType: String,
         @SerialName("is_primary")

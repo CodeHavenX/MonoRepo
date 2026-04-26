@@ -19,6 +19,8 @@ data class Occupant(
     val unitId: UnitId,
     val userId: UserId?,
     val addedBy: UserId?,
+    val name: String,
+    val email: String?,
     val occupantType: OccupantType,
     val isPrimary: Boolean,
     val startDate: LocalDate,

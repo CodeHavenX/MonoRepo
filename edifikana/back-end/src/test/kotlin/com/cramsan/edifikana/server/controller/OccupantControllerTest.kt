@@ -26,9 +26,14 @@ import com.cramsan.framework.test.CoroutineTest
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.ConflictException
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
+import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.contentType
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.datetime.LocalDate
 import org.koin.core.context.stopKoin
@@ -58,6 +63,74 @@ class OccupantControllerTest : CoroutineTest(), KoinTest {
     }
 
     // -------------------------------------------------------------------------
+    // createOccupant — name/email round-trip
+    // -------------------------------------------------------------------------
+
+    @Test
+    fun `createOccupant persists name and email on the response`() = testBackEndApplication {
+        val unitId = UnitId("unit123")
+        val callerId = UserId("user123")
+        val occupantService = get<OccupantService>()
+        val rbacService = get<RBACService>()
+        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+        val context = ClientContext.AuthenticatedClientContext(
+            SupabaseContextPayload(userInfo = mockk(), userId = callerId)
+        )
+        val requestBody = readFileContent("requests/create_occupant_request.json")
+        val expectedResponse = readFileContent("requests/get_occupant_response.json")
+
+        coEvery { contextRetriever.getContext(any()) } returns context
+        coEvery { rbacService.hasRoleOrHigher(context, unitId, UserRole.ADMIN) } returns true
+        coEvery {
+            occupantService.addOccupant(
+                unitId = unitId,
+                userId = callerId,
+                addedBy = callerId,
+                name = "Jane Doe",
+                email = "jane@example.com",
+                occupantType = OccupantType.TENANT,
+                isPrimary = true,
+                startDate = LocalDate(2026, 1, 1),
+                endDate = null,
+            )
+        } returns Occupant(
+            id = OccupantId("occupant123"),
+            unitId = unitId,
+            userId = callerId,
+            addedBy = callerId,
+            name = "Jane Doe",
+            email = "jane@example.com",
+            occupantType = OccupantType.TENANT,
+            isPrimary = true,
+            startDate = LocalDate(2026, 1, 1),
+            endDate = null,
+            status = OccupancyStatus.ACTIVE,
+            addedAt = Instant.fromEpochSeconds(0),
+        )
+
+        val response = client.post("occupants") {
+            setBody(requestBody)
+            contentType(ContentType.Application.Json)
+        }
+
+        coVerify {
+            occupantService.addOccupant(
+                unitId = unitId,
+                userId = callerId,
+                addedBy = callerId,
+                name = "Jane Doe",
+                email = "jane@example.com",
+                occupantType = OccupantType.TENANT,
+                isPrimary = true,
+                startDate = LocalDate(2026, 1, 1),
+                endDate = null,
+            )
+        }
+        assertEquals(HttpStatusCode.OK, response.status)
+        assertEquals(expectedResponse, response.bodyAsText())
+    }
+
+    // -------------------------------------------------------------------------
     // Resident RBAC — getOccupant
     // -------------------------------------------------------------------------
 
@@ -81,6 +154,8 @@ class OccupantControllerTest : CoroutineTest(), KoinTest {
                 unitId = UnitId("unit123"),
                 userId = callerId,
                 addedBy = callerId,
+                name = "Jane Doe",
+                email = "jane@example.com",
                 occupantType = OccupantType.TENANT,
                 isPrimary = true,
                 startDate = LocalDate(2026, 1, 1),
@@ -115,6 +190,8 @@ class OccupantControllerTest : CoroutineTest(), KoinTest {
                 unitId = UnitId("unit123"),
                 userId = UserId("different-user"),
                 addedBy = callerId,
+                name = "Other Person",
+                email = null,
                 occupantType = OccupantType.TENANT,
                 isPrimary = true,
                 startDate = LocalDate(2026, 1, 1),
@@ -148,6 +225,8 @@ class OccupantControllerTest : CoroutineTest(), KoinTest {
                 unitId = UnitId("unit123"),
                 userId = null,
                 addedBy = callerId,
+                name = "Name Only",
+                email = null,
                 occupantType = OccupantType.TENANT,
                 isPrimary = true,
                 startDate = LocalDate(2026, 1, 1),
